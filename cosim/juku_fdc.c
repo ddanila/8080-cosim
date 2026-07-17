@@ -248,6 +248,11 @@ static void begin_type_i_verification(juku_fdc* fdc) {
     complete_transfer(fdc);
     return;
   }
+  if (fdc->physical_track < JUK_TRACKS) {
+    fdc->status |= ST_RNF;  // Type-I meaning: SEEK ERROR
+    complete_transfer(fdc);
+    return;
+  }
   fdc->type_i_verify_pending = 1;
   fdc->type_i_verify_index_pulses = 0;
 }
@@ -278,7 +283,7 @@ static void begin_type_i(juku_fdc* fdc, uint8_t command) {
   fdc->type_i_command = command;
   fdc->type_i_rate_ticks = type_i_rate_ticks(command);
   if ((command & 0xF0) == 0x00) {
-    fdc->type_i_steps_remaining = fdc->physical_track;
+    fdc->type_i_steps_remaining = fdc->tr00_line ? 255 : 0;
   } else if ((command & 0xF0) == 0x10) {
     const int delta = (int)fdc->data - (int)fdc->track;
     fdc->step_dir_in = delta >= 0;
@@ -765,10 +770,16 @@ void juku_fdc_tick(juku_fdc* fdc, unsigned ticks) {
       if (fdc->type_i_settling) {
         fdc->type_i_pending = 0;
         begin_type_i_verification(fdc);
+      } else if ((fdc->type_i_command & 0xF0) == 0x00 && !fdc->tr00_line) {
+        fdc->type_i_steps_remaining = 0;
+        finish_type_i_motion(fdc);
       } else if (fdc->type_i_steps_remaining) {
         type_i_step_once(fdc);
         fdc->type_i_steps_remaining--;
         fdc->type_i_ticks = fdc->type_i_rate_ticks;
+      } else if ((fdc->type_i_command & 0xF0) == 0x00) {
+        fdc->status |= ST_RNF;  // TR00 did not assert after 255 steps
+        complete_transfer(fdc);
       } else {
         finish_type_i_motion(fdc);
       }
@@ -822,6 +833,7 @@ void juku_fdc_init(juku_fdc* fdc, juk_disk* disk) {
   fdc->sector = 1;
   fdc->status_type_i = 1;
   fdc->hlt_line = 1;
+  fdc->tr00_line = 0;
   fdc->ready_line = 1;
   fdc->status = ST_NOT_READY;
 }
@@ -847,6 +859,11 @@ void juku_fdc_hlt(juku_fdc* fdc, int hlt) {
     fdc->command_hlt_pending = 0;
     execute_type_ii_iii(fdc, command);
   }
+}
+
+
+void juku_fdc_tr00(juku_fdc* fdc, int tr00) {
+  fdc->tr00_line = tr00 != 0;
 }
 
 
@@ -887,7 +904,7 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
         fdc->drq_ticks = 0;
       }
     } else if (fdc->type_i_verify_pending) {
-      if (++fdc->type_i_verify_index_pulses >= 5) {
+      if (++fdc->type_i_verify_index_pulses >= 4) {
         fdc->status |= ST_RNF;  // Type-I meaning: SEEK ERROR
         complete_transfer(fdc);
       }
@@ -921,8 +938,8 @@ uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg) {
       if (fdc->status_type_i) {
         status &= (uint8_t)~(ST_WRITE_PROTECT | ST_WRITE_FAULT | ST_TRACK0_LOST | ST_DRQ);
         if (fdc->disk && fdc->disk->fp && !fdc->disk->writable) status |= ST_WRITE_PROTECT;
-        if (fdc->head_loaded) status |= ST_WRITE_FAULT;
-        if (fdc->physical_track == 0) status |= ST_TRACK0_LOST;
+        if (fdc->head_loaded && fdc->hlt_line) status |= ST_WRITE_FAULT;
+        if (!fdc->tr00_line) status |= ST_TRACK0_LOST;
         if (fdc->index_line) status |= ST_DRQ;
       }
       if (!(fdc->force_interrupt_mask & 0x08)) fdc->intrq = 0;

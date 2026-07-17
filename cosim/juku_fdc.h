@@ -65,6 +65,7 @@ typedef struct {
   int head_loaded;
   unsigned idle_index_pulses;
   int hlt_line;
+  int tr00_line;
   int ready_line;
   int index_line;
   int intrq;
@@ -73,6 +74,7 @@ typedef struct {
 void juku_fdc_init(juku_fdc* fdc, juk_disk* disk);
 void juku_fdc_portc(juku_fdc* fdc, uint8_t portc);
 void juku_fdc_hlt(juku_fdc* fdc, int hlt);
+void juku_fdc_tr00(juku_fdc* fdc, int tr00);
 void juku_fdc_ready(juku_fdc* fdc, int ready);
 void juku_fdc_index(juku_fdc* fdc, int index);
 // Advance nominal 2 MHz-equivalent controller timers. One MFM byte time is

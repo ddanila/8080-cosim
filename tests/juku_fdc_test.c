@@ -213,6 +213,32 @@ int main(void) {
     fail = 1;
   }
 
+  juku_fdc_tr00(&fdc, 1);
+  fail |= expect_status(&fdc, ST_TRACK0, 0, "inactive TR00 status");
+  juku_fdc_write(&fdc, 0, 0x00);
+  juku_fdc_tick(&fdc, 255u * 6000u);
+  fail |= expect_intrq(&fdc, 1, "restore 255-step completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF | ST_TRACK0,
+                        ST_RNF, "restore stuck-TR00 seek error");
+
+  fdc.track = 5;
+  fdc.physical_track = 5;
+  juku_fdc_write(&fdc, 0, 0x00);
+  if (fdc.physical_track != 4 || fdc.type_i_steps_remaining != 254) {
+    fprintf(stderr, "restore did not issue its first TR00-seeking step\n");
+    fail = 1;
+  }
+  juku_fdc_tick(&fdc, 5999);
+  juku_fdc_tr00(&fdc, 0);
+  juku_fdc_tick(&fdc, 1);
+  fail |= expect_intrq(&fdc, 1, "restore TR00 assertion completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF | ST_TRACK0,
+                        ST_TRACK0, "restore TR00 assertion status");
+  if (fdc.track != 0 || fdc.physical_track != 0) {
+    fprintf(stderr, "restore TR00 assertion did not zero track state\n");
+    fail = 1;
+  }
+
   juku_fdc_write(&fdc, 0, 0x08);  // restore with head-load flag
   fail |= expect_status(&fdc, ST_TRACK0 | ST_HEAD_LOADED,
                         ST_TRACK0 | ST_HEAD_LOADED, "restore head-load status");
@@ -283,7 +309,7 @@ int main(void) {
   juku_fdc_hlt(&fdc, 0);
   juku_fdc_write(&fdc, 0, 0x14);  // zero-step seek, verify after settle and HLT
   juku_fdc_tick(&fdc, 30000);
-  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF | ST_HEAD_LOADED, ST_BUSY,
                         "Type-I verify waits for HLT");
   if (!fdc.type_i_hlt_pending || fdc.intrq) {
     fprintf(stderr, "Type-I verify did not enter the HLT wait\n");
@@ -291,7 +317,7 @@ int main(void) {
   }
   juku_fdc_hlt(&fdc, 1);
   fail |= expect_intrq(&fdc, 1, "Type-I verify HLT completion");
-  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, 0,
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF | ST_HEAD_LOADED, ST_HEAD_LOADED,
                         "matching Type-I verify after HLT");
 
   juku_fdc_write(&fdc, 0, 0x44);  // step in, no register update, verify
@@ -318,14 +344,7 @@ int main(void) {
     fprintf(stderr, "verified no-update step did not separate physical/register tracks\n");
     fail = 1;
   }
-  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
-                        "Type-I verify begins five-revolution ID search");
-  for (int i = 0; i < 4; i++) pulse_index(&fdc);
-  fail |= expect_intrq(&fdc, 0, "Type-I verify before fifth revolution");
-  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
-                        "Type-I verify before fifth-revolution status");
-  pulse_index(&fdc);
-  fail |= expect_intrq(&fdc, 1, "Type-I verify fifth-revolution completion");
+  fail |= expect_intrq(&fdc, 1, "Type-I valid-ID mismatch completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_RNF | ST_HEAD_LOADED,
                         ST_RNF | ST_HEAD_LOADED, "Type-I verify seek error");
   seek_track(&fdc, 14);
@@ -345,6 +364,18 @@ int main(void) {
   fail |= expect_intrq(&fdc, 1, "missing-ID fourth-revolution completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
                         ST_RNF, "read-sector missing-ID fourth-revolution RNF");
+
+  seek_track(&fdc, 80);
+  juku_fdc_write(&fdc, 0, 0x14);
+  juku_fdc_tick(&fdc, 30000);
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
+                        "Type-I missing-ID verify search");
+  for (int i = 0; i < 3; i++) pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 0, "Type-I missing-ID before fourth revolution");
+  pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 1, "Type-I missing-ID fourth-revolution completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_RNF,
+                        "Type-I missing-ID seek error");
   juku_fdc_write(&fdc, 0, 0x00);  // RESTORE is what physically recalibrates track zero
   juku_fdc_tick(&fdc, 10000000);
   seek_track(&fdc, 12);

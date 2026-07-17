@@ -3,7 +3,7 @@
 
 module fdc_1793_tb;
   reg clk = 0, cs_n = 1, rd_n = 1, wr_n = 1, motor_on = 0, side = 0;
-  reg ready = 0, index = 0, hlt = 1;
+  reg ready = 0, index = 0, hlt = 1, tr00 = 0;
   reg [1:0] A = 0;
   reg [7:0] drive = 8'h00;
   reg drive_en = 0;
@@ -26,7 +26,7 @@ module fdc_1793_tb;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                .clk(clk), .motor_on(motor_on), .side(side), .ready(ready), .index(index),
-               .hlt(hlt), .wprt(1'b0),
+               .hlt(hlt), .tr00(tr00), .wprt(1'b0),
                .drq(drq), .intrq(intrq), .step(step), .dirc(dirc));
 
   always #5 clk = ~clk;
@@ -172,6 +172,38 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
+    tr00 = 1;
+    expect_status(8'h04, 8'h00, "inactive TR00 status");
+    step_pulses_before = step_pulses;
+    write_reg(2'd0, 8'h00);
+    while (dut.status[0]) @(negedge clk);
+    #1;
+    if (step_pulses !== step_pulses_before + 255) begin
+      $display("FDC-1793: FAIL stuck-TR00 restore steps=%0d expected=255",
+               step_pulses - step_pulses_before);
+      errors = errors + 1;
+    end
+    expect_intrq(1'b1, "restore 255-step completion");
+    expect_status(8'h15, 8'h10, "restore stuck-TR00 seek error");
+
+    seek_track(8'd5);
+    step_pulses_before = step_pulses;
+    write_reg(2'd0, 8'h00);
+    if (dut.physical_track !== 8'd4 || dut.type_i_steps_remaining !== 254) begin
+      $display("FDC-1793: FAIL restore did not issue first TR00-seeking step");
+      errors = errors + 1;
+    end
+    while (dut.type_i_ticks > 1) @(posedge clk);
+    tr00 = 0;
+    @(negedge clk); #1;
+    if (step_pulses !== step_pulses_before + 1 || dut.track !== 0 || dut.physical_track !== 0) begin
+      $display("FDC-1793: FAIL TR00 assertion restore steps=%0d track=%02x physical=%02x",
+               step_pulses - step_pulses_before, dut.track, dut.physical_track);
+      errors = errors + 1;
+    end
+    expect_intrq(1'b1, "restore TR00 assertion completion");
+    expect_status(8'h15, 8'h04, "restore TR00 assertion status");
+
     write_reg(2'd0, 8'h08);
     expect_status(8'h24, 8'h24, "restore head-load status");
     for (i = 0; i < 7; i = i + 1) begin
@@ -246,13 +278,13 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'h14);  // zero-step seek, verify after settle and HLT
     while (dut.type_i_ticks > 1) @(posedge clk);
     @(negedge clk); #1;
-    if ((dut.status & 8'h11) !== 8'h01 || !dut.type_i_hlt_pending || intrq) begin
+    if ((dut.effective_status & 8'h31) !== 8'h01 || !dut.type_i_hlt_pending || intrq) begin
       $display("FDC-1793: FAIL Type-I verify did not wait for HLT status=%02x", dut.status);
       errors = errors + 1;
     end
     hlt = 1; #1;
     expect_intrq(1'b1, "Type-I verify HLT completion");
-    expect_status(8'h11, 8'h00, "matching Type-I verify after HLT");
+    expect_status(8'h31, 8'h20, "matching Type-I verify after HLT");
 
     step_pulses_before = step_pulses;
     write_reg(2'd0, 8'h44);
@@ -290,12 +322,7 @@ module fdc_1793_tb;
                dut.physical_track, got);
       errors = errors + 1;
     end
-    expect_status(8'h11, 8'h01, "Type-I verify begins five-revolution ID search");
-    repeat (4) pulse_index();
-    expect_intrq(1'b0, "Type-I verify before fifth revolution");
-    expect_status(8'h11, 8'h01, "Type-I verify before fifth-revolution status");
-    pulse_index();
-    expect_intrq(1'b1, "Type-I verify fifth-revolution completion");
+    expect_intrq(1'b1, "Type-I valid-ID mismatch completion");
     expect_status(8'h31, 8'h30, "Type-I verify seek error");
     seek_track(8'd14);
     read_reg(2'd1, got);
@@ -318,6 +345,17 @@ module fdc_1793_tb;
     pulse_index();
     expect_intrq(1'b1, "missing-ID fourth-revolution completion");
     expect_status(8'h13, 8'h10, "missing-ID fourth-revolution RNF");
+
+    seek_track(8'd80);
+    write_reg(2'd0, 8'h14);
+    while (!dut.type_i_verify_pending) @(negedge clk);
+    #1;
+    expect_status(8'h11, 8'h01, "Type-I missing-ID verify search");
+    repeat (3) pulse_index();
+    expect_intrq(1'b0, "Type-I missing-ID before fourth revolution");
+    pulse_index();
+    expect_intrq(1'b1, "Type-I missing-ID fourth-revolution completion");
+    expect_status(8'h11, 8'h10, "Type-I missing-ID seek error");
     write_reg(2'd0, 8'h00);
     while (dut.status[0]) @(negedge clk);
     #1;

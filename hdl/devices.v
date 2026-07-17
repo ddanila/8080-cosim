@@ -919,7 +919,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         (status & 8'h99) |
         (type_i_write_protect ? ST_WRITE_PROTECT : 8'h00) |
         ((head_loaded && hlt) ? ST_WRITE_FAULT : 8'h00) |
-        ((physical_track == 8'h00) ? 8'h04 : 8'h00) |
+        (!tr00 ? 8'h04 : 8'h00) |
         (index ? ST_DRQ : 8'h00);
     wire [7:0] status_view = status_type_i ? type_i_status : status;
     wire [7:0] effective_status =
@@ -1435,6 +1435,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             type_i_hlt_pending = 1;
         end else if (track == physical_track && physical_track <= 8'd79) begin
             complete_transfer();
+        end else if (physical_track <= 8'd79) begin
+            status = status | ST_RNF;
+            complete_transfer();
         end else begin
             type_i_verify_pending = 1;
             type_i_verify_index_pulses = 0;
@@ -1478,7 +1481,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 default: type_i_rate_ticks = 30000;
             endcase
             if ((cmd & 8'hf0) == 8'h00) begin
-                steps = physical_track;
+                steps = tr00 ? 255 : 0;
                 step_dir_in = 0;
                 dirc_r = 0;
             end else if ((cmd & 8'hf0) == 8'h10) begin
@@ -1929,8 +1932,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     // Type-I rates are controller-clock contracts from the FD179X table:
     // 3/6/10/15 ms per step and 15 ms verify settle at a nominal 2 MHz,
-    // followed by HLT and at most five ID-search revolutions. Keep the timer
-    // opt-in until the board's physical D93.24 clock is measured.
+    // followed by HLT, immediate valid-ID comparison, and at most four
+    // missing-ID revolutions in the flat-image backend. Restore samples active-low
+    // TR00 for at most 255 steps. Keep the timer opt-in until the board's
+    // physical D93.24 clock is measured.
 `ifdef FDC_TYPE_I_TIMING
     always @(negedge clk) begin
         step_r = 0;
@@ -1940,10 +1945,16 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 if (type_i_settling) begin
                     type_i_pending = 0;
                     begin_type_i_verification();
+                end else if ((type_i_command & 8'hf0) == 8'h00 && !tr00) begin
+                    type_i_steps_remaining = 0;
+                    finish_type_i_motion();
                 end else if (type_i_steps_remaining != 0) begin
                     type_i_step_once();
                     type_i_steps_remaining = type_i_steps_remaining - 1;
                     type_i_ticks = type_i_rate_ticks;
+                end else if ((type_i_command & 8'hf0) == 8'h00) begin
+                    status = status | ST_RNF;
+                    complete_transfer();
                 end else begin
                     finish_type_i_motion();
                 end
@@ -2013,7 +2024,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             end
 `ifdef FDC_TYPE_I_TIMING
         end else if (type_i_verify_pending) begin
-            if (type_i_verify_index_pulses + 1 >= 5) begin
+            if (type_i_verify_index_pulses + 1 >= 4) begin
                 status = status | ST_RNF;
                 complete_transfer();
             end else begin

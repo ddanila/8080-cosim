@@ -269,6 +269,22 @@ module juku_top_periph_bus_tb();
     io_read(8'h1D, rd);
     if (rd !== 8'h00) fail("FDC restore did not return track register to zero");
 
+    force dut.U_FDC.tr00 = 1'b1;
+    io_read(8'h1C, rd);
+    if ((rd & 8'h04) !== 0) fail("FDC Type-I TRACK 0 status ignored inactive TR00");
+    fdc_seek(8'h02);
+    io_write(8'h1C, 8'h00);
+    if (dut.U_FDC.physical_track !== 8'h01 || dut.U_FDC.type_i_steps_remaining !== 254)
+      fail("FDC Restore did not issue its first TR00-seeking step");
+    while (dut.U_FDC.type_i_ticks > 1) @(posedge osc);
+    force dut.U_FDC.tr00 = 1'b0;
+    @(negedge osc); #1;
+    if (dut.U_FDC.status[0] || dut.U_FDC.track !== 0 || dut.U_FDC.physical_track !== 0)
+      fail("FDC Restore did not complete and zero track state when TR00 asserted");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h14) !== 8'h04) fail("FDC Restore TR00 completion status mismatch");
+    release dut.U_FDC.tr00;
+
     io_write(8'h1F, 8'h02);     // FDC data register: seek target / sector byte
     io_write(8'h1D, 8'h00);     // FDC track register
     io_write(8'h1E, 8'h02);     // FDC sector register
@@ -283,7 +299,7 @@ module juku_top_periph_bus_tb();
     while (!dut.U_FDC.type_i_hlt_pending) @(posedge osc);
     #1;
     io_read(8'h1C, rd);
-    if ((rd & 8'h11) !== 8'h01 || dut.fdc_intrq)
+    if ((rd & 8'h31) !== 8'h01 || dut.fdc_intrq)
       fail("FDC Type-I verify did not remain BUSY while HLT was low");
     force dut.U_FDC.hlt = 1'b1;
     #1;
@@ -292,16 +308,12 @@ module juku_top_periph_bus_tb();
     if ((rd & 8'h11) !== 0) fail("FDC matching Type-I verify reported an error");
 
     io_write(8'h1C, 8'h44);     // step in without update, then verify
-    while (!dut.U_FDC.type_i_verify_pending) @(posedge osc);
+    while (dut.U_FDC.status[0]) @(posedge osc);
     #1;
     io_read(8'h1D, rd);
     if (rd !== 8'h02 || dut.U_FDC.physical_track !== 8'h03)
       fail("FDC no-update step did not separate physical head and Track register");
-    for (i = 0; i < 4; i = i + 1) fdc_index_pulse();
-    if (dut.fdc_intrq !== 1'b0 || (dut.U_FDC.status & 8'h11) !== 8'h01)
-      fail("FDC Type-I verify ended before the fifth index pulse");
-    fdc_index_pulse();
-    if (dut.fdc_intrq !== 1'b1) fail("FDC Type-I verify did not finish on fifth index pulse");
+    if (dut.fdc_intrq !== 1'b1) fail("FDC Type-I valid-ID mismatch did not finish immediately");
     io_read(8'h1C, rd);
     if ((rd & 8'h30) !== 8'h30) fail("FDC Type-I verify did not report SEEK ERROR/head loaded");
 

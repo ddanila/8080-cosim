@@ -15,7 +15,8 @@ physical D93/D94 wiring.
   physical/register offset, and only RESTORE recalibrates both to track zero.
   Later sector commands reject a mismatched head/register pair. The Type-I status view dynamically
   reports TRACK 0, HEAD LOADED, INDEX, media write protection, and SEEK ERROR;
-  the `h` and `V` flags control the modeled head-load latch. Fifteen rising
+  the `h` and `V` flags control the modeled head-load latch, while the visible
+  HEAD LOADED status bit is the specified `HLD && HLT`. Fifteen rising
   index edges while idle automatically release HLD exactly as specified;
   index edges while BUSY do not count, and Type I-III command activity restarts
   the idle interval while an idle Type-IV event arm leaves it running. The four
@@ -23,12 +24,18 @@ physical D93/D94 wiring.
   ms): STEP/DIRC and head motion occur at the step phase, BUSY spans the
   selected post-step interval, and `V=1` adds the datasheet 30,000-tick/15 ms
   settle before waiting for HLT. Once HLT is high, a matching flat-image ID
-  completes verification; a mismatch remains BUSY for four index pulses and
-  reports SEEK ERROR on the fifth revolution. A silent D0 retains every
+  completes verification and a valid-CRC wrong-track ID reports SEEK ERROR
+  immediately; a missing flat-image ID remains BUSY for three index pulses and
+  reports SEEK ERROR on the fourth revolution. Restore samples active-low TR00,
+  emits at most 255 outward steps, and reports SEEK ERROR if TR00 never asserts;
+  the Type-I TRACK 0 status bit is the live inverse of that input. A silent D0 retains every
   already-issued partial seek step. C advances this contract from executed 8080 cycles; focused HDL
   unit/decoded guards enable it with `FDC_TYPE_I_TIMING`. Exact wall-clock
   calibration remains a physical D93.24 boundary, while the source and waveform
-  of the now-modeled HLT input remain a physical D93.23 boundary.
+  of the now-modeled HLT input remain a physical D93.23 boundary. The physical
+  drive-status source for TR00 remains a D93.34 continuity boundary; the C
+  harness defaults it asserted and `juku_top` retains its explicit functional
+  low tie without claiming that as board copper.
   The same models cover single/multiple-record read-sector and write-sector, Read
   Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
@@ -389,7 +396,8 @@ evidence exists.
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
   not a general WD1793 conformance model. Exact physical D93.24 calibration of
   the byte, Type-I, and Type-II/III E-delay intervals,
-  physical D93.23 HLT generation and step-interface timing, arbitrary flux/sector
+  physical D93.23 HLT generation, D93.34 TR00 drive-status continuity, and
+  step-interface timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Command-load READY sampling and Type-IV READY-transition and
   index-event semantics are guarded, but the board's physical D93.32 READY
