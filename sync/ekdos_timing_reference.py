@@ -19,7 +19,7 @@ EXPECTED_FIRSTS = {
     ("OUT", 0x01): {"cyc": "3061556", "pc": "02BC", "g_vw": "30520", "value": "FE"},
     ("IN", 0x05): {"cyc": "3062006", "pc": "1213", "g_vw": "30520", "value": "-"},
     ("OUT", 0x1C): {"cyc": "6666400", "pc": "E5DE", "g_vw": "63085", "value": "02"},
-    ("IN", 0x1F): {"cyc": "8876919", "pc": "E5AA", "g_vw": "63095", "value": "-"},
+    ("IN", 0x1F): {"cyc": "8956831", "pc": "E5AA", "g_vw": "63095", "value": "-"},
 }
 EXPECTED_IRQS = [
     {"n": "1", "cyc": "3200001", "pc": "0E21", "vec": "FED4", "g_vw": "33812"},
