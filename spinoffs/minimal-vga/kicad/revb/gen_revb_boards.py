@@ -81,28 +81,21 @@ GAL16V8_IOSEL = {
 }
 # DIP-14 half-can baud oscillator: drives BAUDCLK (8251 TxC/RxC), local per D1.8.
 OSC_BAUD = {"1":"OSC_EN_NC","7":"GND","8":"BAUDCLK","14":"VCC5"}
-# 74HCT245 DIP-20 octal transceiver (data bus buffer). A-side = CPU-local, B-side = bus.
-BUF245 = {
-    "1":"BUF_DIR","2":"D0L","3":"D1L","4":"D2L","5":"D3L","6":"D4L","7":"D5L","8":"D6L",
-    "9":"D7L","10":"GND","11":"D7","12":"D6","13":"D5","14":"D4","15":"D3","16":"D2",
-    "17":"D1","18":"D0","19":"BUF_OE_N","20":"VCC5",
-}
-# 74HCT244 DIP-20 octal buffer (address/control out to bus). 1-side + 2-side.
-BUF244 = {
-    "1":"BUFA_OE1_N","2":"A0L","3":"A0","4":"A1L","5":"A1","6":"A2L","7":"A2","8":"A3L",
-    "9":"A3","10":"GND","11":"A4","12":"A4L","13":"A5","14":"A5L","15":"A6","16":"A6L",
-    "17":"A7","18":"A7L","19":"BUFA_OE2_N","20":"VCC5",
-}
+# NB (D1.21): the CPU card is UNBUFFERED in B1 (Z80 directly on the bus, RC2014
+# style). The '245/'244 are a documented optional later-rev margin footprint, not
+# populated, so their datapath/control logic is not part of the B1 netlist.
+# DIP-14 half-can CPU clock oscillator: drives CLK (socketed, ~2-4 MHz, S1).
+OSC_CPU = {"1":"OSC_EN_NC","7":"GND","8":"CLK","14":"VCC5"}
 
 CHIP_TYPES = {
     "Z80_DIP40": Z80, "EPROM_27C256": ROM_27C256, "SRAM_AS6C1008": SRAM_128K,
-    "GAL22V10": GAL22V10, "USART_8251": USART_8251, "BUF_74HCT245": BUF245,
-    "BUF_74HCT244": BUF244, "GAL16V8_IOSEL": GAL16V8_IOSEL, "OSC_BAUD": OSC_BAUD,
+    "GAL22V10": GAL22V10, "USART_8251": USART_8251,
+    "GAL16V8_IOSEL": GAL16V8_IOSEL, "OSC_BAUD": OSC_BAUD, "OSC_CPU": OSC_CPU,
 }
 
 # per-card populated ICs: (ref, type)
 CARD_CHIPS = {
-    "cpu":  [("U1", "Z80_DIP40"), ("U2", "BUF_74HCT245"), ("U3", "BUF_74HCT244")],
+    "cpu":  [("U1", "Z80_DIP40"), ("U2", "OSC_CPU")],   # unbuffered (D1.21); U2 = clock osc
     "mem":  [("U1", "EPROM_27C256"), ("U2", "SRAM_AS6C1008"), ("U3", "GAL22V10")],
     "io":   [("U1", "USART_8251"), ("U2", "GAL16V8_IOSEL"), ("U3", "OSC_BAUD")],
     "backplane": [],
@@ -131,6 +124,11 @@ CARD_EXTRAS = {
         # scope point so they are provisioned, not dangling, in B1.
         header("J_IOSEL", {"1": "UART_CS_N", "2": "PPI_CS_N", "3": "PIC_CS_N",
                            "4": "UART_RESET", "5": "GND"}),
+    ],
+    "cpu": [
+        cap("C1"), cap("C2"),
+        # Control-activity observability (S9): the rev A diagnostic signals.
+        header("J_DIAG", {"1": "CLK", "2": "M1_N", "3": "RFSH_N", "4": "RESET_N", "5": "GND"}),
     ],
 }
 
