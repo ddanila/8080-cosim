@@ -38,7 +38,7 @@ Z80 = {
 # 27C256 DIP-28 (256Kbit EPROM), standard JEDEC pinout. A14 is the top ROM addr line;
 # the low 16 KiB image lives in A0..A13 with A14 tied per the decode.
 ROM_27C256 = {
-    "1":"VPP","2":"A12","3":"A7","4":"A6","5":"A5","6":"A4","7":"A3","8":"A2","9":"A1",
+    "1":"VCC5","2":"A12","3":"A7","4":"A6","5":"A5","6":"A4","7":"A3","8":"A2","9":"A1",
     "10":"A0","11":"D0","12":"D1","13":"D2","14":"GND","15":"D3","16":"D4","17":"D5",
     "18":"D6","19":"D7","20":"ROM_CE_N","21":"A10","22":"MEM_RD_N","23":"A11","24":"A9",
     "25":"A8","26":"A13","27":"A14","28":"VCC5",
@@ -55,10 +55,12 @@ SRAM_128K = {
 # decode -- in rev B each card decodes its own I/O, so no IORQ_N / IO strobes here).
 # Inputs: MREQ_N, RD_N, WR_N, A13-A15, MODE0, MODE1. Outputs: ROM/RAM CE + MEM strobes.
 GAL22V10 = {
+    # Inputs A11..A15 are needed so RAM_CE stops below the video window (0xD800) and
+    # the mem card never fights the Video card on the bus (see rev-b-gal-equations.md).
     "1":"MREQ_N","2":"RD_N","3":"WR_N","4":"A13","5":"A14","6":"A15","7":"MODE0","8":"MODE1",
-    "9":"DEC_SPARE0","10":"DEC_SPARE1","11":"DEC_SPARE2","12":"GND","13":"DEC_SPARE3",
-    "14":"ROM_CE_N","15":"RAM_CE_N","16":"MEM_RD_N","17":"MEM_WR_N","18":"DEC_SPARE4",
-    "19":"DEC_SPARE5","20":"DEC_SPARE6","21":"DEC_SPARE7","22":"DEC_SPARE8","23":"DEC_SPARE9","24":"VCC5",
+    "9":"A11","10":"A12","11":"DEC_SPARE0_NC","12":"GND","13":"DEC_SPARE1_NC",
+    "14":"ROM_CE_N","15":"RAM_CE_N","16":"MEM_RD_N","17":"MEM_WR_N","18":"DEC_SPARE4_NC",
+    "19":"DEC_SPARE5_NC","20":"DEC_SPARE6_NC","21":"DEC_SPARE7_NC","22":"DEC_SPARE8_NC","23":"DEC_SPARE9_NC","24":"VCC5",
 }
 # 8251 DIP-28 (USART), standard pinout. D0..D7, C/D=A0, and control lines to the bus.
 USART_8251 = {
@@ -92,6 +94,25 @@ CARD_CHIPS = {
     "mem":  [("U1", "EPROM_27C256"), ("U2", "SRAM_AS6C1008"), ("U3", "GAL22V10")],
     "io":   [("U1", "USART_8251")],
     "backplane": [],
+}
+
+def cap(ref):
+    """0.1uF decoupling cap: VCC5 <-> GND (power nets, LVS-exempt)."""
+    return {"ref": ref, "type": "C_100N", "pins": {"1": "VCC5", "2": "GND"}}
+
+def header(ref, mapping):
+    return {"ref": ref, "type": "HDR_1xN", "pins": dict(mapping)}
+
+# Per-card discrete extras (decoupling + S9 observability/NOP headers, TD.2-TD.5).
+CARD_EXTRAS = {
+    "mem": [
+        cap("C1"), cap("C2"), cap("C3"),
+        # J95-style decode-observability header (S9): GAL outputs to the analyzer.
+        header("J_OBS", {"1": "ROM_CE_N", "2": "RAM_CE_N", "3": "MEM_RD_N", "4": "MEM_WR_N", "5": "GND"}),
+        # NOP free-run plug provision (J91-style, S9): D0-D7 + GND for the resistor plug.
+        header("J_NOP", {"1": "D0", "2": "D1", "3": "D2", "4": "D3", "5": "D4",
+                         "6": "D5", "7": "D6", "8": "D7", "9": "GND"}),
+    ],
 }
 
 
@@ -135,6 +156,7 @@ def build(card):
         chips.append(bus_connector("J_BUS"))
         for ref, typ in CARD_CHIPS[card]:
             chips.append({"ref": ref, "type": typ, "pins": dict(CHIP_TYPES[typ])})
+        chips.extend(CARD_EXTRAS.get(card, []))
     return {"card": card, "generated_by": "gen_revb_boards.py",
             "chips": chips, "nets": nets_from_chips(chips)}
 
