@@ -1,0 +1,63 @@
+{
+  "_about": "Single source of truth for Juku machine facts shared between the root reconstruction and the spin-offs (see docs/spinoff-commons.md). Every entry carries a 'provenance' field naming the file(s) it was read from. Consumers (rev B bus contract, testbenches, guards) must derive from this file, never restate numbers independently. Do not hand-edit a value without updating its provenance and re-checking the cited source.",
+
+  "framebuffer": {
+    "base_addr": 55296,
+    "base_addr_hex": "0xD800",
+    "bytes": 9640,
+    "cols": 40,
+    "rows": 241,
+    "note": "Monochrome bitmap; bytes == cols*rows (40*241=9640). Byte-packed, 8 horizontal pixels per byte.",
+    "provenance": "spinoffs/minimal-vga/docs/phase4-bench-bringup.md:67 (9640-byte image), :75 (0xD800 + 40x241); spinoffs/minimal-vga/hdl/vjuga_juku_top.v:254 (dump loop 40*241 from 0xD800)"
+  },
+
+  "memory_overlay_modes": {
+    "_desc": "ROM/RAM overlay is selected by 8255#0 Port C bits[1:0] (I/O port 0x06). '1' regions are served by the ROM overlay, everything else is RAM. Framebuffer at 0xD800 is RAM except where a mode overlays ROM there.",
+    "mode0": {"rom_regions": ["0x0000-0x3FFF"], "note": "boot/default mode; ekta37 stays in mode 0"},
+    "mode1": {"rom_regions": ["0xD800-0xFFFF"]},
+    "mode2": {"rom_regions": ["0x4000-0xBFFF (cartridge, reads 0xFF when empty)", "0xD800-0xFFFF"]},
+    "mode3": {"rom_regions": [], "note": "all RAM"},
+    "provenance": "spinoffs/minimal-vga/hdl/vjuga_juku_top.v:60-71 (overlay() + is_cart); mode-bit source: cosim/trace.c:263-277 (Port C 0x06 / control 0x07 set_mode); spinoffs/minimal-vga/docs/rev-a-gal-equations.md:60-72"
+  },
+
+  "rom_image": {
+    "file": "spinoffs/minimal-vga/roms/ekta37_z80.bin",
+    "bytes": 16384,
+    "note": "Z80-patched ekta37 firmware; twin loads rom[0:16383]. Physical rev B part is a 27C256 (32KiB) per build-plan C2; only the low 16KiB image is defined here.",
+    "provenance": "spinoffs/minimal-vga/hdl/vjuga_juku_top.v:49 (reg [7:0] rom [0:16383]); spinoffs/minimal-vga/roms/README.md"
+  },
+
+  "io_ports": {
+    "_desc": "8-bit I/O port map as the firmware actually drives it, read out of the cosim reference dispatcher. Ports are the low 8 address bits.",
+    "pic_a0_0": {"port": 0, "port_hex": "0x00", "device": "8259-class PIC", "role": "A0=0: ICW1 / OCW2 / OCW3"},
+    "pic_a0_1": {"port": 1, "port_hex": "0x01", "device": "8259-class PIC", "role": "A0=1: ICW2 (vector hi) / OCW1 (mask)"},
+    "ppi_port_a": {"port": 4, "port_hex": "0x04", "device": "8255#0 Port A", "role": "keyboard column select (low nibble)"},
+    "ppi_port_b": {"port": 5, "port_hex": "0x05", "device": "8255#0 Port B", "role": "keyboard read (74148 encoder)"},
+    "ppi_port_c": {"port": 6, "port_hex": "0x06", "device": "8255#0 Port C", "role": "memory-overlay mode bits[1:0] (also FDC Port C strobes when FDC present)"},
+    "ppi_control": {"port": 7, "port_hex": "0x07", "device": "8255#0 control", "role": "mode-set / bit set-reset on Port C"},
+    "fdc": {"ports": [28, 29, 30, 31], "ports_hex": "0x1C-0x1F", "device": "ВГ93/WD1793-class FDC", "role": "port & 3 = command/status, track, sector, data (0x1F)"},
+    "provenance": "cosim/trace.c:255-260 (PIC 0x00/0x01), :253 (0x04 kbd col), :220 (0x05 kbd read), :263-277 (0x06/0x07 Port C mode), :221 & :250 (0x1C-0x1F FDC)"
+  },
+
+  "pic_wiring": {
+    "_desc": "8259-class PIC interrupt-request line assignments, as wired in the root structural twin. Lower number = higher priority.",
+    "ir0": "FDC INTRQ",
+    "ir1": "FDC DRQ",
+    "ir2": "serial RxRDY",
+    "ir3": "serial TxRDY",
+    "ir4": "unused",
+    "ir5": "frame tick (video frame boundary)",
+    "ir6": "ir6_sig (reserved)",
+    "ir7": "ir7_sig (reserved)",
+    "frame_service_vector_hex": "0xFED4",
+    "provenance": "hdl/juku_top.v:709 (ir assignments); frame service vector: docs/fdc-readiness.md:257, spinoffs/minimal-vga/docs/rev-b-build-plan.md interrupts row"
+  },
+
+  "timing": {
+    "frame_irq_period_cycles": 200000,
+    "fdc_nominal_clock_hz": 2000000,
+    "fdc_type_i_ticks_15ms": 30000,
+    "note": "frame_irq_period is the calibrated keyboard-scan cadence used by the structural twin. FDC timers assume a 2 MHz-equivalent controller clock; 30000 ticks = 15 ms at 2 MHz.",
+    "provenance": "docs/jmon33-hdl-probe.md:19,32 (frame IRQ period 200000); cosim/juku_fdc.c:273 (30000 ticks = 15 ms at nominal 2 MHz), juku_fdc.h:81"
+  }
+}
