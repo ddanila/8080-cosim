@@ -103,9 +103,16 @@ def main():
         for ref, bbox in bodies.items():
             if ref == owner:
                 continue
-            # A label fully inside a body is an intended in-part label, not a clash.
-            if collide(tbox, bbox) and not contains(bbox, tbox):
-                errors.append(f"label {label} overlaps component {ref}")
+            if not collide(tbox, bbox):
+                continue
+            # A *standalone* silk label fully inside a body is an intended in-part
+            # label (connector pin names, etc.). But a footprint's own ref/value
+            # field landing inside a DIFFERENT component is a real, unreadable
+            # clash -- e.g. a tightly-packed resistor's designator printed on top
+            # of its neighbour -- so containment is not a free pass for owned text.
+            if owner is None and contains(bbox, tbox):
+                continue
+            errors.append(f"label {label} overlaps component {ref}")
 
     # Silk text vs silk text (sign collisions), skipping a part's own ref+value.
     for i in range(len(texts)):
@@ -121,11 +128,18 @@ def main():
     # (partly in, partly out) sits on the border line. Fully-inside / fully-out
     # is fine. This catches a refdes printed on top of a block frame (e.g. a
     # DIP's side-printed designator landing on the block's left edge).
+    # Only component bodies are checked for straddle: block titles now sit ON the
+    # frame's top border by design, and part designators near a frame are handled
+    # by the label-vs-component / text-vs-text checks above.
     straddle_items = [(ref, bbox) for ref, bbox in bodies.items()
                       if ref not in EDGE_CONNECTORS]
-    straddle_items += [(label, tbox) for label, tbox, owner in texts
-                       if owner not in EDGE_CONNECTORS]
-    for name, (l, t, r, b) in gen.SILK_BLOCK_OUTLINES.items():
+    # Block outlines are computed from the placed parts (the module-level
+    # SILK_BLOCK_OUTLINES is empty until build time), matching how the generator
+    # and check_rev_a_pcb.py derive them.
+    block_outlines = gen.compute_block_outlines(
+        {fp.GetReference(): fp for fp in board.GetFootprints()}
+    )
+    for name, (l, t, r, b) in block_outlines.items():
         rect = (l, t, r, b)
         for who, bbox in straddle_items:
             w, h = overlap(bbox, rect)

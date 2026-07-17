@@ -29,15 +29,8 @@ EXPECTED_ZONES = {
     "Rev A GND plane placeholder": ("In1.Cu", "GND"),
     "Rev A VCC plane placeholder": ("In2.Cu", "VCC"),
 }
-EXPECTED_SILK_BLOCK_LABELS = {
-    "POWER": "POWER",
-    "CLOCK_RESET": "CLOCK + RESET",
-    "DRAM_REFRESH_TIMING": "DRAM REFRESH + TIMING",
-    "DRAM_BANK": "DRAM BANK",
-    "KEYBOARD_MATRIX": "KEYBOARD MATRIX",
-    "VGA_OUT": "VGA OUT",
-    "DEBUG_HEADERS": "DEBUG HEADERS",
-}
+# Block titles/frames are verified against gen.SILK_BLOCK_LABELS (single source
+# of truth), computed from the placed parts.
 EXPECTED_CHIP_BLOCK_LABELS = {
     "CPU": "U1",
     "ROM": "U2",
@@ -129,14 +122,17 @@ def matching_silk_segment(board, expected):
     return False
 
 
-def missing_silk_outline_edges(board, name, bounds):
+def missing_silk_outline_edges(board, name, bounds, title):
     left, top, right, bottom = bounds
     edges = {
-        "top": (left, top, right, top),
         "right": (right, top, right, bottom),
         "bottom": (right, bottom, left, bottom),
         "left": (left, bottom, left, top),
     }
+    # The top border is drawn as one full segment (untitled) or two stubs
+    # flanking the inset title -- computed the same way the generator draws it.
+    for i, seg in enumerate(gen.block_top_segments(bounds, title)):
+        edges[f"top{i}"] = seg
     return [edge for edge, segment in edges.items() if not matching_silk_segment(board, segment)]
 
 
@@ -269,10 +265,12 @@ def main():
                     f"expected default footprint text style: {label}"
                 )
 
-    # Titles are printed just above each frame's top-left corner; a few in tight
-    # corners are dropped (gen.SILK_BLOCK_LABEL_DROP) and must NOT be present.
+    # Titles are printed ON each frame's top border, inset from the left corner;
+    # a block in gen.SILK_BLOCK_LABEL_DROP is framed but untitled.
     block_label_violations = []
-    for name, label in EXPECTED_SILK_BLOCK_LABELS.items():
+    for name, label in gen.SILK_BLOCK_LABELS.items():
+        if name not in block_outlines:
+            continue
         matches = [
             text
             for _, _, text in silk_text_items(board)
@@ -282,7 +280,7 @@ def main():
             if matches:
                 block_label_violations.append(f"{label}:should-be-dropped")
             continue
-        expected_pos = gen.silk_block_label_anchor(block_outlines[name])
+        expected_pos = gen.silk_block_title_anchor(block_outlines[name])
         if not matches:
             block_label_violations.append(f"{label}:missing")
             continue
@@ -294,7 +292,7 @@ def main():
                     f"{label}=({x:.2f},{y:.2f}) expected=({expected_pos[0]:.2f},{expected_pos[1]:.2f})"
                 )
     if block_label_violations:
-        fail("silkscreen block labels are not at the above-frame anchors: " + "; ".join(block_label_violations))
+        fail("silkscreen block titles are not on their frame's top border: " + "; ".join(block_label_violations))
 
     chip_label_violations = []
     for label, ref in EXPECTED_CHIP_BLOCK_LABELS.items():
@@ -378,7 +376,8 @@ def main():
 
     missing_outlines = []
     for name, bounds in block_outlines.items():
-        missing_edges = missing_silk_outline_edges(board, name, bounds)
+        title = None if name in gen.SILK_BLOCK_LABEL_DROP else gen.SILK_BLOCK_LABELS[name]
+        missing_edges = missing_silk_outline_edges(board, name, bounds, title)
         if missing_edges:
             missing_outlines.append(f"{name}:{','.join(missing_edges)}")
     if missing_outlines:

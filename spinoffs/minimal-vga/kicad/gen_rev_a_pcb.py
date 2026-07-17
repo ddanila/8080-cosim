@@ -38,15 +38,21 @@ CHIP_BLOCK_LABELS = {
 BLOCK_MEMBERS = {
     "POWER": ["J1", "J3", "F1", "D1", "C50", "R6", "R30", "R31"],
     "CLOCK_RESET": ["U50", "U51", "R4", "R5", "J96", "C24", "C25"],
-    "DRAM_REFRESH_TIMING": ["U20", "U21", "U22", "U23", "U24",
-                             "C14", "C15", "C16", "C17", "C18"],
+    # U41 (pixel serializer) lives with the video timing here, next to its data
+    # inputs; only its output goes to the VGA connector.
+    "DRAM_REFRESH_TIMING": ["U20", "U21", "U22", "U23", "U24", "U41",
+                             "C14", "C15", "C16", "C17", "C18", "C23"],
     "DRAM_BANK": ["U10", "U11", "U12", "U13", "U14", "U15", "U16", "U17",
                    "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13"],
     "KEYBOARD_MATRIX": ["U30", "U31", "J30", "C20", "C21"],
-    "VGA_OUT": ["U40", "U41", "J40", "C22", "C23"],
-    # DIAGNOSTIC_LEDS has no frame: the LEDs sit in a tight right-edge corner
-    # between VGA and the keyboard where no clean rectangle fits; the LEDs carry
-    # descriptive silk values (PWR/CLK/RESET/...) instead, like the CPU/ROM chips.
+    "VGA_OUT": ["U40", "J40", "R1", "R2", "R3"],
+    "DIAGNOSTIC_LEDS": ["D2", "D3", "D4", "D5", "D6", "D7"],
+    # Left resistor field: keyboard pull-ups/series + decode pull-ups, framed
+    # together as "PULL-UPS" (the dominant function).
+    "PULL_UPS": (
+        [f"R{i}" for i in range(7, 15)] + [f"R{i}" for i in range(16, 24)] + ["R15"]
+        + [f"R{i}" for i in range(32, 44)] + ["R44"]
+    ),
     "DEBUG_HEADERS": ["J90", "J91", "J92", "J93", "J95", "J97", "J98"],
 }
 BLOCK_EDGE_CONNECTORS = {"J3"}   # overhang the board edge; excluded from frames
@@ -66,8 +72,10 @@ def compute_block_outlines(placed):
     for name, refs in BLOCK_MEMBERS.items():
         # Edge connectors (USB-C J3) overhang the board edge; exclude them so the
         # frame and its title stay on-board.
+        # Include silk text: the frame must enclose each member's refdes/value so
+        # a title printed on the top border clears the parts' labels below it.
         boxes = [
-            placed[r].GetBoundingBox(False, False)
+            placed[r].GetBoundingBox(True, False)
             for r in refs
             if r in placed and r not in BLOCK_EDGE_CONNECTORS
         ]
@@ -91,6 +99,8 @@ SILK_BLOCK_LABELS = {
     "DRAM_BANK": "DRAM BANK",
     "KEYBOARD_MATRIX": "KEYBOARD MATRIX",
     "VGA_OUT": "VGA OUT",
+    "DIAGNOSTIC_LEDS": "DIAGNOSTIC LEDS",
+    "PULL_UPS": "PULL-UPS",
     "DEBUG_HEADERS": "DEBUG HEADERS",
 }
 SILK_BLOCK_LABEL_PADDING_MM = 2.0
@@ -255,18 +265,20 @@ IC_CAP = {
     "U1": "C1", "U2": "C2", "U3": "C26", "U4": "C27", "U5": "C5", "U6": "C28",
     "U10": "C6", "U11": "C7", "U12": "C8", "U13": "C9", "U14": "C10", "U15": "C11",
     "U16": "C12", "U17": "C13", "U20": "C14", "U21": "C15", "U22": "C16",
-    "U23": "C17", "U24": "C18", "U30": "C20", "U31": "C21", "U40": "C22",
+    "U23": "C17", "U24": "C18", "U30": "C20", "U31": "C21",
     "U41": "C23", "U50": "C24", "U51": "C25",
 }
+# U40 is a passive TTL output header; its modelled decoupling cap C22 is placed
+# with the spare decouplers rather than crammed into the VGA connector column.
 # Cap direction relative to its IC: default "up" (place above the body). The top
 # logic band hugs the board's top edge, so its caps drop "down" into the gap
 # below instead; a few tight spots push their cap sideways.
 CAP_DIR = {
     "U1": "up", "U2": "up",              # caps above CPU/ROM, clearing the chip labels below
-    "U40": "down", "U41": "down",        # VGA column: caps below each part, off the R1-3 column
+    "U40": "down",                       # VGA header: cap below, in the connector column
     "U50": "left", "U51": "down",        # clock/reset: caps clear of the edge
 }
-SPARE_CAPS = ["C3", "C4", "C19"]   # extra decouplers, tucked in open spots
+SPARE_CAPS = ["C3", "C4", "C19", "C22"]   # extra decouplers, tucked in open spots
 
 # ---------------------------------------------------------------------------
 # Auto-packer: computes grid-aligned positions from real footprint sizes so no
@@ -330,8 +342,9 @@ def build_placement(spec):
     row([("U3", 0), ("U4", 0), ("U6", 0), ("U5", 90)], 10, 12)
     put("J94", 28, 12, 90)          # decode mode jumper
 
-    # -- refresh/timing band: address muxes + counters (vertical), seq GAL (horiz) --
-    row([("U20", 0), ("U21", 0), ("U22", 0), ("U23", 0), ("U24", 90)], 10, 19)
+    # -- refresh/timing band: address muxes + counters (vertical), seq GAL
+    #    (horiz), and the pixel serializer U41 (near its video-data inputs) --
+    row([("U20", 0), ("U21", 0), ("U22", 0), ("U23", 0), ("U24", 90), ("U41", 0)], 10, 19)
 
     # -- DRAM bank: eight 4164 (vertical) --
     row([(f"U1{i}", 0) for i in range(8)], 8, 26)
@@ -343,24 +356,24 @@ def build_placement(spec):
     put("U50", 35, 4); put("U51", 37, 8); put("J96", 35, 11, 90)
     put("R4", 33, 8, 90); put("R5", 35, 8, 90)
 
-    # -- VGA out (far-right column); series resistors R1-3 kept next to the
-    #    serializer/connector so PIXEL/video nets stay short and routable --
-    put("U40", 37, 14); put("U41", 37, 20); put("J40", 37, 26)
-    grid(["R1", "R2", "R3"], 34, 15, 1, 2, 2, rot=90)
+    # -- VGA out (far-right column): two connectors with the video series
+    #    resistors R1-3 stacked below them. Compact now that the serializer U41
+    #    moved to the refresh band. --
+    put("U40", 37, 15); put("J40", 37, 20)
+    grid(["R1", "R2", "R3"], 37, 24, 1, 2, 2, rot=90)
 
-    # -- left resistor field: keyboard pull-ups/series, decode pull-ups and the
-    #    VGA series resistors, packed as one grid of vertical resistors (cols
-    #    2/4/6, clear of every band box, whose left edges start at col 8) --
-    left_resistors = (
-        [f"R{i}" for i in range(7, 15)] + [f"R{i}" for i in range(16, 24)] + ["R15"]
-        + [f"R{i}" for i in range(32, 44)] + ["R44"]
-    )
-    grid(left_resistors, 2, 14, 3, 2, 2, rot=90)
+    # -- LED limit resistors: single column in the strip between the DRAM bank
+    #    (col 33) and the VGA column (col 37) --
+    grid([f"R{i}" for i in range(24, 30)], 35, 15, 1, 2, 2, rot=90)
 
-    # -- diagnostic LEDs (far-right strip below VGA) --
-    grid([f"D{i}" for i in range(2, 8)], 34, 30, 2, 2, 2, rot=0)
-    # -- LED limit resistors in the narrow void between clock and the DRAM bank --
-    grid([f"R{i}" for i in range(24, 30)], 31, 15, 2, 1, 2, rot=90)
+    # -- left resistor field: keyboard pull-ups/series + decode pull-ups, packed
+    #    as one grid of vertical resistors (cols 2/4/6, clear of every band box,
+    #    whose left edges start at col 8) --
+    left_resistors = BLOCK_MEMBERS["PULL_UPS"]
+    grid(left_resistors, 2, 15, 3, 2, 2, rot=90)
+
+    # -- diagnostic LEDs (framed block, below VGA, right of the keyboard header) --
+    grid([f"D{i}" for i in range(2, 8)], 35, 31, 2, 2, 2, rot=0)
 
     # -- debug + observability headers along the bottom edge (horizontal) --
     row([("J95", 90), ("J97", 90), ("J98", 90),
@@ -368,7 +381,7 @@ def build_placement(spec):
 
     # -- spare decouplers, in the thin gap below CPU/ROM (above the decode caps;
     #    columns chosen to clear the CPU/ROM titles and the decode caps) --
-    put("C3", 13, 8); put("C4", 20, 8); put("C19", 27, 8)
+    put("C3", 12, 8); put("C4", 17, 8); put("C19", 22, 8); put("C22", 27, 8)
 
     # -- decoupling caps next to each IC (short side; low-freq, so exact side
     #    doesn't matter electrically -- we just keep them off the neighbours) --
@@ -494,14 +507,15 @@ def place_silk_fields(fp, chip, x, y, rot):
             value_size = 0.72
         style_field(fp.Value(), value, cx, cy, value_angle, size=value_size)
 
-        if rot % 180:
-            ref_x = cx
-            ref_y = top - 1.8
-            ref_angle = 0
-        else:
-            ref_x = cx
-            ref_y = top - 1.8
-            ref_angle = 0
+        ref_x = cx
+        ref_y = top - 1.8
+        ref_angle = 0
+        if ref[0] == "R" and rot % 180:
+            # Vertical resistors are packed in tight columns (rowp ~10 mm), so a
+            # refdes printed ABOVE lands on the resistor above it. Print it to the
+            # LEFT of the body, level with its centre, instead.
+            ref_x = left - 1.4
+            ref_y = cy
         if ref[0] == "R" and rot % 180 == 0:
             ref_y = top - 1.4
         if ref[0] == "F":
@@ -611,32 +625,55 @@ def add_chip_block_label(board, text, fp):
 # On the compact board there is no clear space inside the block frames for a
 # title, so each title is printed just ABOVE the frame's top-left corner (in the
 # inter-band gap). Titles that would still collide there are dropped.
-# VGA_OUT sits in a tight right-edge corner where even an above-frame title
-# collides with a neighbour, so its frame is drawn untitled.
-SILK_BLOCK_LABEL_DROP = {"VGA_OUT"}
+# Titles now sit ON the top border (in the inter-band gap), so every framed block
+# can carry one; nothing is dropped.
+SILK_BLOCK_LABEL_DROP = set()
 
 
-def silk_block_label_anchor(bounds):
-    """Lower-left of the title text, printed just above the frame's top edge."""
+# The block title is printed ON the frame's top border ("+- TITLE ------+"): the
+# top edge is drawn as two stubs with a gap for the text, which sits centred on
+# the top line. block_top_segments is shared with the checker so both sides agree.
+SILK_BLOCK_TITLE_SIZE_MM = 2.0
+SILK_BLOCK_TITLE_INSET_MM = 2.5   # title left edge in from the frame's left corner
+SILK_BLOCK_TITLE_GAP_MM = 1.2     # gap between the title text and the top-border stubs
+SILK_BLOCK_TITLE_CHAR_W = 0.72    # approx GOST stroke-font char width / height
+
+
+def block_title_size(bounds, title):
+    """Title font size, shrunk so a long title fits within a narrow frame."""
+    left, _, right, _ = bounds
+    avail = (right - left) - 2 * SILK_BLOCK_TITLE_INSET_MM
+    full = len(title) * SILK_BLOCK_TITLE_SIZE_MM * SILK_BLOCK_TITLE_CHAR_W
+    if full <= avail:
+        return SILK_BLOCK_TITLE_SIZE_MM
+    return round(max(0.9, avail / (len(title) * SILK_BLOCK_TITLE_CHAR_W)), 3)
+
+
+def block_title_width(bounds, title):
+    return len(title) * block_title_size(bounds, title) * SILK_BLOCK_TITLE_CHAR_W
+
+
+def silk_block_title_anchor(bounds):
+    """Left edge / vertical centre of the title text, sitting on the top border."""
     left, top, _, _ = bounds
-    return (left + SILK_BLOCK_LABEL_PADDING_MM, top - SILK_BLOCK_LABEL_PADDING_MM)
+    return (round(left + SILK_BLOCK_TITLE_INSET_MM, 3), top)
 
 
-def add_silk_block_label(board, text, bounds, name=None):
-    if name in SILK_BLOCK_LABEL_DROP:
-        return
-    x, y = silk_block_label_anchor(bounds)
-    label = pcbnew.PCB_TEXT(board)
-    label.SetLayer(pcbnew.F_SilkS)
-    label.SetText(text)
-    label.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y)))
-    label.SetTextAngleDegrees(0)
-    label.SetTextSize(pcbnew.VECTOR2I(mm(2.0), mm(2.0)))
-    label.SetTextThickness(mm(0.2))
-    label.SetItalic(False)
-    label.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
-    label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_BOTTOM)
-    board.Add(label)
+def block_top_segments(bounds, title):
+    """Top-border silk segments: the full edge, or two stubs flanking the title."""
+    left, top, right, _ = bounds
+    if not title:
+        return [(left, top, right, top)]
+    tx = left + SILK_BLOCK_TITLE_INSET_MM
+    tw = block_title_width(bounds, title)
+    seg1_end = round(tx - SILK_BLOCK_TITLE_GAP_MM, 3)
+    seg2_start = round(tx + tw + SILK_BLOCK_TITLE_GAP_MM, 3)
+    segs = []
+    if seg1_end > left + 0.05:
+        segs.append((left, top, seg1_end, top))
+    if seg2_start < right - 0.05:
+        segs.append((seg2_start, top, right, top))
+    return segs
 
 
 def add_silk_segment(board, x1, y1, x2, y2, layer=pcbnew.F_SilkS):
@@ -649,11 +686,28 @@ def add_silk_segment(board, x1, y1, x2, y2, layer=pcbnew.F_SilkS):
     board.Add(shape)
 
 
-def add_silk_rect(board, left, top, right, bottom, layer=pcbnew.F_SilkS):
-    add_silk_segment(board, left, top, right, top, layer)
-    add_silk_segment(board, right, top, right, bottom, layer)
-    add_silk_segment(board, right, bottom, left, bottom, layer)
-    add_silk_segment(board, left, bottom, left, top, layer)
+def add_framed_block(board, bounds, title=None):
+    """Draw a block frame with its title inset into the top border."""
+    left, top, right, bottom = bounds
+    add_silk_segment(board, right, top, right, bottom)
+    add_silk_segment(board, right, bottom, left, bottom)
+    add_silk_segment(board, left, bottom, left, top)
+    for x1, y1, x2, y2 in block_top_segments(bounds, title):
+        add_silk_segment(board, x1, y1, x2, y2)
+    if not title:
+        return
+    tx, ty = silk_block_title_anchor(bounds)
+    size = block_title_size(bounds, title)
+    label = pcbnew.PCB_TEXT(board)
+    label.SetLayer(pcbnew.F_SilkS)
+    label.SetText(title)
+    label.SetTextPos(pcbnew.VECTOR2I(mm(tx), mm(ty)))
+    label.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size)))
+    label.SetTextThickness(mm(0.2))
+    label.SetItalic(False)
+    label.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
+    label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
+    board.Add(label)
 
 
 def add_small_silk_label(board, text, x, y, angle=0, layer=pcbnew.F_SilkS):
@@ -748,9 +802,8 @@ def main():
         add_chip_block_label(board, label, placed[ref])
     outlines = compute_block_outlines(placed)
     for name, bounds in outlines.items():
-        left, top, right, bottom = bounds
-        add_silk_rect(board, left, top, right, bottom)
-        add_silk_block_label(board, SILK_BLOCK_LABELS[name], bounds, name)
+        title = None if name in SILK_BLOCK_LABEL_DROP else SILK_BLOCK_LABELS[name]
+        add_framed_block(board, bounds, title)
     for label, x, y, angle in POWER_INPUT_PIN_LABELS:
         add_small_silk_label(board, label, x, y, angle)
 
