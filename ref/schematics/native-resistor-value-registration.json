@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "scope": "legible resistor values on the native .006 electrical sheets reused by the .009 target model",
+  "promotion_rule": "promote only a value printed unambiguously beside the same refdes or a clearly bracketed identical group; do not infer target values from topology, color similarity, or a revision-sensitive continuation",
+  "sources": [
+    {
+      "path": "ref/schematics/p3_sheet1.png",
+      "sha256": "dd9eb45a8b9a6af5bbaf4677939f4b2db49661c1a536a07009e0fce9afa1bf53",
+      "sheet": 1,
+      "regions_px": {
+        "decode_pullups": [1200, 100, 1300, 1000],
+        "decode_rc": [1550, 700, 800, 700]
+      }
+    },
+    {
+      "path": "ref/schematics/p2_sheet2.png",
+      "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
+      "sheet": 2,
+      "regions_px": {
+        "s3_pullups": [900, 1000, 1200, 1200],
+        "d56_timing": [2750, 1000, 1100, 1000],
+        "frame_interrupt": [4200, 600, 900, 1200],
+        "video_summing": [3100, 1900, 1600, 1000],
+        "beeper_clamp": [4200, 1800, 800, 700]
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "sheet-1 decode open-collector pullups",
+      "source_sheet": 1,
+      "refs": {"R11": "1к", "R12": "1к", "R13": "1к", "R14": "1к"},
+      "observation": "R11/R12 are printed 1k above D6 outputs; R13/R14 are printed 1k beside the D13 input branches"
+    },
+    {
+      "name": "sheet-1 decode RC series resistor",
+      "source_sheet": 1,
+      "refs": {"R17": "200"},
+      "observation": "R17 is printed 200 beside C99=160 in the D7/D9 decode path"
+    },
+    {
+      "name": "sheet-2 S3 switch pullup bank",
+      "source_sheet": 2,
+      "refs": {"R40": "15к", "R41": "15к", "R42": "15к", "R43": "15к", "R44": "15к", "R45": "15к"},
+      "observation": "the six identical R40-R45 pullups share the printed 15k group value below R45; the former 13k prose was a transcription error"
+    },
+    {
+      "name": "sheet-2 D56 timing network",
+      "source_sheet": 2,
+      "refs": {"R47": "20к", "R59": "33к", "R61": "12к"},
+      "observation": "the two AG3 timing resistors are printed R47=20k and R59=33k; the clear pullup is printed R61=12k"
+    },
+    {
+      "name": "sheet-2 frame interrupt pullup",
+      "source_sheet": 2,
+      "refs": {"R60": "5,1к"},
+      "observation": "R60 is printed 5.1k on FRAME_INT"
+    },
+    {
+      "name": "sheet-2 video summing stage",
+      "source_sheet": 2,
+      "refs": {"R62": "2к", "R63": "1к", "R64": "5,1к", "R65": "430", "R66": "1к"},
+      "observation": "each value is printed directly beside its refdes around VT2; R67 is deliberately excluded because its .009 far-side continuation is revision-sensitive"
+    },
+    {
+      "name": "sheet-2 beeper clamp",
+      "source_sheet": 2,
+      "refs": {"R90": "2к", "R91": "1к"},
+      "observation": "R90=2k and R91=1k are printed on the D58/VD4/VT1 AVDC branch"
+    }
+  ],
+  "held": [
+    {
+      "ref": "R48",
+      "reason": "the scan label beside the speaker/emitter path is not unambiguous enough to normalize automatically"
+    },
+    {
+      "ref": "R67",
+      "reason": "sheet 2 prints 2k, but target .009 photos prove its far-side continuation differs from the .006 drawing; retain the target-value hold until the body or target documentation is readable"
+    }
+  ]
+}

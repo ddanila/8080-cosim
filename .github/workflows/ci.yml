@@ -111,6 +111,7 @@ jobs:
             scripts/close_d30_status_strobe.py \
             scripts/report_decap_value_fidelity.py \
             scripts/report_ras_resistor_bank.py \
+            scripts/report_native_resistor_values.py \
             scripts/report_d41_timing_boundary.py \
             scripts/report_memory_timing_boundary.py \
             scripts/report_io_decode_boundary.py \

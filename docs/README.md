@@ -32,6 +32,7 @@ findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
   `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
+  `native-resistor-values.md` (22 literal sheet values with R48/R67 held),
   `master-oscillator-boundary.md`,
   `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
   `owner-measurement-shortlist.md`.

@@ -3104,7 +3104,7 @@
     "refdes": "sheet-1 R18 33k between OC SOUT and D3.11; .009 assembly/photo placement",
     "pins": "source junctions and component copper identify the upper S_OC and lower SER_TXD terminals"
    },
-   "value": "33k"
+   "value": "33к"
   },
   {
    "ref": "R30",
@@ -3115,7 +3115,7 @@
     "refdes": "sheet-1 R30 33k from OC SOUT to ground; .009 assembly/photo placement",
     "pins": "source junctions identify the upper S_OC and lower ground terminals"
    },
-   "value": "33k"
+   "value": "33к"
   },
   {
    "ref": "R104",
@@ -4099,79 +4099,85 @@
   {
    "ref": "R40",
    "type": "R_AXIAL",
+   "value": "15к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 R40-R45 13k pullups",
-    "pins": "scan"
+    "refdes": "native sheet-2 R40-R45 15k S3 pullups",
+    "pins": "common value label 15k applies to the six identical switch pullups"
    }
   },
   {
    "ref": "R41",
    "type": "R_AXIAL",
+   "value": "15к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 R40-R45 13k pullups",
-    "pins": "scan"
+    "refdes": "native sheet-2 R40-R45 15k S3 pullups",
+    "pins": "common value label 15k applies to the six identical switch pullups"
    }
   },
   {
    "ref": "R42",
    "type": "R_AXIAL",
+   "value": "15к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 R40-R45 13k pullups",
-    "pins": "scan"
+    "refdes": "native sheet-2 R40-R45 15k S3 pullups",
+    "pins": "common value label 15k applies to the six identical switch pullups"
    }
   },
   {
    "ref": "R43",
    "type": "R_AXIAL",
+   "value": "15к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 R40-R45 13k pullups",
-    "pins": "scan"
+    "refdes": "native sheet-2 R40-R45 15k S3 pullups",
+    "pins": "common value label 15k applies to the six identical switch pullups"
    }
   },
   {
    "ref": "R44",
    "type": "R_AXIAL",
+   "value": "15к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 R40-R45 13k pullups",
-    "pins": "scan"
+    "refdes": "native sheet-2 R40-R45 15k S3 pullups",
+    "pins": "common value label 15k applies to the six identical switch pullups"
    }
   },
   {
    "ref": "R45",
    "type": "R_AXIAL",
+   "value": "15к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 R40-R45 13k pullups",
-    "pins": "scan"
+    "refdes": "native sheet-2 R40-R45 15k S3 pullups",
+    "pins": "common value label 15k applies to the six identical switch pullups"
    }
   },
   {
@@ -4592,6 +4598,7 @@
   {
    "ref": "R62",
    "type": "R_AXIAL",
+   "value": "2к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -4605,6 +4612,7 @@
   {
    "ref": "R63",
    "type": "R_AXIAL",
+   "value": "1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -4618,6 +4626,7 @@
   {
    "ref": "R64",
    "type": "R_AXIAL",
+   "value": "5,1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -4631,6 +4640,7 @@
   {
    "ref": "R65",
    "type": "R_AXIAL",
+   "value": "430",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -4644,6 +4654,7 @@
   {
    "ref": "R66",
    "type": "R_AXIAL",
+   "value": "1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -4960,6 +4971,7 @@
   {
    "ref": "R17",
    "type": "R_AXIAL",
+   "value": "200",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5012,6 +5024,7 @@
   {
    "ref": "R90",
    "type": "R_AXIAL",
+   "value": "2к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5025,6 +5038,7 @@
   {
    "ref": "R91",
    "type": "R_AXIAL",
+   "value": "1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5038,6 +5052,7 @@
   {
    "ref": "R61",
    "type": "R_AXIAL",
+   "value": "12к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5051,6 +5066,7 @@
   {
    "ref": "R47",
    "type": "R_AXIAL",
+   "value": "20к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5064,6 +5080,7 @@
   {
    "ref": "R59",
    "type": "R_AXIAL",
+   "value": "33к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5103,6 +5120,7 @@
   {
    "ref": "R11",
    "type": "R_AXIAL",
+   "value": "1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5116,6 +5134,7 @@
   {
    "ref": "R12",
    "type": "R_AXIAL",
+   "value": "1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5129,6 +5148,7 @@
   {
    "ref": "R13",
    "type": "R_AXIAL",
+   "value": "1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5142,6 +5162,7 @@
   {
    "ref": "R14",
    "type": "R_AXIAL",
+   "value": "1к",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5155,6 +5176,7 @@
   {
    "ref": "R60",
    "type": "R_AXIAL",
+   "value": "5,1к",
    "pins": {
     "1": "P1",
     "2": "P2"
