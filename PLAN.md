@@ -45,11 +45,14 @@ electrical-category findings. Splits, removed endpoints, and every moved pad
 remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
-starts at 433 honest gaps. Eleven bounded guarded-A* transactions now accept
-193 repairs and reach 235 gaps with 19,400 copper items, exact parity across
+starts at 433 honest gaps. Nineteen bounded guarded-A* transactions now accept
+263 repairs and reach 164 gaps with 21,427 copper items, exact parity across
 all 2,395 current source pads, and zero short, clearance, crossing, hole, or
-edge findings. The gap closer now persists canonical attempted-gap signatures
-against the exact additive board lineage, router code, and proposal parameters,
+edge findings. A configured 0.5 mm sweep through 120 mm, complete full-distance
+0.25/0.20/0.125 mm sweeps, and a bounded 0.10 mm short-gap sweep establish the
+global-router convergence boundary; route-specific conflict/rip-up work is
+next. The gap closer persists canonical attempted-gap signatures against the
+exact additive board lineage, router code, and proposal parameters,
 so later bounded passes do not replay known-invalid corridors. Reported dangling
 tails remain reconnection work; the temporary board is convergence evidence,
 not a replacement routed artifact

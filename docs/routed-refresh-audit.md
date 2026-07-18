@@ -112,15 +112,16 @@ as explicit reconnection work: a test prune exposed the expected recursive
 chain and was stopped rather than deleting otherwise useful routes before
 their new endpoints are joined.
 
-Eleven bounded multilayer A* transactions then accepted 193 legal repairs. They
+Nineteen bounded multilayer A* transactions then accepted 263 legal repairs. They
 close GND/P5V branches plus MEMW/MEMR, D94 D0, memory-mode, W10 select,
 rail-13/14, AMW, D39 memory-cycle/Y, REV, D105 WAIT, D42 Q, IORD, FDC `/WE`,
 FRAME_INT, PHI2TTL, RAS, address/video-address branches, VIDEO_OUT/mix/mux,
-RAM_OUT_EN, S_TTL, CAS, sound, serial-baud, ROM-select, and related gaps. The
-resulting temporary board has all 303 source footprints and all 2,395 current
-source pad identities,
-nets, and integer-nanometre coordinates, 19,400 copper items, and 235 uncapped
-connectivity gaps. A final independent KiCad DRC still has zero short,
+RAM_OUT_EN, S_TTL, CAS, sound, serial-baud, ROM/expansion-select, INTA, HLDA,
+VT2 base, and related gaps. The resulting temporary board has all 303 source
+footprints and all 2,395 current
+source pad identities, nets, and integer-nanometre coordinates, 21,427 copper
+items, and 164 uncapped connectivity gaps. A final independent KiCad DRC still
+has zero short,
 clearance, crossing, hole-clearance, hole-to-hole, or copper-to-edge findings;
 it reports 199 track-dangling and 51 via-dangling tails. This is a much closer
 current-source route, but its opens and retained tails keep it outside tracked
@@ -131,10 +132,14 @@ resume efficiently. It canonicalizes endpoint order and atomically records
 every accepted, DRC-rejected, timed-out, or unroutable signature. The state is
 bound to the exact SHA-256 of the current additive board lineage, the proposal
 parameters, and both routing-script hashes; a different board, parameter set,
-or implementation fails closed instead of silently skipping work. The current
-state correctly matches the 235-gap board, records 233 attempted gaps (70
-accepted, 128 without a route, and 35 rejected by DRC), and was independently
-proved to reject the earlier 308-gap input as the wrong lineage.
+or implementation fails closed instead of silently skipping work. The resumed
+0.5 mm state reached 209 gaps and records 340 attempted gaps (95 accepted, 197
+without a route, and 48 rejected by DRC). Independent 0.25, 0.20, and 0.125 mm
+states then accepted 36, four, and four more routes; each complete full-distance
+sweep exhausted its remaining signatures. A bounded 0.10 mm sweep through 30
+mm accepted one final rail-12 route, records 129 signatures, and correctly
+matches the final 164-gap board. The earlier wrong-lineage rejection test also
+remains enforced.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -195,6 +200,50 @@ python3 kicad/close_unconnected_gaps.py \
   /tmp/juku-drc-salvage-gap193.kicad_pcb \
   --min-distance 1 --max-distance 120 --mode M --timeout 20 --limit 20 \
   --attempted-state "$STATE"
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-gap193.kicad_pcb \
+  /tmp/juku-drc-salvage-coarse20.kicad_pcb \
+  --min-distance 1 --max-distance 120 --mode M --timeout 20 --limit 20 \
+  --attempted-state "$STATE"
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-coarse20.kicad_pcb \
+  /tmp/juku-drc-salvage-coarse-exhausted.kicad_pcb \
+  --min-distance 1 --max-distance 120 --mode M --timeout 20 --limit 20 \
+  --attempted-state "$STATE"
+STATE_FINE=/tmp/juku-gap-fine.json
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-coarse-exhausted.kicad_pcb \
+  /tmp/juku-drc-salvage-fine10.kicad_pcb \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.25 --timeout 60 --limit 10 --attempted-state "$STATE_FINE"
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-fine10.kicad_pcb \
+  /tmp/juku-drc-salvage-fine30.kicad_pcb \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.25 --timeout 60 --limit 20 --attempted-state "$STATE_FINE"
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-fine30.kicad_pcb \
+  /tmp/juku-drc-salvage-fine025-exhausted.kicad_pcb \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.25 --timeout 60 --limit 20 --attempted-state "$STATE_FINE"
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-fine025-exhausted.kicad_pcb \
+  /tmp/juku-drc-salvage-fine020-exhausted.kicad_pcb \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.20 --timeout 90 --limit 10 \
+  --attempted-state /tmp/juku-gap-fine020.json
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-fine020-exhausted.kicad_pcb \
+  /tmp/juku-drc-salvage-fine0125-exhausted.kicad_pcb \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.125 --timeout 120 --limit 10 \
+  --attempted-state /tmp/juku-gap-fine0125.json
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-fine0125-exhausted.kicad_pcb \
+  /tmp/juku-drc-salvage-fine010-short.kicad_pcb \
+  --min-distance 0 --max-distance 30 --mode M --search-margin 60 \
+  --grid-step 0.10 --timeout 180 --limit 5 \
+  --attempted-state /tmp/juku-gap-fine010.json
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
