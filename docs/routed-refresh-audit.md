@@ -174,6 +174,21 @@ repairs, 30,334 copper items, and 34 uncapped opens. Exact footprint/pad parity
 and every electrical DRC invariant remain unchanged; the dangling counts stay
 at 199 tracks and 47 vias.
 
+Four further exact-clearance phases (0.12, 0.13, 0.14, and 0.16 mm) each
+exhaust all 34 signatures without acceptance. Increasing the search margin from
+60 to 100 mm also finds no legal detour for DB7, BA5, VA6, MA1, CS_D11, or MA6.
+Guarded 0.15 mm diagnostics do find geometric paths for many other residuals,
+but their direct blockers include fixed source pads—for example the D35/D53
+cluster on PHI1_D35 and PHI2_D35, the D44/R42/R43 cluster on S3_1, D50 on
+VA9/VA15, D5 on DC2/DC7/WR, and D3/D6/D12 on the long PROM-boundary nets.
+Those are not eligible for copper rip-up. IORD, CS_D10, MEMR, and W10_QA_SEL_D50
+still have no path even at the diagnostic clearance. This establishes that the
+next useful automatic step needs topology-aware displacement around fixed-pad
+rows, not more blind lattice enumeration. `close_gap_by_ripup.py
+--diagnostic-report` retains the proposal's complete KiCad DRC JSON even when
+the guarded transaction fails, so future blocker classification remains
+machine-auditable instead of depending on terminal output.
+
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
   --routed kicad/juku_routed_candidate.kicad_pcb \
@@ -326,6 +341,9 @@ python3 kicad/close_unconnected_gaps.py INPUT_34 OUTPUT_34 \
   --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
   --grid-step 0.1125 --route-clearance 0.20 --timeout 180 --limit 20 \
   --attempted-state /tmp/juku-gap-clear020-grid01125-final.json
+python3 kicad/close_gap_by_ripup.py OUTPUT_34 UNUSED_OUTPUT \
+  --net S3_1 --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --diagnostic-report /tmp/juku-s3-diagnostic.json
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.

@@ -63,7 +63,12 @@ results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The remaining
 34 signatures exhaust fresh full-distance 0.1125 mm/0.20 mm-clearance work;
 additional 0.20, 0.225, 0.25, and 0.30 mm lattices also accept nothing. More
-route-specific conflict/rip-up work is next. Reported dangling tails remain
+0.12, 0.13, 0.14, and 0.16 mm phases and 100 mm-margin legal detours for six
+short dense gaps likewise accept nothing. Guarded 0.15 mm diagnostics classify
+the sampled alternatives as fixed source-pad corridors rather than removable
+copper conflicts; route-specific topology work is next. Diagnostic DRC JSON can
+now be retained even when a transaction fails, keeping that classification
+machine-auditable. Reported dangling tails remain
 reconnection work; the temporary board is convergence evidence, not a
 replacement routed artifact
 (`docs/routed-refresh-audit.md`).
