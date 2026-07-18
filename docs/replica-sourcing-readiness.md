@@ -12,22 +12,22 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 110
+- BOM lines: 109
 - Populate-now component positions: 251
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 23
+- Mechanical/circuit-review lines: 22
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 11 | 25 |
+| circuit-review | 10 | 24 |
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 79 | 203 |
+| source-now | 79 | 204 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -78,7 +78,6 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | D_DIODE | Soviet diode/zener per value | 1 | VD4 | modern diode/zener matching value and power |
 | circuit-review | Q_KT13 | КТ315 | 1 | VT2 | modern E-C-B transistor selected for the video role and KT-13 pad row |
 | circuit-review | Q_KT27 | КТ972 | 1 | VT1 | modern E-C-B TO-126 transistor selected for the beeper role |
-| circuit-review | R_AXIAL | axial resistor | 1 | R67 | modern axial resistor, matching value and power rating |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |
 | mechanical-review | JUMPER2 | wire/link | 1 | E5 | select exact substitute after circuit review |

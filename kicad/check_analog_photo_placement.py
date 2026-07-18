@@ -174,8 +174,11 @@ def main() -> None:
 
     r67 = json.loads(R67_EVIDENCE.read_text(encoding="utf-8"))
     if (r67.get("refdes") != "R67" or r67.get("endpoint") != "2" or
+            r67.get("value") != "4,7к" or r67.get("visible_marking") != "4K7" or
             r67.get("unresolved") != ["R67.2 remote destination"]):
-        errors.append("R67 photo-exhaustion record does not preserve the R67.2 boundary")
+        errors.append("R67 value/endpoint evidence does not preserve 4K7 and the R67.2 boundary")
+    if board.FindFootprintByReference("R67").GetValue() != "4,7к":
+        errors.append("R67 source-PCB value is not the photo-read 4,7к")
     cross_side = r67.get("cross_side_registration", {})
     if (cross_side.get("projected_solder_joint_px") != [916, 988] or
             cross_side.get("max_anchor_residual_px", 1) > 0.001):
@@ -217,6 +220,11 @@ def main() -> None:
         bbox = item.get("bbox_px", [])
         if len(bbox) != 4 or bbox[0] >= bbox[2] or bbox[1] >= bbox[3]:
             errors.append(f"R67 evidence has invalid review box: {source}")
+        if item in r67.get("component_observations", []):
+            body_bbox = item.get("body_bbox_px", [])
+            if (len(body_bbox) != 4 or body_bbox[0] >= body_bbox[2] or
+                    body_bbox[1] >= body_bbox[3]):
+                errors.append(f"R67 evidence has invalid 4K7 body box: {source}")
     if errors:
         raise SystemExit("analog photo placement FAIL\n- " + "\n- ".join(errors))
     print("analog photo placement PASS")

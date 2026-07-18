@@ -19,7 +19,7 @@ the RF group remains constrained but deferred while its tapped coil is traced.
   `R66=(302.69,128.46)` mm.
 
 The photo read is suitable for package placement but does not yet identify the
-lower obscured/passive positions. `R65`, the visibly marked red `2к` R67, glass
+lower obscured/passive positions. `R65`, the visibly marked red `4К7` R67, glass
 `VD3`, and rightmost `R66` are now placed at their observed centres. The
 factory drawing fixes the left-to-right identity of the right-hand group, so
 the photo centres no longer depend on colour or circuit-role inference.
@@ -68,7 +68,9 @@ yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
 
 R67.2 has now been chased to the limit of the owner imagery. The registered
 July component view and an independent May angle both expose its upper physical
-lead ending in a distinct solder pool without visible onward copper. A local
+lead ending in a distinct solder pool without visible onward copper. Both angles
+directly read `4K7` on the factory-identified body, so R67 is now source-closed
+as 4.7 kΩ even though its pin-2 destination remains open. A local
 cross-side affine built from all fourteen paired D102 pin centres projects that
 joint to `(916,988)` in solder image `PXL_20260710_200522685.jpg` with less than
 0.001 px anchor residual. That location is a bare copper corner with no annulus,

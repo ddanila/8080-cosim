@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "scope": "legible resistor values on the native .006 electrical sheets reused by the .009 target model",
-  "promotion_rule": "promote only a value printed unambiguously beside the same refdes or a clearly bracketed identical group; do not infer target values from topology, color similarity, or a revision-sensitive continuation",
+  "scope": "legible resistor values on retained native electrical sheets and registered .009 target-board bodies",
+  "promotion_rule": "promote only a value printed unambiguously beside the same refdes, on the factory-identified target body, or in a clearly bracketed identical group; do not infer values from topology or color similarity",
   "sources": [
     {
       "path": "ref/schematics/p3_sheet1.png",
@@ -23,6 +23,24 @@
         "video_summing": [3100, 1900, 1600, 1000],
         "beeper_clamp": [4200, 1800, 800, 700]
       }
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "sheet": ".009 owner board July",
+      "regions_px": {"r67_body": [3240, 1740, 160, 230]}
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+      "sha256": "43343d7de0fe671fbe73db933755de1acf6c23c297a741085e05cf94b9c8a53d",
+      "sheet": ".009 assembly drawing",
+      "regions_px": {"r67_identity": [2410, 2740, 120, 200]}
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+      "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
+      "sheet": ".009 owner board May",
+      "regions_px": {"r67_body": [3260, 730, 150, 330]}
     }
   ],
   "groups": [
@@ -60,7 +78,13 @@
       "name": "sheet-2 video summing stage",
       "source_sheet": 2,
       "refs": {"R62": "2к", "R63": "1к", "R64": "5,1к", "R65": "430", "R66": "1к"},
-      "observation": "each value is printed directly beside its refdes around VT2; R67 is deliberately excluded because its .009 far-side continuation is revision-sensitive"
+      "observation": "each value is printed directly beside its refdes around VT2; the .006 R67 value is not reused because the target body is independently readable"
+    },
+    {
+      "name": ".009 target video-clamp body",
+      "source_sheet": ".009 photos",
+      "refs": {"R67": "4,7к"},
+      "observation": "the factory drawing fixes the red vertical body between R66 and VD3 as R67; independent July and May owner views both directly read 4K7, superseding the .006 sheet's 2k for this target-revision part without assigning its unresolved far endpoint"
     },
     {
       "name": "sheet-2 beeper clamp",
@@ -69,10 +93,5 @@
       "observation": "R90=2k and R91=1k are printed on the D58/VD4/VT1 AVDC branch; R48 is printed 8,2 Ом on the VT1 emitter-to-speaker output and the independently traced beeper boundary records the same 8.2R value"
     }
   ],
-  "held": [
-    {
-      "ref": "R67",
-      "reason": "sheet 2 prints 2k, but target .009 photos prove its far-side continuation differs from the .006 drawing; retain the target-value hold until the body or target documentation is readable"
-    }
-  ]
+  "held": []
 }

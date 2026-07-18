@@ -4668,14 +4668,15 @@
   {
    "ref": "R67",
    "type": "R_AXIAL",
+   "value": "4,7к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner plus .009 factory identity and registered owner photos",
-    "pins": "pin1 remains on the source-proved SOUND_CLAMP node. The revision-superseded .006 SND_MIX continuation is not reused for pin2: July and May component views expose its separate joint but no onward copper, while D102-local cross-side registration lands on a bare backside trace corner without a via in two solder views; R67.2 requires continuity"
+    "refdes": ".009 factory identity plus independent registered July/May owner photos; target body reads 4K7",
+    "pins": "pin1 remains on the source-proved SOUND_CLAMP node. The revision-superseded .006 2k/SND_MIX assignment is not reused: the target body independently reads 4K7, while July and May views expose pin2's separate joint but no onward copper; D102-local cross-side registration lands on a bare backside trace corner without a via, so R67.2 still requires continuity"
    }
   },
   {

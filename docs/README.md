@@ -32,8 +32,8 @@ findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
   `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
-  `native-resistor-values.md` (23 literal sheet values with only R67 held),
-  `native-capacitor-values.md` (C7/C8/C99 literal sheet values with eight
+  `native-resistor-values.md` (24 literal sheet/photo values; no axial holds),
+  `native-capacitor-values.md` (C7/C8/C99 literal sheet values with nine
   target holds), `native-semiconductors.md` (VT1/VT2/VD3 native markings,
   transistor E-C-B package pinouts, and generated PCB pad/net guards),
   `master-oscillator-boundary.md`,

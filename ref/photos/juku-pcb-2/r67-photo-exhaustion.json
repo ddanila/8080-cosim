@@ -3,13 +3,17 @@
   "refdes": "R67",
   "endpoint": "2",
   "status": "photo-exhausted / continuity required",
+  "value": "4,7к",
+  "visible_marking": "4K7",
+  "value_basis": "the factory drawing fixes this body as R67 and independent July/May target-board views directly read 4K7; the target marking supersedes the .006 sheet's 2k while connectivity remains separate",
   "component_observations": [
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
       "dimensions_px": [4080, 3072],
       "joint_px": [3321, 1698],
-      "bbox_px": [3220, 1580, 3430, 1850],
+      "bbox_px": [3220, 1580, 3430, 1980],
+      "body_bbox_px": [3240, 1740, 3400, 1970],
       "observation": "the upper physical lead of the factory-identified red 4K7 R67 terminates at a distinct component-side solder pool; no copper continuation leaves the visible pool"
     },
     {
@@ -18,7 +22,8 @@
       "dimensions_px": [4080, 3072],
       "joint_px": [3384, 777],
       "bbox_px": [3280, 650, 3490, 1050],
-      "observation": "an independent oblique May view separates the same R67.2 lead and joint but likewise exposes no onward route"
+      "body_bbox_px": [3260, 730, 3410, 1060],
+      "observation": "an independent oblique May view directly reads 4K7 on the same R67 body and separates its pin-2 lead/joint, but likewise exposes no onward route"
     }
   ],
   "cross_side_registration": {

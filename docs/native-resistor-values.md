@@ -1,9 +1,9 @@
 # Native schematic resistor values
 
-Status: **23 VALUES SOURCE-CLOSED / 1 TARGET HOLD**
+Status: **24 VALUES SOURCE-CLOSED / 0 TARGET HOLDS**
 
-The native electrical sheets print 23 values that were formerly blank in
-the machine-readable board model. This report checksum-guards those scans,
+The native electrical sheets and target-board photos close 24 values that
+were formerly blank in the machine-readable board model. This report checksum-guards those sources,
 checks the board JSON and generated source PCB agree, and keeps ambiguous or
 revision-sensitive values out of the promoted set.
 
@@ -38,14 +38,13 @@ python3 scripts/report_native_resistor_values.py
 | `R64` | `5,1к` | 2 | sheet-2 video summing stage |
 | `R65` | `430` | 2 | sheet-2 video summing stage |
 | `R66` | `1к` | 2 | sheet-2 video summing stage |
+| `R67` | `4,7к` | .009 photos | .009 target video-clamp body |
 | `R90` | `2к` | 2 | sheet-2 beeper clamp |
 | `R91` | `1к` | 2 | sheet-2 beeper clamp |
 
 ## Deliberate holds
 
-| Ref | Why it remains unvalued |
-| --- | --- |
-| `R67` | sheet 2 prints 2k, but target .009 photos prove its far-side continuation differs from the .006 drawing; retain the target-value hold until the body or target documentation is readable |
+None. Every modeled axial resistor now has literal source evidence.
 
 ## Evidence boundary
 
@@ -53,7 +52,10 @@ python3 scripts/report_native_resistor_values.py
   from open-collector behavior.
 - Sheet 2 closes the R40-R45 common 15 kΩ group, correcting stale 13 kΩ
   prose, plus the D56, FRAME_INT, video-summing, and beeper networks.
+- The factory-identified target R67 body reads `4K7` independently in July
+  and May views. This supersedes the `.006` sheet's 2 kΩ R67 value without
+  promoting the target part's still-unresolved pin-2 destination.
 - Connectivity is unchanged. This milestone only replaces absent value
-  metadata with literal scan evidence.
+  metadata with literal scan/photo evidence.
 - R48's `8,2 Ом` label is independently corroborated by the traced beeper
-  boundary. R67 alone remains outside sourcing-ready valued BOM groups.
+  boundary. No modeled axial resistor remains unvalued.

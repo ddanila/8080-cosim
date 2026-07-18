@@ -71,8 +71,9 @@ four 1 kΩ decode pull-ups R11-R14 and 200 Ω R17; sheet 2 closes the common
 R60 FRAME_INT, R62-R66 video summing, R90/R91 beeper-clamp, and 8.2 Ω R48
 speaker-output values. The
 board JSON and generated PCB are checked against the same literal table.
-Connectivity is unchanged. R67 deliberately remains the sole unvalued axial
-resistor because its `.009` continuation is revision-sensitive.
+Connectivity is unchanged. The final axial hold R67 is now independently
+target-photo closed as `4К7` in July and May views; this supersedes the `.006`
+sheet's 2 kΩ value without inferring its still-open `.009` pin-2 continuation.
 
 The matching native-capacitor audit now source-closes C7=`560 pF`, C8=`15 nF`,
 and C99=`160 pF` from their retained electrical-sheet circuits

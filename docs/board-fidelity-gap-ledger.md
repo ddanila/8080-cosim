@@ -64,8 +64,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 9 | 128 |
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 7 |
-| analog/source | 1 | 0 |
-| logic/source | 16 | 60 |
+| logic/source | 17 | 60 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 26 | 0 |
 | placement/value | 15 | 0 |
@@ -99,12 +98,6 @@ parts placement and Tier-3 reproduction.
 | --- | --- | --- | --- |
 | `D6` | `DEC_PROM` | scan | validated physical dump uses RT4 address order A0-A7=5/6/7/4/3/2/1/15. Direct .009 owner continuity on 2026-07-14 proves board signals BA15,BA14,BA13,BA12,BA... |
 
-### analog/source
-
-| Ref | Type | Provenance | Note |
-| --- | --- | --- | --- |
-| `R67` | `R_AXIAL` | scan | sheet-2 analog corner plus .009 factory identity and registered owner photos pin1 remains on the source-proved SOUND_CLAMP node. The revision-superseded .006... |
-
 ### logic/source
 
 | Ref | Type | Provenance | Note |
@@ -118,6 +111,7 @@ parts placement and Tier-3 reproduction.
 | `R100` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles upper resistor in the populated four-part vertical column at the right edge beside C19; both tar... |
 | `R102` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles second resistor in the populated four-part vertical column at the right edge beside C19; both ta... |
 | `R108` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles third resistor in the populated four-part vertical column at the right edge beside C19; both tar... |
+| `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. The revisi... |
 | `R86` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles lowest resistor in the populated four-part vertical column at the right edge beside C19; both ta... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |

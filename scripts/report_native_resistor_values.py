@@ -88,8 +88,8 @@ for group in evidence["groups"]:
         expected[refdes] = value
         source_sheet[refdes] = group["source_sheet"]
         group_name[refdes] = group["name"]
-if len(expected) != 23:
-    fail(f"expected 23 promoted values, found {len(expected)}")
+if len(expected) != 24:
+    fail(f"expected 24 promoted values, found {len(expected)}")
 
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
@@ -123,10 +123,10 @@ for refdes, value in expected.items():
 lines = [
     "# Native schematic resistor values",
     "",
-    "Status: **23 VALUES SOURCE-CLOSED / 1 TARGET HOLD**",
+    "Status: **24 VALUES SOURCE-CLOSED / 0 TARGET HOLDS**",
     "",
-    "The native electrical sheets print 23 values that were formerly blank in",
-    "the machine-readable board model. This report checksum-guards those scans,",
+    "The native electrical sheets and target-board photos close 24 values that",
+    "were formerly blank in the machine-readable board model. This report checksum-guards those sources,",
     "checks the board JSON and generated source PCB agree, and keeps ambiguous or",
     "revision-sensitive values out of the promoted set.",
     "",
@@ -147,17 +147,13 @@ for refdes in sorted(expected, key=lambda item: int(item[1:])):
         f"{group_name[refdes]} |"
     )
 
-lines.extend(
-    [
-        "",
-        "## Deliberate holds",
-        "",
-        "| Ref | Why it remains unvalued |",
-        "| --- | --- |",
-    ]
-)
-for item in evidence["held"]:
-    lines.append(f"| `{item['ref']}` | {item['reason']} |")
+lines.extend(["", "## Deliberate holds", ""])
+if evidence["held"]:
+    lines.extend(["| Ref | Why it remains unvalued |", "| --- | --- |"])
+    for item in evidence["held"]:
+        lines.append(f"| `{item['ref']}` | {item['reason']} |")
+else:
+    lines.append("None. Every modeled axial resistor now has literal source evidence.")
 
 lines.extend(
     [
@@ -168,16 +164,19 @@ lines.extend(
         "  from open-collector behavior.",
         "- Sheet 2 closes the R40-R45 common 15 kΩ group, correcting stale 13 kΩ",
         "  prose, plus the D56, FRAME_INT, video-summing, and beeper networks.",
+        "- The factory-identified target R67 body reads `4K7` independently in July",
+        "  and May views. This supersedes the `.006` sheet's 2 kΩ R67 value without",
+        "  promoting the target part's still-unresolved pin-2 destination.",
         "- Connectivity is unchanged. This milestone only replaces absent value",
-        "  metadata with literal scan evidence.",
+        "  metadata with literal scan/photo evidence.",
         "- R48's `8,2 Ом` label is independently corroborated by the traced beeper",
-        "  boundary. R67 alone remains outside sourcing-ready valued BOM groups.",
+        "  boundary. No modeled axial resistor remains unvalued.",
         "",
     ]
 )
 
 REPORT.write_text("\n".join(lines), encoding="utf-8")
 print(
-    "NATIVE RESISTOR VALUES: PASS — 23 literal scan values agree across "
-    "evidence, board JSON, and source PCB; only R67 remains held"
+    "NATIVE RESISTOR VALUES: PASS — 24 literal source values agree across "
+    "evidence, board JSON, and source PCB; no axial resistor remains held"
 )
