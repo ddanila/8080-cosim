@@ -1,10 +1,23 @@
 # Juku processor-module factory drawings
 
+Two electrical-schematic revisions of the processor module exist; **keep both**:
+
+- **`.006 Э3`** — `juku_es101_processor_module.pdf` (below). Earlier revision;
+  its sheet 3 is the tape/serial subsystem.
+- **`.009 Э3`** — the later FDC-era revision, photographed by the owner under
+  `ref/photos/dgsh5-109-009-e3/` (2026-07-18). Its sheet 3 is the КР1818ВГ93
+  floppy controller. This closes the "Document gap" tracked in `PLAN.md`: the
+  `.009 Э3` was not public anywhere. Where the two diverge (sheet-3 FDC vs
+  tape, and post-`.006` change notes), the `.009` wins; elsewhere they agree
+  and the `.006` scan is the higher-resolution source. See that folder's
+  `README.md` for the per-sheet photo catalog.
+
 `juku_es101_processor_module.pdf` is the primary factory electrical schematic
 for the ДГШ5.109.006 processor module. It outranks emulator inference for the
 circuits it depicts, but it is not the complete `.009` FDC-era target by
 itself: sheet 3 shows the earlier tape subsystem, while the official `.009`
-parts list and physical-board evidence establish the later FDC population.
+parts list, the `.009 Э3` photos, and physical-board evidence establish the
+later FDC population.
 
 - Drawing: `ДГШ5.109.006 Э3` — processor module electrical schematic.
 - Source: https://arti.ee/juku/

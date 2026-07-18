@@ -614,12 +614,14 @@ After connectivity and programmable-part decisions stop changing:
   wait on them. The targeted corrected-reader D6 experiment in highest-priority
   item 1 is on the critical path because it resolves a known contradiction;
   unrelated independent reads remain Tier-3 corroboration only.
-- **Document gap:** the remaining item for this drawing family is the
-  `.009 Э3` electrical-schematic revision, if it survives. A 2026-07-14 web
-  sweep confirms it is not public anywhere; the Arvutimuuseum team physically
-  recovered the Baltijets archive in Narva (Nov 2024), so asking them whether
-  unscanned sheets include the `.009 Э3` and the НГМД block `ДГШ3.065.008`
-  documentation is the highest-value document lead.
+- **Document gap:** the `.009 Э3` electrical-schematic revision is **recovered**
+  — owner-photographed 2026-07-18, all three sheets, under
+  `ref/photos/dgsh5-109-009-e3/` (sheet 3 = the КР1818ВГ93 FDC circuit). This
+  drawing was not public anywhere per the 2026-07-14 web sweep. Remaining work
+  is to transcribe it and reconcile `.006`→`.009` divergences; the still-open
+  document lead is the НГМД block `ДГШ3.065.008`, and the Arvutimuuseum team
+  (which physically recovered the Baltijets archive in Narva, Nov 2024) remains
+  the best source for it.
 - **Community coordination lead:** juku3000 issue #25
   (<https://github.com/infoaed/juku3000/issues/25>) shows the MAME driver
   maintainer hunting the same FDC-era schematic; the MAME driver's own TODO
