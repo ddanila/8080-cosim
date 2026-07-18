@@ -10,6 +10,6 @@
   "slot_pitch": 16.0,
   "slot0_y": 10.0,
   "n_slots": 6,
-  "backplane_board_h": 115.0,
+  "backplane_board_h": 120.0,
   "tail_strip_y0": 98.0
 }

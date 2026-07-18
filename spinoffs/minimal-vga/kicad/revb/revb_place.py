@@ -70,25 +70,31 @@ def backplane_place():
         p[f"J_S{k+1}_BUS"] = (x_b, y_base, 90)
         p[f"J_S{k+1}_EXT"] = (x_e, y_base + _C["ext_row_dy"], 90)
 
-    # Tail lives in the two column-free strips: the TOP strip (above the top ext row)
-    # holds the connectors + CC/LED resistors; the BOTTOM strip (below the first base
-    # row, y<8) holds the six bus-signal pullups. All resistors horizontal (rot 0) to
-    # stay short in Y. Splitting keeps each strip one part tall — no cross-row overlap.
-    y_conn = _C["tail_strip_y0"] + 6.0     # 104 — connector row (tallest part ~USB-C)
-    y_ccr  = _C["tail_strip_y0"] + 14.0    # 112 — CC/LED resistor row
-    p["J_USBC"] = (14.0, y_conn, 0)
-    p["J_PWR"]  = (30.0, y_conn, 0)
-    p["U_RST"]  = (40.0, y_conn, 0)
-    p["SW_RST"] = (50.0, y_conn, 0)
-    p["J_FTDI"] = (64.0, y_conn, 0)
-    p["JP_S5"]  = (73.0, y_conn, 0)        # near J_FTDI for the short TX/RX jumper link
-    p["D_PWR"]  = (90.0, y_conn, 0)
-    for ref, x in (("R_CC1", 20.0), ("R_CC2", 40.0), ("R_LED", 60.0)):
-        p[ref] = (x, y_ccr, 0)
+    # Tail lives in the two column-free strips. TOP strip (above the top ext row, now
+    # ~22 mm tall) holds the power-entry / reset / serial parts in three rows; BOTTOM
+    # strip (below the first base row, y<8) holds the six bus-signal pullups.
+    y0 = _C["tail_strip_y0"]
+    yr1, yr2, yr3 = y0 + 6.0, y0 + 13.0, y0 + 19.0   # 104, 111, 117
+    # Headers rotated 90 so pins run along X (short in Y); the big USB-C goes far-right,
+    # clear of the ext connectors (x 3..26). Row 1 = the tall parts (USB-C, bulk cap,
+    # button, LED); rows 2-3 = the short parts (fuse, caps, headers, CC/LED resistors).
+    p["C_BULK"] = (14.0, yr1, 0)
+    p["SW_RST"] = (30.0, yr1, 0)
+    p["D_PWR"]  = (44.0, yr1, 0)
+    p["J_USBC"] = (82.0, yr1, 0)
+    p["F_VBUS"] = (12.0, yr2, 0)
+    p["C_IN"]   = (22.0, yr2, 0)
+    p["J_PWR"]  = (32.0, yr2, 90)
+    p["U_RST"]  = (46.0, yr2, 90)
+    p["R_RST"]  = (60.0, yr2, 0)
+    p["C_RST"]  = (70.0, yr2, 0)
+    p["J_FTDI"] = (14.0, yr3, 90)
+    p["JP_S5"]  = (30.0, yr3, 0)
+    p["R_CC1"]  = (44.0, yr3, 0)
+    p["R_CC2"]  = (56.0, yr3, 0)
+    p["R_LED"]  = (68.0, yr3, 0)
     # Bottom-strip bus-signal pullups, evenly spread (horizontal axials need ~16 mm
-    # spacing). R_INT sits at x=60 near its INT_N column (x~55) so its tap is a short
-    # stub; R_BRQ takes the far-left slot near its BUSRQ_N column (x~8). A far-flung
-    # pullup (R_INT at x=12 vs its column at 55) otherwise left a long unroutable tap.
+    # spacing). R_INT sits near its INT_N column (x~55); R_BRQ near BUSRQ_N (x~8).
     for ref, x in (("R_BRQ", 12.0), ("R_WAIT", 28.0), ("R_NMI", 44.0),
                    ("R_INT", 60.0), ("R_M0", 76.0), ("R_M1", 92.0)):
         p[ref] = (x, 4.0, 0)               # bottom strip, below the first base row

@@ -336,7 +336,7 @@
       "ref": "J_USBC",
       "type": "USB_C_PWR",
       "pins": {
-        "VBUS": "VCC5",
+        "VBUS": "VBUS_IN",
         "GND": "GND",
         "CC1": "USB_CC1",
         "CC2": "USB_CC2"
@@ -359,6 +359,14 @@
       }
     },
     {
+      "ref": "F_VBUS",
+      "type": "PTC_1A",
+      "pins": {
+        "1": "VBUS_IN",
+        "2": "VCC5"
+      }
+    },
+    {
       "ref": "J_PWR",
       "type": "HDR_1x2",
       "pins": {
@@ -367,12 +375,44 @@
       }
     },
     {
+      "ref": "C_BULK",
+      "type": "C_ELEC_47U",
+      "pins": {
+        "1": "VCC5",
+        "2": "GND"
+      }
+    },
+    {
+      "ref": "C_IN",
+      "type": "C_100N",
+      "pins": {
+        "1": "VCC5",
+        "2": "GND"
+      }
+    },
+    {
       "ref": "U_RST",
-      "type": "SUPERVISOR_3",
+      "type": "HDR_1xN",
       "pins": {
         "1": "GND",
         "2": "RESET_N",
         "3": "VCC5"
+      }
+    },
+    {
+      "ref": "R_RST",
+      "type": "R_10K",
+      "pins": {
+        "1": "RESET_N",
+        "2": "VCC5"
+      }
+    },
+    {
+      "ref": "C_RST",
+      "type": "C_100N",
+      "pins": {
+        "1": "RESET_N",
+        "2": "GND"
       }
     },
     {
@@ -455,8 +495,8 @@
       "ref": "D_PWR",
       "type": "LED",
       "pins": {
-        "1": "LED_A",
-        "2": "GND"
+        "1": "GND",
+        "2": "LED_A"
       }
     },
     {
@@ -984,8 +1024,20 @@
           "2"
         ],
         [
+          "C_BULK",
+          "2"
+        ],
+        [
+          "C_IN",
+          "2"
+        ],
+        [
           "U_RST",
           "1"
+        ],
+        [
+          "C_RST",
+          "2"
         ],
         [
           "SW_RST",
@@ -1005,7 +1057,7 @@
         ],
         [
           "D_PWR",
-          "2"
+          "1"
         ]
       ],
       "power": true
@@ -1061,16 +1113,28 @@
           "E9"
         ],
         [
-          "J_USBC",
-          "VBUS"
+          "F_VBUS",
+          "2"
         ],
         [
           "J_PWR",
           "1"
         ],
         [
+          "C_BULK",
+          "1"
+        ],
+        [
+          "C_IN",
+          "1"
+        ],
+        [
           "U_RST",
           "3"
+        ],
+        [
+          "R_RST",
+          "2"
         ],
         [
           "R_INT",
@@ -1156,6 +1220,14 @@
         [
           "U_RST",
           "2"
+        ],
+        [
+          "R_RST",
+          "1"
+        ],
+        [
+          "C_RST",
+          "1"
         ],
         [
           "SW_RST",
@@ -1951,6 +2023,18 @@
         ]
       ]
     },
+    "VBUS_IN": {
+      "nodes": [
+        [
+          "J_USBC",
+          "VBUS"
+        ],
+        [
+          "F_VBUS",
+          "1"
+        ]
+      ]
+    },
     "USB_CC1": {
       "nodes": [
         [
@@ -2003,7 +2087,7 @@
       "nodes": [
         [
           "D_PWR",
-          "1"
+          "2"
         ],
         [
           "R_LED",

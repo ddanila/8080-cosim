@@ -178,13 +178,24 @@ CARD_EXTRAS = {
         header("J_DIAG", {"1": "CLK", "2": "M1_N", "3": "RFSH_N", "4": "RESET_N", "5": "GND"}),
     ],
     "backplane": [
-        # +5V input: USB-C (CC pulldowns for a plain 5V supply) + a screw/header alt.
-        comp("J_USBC", "USB_C_PWR", {"VBUS": "VCC5", "GND": "GND", "CC1": "USB_CC1", "CC2": "USB_CC2"}),
+        # +5V input: USB-C (THT, CC pulldowns advertise a 5V sink) through a resettable
+        # polyfuse into the board rail (D1.35); a bench header taps VCC5 directly (unfused,
+        # so the primary bring-up path can't be broken by a blown/absent fuse).
+        comp("J_USBC", "USB_C_PWR", {"VBUS": "VBUS_IN", "GND": "GND", "CC1": "USB_CC1", "CC2": "USB_CC2"}),
         comp("R_CC1", "R_5K1", {"1": "USB_CC1", "2": "GND"}),
         comp("R_CC2", "R_5K1", {"1": "USB_CC2", "2": "GND"}),
+        comp("F_VBUS", "PTC_1A", {"1": "VBUS_IN", "2": "VCC5"}),
         comp("J_PWR", "HDR_1x2", {"1": "VCC5", "2": "GND"}),
-        # Reset: supervisor is the SOLE RESET_N driver (S7) + a manual button.
-        comp("U_RST", "SUPERVISOR_3", {"1": "GND", "2": "RESET_N", "3": "VCC5"}),
+        # Input power conditioning (D1.35): bulk + HF bypass on the rail.
+        comp("C_BULK", "C_ELEC_47U", {"1": "VCC5", "2": "GND"}),
+        comp("C_IN", "C_100N", {"1": "VCC5", "2": "GND"}),
+        # Reset: a 3-pin position for a TO-92 supervisor (net-labelled on silk so ANY
+        # supervisor pinout mounts correctly — the exact TO-92 pinout is part-specific and
+        # not committed to copper), plus a wired-OR pull-up + power-on RC + manual button
+        # so reset works even with the supervisor position empty.
+        comp("U_RST", "HDR_1xN", {"1": "GND", "2": "RESET_N", "3": "VCC5"}),
+        comp("R_RST", "R_10K", {"1": "RESET_N", "2": "VCC5"}),
+        comp("C_RST", "C_100N", {"1": "RESET_N", "2": "GND"}),
         comp("SW_RST", "SW_PUSH", {"1": "RESET_N", "2": "GND"}),
         # MODE default pulls (S11): default mode 0 (both low) when no I/O card drives.
         comp("R_M0", "R_10K", {"1": "MODE0", "2": "GND"}),
@@ -198,8 +209,9 @@ CARD_EXTRAS = {
         # card's UART is present): FTDI TX -> bus RX, bus TX -> FTDI RX.
         comp("J_FTDI", "HDR_1x4", {"1": "VCC5", "2": "FTDI_TX", "3": "FTDI_RX", "4": "GND"}),
         comp("JP_S5", "JMP_2x2", {"1": "FTDI_TX", "2": "RX", "3": "TX", "4": "FTDI_RX"}),
-        # Power LED.
-        comp("D_PWR", "LED", {"1": "LED_A", "2": "GND"}),
+        # Power LED. KiCad LED_D5.0mm pad 1 = cathode (K), pad 2 = anode (A) — so pad 1
+        # goes to GND and pad 2 to the anode net through R_LED (was reversed).
+        comp("D_PWR", "LED", {"1": "GND", "2": "LED_A"}),
         comp("R_LED", "R_2K2", {"1": "VCC5", "2": "LED_A"}),
     ],
 }

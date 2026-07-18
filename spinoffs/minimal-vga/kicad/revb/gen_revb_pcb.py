@@ -215,12 +215,10 @@ if _sw_ref and _sw_ref in PLACE:
 def main():
     board = pcbnew.BOARD()
     outline(board)
-    # Cards only: the backplane's DSN is already fragile (D1.33 — dropped interleaved
-    # columns) and the extra keepout zones tip freerouting into leaving the tail
-    # unrouted; it has routed edge-clean repeatedly without the ring, and the DRC-gated
-    # route loop still catches any edge-hugging retry.
-    if CARD != "backplane":
-        edge_keepout(board)
+    # Edge no-track ring on every board. It used to break the backplane, but that was a
+    # ring x locked-column interaction; with the columns retired (D1.34) the backplane
+    # freeroutes cleanly and needs the ring too (freerouting kept hugging its edge).
+    edge_keepout(board)
 
     # nets: one per board.json net name
     nets = {}
@@ -261,11 +259,25 @@ def main():
             add_fp(bref, base_fp, PLACE[bref], base)
             add_fp(eref, ext_fp, PLACE[eref], ext)
         elif typ == "USB_C_PWR":
-            # Map logical power pins to the 6P receptacle's physical pads; shield->GND.
+            # Map logical power pins to the GCT USB4085 THT receptacle's pads (full USB-C
+            # pinout): VBUS=A4/A9/B4/B9, GND=A1/A12/B1/B12 + shield, CC1=A5, CC2=B5. The
+            # data/SBU pins (A6-A8/B6-B8) are intentionally unused on a power-only sink.
             v, g = pins["VBUS"], pins["GND"]
-            padnet = {"A9": v, "B9": v, "A12": g, "B12": g,
-                      "A5": pins["CC1"], "B5": pins["CC2"], "SH": g}
-            add_fp(ref, fpmap[typ], PLACE.get(ref, (50.0, 40.0)), padnet)
+            padnet = {"A4": v, "A9": v, "B4": v, "B9": v,
+                      "A1": g, "A12": g, "B1": g, "B12": g, "SH": g,
+                      "A5": pins["CC1"], "B5": pins["CC2"]}
+            usb = add_fp(ref, fpmap[typ], PLACE.get(ref, (50.0, 40.0)), padnet)
+            # USB-C is 0.85 mm pitch -> 0.15 mm inter-pad copper gaps, inherent to the
+            # standard (VBUS/GND are always adjacent) and fine for any cheap fab, but
+            # below KiCad's 0.2 mm default. Relax clearance for THIS connector only so it
+            # doesn't force the whole board to 6-mil rules (order-readiness notes the
+            # 0.15 mm fab requirement at the connector).
+            try:
+                usb.SetLocalClearance(mm(0.1))
+                for pad in usb.Pads():
+                    pad.SetLocalClearance(mm(0.1))
+            except Exception:
+                pass
         else:
             fpname = fpmap.get(typ) or fpmap.get(f"HDR_1x{len(pins)}")
             xy = PLACE.get(ref, (50.0, 40.0))
