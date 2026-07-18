@@ -30,25 +30,65 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source footprints | 302 |
+| Source footprints | 303 |
 | Routed-snapshot footprints | 241 |
-| Source-only footprints | 88 |
+| Source-only footprints | 89 |
 | Routed-only footprints | 27 |
 | Routed copper nets classified by the refresh | 324 |
-| Nets with currently reusable routed copper | 97 |
-| Routed nets currently quarantined | 227 |
-| Reusable non-duplicate track/via items | 1,032 |
-| Quarantined/duplicate track/via items | 7,633 |
-| Common-pad net mismatches requiring reroute | 356 |
+| Nets with currently reusable routed copper | 94 |
+| Routed nets currently quarantined | 230 |
+| Reusable non-duplicate track/via items | 1,017 |
+| Quarantined/duplicate track/via items | 7,648 |
+| Common-pad net mismatches requiring reroute | 360 |
 <!-- routed-refresh-current:end -->
 
 The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly
-modeled FDC support/passive parts, and the photo-fitted serial and oscillator
-parts. The routed-only set contains superseded `.006` option parts and the
+modeled FDC support/passive parts, the restored target VD1 reset diode, and the
+photo-fitted serial and oscillator parts. The routed-only set contains superseded `.006` option parts and the
 off-board `S1`, `S4`, `X3`, `X8`, and `X9` bodies; the authoritative source
 represents the applicable cable landings instead. X4 is likewise
 schematic-only in the source; its modeled `AX401-AX423` landing row is absent
 from the stale routed snapshot.
+
+### Additive/rename-safe copper migration
+
+Exact whole-net equality is still the default. The optional
+`--allow-additive-renames` mode admits one additional mechanically proved
+case: every old endpoint must still exist at the exact integer-nanometre pad
+coordinate, every endpoint must map to one current net, and the old endpoint
+set must be a subset of that current net. This permits copper to survive a
+pure endpoint addition or merge/rename, while splits, removed endpoints, and
+any moved pad remain quarantined. Copied items are relabeled to the current net
+before duplicate detection.
+
+Against the preserved zero-open candidate, the current source proves 28 such
+maps; five carry copper. The unfiltered pass retains 588 more track/via items
+than exact equality alone. As with every refresh, newly placed footprints can
+still collide with otherwise valid old copper, so the first DRC must be fed
+back through `--exclude-drc`. After that existing guard quarantines 27
+DRC-implicated nets, the additive result retains 2,656 copper items and has
+1,445 uncapped connectivity gaps, versus 2,634 items and 1,449 gaps for the
+same exclusion under exact equality. Both cleaned candidates have zero shorts,
+copper-clearance, crossing, hole-clearance, hole-to-hole, dangling, or
+copper-to-edge findings. This closes four current-source gaps without relaxing
+the DRC invariant; neither temporary board is a fabrication deliverable.
+
+The experiment is reproducible without modifying a tracked PCB:
+
+```sh
+/usr/bin/python3 kicad/refresh_routed_from_source.py \
+  --routed kicad/juku_routed_candidate.kicad_pcb \
+  --allow-additive-renames \
+  --output /tmp/juku-additive-refresh.kicad_pcb
+"$(scripts/find-kicad-cli.sh)" pcb drc --format json \
+  --output /tmp/juku-additive-refresh-drc.json \
+  /tmp/juku-additive-refresh.kicad_pcb
+/usr/bin/python3 kicad/refresh_routed_from_source.py \
+  --routed kicad/juku_routed_candidate.kicad_pcb \
+  --allow-additive-renames \
+  --exclude-drc /tmp/juku-additive-refresh-drc.json \
+  --output /tmp/juku-additive-refresh-clean.kicad_pcb
+```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
 Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated

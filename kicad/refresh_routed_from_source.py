@@ -29,15 +29,18 @@ def pads(board: pcbnew.BOARD) -> dict[tuple[str, str], tuple[str, tuple[int, int
             for footprint in board.GetFootprints() for pad in footprint.Pads()}
 
 
-def copper_key(item: pcbnew.BOARD_ITEM) -> tuple[object, ...]:
+def copper_key(
+    item: pcbnew.BOARD_ITEM, netname: str | None = None
+) -> tuple[object, ...]:
+    effective_netname = item.GetNetname() if netname is None else netname
     start = (item.GetStart().x, item.GetStart().y)
     end = (item.GetEnd().x, item.GetEnd().y)
     if item.GetClass() == "PCB_TRACK":
         start, end = sorted((start, end))
-        return ("track", start, end, item.GetLayer(), item.GetWidth(), item.GetNetname())
+        return ("track", start, end, item.GetLayer(), item.GetWidth(), effective_netname)
     if item.GetClass() == "PCB_VIA":
         return ("via", start, item.GetViaType(), item.GetWidth(item.TopLayer()), item.GetDrillValue(),
-                item.TopLayer(), item.BottomLayer(), item.GetNetname())
+                item.TopLayer(), item.BottomLayer(), effective_netname)
     raise ValueError(f"unsupported copper item {item.GetClass()}")
 
 
@@ -85,6 +88,15 @@ def main() -> None:
                         help="write an audit candidate; omitted for read-only classification")
     parser.add_argument("--verbose", action="store_true",
                         help="list every quarantined net and mismatched endpoint")
+    parser.add_argument(
+        "--allow-additive-renames",
+        action="store_true",
+        help=(
+            "also retain an old net when every old endpoint still exists at the "
+            "exact same coordinate on one current net and the current endpoint "
+            "set is only additive; safely relabel renamed/merged copper"
+        ),
+    )
     parser.add_argument("--exclude-drc", type=Path, action="append", default=[],
                         help="quarantine routed track/via nets implicated by copper errors in a KiCad DRC JSON")
     report_group = parser.add_mutually_exclusive_group()
@@ -110,8 +122,33 @@ def main() -> None:
 
     source_endpoints = nets_to_endpoints(source_pads)
     routed_endpoints = nets_to_endpoints(routed_pads)
-    compatible_nets = {netname for netname, endpoints in source_endpoints.items()
-                       if routed_endpoints.get(netname) == endpoints}
+    copper_net_map = {
+        netname: netname
+        for netname, endpoints in source_endpoints.items()
+        if routed_endpoints.get(netname) == endpoints
+    }
+    additive_net_map: dict[str, str] = {}
+    if args.allow_additive_renames:
+        for old_netname, old_endpoints in routed_endpoints.items():
+            if old_netname in copper_net_map:
+                continue
+            target_names: set[str] = set()
+            endpoint_positions_match = True
+            for endpoint, old_position in old_endpoints.items():
+                source_value = source_pads.get(endpoint)
+                if source_value is None or not source_value[0]:
+                    endpoint_positions_match = False
+                    break
+                target_names.add(source_value[0])
+                if source_value[1] != old_position:
+                    endpoint_positions_match = False
+                    break
+            if not endpoint_positions_match or len(target_names) != 1:
+                continue
+            target_netname = next(iter(target_names))
+            if set(old_endpoints) <= set(source_endpoints.get(target_netname, {})):
+                additive_net_map[old_netname] = target_netname
+        copper_net_map.update(additive_net_map)
     forced_excluded: set[str] = set()
     for drc_path in args.exclude_drc:
         report = json.loads(drc_path.read_text())
@@ -123,9 +160,16 @@ def main() -> None:
                 match = re.match(r"(?:Track|Via) \[([^]]+)]", description)
                 if match and match.group(1) != "<no net>":
                     forced_excluded.add(match.group(1))
-    compatible_nets -= forced_excluded
+    copper_net_map = {
+        old: new
+        for old, new in copper_net_map.items()
+        if old not in forced_excluded and new not in forced_excluded
+    }
     routed_copper_nets = {item.GetNetname() for item in routed.GetTracks()}
-    quarantined_nets = routed_copper_nets - compatible_nets
+    quarantined_nets = routed_copper_nets - set(copper_net_map)
+    retained_additive_nets = (
+        set(additive_net_map) & set(copper_net_map) & routed_copper_nets
+    )
 
     source_refs = {footprint.GetReference() for footprint in source.GetFootprints()}
     routed_refs = {footprint.GetReference() for footprint in routed.GetFootprints()}
@@ -135,24 +179,25 @@ def main() -> None:
     copied = Counter()
     skipped = Counter()
     for item in routed.GetTracks():
-        netname = item.GetNetname()
-        if netname not in compatible_nets:
-            skipped[netname] += 1
+        old_netname = item.GetNetname()
+        if old_netname not in copper_net_map:
+            skipped[old_netname] += 1
             continue
-        if netname not in source_nets:
-            skipped[f"removed:{netname}"] += 1
+        target_netname = copper_net_map[old_netname]
+        if target_netname not in source_nets:
+            skipped[f"removed:{target_netname}"] += 1
             continue
-        key = copper_key(item)
+        key = copper_key(item, target_netname)
         if key in existing:
             skipped["duplicate"] += 1
             continue
         if args.output:
             duplicate = item.Duplicate()
-            duplicate.SetNet(source.FindNet(netname))
+            duplicate.SetNet(source.FindNet(target_netname))
             duplicate.SetLocked(True)
             source.Add(duplicate)
         existing.add(key)
-        copied[netname] += 1
+        copied[target_netname] += 1
 
     if args.output:
         source.GetDesignSettings().m_CopperEdgeClearance = routed.GetDesignSettings().m_CopperEdgeClearance
@@ -163,20 +208,23 @@ def main() -> None:
         "source_only_footprints": len(source_refs - routed_refs),
         "routed_only_footprints": len(routed_refs - source_refs),
         "routed_copper_nets": len(routed_copper_nets),
-        "compatible_routed_nets": len(compatible_nets & routed_copper_nets),
+        "compatible_routed_nets": len(set(copper_net_map) & routed_copper_nets),
         "quarantined_routed_nets": len(quarantined_nets),
         "copied_items": sum(copied.values()),
         "skipped_items": sum(skipped.values()),
         "common_pad_mismatches": len(mismatches),
     }
     print(f"routed refresh: copied {sum(copied.values())} copper items on {len(copied)} nets")
-    print(f"  compatible routed nets: {len(compatible_nets & routed_copper_nets)}")
+    print(f"  compatible routed nets: {len(set(copper_net_map) & routed_copper_nets)}")
+    print(f"  proved additive/rename mappings: {len(additive_net_map)}")
+    print(f"  retained additive/renamed routed nets: {len(retained_additive_nets)}")
     print(f"  quarantined routed nets: {len(quarantined_nets)}")
     print(f"  quarantined/duplicate items: {sum(skipped.values())}")
     print(f"  common-pad mismatches requiring reroute: {len(mismatches)}")
     print(f"  DRC-forced excluded nets: {len(forced_excluded)}")
     if args.verbose:
         print(f"  DRC-forced excluded net names: {sorted(forced_excluded)}")
+        print(f"  additive/rename net map: {dict(sorted(additive_net_map.items()))}")
         print(f"  quarantined item counts: {dict(skipped)}")
         print(f"  mismatched endpoints: {mismatches}")
     if args.output:
