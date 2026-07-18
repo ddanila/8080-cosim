@@ -9,6 +9,7 @@ violations, and no increase in any other DRC finding.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -25,6 +26,91 @@ BLOCKERS = {"shorting_items", "clearance", "tracks_crossing"}
 NET_RE = re.compile(r"\[([^]]+)\]")
 LAYER_RE = re.compile(r" on ([FB])\.Cu(?:,|$)")
 KICAD_UNCONNECTED_REPORT_CAP = 499
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def load_attempt_state(
+    path: Path,
+    board_sha256: str,
+    config: dict[str, object],
+    router_sha256: str,
+    closer_sha256: str,
+) -> dict[tuple[str, float, float, float, float, str, str], str]:
+    if not path.exists():
+        return {}
+    state = json.loads(path.read_text())
+    if state.get("schema_version") != 2:
+        raise SystemExit(f"{path}: unsupported attempted-state schema")
+    if state.get("board_sha256") != board_sha256:
+        raise SystemExit(
+            f"{path}: attempted state belongs to a different input board"
+        )
+    if (
+        state.get("config") != config
+        or state.get("router_sha256") != router_sha256
+        or state.get("closer_sha256") != closer_sha256
+    ):
+        raise SystemExit(
+            f"{path}: attempted state uses different router parameters or code"
+        )
+    attempts = {}
+    for item in state.get("attempts", []):
+        signature = tuple(item["signature"])
+        if len(signature) != 7:
+            raise SystemExit(f"{path}: malformed attempted-gap signature")
+        attempts[signature] = str(item["outcome"])
+    return attempts
+
+
+def save_attempt_state(
+    path: Path,
+    board_sha256: str,
+    config: dict[str, object],
+    router_sha256: str,
+    closer_sha256: str,
+    attempts: dict[tuple[str, float, float, float, float, str, str], str],
+) -> None:
+    state = {
+        "schema_version": 2,
+        "board_sha256": board_sha256,
+        "config": config,
+        "router_sha256": router_sha256,
+        "closer_sha256": closer_sha256,
+        "attempts": [
+            {"signature": list(signature), "outcome": attempts[signature]}
+            for signature in sorted(attempts)
+        ],
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(json.dumps(state, indent=2) + "\n")
+    os.replace(temporary, path)
+
+
+def gap_signature(
+    proposal: tuple[float, str, float, float, float, float, str, str],
+) -> tuple[str, float, float, float, float, str, str]:
+    _, net, x1, y1, x2, y2, layer1, layer2 = proposal
+    endpoint1 = (x1, y1, layer1)
+    endpoint2 = (x2, y2, layer2)
+    if endpoint2 < endpoint1:
+        endpoint1, endpoint2 = endpoint2, endpoint1
+    return (
+        net,
+        endpoint1[0],
+        endpoint1[1],
+        endpoint2[0],
+        endpoint2[1],
+        endpoint1[2],
+        endpoint2[2],
+    )
 
 
 def run_drc(cli: Path, board: Path, report: Path) -> dict:
@@ -206,6 +292,15 @@ def main() -> None:
             "whose exact proposed gap disappears without increasing any DRC count"
         ),
     )
+    parser.add_argument(
+        "--attempted-state",
+        type=Path,
+        help=(
+            "persist attempted gap signatures between additive routing passes; "
+            "the state is bound to the exact input/output lineage, router code, "
+            "and proposal parameters"
+        ),
+    )
     args = parser.parse_args()
 
     cli = args.kicad_cli
@@ -230,10 +325,50 @@ def main() -> None:
         raise SystemExit("grid step must be positive")
     if args.route_clearance <= 0:
         raise SystemExit("route clearance must be positive")
+    board_sha256 = file_sha256(args.input)
+    route_config = {
+        "mode": args.mode,
+        "search_margin": args.search_margin,
+        "grid_step": args.grid_step,
+        "route_clearance": args.route_clearance,
+        "timeout": args.timeout,
+    }
+    router_sha256 = file_sha256(ROUTER)
+    closer_sha256 = file_sha256(Path(__file__))
+    attempt_outcomes = (
+        load_attempt_state(
+            args.attempted_state,
+            board_sha256,
+            route_config,
+            router_sha256,
+            closer_sha256,
+        )
+        if args.attempted_state
+        else {}
+    )
     shutil.copyfile(args.input, args.output)
 
     accepted = 0
-    attempted: set[tuple[str, float, float, float, float, str, str]] = set()
+    attempted = set(attempt_outcomes)
+
+    def record_attempt(
+        signature: tuple[str, float, float, float, float, str, str],
+        outcome: str,
+    ) -> None:
+        nonlocal board_sha256
+        attempt_outcomes[signature] = outcome
+        if outcome == "accepted":
+            board_sha256 = file_sha256(args.output)
+        if args.attempted_state:
+            save_attempt_state(
+                args.attempted_state,
+                board_sha256,
+                route_config,
+                router_sha256,
+                closer_sha256,
+                attempt_outcomes,
+            )
+
     with tempfile.TemporaryDirectory(prefix="juku-gap-close-") as tmp_name:
         tmp = Path(tmp_name)
         current_report = run_drc(cli, args.output, tmp / "current.json")
@@ -246,12 +381,13 @@ def main() -> None:
                 args.net,
             )
             proposal = next(
-                (item for item in candidates if item[1:] not in attempted), None
+                (item for item in candidates if gap_signature(item) not in attempted),
+                None,
             )
             if proposal is None:
                 break
             distance, net, x1, y1, x2, y2, start_layer, goal_layer = proposal
-            signature = proposal[1:]
+            signature = gap_signature(proposal)
             attempted.add(signature)
             candidate_board = tmp / "candidate.kicad_pcb"
             candidate_report_path = tmp / "candidate.json"
@@ -282,6 +418,7 @@ def main() -> None:
                 )
             except subprocess.TimeoutExpired:
                 print(f"skip {net} {distance:.3f} mm: A* timeout", flush=True)
+                record_attempt(signature, "timeout")
                 continue
             if proc.returncode or not candidate_board.exists():
                 reason = (proc.stderr or proc.stdout).strip().splitlines()
@@ -289,6 +426,7 @@ def main() -> None:
                     f"skip {net} {distance:.3f} mm: {reason[-1] if reason else 'no route'}",
                     flush=True,
                 )
+                record_attempt(signature, "router-failed")
                 continue
             candidate_report = run_drc(cli, candidate_board, candidate_report_path)
             if not acceptable(
@@ -302,12 +440,14 @@ def main() -> None:
                     f"{rejection_reason(current_report, candidate_report)}",
                     flush=True,
                 )
+                record_attempt(signature, "drc-rejected")
                 continue
             before = len(current_report["unconnected_items"])
             after = len(candidate_report["unconnected_items"])
             os.replace(candidate_board, args.output)
             current_report = candidate_report
             accepted += 1
+            record_attempt(signature, "accepted")
             capped_note = (
                 " (capped marker set advanced)"
                 if before == after == KICAD_UNCONNECTED_REPORT_CAP
@@ -321,6 +461,11 @@ def main() -> None:
 
     final = len(current_report.get("unconnected_items", []))
     print(f"accepted {accepted} route(s): unconnected {initial} -> {final}")
+    if args.attempted_state:
+        print(
+            f"recorded {len(attempt_outcomes)} attempted gap(s) in "
+            f"{args.attempted_state}"
+        )
     print(f"wrote {args.output}")
 
 

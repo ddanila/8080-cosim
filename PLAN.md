@@ -45,11 +45,14 @@ electrical-category findings. Splits, removed endpoints, and every moved pad
 remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
-starts at 433 honest gaps. Five bounded guarded-A* transactions now accept 120
-repairs and reach 308 gaps with 18,374 copper items, exact parity across all
-2,395 current source pads, and zero short, clearance, crossing, hole, or edge
-findings. Reported dangling tails remain reconnection work; the temporary board
-is convergence evidence, not a replacement routed artifact
+starts at 433 honest gaps. Eleven bounded guarded-A* transactions now accept
+193 repairs and reach 235 gaps with 19,400 copper items, exact parity across
+all 2,395 current source pads, and zero short, clearance, crossing, hole, or
+edge findings. The gap closer now persists canonical attempted-gap signatures
+against the exact additive board lineage, router code, and proposal parameters,
+so later bounded passes do not replay known-invalid corridors. Reported dangling
+tails remain reconnection work; the temporary board is convergence evidence,
+not a replacement routed artifact
 (`docs/routed-refresh-audit.md`).
 
 Automatic device-level closure on 2026-07-17 also retires D103's former
