@@ -1,7 +1,9 @@
 # VJUGA rev B — order-readiness note (TG.4)
 
-State of the four rev B boards for fabrication. **T1.10 (placing the order) is now a
-purchasing decision — the engineering gates below are green.** Last updated 2026-07-18.
+State of the four rev B boards for fabrication. **The three cards (cpu/mem/io) are
+order-safe. The backplane is HELD pending TH.1–TH.4** (execution guide: pin non-DIP
+footprints to exact MPNs + physical-contract guard, add input power conditioning —
+D1.35/D1.36). Last updated 2026-07-18.
 
 ## Boards
 
@@ -55,6 +57,12 @@ board `.kicad_pcb` is the source of truth, content-checked):
 > (`PKG_WIDTH` in `check_revb_footprints.py`).
 
 ## Open risks to weigh before ordering
+
+- **Backplane HOLD (TH.1–TH.4):** the six non-DIP footprints (USB-C, TO-92, pushbutton,
+  LED, 2×2 jumper, axial R) are name-matched to the KiCad library, not verified against
+  purchasable parts — the DIP-28 bug's exact mechanism; the TO-92 pad→net map is
+  part-family-specific; and the board has **no input capacitance or protection** (D1.35).
+  Cards are unaffected (DIP/header/disc-cap only, all machine-checked).
 
 - **Keying is convention-only (D1.32b):** a reversed card can seat (centred base is
   symmetric). Mitigation is silk/orientation marks + care, not a mechanical block. The

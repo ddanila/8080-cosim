@@ -638,6 +638,69 @@ purely a purchasing decision**.
 (backplane discretes negligible), budget holds. `docs/rev-b-order-readiness.md` records
 boards/BOM/hashes/risks. **T1.10 armed** — Stage D complete.
 
+### Backplane order-safety (TH.1–TH.4; D1.35/D1.36) — planned 2026-07-18
+
+The pre-order audit fixed the DIP-28 width bug but left the backplane's six non-DIP
+footprints name-matched and unverified (D1.36), the TO-92 pad→net map unpinned to a
+real part, and the power-entry board with **no capacitors and no input protection**
+(D1.35). The three cards are order-safe now; the backplane goes through TH before its
+zip is sent. One task = one commit; rebase before push.
+
+**TH.1 — pin the backplane BOM to exact MPNs (D1.36 first half).**
+For every backplane part, choose one orderable MPN and check its datasheet drawing
+against the named footprint — drill ≥ pin diagonal, pitch, pad pattern, body outline:
+- `J_USBC` → **exactly GCT USB4125-xx-x** (the footprint names it; A5/B5=CC, A9/B9=VBUS,
+  A12/B12=GND, SH — our pad→net map already matches the 6P power-only pattern).
+- `SW_RST` → **exactly APEM MJTP1243** (footprint names it; 2 pins per board.json).
+- `U_RST` → pick a **DS1813-class 3-pin TO-92 supervisor** whose pinout is
+  1=GND, 2=/RESET, 3=VCC (the board.json mapping); if the chosen MPN differs, fix the
+  pin map in `gen_revb_boards.py` — this mapping is electrical, not just mechanical.
+  Note the 8251/GAL16V8 reset path expects the supervisor's open-drain active-low out
+  on RESET_N with the existing pull-up (cross-check `rev-b-gal-equations.md` D1.16).
+- `D_PWR` → any 5 mm THT LED (verify pad1=anode on `LED_D5.0mm`); `R_*` → DIN0207
+  axials; `JP_S5`/`J_FTDI`/`J_PWR` → standard 2.54 mm headers; slot sockets → 1×39 +
+  1×10 **female** SIL sockets (square-pin, fits the 1.0 mm drills); card-side headers →
+  **right-angle male** (PCB hole pattern identical to the vertical footprint used).
+Record all of it as a BOM table (ref, MPN, footprint, datasheet link, checked-dims ✓)
+in `rev-b-order-readiness.md`. Sources: WebSearch/datasheets; cite in the table.
+*Acceptance:* every backplane ref has an MPN + a checked-✓ row; any pin-map fix is in
+the generator (guards green), not prose.
+
+**TH.2 — footprint physical-contract guard for non-DIPs (D1.36 second half).**
+Extend `check_revb_footprints.py`: for each resolved footprint, parse the `.kicad_mod`
+(s-expr text; no pcbnew needed) and assert (a) **pad count == the board.json pin count**
+for that component (catches silently floating pads — `add_fp` maps nets by pad number
+and unmapped pads today float with no DRC complaint; the USB-C SH multi-pad case needs
+an explicit allowance), (b) THT drill ≥ the BOM pin dimension and pad pitch == datasheet
+value, from a small `PKG_PHYS` table filled with TH.1's numbers (cite the datasheet per
+row). CI-safe (skips without KICAD_FOOTPRINTS).
+*Acceptance:* guard green on the pinned BOM **and negative-tested** (e.g., wrong
+pad-count expectation or a too-small drill must FAIL) — same discipline as PKG_WIDTH.
+
+**TH.3 — input power conditioning (D1.35).**
+`gen_revb_boards.py`: add to the backplane `C_BULK` (47 µF/16 V radial electrolytic,
+new footprint kind `CP_RADIAL_D6.3` or similar), `C_IN` (100 nF disc, existing kind),
+and `F_VBUS` (~1 A-hold polyfuse, radial) wired **USB VBUS → F_VBUS → VCC5 rail**, with
+`J_PWR` still directly on VCC5 (bench path unfused, D1.35). Caps across VCC5/GND near
+the USB entry. New net `VBUS_IN` between J_USBC and the fuse. Placement: tail strip
+next to `J_USBC` (revb_place.py). Connectivity + D1.18 completeness must stay green
+(they police the new wiring); footprint probe extended for the two new kinds (TH.2
+guard applies). Power-budget note: polyfuse hold current vs the ~712 mA budget (1 A
+hold / ~2 A trip fits; record in the bus contract power section).
+*Acceptance:* board.json regenerates with the three parts wired; all existing guards
+green; `check_revb_pcb.py backplane` taught the new part count.
+
+**TH.4 — re-verify and re-arm the backplane.**
+Regenerate + route to total-DRC 0/0 (also try re-enabling the 0.6 mm edge keepout ring
+for the backplane now that the locked columns are retired — the earlier ring failure
+was a ring×columns interaction; keep it if the clean-slate board still routes 0/0,
+drop it again if not, recording which). Then: mating checker, STEP + previews,
+`mate_check.py` (new parts change the envelope), `export_fab.sh`, update hashes + flip
+the backplane hold in `rev-b-order-readiness.md` ("order-safe" for all four boards),
+tier suite green.
+*Acceptance:* 4× total DRC 0/0 from fresh regenerate; all artifacts + hashes current;
+order-readiness lists **no unverified footprint** among the risks.
+
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
 
 **TD.9 — io card (the big one: D1.26 full-B3 wiring first).**

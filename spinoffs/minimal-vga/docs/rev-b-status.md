@@ -64,6 +64,18 @@ base is symmetric). TG.4 — Gerber+drill fab packages (`export_fab.sh`), power 
 (~712 mA / 47 % of USB-C 1.5 A), `rev-b-order-readiness.md` written. **T1.10 is armed —
 a purchasing decision.**
 
-**Next: T1.10** order (user's call — see `rev-b-order-readiness.md` for the risk list),
-then **T1.11** bench bring-up (hardware-blocked). **B2/B3/B4** tiers plan at entry.
+**Pre-order audit (2026-07-18):** caught + fixed the DIP-28 width bug (0.3″ footprints
+for 0.6″ chips — every gate was green; now machine-checked via `PKG_WIDTH`); retired
+the backplane's locked column pre-routes (D1.34 — the specctra roundtrip mangled them;
+the clean-slate board routes 0/0 attempt 1). **Cards (cpu/mem/io) are order-safe.**
+
+**Backplane is HELD pending TH.1–TH.4** (planned to task depth in the execution guide):
+**TH.1** pin the BOM to exact MPNs (USB-C = GCT USB4125, switch = APEM MJTP1243,
+DS1813-class supervisor whose pinout matches the pad map — electrical, not just
+mechanical); **TH.2** footprint physical-contract guard for non-DIPs (pad-count ==
+pin-count + datasheet dims, negative-tested); **TH.3** input power conditioning
+(D1.35: bulk 47 µF + 100 nF + polyfuse in the USB branch only — the board currently
+has NO capacitors); **TH.4** re-verify (route 0/0, artifacts, hashes) and flip the
+hold. Then **T1.10** order (user's call), **T1.11** bench (hardware-blocked), B2/B3/B4
+plan at entry.
 Rule: `git pull --rebase` before every push — the remote moves mid-session.
