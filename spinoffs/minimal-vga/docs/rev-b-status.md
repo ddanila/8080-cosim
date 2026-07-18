@@ -13,7 +13,7 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B1 — sim/firmware** | bring-up ROM, minimum-tier twin | ✅ done | `revb_bringup_check.sh`: TX stream == cosim via real 8251 |
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
-| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11) | 🟡 partial | io ✅ fully routed (DRC 0/0, DNP B3 wiring); cpu placement-clean+47/48 (A8 tail); backplane ⬜ (needs multi-slot gen + layout) |
+| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11) | 🟡 partial | io ✅ + cpu ✅ **both fully routed (DRC 0/0)** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane ⬜ (needs multi-slot gen + column-route) |
 | **B1-CAD Stage D** | FreeCAD mating/keying + fab package (TD.12–TD.13) | ⬜ → arms T1.10 | |
 | **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ hardware-blocked | |
 | **B2 / B3 / B4** | video / keyboard+PIC / FDC tiers | ⬜ future | |

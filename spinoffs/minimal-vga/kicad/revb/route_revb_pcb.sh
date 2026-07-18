@@ -43,8 +43,12 @@ sys.exit(0 if pcbnew.ExportSpecctraDSN(b,'$DSN') else 'DSN export failed')"
 # freerouting 2.x is GUI-first (-Djava.awt.headless=true runs it batch on macOS) and
 # stochastic -- this board is near the 2-layer routability edge, so retry until a run
 # routes every net (no "could not be routed" in the log).
+# Attempt count is tunable (FR_ATTEMPTS) so the TF.1 placement sweep can probe each
+# candidate cheaply (a routable placement routes in the first attempt or two; a
+# deterministic-fail placement never routes, so few attempts suffice to reject it).
+ATTEMPTS="${FR_ATTEMPTS:-12}"
 ROUTED=""
-for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+for attempt in $(seq 1 "$ATTEMPTS"); do
   "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" -de "$DSN" -do "$SES" -mp 100 \
     >"$OUT/${CARD}-fr.log" 2>&1 || true
   if [ -f "$SES" ] && ! grep -qi "could not be routed" "$OUT/${CARD}-fr.log"; then

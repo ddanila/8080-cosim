@@ -506,6 +506,12 @@ sweep's temp boards. Fallback if all points fail: emit ONE generator-authored
 track for A8 (documented in the PLACE comment).
 *Acceptance:* `check_revb_drc.py cpu --total` = 0/0 from a fresh regenerate+route;
 winning placement committed in the generator, not just in fab/.
+**DONE (2026-07-18):** sweep hit at **U1 x=41, rot=90** (was x=35) — candidate #9,
+first 0/0 in the grid. x∈{25..33} routed but left DRC dirty; x∈{35..39} did not
+converge (the known deterministic A8 failure); x=41 routes clean. Winning coord
+folded into `gen_revb_pcb.py`; fresh regenerate+route → `--total` 0/0; STEP + preview
+regenerated. `REVB_SWEEP_{REF,X,ROT}` env hook in the generator drives the search;
+`FR_ATTEMPTS` env caps route retries for the sweep.
 
 **TF.2 — multi-slot connector support in the PCB generator (D1.29 prerequisite).**
 `gen_revb_pcb.py`: the `REVB_BUS_39_10` branch derives refs from the component ref

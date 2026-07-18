@@ -82,13 +82,26 @@ PLACE_BY_CARD = {
     },
     "cpu": {   # 100x70: unbuffered Z80 + osc + diag, wide fan-out channel (D1.21)
         "J_BUS": (50.0, 66.0, 90), "J_EXT": (14.0, 61.0, 90),
-        "U1": (35.0, 22.0, 90),   # Z80 DIP-40 horizontal
+        "U1": (41.0, 22.0, 90),   # Z80 DIP-40 horizontal; x=41 from TF.1 sweep (D1.28) routes A8 0/0
         "U2": (85.0, 18.0, 0),    # clock osc DIP-14 vertical
         "C1": (66.0, 36.0, 0), "C2": (88.0, 42.0, 0),
         "J_DIAG": (40.0, 46.0, 90),
     },
 }
-PLACE = PLACE_BY_CARD[CARD]
+PLACE = dict(PLACE_BY_CARD[CARD])
+
+# TF.1 placement-sweep hook (D1.28). The cpu card's A8 is a deterministic 2-layer
+# fan-out constraint, so we search for a routable Z80 x-position/rotation headlessly
+# rather than re-rolling the stochastic router. When REVB_SWEEP_REF names a placed
+# ref, its X and rotation are overridden from the environment (Y is kept). This path
+# is used only during the search; the winning value gets folded back into the table
+# above, so normal regeneration never depends on the environment.
+_sw_ref = os.environ.get("REVB_SWEEP_REF")
+if _sw_ref and _sw_ref in PLACE:
+    _x, _y, _rot = PLACE[_sw_ref]
+    _x = float(os.environ.get("REVB_SWEEP_X", _x))
+    _rot = float(os.environ.get("REVB_SWEEP_ROT", _rot))
+    PLACE[_sw_ref] = (_x, _y, _rot)
 
 
 def main():
