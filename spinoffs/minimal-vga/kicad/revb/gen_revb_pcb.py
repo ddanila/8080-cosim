@@ -88,6 +88,41 @@ PLACE_BY_CARD = {
         "J_DIAG": (40.0, 46.0, 90),
     },
 }
+def _backplane_place():
+    """Programmatic backplane placement (TF.2 / D1.29–D1.30). The six 39-pin base
+    connectors span nearly the full width, so their vertical bus columns cover the
+    board: the only clear space is the top/bottom margins. We therefore stack the
+    six base connectors column-aligned in the UPPER region and the six 10-pin ext
+    connectors column-aligned in the LOWER-LEFT (two independent bussed banks, each
+    cleanly column-routable), and drop the power/reset/FTDI/LED tail into the free
+    LOWER-RIGHT quadrant. Per-card base/ext edge mating is validated in Stage D."""
+    p = {}
+    for k in range(6):                       # base bank: x=50, 10 mm pitch, y 10..60
+        p[f"J_S{k+1}_BUS"] = (50.0, 10.0 + k * 10.0, 90)
+    for k in range(6):                       # ext bank: x=22, 5 mm pitch, y 70..95
+        p[f"J_S{k+1}_EXT"] = (22.0, 70.0 + k * 5.0, 90)
+    # support tail in the lower-right quadrant; axial resistors vertical (rot 90) to
+    # pack tightly. Coordinates are DRC-tuned, not hand-precise.
+    p["J_USBC"] = (46.0, 70.0, 0)
+    p["J_PWR"]  = (60.0, 70.0, 0)
+    p["U_RST"]  = (70.0, 70.0, 0)
+    p["SW_RST"] = (80.0, 70.0, 0)
+    p["J_FTDI"] = (91.0, 70.0, 0)
+    p["JP_S5"]  = (46.0, 82.0, 0)
+    p["D_PWR"]  = (56.0, 82.0, 0)
+    p["R_LED"]  = (64.0, 82.0, 90)
+    p["R_CC1"]  = (72.0, 82.0, 90)
+    p["R_CC2"]  = (80.0, 82.0, 90)
+    p["R_M0"]   = (88.0, 82.0, 90)
+    p["R_M1"]   = (46.0, 94.0, 90)
+    p["R_INT"]  = (54.0, 94.0, 90)
+    p["R_WAIT"] = (62.0, 94.0, 90)
+    p["R_NMI"]  = (70.0, 94.0, 90)
+    p["R_BRQ"]  = (78.0, 94.0, 90)
+    return p
+
+
+PLACE_BY_CARD["backplane"] = _backplane_place()
 PLACE = dict(PLACE_BY_CARD[CARD])
 
 # TF.1 placement-sweep hook (D1.28). The cpu card's A8 is a deterministic 2-layer
@@ -139,8 +174,19 @@ def main():
             base_fp, ext_fp = fpmap[typ]
             base = {p: n for p, n in pins.items() if p.isdigit()}
             ext = {p[1:]: n for p, n in pins.items() if p.startswith("E")}  # E1->pad 1
-            add_fp("J_BUS", base_fp, PLACE["J_BUS"], base)
-            add_fp("J_EXT", ext_fp, PLACE["J_EXT"], ext)
+            # Single-card bus keeps the J_BUS/J_EXT names; the backplane's six slots
+            # (J_S1..J_S6) derive per-slot refs so each connector is uniquely named
+            # and its pins align in vertical columns (D1.29 column-route prerequisite).
+            bref = "J_BUS" if ref == "J_BUS" else f"{ref}_BUS"
+            eref = "J_EXT" if ref == "J_BUS" else f"{ref}_EXT"
+            add_fp(bref, base_fp, PLACE[bref], base)
+            add_fp(eref, ext_fp, PLACE[eref], ext)
+        elif typ == "USB_C_PWR":
+            # Map logical power pins to the 6P receptacle's physical pads; shield->GND.
+            v, g = pins["VBUS"], pins["GND"]
+            padnet = {"A9": v, "B9": v, "A12": g, "B12": g,
+                      "A5": pins["CC1"], "B5": pins["CC2"], "SH": g}
+            add_fp(ref, fpmap[typ], PLACE.get(ref, (50.0, 40.0)), padnet)
         else:
             fpname = fpmap.get(typ) or fpmap.get(f"HDR_1x{len(pins)}")
             xy = PLACE.get(ref, (50.0, 40.0))
@@ -151,6 +197,8 @@ def main():
         "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
         "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
         "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
+        # backplane: labels in the clear top strip above the base bank (y<8, no copper).
+        "backplane": [("REVB BACKPLANE", 30.0, 4.0, 1.3), ("NO HOT-PLUG", 78.0, 4.0, 1.1)],
     }
     for text, sx, sy, ssz in SILK.get(CARD, SILK["mem"]):
         silk(board, text, sx, sy, size=ssz)

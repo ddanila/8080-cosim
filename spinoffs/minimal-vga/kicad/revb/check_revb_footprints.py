@@ -32,6 +32,13 @@ CAND = {
     "OSC14": ["Oscillator:Oscillator_DIP-14", "Package_DIP:DIP-14_W7.62mm"],
     "C_DISC": ["Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
                "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"],
+    # backplane support parts (TF.2)
+    "R_AXIAL": ["Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"],
+    "LED5": ["LED_THT:LED_D5.0mm"],
+    "SW_PUSH6": ["Button_Switch_THT:SW_PUSH_1P1T_6x3.5mm_H4.3_APEM_MJTP1243"],
+    "TO92": ["Package_TO_SOT_THT:TO-92_Inline"],
+    "USB_C_6P": ["Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x_6P_TopMnt_Horizontal"],
+    "PIN_2x2": ["Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical"],
 }
 # board.json component type -> list of footprint kinds it needs
 TYPE_KINDS = {
@@ -42,6 +49,10 @@ TYPE_KINDS = {
     "OSC_CPU": ["OSC14"], "PPI_8255": ["DIP40"], "ENC_74148": ["DIP16"],
     "PIC_8259": ["DIP28"],
     "C_100N": ["C_DISC"],
+    # backplane support parts (TF.2); all fixed resistors share one axial footprint
+    "USB_C_PWR": ["USB_C_6P"], "R_5K1": ["R_AXIAL"], "R_10K": ["R_AXIAL"],
+    "R_4K7": ["R_AXIAL"], "R_2K2": ["R_AXIAL"], "SUPERVISOR_3": ["TO92"],
+    "SW_PUSH": ["SW_PUSH6"], "LED": ["LED5"], "JMP_2x2": ["PIN_2x2"],
 }
 
 
@@ -67,7 +78,7 @@ def main():
             if None in fps:
                 missing.append((t, TYPE_KINDS[t]))
             chosen[t] = fps if len(fps) > 1 else fps[0]
-        elif t == "HDR_1xN":
+        elif t == "HDR_1xN" or t.startswith("HDR_1x"):
             n = len(comp["pins"])
             fp = f"Connector_PinHeader_2.54mm:PinHeader_1x{n:02d}_P2.54mm_Vertical"
             if not exists(fp):
