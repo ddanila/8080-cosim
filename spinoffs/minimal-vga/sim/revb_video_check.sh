@@ -31,4 +31,9 @@ iverilog -g2012 -o "$TMP/wait" "$R/revb_video_card_ttl.v" "$R/revb_video_wait_tb
 vvp "$TMP/wait" | tee "$TMP/wait.log"
 grep -q "REVB-VIDEO-WAIT: PASS" "$TMP/wait.log"
 
-echo "REVB-VIDEO-CHECK: PASS (timing + crop + scanout + /WAIT)"
+echo "== B2: scanout address generator == src_row*40+byte_col (D2.7 accumulator) =="
+iverilog -g2012 -o "$TMP/addr" "$R/revb_video_addrgen.v" "$R/revb_video_addrgen_tb.v"
+vvp "$TMP/addr" | tee "$TMP/addr.log"
+grep -q "REVB-VIDEO-ADDRGEN: PASS" "$TMP/addr.log"
+
+echo "REVB-VIDEO-CHECK: PASS (timing + crop + scanout + /WAIT + addr-gen)"
