@@ -492,6 +492,48 @@ Stage C begins. *Acceptance:* one command green end-to-end, including DRC.
 
 Resume: cpu A8 + backplane are visual/gen work best done with KiCad open.
 
+### Stage C finish — TF tasks (planned 2026-07-18; D1.28/D1.29 in the build plan)
+
+One task = one commit; `git pull --rebase` before every push (the remote moves).
+
+**TF.1 — cpu A8 via placement sweep (D1.28).**
+`kicad/revb/sweep_cpu_place.sh`: loop U1 x ∈ {25..45 step 2} × rot ∈ {90, 270};
+per point: patch a copy of the PLACE entry → regenerate → `check_revb_drc.py cpu
+--placement` (skip point if not 0) → export DSN → ≤2 freerouting attempts → import
+→ `--total`. Stop at the first **0/0**; write the winning coordinates back into
+`gen_revb_pcb.py` permanently (with a comment naming the sweep) and delete the
+sweep's temp boards. Fallback if all points fail: emit ONE generator-authored
+track for A8 (documented in the PLACE comment).
+*Acceptance:* `check_revb_drc.py cpu --total` = 0/0 from a fresh regenerate+route;
+winning placement committed in the generator, not just in fab/.
+
+**TF.2 — multi-slot connector support in the PCB generator (D1.29 prerequisite).**
+`gen_revb_pcb.py`: the `REVB_BUS_39_10` branch derives refs from the component ref
+(`J_S3` → `J_S3_BUS`/`J_S3_EXT`; a bare `J_BUS` keeps today's names, cards
+unaffected). Backplane PLACE: six slot pairs at the same x-origin, y = 19 mm pitch
+(base rows at y ≈ 8, 27, 46, 65, 84, 103 → needs BOARD_H check vs 100 — if 6×19
+overflows, drop pitch to 18 mm, NOT the slot count; record the final pitch in the
+bus contract). Power/reset/FTDI/LED parts go in the inter-slot gaps and margins.
+*Acceptance:* backplane regenerates with 12 connector footprints + all 16 discrete
+parts placed; `check_revb_pcb.py backplane` green (teach it the 12-connector
+expectation); placement-DRC 0.
+
+**TF.3 — backplane column-route (D1.29).**
+Generator emits vertical F.Cu tracks joining pin N of slot k to slot k+1 for all
+49 columns (straight segments, same x per column), then `route_revb_pcb.sh
+backplane` handles only the power tail (pulls/USB-C/supervisor/FTDI/LED nets).
+*Acceptance:* `check_revb_drc.py backplane --total` = 0/0; STEP + previews
+rendered; hashes recorded.
+
+**TF.4 — Stage C exit.**
+Re-run the tier suite + all per-card gates (mem/io/cpu/backplane: content check,
+placement, total DRC); regenerate all previews; flip the Stage C ledger row to ✅;
+expand nothing (Stage D is already at task depth).
+*Acceptance:* four boards, four 0/0 DRC results, one command each.
+
+Then **Stage D (TD.12–TD.13)** as already specified: FreeCAD mating/keying with the
+reversed-card collision proof → gerber fab packages + power re-check → **arms T1.10**.
+
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
 
 **TD.9 — io card (the big one: D1.26 full-B3 wiring first).**

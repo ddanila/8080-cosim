@@ -43,9 +43,11 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-Finish **Stage C**: (1) cpu A8 — one manual trace or address-pin-order placement;
-(2) backplane — teach `gen_revb_pcb.py` to split each of the 6 `J_S*` bus connectors
-into per-slot `J_S{n}_BUS`/`J_S{n}_EXT` refs, then place (6 slots @ 19 mm +
-power/reset/pulls/FTDI/LED) and route. Then **Stage D** (TD.12 FreeCAD mating/keying,
-TD.13 gerber fab package → arms T1.10). Best with KiCad open. mem + io are fully
-routed references; tools all installed + proven headless.
+Finish **Stage C** via the TF tasks (execution guide, planned to depth 2026-07-18):
+**TF.1** cpu A8 placement sweep (D1.28 — grid-search U1 x×rot headlessly, commit the
+winning coordinates; fallback = one generator-authored track); **TF.2** multi-slot
+connector support (`J_S{n}_BUS/EXT`) + backplane placement; **TF.3** backplane
+column-route (D1.29 — generator-emitted vertical tracks for the 49 bus columns,
+freerouting only the power tail); **TF.4** Stage C exit (4 boards × DRC 0/0).
+Then **Stage D** (TD.12 mating/keying, TD.13 fab packages → arms T1.10).
+Rule: `git pull --rebase` before every push — the remote moves mid-session.
