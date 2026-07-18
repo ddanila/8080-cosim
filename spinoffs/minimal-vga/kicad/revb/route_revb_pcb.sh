@@ -49,7 +49,7 @@ sys.exit(0 if pcbnew.ExportSpecctraDSN(b,'$DSN') else 'DSN export failed')"
 # trust the log: we import each candidate and accept only when the TOTAL DRC is 0/0
 # (0 violations AND 0 unconnected). FR_ATTEMPTS bounds the retries (the TF.1 sweep sets
 # it low so a hopeless placement is rejected fast; routing uses the default otherwise).
-ATTEMPTS="${FR_ATTEMPTS:-12}"
+ATTEMPTS="${FR_ATTEMPTS:-25}"
 ROUTED=""
 for attempt in $(seq 1 "$ATTEMPTS"); do
   "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" -de "$DSN" -do "$SES" -mp 100 \

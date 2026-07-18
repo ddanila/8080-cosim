@@ -137,14 +137,18 @@ geometry from it. Distances in mm, footprint-centre.
 | Constant | Value | Meaning |
 |---|---:|---|
 | `base_row_x` | 50.0 | card + backplane base (1×39) row centre X |
-| `base_edge_offset` | 5.0 | card base row: mm above the card's bottom edge |
+| `base_edge_offset` | 4.0 | card base row: mm from the card's mating edge |
 | `ext_row_x` | 14.45 | ext (1×10) row centre X (see interleave note) |
-| `ext_edge_offset` | 10.0 | card ext row: mm above the bottom edge |
+| `ext_edge_offset` | 9.0 | card ext row: mm from the mating edge |
 | `ext_row_dy` | 5.0 | backplane ext row = base row + this (per slot) |
 | `slot_pitch` | 16.0 | backplane slot-to-slot spacing |
 | `slot0_y` | 10.0 | backplane first (bottom) base row Y |
 | `n_slots` | 6 | backplane slots |
-| `backplane_board_h` | 112.0 | backplane outline height (grown per D1.31) |
+| `backplane_board_h` | 115.0 | backplane outline height (grown per D1.31) |
+
+The base offset is **4.0 mm** (not mem's historical 5.0): io — the densest, most
+routing-constrained card — routes reliably only at 4 mm, and it is the binding
+constraint, so the contract adopts its value and the roomier cards follow.
 
 **Connector gender / presentation (RC2014-compatible).** Cards carry **right-angle
 male** headers on the bottom edge; the backplane carries **female sockets**

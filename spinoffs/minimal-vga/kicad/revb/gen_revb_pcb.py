@@ -63,7 +63,13 @@ def emit_bus_columns(board):
     from collections import defaultdict
     fps = {fp.GetReference(): fp for fp in board.GetFootprints()}
     n = 0
-    for suffix in ("BUS", "EXT"):
+    # Base columns on F.Cu, ext columns on B.Cu. Both are DRC-clean when emitted directly
+    # here, even though mate-compatibility forces the ext row to x=14.45 inside the base
+    # span (the two column grids interleave ~1.27 mm apart — fine for KiCad DRC). Note the
+    # specctra DSN roundtrip silently DROPS the threading tracks (D1.33): freerouting then
+    # re-routes those + the tail from the ratsnest. Pullups are placed on their columns so
+    # freerouting's remaining job is short taps.
+    for suffix, layer in (("BUS", pcbnew.F_Cu), ("EXT", pcbnew.B_Cu)):
         conns = sorted((r for r in fps if re.match(rf"J_S\d+_{suffix}$", r)),
                        key=lambda r: int(re.match(r"J_S(\d+)_", r).group(1)))
         if len(conns) < 2:
@@ -77,7 +83,7 @@ def emit_bus_columns(board):
             for a, b in zip(pads, pads[1:]):
                 t = pcbnew.PCB_TRACK(board)
                 t.SetStart(a.GetPosition()); t.SetEnd(b.GetPosition())
-                t.SetWidth(mm(0.3)); t.SetLayer(pcbnew.F_Cu)
+                t.SetWidth(mm(0.3)); t.SetLayer(layer)
                 net = a.GetNet()
                 if net is not None:
                     t.SetNet(net)
@@ -169,8 +175,9 @@ def main():
         "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
         "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
         "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
-        # backplane: labels in the clear top strip above the base bank (y<8, no copper).
-        "backplane": [("REVB BACKPLANE", 30.0, 4.0, 1.3), ("NO HOT-PLUG", 78.0, 4.0, 1.1)],
+        # backplane: one short label in the thin clear band between the top ext row
+        # (y<=96.7) and the connector tail row (y>=99.5); strips are otherwise full.
+        "backplane": [("REVB BACKPLANE", 45.0, 98.0, 1.0)],
     }
     for text, sx, sy, ssz in SILK.get(CARD, SILK["mem"]):
         silk(board, text, sx, sy, size=ssz)
