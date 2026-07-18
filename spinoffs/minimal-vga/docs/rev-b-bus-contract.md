@@ -128,6 +128,38 @@ Lower number = higher priority. Frame-service ROM vector 0xFED4.
 
 (Both from the facts file; CPU operating frequency is a build-plan decision, S1.)
 
+## Mechanical mating contract (D1.31)
+
+Machine-checked by `kicad/revb/check_revb_mating.py` against `kicad/revb/mating.json`
+(the numeric source of truth); both cards and the backplane derive their connector
+geometry from it. Distances in mm, footprint-centre.
+
+| Constant | Value | Meaning |
+|---|---:|---|
+| `base_row_x` | 50.0 | card + backplane base (1×39) row centre X |
+| `base_edge_offset` | 5.0 | card base row: mm above the card's bottom edge |
+| `ext_row_x` | 14.45 | ext (1×10) row centre X (see interleave note) |
+| `ext_edge_offset` | 10.0 | card ext row: mm above the bottom edge |
+| `ext_row_dy` | 5.0 | backplane ext row = base row + this (per slot) |
+| `slot_pitch` | 16.0 | backplane slot-to-slot spacing |
+| `slot0_y` | 10.0 | backplane first (bottom) base row Y |
+| `n_slots` | 6 | backplane slots |
+| `backplane_board_h` | 112.0 | backplane outline height (grown per D1.31) |
+
+**Connector gender / presentation (RC2014-compatible).** Cards carry **right-angle
+male** headers on the bottom edge; the backplane carries **female sockets**
+([RC2014 module template](https://rc2014.co.uk/1377/module-template/),
+[RC2014 bus spec](https://smallcomputercentral.com/rc2014-bus/specification-rc2014-bus/)).
+Mainline RC2014 presents the enhanced bus as an *adjacent second row* of the main
+connector; **we instead use a separate 10-pin ext header**. This is a legitimate
+RC2014-compatible variant (the spec fixes the signal set, not the physical presentation)
+and it lets the base and ext bus **columns interleave** on the 2-layer backplane:
+`ext_row_x = 14.45` places the ext pin grid a **half pin-pitch (1.27 mm)** off the base
+grid, versus only 0.82 mm at the old 14.0 — the checker's `min_column_sep` gate enforces
+this. The backplane is grown to 100×112 (still a cheap 2-layer one-off) so six 16 mm-pitch
+slots plus the power/reset/serial tail strip fit; per D1.31 we grow the one-off backplane
+rather than drop slots.
+
 ## B1-population power budget (planning estimate)
 
 Conservative +5 V budget for the **minimum tier** (backplane + CPU + Memory +

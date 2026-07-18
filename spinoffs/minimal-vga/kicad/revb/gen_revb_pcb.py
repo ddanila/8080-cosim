@@ -8,15 +8,16 @@ placement (no randomness); regeneration is content-checked, not byte-diffed (D1.
 """
 import json, os, sys
 import pcbnew
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from revb_place import BOARD_W, BOARD_H_BY_CARD, PLACE_BY_CARD  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))   # spinoffs/minimal-vga/kicad/revb
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 CARD = sys.argv[1] if len(sys.argv) > 1 else "mem"
 FPROOT = os.environ["KICAD_FOOTPRINTS"]
 
-# Card outlines (all <=100x100 cheap tier). io is taller: more parts (D1.23).
-BOARD_H_BY_CARD = {"mem": 60.0, "io": 100.0, "cpu": 70.0, "backplane": 100.0}
-BOARD_W = 100.0
+# Card outlines: BOARD_W + per-card BOARD_H come from revb_place (shared with the
+# mating checker). io is taller: more parts (D1.23).
 BOARD_H = BOARD_H_BY_CARD.get(CARD, 60.0)
 
 board_spec = json.load(open(os.path.join(HERE, f"{CARD}.board.json")))
@@ -92,71 +93,8 @@ def silk(board, text, x, y, size=1.5, angle=0):
     board.Add(t)
 
 
-# Deterministic placement table (mm, footprint CENTRE, rotation deg). Connectors
-# rotated 90 so their pin rows run along X: the 1x39 base along the bottom edge, the
-# 1x10 extension row just above it, pin-1-end aligned (D1.23/D1.4). DIPs vertical.
-PLACE_BY_CARD = {
-    "mem": {
-        "J_BUS": (50.0, 55.0, 90), "J_EXT": (14.0, 50.0, 90),
-        "U1": (20.0, 24.0, 180), "U2": (50.0, 23.0, 0), "U3": (82.0, 24.0, 0),
-        "C1": (32.0, 10.0, 0), "C2": (64.0, 10.0, 0), "C3": (92.0, 10.0, 0),
-        "J_OBS": (75.0, 47.0, 90), "J_NOP": (40.0, 47.0, 90),
-    },
-    "io": {   # 100x100: three well-separated chip rows for 2-layer routing channels
-        "J_BUS": (50.0, 96.0, 90), "J_EXT": (14.0, 91.0, 90),
-        "U4": (29.0, 14.0, 90),   # 8255 DIP-40
-        "U1": (78.0, 14.0, 90),   # 8251 DIP-28
-        "U6": (26.0, 44.0, 90),   # 8259 DIP-28
-        "U2": (76.0, 44.0, 90),   # GAL16V8 DIP-20
-        "U5": (26.0, 72.0, 90),   # 74148 DIP-16
-        "U3": (88.0, 70.0, 0),    # baud osc DIP-14 (vertical)
-        "C1": (55.0, 28.0, 0), "C2": (55.0, 58.0, 0), "C3": (95.0, 28.0, 0), "C4": (62.0, 72.0, 0),
-        "J_IOSEL": (90.0, 84.0, 90), "J_KBD": (40.0, 84.0, 90),
-    },
-    "cpu": {   # 100x70: unbuffered Z80 + osc + diag, wide fan-out channel (D1.21)
-        "J_BUS": (50.0, 66.0, 90), "J_EXT": (14.0, 61.0, 90),
-        "U1": (41.0, 22.0, 90),   # Z80 DIP-40 horizontal; x=41 from TF.1 sweep (D1.28) routes A8 0/0
-        "U2": (85.0, 18.0, 0),    # clock osc DIP-14 vertical
-        "C1": (66.0, 36.0, 0), "C2": (88.0, 42.0, 0),
-        "J_DIAG": (40.0, 46.0, 90),
-    },
-}
-def _backplane_place():
-    """Programmatic backplane placement (TF.2 / D1.29–D1.30). The six 39-pin base
-    connectors span nearly the full width, so their vertical bus columns cover the
-    board: the only clear space is the top/bottom margins. We therefore stack the
-    six base connectors column-aligned in the UPPER region and the six 10-pin ext
-    connectors column-aligned in the LOWER-LEFT (two independent bussed banks, each
-    cleanly column-routable), and drop the power/reset/FTDI/LED tail into the free
-    LOWER-RIGHT quadrant. Per-card base/ext edge mating is validated in Stage D."""
-    p = {}
-    for k in range(6):                       # base bank: x=50, 8 mm pitch, y 8..48
-        p[f"J_S{k+1}_BUS"] = (50.0, 8.0 + k * 8.0, 90)
-    for k in range(6):                       # ext bank: x=22, 4 mm pitch, y 68..88
-        p[f"J_S{k+1}_EXT"] = (22.0, 68.0 + k * 4.0, 90)
-    # Bus-signal pullups sit in the interior band between the two banks (y~58), spread
-    # across the width so each taps its own column with a SHORT interior stub — this is
-    # what keeps freerouting from dragging a long cross-board trace + via into a corner
-    # (the copper-edge failure mode). Vertical (rot 90) to stay thin.
-    for ref, x in (("R_INT", 18.0), ("R_WAIT", 32.0), ("R_NMI", 46.0),
-                   ("R_BRQ", 60.0), ("R_M0", 74.0), ("R_M1", 88.0)):
-        p[ref] = (x, 58.0, 90)
-    # power/reset/serial tail: lower-right, all >=5 mm from every edge (ext bank owns
-    # the lower-left). Coordinates are DRC-tuned, not hand-precise.
-    p["J_USBC"] = (48.0, 73.0, 0)
-    p["J_PWR"]  = (60.0, 73.0, 0)
-    p["U_RST"]  = (68.0, 73.0, 0)
-    p["SW_RST"] = (76.0, 73.0, 0)
-    p["J_FTDI"] = (87.0, 73.0, 0)
-    p["JP_S5"]  = (46.0, 85.0, 0)
-    p["D_PWR"]  = (55.0, 85.0, 0)
-    p["R_LED"]  = (63.0, 85.0, 90)
-    p["R_CC1"]  = (71.0, 85.0, 90)
-    p["R_CC2"]  = (79.0, 85.0, 90)
-    return p
-
-
-PLACE_BY_CARD["backplane"] = _backplane_place()
+# Placement tables (PLACE_BY_CARD) come from revb_place (shared with the mating
+# checker). Copy so the sweep hook below can mutate one card without side effects.
 PLACE = dict(PLACE_BY_CARD[CARD])
 
 # TF.1 placement-sweep hook (D1.28). The cpu card's A8 is a deterministic 2-layer

@@ -1,0 +1,15 @@
+{
+  "_doc": "TG.1 / D1.31 mechanical mating contract. Single source of connector geometry truth, consumed by revb_place.py (card + backplane placement) and check_revb_mating.py (tier-suite gate). All distances in mm. RC2014-compatible: cards carry right-angle MALE headers at the bottom edge; the backplane carries FEMALE sockets. Mainline RC2014 presents the enhanced bus as an adjacent 2nd row of the main connector; we instead use a SEPARATE 10-pin ext header offset half a pin-pitch in X (ext_row_x) so the base and ext bus columns interleave cleanly on the 2-layer backplane instead of colliding on one grid. See rev-b-bus-contract.md mechanical section for the citation.",
+  "base_row_x": 50.0,
+  "base_edge_offset": 5.0,
+  "ext_row_x": 14.45,
+  "ext_edge_offset": 10.0,
+  "ext_row_dy": 5.0,
+  "pin_pitch": 2.54,
+  "min_column_sep": 1.0,
+  "slot_pitch": 16.0,
+  "slot0_y": 10.0,
+  "n_slots": 6,
+  "backplane_board_h": 112.0,
+  "tail_strip_y0": 99.0
+}
