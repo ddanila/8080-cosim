@@ -64,18 +64,19 @@ base is symmetric). TG.4 — Gerber+drill fab packages (`export_fab.sh`), power 
 (~712 mA / 47 % of USB-C 1.5 A), `rev-b-order-readiness.md` written. **T1.10 is armed —
 a purchasing decision.**
 
-**Pre-order audit (2026-07-18):** caught + fixed the DIP-28 width bug (0.3″ footprints
-for 0.6″ chips — every gate was green; now machine-checked via `PKG_WIDTH`); retired
-the backplane's locked column pre-routes (D1.34 — the specctra roundtrip mangled them;
-the clean-slate board routes 0/0 attempt 1). **Cards (cpu/mem/io) are order-safe.**
+**Pre-order audit + backplane fix DONE (2026-07-18).** Audit caught the DIP-28 width
+bug (0.3″ footprints for 0.6″ chips — machine-checked now via `PKG_WIDTH`) and retired
+the backplane's locked columns (D1.34). Then **TH.1–TH.4 made the backplane order-safe**,
+fixing three more real defects found while pinning the BOM: **SMD USB-C** → THT GCT
+USB4085; **reversed power LED** (pad 1 = cathode); **missing RESET_N pull-up** (open-drain
+supervisor + button would have floated reset). Added input power conditioning (47 µF bulk
++ 100 nF + a 1.1 A polyfuse in the USB branch only — D1.35), a non-DIP footprint
+physical-contract guard (`PKG_PHYS`: through-hole count / drill / pitch, negative-tested —
+D1.36), and made the reset supervisor a pinout-agnostic labelled header. **All four boards
+route DRC 0/0; mating + footprint guards in the tier suite; order-readiness lists no
+unverified footprint.**
 
-**Backplane is HELD pending TH.1–TH.4** (planned to task depth in the execution guide):
-**TH.1** pin the BOM to exact MPNs (USB-C = GCT USB4125, switch = APEM MJTP1243,
-DS1813-class supervisor whose pinout matches the pad map — electrical, not just
-mechanical); **TH.2** footprint physical-contract guard for non-DIPs (pad-count ==
-pin-count + datasheet dims, negative-tested); **TH.3** input power conditioning
-(D1.35: bulk 47 µF + 100 nF + polyfuse in the USB branch only — the board currently
-has NO capacitors); **TH.4** re-verify (route 0/0, artifacts, hashes) and flip the
-hold. Then **T1.10** order (user's call), **T1.11** bench (hardware-blocked), B2/B3/B4
-plan at entry.
+**All four boards are order-safe → T1.10** is a purchasing decision (user's call — see
+`rev-b-order-readiness.md`, incl. the 0.15 mm USB-C fab-clearance note). Then **T1.11**
+bench (hardware-blocked); **B2/B3/B4** plan at entry.
 Rule: `git pull --rebase` before every push — the remote moves mid-session.

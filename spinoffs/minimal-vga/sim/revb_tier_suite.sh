@@ -17,6 +17,11 @@ python3 scripts/check_revb_boards.py --completeness
 echo "== rev B: mechanical mating contract (TG.1/D1.31; pure python, no CAD tools) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_mating.py
 
+echo "== rev B: footprint package guards (D1.36 phys + DIP width; skips w/o KiCad libs) =="
+for _c in mem io cpu backplane; do
+  python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py "$_c"
+done
+
 echo "== rev B: mem-card LVS (structural netlist vs board.json; skips w/o yosys) =="
 spinoffs/minimal-vga/sync/revb_lvs.sh mem
 

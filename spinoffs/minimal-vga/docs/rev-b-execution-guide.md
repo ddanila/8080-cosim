@@ -701,6 +701,19 @@ tier suite green.
 *Acceptance:* 4× total DRC 0/0 from fresh regenerate; all artifacts + hashes current;
 order-readiness lists **no unverified footprint** among the risks.
 
+**TH.1–TH.4 DONE (2026-07-18).** Pinning the BOM surfaced three real defects beyond the
+name-match risk: **SMD USB-C** (GCT USB4125 was surface-mount → switched to fully-THT GCT
+USB4085, full 16-pin power map, 0.1 mm local clearance for its 0.85 mm pitch); **reversed
+power LED** (KiCad LED_D5.0mm pad 1 = cathode — rev A's checker confirms — but we mapped
+anode there → swapped); **missing RESET_N pull-up** (open-drain supervisor + button would
+have floated reset → added R_RST + C_RST). The TO-92 supervisor pinout couldn't be
+verified authoritatively from the desk, so U_RST became a **net-labelled 3-pin header**
+(orient the part to silk) — reset works even with it empty. TH.3 added 47 µF bulk + 100 nF
++ an MF-R110 polyfuse (USB branch only); backplane grew 115→120. TH.2's `PKG_PHYS` guard
+(through-hole count / drill / pitch, negative-tested) + the footprint probe are now in the
+tier suite. Edge keepout ring enabled on the backplane too (D1.34 retired the conflicting
+columns) → routes 0/0 attempt 1. All four boards 0/0; hold lifted.
+
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
 
 **TD.9 — io card (the big one: D1.26 full-B3 wiring first).**
