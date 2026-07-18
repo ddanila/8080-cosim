@@ -45,8 +45,8 @@ electrical-category findings. Splits, removed endpoints, and every moved pad
 remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
-starts at 433 honest gaps. Guarded A* routing now accepts 394 repairs and reaches
-33 gaps with 30,418 copper items, exact parity across all 2,395 current source
+starts at 433 honest gaps. Guarded A* routing now accepts 397 repairs and reaches
+30 gaps with 30,671 copper items, exact parity across all 2,395 current source
 pads, and zero short, clearance, crossing, hole, or edge findings. The decisive
 follow-up uses the board-legal 0.21 mm clearance instead of the earlier
 conservative 0.45 mm proposal keep-out; it closes 111 gaps after targeted INTR,
@@ -60,9 +60,15 @@ D105_10_H, both ROE gaps, VA12, DBIN_GATED, CS_D55, and the
 D6_A7_D105_I1_BOUNDARY, reaching 34 gaps. A bounded mixed-blocker transaction
 then retains the fixed D44/R40/R41/R44 pad corridor, displaces only ten explicitly
 named migrated-copper blockers, closes BA0, and restores the affected nets on
-0.10/0.15 mm lattices, reaching the current 33-gap boundary; fresh full-distance
-0.10 and 0.15 mm sweeps accept nothing further. Attempted-gap
-state retains proven router no-path
+0.10/0.15 mm lattices, reaching 33 gaps. A six-item E3_COM transaction restores
+CTR_LD, E2_COM, GND, and VID_CPU_SEL and reaches 32. A fourteen-item DB7
+transaction then restores BA10, BA5, CS_D27, CS_D54, and CS_D55; it also removes
+only the two pre-existing migrated vias made newly dangling by that
+displacement. DB7 closes and an obsolete intermediate CS_D57 copper island
+disappears, leaving its one honest pad-to-track gap; the transaction makes a
+two-open net improvement and reaches the current 30-gap boundary. Attempted-gap
+Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps
+accept nothing further. Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
 signatures exhaust fresh full-distance 0.1125 mm/0.20 mm-clearance work;

@@ -151,9 +151,14 @@ the target at the final clearance, restores every affected net, and normally
 writes an output only when total opens fall, the selected gap disappears, no
 electrical blocker remains, and no DRC category increases. A separate opt-in
 permits an equal-open, DRC-neutral topology swap for subsequent guarded sweeps;
-it never permits an open-count increase. INTR required one BA5 item to be
-replaced; PROM_EN, CS_D54, and BA13 proved clean-path cases through the same
-guarded interface.
+it never permits an open-count increase. If displaced copper leaves a
+pre-existing migrated via newly dangling, the transaction removes that via
+only when it belongs to an affected net and is absent from source copper; the
+ordinary open-count and whole-DRC gates then re-evaluate the cleaned board.
+`--transaction-board` and `--transaction-report` can retain the restored
+pre-acceptance artifacts when a final gate rejects them. INTR required one BA5
+item to be replaced; PROM_EN, CS_D54, and BA13 proved clean-path cases through
+the same guarded interface.
 
 `close_unconnected_gaps.py --attempted-state` canonicalizes endpoint order and
 atomically records outcomes. State remains bound to the exact SHA-256 of the
@@ -208,6 +213,25 @@ has 30,418 copper items and exact 303-footprint/2,395-pad identity, net, and
 integer-coordinate parity with the source. The cumulative guarded result is
 394 repairs and 33 uncapped opens. Fresh full-distance 0.10 and 0.15 mm sweeps
 of that improved lineage exhaust all 33 signatures without another acceptance.
+
+The next mixed transactions make three more net improvements. E3_COM removes
+six migrated blockers while retaining the fixed R53/D53 ground pads, then
+restores CTR_LD, E2_COM, GND, and VID_CPU_SEL to reach 32 opens and 30,578
+copper items. DB7 removes fourteen migrated blockers while retaining D9.1,
+restores BA10, BA5, CS_D27, CS_D54, and both CS_D55 branches. Its displaced
+obsolete intermediate CS_D57 island disappears, leaving one honest D9.9-to-track
+gap instead of the earlier two island-mediated findings, and the board reaches
+30 opens. Two pre-existing vias on BA5 and CS_D55 become newly dangling only
+because their adjacent migrated tracks were displaced; the transaction-owned
+cleanup removes those two vias, returning the whole-board count from 49 to the
+47-via baseline. Independent KiCad DRC reports the unchanged 199 track-dangling
+tails and zero electrical blockers. The resulting board has 30,671 copper
+items, exact 303-footprint/2,395-pad source parity, and a cumulative 397 guarded
+repairs. Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm sweeps exhaust all
+30 signatures without acceptance. The 0.125 mm phase does geometrically propose
+D26_PC0_D3_I5, but KiCad rejects it for three added clearance findings. A
+separate 0.15 mm CS_D57 diagnostic needs 25 migrated blockers, beyond the
+bounded 20-item transaction limit; the remaining honest gap is not disturbed.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -368,6 +392,14 @@ python3 kicad/close_gap_by_ripup.py OUTPUT_34 OUTPUT_33 \
   --net BA0 --diagnostic-clearance 0.15 --route-clearance 0.20 \
   --max-conflicts 20 --allow-mixed-diagnostic-blockers \
   --restore-grid-steps 0.10,0.15 --summary /tmp/juku-mixed-ba0.json
+python3 kicad/close_gap_by_ripup.py OUTPUT_33 OUTPUT_32 \
+  --net E3_COM --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --max-conflicts 20 --allow-mixed-diagnostic-blockers \
+  --restore-grid-steps 0.10,0.15,0.125 --summary /tmp/juku-mixed-e3.json
+python3 kicad/close_gap_by_ripup.py OUTPUT_32 OUTPUT_30 \
+  --net DB7 --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --max-conflicts 20 --allow-mixed-diagnostic-blockers \
+  --restore-grid-steps 0.10,0.15,0.125 --summary /tmp/juku-mixed-db7.json
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.

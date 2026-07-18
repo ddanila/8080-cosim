@@ -5,7 +5,9 @@ The tool first proposes one route with a board-legal but less conservative
 clearance than the global sweeps.  Only pre-existing, non-source copper items
 that KiCad names as direct blockers of newly proposed route UUIDs are eligible
 for removal.  It then routes the target net, restores every affected net, and
-publishes the transaction only when total opens fall and no DRC class grows.
+normally publishes the transaction only when total opens fall and no DRC class
+grows.  An opt-in equal-open mode supports guarded topology exploration without
+ever allowing the open count to increase.
 """
 
 from __future__ import annotations
@@ -71,6 +73,16 @@ def violation_counts(report: dict) -> Counter[str]:
         str(violation.get("type", "unknown"))
         for violation in report.get("violations", [])
     )
+
+
+def violation_item_uuids(report: dict, kind: str) -> set[str]:
+    return {
+        str(item.get("uuid", ""))
+        for violation in report.get("violations", [])
+        if violation.get("type") == kind
+        for item in violation.get("items", [])
+        if item.get("uuid")
+    }
 
 
 def net_gaps(
@@ -266,11 +278,32 @@ def main() -> None:
         type=Path,
         help="retain the diagnostic KiCad DRC JSON even when the transaction fails",
     )
+    parser.add_argument(
+        "--transaction-board",
+        type=Path,
+        help=(
+            "retain the restored pre-acceptance board for diagnosis even when "
+            "a final publication invariant fails"
+        ),
+    )
+    parser.add_argument(
+        "--transaction-report",
+        type=Path,
+        help=(
+            "retain the restored pre-acceptance KiCad DRC JSON even when a "
+            "final publication invariant fails"
+        ),
+    )
     parser.add_argument("--summary", type=Path)
     args = parser.parse_args()
 
     if args.input.resolve() == args.output.resolve():
         raise SystemExit("input and output must differ")
+    if args.transaction_board and args.transaction_board.resolve() in {
+        args.input.resolve(),
+        args.output.resolve(),
+    }:
+        raise SystemExit("transaction diagnostic board must differ from input/output")
     if args.gap_index < 0:
         raise SystemExit("--gap-index must be non-negative")
     if args.search_margin <= 0 or args.grid_step <= 0:
@@ -458,7 +491,47 @@ def main() -> None:
                 )
                 current = restored
 
-        final_report = run_drc(cli, current, tmp / "final.json")
+        final_report_path = tmp / "final.json"
+        final_report = run_drc(cli, current, final_report_path)
+        newly_dangling_vias = (
+            violation_item_uuids(final_report, "via_dangling")
+            - violation_item_uuids(initial_report, "via_dangling")
+        )
+        removable_dangling_vias = {
+            item_uuid
+            for item_uuid in newly_dangling_vias
+            if item_uuid in baseline_tracks
+            and item_uuid not in source_uuids
+            and baseline_tracks[item_uuid] in affected_nets
+        }
+        if removable_dangling_vias:
+            cleanup_json = tmp / "remove-newly-dangling-vias.json"
+            cleanup_json.write_text(json.dumps(sorted(removable_dangling_vias)) + "\n")
+            cleaned = tmp / "cleaned-newly-dangling-vias.kicad_pcb"
+            subprocess.run(
+                [
+                    str(router_python),
+                    str(REMOVE_HELPER),
+                    str(current),
+                    str(cleaned),
+                    str(cleanup_json),
+                ],
+                check=True,
+            )
+            current = cleaned
+            final_report = run_drc(cli, current, final_report_path)
+            print(
+                "removed transaction-orphaned migrated vias: "
+                f"{sorted(removable_dangling_vias)}"
+            )
+        if args.transaction_board:
+            args.transaction_board.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(current, args.transaction_board)
+            print(f"wrote {args.transaction_board}")
+        if args.transaction_report:
+            args.transaction_report.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(final_report_path, args.transaction_report)
+            print(f"wrote {args.transaction_report}")
         final_counts = violation_counts(final_report)
         final_open = len(final_report.get("unconnected_items", []))
         blockers = {
@@ -504,6 +577,10 @@ def main() -> None:
             "removed_conflicts": [
                 {"uuid": item_uuid, "net": baseline_tracks[item_uuid]}
                 for item_uuid in sorted(conflicts)
+            ],
+            "removed_newly_dangling_vias": [
+                {"uuid": item_uuid, "net": baseline_tracks[item_uuid]}
+                for item_uuid in sorted(removable_dangling_vias)
             ],
             "restored_nets": sorted(affected_nets),
             "initial_tracks": initial_tracks,
