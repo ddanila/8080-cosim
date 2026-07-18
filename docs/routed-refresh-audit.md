@@ -158,7 +158,10 @@ ordinary open-count and whole-DRC gates then re-evaluate the cleaned board.
 `--transaction-board` and `--transaction-report` can retain the restored
 pre-acceptance artifacts when a final gate rejects them. INTR required one BA5
 item to be replaced; PROM_EN, CS_D54, and BA13 proved clean-path cases through
-the same guarded interface.
+the same guarded interface. `--restore-net-priority` permits reproducible order
+experiments for constrained affected nets. Completed intermediate boards are
+discarded as soon as their successor is verified, keeping large transactions
+at constant scratch-board storage rather than one full board per grid attempt.
 
 `close_unconnected_gaps.py --attempted-state` canonicalizes endpoint order and
 atomically records outcomes. State remains bound to the exact SHA-256 of the
@@ -232,6 +235,20 @@ repairs. Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm sweeps exhaust all
 D26_PC0_D3_I5, but KiCad rejects it for three added clearance findings. A
 separate 0.15 mm CS_D57 diagnostic needs 25 migrated blockers, beyond the
 bounded 20-item transaction limit; the remaining honest gap is not disturbed.
+
+Raising the diagnostic bound only for classified follow-up exhausts the next
+three candidates without weakening publication. DC4's 21-item and VA15's
+28-item removable sets still leave their selected target gaps after displacement,
+proving fixed-corridor failures. CS_D57's 25-item set does permit a legal target
+route, but alphabetical restoration finishes at 33 opens. Order experiments
+explain the deficit: D25_T-first restores both of its formerly impossible
+branches but blocks AMW_N; AMW_N-then-D25_T preserves those three closures but
+uses the only CS_D55 corridor. Neither order can beat the independently verified
+30-open board, so no exploratory candidate is published. The first full probe
+also exposed why retaining every intermediate is unsustainable; sequential
+discard now holds the same transaction to about 33 MB of scratch data instead
+of hundreds of megabytes and avoids KiCad lock/report failures at the `/tmp`
+quota.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \

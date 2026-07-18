@@ -139,6 +139,11 @@ def track_nets(board: pcbnew.BOARD) -> dict[str, str]:
     return {uuid(item): item.GetNetname() for item in board.GetTracks()}
 
 
+def discard_temporary_board(path: Path, directory: Path) -> None:
+    if path.parent == directory:
+        path.unlink(missing_ok=True)
+
+
 def direct_conflicts(
     report: dict,
     new_route_uuids: set[str],
@@ -244,6 +249,13 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--restore-net-priority",
+        help=(
+            "comma-separated affected nets to restore first; all remaining "
+            "affected nets follow in sorted order"
+        ),
+    )
+    parser.add_argument(
         "--diagnostic-clearance",
         type=float,
         help=(
@@ -318,6 +330,15 @@ def main() -> None:
         raise SystemExit("restore grid steps must be comma-separated numbers") from error
     if not restore_grid_steps or any(step <= 0 for step in restore_grid_steps):
         raise SystemExit("restore grid steps must be positive")
+    restore_net_priority = (
+        [value.strip() for value in args.restore_net_priority.split(",")]
+        if args.restore_net_priority
+        else []
+    )
+    if any(not value for value in restore_net_priority):
+        raise SystemExit("restore net priority must be comma-separated net names")
+    if len(set(restore_net_priority)) != len(restore_net_priority):
+        raise SystemExit("restore net priority contains duplicates")
     diagnostic_clearance = (
         args.route_clearance
         if args.diagnostic_clearance is None
@@ -428,6 +449,15 @@ def main() -> None:
                 "mixed diagnostic: retaining fixed blockers and trying only "
                 f"the removable subset; fixed={sorted(unremovable)}"
             )
+        unknown_restore_nets = set(restore_net_priority) - affected_nets
+        if unknown_restore_nets:
+            raise SystemExit(
+                "restore net priority names are not affected by this transaction: "
+                f"{sorted(unknown_restore_nets)}"
+            )
+        restore_net_order = restore_net_priority + sorted(
+            affected_nets - set(restore_net_priority)
+        )
         if len(conflicts) > args.max_conflicts:
             raise SystemExit(
                 f"diagnostic route needs {len(conflicts)} conflicts removed; "
@@ -457,6 +487,7 @@ def main() -> None:
             current = ripped
 
         target_routed = tmp / "target-routed.kicad_pcb"
+        target_input = current
         run_closer(
             current,
             target_routed,
@@ -467,6 +498,7 @@ def main() -> None:
             args.route_clearance,
             args.timeout,
         )
+        discard_temporary_board(target_input, tmp)
         target_report = run_drc(cli, target_routed, tmp / "target-routed.json")
         if any(
             same_gap(selected, gap)
@@ -476,9 +508,10 @@ def main() -> None:
                 "selected target gap remains after removing its diagnostic conflicts"
             )
         current = target_routed
-        for net_index, netname in enumerate(sorted(affected_nets), 1):
+        for net_index, netname in enumerate(restore_net_order, 1):
             for grid_index, restore_grid_step in enumerate(restore_grid_steps, 1):
                 restored = tmp / f"restored-{net_index}-{grid_index}.kicad_pcb"
+                previous = current
                 run_closer(
                     current,
                     restored,
@@ -490,6 +523,7 @@ def main() -> None:
                     args.timeout,
                 )
                 current = restored
+                discard_temporary_board(previous, tmp)
 
         final_report_path = tmp / "final.json"
         final_report = run_drc(cli, current, final_report_path)
@@ -518,6 +552,7 @@ def main() -> None:
                 ],
                 check=True,
             )
+            discard_temporary_board(current, tmp)
             current = cleaned
             final_report = run_drc(cli, current, final_report_path)
             print(
@@ -572,6 +607,7 @@ def main() -> None:
             "diagnostic_clearance_mm": diagnostic_clearance,
             "route_clearance_mm": args.route_clearance,
             "restore_grid_steps_mm": restore_grid_steps,
+            "restore_net_order": restore_net_order,
             "diagnostic_new_items": len(new_route_uuids),
             "diagnostic_unremovable_blockers": sorted(unremovable),
             "removed_conflicts": [

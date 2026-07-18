@@ -68,7 +68,12 @@ displacement. DB7 closes and an obsolete intermediate CS_D57 copper island
 disappears, leaving its one honest pad-to-track gap; the transaction makes a
 two-open net improvement and reaches the current 30-gap boundary. Attempted-gap
 Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps
-accept nothing further. Attempted-gap state retains proven router no-path
+accept nothing further. Larger bounded diagnostics prove that removing DC4's
+21-item or VA15's 28-item migrated-copper set still leaves the fixed-corridor
+target gap. CS_D57 routes after a 25-item displacement, but complete restoration
+ends at 33 opens: prioritizing D25_T recovers its two branches only by consuming
+AMW_N or CS_D55 space, so tested orders cannot beat the 30-open checkpoint.
+Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
 signatures exhaust fresh full-distance 0.1125 mm/0.20 mm-clearance work;
