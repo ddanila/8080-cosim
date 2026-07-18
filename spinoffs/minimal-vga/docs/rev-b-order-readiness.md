@@ -43,10 +43,16 @@ board `.kicad_pcb` is the source of truth, content-checked):
 
 | package | sha256 (snapshot) |
 |---|---|
-| mem.zip | 87e0129826b60796772a2119ba07bc41049ff1735e37fcd504dfefb8d1934046 |
-| io.zip | 7b1eb8f0e086ac3b97a1704084c01529bc9049ef72c1b09bb0b2dfee176b3487 |
-| cpu.zip | 378945d922c0bf7dbd4bfc22bf4e54881b909caab489a3dd317bcbabb33059ee |
-| backplane.zip | ad8577f50c287dbad37441a5cbceca350454ffc46d24e0ab77aa2ddcb211d562 |
+| mem.zip | 9cc2a085745afcb9273c3f34f10727466916b154f47e27e7bb4d65d05e65f21d |
+| io.zip | 8908c7606f4d6b44aa89e7b36011aaeb622af81e78a100795cf04c0217f17f7e |
+| cpu.zip | aa70668cef08abfb803de68e58fd0d74d928f554fff205950d642facbce5e701 |
+| backplane.zip | 0d2f48dc15acfd70328595f582b6db3177fd89b31a82f7323f8e6df61cdf244b |
+
+> Re-exported 2026-07-18 after the pre-order audit caught (and fixed) the DIP-28
+> footprint-width bug: the 27C256/8251/8259 had resolved to skinny 0.3″ footprints while
+> the real chips are 0.6″ — DRC-green boards the chips could not be soldered into. The
+> footprint probe now machine-checks every DIP against its datasheet row spacing
+> (`PKG_WIDTH` in `check_revb_footprints.py`).
 
 ## Open risks to weigh before ordering
 
@@ -58,8 +64,11 @@ board `.kicad_pcb` is the source of truth, content-checked):
   ≤100×100.
 - **Slot pitch 16 mm** is tighter than mainline RC2014 (~20 mm). FreeCAD clearance is a
   conservative 4.16 mm; confirm on the bench (T1.11) before committing to many boards.
-- **Routing is freerouting-stochastic** (D1.33): the pipeline reliably *reaches* 0/0 but
-  does not reproduce byte-identical copper; the `.kicad_pcb` is the artifact of record.
+- **Routing is freerouting-stochastic** (D1.33/D1.34): the pipeline reliably *reaches*
+  0/0 but does not reproduce byte-identical copper; the `.kicad_pcb` is the artifact of
+  record. The backplane routes fully via freerouting (D1.34 — the locked bus-column
+  pre-routes were retired: the specctra roundtrip mangled them; the clean-slate board
+  routes 0/0 on attempt 1).
 - **Digital twin does not cover signal integrity / bus timing** — VJUGA is slow (few
   MHz), low risk, but this is a bench-validated assumption, not a proven one.
 

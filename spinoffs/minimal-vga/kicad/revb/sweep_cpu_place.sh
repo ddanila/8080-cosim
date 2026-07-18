@@ -17,7 +17,7 @@ cd "$REPO"
 R="spinoffs/minimal-vga"
 . "$R/kicad/revb/env.sh"
 
-CARD=cpu
+CARD="${SWEEP_CARD:-cpu}"
 REF="${SWEEP_REF:-U1}"
 XS="${SWEEP_XS:-25 27 29 31 33 35 37 39 41 43 45}"
 ROTS="${SWEEP_ROTS:-90 270}"
@@ -27,7 +27,7 @@ revb_have KICAD_PYTHON || { echo "  SKIP  sweep: no KICAD_PYTHON"; exit 0; }
 [ -f "${FREEROUTING_JAR:-.tools/freerouting/freerouting.jar}" ] || {
   echo "  SKIP  sweep: no freerouting.jar (set FREEROUTING_JAR)"; exit 0; }
 
-echo "== cpu placement sweep: ref=$REF  x={$XS}  rot={$ROTS}  attempts=$FR_ATTEMPTS =="
+echo "== $CARD placement sweep: ref=$REF  x={$XS}  rot={$ROTS}  attempts=$FR_ATTEMPTS =="
 tried=0
 for rot in $ROTS; do
   for x in $XS; do
@@ -45,8 +45,8 @@ for rot in $ROTS; do
     fi
     if python3 "$R/kicad/revb/check_revb_drc.py" "$CARD" --total >/dev/null 2>&1; then
       echo ""
-      echo "  *** WINNER: $REF x=$x rot=$rot  ->  cpu routes 0/0 ***"
-      echo "  fold into gen_revb_pcb.py:  \"$REF\": ($x, <keep Y>, $rot)"
+      echo "  *** WINNER: $REF x=$x rot=$rot  ->  $CARD routes 0/0 ***"
+      echo "  fold into revb_place.py:  \"$REF\": ($x, <keep Y>, $rot)"
       echo "  (candidate #$tried)"
       unset REVB_SWEEP_REF REVB_SWEEP_X REVB_SWEEP_ROT
       exit 0

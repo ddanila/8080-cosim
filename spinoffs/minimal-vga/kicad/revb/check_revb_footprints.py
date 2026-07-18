@@ -26,7 +26,7 @@ CAND = {
     "DIP16": ["Package_DIP:DIP-16_W7.62mm"],
     "DIP20": ["Package_DIP:DIP-20_W7.62mm"],
     "DIP24": ["Package_DIP:DIP-24_W7.62mm", "Package_DIP:DIP-24_W15.24mm"],
-    "DIP28": ["Package_DIP:DIP-28_W7.62mm", "Package_DIP:DIP-28_W15.24mm"],
+    "DIP28": ["Package_DIP:DIP-28_W15.24mm", "Package_DIP:DIP-28_W7.62mm"],
     "DIP32": ["Package_DIP:DIP-32_W15.24mm", "Package_DIP:DIP-32_W7.62mm"],
     "DIP40": ["Package_DIP:DIP-40_W15.24mm", "Package_DIP:DIP-40_W7.62mm"],
     "OSC14": ["Oscillator:Oscillator_DIP-14", "Package_DIP:DIP-14_W7.62mm"],
@@ -54,6 +54,21 @@ TYPE_KINDS = {
     "R_4K7": ["R_AXIAL"], "R_2K2": ["R_AXIAL"], "SUPERVISOR_3": ["TO92"],
     "SW_PUSH": ["SW_PUSH6"], "LED": ["LED5"], "JMP_2x2": ["PIN_2x2"],
 }
+# Datasheet DIP row spacing per chip type — the resolved footprint name MUST contain
+# this width token. This is the guard that catches "DRC-green board, chip doesn't fit":
+# the 27C256/8251/8259 are 0.6-inch DIP-28s and once silently resolved to the skinny
+# W7.62 variant because both widths exist in the KiCad library.
+PKG_WIDTH = {
+    "Z80_DIP40": "W15.24mm",       # Zilog Z0840004 DIP-40, 600 mil
+    "EPROM_27C256": "W15.24mm",    # 27C256 DIP-28, 600 mil
+    "SRAM_AS6C1008": "W15.24mm",   # AS6C1008 DIP-32, 600 mil
+    "GAL22V10": "W7.62mm",         # GAL22V10/ATF22V10 DIP-24, 300 mil skinny
+    "USART_8251": "W15.24mm",      # 8251A/82C51 DIP-28, 600 mil
+    "GAL16V8_IOSEL": "W7.62mm",    # GAL16V8/ATF16V8 DIP-20, 300 mil
+    "PPI_8255": "W15.24mm",        # 8255A/82C55 DIP-40, 600 mil
+    "ENC_74148": "W7.62mm",        # 74HC148 DIP-16, 300 mil
+    "PIC_8259": "W15.24mm",        # 8259A/82C59 DIP-28, 600 mil
+}
 
 
 def exists(fp):
@@ -77,6 +92,8 @@ def main():
             fps = [resolve_kind(k) for k in TYPE_KINDS[t]]
             if None in fps:
                 missing.append((t, TYPE_KINDS[t]))
+            elif t in PKG_WIDTH and PKG_WIDTH[t] not in fps[0]:
+                missing.append((f"{t} [datasheet width {PKG_WIDTH[t]}]", fps))
             chosen[t] = fps if len(fps) > 1 else fps[0]
         elif t == "HDR_1xN" or t.startswith("HDR_1x"):
             n = len(comp["pins"])

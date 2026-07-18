@@ -31,7 +31,7 @@ def _card_connectors(h):
 _PARTS = {
     "mem": {
         "U1": (20.0, 24.0, 180), "U2": (50.0, 23.0, 0), "U3": (82.0, 24.0, 0),
-        "C1": (32.0, 10.0, 0), "C2": (64.0, 10.0, 0), "C3": (92.0, 10.0, 0),
+        "C1": (34.0, 10.0, 0), "C2": (64.0, 10.0, 0), "C3": (92.0, 10.0, 0),  # C1 clear of the 600mil U1
         "J_OBS": (75.0, 47.0, 90), "J_NOP": (40.0, 47.0, 90),
     },
     "io": {   # 100x100: three well-separated chip rows for 2-layer routing channels

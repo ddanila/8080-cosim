@@ -52,8 +52,13 @@ sys.exit(0 if pcbnew.ExportSpecctraDSN(b,'$DSN') else 'DSN export failed')"
 ATTEMPTS="${FR_ATTEMPTS:-25}"
 ROUTED=""
 for attempt in $(seq 1 "$ATTEMPTS"); do
-  "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" -de "$DSN" -do "$SES" -mp 100 \
+  # per-attempt DSN copy: freerouting derives job/board identity (and some caching/
+  # seeding) from its input; a fresh filename per attempt guarantees an independent run.
+  cp "$DSN" "$OUT/${CARD}-a${attempt}.dsn"
+  "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" \
+    -de "$OUT/${CARD}-a${attempt}.dsn" -do "$SES" -mp 100 \
     >"$OUT/${CARD}-fr.log" 2>&1 || true
+  rm -f "$OUT/${CARD}-a${attempt}.dsn"
   [ -f "$SES" ] || { echo "  attempt $attempt: no SES produced, retrying"; continue; }
   grep -qi "could not be routed" "$OUT/${CARD}-fr.log" && { echo "  attempt $attempt: log reports unrouted nets, retrying"; continue; }
   "$KICAD_PYTHON" -c "import pcbnew; b=pcbnew.LoadBoard('$PRISTINE'); pcbnew.ImportSpecctraSES(b,'$SES'); b.Save('$PCB')"
