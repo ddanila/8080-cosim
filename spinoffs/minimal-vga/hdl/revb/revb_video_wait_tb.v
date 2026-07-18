@@ -35,19 +35,17 @@ module revb_video_wait_tb;
 
     initial begin #200000; $display("REVB-VIDEO-WAIT: FAIL (watchdog)"); $finish; end
 
+    // Cycle-steal (D2.9): a CPU framebuffer write ALWAYS lands (never blocked for the
+    // active region); WAIT is asserted only for the rare dot where the access coincides
+    // with the scanout's own SRAM fetch. Launch a write at a chosen phase, hold it a few
+    // clocks like a real bus cycle, release, and verify it landed; note any steal.
     task one_write(input [15:0] addr, input [7:0] val, input want_active); begin
-        // position the launch: wait (bounded) for the requested region
         for (k = 0; k < 200 && (active != want_active); k = k + 1) @(posedge dot_clk);
         @(negedge clk); A = addr; D_in = val; mreq_n = 0; wr_n = 0;
-        if (want_active) begin
-            @(posedge dot_clk);                          // one dot with the access up
-            if (wait_od_n === 1'b0) held_cnt = held_cnt + 1;   // must be held
+        for (k = 0; k < 6; k = k + 1) begin
+            @(posedge clk); #0; if (wait_od_n === 1'b0) held_cnt = held_cnt + 1;  // steal seen
         end
-        // drive to a granted clk edge in blanking (bounded)
-        for (k = 0; k < 400; k = k + 1) begin
-            @(posedge clk); #0; if (wait_od_n === 1'b1 && !active) k = 1000;  // granted
-        end
-        @(posedge clk); @(negedge clk); mreq_n = 1; wr_n = 1; #1;
+        @(negedge clk); mreq_n = 1; wr_n = 1; #1;
         if (uut.fb[addr - 16'hD800] !== val) begin
             land_err = land_err + 1;
             $display("  LAND ERR fb[%h]=%h exp %h", addr, uut.fb[addr-16'hD800], val);
@@ -59,20 +57,15 @@ module revb_video_wait_tb;
         land_err = 0; held_cnt = 0;
         for (j = 0; j < (32'h1_0000 - 16'hD800); j = j + 1) uut.fb[j] = 8'h00;
         @(negedge dot_clk); reset_n = 1;
-        for (j = 0; j < 24; j = j + 1) begin
-            one_write(16'hD800 + j*3,       (j*29 + 5)  & 8'hFF, 1'b1);   // active -> held
-            one_write(16'hD800 + 256 + j*3, (j*53 + 17) & 8'hFF, 1'b0);   // blanking
+        // sweep writes across active and blanking phases; EVERY write must land.
+        for (j = 0; j < 40; j = j + 1) begin
+            one_write(16'hD800 + j*3,       (j*29 + 5)  & 8'hFF, 1'b1);   // active phase
+            one_write(16'hD800 + 256 + j*3, (j*53 + 17) & 8'hFF, 1'b0);   // blanking phase
         end
-        $display("  active-writes=24 held=%0d, blank-writes=24, land=%0d",
-                 held_cnt, land_err);
-        // land_err==0 is the load-bearing check: NO write is ever lost. held_cnt shows the
-        // contention path is exercised; with the CDC sync, a launch in the ~2-clk window
-        // before active_cpu rises is granted immediately (at the tiny test timing this is a
-        // big fraction; at real 640-dot lines the 2-dot lag is negligible), so require a
-        // majority held rather than all.
-        if (land_err == 0 && held_cnt >= 12)
-             $display("REVB-VIDEO-WAIT: PASS");
-        else $display("REVB-VIDEO-WAIT: FAIL");
+        $display("  writes=80, steal-dots seen=%0d, land errors=%0d", held_cnt, land_err);
+        // load-bearing: NO write is ever lost across any phase (cycle-steal correctness).
+        if (land_err == 0) $display("REVB-VIDEO-WAIT: PASS");
+        else               $display("REVB-VIDEO-WAIT: FAIL");
         $finish;
     end
 endmodule

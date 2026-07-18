@@ -111,27 +111,27 @@ module revb_video_card_ttl #(
     wire       cpu_wr    = (mreq_n == 1'b0) && (wr_n == 1'b0) && in_window;
     wire       cpu_acc   = cpu_rd | cpu_wr;
 
-    // GAL contention (D2.5): scanout owns the SRAM during the active region, so a CPU
-    // framebuffer access there is held (WAIT_N low) until blanking. `active` lives in the
-    // dot-clock domain; the WAIT/grant decision is a CPU-domain event, so `active` MUST be
-    // synchronized into the CPU clock first (a 2-FF synchronizer) — otherwise the write
-    // lands non-deterministically across the async boundary (caught by the integrated boot,
-    // D2.9). The 1-2 clk latency can leave a CPU access active for a couple of dots at the
-    // very start of a line (a possible 1-pixel scanout artifact, bench-checked); the write
-    // content is always correct, which is what byte-identity needs.
-    reg active_s1 = 1'b0, active_cpu = 1'b0;
+    // CYCLE-STEAL contention (D2.9, superseding D2.5's block-and-wait). The SRAM (~55 ns)
+    // is far faster than the scanout's demand of one byte per 16 dots (~640 ns), so a CPU
+    // access fits between scanout fetches: the CPU is NEVER blocked for the active region,
+    // and its write ALWAYS lands (byte-identity). WAIT is asserted only for the rare dot
+    // where a CPU access coincides with the scanout's own SRAM fetch (the byte boundary),
+    // i.e. a ~1-dot cycle-steal — synchronized into the CPU clock. `fetch_dot` marks the
+    // scanout SRAM cycle; everywhere else the CPU has the bus.
+    wire fetch_dot = active & (hcount[3:0] == 4'd0);
+    reg  steal_s1 = 1'b0, steal_cpu = 1'b0;
     always @(posedge clk or negedge reset_n)
-        if (!reset_n) {active_cpu, active_s1} <= 2'b00;
-        else          {active_cpu, active_s1} <= {active_s1, active};
-    assign wait_od_n = ~(cpu_acc & active_cpu);
-    wire   cpu_grant = cpu_acc & ~active_cpu;   // serviced only in (synchronized) blanking
+        if (!reset_n) {steal_cpu, steal_s1} <= 2'b00;
+        else          {steal_cpu, steal_s1} <= {steal_s1, cpu_acc & fetch_dot};
+    assign wait_od_n = ~steal_cpu;            // brief steal wait only; never the whole active region
 
     reg [7:0] D_out_r;
     always @* D_out_r = fb[A - FB_BASE];
     assign D_out = D_out_r;
-    assign D_oe  = cpu_rd & ~active_cpu;      // drive only when actually granted
+    assign D_oe  = cpu_rd;                     // read data valid whenever the CPU reads the window
 
-    // write + boot-oracle dump (edge-gated, one store per granted CPU write)
+    // write + boot-oracle dump: one store per CPU write cycle (writes ALWAYS land — the
+    // steal only delays the bus by <=1 dot, it never drops a write).
     reg        prev_wr = 1'b0;
     reg [31:0] vw = 0;
     reg        dumped = 0;
@@ -140,11 +140,11 @@ module revb_video_card_ttl #(
         if (!reset_n) begin
             vw <= 0; prev_wr <= 1'b0; dumped <= 0;
         end else begin
-            if (cpu_wr && cpu_grant && !prev_wr) begin
+            if (cpu_wr && !prev_wr) begin
                 fb[A - FB_BASE] <= D_in;
                 vw <= vw + 1;
             end
-            prev_wr <= (cpu_wr && cpu_grant);
+            prev_wr <= cpu_wr;
             if (vw_limit > 0 && vw == vw_limit && !dumped) begin
                 dumped <= 1;
                 fo = $fopen(dump_file, "wb");

@@ -65,17 +65,11 @@ for M in 0 1; do
 done
 
 # B2 (TI.3): integrated boot through the CHIP-LEVEL TTL video card, with the card's
-# open-drain /WAIT wired into the CPU (VIDEO_TTL=1). GATED OFF by default (REVB_TTL_BOOT=1
-# to run): this gate surfaced D2.9 -- the scanout-priority /WAIT contention LOSES
-# framebuffer writes when integrated with the real T80 (the CPU is not held the way the
-# unit /WAIT sweep's stub CPU was), so ekta37 does NOT yet boot byte-identical through the
-# TTL card. The behavioural partition (above) IS validated; the contention design needs
-# focused rework (CPU-side WAIT honouring, or a cycle-steal scheme) before this gate flips
-# green. Kept here, off, so it is easy to re-run while debugging D2.9.
-if [ "${REVB_TTL_BOOT:-0}" != 1 ]; then
-  echo "== B2: integrated TTL-card boot SKIPPED (D2.9 open; set REVB_TTL_BOOT=1 to run) =="
-else
-TTL_WRITES=${TTL_WRITES:-800}
+# open-drain /WAIT wired into the CPU (VIDEO_TTL=1). Proves ekta37 boots byte-identical
+# through the real framebuffer serving + cycle-steal contention (D2.9) with the actual T80,
+# not just the behavioural card. Reduced write count: the two async clocks (CPU + 25 MHz
+# dot) make this far heavier than the single-clock runs.
+TTL_WRITES=${TTL_WRITES:-400}
 echo "== B2: cosim reference @ $TTL_WRITES writes (TTL-card run) =="
 ( cd "$ROOT/cosim" && "$TMP/trace" "$MV/roms/ekta37_z80.bin" 50000000 "$TTL_WRITES" >/dev/null 2>&1 )
 cp "$ROOT/cosim/vram.bin" "$TMP/ref_ttl.bin"
@@ -103,7 +97,6 @@ elif cmp -s "$TMP/revb_ttl.bin" "$TMP/ref_ttl.bin"; then
   echo "  PASS  TTL-card framebuffer == cosim after $TTL_WRITES writes (real chips + /WAIT)"
 else
   echo "  FAIL  TTL-card framebuffer differs from cosim @ $TTL_WRITES writes (D2.9)"; fail=1
-fi
 fi
 
 if [ "$fail" = 0 ]; then
