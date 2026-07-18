@@ -267,6 +267,14 @@ def main() -> None:
     parser.add_argument("--timeout", type=float, default=180.0)
     parser.add_argument("--max-conflicts", type=int, default=8)
     parser.add_argument(
+        "--diagnose-only",
+        action="store_true",
+        help=(
+            "classify the diagnostic path's removable and fixed blockers, "
+            "write --summary when requested, and perform no rip-up"
+        ),
+    )
+    parser.add_argument(
         "--allow-mixed-diagnostic-blockers",
         action="store_true",
         help=(
@@ -434,6 +442,40 @@ def main() -> None:
             source_uuids,
             args.net,
         )
+        print(
+            f"{args.net} diagnostic: gap={distance:.3f} mm, "
+            f"new_items={len(new_route_uuids)}, conflicts={len(conflicts)}, "
+            f"affected_nets={sorted(affected_nets)}"
+        )
+        if args.diagnose_only:
+            diagnostic_summary = {
+                "schema_version": 1,
+                "mode": "diagnose-only",
+                "input": str(args.input),
+                "target_net": args.net,
+                "target_gap_index": args.gap_index,
+                "target_gap_distance_mm": distance,
+                "diagnostic_clearance_mm": diagnostic_clearance,
+                "route_clearance_mm": args.route_clearance,
+                "diagnostic_new_items": len(new_route_uuids),
+                "diagnostic_unremovable_blockers": sorted(unremovable),
+                "removable_conflicts": [
+                    {"uuid": item_uuid, "net": baseline_tracks[item_uuid]}
+                    for item_uuid in sorted(conflicts)
+                ],
+                "affected_nets": sorted(affected_nets),
+                "within_max_conflicts": len(conflicts) <= args.max_conflicts,
+            }
+            if args.summary:
+                args.summary.parent.mkdir(parents=True, exist_ok=True)
+                args.summary.write_text(json.dumps(diagnostic_summary, indent=2) + "\n")
+                print(f"wrote {args.summary}")
+            print(
+                "GAP DIAGNOSTIC: PASS; "
+                f"net={args.net}, conflicts={len(conflicts)}, "
+                f"fixed={len(unremovable)}"
+            )
+            return
         if unremovable and not args.allow_mixed_diagnostic_blockers:
             raise SystemExit(
                 "diagnostic route has source-owned, pad, edge, self, or other "
@@ -463,12 +505,6 @@ def main() -> None:
                 f"diagnostic route needs {len(conflicts)} conflicts removed; "
                 f"limit is {args.max_conflicts}"
             )
-        print(
-            f"{args.net} diagnostic: gap={distance:.3f} mm, "
-            f"new_items={len(new_route_uuids)}, conflicts={len(conflicts)}, "
-            f"affected_nets={sorted(affected_nets)}"
-        )
-
         current = args.input
         if conflicts:
             remove_json = tmp / "remove.json"

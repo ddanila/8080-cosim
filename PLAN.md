@@ -45,8 +45,8 @@ electrical-category findings. Splits, removed endpoints, and every moved pad
 remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
-starts at 433 honest gaps. Guarded A* routing now accepts 397 repairs and reaches
-30 gaps with 30,671 copper items, exact parity across all 2,395 current source
+starts at 433 honest gaps. Guarded A* routing now accepts 398 repairs and reaches
+29 gaps with 30,949 copper items, exact parity across all 2,395 current source
 pads, and zero short, clearance, crossing, hole, or edge findings. The decisive
 follow-up uses the board-legal 0.21 mm clearance instead of the earlier
 conservative 0.45 mm proposal keep-out; it closes 111 gaps after targeted INTR,
@@ -66,13 +66,18 @@ transaction then restores BA10, BA5, CS_D27, CS_D54, and CS_D55; it also removes
 only the two pre-existing migrated vias made newly dangling by that
 displacement. DB7 closes and an obsolete intermediate CS_D57 copper island
 disappears, leaving its one honest pad-to-track gap; the transaction makes a
-two-open net improvement and reaches the current 30-gap boundary. Attempted-gap
-Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps
+two-open net improvement and reaches the 30-gap boundary. Fresh full-distance
+0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps
 accept nothing further. Larger bounded diagnostics prove that removing DC4's
 21-item or VA15's 28-item migrated-copper set still leaves the fixed-corridor
 target gap. CS_D57 routes after a 25-item displacement, but complete restoration
 ends at 33 opens: prioritizing D25_T recovers its two branches only by consuming
 AMW_N or CS_D55 space, so tested orders cannot beat the 30-open checkpoint.
+Read-only blocker surveys then identify CS_D26's bounded 17-item topology. Its
+DRC-neutral equal-open swap closes CS_D26 but exposes D53_Y2_R51; a second
+one-item transaction routes that replacement and restores CS_D26, reaching the
+current independently verified 29-gap boundary. Fresh full-distance 0.10,
+0.125, 0.1375, and 0.15 mm sweeps accept nothing further.
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

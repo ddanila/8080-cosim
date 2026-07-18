@@ -162,6 +162,8 @@ the same guarded interface. `--restore-net-priority` permits reproducible order
 experiments for constrained affected nets. Completed intermediate boards are
 discarded as soon as their successor is verified, keeping large transactions
 at constant scratch-board storage rather than one full board per grid attempt.
+`--diagnose-only` records the complete removable/fixed blocker classification
+and affected-net set without removing copper or writing a candidate board.
 
 `close_unconnected_gaps.py --attempted-state` canonicalizes endpoint order and
 atomically records outcomes. State remains bound to the exact SHA-256 of the
@@ -249,6 +251,23 @@ also exposed why retaining every intermediate is unsustainable; sequential
 discard now holds the same transaction to about 33 MB of scratch data instead
 of hundreds of megabytes and avoids KiCad lock/report failures at the `/tmp`
 quota.
+
+The read-only classifier next surveys the remaining exact-clearance failures.
+It finds bounded sets on CS_D11 (18 items), both VA13 gaps (19 and 18), VA9
+(18), WR (18), and CS_D26 (17), while MA6 and MA7 require 36 and 47 items. Full
+CS_D11 restoration ends at 33 opens and the short VA13 target remains blocked
+after displacement. CS_D26 is the useful topology: its 17-item transaction
+retains fixed D26.38, closes the 69.638 mm target, restores thirteen affected
+nets, and ends as a DRC-neutral 30-open swap whose lone replacement is
+D53_Y2_R51. That 7.517 mm replacement has exactly one removable CS_D26 blocker.
+A second guarded transaction routes it and restores the short CS_D26 branch,
+reaching 29 opens. Independent stable KiCad DRC reports the unchanged 199
+track-dangling and 47 via-dangling counts and zero electrical blockers. The
+board has 30,949 copper items, exact 303-footprint/2,395-pad source parity, and
+a cumulative 398 guarded repairs. Fresh full-distance 0.10, 0.125, 0.1375, and
+0.15 mm sweeps exhaust all 29 signatures without another acceptance; the
+0.125 mm D26_PC0_D3_I5 proposal remains rejected by three added clearance
+findings.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -417,6 +436,17 @@ python3 kicad/close_gap_by_ripup.py OUTPUT_32 OUTPUT_30 \
   --net DB7 --diagnostic-clearance 0.15 --route-clearance 0.20 \
   --max-conflicts 20 --allow-mixed-diagnostic-blockers \
   --restore-grid-steps 0.10,0.15,0.125 --summary /tmp/juku-mixed-db7.json
+python3 kicad/close_gap_by_ripup.py OUTPUT_30 UNUSED_OUTPUT \
+  --net CS_D26 --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --max-conflicts 20 --diagnose-only --summary /tmp/juku-diag-csd26.json
+python3 kicad/close_gap_by_ripup.py OUTPUT_30 CS_D26_SWAP \
+  --net CS_D26 --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --max-conflicts 20 --allow-mixed-diagnostic-blockers \
+  --allow-equal-open-swap --restore-grid-steps 0.10,0.15,0.125,0.1375
+python3 kicad/close_gap_by_ripup.py CS_D26_SWAP OUTPUT_29 \
+  --net D53_Y2_R51 --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --max-conflicts 20 --allow-mixed-diagnostic-blockers \
+  --restore-grid-steps 0.10,0.15,0.125,0.1375
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
