@@ -13,9 +13,11 @@ module revb_backplane_top #(
     parameter dump_file     = "revb_vram.bin",
     parameter DECODE_MODE   = 0,
     parameter VIDEO_PRESENT = 1,   // 0 = minimum tier (no Video card)
+    parameter VIDEO_TTL     = 0,   // 1 = chip-level TTL video card (B2), asserts /WAIT
     parameter USART_REAL    = 0    // 1 = real 8251 on the I/O card (bring-up twin)
 ) (
     input  wire clk,
+    input  wire dot_clk,           // 25.175 MHz scanout clock (only used when VIDEO_TTL)
     input  wire reset_n
 );
     // ---- bus ----
@@ -33,9 +35,9 @@ module revb_backplane_top #(
                    video_oe ? video_do :
                    io_oe    ? io_do    : 8'hFF;
 
-    // B0: no wait-state source yet (SRAM is fast, Video /WAIT is B2). Interrupt
-    // lines idle (no PIC populated in this tier).
-    wire wait_n  = 1'b1;
+    // Video card may assert open-drain /WAIT (B2, VIDEO_TTL). Interrupt lines idle.
+    wire video_wait_n;
+    wire wait_n  = video_wait_n;
     wire int_n   = 1'b1;
     wire nmi_n   = 1'b1;
     wire busrq_n = 1'b1;
@@ -53,14 +55,26 @@ module revb_backplane_top #(
         .MODE0(MODE0), .MODE1(MODE1), .D_out(mem_do), .D_oe(mem_oe));
 
     generate
-      if (VIDEO_PRESENT) begin : g_video
+      if (VIDEO_PRESENT && VIDEO_TTL) begin : g_video_ttl
+        // Chip-level TTL card (B2): scanout on dot_clk, asserts /WAIT on CPU framebuffer
+        // accesses that collide with the active region (D2.5). Scanout outputs unused here
+        // (the boot oracle checks the framebuffer dump; scanout is a separate gate).
+        revb_video_card_ttl #(.vw_limit(vw_limit), .dump_file(dump_file)) U_VIDEO (
+            .dot_clk(dot_clk), .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
+            .mreq_n(mreq_n), .rd_n(rd_n), .wr_n(wr_n),
+            .MODE0(MODE0), .MODE1(MODE1), .D_out(video_do), .D_oe(video_oe),
+            .wait_od_n(video_wait_n),
+            .hsync_n(), .vsync_n(), .active(), .pixel(), .frame_tick());
+      end else if (VIDEO_PRESENT) begin : g_video
         revb_video_card #(.vw_limit(vw_limit), .dump_file(dump_file)) U_VIDEO (
             .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
             .mreq_n(mreq_n), .rd_n(rd_n), .wr_n(wr_n),
             .MODE0(MODE0), .MODE1(MODE1), .D_out(video_do), .D_oe(video_oe));
+        assign video_wait_n = 1'b1;
       end else begin : g_novideo
         assign video_do = 8'h00;
         assign video_oe = 1'b0;
+        assign video_wait_n = 1'b1;
       end
     endgenerate
 

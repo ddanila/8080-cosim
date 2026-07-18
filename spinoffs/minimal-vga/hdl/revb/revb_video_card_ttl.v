@@ -112,15 +112,24 @@ module revb_video_card_ttl #(
     wire       cpu_acc   = cpu_rd | cpu_wr;
 
     // GAL contention (D2.5): scanout owns the SRAM during the active region, so a CPU
-    // framebuffer access there is held (WAIT_N low) until blanking. Open-drain: release
-    // = high-Z (modelled as 1); assert = 0.
-    assign wait_od_n = ~(cpu_acc & active);
-    wire   cpu_grant = cpu_acc & ~active;    // serviced only in blanking
+    // framebuffer access there is held (WAIT_N low) until blanking. `active` lives in the
+    // dot-clock domain; the WAIT/grant decision is a CPU-domain event, so `active` MUST be
+    // synchronized into the CPU clock first (a 2-FF synchronizer) — otherwise the write
+    // lands non-deterministically across the async boundary (caught by the integrated boot,
+    // D2.9). The 1-2 clk latency can leave a CPU access active for a couple of dots at the
+    // very start of a line (a possible 1-pixel scanout artifact, bench-checked); the write
+    // content is always correct, which is what byte-identity needs.
+    reg active_s1 = 1'b0, active_cpu = 1'b0;
+    always @(posedge clk or negedge reset_n)
+        if (!reset_n) {active_cpu, active_s1} <= 2'b00;
+        else          {active_cpu, active_s1} <= {active_s1, active};
+    assign wait_od_n = ~(cpu_acc & active_cpu);
+    wire   cpu_grant = cpu_acc & ~active_cpu;   // serviced only in (synchronized) blanking
 
     reg [7:0] D_out_r;
     always @* D_out_r = fb[A - FB_BASE];
     assign D_out = D_out_r;
-    assign D_oe  = cpu_rd & ~active;         // drive only when actually granted
+    assign D_oe  = cpu_rd & ~active_cpu;      // drive only when actually granted
 
     // write + boot-oracle dump (edge-gated, one store per granted CPU write)
     reg        prev_wr = 1'b0;

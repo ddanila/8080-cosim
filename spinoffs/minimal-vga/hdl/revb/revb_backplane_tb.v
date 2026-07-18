@@ -7,12 +7,16 @@ module revb_backplane_tb;
     parameter vw_limit    = 6000;
     parameter dump_file   = "revb_vram.bin";
     parameter decode_mode = 0;   // 0 = Mode B (D6 РТ4), 1 = Mode A (GAL-internal)
-    reg clk = 0, reset_n = 0;
+    parameter video_ttl   = 0;   // 1 = boot through the chip-level TTL video card (B2)
+    reg clk = 0, reset_n = 0, dot_clk = 0;
     always #10 clk = ~clk;
+    // dot clock: ~4x the CPU clock here (real ratio is ~12x; a modest ratio keeps the
+    // integrated boot sim tractable while still exercising cross-domain /WAIT contention).
+    always #2 dot_clk = ~dot_clk;
 
-    revb_backplane_top #(.rom_file(rom_file), .vw_limit(vw_limit),
-                         .dump_file(dump_file), .DECODE_MODE(decode_mode))
-        dut (.clk(clk), .reset_n(reset_n));
+    revb_backplane_top #(.rom_file(rom_file), .vw_limit(vw_limit), .dump_file(dump_file),
+                         .DECODE_MODE(decode_mode), .VIDEO_TTL(video_ttl))
+        dut (.clk(clk), .dot_clk(dot_clk), .reset_n(reset_n));
 
     initial begin
         #100 reset_n = 1;
