@@ -90,6 +90,57 @@ The experiment is reproducible without modifying a tracked PCB:
   --output /tmp/juku-additive-refresh-clean.kicad_pcb
 ```
 
+### Item-level DRC salvage
+
+Whole-net quarantine is deliberately conservative: a single moved endpoint
+discarded every old branch on that net. The optional
+`--allow-drc-salvage` refresh mode instead emits an intentionally unsafe
+source-based trial containing all same-name old copper plus the proved
+additive/rename maps. `kicad/salvage_routed_copper.py` then owns the safety
+transaction. It identifies migrated items only by UUID absence from the
+authoritative source PCB, removes only migrated tracks/vias named by current
+KiCad short, clearance, crossing, hole, or edge findings, and reruns DRC after
+each batch. Source-owned copper is never eligible for removal.
+
+The current raw trial copies 18,078 items on 351 nets and appears to have only
+274 connectivity gaps, but it is invalid because old corridors cross moved
+parts. One DRC-owned cleanup round removes 496 implicated items, retains
+17,582, and exposes the honest 433-gap topology with zero short, clearance,
+crossing, hole-clearance, hole-to-hole, or copper-to-edge findings. KiCad also
+reports 199 track-dangling and 52 via-dangling findings. Those tails are kept
+as explicit reconnection work: a test prune exposed the expected recursive
+chain and was stopped rather than deleting otherwise useful routes before
+their new endpoints are joined.
+
+Two bounded multilayer A* transactions then accepted 30 legal repairs. They
+close GND/P5V branches plus MEMW, D94 D0, memory-mode, W10 select, rail-13,
+AMW, D39 memory-cycle, REV, D105 WAIT, D42 Q, VIDEO_OUT, RAM_OUT_EN, S_TTL,
+CAS, and related gaps. The resulting temporary board has all 2,395 current
+source pad identities, nets, and integer-nanometre coordinates, 17,652 copper
+items, and 401 uncapped connectivity gaps. A final independent KiCad DRC still
+has zero geometric electrical blockers. This is a much closer current-source
+route, but its opens and retained tails keep it outside tracked fabrication
+artifacts.
+
+```sh
+/usr/bin/python3 kicad/refresh_routed_from_source.py \
+  --routed kicad/juku_routed_candidate.kicad_pcb \
+  --allow-additive-renames --allow-drc-salvage \
+  --output /tmp/juku-drc-salvage-raw.kicad_pcb
+/usr/bin/python3 kicad/salvage_routed_copper.py \
+  /tmp/juku-drc-salvage-raw.kicad_pcb \
+  /tmp/juku-drc-salvage-clean.kicad_pcb \
+  --summary /tmp/juku-drc-salvage-clean.json
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-clean.kicad_pcb \
+  /tmp/juku-drc-salvage-gap10.kicad_pcb \
+  --min-distance 1 --max-distance 30 --mode M --timeout 20 --limit 10
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-drc-salvage-gap10.kicad_pcb \
+  /tmp/juku-drc-salvage-gap30.kicad_pcb \
+  --min-distance 1 --max-distance 30 --mode M --timeout 20 --limit 20
+```
+
 The July-2026 refresh audit found 48 short violations in the first candidate.
 Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated
 routed nets and removes every transplanted-track short. The remaining 12 DRC

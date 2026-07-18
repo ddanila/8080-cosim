@@ -97,6 +97,15 @@ def main() -> None:
             "set is only additive; safely relabel renamed/merged copper"
         ),
     )
+    parser.add_argument(
+        "--allow-drc-salvage",
+        action="store_true",
+        help=(
+            "experimentally copy same-name old copper even when endpoints moved "
+            "or split; the output is intentionally unsafe until processed by "
+            "salvage_routed_copper.py and must never be adopted directly"
+        ),
+    )
     parser.add_argument("--exclude-drc", type=Path, action="append", default=[],
                         help="quarantine routed track/via nets implicated by copper errors in a KiCad DRC JSON")
     report_group = parser.add_mutually_exclusive_group()
@@ -149,6 +158,12 @@ def main() -> None:
             if set(old_endpoints) <= set(source_endpoints.get(target_netname, {})):
                 additive_net_map[old_netname] = target_netname
         copper_net_map.update(additive_net_map)
+    drc_salvage_net_map: dict[str, str] = {}
+    if args.allow_drc_salvage:
+        for old_netname in routed_endpoints:
+            if old_netname not in copper_net_map and old_netname in source_endpoints:
+                drc_salvage_net_map[old_netname] = old_netname
+        copper_net_map.update(drc_salvage_net_map)
     forced_excluded: set[str] = set()
     for drc_path in args.exclude_drc:
         report = json.loads(drc_path.read_text())
@@ -169,6 +184,9 @@ def main() -> None:
     quarantined_nets = routed_copper_nets - set(copper_net_map)
     retained_additive_nets = (
         set(additive_net_map) & set(copper_net_map) & routed_copper_nets
+    )
+    retained_drc_salvage_nets = (
+        set(drc_salvage_net_map) & set(copper_net_map) & routed_copper_nets
     )
 
     source_refs = {footprint.GetReference() for footprint in source.GetFootprints()}
@@ -218,6 +236,7 @@ def main() -> None:
     print(f"  compatible routed nets: {len(set(copper_net_map) & routed_copper_nets)}")
     print(f"  proved additive/rename mappings: {len(additive_net_map)}")
     print(f"  retained additive/renamed routed nets: {len(retained_additive_nets)}")
+    print(f"  retained DRC-salvage routed nets: {len(retained_drc_salvage_nets)}")
     print(f"  quarantined routed nets: {len(quarantined_nets)}")
     print(f"  quarantined/duplicate items: {sum(skipped.values())}")
     print(f"  common-pad mismatches requiring reroute: {len(mismatches)}")
