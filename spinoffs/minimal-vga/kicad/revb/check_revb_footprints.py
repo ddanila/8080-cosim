@@ -83,7 +83,8 @@ PKG_WIDTH = {
 # >= the part's lead, pitch = a pad spacing that must appear. Negative-tested.
 PKG_PHYS = {
     # type:            (min_tht, min_drill_mm, pitch_mm-or-None, datasheet)
-    "USB_C_PWR":  (16, 0.40, 0.85, "GCT USB4085 (THT USB-C, 16 signal pins @0.85mm)"),
+    "USB_C_PWR":  (16, 0.40, 0.85, "GCT USB4085 THT USB-C, 16 signal @0.85mm; VBUS=A4/A9/"
+                                   "B4/B9 GND=A1/A12/B1/B12 CC1=A5 CC2=B5 (GCT_usb4085.pdf)"),
     "SUPERVISOR_3": (3, 0.70, 1.27, "DS1813-5 TO-92: pin1=/RST pin2=VCC pin3=GND (ds1813.pdf)"),
     "SW_PUSH":    (2,  1.20, 6.50, "APEM MJTP1243 6mm tactile, 6.5mm terminal span"),
     "LED":        (2,  0.80, 2.54, "5mm THT LED, 2.54mm lead pitch"),
@@ -94,7 +95,7 @@ PKG_PHYS = {
     "R_10K":      (2,  0.70, 7.62, "DIN0207 axial, 7.62mm pitch"),
     "C_100N":     (2,  0.70, 5.00, "5mm disc ceramic, 5.08mm pitch"),
     "C_ELEC_47U": (2,  0.60, 2.50, "6.3mm radial electrolytic, 2.5mm pitch"),
-    "PTC_1A":     (2,  0.70, None, "Bourns MF-RG radial PTC"),
+    "PTC_1A":     (2,  0.70, 5.10, "Bourns MF-R110: 5.1mm lead pitch, 0.51mm leads (mf_r.pdf)"),
 }
 
 

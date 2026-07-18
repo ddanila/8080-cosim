@@ -38,8 +38,8 @@ count, drill, and pitch so a wrong/SMD footprint can't slip through again.
 
 | Ref(s) | Value / part | Footprint | Notes |
 |---|---|---|---|
-| J_USBC | **GCT USB4085** USB-C receptacle | `USB_C_Receptacle_GCT_USB4085` | fully THT (16 signal + 4 shield pins); power-only wiring, data pins float. 0.85 mm pitch → needs 0.15 mm fab clearance |
-| F_VBUS | Bourns **MF-R110** PTC (1.1 A hold / 2.2 A trip) | `Fuse_Bourns_MF-RG300` | in the USB VBUS branch only; verify lead pitch vs footprint at purchase |
+| J_USBC | **GCT USB4085** USB-C receptacle | `USB_C_Receptacle_GCT_USB4085` | **datasheet-verified** (GCT_usb4085.pdf): THT "Dip Type", VBUS=A4/A9/B4/B9, GND=A1/A12/B1/B12+shell, CC1=A5, CC2=B5; data pins float (power-only). 5 A VBUS rating. 0.85 mm pitch → 0.15 mm fab clearance |
+| F_VBUS | Bourns **MF-R110** PTC (1.1 A hold / 2.2 A trip, 30 V) | `Fuse_Bourns_MF-RG300` | **datasheet-verified** (mf_r.pdf): 5.1 mm lead pitch = footprint pitch, 0.51 mm leads; USB VBUS branch only |
 | C_BULK | 47 µF / 16 V radial electrolytic | `CP_Radial_D6.3mm_P2.50mm` | rail bulk |
 | C_IN, C_RST | 100 nF disc ceramic | `C_Disc_D5.0mm_P5.00mm` | HF bypass / reset RC |
 | U_RST | **DS1813-5** reset supervisor, TO-92 | `TO-92_Inline` | **datasheet-verified pinout** (ds1813.pdf p1): pad 1 = /RST, pad 2 = VCC, pad 3 = GND; open-drain with internal 5.5 kΩ pull-up |
@@ -86,17 +86,15 @@ board `.kicad_pcb` is the source of truth, content-checked):
 
 ## Open risks to weigh before ordering
 
+**Every backplane part is now datasheet-verified** (footprints cross-checked against the
+manufacturer drawings — DS1813, USB4085, MF-R110 fetched 2026-07-18); no name-matched-only
+parts remain on any board. Remaining items are inherent, not open questions:
+
 - **USB-C fab clearance:** needs 0.15 mm at the connector (standard cheap-fab capability,
   noted above). Fine-pitch USB-C is also a bit fiddly to hand-solder (flux + fine iron);
-  an all-through-hole part (GCT USB4085) was chosen to keep it possible.
-- **Reset supervisor — resolved:** the DS1813-5 TO-92 pinout is now datasheet-verified
-  (ds1813.pdf: 1=/RST, 2=VCC, 3=GND) and soldered down with that mapping; the earlier
-  header workaround is gone. The pull-up + RC + button still give a working reset if
-  U_RST is left unpopulated. (Buy the **DS1813-5** specifically — the pinmap is committed
-  to copper for that part.)
-- **F_VBUS polyfuse lead pitch:** confirm the ordered MF-R110 matches the
-  `Fuse_Bourns_MF-RG300` footprint pitch before soldering (guarded for drill, not exact
-  pitch since PTC lead spacing varies).
+  the all-through-hole GCT USB4085 was chosen to keep it possible.
+- **Buy the exact parts named in the BOM** — the footprints are committed to copper for
+  these specific MPNs (esp. DS1813-5's pinout and the USB4085 / MF-R110 geometry).
 
 - **Keying is convention-only (D1.32b):** a reversed card can seat (centred base is
   symmetric). Mitigation is silk/orientation marks + care, not a mechanical block. The
