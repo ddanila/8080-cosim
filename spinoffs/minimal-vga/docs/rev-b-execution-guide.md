@@ -476,6 +476,22 @@ doc (D1.25).
 `check_revb_mem.sh` gains the D1.27 post-route gate; status/ledger flipped to ✅;
 Stage C begins. *Acceptance:* one command green end-to-end, including DRC.
 
+### Stage C status (2026-07-18)
+
+- **TD.9 io ✅ DONE** — full D1.26 B3 wiring (8255/8259/74148/keyboard, DNP; GAL adds
+  INT_N/INTA_N/IO_RESET inversion), io LVS IN SYNC, **D1.26 wiring assertion** in the
+  board checker, placement-clean + **fully routed, DRC 0/0** at 100×100, STEP + preview.
+- **TD.10 cpu 🟡 placement-clean, 47/48 routed** — netlist + LVS-trivial (one logic IC)
+  + placement-clean at 100×70; A8 is a **deterministic** 2-layer fan-out constraint
+  (12/12 route attempts leave it) that needs address-pin-order-matched placement or a
+  manual trace. The layout-craft tail.
+- **TD.11 backplane ⬜** — needs a PCB-gen enhancement first: `gen_revb_pcb.py` splits
+  a REVB_BUS_39_10 into hardcoded `J_BUS`/`J_EXT`, but the backplane has **six**
+  (`J_S1..J_S6`) — the split must use per-slot ref names. Then a 22-part layout
+  (6 slots @ 19 mm + power/reset/pulls/FTDI/LED) and parallel-bus routing. No LVS.
+
+Resume: cpu A8 + backplane are visual/gen work best done with KiCad open.
+
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
 
 **TD.9 — io card (the big one: D1.26 full-B3 wiring first).**

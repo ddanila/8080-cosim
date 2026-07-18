@@ -13,7 +13,7 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B1 — sim/firmware** | bring-up ROM, minimum-tier twin | ✅ done | `revb_bringup_check.sh`: TX stream == cosim via real 8251 |
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
-| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11) | ⬜ | |
+| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11) | 🟡 partial | io ✅ fully routed (DRC 0/0, DNP B3 wiring); cpu placement-clean+47/48 (A8 tail); backplane ⬜ (needs multi-slot gen + layout) |
 | **B1-CAD Stage D** | FreeCAD mating/keying + fab package (TD.12–TD.13) | ⬜ → arms T1.10 | |
 | **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ hardware-blocked | |
 | **B2 / B3 / B4** | video / keyboard+PIC / FDC tiers | ⬜ future | |
@@ -43,9 +43,9 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-Stage B ✅ (mem card fully routed, DRC 0/0). Next: **Stage C — TD.9** (io card,
-biggest per D1.26: full B3 wiring now, 8255/PIC DNP) then TD.10 cpu, TD.11
-backplane, running the now-proven pipeline (`gen_revb_boards`→LVS→`gen_revb_pcb`→
-`route_revb_pcb`→DRC). Then **TD.12–TD.13** FreeCAD mating/keying + gerber fab
-package → arms T1.10. Tools (KiCad 10, FreeCAD 1.1.1, Java 25, freerouting 2.2.4)
-all installed and proven headless.
+Finish **Stage C**: (1) cpu A8 — one manual trace or address-pin-order placement;
+(2) backplane — teach `gen_revb_pcb.py` to split each of the 6 `J_S*` bus connectors
+into per-slot `J_S{n}_BUS`/`J_S{n}_EXT` refs, then place (6 slots @ 19 mm +
+power/reset/pulls/FTDI/LED) and route. Then **Stage D** (TD.12 FreeCAD mating/keying,
+TD.13 gerber fab package → arms T1.10). Best with KiCad open. mem + io are fully
+routed references; tools all installed + proven headless.
