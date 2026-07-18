@@ -133,7 +133,7 @@ def direct_conflicts(
     baseline_tracks: dict[str, str],
     source_uuids: set[str],
     target_net: str,
-) -> tuple[set[str], set[str]]:
+) -> tuple[set[str], set[str], set[str]]:
     removable: set[str] = set()
     affected_nets: set[str] = set()
     unremovable: set[str] = set()
@@ -167,15 +167,8 @@ def direct_conflicts(
                 f"{violation.get('type', 'blocker')} has no removable baseline copper"
             )
     if relevant == 0:
-        return set(), set()
-    if unremovable:
-        raise SystemExit(
-            "diagnostic route has source-owned, pad, edge, self, or other "
-            f"unremovable blockers: {sorted(unremovable)}"
-        )
-    if not removable:
-        raise SystemExit("diagnostic route exposed no removable copper conflicts")
-    return removable, affected_nets
+        return set(), set(), set()
+    return removable, affected_nets, unremovable
 
 
 def run_closer(
@@ -232,6 +225,13 @@ def main() -> None:
     parser.add_argument("--search-margin", type=float, default=60.0)
     parser.add_argument("--grid-step", type=float, default=0.10)
     parser.add_argument(
+        "--restore-grid-steps",
+        help=(
+            "comma-separated grid phases for each displaced-net restoration; "
+            "defaults to --grid-step"
+        ),
+    )
+    parser.add_argument(
         "--diagnostic-clearance",
         type=float,
         help=(
@@ -242,6 +242,23 @@ def main() -> None:
     parser.add_argument("--route-clearance", type=float, default=0.21)
     parser.add_argument("--timeout", type=float, default=180.0)
     parser.add_argument("--max-conflicts", type=int, default=8)
+    parser.add_argument(
+        "--allow-mixed-diagnostic-blockers",
+        action="store_true",
+        help=(
+            "attempt the bounded removable-copper subset even when the "
+            "diagnostic path also touches fixed blockers; final DRC invariants "
+            "still govern publication"
+        ),
+    )
+    parser.add_argument(
+        "--allow-equal-open-swap",
+        action="store_true",
+        help=(
+            "publish a DRC-neutral transaction with the same open count when "
+            "the selected target gap is gone, for a subsequent guarded sweep"
+        ),
+    )
     parser.add_argument("--kicad-cli", type=Path)
     parser.add_argument("--python", type=Path, help="Python interpreter with pcbnew")
     parser.add_argument(
@@ -258,6 +275,16 @@ def main() -> None:
         raise SystemExit("--gap-index must be non-negative")
     if args.search_margin <= 0 or args.grid_step <= 0:
         raise SystemExit("search margin and grid step must be positive")
+    try:
+        restore_grid_steps = (
+            [float(value) for value in args.restore_grid_steps.split(",")]
+            if args.restore_grid_steps
+            else [args.grid_step]
+        )
+    except ValueError as error:
+        raise SystemExit("restore grid steps must be comma-separated numbers") from error
+    if not restore_grid_steps or any(step <= 0 for step in restore_grid_steps):
+        raise SystemExit("restore grid steps must be positive")
     diagnostic_clearance = (
         args.route_clearance
         if args.diagnostic_clearance is None
@@ -346,13 +373,28 @@ def main() -> None:
             args.diagnostic_report.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(diagnostic_report_path, args.diagnostic_report)
             print(f"wrote {args.diagnostic_report}")
-        conflicts, affected_nets = direct_conflicts(
+        conflicts, affected_nets, unremovable = direct_conflicts(
             diagnostic_report,
             new_route_uuids,
             baseline_tracks,
             source_uuids,
             args.net,
         )
+        if unremovable and not args.allow_mixed_diagnostic_blockers:
+            raise SystemExit(
+                "diagnostic route has source-owned, pad, edge, self, or other "
+                f"unremovable blockers: {sorted(unremovable)}"
+            )
+        if unremovable and not conflicts:
+            raise SystemExit(
+                "diagnostic route exposed fixed blockers but no removable "
+                f"copper conflicts: {sorted(unremovable)}"
+            )
+        if unremovable:
+            print(
+                "mixed diagnostic: retaining fixed blockers and trying only "
+                f"the removable subset; fixed={sorted(unremovable)}"
+            )
         if len(conflicts) > args.max_conflicts:
             raise SystemExit(
                 f"diagnostic route needs {len(conflicts)} conflicts removed; "
@@ -401,19 +443,20 @@ def main() -> None:
                 "selected target gap remains after removing its diagnostic conflicts"
             )
         current = target_routed
-        for index, netname in enumerate(sorted(affected_nets), 1):
-            restored = tmp / f"restored-{index}.kicad_pcb"
-            run_closer(
-                current,
-                restored,
-                netname,
-                cli,
-                args.search_margin,
-                args.grid_step,
-                args.route_clearance,
-                args.timeout,
-            )
-            current = restored
+        for net_index, netname in enumerate(sorted(affected_nets), 1):
+            for grid_index, restore_grid_step in enumerate(restore_grid_steps, 1):
+                restored = tmp / f"restored-{net_index}-{grid_index}.kicad_pcb"
+                run_closer(
+                    current,
+                    restored,
+                    netname,
+                    cli,
+                    args.search_margin,
+                    restore_grid_step,
+                    args.route_clearance,
+                    args.timeout,
+                )
+                current = restored
 
         final_report = run_drc(cli, current, tmp / "final.json")
         final_counts = violation_counts(final_report)
@@ -428,7 +471,9 @@ def main() -> None:
             for kind in sorted(set(initial_counts) | set(final_counts))
             if final_counts[kind] > initial_counts[kind]
         }
-        if final_open >= initial_open:
+        if final_open > initial_open or (
+            final_open == initial_open and not args.allow_equal_open_swap
+        ):
             raise SystemExit(
                 f"rip-up transaction did not reduce opens: {initial_open}->{final_open}"
             )
@@ -453,7 +498,9 @@ def main() -> None:
             "target_gap_distance_mm": distance,
             "diagnostic_clearance_mm": diagnostic_clearance,
             "route_clearance_mm": args.route_clearance,
+            "restore_grid_steps_mm": restore_grid_steps,
             "diagnostic_new_items": len(new_route_uuids),
+            "diagnostic_unremovable_blockers": sorted(unremovable),
             "removed_conflicts": [
                 {"uuid": item_uuid, "net": baseline_tracks[item_uuid]}
                 for item_uuid in sorted(conflicts)
@@ -463,6 +510,7 @@ def main() -> None:
             "final_tracks": final_tracks,
             "initial_unconnected": initial_open,
             "final_unconnected": final_open,
+            "equal_open_swap": final_open == initial_open,
             "electrical_blockers": blockers,
             "drc_count_increases": increases,
         }

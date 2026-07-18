@@ -143,12 +143,17 @@ hole-to-hole, or copper-to-edge findings.
 `close_gap_by_ripup.py` generalizes the successful INTR transaction. A
 diagnostic proposal identifies only pre-existing, non-source tracks or vias
 that KiCad names as direct blockers of the new route. Source copper, pads,
-edges, target-net items, and ambiguous blockers fail closed. The tool removes
-the bounded conflict set, routes the target at the final clearance, restores
-every affected net, and writes an output only when total opens fall, the
-selected gap disappears, no electrical blocker remains, and no DRC category
-increases. INTR required one BA5 item to be replaced; PROM_EN, CS_D54, and BA13
-proved clean-path cases through the same guarded interface.
+edges, target-net items, and ambiguous blockers fail closed by default. The
+opt-in mixed-blocker mode still never removes those fixed items: it tries only
+the bounded removable subset and relies on the same final publication gates.
+Affected-net restoration can try several explicit grid phases. The tool routes
+the target at the final clearance, restores every affected net, and normally
+writes an output only when total opens fall, the selected gap disappears, no
+electrical blocker remains, and no DRC category increases. A separate opt-in
+permits an equal-open, DRC-neutral topology swap for subsequent guarded sweeps;
+it never permits an open-count increase. INTR required one BA5 item to be
+replaced; PROM_EN, CS_D54, and BA13 proved clean-path cases through the same
+guarded interface.
 
 `close_unconnected_gaps.py --attempted-state` canonicalizes endpoint order and
 atomically records outcomes. State remains bound to the exact SHA-256 of the
@@ -169,10 +174,10 @@ distinct searches: 0.125 mm closes the first ROE gap; 0.15 mm closes VA12, the
 second ROE gap, and DBIN_GATED; 0.175 mm closes CS_D55; and 0.1375 mm closes
 D6_A7_D105_I1_BOUNDARY. The 0.20, 0.225, 0.25, and 0.30 mm lattices add no
 routes, and a final full-distance 0.1125 mm sweep records all 34 residual gaps
-without another acceptance. The cumulative guarded result is therefore 393
-repairs, 30,334 copper items, and 34 uncapped opens. Exact footprint/pad parity
-and every electrical DRC invariant remain unchanged; the dangling counts stay
-at 199 tracks and 47 vias.
+without another acceptance. That checkpoint contains 393 repairs, 30,334
+copper items, and 34 uncapped opens. Exact footprint/pad parity and every
+electrical DRC invariant remain unchanged; the dangling counts stay at 199
+tracks and 47 vias.
 
 Four further exact-clearance phases (0.12, 0.13, 0.14, and 0.16 mm) each
 exhaust all 34 signatures without acceptance. Increasing the search margin from
@@ -188,6 +193,21 @@ rows, not more blind lattice enumeration. `close_gap_by_ripup.py
 --diagnostic-report` retains the proposal's complete KiCad DRC JSON even when
 the guarded transaction fails, so future blocker classification remains
 machine-auditable instead of depending on terminal output.
+
+The mixed-blocker follow-up first exercises a conservative equal-open S3_1
+swap: the fixed D44/R42/R43 pads remain untouched, the selected S3_1 gap
+disappears, and the replacement VA4 gap keeps the count at 34. Fresh 0.10 and
+0.15 mm sweeps accept nothing from that topology, so it is not adopted. BA0 is
+productive. Its diagnostic path also touches fixed D44/R40/R41/R44 pads, but the
+transaction removes only ten named migrated-copper items across BA13, BA5,
+GND, RAIL_H, VA1, VA4, VA7, and VA9. Restoration on 0.10 and 0.15 mm phases
+closes BA0 while leaving 33 opens. Independent KiCad DRC reports 199
+track-dangling and 47 via-dangling tails and zero short, clearance, crossing,
+hole-clearance, hole-to-hole, or copper-to-edge findings. The resulting board
+has 30,418 copper items and exact 303-footprint/2,395-pad identity, net, and
+integer-coordinate parity with the source. The cumulative guarded result is
+394 repairs and 33 uncapped opens. Fresh full-distance 0.10 and 0.15 mm sweeps
+of that improved lineage exhaust all 33 signatures without another acceptance.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -344,6 +364,10 @@ python3 kicad/close_unconnected_gaps.py INPUT_34 OUTPUT_34 \
 python3 kicad/close_gap_by_ripup.py OUTPUT_34 UNUSED_OUTPUT \
   --net S3_1 --diagnostic-clearance 0.15 --route-clearance 0.20 \
   --diagnostic-report /tmp/juku-s3-diagnostic.json
+python3 kicad/close_gap_by_ripup.py OUTPUT_34 OUTPUT_33 \
+  --net BA0 --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --max-conflicts 20 --allow-mixed-diagnostic-blockers \
+  --restore-grid-steps 0.10,0.15 --summary /tmp/juku-mixed-ba0.json
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
