@@ -103,6 +103,14 @@ turns the former equal-open swap into a real 27-to-26 improvement. A subsequent
 independently verified 25-gap boundary. The board has 31,992 copper items;
 stable DRC retains 199 track-dangling and 46 via-dangling findings and no
 electrical blockers.
+The next endpoint-correct blocker ranking rejects the shortest alternatives:
+MA7 needs 54 migrated items and ten fixed blockers; BA5 has no path even at a
+0.10 mm diagnostic clearance; VA15 still cannot cross fixed D51/E14/R45 after
+all 19 migrated blockers are removed; and MEMW_D7P2 needs 38 items across
+thirteen nets. A 17-item VA13 transaction closes its first branch but creates
+two same-coordinate MA1 layer joins with no legal via position. Tested restore
+orders end at 27 opens or have a theoretical floor of 26, so that topology is
+also discarded.
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

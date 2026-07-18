@@ -333,6 +333,23 @@ all 303 footprints and 2,395 pads. The board contains 31,992 copper items, is
 10,982,923 bytes, and has SHA256
 `b0de0b804af22c71c50d790fa29ca2b4ed3ba218956403babf6529193530870b`.
 
+Endpoint-correct blocker ranking after that checkpoint rules out the next
+shortest options without mutating it. MA7's 0.10 mm diagnostic needs 54
+migrated items across 30 nets and still names ten fixed blockers. BA5 has no
+multilayer path even at 0.10 mm clearance. VA15 finds 19 removable items across
+BA3, P5V, VA7, and VID_MUX_G, but after their removal the legal-clearance target
+router still cannot pass fixed D51.12, E14.2, and R45.2. MEMW_D7P2 requires 38
+items across thirteen nets plus five fixed findings.
+
+VA13 is smaller but not competitive. Its first 14.295 mm branch closes after a
+17-item displacement across CAS, GND, MA1, MA2, VA11, VA3, and W10_QA_SEL.
+Restoring W10/VA11 first ends at 27 opens because two MA1 layer joins and one
+VA3 branch remain. Restoring MA1 first proves the stronger blocker: the VA13
+route creates two same-coordinate MA1 joins for which no legal via position
+exists even before the other displaced nets return. Closing one VA13 open while
+creating those two MA1 opens has a theoretical 26-open floor, so no remaining
+restore order can beat 25; the transaction is discarded.
+
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
   --routed kicad/juku_routed_candidate.kicad_pcb \
