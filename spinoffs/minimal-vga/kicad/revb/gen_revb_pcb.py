@@ -52,6 +52,39 @@ def outline(board):
         board.Add(s)
 
 
+def emit_bus_columns(board):
+    """D1.29 column-route: the six base (and six ext) connectors are stacked at the
+    same x-origin, so pad N of every slot shares an X and differs only in Y — a
+    straight F.Cu segment between consecutive slots' pad N routes that whole bus net.
+    We emit these deterministic vertical tracks here (locked, so freerouting keeps
+    them and only fills the irregular power tail). Returns the track count."""
+    import re
+    from collections import defaultdict
+    fps = {fp.GetReference(): fp for fp in board.GetFootprints()}
+    n = 0
+    for suffix in ("BUS", "EXT"):
+        conns = sorted((r for r in fps if re.match(rf"J_S\d+_{suffix}$", r)),
+                       key=lambda r: int(re.match(r"J_S(\d+)_", r).group(1)))
+        if len(conns) < 2:
+            continue
+        cols = defaultdict(list)          # pad number -> pads across all slots
+        for r in conns:
+            for pad in fps[r].Pads():
+                cols[pad.GetNumber()].append(pad)
+        for pads in cols.values():
+            pads.sort(key=lambda p: p.GetPosition().y)
+            for a, b in zip(pads, pads[1:]):
+                t = pcbnew.PCB_TRACK(board)
+                t.SetStart(a.GetPosition()); t.SetEnd(b.GetPosition())
+                t.SetWidth(mm(0.3)); t.SetLayer(pcbnew.F_Cu)
+                net = a.GetNet()
+                if net is not None:
+                    t.SetNet(net)
+                t.SetLocked(True)
+                board.Add(t); n += 1
+    return n
+
+
 def silk(board, text, x, y, size=1.5, angle=0):
     t = pcbnew.PCB_TEXT(board); t.SetLayer(pcbnew.F_SilkS); t.SetText(text)
     t.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y))); t.SetTextAngleDegrees(angle)
@@ -97,28 +130,29 @@ def _backplane_place():
     cleanly column-routable), and drop the power/reset/FTDI/LED tail into the free
     LOWER-RIGHT quadrant. Per-card base/ext edge mating is validated in Stage D."""
     p = {}
-    for k in range(6):                       # base bank: x=50, 10 mm pitch, y 10..60
-        p[f"J_S{k+1}_BUS"] = (50.0, 10.0 + k * 10.0, 90)
-    for k in range(6):                       # ext bank: x=22, 5 mm pitch, y 70..95
-        p[f"J_S{k+1}_EXT"] = (22.0, 70.0 + k * 5.0, 90)
-    # support tail in the lower-right quadrant; axial resistors vertical (rot 90) to
-    # pack tightly. Coordinates are DRC-tuned, not hand-precise.
-    p["J_USBC"] = (46.0, 70.0, 0)
-    p["J_PWR"]  = (60.0, 70.0, 0)
-    p["U_RST"]  = (70.0, 70.0, 0)
-    p["SW_RST"] = (80.0, 70.0, 0)
-    p["J_FTDI"] = (91.0, 70.0, 0)
-    p["JP_S5"]  = (46.0, 82.0, 0)
-    p["D_PWR"]  = (56.0, 82.0, 0)
-    p["R_LED"]  = (64.0, 82.0, 90)
-    p["R_CC1"]  = (72.0, 82.0, 90)
-    p["R_CC2"]  = (80.0, 82.0, 90)
-    p["R_M0"]   = (88.0, 82.0, 90)
-    p["R_M1"]   = (46.0, 94.0, 90)
-    p["R_INT"]  = (54.0, 94.0, 90)
-    p["R_WAIT"] = (62.0, 94.0, 90)
-    p["R_NMI"]  = (70.0, 94.0, 90)
-    p["R_BRQ"]  = (78.0, 94.0, 90)
+    for k in range(6):                       # base bank: x=50, 8 mm pitch, y 8..48
+        p[f"J_S{k+1}_BUS"] = (50.0, 8.0 + k * 8.0, 90)
+    for k in range(6):                       # ext bank: x=22, 4 mm pitch, y 68..88
+        p[f"J_S{k+1}_EXT"] = (22.0, 68.0 + k * 4.0, 90)
+    # Bus-signal pullups sit in the interior band between the two banks (y~58), spread
+    # across the width so each taps its own column with a SHORT interior stub — this is
+    # what keeps freerouting from dragging a long cross-board trace + via into a corner
+    # (the copper-edge failure mode). Vertical (rot 90) to stay thin.
+    for ref, x in (("R_INT", 18.0), ("R_WAIT", 32.0), ("R_NMI", 46.0),
+                   ("R_BRQ", 60.0), ("R_M0", 74.0), ("R_M1", 88.0)):
+        p[ref] = (x, 58.0, 90)
+    # power/reset/serial tail: lower-right, all >=5 mm from every edge (ext bank owns
+    # the lower-left). Coordinates are DRC-tuned, not hand-precise.
+    p["J_USBC"] = (48.0, 73.0, 0)
+    p["J_PWR"]  = (60.0, 73.0, 0)
+    p["U_RST"]  = (68.0, 73.0, 0)
+    p["SW_RST"] = (76.0, 73.0, 0)
+    p["J_FTDI"] = (87.0, 73.0, 0)
+    p["JP_S5"]  = (46.0, 85.0, 0)
+    p["D_PWR"]  = (55.0, 85.0, 0)
+    p["R_LED"]  = (63.0, 85.0, 90)
+    p["R_CC1"]  = (71.0, 85.0, 90)
+    p["R_CC2"]  = (79.0, 85.0, 90)
     return p
 
 
@@ -202,6 +236,12 @@ def main():
     }
     for text, sx, sy, ssz in SILK.get(CARD, SILK["mem"]):
         silk(board, text, sx, sy, size=ssz)
+
+    # backplane bus columns are emitted deterministically (D1.29); other cards route
+    # entirely via freerouting.
+    if CARD == "backplane":
+        ncol = emit_bus_columns(board)
+        print(f"  emitted {ncol} bus-column track segments (locked)")
 
     outdir = os.path.join(REPO, "fab", "minimal-vga", "revb")
     os.makedirs(outdir, exist_ok=True)

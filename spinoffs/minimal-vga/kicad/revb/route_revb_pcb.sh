@@ -37,25 +37,31 @@ OUT="fab/minimal-vga/revb/routing"; mkdir -p "$OUT"
 DSN="$OUT/${CARD}.dsn"; SES="$OUT/${CARD}.ses"
 echo "== rev B route ($CARD) via freerouting =="
 # KiCad 10 kicad-cli has no specctra export; use pcbnew (rev A route_rev_a_pcb.sh method).
-# ExportSpecctraDSN returns False (silently) on duplicate refs -- check it.
-"$KICAD_PYTHON" -c "import pcbnew,sys; b=pcbnew.LoadBoard('$PCB');
+# ExportSpecctraDSN returns False (silently) on duplicate refs -- check it. The DSN is
+# exported ONCE from the pristine (pre-route) board so every retry routes the same input
+# with a fresh seed; each attempt imports into a pristine copy, never compounding.
+PRISTINE="$OUT/${CARD}.pristine.kicad_pcb"
+cp "$PCB" "$PRISTINE"
+"$KICAD_PYTHON" -c "import pcbnew,sys; b=pcbnew.LoadBoard('$PRISTINE');
 sys.exit(0 if pcbnew.ExportSpecctraDSN(b,'$DSN') else 'DSN export failed')"
 # freerouting 2.x is GUI-first (-Djava.awt.headless=true runs it batch on macOS) and
-# stochastic -- this board is near the 2-layer routability edge, so retry until a run
-# routes every net (no "could not be routed" in the log).
-# Attempt count is tunable (FR_ATTEMPTS) so the TF.1 placement sweep can probe each
-# candidate cheaply (a routable placement routes in the first attempt or two; a
-# deterministic-fail placement never routes, so few attempts suffice to reject it).
+# stochastic -- a run can report success in its log yet leave a net island. So we don't
+# trust the log: we import each candidate and accept only when the TOTAL DRC is 0/0
+# (0 violations AND 0 unconnected). FR_ATTEMPTS bounds the retries (the TF.1 sweep sets
+# it low so a hopeless placement is rejected fast; routing uses the default otherwise).
 ATTEMPTS="${FR_ATTEMPTS:-12}"
 ROUTED=""
 for attempt in $(seq 1 "$ATTEMPTS"); do
   "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" -de "$DSN" -do "$SES" -mp 100 \
     >"$OUT/${CARD}-fr.log" 2>&1 || true
-  if [ -f "$SES" ] && ! grep -qi "could not be routed" "$OUT/${CARD}-fr.log"; then
-    ROUTED=1; echo "  fully routed on attempt $attempt: $(grep -oE 'final score: [0-9.]+' "$OUT/${CARD}-fr.log" | tail -1)"; break
+  [ -f "$SES" ] || { echo "  attempt $attempt: no SES produced, retrying"; continue; }
+  grep -qi "could not be routed" "$OUT/${CARD}-fr.log" && { echo "  attempt $attempt: log reports unrouted nets, retrying"; continue; }
+  "$KICAD_PYTHON" -c "import pcbnew; b=pcbnew.LoadBoard('$PRISTINE'); pcbnew.ImportSpecctraSES(b,'$SES'); b.Save('$PCB')"
+  if python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py "$CARD" --total >/dev/null 2>&1; then
+    ROUTED=1; echo "  routed 0/0 on attempt $attempt: $(grep -oE 'final score: [0-9.]+' "$OUT/${CARD}-fr.log" | tail -1)"; break
   fi
-  echo "  attempt $attempt: not fully routed, retrying"
+  echo "  attempt $attempt: imported but total DRC not 0/0, retrying"
 done
-[ -n "$ROUTED" ] || { echo "  route ($CARD): could not fully route (needs placement margin) (needs placement margin)"; exit 1; }
-"$KICAD_PYTHON" -c "import pcbnew; b=pcbnew.LoadBoard('$PCB'); pcbnew.ImportSpecctraSES(b,'$SES'); b.Save('$PCB')"
-echo "  routed: $SES imported into $PCB"
+rm -f "$PRISTINE"
+[ -n "$ROUTED" ] || { echo "  route ($CARD): could not reach 0/0 in $ATTEMPTS attempts (needs placement margin)"; exit 1; }
+echo "  routed: $SES imported into $PCB (total DRC 0/0)"
