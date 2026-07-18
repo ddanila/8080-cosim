@@ -52,6 +52,6 @@ for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
   fi
   echo "  attempt $attempt: not fully routed, retrying"
 done
-[ -n "$ROUTED" ] || { echo "  route ($CARD): could not fully route in 6 attempts (needs placement margin)"; exit 1; }
+[ -n "$ROUTED" ] || { echo "  route ($CARD): could not fully route (needs placement margin) (needs placement margin)"; exit 1; }
 "$KICAD_PYTHON" -c "import pcbnew; b=pcbnew.LoadBoard('$PCB'); pcbnew.ImportSpecctraSES(b,'$SES'); b.Save('$PCB')"
 echo "  routed: $SES imported into $PCB"
