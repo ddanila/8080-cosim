@@ -109,7 +109,7 @@ for refdes, item in closed.items():
 lines = [
     "# Native schematic capacitor values",
     "",
-    "Status: **3 VALUES SOURCE-CLOSED / 8 TARGET HOLDS**",
+    "Status: **3 VALUES SOURCE-CLOSED / 9 TARGET HOLDS**",
     "",
     "The retained native circuits print three capacitor values that were blank in",
     "the machine-readable board model. This report checksum-guards the source scans",
@@ -151,7 +151,7 @@ lines += [
     "  closes their sourcing metadata without changing their endpoints.",
     "- C99's `160` label is independent of its unresolved far plate. The value",
     "  is promoted while `C99_FAR` remains a continuity ask.",
-    "- The eight holds are target-revision or incomplete-marking cases. Values",
+    "- The nine holds are target-revision, obscured-body, or incomplete-marking cases. Values",
     "  from the superseded `.006` RF option are deliberately not copied into them.",
     "",
 ]
@@ -159,5 +159,5 @@ lines += [
 REPORT.write_text("\n".join(lines), encoding="utf-8")
 print(
     "NATIVE CAPACITOR VALUES: PASS — 3 literal scan values agree across "
-    "evidence, board JSON, and source PCB; 8 target values remain held"
+    "evidence, board JSON, and source PCB; 9 target values remain held"
 )

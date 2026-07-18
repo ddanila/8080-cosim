@@ -197,8 +197,11 @@ PASSIVE_PLACE = {
     'E4':(39.9,226.5,0),'E5':(50.5,224.0,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
     # ---- .009 analog/FDC corner. The .006 VT3/VT4 dashed RF option is DNP on
     # the target; only the retained VT2/R62-R67/VD3/C94 path is placed here. ----
-    'VT2':(280.7,126.4,0),'VD3':(299.38,128.40,90),
-    'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(287.07,132.26,90),
+    # VT2's yellow Б/8901 KT-13 body is photo-fitted independently of its
+    # three bent component-side lap joints; C94 is the separate factory-drawn
+    # two-terminal position immediately right of VT2, not that yellow body.
+    'VT2':(285.037,132.926,90),'VD3':(299.38,128.40,90),
+    'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(289.870,130.321,90),
     # Remaining retained R6x grid refdes-to-slot assignments are approximate.
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(282.21,125.14,90),'R66':(302.69,128.46,90),
     'R67':(295.94,125.39,90),
@@ -480,6 +483,28 @@ def main():
                     pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
         ctr = fp.GetBoundingBox(False, False).GetCenter()          # re-center on (x,y)
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
+        # The original KT-13 VT2 is raised 3+/-0.5 mm and its three bent leads
+        # are lap-soldered to component-side copper left of the body. Registered
+        # D102 photo coordinates close all three E-C-B joints; their cross-side
+        # projections land on bare copper rather than drilled annuli. Preserve
+        # those asymmetric physical landings instead of an invented TO-92 row.
+        if ref == "VT2":
+            targets = {
+                "1": (280.068, 130.501),  # E / VIDEO_OUT / R65.1 common joint
+                "2": (281.381, 133.201),  # C / P5V
+                "3": (279.700, 135.892),  # B / VT2_BASE
+            }
+            layers = pcbnew.LSET()
+            layers.AddLayer(pcbnew.F_Cu)
+            layers.AddLayer(pcbnew.F_Mask)
+            for pad in fp.Pads():
+                pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
+                pad.SetDrillSize(pcbnew.VECTOR2I_MM(0, 0))
+                pad.SetShape(pcbnew.PAD_SHAPE_CIRCLE)
+                pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
+                pad.SetLayerSet(layers)
+                px, py = targets[pad.GetNumber()]
+                pad.SetPosition(pcbnew.VECTOR2I_MM(px, py))
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
         show_val = not (typ == 'C_KM' and ref.startswith('C') and c.get('value') == '0,047')
         flip = (int(round(x)) // 6) % 2 == 1   # stagger labels in dense passive rows (silk polish)

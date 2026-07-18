@@ -1,52 +1,68 @@
 {
-  "schema_version": 1,
-  "refdes": "C94",
-  "factory_identity": {
+  "schema_version": 2,
+  "scope": "correct the former yellow-body C94 misidentification and preserve the separate factory C94 position as an electrical boundary",
+  "factory_source": {
     "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
     "sha256": "43343d7de0fe671fbe73db933755de1acf6c23c297a741085e05cf94b9c8a53d",
-    "dimensions_px": [4080, 3072],
-    "observation": "the .009 assembly drawing labels C94 below X7 and depicts a two-terminal rectangular capacitor"
+    "dimensions_px": [3072, 4080],
+    "vt2_body_bbox_px": [2258, 2910, 2302, 3034],
+    "vt2_body_center_px": [2279.5, 2971.5],
+    "c94_body_bbox_px": [2334, 2842, 2373, 2979],
+    "c94_body_center_px": [2353.5, 2910.5],
+    "observation": "the assembly drawing separately labels the small VT2 body with grade б and the adjacent two-terminal rectangle C94"
   },
-  "joined_endpoints": ["C94.2", "R65.1"],
-  "net": "VIDEO_OUT",
-  "component_observations": [
-    {
-      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
-      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
-      "dimensions_px": [4080, 3072],
-      "common_joint_px": [3035, 1964],
-      "lower_joint_px": [3029, 2083],
-      "bbox_px": [2920, 1840, 3160, 2180],
-      "observation": "the upper physical C94 lead and lower R65 lead terminate in one common component-side solder pool; the separate lower C94 lead reaches its own lap-soldered joint"
+  "vt2_component_registration": {
+    "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+    "dimensions_px": [4080, 3072],
+    "body_bbox_px": [3090, 1938, 3201, 2093],
+    "body_center_px": [3145.5, 2015.5],
+    "body_center_board_mm": [285.037, 132.926],
+    "visible_marking": "Б / 8901",
+    "pins": {
+      "1": {"role": "E", "net": "VIDEO_OUT", "joint_px": [3035, 1964], "board_mm": [280.068, 130.501]},
+      "2": {"role": "C", "net": "P5V", "joint_px": [3065, 2023], "board_mm": [281.381, 133.201]},
+      "3": {"role": "B", "net": "VT2_BASE", "joint_px": [3029, 2083], "board_mm": [279.700, 135.892]}
     },
+    "observation": "the yellow rectangular body has three visible leads, the КТ315 grade letter Б, and 8901 date code; pin 1 shares R65.1's composite-output landing"
+  },
+  "independent_component_observations": [
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
       "sha256": "8407dec2631bf99b232052e2fab6687742f349ed81c7c2b4eae81d3e02df3301",
       "dimensions_px": [4080, 3072],
-      "common_joint_px": [3091, 91],
-      "lower_joint_px": [3091, 206],
       "bbox_px": [2980, 0, 3220, 330],
-      "observation": "the overlapping July tile independently separates the two C94 leads and confirms the upper C94/R65 common landing"
+      "observation": "overlapping July view independently shows the same yellow three-lead body and outer lap joints"
     },
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
       "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
       "dimensions_px": [4080, 3072],
-      "common_joint_px": [3042, 1004],
-      "lower_joint_px": [3039, 1131],
-      "bbox_px": [2920, 880, 3180, 1240],
-      "observation": "an independent oblique May view corroborates the same two separate C94 lead joints and the upper join to R65"
+      "bbox_px": [2920, 880, 3220, 1240],
+      "observation": "independent May angle resolves the same Б/8901 body and three leads"
     }
   ],
-  "solder_observation": {
+  "component_to_board_affine": {
+    "basis": "registered D102 component-side package fit",
+    "model": "owner pixels to board millimetres",
+    "x_coefficients": [0.045342680, -0.000809690, 144.043395],
+    "y_coefficients": [0.000809690, 0.045342680, 38.990900],
+    "observation": "coefficients are the inverse of the exact D102-local board-to-photo affine and reproduce the recorded body/pin coordinates"
+  },
+  "surface_lap_corroboration": {
     "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
     "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
     "dimensions_px": [4080, 3072],
-    "review_point_px": [954, 1764],
-    "bbox_px": [700, 1450, 1250, 2050],
-    "observation": "the globally registered C94.1 region contains several unrelated joints and rails but no uniquely matching through-hole landing; the component is lap-soldered on the component side"
+    "component_to_solder_transform": [-0.984243042, -0.025227553, 0.025228936, -0.984242960, 4141.787170, 2743.274540],
+    "projected_pin_px": {"1": [1204.2, 733.7], "2": [1176.1, 674.8], "3": [1213.1, 616.7]},
+    "observation": "all three projections land on backside copper without a matching annulus, drill, or solder joint, corroborating the factory raised-lead component-side lap construction"
   },
-  "promotion_basis": "two overlapping July target-board component views plus an independent May angle directly show C94.2 and R65.1 entering one physical landing; R65 pad orientation fixes that landing as VIDEO_OUT",
-  "unresolved": ["C94.1 remote destination"],
-  "non_promotion_basis": "all three component views stop at the isolated lower lap joint and the registered solder region is non-unique; direct continuity is required"
+  "c94_disposition": {
+    "value": null,
+    "joined_endpoints": [],
+    "board_center_mm": [289.870, 130.321],
+    "placement_method": "three-point local factory-drawing affine through registered R65/R67/R66, translated by the residual between its VT2 projection and the stronger owner-photo VT2 body fit",
+    "unresolved": ["owner-board C94 body visibility/population", "C94 value", "C94.1 remote destination", "C94.2 remote destination"],
+    "retraction": "the former 680 pF value and C94.2/R65.1 VIDEO_OUT join came from treating the three-lead Б/8901 КТ315 body as a two-lead capacitor; those promotions are invalid"
+  }
 }

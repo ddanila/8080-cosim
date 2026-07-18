@@ -154,7 +154,6 @@ jobs:
             kicad/apply_kp12_resistor_values.py \
             kicad/apply_kp12_resistor_links.py \
             kicad/apply_right_edge_resistor_values.py \
-            kicad/apply_c94_video_out.py \
             kicad/apply_c20_value.py \
             kicad/apply_c22_value.py \
             kicad/check_d94_pullups.py \

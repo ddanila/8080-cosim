@@ -4838,15 +4838,14 @@
   {
    "ref": "C94",
    "type": "C_KM",
-   "value": "680",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus three owner component-photo views",
-    "pins": "factory drawing identifies the two-terminal C94 in the analog/FDC area below D102; two overlapping July component views plus an independent May angle show the populated yellow 680п body and expose its upper physical lead/pad2 sharing R65.1's VIDEO_OUT landing. The lower physical lead/pad1 is registered but its remote continuation remains photo-exhausted"
+    "refdes": "ДГШ5.109.009 СБ; owner component views are VT2-obscured at the projected C94 site",
+    "pins": "factory drawing identifies a separate two-terminal C94 immediately right of VT2. The formerly attributed yellow body is instead the three-lead КТ315 VT2 marked Б/8901; no owner view uniquely exposes C94's body, value, or either electrical continuation, so both pads remain explicit boundaries"
    }
   },
   {
@@ -15345,7 +15344,7 @@
    ]
   },
   "VIDEO_OUT": {
-   "src": "scan sheet-2 analog corner plus registered target-board photos: C94.2/R65.1 share the visible composite pool",
+   "src": "scan sheet-2 analog corner plus registered target-board photos: the upper owner-visible VT2 lead/pin1 shares R65.1's composite-output landing",
    "nodes": [
     [
      "VT2",
@@ -15358,10 +15357,6 @@
     [
      "X7",
      "1"
-    ],
-    [
-     "C94",
-     "2"
     ]
    ]
   },
@@ -15931,8 +15926,12 @@
    "risk_disposition": "the native sheet closes the D7.6-to-D25.11 turnaround conductor; unread upstream inputs belong to MEMW and INHIB_STATUS_BOUNDARY, not this output net"
   },
   "C94_1_BOUNDARY": {
-   "src": ".009 factory assembly drawing plus two overlapping July target-board component views and an independent May angle prove populated two-terminal C94 (680п) below D102 and expose its lower physical lead/pad1 landing; no view or registered solder region yields a continuous uniquely attributable remote path, so direct continuity is required",
+   "src": ".009 factory assembly drawing identifies C94 immediately right of VT2, but the owner views do not uniquely expose its body or either lead; the previously assigned yellow body and joint belong to three-lead VT2, so C94.1 requires direct continuity",
    "nodes": [["C94", "1"]]
+  },
+  "C94_2_BOUNDARY": {
+   "src": ".009 factory assembly drawing identifies C94 immediately right of VT2, but the owner views do not uniquely expose its body or either lead; the previous C94.2/VIDEO_OUT promotion is retracted because that visible joint is VT2.1/R65.1",
+   "nodes": [["C94", "2"]]
   },
   "C19_1_R100_1_BOUNDARY": {
    "src": ".009 factory identity plus registered July and oblique May target-board component views; C19 upper lead/pad1 and R100 left lead/pad1 terminate on the same visible landing, while the remote destination remains unread",

@@ -1,6 +1,6 @@
 # Native schematic capacitor values
 
-Status: **3 VALUES SOURCE-CLOSED / 8 TARGET HOLDS**
+Status: **3 VALUES SOURCE-CLOSED / 9 TARGET HOLDS**
 
 The retained native circuits print three capacitor values that were blank in
 the machine-readable board model. This report checksum-guards the source scans
@@ -32,6 +32,7 @@ python3 scripts/report_native_capacitor_values.py
 | `C16` | target body reads bare 27 without a unit or decimal letter, which is incomplete under GOST 11076-69 |
 | `C19` | target body reads bare 22 without a unit or decimal letter, which is incomplete under GOST 11076-69 |
 | `C34` | the native sheet proves the rail endpoints but prints no value |
+| `C94` | the former 680 value was a misread of the adjacent three-lead VT2 body marked Б/8901; the separately drawn target C94 is not resolved in owner imagery |
 
 ## Evidence boundary
 
@@ -39,5 +40,5 @@ python3 scripts/report_native_capacitor_values.py
   closes their sourcing metadata without changing their endpoints.
 - C99's `160` label is independent of its unresolved far plate. The value
   is promoted while `C99_FAR` remains a continuity ask.
-- The eight holds are target-revision or incomplete-marking cases. Values
+- The nine holds are target-revision, obscured-body, or incomplete-marking cases. Values
   from the superseded `.006` RF option are deliberately not copied into them.

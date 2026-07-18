@@ -22,20 +22,21 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 636 reviewed rows:
+endpoint table contains 639 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 43 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `accepted` | 46 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
 | `measurement` | 593 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 374 `local-package-fit`, 214
 `registration-only`, and 22 `registration+unique-hole-snap` rows. Four use
 `local-package-fit+continuous-copper`, five use
-`registration+visible-common-landing`, six use
-`registration+unique-joint`, and six use `cross-side-registration`.
-Five `panorama-projected-region` observations record the photo-exhausted R94.2
-and C94.1 solder reviews without pretending that a projection is pad identity.
+`registration+visible-common-landing`, four use
+`registration+unique-joint`, three use `registration+three-lead-identity`, and
+nine use `cross-side-registration`. Four `panorama-projected-region`
+observations record photo-exhausted regions without pretending that a
+projection is pad identity.
 A hole snap or accurate pad projection is not electrical evidence by itself.
 
 Accepted paths:
@@ -56,9 +57,10 @@ Accepted paths:
 - D95.14 -> R92.2 / `D95_A0_R92`.
 - D101.4 -> R92.1 + R99.2 / `D101_D02_R92_R99`.
 - R99.1 -> D101.8 / `GND`.
-- C94.2 -> R65.1 / `VIDEO_OUT`; two registered July angles directly expose
-  the shared landing, while an independent May angle is retained in the
-  dedicated evidence record. C94.1 remains photo-exhausted.
+- VT2.1 -> R65.1 / `VIDEO_OUT`; two registered July angles directly expose
+  the emitter's shared landing, while an independent May angle identifies the
+  yellow three-lead body as VT2 marked `Б / 8901`. The separately drawn C94 is
+  obscured, so both C94 endpoints remain explicit measurement boundaries.
 - Factory cable point A:3 -> X6.1 / `SOUND_CLAMP`, visibly coincident with VD3.2,
   while the separately insulated A:4 -> X6.2 / `GND`. Both are
   component-side lap joints; X6 itself is bracket-mounted and has no PCB footprint.

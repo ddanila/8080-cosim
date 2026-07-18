@@ -281,11 +281,12 @@ Every ask below is queued with exact deliverables in
    a unit/decimal letter for a complete coded capacitance; both capacitors'
    values/units and C19's joined-net remote destinations remain explicit
    measurement boundaries rather than guesses.
-   Two overlapping July component views plus an independent May angle now close
-   C94's upper physical lead, pad 2, directly to R65.1/`VIDEO_OUT`. The separate
-   C94.1 lap joint is registered in each view, but none exposes a complete onward route and the
-   solder-side region is non-unique, so only C94.1 remains a photo-exhausted
-   continuity ask.
+   A full-resolution correction identifies the formerly assigned yellow body as
+   the three-lead КТ315 VT2 marked `Б / 8901`, not C94. Its emitter/pin 1 shares
+   R65.1/`VIDEO_OUT`; its other two component-side lap joints are the collector
+   and base. The factory drawing separately places C94 immediately to its right,
+   but owner imagery does not uniquely resolve C94 through the transistor body.
+   C94 population, value, and both endpoints therefore remain measurement asks.
    The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against
@@ -443,7 +444,7 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-636 observations have dispositions, 43 rows are accepted evidence, and the
+639 observations have dispositions, 46 rows are accepted evidence, and the
 other 593 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source

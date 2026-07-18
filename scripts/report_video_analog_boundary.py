@@ -10,18 +10,20 @@ ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.board.json"
 DISPOSITION = ROOT / "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json"
 REPORT = ROOT / "docs/video-analog-boundary.md"
+CORRECTION = ROOT / "ref/photos/juku-pcb-2/c94-endpoint-registration.json"
 
 RETAINED_NETS = {
     "D34_SYNC": {("D34", "8"), ("R62", "1")},
     "D34_SIG": {("D34", "11"), ("R63", "1")},
     "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "3")},
-    "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1"), ("C94", "2")},
+    "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1")},
     "SOUND_CLAMP": {
         ("R66", "2"), ("VD3", "2"), ("R67", "1"),
         ("AX603", "1"), ("X6", "1"),
     },
     "R67_2_BOUNDARY": {("R67", "2")},
     "C94_1_BOUNDARY": {("C94", "1")},
+    "C94_2_BOUNDARY": {("C94", "2")},
 }
 
 REUSED_BOUNDARY_NETS = {
@@ -55,6 +57,7 @@ def table_row(values: list[object]) -> str:
 def main() -> int:
     board = load(BOARD)
     disposition = load(DISPOSITION)
+    correction = load(CORRECTION)
     chips = {item["ref"]: item for item in board["chips"]}
     all_nodes = {
         tuple(node)
@@ -131,10 +134,12 @@ def main() -> int:
             "A:3/X6.1 SOUND_CLAMP / A:4/X6.2 GND; no PCB X6 body",
         ),
         (
-            "Target C94 680 pF body remains modeled",
+            "VT2/C94 owner-photo misidentification remains corrected",
             chips.get("C94", {}).get("type") == "C_KM"
-            and chips.get("C94", {}).get("value") == "680",
-            ".009 factory identity plus populated owner-photo 680п marking",
+            and not chips.get("C94", {}).get("value")
+            and correction.get("vt2_component_registration", {}).get("visible_marking") == "Б / 8901"
+            and correction.get("c94_disposition", {}).get("joined_endpoints") == [],
+            "yellow three-lead body is VT2; separately drawn C94 retains two measurement boundaries",
         ),
     ]
 
@@ -193,10 +198,10 @@ def main() -> int:
         "",
         "- The `.009` PCB no longer carries fifteen physically contradicted `.006` RF-only parts",
         "  or the ten false pad-collision pairs they caused.",
-        "- VT2/R62-R67/VD3/C94/X7 remain the populated target analog handoff. Two overlapping",
-        "  July views plus an independent May angle close C94.2 to R65.1/VIDEO_OUT; C94.1",
-        "  and the other unresolved",
-        "  endpoints still require continuity or bench capture.",
+        "- VT2/R62-R67/VD3/X7 remain the populated target analog handoff. Two overlapping",
+        "  July views plus an independent May angle identify the yellow three-lead body as",
+        "  VT2 marked `Б / 8901`; its emitter shares R65.1/VIDEO_OUT. The separately drawn",
+        "  C94 is obscured, so its population, value, and both endpoints require inspection.",
         "- X6 is not evidence for the removed VT3/VT4 RF network. Its target bracket cable",
         "  instead closes directly to the retained SOUND_CLAMP/GND handoff.",
         "- Machine-readable source and population evidence is in",

@@ -54,6 +54,7 @@
     {"ref": "C15", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
     {"ref": "C16", "reason": "target body reads bare 27 without a unit or decimal letter, which is incomplete under GOST 11076-69"},
     {"ref": "C19", "reason": "target body reads bare 22 without a unit or decimal letter, which is incomplete under GOST 11076-69"},
-    {"ref": "C34", "reason": "the native sheet proves the rail endpoints but prints no value"}
+    {"ref": "C34", "reason": "the native sheet proves the rail endpoints but prints no value"},
+    {"ref": "C94", "reason": "the former 680 value was a misread of the adjacent three-lead VT2 body marked Б/8901; the separately drawn target C94 is not resolved in owner imagery"}
   ]
 }

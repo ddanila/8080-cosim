@@ -79,6 +79,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `C22_1_BOUNDARY: C22.1`
 - `C22_2_BOUNDARY: C22.2`
 - `C94_1_BOUNDARY: C94.1`
+- `C94_2_BOUNDARY: C94.2`
 - `CAS: D38.1`
 - `CLK_123M: D57.9`
 - `CLK_123M: D34.12`
@@ -411,7 +412,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `USART_TXRDY_IRQ: D11.15`
 - `VERT_RTR: D35.9`
 - `VERT_SYNC: D55.17`
-- `VIDEO_OUT: C94.2`
 - `VID_MUX_G: E14.1`
 - `W10_QA_SEL: W10.1`
 - `W10_QA_SEL_D50: D51.1`

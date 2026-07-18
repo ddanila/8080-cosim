@@ -10,6 +10,10 @@
       "beeper_stage": [3300, 2150, 900, 800]
     }
   },
+  "physical_source": {
+    "path": "ref/photos/juku-pcb-2/c94-endpoint-registration.json",
+    "observation": "owner imagery closes VT2 as the yellow three-lead КТ315 body marked Б/8901 and registers its three component-side lap joints"
+  },
   "package_references": [
     {
       "device": "КТ972",

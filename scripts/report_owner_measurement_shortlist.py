@@ -256,10 +256,10 @@ def main() -> int:
         ),
         (
             "P1",
-            "C94 endpoint continuity",
-            "identify the remote destination of C94.1 below D102; two overlapping July component views plus an independent May angle already close the upper physical lead C94.2 directly to R65.1/VIDEO_OUT, while the lower lap-soldered joint and registered solder region are photo-exhausted",
-            "`ref/photos/juku-pcb-2/c94-endpoint-registration.json`; `docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94.1 boundary net",
-            "completes the electrical disposition of a target-revision component that was previously absent from the physical model",
+            "C94 inspection and continuity",
+            "inspect whether the separate factory-drawn C94 immediately right of VT2 is populated, read its value, and identify both endpoint destinations; the formerly assigned yellow body and VIDEO_OUT join are retracted because two July views plus a May angle identify that three-lead Б/8901 body and its joints as VT2",
+            "`ref/photos/juku-pcb-2/c94-endpoint-registration.json`; `docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94 boundary nets",
+            "closes a target-revision capacitor without reusing the adjacent transistor's marking or emitter landing",
         ),
         (
             "P1",

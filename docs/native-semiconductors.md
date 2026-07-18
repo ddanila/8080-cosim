@@ -24,7 +24,8 @@ python3 scripts/report_native_semiconductors.py
 
 - VT1 uses the stock horizontal TO-126 footprint because the КТ972 datasheet
   identifies the КТ-27 case and the factory mounting detail lays that body flat.
-- VT2 retains the stock 2.54 mm outer-span inline footprint as a pad-row stand-in
-  for the flat КТ-13 body; its exact photo placement remains a separate open task.
+- VT2 retains the stock КТ-13 outline but replaces its generic drilled row with
+  the three exact owner-photo component-side lap joints. The yellow body is visibly
+  marked `Б / 8901`; it was formerly misidentified as C94.
 - VD4 remains deliberately blank: neither the retained sheet nor current owner
   imagery closes an exact designation.

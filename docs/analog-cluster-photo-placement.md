@@ -10,35 +10,35 @@ the RF group remains constrained but deferred while its tapped coil is traced.
 - `ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg` labels the positions
   below `D102`: `R65` at the left and `R67`/`VD3`/`R66` at the right.
 - `ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg` shows the corresponding
-  populated region. The red axial resistor left of the yellow three-lead RF
-  part is `R65`; the right group contains `R67`, glass `VD3`, and `R66`.
+  populated region. The red axial resistor left of the yellow three-lead
+  КТ315 `VT2` is `R65`; the right group contains `R67`, glass `VD3`, and `R66`.
 - The owner image is mapped to board millimetres with the independently fitted
   16-pad `D102` affine registration. A full-resolution reread projects the
   `R65` body centre to `(282.21, 125.14)` mm. The right-group observations are
   approximately `R67=(295.94,125.39)`, `VD3=(299.38,128.40)`, and
-  `R66=(302.69,128.46)` mm. The earlier `(287.07,132.26)` reading was the yellow
-  three-lead part, not `R65`, and is explicitly superseded here.
+  `R66=(302.69,128.46)` mm.
 
 The photo read is suitable for package placement but does not yet identify the
 lower obscured/passive positions. `R65`, the visibly marked red `2к` R67, glass
 `VD3`, and rightmost `R66` are now placed at their observed centres. The
 factory drawing fixes the left-to-right identity of the right-hand group, so
 the photo centres no longer depend on colour or circuit-role inference.
-The yellow part beside `R65` was tested as an L1 candidate and rejected. Its
-full-resolution marking reads `680п` (680 pF), and the registered solder view
-does not yield the three coherent coil terminals required by the schematic.
-The previously recorded `(287.07,132.26)` centre therefore belongs to a
-capacitive part, not L1. The `.009` factory drawing identifies that populated
-part as C94, and its visible marking reads `680п`; C94 is now restored to the
-physical board model rather than being silently omitted or misidentified as the
-tapped coil. A later endpoint review of the raw July tile, its overlapping lower
-tile, and an independent May angle separates the two physical leads. In all
-three views the upper C94 lead and lower R65 lead enter one common component-side
-solder pool. The modeled physical orientation maps those leads to C94.2 and
-R65.1, so C94.2 is now closed to `VIDEO_OUT`. The separate lower C94.1 lap joint
-is visible but none of the three angles exposes a continuous remote route; its
-registered solder-side region is likewise non-unique. C94.1 therefore remains a
-photo-exhausted continuity boundary. The remaining
+The former C94 identification of the yellow body is retracted. Full-resolution
+review resolves three leads and the marking `Б / 8901`, the grade/date marking
+of the factory-drawn КТ315 `VT2`. The raw July tile registers its E-C-B lap
+joints at board coordinates `(280.068,130.501)`, `(281.381,133.201)`, and
+`(279.700,135.892)` mm. Pin 1/emitter and R65.1 enter the directly visible common
+`VIDEO_OUT` solder pool; pins 2 and 3 retain the native `P5V` collector and
+`VT2_BASE` assignments. Cross-side projection places all three joints on bare
+backside copper without annuli or drills, corroborating the raised, bent-lead
+component-side construction shown by the factory mounting detail.
+
+The assembly drawing separately labels a two-terminal C94 immediately right of
+VT2. Its locally projected centre, corrected by the stronger owner-photo VT2
+fit, is `(289.870,130.321)` mm. Owner views do not uniquely expose that body
+through VT2, so its population, value, and both continuations remain explicit
+boundaries; neither the former `680` value nor the former C94.2/VIDEO_OUT join is
+retained. The remaining
 parts stay unchanged until their bodies can be paired unambiguously. X6 is no
 longer among those asks: the factory 12 cm cable table and two component-photo
 angles prove that the connector is bracket-mounted. Printed point A:3 is
@@ -64,7 +64,7 @@ The `.009` drawing reuses C9/C10/C11/C12/C15 around D93-D102, so those physical
 capacitors remain at their factory positions with both leads left as explicit
 target-continuity boundaries. R67.2 remains such a boundary; X6 is instead
 closed through the target cable independently of the superseded RF nets. The
-yellow `680п` part remains the separately proved C94.
+yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
 
 R67.2 has now been chased to the limit of the owner imagery. The registered
 July component view and an independent May angle both expose its upper physical
@@ -78,9 +78,9 @@ inter-layer join. R67.2 remains a photo-exhausted continuity measurement, with
 the evidence preserved in `ref/photos/juku-pcb-2/r67-photo-exhaustion.json`.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
-the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`, and
-guards C94's pad orientation/net assignment, C16/C19, R92/R99, plus the two
-registered capacitor drill spans beside D102. Machine-readable C94 endpoint
+the former assembly-grid approximations for `VT2`/`R65`/`R67`/`VD3`/`R66`/`C94`, and
+guards VT2's three lap joints, both C94 boundaries, C16/C19, R92/R99, plus the two
+registered capacitor drill spans beside D102. Machine-readable VT2/C94 correction
 evidence is in `ref/photos/juku-pcb-2/c94-endpoint-registration.json`.
 
 ## C16/R92/R99 drill registration

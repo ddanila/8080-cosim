@@ -19,8 +19,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `315`
-- Nets modeled: `568`
-- Chip-level fidelity gaps: `67`
+- Nets modeled: `569`
+- Chip-level fidelity gaps: `68`
 - Net-level source-risk gaps: `202`
 - Explicitly dispositioned closed net risks: `16`
 - Documented intentional no-connect pins: `58`
@@ -68,7 +68,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | logic/source | 16 | 60 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 26 | 0 |
-| placement/value | 14 | 0 |
+| placement/value | 15 | 0 |
 | sound/analog | 0 | 1 |
 | video/analog | 0 | 4 |
 
@@ -174,6 +174,7 @@ parts placement and Tier-3 reproduction.
 | `C46` | `C_KM` | scan | .009 factory drawing directly places C46 above D87 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and... |
 | `C50` | `C_KM` | scan | .009 factory drawing directly places C50 above D85 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and... |
 | `C9` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C9 vertically between D100 and D98; both target-revision electrical destinations remain explicit continui... |
+| `C94` | `C_KM` | scan | ДГШ5.109.009 СБ; owner component views are VT2-obscured at the projected C94 site factory drawing identifies a separate two-terminal C94 immediately right of... |
 | `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review prints C99=160 and proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing con... |
 
 ## Documented Intentional No-Connects

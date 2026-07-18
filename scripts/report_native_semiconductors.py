@@ -80,6 +80,11 @@ evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
 source = ROOT / evidence["source"]["path"]
 if not source.is_file() or sha256(source) != evidence["source"]["sha256"]:
     fail("native sheet-2 source hash drifted")
+physical_source = ROOT / evidence["physical_source"]["path"]
+physical_evidence = json.loads(physical_source.read_text(encoding="utf-8"))
+if (physical_evidence.get("schema_version") != 2 or
+        physical_evidence.get("vt2_component_registration", {}).get("visible_marking") != "Б / 8901"):
+    fail("VT2 owner-photo package evidence drifted")
 
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
@@ -136,8 +141,9 @@ lines += [
     "", "## Evidence boundary", "",
     "- VT1 uses the stock horizontal TO-126 footprint because the КТ972 datasheet",
     "  identifies the КТ-27 case and the factory mounting detail lays that body flat.",
-    "- VT2 retains the stock 2.54 mm outer-span inline footprint as a pad-row stand-in",
-    "  for the flat КТ-13 body; its exact photo placement remains a separate open task.",
+    "- VT2 retains the stock КТ-13 outline but replaces its generic drilled row with",
+    "  the three exact owner-photo component-side lap joints. The yellow body is visibly",
+    "  marked `Б / 8901`; it was formerly misidentified as C94.",
     "- VD4 remains deliberately blank: neither the retained sheet nor current owner",
     "  imagery closes an exact designation.", "",
 ]
