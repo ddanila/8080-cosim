@@ -55,6 +55,15 @@
     "term_ohms": 75
   },
 
+  "frame_tick": {
+    "_note": "TI.2 gate (e) / TI.3. The firmware uses a frame IRQ (ir5) every 200000 CPU cycles as its keyboard-scan / timing cadence (facts: frame_irq_period_cycles). VGA vsync is 59.94 Hz. At the S1 CPU clock (~2-4 MHz) raw 60 Hz vsync is ~3-6x FASTER than the calibrated 200000-cycle tick, so feeding it raw makes keyboard-repeat/cursor-blink/delay-loops run that many times too fast. The video card therefore divides vsync by DIV to reconstruct the ~200000-cycle cadence. DIV = round(200000 * 59.94 / F_cpu): 6 at 2 MHz, 3 at 4 MHz. F_cpu is socketed (S1, not yet fixed), so DIV is a set-at-CPU-clock-fix parameter (a small counter on the FRAME_TICK output / in the control GAL). Bench (T1.11) confirms the felt cadence.",
+    "firmware_period_cpu_cycles": 200000,
+    "vsync_hz": 59.94,
+    "div_at_2mhz": 6,
+    "div_at_4mhz": 3,
+    "div_formula": "round(200000 * 59.94 / F_cpu_hz)",
+    "div_selected": "TBD@S1 (CPU clock fix / bench)"
+  },
   "adopted_from": {
     "project": "mengstr/TTL640x480",
     "commit": "ea1ecd063d500982263c76a795abd84f77ccb59a",
