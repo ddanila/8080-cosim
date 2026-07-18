@@ -164,6 +164,11 @@ discarded as soon as their successor is verified, keeping large transactions
 at constant scratch-board storage rather than one full board per grid attempt.
 `--diagnose-only` records the complete removable/fixed blocker classification
 and affected-net set without removing copper or writing a candidate board.
+`--gap-report` can select the proposal endpoints from a retained DRC report
+when different KiCad builds choose different representative marker pairs for
+the same disconnected net islands. A fresh live DRC still supplies all counts
+and publication gates. Target closure is proved by a decrease in the live
+target-net gap count, not merely by disappearance of one coordinate pair.
 
 `close_unconnected_gaps.py --attempted-state` canonicalizes endpoint order and
 atomically records outcomes. State remains bound to the exact SHA-256 of the
@@ -268,6 +273,27 @@ a cumulative 398 guarded repairs. Fresh full-distance 0.10, 0.125, 0.1375, and
 0.15 mm sweeps exhaust all 29 signatures without another acceptance; the
 0.125 mm D26_PC0_D3_I5 proposal remains rejected by three added clearance
 findings.
+
+BA2 then exposes a productive composite topology that requires a deliberately
+retained intermediate rather than publishing its first one-open regression.
+Stable KiCad DRC selects the 36.389 mm BA2 track-to-via marker reproducibly;
+nightly DRC can instead choose a 43.805 mm track-to-track marker for the same
+disconnected islands. The first transaction closes BA2 but temporarily exposes
+BA0 and VA8 and therefore retains, but does not publish, a DRC-neutral 30-open
+board. A six-item VA8 transaction restores BA2, BA3, and GND and returns to 29.
+A five-item BA0 equal swap restores VA1, VA5, VA0, and RAIL_H in constrained
+order, leaving one 14.970 mm VA8 replacement. Matching both the diagnostic and
+target lattice at 0.15 mm finds a four-item path for that final replacement;
+S3_3, VID_CPU_SEL, and P5V all restore, and one newly orphaned migrated
+VID_CPU_SEL via is removed under the existing whole-board gate. The resulting
+board reaches 28 opens with 31,637 copper items. Independent stable KiCad DRC
+reports 199 track-dangling and 46 via-dangling findings and zero short,
+clearance, crossing, hole, or edge blockers. Exact parity holds for all 303
+source footprints and 2,395 pads. Its SHA256 is
+`e04c9ac76b87cfb12af5deea4da25cb4cedb02cb1abfb57430f595ab92de9dcf`.
+A fresh 0.10 mm-grid, 100 mm-margin sweep exhausts all 28 residuals without an
+acceptance; D26_PC0_D3_I5 produces seven added clearance findings and is
+rejected.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -447,6 +473,35 @@ python3 kicad/close_gap_by_ripup.py CS_D26_SWAP OUTPUT_29 \
   --net D53_Y2_R51 --diagnostic-clearance 0.15 --route-clearance 0.20 \
   --max-conflicts 20 --allow-mixed-diagnostic-blockers \
   --restore-grid-steps 0.10,0.15,0.125,0.1375
+# Pin BA2's track-to-via marker with stable KiCad; nightly DRC may choose a
+# different representative pair for the same two disconnected islands.
+/usr/bin/kicad-cli pcb drc --format json \
+  --output /tmp/juku-29-stable-drc.json OUTPUT_29
+python3 kicad/close_gap_by_ripup.py OUTPUT_29 UNUSED_OUTPUT \
+  --net BA2 --gap-report /tmp/juku-29-stable-drc.json \
+  --diagnostic-clearance 0.10 --route-clearance 0.20 --grid-step 0.10 \
+  --search-margin 100 --max-conflicts 20 --allow-mixed-diagnostic-blockers \
+  --allow-equal-open-swap --restore-grid-steps 0.10,0.15,0.125,0.1375 \
+  --restore-net-priority VA8,VA7,P5V,BA5,BA0 \
+  --transaction-board BA2_STAGE_30 || test -s BA2_STAGE_30
+python3 kicad/close_gap_by_ripup.py BA2_STAGE_30 BA2_VA8_29 \
+  --net VA8 --diagnostic-clearance 0.10 --route-clearance 0.20 \
+  --grid-step 0.10 --search-margin 100 --max-conflicts 10 \
+  --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
+  --restore-grid-steps 0.10,0.15,0.125,0.1375 \
+  --restore-net-priority BA2,BA3,GND
+python3 kicad/close_gap_by_ripup.py BA2_VA8_29 BA0_SWAP_29 \
+  --net BA0 --diagnostic-clearance 0.10 --route-clearance 0.20 \
+  --grid-step 0.10 --search-margin 100 --max-conflicts 10 \
+  --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
+  --restore-grid-steps 0.10,0.15,0.125,0.1375 \
+  --restore-net-priority VA1,VA5,VA8,VA0,RAIL_H
+python3 kicad/close_gap_by_ripup.py BA0_SWAP_29 OUTPUT_28 \
+  --net VA8 --diagnostic-clearance 0.15 --route-clearance 0.20 \
+  --grid-step 0.15 --search-margin 100 --max-conflicts 10 \
+  --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
+  --restore-grid-steps 0.15,0.10,0.125,0.1375 \
+  --restore-net-priority S3_3,VID_CPU_SEL,P5V
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.

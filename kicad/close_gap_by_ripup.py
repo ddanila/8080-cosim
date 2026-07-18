@@ -115,26 +115,6 @@ def net_gaps(
     return sorted(result)
 
 
-def same_gap(
-    gap: tuple[float, float, float, float, float, str, str],
-    candidate: tuple[float, float, float, float, float, str, str],
-    tolerance: float = 0.000_001,
-) -> bool:
-    left = gap[1:5]
-    right = candidate[1:5]
-
-    def point_equal(a: tuple[float, float], b: tuple[float, float]) -> bool:
-        return abs(a[0] - b[0]) <= tolerance and abs(a[1] - b[1]) <= tolerance
-
-    return (
-        point_equal(left[:2], right[:2])
-        and point_equal(left[2:], right[2:])
-    ) or (
-        point_equal(left[:2], right[2:])
-        and point_equal(left[2:], right[:2])
-    )
-
-
 def track_nets(board: pcbnew.BOARD) -> dict[str, str]:
     return {uuid(item): item.GetNetname() for item in board.GetTracks()}
 
@@ -237,6 +217,14 @@ def main() -> None:
         type=int,
         default=0,
         help="zero-based distance-sorted gap index on the target net",
+    )
+    parser.add_argument(
+        "--gap-report",
+        type=Path,
+        help=(
+            "select the target marker from this retained KiCad DRC JSON; the "
+            "fresh live DRC still governs counts and every publication gate"
+        ),
     )
     parser.add_argument("--source", type=Path, default=SOURCE)
     parser.add_argument("--search-margin", type=float, default=60.0)
@@ -378,11 +366,23 @@ def main() -> None:
         initial_report = run_drc(cli, args.input, tmp / "initial.json")
         initial_counts = violation_counts(initial_report)
         initial_open = len(initial_report.get("unconnected_items", []))
-        gaps = net_gaps(initial_report, args.net)
+        initial_target_open = len(net_gaps(initial_report, args.net))
+        if args.gap_report:
+            try:
+                gap_report = json.loads(args.gap_report.read_text())
+            except (OSError, json.JSONDecodeError) as error:
+                raise SystemExit(
+                    f"cannot read --gap-report {args.gap_report}: {error}"
+                ) from error
+        else:
+            gap_report = initial_report
+        gaps = net_gaps(gap_report, args.net)
         if args.gap_index >= len(gaps):
             raise SystemExit(
                 f"{args.net} has {len(gaps)} gap(s), index {args.gap_index} is invalid"
             )
+        if initial_target_open == 0:
+            raise SystemExit(f"live DRC reports no open gap on target net {args.net}")
         selected = gaps[args.gap_index]
         distance, x1, y1, x2, y2, layer1, layer2 = selected
 
@@ -455,6 +455,8 @@ def main() -> None:
                 "target_net": args.net,
                 "target_gap_index": args.gap_index,
                 "target_gap_distance_mm": distance,
+                "target_gap_report": str(args.gap_report) if args.gap_report else None,
+                "initial_target_net_gaps": initial_target_open,
                 "diagnostic_clearance_mm": diagnostic_clearance,
                 "route_clearance_mm": args.route_clearance,
                 "diagnostic_new_items": len(new_route_uuids),
@@ -536,12 +538,10 @@ def main() -> None:
         )
         discard_temporary_board(target_input, tmp)
         target_report = run_drc(cli, target_routed, tmp / "target-routed.json")
-        if any(
-            same_gap(selected, gap)
-            for gap in net_gaps(target_report, args.net)
-        ):
+        if len(net_gaps(target_report, args.net)) >= initial_target_open:
             raise SystemExit(
-                "selected target gap remains after removing its diagnostic conflicts"
+                "target-net gap count did not decrease after removing its "
+                "diagnostic conflicts"
             )
         current = target_routed
         for net_index, netname in enumerate(restore_net_order, 1):
@@ -626,8 +626,11 @@ def main() -> None:
                 f"rip-up transaction failed DRC invariants: blockers={blockers}, "
                 f"increases={increases}"
             )
-        if any(same_gap(selected, gap) for gap in net_gaps(final_report, args.net)):
-            raise SystemExit("selected target gap remains after rip-up transaction")
+        final_target_open = len(net_gaps(final_report, args.net))
+        if final_target_open >= initial_target_open:
+            raise SystemExit(
+                "target-net gap count did not decrease after rip-up transaction"
+            )
 
         final_board = pcbnew.LoadBoard(str(current))
         final_tracks = len(track_nets(final_board))
@@ -640,6 +643,9 @@ def main() -> None:
             "target_net": args.net,
             "target_gap_index": args.gap_index,
             "target_gap_distance_mm": distance,
+            "target_gap_report": str(args.gap_report) if args.gap_report else None,
+            "initial_target_net_gaps": initial_target_open,
+            "final_target_net_gaps": final_target_open,
             "diagnostic_clearance_mm": diagnostic_clearance,
             "route_clearance_mm": args.route_clearance,
             "restore_grid_steps_mm": restore_grid_steps,

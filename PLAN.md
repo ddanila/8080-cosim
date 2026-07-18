@@ -45,8 +45,8 @@ electrical-category findings. Splits, removed endpoints, and every moved pad
 remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
-starts at 433 honest gaps. Guarded A* routing now accepts 398 repairs and reaches
-29 gaps with 30,949 copper items, exact parity across all 2,395 current source
+starts at 433 honest gaps. Guarded A* routing now reaches
+28 gaps with 31,637 copper items, exact parity across all 2,395 current source
 pads, and zero short, clearance, crossing, hole, or edge findings. The decisive
 follow-up uses the board-legal 0.21 mm clearance instead of the earlier
 conservative 0.45 mm proposal keep-out; it closes 111 gaps after targeted INTR,
@@ -76,8 +76,15 @@ AMW_N or CS_D55 space, so tested orders cannot beat the 30-open checkpoint.
 Read-only blocker surveys then identify CS_D26's bounded 17-item topology. Its
 DRC-neutral equal-open swap closes CS_D26 but exposes D53_Y2_R51; a second
 one-item transaction routes that replacement and restores CS_D26, reaching the
-current independently verified 29-gap boundary. Fresh full-distance 0.10,
-0.125, 0.1375, and 0.15 mm sweeps accept nothing further.
+29-gap boundary. A further composite topology chain uses a retained stable
+KiCad DRC marker to avoid nightly representative-endpoint variation on BA2.
+It temporarily trades BA2 for BA0 and VA8, then closes those replacements in
+three guarded transactions. The final 0.15 mm-grid VA8 transaction displaces
+only four migrated items and restores S3_3, VID_CPU_SEL, and P5V, reaching the
+current independently verified 28-gap boundary. Stable KiCad DRC reports 199
+track-dangling and 46 via-dangling findings and zero electrical blockers. A
+fresh full-distance 0.10 mm, 100 mm-margin sweep exhausts all 28 signatures
+without acceptance; D26_PC0_D3_I5 remains a DRC-rejected proposal.
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
