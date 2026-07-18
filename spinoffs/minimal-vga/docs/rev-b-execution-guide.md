@@ -756,16 +756,35 @@ the adopted schematic; license provenance recorded.
   anchor (tolerance recorded — VGA 60 Hz vs the original tick is a firmware-visible
   fact; the oracle decides what is acceptable).
 *Acceptance:* tier suite green with the TTL card substituted; D2.4 resolved and frozen.
+**PARTIAL (2026-07-18):** delivered — the TTL twin (standalone), gates (b) scanout
+(hsync 656/96, vsync 490/2, 1968 pixels exact), (c) /WAIT (24/24 held+landed, invariant
+every dot), (d) via the twin's mode logic, **plus the D2.7 address-generator gate**
+(accumulator == src_row×40+col, 10240 bytes, 0 errors) — 5 gates green in
+`revb_video_check.sh`, in the tier suite. **Deferred to TI.3 (honesty):** gate (a) the
+*integrated* boot (the boot check still runs the behavioural card; the TTL card has not
+yet been wired into `revb_backplane_top` with dot-clock + WAIT_N→CPU plumbing) and gate
+(e) FRAME_TICK-vs-facts analysis (the output pin exists; the 59.94 Hz vs 200000-cycle
+cadence comparison is unwritten). Sim-scale note: run /WAIT-class sims at SMALL timing
+params + bounded loops + watchdog — full-frame waits hang iverilog.
 
-**TI.3 — netlist to schematic depth + LVS.**
-- `gen_revb_boards.py`: add the `video` card — new CHIP_TYPES (74HCT393/00/10/20/04/157/
-  166, GAL22V10_VIDEO, OSC_25M175, DB15HD, R-DAC + termination resistors, decoupling
-  caps ~1/chip), full pin tables wired per TI.2's model; AS6C1008 reused (D2.3, high
-  address lines strapped). D1.18 completeness + connectivity guards must stay green
-  (cards.json `video` entry already specifies the bus face).
-- LVS: `revb_video_lvs.v` empty-bodied structural netlist + instance map;
-  `revb_lvs.sh video` IN SYNC; tier suite + CI.
-*Acceptance:* video.board.json generated, completeness green, LVS IN SYNC.
+**TI.3 — netlist to schematic depth + LVS (+ the two deferred TI.2 gates).**
+- **Integrated boot gate (deferred TI.2-a):** parameterise `revb_backplane_top` to
+  substitute `revb_video_card_ttl` (adds a dot_clk source and wires `wait_od_n` into the
+  CPU card's `wait_n` — the B0 top ties it high); `revb_boot_check.sh` gains a third run:
+  ekta37 boots through the TTL card, framebuffer byte-identical, T80 honouring /WAIT.
+- **FRAME_TICK gate (deferred TI.2-e):** compute the original tick period from the facts
+  (200000 CPU cycles at the S1 clock) vs VGA 59.94 Hz; record the ratio + firmware
+  consequence (keyboard-scan cadence) in `video-timing.json` and the bus contract; the
+  B3 risk list inherits it.
+- `gen_revb_boards.py`: add the `video` card — new CHIP_TYPES per D2.6/D2.7 (3×'393
+  counters; **3× GAL22V10** H-decode/V-decode/control; 4×'157 CPU/scanout mux; **4×'161
+  scan-addr counter + 2×'374 row-base register** (D2.7); '166 shifter; '245 buffer;
+  OSC_25M175; DSUB-15HD; R-DAC + 75 Ω terminations; decoupling ~1/chip — **~21 ICs**),
+  full pin tables wired per the TI.2 twin; AS6C1008 reused (D2.3, high addresses
+  strapped). GAL equations → `rev-b-gal-equations.md`. Completeness + connectivity green.
+- LVS: `revb_video_lvs.v` (GALs + SRAM instances) + map; `revb_lvs.sh video` IN SYNC.
+*Acceptance:* integrated boot byte-identical through the TTL card; FRAME_TICK ratio
+recorded; video.board.json generated; completeness green; LVS IN SYNC.
 
 **TI.4 — footprints + package guards.**
 - Probe additions: DIP-14 TTLs (existing kind), `OSC_25M175` (existing OSC14 kind),
@@ -777,16 +796,20 @@ the adopted schematic; license provenance recorded.
 *Acceptance:* probe green all five cards; DSUB negative test fails on the wrong-variant
 footprint.
 
-**TI.5 — PCB: placement + route (D2.2 gate). [HOLD until T1.11 bench-proves the bus]**
-- `revb_place.py`: video PLACE table (BOARD_H=100; J_BUS/J_EXT derived from mating.json
-  automatically). Layout guidance: bus interface + GAL near the bottom (mating) edge,
-  SRAM + mux center, timing chain + shifter + DAC + DB15 along the TOP edge (cable side),
-  osc adjacent to the counters, 25 MHz nets short.
-- Placement DRC 0 → route (FR_ATTEMPTS=30, sweep on the SRAM/GAL if needed, exactly the
-  TF.1 pattern). **If the sweep exhausts without 0/0 → D2.2 4-layer exception**, recorded
-  in the build plan with the sweep log as evidence.
-*Acceptance:* `check_revb_drc.py video --total` 0/0 from fresh regenerate; layer count
-recorded; STEP + previews rendered.
+**TI.5 — PCB: placement + route (D2.2 as amended: 4-layer by default). [HOLD until
+T1.11 bench-proves the bus]**
+- **4-layer stackup from the start** (D2.2 amendment: ~21 ICs + the 25 MHz SI argument;
+  no 2-layer fight): signal / GND plane / VCC5 plane / signal. First 4-layer board in the
+  pipeline — `gen_revb_pcb.py` needs a per-card layer-count knob and the DRC/export path
+  re-verified for 4 layers.
+- `revb_place.py`: video PLACE table (BOARD_H=100; J_BUS/J_EXT from mating.json).
+  Layout rules, SI-driven: the **dot-clock chain places as a contiguous run**
+  (osc → '393 counters → '161 scan counter → '166 shifter) along the top edge with the
+  DAC + DB15; **dot-clock stubs ≤ 50 mm**; bus interface + GALs at the bottom (mating)
+  edge; SRAM + mux centre between them.
+- Placement DRC 0 → route (FR_ATTEMPTS=30, sweep on SRAM/GAL positions if needed).
+*Acceptance:* `check_revb_drc.py video --total` 0/0 from fresh regenerate on the 4-layer
+stackup; dot-clock run length recorded; STEP + previews rendered.
 
 **TI.6 — mechanical: 4-card assembly + connector overhang.**
 - `mate_check.py`: seat mem/io/cpu/video in slots 1–4; interference 0; re-measure
@@ -795,9 +818,10 @@ recorded; STEP + previews rendered.
 *Acceptance:* updated `rev-b-mating-report.md` with the 4-card numbers.
 
 **TI.7 — power re-check + fab package + BOM.**
-- Power: ~18 HCT + osc + SRAM ≈ +150 mA over the B1 table → new total vs the 60 %/0.9 A
-  USB headroom rule — if it crosses, record the consequence (bench/PD-supply note in the
-  bus contract), don't hand-wave it.
+- Power: ~21 ICs (HCT + 3 GALs + osc + SRAM, several switching at 25 MHz) ≈ +200 mA over
+  the B1 table → new total ~910 mA vs the 60 %/0.9 A USB headroom rule — this likely
+  CROSSES the ceiling: record the consequence honestly (bench/PD-supply becomes the
+  recommended input for the standalone tier; USB stays fine for the headless tier).
 - `export_fab.sh` gains the video card → 5 zips + hashes; order-readiness: video board
   row + BOM rows (exact MPNs, DSUB + osc datasheet-cited like USB4085/MF-R110).
 *Acceptance:* hashes recorded; every video part datasheet-verified; power table updated.
@@ -806,6 +830,10 @@ recorded; STEP + previews rendered.
 - Full tier suite green (all five boards' guards + the TTL-twin gates); ledger row
   "B2-CAD" ✅; the **on-glass exit** (real banner on a real monitor, framebuffer readback
   byte-identical on hardware) stays a bench task gated on T1.11 + the video-card order.
+- The bench exit's checklist gains the one item the twin cannot see: **dot-clock signal
+  quality** — scope the 25.175 MHz at the shifter (ringing/monotonic edges), and look
+  for pixel shimmer/jitter on glass. This is the acknowledged physics residual (the
+  4-layer ground plane is the mitigation, the bench is the proof).
 *Acceptance:* five boards × total-DRC 0/0 + suite green from one command.
 
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
