@@ -116,11 +116,35 @@ PIC_8259 = {
 # DIP-14 half-can CPU clock oscillator: drives CLK (socketed, ~2-4 MHz, S1).
 OSC_CPU = {"1":"OSC_EN_NC","7":"GND","8":"CLK","14":"VCC5"}
 
+# --- Video card (B2) LVS'd logic: the 3 decode/control GALs + framebuffer SRAM get
+# distinct types (unique pin tables) so the per-type LVS pinmap is unambiguous; the
+# standard 74xx (counters/mux/register/shifter/buffer) live in CARD_EXTRAS and are
+# verified by D1.18 completeness, exactly as the io card's discrete parts. ---
+GAL22V10_HDEC = {"1":"DOTCLK","2":"HC0","3":"HC1","4":"HC2","5":"HC3","6":"HC4","7":"HC5",
+    "8":"HC6","9":"HC7","10":"HC8","11":"HC9","12":"GND","13":"VID_HDEC_I13_NC","14":"H_END",
+    "15":"HSYNC_N","16":"H_BLANK","17":"BYTE_TICK","18":"FI_LOAD_N","19":"SR_LOAD_N",
+    "20":"SR_INH","21":"VID_HDEC_O21_NC","22":"VID_HDEC_O22_NC","23":"VID_HDEC_O23_NC","24":"VCC5"}
+GAL22V10_VDEC = {"1":"H_BLANK","2":"VC0","3":"VC1","4":"VC2","5":"VC3","6":"VC4","7":"VC5",
+    "8":"VC6","9":"VC7","10":"VC8","11":"VC9","12":"GND","13":"H_END","14":"V_END","15":"VSYNC_N",
+    "16":"VID_VDEC_VBLANK_NC","17":"VID_VDEC_BLANK_NC","18":"ACTIVE","19":"FRAME_TOP_N",
+    "20":"FRAME_TICK","21":"RB_CLK","22":"VID_VDEC_O22_NC","23":"VID_VDEC_O23_NC","24":"VCC5"}
+GAL22V10_CTRL = {"1":"DOTCLK","2":"A11","3":"A12","4":"A13","5":"A14","6":"A15","7":"MREQ_N",
+    "8":"RD_N","9":"WR_N","10":"MODE0","11":"MODE1","12":"GND","13":"ACTIVE","14":"WAIT_N",
+    "15":"MUX_SEL","16":"D245_DIR","17":"D245_OE","18":"FB_CE_N","19":"FB_WE_N","20":"FB_OE_N",
+    "21":"VID_CTRL_O21_NC","22":"VID_CTRL_O22_NC","23":"VID_CTRL_O23_NC","24":"VCC5"}
+SRAM_FB = {"1":"FB_A16_TIE","2":"FB_A14_TIE","3":"SA12","4":"SA7","5":"SA6","6":"SA5","7":"SA4",
+    "8":"SA3","9":"SA2","10":"SA1","11":"SA0","12":"FD0","13":"FD1","14":"FD2","15":"GND",
+    "16":"FB_CE_N","17":"FD3","18":"FD4","19":"FD5","20":"FD6","21":"FD7","22":"FB_OE_N",
+    "23":"FB_WE_N","24":"SA8","25":"SA9","26":"SA13","27":"FB_A15_TIE","28":"FB_A17_TIE",
+    "29":"SA11","30":"FB_OE2_TIE","31":"SA10","32":"VCC5"}
+
 CHIP_TYPES = {
     "Z80_DIP40": Z80, "EPROM_27C256": ROM_27C256, "SRAM_AS6C1008": SRAM_128K,
     "GAL22V10": GAL22V10, "USART_8251": USART_8251,
     "GAL16V8_IOSEL": GAL16V8_IOSEL, "OSC_BAUD": OSC_BAUD, "OSC_CPU": OSC_CPU,
     "PPI_8255": PPI_8255, "ENC_74148": ENC_74148, "PIC_8259": PIC_8259,
+    "GAL22V10_HDEC": GAL22V10_HDEC, "GAL22V10_VDEC": GAL22V10_VDEC,
+    "GAL22V10_CTRL": GAL22V10_CTRL, "SRAM_FB": SRAM_FB,
 }
 
 # Refs footprinted but Do-Not-Populate in the current tier (D1.26/D1.7): fully wired
@@ -137,7 +161,9 @@ CARD_CHIPS = {
     "io":   [("U1", "USART_8251"), ("U2", "GAL16V8_IOSEL"), ("U3", "OSC_BAUD"),
              ("U4", "PPI_8255"), ("U5", "ENC_74148"), ("U6", "PIC_8259")],   # U4-U6 DNP (B3)
     "backplane": [],
-    "video": [],   # all video ICs carry per-instance pins in CARD_EXTRAS (repeated types)
+    # LVS'd video logic (distinct types); the repeated 74xx are in CARD_EXTRAS.
+    "video": [("U5", "GAL22V10_HDEC"), ("U6", "GAL22V10_VDEC"), ("U7", "GAL22V10_CTRL"),
+              ("U21", "SRAM_FB")],
 }
 
 def cap(ref):
@@ -235,29 +261,8 @@ CARD_EXTRAS = {
         comp("U4", "TTL_393", {"1": "VC3", "2": "V_END", "3": "VC4", "4": "VC5", "5": "VC6",
              "6": "VC7", "7": "GND", "8": "VID_VC11_NC", "9": "VID_VC10_NC", "10": "VC9",
              "11": "VC8", "12": "V_END", "13": "VC7", "14": "VCC5"}),
-        # H-decode GAL: HC0-9 -> H_END, HSYNC_N, H_BLANK, BYTE_TICK, FI_LOAD_N, SR_LOAD_N, SR_INH
-        comp("U5", "GAL22V10_VIDEO", {"1": "DOTCLK", "2": "HC0", "3": "HC1", "4": "HC2",
-             "5": "HC3", "6": "HC4", "7": "HC5", "8": "HC6", "9": "HC7", "10": "HC8",
-             "11": "HC9", "12": "GND", "13": "VID_HDEC_I13_NC", "14": "H_END", "15": "HSYNC_N",
-             "16": "H_BLANK", "17": "BYTE_TICK", "18": "FI_LOAD_N", "19": "SR_LOAD_N",
-             "20": "SR_INH", "21": "VID_HDEC_O21_NC", "22": "VID_HDEC_O22_NC",
-             "23": "VID_HDEC_O23_NC", "24": "VCC5"}),
-        # V-decode GAL: VC0-9 + H_BLANK + H_END -> V_END, VSYNC_N, V_BLANK, BLANK, ACTIVE,
-        # FRAME_LAST, FRAME_TICK (divided, D2.7-e), RB_CLK (row-base capture)
-        comp("U6", "GAL22V10_VIDEO", {"1": "H_BLANK", "2": "VC0", "3": "VC1", "4": "VC2",
-             "5": "VC3", "6": "VC4", "7": "VC5", "8": "VC6", "9": "VC7", "10": "VC8",
-             "11": "VC9", "12": "GND", "13": "H_END", "14": "V_END", "15": "VSYNC_N",
-             "16": "VID_VDEC_VBLANK_NC", "17": "VID_VDEC_BLANK_NC", "18": "ACTIVE",
-             "19": "FRAME_TOP_N", "20": "FRAME_TICK", "21": "RB_CLK", "22": "VID_VDEC_O22_NC",
-             "23": "VID_VDEC_O23_NC", "24": "VCC5"}),
-        # Control GAL: A11-15 + MREQ/RD/WR + MODE0/1 + ACTIVE -> WAIT_N (D2.5), MUX_SEL,
-        # '245 DIR/OE, SRAM CE/WE/OE
-        comp("U7", "GAL22V10_VIDEO", {"1": "DOTCLK", "2": "A11", "3": "A12", "4": "A13",
-             "5": "A14", "6": "A15", "7": "MREQ_N", "8": "RD_N", "9": "WR_N", "10": "MODE0",
-             "11": "MODE1", "12": "GND", "13": "ACTIVE", "14": "WAIT_N", "15": "MUX_SEL",
-             "16": "D245_DIR", "17": "D245_OE", "18": "FB_CE_N", "19": "FB_WE_N",
-             "20": "FB_OE_N", "21": "VID_CTRL_O21_NC", "22": "VID_CTRL_O22_NC",
-             "23": "VID_CTRL_O23_NC", "24": "VCC5"}),
+        # (U5 H-decode GAL, U6 V-decode GAL, U7 control GAL, U21 framebuffer SRAM are in
+        # CARD_CHIPS with distinct types so they are LVS'd.)
         # '157 address mux (4): SA = MUX_SEL ? A[13:0](CPU) : scan. A-side = scan, B = CPU.
         comp("U8", "TTL_157", {"1": "MUX_SEL", "2": "SI0", "3": "A0", "4": "SA0", "5": "SI1",
              "6": "A1", "7": "SA1", "8": "GND", "9": "SA2", "10": "A2", "11": "SI2",
@@ -318,14 +323,7 @@ CARD_EXTRAS = {
              "6": "D4", "7": "D5", "8": "D6", "9": "D7", "10": "GND", "11": "FD7", "12": "FD6",
              "13": "FD5", "14": "FD4", "15": "FD3", "16": "FD2", "17": "FD1", "18": "FD0",
              "19": "D245_OE", "20": "VCC5"}),
-        # framebuffer SRAM (AS6C1008 reused, D2.3): SA0-13 addr, FD0-7 data, high addr tied
-        comp("U21", "SRAM_AS6C1008", {"1": "FB_A16_TIE", "2": "FB_A14_TIE", "3": "SA12",
-             "4": "SA7", "5": "SA6", "6": "SA5", "7": "SA4", "8": "SA3", "9": "SA2",
-             "10": "SA1", "11": "SA0", "12": "FD0", "13": "FD1", "14": "FD2", "15": "GND",
-             "16": "FB_CE_N", "17": "FD3", "18": "FD4", "19": "FD5", "20": "FD6", "21": "FD7",
-             "22": "FB_OE_N", "23": "FB_WE_N", "24": "SA8", "25": "SA9", "26": "SA13",
-             "27": "FB_A15_TIE", "28": "FB_A17_TIE", "29": "SA11", "30": "FB_OE2_TIE",
-             "31": "SA10", "32": "VCC5"}),
+        # (U21 framebuffer SRAM is in CARD_CHIPS as type SRAM_FB, so it is LVS'd.)
         # blanking AND: RGB must be 0 outside the active region or the monitor loses sync /
         # shows garbage. VID_PIXEL = PIXEL & ACTIVE ('08, 1 of 4 gates).
         comp("U22", "TTL_08", {"1": "PIXEL", "2": "ACTIVE", "3": "VID_PIXEL", "4": "VID_AND2A_NC",

@@ -28,6 +28,9 @@ spinoffs/minimal-vga/sync/revb_lvs.sh mem
 echo "== rev B: io-card LVS (populated 8251 + GAL) =="
 spinoffs/minimal-vga/sync/revb_lvs.sh io
 
+echo "== rev B: video-card LVS (3 decode/control GALs + framebuffer SRAM; B2) =="
+spinoffs/minimal-vga/sync/revb_lvs.sh video
+
 echo "== rev B: per-card unit TBs (BFM) =="
 spinoffs/minimal-vga/sim/revb_card_tb_check.sh
 

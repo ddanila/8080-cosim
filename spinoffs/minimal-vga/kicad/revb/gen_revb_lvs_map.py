@@ -25,6 +25,7 @@ SYNC = HERE.parents[1] / "sync"
 INSTANCES = {
     "mem": {"U1": "U_ROM", "U2": "U_SRAM", "U3": "U_DEC"},
     "io":  {"U1": "U_UART", "U2": "U_IOSEL"},   # 8251 + I/O-select GAL (populated)
+    "video": {"U5": "U_HDEC", "U6": "U_VDEC", "U7": "U_CTRL", "U21": "U_FB"},
 }
 
 
