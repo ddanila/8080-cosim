@@ -627,10 +627,22 @@ After connectivity and programmable-part decisions stop changing:
   — owner-photographed 2026-07-18, all three sheets, under
   `ref/photos/dgsh5-109-009-e3/` (sheet 3 = the КР1818ВГ93 FDC circuit). This
   drawing was not public anywhere per the 2026-07-14 web sweep. Remaining work
-  is to transcribe it and reconcile `.006`→`.009` divergences; the still-open
-  document lead is the НГМД block `ДГШ3.065.008`, and the Arvutimuuseum team
-  (which physically recovered the Baltijets archive in Narva, Nov 2024) remains
-  the best source for it.
+  is to transcribe it and reconcile `.006`→`.009` divergences. The НГМД block
+  `ДГШ3.065.008` is **also recovered** in the same 2026-07-18 batch
+  (`ref/photos/dgsh3-065-008-e3/`, ДУБЛИКАТ) — it gives the drive side of the
+  floppy interface (ЕС5323 mechanisms + X1–X5), the mating counterpart of the
+  processor board's X4; reconcile the two. The Arvutimuuseum team (which
+  physically recovered the Baltijets archive in Narva, Nov 2024) remains the
+  best source for anything still missing.
+- **Peripheral / system drawings (2026-07-18 batch):** additional owner
+  schematics now in-repo under `ref/photos/`, useful for bus/connector
+  cross-checks and firmware ground-truth:
+  `dgsh3-031-011-e6/` (`ДГШ3.031.011 Э6` system general schematic — inter-module
+  connector map X1–X6), `dgsh5-104-015-e3/` (`ДГШ5.104.015 Э3` keyboard module),
+  `dgsh5-106-103-e3/` (`ДГШ5.106.103 Э3` 32K memory-expander card — exposes the
+  system-bus XP pinout, relevant to the rev-B backplane), and
+  `dgsh5-106-106-d1/` (`ДГШ5.106.106 Д1` factory ROM programming table, hex dump
+  0000–07FF with BASIC strings — cross-check against `ref/reconstructed-proms/`).
 - **Community coordination lead:** juku3000 issue #25
   (<https://github.com/infoaed/juku3000/issues/25>) shows the MAME driver
   maintainer hunting the same FDC-era schematic; the MAME driver's own TODO
