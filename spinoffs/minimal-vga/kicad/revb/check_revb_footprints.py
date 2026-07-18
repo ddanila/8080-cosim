@@ -36,6 +36,7 @@ CAND = {
 # board.json component type -> list of footprint kinds it needs
 TYPE_KINDS = {
     "REVB_BUS_39_10": ["PIN_1x39", "PIN_1x10"],
+    "Z80_DIP40": ["DIP40"],
     "EPROM_27C256": ["DIP28"], "SRAM_AS6C1008": ["DIP32"], "GAL22V10": ["DIP24"],
     "USART_8251": ["DIP28"], "GAL16V8_IOSEL": ["DIP20"], "OSC_BAUD": ["OSC14"],
     "OSC_CPU": ["OSC14"], "PPI_8255": ["DIP40"], "ENC_74148": ["DIP16"],

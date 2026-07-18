@@ -15,7 +15,7 @@ CARD = sys.argv[1] if len(sys.argv) > 1 else "mem"
 FPROOT = os.environ["KICAD_FOOTPRINTS"]
 
 # Card outlines (all <=100x100 cheap tier). io is taller: more parts (D1.23).
-BOARD_H_BY_CARD = {"mem": 60.0, "io": 100.0, "cpu": 55.0, "backplane": 100.0}
+BOARD_H_BY_CARD = {"mem": 60.0, "io": 100.0, "cpu": 70.0, "backplane": 100.0}
 BOARD_W = 100.0
 BOARD_H = BOARD_H_BY_CARD.get(CARD, 60.0)
 
@@ -80,6 +80,13 @@ PLACE_BY_CARD = {
         "C1": (55.0, 28.0, 0), "C2": (55.0, 58.0, 0), "C3": (95.0, 28.0, 0), "C4": (62.0, 72.0, 0),
         "J_IOSEL": (90.0, 84.0, 90), "J_KBD": (40.0, 84.0, 90),
     },
+    "cpu": {   # 100x70: unbuffered Z80 + osc + diag, wide fan-out channel (D1.21)
+        "J_BUS": (50.0, 66.0, 90), "J_EXT": (14.0, 61.0, 90),
+        "U1": (35.0, 22.0, 90),   # Z80 DIP-40 horizontal
+        "U2": (85.0, 18.0, 0),    # clock osc DIP-14 vertical
+        "C1": (66.0, 36.0, 0), "C2": (88.0, 42.0, 0),
+        "J_DIAG": (40.0, 46.0, 90),
+    },
 }
 PLACE = PLACE_BY_CARD[CARD]
 
@@ -130,6 +137,7 @@ def main():
     SILK = {
         "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
         "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
+        "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
     }
     for text, sx, sy, ssz in SILK.get(CARD, SILK["mem"]):
         silk(board, text, sx, sy, size=ssz)

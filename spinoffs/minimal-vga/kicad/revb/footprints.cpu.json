@@ -1,0 +1,10 @@
+{
+  "REVB_BUS_39_10": [
+    "Connector_PinHeader_2.54mm:PinHeader_1x39_P2.54mm_Vertical",
+    "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical"
+  ],
+  "Z80_DIP40": "Package_DIP:DIP-40_W15.24mm",
+  "OSC_CPU": "Oscillator:Oscillator_DIP-14",
+  "C_100N": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+  "HDR_1x5": "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical"
+}
