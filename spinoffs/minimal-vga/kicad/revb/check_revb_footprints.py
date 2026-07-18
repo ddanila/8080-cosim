@@ -22,9 +22,14 @@ if not FPROOT or not Path(FPROOT).is_dir():
 CAND = {
     "PIN_1x39": ["Connector_PinHeader_2.54mm:PinHeader_1x39_P2.54mm_Vertical"],
     "PIN_1x10": ["Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical"],
+    "DIP14": ["Package_DIP:DIP-14_W7.62mm"],
+    "DIP16": ["Package_DIP:DIP-16_W7.62mm"],
+    "DIP20": ["Package_DIP:DIP-20_W7.62mm"],
     "DIP24": ["Package_DIP:DIP-24_W7.62mm", "Package_DIP:DIP-24_W15.24mm"],
     "DIP28": ["Package_DIP:DIP-28_W7.62mm", "Package_DIP:DIP-28_W15.24mm"],
     "DIP32": ["Package_DIP:DIP-32_W15.24mm", "Package_DIP:DIP-32_W7.62mm"],
+    "DIP40": ["Package_DIP:DIP-40_W15.24mm", "Package_DIP:DIP-40_W7.62mm"],
+    "OSC14": ["Oscillator:Oscillator_DIP-14", "Package_DIP:DIP-14_W7.62mm"],
     "C_DISC": ["Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
                "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"],
 }
@@ -32,6 +37,9 @@ CAND = {
 TYPE_KINDS = {
     "REVB_BUS_39_10": ["PIN_1x39", "PIN_1x10"],
     "EPROM_27C256": ["DIP28"], "SRAM_AS6C1008": ["DIP32"], "GAL22V10": ["DIP24"],
+    "USART_8251": ["DIP28"], "GAL16V8_IOSEL": ["DIP20"], "OSC_BAUD": ["OSC14"],
+    "OSC_CPU": ["OSC14"], "PPI_8255": ["DIP40"], "ENC_74148": ["DIP16"],
+    "PIC_8259": ["DIP28"],
     "C_100N": ["C_DISC"],
 }
 

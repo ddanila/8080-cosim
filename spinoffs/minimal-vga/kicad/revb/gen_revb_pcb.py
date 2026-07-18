@@ -14,7 +14,10 @@ REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 CARD = sys.argv[1] if len(sys.argv) > 1 else "mem"
 FPROOT = os.environ["KICAD_FOOTPRINTS"]
 
-BOARD_W, BOARD_H = 100.0, 60.0     # D1.23 mem-card outline
+# Card outlines (all <=100x100 cheap tier). io is taller: more parts (D1.23).
+BOARD_H_BY_CARD = {"mem": 60.0, "io": 100.0, "cpu": 55.0, "backplane": 100.0}
+BOARD_W = 100.0
+BOARD_H = BOARD_H_BY_CARD.get(CARD, 60.0)
 
 board_spec = json.load(open(os.path.join(HERE, f"{CARD}.board.json")))
 fpmap = json.load(open(os.path.join(HERE, f"footprints.{CARD}.json")))
@@ -59,12 +62,26 @@ def silk(board, text, x, y, size=1.5, angle=0):
 # Deterministic placement table (mm, footprint CENTRE, rotation deg). Connectors
 # rotated 90 so their pin rows run along X: the 1x39 base along the bottom edge, the
 # 1x10 extension row just above it, pin-1-end aligned (D1.23/D1.4). DIPs vertical.
-PLACE = {
-    "J_BUS":  (50.0, 55.0, 90), "J_EXT": (14.0, 50.0, 90),
-    "U1": (20.0, 24.0, 180), "U2": (50.0, 23.0, 0), "U3": (82.0, 24.0, 0),
-    "C1": (32.0, 10.0, 0), "C2": (64.0, 10.0, 0), "C3": (92.0, 10.0, 0),
-    "J_OBS": (75.0, 47.0, 90), "J_NOP": (40.0, 47.0, 90),
+PLACE_BY_CARD = {
+    "mem": {
+        "J_BUS": (50.0, 55.0, 90), "J_EXT": (14.0, 50.0, 90),
+        "U1": (20.0, 24.0, 180), "U2": (50.0, 23.0, 0), "U3": (82.0, 24.0, 0),
+        "C1": (32.0, 10.0, 0), "C2": (64.0, 10.0, 0), "C3": (92.0, 10.0, 0),
+        "J_OBS": (75.0, 47.0, 90), "J_NOP": (40.0, 47.0, 90),
+    },
+    "io": {   # 100x100: three well-separated chip rows for 2-layer routing channels
+        "J_BUS": (50.0, 96.0, 90), "J_EXT": (14.0, 91.0, 90),
+        "U4": (29.0, 14.0, 90),   # 8255 DIP-40
+        "U1": (78.0, 14.0, 90),   # 8251 DIP-28
+        "U6": (26.0, 44.0, 90),   # 8259 DIP-28
+        "U2": (76.0, 44.0, 90),   # GAL16V8 DIP-20
+        "U5": (26.0, 72.0, 90),   # 74148 DIP-16
+        "U3": (88.0, 70.0, 0),    # baud osc DIP-14 (vertical)
+        "C1": (55.0, 28.0, 0), "C2": (55.0, 58.0, 0), "C3": (95.0, 28.0, 0), "C4": (62.0, 72.0, 0),
+        "J_IOSEL": (90.0, 84.0, 90), "J_KBD": (40.0, 84.0, 90),
+    },
 }
+PLACE = PLACE_BY_CARD[CARD]
 
 
 def main():
@@ -77,11 +94,14 @@ def main():
         ni = pcbnew.NETINFO_ITEM(board, name)
         board.Add(ni); nets[name] = ni
 
-    def add_fp(ref, fpname, xy, pin_to_net):
+    def add_fp(ref, fpname, xy, pin_to_net, dnp=False):
         fp = load_fp(fpname)
         board.Add(fp)
         fp.SetReference(ref)
         place(fp, *xy)
+        if dnp:
+            try: fp.SetDNP(True)
+            except Exception: pass
         for pad in fp.Pads():
             net = pin_to_net.get(str(pad.GetNumber()))
             if net and net in nets:
@@ -104,12 +124,15 @@ def main():
         else:
             fpname = fpmap.get(typ) or fpmap.get(f"HDR_1x{len(pins)}")
             xy = PLACE.get(ref, (50.0, 40.0))
-            add_fp(ref, fpname, xy, pins)
+            add_fp(ref, fpname, xy, pins, dnp=comp.get("dnp", False))
 
-    # silk in the clear strip between the DIP row (y<=44) and the bus (y~54); pin-1
-    # marks come from the footprints.
-    silk(board, f"REVB {CARD.upper()}", 60.0, 49.0, size=1.3)   # short: fits the J_NOP<->J_OBS gap
-    silk(board, "NO HOT-PLUG", 89.0, 49.0, size=1.2)
+    # board-level silk placed in clear gaps (pin-1 marks come from the footprints).
+    SILK = {
+        "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
+        "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
+    }
+    for text, sx, sy, ssz in SILK.get(CARD, SILK["mem"]):
+        silk(board, text, sx, sy, size=ssz)
 
     outdir = os.path.join(REPO, "fab", "minimal-vga", "revb")
     os.makedirs(outdir, exist_ok=True)

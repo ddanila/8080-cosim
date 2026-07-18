@@ -1,0 +1,15 @@
+{
+  "REVB_BUS_39_10": [
+    "Connector_PinHeader_2.54mm:PinHeader_1x39_P2.54mm_Vertical",
+    "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical"
+  ],
+  "USART_8251": "Package_DIP:DIP-28_W7.62mm",
+  "GAL16V8_IOSEL": "Package_DIP:DIP-20_W7.62mm",
+  "OSC_BAUD": "Oscillator:Oscillator_DIP-14",
+  "PPI_8255": "Package_DIP:DIP-40_W15.24mm",
+  "ENC_74148": "Package_DIP:DIP-16_W7.62mm",
+  "PIC_8259": "Package_DIP:DIP-28_W7.62mm",
+  "C_100N": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+  "HDR_1x5": "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical",
+  "HDR_1x17": "Connector_PinHeader_2.54mm:PinHeader_1x17_P2.54mm_Vertical"
+}

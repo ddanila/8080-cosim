@@ -44,7 +44,7 @@ sys.exit(0 if pcbnew.ExportSpecctraDSN(b,'$DSN') else 'DSN export failed')"
 # stochastic -- this board is near the 2-layer routability edge, so retry until a run
 # routes every net (no "could not be routed" in the log).
 ROUTED=""
-for attempt in 1 2 3 4 5 6; do
+for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
   "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" -de "$DSN" -do "$SES" -mp 100 \
     >"$OUT/${CARD}-fr.log" 2>&1 || true
   if [ -f "$SES" ] && ! grep -qi "could not be routed" "$OUT/${CARD}-fr.log"; then
