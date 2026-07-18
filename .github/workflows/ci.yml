@@ -162,6 +162,9 @@ jobs:
             kicad/report_fdc_lower_assembly_placement.py
           python3 -m py_compile kicad/report_d93_pin40_photo_chase.py
           python3 -m py_compile kicad/patch_d94_input_boundaries.py
+          python3 -m py_compile \
+            kicad/close_unconnected_gaps.py \
+            kicad/close_gap_by_ripup.py
 
       - name: Check C63 target-board DNP
         run: python3 kicad/check_c63_target_dnp.py

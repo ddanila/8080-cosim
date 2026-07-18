@@ -112,7 +112,7 @@ as explicit reconnection work: a test prune exposed the expected recursive
 chain and was stopped rather than deleting otherwise useful routes before
 their new endpoints are joined.
 
-Nineteen bounded multilayer A* transactions then accepted 263 legal repairs. They
+The first nineteen bounded multilayer A* transactions accepted 263 legal repairs. They
 close GND/P5V branches plus MEMW/MEMR, D94 D0, memory-mode, W10 select,
 rail-13/14, AMW, D39 memory-cycle/Y, REV, D105 WAIT, D42 Q, IORD, FDC `/WE`,
 FRAME_INT, PHI2TTL, RAS, address/video-address branches, VIDEO_OUT/mix/mux,
@@ -120,26 +120,47 @@ RAM_OUT_EN, S_TTL, CAS, sound, serial-baud, ROM/expansion-select, INTA, HLDA,
 VT2 base, and related gaps. The resulting temporary board has all 303 source
 footprints and all 2,395 current
 source pad identities, nets, and integer-nanometre coordinates, 21,427 copper
-items, and 164 uncapped connectivity gaps. A final independent KiCad DRC still
+items, and 164 uncapped connectivity gaps. An independent KiCad DRC still
 has zero short,
 clearance, crossing, hole-clearance, hole-to-hole, or copper-to-edge findings;
 it reports 199 track-dangling and 51 via-dangling tails. This is a much closer
 current-source route, but its opens and retained tails keep it outside tracked
 fabrication artifacts.
 
-`close_unconnected_gaps.py --attempted-state` now makes later bounded passes
-resume efficiently. It canonicalizes endpoint order and atomically records
-every accepted, DRC-rejected, timed-out, or unroutable signature. The state is
-bound to the exact SHA-256 of the current additive board lineage, the proposal
-parameters, and both routing-script hashes; a different board, parameter set,
-or implementation fails closed instead of silently skipping work. The resumed
-0.5 mm state reached 209 gaps and records 340 attempted gaps (95 accepted, 197
-without a route, and 48 rejected by DRC). Independent 0.25, 0.20, and 0.125 mm
-states then accepted 36, four, and four more routes; each complete full-distance
-sweep exhausted its remaining signatures. A bounded 0.10 mm sweep through 30
-mm accepted one final rail-12 route, records 129 signatures, and correctly
-matches the final 164-gap board. The earlier wrong-lineage rejection test also
-remains enforced.
+The earlier sweeps used a deliberately conservative 0.45 mm proposal clearance.
+KiCad's actual board rules admit proposals made with 0.21 mm clearance. Targeted
+INTR, PROM_EN, and CS_D54 closure first reduced the board from 164 to 157 gaps;
+a full-distance 0.10 mm-grid sweep at the legal clearance then accepted 111
+more routes and reached 46. Retrying BA13 after those additive changes found a
+different clean path and established the current 45-gap boundary. In total the
+guarded routing work has accepted 382 repairs and the current temporary board
+contains 29,009 copper items. It retains all 303 source footprints and exact
+identity, net, and integer-nanometre coordinate parity for all 2,395 pads.
+Independent KiCad DRC reports 45 uncapped opens, 199 track-dangling and 47
+via-dangling tails, and zero short, clearance, crossing, hole-clearance,
+hole-to-hole, or copper-to-edge findings.
+
+`close_gap_by_ripup.py` generalizes the successful INTR transaction. A
+diagnostic proposal identifies only pre-existing, non-source tracks or vias
+that KiCad names as direct blockers of the new route. Source copper, pads,
+edges, target-net items, and ambiguous blockers fail closed. The tool removes
+the bounded conflict set, routes the target at the final clearance, restores
+every affected net, and writes an output only when total opens fall, the
+selected gap disappears, no electrical blocker remains, and no DRC category
+increases. INTR required one BA5 item to be replaced; PROM_EN, CS_D54, and BA13
+proved clean-path cases through the same guarded interface.
+
+`close_unconnected_gaps.py --attempted-state` canonicalizes endpoint order and
+atomically records outcomes. State remains bound to the exact SHA-256 of the
+additive board lineage, proposal parameters, and both routing-script hashes, so
+a different board, configuration, or implementation fails closed. Schema 3
+fixes one important monotonicity distinction: a proven A* no-path remains valid
+when this workflow only adds obstacles, but a DRC-rejected path or timeout does
+not. After every acceptance those geometry-dependent outcomes are invalidated,
+allowing later copper to force a different legal route. A fresh full-distance
+0.10 mm-grid/0.21 mm-clearance pass records all 45 residual gaps as proven
+router no-path cases and accepts none. The earlier wrong-lineage guard remains
+enforced.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -244,6 +265,39 @@ python3 kicad/close_unconnected_gaps.py \
   --min-distance 0 --max-distance 30 --mode M --search-margin 60 \
   --grid-step 0.10 --timeout 180 --limit 5 \
   --attempted-state /tmp/juku-gap-fine010.json
+```
+
+The legal-clearance and guarded rip-up continuation is reproducible from that
+164-gap checkpoint. The six repeated sweep invocations below are deliberately
+bounded writes against one lineage-bound state file; the final invocation
+accepts the remaining eleven candidates before exhausting the state.
+
+```sh
+python3 kicad/close_gap_by_ripup.py \
+  /tmp/juku-drc-salvage-fine010-short.kicad_pcb \
+  /tmp/juku-ripup-intr.kicad_pcb --net INTR \
+  --route-clearance 0.21 --summary /tmp/juku-ripup-intr.json
+python3 kicad/close_gap_by_ripup.py \
+  /tmp/juku-ripup-intr.kicad_pcb /tmp/juku-ripup-prom.kicad_pcb \
+  --net PROM_EN --route-clearance 0.21
+python3 kicad/close_gap_by_ripup.py \
+  /tmp/juku-ripup-prom.kicad_pcb /tmp/juku-ripup-csd54.kicad_pcb \
+  --net CS_D54 --route-clearance 0.21
+STATE_021=/tmp/juku-gap-clear021.json
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-ripup-csd54.kicad_pcb /tmp/juku-clear021-20.kicad_pcb \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.10 --route-clearance 0.21 --timeout 180 --limit 20 \
+  --attempted-state "$STATE_021"
+# Repeat the preceding command five times, advancing input/output by 20 routes.
+python3 kicad/close_gap_by_ripup.py \
+  /tmp/juku-clear021-120.kicad_pcb /tmp/juku-ripup-ba13.kicad_pcb \
+  --net BA13 --route-clearance 0.21 --summary /tmp/juku-ripup-ba13.json
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-ripup-ba13.kicad_pcb /tmp/juku-clear021-exhausted.kicad_pcb \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.10 --route-clearance 0.21 --timeout 180 --limit 20 \
+  --attempted-state /tmp/juku-gap-clear021-final.json
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.

@@ -46,7 +46,7 @@ def load_attempt_state(
     if not path.exists():
         return {}
     state = json.loads(path.read_text())
-    if state.get("schema_version") != 2:
+    if state.get("schema_version") != 3:
         raise SystemExit(f"{path}: unsupported attempted-state schema")
     if state.get("board_sha256") != board_sha256:
         raise SystemExit(
@@ -78,7 +78,7 @@ def save_attempt_state(
     attempts: dict[tuple[str, float, float, float, float, str, str], str],
 ) -> None:
     state = {
-        "schema_version": 2,
+        "schema_version": 3,
         "board_sha256": board_sha256,
         "config": config,
         "router_sha256": router_sha256,
@@ -358,6 +358,19 @@ def main() -> None:
         nonlocal board_sha256
         attempt_outcomes[signature] = outcome
         if outcome == "accepted":
+            # A new obstacle can force A* away from a formerly DRC-invalid
+            # shortest path and thereby make the same endpoint pair legal.
+            # It can also change timeout behavior.  A proven graph search with
+            # no path remains monotonic as this additive workflow only adds
+            # obstacles, so retain only router-failed history across accepts.
+            stale = {
+                attempted_signature
+                for attempted_signature, attempted_outcome in attempt_outcomes.items()
+                if attempted_outcome in {"drc-rejected", "timeout"}
+            }
+            for attempted_signature in stale:
+                attempt_outcomes.pop(attempted_signature)
+            attempted.difference_update(stale)
             board_sha256 = file_sha256(args.output)
         if args.attempted_state:
             save_attempt_state(

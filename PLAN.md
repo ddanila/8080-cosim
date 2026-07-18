@@ -45,17 +45,22 @@ electrical-category findings. Splits, removed endpoints, and every moved pad
 remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
-starts at 433 honest gaps. Nineteen bounded guarded-A* transactions now accept
-263 repairs and reach 164 gaps with 21,427 copper items, exact parity across
-all 2,395 current source pads, and zero short, clearance, crossing, hole, or
-edge findings. A configured 0.5 mm sweep through 120 mm, complete full-distance
-0.25/0.20/0.125 mm sweeps, and a bounded 0.10 mm short-gap sweep establish the
-global-router convergence boundary; route-specific conflict/rip-up work is
-next. The gap closer persists canonical attempted-gap signatures against the
-exact additive board lineage, router code, and proposal parameters,
-so later bounded passes do not replay known-invalid corridors. Reported dangling
-tails remain reconnection work; the temporary board is convergence evidence,
-not a replacement routed artifact
+starts at 433 honest gaps. Guarded A* routing now accepts 382 repairs and reaches
+45 gaps with 29,009 copper items, exact parity across all 2,395 current source
+pads, and zero short, clearance, crossing, hole, or edge findings. The decisive
+follow-up uses the board-legal 0.21 mm clearance instead of the earlier
+conservative 0.45 mm proposal keep-out; it closes 111 gaps after targeted INTR,
+PROM_EN, and CS_D54 work. A generic DRC-derived rip-up transaction removes only
+non-source copper named as a direct blocker, routes the target, restores every
+affected net, and publishes only a net improvement with no DRC-class increase.
+It closes INTR around one BA5 item; a later clean-path BA13 retry reaches the
+current 45-gap boundary. Attempted-gap state retains proven router no-path
+results across additive changes but invalidates DRC rejections and timeouts,
+whose result can change when new copper forces a different path. The remaining
+45 signatures exhaust a fresh full-distance 0.10 mm/0.21 mm-clearance sweep;
+more route-specific conflict/rip-up work is next. Reported dangling tails remain
+reconnection work; the temporary board is convergence evidence, not a
+replacement routed artifact
 (`docs/routed-refresh-audit.md`).
 
 Automatic device-level closure on 2026-07-17 also retires D103's former
