@@ -1,0 +1,63 @@
+{
+  "_about": "TI.1/D2.1 numeric VGA timing + framebuffer-mapping contract for the rev B Video card. Single source of truth consumed by the chip-level twin (revb_video_card_ttl.v), the scanout checker, and the netlist generator. Do not restate these numbers elsewhere. Horizontal units = dot clocks; vertical units = lines. Standard IBM/VESA 640x480@60 (25.175 MHz), which is what mengstr/TTL640x480 (commit ea1ecd0) generates.",
+
+  "dot_clock_hz": 25175000,
+
+  "h": {
+    "active": 640,
+    "front_porch": 16,
+    "sync": 96,
+    "back_porch": 48,
+    "total": 800,
+    "sync_polarity": "negative"
+  },
+  "v": {
+    "active": 480,
+    "front_porch": 10,
+    "sync": 2,
+    "back_porch": 33,
+    "total": 525,
+    "sync_polarity": "negative"
+  },
+  "refresh_hz_nominal": 59.94,
+
+  "framebuffer": {
+    "_note": "VJUGA source is a 320x241 monochrome bitmap: 40 bytes/row x 241 rows = 9640 bytes at 0xD800, 8 horizontal pixels per byte, MSB-first (matches cosim's vram.bin rendering and the facts file).",
+    "base": "0xD800",
+    "cols_bytes": 40,
+    "rows": 241,
+    "bytes": 9640,
+    "src_pixels_w": 320,
+    "src_pixels_h": 241,
+    "bits_per_pixel": 1,
+    "byte_bit_order": "msb_first"
+  },
+
+  "scanout": {
+    "_note": "320x241 source doubled x2 => 640x482, which is 2 lines taller than the 480 active raster. The crop-vs-letterbox choice is resolved by the oracle at TI.2 and frozen into 'vertical_fit' (candidates below).",
+    "h_double": 2,
+    "v_double": 2,
+    "doubled_w": 640,
+    "doubled_h": 482,
+    "vertical_fit": "TBD@TI.2",
+    "vertical_fit_candidates": {
+      "crop_bottom": "draw doubled rows 0..479; drop the last 2 doubled lines (source rows 240.5-241)",
+      "letterbox": "center 482 rows in 480 by clipping 1 doubled line top+bottom",
+      "letterbox_black_top": "blank ~pad lines top/bottom, draw 240 doubled source rows (480) fully"
+    }
+  },
+
+  "dac": {
+    "_note": "Monochrome: one video bit -> R=G=B via a resistor DAC; 75-ohm terminations at the DSUB. A single 'on' level (approx 0.7V into 75R) is enough; a 2-bit-per-channel ladder is optional headroom for a later greyscale mode.",
+    "channels": "R=G=B (mono)",
+    "levels": 2,
+    "term_ohms": 75
+  },
+
+  "adopted_from": {
+    "project": "mengstr/TTL640x480",
+    "commit": "ea1ecd063d500982263c76a795abd84f77ccb59a",
+    "license": "MIT (c) 2019 SmallRoomLabs",
+    "scope": "sync/blank timing chain only"
+  }
+}
