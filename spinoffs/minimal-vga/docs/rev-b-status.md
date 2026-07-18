@@ -14,7 +14,7 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
 | **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four cards route DRC 0/0** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane via D1.29 column-route (245 generated columns + freerouted tail) |
-| **B1-CAD Stage D** | FreeCAD mating/keying + fab package (TD.12–TD.13) | ⬜ → arms T1.10 | next |
+| **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | 🟡 in progress | TG.1 ✅ (mating contract + checker), TG.2 ✅ (**all 4 route 0/0 at the unified 4 mm offset**); TG.3 (FreeCAD proof) + TG.4 (fab pkg) next → arms T1.10 |
 | **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ hardware-blocked | |
 | **B2 / B3 / B4** | video / keyboard+PIC / FDC tiers | ⬜ future | |
 
@@ -48,13 +48,17 @@ placement sweep (U1 x=41); TF.2 added multi-slot backplane placement; TF.3 route
 backplane via D1.29 (245 generator-emitted bus columns + freerouted power tail); TF.4
 verified the 4×0/0 exit gate.
 
-**Stage D planned to task depth (2026-07-18): TG.1–TG.4** (execution guide). The
-Stage-C exit review found the boards are route-perfect but **not mate-compatible**
-(cards disagree 1 mm on connector edge offsets; the D1.30 two-bank backplane cannot
-physically accept a card). So: **TG.1** mechanical mating contract `mating.json` +
-`check_revb_mating.py` (must fail on today's geometry first — D1.31); **TG.2** align
-generators to the contract, re-route all four (sweep tool ready if cpu regresses);
-**TG.3** FreeCAD mating + reversed-card keying proof (D1.32 fallback if keying
+**Stage D in progress (2026-07-18): TG.1 ✅, TG.2 ✅.** TG.1 built the mechanical
+mating contract (`mating.json` + `check_revb_mating.py`, now in the tier suite) that
+provably failed on the old geometry (cards disagreed 1 mm; the D1.30 two-bank backplane
+couldn't accept a card). TG.2 aligned every card's connectors to the contract and
+**all four boards now route DRC 0/0 at the unified 4 mm offset**; the backplane went to
+per-slot base/ext pairs (base cols F.Cu, ext cols B.Cu, tail in the top/bottom strips,
+pullups on their columns). Finding D1.33: the mate-forced 1.27 mm base/ext column
+interleave breaks the specctra DSN roundtrip, so the backplane trends deterministic;
+freerouting still closes it once the tail taps are short.
+
+**Next: TG.3** FreeCAD mating + reversed-card keying proof (D1.32 fallback if keying
 doesn't self-enforce); **TG.4** power re-check + gerber fab packages → **arms T1.10**
 (purchasing decision). Then T1.11 bench (hardware-blocked), B2/B3/B4 (plan at entry).
 Rule: `git pull --rebase` before every push — the remote moves mid-session.

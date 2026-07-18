@@ -595,6 +595,13 @@ known 1-mm and two-bank bugs), contract constants + citation in the bus contract
   can't pass in 100×100 with the tail squeezed in, grow `BOARD_H` per D1.31 (≤115).
 *Acceptance:* `check_revb_mating.py` green; 4× `check_revb_drc.py --total` 0/0 from
 fresh regenerate; STEP + previews regenerated.
+**DONE (2026-07-18):** contract refined to base_edge_offset **4.0** mm (io — densest
+card — is the binding constraint; only routes at 4 mm), backplane grown to 100×115.
+revb_place.py derives card connectors from mating.json; mating checker in the tier
+suite. All four route **0/0**. Backplane needed two fixes beyond placement: base cols
+F.Cu / ext cols B.Cu, and bottom-strip pullups moved onto their own bus columns
+(R_INT→x=60) so the residual tail taps are short (D1.33 — the DSN roundtrip drops the
+interleaved columns; freerouting re-routes them + tail and closes once taps are short).
 
 **TG.3 — FreeCAD mating + keying proof (TD.12 essence, D1.15/D1.4).**
 - `kicad/revb/mate_check.py` under `freecadcmd`: load the 4 STEPs; seat mem/io/cpu
