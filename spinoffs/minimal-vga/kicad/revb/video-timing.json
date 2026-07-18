@@ -39,7 +39,8 @@
     "v_double": 2,
     "doubled_w": 640,
     "doubled_h": 482,
-    "vertical_fit": "TBD@TI.2",
+    "vertical_fit": "crop_bottom",
+    "vertical_fit_resolved": "TI.2, against cosim/vram.bin at the banner: content is top-anchored (rows 0..149 used), source rows 239-240 blank, so dropping the 241st row loses nothing for the banner (the B2 exit content). revb_video_crop_check.py enforces row 240 is blank. Residual: if full-screen firmware ever writes row 240, its bottom 2 VGA lines are cropped (bench-visible; flip to letterbox here if it matters).",
     "vertical_fit_candidates": {
       "crop_bottom": "draw doubled rows 0..479; drop the last 2 doubled lines (source rows 240.5-241)",
       "letterbox": "center 482 rows in 480 by clipping 1 doubled line top+bottom",

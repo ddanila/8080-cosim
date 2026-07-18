@@ -40,4 +40,7 @@ spinoffs/minimal-vga/sim/revb_boot_check.sh
 echo "== rev B: minimum-tier bring-up ROM TX stream == cosim (real 8251, no Video) =="
 spinoffs/minimal-vga/sim/revb_bringup_check.sh
 
-echo "REVB-TIER-SUITE(B0+B1sim): PASS"
+echo "== rev B: B2 video card (TTL twin: timing + crop + scanout + /WAIT) =="
+spinoffs/minimal-vga/sim/revb_video_check.sh
+
+echo "REVB-TIER-SUITE(B0+B1sim+B2video): PASS"
