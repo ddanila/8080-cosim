@@ -318,11 +318,17 @@ def main() -> None:
                     layer2,
                 ],
                 check=True,
+                timeout=args.timeout,
             )
         except subprocess.CalledProcessError as error:
             raise SystemExit(
                 f"diagnostic router could not propose {args.net} gap "
                 f"{args.gap_index} at {diagnostic_clearance} mm clearance"
+            ) from error
+        except subprocess.TimeoutExpired as error:
+            raise SystemExit(
+                f"diagnostic router timed out on {args.net} gap "
+                f"{args.gap_index} after {args.timeout:g} seconds"
             ) from error
         diagnostic = pcbnew.LoadBoard(str(diagnostic_board))
         diagnostic_tracks = track_nets(diagnostic)

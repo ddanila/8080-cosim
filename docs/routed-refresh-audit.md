@@ -132,8 +132,8 @@ KiCad's actual board rules admit proposals made with 0.21 mm clearance. Targeted
 INTR, PROM_EN, and CS_D54 closure first reduced the board from 164 to 157 gaps;
 a full-distance 0.10 mm-grid sweep at the legal clearance then accepted 111
 more routes and reached 46. Retrying BA13 after those additive changes found a
-different clean path and established the current 45-gap boundary. In total the
-guarded routing work has accepted 382 repairs and the current temporary board
+different clean path and established the 45-gap boundary. At that checkpoint
+the guarded routing work had accepted 382 repairs and the temporary board
 contains 29,009 copper items. It retains all 303 source footprints and exact
 identity, net, and integer-nanometre coordinate parity for all 2,395 pads.
 Independent KiCad DRC reports 45 uncapped opens, 199 track-dangling and 47
@@ -161,6 +161,18 @@ allowing later copper to force a different legal route. A fresh full-distance
 0.10 mm-grid/0.21 mm-clearance pass records all 45 residual gaps as proven
 router no-path cases and accepts none. The earlier wrong-lineage guard remains
 enforced.
+
+The exact board rule is 0.20 mm, so a guarded follow-up tested that clearance
+without weakening the KiCad acceptance invariant. A 0.10 mm lattice closes
+IOWR, D40QA, VA10, BA1, and D105_10_H. Different grid phases are materially
+distinct searches: 0.125 mm closes the first ROE gap; 0.15 mm closes VA12, the
+second ROE gap, and DBIN_GATED; 0.175 mm closes CS_D55; and 0.1375 mm closes
+D6_A7_D105_I1_BOUNDARY. The 0.20, 0.225, 0.25, and 0.30 mm lattices add no
+routes, and a final full-distance 0.1125 mm sweep records all 34 residual gaps
+without another acceptance. The cumulative guarded result is therefore 393
+repairs, 30,334 copper items, and 34 uncapped opens. Exact footprint/pad parity
+and every electrical DRC invariant remain unchanged; the dangling counts stay
+at 199 tracks and 47 vias.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -298,6 +310,22 @@ python3 kicad/close_unconnected_gaps.py \
   --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
   --grid-step 0.10 --route-clearance 0.21 --timeout 180 --limit 20 \
   --attempted-state /tmp/juku-gap-clear021-final.json
+```
+
+Starting from the 45-gap board, the exact-clearance lattice sequence is:
+
+```sh
+python3 kicad/close_unconnected_gaps.py INPUT OUTPUT \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.10 --route-clearance 0.20 --timeout 180 --limit 20 \
+  --attempted-state /tmp/juku-gap-clear020-grid010.json
+# Feed each accepted OUTPUT into the next invocation and use a fresh state file.
+# The productive next grid steps are 0.125, 0.15, 0.175, and 0.1375 mm.
+# Full 0.20, 0.225, 0.25, and 0.30 mm checks accept nothing.
+python3 kicad/close_unconnected_gaps.py INPUT_34 OUTPUT_34 \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 60 \
+  --grid-step 0.1125 --route-clearance 0.20 --timeout 180 --limit 20 \
+  --attempted-state /tmp/juku-gap-clear020-grid01125-final.json
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
