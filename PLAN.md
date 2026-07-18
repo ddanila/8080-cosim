@@ -643,6 +643,11 @@ After connectivity and programmable-part decisions stop changing:
   system-bus XP pinout, relevant to the rev-B backplane), and
   `dgsh5-106-106-d1/` (`ДГШ5.106.106 Д1` factory ROM programming table, hex dump
   0000–07FF with BASIC strings — cross-check against `ref/reconstructed-proms/`).
+  **How to work through this batch is planned in
+  `docs/factory-drawing-exploitation-plan.md`** — staged: legibility audit →
+  targeted reads (D6 decode polarity for item 1, FDC X4↔НГМД, XP bus map) →
+  ROM-table transcription/diff → full reviewed transcriptions → community
+  exchange (owner-gated).
 - **Community coordination lead:** juku3000 issue #25
   (<https://github.com/infoaed/juku3000/issues/25>) shows the MAME driver
   maintainer hunting the same FDC-era schematic; the MAME driver's own TODO
