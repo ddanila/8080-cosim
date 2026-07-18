@@ -84,6 +84,7 @@ PKG_WIDTH = {
 PKG_PHYS = {
     # type:            (min_tht, min_drill_mm, pitch_mm-or-None, datasheet)
     "USB_C_PWR":  (16, 0.40, 0.85, "GCT USB4085 (THT USB-C, 16 signal pins @0.85mm)"),
+    "SUPERVISOR_3": (3, 0.70, 1.27, "DS1813-5 TO-92: pin1=/RST pin2=VCC pin3=GND (ds1813.pdf)"),
     "SW_PUSH":    (2,  1.20, 6.50, "APEM MJTP1243 6mm tactile, 6.5mm terminal span"),
     "LED":        (2,  0.80, 2.54, "5mm THT LED, 2.54mm lead pitch"),
     "JMP_2x2":    (4,  0.90, 2.54, "2x2 0.1in header"),

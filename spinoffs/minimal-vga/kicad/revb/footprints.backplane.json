@@ -9,7 +9,7 @@
   "HDR_1x2": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
   "C_ELEC_47U": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
   "C_100N": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
-  "HDR_1x3": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical",
+  "SUPERVISOR_3": "Package_TO_SOT_THT:TO-92_Inline",
   "R_10K": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",
   "SW_PUSH": "Button_Switch_THT:SW_PUSH_1P1T_6x3.5mm_H4.3_APEM_MJTP1243",
   "R_4K7": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",

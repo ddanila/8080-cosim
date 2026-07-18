@@ -189,11 +189,12 @@ CARD_EXTRAS = {
         # Input power conditioning (D1.35): bulk + HF bypass on the rail.
         comp("C_BULK", "C_ELEC_47U", {"1": "VCC5", "2": "GND"}),
         comp("C_IN", "C_100N", {"1": "VCC5", "2": "GND"}),
-        # Reset: a 3-pin position for a TO-92 supervisor (net-labelled on silk so ANY
-        # supervisor pinout mounts correctly — the exact TO-92 pinout is part-specific and
-        # not committed to copper), plus a wired-OR pull-up + power-on RC + manual button
-        # so reset works even with the supervisor position empty.
-        comp("U_RST", "HDR_1xN", {"1": "GND", "2": "RESET_N", "3": "VCC5"}),
+        # Reset: soldered DS1813-5 TO-92 supervisor with its DATASHEET-VERIFIED pinout
+        # (pin 1 = /RST open-drain, pin 2 = VCC, pin 3 = GND; ds1813.pdf p1). Plus a
+        # wired-OR pull-up (belt-and-suspenders with the DS1813's internal 5.5k, and
+        # correct for any other open-drain supervisor), a power-on RC, and a manual
+        # button — reset works even if U_RST is left unpopulated.
+        comp("U_RST", "SUPERVISOR_3", {"1": "RESET_N", "2": "VCC5", "3": "GND"}),
         comp("R_RST", "R_10K", {"1": "RESET_N", "2": "VCC5"}),
         comp("C_RST", "C_100N", {"1": "RESET_N", "2": "GND"}),
         comp("SW_RST", "SW_PUSH", {"1": "RESET_N", "2": "GND"}),

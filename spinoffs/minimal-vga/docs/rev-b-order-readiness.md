@@ -42,7 +42,7 @@ count, drill, and pitch so a wrong/SMD footprint can't slip through again.
 | F_VBUS | Bourns **MF-R110** PTC (1.1 A hold / 2.2 A trip) | `Fuse_Bourns_MF-RG300` | in the USB VBUS branch only; verify lead pitch vs footprint at purchase |
 | C_BULK | 47 µF / 16 V radial electrolytic | `CP_Radial_D6.3mm_P2.50mm` | rail bulk |
 | C_IN, C_RST | 100 nF disc ceramic | `C_Disc_D5.0mm_P5.00mm` | HF bypass / reset RC |
-| U_RST | **3-pin header** for a TO-92 supervisor (DS1813-5 / DS1233-class) | `PinHeader_1x03` | silk-labelled GND/RESET_N/VCC5 — orient the TO-92 to the silk (pinout-agnostic, D1.32-style) |
+| U_RST | **DS1813-5** reset supervisor, TO-92 | `TO-92_Inline` | **datasheet-verified pinout** (ds1813.pdf p1): pad 1 = /RST, pad 2 = VCC, pad 3 = GND; open-drain with internal 5.5 kΩ pull-up |
 | R_RST | 10 kΩ axial | `R_Axial_DIN0207_P7.62` | RESET_N pull-up (required for open-drain supervisor + button) |
 | SW_RST | **APEM MJTP1243** 6 mm tactile (SPST, 2-terminal) | `SW_PUSH_..._APEM_MJTP1243` | reset button |
 | R_M0, R_M1 | 10 kΩ axial | `R_Axial_DIN0207_P7.62` | MODE default-low pulls |
@@ -73,10 +73,10 @@ board `.kicad_pcb` is the source of truth, content-checked):
 
 | package | sha256 (snapshot) |
 |---|---|
-| mem.zip | d76a5a6a96702abf1a3b7daf9c20b21097a640462bc1c16fb3663c9ce9cad935 |
-| io.zip | 36a0ffb7ba8f23da7cafd8a3d88edc3b696cd2751687e055bf4522c9561ec220 |
-| cpu.zip | 6741e81eaffb153668efed5b7e429defd3cdf22066470b12dc6b27de07bc52f3 |
-| backplane.zip | d1b355696d398bf23b9ec99a38aa9c26fc827cc6d9285dce9e42aa2a246bcc10 |
+| mem.zip | 87f7a2d124ec8ecdc76cb8df02d4a7a79d49fb7b3a920b30b3d06036201f98e3 |
+| io.zip | 9ea98eab72d5f0edb9f8b1a26266f4de70d1ac5b9b2b65a6c84bc0d21b0df78b |
+| cpu.zip | 180a8f88ad9cde1612df43b3eaffbc23ca14997a985121a0c294defe7fdba226 |
+| backplane.zip | 48dd20c3e423138cea605593d9a441a0d07f6ef5cf15e0f4116225a24884f74c |
 
 > **Fab capability:** the USB-C connector (0.85 mm pitch) needs **0.15 mm (6 mil) min
 > clearance** at that footprint — standard for JLCPCB/PCBWay etc.; the rest of the board
@@ -89,10 +89,11 @@ board `.kicad_pcb` is the source of truth, content-checked):
 - **USB-C fab clearance:** needs 0.15 mm at the connector (standard cheap-fab capability,
   noted above). Fine-pitch USB-C is also a bit fiddly to hand-solder (flux + fine iron);
   an all-through-hole part (GCT USB4085) was chosen to keep it possible.
-- **Reset supervisor is a plug-in header, not soldered:** the exact TO-92 pinout is
-  part-specific and couldn't be authoritatively verified from the desk, so U_RST is a
-  net-labelled 3-pin position — orient the TO-92 to the silk. The pull-up + RC + button
-  give a working reset even if that position is left empty.
+- **Reset supervisor — resolved:** the DS1813-5 TO-92 pinout is now datasheet-verified
+  (ds1813.pdf: 1=/RST, 2=VCC, 3=GND) and soldered down with that mapping; the earlier
+  header workaround is gone. The pull-up + RC + button still give a working reset if
+  U_RST is left unpopulated. (Buy the **DS1813-5** specifically — the pinmap is committed
+  to copper for that part.)
 - **F_VBUS polyfuse lead pitch:** confirm the ordered MF-R110 matches the
   `Fuse_Bourns_MF-RG300` footprint pitch before soldering (guarded for drill, not exact
   pitch since PTC lead spacing varies).
