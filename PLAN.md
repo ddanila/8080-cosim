@@ -92,6 +92,11 @@ the net, reaching the current independently verified 27-gap boundary. A fresh
 0.15 mm, 100 mm-margin sweep exhausts all 27 residuals without acceptance.
 The next bounded VA6 diagnostic removes 13 migrated items but still cannot
 route through the fixed D51 pad corridor, so it is not adopted.
+Gap selection now resolves KiCad track-marker UUIDs to their nearest real
+copper endpoints instead of routing from track midpoints. This corrects the
+residual MA0 measurement to 3.8629 mm and removes a false MA1 conflict; the
+endpoint-correct retry has no legal exact-clearance path, so no equal-open
+MA1/MA0 topology swap is adopted.
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

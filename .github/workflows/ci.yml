@@ -163,6 +163,7 @@ jobs:
           python3 -m py_compile kicad/report_d93_pin40_photo_chase.py
           python3 -m py_compile kicad/patch_d94_input_boundaries.py
           python3 -m py_compile \
+            kicad/drc_gap_geometry.py \
             kicad/close_unconnected_gaps.py \
             kicad/close_gap_by_ripup.py
 

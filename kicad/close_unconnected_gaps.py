@@ -19,6 +19,10 @@ import shutil
 import subprocess
 import tempfile
 
+import pcbnew
+
+from drc_gap_geometry import board_item_points, resolved_item_pair
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ROUTER = ROOT / "kicad" / "repair_fdc_route_gaps.py"
@@ -143,7 +147,11 @@ def violation_counts(report: dict) -> dict[str, int]:
 
 
 def gaps(
-    report: dict, minimum: float, maximum: float, net_filter: str | None = None
+    report: dict,
+    minimum: float,
+    maximum: float,
+    net_filter: str | None = None,
+    points_by_uuid: dict[str, tuple[tuple[float, float], ...]] | None = None,
 ) -> list[tuple[float, str, float, float, float, float, str, str]]:
     result = []
     for violation in report.get("unconnected_items", []):
@@ -157,17 +165,17 @@ def gaps(
             continue
         layer_a = LAYER_RE.search(items[0].get("description", ""))
         layer_b = LAYER_RE.search(items[1].get("description", ""))
-        a, b = items[0]["pos"], items[1]["pos"]
-        distance = math.hypot(a["x"] - b["x"], a["y"] - b["y"])
+        a, b = resolved_item_pair(items[0], items[1], points_by_uuid)
+        distance = math.dist(a, b)
         if minimum <= distance <= maximum:
             result.append(
                 (
                     distance,
                     match.group(1),
-                    a["x"],
-                    a["y"],
-                    b["x"],
-                    b["y"],
+                    a[0],
+                    a[1],
+                    b[0],
+                    b[1],
                     layer_a.group(1) if layer_a else "A",
                     layer_b.group(1) if layer_b else "A",
                 )
@@ -190,12 +198,16 @@ def same_endpoint_pair(
     )
 
 
-def exact_gap_present(report: dict, proposal: tuple) -> bool:
+def exact_gap_present(
+    report: dict,
+    proposal: tuple,
+    points_by_uuid: dict[str, tuple[tuple[float, float], ...]],
+) -> bool:
     _, net, x1, y1, x2, y2, _, _ = proposal
     endpoints = (x1, y1, x2, y2)
     return any(
         candidate[1] == net and same_endpoint_pair(endpoints, candidate[2:6])
-        for candidate in gaps(report, 0.0, math.inf, net)
+        for candidate in gaps(report, 0.0, math.inf, net, points_by_uuid)
     )
 
 
@@ -204,6 +216,8 @@ def acceptable(
     after: dict,
     proposal: tuple,
     accept_capped_progress: bool,
+    before_points: dict[str, tuple[tuple[float, float], ...]],
+    after_points: dict[str, tuple[tuple[float, float], ...]],
 ) -> bool:
     before_open = len(before.get("unconnected_items", []))
     after_open = len(after.get("unconnected_items", []))
@@ -212,8 +226,8 @@ def acceptable(
         accept_capped_progress
         and before_open == KICAD_UNCONNECTED_REPORT_CAP
         and after_open == KICAD_UNCONNECTED_REPORT_CAP
-        and exact_gap_present(before, proposal)
-        and not exact_gap_present(after, proposal)
+        and exact_gap_present(before, proposal, before_points)
+        and not exact_gap_present(after, proposal, after_points)
     )
     if not count_improved and not capped_gap_improved:
         return False
@@ -385,6 +399,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="juku-gap-close-") as tmp_name:
         tmp = Path(tmp_name)
         current_report = run_drc(cli, args.output, tmp / "current.json")
+        current_points = board_item_points(pcbnew.LoadBoard(str(args.output)))
         initial = len(current_report.get("unconnected_items", []))
         while not args.limit or accepted < args.limit:
             candidates = gaps(
@@ -392,6 +407,7 @@ def main() -> None:
                 args.min_distance,
                 args.max_distance,
                 args.net,
+                current_points,
             )
             proposal = next(
                 (item for item in candidates if gap_signature(item) not in attempted),
@@ -442,11 +458,16 @@ def main() -> None:
                 record_attempt(signature, "router-failed")
                 continue
             candidate_report = run_drc(cli, candidate_board, candidate_report_path)
+            candidate_points = board_item_points(
+                pcbnew.LoadBoard(str(candidate_board))
+            )
             if not acceptable(
                 current_report,
                 candidate_report,
                 proposal,
                 args.accept_capped_progress,
+                current_points,
+                candidate_points,
             ):
                 print(
                     f"reject {net} {distance:.3f} mm: "
@@ -459,6 +480,7 @@ def main() -> None:
             after = len(candidate_report["unconnected_items"])
             os.replace(candidate_board, args.output)
             current_report = candidate_report
+            current_points = candidate_points
             accepted += 1
             record_attempt(signature, "accepted")
             capped_note = (

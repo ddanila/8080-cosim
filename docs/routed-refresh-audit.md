@@ -526,6 +526,19 @@ python3 kicad/close_gap_by_ripup.py OUTPUT_28 OUTPUT_27 \
   --max-conflicts 8
 ```
 
+A follow-up MA1/MA0 topology experiment exposed a DRC-coordinate interpretation
+bug rather than another legal closure. KiCad reports a track item's `pos` at
+the track midpoint, while both gap wrappers had treated that marker as the open
+copper end. For the residual MA0 marker this meant proposing from
+`(110.8304,135.8083)` instead of the actual endpoint
+`(111.9321,136.91)`, creating a false conflict with MA1. The wrappers now
+resolve track/via and pad UUIDs against the current board and choose the nearest
+real connection-point pair, falling back to DRC coordinates only for unknown
+item types. The corrected MA0 gap is 3.8629 mm; an exact-clearance 0.10 mm-grid
+retry finds no legal multilayer path, so the DRC-neutral MA1/MA0 swaps remain
+diagnostic only and the independently verified 27-open board remains the best
+checkpoint.
+
 The July-2026 refresh audit found 48 short violations in the first candidate.
 Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated
 routed nets and removes every transplanted-track short. The remaining 12 DRC

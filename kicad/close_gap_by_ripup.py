@@ -25,6 +25,8 @@ import tempfile
 
 import pcbnew
 
+from drc_gap_geometry import board_item_points, resolved_item_pair
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "kicad" / "juku.kicad_pcb"
@@ -86,7 +88,9 @@ def violation_item_uuids(report: dict, kind: str) -> set[str]:
 
 
 def net_gaps(
-    report: dict, netname: str
+    report: dict,
+    netname: str,
+    points_by_uuid: dict[str, tuple[tuple[float, float], ...]] | None = None,
 ) -> list[tuple[float, float, float, float, float, str, str]]:
     result = []
     for gap in report.get("unconnected_items", []):
@@ -100,14 +104,14 @@ def net_gaps(
         for item in items:
             layer = LAYER_RE.search(str(item.get("description", "")))
             layers.append(layer.group(1) if layer else "A")
-        a, b = items[0]["pos"], items[1]["pos"]
+        a, b = resolved_item_pair(items[0], items[1], points_by_uuid)
         result.append(
             (
-                math.hypot(a["x"] - b["x"], a["y"] - b["y"]),
-                a["x"],
-                a["y"],
-                b["x"],
-                b["y"],
+                math.dist(a, b),
+                a[0],
+                a[1],
+                b[0],
+                b[1],
                 layers[0],
                 layers[1],
             )
@@ -367,6 +371,8 @@ def main() -> None:
         initial_counts = violation_counts(initial_report)
         initial_open = len(initial_report.get("unconnected_items", []))
         initial_target_open = len(net_gaps(initial_report, args.net))
+        baseline = pcbnew.LoadBoard(str(args.input))
+        baseline_points = board_item_points(baseline)
         if args.gap_report:
             try:
                 gap_report = json.loads(args.gap_report.read_text())
@@ -376,7 +382,7 @@ def main() -> None:
                 ) from error
         else:
             gap_report = initial_report
-        gaps = net_gaps(gap_report, args.net)
+        gaps = net_gaps(gap_report, args.net, baseline_points)
         if args.gap_index >= len(gaps):
             raise SystemExit(
                 f"{args.net} has {len(gaps)} gap(s), index {args.gap_index} is invalid"
@@ -386,7 +392,6 @@ def main() -> None:
         selected = gaps[args.gap_index]
         distance, x1, y1, x2, y2, layer1, layer2 = selected
 
-        baseline = pcbnew.LoadBoard(str(args.input))
         baseline_tracks = track_nets(baseline)
         initial_tracks = len(baseline_tracks)
         source = pcbnew.LoadBoard(str(args.source))
