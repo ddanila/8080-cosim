@@ -295,6 +295,24 @@ A fresh 0.10 mm-grid, 100 mm-margin sweep exhausts all 28 residuals without an
 acceptance; D26_PC0_D3_I5 produces seven added clearance findings and is
 rejected.
 
+Those seven D26_PC0_D3_I5 findings are a quantization boundary, not an occupied
+corridor. The 0.20 mm-clearance proposal has no removable copper conflicts and
+misses only four fixed pads: D93.14, D34.7, D101.1, and R63.1. KiCad measures its
+clearances at 0.1962–0.1980 mm against the 0.2000 mm rule. Raising only the
+router's proposal margin to 0.205 mm forces a different 163-segment/17-via path;
+the diagnostic then has zero removable and zero fixed blockers. The ordinary
+transaction publishes that path with no rip-up or restoration and reaches 27
+opens. Independent stable KiCad DRC reports the unchanged 199 track-dangling
+and 46 via-dangling findings and zero short, clearance, crossing, hole, or edge
+blockers. Exact parity still holds for 303 footprints and 2,395 pads; the board
+has 31,817 copper items and SHA256
+`20c409f1aaf5f144b31071673ec06640664f9207264ae5eb8891fdb9db0bdc62`.
+A fresh 0.15 mm-grid, 100 mm-margin sweep exhausts all 27 remaining signatures
+without acceptance. The next smallest bounded mixed candidate, VA6, removes 13
+migrated items across BA10, MA4, MA7, VA1, VA14, VA15, and VA8, but the target
+still cannot route through fixed D51.5/.6/.7 pads; that failed topology is not
+adopted.
+
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
   --routed kicad/juku_routed_candidate.kicad_pcb \
@@ -502,6 +520,10 @@ python3 kicad/close_gap_by_ripup.py BA0_SWAP_29 OUTPUT_28 \
   --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
   --restore-grid-steps 0.15,0.10,0.125,0.1375 \
   --restore-net-priority S3_3,VID_CPU_SEL,P5V
+python3 kicad/close_gap_by_ripup.py OUTPUT_28 OUTPUT_27 \
+  --net D26_PC0_D3_I5 --diagnostic-clearance 0.205 \
+  --route-clearance 0.205 --grid-step 0.10 --search-margin 100 \
+  --max-conflicts 8
 ```
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
