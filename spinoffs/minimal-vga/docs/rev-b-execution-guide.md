@@ -714,6 +714,100 @@ verified authoritatively from the desk, so U_RST became a **net-labelled 3-pin h
 tier suite. Edge keepout ring enabled on the backplane too (D1.34 retired the conflicting
 columns) → routes 0/0 attempt 1. All four boards 0/0; hold lifted.
 
+### Phase B2 — video card to manufacturing-ready (TI.1–TI.8; D2.1–D2.5)
+
+Goal: the fifth board — TTL VGA + framebuffer — through the SAME pipeline as the other
+four (netlist → LVS → footprint guards → PCB → route 0/0 → mating → fab package), with
+the TTL640x480 timing chain adopted per D2.1. The bus side is already contracted:
+cards.json `video` owns `0xD800-0xFFFF` (mem stops at 0xD7FF — no overlap), drives
+FRAME_TICK + open-drain WAIT_N, and the behavioral twin `revb_video_card.v` already
+boots ekta37 byte-identical. Sequencing note: TI.1–TI.4 are pure desk work; **hold TI.5+
+tape-out until T1.11 bench proves the bus** (a bus tweak is cheapest folded into this
+card's first spin). One task = one commit; rebase before push.
+
+**TI.1 — adoption note + timing contract (D2.1).**
+- `docs/rev-b-video-adoption.md`: what is adopted from mengstr/TTL640x480 (timing chain
+  topology: '393 row/col counters + NAND sync/blank decode + diode-NOR), the adopted
+  commit hash, the MIT license text, and what is ours (framebuffer, bus interface,
+  shifter, GAL logic, DAC). No Eagle import — redrawn in our generator.
+- `kicad/revb/video-timing.json` — numeric contract consumed by twin + checkers:
+  h_total=800, h_active=640, h_fp=16, h_sync=96, h_bp=48; v_total=525, v_active=480,
+  v_fp=10, v_sync=2, v_bp=33; dot=25.175 MHz; sync polarities; plus the VJUGA mapping
+  block (fb_base=0xD800, cols=40, rows=241, pixel-double ×2, crop_or_letterbox=TBD@TI.2).
+*Acceptance:* both files committed; timing numbers match the VGA 640×480@60 standard and
+the adopted schematic; license provenance recorded.
+
+**TI.2 — chip-level twin + all B2 sim gates (oracle-first, D1.19).**
+- `hdl/revb/revb_video_card_ttl.v`: 74xx-level model (per-chip modules mirroring the
+  real BOM: 3×'393, '00/'10/'20/'04, 4×'157 CPU/scanout address mux, '166 shifter,
+  '245 data buffer, GAL22V10 — equations added to `rev-b-gal-equations.md`) implementing
+  the D2.5 contention design. Drop-in for `revb_video_card.v` in the backplane twin.
+- Gates, all wired into `revb_tier_suite.sh` + CI:
+  (a) boot ekta37_z80 with the TTL card → framebuffer readback **byte-identical to
+  cosim's vram.bin** (the existing oracle, now through real chips);
+  (b) **scanout checker**: sync periods/widths == `video-timing.json`; active-region
+  pixel stream == framebuffer bits (this resolves **D2.4 crop-vs-letterbox** — test both,
+  freeze the winner in the json);
+  (c) **/WAIT phase sweep**: CPU framebuffer access launched at every dot-clock phase —
+  zero lost/corrupt accesses, bounded wait, verified against the bus monitor;
+  (d) **mode-default gate**: MODE0/1 from backplane pulls only (no io card), GAL decodes
+  the boot overlay per the facts table;
+  (e) **FRAME_TICK contract**: tick period vs the facts' 200000-cycle keyboard-scan
+  anchor (tolerance recorded — VGA 60 Hz vs the original tick is a firmware-visible
+  fact; the oracle decides what is acceptable).
+*Acceptance:* tier suite green with the TTL card substituted; D2.4 resolved and frozen.
+
+**TI.3 — netlist to schematic depth + LVS.**
+- `gen_revb_boards.py`: add the `video` card — new CHIP_TYPES (74HCT393/00/10/20/04/157/
+  166, GAL22V10_VIDEO, OSC_25M175, DB15HD, R-DAC + termination resistors, decoupling
+  caps ~1/chip), full pin tables wired per TI.2's model; AS6C1008 reused (D2.3, high
+  address lines strapped). D1.18 completeness + connectivity guards must stay green
+  (cards.json `video` entry already specifies the bus face).
+- LVS: `revb_video_lvs.v` empty-bodied structural netlist + instance map;
+  `revb_lvs.sh video` IN SYNC; tier suite + CI.
+*Acceptance:* video.board.json generated, completeness green, LVS IN SYNC.
+
+**TI.4 — footprints + package guards.**
+- Probe additions: DIP-14 TTLs (existing kind), `OSC_25M175` (existing OSC14 kind),
+  **DSUB-15HD** (KiCad `Connector_Dsub` lib — high-density 3-row 15-pin, THT, verify
+  against a real MPN datasheet like the USB-C was), R-DAC resistors (existing kind).
+- `PKG_WIDTH`/`PKG_PHYS` rows for every new type, datasheet-cited, **negative-tested**
+  (the DSUB especially: pad count 15+shield, row pitch 2.29/2.54 mm variants — pick the
+  variant matching the purchasable part, not the prettiest footprint).
+*Acceptance:* probe green all five cards; DSUB negative test fails on the wrong-variant
+footprint.
+
+**TI.5 — PCB: placement + route (D2.2 gate). [HOLD until T1.11 bench-proves the bus]**
+- `revb_place.py`: video PLACE table (BOARD_H=100; J_BUS/J_EXT derived from mating.json
+  automatically). Layout guidance: bus interface + GAL near the bottom (mating) edge,
+  SRAM + mux center, timing chain + shifter + DAC + DB15 along the TOP edge (cable side),
+  osc adjacent to the counters, 25 MHz nets short.
+- Placement DRC 0 → route (FR_ATTEMPTS=30, sweep on the SRAM/GAL if needed, exactly the
+  TF.1 pattern). **If the sweep exhausts without 0/0 → D2.2 4-layer exception**, recorded
+  in the build plan with the sweep log as evidence.
+*Acceptance:* `check_revb_drc.py video --total` 0/0 from fresh regenerate; layer count
+recorded; STEP + previews rendered.
+
+**TI.6 — mechanical: 4-card assembly + connector overhang.**
+- `mate_check.py`: seat mem/io/cpu/video in slots 1–4; interference 0; re-measure
+  clearances (the DB15 shell overhangs the card's TOP edge — verify it clears the
+  neighbouring slot's envelope and record the overhang for enclosure thinking).
+*Acceptance:* updated `rev-b-mating-report.md` with the 4-card numbers.
+
+**TI.7 — power re-check + fab package + BOM.**
+- Power: ~18 HCT + osc + SRAM ≈ +150 mA over the B1 table → new total vs the 60 %/0.9 A
+  USB headroom rule — if it crosses, record the consequence (bench/PD-supply note in the
+  bus contract), don't hand-wave it.
+- `export_fab.sh` gains the video card → 5 zips + hashes; order-readiness: video board
+  row + BOM rows (exact MPNs, DSUB + osc datasheet-cited like USB4085/MF-R110).
+*Acceptance:* hashes recorded; every video part datasheet-verified; power table updated.
+
+**TI.8 — B2-CAD exit.**
+- Full tier suite green (all five boards' guards + the TTL-twin gates); ledger row
+  "B2-CAD" ✅; the **on-glass exit** (real banner on a real monitor, framebuffer readback
+  byte-identical on hardware) stays a bench task gated on T1.11 + the video-card order.
+*Acceptance:* five boards × total-DRC 0/0 + suite green from one command.
+
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
 
 **TD.9 — io card (the big one: D1.26 full-B3 wiring first).**

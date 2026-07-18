@@ -16,7 +16,7 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four cards route DRC 0/0** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane via D1.29 column-route (245 generated columns + freerouted tail) |
 | **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | ✅ done | TG.1 mating contract+checker, TG.2 **all 4 route 0/0** at 4 mm offset, TG.3 FreeCAD clearance 4.16 mm + keying D1.32b, TG.4 fab packages + power re-check → **T1.10 armed** |
 | **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ T1.10 = purchasing decision; T1.11 hardware-blocked | see `rev-b-order-readiness.md` |
-| **B2 / B3 / B4** | video / keyboard+PIC / FDC tiers | ⬜ future | |
+| **B2 / B3 / B4** | video / keyboard+PIC / FDC tiers | ⬜ B2 planned to task depth (TI.1–TI.8, D2.1–D2.5, 2026-07-18); B3 = populate-only; B4 future | TTL640x480 (MIT) adopted for the timing chain; TI.1–TI.4 desk-ready, TI.5+ tape-out held until T1.11 proves the bus |
 
 ## One-command gate
 
