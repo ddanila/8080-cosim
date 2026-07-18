@@ -46,7 +46,7 @@ remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
 starts at 433 honest gaps. Guarded A* routing now reaches
-27 gaps with 31,817 copper items, exact parity across all 2,395 current source
+25 gaps with 31,992 copper items, exact parity across all 2,395 current source
 pads, and zero short, clearance, crossing, hole, or edge findings. The decisive
 follow-up uses the board-legal 0.21 mm clearance instead of the earlier
 conservative 0.45 mm proposal keep-out; it closes 111 gaps after targeted INTR,
@@ -88,15 +88,21 @@ without acceptance; its only geometric result is a marginal, DRC-rejected
 D26_PC0_D3_I5 proposal. That 0.20 mm-clearance path misses four fixed pads by
 only 2–4 µm, while a conservative 0.205 mm proposal margin finds a different
 path with no blockers and legally closes
-the net, reaching the current independently verified 27-gap boundary. A fresh
-0.15 mm, 100 mm-margin sweep exhausts all 27 residuals without acceptance.
+the net, reaching the independently verified 27-gap boundary. Endpoint-correct
+0.10, 0.125, 0.1375, and 0.15 mm sweeps first exhaust all 27 residuals without
+an additive acceptance.
 The next bounded VA6 diagnostic removes 13 migrated items but still cannot
 route through the fixed D51 pad corridor, so it is not adopted.
 Gap selection now resolves KiCad track-marker UUIDs to their nearest real
-copper endpoints instead of routing from track midpoints. This corrects the
-residual MA0 measurement to 3.8629 mm and removes a false MA1 conflict; the
-endpoint-correct retry has no legal exact-clearance path, so no equal-open
-MA1/MA0 topology swap is adopted.
+copper endpoints instead of routing from track midpoints. Replaying the bounded
+MA1 transaction with endpoint-correct restoration displaces 14 migrated items,
+closes MA1, and restores W10_QA_SEL, both VID_MUX_G branches, VA2, VA10, both
+VA11 branches, both MA0 branches, and MA2. The decisive 0.1375 mm MA0 phase
+turns the former equal-open swap into a real 27-to-26 improvement. A subsequent
+0.125 mm exact-clearance sweep closes MA6 and establishes the current
+independently verified 25-gap boundary. The board has 31,992 copper items;
+stable DRC retains 199 track-dangling and 46 via-dangling findings and no
+electrical blockers.
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

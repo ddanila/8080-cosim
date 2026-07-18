@@ -307,11 +307,31 @@ and 46 via-dangling findings and zero short, clearance, crossing, hole, or edge
 blockers. Exact parity still holds for 303 footprints and 2,395 pads; the board
 has 31,817 copper items and SHA256
 `20c409f1aaf5f144b31071673ec06640664f9207264ae5eb8891fdb9db0bdc62`.
-A fresh 0.15 mm-grid, 100 mm-margin sweep exhausts all 27 remaining signatures
-without acceptance. The next smallest bounded mixed candidate, VA6, removes 13
-migrated items across BA10, MA4, MA7, VA1, VA14, VA15, and VA8, but the target
-still cannot route through fixed D51.5/.6/.7 pads; that failed topology is not
-adopted.
+Fresh endpoint-correct 0.10, 0.125, 0.1375, and 0.15 mm-grid, 100 mm-margin
+sweeps exhaust all 27 remaining signatures without additive acceptance. The
+next smallest bounded mixed candidate, VA6, removes 13 migrated items across
+BA10, MA4, MA7, VA1, VA14, VA15, and VA8, but the target still cannot route
+through fixed D51.5/.6/.7 pads; that failed topology is not adopted.
+
+The endpoint correction nevertheless changes displaced-net restoration. A
+0.10 mm-clearance MA1 diagnostic identifies a bounded set of 14 migrated items
+across MA0, MA2, VA10, VA11, VA2, VID_MUX_G, and W10_QA_SEL while retaining the
+fixed D50 pad corridor. The guarded mixed-blocker transaction closes MA1 at the
+real 15.533 mm endpoint pair. Endpoint-correct recovery restores both
+VID_MUX_G branches, VA10's same-coordinate layer join, both VA11 branches, one
+MA0 branch, and then the formerly trapped 4.457 mm MA0 branch on the 0.1375 mm
+lattice. MA2 restores last, turning the old equal-open topology experiment into
+a real 27-to-26 improvement; one transaction-orphaned migrated via is removed.
+A fresh 0.125 mm exact-clearance sweep then closes MA6 and reaches 25 opens.
+The other 0.10, 0.1375, and 0.15 mm phases accept nothing, and the accepted
+0.125 mm pass exhausts every remaining signature after MA6.
+
+Independent stable KiCad DRC on that 25-open board reports the unchanged 199
+track-dangling and 46 via-dangling findings and zero short, clearance, crossing,
+hole, or edge blockers. Exact identity, net, and coordinate parity holds for
+all 303 footprints and 2,395 pads. The board contains 31,992 copper items, is
+10,982,923 bytes, and has SHA256
+`b0de0b804af22c71c50d790fa29ca2b4ed3ba218956403babf6529193530870b`.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -524,6 +544,15 @@ python3 kicad/close_gap_by_ripup.py OUTPUT_28 OUTPUT_27 \
   --net D26_PC0_D3_I5 --diagnostic-clearance 0.205 \
   --route-clearance 0.205 --grid-step 0.10 --search-margin 100 \
   --max-conflicts 8
+python3 kicad/close_gap_by_ripup.py OUTPUT_27 OUTPUT_26 \
+  --net MA1 --diagnostic-clearance 0.10 --route-clearance 0.20 \
+  --grid-step 0.10 --search-margin 100 --max-conflicts 20 \
+  --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
+  --restore-grid-steps 0.10,0.15,0.125,0.1375 \
+  --restore-net-priority W10_QA_SEL,VID_MUX_G,VA2,VA10,VA11,MA0,MA2
+python3 kicad/close_unconnected_gaps.py OUTPUT_26 OUTPUT_25 \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 100 \
+  --grid-step 0.125 --route-clearance 0.20 --timeout 180
 ```
 
 A follow-up MA1/MA0 topology experiment exposed a DRC-coordinate interpretation
@@ -534,10 +563,12 @@ copper end. For the residual MA0 marker this meant proposing from
 `(111.9321,136.91)`, creating a false conflict with MA1. The wrappers now
 resolve track/via and pad UUIDs against the current board and choose the nearest
 real connection-point pair, falling back to DRC coordinates only for unknown
-item types. The corrected MA0 gap is 3.8629 mm; an exact-clearance 0.10 mm-grid
-retry finds no legal multilayer path, so the DRC-neutral MA1/MA0 swaps remain
-diagnostic only and the independently verified 27-open board remains the best
-checkpoint.
+item types. The corrected initial MA0 gap is 3.8629 mm; an additive
+exact-clearance retry finds no legal multilayer path. During the bounded MA1
+displacement, however, the new endpoint resolver selects the actual open ends
+of both replacement MA0 branches. The 0.1375 mm phase closes the final 4.457 mm
+branch, enabling the verified 26-open transaction and subsequent 25-open MA6
+checkpoint documented above.
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
 Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated
