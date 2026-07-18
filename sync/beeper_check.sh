@@ -21,6 +21,9 @@ from pathlib import Path
 
 root = Path.cwd()
 board = json.loads((root / "kicad" / "juku.board.json").read_text())
+chips = {chip["ref"]: chip for chip in board["chips"]}
+if chips.get("VD4", {}).get("value") != "КД521В":
+    raise SystemExit("BEEPER-CHECK: target-photo VD4 designation mismatch")
 expected = {
     "SOUND": [("D57", "13"), ("R90", "1")],
     "SND_BASE": [("R90", "2"), ("VD4", "2"), ("VT1", "3")],
@@ -64,6 +67,8 @@ lines = [
     "  and requires `OUT1` to toggle.",
     "- `kicad/juku.board.json` independently carries the traced handoff:",
     "  `D57.OUT1 -> R90 -> VT1/VD4/R91 clamp -> R48 -> SPKR`.",
+    "- The July target-board view directly reads VD4 as `КД521В`; an independent May view corroborates the grade-В reverse face;",
+    "  the retained sheet supplies its cathode/anode connectivity.",
     "",
     "## Command",
     "",
@@ -90,8 +95,8 @@ lines.extend(
         "## Remaining Boundary",
         "",
         "- This is a digital source plus board-handoff guard, not an analog speaker",
-        "  model. Physical bring-up still needs the speaker unit, clamp polarity,",
-        "  and level/current check on real hardware.",
+        "  model. Physical bring-up still needs the speaker unit and a level/current",
+        "  check on real hardware; clamp part identity and drawn polarity are closed.",
         "",
     ]
 )

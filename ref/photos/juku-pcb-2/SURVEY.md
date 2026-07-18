@@ -22,6 +22,13 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
   thick tinned traces rather than copper pours.
 - The board is two-layer. The insulated wires correspond to documented
   assembly links summarized in `BODGE-TRIAGE.md`.
+- Independent May/July component views close two red axial diode bodies as
+  `КД521В`: the direct designation face plus corroborating populated position
+  for VD1 in the reset-RC corner, and the direct designation plus independent
+  grade-В reverse face for VD4 in the traced beeper clamp.
+  VD1 is visibly populated at the sheet-1 +5 V/reset-RC position; this corrects
+  its former omission from the board model rather than treating the empty model
+  as target-board evidence.
 - The nominally "missing" ЛЕ4 package is present but decapped, with die and
   bond wires visible.
 - The clock/video corner visibly includes ИЕ17/74S169-class, ИР16, ЛП5, ЛА3,

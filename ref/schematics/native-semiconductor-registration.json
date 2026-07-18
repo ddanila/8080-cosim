@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "scope": "retained sheet-2 video and beeper semiconductors whose native designations and physical pin contracts are legible",
-  "promotion_rule": "copy only a designation printed beside the retained refdes; map nets to the physical package pin numbers rather than to the schematic symbol drawing order",
+  "scope": "retained sheet-1 reset/power and sheet-2 video/beeper semiconductors whose native or target-body designations and physical pin contracts are legible",
+  "promotion_rule": "copy a designation only when printed beside the retained refdes or directly legible on the factory-identified target body; map nets to physical package pin numbers rather than schematic drawing order",
   "source": {
     "path": "ref/schematics/p2_sheet2.png",
     "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
@@ -10,6 +10,53 @@
       "beeper_stage": [3300, 2150, 900, 800]
     }
   },
+  "reset_source": {
+    "path": "ref/schematics/p3_sheet1.png",
+    "sha256": "dd9eb45a8b9a6af5bbaf4677939f4b2db49661c1a536a07009e0fce9afa1bf53",
+    "regions_px": {
+      "reset_stage": [0, 350, 1300, 1500],
+      "m5v_stage": [4300, 2200, 700, 900]
+    },
+    "observation": "sheet 1 identifies VD1 across +5 V and RES_RC with its cathode on +5 V, and prints VD5=КС147 on the derived -5 V clamp"
+  },
+  "target_body_sources": [
+    {
+      "ref": "VD1",
+      "path": "ref/photos/juku-pcb-2/PXL_20260519_201915520.jpg",
+      "sha256": "02362aece9412157152155841f9cfb939e44c43f67a75598b5721c722c9eeb59",
+      "dimensions_px": [4080, 3072],
+      "bbox_px": [2750, 1550, 3020, 2050],
+      "visible_marking": "КД521В",
+      "observation": "the independent May reset-corner view exposes the populated red axial body and its 521В designation"
+    },
+    {
+      "ref": "VD1",
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+      "sha256": "a009a302bf045ebe6fde6cc081afec748f633650e3a92741bb1fff99574fe252",
+      "dimensions_px": [4080, 3072],
+      "bbox_px": [350, 1350, 610, 2000],
+      "visible_marking": "designation face C1-obscured",
+      "observation": "registered July component coverage independently fixes the same red КД-2 body at approximately (12.5,216.1) mm beside C1; the designation face is obscured rather than reread"
+    },
+    {
+      "ref": "VD4",
+      "path": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+      "sha256": "a14bc7abb344b0d5a754f6bc62133641393a2f10cef001de423544f8dab75263",
+      "dimensions_px": [4080, 3072],
+      "bbox_px": [3150, 480, 3530, 1230],
+      "visible_marking": "В suffix",
+      "observation": "the independent May beeper view exposes the same red axial body and the grade suffix В on its opposite face"
+    },
+    {
+      "ref": "VD4",
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "sha256": "87ef05efd7bf245bbe072526ca768cd1ce6787dc90ee15c7cb8e975badebcbe0",
+      "dimensions_px": [4080, 3072],
+      "bbox_px": [2050, 600, 2310, 1250],
+      "visible_marking": "КД521В",
+      "observation": "the registered July beeper view directly reads 521В on VD4 between the D58 and VT1/R48 cluster"
+    }
+  ],
   "physical_source": {
     "path": "ref/photos/juku-pcb-2/c94-endpoint-registration.json",
     "observation": "owner imagery closes VT2 as the yellow three-lead КТ315 body marked Б/8901 and registers its three component-side lap joints"
@@ -28,11 +75,12 @@
     }
   ],
   "closed": [
+    {"ref": "VD1", "type": "D_DIODE", "value": "КД521В", "pins": {"1": "K", "2": "A"}, "footprint": "D_DO-35_SOD27_P7.62mm_Horizontal"},
     {"ref": "VT1", "type": "Q_KT27", "value": "КТ972", "pins": {"1": "E", "2": "C", "3": "B"}, "footprint": "TO-126-3_Horizontal_TabDown"},
     {"ref": "VT2", "type": "Q_KT13", "value": "КТ315", "pins": {"1": "E", "2": "C", "3": "B"}, "footprint": "TO-92_Inline"},
-    {"ref": "VD3", "type": "D_DIODE", "value": "КС147Г", "pins": {"1": "K", "2": "A"}, "footprint": "D_DO-35_SOD27_P7.62mm_Horizontal"}
+    {"ref": "VD3", "type": "D_DIODE", "value": "КС147Г", "pins": {"1": "K", "2": "A"}, "footprint": "D_DO-35_SOD27_P7.62mm_Horizontal"},
+    {"ref": "VD4", "type": "D_DIODE", "value": "КД521В", "pins": {"1": "K", "2": "A"}, "footprint": "D_DO-35_SOD27_P7.62mm_Horizontal"},
+    {"ref": "VD5", "type": "D_DIODE", "value": "КС147", "pins": {"1": "K", "2": "A"}, "footprint": "D_DO-35_SOD27_P7.62mm_Horizontal"}
   ],
-  "held": [
-    {"ref": "VD4", "reason": "the retained beeper clamp symbol is legible but no exact diode designation is printed beside it"}
-  ]
+  "held": []
 }

@@ -5,7 +5,6 @@ circuit-review,C_KM,,КМ ceramic capacitor,modern ceramic capacitor with matchi
 circuit-review,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,4,4,0,"C38, C42, C46, C50","C38, C42, C46, C50","Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value."
 circuit-review,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,6,0,6,"C51, C52, C53, C70, C71, C72",,"Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."
 circuit-review,C_KM,"1,5 нФ","КМ ceramic capacitor 1,5 нФ",modern ceramic capacitor with matching value/voltage/lead spacing,2,2,0,"C20, C22","C20, C22","Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone."
-circuit-review,D_DIODE,,Soviet diode/zener per value,modern diode/zener matching value and power,1,1,0,VD4,VD4,
 circuit-review,Q_KT13,,КТ315,modern E-C-B transistor selected for the video role and KT-13 pad row,1,1,0,VT2,VT2,
 circuit-review,Q_KT27,,КТ972,modern E-C-B TO-126 transistor selected for the beeper role,1,1,0,VT1,VT1,
 circuit-review,UP2,,К170УП2,RS-232/line-receiver substitute required; verify +/-12 V interface,1,1,0,D104,D104,
@@ -42,6 +41,7 @@ source-now,C_KM,24,КМ ceramic capacitor 24,modern ceramic capacitor with match
 source-now,C_KM,56,КМ ceramic capacitor 56,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C6,C6,
 source-now,C_KM,560,КМ ceramic capacitor 560,modern ceramic capacitor with matching value/voltage/lead spacing,2,2,0,"C5, C7","C5, C7",
 source-now,C_TRIM,4/20,trimmer capacitor 4/20,modern trimmer capacitor matching footprint/value,1,1,0,C73,C73,
+source-now,D_DIODE,КД521В,Soviet diode/zener per value КД521В,modern diode/zener matching value and power,2,2,0,"VD1, VD4","VD1, VD4",
 source-now,D_DIODE,КС147,Soviet diode/zener per value КС147,modern diode/zener matching value and power,1,1,0,VD5,VD5,
 source-now,D_DIODE,КС147Г,Soviet diode/zener per value КС147Г,modern diode/zener matching value and power,1,1,0,VD3,VD3,
 source-now,FDC_CONN,,FDC_CONN,select exact substitute after circuit review,1,1,0,X4,X4,

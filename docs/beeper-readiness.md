@@ -11,6 +11,8 @@ cross-checks the traced board handoff into the analog driver.
   and requires `OUT1` to toggle.
 - `kicad/juku.board.json` independently carries the traced handoff:
   `D57.OUT1 -> R90 -> VT1/VD4/R91 clamp -> R48 -> SPKR`.
+- The July target-board view directly reads VD4 as `КД521В`; an independent May view corroborates the grade-В reverse face;
+  the retained sheet supplies its cathode/anode connectivity.
 
 ## Command
 
@@ -39,5 +41,5 @@ sync/beeper_check.sh
 ## Remaining Boundary
 
 - This is a digital source plus board-handoff guard, not an analog speaker
-  model. Physical bring-up still needs the speaker unit, clamp polarity,
-  and level/current check on real hardware.
+  model. Physical bring-up still needs the speaker unit and a level/current
+  check on real hardware; clamp part identity and drawn polarity are closed.

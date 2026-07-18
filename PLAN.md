@@ -84,6 +84,17 @@ holds, C16/C19 at their incomplete bare-body markings, and unlabelled C34
 unvalued rather than importing superseded `.006` RF assignments or guessing
 units. Connectivity is unchanged.
 
+The native-semiconductor audit now also restores the reset diode omitted from
+the former board model and closes the beeper clamp's exact fitted part
+(`docs/native-semiconductors.md`). Native sheet 1 fixes VD1's cathode on +5 V
+and anode on the R3/C1/R4 reset-RC junction; independent May and registered
+July target views prove the populated red axial body at `(12.5,216.1)` mm; the
+May body view directly reads `КД521В`. In the traced beeper cluster, the July
+view directly reads the same `КД521В` designation on VD4 and the independent
+May view corroborates its grade-В reverse face. The source PCB carries both physical
+diodes with their sheet-proved polarities. This target-body evidence supersedes
+the older `.006` group list's КД522А allocation without changing VD3/VD5.
+
 The recorded upload ZIP SHA256 is
 `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
 Do not send this saved package to a fabricator. After the blockers below are
@@ -429,7 +440,7 @@ Every ask below is queued with exact deliverables in
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
-Source-model state feeding this work: the source PCB passes all 2262/2262
+Source-model state feeding this work: the source PCB passes all 2264/2264
 net-assigned PCB-scoped board-JSON endpoints, with 75 non-PCB or placement-held
 endpoints intentionally excluded. Bracket-mounted S1/X3/X4/X6/X8/X9 use their
 physical A-point cable landings. The photo-proven bare `.009` C63 callout is

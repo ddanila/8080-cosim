@@ -139,7 +139,7 @@ PASSIVE_PLACE = {
     'R33':(297.5,133.3,0),   # 620R D34 RC resistor, horizontal above D34 [owner photo]
     'C5':(304.0,127.5,0),    # 560p D34 RC capacitor above R33 [owner photo]
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
-    'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),
+    'R3':(12,200.8,0),'R4':(16.9,209.2,90),'VD1':(12.5,216.1,270),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),
     # Native sheet 1 names the H/-BLOCK pull-up R1 2k; the .009 drawing and
     # owner photo place it horizontally between D13 and D105. Pin 1 is the
     # right-hand +5 V landing and pin 2 is the left-hand H landing.

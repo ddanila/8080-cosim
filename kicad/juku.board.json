@@ -2545,6 +2545,20 @@
    "value": "470"
   },
   {
+   "ref": "VD1",
+   "type": "D_DIODE",
+   "value": "КД521В",
+   "pins": {
+    "1": "K",
+    "2": "A"
+   },
+   "prov": {
+    "type": "scan + registered owner photos",
+    "refdes": "native sheet-1 reset circuit + target-board component registration",
+    "pins": "native sheet-1 draws VD1 from +5 V cathode to the R3/C1/R4 reset-RC junction anode; the May target view directly reads КД521В and registered July coverage independently proves the previously omitted populated body/position"
+   }
+  },
+  {
    "ref": "VD5",
    "type": "D_DIODE",
    "pins": {
@@ -5002,14 +5016,15 @@
   {
    "ref": "VD4",
    "type": "D_DIODE",
+   "value": "КД521В",
    "pins": {
     "1": "K",
     "2": "A"
    },
    "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 beeper stage",
-    "pins": "beeper clamp diode; connected nets SND_BASE/SND_CLAMP carry crop evidence"
+    "type": "scan + registered owner photos",
+    "refdes": "sheet-2 beeper stage + target-board component registration",
+    "pins": "beeper clamp diode; the registered July target view directly reads КД521В and the independent May view exposes the grade-В reverse face, while connected nets SND_BASE/SND_CLAMP retain the traced sheet-2 polarity"
    }
   },
   {
@@ -11380,6 +11395,10 @@
      "1"
     ],
     [
+     "VD1",
+     "1"
+    ],
+    [
      "R20",
      "2"
     ],
@@ -11786,6 +11805,10 @@
     [
      "A17",
      "1"
+    ],
+    [
+     "VD1",
+     "2"
     ]
    ],
    "_note": "А:17 is a dedicated tinned wire pad at approximately (115.8,27.1) mm; S1 is off-board"

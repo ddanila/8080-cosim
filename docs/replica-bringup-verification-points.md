@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `202`
 - Verification-point endpoints checked in PCB: `227`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2262`
-- All board endpoints checked in routed PCB: `2262`
+- All board endpoints checked in source PCB: `2264`
+- All board endpoints checked in routed PCB: `2264`
 - Intentional non-PCB or placement-pending endpoints excluded: `75`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -57,8 +57,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2262/2262 | 2262/2262 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1871/2262 | 1784/2262 | FAIL |
+| `kicad/juku.kicad_pcb` | 2264/2264 | 2264/2264 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1871/2264 | 1784/2264 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -345,6 +345,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `P5V: D40.10`
 - `P5V: D41.1`
 - `P5V: D41.8`
+- `P5V: VD1.1`
 - `P5V: R34.1`
 - `P5V: D34.13`
 - `P5V: D57.11`
@@ -364,6 +365,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `RESET: D13.6`
 - `RESET: D11.21`
 - `RES_RC: A17.1`
+- `RES_RC: VD1.2`
 - `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY: R100.2`
 - `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY: R102.2`
 - `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY: R108.2`

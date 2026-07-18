@@ -13,21 +13,21 @@ review before being treated as build-ready.
 ## Summary
 
 - BOM lines: 109
-- Populate-now component positions: 251
+- Populate-now component positions: 252
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 22
+- Mechanical/circuit-review lines: 21
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 10 | 24 |
+| circuit-review | 9 | 23 |
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 79 | 204 |
+| source-now | 80 | 206 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -75,7 +75,6 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 4 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 0 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value. |
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | 2 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
-| circuit-review | D_DIODE | Soviet diode/zener per value | 1 | VD4 | modern diode/zener matching value and power |
 | circuit-review | Q_KT13 | КТ315 | 1 | VT2 | modern E-C-B transistor selected for the video role and KT-13 pad row |
 | circuit-review | Q_KT27 | КТ972 | 1 | VT1 | modern E-C-B TO-126 transistor selected for the beeper role |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
