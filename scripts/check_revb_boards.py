@@ -194,6 +194,32 @@ def main() -> int:
                     fail.append(f"[completeness] {name}.board.json internal net {net} "
                                 f"has 1 endpoint {nodes} (wire it, or tag _TIE/_NC)")
 
+    # 9) D1.26 io-card inter-chip wiring: the DNP B3 parts (8255=U4, 74148=U5,
+    # 8259=U6) are not LVS'd, so assert the key connections explicitly. Each net must
+    # connect (at least) the listed refs, or B3 would need a respin.
+    io_bj = REVB / "io.board.json"
+    if io_bj.exists():
+        ion = {n: {r for r, _ in (e["nodes"] if isinstance(e, dict) else e)}
+               for n, e in json.loads(io_bj.read_text()).get("nets", {}).items()}
+        D126 = {
+            "INT_N":     {"U2", "J_BUS"},          # GAL inverts PIC INT -> bus (open-drain)
+            "INTA_N":    {"U2", "U6"},             # GAL gates M1/IORQ -> 8259 INTA
+            "PIC_INT":   {"U2", "U6"},             # 8259 INT -> GAL (for inversion)
+            "SER_RXRDY": {"U1", "U6"},             # 8251 RxRDY -> 8259 ir2
+            "SER_TXRDY": {"U1", "U6"},             # 8251 TxRDY -> 8259 ir3
+            "IO_RESET":  {"U1", "U2", "U4"},       # GAL active-HIGH reset -> 8251 + 8255
+            "MODE0":     {"U4", "J_BUS"},          # 8255 PC0 -> bus mode bit
+            "MODE1":     {"U4", "J_BUS"},          # 8255 PC1 -> bus mode bit
+            "FRAME_TICK":{"U6", "J_BUS"},          # bus frame tick -> 8259 ir5
+            "IRQ_A":     {"U6", "J_BUS"},          # FDC INTRQ (ext) -> 8259 ir0
+            "KBD_ENC0":  {"U4", "U5"},             # 74148 encode -> 8255 Port B
+        }
+        for net, need in D126.items():
+            have = ion.get(net, set())
+            miss = need - have
+            if miss:
+                fail.append(f"[D1.26] io net {net} missing endpoints {sorted(miss)} (have {sorted(have)})")
+
     if fail:
         print("rev B board connectivity check FAILED:")
         for f in fail:

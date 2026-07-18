@@ -93,6 +93,9 @@ jobs:
         # directly so Actions honors its shebang instead of forcing dash.
         run: spinoffs/minimal-vga/sync/revb_lvs.sh mem
 
+      - name: Run rev B io-card LVS
+        run: sh spinoffs/minimal-vga/sync/revb_lvs.sh io
+
   behavioral:
     runs-on: ubuntu-latest
     steps:

@@ -17,6 +17,9 @@ python3 scripts/check_revb_boards.py --completeness
 echo "== rev B: mem-card LVS (structural netlist vs board.json; skips w/o yosys) =="
 spinoffs/minimal-vga/sync/revb_lvs.sh mem
 
+echo "== rev B: io-card LVS (populated 8251 + GAL) =="
+spinoffs/minimal-vga/sync/revb_lvs.sh io
+
 echo "== rev B: per-card unit TBs (BFM) =="
 spinoffs/minimal-vga/sim/revb_card_tb_check.sh
 
