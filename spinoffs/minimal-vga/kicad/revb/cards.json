@@ -229,7 +229,9 @@
       "WR_N",
       "IRQ_A",
       "IRQ_B",
-      "RX"
+      "RX",
+      "M1_N",
+      "FRAME_TICK"
     ],
     "drives_serial": [
       "TX"
@@ -242,12 +244,14 @@
     ],
     "populated": [
       "8251-class USART",
+      "GAL16V8 I/O-select GAL",
       "local baud oscillator"
     ],
     "dnp": [
-      "82C55 PPI",
-      "8259-class PIC",
-      "keyboard connector"
+      "82C55 PPI (B3)",
+      "8259-class PIC (B3)",
+      "74148 keyboard encoder (B3)",
+      "keyboard connector (B3)"
     ],
     "hdl": "revb_io_card.v"
   },
