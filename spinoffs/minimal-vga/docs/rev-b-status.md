@@ -48,7 +48,13 @@ placement sweep (U1 x=41); TF.2 added multi-slot backplane placement; TF.3 route
 backplane via D1.29 (245 generator-emitted bus columns + freerouted power tail); TF.4
 verified the 4×0/0 exit gate.
 
-Proceed to **Stage D**: **TD.12** FreeCAD mating/keying report (card↔backplane fit,
-reversed-card-must-collide keying proof); **TD.13** gerber fab packages + power re-check
-→ arms T1.10 (purchasing decision). Then B2/B3/B4 tiers (plan at entry).
+**Stage D planned to task depth (2026-07-18): TG.1–TG.4** (execution guide). The
+Stage-C exit review found the boards are route-perfect but **not mate-compatible**
+(cards disagree 1 mm on connector edge offsets; the D1.30 two-bank backplane cannot
+physically accept a card). So: **TG.1** mechanical mating contract `mating.json` +
+`check_revb_mating.py` (must fail on today's geometry first — D1.31); **TG.2** align
+generators to the contract, re-route all four (sweep tool ready if cpu regresses);
+**TG.3** FreeCAD mating + reversed-card keying proof (D1.32 fallback if keying
+doesn't self-enforce); **TG.4** power re-check + gerber fab packages → **arms T1.10**
+(purchasing decision). Then T1.11 bench (hardware-blocked), B2/B3/B4 (plan at entry).
 Rule: `git pull --rebase` before every push — the remote moves mid-session.

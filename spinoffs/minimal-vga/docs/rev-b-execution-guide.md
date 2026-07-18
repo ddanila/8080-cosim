@@ -552,8 +552,73 @@ expand nothing (Stage D is already at task depth).
 **DONE (2026-07-18):** `check_revb_drc.py {mem,io,cpu,backplane} --total` = 0/0 ×4;
 board connectivity + D1.18 completeness green; Stage C ledger flipped to ✅.
 
-Then **Stage D (TD.12–TD.13)** as already specified: FreeCAD mating/keying with the
-reversed-card collision proof → gerber fab packages + power re-check → **arms T1.10**.
+Then **Stage D** — expanded to task depth as **TG.1–TG.4** below (2026-07-18; refines
+TD.12–TD.13 with the mating-contract finding from the Stage-C exit review).
+
+### Stage D — mating contract, FreeCAD proof, fab package (TG.1–TG.4)
+
+The Stage-C exit review found the boards are route-perfect but **not physically
+compatible**: cards disagree with each other by 1 mm on connector edge offsets
+(mem 5/10 mm vs io/cpu 4/9 mm), and the D1.30 two-bank backplane cannot mate any
+card (cards present base+ext rows 5 mm apart at one slot line; the backplane's banks
+are 40+ mm apart). Stage D therefore starts by making mating a machine-checked
+contract (D1.31), THEN proves it in 3D. One task = one commit; rebase before push.
+
+**TG.1 — mechanical mating contract + checker (D1.31).**
+- `kicad/revb/mating.json` — single source of geometry truth: `BASE_ROW_X=50.0`,
+  `BASE_EDGE_OFFSET=5.0`, `EXT_ROW_X=14.45`, `EXT_EDGE_OFFSET=10.0`,
+  `SLOT_PITCH=18.0`, `SLOT0_Y=5.0`, `N_SLOTS=6`, `EXT_ROW_DY=5.0`. (Ext x moves
+  14.0→14.45: half-pitch interleave keeps base/ext bus columns 1.27 mm apart on the
+  backplane; at 14.0 they'd run 0.82 mm apart.)
+- During execution, confirm the presentation model against RC2014 practice (cards
+  use right-angle male headers at the bottom edge, backplane female sockets; the two
+  card rows' down-legs land `EXT_ROW_DY` apart at the slot) — one WebSearch/ref check,
+  record the citation in `rev-b-bus-contract.md` §mechanical.
+- `kicad/revb/check_revb_mating.py` (pure python, no CAD tools — CI-safe): asserts
+  (1) every card's J_BUS/J_EXT PLACE entries equal `(BASE_ROW_X, BOARD_H −
+  BASE_EDGE_OFFSET)` / `(EXT_ROW_X, BOARD_H − EXT_EDGE_OFFSET)`; (2) backplane slot
+  pairs follow the slot equations; (3) base/ext column x-grids stay ≥1.0 mm apart;
+  (4) `SLOT0_Y + 5·SLOT_PITCH + EXT_ROW_DY` + margins fit `BOARD_H`. Wire into
+  `revb_tier_suite.sh` + CI.
+*Acceptance:* checker committed and **FAILS on today's geometry** (it must catch the
+known 1-mm and two-bank bugs), contract constants + citation in the bus contract doc.
+
+**TG.2 — align generators to the contract, re-route all four.**
+- `gen_revb_pcb.py` reads `mating.json`: card J_BUS/J_EXT positions derived (not
+  hand-tabled); `_backplane_place()` = per-slot pairs (base y_k, ext y_k+5, 18 mm
+  pitch, y 5…95) with the power/reset/serial tail moved into the 13-mm inter-slot
+  gaps + top strip (tail nets mostly terminate ON bus columns — VCC5/GND/RESET_N/
+  TX/RX are bus nets — so freerouting taps the nearest column; B.Cu stays free for
+  crossings). `emit_bus_columns()` unchanged (banks are still same-x stacks).
+- Regenerate + route mem/io/cpu/backplane. cpu's J_BUS moves 1 mm — if x=41 stops
+  routing, re-run `sweep_cpu_place.sh` (exists, ~7 min). If backplane placement DRC
+  can't pass in 100×100 with the tail squeezed in, grow `BOARD_H` per D1.31 (≤115).
+*Acceptance:* `check_revb_mating.py` green; 4× `check_revb_drc.py --total` 0/0 from
+fresh regenerate; STEP + previews regenerated.
+
+**TG.3 — FreeCAD mating + keying proof (TD.12 essence, D1.15/D1.4).**
+- `kicad/revb/mate_check.py` under `freecadcmd`: load the 4 STEPs; seat mem/io/cpu
+  in slots 1/2/3 (transform from the contract math: rotate card vertical, bottom
+  edge over slot rows); assert pairwise boolean `common()` volume == 0; measure
+  card-to-card clearance (neighbor card face ↔ tallest component solid) and record.
+- Negative test: one card rotated 180° about the vertical axis — assert interference
+  OR blocked seating. If the model shows the reversed card seats freely, take
+  **D1.32**: (a) generator-emitted blocking obstruction at mirrored-ext x≈85.55 per
+  slot, else (b) convention-only keying (silk arrows), downgrade D1.4, record risk.
+- Commit `docs/rev-b-mating-report.md` with the measured numbers.
+*Acceptance:* normal assembly interference = 0; reversed case collides or D1.32
+implemented + recorded; report committed.
+
+**TG.4 — power re-check + fab packages → arm T1.10 (TD.13 essence).**
+- Power budget re-check against the FINAL BOMs (bus-contract power table): worst-case
+  Icc totals per card + backplane, vs USB-C 5 V budget; per-column current sanity
+  (0.3 mm track). Record in the order-readiness note.
+- `export_fab.sh` (rev A pattern): `kicad-cli pcb export gerbers` + drill per board →
+  4 zips in `fab/minimal-vga/revb/package/` (untracked) + SHA256s committed.
+- `docs/rev-b-order-readiness.md`: per-board dims/layers/qty, connector BOM (female
+  sockets ×12 on backplane, right-angle male 1×39 + 1×10 per card), open risks.
+*Acceptance:* 4 package hashes committed; order-readiness note done; **T1.10 is now
+purely a purchasing decision**.
 
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
 
