@@ -13,8 +13,8 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B1 — sim/firmware** | bring-up ROM, minimum-tier twin | ✅ done | `revb_bringup_check.sh`: TX stream == cosim via real 8251 |
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
-| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11) | 🟡 partial | io ✅ + cpu ✅ **both fully routed (DRC 0/0)** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane ⬜ (needs multi-slot gen + column-route) |
-| **B1-CAD Stage D** | FreeCAD mating/keying + fab package (TD.12–TD.13) | ⬜ → arms T1.10 | |
+| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four cards route DRC 0/0** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane via D1.29 column-route (245 generated columns + freerouted tail) |
+| **B1-CAD Stage D** | FreeCAD mating/keying + fab package (TD.12–TD.13) | ⬜ → arms T1.10 | next |
 | **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ hardware-blocked | |
 | **B2 / B3 / B4** | video / keyboard+PIC / FDC tiers | ⬜ future | |
 
@@ -43,11 +43,12 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-Finish **Stage C** via the TF tasks (execution guide, planned to depth 2026-07-18):
-**TF.1** cpu A8 placement sweep (D1.28 — grid-search U1 x×rot headlessly, commit the
-winning coordinates; fallback = one generator-authored track); **TF.2** multi-slot
-connector support (`J_S{n}_BUS/EXT`) + backplane placement; **TF.3** backplane
-column-route (D1.29 — generator-emitted vertical tracks for the 49 bus columns,
-freerouting only the power tail); **TF.4** Stage C exit (4 boards × DRC 0/0).
-Then **Stage D** (TD.12 mating/keying, TD.13 fab packages → arms T1.10).
+**Stage C is done (2026-07-18): all four cards route DRC 0/0.** TF.1 closed cpu A8 by
+placement sweep (U1 x=41); TF.2 added multi-slot backplane placement; TF.3 routed the
+backplane via D1.29 (245 generator-emitted bus columns + freerouted power tail); TF.4
+verified the 4×0/0 exit gate.
+
+Proceed to **Stage D**: **TD.12** FreeCAD mating/keying report (card↔backplane fit,
+reversed-card-must-collide keying proof); **TD.13** gerber fab packages + power re-check
+→ arms T1.10 (purchasing decision). Then B2/B3/B4 tiers (plan at entry).
 Rule: `git pull --rebase` before every push — the remote moves mid-session.

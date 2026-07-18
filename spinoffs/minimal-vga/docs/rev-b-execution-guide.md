@@ -523,6 +523,12 @@ bus contract). Power/reset/FTDI/LED parts go in the inter-slot gaps and margins.
 *Acceptance:* backplane regenerates with 12 connector footprints + all 16 discrete
 parts placed; `check_revb_pcb.py backplane` green (teach it the 12-connector
 expectation); placement-DRC 0.
+**DONE (2026-07-18):** 28 footprints placed, placement DRC 0/0. **Deviation → D1.30:**
+the 39-pin base spans nearly the full width, so co-located base+ext-per-slot pairs
+would put ext bodies on top of base bus columns. Instead the six base connectors form
+a column-aligned bank in the UPPER region and the six ext connectors a separate bank
+LOWER-LEFT (two independent bussed banks, each cleanly column-routable); power tail in
+the free lower-right quadrant. Footprint probe + `USB_C_PWR` logical-pin→pad map added.
 
 **TF.3 — backplane column-route (D1.29).**
 Generator emits vertical F.Cu tracks joining pin N of slot k to slot k+1 for all
@@ -530,12 +536,21 @@ Generator emits vertical F.Cu tracks joining pin N of slot k to slot k+1 for all
 backplane` handles only the power tail (pulls/USB-C/supervisor/FTDI/LED nets).
 *Acceptance:* `check_revb_drc.py backplane --total` = 0/0; STEP + previews
 rendered; hashes recorded.
+**DONE (2026-07-18):** `emit_bus_columns()` emits 245 locked F.Cu column segments
+(49 pins × 5 gaps); freerouting fills only the tail → **0/0 on attempt 1**. Two fixes
+found: (a) bus-signal pullups moved into the interior band between the banks so each
+taps its column with a short stub — a long cross-board pullup trace otherwise dragged
+a via into a corner (copper-edge fail); (b) `route_revb_pcb.sh` now exports the DSN
+once from a pristine copy and gates each retry on TOTAL DRC 0/0 (freerouting can log
+success yet leave a net island). STEP + previews rendered.
 
 **TF.4 — Stage C exit.**
 Re-run the tier suite + all per-card gates (mem/io/cpu/backplane: content check,
 placement, total DRC); regenerate all previews; flip the Stage C ledger row to ✅;
 expand nothing (Stage D is already at task depth).
 *Acceptance:* four boards, four 0/0 DRC results, one command each.
+**DONE (2026-07-18):** `check_revb_drc.py {mem,io,cpu,backplane} --total` = 0/0 ×4;
+board connectivity + D1.18 completeness green; Stage C ledger flipped to ✅.
 
 Then **Stage D (TD.12–TD.13)** as already specified: FreeCAD mating/keying with the
 reversed-card collision proof → gerber fab packages + power re-check → **arms T1.10**.
