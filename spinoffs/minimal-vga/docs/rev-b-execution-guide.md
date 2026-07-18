@@ -633,6 +633,10 @@ with generic headers the ext row can't be shown to bottom-out → **D1.32b conve
   sockets ×12 on backplane, right-angle male 1×39 + 1×10 per card), open risks.
 *Acceptance:* 4 package hashes committed; order-readiness note done; **T1.10 is now
 purely a purchasing decision**.
+**DONE (2026-07-18):** `export_fab.sh` writes Gerbers + drill per board → 4 zips
+(untracked) + SHA256 manifest. Power re-checked: ~712 mA / ~47 % of 1.5 A USB-C
+(backplane discretes negligible), budget holds. `docs/rev-b-order-readiness.md` records
+boards/BOM/hashes/risks. **T1.10 armed** — Stage D complete.
 
 ### Stage C — replicate (order: io → cpu → backplane; D1.20)
 

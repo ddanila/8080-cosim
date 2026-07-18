@@ -14,8 +14,8 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
 | **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four cards route DRC 0/0** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane via D1.29 column-route (245 generated columns + freerouted tail) |
-| **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | 🟡 in progress | TG.1 ✅ (mating contract + checker), TG.2 ✅ (**all 4 route 0/0 at the unified 4 mm offset**); TG.3 (FreeCAD proof) + TG.4 (fab pkg) next → arms T1.10 |
-| **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ hardware-blocked | |
+| **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | ✅ done | TG.1 mating contract+checker, TG.2 **all 4 route 0/0** at 4 mm offset, TG.3 FreeCAD clearance 4.16 mm + keying D1.32b, TG.4 fab packages + power re-check → **T1.10 armed** |
+| **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ T1.10 = purchasing decision; T1.11 hardware-blocked | see `rev-b-order-readiness.md` |
 | **B2 / B3 / B4** | video / keyboard+PIC / FDC tiers | ⬜ future | |
 
 ## One-command gate
@@ -58,7 +58,12 @@ pullups on their columns). Finding D1.33: the mate-forced 1.27 mm base/ext colum
 interleave breaks the specctra DSN roundtrip, so the backplane trends deterministic;
 freerouting still closes it once the tail taps are short.
 
-**Next: TG.3** FreeCAD mating + reversed-card keying proof (D1.32 fallback if keying
-doesn't self-enforce); **TG.4** power re-check + gerber fab packages → **arms T1.10**
-(purchasing decision). Then T1.11 bench (hardware-blocked), B2/B3/B4 (plan at entry).
+**Stage D complete (2026-07-18): TG.1–TG.4 all done.** TG.3 — FreeCAD seated clearance
+4.16 mm at 16 mm pitch (PASS), reversed-card keying is convention-only (D1.32b, centred
+base is symmetric). TG.4 — Gerber+drill fab packages (`export_fab.sh`), power re-checked
+(~712 mA / 47 % of USB-C 1.5 A), `rev-b-order-readiness.md` written. **T1.10 is armed —
+a purchasing decision.**
+
+**Next: T1.10** order (user's call — see `rev-b-order-readiness.md` for the risk list),
+then **T1.11** bench bring-up (hardware-blocked). **B2/B3/B4** tiers plan at entry.
 Rule: `git pull --rebase` before every push — the remote moves mid-session.
