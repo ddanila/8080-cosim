@@ -615,6 +615,13 @@ interleaved columns; freerouting re-routes them + tail and closes once taps are 
 - Commit `docs/rev-b-mating-report.md` with the measured numbers.
 *Acceptance:* normal assembly interference = 0; reversed case collides or D1.32
 implemented + recorded; report committed.
+**DONE (2026-07-18):** `mate_check.py` reads the 4 STEPs in FreeCAD, measures each
+card's real component envelope, and checks the same-facing seated clearance at the
+16 mm pitch: thickest envelope 11.84 mm → **clearance 4.16 mm, PASS** (conservative —
+the envelope includes the bus pins, which insert into the backplane, not toward the
+neighbour). Keying: base is centred/symmetric so a reversed card's base still seats;
+with generic headers the ext row can't be shown to bottom-out → **D1.32b convention-only**
+(RC2014 precedent, risk recorded). `docs/rev-b-mating-report.md` committed.
 
 **TG.4 — power re-check + fab packages → arm T1.10 (TD.13 essence).**
 - Power budget re-check against the FINAL BOMs (bus-contract power table): worst-case
