@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "scope": "R8 identity, value, and physical placement",
+  "promotion_rule": "the factory assembly drawing establishes R8 identity beside D1; the registered owner component photograph establishes its populated landing centres, lead pitch, and visible value bands; electrical connectivity comes only from direct owner continuity",
+  "factory_drawing": {
+    "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
+    "sha256": "a0285bfebba8bfe5ecf66af40322bd708bd5e0ba74493132293ab74990fa334d",
+    "dimensions_px": [3072, 4080],
+    "observation": "R8 is the single vertical axial body immediately left of the top half of D1"
+  },
+  "owner_board": {
+    "source": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "sha256": "087e683e5da9802deedd11ec8cba3a9629c96cb85c7362c93acc44052f19f845",
+    "dimensions_px": [4080, 3072],
+    "coordinate_system": "original source-image pixels transformed through the registered D1 component affine",
+    "d1_registration": "ref/photos/juku-pcb-2/local-package-registration.json",
+    "target": {
+      "refdes": "R8",
+      "joint_px": [[621, 2126], [621, 2348]],
+      "board_midpoint_mm": [22.870, 178.710],
+      "footprint_pitch_mm": 10.16,
+      "value": "2к",
+      "observation": "the unique populated vertical body in the factory-defined slot has red-black-red bands and photographed drill separation consistent with 10.16 mm pitch"
+    }
+  },
+  "electrical_evidence": "direct owner continuity recorded 2026-07-19 closes R8 between D94.1 and +5 V"
+}

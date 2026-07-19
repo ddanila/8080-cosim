@@ -5379,9 +5379,7 @@
   },
   {
    "ref": "R8", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
-   "pcb_placement_pending": true,
-   "procurement": {"action": "circuit-review", "note": "The measured value and D94.1/+5 V endpoints are closed, but R8's physical placement is not registered; do not fabricate or source its final body/lead spacing until that placement is recovered."},
-   "prov": {"type": "owner continuity 2026-07-19", "refdes": "R8, physical placement not yet registered in the replica", "pins": "one end joins only D94.1 in the measured scope; the other end reaches +5 V; measured resistance approximately 2 kohm"}
+   "prov": {"type": "factory assembly + owner photo + continuity", "refdes": ".009 assembly R8 immediately left of D1; owner D1-local component view", "pins": "factory identity and owner-photo landing registration establish the populated vertical 10.16 mm-pitch body; its red-black-red bands corroborate 2 kohm; direct continuity 2026-07-19 proves one end joins only D94.1 in the measured scope and the other reaches +5 V"}
   },
   {
    "ref": "R29", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "1к",

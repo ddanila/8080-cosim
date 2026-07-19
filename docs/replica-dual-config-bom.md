@@ -16,19 +16,19 @@ readiness report.
 ## Summary
 
 - Board component positions: 334
-- Populate for current functional .009 build: 269
-- Do not populate now (empty/DNP/pending): 65
-- Unique BOM lines: 113
+- Populate for current functional .009 build: 270
+- Do not populate now (empty/DNP/pending): 64
+- Unique BOM lines: 112
 
 ## Action Totals
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 30 |
-| leave-empty | 65 |
+| circuit-review | 29 |
+| leave-empty | 64 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 223 |
+| source-now | 224 |
 
 ## BOM Lines
 
@@ -42,7 +42,6 @@ readiness report.
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | Q_KT13 | КТ315 | modern E-C-B transistor selected for the video role and KT-13 pad row | 1 | 1 | 0 | VT2 | - |
 | circuit-review | Q_KT27 | КТ972 | modern E-C-B TO-126 transistor selected for the beeper role | 1 | 1 | 0 | VT1 | - |
-| circuit-review | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R8 | The measured value and D94.1/+5 V endpoints are closed, but R8's physical placement is not registered; do not fabricate or source its final body/lead spacing until that placement is recovered. |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
 | leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 28 | 0 | 28 | C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+10) | Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part. |
 | leave-empty | EPROM8K | К573РФ6 | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 1 | 0 | 1 | D19 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
@@ -121,7 +120,7 @@ readiness report.
 | source-now | R_AXIAL 200 | axial resistor 200 | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R17, R46 | - |
 | source-now | R_AXIAL 20к | axial resistor 20к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R47 | - |
 | source-now | R_AXIAL 220 | axial resistor 220 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R94 | - |
-| source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 6 | 6 | 0 | R1, R5, R6, R62, R90, R95 | - |
+| source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 7 | 7 | 0 | R1, R5, R6, R8, R62, R90, R95 | - |
 | source-now | R_AXIAL 33к | axial resistor 33к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R18, R30, R59 | - |
 | source-now | R_AXIAL 4,7к | axial resistor 4,7к | modern axial resistor, matching value and power rating | 4 | 4 | 0 | R67, R86, R98, R99 | - |
 | source-now | R_AXIAL 430 | axial resistor 430 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R65 | - |

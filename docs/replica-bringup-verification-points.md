@@ -14,11 +14,11 @@ visible and actionable before manufacturing and first power-on.
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
 - Verification-point nets: `49`
-- Verification-point endpoints checked in PCB: `58`
+- Verification-point endpoints checked in PCB: `59`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2290`
-- All board endpoints checked in routed PCB: `2290`
-- Intentional non-PCB or placement-pending endpoints excluded: `77`
+- All board endpoints checked in source PCB: `2292`
+- All board endpoints checked in routed PCB: `2292`
+- Intentional non-PCB or placement-pending endpoints excluded: `75`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
@@ -39,8 +39,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 58/58 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 58/58 net names matched |
+| Risk endpoints present on PCB pads | PASS | 59/59 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 59/59 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -56,8 +56,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2290/2290 | 2290/2290 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1871/2290 | 1754/2290 | FAIL |
+| `kicad/juku.kicad_pcb` | 2292/2292 | 2292/2292 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1871/2292 | 1754/2292 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -151,6 +151,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D93_TEST_WF_VFOE: D93.33`
 - `D94_A4_D101_Q0: D101.7`
 - `D94_D0_BOUNDARY: D94.1`
+- `D94_D0_BOUNDARY: R8.1`
 - `D94_D1_D99_A2N: D94.2`
 - `D94_D1_D99_A2N: D99.9`
 - `D94_D1_D99_A2N: R89.1`
@@ -336,6 +337,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `P5V: AX412.1`
 - `P5V: AX413.1`
 - `P5V: R87.2`
+- `P5V: R8.2`
 - `P5V: R88.2`
 - `P5V: R89.2`
 - `P5V: R79.2`

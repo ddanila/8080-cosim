@@ -72,6 +72,7 @@ PASSIVE_FP_REF = {
     'R99': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R78': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R98': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R8': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     **{ref: ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal')
        for ref in ('R49', 'R50', 'R51', 'R52', 'R53', 'R54', 'R55', 'R56')},
     'R57': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
@@ -147,6 +148,10 @@ PASSIVE_PLACE = {
     # owner photo place it horizontally between D13 and D105. Pin 1 is the
     # right-hand +5 V landing and pin 2 is the left-hand H landing.
     'R1':(35.800,210.000,180),
+    # .009 factory assembly labels the vertical 2K body immediately left of
+    # D1 as R8.  The D1-local owner-photo fit fixes its two drills at 10.16 mm
+    # pitch and the body centre here; direct continuity closes D94.1 to +5 V.
+    'R8':(22.870,178.710,90),
     'A17':(115.8,27.1,0),  # two-sided owner photos, transferred from top mounting hole (114.4,13.3)
     # Registered component/solder views show one 2.5 mm-pitch X3 cable row;
     # sheet 1 labels the left/right ends A21/A32.

@@ -69,12 +69,25 @@ def main() -> int:
                 failures.append(f"{ref}.1 position {actual} != {signal_position}")
 
     r8 = chips.get("R8", {})
-    if r8.get("value") != "2к" or not r8.get("pcb_placement_pending"):
-        failures.append("R8 2 kohm pull-up is missing or not placement-pending")
+    if r8.get("value") != "2к" or r8.get("pcb_placement_pending"):
+        failures.append("R8 2 kohm pull-up is missing or still placement-pending")
     if ["R8", "1"] not in spec["nets"]["D94_D0_BOUNDARY"]["nodes"]:
         failures.append("R8.1 is missing from D94_D0_BOUNDARY")
     if ["R8", "2"] not in spec["nets"]["P5V"]["nodes"]:
         failures.append("R8.2 is missing from P5V")
+    r8_fp = board.FindFootprintByReference("R8")
+    if r8_fp is None:
+        failures.append("R8 source-PCB footprint is missing")
+    else:
+        expected = {"1": (22.870, 183.790), "2": (22.870, 173.630)}
+        for number, want in expected.items():
+            pad = r8_fp.FindPadByNumber(number)
+            if pad is None:
+                failures.append(f"R8.{number} pad is missing")
+                continue
+            actual = (mm(pad.GetPosition().x), mm(pad.GetPosition().y))
+            if any(abs(got - target) > 0.002 for got, target in zip(actual, want)):
+                failures.append(f"R8.{number} position {actual} != {want}")
 
     if failures:
         for failure in failures:
