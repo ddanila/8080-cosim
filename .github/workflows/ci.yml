@@ -30,7 +30,7 @@ jobs:
           sh -n sync/serial_check.sh
           sh -n sync/ie7_check.sh
           sh -n sync/ie10_check.sh
-          sh -n sync/kp12_check.sh
+          bash -n sync/kp12_check.sh
           sh -n sync/ag3_check.sh
           sh -n sync/cosim_check.sh
           sh -n sync/boot_check.sh
