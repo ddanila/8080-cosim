@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux, D106 recovery counter, and D96 read-clock toggle. The 6 official FDC devices with untraced functional pins remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux, D106 recovery counter, D96 read-clock toggle, and the explicitly omitted/unused D28/D97/D98/D102 pins. The 2 official FDC devices with untraced functional pins are D99 and D101.",
  "chips": [
   {
    "ref": "D1",
@@ -5285,7 +5285,7 @@
   {
    "ref": "D97", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking", "pins": "sheet 3 closes the first write-precomp delay: WDATA on pin10, output pin5 to D101.10, cascade pin12 to D102.10, WREQ clear pins3/11, grounded trigger pins1/9, C16 on pins15/14, and C19/R100 on pins7/6. Target R86/C19 copper overrides the sheet's conflicting reset-resistor annotation; output pins4/13 remain boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking", "pins": "sheet 3 closes the first write-precomp delay: WDATA on pin10, output pin5 to D101.10, cascade pin12 to D102.10, WREQ clear pins3/11, grounded trigger pins1/9, C16 on pins15/14, and C19/R100 on pins7/6. Target R86/C19 copper overrides the sheet's conflicting reset-resistor annotation; the other section's Q_N pin4 drives RAW READ and its undrawn complementary Q pin13 is an intentional no-connect"}
   },
   {
    "ref": "D99", "type": "AG3_ONESHOT", "marking": "К155АГ3",
@@ -5295,7 +5295,7 @@
   {
    "ref": "D102", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking", "pins": "sheet 3 closes both cascaded write-precomp delays: D97.12 to pin10/output5, pin12 to pin2/output13, WREQ clear pins3/11, grounded trigger pins1/9, C20/R108 on pins6/7, and C22/R102 on pins14/15. Only output pin4 remains a target continuity boundary"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking", "pins": "sheet 3 closes both cascaded write-precomp delays: D97.12 to pin10/output5, pin12 to pin2/output13, WREQ clear pins3/11, grounded trigger pins1/9, C20/R108 on pins6/7, and C22/R102 on pins14/15. The third stage draws Q/pin13 and explicitly omits its unused complementary Q_N pin4, which is an intentional no-connect"}
   },
   {
    "ref": "D106", "type": "IE7_CTR",
@@ -5305,7 +5305,7 @@
   {
    "ref": "D28", "type": "LN3_OC_INV",
    "pins": {"1": "A1", "2": "Y1", "3": "A2", "4": "Y2", "5": "A3", "6": "Y3", "8": "Y4", "9": "A4", "10": "Y5", "11": "A5", "12": "Y6", "13": "A6"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts. Recovered .009 Э3 sheet 3 supersedes the legacy tape assignment: D26 PC5/pin12 drives pin1; pin2 drives X4.21 and cascades into pin3; pin4 drives X4.22; D98.3 drives pin5 and pin6 reaches D93 READY; D106.7 drives pin9 and pin8 clocks D96.3. Pins10-13 return to explicit boundaries pending their target-sheet transcription"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts. Recovered .009 Э3 sheet 3 supersedes the legacy tape assignment: D26 PC5/pin12 drives pin1; pin2 drives X4.21 and cascades into pin3; pin4 drives X4.22; D98.3 drives pin5 and pin6 reaches D93 READY; D106.7 drives pin9 and pin8 clocks D96.3. The two remaining inverter sections are absent from the exact-revision sheet, making pins10-13 intentional no-connects"}
   },
   {
    "ref": "D95", "type": "KP12_MUX",
@@ -5315,7 +5315,7 @@
   {
    "ref": "D98", "type": "LP11_BUF",
    "pins": {"1": "OE14_N", "2": "A1", "3": "Y1", "4": "A2", "5": "Y2", "6": "A3", "7": "Y3", "9": "Y4", "10": "A4", "11": "Y5", "12": "A5", "13": "Y6", "14": "A6", "15": "OE56_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed. Recovered .009 Э3 sheet 3 grounds enables pins1/15; receives X4 RD.DATA/TR00/INDEX/WR.PROTECT/READY on pins6/12/4/14/2; sends pins11/5/13 to D93 TR00/INDEX/WPRT, pin3 through D28.5/.6 to READY, and pin7 into D97.2/read separator. Photo-proved R94 and S1 branches remain on pins3 and7"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed. Recovered .009 Э3 sheet 3 grounds enables pins1/15; receives X4 RD.DATA/TR00/INDEX/WR.PROTECT/READY on pins6/12/4/14/2; sends pins11/5/13 to D93 TR00/INDEX/WPRT, pin3 through D28.5/.6 to READY, and pin7 into D97.2/read separator. Photo-proved R94 and S1 branches remain on pins3 and7; the omitted fourth buffer pair pins9/10 is intentionally unused"}
   },
   {
    "ref": "D101", "type": "KP12_MUX",
@@ -7632,10 +7632,6 @@
      "10"
     ]
    ]
-  },
-  "D28_A5_BOUNDARY": {
-   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 input pin11; its target-revision source remains to be transcribed",
-   "nodes": [["D28", "11"]]
   },
   "INTR": {
    "src": "scan",
@@ -13938,10 +13934,6 @@
    "src": "recovered .009 Э3 sheet 3 directly joins the second-stage complementary output D102.12 to the third-stage B input D102.2",
    "nodes": [["D102", "12"], ["D102", "2"]]
   },
-  "D102_Q1N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "4"]]
-  },
   "D102_C2_C20": {
    "src": "recovered .009 Э3 sheet 3 closes D102 C2/pin6 to the lower target landing C20.1",
    "nodes": [["D102", "6"], ["C20", "1"]]
@@ -13969,10 +13961,6 @@
   "PRECOMP_CASCADE_1": {
    "src": "recovered .009 Э3 sheet 3 directly joins the first write-precomp one-shot complementary output D97.12 to the second-stage B input D102.10",
    "nodes": [["D97", "12"], ["D102", "10"]]
-  },
-  "D97_Q1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "13"]]
   },
   "D97_C1_C16": {
    "src": "recovered .009 Э3 sheet 3 closes D97 C1/pin14 to the right-hand target landing C16.2",
@@ -14035,25 +14023,9 @@
    "src": "recovered .009 Э3 sheet 3 omits circuit contact X4.5; .009 sheets4-5 retain the AX405-to-X4.5 cable landing",
    "nodes": [["AX405", "1"], ["X4", "5"]]
   },
-  "D28_Y5_BOUNDARY": {
-   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 output pin10; its target-revision destination remains to be transcribed",
-   "nodes": [["D28", "10"]]
-  },
-  "D28_Y6_BOUNDARY": {
-   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 output pin12; its target-revision destination remains to be transcribed",
-   "nodes": [["D28", "12"]]
-  },
   "FDC_INDEX_STATUS": {
    "src": "recovered .009 Э3 sheet 3: D98 output pin5 directly drives D93 INDEX/pin35",
    "nodes": [["D98", "5"], ["D93", "35"]]
-  },
-  "D98_Y4_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin9 Y4; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "9"]]
-  },
-  "D98_A4_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin10 A4; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "10"]]
   },
   "FDC_TR00_STATUS": {
    "src": "recovered .009 Э3 sheet 3: D98 output pin11 directly drives D93 TR00/pin34",
@@ -15408,10 +15380,6 @@
    "src": "recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; sheet 3 directly joins it to D95 clock-mux select A1/pin2",
    "nodes": [["D26", "17"], ["D95", "2"]]
   },
-  "D28_A6_BOUNDARY": {
-   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 input pin13; its target-revision source remains to be transcribed",
-   "nodes": [["D28", "13"]]
-  },
   "SOUND": {
    "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.OUT1 (pin 13) -> bundle tag 10 -> R90 2k (beeper drive)",
    "nodes": [
@@ -15820,6 +15788,14 @@
   }
  },
  "no_connects": [
+  ["D28", "10"],
+  ["D28", "11"],
+  ["D28", "12"],
+  ["D28", "13"],
+  ["D97", "13"],
+  ["D98", "9"],
+  ["D98", "10"],
+  ["D102", "4"],
   ["D96", "9"],
   ["D96", "10"],
   ["D96", "11"],
@@ -15886,8 +15862,6 @@
   ["D42", "13"],
   ["D43", "11"],
   ["D43", "12"],
-  ["D43", "13"],
-  ["D28", "5"],
-  ["D28", "6"]
+  ["D43", "13"]
  ]
 }

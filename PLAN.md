@@ -402,7 +402,7 @@ Every ask below is queued with exact deliverables in
 `docs/owner-measurement-shortlist.md`; each item names its gate document.
 
 1. **Complete FDC-era functional wiring.** D93's drive-interface pins plus
-   D28, D97-D99, D101, and D102 have package models but no complete
+   D99 and D101 have package models but no complete
    functional signal closure (`docs/unmodeled-footprint-inventory.md`,
    `docs/fdc-hardware-handoff.md`). Trace each required pin end-to-end, or
    record a deliberate redesign/DNP decision. D93.40 `VDD_12V` is now
@@ -424,6 +424,13 @@ Every ask below is queued with exact deliverables in
    D93.26 RCLK. The undrawn second half is NC except for its photo-proved
    isolated pin-8 test landing. D96 is now runnable and LVS-mapped
    (`ref/schematics/fdc-read-clock-toggle-map.md`).
+   The same exact-revision omission convention now closes the remaining unused
+   pins on four adjacent devices: sheet 3 draws four of six D28 inverters and
+   five of six D98 buffers, so D28.10-.13 and D98.9/.10 are NC; it explicitly
+   draws the used polarity of each D97/D102 one-shot output, leaving D97.13 and
+   D102.4 NC. A structural guard also prevents the former contradictory NC
+   entries from returning on the live D28.5/.6 READY inverter
+   (`ref/schematics/fdc-unused-pin-dispositions.md`).
    the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
    D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
    D101.8/GND. Recovered `.009` Э3 sheet 3 additionally closes the
@@ -460,8 +467,9 @@ Every ask below is queued with exact deliverables in
    and base. The factory drawing separately places C94 immediately to its right,
    but owner imagery does not uniquely resolve C94 through the transistor body.
    C94 population, value, and both endpoints therefore remain measurement asks.
-   The remaining first probes are D101.1/.3/.5/.6, D97.13, and D102.4;
-   the former D93 EARLY/LATE and precomp-output probes are source-closed.
+   The remaining first precomp probes are D101.1/.3/.5/.6; D99's unidentified
+   second section remains the other support-device continuity target. The former
+   D93 EARLY/LATE, precomp-output, D97.13, and D102.4 probes are source-closed.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
    place `CMA` around all 12 VG93 writes and six reads, while EktaSoft
@@ -587,14 +595,14 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   67 source-risk nets and 6 official FDC devices with untraced functional
+   63 source-risk nets and 2 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
-Source-model state feeding this work: the source PCB passes all 2282/2282
-net-assigned PCB-scoped board-JSON endpoints, with 75 non-PCB or placement-held
+Source-model state feeding this work: the source PCB contains all 2263/2263
+PCB-scoped board-JSON endpoints, with 79 non-PCB or placement-held
 endpoints intentionally excluded. Bracket-mounted S1/X3/X4/X6/X8/X9 use their
 physical A-point cable landings. The photo-proven bare `.009` C63 callout is
 kept distinct from the inherited C63 DRAM-grid verification landing: the full

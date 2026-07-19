@@ -100,6 +100,11 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       D93 RCLK, and the undrawn second half is NC except for its independently
       photo-proved pin-8 test landing
       (`ref/schematics/fdc-read-clock-toggle-map.md`).
+- [x] Exact-revision unused sections reconciled: the drawing omits D28's last
+      two inverter pairs, D98 buffer pair 4, D97 Q/pin13, and D102 /Q/pin4.
+      Those eight pads are guarded NCs, while live D28 READY pins5/6 are no
+      longer contradicted by stale NC metadata
+      (`ref/schematics/fdc-unused-pin-dispositions.md`).
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).

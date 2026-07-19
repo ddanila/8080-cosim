@@ -48,7 +48,7 @@ FD1791/FD1793 counter/separator made from exactly these logic families:
 
 | Reference function | Manufacturer device | Juku family match | State |
 | --- | --- | --- | --- |
-| raw-read pulse conditioner | 74123 | D97/D99/D102 К155АГ3 | D99 section 1 excluded; remaining section not identified |
+| raw-read pulse conditioner | 74123 | D97/D99/D102 К155АГ3 | D97/D102 source-closed; D99 section 1 excluded and section 2 unidentified |
 | recovery counter | 74LS193 | D106 К555ИЕ7 | package family matched |
 | read-clock toggle | 74LS74 | D96 КМ555ТМ2 | sheet-3 toggle source-closed; section 2 unused |
 
@@ -59,10 +59,13 @@ D96.8 (/Q2) reaches a proved isolated component-side test landing, and
 sheet 3 omits the rest of section 2. Sheet 3 directly closes section 1
 as the active toggle: /Q pin6 feeds D pin2, D28.8 clocks pin3, Q pin5
 drives D93.26 RCLK, and WREQ_N drives both asynchronous controls.
-D99.3
+Exact-revision sheet 3 also omits both unused D28 inverter sections
+(pins 10-13), D98 buffer pair 4 (pins 9/10), D97 Q/pin13, and D102
+/Q pin4. They are guarded intentional no-connects rather than continuity
+requests. D99.3
 (/CLR1) is physically grounded and D99.2 (B1) reaches another isolated
 test landing, excluding D99 section 1 as the active raw-read conditioner.
-The remaining AG3 sections still require continuity identification.
+Only D99 and D101 still retain open support-device functional pins.
 
 The Juku
 cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas
@@ -99,7 +102,8 @@ D100.6. The associated C16/C19/C20/C22 timing networks and R100/R102/R108
 D101.4-R92-R99, D101.7-D94.14/R88, and physical R86=4.7 kΩ on C19.2/D97.6;
 these override the electrical sheet's duplicated R99 reference, conflicting
 R86=470 annotation, and tied-D101 drafting. See
-`ref/schematics/fdc-write-precomp-map.md` for the exact source hierarchy.
+`ref/schematics/fdc-write-precomp-map.md` for the exact source hierarchy and
+`ref/schematics/fdc-unused-pin-dispositions.md` for the omitted outputs.
 
 ### Superseded separator raw-crop candidates
 
@@ -242,8 +246,8 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   `docs/fdc-bus-polarity.md`.
   Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
-- Trace every still-open restored D93 drive-interface pin through D28/D97-D99/
-  D101/D102. D96 and D106 are source-closed; only physical waveform quality
+- Trace every still-open restored D93 drive-interface pin through D99/D101.
+  D28/D95-D98/D102/D106 are source-closed; only physical waveform quality
   remains a bring-up check. D93.40 to `P12V` is already owner-confirmed.
   Pin 40 is a power-safety
   blocker, not an optional functional refinement.

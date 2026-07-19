@@ -162,6 +162,7 @@ jobs:
             kicad/check_kp12_resistor_links.py \
             kicad/check_fdc_clock_mux.py \
             kicad/check_fdc_read_clock_toggle.py \
+            kicad/check_fdc_unused_pins.py \
             kicad/check_fdc_recovery_counter.py \
             kicad/check_fdc_precomp_network.py \
             kicad/report_d105_h_boundary.py \
@@ -187,6 +188,9 @@ jobs:
 
       - name: Check FDC read-clock toggle
         run: python3 kicad/check_fdc_read_clock_toggle.py
+
+      - name: Check exact-revision FDC unused pins
+        run: python3 kicad/check_fdc_unused_pins.py
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py

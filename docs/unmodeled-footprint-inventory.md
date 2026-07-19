@@ -25,7 +25,7 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 ## Design-Release Consequence
 
 There are `0` IC footprints with no board-JSON representation
-and `6` promoted FDC devices with functional pins still
+and `2` promoted FDC devices with functional pins still
 untraced or carried only by explicit boundary nets. KiCad's zero-unconnected
 result cannot establish remote continuity for those endpoints. They block
 design release until measured or explicitly dispositioned.
@@ -77,11 +77,13 @@ design release until measured or explicitly dispositioned.
   clock mux; D101 retains only its explicitly listed precomp boundaries.
   Pin roles follow <https://gatchina.pw/datasheets/микросхемы/555/555КП12.pdf>.
 - `D98` is now typed as a К155ЛП11 / SN74367 six-channel three-state
-  buffer; its two enable groups and six A/Y pairs follow the device sheet:
+  buffer; its two enable groups and six A/Y pairs follow the device sheet.
+  Exact-revision sheet 3 uses five pairs and explicitly omits pair 4/pins 9-10:
   <https://static.chipdip.ru/lib/493/DOC048493374.pdf>.
 - `D28` is now typed as the К155ЛН3 six-inverter open-collector family.
-  Factory `.009` sheet 1 now closes pins 1-9 through drive-select, READY,
-  and separator-clock paths; pins 10-13 remain explicit boundaries.
+  Factory `.009` sheet 3 closes four inverter sections through drive-select,
+  READY, and separator-clock paths; the two omitted sections/pins 10-13 are NC.
+  The same sheet explicitly omits unused complementary outputs D97.13 and D102.4.
 
 ## Footprint-Only ICs
 
@@ -97,12 +99,8 @@ documented intentional no-connects are excluded.
 
 | Ref | Untraced functional pins |
 | --- | --- |
-| `D28` | 10:Y5, 11:A5, 12:Y6, 13:A6 |
-| `D97` | 13:Q |
-| `D98` | 9:Y4, 10:A4 |
 | `D99` | 1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
 | `D101` | 1:OE0_N, 3:D03, 5:D01, 6:D00 |
-| `D102` | 4:Q_N |
 
 ## Closure Rule
 

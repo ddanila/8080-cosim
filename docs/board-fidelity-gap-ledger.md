@@ -19,11 +19,11 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `326`
-- Nets modeled: `485`
-- Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `67`
+- Nets modeled: `477`
+- Chip-level fidelity gaps: `56`
+- Net-level source-risk gaps: `63`
 - Explicitly dispositioned closed net risks: `14`
-- Documented intentional no-connect pins: `69`
+- Documented intentional no-connect pins: `75`
 
 ## Chip Provenance Types
 
@@ -64,7 +64,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 5 | 26 |
+| FDC owner-continuity | 2 | 22 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 5 |
 | logic/source | 13 | 29 |
@@ -86,9 +86,6 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D101` | `KP12_MUX` | scan + target-photo override | .009 official population and Э3 sheet 3 plus direct owner continuity no-conflict sheet paths close EARLY D93.17 to pin2, LATE D93.18 to pin14, delay taps D97... |
-| `D102` | `AG3_ONESHOT` | scan | .009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking sheet 3 closes both cascaded write-precomp delays: D97.12 to pin10/output5, pin... |
-| `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all... |
-| `D97` | `AG3_ONESHOT` | scan | .009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking sheet 3 closes the first write-precomp delay: WDATA on pin10, output pin5 to D1... |
 | `D99` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking 16-pin package and standard A... |
 
 ### PROM truth
@@ -175,13 +172,14 @@ explicit KiCad schematic no-connect markers.
 | --- | --- |
 | `D1` | `16` |
 | `D10` | `12, 13, 15` |
+| `D102` | `4` |
 | `D103` | `12, 13, 14` |
 | `D106` | `2, 3, 6, 12, 13` |
 | `D11` | `18` |
 | `D13` | `8, 9, 10, 11` |
 | `D2` | `9, 10, 11` |
 | `D26` | `39` |
-| `D28` | `5, 6` |
+| `D28` | `10, 11, 12, 13` |
 | `D30` | `6, 9` |
 | `D35` | `1, 2, 5, 6` |
 | `D37` | `8, 9, 10` |
@@ -199,6 +197,8 @@ explicit KiCad schematic no-connect markers.
 | `D59` | `5, 6` |
 | `D94` | `5` |
 | `D96` | `9, 10, 11, 12, 13` |
+| `D97` | `13` |
+| `D98` | `9, 10` |
 
 ## Net-Level Source Risks
 
@@ -226,7 +226,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D101_D01_BOUNDARY` | FDC owner-continuity | `D101.5` | July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D03_BOUNDARY` | FDC owner-continuity | `D101.3` | July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary |
 | `D101_OE0_BOUNDARY` | FDC owner-continuity | `D101.1` | July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary |
-| `D102_Q1N_BOUNDARY` | FDC owner-continuity | `D102.4` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary |
 | `D104_X4_IN_BOUNDARY` | logic/source | `D104.7` | owner resistance 2026-07-19 measures approximately 84 kohm between D104.7 and D94.13, disproving the former direct-net claim; D104 receiver input pin7 remain... |
 | `D104_X4_OUT_BOUNDARY` | logic/source | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps h... |
 | `D14_I2_BOUNDARY` | logic/source | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
@@ -250,9 +249,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
 | `D94_D6` | PROM/decode | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because... |
 | `D94_D7` | PROM/decode | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
-| `D97_Q1_BOUNDARY` | FDC owner-continuity | `D97.13` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary |
-| `D98_A4_BOUNDARY` | FDC owner-continuity | `D98.10` | July-2026 validated package registration identifies D98 К155ЛП11 pin10 A4; no remote destination is proved, so this remains a measurement boundary |
-| `D98_Y4_BOUNDARY` | FDC owner-continuity | `D98.9` | July-2026 validated package registration identifies D98 К155ЛП11 pin9 Y4; no remote destination is proved, so this remains a measurement boundary |
 | `D99_A1N_BOUNDARY` | FDC owner-continuity | `D99.1` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement... |
 | `D99_B2_BOUNDARY` | FDC owner-continuity | `D99.10` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement... |
 | `D99_C1_BOUNDARY` | FDC owner-continuity | `D99.14` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement... |

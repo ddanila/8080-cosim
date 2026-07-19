@@ -47,13 +47,19 @@ for node in ("R100.2", "R102.2", "R108.2", "R86.2"):
     if node not in NETS["P5V"]:
         raise SystemExit(f"FDC PRECOMP: {node} missing from P5V")
 
+actual_nc = {f"{ref}.{pin}" for ref, pin in SPEC.get("no_connects", [])}
+for node in ("D97.13", "D102.4"):
+    if node not in actual_nc:
+        raise SystemExit(f"FDC PRECOMP: sheet-omitted output {node} is not NC")
+
 for ref, value in {"R92": "1,3к", "R99": "4,7к", "R100": "12к", "R102": "12к",
                    "R108": "12к", "R86": "4,7к", "C20": "1,5 нФ", "C22": "1,5 нФ"}.items():
     if COMPONENTS[ref].get("value") != value:
         raise SystemExit(f"FDC PRECOMP: {ref} value drift")
 
 obsolete = {"C19_1_R100_1_BOUNDARY", "C19_2_R86_1_BOUNDARY",
-            "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY", "R102_1_BOUNDARY", "R108_1_BOUNDARY"}
+            "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY", "R102_1_BOUNDARY", "R108_1_BOUNDARY",
+            "D97_Q1_BOUNDARY", "D102_Q1N_BOUNDARY"}
 if obsolete & NETS.keys():
     raise SystemExit(f"FDC PRECOMP: obsolete boundaries returned: {sorted(obsolete & NETS.keys())}")
 

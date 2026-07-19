@@ -154,14 +154,6 @@ def main() -> int:
             if missing:
                 boundary_untraced[ref] = missing
 
-    expected_d28 = {"10", "11", "12", "13"}
-    actual_d28 = {pin for pin, _role in boundary_untraced.get("D28", [])}
-    if actual_d28 != expected_d28:
-        raise SystemExit(
-            "D28 boundary classifier mismatch: "
-            f"expected {sorted(expected_d28, key=int)}, got {sorted(actual_d28, key=int)}"
-        )
-
     footprint_only = sorted((source | routed | set(placements)) - model, key=lambda ref: int(ref[1:]))
     common_footprint_only = sorted((source & routed & set(placements)) - model, key=lambda ref: int(ref[1:]))
 
@@ -275,11 +267,13 @@ def main() -> int:
         "  clock mux; D101 retains only its explicitly listed precomp boundaries.",
         "  Pin roles follow <https://gatchina.pw/datasheets/микросхемы/555/555КП12.pdf>.",
         "- `D98` is now typed as a К155ЛП11 / SN74367 six-channel three-state",
-        "  buffer; its two enable groups and six A/Y pairs follow the device sheet:",
+        "  buffer; its two enable groups and six A/Y pairs follow the device sheet.",
+        "  Exact-revision sheet 3 uses five pairs and explicitly omits pair 4/pins 9-10:",
         "  <https://static.chipdip.ru/lib/493/DOC048493374.pdf>.",
         "- `D28` is now typed as the К155ЛН3 six-inverter open-collector family.",
-        "  Factory `.009` sheet 1 now closes pins 1-9 through drive-select, READY,",
-        "  and separator-clock paths; pins 10-13 remain explicit boundaries.",
+        "  Factory `.009` sheet 3 closes four inverter sections through drive-select,",
+        "  READY, and separator-clock paths; the two omitted sections/pins 10-13 are NC.",
+        "  The same sheet explicitly omits unused complementary outputs D97.13 and D102.4.",
         "",
         "## Footprint-Only ICs",
         "",
