@@ -12327,7 +12327,7 @@
    ]
   },
   "TAPE_RUN_INT": {
-   "src": "scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary",
+   "src": "recovered .009 Э3 sheet 1 explicitly labels D10 IR4/pin22 as continuation (3) TAPE RUN INT, but the complete recovered .009 sheet 3 is the replacement FDC circuit and contains no matching TAPE RUN INT continuation; preserve the single controller pad as an unresolved stale-sheet boundary rather than inventing a source. Exact ekta37 ROMBIOS writes PIC mask 0xDF, so IR4 remains masked while only frame IR5 is enabled",
    "nodes": [
     [
      "D10",

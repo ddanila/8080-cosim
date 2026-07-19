@@ -45,7 +45,8 @@ python3 scripts/report_serial_handoff.py
 | 8259 SP/EN is strapped high for standalone master mode | PASS | sheet-1 A-rail arrow; `P5V` |
 | 8259 cascade outputs are source-proved unused | PASS | full-resolution sheet-1 PIC symbol omits CAS0/CAS1/CAS2 pins 12/13/15 |
 | USART ready outputs reach PIC IR2/IR3 | PASS | native sheet-1 direct loops; pinned MAME primary-USART IR2/IR3 mapping |
-| Tape-run interrupt remains an explicit off-sheet boundary | PASS | sheet-1: IR4=(3) TAPE RUN INT |
+| Tape-run interrupt preserves the exact-revision stale-sheet boundary | PASS | .009 sheet 1: IR4=(3) TAPE RUN INT; complete .009 sheet 3: no matching continuation |
+| Runnable ROMBIOS keeps stale tape IR4 masked | PASS | exact ekta37 event at 0x02D6 writes mask 0xDF: IR4 masked, IR5 enabled |
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
 | USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
@@ -114,6 +115,14 @@ python3 scripts/report_serial_handoff.py
   D11 TxRDY pin15 to PIC IR3 pin21. The separately labeled off-sheet
   `(3)` RxRDY/TxRDY arrows enter IR0/IR1 from the alternate interface;
   those two inputs are replaced by КР1818ВГ93 INTRQ/DRQ on `.009`.
+- The same `.009` sheet 1 retains `IR4=(3) TAPE RUN INT`, but the
+  complete replacement FDC sheet 3 has no matching continuation.
+  The board model therefore preserves only D10.22 as a stale-sheet
+  continuity boundary. It is not promoted to NC or connected to a
+  guessed FDC source. Exact ekta37 code writes PIC mask `0xDF`, keeping
+  IR4 masked while enabling only the frame interrupt on IR5; tape is
+  outside the current critical path, but physical continuity remains
+  Tier-3 historical evidence.
 - Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.
   D11.18 `TXEMPTY` is absent from the drawn USART symbol and is now an
   explicit NC rather than an unresolved functional endpoint.

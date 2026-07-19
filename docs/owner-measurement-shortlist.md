@@ -84,9 +84,10 @@ yet modeled as nets.
 
 - Generated bring-up verification nets: `63`
 - `FDC`: `7` net(s)
-- `logic`: `35` net(s)
+- `logic`: `34` net(s)
 - `memory/decode`: `2` net(s)
 - `sound/analog`: `1` net(s)
+- `timing/I/O`: `1` net(s)
 - `video/analog`: `18` net(s)
 
 ## Practical sequencing

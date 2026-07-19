@@ -614,6 +614,13 @@ Every ask below is queued with exact deliverables in
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
+   The D10 interrupt audit narrows one non-critical exception without inventing
+   copper: exact `.009` sheet 1 retains `IR4=(3) TAPE RUN INT`, while the
+   complete replacement FDC sheet 3 contains no matching continuation. The
+   model preserves only D10.22 as a stale-sheet boundary, and exact ekta37 code
+   writes PIC mask `0xDF`, keeping IR4 masked while enabling frame IR5. Tape is
+   outside the critical path; owner continuity remains Tier-3 historical
+   evidence rather than a Tier-1/2 boot blocker.
 
 Source-model state feeding this work: the source PCB contains all 2263/2263
 PCB-scoped board-JSON endpoints, with 79 non-PCB or placement-held

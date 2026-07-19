@@ -88,6 +88,10 @@ VIDEO_ANALOG_NETS = {
 def category_for_net(name: str, text: str, nodes: list[list[str]]) -> str:
     upper = f"{name} {text}".upper()
     refs = {str(node[0]) for node in nodes}
+    # FRAME contains the substring RAM; keep this exact PIC boundary out of the
+    # memory bucket when its provenance mentions the enabled frame interrupt.
+    if name == "TAPE_RUN_INT":
+        return "logic/source"
     if name.startswith(("FDC_", "D93_")) or refs & (FDC_SUPPORT_REFS | {"D93"}):
         return "FDC owner-continuity"
     if "PROM" in name.upper() or name in PROM_DECODE_NETS or refs & PROGRAMMABLE_REFS:
@@ -214,6 +218,7 @@ def main() -> int:
         "C12_1_BOUNDARY": "logic/source",
         "C12_2_BOUNDARY": "logic/source",
         "READY_PRE_N": "logic/source",
+        "TAPE_RUN_INT": "logic/source",
         "USART_RXRDY_IRQ": "logic/source",
         "USART_TXRDY_IRQ": "logic/source",
     }

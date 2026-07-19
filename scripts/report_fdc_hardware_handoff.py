@@ -453,10 +453,10 @@ def main() -> int:
 
     unresolved = [
         (
-            "D10.12/.13/.15/.20/.21/.22",
-            group_state(board, "D10", ("12", "13", "15", "20", "21", "22")),
-            "8259 CAS0-2 and IR2-IR4 dispositions",
-            "standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, IR2/IR3 connect directly to D11 RXRDY/TXRDY, and only IR4 remains an off-sheet boundary",
+            "D10.22 `IR4`",
+            endpoint_state(board, "D10", "22"),
+            "stale tape-run continuation disposition",
+            "exact .009 sheet 1 labels (3) TAPE RUN INT, but replacement FDC sheet 3 has no matching continuation; ekta37 mask 0xDF keeps IR4 masked",
         ),
         (
             "D93.22/.23/.25/.33",
@@ -724,8 +724,10 @@ def main() -> int:
             "  shared D100.9/.11 continuation `1`; D100.6's selected write-data input",
             "  is already source-closed through D101.9. See",
             "  `docs/fdc-bus-polarity.md`.",
-            "  Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional",
-            "  NCs; SP/EN pin16 is already source-proved and modeled at +5 V.",
+            "  D10 CAS0-2 are source-proved NC, IR2/IR3 are source-connected, and",
+            "  SP/EN pin16 is source-proved at +5 V. Only the stale tape IR4",
+            "  continuation remains a Tier-3 continuity boundary; ROM mask 0xDF",
+            "  keeps it disabled in the runnable configuration.",
             "- Trace only the still-open D93.22/.23/.25/.33 functions and the D99/D101",
             "  support-device boundaries; D93.15-.18/.26-.32/.34-.36 are source-closed.",
             "  D28/D95-D98/D102/D106 are source-closed; only physical waveform quality",

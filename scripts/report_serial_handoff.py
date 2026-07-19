@@ -188,9 +188,28 @@ def check_rows(board: dict) -> list[list[object]]:
         "native sheet-1 direct loops; pinned MAME primary-USART IR2/IR3 mapping",
     ))
     checks.append((
-        "Tape-run interrupt remains an explicit off-sheet boundary",
-        has_node(board, "TAPE_RUN_INT", "D10", "22"),
-        "sheet-1: IR4=(3) TAPE RUN INT",
+        "Tape-run interrupt preserves the exact-revision stale-sheet boundary",
+        board["nets"].get("TAPE_RUN_INT", {}).get("nodes") == [["D10", "22"]]
+        and marker(
+            "kicad/juku.board.json",
+            "complete recovered .009 sheet 3 is the replacement FDC circuit",
+            "contains no matching TAPE RUN INT continuation",
+        ),
+        ".009 sheet 1: IR4=(3) TAPE RUN INT; complete .009 sheet 3: no matching continuation",
+    ))
+    checks.append((
+        "Runnable ROMBIOS keeps stale tape IR4 masked",
+        marker(
+            "sync/ekdos_ioseq_reference.py",
+            'find_event(events, "OUT", 0x01, 0xDF)',
+            '("PIC unmask", pic_unmask, "02D6", 30524, 0xDF)',
+        )
+        and marker(
+            "hdl/sim/juku_top_periph_bus_tb.v",
+            "io_write(8'h01, 8'hDF);",
+            "unmask IR5, matching ROMBIOS frame path",
+        ),
+        "exact ekta37 event at 0x02D6 writes mask 0xDF: IR4 masked, IR5 enabled",
     ))
     checks.append(
         (
@@ -380,6 +399,14 @@ def main() -> int:
             "  D11 TxRDY pin15 to PIC IR3 pin21. The separately labeled off-sheet",
             "  `(3)` RxRDY/TxRDY arrows enter IR0/IR1 from the alternate interface;",
             "  those two inputs are replaced by КР1818ВГ93 INTRQ/DRQ on `.009`.",
+            "- The same `.009` sheet 1 retains `IR4=(3) TAPE RUN INT`, but the",
+            "  complete replacement FDC sheet 3 has no matching continuation.",
+            "  The board model therefore preserves only D10.22 as a stale-sheet",
+            "  continuity boundary. It is not promoted to NC or connected to a",
+            "  guessed FDC source. Exact ekta37 code writes PIC mask `0xDF`, keeping",
+            "  IR4 masked while enabling only the frame interrupt on IR5; tape is",
+            "  outside the current critical path, but physical continuity remains",
+            "  Tier-3 historical evidence.",
             "- Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.",
             "  D11.18 `TXEMPTY` is absent from the drawn USART symbol and is now an",
             "  explicit NC rather than an unresolved functional endpoint.",
