@@ -637,8 +637,8 @@ Every ask below is queued with exact deliverables in
    outside the critical path; owner continuity remains Tier-3 historical
    evidence rather than a Tier-1/2 boot blocker.
 
-Source-model state feeding this work: the source PCB contains all 2290/2290
-PCB-scoped board-JSON endpoints, with 79 non-PCB or placement-held
+Source-model state feeding this work: the source PCB contains all 2292/2292
+PCB-scoped board-JSON endpoints, with 75 non-PCB or placement-held
 endpoints intentionally excluded. Bracket-mounted S1/X3/X4/X6/X8/X9 use their
 physical A-point cable landings. The photo-proven bare `.009` C63 callout is
 kept distinct from the inherited C63 DRAM-grid verification landing: the full

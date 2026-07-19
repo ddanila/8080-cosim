@@ -373,6 +373,11 @@ def main() -> int:
                 )
     if unmodeled_count and f"{unmodeled_count} official FDC devices with untraced functional pins" not in board:
         failures.append("board JSON does not expose all untraced FDC devices as a design boundary")
+    if unmodeled_count and not re.search(
+        rf"The {unmodeled_count} official FDC devices with remaining source-risk pins",
+        evidence["source-risk nets"],
+    ):
+        failures.append("bring-up checklist exposes a stale untraced FDC-device count")
 
     risk_match = re.search(r"Verification-point nets: `(\d+)`", evidence["source-risk nets"])
     if risk_match:
@@ -402,6 +407,33 @@ def main() -> int:
         for path in ("PLAN.md", "hdl/README.md"):
             if not re.search(rf"\b{risk_count}\b[^\n]*source-risk", read(path)):
                 failures.append(f"{path} does not expose the current residual source-risk net count")
+
+    endpoint_match = re.search(
+        r"All board endpoints checked in source PCB: `(\d+)`",
+        evidence["source-risk nets"],
+    )
+    if not endpoint_match:
+        failures.append("bring-up checklist is missing the source-PCB endpoint count")
+    else:
+        endpoint_count = int(endpoint_match.group(1))
+        if not re.search(
+            rf"all {endpoint_count}/{endpoint_count}\s+PCB-scoped board-JSON endpoints",
+            core["PLAN.md"],
+        ):
+            failures.append("PLAN exposes a stale source-PCB endpoint count")
+    excluded_match = re.search(
+        r"Intentional non-PCB or placement-pending endpoints excluded: `(\d+)`",
+        evidence["source-risk nets"],
+    )
+    if not excluded_match:
+        failures.append("bring-up checklist is missing the excluded endpoint count")
+    else:
+        excluded_count = int(excluded_match.group(1))
+        if not re.search(
+            rf"with {excluded_count} non-PCB or placement-held\s+endpoints intentionally excluded",
+            core["PLAN.md"],
+        ):
+            failures.append("PLAN exposes a stale excluded endpoint count")
 
     # The preserved zero-open routing candidate intentionally drifts from the
     # current source. Its generated factory-wire report owns those counts; keep

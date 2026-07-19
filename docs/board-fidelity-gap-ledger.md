@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `334`
 - Nets modeled: `477`
-- Chip-level fidelity gaps: `55`
+- Chip-level fidelity gaps: `54`
 - Net-level source-risk gaps: `49`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `69`
@@ -35,6 +35,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | factory X3 cable table + registered owner photos | 12 |
 | factory X4 cable table + legacy circuit | 1 |
 | factory X4 cable table + owner photo | 23 |
+| factory assembly + owner photo + continuity | 1 |
 | factory assembly drawing + owner photo | 1 |
 | factory power-cable table | 4 |
 | factory shielded-cable table + registered owner photos | 3 |
@@ -47,7 +48,6 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | factory wire table + two-sided owner photos | 1 |
 | mame+datasheet | 1 |
 | native schematic + factory assembly drawing + owner photo | 3 |
-| owner continuity 2026-07-19 | 1 |
 | photo | 4 |
 | prom | 1 |
 | scan | 231 |
@@ -69,7 +69,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 2 | 8 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 5 |
-| logic/source | 12 | 29 |
+| logic/source | 11 | 29 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 26 | 0 |
 | placement/value | 13 | 0 |
@@ -106,7 +106,6 @@ parts placement and Tier-3 reproduction.
 | `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Chip-removed owner continuity on 2026-07-14 supersedes the... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. The revisi... |
-| `R8` | `R_AXIAL` | owner continuity 2026-07-19 | R8, physical placement not yet registered in the replica one end joins only D94.1 in the measured scope; the other end reaches +5 V; measured resistance appr... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |
 | `W14` | `WIRE_LINK` | factory wire table + registered owner backside photo | ДГШ5.109.009 СБ conductor position 10 / board point А:14 registered plated through-joints beside the printed 14 marks at (10.449,179.305) and (224.478,193.14... |
