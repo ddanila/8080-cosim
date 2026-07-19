@@ -87,16 +87,17 @@
       "observation": "the factory drawing fixes the red vertical body between R66 and VD3 as R67; independent July and May owner views both directly read 4K7, superseding the .006 sheet's 2k for this target-revision part without assigning its unresolved far endpoint"
     },
     {
+      "name": ".009 D106 preset pull-up",
+      "source_sheet": 3,
+      "refs": {"R78": "10к"},
+      "observation": "the exact electrical sheet closes R78's D106 preset/UP pull-up role; the factory assembly drawing identifies the left member of the R78/R98 pair and the registered D106/D28-local owner photograph directly reads 10K"
+    },
+    {
       "name": "sheet-2 beeper clamp",
       "source_sheet": 2,
       "refs": {"R48": "8,2", "R90": "2к", "R91": "1к"},
       "observation": "R90=2k and R91=1k are printed on the D58/VD4/VT1 AVDC branch; R48 is printed 8,2 Ом on the VT1 emitter-to-speaker output and the independently traced beeper boundary records the same 8.2R value"
     }
   ],
-  "held": [
-    {
-      "ref": "R78",
-      "reason": "Recovered .009 Э3 sheet 3 proves the D106 preset/UP pull-up role and +5 V endpoint, but its value marking and physical body are not readable in the available source set."
-    }
-  ]
+  "held": []
 }

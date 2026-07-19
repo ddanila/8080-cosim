@@ -18,11 +18,11 @@ OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
 RESTORED_FACTORY_PARTS = {
-    "C16", "C17", "C18", "C19", "R79", "R80", "R81", "R82", "R83", "R84", "R85", "R93", "R95",
+    "C16", "C17", "C18", "C19", "R78", "R79", "R80", "R81", "R82", "R83", "R84", "R85", "R93", "R95",
     "R86", "R92", "R97", "R98", "R99", "R100", "R102", "R103", "R108",
 }
 EXPECTED_RESISTOR_VALUES = {
-    "R79": "470", "R80": "470", "R81": "470", "R82": "470",
+    "R78": "10к", "R79": "470", "R80": "470", "R81": "470", "R82": "470",
     "R83": "470", "R84": "470", "R85": "470", "R86": "4,7к",
     "R92": "1,3к", "R93": "10к", "R95": "2к", "R98": "4,7к", "R99": "4,7к", "R100": "12к",
     "R97": "47к", "R102": "12к", "R103": "47к", "R108": "12к",
@@ -297,6 +297,7 @@ for item in document["targets"]:
         if expected_value is not None and footprint.GetValue() != expected_value:
             raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {item['refdes']} value {footprint.GetValue()!r} != {expected_value!r}")
         expected_pad_nets = {
+            "R78": {"1": "D106_PRESET_HIGH", "2": "P5V"},
             "R79": {"1": "X4_RD_DATA", "2": "P5V"},
             "R80": {"1": "X4_TR00_N", "2": "P5V"},
             "R81": {"1": "X4_INDEX_N", "2": "P5V"},

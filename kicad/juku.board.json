@@ -4727,10 +4727,8 @@
    }
   },
   {
-   "ref": "R78", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
-   "pcb_placement_pending": true,
-   "procurement": {"action": "circuit-review", "note": "Sheet 3 proves R78 is the +5 V pull-up for D106 UP and all four preset inputs, but its value, body, and source-PCB placement are not yet registered."},
-   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3; physical placement/value pending", "pins": "pin1 joins D106 pins1/5/9/10/15; pin2 joins +5 V. The resistor is symmetric; final pad numbering follows future placement registration"}
+   "ref": "R78", "type": "R_AXIAL", "value": "10к", "pins": {"1": "P1", "2": "P2"},
+   "prov": {"type": "scan + factory assembly drawing + registered owner photo", "refdes": "ДГШ5.109.009 Э3 sheet 3; СБ R78/R98 factory pair; D106/D28-local owner-photo landing registration", "pins": "pin1 joins D106 pins1/5/9/10/15; pin2 joins +5 V. The factory drawing identifies R78 as the left member of the overlapping R78/R98 pair, and the registered owner view directly reads its populated red body as 10K and fixes both joints"}
   },
   {
    "ref": "R79", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
@@ -4762,7 +4760,7 @@
   },
   {
    "ref": "R98", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "4,7к",
-   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "4.7-kohm +5 V pull-up on D28.2 / D28.3 / X4.21 -D.SEL1; factory drawing registers the vertical body immediately left of D28"}
+   "prov": {"type": "scan + factory assembly drawing + registered owner photo", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory pair plus D106/D28-local owner registration", "pins": "4.7-kohm +5 V pull-up on D28.2 / D28.3 / X4.21 -D.SEL1; the factory drawing identifies the right member of the overlapping R78/R98 pair, while the owner view fixes both joints, corroborates 4K7, and supersedes the displaced drawing-only centre"}
   },
   {
    "ref": "R92",

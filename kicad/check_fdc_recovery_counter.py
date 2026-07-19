@@ -44,10 +44,10 @@ if returned:
     raise SystemExit(f"FDC RECOVERY: obsolete boundaries returned: {sorted(returned)}")
 
 r78 = next(item for item in BOARD["chips"] if item["ref"] == "R78")
-if not r78.get("pcb_placement_pending") or r78.get("value"):
-    raise SystemExit("FDC RECOVERY: R78 must remain placement/value pending")
-if r78.get("procurement", {}).get("action") != "circuit-review":
-    raise SystemExit("FDC RECOVERY: R78 must remain a circuit-review item")
+if r78.get("pcb_placement_pending") or r78.get("value") != "10к":
+    raise SystemExit("FDC RECOVERY: registered R78 10k placement/value missing")
+if r78.get("procurement"):
+    raise SystemExit("FDC RECOVERY: obsolete R78 procurement hold returned")
 
 sources = {
     "PXL_20260718_101633062.jpg": "5f58dff9c2e1f8237f1c54e44a7ff5db2381b7c503d5e25466fcd219915f7047",

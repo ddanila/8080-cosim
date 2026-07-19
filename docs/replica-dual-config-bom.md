@@ -15,20 +15,20 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 332
-- Populate for current functional .009 build: 266
-- Do not populate now (empty/DNP/pending): 66
-- Unique BOM lines: 114
+- Board component positions: 334
+- Populate for current functional .009 build: 269
+- Do not populate now (empty/DNP/pending): 65
+- Unique BOM lines: 113
 
 ## Action Totals
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 31 |
-| leave-empty | 66 |
+| circuit-review | 30 |
+| leave-empty | 65 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 220 |
+| source-now | 223 |
 
 ## BOM Lines
 
@@ -42,7 +42,6 @@ readiness report.
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | Q_KT13 | КТ315 | modern E-C-B transistor selected for the video role and KT-13 pad row | 1 | 1 | 0 | VT2 | - |
 | circuit-review | Q_KT27 | КТ972 | modern E-C-B TO-126 transistor selected for the beeper role | 1 | 1 | 0 | VT1 | - |
-| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R78 | Sheet 3 proves R78 is the +5 V pull-up for D106 UP and all four preset inputs, but its value, body, and source-PCB placement are not yet registered. |
 | circuit-review | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R8 | The measured value and D94.1/+5 V endpoints are closed, but R8's physical placement is not registered; do not fabricate or source its final body/lead spacing until that placement is recovered. |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
 | leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 28 | 0 | 28 | C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+10) | Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part. |
@@ -112,9 +111,9 @@ readiness report.
 | source-now | R_AXIAL 1,3к | axial resistor 1,3к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R92 | - |
 | source-now | R_AXIAL 1,5к | axial resistor 1,5к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R20 | - |
 | source-now | R_AXIAL 100 | axial resistor 100 | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R3, R4 | - |
-| source-now | R_AXIAL 10к | axial resistor 10к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R93 | - |
+| source-now | R_AXIAL 10к | axial resistor 10к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R78, R93 | - |
 | source-now | R_AXIAL 120 | axial resistor 120 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R104 | - |
-| source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 5 | 5 | 0 | R39, R61, R100, R102, R108 | - |
+| source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 7 | 7 | 0 | R39, R61, R100, R102, R105, R107, R108 | - |
 | source-now | R_AXIAL 13к | axial resistor 13к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R34 | - |
 | source-now | R_AXIAL 15к | axial resistor 15к | modern axial resistor, matching value and power rating | 6 | 6 | 0 | R40, R41, R42, R43, R44, R45 | - |
 | source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 10 | 10 | 0 | R11, R12, R13, R14, R29, R31, R38, R63, R66, R91 | - |

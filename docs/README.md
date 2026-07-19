@@ -34,7 +34,7 @@ findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
   `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
-  `native-resistor-values.md` (24 literal sheet/photo values; no axial holds),
+  `native-resistor-values.md` (25 literal sheet/photo values; no axial holds),
   `native-capacitor-values.md` (C7/C8/C99 literal sheet values with nine
   target holds), `native-semiconductors.md` (VD1/VD4 target `КД521В` bodies,
   the restored reset-diode footprint, VT1/VT2/VD3/VD5 native markings,

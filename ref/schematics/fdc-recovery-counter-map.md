@@ -14,10 +14,10 @@ candidates with primary-source connectivity.
 | recovered-count output | D106.7 Q3, D28.9 | `SEP_D106_Q3` |
 | explicitly undrawn | D106.2 Q1, D106.3 Q0, D106.6 Q2, D106.12 /CO, D106.13 /BO | no-connects |
 
-R78's electrical role is explicit, but its value, body, and physical placement
-are not readable in the recovered source set. It therefore remains a
-placement-pending, circuit-review BOM item rather than receiving a guessed
-value or footprint location.
+R78's electrical role comes from sheet 3. The factory assembly drawing identifies
+it as the left member of the overlapping R78/R98 pair between D106 and D28; the
+registered owner view fixes both joints and directly reads `10K`. The replica
+therefore uses the photographed 10.16 mm axial landing span and registered centre.
 
 ## Evidence
 

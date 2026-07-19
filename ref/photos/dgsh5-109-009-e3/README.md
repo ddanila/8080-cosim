@@ -93,8 +93,8 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
 - [x] Sheet-3 D106 recovery counter completely transcribed: R78 pulls UP and
       all four preset inputs high, D95 clocks DOWN, RAW READ drives /LOAD,
       CLR is grounded, Q3 drives D28.9, and the five undrawn outputs are NC
-      (`ref/schematics/fdc-recovery-counter-map.md`). R78 value and placement
-      remain explicitly unresolved.
+      (`ref/schematics/fdc-recovery-counter-map.md`). Factory-pair registration
+      and the D106/D28-local owner view close R78 placement and value at 10K.
 - [x] Sheet-3 D96 read-clock toggle completely transcribed: WREQ_N drives both
       asynchronous controls, /Q feeds D, D28.8 clocks section 1, Q drives
       D93 RCLK, and section 2 implements the DRQ/INTRQ conditioner while its

@@ -88,8 +88,8 @@ for group in evidence["groups"]:
         expected[refdes] = value
         source_sheet[refdes] = group["source_sheet"]
         group_name[refdes] = group["name"]
-if len(expected) != 24:
-    fail(f"expected 24 promoted values, found {len(expected)}")
+if len(expected) != 25:
+    fail(f"expected 25 promoted values, found {len(expected)}")
 
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
@@ -123,9 +123,9 @@ for refdes, value in expected.items():
 lines = [
     "# Native schematic resistor values",
     "",
-    f"Status: **24 VALUES SOURCE-CLOSED / {len(held)} TARGET HOLD**",
+    f"Status: **{len(expected)} VALUES SOURCE-CLOSED / {len(held)} TARGET HOLD**",
     "",
-    "The native electrical sheets and target-board photos close 24 values that",
+    f"The native electrical sheets and target-board photos close {len(expected)} values that",
     "were formerly blank in the machine-readable board model. This report checksum-guards those sources,",
     "checks the board JSON and generated source PCB agree, and keeps ambiguous or",
     "revision-sensitive values out of the promoted set.",
@@ -167,16 +167,16 @@ lines.extend(
         "- The factory-identified target R67 body reads `4K7` independently in July",
         "  and May views. This supersedes the `.006` sheet's 2 kΩ R67 value without",
         "  promoting the target part's still-unresolved pin-2 destination.",
-        "- R78 connectivity is source-closed separately, but its value and physical",
-        "  placement remain held rather than guessed.",
+        "- R78's exact-sheet connectivity, factory pair identity, registered owner",
+        "  joints, and directly readable `10K` marking close its value and placement.",
         "- R48's `8,2 Ом` label is independently corroborated by the traced beeper",
-        "  boundary. R78 is the sole modeled axial resistor still unvalued.",
+        "  boundary. No modeled axial resistor remains unvalued.",
         "",
     ]
 )
 
 REPORT.write_text("\n".join(lines), encoding="utf-8")
 print(
-    "NATIVE RESISTOR VALUES: PASS — 24 literal source values agree across "
-    f"evidence, board JSON, and source PCB; {len(held)} axial resistor remains held"
+    f"NATIVE RESISTOR VALUES: PASS — {len(expected)} literal source values agree across "
+    f"evidence, board JSON, and source PCB; {len(held)} axial resistors remain held"
 )

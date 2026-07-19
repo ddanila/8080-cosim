@@ -1,8 +1,8 @@
 # Native schematic resistor values
 
-Status: **24 VALUES SOURCE-CLOSED / 1 TARGET HOLD**
+Status: **25 VALUES SOURCE-CLOSED / 0 TARGET HOLD**
 
-The native electrical sheets and target-board photos close 24 values that
+The native electrical sheets and target-board photos close 25 values that
 were formerly blank in the machine-readable board model. This report checksum-guards those sources,
 checks the board JSON and generated source PCB agree, and keeps ambiguous or
 revision-sensitive values out of the promoted set.
@@ -39,14 +39,13 @@ python3 scripts/report_native_resistor_values.py
 | `R65` | `430` | 2 | sheet-2 video summing stage |
 | `R66` | `1к` | 2 | sheet-2 video summing stage |
 | `R67` | `4,7к` | .009 photos | .009 target video-clamp body |
+| `R78` | `10к` | 3 | .009 D106 preset pull-up |
 | `R90` | `2к` | 2 | sheet-2 beeper clamp |
 | `R91` | `1к` | 2 | sheet-2 beeper clamp |
 
 ## Deliberate holds
 
-| Ref | Why it remains unvalued |
-| --- | --- |
-| `R78` | Recovered .009 Э3 sheet 3 proves the D106 preset/UP pull-up role and +5 V endpoint, but its value marking and physical body are not readable in the available source set. |
+None. Every modeled axial resistor now has literal source evidence.
 
 ## Evidence boundary
 
@@ -57,7 +56,7 @@ python3 scripts/report_native_resistor_values.py
 - The factory-identified target R67 body reads `4K7` independently in July
   and May views. This supersedes the `.006` sheet's 2 kΩ R67 value without
   promoting the target part's still-unresolved pin-2 destination.
-- R78 connectivity is source-closed separately, but its value and physical
-  placement remain held rather than guessed.
+- R78's exact-sheet connectivity, factory pair identity, registered owner
+  joints, and directly readable `10K` marking close its value and placement.
 - R48's `8,2 Ом` label is independently corroborated by the traced beeper
-  boundary. R78 is the sole modeled axial resistor still unvalued.
+  boundary. No modeled axial resistor remains unvalued.

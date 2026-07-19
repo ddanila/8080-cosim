@@ -22,7 +22,8 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R85 | 278.302, 66.090 | 278.302, 66.090 | +0.000, +0.000 | vertical factory body between D28 and D96; electrical sheet 3 assigns its 470-ohm pull-up to the separator clock |
 | R93 | 277.444, 54.083 | 277.443, 54.083 | +0.001, +0.000 | left member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 10-kohm pull-up to D93 INTRQ |
 | R95 | 282.852, 54.319 | 282.852, 54.319 | +0.000, +0.000 | right member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 2-kohm pull-up to the wired D28.10/.12 conditioner output |
-| R98 | 270.135, 65.590 | 270.135, 65.590 | -0.000, +0.000 | vertical factory body immediately left of D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1 |
+| R78 | 267.999, 68.177 | 267.999, 68.177 | +0.000, +0.000 | left member of the factory-overlapped R78/R98 pair between D106 and D28; exact sheet 3 assigns the D106 preset/UP pull-up and the owner body directly reads 10K |
+| R98 | 270.485, 68.177 | 270.485, 68.177 | +0.000, +0.000 | right member of the factory-overlapped R78/R98 pair between D106 and D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1. Owner joints supersede the folded-drawing affine centre |
 | C10 | 252.361, 73.163 | 252.361, 73.163 | +0.000, -0.000 | vertical C10 immediately right of D93; replaces the former lower-row collision with D102 |
 | C11 | 268.232, 93.540 | 268.232, 93.540 | +0.000, +0.000 | vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body |
 | C16 | 267.094, 101.055 | 267.094, 101.055 | +0.000, +0.000 | horizontal capacitor between the upper and lower IC rows |

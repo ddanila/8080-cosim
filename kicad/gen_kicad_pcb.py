@@ -70,6 +70,8 @@ PASSIVE_FP_REF = {
     'R89': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R92': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R99': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R78': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R98': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     **{ref: ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal')
        for ref in ('R49', 'R50', 'R51', 'R52', 'R53', 'R54', 'R55', 'R56')},
     'R57': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
@@ -210,7 +212,10 @@ PASSIVE_PLACE = {
     'R79':(292.431,19.166,90),'R80':(290.248,19.189,90),'R81':(288.066,19.212,90),
     'R82':(285.883,19.235,90),'R83':(283.701,19.258,90),
     'R84':(245.220,97.300,90),'R85':(278.302,66.090,90),
-    'R93':(277.443,54.083,90),'R95':(282.852,54.319,90),'R98':(270.135,65.590,90),
+    # D106/D28-local owner-photo joints supersede the folded-drawing affine:
+    # R78 is the left 10K body and R98 the right 4K7 body, both at 10.16 mm pitch.
+    'R78':(267.999,68.177,90),'R93':(277.443,54.083,90),'R95':(282.852,54.319,90),
+    'R98':(270.485,68.177,90),
     'C11':(268.232,93.540,90),'C94':(289.870,130.321,90),
     # Remaining retained R6x grid refdes-to-slot assignments are approximate.
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(282.21,125.14,90),'R66':(302.69,128.46,90),

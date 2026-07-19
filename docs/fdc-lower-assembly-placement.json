@@ -733,6 +733,50 @@
       "electrical_evidence": true
     },
     {
+      "refdes": "R78",
+      "drawing_px": [
+        1887.0,
+        1824.0
+      ],
+      "factory_projected_board_mm": [
+        267.223,
+        68.2
+      ],
+      "projected_board_mm": [
+        267.999,
+        68.177
+      ],
+      "current_footprint_mm": [
+        267.999,
+        68.177
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "left member of the factory-overlapped R78/R98 pair between D106 and D28; exact sheet 3 assigns the D106 preset/UP pull-up and the owner body directly reads 10K",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2738.0,
+              2038.0
+            ],
+            [
+              2738.0,
+              2238.0
+            ]
+          ],
+          "value": "10K",
+          "observation": "registered D106/D28-local view resolves both joints and the printed 10K marking"
+        }
+      ],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
       "refdes": "R98",
       "drawing_px": [
         1935.0,
@@ -743,19 +787,36 @@
         65.59
       ],
       "projected_board_mm": [
-        270.135,
-        65.59
+        270.485,
+        68.177
       ],
       "current_footprint_mm": [
-        270.135,
-        65.59
+        270.485,
+        68.177
       ],
       "projected_delta_mm": [
-        -0.0,
+        0.0,
         0.0
       ],
-      "observation": "vertical factory body immediately left of D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1",
-      "owner_evidence": [],
+      "observation": "right member of the factory-overlapped R78/R98 pair between D106 and D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1. Owner joints supersede the folded-drawing affine centre",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2790.0,
+              2038.0
+            ],
+            [
+              2790.0,
+              2238.0
+            ]
+          ],
+          "value": "4K7",
+          "observation": "same local frame resolves both joints and corroborates the known 4K7 marking"
+        }
+      ],
       "owner_absence_evidence": [],
       "electrical_evidence": true
     },

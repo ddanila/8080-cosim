@@ -2628,7 +2628,7 @@
 		(property "Value" "R_AXIAL" (at 50 10247 0) (effects (font (size 1.27 1.27))))
 		(instances (project "juku" (path "/" (reference "R67") (unit 1)))))
 	(symbol (lib_id "juku:R_AXIAL") (at 50 10280 0) (unit 1)
-		(exclude_from_sim no) (in_bom yes) (on_board no) (dnp no) (uuid "00000000-0000-0000-0000-000000000356")
+		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "00000000-0000-0000-0000-000000000356")
 		(property "Reference" "R78" (at 50 10273 0) (effects (font (size 1.27 1.27))))
 		(property "Value" "R_AXIAL" (at 50 10287 0) (effects (font (size 1.27 1.27))))
 		(instances (project "juku" (path "/" (reference "R78") (unit 1)))))
