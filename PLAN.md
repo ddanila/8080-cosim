@@ -156,6 +156,18 @@ restorations; the complete P5V-first transaction ends at 26 opens. Both chains
 are discarded and the independently verified 23-gap checkpoint remains
 authoritative.
 
+The long-net follow-up ranks WR at 27 removable conflicts across sixteen nets,
+D6_V_ENABLE at 31 across sixteen, D3_O6_D6_A5 at 57 across twenty-seven, and
+RAM_OUT_EN at 65 across nineteen. WR has legal 0.125 and 0.1375 mm targets, but
+both immediately create an all-phase-unroutable 1.980 mm STSTB_D38 replacement,
+so its optimistic floor is an equal 23-open swap. D6_V_ENABLE has legal 0.10
+and 0.125 mm targets. A BA15-first transaction restores both BA15 branches,
+both P5V branches, all three BA0 branches, GND, BA1, A7, and D13_4_D105_2, but
+BA2 at 24.520 mm and DBIN at 3.592 mm fail all four phases. Even assuming every
+remaining net restores, that chain has a 24-open floor and is stopped. The
+57/65-item D3/RAM candidates also retain fixed-pad blockers and are not ripped
+up. No long-net topology supersedes the verified 23-gap checkpoint.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

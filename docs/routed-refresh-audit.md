@@ -451,6 +451,45 @@ either legal VA9 target topology on the tested restoration phases. The complete
 transaction ends at 26 opens, so VA9 is likewise rejected and the 23-open
 checkpoint remains authoritative.
 
+The next long-net survey ranks WR at 27 removable items across sixteen nets,
+D6_V_ENABLE at 31 across sixteen, D3_O6_D6_A5 at 57 across twenty-seven, and
+RAM_OUT_EN at 65 across nineteen. WR's diagnostic also touches D1.16, D1.32/A6,
+and D4.8/A8. Legal WR targets exist on the 0.125 and 0.1375 mm phases; the 0.10
+and 0.15 mm proposals add two and four clearance findings respectively. Both
+legal geometries immediately expose the same 1.980 mm STSTB_D38 replacement,
+which has no route on any of the four standard phases even when attempted
+before every other restoration. WR therefore has an optimistic 23-open
+equal-swap floor and is not adopted.
+
+D6_V_ENABLE's diagnostic touches fixed R5.1/P5V,
+D6.15/D6_A7_D105_I1_BOUNDARY, R6.2/READY_D, and D4.8/A8 pads. Its 0.10 and
+0.125 mm target phases are legal. A guarded BA15-first transaction restores
+BA15 at 8.485 mm on the 0.10 phase and at 6.021 mm on the 0.15 phase, both P5V
+branches, all three BA0 branches, GND, BA1, A7, and D13_4_D105_2. BA2 at
+24.520 mm and DBIN at 3.592 mm have no route on any standard phase. Even
+assuming every later net restores, those two replacements give the chain a
+24-open floor, so the transaction is stopped without publication.
+
+The D3_O6_D6_A5 diagnostic additionally retains fixed D3.10/S_TTL_D3,
+D12.7, and W20.2/S_TTL_D3 geometry. RAM_OUT_EN retains eleven named fixed pads
+across R53, C21, D52, D37, E2, D35, D47, and D53. Their 57- and 65-item
+displacements are therefore recorded but not attempted. The independently
+verified 23-open checkpoint remains authoritative.
+
+```sh
+for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
+  /usr/bin/python3 kicad/close_gap_by_ripup.py \
+    /tmp/juku-dc2-24-a10first.kicad_pcb \
+    "/tmp/juku-long-${NET}-unused.kicad_pcb" \
+    --net "$NET" --diagnostic-clearance 0.10 \
+    --diagnostic-grid-step 0.10 --grid-step 0.10 \
+    --route-clearance 0.20 --search-margin 100 --timeout 300 \
+    --max-conflicts 256 --diagnose-only \
+    --diagnostic-report "/tmp/juku-long-${NET}-diag-drc.json" \
+    --summary "/tmp/juku-long-${NET}-diag-summary.json"
+done
+```
+
 ```sh
 /usr/bin/python3 kicad/close_gap_by_ripup.py \
   /tmp/juku-dc7-25-dc5first.kicad_pcb \
