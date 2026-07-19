@@ -29,7 +29,7 @@ Primary pinout source:
 | D25 uses the Intel DIP-20 logical pin names | PASS |
 | D25 address-channel pad assignments match sheet 1 | PASS |
 | D29 uses the Intel DIP-20 logical pin names | PASS |
-| D29 command-channel pads preserve owner-corrected IORD and D30.8 routes | PASS |
+| D29 command-channel pads preserve owner-corrected IORD, IOWR, and D30.8 routes | PASS |
 | D100 uses the Intel 8287 DIP-20 pin names | PASS |
 | D100 drive-interface pad assignments follow factory sheet 1 | PASS |
 | LVS type pinmap follows A0-A7 pins 1-8 and B0-B7 pins 19-12 | PASS |
@@ -39,4 +39,4 @@ Primary pinout source:
 | D29 LVS override preserves its routed command permutation | PASS |
 | D7 pin 5 and D29 physical A2 pin 3 share the traced -INHIB source boundary | PASS |
 | D7 pin 4 and D29 physical pin 1 share the traced MEMW conductor | PASS |
-| D29 physical A1 pin 2 remains isolated from the unproved D105 pin 3 candidate | PASS |
+| D29 physical A1 pin 2 remains isolated from the qualified D105 pin 3 write rail | PASS |

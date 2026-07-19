@@ -74,7 +74,7 @@ def main() -> None:
     checks.append(("D29 uses the Intel DIP-20 logical pin names", d29_actual == PHYSICAL))
     d29_expected_by_pin = {
         "1": "MEMW", "2": "D29_AIN1_BOUNDARY", "3": "INHIB_STATUS_BOUNDARY",
-        "4": "IORD", "5": "AMW_N", "6": "MEMR", "7": "D30_Q2N_D29_AIN7",
+        "4": "IORD", "5": "IOWR", "6": "MEMR", "7": "D30_Q2N_D29_AIN7",
         "8": "IORD", "12": "IORC_N", "13": "IOWC_N", "14": "MRC_N",
         "15": "AMWC_N", "16": "IOM_N", "17": "INHIB_N", "18": "CCLCK",
         "19": "MWC_N",
@@ -83,7 +83,7 @@ def main() -> None:
         pin: endpoint_net.get(("D29", pin)) for pin in d29_expected_by_pin
     }
     checks.append((
-        "D29 command-channel pads preserve owner-corrected IORD and D30.8 routes",
+        "D29 command-channel pads preserve owner-corrected IORD, IOWR, and D30.8 routes",
         d29_observed_by_pin == d29_expected_by_pin,
     ))
 
@@ -133,12 +133,12 @@ def main() -> None:
         },
     ))
     checks.append((
-        "D29 physical A1 pin 2 remains isolated from the unproved D105 pin 3 candidate",
+        "D29 physical A1 pin 2 remains isolated from the qualified D105 pin 3 write rail",
         {
             (ref, str(pin))
             for ref, pin in board["nets"]["D29_AIN1_BOUNDARY"]["nodes"]
         } == {("D29", "2")}
-        and endpoint_net.get(("D105", "3")) == "D105_GATE1_Y",
+        and endpoint_net.get(("D105", "3")) == "IOWR",
     ))
 
     failed = [name for name, ok in checks if not ok]
