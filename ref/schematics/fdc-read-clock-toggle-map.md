@@ -10,15 +10,16 @@ recovery counter and the КР1818ВГ93 read-clock input.
 | toggle feedback | D96.6 /Q1, D96.2 D1 | `D96_TOGGLE_FEEDBACK` |
 | recovered clock input | D28.8, R85.1, D96.3 CLK1 | `SEP_D28_CLK` |
 | controller read clock | D96.5 Q1, D93.26 RCLK | `FDC_RCLK` |
-| unused section 2 | D96.9 Q2, D96.10 /PRE2, D96.11 CLK2, D96.12 D2, D96.13 /CLR2 | no-connects |
+| separate section 2 | D96.9 Q2, D96.10 /PRE2, D96.11 CLK2, D96.12 D2 | DRQ/INTRQ conditioner; see `fdc-irq-conditioner-map.md` |
+| unused section-2 clear | D96.13 /CLR2 | no-connect |
 | physical test landing | D96.8 /Q2 | `D96_Q2_N_TEST_LANDING` |
 
-The quoted `"1"` arrow on both D96 asynchronous controls is the same sheet
-continuation used on the D97/D102 reset network, already closed as `WREQ_N`;
-it is not a literal logic-high annotation. D96's second section is absent from
-the electrical drawing. Its /Q output nevertheless reaches an independently
-photo-proved one-sided component test landing, so pin 8 retains that physical
-singleton while the other five section-2 pins are explicit no-connects.
+The quoted `"1"` arrow on both section-1 asynchronous controls is a continuation
+to sheet 1 already closed as `WREQ_N`; it is not a literal logic-high
+annotation. A separate full-resolution sheet-3 region draws D96 section 2 in
+the DRQ/INTRQ conditioner. Its `/Q2` pin8 nevertheless reaches an independently
+photo-proved one-sided component test landing, while `/CLR2` pin13 is the only
+explicitly unused section-2 pin.
 
 ## Evidence
 

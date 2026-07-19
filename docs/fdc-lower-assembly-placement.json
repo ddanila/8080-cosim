@@ -679,6 +679,60 @@
       "electrical_evidence": true
     },
     {
+      "refdes": "R93",
+      "drawing_px": [
+        2040.0,
+        1585.0
+      ],
+      "factory_projected_board_mm": [
+        277.444,
+        54.083
+      ],
+      "projected_board_mm": [
+        277.444,
+        54.083
+      ],
+      "current_footprint_mm": [
+        277.443,
+        54.083
+      ],
+      "projected_delta_mm": [
+        0.001,
+        0.0
+      ],
+      "observation": "left member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 10-kohm pull-up to D93 INTRQ",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R95",
+      "drawing_px": [
+        2145.0,
+        1590.0
+      ],
+      "factory_projected_board_mm": [
+        282.852,
+        54.319
+      ],
+      "projected_board_mm": [
+        282.852,
+        54.319
+      ],
+      "current_footprint_mm": [
+        282.852,
+        54.319
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "right member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 2-kohm pull-up to the wired D28.10/.12 conditioner output",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
       "refdes": "R98",
       "drawing_px": [
         1935.0,

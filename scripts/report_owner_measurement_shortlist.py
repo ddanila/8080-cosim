@@ -215,9 +215,9 @@ def main() -> int:
         (
             "P0",
             "FDC interrupt/buffer continuity and fitted ROM profile",
-            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; factory sheet 1 proves D93 pins 7..14 connect directly to DB0..DB7. Recovered sheet 3 closes shared D100 pins 9/11 to quoted logic level `1` and D100.6 to D101.9 write precompensation",
+            "Trace the sheet-1 destinations of conditioned D96.9 Q2 and D96.11 CLK2 to the PIC/control logic, plus the shared D100.9/.11 control continuation. Exact sheet 3 now closes raw D93 DRQ/INTRQ through D28.11/.13, wired outputs D28.10/.12, R93/R95, and D96.10/.12. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; D100.6 is source-closed to D101.9 write precompensation",
             "`docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
-            "identifies the exact board/EPROM configuration without reopening source-closed drive-output-buffer inputs",
+            "identifies the exact board/EPROM configuration and the remote destinations after the local interrupt conditioner without reopening source-closed paths",
         ),
         (
             "P0",
@@ -243,7 +243,7 @@ def main() -> int:
         (
             "P0",
             "FDC support signal dispositions",
-            "pin-level continuity or an explicit redesign/DNP decision for the still-open D99 and D101 pins. Preserve the source-closed D28/D95/D96/D97/D98/D102/D106 paths, including the D106.7-D28.9-D28.8-D96.3-D96.5-D93.26 chain and D97/D102/D101 write-precomp chain. Exact-revision sheet 3 explicitly omits D28.10-.13, D97.13, D98.9/.10, and D102.4 as NC; D101.1/.3/.5/.6 remain the specific precomp-area boundaries. Closed timing paths need waveform validation at bring-up, not another continuity probe",
+            "pin-level continuity or an explicit redesign/DNP decision for the still-open D99 and D101 pins. Preserve the source-closed D28/D95/D96/D97/D98/D102/D106 paths, including the D106.7-D28.9-D28.8-D96.3-D96.5-D93.26 chain, the D28.10/.12-D96.10/.12 interrupt conditioner, and the D97/D102/D101 write-precomp chain. Exact-revision sheet 3 explicitly omits only D96.13, D97.13, D98.9/.10, and D102.4 in this area; D101.1/.3/.5/.6 remain the specific precomp-area boundaries. Closed timing paths need waveform validation at bring-up, not another continuity probe",
             "`docs/fdc-hardware-handoff.md`; `ref/schematics/fdc-unused-pin-dispositions.md`; `ref/schematics/fdc-clock-mux-map.md`; `ref/schematics/fdc-recovery-counter-map.md`; `ref/schematics/fdc-read-clock-toggle-map.md`; `ref/schematics/fdc-write-precomp-map.md`; `PLAN.md` P0 connectivity gate",
             "completes only the genuinely open support-circuit context without re-probing source-closed timing paths",
         ),

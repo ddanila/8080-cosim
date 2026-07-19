@@ -558,12 +558,15 @@ module juku_top (
     // toggle: /Q feeds D, Q drives VG93 RCLK, and WREQ_N holds both
     // asynchronous controls inactive except during writes.
     wire d96_separator_clk, d96_q1_n, d96_q2n_test;
+    wire d96_irq_conditioned_boundary, d96_irq_clock_boundary;
+    wire d96_irq_q_sheet1_boundary;
     assign d96_separator_clk = ~d106_q3_to_d28;
     tm2_dff #(.FUNCTIONAL(1)) U_D96 (
         .clr1_n(wreq_n), .d1(d96_q1_n), .clk1(d96_separator_clk), .pre1_n(wreq_n),
         .q1(fdc_rclk), .q1_n(d96_q1_n),
-        .clr2_n(1'bz), .d2(1'bz), .clk2(1'bz), .pre2_n(1'bz),
-        .q2(), .q2_n(d96_q2n_test));
+        .clr2_n(1'bz), .d2(d96_irq_conditioned_boundary),
+        .clk2(d96_irq_clock_boundary), .pre2_n(d96_irq_conditioned_boundary),
+        .q2(d96_irq_q_sheet1_boundary), .q2_n(d96_q2n_test));
 `ifdef YOSYS
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
 `else
@@ -603,22 +606,31 @@ module juku_top (
                        .wg(fdc_wg), .wdata(fdc_wdata), .ready(fdc_ready),
                        .wf_vfoe(fdc_test_wf_vfoe), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),
                        .drq(fdc_drq), .intrq(fdc_intrq));
-    // Exact sheet 3 ties D99 B2 and both D100 controls to the quoted logic-1
-    // rail. D99 section 1 has grounded A/CLR and an omitted Q;
-    // its four remaining signal outputs/clear stay explicit boundaries.
+    // Exact sheet 3 grounds D99 A1/CLR1 and omits Q1. B2 and the four
+    // remaining signal outputs/clear leave through distinct remote paths;
+    // the `(1)` beside B2 denotes a continuation to sheet 1, not logic high.
+    wire d99_b2_sheet1_boundary;
     ag3_oneshot U_D99 (.a_n(1'b0), .b(d99_b_test_landing), .clr_n(1'b0),
                        .q(d99_q1_nc), .q_n(d99_q1n_boundary),
-                       .a2_n(d94_d1_d99_a2n), .b2(1'b1),
+                       .a2_n(d94_d1_d99_a2n), .b2(d99_b2_sheet1_boundary),
                        .clr2_n(d99_clr2_boundary), .q2(d99_q2_boundary),
                        .q2_n(d99_q2n_boundary));
-    wire d100_wrdata_in_boundary;
+    wire d100_control_sheet1_boundary, d100_wrdata_in_boundary;
+`ifndef YOSYS
+    // Runnable fallback only: the three remote sheet-1 sources are not yet
+    // known. Keep inactive defaults out of the LVS/physical netlist.
+    assign d99_b2_sheet1_boundary = 1'b1;
+    assign d100_control_sheet1_boundary = 1'b1;
+`endif
     wire [7:0] d100_drive_in, d100_drive_out;
     assign d100_drive_in = {ppi0_pc[6], ppi0_pc[2], d100_wrdata_in_boundary,
                             fdc_wg, fdc_tg43, fdc_hld, fdc_step, fdc_dir};
     buf_8287 U_D100 (.a(d100_drive_in), .b(d100_drive_out),
-                     .oe_n(1'b1), .t(1'b1),
+                     .oe_n(d100_control_sheet1_boundary), .t(d100_control_sheet1_boundary),
                      .vss_gnd(1'b0), .vcc_5v(1'b1));
 `ifdef YOSYS
+    net_boundary U_D99B2LNK (.a(1'b1), .b(d99_b2_sheet1_boundary));
+    net_boundary U_D100CTL1LNK (.a(1'b1), .b(d100_control_sheet1_boundary));
     net_boundary U_D100WDATALNK (.a(1'b1), .b(d100_wrdata_in_boundary));
 `elsif FDC_VA87_CS_QUALIFIED
     wire d100_oe_boundary = fdc_prom_cs_n;
@@ -763,9 +775,17 @@ module juku_top (
                       .drq(fdc_drq), .intrq(fdc_intrq));
 `undef JUKU_FDC_DATA_BUS
     wire pic_sp_en = 1'b1; // sheet-1 A-rail strap: standalone/master 8259
+`ifdef YOSYS
+    // Exact sheet 3 routes raw DRQ/INTRQ through D28/D96. The downstream
+    // sheet-1 joins to PIC IR0/IR1 are not yet known, so retain distinct pins.
+    wire pic_fdc_drq_boundary, pic_fdc_intrq_boundary;
+`else
+    wire pic_fdc_drq_boundary = fdc_drq;
+    wire pic_fdc_intrq_boundary = fdc_intrq;
+`endif
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
-                      .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(ser_txrdy), .ir2(ser_rxrdy), .ir1(fdc_drq), .ir0(fdc_intrq),
+                      .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(ser_txrdy), .ir2(ser_rxrdy), .ir1(pic_fdc_drq_boundary), .ir0(pic_fdc_intrq_boundary),
                       .cas0(), .cas1(), .cas2(), .sp_en(pic_sp_en), .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.

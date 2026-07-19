@@ -9,7 +9,7 @@ the four timing parts.
 | D99 endpoint | Exact connection |
 | --- | --- |
 | 1 `A_N`, 3 `CLR_N` | GND |
-| 10 `B2` | quoted logic level `"1"`, shared with D100.9 `/OE` and D100.11 `T` |
+| 10 `B2` | its own continuation to sheet 1; remote endpoint unresolved |
 | 6 `C2`, 7 `RC2` | polarized C17 `120,0`; RC junction pulled to +5 V by R97 `47к` |
 | 14 `C1`, 15 `RC1` | polarized C18 `47,0`; RC junction pulled to +5 V by R103 `47к` |
 | 13 `Q` | omitted/unused; the complementary pin 4 output is drawn |
@@ -21,9 +21,10 @@ against D98/D99 and the owner-board view because the folded sheet's global
 lower-FDC affine drifts at the right edge. D99 pins 4, 5, 11, and 12 remain remote-route
 boundaries; E12 and its selected input path require a separate trace.
 
-This read also closes the former D100.9/.11 upstream-source request: the same
-quoted logic-high symbol is printed at D99.10. The structural HDL therefore
-includes U_D99 and ties B2 plus both D100 controls high.
+The parenthesized/quoted `1` beside this conductor denotes the destination
+sheet, not a logic level or a shared net name. D99.10 and the separately joined
+D100.9/.11 pair therefore remain distinct sheet-1 boundaries. Structural HDL
+keeps both boundaries visible rather than tying either one high.
 
 Guard:
 

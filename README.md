@@ -52,17 +52,18 @@ with the machine-readable board model.
   snapshot still needs replacement. D94 content truth is closed, but its A0-A4
   input sources, pin 15 source, and the far destinations or branches of outputs
   D3-D7 remain unknown; the former BA11-BA15 input assignment was an unproved
-  scaffold analogy and is retired. There are 2 official FDC-support ICs whose
+  scaffold analogy and is retired. There are 3 official FDC-support ICs whose
   functional pin closure is still incomplete.
   Recovered sheet 3 closes D106 completely: its R78 preset pull-up, RAW READ
   load, D95 recovery clock, grounded clear, Q3 output, and five no-connects are
   now source-modeled and LVS-visible; R78 value/placement stays unresolved.
-  Sheet 3 also closes D96's complete section-1 divide-by-two read-clock toggle,
-  its WREQ controls, five unused-half no-connects, and the separately proved
-  pin-8 test landing; it too is structural and LVS-visible.
-  The exact-revision sheet's complete section usage also makes D28.10-.13,
-  D97.13, D98.9/.10, and D102.4 intentional no-connects, leaving only D99 and
-  D101 with open support-device functional pins.
+  Sheet 3 also closes D96's section-1 divide-by-two read-clock toggle and its
+  WREQ controls. A full-resolution reread restores D96 section 2 plus D28
+  sections 5/6 and R93/R95 as the local DRQ/INTRQ conditioner; D96.13 remains
+  unused and the separately proved pin-8 test landing is retained. The circuit
+  is structural and LVS-visible, while D96.9/.11 remain sheet-1 boundaries.
+  The exact-revision sheet makes D97.13, D98.9/.10, and D102.4 intentional
+  no-connects, leaving D96, D99, and D101 with open support-device functional pins.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
   D6's validated physical table and chip-removed separate ROM/RAM outputs stay LVS-visible,
   while runnable simulation uses an explicit non-LVS memory-map decoder until

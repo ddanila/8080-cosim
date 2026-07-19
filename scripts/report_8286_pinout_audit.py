@@ -43,7 +43,7 @@ EXPECTED_NET_PINS = {
         "FDC_HLD_TO_D100": "3", "FDC_TG43_TO_D100": "4",
         "FDC_WG_TO_D100": "5", "FDC_PRECOMP_WRDATA": "6",
         "FDC_MOTOR_EN": "7", "FDC_SIDE_SEL": "8",
-        "P5V_A": "9", "P5V_B": "11",
+        "D100_CONTROL_SHEET1_BOUNDARY_A": "9", "D100_CONTROL_SHEET1_BOUNDARY_B": "11",
         "X4_SIDE_SEL": "12", "X4_MOTOR_ON_N": "13",
         "X4_WR_DATA_N": "14", "X4_WR_GATE_N": "15",
         "X4_TG43": "16", "X4_HLOAD_N": "17",
@@ -92,7 +92,7 @@ def main() -> None:
     d100_expected = EXPECTED_NET_PINS["D100"]
     d100_observed = {key: endpoint_net.get(("D100", pin)) for key, pin in d100_expected.items()}
     d100_expected_nets = {
-        key: "P5V" if key.startswith("P5V_") else key
+        key: "D100_CONTROL_SHEET1_BOUNDARY" if key.startswith("D100_CONTROL_SHEET1_BOUNDARY_") else key
         for key in d100_expected
     }
     checks.append(("D100 drive-interface pad assignments follow factory sheet 1", d100_observed == d100_expected_nets))

@@ -16,8 +16,7 @@ NETS = {
 }
 
 EXPECTED_NC = {
-    "D28.10", "D28.11", "D28.12", "D28.13",
-    "D97.13", "D98.9", "D98.10", "D102.4",
+    "D97.13", "D98.9", "D98.10", "D102.4", "D96.13",
 }
 actual_nc = {f"{ref}.{pin}" for ref, pin in BOARD.get("no_connects", [])}
 missing = EXPECTED_NC - actual_nc
@@ -34,17 +33,20 @@ if connected:
 
 EXPECTED_USED = {
     "D98_Y1_R94": {"D98.3", "R94.1", "D28.5"},
-    "FDC_READY": {"D28.6", "D93.32", "R84.1"},
+    "FDC_READY": {"D28.6", "D93.23", "D93.32", "R84.1"},
     "FDC_RAW_READ": {"D97.4", "D93.27", "D106.11"},
     "PRECOMP_TAP_3": {"D102.13", "D101.12"},
+    "FDC_INTRQ": {"D93.39", "D28.13", "R93.1"},
+    "FDC_DRQ": {"D93.38", "D28.11"},
+    "FDC_IRQ_CONDITIONED_N": {"D28.10", "D28.12", "D96.10", "D96.12", "R95.1"},
 }
 for name, expected in EXPECTED_USED.items():
     if NETS.get(name) != expected:
         raise SystemExit(
             f"FDC UNUSED: {name} {sorted(NETS.get(name, set()))} != {sorted(expected)}"
         )
-if {"D28.5", "D28.6"} & actual_nc:
-    raise SystemExit("FDC UNUSED: live D28 READY inverter pins are marked NC")
+if {f"D28.{pin}" for pin in ("5", "6", "10", "11", "12", "13")} & actual_nc:
+    raise SystemExit("FDC UNUSED: live D28 READY/IRQ conditioner pins are marked NC")
 
 obsolete = {
     "D28_A5_BOUNDARY", "D28_Y5_BOUNDARY", "D28_Y6_BOUNDARY", "D28_A6_BOUNDARY",
@@ -57,6 +59,7 @@ if returned:
 
 sources = {
     "PXL_20260718_101633062.jpg": "5f58dff9c2e1f8237f1c54e44a7ff5db2381b7c503d5e25466fcd219915f7047",
+    "PXL_20260718_101641055.jpg": "86740a80fb494cdb08f4de3a120cab83e4f6638cf5885d4c83418a4a94c881a7",
     "PXL_20260718_101648508.jpg": "ef04482bdd7f15a20e132034709bb7b6dfab54d6ac9d4efe2f6510575b4aa641",
 }
 photo_dir = ROOT / "ref/photos/dgsh5-109-009-e3"
@@ -92,10 +95,14 @@ for node in sorted(EXPECTED_NC):
     actual = pad_net(ref, pin)
     if actual is not None:
         raise SystemExit(f"FDC UNUSED: source PCB {node} still has net {actual!r}")
-for node, expected in {"D28.5": "D98_Y1_R94", "D28.6": "FDC_READY"}.items():
+for node, expected in {
+    "D28.5": "D98_Y1_R94", "D28.6": "FDC_READY",
+    "D28.10": "FDC_IRQ_CONDITIONED_N", "D28.11": "FDC_DRQ",
+    "D28.12": "FDC_IRQ_CONDITIONED_N", "D28.13": "FDC_INTRQ",
+}.items():
     ref, pin = node.split(".")
     actual = pad_net(ref, pin)
     if actual != expected:
         raise SystemExit(f"FDC UNUSED: source PCB {node} net {actual!r} != {expected!r}")
 
-print("FDC UNUSED: PASS — sheet 3 explicitly omits two D28 gates, D98 buffer 4, and complementary D97/D102 outputs")
+print("FDC UNUSED: PASS — D28 IRQ gates restored; D98 buffer 4 and complementary D97/D102 outputs remain omitted")

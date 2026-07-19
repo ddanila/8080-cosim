@@ -429,15 +429,17 @@ Every ask below is queued with exact deliverables in
    plus physical recovery-clock edge quality, remain honest bring-up boundaries.
    The same sheet closes D96 section 1 as the actual read-clock toggle:
    WREQ_N drives /CLR and /PRE, /Q feeds D, D28.8 clocks it, and Q drives
-   D93.26 RCLK. The undrawn second half is NC except for its photo-proved
-   isolated pin-8 test landing. D96 is now runnable and LVS-mapped
+   D93.26 RCLK. A full-resolution reread restores section 2 in the local
+   DRQ/INTRQ conditioner: wired D28.10/.12 feeds D96.10/.12 through R95,
+   R93 pulls the INTRQ input high, D96.9/.11 continue to sheet 1, D96.13 is
+   unused, and pin8 retains its isolated test landing. D96 is runnable and LVS-mapped
    (`ref/schematics/fdc-read-clock-toggle-map.md`).
    The same exact-revision omission convention now closes the remaining unused
-   pins on four adjacent devices: sheet 3 draws four of six D28 inverters and
-   five of six D98 buffers, so D28.10-.13 and D98.9/.10 are NC; it explicitly
+   pins on adjacent devices: sheet 3 draws all six D28 inverters and five of
+   six D98 buffers, so only D98.9/.10 are NC on those devices; it explicitly
    draws the used polarity of each D97/D102 one-shot output, leaving D97.13 and
-   D102.4 NC. A structural guard also prevents the former contradictory NC
-   entries from returning on the live D28.5/.6 READY inverter
+   D102.4 NC. A structural guard prevents contradictory NC entries from
+   returning on the live D28.5/.6 READY or D28.10-.13 IRQ inverters
    (`ref/schematics/fdc-unused-pin-dispositions.md`).
    the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
    D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
@@ -490,9 +492,13 @@ Every ask below is queued with exact deliverables in
    D93.25 RG is deliberately omitted between the explicitly drawn pin-24 and
    pin-26 paths and is therefore unused/open on this design. The remaining
    controller-side asks are the separately guarded DRQ/INTRQ assumptions.
-   A further full-resolution sheet-3 read closes D99.10 and D100.9/.11 to the
-   same quoted logic-high `1`, restores C17/C18/R97/R103 and both D99 RC
-   networks, grounds D99.1, and marks the explicitly omitted D99.13 unused.
+   A further full-resolution sheet-3 read restores C17/C18/R97/R103 and both
+   D99 RC networks, grounds D99.1, and marks the explicitly omitted D99.13
+   unused. Cross-checking the sheet's continuation notation keeps D99.10 and
+   the joined D100.9/.11 conductor as distinct sheet-1 boundaries rather than
+   incorrectly treating each `(1)` marker as logic high. The same read restores
+   D28 sections 5/6, D96 section 2, and R93/R95 as the local D93 DRQ/INTRQ
+   conditioner; D96.9/.11 and the PIC-side destinations remain sheet-1 asks.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
    place `CMA` around all 12 VG93 writes and six reads, while EktaSoft
@@ -618,7 +624,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   51 source-risk nets and 2 official FDC devices with untraced functional
+   51 source-risk nets and 3 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

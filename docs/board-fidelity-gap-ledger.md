@@ -18,12 +18,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `330`
-- Nets modeled: `471`
+- Chips modeled: `332`
+- Nets modeled: `478`
 - Chip-level fidelity gaps: `56`
 - Net-level source-risk gaps: `51`
 - Explicitly dispositioned closed net risks: `14`
-- Documented intentional no-connect pins: `75`
+- Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
 
@@ -52,7 +52,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | prom | 1 |
 | scan | 233 |
 | scan + assembly drawing + registered owner photo | 2 |
-| scan + factory assembly drawing | 2 |
+| scan + factory assembly drawing | 4 |
 | scan + factory assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -66,10 +66,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 2 | 10 |
+| FDC owner-continuity | 2 | 8 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 5 |
-| logic/source | 13 | 29 |
+| logic/source | 13 | 31 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 26 | 0 |
 | placement/value | 13 | 0 |
@@ -181,7 +181,6 @@ explicit KiCad schematic no-connect markers.
 | `D13` | `8, 9, 10, 11` |
 | `D2` | `9, 10, 11` |
 | `D26` | `39` |
-| `D28` | `10, 11, 12, 13` |
 | `D30` | `6, 9` |
 | `D35` | `1, 2, 5, 6` |
 | `D37` | `8, 9, 10` |
@@ -198,7 +197,7 @@ explicit KiCad schematic no-connect markers.
 | `D56` | `13` |
 | `D59` | `5, 6` |
 | `D94` | `5` |
-| `D96` | `9, 10, 11, 12, 13` |
+| `D96` | `13` |
 | `D97` | `13` |
 | `D98` | `9, 10` |
 
@@ -230,6 +229,8 @@ same fidelity ledger as the chip provenance gaps.
 | `D101_OE0_BOUNDARY` | FDC owner-continuity | `D101.1` | July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary |
 | `D104_X4_IN_BOUNDARY` | logic/source | `D104.7` | owner resistance 2026-07-19 measures approximately 84 kohm between D104.7 and D94.13, disproving the former direct-net claim; D104 receiver input pin7 remain... |
 | `D104_X4_OUT_BOUNDARY` | logic/source | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps h... |
+| `D10_IR0_FDC_BOUNDARY` | logic/source | `D10.18` | D10 IR0/pin18 was formerly assigned directly to D93 INTRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so... |
+| `D10_IR1_FDC_BOUNDARY` | logic/source | `D10.19` | D10 IR1/pin19 was formerly assigned directly to D93 DRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so t... |
 | `D14_I2_BOUNDARY` | logic/source | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
 | `D14_O7_BOUNDARY` | logic/source | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary |
 | `D26_PA6_PREN_BOUNDARY` | logic/source | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measu... |
@@ -250,8 +251,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D99_Q1N_BOUNDARY` | FDC owner-continuity | `D99.4` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement... |
 | `D99_Q2N_BOUNDARY` | FDC owner-continuity | `D99.12` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measureme... |
 | `D99_Q2_BOUNDARY` | FDC owner-continuity | `D99.5` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement... |
-| `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
-| `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Registered July and M... |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |

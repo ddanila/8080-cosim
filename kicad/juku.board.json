@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux, D106 recovery counter, D96 read-clock toggle, and the explicitly omitted/unused D28/D97/D98/D102 pins. The 2 official FDC devices with untraced functional pins are D99 and D101.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux, D106 recovery counter, D96 read-clock toggle and local IRQ conditioner, plus the explicitly omitted D96/D97/D98/D102 pins. The 3 official FDC devices with untraced functional pins are D96, D99, and D101.",
  "chips": [
   {
    "ref": "D1",
@@ -3146,6 +3146,10 @@
    "value": "120"
   },
   {
+   "ref": "R93", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "10к",
+   "prov": {"type": "scan + factory assembly drawing", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory placement", "pins": "10-kohm pull-up from D93 INTRQ/pin39 and D28.13 to +5 V; factory drawing places the vertical body beside D96"}
+  },
+  {
    "ref": "R94",
    "type": "R_AXIAL",
    "pins": {
@@ -3158,6 +3162,10 @@
     "pins": "photo color code and owner continuity identify 220 ohm; visible component copper connects the upper terminal to D98.3; far terminal remains unresolved"
    },
    "value": "220"
+  },
+  {
+   "ref": "R95", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
+   "prov": {"type": "scan + factory assembly drawing", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory placement", "pins": "2-kohm pull-up on the wired D28.10/.12 conditioner output feeding D96.10/.12; factory drawing places the vertical body beside R93 and D96"}
   },
   {
    "ref": "R38",
@@ -5296,7 +5304,7 @@
   {
    "ref": "D96", "type": "TM2_DFF",
    "pins": {"1": "CLR1_N", "2": "D1", "3": "CLK1", "4": "PRE1_N", "5": "Q1", "6": "Q1_N", "8": "Q2_N", "9": "Q2", "10": "PRE2_N", "11": "CLK2", "12": "D2", "13": "CLR2_N"},
-   "prov": {"type": "scan", "refdes": ".009 Э3 sheet 3 plus КМ555ТМ2 standard pinout", "pins": "sheet 3 closes section 1 as the read-clock toggle: WREQ_N drives both active-low asynchronous controls pins1/4, Q_N pin6 feeds D pin2, D28.8 clocks pin3, and Q pin5 drives D93 RCLK. Section 2 is undrawn/unused: pins9-13 are intentional no-connects, while pin8 retains the independently photo-proved isolated one-sided test landing"}
+   "prov": {"type": "scan", "refdes": ".009 Э3 sheet 3 plus КМ555ТМ2 standard pinout", "pins": "sheet 3 closes section 1 as the read-clock toggle: WREQ_N drives both active-low asynchronous controls pins1/4, Q_N pin6 feeds D pin2, D28.8 clocks pin3, and Q pin5 drives D93 RCLK. The separately drawn section 2 receives the wired D28.10/.12 DRQ/INTRQ conditioner at PRE2_N/pin10 and D2/pin12, has independent sheet-1 continuations at CLK2/pin11 and Q2/pin9, and explicitly leaves CLR2_N/pin13 unused. Pin8 retains the independently photo-proved isolated one-sided test landing"}
   },
   {
    "ref": "D97", "type": "AG3_ONESHOT", "marking": "К155АГ3",
@@ -5306,7 +5314,7 @@
   {
    "ref": "D99", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan + registered owner photos", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "exact .009 sheet 3 closes A1_N/pin1 and CLR_N/pin3 to ground, B2/pin10 and D100 control pins 9/11 to quoted logic level 1, both C/RC timing pairs through C17/C18 and R97/R103, and omits Q1/pin13 as NC. Validated photos identify the right-facing notch, pin2 isolated test landing, and pin3 ground. Pins4/5/11/12 remain remote-path boundaries"}
+   "prov": {"type": "scan + registered owner photos", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "exact .009 sheet 3 closes A1_N/pin1 and CLR_N/pin3 to ground, both C/RC timing pairs through C17/C18 and R97/R103, and omits Q1/pin13 as NC. B2/pin10 leaves through its own sheet-1 continuation. Validated photos identify the right-facing notch, pin2 isolated test landing, and pin3 ground. Pins4/5/10/11/12 remain remote-path boundaries"}
   },
   {
    "ref": "D102", "type": "AG3_ONESHOT", "marking": "К155АГ3",
@@ -5321,7 +5329,7 @@
   {
    "ref": "D28", "type": "LN3_OC_INV",
    "pins": {"1": "A1", "2": "Y1", "3": "A2", "4": "Y2", "5": "A3", "6": "Y3", "8": "Y4", "9": "A4", "10": "Y5", "11": "A5", "12": "Y6", "13": "A6"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts. Recovered .009 Э3 sheet 3 supersedes the legacy tape assignment: D26 PC5/pin12 drives pin1; pin2 drives X4.21 and cascades into pin3; pin4 drives X4.22; D98.3 drives pin5 and pin6 reaches D93 READY; D106.7 drives pin9 and pin8 clocks D96.3. The two remaining inverter sections are absent from the exact-revision sheet, making pins10-13 intentional no-connects"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts. Recovered .009 Э3 sheet 3 supersedes the legacy tape assignment: D26 PC5/pin12 drives pin1; pin2 drives X4.21 and cascades into pin3; pin4 drives X4.22; D98.3 drives pin5 and pin6 reaches D93 READY; D106.7 drives pin9 and pin8 clocks D96.3. The final two open-collector sections receive D93 DRQ/INTRQ on pins11/13 and wire outputs pins10/12 together into the D96 section-2 conditioner"}
   },
   {
    "ref": "D95", "type": "KP12_MUX",
@@ -11106,7 +11114,7 @@
    ]
   },
   "P5V": {
-   "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1; exact .009 sheet 3 ties D99.10 and D100.9/.11 to the quoted logic-high level 1",
+   "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1; exact .009 sheet 3 adds the R93/R95 conditioner pull-ups",
    "power": true,
    "nodes": [
     [
@@ -11854,16 +11862,12 @@
        "2"
       ],
       [
-       "D99",
-       "10"
+       "R93",
+       "2"
       ],
       [
-       "D100",
-       "9"
-      ],
-      [
-       "D100",
-       "11"
+       "R95",
+       "2"
       ]
    ]
   },
@@ -13866,6 +13870,18 @@
    "src": "July-2026 D99-package-local cross-side affine: D96.8 Q2_N reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
    "nodes": [["D96", "8"]]
   },
+  "FDC_IRQ_CONDITIONED_N": {
+   "src": "recovered .009 Э3 sheet 3 wires the open-collector D28 outputs pins10/12 together, pulls the node up through R95=2k, and feeds both D96 section-2 PRE_N/pin10 and D/pin12",
+   "nodes": [["D28", "10"], ["D28", "12"], ["D96", "10"], ["D96", "12"], ["R95", "1"]]
+  },
+  "D96_IRQ_CLOCK_SHEET1_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 draws D96 section-2 clock/pin11 to a distinct sheet-1 continuation whose remote source is not yet transcribed",
+   "nodes": [["D96", "11"]]
+  },
+  "D96_IRQ_Q_SHEET1_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 draws D96 section-2 Q/pin9 to a distinct sheet-1 continuation; the continuation marker is not a logic level or shared net name",
+   "nodes": [["D96", "9"]]
+  },
   "D96_TOGGLE_FEEDBACK": {
    "src": "recovered .009 Э3 sheet 3 directly feeds D96 section-1 Q_N/pin6 back to D/pin2, forming the read-clock divide-by-two toggle",
    "nodes": [["D96", "2"], ["D96", "6"]]
@@ -13925,6 +13941,10 @@
   "FDC_SIDE_SEL": {
    "src": "recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL",
    "nodes": [["D26", "11"], ["D100", "8"]]
+  },
+  "D100_CONTROL_SHEET1_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D100 OE_N/pin9 and T/pin11; their common conductor leaves through an otherwise unnamed sheet-1 continuation and is not a logic-level marker",
+   "nodes": [["D100", "9"], ["D100", "11"]]
   },
   "D101_OE0_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary",
@@ -14075,6 +14095,10 @@
    "src": "recovered .009 Э3 sheet 3: D98 output pin13 directly drives D93 WPRT/pin36",
    "nodes": [["D98", "13"], ["D93", "36"]]
   },
+  "D99_B2_SHEET1_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 draws D99 B2/pin10 to its own sheet-1 continuation; the continuation marker is not a literal logic-high annotation",
+   "nodes": [["D99", "10"]]
+  },
   "D99_Q1N_BOUNDARY": {
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "4"]]
@@ -14190,30 +14214,20 @@
    "nodes": [["S1", "3"]]
   },
   "FDC_INTRQ": {
-   "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",
-   "nodes": [
-    [
-     "D93",
-     "39"
-    ],
-    [
-     "D10",
-     "18"
-    ]
-   ]
+   "src": "recovered .009 Э3 sheet 3 directly joins D93 INTRQ/pin39, D28 open-collector inverter input pin13, and R93=10k; R93's other terminal is +5 V",
+   "nodes": [["D93", "39"], ["D28", "13"], ["R93", "1"]]
   },
   "FDC_DRQ": {
-   "src": "MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required",
-   "nodes": [
-    [
-     "D93",
-     "38"
-    ],
-    [
-     "D10",
-     "19"
-    ]
-   ]
+   "src": "recovered .009 Э3 sheet 3 directly joins D93 DRQ/pin38 to D28 open-collector inverter input pin11. The drawing labels a 10k pull-up R94 on this node, but target-board photo/continuity proves physical R94 is instead 220 ohms on D98.3, so that conflicting resistor branch is not imported",
+   "nodes": [["D93", "38"], ["D28", "11"]]
+  },
+  "D10_IR0_FDC_BOUNDARY": {
+   "src": "D10 IR0/pin18 was formerly assigned directly to D93 INTRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so the PIC-side destination remains a sheet-1 continuity boundary",
+   "nodes": [["D10", "18"]]
+  },
+  "D10_IR1_FDC_BOUNDARY": {
+   "src": "D10 IR1/pin19 was formerly assigned directly to D93 DRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so the PIC-side destination remains a sheet-1 continuity boundary",
+   "nodes": [["D10", "19"]]
   },
   "FDC_DDEN": {
    "src": "recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch",
@@ -15808,18 +15822,10 @@
   }
  },
  "no_connects": [
-  ["D28", "10"],
-  ["D28", "11"],
-  ["D28", "12"],
-  ["D28", "13"],
   ["D97", "13"],
   ["D98", "9"],
   ["D98", "10"],
   ["D102", "4"],
-  ["D96", "9"],
-  ["D96", "10"],
-  ["D96", "11"],
-  ["D96", "12"],
   ["D96", "13"],
   ["D106", "2"],
   ["D106", "3"],

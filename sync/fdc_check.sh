@@ -451,8 +451,8 @@ evidence exists.
 - Physical D93 INTRQ/DRQ and reset still require targeted continuity; the clock
   conductor is source-closed but its waveform still requires bench calibration
   checks in `docs/fdc-hardware-handoff.md`. D100's drive-output channels are
-  source-proved; shared pins 9/11 are tied to quoted logic level `1`, and the
-  pin-6 write-data input is source-closed to D101.9.
+  source-proved; shared pins 9/11 continue to an unresolved sheet-1 conductor,
+  and the pin-6 write-data input is source-closed to D101.9.
 - D94 `.092` uses the validated physical table; direct continuity closes its
   enable to D93.CS, D1 to ground, D2 to D93.RE, D3 to D93.WE, and D4 to the
   D93 back-bias/NC socket contact. The runnable model consumes the physical

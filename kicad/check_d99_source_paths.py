@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard exact-revision D99 timing and shared D100 control paths."""
+"""Guard exact-revision D99 timing and distinct sheet-1 boundaries."""
 from __future__ import annotations
 
 import json
@@ -30,9 +30,16 @@ def main() -> None:
     for node in (["R97", "2"], ["R103", "2"]):
         if node not in nets["P5V"]["nodes"]:
             raise SystemExit(f"D99 timing pull-up missing: {node}")
+    boundary_expected = {
+        "D99_B2_SHEET1_BOUNDARY": [["D99", "10"]],
+        "D100_CONTROL_SHEET1_BOUNDARY": [["D100", "9"], ["D100", "11"]],
+    }
+    for name, nodes in boundary_expected.items():
+        if nets.get(name, {}).get("nodes") != nodes:
+            raise SystemExit(f"{name} changed: {nets.get(name, {}).get('nodes')}")
     for node in (["D99", "10"], ["D100", "9"], ["D100", "11"]):
-        if node not in nets["P5V"]["nodes"]:
-            raise SystemExit(f"quoted logic-1 endpoint missing from P5V: {node}")
+        if node in nets["P5V"]["nodes"]:
+            raise SystemExit(f"sheet-1 continuation incorrectly tied high: {node}")
     stale = {
         "D100_CONTROL_1_BOUNDARY", "D99_A1N_BOUNDARY", "D99_B2_BOUNDARY",
         "D99_C1_BOUNDARY", "D99_RC1_BOUNDARY", "D99_C2_BOUNDARY",
@@ -49,10 +56,12 @@ def main() -> None:
     if not {"C17", "C18", "R97", "R103"} <= targets:
         raise SystemExit("D99 timing-part factory placement registration incomplete")
     hdl = HDL.read_text(encoding="utf-8")
-    for marker in ("ag3_oneshot U_D99", ".b2(1'b1)", ".oe_n(1'b1)", ".t(1'b1)"):
+    for marker in ("ag3_oneshot U_D99", ".b2(d99_b2_sheet1_boundary)",
+                   ".oe_n(d100_control_sheet1_boundary)",
+                   ".t(d100_control_sheet1_boundary)"):
         if marker not in hdl:
             raise SystemExit(f"structural D99/D100 marker missing: {marker}")
-    print("D99 SOURCE PATHS: PASS — timing networks and quoted logic-1 D100 controls closed")
+    print("D99 SOURCE PATHS: PASS — timing networks closed; sheet-1 continuations remain distinct")
 
 
 if __name__ == "__main__":

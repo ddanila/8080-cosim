@@ -95,6 +95,11 @@ D106.4 with selected 4/8 MHz; D106 Q3 is not a D93.24 source.
 See `ref/schematics/fdc-clock-mux-map.md` and
 `ref/schematics/fdc-recovery-counter-map.md` plus
 `ref/schematics/fdc-read-clock-toggle-map.md` for the exact tables.
+The same full-resolution region restores the local interrupt conditioner:
+D93 DRQ/INTRQ drive D28.11/.13, wired open-collector outputs D28.10/.12
+feed D96.10/.12 through the R95 pull-up, and R93 pulls INTRQ high.
+D96.9 Q2 and D96.11 CLK2 remain distinct sheet-1 boundaries; see
+`ref/schematics/fdc-irq-conditioner-map.md`.
 
 Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:
 D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;
@@ -168,14 +173,16 @@ visible links are modeled; the mux select/output paths remain open.
 | D94.5 no-connect / `D93_1_OPEN_STUB` | WIRED | D94 output D4 is a PCB no-connect; D93.1 owns the short open stub | owner continuity plus full-resolution exposed-socket photograph recheck |
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
 | `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
-| `FDC_INTRQ` | OWNER-VERIFY | D93 INTRQ to PIC IR0 | MAME-era assumption; owner continuity required |
-| `FDC_DRQ` | OWNER-VERIFY | D93 DRQ to PIC IR1 | MAME-era assumption; owner continuity required |
+| `FDC_INTRQ` | WIRED | D93 INTRQ into local D28/R93 conditioner | exact .009 sheet 3 |
+| `FDC_DRQ` | WIRED | D93 DRQ into local D28 conditioner | exact .009 sheet 3; conflicting drawn R94 branch withheld |
+| `D10_IR0_FDC_BOUNDARY` / `D10_IR1_FDC_BOUNDARY` | OWNER-VERIFY | remote PIC-side FDC interrupt destinations | sheet-1 continuation/owner continuity required |
 
 ## D93 Source-Risk Pad Review
 
 The two-sided package fits make the controller-end pad identity exact.
-The available photographs do not show an unbroken path from these pads
-to the modeled remote endpoints.
+The exact sheet now supersedes the former direct-to-PIC interpretation
+with local D28/D96 conditioning. These coordinates retain the rejected
+MAME-era D10 candidate as audit history, not modeled connectivity.
 
 The D10 affine fit independently localizes the КР580ВН59 interrupt-input
 contacts at the other end of the modeled DRQ/INTRQ nets.
@@ -193,7 +200,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D10.22 `IR4` | BOUNDARY | stale tape-run continuation disposition | exact .009 sheet 1 labels (3) TAPE RUN INT, but replacement FDC sheet 3 has no matching continuation; ekta37 mask 0xDF keeps IR4 masked |
 | D93.23 HLT / D93.25 RG | SOURCE-CLOSED | selected head-load timing and unused read-gate output | exact .009 sheet 3 draws E11 in position 2-3 (HLT=READY) and deliberately omits RG/pin25 between the explicit pin24/pin26 paths |
 | D93.24 `CLK` | CONNECTED | source-selected 1/2 MHz FDC clock rail | recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock |
-| D100.9/.11 logic `1` | SOURCE-CLOSED | shared drive-output-buffer control source | exact .009 sheet 3 prints the same quoted logic-high `1` at D99.10 B2 and at joined D100.9/.11 |
+| D100.9/.11 sheet-1 continuation | CONNECTED | shared drive-output-buffer controls | exact .009 sheet 3 joins D100.9/.11 locally, then sends that conductor to sheet 1; the `(1)` annotation is not logic high and D99.10 is a separate continuation |
 
 ## Netted FDC Endpoints
 
@@ -205,12 +212,13 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_DDEN` | recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch | `D26.13, D93.37, D95.14, R92.2` |
 | `FDC_DIR_TO_D100` | recovered .009 Э3 sheet 3: D93 DIR/pin16 directly drives D100 A2/pin1 | `D93.16, D100.1` |
 | `FDC_DRIVE_SIZE_5_8` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; sheet 3 directly joins it to D95 clock-mux select A1/pin2 | `D26.17, D95.2` |
-| `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
+| `FDC_DRQ` | recovered .009 Э3 sheet 3 directly joins D93 DRQ/pin38 to D28 open-collector inverter input pin11. The drawing labels a 10k pull-up R94 on this node, but target-board photo/continuity proves physical R94 is instead 220 ohms on D98.3, so that conflicting resistor branch is not imported | `D93.38, D28.11` |
 | `FDC_DSEL_IN` | recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1 | `D26.12, D28.1` |
 | `FDC_EARLY_SEL` | recovered .009 Э3 sheet 3 directly joins D93 EARLY/pin17 to the common D101 select input A1/pin2 | `D93.17, D101.2` |
 | `FDC_HLD_TO_D100` | recovered .009 Э3 sheet 3: D93 HLD/pin28 directly drives D100 A6/pin3 | `D93.28, D100.3` |
 | `FDC_INDEX_STATUS` | recovered .009 Э3 sheet 3: D98 output pin5 directly drives D93 INDEX/pin35 | `D98.5, D93.35` |
-| `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
+| `FDC_INTRQ` | recovered .009 Э3 sheet 3 directly joins D93 INTRQ/pin39, D28 open-collector inverter input pin13, and R93=10k; R93's other terminal is +5 V | `D93.39, D28.13, R93.1` |
+| `FDC_IRQ_CONDITIONED_N` | recovered .009 Э3 sheet 3 wires the open-collector D28 outputs pins10/12 together, pulls the node up through R95=2k, and feeds both D96 section-2 PRE_N/pin10 and D/pin12 | `D28.10, D28.12, D96.10, D96.12, R95.1` |
 | `FDC_LATE_SEL` | recovered .009 Э3 sheet 3 directly joins D93 LATE/pin18 to the common D101 select input A0/pin14 | `D93.18, D101.14` |
 | `FDC_MOTOR_EN` | recovered .009 Э3 sheet 1 continuation 1 and sheet 3: D26 PC2/pin16 drives D100 A7/pin7 MOTOR EN | `D26.16, D100.7` |
 | `FDC_PRECOMP_WRDATA` | recovered .009 Э3 sheet 3 directly joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; the drawing's simultaneous Q0/pin7 junction is rejected because direct owner continuity instead closes Q0 to D94.14/R88 | `D101.9, D100.6` |
@@ -238,14 +246,16 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   controls are owner-mapped; remaining decode boundaries are the upstream
   pin-15 enable source, pull-up identities, D3-D7 destinations, and the
   recorded D29.4/IORD recheck. The `.092` table is physically captured.
-- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
-  confirm INTRQ/DRQ ordering. D93.19 is now source-connected to the
+- Before real FDC bring-up, trace D96.9 Q2 and D96.11 CLK2 through
+  sheet 1 to the PIC/control destinations. Direct D93.39/38-to-D10.18/19
+  was a retired MAME-era assumption: sheet 3 instead proves the local
+  D28/R93/R95/D96 conditioner. D93.19 is source-connected to the
   sheet-1 RES continuation, while its drawn active-low polarity remains
   a scope check. D93.24 is
   source-closed through D95's selected 1/2 MHz clock section. First dump
   D15/D16 and identify its guarded CMA/NOP profile; the recovered direct
   D93 bus means physical D100 is not the profile selector. D99.10 and
-  D100.9/.11 share the source-proved quoted logic-high `1`; D100.6's selected write-data input
+  joined D100.9/.11 are distinct unresolved sheet-1 continuations; D100.6's selected write-data input
   is source-closed through D101.9. See
   `docs/fdc-bus-polarity.md`.
   D10 CAS0-2 are source-proved NC, IR2/IR3 are source-connected, and

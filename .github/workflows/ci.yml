@@ -169,6 +169,7 @@ jobs:
             kicad/check_d93_static_paths.py \
             kicad/apply_d93_hlt_rg.py \
             kicad/check_d93_hlt_rg.py \
+            kicad/check_d93_irq_conditioner.py \
             kicad/check_d99_source_paths.py \
             kicad/report_d105_h_boundary.py \
             kicad/report_fdc_lower_assembly_placement.py
@@ -203,7 +204,10 @@ jobs:
       - name: Check D93 HLT selector and RG disposition
         run: python3 kicad/check_d93_hlt_rg.py
 
-      - name: Check D99 timing and D100 control continuation
+      - name: Check D93 interrupt conditioner
+        run: python3 kicad/check_d93_irq_conditioner.py
+
+      - name: Check D99 timing and sheet-1 continuations
         run: python3 kicad/check_d99_source_paths.py
 
       - name: Check documentation consistency

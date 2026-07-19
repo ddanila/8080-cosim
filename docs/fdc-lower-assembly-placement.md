@@ -6,7 +6,7 @@ The photographed factory assembly drawing is registered to the five package cent
 already fitted in the owner board photograph. D95, D101, and D102 define the affine
 fit; D99 and D97 are independent checks. This establishes reference identity and
 placement only, except where the owner-evidence records below explicitly close
-R79-R85/R98 plus R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.
+R79-R85/R93/R95/R98 plus R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.
 
 Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 
@@ -20,6 +20,8 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R83 | 283.701, 19.258 | 283.701, 19.258 | -0.000, +0.000 | leftmost member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -READY |
 | R84 | 245.220, 97.300 | 245.220, 97.300 | +0.000, +0.000 | vertical factory body immediately left of D95; electrical sheet 3 assigns its 470-ohm pull-up to D28.6/D93 READY. Registered component-photo joints supersede the coarse drawing-centre projection |
 | R85 | 278.302, 66.090 | 278.302, 66.090 | +0.000, +0.000 | vertical factory body between D28 and D96; electrical sheet 3 assigns its 470-ohm pull-up to the separator clock |
+| R93 | 277.444, 54.083 | 277.443, 54.083 | +0.001, +0.000 | left member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 10-kohm pull-up to D93 INTRQ |
+| R95 | 282.852, 54.319 | 282.852, 54.319 | +0.000, +0.000 | right member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 2-kohm pull-up to the wired D28.10/.12 conditioner output |
 | R98 | 270.135, 65.590 | 270.135, 65.590 | -0.000, +0.000 | vertical factory body immediately left of D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1 |
 | C10 | 252.361, 73.163 | 252.361, 73.163 | +0.000, -0.000 | vertical C10 immediately right of D93; replaces the former lower-row collision with D102 |
 | C11 | 268.232, 93.540 | 268.232, 93.540 | +0.000, +0.000 | vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body |
@@ -40,7 +42,7 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R97 | 298.620, 67.150 | 298.620, 67.150 | +0.000, +0.000 | factory-drawing identity plus local D99/right-edge correction for the vertical 47k timing resistor beside C18 |
 | C63 | 239.150, 140.065 | 176.100, 145.600 | +63.050, -5.535 | factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site |
 
-D93, C10, C11, C15, C16, C19, R79-R85, R92, R98, R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
+D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
 factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the
 overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns
 at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C63 is an explicit target-board DNP:

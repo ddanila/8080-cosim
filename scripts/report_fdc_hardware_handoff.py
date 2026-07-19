@@ -250,7 +250,7 @@ def main() -> int:
         failures.append("FD179X June-1980 application note is absent")
     if not all(reference_family_checks.values()):
         failures.append("Juku FDC cluster no longer matches the Figure-11 logic families")
-    d96_section2_excluded = (
+    d96_q2n_landing_guarded = (
         has_node(board, "D96_Q2_N_TEST_LANDING", "D96", "8")
         and endpoint_state(board, "D96", "8") == "BOUNDARY"
     )
@@ -259,22 +259,27 @@ def main() -> int:
         and has_node(board, "D99_B_TEST_LANDING", "D99", "2")
         and endpoint_state(board, "D99", "2") == "BOUNDARY"
     )
-    if not d96_section2_excluded:
+    if not d96_q2n_landing_guarded:
         failures.append("D96 section-2 isolated-/Q constraint is absent")
     d96_toggle_closed = (
         {"D96.2", "D96.6"}
         == {f"{ref}.{pin}" for ref, pin in net(board, "D96_TOGGLE_FEEDBACK").get("nodes", [])}
         and all(has_node(board, "WREQ_N", "D96", pin) for pin in ("1", "4"))
-        and all(["D96", pin] in board.get("no_connects", []) for pin in ("9", "10", "11", "12", "13"))
+        and has_node(board, "FDC_IRQ_CONDITIONED_N", "D96", "10")
+        and has_node(board, "FDC_IRQ_CONDITIONED_N", "D96", "12")
+        and has_node(board, "D96_IRQ_CLOCK_SHEET1_BOUNDARY", "D96", "11")
+        and has_node(board, "D96_IRQ_Q_SHEET1_BOUNDARY", "D96", "9")
+        and ["D96", "13"] in board.get("no_connects", [])
     )
     if not d96_toggle_closed:
         failures.append("sheet-3 D96 read-clock toggle wiring is absent")
     exact_revision_nc = {
-        ("D28", pin) for pin in ("10", "11", "12", "13")
-    } | {("D97", "13"), ("D98", "9"), ("D98", "10"), ("D102", "4")}
+        ("D96", "13"), ("D97", "13"), ("D98", "9"),
+        ("D98", "10"), ("D102", "4"),
+    }
     actual_nc = {tuple(item) for item in board.get("no_connects", [])}
     if not exact_revision_nc <= actual_nc:
-        failures.append("sheet-3 D28/D97/D98/D102 unused-pin dispositions are absent")
+        failures.append("sheet-3 D96/D97/D98/D102 unused-pin dispositions are absent")
     if not d99_section1_excluded:
         failures.append("D99 section-1 grounded-clear/test-landing constraint is absent")
     rclk_closed = (
@@ -440,17 +445,24 @@ def main() -> int:
         ),
         (
             "`FDC_INTRQ`",
-            "D93 INTRQ to PIC IR0",
-            [("FDC_INTRQ", "D93", "39"), ("FDC_INTRQ", "D10", "18")],
-            True,
-            "MAME-era assumption; owner continuity required",
+            "D93 INTRQ into local D28/R93 conditioner",
+            [("FDC_INTRQ", "D93", "39"), ("FDC_INTRQ", "D28", "13"), ("FDC_INTRQ", "R93", "1")],
+            False,
+            "exact .009 sheet 3",
         ),
         (
             "`FDC_DRQ`",
-            "D93 DRQ to PIC IR1",
-            [("FDC_DRQ", "D93", "38"), ("FDC_DRQ", "D10", "19")],
+            "D93 DRQ into local D28 conditioner",
+            [("FDC_DRQ", "D93", "38"), ("FDC_DRQ", "D28", "11")],
+            False,
+            "exact .009 sheet 3; conflicting drawn R94 branch withheld",
+        ),
+        (
+            "`D10_IR0_FDC_BOUNDARY` / `D10_IR1_FDC_BOUNDARY`",
+            "remote PIC-side FDC interrupt destinations",
+            [("D10_IR0_FDC_BOUNDARY", "D10", "18"), ("D10_IR1_FDC_BOUNDARY", "D10", "19")],
             True,
-            "MAME-era assumption; owner continuity required",
+            "sheet-1 continuation/owner continuity required",
         ),
     ]
     for name, purpose, endpoints, owner_verify, evidence in control_checks:
@@ -479,10 +491,10 @@ def main() -> int:
             "recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock",
         ),
         (
-            "D100.9/.11 logic `1`",
-            "SOURCE-CLOSED",
-            "shared drive-output-buffer control source",
-            "exact .009 sheet 3 prints the same quoted logic-high `1` at D99.10 B2 and at joined D100.9/.11",
+            "D100.9/.11 sheet-1 continuation",
+            endpoint_state(board, "D100", "9"),
+            "shared drive-output-buffer controls",
+            "exact .009 sheet 3 joins D100.9/.11 locally, then sends that conductor to sheet 1; the `(1)` annotation is not logic high and D99.10 is a separate continuation",
         ),
     ]
 
@@ -584,6 +596,11 @@ def main() -> int:
         "See `ref/schematics/fdc-clock-mux-map.md` and",
         "`ref/schematics/fdc-recovery-counter-map.md` plus",
         "`ref/schematics/fdc-read-clock-toggle-map.md` for the exact tables.",
+        "The same full-resolution region restores the local interrupt conditioner:",
+        "D93 DRQ/INTRQ drive D28.11/.13, wired open-collector outputs D28.10/.12",
+        "feed D96.10/.12 through the R95 pull-up, and R93 pulls INTRQ high.",
+        "D96.9 Q2 and D96.11 CLK2 remain distinct sheet-1 boundaries; see",
+        "`ref/schematics/fdc-irq-conditioner-map.md`.",
         "",
         "Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:",
         "D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;",
@@ -648,8 +665,9 @@ def main() -> int:
             "## D93 Source-Risk Pad Review",
             "",
             "The two-sided package fits make the controller-end pad identity exact.",
-            "The available photographs do not show an unbroken path from these pads",
-            "to the modeled remote endpoints.",
+            "The exact sheet now supersedes the former direct-to-PIC interpretation",
+            "with local D28/D96 conditioning. These coordinates retain the rejected",
+            "MAME-era D10 candidate as audit history, not modeled connectivity.",
             "",
             "The D10 affine fit independently localizes the КР580ВН59 interrupt-input",
             "contacts at the other end of the modeled DRQ/INTRQ nets.",
@@ -720,14 +738,16 @@ def main() -> int:
             "  controls are owner-mapped; remaining decode boundaries are the upstream",
             "  pin-15 enable source, pull-up identities, D3-D7 destinations, and the",
             "  recorded D29.4/IORD recheck. The `.092` table is physically captured.",
-            "- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to",
-            "  confirm INTRQ/DRQ ordering. D93.19 is now source-connected to the",
+            "- Before real FDC bring-up, trace D96.9 Q2 and D96.11 CLK2 through",
+            "  sheet 1 to the PIC/control destinations. Direct D93.39/38-to-D10.18/19",
+            "  was a retired MAME-era assumption: sheet 3 instead proves the local",
+            "  D28/R93/R95/D96 conditioner. D93.19 is source-connected to the",
             "  sheet-1 RES continuation, while its drawn active-low polarity remains",
             "  a scope check. D93.24 is",
             "  source-closed through D95's selected 1/2 MHz clock section. First dump",
             "  D15/D16 and identify its guarded CMA/NOP profile; the recovered direct",
             "  D93 bus means physical D100 is not the profile selector. D99.10 and",
-            "  D100.9/.11 share the source-proved quoted logic-high `1`; D100.6's selected write-data input",
+            "  joined D100.9/.11 are distinct unresolved sheet-1 continuations; D100.6's selected write-data input",
             "  is source-closed through D101.9. See",
             "  `docs/fdc-bus-polarity.md`.",
             "  D10 CAS0-2 are source-proved NC, IR2/IR3 are source-connected, and",

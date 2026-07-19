@@ -92,8 +92,9 @@ straight board topology, and every direct system-bus ROM/peripheral path.
   the FD1793 command set. The original Soviet paper defines pins 7..14 as
   the bidirectional DB0..DB7 bus, `/W` as loading that bus into the selected
   register, and Table 3 as the command-register bit codes.
-- D100 pins 9 and 11 are factory-drawn at quoted logic level `1`; the
-  D100.6 write-data input is source-closed to D101.9.
+- D100 pins 9 and 11 are factory-drawn on one conductor continuing
+  to sheet 1; `(1)` is a sheet reference, not logic high. D100.6 is
+  source-closed to D101.9.
 
 Primary references: Intel M8286/M8287 data sheet
 (<https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf>);
@@ -117,5 +118,5 @@ continue to guard the systematic CMA behavior without claiming board copper.
 1. Dump D15 and D16 twice each and identify the installed polarity profile.
 2. Identify why the preserved CMA-profile firmware exists; do not attribute
    it to physical D100 without new primary evidence.
-3. Bench-check the source-closed D100 pins 9/11 logic-high control and
-   D100.6 write-data/precompensation path during drive bring-up.
+3. Trace the shared D100 pins 9/11 sheet-1 continuation; bench-check
+   the source-closed D100.6 write-data/precompensation path.
