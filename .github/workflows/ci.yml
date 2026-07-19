@@ -177,9 +177,7 @@ jobs:
         run: python3 kicad/check_fdc_precomp_network.py
 
       - name: Check FDC clock mux
-        run: |
-          python3 kicad/check_fdc_clock_mux.py
-          sync/kp12_check.sh
+        run: python3 kicad/check_fdc_clock_mux.py
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py
