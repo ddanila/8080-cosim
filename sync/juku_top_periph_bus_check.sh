@@ -66,7 +66,8 @@ cat > "$REPORT" <<EOF
 Status: **$status**
 
 This fast harness drives the LVS-checked \`juku_top\` buffered CPU bus directly
-through \`BA\`, \`DB\`, \`iord_n\`, \`iowr_n\`, and \`inta_n\`, while leaving the
+through \`BA\`, \`DB\`, \`iord_n\`, \`iowr_n\`, and \`inta_n\`; FDC writes
+additionally exercise raw \`iowr_raw_n\` plus CPU \`wr_n\`, while leaving the
 real top-level chip-select decode and peripheral instances in place. It proves
 the post-banner keyboard/PIC/PPI/FDC path without waiting for ROMBIOS to redraw
 the screen.
@@ -121,8 +122,9 @@ sync/juku_top_periph_bus_check.sh
 
 - This is a direct-bus harness, not the full ROMBIOS \`TDD\` CPU path.
 - The behavioral FDC consumes D94's physical-table strobes. A3 is physically
-  closed to D105.3 qualified peripheral \`/WR\`; the harness drives that rail
-  directly. D94 enable's upstream source and runnable A4 behavior remain
+  closed to D105.3 qualified peripheral \`/WR\`; FDC write cycles drive raw
+  \`/IOWR\` plus CPU \`/WR\` and check D105 derives that rail. D94 enable's
+  upstream source and runnable A4 behavior remain
   explicit simulation fits around the measured D94.15/D93.3 and D94.14/D101.7 nets.
 - A separate forced-low A4 check exercises the alternate register-3 D0 branch;
   D0 has only the measured R8 2 kΩ pull-up in the observed hardware scope.

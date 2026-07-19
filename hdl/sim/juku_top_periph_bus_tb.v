@@ -44,6 +44,7 @@ module juku_top_periph_bus_tb();
   task bus_idle; begin
     force dut.wr_n = 1'b1;
     force dut.dbin = 1'b0;
+    force dut.iowr_raw_n = 1'b1;
     force dut.iowr_n = 1'b1;
     force dut.iord_n = 1'b1;
     release dut.DB;
@@ -57,10 +58,20 @@ module juku_top_periph_bus_tb();
     force dut.BA = drive_ba;
     force dut.DB = drive_db;
     force dut.iord_n = 1'b1;
+    force dut.wr_n = 1'b1;
+    force dut.iowr_raw_n = 1'b1;
     force dut.iowr_n = 1'b1;
     #1;
-    force dut.iowr_n = 1'b0;
+    force dut.iowr_raw_n = 1'b0;
+    if (is_fdc_port(port)) begin
+      release dut.iowr_n;
+      force dut.wr_n = 1'b0;
+    end else begin
+      force dut.iowr_n = 1'b0;
+    end
     #1;
+    if (is_fdc_port(port) && dut.iowr_n !== 1'b0)
+      fail("D105 qualified /WR did not assert from raw /IOWR and CPU /WR");
     if (port[4:2] == 3'd0 && dut.cs_pic_n) fail("PIC chip-select did not assert on write");
     if (port[4:2] == 3'd1 && dut.cs_ppi0_n) fail("PPI0 chip-select did not assert on write");
     if (port[4:2] == 3'd7) begin
@@ -78,9 +89,12 @@ module juku_top_periph_bus_tb();
     drive_ba = io_addr(port);
     force dut.BA = drive_ba;
     release dut.DB;
+    force dut.wr_n = 1'b1;
+    force dut.iowr_raw_n = 1'b1;
     force dut.iowr_n = 1'b1;
     force dut.iord_n = 1'b1;
     #1;
+    if (dut.iowr_n !== 1'b1) fail("D105 qualified /WR asserted during an I/O read");
     force dut.iord_n = 1'b0;
     #1;
     if (port[4:2] == 3'd0 && dut.cs_pic_n) fail("PIC chip-select did not assert on read");
@@ -119,6 +133,8 @@ module juku_top_periph_bus_tb();
   task inta_read(output [7:0] data); begin
     release dut.DB;
     force dut.iord_n = 1'b1;
+    force dut.wr_n = 1'b1;
+    force dut.iowr_raw_n = 1'b1;
     force dut.iowr_n = 1'b1;
     force dut.inta_n = 1'b0;
     @(posedge osc);
@@ -175,6 +191,8 @@ module juku_top_periph_bus_tb();
   task check_d94_data_branch; begin
     @(negedge osc);
     force dut.BA = 16'h1f1f;
+    force dut.wr_n = 1'b1;
+    force dut.iowr_raw_n = 1'b1;
     force dut.iowr_n = 1'b1;
     force dut.iord_n = 1'b0;
     force dut.d94_a4_d101_q0 = 1'b0;
