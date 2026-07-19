@@ -17,8 +17,16 @@ BOARD_SPEC = ROOT / "kicad/juku.board.json"
 OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
-RESTORED_FACTORY_PARTS = {"C16", "C19", "R92", "R99", "R100", "R102", "R108", "R86"}
-EXPECTED_RESISTOR_VALUES = {"R92": "1,3к", "R99": "4,7к", "R100": "12к", "R102": "12к", "R108": "12к", "R86": "4,7к"}
+RESTORED_FACTORY_PARTS = {
+    "C16", "C19", "R79", "R80", "R81", "R82", "R83", "R84", "R85",
+    "R86", "R92", "R98", "R99", "R100", "R102", "R108",
+}
+EXPECTED_RESISTOR_VALUES = {
+    "R79": "470", "R80": "470", "R81": "470", "R82": "470",
+    "R83": "470", "R84": "470", "R85": "470", "R86": "4,7к",
+    "R92": "1,3к", "R98": "4,7к", "R99": "4,7к", "R100": "12к",
+    "R102": "12к", "R108": "12к",
+}
 EXPECTED_CAPACITOR_VALUES = {"C20": "1,5 нФ", "C22": "1,5 нФ"}
 
 
@@ -276,7 +284,8 @@ if math.dist(c63_midpoint, (176.1, 145.6)) > 0.01:
     raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: inherited C63 landing moved to {c63_midpoint}")
 targets = []
 for item in document["targets"]:
-    x, y = project(transform, item["drawing_px"])
+    factory_x, factory_y = project(transform, item["drawing_px"])
+    x, y = map(float, item.get("owner_board_mm", (factory_x, factory_y)))
     footprint = board.FindFootprintByReference(item["refdes"])
     current = None
     delta = None
@@ -289,6 +298,14 @@ for item in document["targets"]:
         if expected_value is not None and footprint.GetValue() != expected_value:
             raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {item['refdes']} value {footprint.GetValue()!r} != {expected_value!r}")
         expected_pad_nets = {
+            "R79": {"1": "X4_RD_DATA", "2": "P5V"},
+            "R80": {"1": "X4_TR00_N", "2": "P5V"},
+            "R81": {"1": "X4_INDEX_N", "2": "P5V"},
+            "R82": {"1": "X4_WR_PROTECT_N", "2": "P5V"},
+            "R83": {"1": "X4_READY_N", "2": "P5V"},
+            "R84": {"1": "FDC_READY", "2": "P5V"},
+            "R85": {"1": "SEP_D28_CLK", "2": "P5V"},
+            "R98": {"1": "X4_DSEL1_N", "2": "P5V"},
             "C19": {"1": "C19_1_R100_1_BOUNDARY", "2": "C19_2_R86_1_BOUNDARY"},
             "R100": {"1": "C19_1_R100_1_BOUNDARY", "2": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"},
             "R102": {"1": "R102_1_BOUNDARY", "2": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"},
@@ -300,6 +317,7 @@ for item in document["targets"]:
             if pad_nets != expected_pad_nets[item["refdes"]]:
                 raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {item['refdes']} local-join endpoint mismatch")
     targets.append({"refdes": item["refdes"], "drawing_px": item["drawing_px"],
+                    "factory_projected_board_mm": [round(factory_x, 3), round(factory_y, 3)],
                     "projected_board_mm": [round(x, 3), round(y, 3)],
                     "current_footprint_mm": current, "projected_delta_mm": delta,
                     "observation": item["observation"],
@@ -338,7 +356,7 @@ lines = ["# FDC lower assembly placement", "",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
          "placement only, except where the owner-evidence records below explicitly close",
-         "R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.", "",
+         "R79-R85/R98 plus R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.", "",
          f"Held-out errors: D99 `{next(x['error_mm'] for x in checks if x['refdes']=='D99'):.3f}` mm; "
          f"D97 `{next(x['error_mm'] for x in checks if x['refdes']=='D97'):.3f}` mm.", "",
          "| Ref | Projected x,y mm | Current x,y mm | Delta mm | Drawing observation |", 
@@ -350,7 +368,7 @@ for item in targets:
     delta = "-" if item["projected_delta_mm"] is None else ", ".join(
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {projected} | {current} | {delta} | {item['observation']} |")
-lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
+lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92, R98, R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
           "factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the",
           "overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns",
           "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C63 is an explicit target-board DNP:",

@@ -201,7 +201,12 @@ PASSIVE_PLACE = {
     # three bent component-side lap joints; C94 is the separate factory-drawn
     # two-terminal position immediately right of VT2, not that yellow body.
     'VT2':(285.037,132.926,90),'VD3':(299.38,128.40,90),
-    'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(289.870,130.321,90),
+    # Factory СБ affine registration: five X4 input pull-ups above D98 plus
+    # READY/separator/drive-select open-collector pull-ups around D95/D28/D96.
+    'R79':(292.431,19.166,90),'R80':(290.248,19.189,90),'R81':(288.066,19.212,90),
+    'R82':(285.883,19.235,90),'R83':(283.701,19.258,90),
+    'R84':(245.220,97.300,90),'R85':(278.302,66.090,90),'R98':(270.135,65.590,90),
+    'C11':(268.232,93.540,90),'C94':(289.870,130.321,90),
     # Remaining retained R6x grid refdes-to-slot assignments are approximate.
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(282.21,125.14,90),'R66':(302.69,128.46,90),
     'R67':(295.94,125.39,90),

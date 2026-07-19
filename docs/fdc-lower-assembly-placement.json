@@ -464,6 +464,10 @@
         1300.0,
         1906.0
       ],
+      "factory_projected_board_mm": [
+        235.941,
+        73.335
+      ],
       "projected_board_mm": [
         235.941,
         73.335
@@ -482,10 +486,247 @@
       "electrical_evidence": false
     },
     {
+      "refdes": "R79",
+      "drawing_px": [
+        2220.0,
+        992.0
+      ],
+      "factory_projected_board_mm": [
+        292.431,
+        19.166
+      ],
+      "projected_board_mm": [
+        292.431,
+        19.166
+      ],
+      "current_footprint_mm": [
+        292.431,
+        19.166
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        0.0
+      ],
+      "observation": "rightmost member of the factory R83..R79 vertical bank above D98; electrical sheet 3 assigns its 470-ohm pull-up to RD.DATA",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R80",
+      "drawing_px": [
+        2178.0,
+        992.0
+      ],
+      "factory_projected_board_mm": [
+        290.248,
+        19.189
+      ],
+      "projected_board_mm": [
+        290.248,
+        19.189
+      ],
+      "current_footprint_mm": [
+        290.248,
+        19.189
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "second-from-right member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -TR.00",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R81",
+      "drawing_px": [
+        2136.0,
+        992.0
+      ],
+      "factory_projected_board_mm": [
+        288.066,
+        19.212
+      ],
+      "projected_board_mm": [
+        288.066,
+        19.212
+      ],
+      "current_footprint_mm": [
+        288.066,
+        19.212
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        0.0
+      ],
+      "observation": "centre member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -INDEX",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R82",
+      "drawing_px": [
+        2094.0,
+        992.0
+      ],
+      "factory_projected_board_mm": [
+        285.883,
+        19.235
+      ],
+      "projected_board_mm": [
+        285.883,
+        19.235
+      ],
+      "current_footprint_mm": [
+        285.883,
+        19.235
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "second-from-left member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -WR.PROTECT",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R83",
+      "drawing_px": [
+        2052.0,
+        992.0
+      ],
+      "factory_projected_board_mm": [
+        283.701,
+        19.258
+      ],
+      "projected_board_mm": [
+        283.701,
+        19.258
+      ],
+      "current_footprint_mm": [
+        283.701,
+        19.258
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        0.0
+      ],
+      "observation": "leftmost member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -READY",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R84",
+      "drawing_px": [
+        1533.0,
+        2258.0
+      ],
+      "factory_projected_board_mm": [
+        244.704,
+        93.876
+      ],
+      "projected_board_mm": [
+        245.22,
+        97.3
+      ],
+      "current_footprint_mm": [
+        245.22,
+        97.3
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "vertical factory body immediately left of D95; electrical sheet 3 assigns its 470-ohm pull-up to D28.6/D93 READY. Registered component-photo joints supersede the coarse drawing-centre projection",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2262.0,
+              1086.0
+            ],
+            [
+              2262.0,
+              1380.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres transformed through the guarded D95 component fit",
+          "observation": "populated vertical red axial body immediately left of D95, clear of D93's pad row"
+        }
+      ],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R85",
+      "drawing_px": [
+        2094.0,
+        1790.0
+      ],
+      "factory_projected_board_mm": [
+        278.302,
+        66.09
+      ],
+      "projected_board_mm": [
+        278.302,
+        66.09
+      ],
+      "current_footprint_mm": [
+        278.302,
+        66.09
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "vertical factory body between D28 and D96; electrical sheet 3 assigns its 470-ohm pull-up to the separator clock",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R98",
+      "drawing_px": [
+        1935.0,
+        1780.0
+      ],
+      "factory_projected_board_mm": [
+        270.135,
+        65.59
+      ],
+      "projected_board_mm": [
+        270.135,
+        65.59
+      ],
+      "current_footprint_mm": [
+        270.135,
+        65.59
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        0.0
+      ],
+      "observation": "vertical factory body immediately left of D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
       "refdes": "C10",
       "drawing_px": [
         1616.0,
         1906.0
+      ],
+      "factory_projected_board_mm": [
+        252.361,
+        73.163
       ],
       "projected_board_mm": [
         252.361,
@@ -510,6 +751,10 @@
         1985.5,
         2256.5
       ],
+      "factory_projected_board_mm": [
+        268.232,
+        93.54
+      ],
       "projected_board_mm": [
         268.232,
         93.54
@@ -532,6 +777,10 @@
       "drawing_px": [
         1987.0,
         2384.5
+      ],
+      "factory_projected_board_mm": [
+        267.094,
+        101.055
       ],
       "projected_board_mm": [
         267.094,
@@ -589,6 +838,10 @@
         2268.5,
         2541.5
       ],
+      "factory_projected_board_mm": [
+        280.23,
+        110.12
+      ],
       "projected_board_mm": [
         280.23,
         110.12
@@ -611,6 +864,10 @@
       "drawing_px": [
         2461.0,
         2261.5
+      ],
+      "factory_projected_board_mm": [
+        292.893,
+        93.574
       ],
       "projected_board_mm": [
         292.893,
@@ -672,6 +929,10 @@
         1732.5,
         2384.5
       ],
+      "factory_projected_board_mm": [
+        253.869,
+        101.194
+      ],
       "projected_board_mm": [
         253.869,
         101.194
@@ -727,6 +988,10 @@
       "drawing_px": [
         1495.5,
         2421.0
+      ],
+      "factory_projected_board_mm": [
+        241.207,
+        103.467
       ],
       "projected_board_mm": [
         241.207,
@@ -784,6 +1049,10 @@
         2595.0,
         2270.0
       ],
+      "factory_projected_board_mm": [
+        299.776,
+        94.0
+      ],
       "projected_board_mm": [
         299.776,
         94.0
@@ -806,6 +1075,10 @@
       "drawing_px": [
         2595.0,
         2325.0
+      ],
+      "factory_projected_board_mm": [
+        299.253,
+        97.229
       ],
       "projected_board_mm": [
         299.253,
@@ -830,6 +1103,10 @@
         2595.0,
         2380.0
       ],
+      "factory_projected_board_mm": [
+        298.731,
+        100.458
+      ],
       "projected_board_mm": [
         298.731,
         100.458
@@ -852,6 +1129,10 @@
       "drawing_px": [
         2595.0,
         2435.0
+      ],
+      "factory_projected_board_mm": [
+        298.208,
+        103.688
       ],
       "projected_board_mm": [
         298.208,
@@ -876,6 +1157,10 @@
         2648.0,
         2545.0
       ],
+      "factory_projected_board_mm": [
+        299.917,
+        110.117
+      ],
       "projected_board_mm": [
         299.917,
         110.117
@@ -899,6 +1184,10 @@
         2692.0,
         2545.0
       ],
+      "factory_projected_board_mm": [
+        302.204,
+        110.093
+      ],
       "projected_board_mm": [
         302.204,
         110.093
@@ -921,6 +1210,10 @@
       "drawing_px": [
         1570.0,
         3045.0
+      ],
+      "factory_projected_board_mm": [
+        239.15,
+        140.065
       ],
       "projected_board_mm": [
         239.15,

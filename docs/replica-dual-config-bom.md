@@ -15,8 +15,8 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 316
-- Populate for current functional .009 build: 252
+- Board component positions: 324
+- Populate for current functional .009 build: 260
 - Do not populate now (empty/DNP/pending): 64
 - Unique BOM lines: 109
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 64 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 206 |
+| source-now | 214 |
 
 ## BOM Lines
 
@@ -120,9 +120,9 @@ readiness report.
 | source-now | R_AXIAL 220 | axial resistor 220 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R94 | - |
 | source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 5 | 5 | 0 | R1, R5, R6, R62, R90 | - |
 | source-now | R_AXIAL 33к | axial resistor 33к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R18, R30, R59 | - |
-| source-now | R_AXIAL 4,7к | axial resistor 4,7к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R67, R86, R99 | - |
+| source-now | R_AXIAL 4,7к | axial resistor 4,7к | modern axial resistor, matching value and power rating | 4 | 4 | 0 | R67, R86, R98, R99 | - |
 | source-now | R_AXIAL 430 | axial resistor 430 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R65 | - |
-| source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R19 | - |
+| source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 8 | 8 | 0 | R19, R79, R80, R81, R82, R83, R84, R85 | - |
 | source-now | R_AXIAL 5,1к | axial resistor 5,1к | modern axial resistor, matching value and power rating | 7 | 7 | 0 | R53, R54, R55, R56, R58, R60, R64 | - |
 | source-now | R_AXIAL 6,2к | axial resistor 6,2к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R87, R88, R89 | - |
 | source-now | R_AXIAL 620 | axial resistor 620 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R33 | - |

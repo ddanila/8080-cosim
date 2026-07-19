@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `152`
 - Verification-point endpoints checked in PCB: `170`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2266`
-- All board endpoints checked in routed PCB: `2266`
+- All board endpoints checked in source PCB: `2282`
+- All board endpoints checked in routed PCB: `2282`
 - Intentional non-PCB or placement-pending endpoints excluded: `75`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -57,8 +57,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2266/2266 | 2266/2266 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1871/2266 | 1758/2266 | FAIL |
+| `kicad/juku.kicad_pcb` | 2282/2282 | 2282/2282 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1871/2282 | 1758/2282 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -263,6 +263,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `FDC_RCLK: D93.26`
 - `FDC_READY: D28.6`
 - `FDC_READY: D93.32`
+- `FDC_READY: R84.1`
 - `FDC_RE_N: D94.3`
 - `FDC_STEP_TO_D100: D93.15`
 - `FDC_TG43_TO_D100: D93.29`
@@ -353,6 +354,14 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `P5V: R87.2`
 - `P5V: R88.2`
 - `P5V: R89.2`
+- `P5V: R79.2`
+- `P5V: R80.2`
+- `P5V: R81.2`
+- `P5V: R82.2`
+- `P5V: R83.2`
+- `P5V: R84.2`
+- `P5V: R85.2`
+- `P5V: R98.2`
 - `PHI1: W7.1`
 - `PHI1_D35: W7.2`
 - `POF: D35.3`
@@ -374,6 +383,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `SEP_D106_Q3: D28.9`
 - `SEP_D28_CLK: D28.8`
 - `SEP_D28_CLK: D96.3`
+- `SEP_D28_CLK: R85.1`
 - `SER_CTS_N: D104.12`
 - `SER_CTS_N: D11.17`
 - `SER_DSR_N: D104.11`
@@ -436,23 +446,29 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `X4_DSEL1_N: D28.2`
 - `X4_DSEL1_N: D28.3`
 - `X4_DSEL1_N: AX421.1`
+- `X4_DSEL1_N: R98.1`
 - `X4_HLOAD_N: AX417.1`
 - `X4_INDEX_N: AX415.1`
 - `X4_INDEX_N: D98.4`
+- `X4_INDEX_N: R81.1`
 - `X4_MOTOR_ON_N: AX419.1`
 - `X4_RD_DATA: AX423.1`
 - `X4_RD_DATA: D98.6`
+- `X4_RD_DATA: R79.1`
 - `X4_READY_N: AX408.1`
 - `X4_READY_N: D98.2`
+- `X4_READY_N: R83.1`
 - `X4_SIDE_SEL: AX420.1`
 - `X4_STEP_N: AX409.1`
 - `X4_TG43: AX410.1`
 - `X4_TR00_N: AX414.1`
 - `X4_TR00_N: D98.12`
+- `X4_TR00_N: R80.1`
 - `X4_WR_DATA_N: AX411.1`
 - `X4_WR_GATE_N: AX418.1`
 - `X4_WR_PROTECT_N: AX407.1`
 - `X4_WR_PROTECT_N: D98.14`
+- `X4_WR_PROTECT_N: R82.1`
 - `XTAL16M: D39.10`
 - `XTAL_TRIM: Z1.2`
 - `XTAL_TRIM: C73.1`

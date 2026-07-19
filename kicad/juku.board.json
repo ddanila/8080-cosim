@@ -4694,6 +4694,38 @@
    }
   },
   {
+   "ref": "R79", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on X4.23 RD.DATA / D98.6; assembly-drawing affine registration fixes the rightmost member of the R83..R79 bank above D98"}
+  },
+  {
+   "ref": "R80", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on X4.14 -TR.00 / D98.12; assembly-drawing affine registration fixes the second-from-right bank member"}
+  },
+  {
+   "ref": "R81", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on X4.15 -INDEX / D98.4; assembly-drawing affine registration fixes the centre bank member"}
+  },
+  {
+   "ref": "R82", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on X4.7 -WR.PROTECT / D98.14; assembly-drawing affine registration fixes the second-from-left bank member"}
+  },
+  {
+   "ref": "R83", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on X4.8 -READY / D98.2; assembly-drawing affine registration fixes the leftmost bank member"}
+  },
+  {
+   "ref": "R84", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on D28.6 / D93.32 READY; factory drawing registers the vertical body immediately left of D95"}
+  },
+  {
+   "ref": "R85", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on D28.8 / D96.3 separator clock; factory drawing registers the vertical body between D28 and D96"}
+  },
+  {
+   "ref": "R98", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "4,7к",
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "4.7-kohm +5 V pull-up on D28.2 / D28.3 / X4.21 -D.SEL1; factory drawing registers the vertical body immediately left of D28"}
+  },
+  {
    "ref": "R92",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
@@ -11692,6 +11724,38 @@
     [
      "R89",
      "2"
+    ],
+    [
+     "R79",
+     "2"
+    ],
+    [
+     "R80",
+     "2"
+    ],
+    [
+     "R81",
+     "2"
+    ],
+    [
+     "R82",
+     "2"
+    ],
+    [
+     "R83",
+     "2"
+    ],
+    [
+     "R84",
+     "2"
+    ],
+    [
+     "R85",
+     "2"
+    ],
+    [
+     "R98",
+     "2"
     ]
    ]
   },
@@ -13991,8 +14055,8 @@
    "nodes": [["D106", "7"], ["D28", "9"]]
   },
   "SEP_D28_CLK": {
-   "src": "recovered .009 Э3 sheet 3: D28 inverter output pin8 clocks D96 pin3; the drawn R85 pull-up remains an unmodeled passive endpoint",
-   "nodes": [["D28", "8"], ["D96", "3"]]
+   "src": "recovered .009 Э3 sheet 3: D28 open-collector inverter output pin8 clocks D96 pin3 and R85=470 pulls the node to +5 V",
+   "nodes": [["D28", "8"], ["D96", "3"], ["R85", "1"]]
   },
   "FDC_RCLK": {
    "src": "recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26",
@@ -14031,8 +14095,8 @@
    "nodes": [["D26", "12"], ["D28", "1"]]
   },
   "X4_DSEL1_N": {
-   "src": "recovered .009 Э3 sheet 3: D28 open-collector output pin2 drives X4.21 -D.SEL1 and directly cascades into D28 input pin3; .009 sheets4-5 map AX421 to X4.21",
-   "nodes": [["D28", "2"], ["D28", "3"], ["AX421", "1"], ["X4", "21"]]
+   "src": "recovered .009 Э3 sheet 3: D28 open-collector output pin2 drives X4.21 -D.SEL1, cascades into D28 input pin3, and R98=4.7k pulls the node to +5 V; .009 sheets4-5 map AX421 to X4.21",
+   "nodes": [["D28", "2"], ["D28", "3"], ["AX421", "1"], ["X4", "21"], ["R98", "1"]]
   },
   "X4_DSEL0_N": {
    "src": "recovered .009 Э3 sheet 3: cascaded D28 open-collector output pin4 drives X4.22 -D.SEL0; .009 sheets4-5 map AX422 to X4.22",
@@ -14208,8 +14272,8 @@
    "nodes": [["D93", "31"]]
   },
   "FDC_READY": {
-   "src": "recovered .009 Э3 sheet 3: D28 READY inverter output pin6 directly drives D93 READY/pin32; the drawn R84 pull-up remains an unmodeled passive endpoint",
-   "nodes": [["D28", "6"], ["D93", "32"]]
+   "src": "recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V",
+   "nodes": [["D28", "6"], ["D93", "32"], ["R84", "1"]]
   },
   "D93_WF_VFOE_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary",
@@ -15755,19 +15819,19 @@
     ]
    ]
   },
-  "X4_WR_PROTECT_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire33: AX407/X4.7 -WR.PROTECT drives D98 input pin14","nodes":[["AX407","1"],["X4","7"],["D98","14"]]},
-  "X4_READY_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire34: AX408/X4.8 -READY drives D98 input pin2","nodes":[["AX408","1"],["X4","8"],["D98","2"]]},
+  "X4_WR_PROTECT_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire33: AX407/X4.7 -WR.PROTECT drives D98 input pin14 and R82=470 pulls the line to +5 V","nodes":[["AX407","1"],["X4","7"],["D98","14"],["R82","1"]]},
+  "X4_READY_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire34: AX408/X4.8 -READY drives D98 input pin2 and R83=470 pulls the line to +5 V","nodes":[["AX408","1"],["X4","8"],["D98","2"],["R83","1"]]},
   "X4_STEP_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire35: D100 output pin18 drives AX409/X4.9 -STEP","nodes":[["D100","18"],["AX409","1"],["X4","9"]]},
   "X4_TG43": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire36: D100 output pin16 drives AX410/X4.10 TG43","nodes":[["D100","16"],["AX410","1"],["X4","10"]]},
   "X4_WR_DATA_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire37: D100 output pin14 drives AX411/X4.11 -WR.DATA","nodes":[["D100","14"],["AX411","1"],["X4","11"]]},
-  "X4_TR00_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire40: AX414/X4.14 -TR.00 drives D98 input pin12","nodes":[["AX414","1"],["X4","14"],["D98","12"]]},
-  "X4_INDEX_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire41: AX415/X4.15 -INDEX drives D98 input pin4","nodes":[["AX415","1"],["X4","15"],["D98","4"]]},
+  "X4_TR00_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire40: AX414/X4.14 -TR.00 drives D98 input pin12 and R80=470 pulls the line to +5 V","nodes":[["AX414","1"],["X4","14"],["D98","12"],["R80","1"]]},
+  "X4_INDEX_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire41: AX415/X4.15 -INDEX drives D98 input pin4 and R81=470 pulls the line to +5 V","nodes":[["AX415","1"],["X4","15"],["D98","4"],["R81","1"]]},
   "X4_DIR_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire42: D100 output pin19 drives AX416/X4.16 -DIR","nodes":[["D100","19"],["AX416","1"],["X4","16"]]},
   "X4_HLOAD_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire43: D100 output pin17 drives AX417/X4.17 -H.LOAD","nodes":[["D100","17"],["AX417","1"],["X4","17"]]},
   "X4_WR_GATE_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire44: D100 output pin15 drives AX418/X4.18 -WR.GATE","nodes":[["D100","15"],["AX418","1"],["X4","18"]]},
   "X4_MOTOR_ON_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire45: D100 output pin13 drives AX419/X4.19 -MOTOR.ON","nodes":[["D100","13"],["AX419","1"],["X4","19"]]},
   "X4_SIDE_SEL": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire46: D100 output pin12 drives AX420/X4.20 S.SEL","nodes":[["D100","12"],["AX420","1"],["X4","20"]]},
-  "X4_RD_DATA": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire49: AX423/X4.23 RD.DATA drives D98 input pin6","nodes":[["AX423","1"],["X4","23"],["D98","6"]]},
+  "X4_RD_DATA": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire49: AX423/X4.23 RD.DATA drives D98 input pin6 and R79=470 pulls the line to +5 V","nodes":[["AX423","1"],["X4","23"],["D98","6"],["R79","1"]]},
   "CPU_WAIT_STATUS": {
    "src": "traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread",
    "nodes": [["D1", "24"]]

@@ -207,6 +207,14 @@
   },
   "targets": [
     {"refdes": "D93", "drawing_px": [1300.0, 1906.0], "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"},
+    {"refdes": "R79", "drawing_px": [2220.0, 992.0], "observation": "rightmost member of the factory R83..R79 vertical bank above D98; electrical sheet 3 assigns its 470-ohm pull-up to RD.DATA", "electrical_evidence": true},
+    {"refdes": "R80", "drawing_px": [2178.0, 992.0], "observation": "second-from-right member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -TR.00", "electrical_evidence": true},
+    {"refdes": "R81", "drawing_px": [2136.0, 992.0], "observation": "centre member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -INDEX", "electrical_evidence": true},
+    {"refdes": "R82", "drawing_px": [2094.0, 992.0], "observation": "second-from-left member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -WR.PROTECT", "electrical_evidence": true},
+    {"refdes": "R83", "drawing_px": [2052.0, 992.0], "observation": "leftmost member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -READY", "electrical_evidence": true},
+    {"refdes": "R84", "drawing_px": [1533.0, 2258.0], "owner_board_mm": [245.220, 97.300], "observation": "vertical factory body immediately left of D95; electrical sheet 3 assigns its 470-ohm pull-up to D28.6/D93 READY. Registered component-photo joints supersede the coarse drawing-centre projection", "electrical_evidence": true, "owner_evidence": [{"image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg", "side": "component", "joint_px": [[2262.0, 1086.0], [2262.0, 1380.0]], "precision": "reviewed approximate joint centres transformed through the guarded D95 component fit", "observation": "populated vertical red axial body immediately left of D95, clear of D93's pad row"}]},
+    {"refdes": "R85", "drawing_px": [2094.0, 1790.0], "observation": "vertical factory body between D28 and D96; electrical sheet 3 assigns its 470-ohm pull-up to the separator clock", "electrical_evidence": true},
+    {"refdes": "R98", "drawing_px": [1935.0, 1780.0], "observation": "vertical factory body immediately left of D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1", "electrical_evidence": true},
     {"refdes": "C10", "drawing_px": [1616.0, 1906.0], "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102"},
     {"refdes": "C11", "drawing_px": [1985.5, 2256.5], "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body"},
     {

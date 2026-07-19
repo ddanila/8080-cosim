@@ -1,6 +1,6 @@
 # Processor X4 to НГМД wire map
 
-Status: **REVIEWED CONNECTOR TRANSCRIPTION / SOURCE-MODEL CORRECTION REQUIRED**
+Status: **REVIEWED CONNECTOR AND PASSIVE TRANSCRIPTION / SOURCE MODEL ALIGNED**
 
 This note reconciles the processor-module floppy connector on
 `ДГШ5.109.009 Э3`, sheet 3, with the recovered НГМД block
@@ -59,6 +59,15 @@ The D98 output side is also explicit: its B1/B2/B3 channels reach D93
 TR00/INDEX/WPRT pins 34/35/36. The READY channel passes through the newly used
 D28 pins 5/6 before D93.32. `RD.DATA` enters the read-separator path rather
 than D93 RAW READ directly.
+
+Each external D98 input has its own factory 470-ohm pull-up to rail `A` (+5 V):
+`R79` on RD.DATA, `R80` on -TR.00, `R81` on -INDEX, `R82` on -WR.PROTECT,
+and `R83` on -READY. The `.009 СБ` assembly drawing independently places the
+five bodies as the left-to-right `R83..R79` bank above D98. Three further
+open-collector pull-ups are explicit: `R84=470` on D28.6/D93 READY,
+`R85=470` on D28.8/D96.3 separator clock, and `R98=4.7k` on the cascaded
+D28.2/D28.3/X4.21 -D.SEL1 node. Their assembly-drawing locations are now
+registered and guarded in `docs/fdc-lower-assembly-placement.md`.
 
 ## Processor-side source map
 

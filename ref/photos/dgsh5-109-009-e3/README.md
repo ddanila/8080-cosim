@@ -79,6 +79,9 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
 - [x] Sheet-1/3 FDC source read: D93 DAL0-DAL7 join D0-D7 directly; D26
       PC2/PC4/PC5/PC6 supply MOTOR EN/FM-MFM/D_SEL/S.SEL; D28.2 cascades to
       D28.3 to generate the complementary drive selects.
+- [x] Sheet-3 input/open-collector pull-ups reconciled with the `.009 СБ`
+      assembly drawing: R79-R85 and R98 are modeled at their registered
+      positions with exact values and endpoints.
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).
