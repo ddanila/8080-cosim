@@ -331,6 +331,15 @@ measurement-gated.
    operating LEVELS during a ROM fetch (continuity is already done). If the
    re-read flips D0/D3 in the affected rows, the physical table then boots
    directly with no transform.
+   The recovered `.009 Э3` sheet 1 now independently closes the remaining
+   drawing question. Two reviewed read passes over the guarded overview and
+   D6/D8 detail frame show D6 D0/pin 12 labeled `ROM` running directly through
+   R11 to D8 `E`/pin 15, while D6 D3/pin 9 labeled `ROE` runs directly through
+   R14 to D13 pin 1. D13 is the only drawn inverter and its pin 2 is the
+   `RAMOUTEN` output. Thus the factory drawing agrees with chip-removed
+   continuity and rules out an omitted drawn series inverter; it cannot explain
+   the raw-table mismatch. The corrected-reader re-read or operating-level
+   comparison remains decisive (`docs/d6-physical-decode.md`).
    **Status: provisionally adopted.** The runnable twin now boots from the
    physical table (with the `~D0`/`~D3` correction) byte-identically; the oracle
    is retired from the boot path (`decode_prom_functional` kept in `devices.v`

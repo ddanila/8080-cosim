@@ -10,6 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "ref/physical-proms/validated/d6_038.raw.bin"
 REPORT = ROOT / "docs/d6-physical-decode.md"
 EXPECTED_SHA256 = "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
+SHEET1_OVERVIEW = ROOT / "ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg"
+SHEET1_DETAIL = ROOT / "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg"
+EXPECTED_SHEET1_OVERVIEW_SHA256 = "effc98746807ef28dab97051ceba293f4433c0f3b39b86cbb55ddcaad24aeca4"
+EXPECTED_SHEET1_DETAIL_SHA256 = "40a524d663dc4685a7093782165264524cd70780fb41638a8d1c0cbca0b36216"
 
 
 def row_index(high5: int, mode: int) -> int:
@@ -45,6 +49,18 @@ def main() -> int:
     words = sorted(set(data))
     if words != [0x1, 0x8, 0xD, 0xF]:
         raise SystemExit(f"unexpected D6 output vocabulary: {words}")
+
+    drawing_hashes = {
+        SHEET1_OVERVIEW: EXPECTED_SHEET1_OVERVIEW_SHA256,
+        SHEET1_DETAIL: EXPECTED_SHEET1_DETAIL_SHA256,
+    }
+    for path, expected in drawing_hashes.items():
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        if actual != expected:
+            raise SystemExit(
+                f"unexpected recovered .009 sheet-1 photo: {path.relative_to(ROOT)} "
+                f"sha256={actual}"
+            )
 
     mode_values = [[data[row_index(high5, mode)] for high5 in range(32)] for mode in range(8)]
     expected_runs = {
@@ -114,6 +130,8 @@ def main() -> int:
         ("Raw-row regression and corrected checkpoint suffix are documented",
          "D6-RUNTIME-QUALIFIER mode=000 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=8 ram_d8=ff" in runtime_report
          and "checkpoint on suffix `11`" in runtime_report),
+        ("Recovered .009 sheet-1 D6 polarity evidence is checksum-guarded",
+         all(path.exists() for path in drawing_hashes)),
     ]
     if not all(ok for _, ok in model_checks):
         raise SystemExit(f"D6 physical-model adoption changed: {model_checks}")
@@ -141,6 +159,25 @@ def main() -> int:
         "separate. D6.12 reaches D8.15, while D6.11 reaches D2.15/-WREQ and",
         "does not reach D8.15; the earlier installed-PROM",
         "zero-ohm reading that joined D6.11/D6.12/D13.12 is explicitly invalidated.", "",
+        "## Recovered `.009` sheet-1 polarity read", "",
+        "Two independent read passes over the native-color detail and an enhanced",
+        "high-resolution crop, cross-checked against the sheet overview, close the",
+        "critical schematic question. The guarded source frames are:", "",
+        f"- `{SHEET1_OVERVIEW.relative_to(ROOT)}` (SHA256 `{EXPECTED_SHEET1_OVERVIEW_SHA256}`)",
+        f"- `{SHEET1_DETAIL.relative_to(ROOT)}` (SHA256 `{EXPECTED_SHEET1_DETAIL_SHA256}`; upper-center D6/D8/D9 region)", "",
+        "The drawing labels D6 D0/pin 12 `ROM` and carries that conductor",
+        "uninterrupted through the R11 1 kOhm pull-up node to D8 `E`/pin 15. It",
+        "labels D6 D3/pin 9 `ROE`; that conductor passes the R14 1 kOhm pull-up",
+        "node and enters D13 pin 1 directly. D13 is the only inverter symbol on",
+        "this path, and D13 pin 2 is the drawn `RAMOUTEN` output. No additional",
+        "series inverter, off-sheet inversion, or alternate consumer is drawn on",
+        "either D6 output path.", "",
+        "This reviewed factory-drawing result agrees with the stronger chip-removed",
+        "D6.12-to-D8.15 and D6.9-to-D13.1 continuity measurements and with the",
+        "modeled D13 polarity. It therefore rules out an omitted *drawn* inverter",
+        "as the cause of the raw-table contradiction; it does not resolve the",
+        "electrical/provenance mismatch in the existing D6 dump. The corrected-reader",
+        "re-read or operating-level comparison remains decisive.", "",
         "## Mode maps", "", "Each address interval is inclusive. The 32-character signature is one raw",
         "nibble per 2 KiB block from `0000` through `F800`.", "",
         "| D6 A7 A6 A5 | 2 KiB signature | Inclusive address ranges |", "| --- | --- | --- |",

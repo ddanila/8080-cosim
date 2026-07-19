@@ -33,6 +33,30 @@ separate. D6.12 reaches D8.15, while D6.11 reaches D2.15/-WREQ and
 does not reach D8.15; the earlier installed-PROM
 zero-ohm reading that joined D6.11/D6.12/D13.12 is explicitly invalidated.
 
+## Recovered `.009` sheet-1 polarity read
+
+Two independent read passes over the native-color detail and an enhanced
+high-resolution crop, cross-checked against the sheet overview, close the
+critical schematic question. The guarded source frames are:
+
+- `ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg` (SHA256 `effc98746807ef28dab97051ceba293f4433c0f3b39b86cbb55ddcaad24aeca4`)
+- `ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg` (SHA256 `40a524d663dc4685a7093782165264524cd70780fb41638a8d1c0cbca0b36216`; upper-center D6/D8/D9 region)
+
+The drawing labels D6 D0/pin 12 `ROM` and carries that conductor
+uninterrupted through the R11 1 kOhm pull-up node to D8 `E`/pin 15. It
+labels D6 D3/pin 9 `ROE`; that conductor passes the R14 1 kOhm pull-up
+node and enters D13 pin 1 directly. D13 is the only inverter symbol on
+this path, and D13 pin 2 is the drawn `RAMOUTEN` output. No additional
+series inverter, off-sheet inversion, or alternate consumer is drawn on
+either D6 output path.
+
+This reviewed factory-drawing result agrees with the stronger chip-removed
+D6.12-to-D8.15 and D6.9-to-D13.1 continuity measurements and with the
+modeled D13 polarity. It therefore rules out an omitted *drawn* inverter
+as the cause of the raw-table contradiction; it does not resolve the
+electrical/provenance mismatch in the existing D6 dump. The corrected-reader
+re-read or operating-level comparison remains decisive.
+
 ## Mode maps
 
 Each address interval is inclusive. The 32-character signature is one raw
@@ -100,3 +124,4 @@ nibble per 2 KiB block from `0000` through `F800`.
 | Structural consumers retain separate ROM/RAM conductors | PASS |
 | All-row B37A RAM-gate boundary has a reproducible diagnostic | PASS |
 | Raw-row regression and corrected checkpoint suffix are documented | PASS |
+| Recovered .009 sheet-1 D6 polarity evidence is checksum-guarded | PASS |

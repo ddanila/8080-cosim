@@ -68,6 +68,9 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
 
 ## Status / TODO
 
+- [x] Targeted sheet-1 D6 polarity read: D6.12/D0 is drawn directly to
+      D8.15/E through R11, and D6.9/D3 directly to D13.1 through R14; D13 is
+      the only drawn inverter (`docs/d6-physical-decode.md`).
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).
