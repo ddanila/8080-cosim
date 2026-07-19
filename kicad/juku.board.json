@@ -5327,6 +5327,7 @@
   {
    "ref": "R8", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
    "pcb_placement_pending": true,
+   "procurement": {"action": "circuit-review", "note": "The measured value and D94.1/+5 V endpoints are closed, but R8's physical placement is not registered; do not fabricate or source its final body/lead spacing until that placement is recovered."},
    "prov": {"type": "owner continuity 2026-07-19", "refdes": "R8, physical placement not yet registered in the replica", "pins": "one end joins only D94.1 in the measured scope; the other end reaches +5 V; measured resistance approximately 2 kohm"}
   },
   {

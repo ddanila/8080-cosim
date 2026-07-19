@@ -15,7 +15,7 @@ DRAM_DECAP_ASSEMBLY_DNP = {
     "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
     "C60", "C61", "C62", "C63", "C64", "C65", "C66", "C67", "C68", "C69",
 }
-DRAM_DECAP_PLACEMENT_PENDING = {"C51", "C52", "C53", "C70", "C71", "C72"}
+PCB_PLACEMENT_PENDING = {"C51", "C52", "C53", "C70", "C71", "C72", "R8"}
 
 
 AUTHENTIC_MARK = {
@@ -278,11 +278,11 @@ def build_rows(board_json):
     actual_placement_pending = {
         chip["ref"] for chip in spec["chips"] if chip.get("pcb_placement_pending")
     }
-    if actual_placement_pending != DRAM_DECAP_PLACEMENT_PENDING:
+    if actual_placement_pending != PCB_PLACEMENT_PENDING:
         raise ValueError(
             "PCB-placement-pending set changed: "
             f"actual={sorted(actual_placement_pending)}, "
-            f"expected={sorted(DRAM_DECAP_PLACEMENT_PENDING)}"
+            f"expected={sorted(PCB_PLACEMENT_PENDING)}"
         )
     groups = defaultdict(list)
     for chip in spec["chips"]:
