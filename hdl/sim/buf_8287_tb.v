@@ -120,7 +120,7 @@ module buf_8287_tb;
       end
     end
 
-    $display("BUF-8287: PASS D100 control families and D23-D25, all 256 values both directions");
+    $display("BUF-8287: PASS generic diagnostic profiles and D23-D25, all 256 values both directions");
     $finish;
   end
 endmodule

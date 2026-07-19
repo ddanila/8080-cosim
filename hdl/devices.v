@@ -2299,18 +2299,24 @@ module lp5_xor (input wire a1, b1, a2, b2, a3, b3, a4, b4, output wire y1, y2, y
     assign y4 = a4 ^ b4;
 endmodule
 
-// ---- Physical КР1818ВГ93 (WD1793 clone) at D93. This module preserves its proved
-// bus pins while the behavioral core and remaining quadrant wiring are incomplete. The temporary
-// released outputs prevent unproved behavior from driving DAL/IRQ; they do not denote an omitted,
-// abstract, or depopulated controller.
-module vg93_fdc (input wire nc_back_bias, cs_n, re_n, we_n, a0, a1, mr_n, clk, dden,
-                 inout wire [7:0] dal, output wire drq, intrq);
-    assign dal = 8'hzz; assign drq = 1'bz; assign intrq = 1'bz;
+// ---- Physical КР1818ВГ93 (WD1793 clone) at D93. This black-box shell exposes the
+// complete package so structural LVS can preserve the source-proved host, separator,
+// status, and drive-output wiring. Released outputs do not denote a depopulated part;
+// runnable controller behavior remains in the separate fdc_1793 adjunct below.
+module vg93_fdc (
+    input wire nc_back_bias, cs_n, re_n, we_n, a0, a1, mr_n, clk, dden,
+    input wire vss_gnd, vcc_5v, vdd_12v, test, hlt, rg, rclk, raw_read,
+    input wire ready, wf_vfoe, tr00, index, wprt,
+    inout wire [7:0] dal,
+    output wire step, dirc, early, late, hld, tg43, wg, wdata, drq, intrq
+);
+    assign dal = 8'hzz;
+    assign {step, dirc, early, late, hld, tg43, wg, wdata, drq, intrq} = 10'bz;
 endmodule
 
-// КР580ВА87 (8287, inverting 8286) D100: FDC bus buffer. The physical control
-// nets remain boundaries in juku_top; this device model preserves the actual
-// bidirectional truth table independently of those still-unproved sources.
+// КР580ВА87 (8287, inverting 8286). At physical D100 this is the recovered
+// drive-output buffer; the generic model is also reused by a simulation-only bus-profile
+// adjunct whose instance is intentionally absent from the physical LVS map.
 module buf_8287 (inout wire [7:0] a, b, input wire oe_n, t,
                  input wire vss_gnd, vcc_5v);
     assign b = (!oe_n &&  t) ? ~a : 8'hzz;

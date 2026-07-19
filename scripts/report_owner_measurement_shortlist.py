@@ -154,7 +154,7 @@ def main() -> int:
         ("D30 section-B continuity closure guarded", has_phrase("docs/d30-section-b-scan-chase.md", "Status: **OWNER CONTINUITY CLOSED / OLDER SCAN AMBIGUITY RETAINED**")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
-        ("FDC firmware/hardware polarity profiles proved", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE/HARDWARE POLARITY PROFILES PROVED / TARGET EPROM DUMPS PENDING**")),
+        ("FDC firmware profiles proved; physical D100 attribution retired", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE PROFILES PROVED / PHYSICAL D100 ATTRIBUTION RETIRED / TARGET EPROM DUMPS PENDING**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM-FIELD ARTWORK/POPULATION CLOSED / VALUES AND NON-FIELD PLACEMENTS PENDING**")),
@@ -215,9 +215,9 @@ def main() -> int:
         (
             "P0",
             "FDC interrupt/buffer continuity and fitted ROM profile",
-            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. For D100 controls, first test pin 9 /OE against GND and FDC_CS_N, then pin 11 T against D93 RE_N/D94.3; those three comparisons distinguish the two exhaustively guarded safe control families before a broad chase. Do not substitute raw IORD for T: D94 can suppress /RE on its low-A4 register-3 branch. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile. For the stock inverting КР580ВА87 with a CMA-profile ROM, capture system DB, D100 B-side/D93 DAL, D100.9 /OE, D100.11 T, D93.2 /WE, and STEP/WG: CPU 0xFD must become logical Restore 0x02 on DAL. Repeat one status read: logical status 0x00 must reach the CPU as 0xFF before firmware CMA. If a NOP profile is installed, document the physical D100 replacement/bypass instead of mixing configurations",
+            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; factory sheet 1 proves D93 pins 7..14 connect directly to DB0..DB7, so do not attribute the profile split to D100. Separately trace the upstream source of shared D100 pins 9/11 continuation `1` and D100.6's write-data/precompensation input",
             "`docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
-            "identifies the exact board/EPROM configuration, closes D100 enable/direction, and makes the physical FDC data path safe to adopt",
+            "identifies the exact board/EPROM configuration and closes the remaining drive-output-buffer inputs without reopening the direct D93 data bus",
         ),
         (
             "P0",
@@ -243,7 +243,7 @@ def main() -> int:
         (
             "P0",
             "FDC support signal dispositions",
-            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106. D106.7-D93.26 RCLK is photo-closed, selecting the IE7-only output; resistance-test D106.11-D93.27 and D106.14-D93.33 specifically for hidden layer handoffs because calibrated solder-crop review rejects both direct same-layer paths. Meter the now-photo-bounded D106 setup probes: pins 15/1/5 to a known P5V anchor, pins 10/9 to a known GND anchor, and pin 4 to its clock source; pins 9/10 are rail-obscured and the others show only local copper or handoffs, so visual overlap is not continuity. Do not assume the now-excluded WD RCLK chain D106.3-D96.3/D96.5-D93.26, but still identify D96 section 1's actual role. For write precompensation, the photo now closes the R92/R99 ladder at D95.14, D101.4, and D101.8/GND; test the remaining D95/D101 select candidates against D93.18/.17, pins 1 to ground, and pin 7 toward an inverter/write-data path. Recheck legacy-NC D28.5/.6 only if that path approaches them. D96 section 2 and D99 section 1 are already excluded from the WD roles",
+            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106. Factory sheet 1 closes D106.7-D28.9, D28.8-D96.3, and D96.5-D93.26 RCLK; preserve that chain. Resistance-test D106.11-D93.27 and D106.14-D93.33 specifically for hidden layer handoffs because calibrated solder-crop review rejects both direct same-layer paths. Meter the now-photo-bounded D106 setup probes: pins 15/1/5 to a known P5V anchor, pins 10/9 to a known GND anchor, and pin 4 to its clock source. For write precompensation, the photo closes the R92/R99 ladder at D95.14, D101.4, and D101.8/GND; test the remaining D95/D101 select candidates against D93.18/.17, pins 1 to ground, and pin 7 toward D100.6/write data. D96 section 2 and D99 section 1 remain excluded from the WD roles",
             "`docs/fdc-hardware-handoff.md`; `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; Western Digital June-1980 application note Figure 11; Kovalenko et al. МПСС 1986 No. 3 pp. 3-8; `.009` assembly/photo evidence",
             "the recovered-clock output is now closed from target copper; the remaining probes complete its loading/reset context and test the mux family that the WD-only comparison left unexplained",
         ),

@@ -4,8 +4,8 @@ Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**
 
 This generated report narrows the physical floppy-controller handoff to
 the exact board points that still need owner or bench evidence. It does
-not claim D93 interrupt mapping, D100 enable/direction gating, or the
-electrical DB-to-DAL polarity are hardware-verified; it separates the
+not claim D93 interrupt mapping or the remaining support inputs are
+hardware-verified; it separates the
 wired bus-side facts from the remaining continuity asks.
 
 ## Command
@@ -69,7 +69,7 @@ for that output. D99.3
 test landing, excluding D99 section 1 as the active raw-read conditioner.
 The remaining AG3 sections still require continuity identification.
 
-Except for the separately photo-proved Q3-to-RCLK path below, these are
+Except for the factory-proved separator chain below, these are
 **reference candidates, not promoted Juku nets**. The Juku
 cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas
 Figure 11 contains no mux and only one half of a single 74123. The owner
@@ -89,10 +89,9 @@ pin 4, pin 5 is held high, and Q3/pin 7 supplies VG93 RCLK/pin 26. The
 parallel inputs are strapped 15/1 high and 10/9 low, while pin 14 is
 controlled by WF/VFOE/pin 33.
 
-The target board now chooses this branch: corrected independent package
-fits place D106.7 and D93.26 on one uninterrupted solder-side trace in
-`PXL_20260710_200506061.jpg`. This excludes the Western Figure-11
-D96-toggle output as Juku's RCLK source, though D96 may have another role.
+Factory `.009` sheet 1 resolves the apparent crossing: D106.7 reaches
+D28.9, D28.8 clocks D96.3, and D96.5 supplies D93.26 RCLK. The older
+photograph-only interpretation of a direct D106.7-D93.26 net is retired.
 Calibrated review of the same raw solder tile finds no uninterrupted
 same-layer path for D106.11-D93.27 or D106.14-D93.33. This rejects a
 direct visible merge, not cross-layer continuity: both pairs remain meter
@@ -112,8 +111,8 @@ against D93.18/.17 and both pin-7 destinations. If either approaches
 D28.5/.6, continuity must override the legacy-sheet NC assumption; the
 current photographs do not prove that reuse.
 
-D106.7-D93.26 and the three passive-ladder links above are promoted from
-target-board copper. The remaining Soviet-reference paths are guarded
+The D106-D28-D96-D93 chain and the three passive-ladder links above are
+promoted from primary factory/copper evidence. Remaining reference paths are guarded
 candidates, not Juku continuity.
 
 ### Separator candidate raw-crop disposition
@@ -164,14 +163,14 @@ visible links are modeled; the mux select/output paths remain open.
 
 | Net / path | Status | Endpoint / purpose | Evidence boundary |
 | --- | --- | --- | --- |
-| `DB0` / `FDC_DAL0` | WIRED | `D100.1` <-> system DB; `D100.19` <-> `D93.7` | scan + WD1793/8287 datasheets |
-| `DB1` / `FDC_DAL1` | WIRED | `D100.2` <-> system DB; `D100.18` <-> `D93.8` | scan + WD1793/8287 datasheets |
-| `DB2` / `FDC_DAL2` | WIRED | `D100.3` <-> system DB; `D100.17` <-> `D93.9` | scan + WD1793/8287 datasheets |
-| `DB3` / `FDC_DAL3` | WIRED | `D100.4` <-> system DB; `D100.16` <-> `D93.10` | scan + WD1793/8287 datasheets |
-| `DB4` / `FDC_DAL4` | WIRED | `D100.5` <-> system DB; `D100.15` <-> `D93.11` | scan + WD1793/8287 datasheets |
-| `DB5` / `FDC_DAL5` | WIRED | `D100.6` <-> system DB; `D100.14` <-> `D93.12` | scan + WD1793/8287 datasheets |
-| `DB6` / `FDC_DAL6` | WIRED | `D100.7` <-> system DB; `D100.13` <-> `D93.13` | scan + WD1793/8287 datasheets |
-| `DB7` / `FDC_DAL7` | WIRED | `D100.8` <-> system DB; `D100.12` <-> `D93.14` | scan + WD1793/8287 datasheets |
+| `DB0` | WIRED | system DB directly to `D93.7` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB1` | WIRED | system DB directly to `D93.8` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB2` | WIRED | system DB directly to `D93.9` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB3` | WIRED | system DB directly to `D93.10` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB4` | WIRED | system DB directly to `D93.11` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB5` | WIRED | system DB directly to `D93.12` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB6` | WIRED | system DB directly to `D93.13` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB7` | WIRED | system DB directly to `D93.14` | factory `.009` sheet 1 + WD1793 datasheet |
 | `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D2/D3 to D93 RE/WE; D94 enable pin15 to D93 CS; D94 D1 grounded via D99.8 | direct owner continuity for all three controls and grounded D1 |
 | `D94_D4` / D93.1 back-bias landing | WIRED | D94 output D4 to the wired D93 socket contact whose controller pin is internally NC/back-bias | exposed-socket component photograph with independent affine D94/D93 fits |
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
@@ -202,8 +201,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
-| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating and command-side polarity | singleton D100_OE_BOUNDARY; first compare against GND (same-board D23-D25 precedent) and FDC_CS_N (qualified-enable family) |
-| D100.11 `T` | BOUNDARY | 8287 direction gating and read-side polarity | singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3, required by both safe families; raw IORD is excluded by D94's suppressed-/RE branch |
+| D100.9/.11 continuation `1` | CONNECTED | shared drive-output-buffer control source | factory sheet proves pins 9/11 joined; upstream continuation remains untraced |
 
 ## Netted FDC Endpoints
 
@@ -211,41 +209,42 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | --- | --- | --- |
 | `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 remains the physical КР1818ВГ93 | `D9.7` |
 | `FDC_CS_N` | direct owner continuity 2026-07-15 proves D94 enable pin15 reaches D93 chip-select pin3, and explicitly proves D94 output pin2 is isolated from this conductor. The upstream source is retained separately for later continuity | `D94.15, D93.3` |
-| `FDC_DAL0` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.19, D93.7` |
-| `FDC_DAL1` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.18, D93.8` |
-| `FDC_DAL2` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.17, D93.9` |
-| `FDC_DAL3` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.16, D93.10` |
-| `FDC_DAL4` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.15, D93.11` |
-| `FDC_DAL5` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.14, D93.12` |
-| `FDC_DAL6` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.13, D93.13` |
-| `FDC_DAL7` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.12, D93.14` |
-| `FDC_DDEN` | cross-source: older sheet routes D26 PC4/pin13 directly into D28 input pin9, while .009/MAME associates PC4 with FDC density; July-2026 two-sided local D93 fit identifies pin37 and its local copper. Direct .009 owner continuity on 2026-07-14 proves D6.15 is not connected to any D26 pin, so the former D6 branch is removed | `D26.13, D93.37, D28.9` |
+| `FDC_DDEN` | recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM and sheet 3 joins that conductor directly to D93 DDEN/pin37; the same sheet proves D28.9 belongs to the separator and is not a DDEN branch | `D26.13, D93.37` |
+| `FDC_DIR_TO_D100` | recovered .009 Э3 sheet 3: D93 DIR/pin16 directly drives D100 A2/pin1 | `D93.16, D100.1` |
+| `FDC_DRIVE_SIZE_5_8_BOUNDARY` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; the target-revision destination is not shown on sheet 3 | `D26.17` |
 | `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
+| `FDC_DSEL_IN` | recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1 | `D26.12, D28.1` |
+| `FDC_HLD_TO_D100` | recovered .009 Э3 sheet 3: D93 HLD/pin28 directly drives D100 A6/pin3 | `D93.28, D100.3` |
+| `FDC_INDEX_STATUS` | recovered .009 Э3 sheet 3: D98 output pin5 directly drives D93 INDEX/pin35 | `D98.5, D93.35` |
 | `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
-| `FDC_RCLK` | July-2026 cross-package solder-photo closure: the corrected D106 К555ИЕ7 fit projects Q3/pin7 at (1154.329,2131.000) px and the independent D93 socket fit projects RCLK/pin26 at (1554.989,2138.344) px in PXL_20260710_200506061.jpg; one uninterrupted slightly sloped solder-side copper trace passes through both fitted contacts with no via, branch, or gap. The literal VG93 IE7-only reference independently matches Q3->RCLK, but the visible target-board copper is the promotion evidence | `D106.7, D93.26` |
+| `FDC_MOTOR_EN` | recovered .009 Э3 sheet 1 continuation 1 and sheet 3: D26 PC2/pin16 drives D100 A7/pin7 MOTOR EN | `D26.16, D100.7` |
+| `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 | `D97.4, D93.27` |
+| `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
+| `FDC_READY` | recovered .009 Э3 sheet 3: D28 READY inverter output pin6 directly drives D93 READY/pin32; the drawn R84 pull-up remains an unmodeled passive endpoint | `D28.6, D93.32` |
 | `FDC_RE_N` | direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation | `D94.3, D93.4` |
+| `FDC_SIDE_SEL` | recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL | `D26.11, D100.8` |
+| `FDC_STEP_TO_D100` | recovered .009 Э3 sheet 3: D93 STEP/pin15 directly drives D100 A3/pin2 | `D93.15, D100.2` |
+| `FDC_TG43_TO_D100` | recovered .009 Э3 sheet 3: D93 TG43/pin29 directly drives D100 A1/pin4 | `D93.29, D100.4` |
+| `FDC_TR00_STATUS` | recovered .009 Э3 sheet 3: D98 output pin11 directly drives D93 TR00/pin34 | `D98.11, D93.34` |
 | `FDC_WE_N` | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5 | `D94.4, D93.2` |
+| `FDC_WG_TO_D100` | recovered .009 Э3 sheet 3: D93 WG/pin30 directly drives D100 A5/pin5 | `D93.30, D100.5` |
+| `FDC_WPRT_STATUS` | recovered .009 Э3 sheet 3: D98 output pin13 directly drives D93 WPRT/pin36 | `D98.13, D93.36` |
 | `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+4)` |
 | `IOWR` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1; direct owner continuity assigns D93.2 only to D94.4 on the target revision | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+1)` |
 
 ## Disposition
 
-- The system data bus, D100 B-side, D93 DAL bus, register select, and
+- The direct system-data-bus to D93 DAL route, register select, and
   private D94-to-D93 RE/CS/WE controls are present in board JSON and
   guarded by this report. All D94 A0-A4 inputs and the private D93
   controls are owner-mapped; remaining decode boundaries are the upstream
   pin-15 enable source, pull-up identities, D3-D7 destinations, and the
   recorded D29.4/IORD recheck. The `.092` table is physically captured.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
-  confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
-  D100.11. Test D100.9 first against GND and FDC_CS_N; test D100.11
-  against D93 RE_N/D94.3. These distinguish the two exhaustive safe
-  functional families before any broad continuity chase. First dump D15/D16
-  and identify its guarded CMA/NOP profile.
-  With a CMA profile, capture CPU DB, D93 DAL, D100 /OE/T, D93 /WE, and
-  STEP/WG: CPU 0xFD must cross the enabled КР580ВА87 as logical Restore
-  0x02. Repeat a status read (logical 0x00 -> CPU 0xFF before firmware
-  CMA) to close both directions; see
+  confirm INTRQ/DRQ ordering, then identify D93.19 and D93.24. First dump
+  D15/D16 and identify its guarded CMA/NOP profile; the recovered direct
+  D93 bus means physical D100 is not the profile selector. Separately trace
+  shared D100.9/.11 continuation `1` and D100.6's write-data input; see
   `docs/fdc-bus-polarity.md`.
   Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.

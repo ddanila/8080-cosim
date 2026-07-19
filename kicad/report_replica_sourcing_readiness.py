@@ -159,7 +159,7 @@ def build_report(rows):
         "PIT8253": "Socket; verify programmed divisors and video-sync outputs.",
         "PIC8259": "Socket; verify frame interrupt vectoring before FDC IRQs.",
         "BUF8286": "Continuity/orientation check; verify no bus fight during first ROM fetch.",
-        "BUF8287": "Continuity/orientation check; verify direction/OE before attaching FDC data path.",
+        "BUF8287": "Continuity/orientation check; verify the recovered drive-output channels and shared control before attaching X4.",
         "VABUS": "Continuity/orientation check on expansion bus transceivers.",
         "IR82": "Verify latch polarity around DRAM write-data path.",
         "VG93_FDC": "Prefer a socket; verify the exact WD1793/VG93 candidate's pinout, clock, rails, and timing before approval.",

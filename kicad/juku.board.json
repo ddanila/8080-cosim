@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. D94 fanout/enable, routed-snapshot parity, D30 pins8/11 plus the exact H pull-up/contact, and 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages. The 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -4368,9 +4368,9 @@
     "40": "VDD_12V"
    },
    "prov": {
-    "type": "mame+datasheet",
-    "refdes": ".009 official (FDC)",
-    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact; direct owner continuity proves D94.4/.15/.3 reach D93 /WE, /CS, /RE respectively; an exposed-socket component photo proves D94.5 reaches the internally NC/back-bias D93.1 socket contact; D93.40 reaches the +12 V rail; the remaining drive/clock/control contacts stay explicit measurement boundaries"
+   "type": "mame+datasheet",
+   "refdes": ".009 official (FDC)",
+    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact; direct owner continuity proves D94.4/.15/.3 reach D93 /WE, /CS, /RE respectively; an exposed-socket component photo proves D94.5 reaches the internally NC/back-bias D93.1 socket contact; recovered .009 Э3 sheet 3 proves DAL0-DAL7/pins7-14 join D0-D7 directly, drive outputs feed D100, D98 supplies TR00/INDEX/WPRT and READY through D28, D96.5 supplies RCLK, and D97.4 supplies RAW READ; D93.40 reaches the +12 V rail"
    }
   },
   {
@@ -4425,8 +4425,8 @@
    },
    "prov": {
     "type": "datasheet",
-    "refdes": ".009 official (5th ВА87 = FDC bus buffer)",
-    "pins": "complete 8287 contract including VSS pin10 and +5V VCC pin20; OE_N pin9 and T pin11 are two-sided photo-identified measurement boundaries, with remote gating still pending continuity"
+   "refdes": ".009 official (5th ВА87 = drive-output buffer)",
+   "pins": "complete 8287 contract including VSS pin10 and +5V VCC pin20; recovered .009 Э3 sheet 3 proves A-side inputs TG43/DIR/STEP/precompensated-WR.DATA/WG/HLD/MOTOR EN/S.SEL on pins4/1/2/6/5/3/7/8 and B-side X4 outputs on pins16/19/18/14/15/17/13/12. OE_N pin9 and T pin11 share one numbered continuation whose upstream source remains explicit"
    }
   },
   {
@@ -5267,7 +5267,7 @@
   {
    "ref": "D28", "type": "LN3_OC_INV",
    "pins": {"1": "A1", "2": "Y1", "3": "A2", "4": "Y2", "5": "A3", "6": "Y3", "8": "Y4", "9": "A4", "10": "Y5", "11": "A5", "12": "Y6", "13": "A6"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts; exhaustive legacy sheet-1 package census directly traces D26 PC2-PC6 into D28 inputs 11/13/9/3/1 for -REC/-PLAY/-FF/-RN/-STOP, omits the sixth section pins5/6 as explicit NCs, and leaves the five active output destinations as target-board continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts. Recovered .009 Э3 sheet 3 supersedes the legacy tape assignment: D26 PC5/pin12 drives pin1; pin2 drives X4.21 and cascades into pin3; pin4 drives X4.22; D98.3 drives pin5 and pin6 reaches D93 READY; D106.7 drives pin9 and pin8 clocks D96.3. Pins10-13 return to explicit boundaries pending their target-sheet transcription"}
   },
   {
    "ref": "D95", "type": "KP12_MUX",
@@ -5277,7 +5277,7 @@
   {
    "ref": "D98", "type": "LP11_BUF",
    "pins": {"1": "OE14_N", "2": "A1", "3": "Y1", "4": "A2", "5": "Y2", "6": "A3", "7": "Y3", "9": "Y4", "10": "A4", "11": "Y5", "12": "A5", "13": "Y6", "14": "A6", "15": "OE56_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed; D98.3 is proved to R94 and D98.7 to S1.2, while registered package evidence preserves the other 12 contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed. Recovered .009 Э3 sheet 3 grounds enables pins1/15; receives X4 RD.DATA/TR00/INDEX/WR.PROTECT/READY on pins6/12/4/14/2; sends pins11/5/13 to D93 TR00/INDEX/WPRT, pin3 through D28.5/.6 to READY, and pin7 into D97.2/read separator. Photo-proved R94 and S1 branches remain on pins3 and7"}
   },
   {
    "ref": "D101", "type": "KP12_MUX",
@@ -6682,8 +6682,8 @@
      "19"
     ],
     [
-     "D100",
-     "1"
+     "D93",
+     "7"
     ]
    ]
   },
@@ -6779,8 +6779,8 @@
      "18"
     ],
     [
-     "D100",
-     "2"
+     "D93",
+     "8"
     ]
    ]
   },
@@ -6876,8 +6876,8 @@
      "17"
     ],
     [
-     "D100",
-     "3"
+     "D93",
+     "9"
     ]
    ]
   },
@@ -6973,8 +6973,8 @@
      "16"
     ],
     [
-     "D100",
-     "4"
+     "D93",
+     "10"
     ]
    ]
   },
@@ -7070,8 +7070,8 @@
      "15"
     ],
     [
-     "D100",
-     "5"
+     "D93",
+     "11"
     ]
    ]
   },
@@ -7167,8 +7167,8 @@
      "14"
     ],
     [
-     "D100",
-     "6"
+     "D93",
+     "12"
     ]
    ]
   },
@@ -7264,8 +7264,8 @@
      "13"
     ],
     [
-     "D100",
-     "7"
+     "D93",
+     "13"
     ]
    ]
   },
@@ -7361,8 +7361,8 @@
      "12"
     ],
     [
-     "D100",
-     "8"
+     "D93",
+     "14"
     ]
    ]
   },
@@ -7613,18 +7613,9 @@
     ]
    ]
   },
-  "MEM_MODE0": {
-   "src": "older sheet routes D26 PC2/pin16 directly into D28 input pin11; direct .009 owner continuity on 2026-07-14 proves D6.2 is not connected to any D26 pin and instead receives D3.6",
-   "nodes": [
-    [
-     "D26",
-     "16"
-    ],
-    [
-     "D28",
-     "11"
-    ]
-   ]
+  "D28_A5_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 input pin11; its target-revision source remains to be transcribed",
+   "nodes": [["D28", "11"]]
   },
   "INTR": {
    "src": "scan",
@@ -10629,6 +10620,14 @@
      "1"
     ],
     [
+     "AX406",
+     "1"
+    ],
+    [
+     "X4",
+     "6"
+    ],
+    [
      "D23",
      "9"
     ],
@@ -10687,6 +10686,14 @@
     [
      "D98",
      "8"
+    ],
+    [
+     "D98",
+     "1"
+    ],
+    [
+     "D98",
+     "15"
     ],
     [
      "D101",
@@ -11599,6 +11606,22 @@
      "1"
     ],
     [
+     "AX412",
+     "1"
+    ],
+    [
+     "X4",
+     "12"
+    ],
+    [
+     "AX413",
+     "1"
+    ],
+    [
+     "X4",
+     "13"
+    ],
+    [
      "D54",
      "11"
     ],
@@ -11814,7 +11837,7 @@
    "_note": "А:17 is a dedicated tinned wire pad at approximately (115.8,27.1) mm; S1 is off-board"
   },
   "D98_Y3_S1_2": {
-   "src": "ДГШ5.109.009 СБ sheets 2-5 wire table row 12 (А:18 -> S1:2); owner component photo PXL_20260710_200402344.jpg with validated D98 package fit places the white bracket-switch lead directly on D98.7",
+   "src": "recovered .009 Э3 sheet 3 drives D97.2 from D98 RD.DATA output pin7; ДГШ5.109.009 СБ sheets 2-5 wire table row 12 (А:18 -> S1:2) and registered owner imagery independently prove the S1.2 branch on the same D98.7 node",
    "nodes": [
     [
      "D98",
@@ -11823,12 +11846,16 @@
     [
      "S1",
      "2"
+    ],
+    [
+     "D97",
+     "2"
     ]
    ],
    "_note": "off-board wire 18; S1 is bracket-mounted and must not become an on-board two-pin footprint"
   },
   "D98_Y1_R94": {
-   "src": "registered D98 component fit plus continuous visible copper from D98.3 to the upper terminal of photographed 220-ohm R94; R94 identity from ДГШ5.109.009 СБ placement",
+   "src": "recovered .009 Э3 sheet 3 drives D28 READY inverter input pin5 from D98 READY output pin3; registered component imagery independently proves the photographed 220-ohm R94.1 branch on the same D98.3 node",
    "nodes": [
     [
      "D98",
@@ -11837,6 +11864,10 @@
     [
      "R94",
      "1"
+    ],
+    [
+     "D28",
+     "5"
     ]
    ],
    "_note": "R94.2 far terminal remains a physical-connectivity blocker"
@@ -13679,117 +13710,41 @@
    "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary",
    "nodes": [["D94", "9"]]
   },
-  "FDC_DAL0": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "19"
-    ],
-    [
-     "D93",
-     "7"
-    ]
-   ]
+  "D100_CONTROL_1_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D100 OE_N/pin9 and T/pin11 to the same continuation marked \"1\"; its upstream source remains untranscribed",
+   "nodes": [["D100", "9"], ["D100", "11"]]
   },
-  "FDC_DAL1": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "18"
-    ],
-    [
-     "D93",
-     "8"
-    ]
-   ]
+  "FDC_TG43_TO_D100": {
+   "src": "recovered .009 Э3 sheet 3: D93 TG43/pin29 directly drives D100 A1/pin4",
+   "nodes": [["D93", "29"], ["D100", "4"]]
   },
-  "FDC_DAL2": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "17"
-    ],
-    [
-     "D93",
-     "9"
-    ]
-   ]
+  "FDC_DIR_TO_D100": {
+   "src": "recovered .009 Э3 sheet 3: D93 DIR/pin16 directly drives D100 A2/pin1",
+   "nodes": [["D93", "16"], ["D100", "1"]]
   },
-  "FDC_DAL3": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "16"
-    ],
-    [
-     "D93",
-     "10"
-    ]
-   ]
+  "FDC_STEP_TO_D100": {
+   "src": "recovered .009 Э3 sheet 3: D93 STEP/pin15 directly drives D100 A3/pin2",
+   "nodes": [["D93", "15"], ["D100", "2"]]
   },
-  "FDC_DAL4": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "15"
-    ],
-    [
-     "D93",
-     "11"
-    ]
-   ]
+  "D100_WRDATA_IN_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 identifies D100 A4/pin6 as the precompensated write-data channel; the upstream selector path remains to be transcribed",
+   "nodes": [["D100", "6"]]
   },
-  "FDC_DAL5": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "14"
-    ],
-    [
-     "D93",
-     "12"
-    ]
-   ]
+  "FDC_WG_TO_D100": {
+   "src": "recovered .009 Э3 sheet 3: D93 WG/pin30 directly drives D100 A5/pin5",
+   "nodes": [["D93", "30"], ["D100", "5"]]
   },
-  "FDC_DAL6": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "13"
-    ],
-    [
-     "D93",
-     "13"
-    ]
-   ]
+  "FDC_HLD_TO_D100": {
+   "src": "recovered .009 Э3 sheet 3: D93 HLD/pin28 directly drives D100 A6/pin3",
+   "nodes": [["D93", "28"], ["D100", "3"]]
   },
-  "FDC_DAL7": {
-   "src": "datasheet (8287 B-side -> ВГ93 DAL)",
-   "nodes": [
-    [
-     "D100",
-     "12"
-    ],
-    [
-     "D93",
-     "14"
-    ]
-   ]
+  "FDC_MOTOR_EN": {
+   "src": "recovered .009 Э3 sheet 1 continuation 1 and sheet 3: D26 PC2/pin16 drives D100 A7/pin7 MOTOR EN",
+   "nodes": [["D26", "16"], ["D100", "7"]]
   },
-  "D100_OE_BOUNDARY": {
-   "src": "July-2026 two-sided local-package registration identifies D100 OE_N pin9; component copper ends at an isolated circular landing and the projected backside point is bare substrate, so the remote control net remains a measurement boundary",
-   "nodes": [["D100", "9"]]
-  },
-  "D100_T_BOUNDARY": {
-   "src": "July-2026 two-sided local-package registration identifies D100 direction pin11; its component-side continuation is obscured by the factory wire/tape bundle, so the remote control net remains a measurement boundary",
-   "nodes": [["D100", "11"]]
+  "FDC_SIDE_SEL": {
+   "src": "recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL",
+   "nodes": [["D26", "11"], ["D100", "8"]]
   },
   "D101_OE0_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary",
@@ -13907,17 +13862,9 @@
    "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D97", "1"]]
   },
-  "D97_B1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin2 B; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "2"]]
-  },
   "D97_CLR1_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin3 CLR_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D97", "3"]]
-  },
-  "D97_Q1N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "4"]]
   },
   "D97_Q2_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary",
@@ -14039,9 +13986,17 @@
    "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D106", "6"]]
   },
+  "SEP_D106_Q3": {
+   "src": "recovered .009 Э3 sheet 3 supersedes the cross-photo straight-trace interpretation: D106 Q3/pin7 drives D28 inverter input pin9",
+   "nodes": [["D106", "7"], ["D28", "9"]]
+  },
+  "SEP_D28_CLK": {
+   "src": "recovered .009 Э3 sheet 3: D28 inverter output pin8 clocks D96 pin3; the drawn R85 pull-up remains an unmodeled passive endpoint",
+   "nodes": [["D28", "8"], ["D96", "3"]]
+  },
   "FDC_RCLK": {
-   "src": "July-2026 cross-package solder-photo closure: the corrected D106 К555ИЕ7 fit projects Q3/pin7 at (1154.329,2131.000) px and the independent D93 socket fit projects RCLK/pin26 at (1554.989,2138.344) px in PXL_20260710_200506061.jpg; one uninterrupted slightly sloped solder-side copper trace passes through both fitted contacts with no via, branch, or gap. The literal VG93 IE7-only reference independently matches Q3->RCLK, but the visible target-board copper is the promotion evidence",
-   "nodes": [["D106", "7"], ["D93", "26"]]
+   "src": "recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26",
+   "nodes": [["D96", "5"], ["D93", "26"]]
   },
   "D106_D3_BOUNDARY": {
    "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin9 D3 while the solder end projects beneath crossing rail metal; that apparent overlap is not continuity to GND, so the expected low strap remains an unproved measurement boundary",
@@ -14071,37 +14026,46 @@
    "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin15 D0; calibrated raw-crop review finds only local copper into a nearby handoff, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
    "nodes": [["D106", "15"]]
   },
-  "D26_PC6_STOP_IN": {
-   "src": "cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2 is labeled -STOP/X4.5; the pinned MAME .009-era Port-C contract independently retains PC6 as floppy side select. The D28.2 target-board output destination remains a separate continuity boundary",
-   "source_risk": false,
-   "risk_disposition": "the D26.11-to-D28.1 input conductor is closed on the older sheet; uncertainty on paired output D28.2 is tracked separately as X4_STOP_N",
-   "nodes": [["D26", "11"], ["D28", "1"]]
+  "FDC_DSEL_IN": {
+   "src": "recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1",
+   "nodes": [["D26", "12"], ["D28", "1"]]
   },
-  "X4_STOP_N": {
-   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin2 -STOP and sends it to X4.5; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:5 to bracket connector X4.5, and MAME independently retains D26 PC6 as floppy side select. Target-board D28.2-to-AX405 copper remains owner-verify",
-   "nodes": [["D28", "2"], ["AX405", "1"], ["X4", "5"]]
+  "X4_DSEL1_N": {
+   "src": "recovered .009 Э3 sheet 3: D28 open-collector output pin2 drives X4.21 -D.SEL1 and directly cascades into D28 input pin3; .009 sheets4-5 map AX421 to X4.21",
+   "nodes": [["D28", "2"], ["D28", "3"], ["AX421", "1"], ["X4", "21"]]
   },
-  "D26_PC5_RN_IN": {
-   "src": "cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4 is labeled -RN/X4.4; the pinned MAME .009-era Port-C contract independently retains PC5 as floppy drive select. The D28.4 target-board output destination remains a separate continuity boundary",
-   "source_risk": false,
-   "risk_disposition": "the D26.12-to-D28.3 input conductor is closed on the older sheet; uncertainty on paired output D28.4 is tracked separately as X4_RN_N",
-   "nodes": [["D26", "12"], ["D28", "3"]]
+  "X4_DSEL0_N": {
+   "src": "recovered .009 Э3 sheet 3: cascaded D28 open-collector output pin4 drives X4.22 -D.SEL0; .009 sheets4-5 map AX422 to X4.22",
+   "nodes": [["D28", "4"], ["AX422", "1"], ["X4", "22"]]
   },
-  "X4_RN_N": {
-   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin4 -RN and sends it to X4.4; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:4 to bracket connector X4.4, and MAME independently retains D26 PC5 as floppy drive select. Target-board D28.4-to-AX404 copper remains owner-verify",
-   "nodes": [["D28", "4"], ["AX404", "1"], ["X4", "4"]]
+  "X4_01_NC_HARNESS": {
+   "src": "recovered .009 Э3 sheet 3 explicitly leaves circuit contact X4.1 unconnected; .009 sheets4-5 retain the AX401-to-X4.1 cable landing",
+   "nodes": [["AX401", "1"], ["X4", "1"]],
+   "intentional_harness_only": true
   },
-  "X4_FF_N": {
-   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin8 -FF and sends it to X4.1; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:1 to bracket connector X4.1, and MAME independently retains D26 PC4 as floppy density control. Target-board D28.8-to-AX401 copper remains owner-verify",
-   "nodes": [["D28", "8"], ["AX401", "1"], ["X4", "1"]]
+  "X4_02_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 omits circuit contact X4.2; .009 sheets4-5 retain the AX402-to-X4.2 cable landing",
+   "nodes": [["AX402", "1"], ["X4", "2"]]
   },
-  "X4_REC_N": {
-   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin10 -REC and sends it to X4.2; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:2 to bracket connector X4.2, and MAME independently retains D26 PC2 as floppy motor control. Target-board D28.10-to-AX402 copper remains owner-verify",
-   "nodes": [["D28", "10"], ["AX402", "1"], ["X4", "2"]]
+  "X4_03_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 omits circuit contact X4.3; .009 sheets4-5 retain the AX403-to-X4.3 cable landing",
+   "nodes": [["AX403", "1"], ["X4", "3"]]
   },
-  "X4_PLAY_N": {
-   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin12 -PLAY and sends it to X4.3; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:3 to bracket connector X4.3, and MAME independently retains D26 PC3 as floppy-size control. Target-board D28.12-to-AX403 copper remains owner-verify",
-   "nodes": [["D28", "12"], ["AX403", "1"], ["X4", "3"]]
+  "X4_04_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 omits circuit contact X4.4; .009 sheets4-5 retain the AX404-to-X4.4 cable landing",
+   "nodes": [["AX404", "1"], ["X4", "4"]]
+  },
+  "X4_05_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 omits circuit contact X4.5; .009 sheets4-5 retain the AX405-to-X4.5 cable landing",
+   "nodes": [["AX405", "1"], ["X4", "5"]]
+  },
+  "D28_Y5_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 output pin10; its target-revision destination remains to be transcribed",
+   "nodes": [["D28", "10"]]
+  },
+  "D28_Y6_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 output pin12; its target-revision destination remains to be transcribed",
+   "nodes": [["D28", "12"]]
   },
   "D96_CLR1_BOUNDARY": {
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin1 CLR1_N; no remote destination is proved, so this remains a measurement boundary",
@@ -14111,17 +14075,9 @@
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin2 D1; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D96", "2"]]
   },
-  "D96_CLK1_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin3 CLK1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "3"]]
-  },
   "D96_PRE1_BOUNDARY": {
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin4 PRE1_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D96", "4"]]
-  },
-  "D96_Q1_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin5 Q1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "5"]]
   },
   "D96_Q1N_BOUNDARY": {
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin6 Q1_N; no remote destination is proved, so this remains a measurement boundary",
@@ -14147,25 +14103,9 @@
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin13 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D96", "13"]]
   },
-  "D98_OE14_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin1 OE14_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "1"]]
-  },
-  "D98_A1_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin2 A1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "2"]]
-  },
-  "D98_A2_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin4 A2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "4"]]
-  },
-  "D98_Y2_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin5 Y2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "5"]]
-  },
-  "D98_A3_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin6 A3; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "6"]]
+  "FDC_INDEX_STATUS": {
+   "src": "recovered .009 Э3 sheet 3: D98 output pin5 directly drives D93 INDEX/pin35",
+   "nodes": [["D98", "5"], ["D93", "35"]]
   },
   "D98_Y4_BOUNDARY": {
    "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin9 Y4; no remote destination is proved, so this remains a measurement boundary",
@@ -14175,25 +14115,13 @@
    "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin10 A4; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D98", "10"]]
   },
-  "D98_Y5_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin11 Y5; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "11"]]
+  "FDC_TR00_STATUS": {
+   "src": "recovered .009 Э3 sheet 3: D98 output pin11 directly drives D93 TR00/pin34",
+   "nodes": [["D98", "11"], ["D93", "34"]]
   },
-  "D98_A5_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin12 A5; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "12"]]
-  },
-  "D98_Y6_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin13 Y6; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "13"]]
-  },
-  "D98_A6_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin14 A6; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "14"]]
-  },
-  "D98_OE56_BOUNDARY": {
-   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin15 OE56_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D98", "15"]]
+  "FDC_WPRT_STATUS": {
+   "src": "recovered .009 Э3 sheet 3: D98 output pin13 directly drives D93 WPRT/pin36",
+   "nodes": [["D98", "13"], ["D93", "36"]]
   },
   "D99_A1N_BOUNDARY": {
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary",
@@ -14243,14 +14171,6 @@
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "15"]]
   },
-  "D93_STEP_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin15 STEP; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "15"]]
-  },
-  "D93_DIRC_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "16"]]
-  },
   "D93_EARLY_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "17"]]
@@ -14279,45 +14199,21 @@
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "25"]]
   },
-  "D93_RAW_READ_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "27"]]
-  },
-  "D93_HLD_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin28 HLD; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "28"]]
-  },
-  "D93_TG43_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin29 TG43; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "29"]]
-  },
-  "D93_WG_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin30 WG; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "30"]]
+  "FDC_RAW_READ": {
+   "src": "recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27",
+   "nodes": [["D97", "4"], ["D93", "27"]]
   },
   "D93_WDATA_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin31 WDATA; remote drive-interface continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "31"]]
   },
-  "D93_READY_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin32 READY; remote drive-status continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "32"]]
+  "FDC_READY": {
+   "src": "recovered .009 Э3 sheet 3: D28 READY inverter output pin6 directly drives D93 READY/pin32; the drawn R84 pull-up remains an unmodeled passive endpoint",
+   "nodes": [["D28", "6"], ["D93", "32"]]
   },
   "D93_WF_VFOE_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "33"]]
-  },
-  "D93_TR00_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin34 TR00; remote drive-status continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "34"]]
-  },
-  "D93_INDEX_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin35 INDEX; remote drive-status continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "35"]]
-  },
-  "D93_WPRT_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "36"]]
   },
   "D13_I3_BOUNDARY": {
    "src": "sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary",
@@ -14404,7 +14300,7 @@
    ]
   },
   "FDC_DDEN": {
-   "src": "cross-source: older sheet routes D26 PC4/pin13 directly into D28 input pin9, while .009/MAME associates PC4 with FDC density; July-2026 two-sided local D93 fit identifies pin37 and its local copper. Direct .009 owner continuity on 2026-07-14 proves D6.15 is not connected to any D26 pin, so the former D6 branch is removed",
+   "src": "recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM and sheet 3 joins that conductor directly to D93 DDEN/pin37; the same sheet proves D28.9 belongs to the separator and is not a DDEN branch",
    "nodes": [
     [
      "D26",
@@ -14413,10 +14309,6 @@
     [
      "D93",
      "37"
-    ],
-    [
-     "D28",
-     "9"
     ]
    ]
   },
@@ -15580,18 +15472,13 @@
    "src": "sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit",
    "nodes": [["C99", "2"]]
   },
-  "MEM_MODE1": {
-   "src": "older sheet routes D26 PC3/pin17 directly into D28 input pin13; direct .009 owner continuity on 2026-07-14 proves D6.1 is not connected to D26 and instead receives D3.4",
-   "nodes": [
-    [
-     "D26",
-     "17"
-    ],
-    [
-     "D28",
-     "13"
-    ]
-   ]
+  "FDC_DRIVE_SIZE_5_8_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; the target-revision destination is not shown on sheet 3",
+   "nodes": [["D26", "17"]]
+  },
+  "D28_A6_BOUNDARY": {
+   "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 input pin13; its target-revision source remains to be transcribed",
+   "nodes": [["D28", "13"]]
   },
   "SOUND": {
    "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.OUT1 (pin 13) -> bundle tag 10 -> R90 2k (beeper drive)",
@@ -15868,24 +15755,19 @@
     ]
    ]
   },
-  "X4_06_BOUNDARY": {"src":".009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced","nodes":[["AX406","1"],["X4","6"]]},
-  "X4_07_BOUNDARY": {"src":".009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced","nodes":[["AX407","1"],["X4","7"]]},
-  "X4_08_BOUNDARY": {"src":".009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced","nodes":[["AX408","1"],["X4","8"]]},
-  "X4_09_BOUNDARY": {"src":".009 sheets4-5 wire35: physical board landing А X4:9 maps directly to bracket X4.9; circuit-side destination remains untraced","nodes":[["AX409","1"],["X4","9"]]},
-  "X4_10_BOUNDARY": {"src":".009 sheets4-5 wire36: physical board landing А X4:10 maps directly to bracket X4.10; circuit-side destination remains untraced","nodes":[["AX410","1"],["X4","10"]]},
-  "X4_11_BOUNDARY": {"src":".009 sheets4-5 wire37: physical board landing А X4:11 maps directly to bracket X4.11; circuit-side destination remains untraced","nodes":[["AX411","1"],["X4","11"]]},
-  "X4_12_BOUNDARY": {"src":".009 sheets4-5 wire38: physical board landing А X4:12 maps directly to bracket X4.12; circuit-side destination remains untraced","nodes":[["AX412","1"],["X4","12"]]},
-  "X4_13_BOUNDARY": {"src":".009 sheets4-5 wire39: physical board landing А X4:13 maps directly to bracket X4.13; circuit-side destination remains untraced","nodes":[["AX413","1"],["X4","13"]]},
-  "X4_14_BOUNDARY": {"src":".009 sheets4-5 wire40: physical board landing А X4:14 maps directly to bracket X4.14; circuit-side destination remains untraced","nodes":[["AX414","1"],["X4","14"]]},
-  "X4_15_BOUNDARY": {"src":".009 sheets4-5 wire41: physical board landing А X4:15 maps directly to bracket X4.15; circuit-side destination remains untraced","nodes":[["AX415","1"],["X4","15"]]},
-  "X4_16_BOUNDARY": {"src":".009 sheets4-5 wire42: physical board landing А X4:16 maps directly to bracket X4.16; circuit-side destination remains untraced","nodes":[["AX416","1"],["X4","16"]]},
-  "X4_17_BOUNDARY": {"src":".009 sheets4-5 wire43: physical board landing А X4:17 maps directly to bracket X4.17; circuit-side destination remains untraced","nodes":[["AX417","1"],["X4","17"]]},
-  "X4_18_BOUNDARY": {"src":".009 sheets4-5 wire44: physical board landing А X4:18 maps directly to bracket X4.18; circuit-side destination remains untraced","nodes":[["AX418","1"],["X4","18"]]},
-  "X4_19_BOUNDARY": {"src":".009 sheets4-5 wire45: physical board landing А X4:19 maps directly to bracket X4.19; circuit-side destination remains untraced","nodes":[["AX419","1"],["X4","19"]]},
-  "X4_20_BOUNDARY": {"src":".009 sheets4-5 wire46: physical board landing А X4:20 maps directly to bracket X4.20; circuit-side destination remains untraced","nodes":[["AX420","1"],["X4","20"]]},
-  "X4_21_BOUNDARY": {"src":".009 sheets4-5 wire47: physical board landing А X4:21 maps directly to bracket X4.21; circuit-side destination remains untraced","nodes":[["AX421","1"],["X4","21"]]},
-  "X4_22_BOUNDARY": {"src":".009 sheets4-5 wire48: physical board landing А X4:22 maps directly to bracket X4.22; circuit-side destination remains untraced","nodes":[["AX422","1"],["X4","22"]]},
-  "X4_23_BOUNDARY": {"src":".009 sheets4-5 wire49: physical board landing А X4:23 maps directly to bracket X4.23; circuit-side destination remains untraced","nodes":[["AX423","1"],["X4","23"]]},
+  "X4_WR_PROTECT_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire33: AX407/X4.7 -WR.PROTECT drives D98 input pin14","nodes":[["AX407","1"],["X4","7"],["D98","14"]]},
+  "X4_READY_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire34: AX408/X4.8 -READY drives D98 input pin2","nodes":[["AX408","1"],["X4","8"],["D98","2"]]},
+  "X4_STEP_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire35: D100 output pin18 drives AX409/X4.9 -STEP","nodes":[["D100","18"],["AX409","1"],["X4","9"]]},
+  "X4_TG43": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire36: D100 output pin16 drives AX410/X4.10 TG43","nodes":[["D100","16"],["AX410","1"],["X4","10"]]},
+  "X4_WR_DATA_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire37: D100 output pin14 drives AX411/X4.11 -WR.DATA","nodes":[["D100","14"],["AX411","1"],["X4","11"]]},
+  "X4_TR00_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire40: AX414/X4.14 -TR.00 drives D98 input pin12","nodes":[["AX414","1"],["X4","14"],["D98","12"]]},
+  "X4_INDEX_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire41: AX415/X4.15 -INDEX drives D98 input pin4","nodes":[["AX415","1"],["X4","15"],["D98","4"]]},
+  "X4_DIR_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire42: D100 output pin19 drives AX416/X4.16 -DIR","nodes":[["D100","19"],["AX416","1"],["X4","16"]]},
+  "X4_HLOAD_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire43: D100 output pin17 drives AX417/X4.17 -H.LOAD","nodes":[["D100","17"],["AX417","1"],["X4","17"]]},
+  "X4_WR_GATE_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire44: D100 output pin15 drives AX418/X4.18 -WR.GATE","nodes":[["D100","15"],["AX418","1"],["X4","18"]]},
+  "X4_MOTOR_ON_N": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire45: D100 output pin13 drives AX419/X4.19 -MOTOR.ON","nodes":[["D100","13"],["AX419","1"],["X4","19"]]},
+  "X4_SIDE_SEL": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire46: D100 output pin12 drives AX420/X4.20 S.SEL","nodes":[["D100","12"],["AX420","1"],["X4","20"]]},
+  "X4_RD_DATA": {"src":"recovered .009 Э3 sheet 3 plus sheets4-5 wire49: AX423/X4.23 RD.DATA drives D98 input pin6","nodes":[["AX423","1"],["X4","23"],["D98","6"]]},
   "CPU_WAIT_STATUS": {
    "src": "traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread",
    "nodes": [["D1", "24"]]

@@ -186,9 +186,9 @@ module juku_top_periph_bus_tb();
     if (dut.fdc_prom_re_n !== 1'b1) fail("D94 /RE did not release for low-A4 register-3 cycle");
     if (dut.fdc_prom_we_n !== 1'b1) fail("D94 /WE did not release for low-A4 register-3 cycle");
 `ifdef FDC_VA87_CS_QUALIFIED
-    if (dut.d100_t_boundary !== 1'b1) fail("qualified D100 pointed B->A while D94 /RE was suppressed");
+    if (dut.d100_t_boundary !== 1'b1) fail("qualified diagnostic profile pointed B->A while D94 /RE was suppressed");
 `elsif FDC_VA87_ALWAYS_ENABLED
-    if (dut.d100_t_boundary !== 1'b1) fail("always-enabled D100 pointed B->A while D94 /RE was suppressed");
+    if (dut.d100_t_boundary !== 1'b1) fail("always-enabled diagnostic profile pointed B->A while D94 /RE was suppressed");
 `endif
     force dut.iord_n = 1'b1;
     release dut.d94_a4_d101_q0;
@@ -200,9 +200,9 @@ module juku_top_periph_bus_tb();
     writable_mode = $test$plusargs("expect_writable");
     fdc_bus_invert = $test$plusargs("fdc_bus_invert");
 `ifdef FDC_VA87_CS_QUALIFIED
-    if (!fdc_bus_invert) fail("qualified physical D100 build requires +fdc_bus_invert");
+    if (!fdc_bus_invert) fail("qualified diagnostic profile requires +fdc_bus_invert");
 `elsif FDC_VA87_ALWAYS_ENABLED
-    if (!fdc_bus_invert) fail("always-enabled physical D100 build requires +fdc_bus_invert");
+    if (!fdc_bus_invert) fail("always-enabled diagnostic profile requires +fdc_bus_invert");
 `else
     if (fdc_bus_invert) fail("logical DB build must not use +fdc_bus_invert");
 `endif

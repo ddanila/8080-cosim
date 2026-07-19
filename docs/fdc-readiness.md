@@ -85,7 +85,7 @@ physical D93/D94 wiring.
   including the exact 1,407/1,408 boundary, unchanged media, persisted zero
   substitution, and per-record re-arming; the decoded
   top-level guard proves read overwrite and S2 through D94 plus logical DB and
-  both safe D100 families. Exact wall-clock calibration remains conditional on
+  both diagnostic inversion-profile families. Exact wall-clock calibration remains conditional on
   the measurement-gated physical D93.24 clock source. Accordingly, the C oracle
   advances the deadline from executed 8080 cycles, while the autonomous HDL
   timer is enabled only in focused unit/decoded guards with `FDC_BYTE_TIMING`;
@@ -145,7 +145,7 @@ physical D93/D94 wiring.
   `40d8c5c343efc497524832d59a6d0e2b8e59376b`; the C guard compares every byte,
   and the HDL plus decoded top-level guards check structure, CRCs, all ten IDs,
   vendored sector data, completion, status acknowledgement, and silent D0 abort
-  through logical DB and both physical D100 families. MAME explicitly labels
+  through logical DB and both diagnostic profile families. MAME explicitly labels
   those gap counts unverified, and a sector-only image cannot preserve original
   gap contents, missing-clock waveforms, or rotational phase, so this is a
   deterministic media reconstruction rather than a claimed flux capture.
@@ -171,24 +171,17 @@ physical D93/D94 wiring.
   and partial gap/header damage remain explicit backend/timing boundaries.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
-- The physical КР580ВА87/8287 device models complement all 256 byte values in
-  both directions. D100 is tested under both safe control families:
-  qualified `/OE=FDC_CS_N`, `T=D93_RE_N`, and the same-board precedent
-  `/OE=GND`, `T=D93_RE_N`. Selected writes drive CPU `DB` to inverted `DAL`;
-  selected reads drive `DAL` to inverted `DB`; an unselected or D94-suppressed
-  read cycle either
-  disables both sides or holds direction A->B so D100 cannot contend on CPU
-  `DB`. The same exhaustive guard now proves D23-D25's full bidirectional model,
-  including D25's traced turnaround input. Raw `IORD` is excluded as D100 `T`
-  because D94 can suppress `/RE` on its low-A4 register-3 branch. These are
-  functional constraints;
-  they do not promote either still-unmeasured D100 conductor.
+- The generic КР580ВА87/8287 model complements all 256 byte values in both
+  directions. Two control families remain exercised solely as unmapped
+  firmware-profile diagnostics. The same exhaustive guard proves D23-D25's
+  physical bidirectional behavior, including D25's traced turnaround input.
+  Factory sheet 1 independently assigns physical D100 to drive outputs, not DB.
 - The decoded top-level harness runs multi-read over vendored sectors 9/10,
   multi-write/readback, and a full 6,230-write MFM track format over an isolated
-  writable copy in the logical DB build and both physical D100/DAL candidates.
+  writable copy in the logical DB build and both unmapped inversion-profile builds.
   The format path reads sectors 1 and 10 back byte-for-byte; all three
   multiple-record paths reach sector 11 with RNF. These semantics are exercised
-  through D94 strobes and both safe D100 control families rather than only
+  through D94 strobes and both diagnostic profile families rather than only
   inside the controller unit.
 - The exact ROMBIOS `0xA0/0xA2` write-sector path writes 512 bytes to an
   explicitly writable temporary image and reads them back byte-for-byte.
@@ -294,13 +287,12 @@ physical D93/D94 wiring.
   This is a guarded historical firmware boundary, not claimed error safety.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
-- The behavioral controller intentionally consumes logical system `DB` rather
-  than the control-disconnected physical D100/DAL path. `docs/fdc-bus-polarity.md`
-  proves the two firmware/hardware profiles: EktaSoft 2.4 and Monitor 3.3 wrap
-  every VG93 transfer in `CMA` for the populated inverting КР580ВА87, while
-  EktaSoft 3.1/3.5/3.7 use NOPs for a non-inverting path. `cosim/trace` models
-  the former with `JUKU_FDC_BUS_INVERT=1`; fitted D15/D16 dumps and D100
-  `/OE`/`T` continuity still decide the exact physical-board configuration.
+- Factory sheet 1 proves the behavioral controller's direct system-`DB` path.
+  `docs/fdc-bus-polarity.md` proves two preserved firmware profiles: EktaSoft
+  2.4 and Monitor 3.3 wrap every VG93 transfer in `CMA`, while EktaSoft
+  3.1/3.5/3.7 use NOPs. The former remains an unmapped diagnostic inversion
+  adjunct (`JUKU_FDC_BUS_INVERT=1`); fitted D15/D16 dumps are still required,
+  but physical D100 is now source-proved as the drive-output buffer.
 - The committed uninterrupted Verilator report
   `docs/juku-top-fdc-verilator-probe.md` drains all 10,752 FDC data-register
   reads and reaches the EKDOS `A>` bitmap; `sync/juku_top_fdc_prompt_check.sh`
@@ -415,10 +407,10 @@ evidence exists.
   index-event semantics are guarded, but the board's physical D93.32 READY
   source, event pulse widths, and rotational timing remain outside this
   byte-level shim.
-- Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
-  continuity checks in `docs/fdc-hardware-handoff.md`. The D100 component model
-  and required cycle truth table are now guarded; only its board control sources
-  remain open.
+- Physical D93 INTRQ/DRQ, reset, and clock still require targeted continuity
+  checks in `docs/fdc-hardware-handoff.md`. D100's drive-output channels are
+  source-proved; shared pins 9/11 continuation `1` and the pin-6 write-data input
+  remain open upstream boundaries.
 - D94 `.092` uses the validated physical table; direct continuity closes its
   enable to D93.CS, D1 to ground, D2 to D93.RE, D3 to D93.WE, and D4 to the
   D93 back-bias/NC socket contact. The runnable model consumes the physical

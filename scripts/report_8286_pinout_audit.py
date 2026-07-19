@@ -38,8 +38,17 @@ EXPECTED_NET_PINS = {
             **{f"ADR{'89ABCDEF'[i]}_N": str(19 - i) for i in range(8)}},
     "D25": {**{f"DB{i}": str(i + 1) for i in range(8)},
             **{f"DAT{i}_N": str(19 - i) for i in range(8)}},
-    "D100": {**{f"DB{i}": str(i + 1) for i in range(8)},
-             **{f"FDC_DAL{i}": str(19 - i) for i in range(8)}},
+    "D100": {
+        "FDC_DIR_TO_D100": "1", "FDC_STEP_TO_D100": "2",
+        "FDC_HLD_TO_D100": "3", "FDC_TG43_TO_D100": "4",
+        "FDC_WG_TO_D100": "5", "D100_WRDATA_IN_BOUNDARY": "6",
+        "FDC_MOTOR_EN": "7", "FDC_SIDE_SEL": "8",
+        "D100_CONTROL_1_BOUNDARY_A": "9", "D100_CONTROL_1_BOUNDARY_B": "11",
+        "X4_SIDE_SEL": "12", "X4_MOTOR_ON_N": "13",
+        "X4_WR_DATA_N": "14", "X4_WR_GATE_N": "15",
+        "X4_TG43": "16", "X4_HLOAD_N": "17",
+        "X4_STEP_N": "18", "X4_DIR_N": "19",
+    },
 }
 
 
@@ -81,8 +90,12 @@ def main() -> None:
     d100 = chips["D100"]
     checks.append(("D100 uses the Intel 8287 DIP-20 pin names", d100["pins"] == PHYSICAL_D100))
     d100_expected = EXPECTED_NET_PINS["D100"]
-    d100_observed = {net: endpoint_net.get(("D100", pin)) for net, pin in d100_expected.items()}
-    checks.append(("D100 DB/DAL channel pad assignments follow the physical pairs", d100_observed == {n: n for n in d100_expected}))
+    d100_observed = {key: endpoint_net.get(("D100", pin)) for key, pin in d100_expected.items()}
+    d100_expected_nets = {
+        key: "D100_CONTROL_1_BOUNDARY" if key.startswith("D100_CONTROL_1_BOUNDARY_") else key
+        for key in d100_expected
+    }
+    checks.append(("D100 drive-interface pad assignments follow factory sheet 1", d100_observed == d100_expected_nets))
 
     type_map = mapping["pinmaps"]["kicad"]["BUF8286"]
     checks.append(("LVS type pinmap follows A0-A7 pins 1-8 and B0-B7 pins 19-12", type_map == PHYSICAL))
@@ -140,8 +153,9 @@ def main() -> None:
         "Sheet 1 routes D107 and D23-D25 straight, permutes D4's high-address",
         "channels, and permutes D29's eight command channels. Board pad endpoints",
         "and per-instance LVS maps preserve those routes while HDL keeps ordered",
-        "logical buses. D100 independently preserves the same straight physical",
-        "pairs between DB0-DB7 and the physical КР1818ВГ93 DAL bus.", "",
+        "logical buses. Factory sheet 1 proves that D100 instead buffers eight",
+        "floppy-drive outputs; its paired pads and shared pins 9/11 control",
+        "continuation are guarded here independently of the data-bus devices.", "",
         "Primary pinout source:",
         "`https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf`", "",
         "## Checks", "", "| Check | Result |", "| --- | --- |",

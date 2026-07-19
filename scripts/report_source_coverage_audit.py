@@ -109,7 +109,7 @@ def main() -> int:
         row([
             "Western Digital FD179X references, the original 1986 КР1818ВГ93 paper, a historical Soviet circuit comparison, and the local WD1772 transistor/PLA reference",
             "WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, photo-closed IE7 Q3-to-RCLK path, remaining separator probes, a KP12 precompensation candidate, and normalized PLA are documented",
-            "target copper now proves D106.7-to-D93.26; device/manufacturer references narrow the remaining probes but do not prove other Juku-specific support nets or D94 connectivity",
+            "factory sheet 1 proves D106.7-D28.9, D28.8-D96.3, and D96.5-D93.26; device/manufacturer references narrow the remaining probes but do not prove other Juku-specific support nets or D94 connectivity",
         ]),
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",

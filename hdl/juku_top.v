@@ -530,11 +530,14 @@ module juku_top (
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
                     .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3), .a4(1'bz), .b4(1'bz), .y4());  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]; sect4 undrawn/NC
 
-    // ============ Physical FDC quadrant (.009): КР1818ВГ93 + РЕ3 .092 + ВА87 bus buffer ============
-    // Bus side traced (CS7/sheet-3 delta + MAME 1C-1F + WD1793 datasheet); support logic
-    // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. The physical
-    // packages remain instantiated; incomplete behavioral models release unproved outputs.
-    wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
+    // ============ Physical FDC quadrant (.009): КР1818ВГ93 + РЕ3 .092 + drive ВА87 ============
+    // Recovered .009 Э3 sheet 3 closes the direct D0-D7 host bus, D93-to-D100
+    // drive outputs, D26 MOTOR/S.SEL controls, and the first status/separator stages.
+    wire fdc_drq, fdc_intrq;
+    wire fdc_step, fdc_dir, fdc_hld, fdc_tg43, fdc_wg, fdc_wdata;
+    wire fdc_early_boundary, fdc_late_boundary, fdc_test_boundary;
+    wire fdc_hlt_boundary, fdc_rg_boundary, fdc_rclk, fdc_raw_read;
+    wire fdc_ready, fdc_wf_vfoe_boundary, fdc_tr00, fdc_index, fdc_wprt;
 `ifdef YOSYS
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
 `else
@@ -554,28 +557,47 @@ module juku_top (
     wire d94_d4, d94_d5, d94_d6, d94_d7;
     supply0 d94_d1_grounded;
     vg93_fdc   U_D93  (.nc_back_bias(d94_d4), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
-                       .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
+                       .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(DB),
+                       .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
+                       .step(fdc_step), .dirc(fdc_dir), .early(fdc_early_boundary), .late(fdc_late_boundary),
+                       .test(fdc_test_boundary), .hlt(fdc_hlt_boundary), .rg(fdc_rg_boundary),
+                       .rclk(fdc_rclk), .raw_read(fdc_raw_read), .hld(fdc_hld), .tg43(fdc_tg43),
+                       .wg(fdc_wg), .wdata(fdc_wdata), .ready(fdc_ready),
+                       .wf_vfoe(fdc_wf_vfoe_boundary), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),
                        .drq(fdc_drq), .intrq(fdc_intrq));
-    wire d100_oe_boundary, d100_t_boundary;
+    wire d100_control_1_boundary, d100_wrdata_in_boundary;
+    wire [7:0] d100_drive_in, d100_drive_out;
+    assign d100_drive_in = {ppi0_pc[6], ppi0_pc[2], d100_wrdata_in_boundary,
+                            fdc_wg, fdc_tg43, fdc_hld, fdc_step, fdc_dir};
+    buf_8287 U_D100 (.a(d100_drive_in), .b(d100_drive_out),
+                     .oe_n(d100_control_1_boundary), .t(d100_control_1_boundary),
+                     .vss_gnd(1'b0), .vcc_5v(1'b1));
 `ifdef YOSYS
-    net_boundary U_D100OELNK (.a(1'b1), .b(d100_oe_boundary));
-    net_boundary U_D100TLNK  (.a(1'b1), .b(d100_t_boundary));
+    net_boundary U_D100CTL1LNK (.a(1'b1), .b(d100_control_1_boundary));
+    net_boundary U_D100WDATALNK (.a(1'b1), .b(d100_wrdata_in_boundary));
 `elsif FDC_VA87_CS_QUALIFIED
-    // Opt-in functional candidate: selected transfers enable D100; actual D93
-    // /RE, rather than raw IORD, controls direction so D94's low-A4 suppressed
-    // register-3 branch cannot drive CPU DB from a released DAL bus.
-    assign d100_oe_boundary = fdc_prom_cs_n;
-    assign d100_t_boundary = fdc_prom_re_n;
+    wire d100_oe_boundary = fdc_prom_cs_n;
+    wire d100_t_boundary = fdc_prom_re_n;
 `elsif FDC_VA87_ALWAYS_ENABLED
-    // Same-board D23-D25 precedent: /OE grounded, with actual D93 /RE keeping
-    // the buffer A->B except during a controller read.
-    assign d100_oe_boundary = 1'b0;
-    assign d100_t_boundary = fdc_prom_re_n;
+    wire d100_oe_boundary = 1'b0;
+    wire d100_t_boundary = fdc_prom_re_n;
 `else
-    net_boundary U_D100OELNK (.a(1'b1), .b(d100_oe_boundary));
-    net_boundary U_D100TLNK  (.a(1'b1), .b(d100_t_boundary));
+    wire d100_oe_boundary = 1'b1;
+    wire d100_t_boundary = 1'b1;
 `endif
-    buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(d100_oe_boundary), .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
+`ifndef YOSYS
+    // Diagnostic firmware-profile transform only. The recovered factory sheet
+    // proves this is not physical D100; keeping the unmapped adjunct preserves
+    // CMA/NOP profile regressions without asserting false PCB connectivity.
+    wire [7:0] fdc_profile_dal;
+`ifdef FDC_VA87_CS_QUALIFIED
+    buf_8287 U_FDC_PROFILE_BUF (.a(DB), .b(fdc_profile_dal), .oe_n(d100_oe_boundary),
+                                .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
+`elsif FDC_VA87_ALWAYS_ENABLED
+    buf_8287 U_FDC_PROFILE_BUF (.a(DB), .b(fdc_profile_dal), .oe_n(d100_oe_boundary),
+                                .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
+`endif
+`endif
 `ifdef YOSYS
     wire d94_a3_boundary, d94_a4_d101_q0;
 `else
@@ -685,13 +707,12 @@ module juku_top (
     wire fdc_model_re_n = fdc_prom_re_n;
     wire fdc_model_we_n = fdc_prom_we_n;
 `endif
-    // Default functional core remains on logical DB. Two opt-in regressions put
-    // it behind the real inverting D100/DAL path with the safe control families
-    // above; neither compile-time fit changes LVS or promotes unmeasured copper.
+    // Default functional core remains on logical DB. Two opt-in regressions use
+    // the explicitly non-physical inverting firmware-profile adjunct above.
 `ifdef FDC_VA87_CS_QUALIFIED
-`define JUKU_FDC_DATA_BUS fdc_dal
+`define JUKU_FDC_DATA_BUS fdc_profile_dal
 `elsif FDC_VA87_ALWAYS_ENABLED
-`define JUKU_FDC_DATA_BUS fdc_dal
+`define JUKU_FDC_DATA_BUS fdc_profile_dal
 `else
 `define JUKU_FDC_DATA_BUS DB
 `endif

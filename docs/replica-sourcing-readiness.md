@@ -34,7 +34,7 @@ review before being treated as build-ready.
 | Type | Authentic part | Functional substitute | Populate now | Refs | Acceptance note |
 | --- | --- | --- | ---: | --- | --- |
 | BUF8286 | КР580ВА86 | Intel 8286 / compatible bus transceiver | 3 | D4, D29, D107 | Continuity/orientation check; verify no bus fight during first ROM fetch. |
-| BUF8287 | КР580ВА87 | Intel 8287 / compatible bus transceiver | 1 | D100 | Continuity/orientation check; verify direction/OE before attaching FDC data path. |
+| BUF8287 | КР580ВА87 | Intel 8287 / compatible bus transceiver | 1 | D100 | Continuity/orientation check; verify the recovered drive-output channels and shared control before attaching X4. |
 | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | D1 | Run in a known-good 8080 tester or minimal NOP/ROM-fetch jig before seating. |
 | IR82 | КР580ИР82 | 8282/8283-class latch; verify polarity/package | 1 | D58 | Verify latch polarity around DRAM write-data path. |
 | PIC8259 | КР580ВН59 | 8259A PIC | 1 | D10 | Socket; verify frame interrupt vectoring before FDC IRQs. |

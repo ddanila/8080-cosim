@@ -62,8 +62,9 @@ $pass_line
 ## Evidence boundary
 
 This closes the standard package's digital behavior. It does **not** promote
-unseen Juku PCB continuity around D106: only D106.7 Q3 to D93.26 RCLK is
-photo-closed. D106 load, clear, clocks, presets, the other outputs, and their
+unseen Juku PCB continuity around D106: factory sheet 1 closes D106.7 Q3 through
+D28.9/D28.8 and D96.3/D96.5 to D93.26 RCLK. D106 load, clear, clocks, presets,
+the other outputs, and their
 remote destinations remain owner-continuity boundaries.
 EOF
 

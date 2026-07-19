@@ -224,10 +224,10 @@ def main() -> int:
     failures: list[str] = []
     if (
         not BUS_POLARITY_REPORT.is_file()
-        or "Status: **FIRMWARE/HARDWARE POLARITY PROFILES PROVED / TARGET EPROM DUMPS PENDING**"
+        or "Status: **FIRMWARE PROFILES PROVED / PHYSICAL D100 ATTRIBUTION RETIRED / TARGET EPROM DUMPS PENDING**"
         not in BUS_POLARITY_REPORT.read_text(encoding="utf-8")
     ):
-        failures.append("firmware/D100/D93 bus-polarity audit is absent or stale")
+        failures.append("firmware-profile/direct-D93-bus audit is absent or stale")
     separator_rows, separator_probe_guarded = separator_probe_observations()
     if not separator_probe_guarded:
         failures.append("D106/D93 separator negative photo evidence is missing or stale")
@@ -263,11 +263,16 @@ def main() -> int:
         failures.append("D96 section-2 isolated-/Q constraint is absent")
     if not d99_section1_excluded:
         failures.append("D99 section-1 grounded-clear/test-landing constraint is absent")
-    rclk_closed = has_node(board, "FDC_RCLK", "D106", "7") and has_node(
-        board, "FDC_RCLK", "D93", "26"
+    rclk_closed = (
+        has_node(board, "SEP_D106_Q3", "D106", "7")
+        and has_node(board, "SEP_D106_Q3", "D28", "9")
+        and has_node(board, "SEP_D28_CLK", "D28", "8")
+        and has_node(board, "SEP_D28_CLK", "D96", "3")
+        and has_node(board, "FDC_RCLK", "D96", "5")
+        and has_node(board, "FDC_RCLK", "D93", "26")
     )
     if not rclk_closed:
-        failures.append("photo-proved D106.7-to-D93.26 recovered-clock net is absent")
+        failures.append("factory-proved D106-D28-D96-D93 recovered-clock chain is absent")
     kp12_resistor_closed = (
         has_node(board, "D95_A0_R92", "D95", "14")
         and has_node(board, "D95_A0_R92", "R92", "2")
@@ -356,24 +361,16 @@ def main() -> int:
 
     for bit in range(8):
         db_name = f"DB{bit}"
-        dal_name = f"FDC_DAL{bit}"
-        d100_a = str(bit + 1)
-        d100_b = str(19 - bit)
         d93_dal = str(7 + bit)
-        db_ok = has_node(board, db_name, "D100", d100_a)
-        dal_ok = has_node(board, dal_name, "D100", d100_b) and has_node(
-            board, dal_name, "D93", d93_dal
-        )
+        db_ok = has_node(board, db_name, "D93", d93_dal)
         if not db_ok:
-            failures.append(f"{db_name} lacks D100.{d100_a}")
-        if not dal_ok:
-            failures.append(f"{dal_name} lacks D100.{d100_b} and D93.{d93_dal}")
+            failures.append(f"{db_name} lacks D93.{d93_dal}")
         rows.append(
             [
-                f"`{db_name}` / `{dal_name}`",
-                status(db_ok and dal_ok),
-                f"`D100.{d100_a}` <-> system DB; `D100.{d100_b}` <-> `D93.{d93_dal}`",
-                "scan + WD1793/8287 datasheets",
+                f"`{db_name}`",
+                status(db_ok),
+                f"system DB directly to `D93.{d93_dal}`",
+                "factory `.009` sheet 1 + WD1793 datasheet",
             ]
         )
 
@@ -456,16 +453,10 @@ def main() -> int:
             "corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved",
         ),
         (
-            "D100.9 `OE_N`",
-            endpoint_state(board, "D100", "9"),
-            "8287 output-enable gating and command-side polarity",
-            "singleton D100_OE_BOUNDARY; first compare against GND (same-board D23-D25 precedent) and FDC_CS_N (qualified-enable family)",
-        ),
-        (
-            "D100.11 `T`",
-            endpoint_state(board, "D100", "11"),
-            "8287 direction gating and read-side polarity",
-            "singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3, required by both safe families; raw IORD is excluded by D94's suppressed-/RE branch",
+            "D100.9/.11 continuation `1`",
+            group_state(board, "D100", ("9", "11")),
+            "shared drive-output-buffer control source",
+            "factory sheet proves pins 9/11 joined; upstream continuation remains untraced",
         ),
     ]
 
@@ -476,8 +467,8 @@ def main() -> int:
         "",
         "This generated report narrows the physical floppy-controller handoff to",
         "the exact board points that still need owner or bench evidence. It does",
-        "not claim D93 interrupt mapping, D100 enable/direction gating, or the",
-        "electrical DB-to-DAL polarity are hardware-verified; it separates the",
+        "not claim D93 interrupt mapping or the remaining support inputs are",
+        "hardware-verified; it separates the",
         "wired bus-side facts from the remaining continuity asks.",
         "",
         "## Command",
@@ -541,7 +532,7 @@ def main() -> int:
         "test landing, excluding D99 section 1 as the active raw-read conditioner.",
         "The remaining AG3 sections still require continuity identification.",
         "",
-        "Except for the separately photo-proved Q3-to-RCLK path below, these are",
+        "Except for the factory-proved separator chain below, these are",
         "**reference candidates, not promoted Juku nets**. The Juku",
         "cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas",
         "Figure 11 contains no mux and only one half of a single 74123. The owner",
@@ -561,10 +552,9 @@ def main() -> int:
         "parallel inputs are strapped 15/1 high and 10/9 low, while pin 14 is",
         "controlled by WF/VFOE/pin 33.",
         "",
-        "The target board now chooses this branch: corrected independent package",
-        "fits place D106.7 and D93.26 on one uninterrupted solder-side trace in",
-        "`PXL_20260710_200506061.jpg`. This excludes the Western Figure-11",
-        "D96-toggle output as Juku's RCLK source, though D96 may have another role.",
+        "Factory `.009` sheet 1 resolves the apparent crossing: D106.7 reaches",
+        "D28.9, D28.8 clocks D96.3, and D96.5 supplies D93.26 RCLK. The older",
+        "photograph-only interpretation of a direct D106.7-D93.26 net is retired.",
         "Calibrated review of the same raw solder tile finds no uninterrupted",
         "same-layer path for D106.11-D93.27 or D106.14-D93.33. This rejects a",
         "direct visible merge, not cross-layer continuity: both pairs remain meter",
@@ -584,8 +574,8 @@ def main() -> int:
         "D28.5/.6, continuity must override the legacy-sheet NC assumption; the",
         "current photographs do not prove that reuse.",
         "",
-        "D106.7-D93.26 and the three passive-ladder links above are promoted from",
-        "target-board copper. The remaining Soviet-reference paths are guarded",
+        "The D106-D28-D96-D93 chain and the three passive-ladder links above are",
+        "promoted from primary factory/copper evidence. Remaining reference paths are guarded",
         "candidates, not Juku continuity.",
         "",
         "### Separator candidate raw-crop disposition",
@@ -705,22 +695,17 @@ def main() -> int:
             "",
             "## Disposition",
             "",
-            "- The system data bus, D100 B-side, D93 DAL bus, register select, and",
+            "- The direct system-data-bus to D93 DAL route, register select, and",
             "  private D94-to-D93 RE/CS/WE controls are present in board JSON and",
             "  guarded by this report. All D94 A0-A4 inputs and the private D93",
             "  controls are owner-mapped; remaining decode boundaries are the upstream",
             "  pin-15 enable source, pull-up identities, D3-D7 destinations, and the",
             "  recorded D29.4/IORD recheck. The `.092` table is physically captured.",
             "- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to",
-            "  confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and",
-            "  D100.11. Test D100.9 first against GND and FDC_CS_N; test D100.11",
-            "  against D93 RE_N/D94.3. These distinguish the two exhaustive safe",
-            "  functional families before any broad continuity chase. First dump D15/D16",
-            "  and identify its guarded CMA/NOP profile.",
-            "  With a CMA profile, capture CPU DB, D93 DAL, D100 /OE/T, D93 /WE, and",
-            "  STEP/WG: CPU 0xFD must cross the enabled КР580ВА87 as logical Restore",
-            "  0x02. Repeat a status read (logical 0x00 -> CPU 0xFF before firmware",
-            "  CMA) to close both directions; see",
+            "  confirm INTRQ/DRQ ordering, then identify D93.19 and D93.24. First dump",
+            "  D15/D16 and identify its guarded CMA/NOP profile; the recovered direct",
+            "  D93 bus means physical D100 is not the profile selector. Separately trace",
+            "  shared D100.9/.11 continuation `1` and D100.6's write-data input; see",
             "  `docs/fdc-bus-polarity.md`.",
             "  Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional",
             "  NCs; SP/EN pin16 is already source-proved and modeled at +5 V.",

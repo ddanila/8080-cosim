@@ -154,7 +154,7 @@ def main() -> int:
             if missing:
                 boundary_untraced[ref] = missing
 
-    expected_d28 = {"2", "4", "8", "9", "10", "12"}
+    expected_d28 = {"10", "11", "12", "13"}
     actual_d28 = {pin for pin, _role in boundary_untraced.get("D28", [])}
     if actual_d28 != expected_d28:
         raise SystemExit(
@@ -276,8 +276,8 @@ def main() -> int:
         "  buffer; its two enable groups and six A/Y pairs follow the device sheet:",
         "  <https://static.chipdip.ru/lib/493/DOC048493374.pdf>.",
         "- `D28` is now typed as the К155ЛН3 six-inverter open-collector family.",
-        "  These are device-level pin roles only; no Juku-specific signal net is",
-        "  assigned until the `.009` copper continuity is proved.",
+        "  Factory `.009` sheet 1 now closes pins 1-9 through drive-select, READY,",
+        "  and separator-clock paths; pins 10-13 remain explicit boundaries.",
         "",
         "## Footprint-Only ICs",
         "",

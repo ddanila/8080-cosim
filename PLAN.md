@@ -420,7 +420,8 @@ Every ask below is queued with exact deliverables in
    `docs/fdc-hardware-handoff.md`). Trace each required pin end-to-end, or
    record a deliberate redesign/DNP decision. D93.40 `VDD_12V` is now
    owner-confirmed on the +12 V rail (`docs/d93-pin40-photo-chase.md`).
-   D106.7 Q3 -> D93.26 RCLK is photo-closed;
+   Factory sheet 1 closes D106.7 Q3 -> D28.9, D28.8 -> D96.3, and
+   D96.5 -> D93.26 RCLK; the older photo-only direct-net reading is retired.
    the standard К555ИЕ7/74LS193 digital device behavior is now independently
    closed and CI-guarded by `sync/ie7_check.sh`: asynchronous active-high
    clear, asynchronous active-low parallel load, rising-edge up/down count
@@ -590,7 +591,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   202 source-risk nets and 9 official FDC devices with untraced functional
+   152 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

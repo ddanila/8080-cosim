@@ -89,8 +89,8 @@ sync/juku_top_periph_bus_check.sh
 | PPI0 Port C motor-on latch through decoded port \`0x06\` | $status |
 | Physical D94 table produces mutually exclusive FDC \`/RE\` and \`/WE\` strobes | $status |
 | Low D101.Q0/A4 steers register 3 from D93 strobes to the pulled-up D94 D0 branch | $status |
-| Chip-select-qualified D100 path uses actual D93 \`/RE\` and stays A->B on the suppressed-\`/RE\` branch | $(if [ -n "$qualified_pass_line" ]; then echo PASS; else echo FAIL; fi) |
-| Always-enabled D100 path uses actual D93 \`/RE\` and stays A->B on the suppressed-\`/RE\` branch | $(if [ -n "$always_pass_line" ]; then echo PASS; else echo FAIL; fi) |
+| Chip-select-qualified diagnostic inversion profile stays one-way on the suppressed-\`/RE\` branch | $(if [ -n "$qualified_pass_line" ]; then echo PASS; else echo FAIL; fi) |
+| Always-enabled diagnostic inversion profile stays one-way on the suppressed-\`/RE\` branch | $(if [ -n "$always_pass_line" ]; then echo PASS; else echo FAIL; fi) |
 | FDC accepts exact ROMBIOS first command \`0x02\` as restore and returns track 0 | $status |
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | $status |
 | Forced-low READY rejects Type-II/III immediately with NOT READY/INTRQ while Type-I seek still executes and READY-high status recovers | $status |
@@ -100,13 +100,13 @@ sync/juku_top_periph_bus_check.sh
 | One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (\`0x5C\`) through the top-level bus | $status |
 | A missing Type-II track/sector ID holds BUSY without DRQ for three revolutions and completes RNF on the fourth | $status |
 | Type-II \`C/S\` mismatch holds BUSY without DRQ for four index pulses and completes RNF on the fifth | $status |
-| E-delayed, index-gated Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | $status |
+| E-delayed, index-gated Type-III Read Track reconstructs one MFM revolution through logical DB and both diagnostic profile families | $status |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | $status |
 | ROMBIOS \`0xA2\` write-sector preloads across the 22-byte ID-to-write-gate interval, streams 512 bytes through D94-decoded port \`0x1F\`, and reads them back from a writable copy | $status |
 | Write Sector \`a0=1\` records an \`F8\` deleted-data mark and Read Sector reports RECORD TYPE bit 5 through the decoded bus | $status |
 | Type-II deleted multi-write re-arms the 22-byte preload interval, preserves \`F8\` marks on sectors 9/10, and ends at sector 11 with RNF | $status |
-| E-delayed, index-gated Type-III Write Track preloads its first byte, streams 6,230 formatter bytes, persists sectors 1-10, and preserves an \`F8\` mark as session metadata through logical DB and both physical D100 families | $status |
-| CMA-profile CPU bytes cross physical D100/DAL for restore, seek, media read, and 512-byte write/readback under both control families | $status |
+| E-delayed, index-gated Type-III Write Track persists sectors 1-10 and an \`F8\` mark through logical DB and both diagnostic profile families | $status |
+| CMA-profile CPU bytes cross the unmapped inversion adjunct for restore, seek, media read, and write/readback | $status |
 
 ## Stop State
 
@@ -125,12 +125,12 @@ sync/juku_top_periph_bus_check.sh
   functional sources; they preserve, rather than close, the physical probes.
 - A separate forced-low A4 check exercises the alternate register-3 D0 branch
   without assigning that physically pulled-up output an unmeasured load.
-- Two opt-in builds route the behavioral controller through physical D100/DAL.
+- Two opt-in builds route the behavioral controller through an unmapped profile adjunct.
   Their CPU-side FDC bytes are complemented like CMA-profile firmware. Both use
-  actual D93 \`/RE\` for direction, not raw \`IORD\`; this keeps D100 A->B when
+  actual D93 \`/RE\` for direction, not raw \`IORD\`; this keeps the adjunct one-way when
   D94's low-A4 branch suppresses the controller read strobe. One build qualifies
   \`/OE\` with FDC chip-select and the other grounds it like D23-D25. These are
-  executable functional candidates, not measured copper assignments.
+  executable firmware diagnostics, not physical D100 or measured copper assignments.
 - It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-\`T\` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path
