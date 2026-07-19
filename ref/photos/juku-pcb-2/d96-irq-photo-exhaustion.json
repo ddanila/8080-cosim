@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "refdes": "D96",
+  "endpoints": ["9", "11"],
+  "status": "photo-exhausted / continuity required",
+  "drawing_observation": {
+    "source": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101641055.jpg",
+    "sha256": "86740a80fb494cdb08f4de3a120cab83e4f6638cf5885d4c83418a4a94c881a7",
+    "dimensions_px": [3072, 4080],
+    "observation": "exact .009 sheet 3 proves D96.9 Q2 and D96.11 CLK2 leave on distinct conductors, but the nearby plain/primed continuation marks cannot be paired uniquely with a sheet-1 endpoint"
+  },
+  "component_observation": {
+    "source": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+    "sha256": "f369d158cf93842af1f97ecc78263bc33738cbbaf25a04c1678297ef7636e9dc",
+    "dimensions_px": [4080, 3072],
+    "endpoint_px": {"9": [3307.0, 2340.0], "11": [3307.0, 2234.0]},
+    "bbox_px": [3150, 2080, 3490, 2470],
+    "observation": "registered component-side package fit fixes both pad identities; visible local top-side copper is partly hidden by D96 and adjacent parts and does not expose a unique remote destination"
+  },
+  "solder_observation": {
+    "source": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "sha256": "6f11cc69615f159fcaea852ce41e9af944da4886d31d0fc7d70394a56772070c",
+    "dimensions_px": [4080, 3072],
+    "endpoint_px": {"9": [624.6, 2085.8], "11": [625.4, 1994.2]},
+    "bbox_px": [450, 1850, 850, 2220],
+    "observation": "registered reflected package fit fixes both solder pads; neither pad has a B.Cu departure, so any remote continuation is on F.Cu or changes layer at a separately obscured handoff"
+  },
+  "unresolved": ["D96.9 Q2 remote destination", "D96.11 CLK2 remote source"],
+  "non_promotion_basis": "the exact drawing keeps the endpoints distinct but does not supply a uniquely pairable sheet-1 identity, while the registered board views exclude a direct B.Cu chase and leave the F.Cu paths obscured; direct continuity is required"
+}

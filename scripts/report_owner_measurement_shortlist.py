@@ -36,6 +36,7 @@ REQUIRED = [
     ROOT / "docs" / "assembly-drawing-extraction.md",
     ROOT / "docs" / "factory-modification-disposition.md",
     ROOT / "docs" / "source-pcb-drc.md",
+    ROOT / "ref" / "photos" / "juku-pcb-2" / "d96-irq-photo-exhaustion.json",
 ]
 
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
@@ -215,8 +216,8 @@ def main() -> int:
         (
             "P0",
             "FDC interrupt/buffer continuity and fitted ROM profile",
-            "Trace the sheet-1 destinations of conditioned D96.9 Q2 and D96.11 CLK2 to the PIC/control logic, plus the shared D100.9/.11 control continuation. Exact sheet 3 now closes raw D93 DRQ/INTRQ through D28.11/.13, wired outputs D28.10/.12, R93/R95, and D96.10/.12. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; D100.6 is source-closed to D101.9 write precompensation",
-            "`docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
+            "Continuity-identify the remote destination of conditioned D96.9 Q2 and the remote source of D96.11 CLK2, plus the shared D100.9/.11 control continuation. Exact sheet 3 closes raw D93 DRQ/INTRQ through D28.11/.13, wired outputs D28.10/.12, R93/R95, and D96.10/.12. Registered two-sided photos prove neither D96 endpoint departs on B.Cu, while F.Cu is obscured; do not infer a PIC join from the non-unique drawing continuation marks. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; D100.6 is source-closed to D101.9 write precompensation",
+            "`ref/photos/juku-pcb-2/d96-irq-photo-exhaustion.json`; `docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
             "identifies the exact board/EPROM configuration and the remote destinations after the local interrupt conditioner without reopening source-closed paths",
         ),
         (

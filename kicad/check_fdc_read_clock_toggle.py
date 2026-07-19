@@ -29,10 +29,13 @@ missing_wreq = {"D96.1", "D96.4"} - NETS.get("WREQ_N", set())
 if missing_wreq:
     raise SystemExit(f"FDC RCLK: WREQ_N missing {sorted(missing_wreq)}")
 
-expected_nc = {f"D96.{pin}" for pin in ("9", "10", "11", "12", "13")}
+expected_nc = {"D96.13"}
 actual_nc = {f"{ref}.{pin}" for ref, pin in BOARD.get("no_connects", [])}
 if not expected_nc <= actual_nc:
     raise SystemExit(f"FDC RCLK: no-connects missing {sorted(expected_nc - actual_nc)}")
+unexpected_nc = {f"D96.{pin}" for pin in ("9", "10", "11", "12")} & actual_nc
+if unexpected_nc:
+    raise SystemExit(f"FDC RCLK: source-used section-2 pins marked NC: {sorted(unexpected_nc)}")
 
 obsolete = {
     f"D96_{suffix}_BOUNDARY"
@@ -85,8 +88,9 @@ footprint = pcb[pcb.rfind("\n\t(footprint", 0, ref_pos):pcb.find("\n\t(footprint
 pcb_expected = {
     "1": "WREQ_N", "2": "D96_TOGGLE_FEEDBACK", "3": "SEP_D28_CLK",
     "4": "WREQ_N", "5": "FDC_RCLK", "6": "D96_TOGGLE_FEEDBACK",
-    "8": "D96_Q2_N_TEST_LANDING", "9": None, "10": None, "11": None,
-    "12": None, "13": None,
+    "8": "D96_Q2_N_TEST_LANDING", "9": "D96_IRQ_Q_SHEET1_BOUNDARY",
+    "10": "FDC_IRQ_CONDITIONED_N", "11": "D96_IRQ_CLOCK_SHEET1_BOUNDARY",
+    "12": "FDC_IRQ_CONDITIONED_N", "13": None,
 }
 for pin, expected in pcb_expected.items():
     match = re.search(

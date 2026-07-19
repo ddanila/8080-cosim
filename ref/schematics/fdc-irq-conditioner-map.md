@@ -20,11 +20,18 @@ internal electrical-drawing reference conflict, not permission to duplicate
 R94 or overwrite target-board evidence.
 
 The earlier direct D93.38/.39-to-D10.19/.18 assignment came from MAME and is
-now retired. D10 IR0/IR1 and the two D96 sheet-1 continuations remain explicit
-boundaries until sheet 1 or owner continuity identifies their actual joins.
+now retired. D10 IR0/IR1 and the two D96 continuations remain explicit
+boundaries until owner continuity identifies their actual joins. Registered
+component and solder views fix the D96.9/.11 pad locations and show that
+neither pad departs on B.Cu; the visible F.Cu is package/component-obscured.
+That exhausted photo chase is recorded in
+`ref/photos/juku-pcb-2/d96-irq-photo-exhaustion.json`.
 
-The `(1)`/`"1"` annotations at continuation arrows mean “sheet 1.” They do not
-mean logic high and do not join unrelated arrows carrying the same annotation.
+The nearby continuation annotations include distinct plain/primed variants.
+They are drawing cross-references, not logic-high labels, and repeated-looking
+marks do not justify joining unrelated arrows. The recovered sheet-1 views do
+not expose a unique pair for these two conductors, so no net is promoted from
+the annotations alone.
 
 Guard:
 

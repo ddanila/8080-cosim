@@ -98,7 +98,9 @@ See `ref/schematics/fdc-clock-mux-map.md` and
 The same full-resolution region restores the local interrupt conditioner:
 D93 DRQ/INTRQ drive D28.11/.13, wired open-collector outputs D28.10/.12
 feed D96.10/.12 through the R95 pull-up, and R93 pulls INTRQ high.
-D96.9 Q2 and D96.11 CLK2 remain distinct sheet-1 boundaries; see
+D96.9 Q2 and D96.11 CLK2 remain distinct remote boundaries. Registered
+two-sided photos prove neither pad departs on B.Cu, while the F.Cu chase
+and the drawing's plain/primed continuation marks remain non-unique; see
 `ref/schematics/fdc-irq-conditioner-map.md`.
 
 Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:
@@ -175,7 +177,7 @@ visible links are modeled; the mux select/output paths remain open.
 | `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
 | `FDC_INTRQ` | WIRED | D93 INTRQ into local D28/R93 conditioner | exact .009 sheet 3 |
 | `FDC_DRQ` | WIRED | D93 DRQ into local D28 conditioner | exact .009 sheet 3; conflicting drawn R94 branch withheld |
-| `D10_IR0_FDC_BOUNDARY` / `D10_IR1_FDC_BOUNDARY` | OWNER-VERIFY | remote PIC-side FDC interrupt destinations | sheet-1 continuation/owner continuity required |
+| `X2_IRQ0` / `X2_PB7` | WIRED | source-closed D10 IR0/IR1 external inputs (not assigned to FDC) | exact .009 sheet 1; retired as inferred FDC destinations |
 
 ## D93 Source-Risk Pad Review
 
@@ -246,8 +248,10 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   controls are owner-mapped; remaining decode boundaries are the upstream
   pin-15 enable source, pull-up identities, D3-D7 destinations, and the
   recorded D29.4/IORD recheck. The `.092` table is physically captured.
-- Before real FDC bring-up, trace D96.9 Q2 and D96.11 CLK2 through
-  sheet 1 to the PIC/control destinations. Direct D93.39/38-to-D10.18/19
+- Before real FDC bring-up, continuity-identify D96.9 Q2's remote
+  destination and D96.11 CLK2's remote source. The registered solder
+  view excludes B.Cu departures at both pads, and the obscured F.Cu
+  paths plus non-unique drawing marks do not prove PIC joins. Direct D93.39/38-to-D10.18/19
   was a retired MAME-era assumption: sheet 3 instead proves the local
   D28/R93/R95/D96 conditioner. D93.19 is source-connected to the
   sheet-1 RES continuation, while its drawn active-low polarity remains
