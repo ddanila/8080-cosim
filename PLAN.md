@@ -168,6 +168,14 @@ remaining net restores, that chain has a 24-open floor and is stopped. The
 57/65-item D3/RAM candidates also retain fixed-pad blockers and are not ripped
 up. No long-net topology supersedes the verified 23-gap checkpoint.
 
+The unsurveyed companion PROM-address net D3_O4_D6_A6 is now also exhausted
+on that exact checkpoint. Its diagnostic names 55 removable items across 27
+nets plus fixed D3.14/P5V. A legal 0.1375 mm target exists after displacement,
+but restoration leaves one CS_D11 branch and one same-coordinate CS_D55 join
+unroutable on all four standard phases. Even granting every later restoration,
+the chain has a 24-open floor, so it is discarded and the 23-gap checkpoint
+remains authoritative.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

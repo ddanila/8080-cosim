@@ -476,6 +476,20 @@ across R53, C21, D52, D37, E2, D35, D47, and D53. Their 57- and 65-item
 displacements are therefore recorded but not attempted. The independently
 verified 23-open checkpoint remains authoritative.
 
+The previously unsurveyed companion PROM-address net `D3_O4_D6_A6` is now
+classified on that same checkpoint. Its 173.442 mm diagnostic route names 55
+removable migrated items across 27 nets and the fixed D3.14/P5V pad. After
+removing only those migrated items, exact-clearance target attempts on the
+0.10 and 0.125 mm phases remain DRC-rejected by four and two clearance
+findings respectively; the 0.1375 mm phase legally closes the target. The
+guarded restoration then reconnects BA1, BA12, BA6, both BA7 branches, three
+CS_D55 branches, and one CS_D11 branch, but the remaining CS_D11 branch and
+same-coordinate CS_D55 join each fail all four 0.10/0.125/0.1375/0.15 mm
+phases. Even assuming every later displaced net restores, those two
+replacements give the chain a 24-open floor. The transaction was stopped and
+no candidate was published; the verified 23-open checkpoint remains
+authoritative.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \
