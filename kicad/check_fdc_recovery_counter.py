@@ -55,7 +55,13 @@ sources = {
 }
 photo_dir = ROOT / "ref/photos/dgsh5-109-009-e3"
 for name, expected in sources.items():
-    actual = hashlib.sha256((photo_dir / name).read_bytes()).hexdigest()
+    payload = (photo_dir / name).read_bytes()
+    if payload.startswith(b"version https://git-lfs.github.com/spec/v1\n"):
+        pointer = payload.decode("ascii")
+        match = re.search(r"^oid sha256:([0-9a-f]{64})$", pointer, re.MULTILINE)
+        actual = match.group(1) if match else "invalid-lfs-pointer"
+    else:
+        actual = hashlib.sha256(payload).hexdigest()
     if actual != expected:
         raise SystemExit(f"FDC RECOVERY: source hash changed for {name}: {actual}")
 
