@@ -160,6 +160,7 @@ jobs:
             kicad/check_d94_pullups.py \
             kicad/check_kp12_resistor_links.py \
             kicad/check_fdc_clock_mux.py \
+            kicad/check_fdc_recovery_counter.py \
             kicad/check_fdc_precomp_network.py \
             kicad/report_d105_h_boundary.py \
             kicad/report_fdc_lower_assembly_placement.py
@@ -178,6 +179,9 @@ jobs:
 
       - name: Check FDC clock mux
         run: python3 kicad/check_fdc_clock_mux.py
+
+      - name: Check FDC recovery counter
+        run: python3 kicad/check_fdc_recovery_counter.py
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py

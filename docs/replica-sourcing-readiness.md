@@ -12,18 +12,18 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 110
+- BOM lines: 111
 - Populate-now component positions: 260
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 22
+- Mechanical/circuit-review lines: 23
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 10 | 23 |
+| circuit-review | 11 | 23 |
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
@@ -77,6 +77,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | 2 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | Q_KT13 | КТ315 | 1 | VT2 | modern E-C-B transistor selected for the video role and KT-13 pad row |
 | circuit-review | Q_KT27 | КТ972 | 1 | VT1 | modern E-C-B TO-126 transistor selected for the beeper role |
+| circuit-review | R_AXIAL | axial resistor | 0 | R78 | Sheet 3 proves R78 is the +5 V pull-up for D106 UP and all four preset inputs, but its value, body, and source-PCB placement are not yet registered. |
 | circuit-review | R_AXIAL 2к | axial resistor 2к | 0 | R8 | The measured value and D94.1/+5 V endpoints are closed, but R8's physical placement is not registered; do not fabricate or source its final body/lead spacing until that placement is recovered. |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |

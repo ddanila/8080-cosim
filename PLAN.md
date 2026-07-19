@@ -31,7 +31,7 @@ is not a prerequisite for this replica.
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; the recovered ROMBIOS `0xA0/0xA2` 512-byte write-sector path is implemented in both models and byte-for-byte readback-tested on an explicitly writable disk copy; the C and HDL FDC models share guarded Type-I physical-head versus Track-register motion, update/verify/SEEK-ERROR, dynamic status, nominal 3/6/10/15 ms step plus 15 ms verify-settle timing with HLT gating, immediate valid-ID mismatch, four-revolution missing-ID failure, active-low TR00 status/Restore with a 255-step limit, and partial-D0 motion, nominal Type-II/III `E=1` 15 ms head-settle timing followed by exact HLT gating, exact command-load READY-low Type-II/III rejection with Type-I independence, and exact 15-idle-index head-unload semantics, Type-II multi-record continuation through end-of-track RNF, exact four-revolution missing-ID search, exact `C/S` side-ID comparison with fifth-index RNF, and exact Write Sector `a0` normal/deleted marks with Read Sector bit-5 RECORD TYPE through session metadata, the datasheet's exact 22-byte MFM Write Sector preload interval plus streaming one-byte DRQ/LOST-DATA contract (read overwrite and later-write zero substitution), datasheet completion/status acknowledgement and the full Type-IV Force Interrupt event/acknowledgement/disarm lifecycle, a CRC-checked six-byte Read Address command, index-gated 6,250-byte one-revolution MFM Read Track reconstruction including `FB`/`F8`, and an index-gated/preloaded 6,230-write representable MFM Write Track formatter with all ten sector payloads and marks, partial-D0 persistence, and explicit flat-image representation faults; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes directly from the corrected, validated physical D6 table, while the old functional decoder is retained only as a diagnostic comparison; the official D1-D5-DB-ROM topology and period КР580ВК38/ВА87 diagrams exclude a hidden D5 inversion; exact static/runtime guards preserve the CMA/NOP firmware-profile split; standalone ВА87 behavior and the source-proved D23-D25 paths exhaustively guard all 256 values in both directions. The former opt-in D100/DAL builds remain diagnostic experiments only: recovered `.009` sheet 3 proves D100 is instead the drive-output buffer. The same sheet now closes D95's complete 1/2 MHz D93 and 4/8 MHz separator clock mux, which is structural and LVS-visible | Close the physical D6 A7 driver; identify the exact fitted D15/D16 polarity profile and the actual CPU↔D93 DAL wiring now that the inferred D100 bus role is excluded; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior beyond the guarded media subset (including calibration of the D95-selected D93.24 waveform against byte/Type-I/Type-II/III intervals, physical D93.23 HLT generation, D93.34 TR00 drive-status continuity, and step-interface timing, arbitrary flux/deleted-data layouts beyond session-representable marks, and physical D93.32 READY/index timing), cartridge BASIC loading, and analog behavior |
-| Connectivity | `sync/check.sh` reports 108 mapped instances and 279 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D35 frame-interrupt inversion, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
+| Connectivity | `sync/check.sh` reports 110 mapped instances and 282 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D35 frame-interrupt inversion, D41 timing rails, reset/USART paths, D7 strobe topology, D95 clock mux, D106 recovery counter, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The tracked routed artifact was DRC-clean within its former modeled scope; the accepted W14 topology now deliberately invalidates that stale route and its saved manufacturing packet until the P0 netlist freezes. Before the native rail-E correction, the preserved refresh checkpoint `kicad/juku_routed_candidate.kicad_pcb` had 296 footprints, all 2,383 pad identities, zero internal unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings. Merging that source-proved ground domain now exposes one real missing ground join in its stale copper | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. Its stale copper produces two W14-related shorts and two opens: old PHI2 copper still touches D35.12, and a D53_Y0_R49 track crosses W14.2. The refresh checkpoint is intentionally not current-source copper: later corrections leave 62 pad-net mismatches and 202 moved pads across C69/D5/D7/D8/D9/D13/D37-D39/D50/D51/D105/R13/R14/R46/R49-R57, including the net-only C34.1 correction; it also lacks the fourteen A:7/A:8/A:10/A:11/A:14/A:19/A:20 pads. It copper-routes all ten factory insulated-link nets. The source PCB now preserves A:7, A:8, A:10, A:11, A:14, A:19, and A:20 as landing-island pairs joined only by assembly wires W7/W8/W10/W11/W14/W19/W20; the other six `А:N` terminals and three island splits remain unmodeled. All twenty drawing-pixel endpoints are guarded, both A7/A8/A10/A11/A14/A19/A20 terminals plus the D38-side A9 and C96-side A12 joints are board-fitted/island-assigned, and the A7/A8/A11/A14 cut-length discrepancies are explicit. The other four PCB terminals remain unpromoted; a common raw solder image places A14B 58.911 mm from D41.1, and W14 now preserves the distinct PHI2 landing islands. Both routed artifacts are convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split the remaining islands, then refresh/reroute and adopt the manufacturing packet only after the functional P0 netlist freezes |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
@@ -402,7 +402,7 @@ Every ask below is queued with exact deliverables in
 `docs/owner-measurement-shortlist.md`; each item names its gate document.
 
 1. **Complete FDC-era functional wiring.** D93's drive-interface pins plus
-   D28, D96-D99, D101, D102, and D106 have package models but no complete
+   D28, D96-D99, D101, and D102 have package models but no complete
    functional signal closure (`docs/unmodeled-footprint-inventory.md`,
    `docs/fdc-hardware-handoff.md`). Trace each required pin end-to-end, or
    record a deliberate redesign/DNP decision. D93.40 `VDD_12V` is now
@@ -413,8 +413,12 @@ Every ask below is queued with exact deliverables in
    closed and CI-guarded by `sync/ie7_check.sh`: asynchronous active-high
    clear, asynchronous active-low parallel load, rising-edge up/down count
    with the opposite clock high, active-low clock-width carry/borrow, and
-   two-package cascade all match TI SDLS074. This is package behavior only;
-   it does not promote any of D106's remaining measurement-gated board nets.
+   two-package cascade all match TI SDLS074. Recovered sheet 3 now also closes
+   D106's complete board contract: R78 pulls UP and all four preset inputs high,
+   D95.9 clocks DOWN, D97.4/D93.27 RAW READ drives /LOAD, CLR is grounded, Q3
+   drives D28.9, and Q0-Q2 plus /CO and /BO are explicit no-connects
+   (`ref/schematics/fdc-recovery-counter-map.md`). R78's value and placement,
+   plus physical recovery-clock edge quality, remain honest bring-up boundaries.
    the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
    D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
    D101.8/GND. Recovered `.009` Э3 sheet 3 additionally closes the
@@ -451,9 +455,7 @@ Every ask below is queued with exact deliverables in
    and base. The factory drawing separately places C94 immediately to its right,
    but owner imagery does not uniquely resolve C94 through the transistor body.
    C94 population, value, and both endpoints therefore remain measurement asks.
-   The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
-   hidden layer handoffs; direct same-layer paths are rejected), D106's five
-   bounded setup straps, plus D101.1/.3/.5/.6, D97.13, and D102.4;
+   The remaining first probes are D101.1/.3/.5/.6, D97.13, and D102.4;
    the former D93 EARLY/LATE and precomp-output probes are source-closed.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
@@ -580,7 +582,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   88 source-risk nets and 8 official FDC devices with untraced functional
+   76 source-risk nets and 7 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

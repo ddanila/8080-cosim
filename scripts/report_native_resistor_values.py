@@ -123,7 +123,7 @@ for refdes, value in expected.items():
 lines = [
     "# Native schematic resistor values",
     "",
-    "Status: **24 VALUES SOURCE-CLOSED / 0 TARGET HOLDS**",
+    f"Status: **24 VALUES SOURCE-CLOSED / {len(held)} TARGET HOLD**",
     "",
     "The native electrical sheets and target-board photos close 24 values that",
     "were formerly blank in the machine-readable board model. This report checksum-guards those sources,",
@@ -167,10 +167,10 @@ lines.extend(
         "- The factory-identified target R67 body reads `4K7` independently in July",
         "  and May views. This supersedes the `.006` sheet's 2 kΩ R67 value without",
         "  promoting the target part's still-unresolved pin-2 destination.",
-        "- Connectivity is unchanged. This milestone only replaces absent value",
-        "  metadata with literal scan/photo evidence.",
+        "- R78 connectivity is source-closed separately, but its value and physical",
+        "  placement remain held rather than guessed.",
         "- R48's `8,2 Ом` label is independently corroborated by the traced beeper",
-        "  boundary. No modeled axial resistor remains unvalued.",
+        "  boundary. R78 is the sole modeled axial resistor still unvalued.",
         "",
     ]
 )
@@ -178,5 +178,5 @@ lines.extend(
 REPORT.write_text("\n".join(lines), encoding="utf-8")
 print(
     "NATIVE RESISTOR VALUES: PASS — 24 literal source values agree across "
-    "evidence, board JSON, and source PCB; no axial resistor remains held"
+    f"evidence, board JSON, and source PCB; {len(held)} axial resistor remains held"
 )

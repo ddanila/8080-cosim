@@ -30,7 +30,7 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
    the direction-appropriate D93 strobe
    (`docs/d94-reconstruction-constraints.md`).
 3. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
-   D106.11-D93.27, D106.14-D93.33 layer-handoff tests, and the D95/D101 select
+   D101 select
    pins (`docs/fdc-hardware-handoff.md`).
 4. **Factory Вид В details:** D56's three physical callout locations are fixed
    as the separate left annulus plus D56.5/D56.12; continuity-map the installed

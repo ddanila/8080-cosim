@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux. The 8 official FDC devices with untraced functional pins remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux and D106 recovery counter. The 7 official FDC devices with untraced functional pins remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -4694,6 +4694,12 @@
    }
   },
   {
+   "ref": "R78", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
+   "pcb_placement_pending": true,
+   "procurement": {"action": "circuit-review", "note": "Sheet 3 proves R78 is the +5 V pull-up for D106 UP and all four preset inputs, but its value, body, and source-PCB placement are not yet registered."},
+   "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3; physical placement/value pending", "pins": "pin1 joins D106 pins1/5/9/10/15; pin2 joins +5 V. The resistor is symmetric; final pad numbering follows future placement registration"}
+  },
+  {
    "ref": "R79", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "470",
    "prov": {"type": "scan", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory assembly drawing", "pins": "470-ohm +5 V pull-up on X4.23 RD.DATA / D98.6; assembly-drawing affine registration fixes the rightmost member of the R83..R79 bank above D98"}
   },
@@ -5294,7 +5300,7 @@
   {
    "ref": "D106", "type": "IE7_CTR",
    "pins": {"5": "UP", "4": "DOWN", "15": "D0", "1": "D1", "10": "D2", "9": "D3", "11": "LOAD_N", "14": "CLR", "3": "Q0", "2": "Q1", "6": "Q2", "7": "Q3", "12": "CO", "13": "BO"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout", "pins": "power pins 8/16 routed; corrected component and solder fits identify all 14 counter contacts as distinct measurement boundaries, with pins7/9/10 especially rail-obscured and all remote FDC continuity unresolved"}
+   "prov": {"type": "scan", "refdes": ".009 Э3 sheet 3 plus К555ИЕ7/74193 pinout", "pins": "sheet 3 closes DOWN pin4 from D95.9, UP pin5 and D0-D3 pins15/1/10/9 high through R78, LOAD_N pin11 on D97.4/D93.27 RAW READ, CLR pin14 grounded, and Q3 pin7 into D28.9. Undrawn Q0/Q1/Q2 and carry/borrow pins3/2/6/12/13 are intentional no-connects"}
   },
   {
    "ref": "D28", "type": "LN3_OC_INV",
@@ -10194,6 +10200,10 @@
    "power": true,
    "nodes": [
     [
+     "D106",
+     "14"
+    ],
+    [
      "R30",
      "2"
     ],
@@ -11079,6 +11089,10 @@
    "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1",
    "power": true,
    "nodes": [
+    [
+     "R78",
+     "2"
+    ],
     [
      "D10",
      "16"
@@ -13964,29 +13978,13 @@
    "src": "recovered .009 Э3 sheet 3 closes D97 RC1/pin15 to the left-hand target landing C16.1. The drawing's R99 timing-resistor branch is not adopted because registered target copper directly places the sole R99 between D101.4 and ground",
    "nodes": [["D97", "15"], ["C16", "1"]]
   },
-  "D106_D1_BOUNDARY": {
-   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin1 D1; calibrated raw-crop review finds only local copper into a nearby handoff, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
-   "nodes": [["D106", "1"]]
-  },
-  "D106_Q1_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin2 Q1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D106", "2"]]
-  },
-  "D106_Q0_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin3 Q0; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D106", "3"]]
+  "D106_PRESET_HIGH": {
+   "src": "recovered .009 Э3 sheet 3 directly ties D106 UP/pin5 and all four parallel-load inputs pins15/1/10/9 together; R78 pulls that common node to +5 V",
+   "nodes": [["D106", "1"], ["D106", "5"], ["D106", "9"], ["D106", "10"], ["D106", "15"], ["R78", "1"]]
   },
   "FDC_SEPARATOR_CLOCK": {
    "src": "recovered .009 Э3 sheet 3 directly joins D95 clock-mux output B/pin9 to D106 IE7 DOWN/pin4; the mux selects 8 MHz only for FM/MFM=0 and 5-inch/8-inch=0, otherwise 4 MHz",
    "nodes": [["D95", "9"], ["D106", "4"]]
-  },
-  "D106_UP_BOUNDARY": {
-   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin5 UP; calibrated raw-crop review finds only local copper, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
-   "nodes": [["D106", "5"]]
-  },
-  "D106_Q2_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D106", "6"]]
   },
   "SEP_D106_Q3": {
    "src": "recovered .009 Э3 sheet 3 supersedes the cross-photo straight-trace interpretation: D106 Q3/pin7 drives D28 inverter input pin9",
@@ -13999,34 +13997,6 @@
   "FDC_RCLK": {
    "src": "recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26",
    "nodes": [["D96", "5"], ["D93", "26"]]
-  },
-  "D106_D3_BOUNDARY": {
-   "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin9 D3 while the solder end projects beneath crossing rail metal; that apparent overlap is not continuity to GND, so the expected low strap remains an unproved measurement boundary",
-   "nodes": [["D106", "9"]]
-  },
-  "D106_D2_BOUNDARY": {
-   "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin10 D2 while the solder end projects beneath crossing rail metal; that apparent overlap is not continuity to GND, so the expected low strap remains an unproved measurement boundary",
-   "nodes": [["D106", "10"]]
-  },
-  "D106_LOAD_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin11 LOAD_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D106", "11"]]
-  },
-  "D106_CO_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin12 CO; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D106", "12"]]
-  },
-  "D106_BO_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D106", "13"]]
-  },
-  "D106_CLR_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin14 CLR; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D106", "14"]]
-  },
-  "D106_D0_BOUNDARY": {
-   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin15 D0; calibrated raw-crop review finds only local copper into a nearby handoff, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
-   "nodes": [["D106", "15"]]
   },
   "FDC_DSEL_IN": {
    "src": "recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1",
@@ -14194,8 +14164,8 @@
    "nodes": [["D93", "25"]]
   },
   "FDC_RAW_READ": {
-   "src": "recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27",
-   "nodes": [["D97", "4"], ["D93", "27"]]
+   "src": "recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 and D106 parallel-load input pin11",
+   "nodes": [["D97", "4"], ["D93", "27"], ["D106", "11"]]
   },
   "FDC_WDATA_DELAY_IN": {
    "src": "recovered .009 Э3 sheet 3 directly joins D93 WDATA/pin31 to the first write-precomp delay stage D97 B2/pin10",
@@ -15882,6 +15852,11 @@
   }
  },
  "no_connects": [
+  ["D106", "2"],
+  ["D106", "3"],
+  ["D106", "6"],
+  ["D106", "12"],
+  ["D106", "13"],
   ["D94", "5"],
   ["D53", "7"],
   ["D53", "9"],

@@ -38,8 +38,9 @@ IE7-CTR: PASS async-clear/load up/down terminal-pulses cascade
 
 ## Evidence boundary
 
-This closes the standard package's digital behavior. It does **not** promote
-unseen Juku PCB continuity around D106: factory sheet 1 closes D106.7 Q3 through
-D28.9/D28.8 and D96.3/D96.5 to D93.26 RCLK. D106 load, clear, clocks, presets,
-the other outputs, and their
-remote destinations remain owner-continuity boundaries.
+This closes the standard package's digital behavior. Recovered `.009` Э3
+sheet 3 independently closes the board wiring around D106: D95.9 clocks DOWN,
+R78 pulls UP and all four preset inputs high, D97.4/D93.27 RAW READ drives
+/LOAD, CLR is grounded, Q3 drives D28.9, and Q0-Q2 plus /CO and /BO are explicit
+no-connects. The downstream D28/D96 analog timing and edge quality remain
+board bring-up boundaries.

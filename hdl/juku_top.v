@@ -537,13 +537,22 @@ module juku_top (
     // D95 select A0 is FM/MFM (D26 PC4); select A1 is 5-inch/8-inch
     // (D26 PC3). Section A selects 1 MHz at A1=0 or 2 MHz at A1=1;
     // section B selects 8 MHz only at 00 and otherwise 4 MHz. Both enables
-    // are sheet-grounded. The separator consumer D106 is still structurally
-    // outside LVS, but its D95.9-to-D106.4 conductor is source-guarded in KiCad.
+    // are sheet-grounded. Sheet 3 also closes D106: raw read loads 4'hf,
+    // the unused UP clock and preset inputs are pulled high through R78,
+    // CLR is grounded, DOWN receives this mux clock, and Q3 drives D28.9.
     kp12_mux U_D95 (.a0(ppi0_pc[4]), .a1(ppi0_pc[3]),
                      .oe0_n(1'b0), .oe1_n(1'b0),
                      .d0({clk2m, clk2m, clk1m, clk1m}),
                      .d1({clk4m, clk4m, clk4m, clk8m}),
                      .q0(fdc_clk), .q1(fdc_separator_clk));
+    wire d106_preset_high;
+    wire [3:0] d106_q;
+    wire d106_co_unused, d106_bo_unused, d106_q3_to_d28;
+    net_boundary U_D106PRESET (.a(1'b1), .b(d106_preset_high));
+    ie7_ctr U_D106 (.up(d106_preset_high), .down(fdc_separator_clk),
+                    .load_n(fdc_raw_read), .clr(1'b0), .d({4{d106_preset_high}}),
+                    .q(d106_q), .co(d106_co_unused), .bo(d106_bo_unused));
+    net_boundary U_D106Q3LNK (.a(d106_q[3]), .b(d106_q3_to_d28));
 `ifdef YOSYS
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
 `else

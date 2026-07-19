@@ -211,7 +211,6 @@ def main() -> int:
 
     category_by_net = {str(row["name"]): str(row["category"]) for row in net_gap_rows}
     expected_categories = {
-        "D106_D2_BOUNDARY": "FDC owner-continuity",
         "C12_1_BOUNDARY": "logic/source",
         "C12_2_BOUNDARY": "logic/source",
         "READY_PRE_N": "logic/source",

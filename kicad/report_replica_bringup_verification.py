@@ -14,7 +14,7 @@ PCB = ROOT / "kicad" / "juku.kicad_pcb"
 ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X6", "X8", "X9"}
-PLACEMENT_PENDING_REFS = {"C51", "C52", "C53", "C70", "C71", "C72", "R8"}
+PLACEMENT_PENDING_REFS = {"C51", "C52", "C53", "C70", "C71", "C72", "R8", "R78"}
 
 RISK_RE = re.compile(
     r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
@@ -348,7 +348,7 @@ def main() -> int:
             "- Endpoint coverage proves that modeled nets survive into both PCB files;",
             "  it does not prove that the modeled net is historically correct or that",
             "  omitted functional pins are safe.",
-            "- The 8 official FDC devices with remaining source-risk pins are tracked",
+            "- The 7 official FDC devices with remaining source-risk pins are tracked",
             "  separately in `docs/unmodeled-footprint-inventory.md`; they are outside",
             "  every endpoint count above and remain design-release blockers.",
             "- Any row affecting boot, memory, bus direction, interrupts, or video",

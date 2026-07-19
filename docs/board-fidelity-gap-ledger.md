@@ -18,12 +18,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `325`
-- Nets modeled: `504`
+- Chips modeled: `326`
+- Nets modeled: `493`
 - Chip-level fidelity gaps: `60`
-- Net-level source-risk gaps: `88`
+- Net-level source-risk gaps: `76`
 - Explicitly dispositioned closed net risks: `14`
-- Documented intentional no-connect pins: `59`
+- Documented intentional no-connect pins: `64`
 
 ## Chip Provenance Types
 
@@ -50,7 +50,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | owner continuity 2026-07-19 | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 233 |
+| scan | 234 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -64,10 +64,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 7 | 47 |
+| FDC owner-continuity | 6 | 35 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 5 |
-| logic/source | 12 | 29 |
+| logic/source | 13 | 29 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 26 | 0 |
 | placement/value | 13 | 0 |
@@ -87,7 +87,6 @@ parts placement and Tier-3 reproduction.
 | --- | --- | --- | --- |
 | `D101` | `KP12_MUX` | scan + target-photo override | .009 official population and Э3 sheet 3 plus direct owner continuity no-conflict sheet paths close EARLY D93.17 to pin2, LATE D93.18 to pin14, delay taps D97... |
 | `D102` | `AG3_ONESHOT` | scan | .009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking sheet 3 closes both cascaded write-precomp delays: D97.12 to pin10/output5, pin... |
-| `D106` | `IE7_CTR` | scan | .009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout power pins 8/16 routed; corrected component and solder fits identify all 14 co... |
 | `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all... |
 | `D96` | `TM2_DFF` | scan | .009 official FDC population; КМ555ТМ2 identity and standard pinout power pins 7/14 routed; full component registration and reflected solder fit identify the... |
 | `D97` | `AG3_ONESHOT` | scan | .009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking sheet 3 closes the first write-precomp delay: WDATA on pin10, output pin5 to D1... |
@@ -109,6 +108,7 @@ parts placement and Tier-3 reproduction.
 | `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Chip-removed owner continuity on 2026-07-14 supersedes the... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. The revisi... |
+| `R78` | `R_AXIAL` | scan | ДГШ5.109.009 Э3 sheet 3; physical placement/value pending pin1 joins D106 pins1/5/9/10/15; pin2 joins +5 V. The resistor is symmetric; final pad numbering fo... |
 | `R8` | `R_AXIAL` | owner continuity 2026-07-19 | R8, physical placement not yet registered in the replica one end joins only D94.1 in the measured scope; the other end reaches +5 V; measured resistance appr... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |
@@ -177,6 +177,7 @@ explicit KiCad schematic no-connect markers.
 | `D1` | `16` |
 | `D10` | `12, 13, 15` |
 | `D103` | `12, 13, 14` |
+| `D106` | `2, 3, 6, 12, 13` |
 | `D11` | `18` |
 | `D13` | `8, 9, 10, 11` |
 | `D2` | `9, 10, 11` |
@@ -228,18 +229,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D102_Q1N_BOUNDARY` | FDC owner-continuity | `D102.4` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary |
 | `D104_X4_IN_BOUNDARY` | logic/source | `D104.7` | owner resistance 2026-07-19 measures approximately 84 kohm between D104.7 and D94.13, disproving the former direct-net claim; D104 receiver input pin7 remain... |
 | `D104_X4_OUT_BOUNDARY` | logic/source | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps h... |
-| `D106_BO_BOUNDARY` | FDC owner-continuity | `D106.13` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary |
-| `D106_CLR_BOUNDARY` | FDC owner-continuity | `D106.14` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin14 CLR; no remote destination is proved, so this remains a measurement boundary |
-| `D106_CO_BOUNDARY` | FDC owner-continuity | `D106.12` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin12 CO; no remote destination is proved, so this remains a measurement boundary |
-| `D106_D0_BOUNDARY` | FDC owner-continuity | `D106.15` | July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin15 D0; calibrated raw-crop review finds only local copper into a nearby handoff, with... |
-| `D106_D1_BOUNDARY` | FDC owner-continuity | `D106.1` | July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin1 D1; calibrated raw-crop review finds only local copper into a nearby handoff, with n... |
-| `D106_D2_BOUNDARY` | FDC owner-continuity | `D106.10` | July-2026 corrected component fit identifies D106 К555ИЕ7 pin10 D2 while the solder end projects beneath crossing rail metal; that apparent overlap is not co... |
-| `D106_D3_BOUNDARY` | FDC owner-continuity | `D106.9` | July-2026 corrected component fit identifies D106 К555ИЕ7 pin9 D3 while the solder end projects beneath crossing rail metal; that apparent overlap is not con... |
-| `D106_LOAD_BOUNDARY` | FDC owner-continuity | `D106.11` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin11 LOAD_N; no remote destination is proved, so this remains a measurement boun... |
-| `D106_Q0_BOUNDARY` | FDC owner-continuity | `D106.3` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin3 Q0; no remote destination is proved, so this remains a measurement boundary |
-| `D106_Q1_BOUNDARY` | FDC owner-continuity | `D106.2` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin2 Q1; no remote destination is proved, so this remains a measurement boundary |
-| `D106_Q2_BOUNDARY` | FDC owner-continuity | `D106.6` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary |
-| `D106_UP_BOUNDARY` | FDC owner-continuity | `D106.5` | July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin5 UP; calibrated raw-crop review finds only local copper, with no uninterrupted path t... |
 | `D14_I2_BOUNDARY` | logic/source | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
 | `D14_O7_BOUNDARY` | logic/source | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary |
 | `D26_PA6_PREN_BOUNDARY` | logic/source | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measu... |

@@ -1,6 +1,6 @@
 # Native schematic resistor values
 
-Status: **24 VALUES SOURCE-CLOSED / 0 TARGET HOLDS**
+Status: **24 VALUES SOURCE-CLOSED / 1 TARGET HOLD**
 
 The native electrical sheets and target-board photos close 24 values that
 were formerly blank in the machine-readable board model. This report checksum-guards those sources,
@@ -44,7 +44,9 @@ python3 scripts/report_native_resistor_values.py
 
 ## Deliberate holds
 
-None. Every modeled axial resistor now has literal source evidence.
+| Ref | Why it remains unvalued |
+| --- | --- |
+| `R78` | Recovered .009 Э3 sheet 3 proves the D106 preset/UP pull-up role and +5 V endpoint, but its value marking and physical body are not readable in the available source set. |
 
 ## Evidence boundary
 
@@ -55,7 +57,7 @@ None. Every modeled axial resistor now has literal source evidence.
 - The factory-identified target R67 body reads `4K7` independently in July
   and May views. This supersedes the `.006` sheet's 2 kΩ R67 value without
   promoting the target part's still-unresolved pin-2 destination.
-- Connectivity is unchanged. This milestone only replaces absent value
-  metadata with literal scan/photo evidence.
+- R78 connectivity is source-closed separately, but its value and physical
+  placement remain held rather than guessed.
 - R48's `8,2 Ом` label is independently corroborated by the traced beeper
-  boundary. No modeled axial resistor remains unvalued.
+  boundary. R78 is the sole modeled axial resistor still unvalued.

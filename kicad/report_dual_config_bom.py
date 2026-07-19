@@ -15,7 +15,7 @@ DRAM_DECAP_ASSEMBLY_DNP = {
     "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
     "C60", "C61", "C62", "C63", "C64", "C65", "C66", "C67", "C68", "C69",
 }
-PCB_PLACEMENT_PENDING = {"C51", "C52", "C53", "C70", "C71", "C72", "R8"}
+PCB_PLACEMENT_PENDING = {"C51", "C52", "C53", "C70", "C71", "C72", "R8", "R78"}
 
 
 AUTHENTIC_MARK = {

@@ -52,12 +52,8 @@ FD1791/FD1793 counter/separator made from exactly these logic families:
 | recovery counter | 74LS193 | D106 К555ИЕ7 | package family matched |
 | read-clock toggle | 74LS74 | D96 КМ555ТМ2 | section 2 excluded; target RCLK copper bypasses D96 |
 
-The reference topology makes the following continuity checks high-value:
-D106.3 (Q0) to D96.3 (CLK), D96.2 (D) to D96.6 (/Q), D96.5 (Q) to
-D93.26 (RCLK), and one AG3 /Q output jointly to D93.27 (RAW READ) and
-D106.11 (/LOAD). It also suggests checking D106 preset inputs
-15/1 high and 10/9 low, CU pin5 high, CD pin4 to the recovery clock,
-and CLR pin14 inactive.
+The manufacturer topology was useful as a search constraint, but the
+recovered Juku sheet is now authoritative for the actual wiring.
 
 Existing Juku photo constraints narrow, but do not close, that mapping.
 D96.8 (/Q2) reaches a proved isolated component-side test landing, so
@@ -69,14 +65,11 @@ for that output. D99.3
 test landing, excluding D99 section 1 as the active raw-read conditioner.
 The remaining AG3 sections still require continuity identification.
 
-Except for the factory-proved separator chain below, these are
-**reference candidates, not promoted Juku nets**. The Juku
+The Juku
 cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas
 Figure 11 contains no mux and only one half of a single 74123. The owner
-photos identify the packages but do not prove the candidate paths end to
-end; in particular D106 pins 9/10 are rail-obscured. The recovered Juku
-sheet now closes D95 completely; continuity remains required only for the
-support pins not explicitly drawn there.
+photos identify the packages but the recovered Juku sheet, not the generic
+reference circuit, closes D95 and D106 completely.
 
 ## Soviet VG93 Circuit Cross-Check
 
@@ -84,22 +77,19 @@ The original 1986 КР1818ВГ93 paper confirms that this is the actual Soviet
 controller device and publishes its pin contract; it does not publish an
 external separator schematic. A later technical-history reconstruction
 collects period VG93 support circuits. Its Figure 16 shows a second
-high-value candidate that uses a К155ИЕ7-class counter without a ТМ2
-toggle: raw read loads the counter at pin 11, a 4 MHz recovery clock enters
-pin 4, pin 5 is held high, and Q3/pin 7 supplies VG93 RCLK/pin 26. The
-parallel inputs are strapped 15/1 high and 10/9 low, while pin 14 is
-controlled by WF/VFOE/pin 33.
+useful comparison circuit, but its preset and clear straps are not reused
+where the primary Juku sheet differs.
 
 Factory `.009` sheet 1 resolves the apparent crossing: D106.7 reaches
 D28.9, D28.8 clocks D96.3, and D96.5 supplies D93.26 RCLK. The older
 photograph-only interpretation of a direct D106.7-D93.26 net is retired.
-Calibrated review of the same raw solder tile finds no uninterrupted
-same-layer path for D106.11-D93.27 or D106.14-D93.33. This rejects a
-direct visible merge, not cross-layer continuity: both pairs remain meter
-tests for hidden handoffs. Recovered sheet 3 now proves D93.24 is driven
+Recovered sheet 3 proves D97.4/D93.27 RAW READ also drives D106.11 /LOAD,
+while D106.14 CLR is grounded; the older photo-only D106.14-D93.33 and
+hidden-handoff meter candidates are retired. Sheet 3 also proves D93.24 is driven
 by D95.7 from the selected 1/2 MHz rail, while D95.9 independently supplies
 D106.4 with selected 4/8 MHz; D106 Q3 is not a D93.24 source.
-See `ref/schematics/fdc-clock-mux-map.md` for the exact four-row tables.
+See `ref/schematics/fdc-clock-mux-map.md` and
+`ref/schematics/fdc-recovery-counter-map.md` for the exact tables.
 
 Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:
 D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;
@@ -111,11 +101,12 @@ these override the electrical sheet's duplicated R99 reference, conflicting
 R86=470 annotation, and tied-D101 drafting. See
 `ref/schematics/fdc-write-precomp-map.md` for the exact source hierarchy.
 
-### Separator candidate raw-crop disposition
+### Superseded separator raw-crop candidates
 
 All coordinates below are validated local-package fits in
 `PXL_20260710_200506061.jpg`. The negative result prevents topology-only
-promotion while preserving the exact cross-layer continuity request.
+promotion before the primary sheet was recovered. Sheet 3 now resolves
+these candidates directly, so the rows are retained only as audit history.
 
 | Endpoint | Solder coordinate | Candidate peer | Disposition |
 | --- | --- | --- | --- |
@@ -124,13 +115,13 @@ promotion while preserving the exact cross-layer continuity request.
 | D106.14 | (1017.546, 1946.087) | D93.33 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
 | D93.33 | (1557.244, 1809.072) | D106.14 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
 
-### D106 static straps and clock raw-crop disposition
+### Superseded D106 static-strap raw-crop candidates
 
 The same calibrated tile was exhausted for the six remaining IE7 setup
-checks. Pins 9/10 project beneath crossing rail metal, so apparent overlap
-is not continuity. Pins 15/1/5 and pin 4 have identifiable local joints or
-departures, but none remains visibly unbroken to a known power or clock
-anchor. These are therefore bounded meter probes, not inferred straps.
+checks. The photograph alone could not close them, but sheet 3 now proves
+R78 pulls pins 15/1/10/9 and UP/pin5 high, D95.9 clocks DOWN/pin4,
+RAW READ loads pin11, and CLR/pin14 is grounded. These rows are no longer
+meter requests.
 
 | Endpoint | Reference expectation | Solder coordinate | Photograph result | Required proof |
 | --- | --- | --- | --- | --- |
@@ -218,7 +209,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_LATE_SEL` | recovered .009 Э3 sheet 3 directly joins D93 LATE/pin18 to the common D101 select input A0/pin14 | `D93.18, D101.14` |
 | `FDC_MOTOR_EN` | recovered .009 Э3 sheet 1 continuation 1 and sheet 3: D26 PC2/pin16 drives D100 A7/pin7 MOTOR EN | `D26.16, D100.7` |
 | `FDC_PRECOMP_WRDATA` | recovered .009 Э3 sheet 3 directly joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; the drawing's simultaneous Q0/pin7 junction is rejected because direct owner continuity instead closes Q0 to D94.14/R88 | `D101.9, D100.6` |
-| `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 | `D97.4, D93.27` |
+| `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 and D106 parallel-load input pin11 | `D97.4, D93.27, D106.11` |
 | `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
 | `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V | `D28.6, D93.32, R84.1` |
 | `FDC_RE_N` | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V | `D94.3, D93.4, R88.1` |
@@ -252,7 +243,8 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
 - Trace every still-open restored D93 drive-interface pin through D28/D96-D99/
-  D101/D102/D106. D93.40 to `P12V` is already owner-confirmed.
+  D101/D102. D106 is source-closed; only its physical waveform quality
+  remains a bring-up check. D93.40 to `P12V` is already owner-confirmed.
   Pin 40 is a power-safety
   blocker, not an optional functional refinement.
   The existing photographs have been exhausted for this path: they prove

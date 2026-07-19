@@ -525,7 +525,7 @@ The automated seed/review queue is complete. Further work should be targeted,
 not another broad projection pass:
 
 1. D93 pins 19/24/37/38/39 and D100 pins 9/11; D93.26 RCLK is now closed.
-2. Remaining functional pins of D28, D96-D99, D101, D102, and D106; D95 is
+2. Remaining functional pins of D28, D96-D99, D101, and D102; D95 and D106 are
    source-closed by the recovered `.009` electrical sheet.
 3. D94 input pins 10-14, enable pin 15, and output D3 first (D4-D7 are
    invariant released but still need copper-fidelity closure), D30 section B,

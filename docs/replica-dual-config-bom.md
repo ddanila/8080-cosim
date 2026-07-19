@@ -15,17 +15,17 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 325
+- Board component positions: 326
 - Populate for current functional .009 build: 260
-- Do not populate now (empty/DNP/pending): 65
-- Unique BOM lines: 110
+- Do not populate now (empty/DNP/pending): 66
+- Unique BOM lines: 111
 
 ## Action Totals
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 30 |
-| leave-empty | 65 |
+| circuit-review | 31 |
+| leave-empty | 66 |
 | mechanical-review | 17 |
 | program/dump | 6 |
 | source-now | 214 |
@@ -42,6 +42,7 @@ readiness report.
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | Q_KT13 | КТ315 | modern E-C-B transistor selected for the video role and KT-13 pad row | 1 | 1 | 0 | VT2 | - |
 | circuit-review | Q_KT27 | КТ972 | modern E-C-B TO-126 transistor selected for the beeper role | 1 | 1 | 0 | VT1 | - |
+| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R78 | Sheet 3 proves R78 is the +5 V pull-up for D106 UP and all four preset inputs, but its value, body, and source-PCB placement are not yet registered. |
 | circuit-review | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R8 | The measured value and D94.1/+5 V endpoints are closed, but R8's physical placement is not registered; do not fabricate or source its final body/lead spacing until that placement is recovered. |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
 | leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 28 | 0 | 28 | C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+10) | Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part. |
