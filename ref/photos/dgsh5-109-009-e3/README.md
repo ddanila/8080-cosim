@@ -57,7 +57,8 @@ DRAM array, video counters/timing, VIDEO output stage (КТ972).
   `_101924004`, `_101927794`, `_101932581`)
 
 ### Sheet 3 — floppy-disk controller (the FDC-era circuit)
-КР1818ВГ93 (VG93) FDC (D100), КР580ВА87, ROM D94, clock MUX D95 (КП12),
+КР1818ВГ93 (VG93) FDC D93, КР580ВА87 drive-output buffer D100, ROM D94,
+clock MUX D95 (КП12),
 data separator (ИЕ7 D106, ТМ2 D96, ЛА3), drive-select/step/direction latches,
 X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание микросхем
 согласно таблице».
@@ -75,6 +76,9 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       contacts are mapped, and the drawing identifies D100 as the drive-output
       buffer rather than the inferred FDC data-bus buffer
       (`ref/schematics/fdc-x4-ngmd-wire-map.md`).
+- [x] Sheet-1/3 FDC source read: D93 DAL0-DAL7 join D0-D7 directly; D26
+      PC2/PC4/PC5/PC6 supply MOTOR EN/FM-MFM/D_SEL/S.SEL; D28.2 cascades to
+      D28.3 to generate the complementary drive selects.
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).

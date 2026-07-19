@@ -487,9 +487,11 @@ Every ask below is queued with exact deliverables in
    WR.DATA, WR.GATE, H.LOAD, MOTOR.ON, and S.SEL. D28.2/.4 instead drive
    X4.21/.22 `-D.SEL1/0`, and D28.5/.6 participate in READY. The current
    `FDC_DAL0..7`/D100 model and its `/OE`/`T` measurement plan are therefore
-   revision-stale and must be replaced before netlist freeze. The drawing does
-   not reveal the actual CPU↔D93 DAL arrangement, so that bus must return to an
-   explicit source boundary rather than be guessed
+   revision-stale and must be replaced before netlist freeze. A second native
+   frame proves D93 DAL0-DAL7/pins 7-14 join the sheet-1 D0-D7 bundle directly;
+   the numbered sheet-1 continuations also prove D26 PC2/PC4/PC5/PC6 as
+   MOTOR EN/FM-MFM/D_SEL/S.SEL, and show that D28.9 belongs to the separator
+   rather than DDEN. These source-proved nets replace the inferred bus
    (`ref/schematics/fdc-x4-ngmd-wire-map.md`).
 2. **Finish D94 `.092` connectivity.** Content truth is closed; direct owner
    continuity proves D94.15->D93.3, D94.2->D99.8/GND, D94.3->D93.4,

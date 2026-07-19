@@ -19,8 +19,10 @@ agreement on every used signal, not by an unseen cable.
 | Drawing region | Source frame | SHA256 |
 | --- | --- | --- |
 | processor sheet-3 overview | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg` | `5f58dff9c2e1f8237f1c54e44a7ff5db2381b7c503d5e25466fcd219915f7047` |
+| processor D93 host bus and control pins | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101637906.jpg` | `ba6f618ea610f05617cde668660a767c103116bcd55f46862a36cbe385ee26e4` |
 | processor D100 outputs and X4.6-.22 | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101641055.jpg` | `86740a80fb494cdb08f4de3a120cab83e4f6638cf5885d4c83418a4a94c881a7` |
 | processor D98 inputs and X4.7/.8/.14/.15/.23 | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101644861.jpg` | `8b8ad8abdf5cdf8c235cc942592ebe6c0019ec8ad90ae9958267fbc154bb0e67` |
+| processor sheet-1 D26 Port-C continuations | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101809608.jpg` | `62ee9a1ce20ef418bbbb5e49ca8b79f2ff7d0fc317c9c9ffe1a087277067d004` |
 | НГМД overview | `ref/photos/dgsh3-065-008-e3/PXL_20260718_121821197.jpg` | `d4f9604f3f35ea9bfa5f028f017e084e66390892f2e703feb579d27c668d1ff7` |
 | НГМД drive/XS4-to-XS5 tables | `ref/photos/dgsh3-065-008-e3/PXL_20260718_121837340.jpg` | `aa1f3ed11c5b224d471c74bf2404b0019b9f08edc5fe54dc271daf069fce21e2` |
 | НГМД second-drive table overlap | `ref/photos/dgsh3-065-008-e3/PXL_20260718_121849598.jpg` | `8addcb589b734db9b21a47593d144c17531c13e8c42a3b1e42d2899e5f037395` |
@@ -57,6 +59,34 @@ The D98 output side is also explicit: its B1/B2/B3 channels reach D93
 TR00/INDEX/WPRT pins 34/35/36. The READY channel passes through the newly used
 D28 pins 5/6 before D93.32. `RD.DATA` enters the read-separator path rather
 than D93 RAW READ directly.
+
+## Processor-side source map
+
+The same drawing closes the host bus that the earlier photo reconstruction
+had assigned to D100. Sheet 3 labels the eight conductors entering D93
+DAL0-DAL7/pins 7-14 as the sheet-1 `D0`-`D7` bundle. They are direct system
+data-bus connections; no transceiver lies between D0-D7 and D93.
+
+Sheet 1 numbers the six D26 Port-C continuations beside pins 16,17,13,12,11,
+and 10, and repeats those numbers beside their destination labels. The exact
+floppy control assignment is therefore:
+
+| D26 endpoint | Sheet-1 continuation | Sheet-3 endpoint / disposition |
+| --- | ---: | --- |
+| PC2 / pin 16 | 1 | `MOTOR EN` -> D100 A7/pin 7 |
+| PC3 / pin 17 | 2 | `5\"/8\"`; target sheet-3 destination not shown |
+| PC4 / pin 13 | 3 | `FM/MFM` -> D93 DDEN/pin 37 |
+| PC5 / pin 12 | 4 | `D_SEL` -> D28 input pin 1 |
+| PC6 / pin 11 | 5 | `S.SEL` -> D100 A8/pin 8 |
+| PC7 / pin 10 | 6 | `POF`; sheet-2 destination |
+
+D28 output pin 2 is drawn back into input pin 3, so pin 2 produces
+`-D.SEL1` and the second inversion at pin 4 produces complementary
+`-D.SEL0`. D100 input pins 4,1,2,5,3 receive D93 TG43, DIR, STEP, WG, and HLD
+respectively; input pin 6 receives the write-data/precompensation path. D100
+control pins 9 and 11 share the sheet-3 continuation marked `"1"`; the
+upstream source of that continuation remains to be transcribed before it is
+named semantically.
 
 ## НГМД external XS5
 
@@ -120,7 +150,7 @@ It does not come from processor X4.12/.13.
 
 ## Source-model divergences
 
-The recovered primary drawing invalidates three inference-era assignments in
+The recovered primary drawing invalidates four inference-era assignments in
 the current source model:
 
 1. D100 is not the CPU-data-to-D93-DAL transceiver. It is the drive-output
@@ -134,7 +164,11 @@ the current source model:
    circuit names and local endpoints above. X4.2-.5 remain a cross-revision
    disposition item because sheet 3 omits them while the НГМД XS5 side groups
    contacts 1-6 as returns.
+4. D93 DAL0-DAL7 are the direct sheet-1 D0-D7 bundle. D26 PC2/PC4/PC5/PC6
+   feed MOTOR EN, FM/MFM, D_SEL, and S.SEL respectively. In particular,
+   D28.9 is part of the read-separator inverter on sheet 3, not a branch of
+   the D26-PC4/DDEN conductor.
 
 These corrections precede another routed-board refresh. They do not authorize
-guessing the still-unshown CPU↔D93 DAL electrical arrangement or external
-cable conductors for X4.1-.5.
+guessing external cable conductors for X4.1-.5 or the still-untraced source of
+the D100 pin-9/pin-11 control continuation.
