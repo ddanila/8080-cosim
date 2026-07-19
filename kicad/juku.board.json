@@ -14091,16 +14091,12 @@
    "src": "recovered .009 Э3 sheet-3 detail PXL_20260718_101637906.jpg directly ties D93 TEST/pin22 to WF/VFOE/pin33 with one local U-shaped conductor; no other junction is drawn",
    "nodes": [["D93", "22"], ["D93", "33"]]
   },
-  "D93_HLT_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "23"]]
-  },
   "FDC_CLK": {
    "src": "recovered .009 Э3 sheet 3 directly joins D95 clock-mux output A/pin7 to D93 CLK/pin24; 5-inch/8-inch select A1=0 chooses the tied 1 MHz inputs and A1=1 chooses the tied 2 MHz inputs",
    "nodes": [["D95", "7"], ["D93", "24"]]
   },
-  "D93_RG_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary",
+  "D93_RG_NC": {
+   "src": "recovered exact-revision .009 Э3 sheet 3 deliberately omits D93 RG/pin25 from the drawn controller symbol between explicitly connected CLK/pin24 and RCLK/pin26; the pin is unused/open on this design",
    "nodes": [["D93", "25"]]
   },
   "FDC_RAW_READ": {
@@ -14112,8 +14108,8 @@
    "nodes": [["D93", "31"], ["D97", "10"]]
   },
   "FDC_READY": {
-   "src": "recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V",
-   "nodes": [["D28", "6"], ["D93", "32"], ["R84", "1"]]
+   "src": "recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V; E11 is drawn in its 2-3 position, strapping D93 HLT/pin23 to READY (post 1 is the alternate MOTOR EN source)",
+   "nodes": [["D28", "6"], ["D93", "23"], ["D93", "32"], ["R84", "1"]]
   },
   "D14_I2_BOUNDARY": {
    "src": "sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary",

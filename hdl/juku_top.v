@@ -531,7 +531,7 @@ module juku_top (
     wire fdc_drq, fdc_intrq;
     wire fdc_step, fdc_dir, fdc_hld, fdc_tg43, fdc_wg, fdc_wdata;
     wire fdc_early_boundary, fdc_late_boundary, fdc_test_wf_vfoe;
-    wire fdc_hlt_boundary, fdc_rg_boundary, fdc_rclk, fdc_raw_read;
+    wire fdc_rg_nc, fdc_rclk, fdc_raw_read;
     wire fdc_ready, fdc_tr00, fdc_index, fdc_wprt;
     wire fdc_clk, fdc_separator_clk;
     // D95 select A0 is FM/MFM (D26 PC4); select A1 is 5-inch/8-inch
@@ -596,7 +596,7 @@ module juku_top (
                        .mr_n(reset_sys), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
                        .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                        .step(fdc_step), .dirc(fdc_dir), .early(fdc_early_boundary), .late(fdc_late_boundary),
-                       .test(fdc_test_wf_vfoe), .hlt(fdc_hlt_boundary), .rg(fdc_rg_boundary),
+                       .test(fdc_test_wf_vfoe), .hlt(fdc_ready), .rg(fdc_rg_nc),
                        .rclk(fdc_rclk), .raw_read(fdc_raw_read), .hld(fdc_hld), .tg43(fdc_tg43),
                        .wg(fdc_wg), .wdata(fdc_wdata), .ready(fdc_ready),
                        .wf_vfoe(fdc_test_wf_vfoe), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),

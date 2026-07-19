@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `60`
-- Verification-point endpoints checked in PCB: `71`
+- Verification-point nets: `58`
+- Verification-point endpoints checked in PCB: `69`
 - PCB endpoint coverage: `FAIL`
 - All board endpoints checked in source PCB: `2263`
 - All board endpoints checked in routed PCB: `2263`
@@ -23,7 +23,7 @@ visible and actionable before manufacturing and first power-on.
 
 | Category | Nets |
 | --- | ---: |
-| FDC | 4 |
+| FDC | 2 |
 | logic | 34 |
 | memory/decode | 2 |
 | sound/analog | 1 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 71/71 matched a footprint pad net |
-| Risk endpoint net names match board JSON | FAIL | 70/71 net names matched |
+| Risk endpoints present on PCB pads | PASS | 69/69 matched a footprint pad net |
+| Risk endpoint net names match board JSON | FAIL | 68/69 net names matched |
 
 Mismatched PCB pad-net endpoints:
 - D104.7: `D94_A3_D104_X4_PULLUP` != `D104_X4_IN_BOUNDARY`
@@ -169,8 +169,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D6_V_ENABLE: D6.14`
 - `D6_V_ENABLE: D13.12`
 - `D93_1_OPEN_STUB: D93.1`
-- `D93_HLT_BOUNDARY: D93.23`
-- `D93_RG_BOUNDARY: D93.25`
+- `D93_RG_NC: D93.25`
 - `D93_TEST_WF_VFOE: D93.22`
 - `D93_TEST_WF_VFOE: D93.33`
 - `D94_A4_D101_Q0: D101.7`
@@ -233,6 +232,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `FDC_RCLK: D96.5`
 - `FDC_RCLK: D93.26`
 - `FDC_READY: D28.6`
+- `FDC_READY: D93.23`
 - `FDC_READY: D93.32`
 - `FDC_READY: R84.1`
 - `FDC_RE_N: D94.3`
@@ -630,8 +630,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D56_Q2N_TAG16` | memory/decode | `D56.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D58_STB_TAG5` | logic | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled... | Bench-check waveform/current path with speaker disconnected first. |
-| `D93_HLT_BOUNDARY` | FDC | `D93.23` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
-| `D93_RG_BOUNDARY` | FDC | `D93.25` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D94_D0_BOUNDARY` | logic | `D94.1, R8.1` | owner continuity 2026-07-19: D94.1 joins R8 through approximately 2 kohm to +5 V; no other connection was found | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D6` | logic | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projec... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

@@ -191,7 +191,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | Pin | Status | Needed fact | Current boundary |
 | --- | --- | --- | --- |
 | D10.22 `IR4` | BOUNDARY | stale tape-run continuation disposition | exact .009 sheet 1 labels (3) TAPE RUN INT, but replacement FDC sheet 3 has no matching continuation; ekta37 mask 0xDF keeps IR4 masked |
-| D93.23/.25 | BOUNDARY | head-load timing and read-gate sources | primary FD179X-01 contract and two-sided socket fits localize both pads; their remote sources remain unproved |
+| D93.23 HLT / D93.25 RG | SOURCE-CLOSED | selected head-load timing and unused read-gate output | exact .009 sheet 3 draws E11 in position 2-3 (HLT=READY) and deliberately omits RG/pin25 between the explicit pin24/pin26 paths |
 | D93.24 `CLK` | CONNECTED | source-selected 1/2 MHz FDC clock rail | recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock |
 | D100.9/.11 continuation `1` | BOUNDARY | shared drive-output-buffer control source | factory sheet proves pins 9/11 joined; upstream continuation remains untraced |
 
@@ -216,7 +216,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_PRECOMP_WRDATA` | recovered .009 Э3 sheet 3 directly joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; the drawing's simultaneous Q0/pin7 junction is rejected because direct owner continuity instead closes Q0 to D94.14/R88 | `D101.9, D100.6` |
 | `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 and D106 parallel-load input pin11 | `D97.4, D93.27, D106.11` |
 | `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
-| `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V | `D28.6, D93.32, R84.1` |
+| `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V; E11 is drawn in its 2-3 position, strapping D93 HLT/pin23 to READY (post 1 is the alternate MOTOR EN source) | `D28.6, D93.23, D93.32, R84.1` |
 | `FDC_RE_N` | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V | `D94.3, D93.4, R88.1` |
 | `FDC_SEPARATOR_CLOCK` | recovered .009 Э3 sheet 3 directly joins D95 clock-mux output B/pin9 to D106 IE7 DOWN/pin4; the mux selects 8 MHz only for FM/MFM=0 and 5-inch/8-inch=0, otherwise 4 MHz | `D95.9, D106.4` |
 | `FDC_SIDE_SEL` | recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL | `D26.11, D100.8` |
@@ -252,8 +252,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   SP/EN pin16 is source-proved at +5 V. Only the stale tape IR4
   continuation remains a Tier-3 continuity boundary; ROM mask 0xDF
   keeps it disabled in the runnable configuration.
-- Trace only the still-open D93.23/.25 functions and the D99/D101
-  support-device boundaries; D93.22/.33 are directly tied on sheet 3,
+- D93.23 HLT is source-strapped through E11 2-3 to READY, and D93.25
+  RG is source-proved unused/open. Trace only the D99/D101 support-device
+  boundaries; D93.22/.33 are directly tied on sheet 3,
   and D93.15-.19/.26-.32/.34-.36 are source-connected.
   D28/D95-D98/D102/D106 are source-closed; only physical waveform quality
   remains a bring-up check. D93.40 to `P12V` is already owner-confirmed.
