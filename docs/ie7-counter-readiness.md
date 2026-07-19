@@ -42,5 +42,6 @@ This closes the standard package's digital behavior. Recovered `.009` Э3
 sheet 3 independently closes the board wiring around D106: D95.9 clocks DOWN,
 R78 pulls UP and all four preset inputs high, D97.4/D93.27 RAW READ drives
 /LOAD, CLR is grounded, Q3 drives D28.9, and Q0-Q2 plus /CO and /BO are explicit
-no-connects. The downstream D28/D96 analog timing and edge quality remain
-board bring-up boundaries.
+no-connects. The downstream D28/R85/D96 waveform quality and separator lock
+margin remain board bring-up measurements even though D96 connectivity is now
+source-closed.

@@ -261,6 +261,14 @@ def main() -> int:
     )
     if not d96_section2_excluded:
         failures.append("D96 section-2 isolated-/Q constraint is absent")
+    d96_toggle_closed = (
+        {"D96.2", "D96.6"}
+        == {f"{ref}.{pin}" for ref, pin in net(board, "D96_TOGGLE_FEEDBACK").get("nodes", [])}
+        and all(has_node(board, "WREQ_N", "D96", pin) for pin in ("1", "4"))
+        and all(["D96", pin] in board.get("no_connects", []) for pin in ("9", "10", "11", "12", "13"))
+    )
+    if not d96_toggle_closed:
+        failures.append("sheet-3 D96 read-clock toggle wiring is absent")
     if not d99_section1_excluded:
         failures.append("D99 section-1 grounded-clear/test-landing constraint is absent")
     rclk_closed = (
@@ -523,17 +531,16 @@ def main() -> int:
         "| --- | --- | --- | --- |",
         table_row(["raw-read pulse conditioner", "74123", "D97/D99/D102 К155АГ3", "D99 section 1 excluded; remaining section not identified"]),
         table_row(["recovery counter", "74LS193", "D106 К555ИЕ7", "package family matched"]),
-        table_row(["read-clock toggle", "74LS74", "D96 КМ555ТМ2", "section 2 excluded; target RCLK copper bypasses D96"]),
+        table_row(["read-clock toggle", "74LS74", "D96 КМ555ТМ2", "sheet-3 toggle source-closed; section 2 unused"]),
         "",
         "The manufacturer topology was useful as a search constraint, but the",
         "recovered Juku sheet is now authoritative for the actual wiring.",
         "",
-        "Existing Juku photo constraints narrow, but do not close, that mapping.",
-        "D96.8 (/Q2) reaches a proved isolated component-side test landing, so",
-        "section 2 cannot supply the reference circuit's required /Q-to-D feedback;",
-        "D96 section 1 (pins 2/3/5/6) is the only physically available WD-toggle",
-        "section, but the target RCLK closure below proves that Juku did not use it",
-        "for that output. D99.3",
+        "D96.8 (/Q2) reaches a proved isolated component-side test landing, and",
+        "sheet 3 omits the rest of section 2. Sheet 3 directly closes section 1",
+        "as the active toggle: /Q pin6 feeds D pin2, D28.8 clocks pin3, Q pin5",
+        "drives D93.26 RCLK, and WREQ_N drives both asynchronous controls.",
+        "D99.3",
         "(/CLR1) is physically grounded and D99.2 (B1) reaches another isolated",
         "test landing, excluding D99 section 1 as the active raw-read conditioner.",
         "The remaining AG3 sections still require continuity identification.",
@@ -542,7 +549,7 @@ def main() -> int:
         "cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas",
         "Figure 11 contains no mux and only one half of a single 74123. The owner",
         "photos identify the packages but the recovered Juku sheet, not the generic",
-        "reference circuit, closes D95 and D106 completely.",
+        "reference circuit, closes D95, D106, and D96 completely.",
         "",
         "## Soviet VG93 Circuit Cross-Check",
         "",
@@ -562,7 +569,8 @@ def main() -> int:
         "by D95.7 from the selected 1/2 MHz rail, while D95.9 independently supplies",
         "D106.4 with selected 4/8 MHz; D106 Q3 is not a D93.24 source.",
         "See `ref/schematics/fdc-clock-mux-map.md` and",
-        "`ref/schematics/fdc-recovery-counter-map.md` for the exact tables.",
+        "`ref/schematics/fdc-recovery-counter-map.md` plus",
+        "`ref/schematics/fdc-read-clock-toggle-map.md` for the exact tables.",
         "",
         "Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:",
         "D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;",
@@ -707,8 +715,8 @@ def main() -> int:
             "  `docs/fdc-bus-polarity.md`.",
             "  Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional",
             "  NCs; SP/EN pin16 is already source-proved and modeled at +5 V.",
-            "- Trace every still-open restored D93 drive-interface pin through D28/D96-D99/",
-            "  D101/D102. D106 is source-closed; only its physical waveform quality",
+            "- Trace every still-open restored D93 drive-interface pin through D28/D97-D99/",
+            "  D101/D102. D96 and D106 are source-closed; only physical waveform quality",
             "  remains a bring-up check. D93.40 to `P12V` is already owner-confirmed.",
             "  Pin 40 is a power-safety",
             "  blocker, not an optional functional refinement.",

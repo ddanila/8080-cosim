@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux and D106 recovery counter. The 7 official FDC devices with untraced functional pins remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux, D106 recovery counter, and D96 read-clock toggle. The 6 official FDC devices with untraced functional pins remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -5280,7 +5280,7 @@
   {
    "ref": "D96", "type": "TM2_DFF",
    "pins": {"1": "CLR1_N", "2": "D1", "3": "CLK1", "4": "PRE1_N", "5": "Q1", "6": "Q1_N", "8": "Q2_N", "9": "Q2", "10": "PRE2_N", "11": "CLK2", "12": "D2", "13": "CLR2_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555ТМ2 identity and standard pinout", "pins": "power pins 7/14 routed; full component registration and reflected solder fit identify the package; pin8 reaches a proved isolated test landing and the other 11 functional contacts remain distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 Э3 sheet 3 plus КМ555ТМ2 standard pinout", "pins": "sheet 3 closes section 1 as the read-clock toggle: WREQ_N drives both active-low asynchronous controls pins1/4, Q_N pin6 feeds D pin2, D28.8 clocks pin3, and Q pin5 drives D93 RCLK. Section 2 is undrawn/unused: pins9-13 are intentional no-connects, while pin8 retains the independently photo-proved isolated one-sided test landing"}
   },
   {
    "ref": "D97", "type": "AG3_ONESHOT", "marking": "К155АГ3",
@@ -13826,6 +13826,10 @@
    "src": "July-2026 D99-package-local cross-side affine: D96.8 Q2_N reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
    "nodes": [["D96", "8"]]
   },
+  "D96_TOGGLE_FEEDBACK": {
+   "src": "recovered .009 Э3 sheet 3 directly feeds D96 section-1 Q_N/pin6 back to D/pin2, forming the read-clock divide-by-two toggle",
+   "nodes": [["D96", "2"], ["D96", "6"]]
+  },
   "D99_B_TEST_LANDING": {
    "src": "July-2026 D99-package-local cross-side affine: D99.2 B reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
    "nodes": [["D99", "2"]]
@@ -14038,42 +14042,6 @@
   "D28_Y6_BOUNDARY": {
    "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 output pin12; its target-revision destination remains to be transcribed",
    "nodes": [["D28", "12"]]
-  },
-  "D96_CLR1_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin1 CLR1_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "1"]]
-  },
-  "D96_D1_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin2 D1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "2"]]
-  },
-  "D96_PRE1_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin4 PRE1_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "4"]]
-  },
-  "D96_Q1N_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin6 Q1_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "6"]]
-  },
-  "D96_Q2_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin9 Q2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "9"]]
-  },
-  "D96_PRE2_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin10 PRE2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "10"]]
-  },
-  "D96_CLK2_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin11 CLK2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "11"]]
-  },
-  "D96_D2_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin12 D2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "12"]]
-  },
-  "D96_CLR2_BOUNDARY": {
-   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin13 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D96", "13"]]
   },
   "FDC_INDEX_STATUS": {
    "src": "recovered .009 Э3 sheet 3: D98 output pin5 directly drives D93 INDEX/pin35",
@@ -15761,8 +15729,8 @@
    "nodes": [["D105", "10"], ["D13", "13"], ["X1", "107B"], ["R1", "2"]]
   },
   "WREQ_N": {
-   "src": "traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Direct owner continuity closes D6.11/D2.15/D92.5/R12.2; recovered .009 sheet 3 continues the same signal to the clear inputs of the D97.1/D97.2/D102.1/D102.2 precompensation one-shots. The sheet's conflicting R86 reset pull-up is not adopted because registered target photos place R86 on the C19/D97.6 node",
-   "nodes": [["D2", "15"], ["X1", "107C"], ["D6", "11"], ["D92", "5"], ["R12", "2"], ["D97", "3"], ["D97", "11"], ["D102", "3"], ["D102", "11"]]
+   "src": "traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Direct owner continuity closes D6.11/D2.15/D92.5/R12.2; recovered .009 sheet 3 continues the same signal to both asynchronous controls D96.1/.4 and to the clear inputs of the D97.1/D97.2/D102.1/D102.2 precompensation one-shots. The sheet's conflicting R86 reset pull-up is not adopted because registered target photos place R86 on the C19/D97.6 node",
+   "nodes": [["D2", "15"], ["X1", "107C"], ["D6", "11"], ["D92", "5"], ["R12", "2"], ["D96", "1"], ["D96", "4"], ["D97", "3"], ["D97", "11"], ["D102", "3"], ["D102", "11"]]
   },
   "D105_WAIT_STAGE": {
    "src": "traced sheet-1: D105 pin 8 drives both inputs pins 4 and 5 of the following NAND section",
@@ -15852,6 +15820,11 @@
   }
  },
  "no_connects": [
+  ["D96", "9"],
+  ["D96", "10"],
+  ["D96", "11"],
+  ["D96", "12"],
+  ["D96", "13"],
   ["D106", "2"],
   ["D106", "3"],
   ["D106", "6"],

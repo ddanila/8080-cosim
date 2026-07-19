@@ -95,6 +95,11 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       CLR is grounded, Q3 drives D28.9, and the five undrawn outputs are NC
       (`ref/schematics/fdc-recovery-counter-map.md`). R78 value and placement
       remain explicitly unresolved.
+- [x] Sheet-3 D96 read-clock toggle completely transcribed: WREQ_N drives both
+      asynchronous controls, /Q feeds D, D28.8 clocks section 1, Q drives
+      D93 RCLK, and the undrawn second half is NC except for its independently
+      photo-proved pin-8 test landing
+      (`ref/schematics/fdc-read-clock-toggle-map.md`).
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).

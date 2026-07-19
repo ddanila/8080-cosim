@@ -490,7 +490,7 @@
         {"pin": "4", "image_px": [3148.0, 2234.0], "use": "check", "observation": "independent fourth contact on the left package column"},
         {"pin": "7", "image_px": [3148.0, 2393.0], "use": "fit", "observation": "bottom-left ground contact on the same coherent seven-pad column"}
       ],
-      "note": "Direct fit to the vertical КМ555ТМ2 D96 immediately right of D28. It establishes package identity and relative placement only; functional FDC continuity remains unresolved."
+      "note": "Direct fit to the vertical КМ555ТМ2 D96 immediately right of D28. This photograph establishes package identity and relative placement only; the official .009 electrical sheet 3 now supplies the accepted functional continuity."
     },
     {
       "refdes": "D96",

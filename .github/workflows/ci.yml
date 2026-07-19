@@ -29,6 +29,7 @@ jobs:
           sh -n sync/video_readout_check.sh
           sh -n sync/serial_check.sh
           sh -n sync/ie7_check.sh
+          sh -n sync/d96_check.sh
           sh -n sync/ie10_check.sh
           bash -n sync/kp12_check.sh
           sh -n sync/ag3_check.sh
@@ -160,6 +161,7 @@ jobs:
             kicad/check_d94_pullups.py \
             kicad/check_kp12_resistor_links.py \
             kicad/check_fdc_clock_mux.py \
+            kicad/check_fdc_read_clock_toggle.py \
             kicad/check_fdc_recovery_counter.py \
             kicad/check_fdc_precomp_network.py \
             kicad/report_d105_h_boundary.py \
@@ -182,6 +184,9 @@ jobs:
 
       - name: Check FDC recovery counter
         run: python3 kicad/check_fdc_recovery_counter.py
+
+      - name: Check FDC read-clock toggle
+        run: python3 kicad/check_fdc_read_clock_toggle.py
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py

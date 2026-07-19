@@ -142,6 +142,8 @@ jobs:
           ./sync/beeper_check.sh
           ./sync/serial_check.sh
           ./sync/ie7_check.sh
+          ./sync/d96_check.sh
+          git diff --exit-code -- docs/d96-read-clock-readiness.md
           ./sync/ie10_check.sh
           ./sync/ag3_check.sh
           ./sync/juku_top_periph_bus_check.sh

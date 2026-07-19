@@ -25,7 +25,7 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 ## Design-Release Consequence
 
 There are `0` IC footprints with no board-JSON representation
-and `7` promoted FDC devices with functional pins still
+and `6` promoted FDC devices with functional pins still
 untraced or carried only by explicit boundary nets. KiCad's zero-unconnected
 result cannot establish remote continuity for those endpoints. They block
 design release until measured or explicitly dispositioned.
@@ -98,7 +98,6 @@ documented intentional no-connects are excluded.
 | Ref | Untraced functional pins |
 | --- | --- |
 | `D28` | 10:Y5, 11:A5, 12:Y6, 13:A6 |
-| `D96` | 1:CLR1_N, 2:D1, 4:PRE1_N, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N |
 | `D97` | 13:Q |
 | `D98` | 9:Y4, 10:A4 |
 | `D99` | 1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |

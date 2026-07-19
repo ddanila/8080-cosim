@@ -13,7 +13,7 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
-- `sync/check.sh` currently compares 110 mapped instances and 282 nets with no
+- `sync/check.sh` currently compares 111 mapped instances and 284 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and zero KiCad copper
   clearance, crossing, short, or unconnected findings. The real
@@ -52,11 +52,14 @@ with the machine-readable board model.
   snapshot still needs replacement. D94 content truth is closed, but its A0-A4
   input sources, pin 15 source, and the far destinations or branches of outputs
   D3-D7 remain unknown; the former BA11-BA15 input assignment was an unproved
-  scaffold analogy and is retired. There are 7 official FDC-support ICs whose
+  scaffold analogy and is retired. There are 6 official FDC-support ICs whose
   functional pin closure is still incomplete.
   Recovered sheet 3 closes D106 completely: its R78 preset pull-up, RAW READ
   load, D95 recovery clock, grounded clear, Q3 output, and five no-connects are
   now source-modeled and LVS-visible; R78 value/placement stays unresolved.
+  Sheet 3 also closes D96's complete section-1 divide-by-two read-clock toggle,
+  its WREQ controls, five unused-half no-connects, and the separately proved
+  pin-8 test landing; it too is structural and LVS-visible.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
   D6's validated physical table and chip-removed separate ROM/RAM outputs stay LVS-visible,
   while runnable simulation uses an explicit non-LVS memory-map decoder until
@@ -73,7 +76,7 @@ with the machine-readable board model.
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
   R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 76 modeled nets retain source-risk annotations requiring
+  In total, 67 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

@@ -553,6 +553,17 @@ module juku_top (
                     .load_n(fdc_raw_read), .clr(1'b0), .d({4{d106_preset_high}}),
                     .q(d106_q), .co(d106_co_unused), .bo(d106_bo_unused));
     net_boundary U_D106Q3LNK (.a(d106_q[3]), .b(d106_q3_to_d28));
+    // D28.2 is the open-collector inverter between D106.Q3 and D96.CLK1;
+    // R85 provides its pull-up. Sheet 3 closes D96.1 as a divide-by-two
+    // toggle: /Q feeds D, Q drives VG93 RCLK, and WREQ_N holds both
+    // asynchronous controls inactive except during writes.
+    wire d96_separator_clk, d96_q1_n, d96_q2n_test;
+    assign d96_separator_clk = ~d106_q3_to_d28;
+    tm2_dff #(.FUNCTIONAL(1)) U_D96 (
+        .clr1_n(wreq_n), .d1(d96_q1_n), .clk1(d96_separator_clk), .pre1_n(wreq_n),
+        .q1(fdc_rclk), .q1_n(d96_q1_n),
+        .clr2_n(1'bz), .d2(1'bz), .clk2(1'bz), .pre2_n(1'bz),
+        .q2(), .q2_n(d96_q2n_test));
 `ifdef YOSYS
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
 `else

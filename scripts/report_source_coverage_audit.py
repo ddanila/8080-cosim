@@ -108,8 +108,8 @@ def main() -> int:
         ]),
         row([
             "Western Digital FD179X references, the original 1986 КР1818ВГ93 paper, a historical Soviet circuit comparison, and the local WD1772 transistor/PLA reference",
-            "WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, source-closed D106 recovery counter and Q3-to-RCLK chain, remaining separator probes, a KP12 precompensation candidate, and normalized PLA are documented",
-            "factory sheet 3 proves every D106 signal/strap/NC disposition, while sheet 1 proves its D28/D96 continuation; device/manufacturer references narrow the remaining support probes but do not prove other Juku-specific support nets or D94 connectivity",
+            "WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, source-closed D106 recovery counter and D96 read-clock toggle, remaining separator probes, a KP12 precompensation candidate, and normalized PLA are documented",
+            "factory sheet 3 proves every D106 and D96 signal/strap/NC disposition plus their D28 continuation; device/manufacturer references narrow the remaining support probes but do not prove other Juku-specific support nets or D94 connectivity",
         ]),
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",
@@ -121,7 +121,7 @@ def main() -> int:
         "",
         "1. Compare all four validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` raw tables against Baltijets programming-disk files if those surface.",
         "2. D94 `ДГШ5.106.092` input/enable/output continuity; the repeated content dump is already adopted.",
-        "3. Pin-level continuity for D93's remaining drive interface, plus explicit dispositions for the 7 still-open power-routed FDC-support devices: D28, D96-D99, D101, and D102. D95's clock mux, D106's complete recovery-counter wiring, D93.40->+12 V, and the owner-measured D2/D30/D105/D13/D6 corrections are synchronized.",
+        "3. Pin-level continuity for D93's remaining drive interface, plus explicit dispositions for the 6 still-open power-routed FDC-support devices: D28, D97-D99, D101, and D102. D95's clock mux, D106's recovery counter, D96's read-clock toggle, D93.40->+12 V, and the owner-measured D2/D30/D105/D13/D6 corrections are synchronized.",
         "4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.",
         "5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.",
         "",

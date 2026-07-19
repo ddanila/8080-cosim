@@ -42,7 +42,7 @@ They are not generic cycle-accurate replacements for every original IC mode.
   and its first three outputs are wired to the accepted local FDC controls. Its
   enable source, remaining far destinations, and complete D93 strobe branches
   are unknown.
-- Seven official FDC-support devices have package pins and power endpoints in
+- Six official FDC-support devices have package pins and power endpoints in
   the board model but no functional signal closure or HDL instances;
   `docs/unmodeled-footprint-inventory.md` owns that boundary.
 - The shared К555ИЕ7/74LS193 primitive used by video counters D44-D47 and
@@ -50,6 +50,10 @@ They are not generic cycle-accurate replacements for every original IC mode.
   guarded. Recovered sheet 3 also closes and LVS-maps its actual board straps,
   RAW READ load, selected recovery clock, grounded clear, Q3 output, and five
   explicit no-connects; only physical waveform quality remains a bench check.
+- D96's КМ555ТМ2 section 1 is likewise sheet-closed, runnable, and LVS-mapped:
+  WREQ_N controls /CLR and /PRE, /Q feeds D, D28.8 clocks the toggle, and Q
+  drives D93 RCLK. The unused half retains its isolated pin-8 test landing and
+  five explicit no-connects.
 - D103's К555ИЕ10/74LS161 behavior and its source-traced D33 feedback are
   guarded through the actual `0011` preset, proving the modulo-13 path from
   16 MHz to the labeled 1.23 MHz Q3 rail. The upstream OSC-to-XTAL16M physical
@@ -72,7 +76,7 @@ They are not generic cycle-accurate replacements for every original IC mode.
   D7.2/A19B landing, with W19 as the only modeled closure.
 - Factory wire A:20 separates D3.10/A20B from the co-located A20A/A23.1/X3.3
   cable island; W20 remains transparent in HDL while preserving that assembly.
-- 76 modeled nets still carry source-risk annotations requiring
+- 67 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist, but faithful shared-DRAM
