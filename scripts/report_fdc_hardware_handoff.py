@@ -298,11 +298,10 @@ def main() -> int:
     ):
         failures.append("D93 measured ground, +5 V, or +12 V supply is absent")
     if (
-        not has_node(board, "D94_D4", "D93", "1")
-        or not has_node(board, "D94_D4", "D94", "5")
-        or ["D93", "1"] in board.get("no_connects", [])
+        ["D94", "5"] not in board.get("no_connects", [])
+        or not has_node(board, "D93_1_OPEN_STUB", "D93", "1")
     ):
-        failures.append("D93 internal back-bias pin 1 is not photo-closed to D94.5")
+        failures.append("D94.5 no-connect / D93.1 open-stub correction is absent")
     if d100.get("type") != "BUF8287":
         failures.append("D100 is not typed as BUF8287")
     if d100.get("pins", {}).get("10") != "VSS_GND" or d100.get("pins", {}).get("20") != "VCC_5V":
@@ -377,20 +376,20 @@ def main() -> int:
     control_checks = [
         (
             "`FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N`",
-            "D94 D2/D3 to D93 RE/WE; D94 enable pin15 to D93 CS; D94 D1 grounded via D99.8",
+            "D94 D2/D3 to D93 RE/WE with R88/R87 pull-ups; D94 enable pin15 to D93 CS; D94 D1 to D99.9/R89",
             [("FDC_RE_N", "D94", "3"), ("FDC_RE_N", "D93", "4"),
              ("FDC_CS_N", "D94", "15"), ("FDC_CS_N", "D93", "3"),
-             ("GND", "D94", "2"), ("GND", "D99", "8"),
+             ("D94_D1_D99_A2N", "D94", "2"), ("D94_D1_D99_A2N", "D99", "9"),
              ("FDC_WE_N", "D94", "4"), ("FDC_WE_N", "D93", "2")],
             False,
-            "direct owner continuity for all three controls and grounded D1",
+            "direct owner continuity for all three controls and corrected D1 destination",
         ),
         (
-            "`D94_D4` / D93.1 back-bias landing",
-            "D94 output D4 to the wired D93 socket contact whose controller pin is internally NC/back-bias",
-            [("D94_D4", "D94", "5"), ("D94_D4", "D93", "1")],
+            "D94.5 no-connect / `D93_1_OPEN_STUB`",
+            "D94 output D4 is a PCB no-connect; D93.1 owns the short open stub",
+            [("D93_1_OPEN_STUB", "D93", "1")],
             False,
-            "exposed-socket component photograph with independent affine D94/D93 fits",
+            "owner continuity plus full-resolution exposed-socket photograph recheck",
         ),
         (
             "`BA0` / `BA1`",
@@ -501,7 +500,7 @@ def main() -> int:
         "actual joints; together they localize MR_N/pin19 and CLK/pin24 without",
         "claiming their far destinations.",
         "Chip-removed owner continuity supersedes the mirrored photograph reading:",
-        "D94.3/.15/.4 drive D93.4/.3/.2, while D94.2 reaches D99.8/GND.",
+        "D94.3/.15/.4 drive D93.4/.3/.2, while D94.2 reaches D99.9/R89.",
         "The old D94.1/.2/.3 photograph rows retain registration value only.",
         "",
         "## Manufacturer Counter/Separator Constraint",

@@ -3,9 +3,11 @@
 D8 `.039` and D94 `.092` now have validated repeated physical captures, as do
 D2 `.037` and D6 `.038`. Further reads and programming-disk copies are
 independent corroboration rather than missing content inputs. D94's complete
-control-strobe continuity is still needed for FDC-era reconstruction; its
-owner-proved D94.15->D93.3 and D94.2->D99.8/GND paths, plus provisional
-photo-traced D0/D2 paths to D93, are not video-slot timing evidence.
+control-strobe continuity is now substantially closed: D94.15->D93.3,
+D94.2->D99.9/R89, D94.3->D93.4/R88, D94.4->D93.2/R87, and D94.13->D105.3
+qualified peripheral `/WR`. D94.5 is visibly NC; D93.1 alone owns the visible
+open stub. These are
+not video-slot timing evidence.
 
 Update 2026-07-06: Baltijets doc 007 was fetched and triaged in
 `ref/baltijets-tech-docs/`. It confirms programmed-part drawings for the small

@@ -43,41 +43,41 @@
     {
       "refdes": "R87",
       "drawing_order": 1,
-      "signal": "D94_A3_D104_X4_PULLUP",
-      "signal_nodes": [["D94", "13"], ["D104", "7"]],
+      "signal": "FDC_WE_N",
+      "signal_nodes": [["D94", "4"], ["D93", "2"]],
       "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
       "component_signal_px": [1485.0, 1553.0],
       "component_p5v_px": [1485.0, 1328.0],
       "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "solder_signal_px": [2190.0, 1323.0],
       "solder_p5v_px": [2190.0, 1110.0],
-      "observation": "leftmost factory-drawn and component-photo body; reflected solder trace runs from its signal pad to D94.13, while its opposite pad enters the common tinned +5 V rail"
+      "observation": "leftmost factory-drawn and component-photo body; owner continuity 2026-07-19 maps its signal pad to D94.4/D93.2 /WE and its opposite pad to +5 V, superseding the earlier photo-route interpretation"
     },
     {
       "refdes": "R88",
       "drawing_order": 2,
-      "signal": "D94_A4_D101_Q0_PULLUP",
-      "signal_nodes": [["D94", "14"], ["D101", "7"]],
+      "signal": "FDC_RE_N",
+      "signal_nodes": [["D94", "3"], ["D93", "4"]],
       "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
       "component_signal_px": [1539.0, 1553.0],
       "component_p5v_px": [1539.0, 1328.0],
       "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "solder_signal_px": [2140.0, 1323.0],
       "solder_p5v_px": [2140.0, 1110.0],
-      "observation": "middle factory-drawn and component-photo body; reflected solder trace runs from its signal pad to D94.14, while its opposite pad enters the common tinned +5 V rail"
+      "observation": "middle factory-drawn and component-photo body; owner continuity 2026-07-19 maps its signal pad to D94.3/D93.4 /RE and its opposite pad to +5 V, superseding the earlier photo-route interpretation"
     },
     {
       "refdes": "R89",
       "drawing_order": 3,
-      "signal": "D94_D0_BOUNDARY",
-      "signal_nodes": [["D94", "1"]],
+      "signal": "D94_D1_D99_A2N",
+      "signal_nodes": [["D94", "2"], ["D99", "9"]],
       "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
       "component_signal_px": [1594.0, 1553.0],
       "component_p5v_px": [1594.0, 1328.0],
       "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "solder_signal_px": [2088.0, 1323.0],
       "solder_p5v_px": [2088.0, 1110.0],
-      "observation": "rightmost body adjacent to D94; reflected solder copper directly joins its signal pad to D94.1, while its opposite pad enters the common tinned +5 V rail; no further D0 branch is promoted"
+      "observation": "rightmost body adjacent to D94; owner continuity 2026-07-19 maps its signal pad to D94.2/D99.9 and its opposite pad to +5 V, superseding the earlier D94.1 interpretation"
     }
   ]
 }

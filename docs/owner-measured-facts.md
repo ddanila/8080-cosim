@@ -36,12 +36,12 @@ measurement lands, add a row here.
 | Fact | Provenance | Source |
 | --- | --- | --- |
 | `D93.40 VDD_12V` on the +12 V rail | owner-continuity | `docs/d93-pin40-photo-chase.md` |
-| `D94.15->D93.3`, `D94.2->D99.8/GND`, `D94.3->D93.4`, `D94.4->D93.2`; D94 D4/pin5 -> D93.1 socket; A0=BA0/A1=BA1/A2=IORD; A3=D104.7+pullup; A4=D101.7+pullup | owner-continuity + socket photo | `docs/d94-reconstruction-constraints.md` |
+| D94 A0/A1/A2 = BA0/BA1/IORD; A3 = D105.3 qualified `/WR`; A4 = D101.7. D94.15→D93.3; D94.2→D99.9+R89; D94.3→D93.4+R88; D94.4→D93.2+R87. D94.1 has only R8 2 kΩ to +5 V. D94.5 is NC; D93.1 alone owns the visible open stub. | owner-continuity + full-resolution visual recheck, 2026-07-19 | `docs/d94-reconstruction-constraints.md` |
+| D5.27→D7.10 is raw `IOWR_N`. D7.8→D105.1→D6.15 is I/O-cycle-active high; D1.18/D5.3→D13.3 and D13.4→D105.2 supply write-active high; D105.3 drives qualified peripheral `/WR` including D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36. | owner-continuity, 2026-07-19 | `kicad/juku.board.json` |
 | `D106.7 Q3 -> D93.26 RCLK` | photo-closed | `docs/fdc-hardware-handoff.md` |
 
 ## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
 
-- D6.15/A7 driver/pull source.
 - Factory Вид В callout conductors at the registered D56.12/D56.5 level,
   D14's photo-exhausted D14.2/.7 and registered fifth-landing conductor /
   remaining drawn traces, and D11's registered

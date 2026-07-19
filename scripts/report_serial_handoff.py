@@ -218,9 +218,9 @@ def check_rows(board: dict) -> list[list[object]]:
     ))
     checks.append((
         "UP2 fourth receiver output remains an explicit continuity boundary",
-        has_node(board, "D94_A3_D104_X4_PULLUP", "D104", "7")
+        has_node(board, "D104_X4_IN_BOUNDARY", "D104", "7")
         and has_node(board, "D104_X4_OUT_BOUNDARY", "D104", "10")
-        and marker("hdl/juku_top.v", ".x4_in(d94_a3_boundary)",
+        and marker("hdl/juku_top.v", ".x4_in(d104_x4_in_boundary)",
                    ".x4_out(d104_x4_out_boundary)"),
         "D104.7 -> D104.10; output destination remains photo-occluded",
     ))
@@ -336,7 +336,7 @@ def main() -> int:
         "SER_RXD",
         "SER_CTS_N",
         "SER_DSR_N",
-        "D94_A3_D104_X4_PULLUP",
+        "D104_X4_IN_BOUNDARY",
         "D104_X4_OUT_BOUNDARY",
         "USART_RXRDY_IRQ",
         "USART_TXRDY_IRQ",
@@ -367,8 +367,9 @@ def main() -> int:
             "- `sync/serial_check.sh` now proves a scoped USART behavior slice:",
             "  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven",
             "  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.",
-            "- D104's fourth receiver input pin 7 is owner-closed to D94.13 and",
-            "  its output pin 10 is preserved as `D104_X4_OUT_BOUNDARY`; its far",
+            "- D104's fourth receiver input pin 7 is separate from D94.13 (~84 kΩ)",
+            "  and preserved as `D104_X4_IN_BOUNDARY`; output pin 10 remains",
+            "  `D104_X4_OUT_BOUNDARY`, and its far",
             "  destination remains a targeted continuity measurement.",
             "- D11 auxiliary pins without a net or explicit NC:",
             "  " + (", ".join(

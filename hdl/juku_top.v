@@ -51,7 +51,7 @@ module juku_top (
 `else
     tri1 [7:0]  DB;
 `endif
-    wire        memr_n, memr_n_d7, memw_n, memw_n_d7p2, iord_n, iowr_n, inta_n;
+    wire        memr_n, memr_n_d7, memw_n, memw_n_d7p2, iord_n, iowr_raw_n, iowr_n, inta_n;
     wire        intr;
     wire        busen_n = 1'b0;       // bus always enabled
     wire        buf_oe_n = 1'b0, buf_t = 1'b1;   // 8286: enabled, CPU->bus
@@ -77,18 +77,17 @@ module juku_top (
     // The 2026-07-19 revision-3 reread fixed the original reader's reversed
     // four-channel packing. The corrected physical `.038` table now drives all
     // four traced outputs directly and boots byte-identical to cosim; no sim-only
-    // output polarity fit remains. A7 is still forced low pending closure of
-    // the measured D6.15/D105.1 conductor's remote driver.
+    // output polarity fit remains. A7 is the measured D7.8 I/O-cycle qualifier
+    // shared with D105.1.
     wire        rev       = d6_rev_physical;
     wire        roe_n     = d6_roe_physical;
     wire        rom_sel_n = d6_rom_select_n;
     wire        ram_sel_n = d6_ram_output_n;
 `endif
-    wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
+    wire        io_strobe_h, io_cycle_h, d9_g1_w; // D7.11 decode strobe; D7.8 raw I/O-cycle qualifier
     wire [3:0]  d103_q; wire d103_co, d103_ld;   // the /13 divider (D103+D33 loop, traced s2_d103)
     wire [7:0]  ppi0_pc;
     wire        d3_o4_d6_a6, d3_o6_d6_a5;
-    wire        d6_a7_d105_i1;          // measured D6.15 <-> D105.1; driver/pull source unresolved
     // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block). Array read:
     // R is PER BANK (rails 11/12/13/14 <- the D53 Y ladder), C (rail 15) + W (rail 16) are shared.
     wire        cas_n;
@@ -171,7 +170,7 @@ module juku_top (
     net_boundary U_W7  (.a(phi1_d35), .b(phi1));
     net_boundary U_W14 (.a(phi2_d35), .b(phi2));
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4, iorc_n;
-    wire d105_memw_inv, d105_dbin_n, d105_dbin_gated, d105_gate1_y;
+    wire d105_memw_inv, d105_dbin_n, d105_dbin_gated;
     wire [3:1] d2_nc; // factory symbol draws only D0/pin12; D1-D3 are intentional NCs
 `ifdef YOSYS
     wire d105_h, ready_d, d30b_d_pre_n, d30_pre1_n;
@@ -187,7 +186,7 @@ module juku_top (
                         .v1_n(1'b0), .v2_n(1'b0),
                         .d({d2_nc, ready_d}));
     la3_gate U_D105 (.a(memw_n), .b(memw_n), .y(d105_memw_inv),
-                     .a2(d6_a7_d105_i1), .b2(d13_o4), .y2(d105_gate1_y),
+                     .a2(io_cycle_h), .b2(d13_o4), .y2(iowr_n),
                      .a3(d105_dbin_n), .b3(d105_dbin_n), .y3(d105_dbin_gated),
                      .a4(dbin), .b4(d105_h), .y4(d105_dbin_n));
     // Owner continuity: D2.12 + R6 -> D30.D1; Q1 -> R29 -> CPU READY.
@@ -219,7 +218,7 @@ module juku_top (
     // in <- D6.9 "-RAMOUTEN" (roe_n, modeled permissive-low => ram_out_en stays 1 = the old tri1
     // boot-verified value). Section 5->6 = RESIN Schmitt -> RES (boundary). Old dual-4-NAND
     // stand-in retired; STSTB comes from D38 directly (beeper wires 8/9).
-    tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(d13_o4),
+    tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(wr_n), .o4(d13_o4),
                      .i5(1'b1), .o6(reset_sys), .i9(1'b1), .o8(),
                      .i11(1'b1), .o10(), .i13(d105_h), .o12(d6_v_enable));
     // Factory wire A:8 is an assembly conductor, not PCB copper. Keeping it as
@@ -231,7 +230,7 @@ module juku_top (
                        .vss_gnd(1'b0), .vcc_5v(1'b1),
                        .ststb_n(ststb_n), .busen_n(busen_n),
                        .memr_n(memr_n), .memw_n(memw_n),
-                       .iord_n(iord_n), .iowr_n(iowr_n), .inta_n(inta_n));
+                       .iord_n(iord_n), .iowr_n(iowr_raw_n), .inta_n(inta_n));
     net_boundary U_W11 (.a(memr_n_d7), .b(memr_n));
     net_boundary U_W19 (.a(memw_n_d7p2), .b(memw_n));
 
@@ -248,10 +247,9 @@ module juku_top (
     // source stays an inactive boundary. One-way (never drives the
     // strobe nets -> boot-safe).
     wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iowc_n;
-    wire d7_y2_amw_n;  // D7.3 -> semantic command A5 on physical D29 A4/pin5; physical B4/pin15 is -AMWC
-    wire d7_y4_iom_status;  // D7.8 boundary; older D29.4 assignment requires recheck
+    wire d7_y2_amw_n;  // D7.3 destination remains a boundary; former D29.5 assignment was disproved
     wire d7_b3_inhib_status;  // D7.5 shares semantic command A0 on physical D29 A2/pin3; physical B2/pin17 is -INHIB
-    va86_out U_D29 (.Ain ({d30_q2n, iord_n, d7_y2_amw_n, memr_n, memw_n, iord_n, 1'b1, d7_b3_inhib_status}),
+    va86_out U_D29 (.Ain ({d30_q2n, iord_n, iowr_n, memr_n, memw_n, iord_n, 1'b1, d7_b3_inhib_status}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));
     // Address/data backplane transceivers (ВА87; refdes confirmed by owner from scan):
@@ -300,17 +298,14 @@ module juku_top (
 `ifdef YOSYS
     wire d7_a1_w = sync, d7_b1_w = io_strobe_h;
 `else
-    wire d7_a1_w = iowr_n, d7_b1_w = iord_n;
+    wire d7_a1_w = iowr_raw_n, d7_b1_w = iord_n;
 `endif
     net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_inhib_status));  // shared source is unread; low preserves the existing boot-safe D25 turnaround scaffold
     la3_gate    U_D7     (.a(d7_a1_w), .b(d7_b1_w), .y(io_strobe_h),
-                          .a2(memr_n_d7), .b2(memw_n_d7p2), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW through W19; pin1 <- D92.13 through W11 / -MRD; pin3 -> physical D29.5 (-AMWC path)
+                          .a2(memr_n_d7), .b2(memw_n_d7p2), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW through W19; pin1 <- D92.13 through W11 / -MRD; pin3 destination remains a boundary
                           .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
-                          .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 destination recheck boundary
-    // A7/D6.15<->D105.1 forced low (see the runnable select block); its physical
-    // driver on the D105.1 conductor is the last D6-area netlist ask (P0 item).
-    net_boundary U_D6A7LNK (.a(1'b0), .b(d6_a7_d105_i1));
-    decode_prom U_DECODE (.a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]}),
+                          .a4(iord_n), .b4(iowr_raw_n), .y4(io_cycle_h));  // D7.8 -> D105.1 + D6.A7: high during either I/O cycle
+    decode_prom U_DECODE (.a({io_cycle_h, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]}),
                           .v_en_n(d6_v_enable),
                           .rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n),
                           .rev(d6_rev_physical), .roe_n(d6_roe_physical));
@@ -556,8 +551,8 @@ module juku_top (
     // yet identified, but their logic function is required by the runnable path.
     tri1 fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
 `endif
-    // D94 РЕ3 .092 outputs: declared before U_D93 because its back-bias input
-    // is fed from D94.D4/pin5 (`default_nettype none` forbids use-before-decl).
+    // D94 РЕ3 .092 outputs. D94.5 is NC; the visible short open PCB stub
+    // belongs to the separate D93.1 boundary.
 `ifdef YOSYS
     wire d94_d0_boundary;
 `else
@@ -566,8 +561,14 @@ module juku_top (
     tri1 d94_d0_boundary;
 `endif
     wire d94_d4, d94_d5, d94_d6, d94_d7;
-    supply0 d94_d1_grounded;
-    vg93_fdc   U_D93  (.nc_back_bias(d94_d4), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
+`ifdef YOSYS
+    wire d94_d1_d99_a2n;
+`else
+    // R89 pulls the measured D94.2-D99.9 node high.
+    tri1 d94_d1_d99_a2n;
+`endif
+    wire d93_1_open_stub;
+    vg93_fdc   U_D93  (.nc_back_bias(d93_1_open_stub), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
                        .mr_n(1'b1), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
                        .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                        .step(fdc_step), .dirc(fdc_dir), .early(fdc_early_boundary), .late(fdc_late_boundary),
@@ -610,24 +611,19 @@ module juku_top (
 `endif
 `endif
 `ifdef YOSYS
-    wire d94_a3_boundary, d94_a4_d101_q0;
+    wire d94_a4_d101_q0;
 `else
     // Simulation-only functional fallbacks do not assert copper identity. The
-    // physical equations require A3 to equal active-low IOWR during selected
-    // FDC cycles; A4 is pulled high while D101.Q0 behavior remains unresolved.
-    wire d94_a3_boundary = iowr_n;
+    // A4 is D101.Q0; its runnable behavior remains pulled high while the mux
+    // inputs are unresolved. A3 is the now-measured D105.3 qualified /WR rail.
     supply1 d94_a4_d101_q0;
 `endif
-    // Direct owner continuity supersedes the mirrored-pin photo interpretation:
-    // D94.15(E_N)->D93.3(CS), D94.2(D1)->D99.8/GND,
-    // D94.3(D2)->D93.4(RE_N), and D94.4(D3)->D93.2(WE_N).
-    // D94.1(D0) has an unidentified pull-up to +5 V and no other observed
-    // branch, but remains a destination boundary in case hidden copper was missed.
-    // These owner measurements
-    // supersede the earlier mirrored-pin interpretation from the photographs.
+    // Owner continuity supersedes the earlier mirrored/numbering interpretation:
+    // D94.2(D1)->D99.9+R89, D94.3(D2)->D93.4+R88, and
+    // D94.4(D3)->D93.2+R87. D94.1(D0) has only the R8 2k pull-up.
     // Measured D94 inputs: A0=D93.A0/BA0, A1=D93.A1/BA1,
-    // A2=IORD (D27.5 and D29.4), A3=D104.7 plus pull-up,
-    // A4=D101.Q0 plus pull-up. The former BA11-BA15 scaffold is retired.
+    // A2=IORD (D27.5 and D29.4), A3=D105.3 qualified peripheral /WR,
+    // A4=D101.Q0. D104.7 is separate (~84 kohm to A3). The former scaffold is retired.
 `ifdef YOSYS
     // Preserve the unresolved physical enable source in the LVS netlist.
     net_boundary U_D94CSLNK (.a(1'b1), .b(fdc_prom_cs_n));
@@ -639,10 +635,10 @@ module juku_top (
 `ifdef YOSYS
     net_boundary U_D94D0LNK (.a(1'b1), .b(d94_d0_boundary));
 `endif
-    re3_prom_092 U_D94 (.a({d94_a4_d101_q0, d94_a3_boundary, iord_n, BA[1], BA[0]}), .e_n(fdc_prom_cs_n),
+    re3_prom_092 U_D94 (.a({d94_a4_d101_q0, iowr_n, iord_n, BA[1], BA[0]}), .e_n(fdc_prom_cs_n),
                         .d({d94_d7, d94_d6, d94_d5, d94_d4,
                             fdc_prom_we_n, fdc_prom_re_n,
-                            d94_d1_grounded, d94_d0_boundary}));
+                            d94_d1_d99_a2n, d94_d0_boundary}));
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries
@@ -697,11 +693,11 @@ module juku_top (
     // build defaults to the external-interrupt throw for simulation.
     spdt_switch U_S4 (.syndet_throw(ser_syndet), .int6_throw(ir6_buf), .ir6_common(ir6_sig));
     la18_oc U_D12 (.i1(ser_txd_inv), .i2(ser_txd_inv), .o3(s_oc));
-    wire d104_x4_out_boundary;
+    wire d104_x4_in_boundary, d104_x4_out_boundary;
     up2_rcv U_D104(.sin_in(s_sin), .sin_out(ser_rxd),
                    .cts_in(s_cts), .cts_out(ser_cts_n),
                    .dsr_in(s_dsr), .dsr_out(ser_dsr_n),
-                   .x4_in(d94_a3_boundary), .x4_out(d104_x4_out_boundary));
+                   .x4_in(d104_x4_in_boundary), .x4_out(d104_x4_out_boundary));
     serial_conn U_X3 (.pullup_io(), .aux2(s_oc), .ttl_sout(s_ttl), .sin(s_sin),
                       .cts(s_cts), .dsr(s_dsr), .aux7(), .aux8(),
                       .sout(s_sout), .rts(s_rts), .dtp(s_dtp), .oc_sout(s_oc));

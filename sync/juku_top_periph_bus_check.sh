@@ -120,11 +120,12 @@ sync/juku_top_periph_bus_check.sh
 ## Boundary
 
 - This is a direct-bus harness, not the full ROMBIOS \`TDD\` CPU path.
-- The behavioral FDC consumes D94's physical-table strobes. D94 enable,
-  A3=active-low \`IOWR\`, and pulled-high A4 are explicit simulation-only
-  functional sources; they preserve, rather than close, the physical probes.
-- A separate forced-low A4 check exercises the alternate register-3 D0 branch
-  without assigning that physically pulled-up output an unmeasured load.
+- The behavioral FDC consumes D94's physical-table strobes. A3 is physically
+  closed to D105.3 qualified peripheral \`/WR\`; the harness drives that rail
+  directly. D94 enable's upstream source and runnable A4 behavior remain
+  explicit simulation fits around the measured D94.15/D93.3 and D94.14/D101.7 nets.
+- A separate forced-low A4 check exercises the alternate register-3 D0 branch;
+  D0 has only the measured R8 2 kΩ pull-up in the observed hardware scope.
 - Two opt-in builds route the behavioral controller through an unmapped profile adjunct.
   Their CPU-side FDC bytes are complemented like CMA-profile firmware. Both use
   actual D93 \`/RE\` for direction, not raw \`IORD\`; this keeps the adjunct one-way when

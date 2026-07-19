@@ -10,7 +10,7 @@ not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.
 
 - Raw image: `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes)
 - SHA256: `c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489`
-- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D6.15/D105.1 boundary`
+- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D7.8 IO_CYCLE_H`
 - Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9
 
 The factory programming instruction in `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf`

@@ -25,9 +25,9 @@ pullups = document.get("d94_pullups", [])
 value_evidence = document.get("d94_pullup_value_evidence", {})
 
 expected_pullups = {
-    "R87": ("D94_A3_D104_X4_PULLUP", [["D94", "13"], ["D104", "7"]]),
-    "R88": ("D94_A4_D101_Q0_PULLUP", [["D94", "14"], ["D101", "7"]]),
-    "R89": ("D94_D0_BOUNDARY", [["D94", "1"]]),
+    "R87": ("FDC_WE_N", [["D94", "4"], ["D93", "2"]]),
+    "R88": ("FDC_RE_N", [["D94", "3"], ["D93", "4"]]),
+    "R89": ("D94_D1_D99_A2N", [["D94", "2"], ["D99", "9"]]),
 }
 if [item.get("refdes") for item in pullups] != ["R87", "R88", "R89"]:
     raise SystemExit("FDC UPPER ASSEMBLY PLACEMENT: D94 pull-up order is not R87/R88/R89")
@@ -107,8 +107,8 @@ lines += ["", "Neither owner-photo site exposes a complete electrical path: C12 
           "The same factory view labels the three vertical bodies immediately left of D94",
           "as R87, R88, and R89 from left to right. The owner component photograph preserves",
           "that order. Its reflected solder mate exposes three non-crossing signal traces and",
-          "the common tinned +5 V rail, closing the resistor identities without inferring a",
-          "hidden D94.1 consumer. A second, alternate-angle owner photo reads `6К2` on",
+          "the common tinned +5 V rail. Owner continuity, rather than photo geometry,",
+          "fixes the signal endpoints. A second, alternate-angle owner photo reads `6К2` on",
           "R87 and R88. R89 is partly socket-obscured but visually identical; the factory",
           "equipment list also assigns exactly three МЛТ-0,125 6.2 kΩ ±5% resistors",
           "to `ДГШ5.087.009`. Because that designation differs from the target",
@@ -122,8 +122,8 @@ for item in pullups:
     solder = ", ".join(f"{value:.1f}" for value in item["solder_signal_px"])
     lines.append(f"| {item['refdes']} | 6.2 kΩ | `{item['signal']}` | {nodes} | {component} | {solder} |")
 lines += ["", "All three opposite resistor pads enter the same visibly tinned +5 V rail.",
-          "R89 identifies the pull-up on D94.1, but the absence of an additional hidden",
-          "branch remains a continuity/operating-capture boundary."]
+          "Owner continuity maps R87/R88/R89 to D94 D3/D2/D1 respectively.",
+          "The separate D94 D0 node is pulled up only by R8 2 kΩ in the measured scope."]
 OUTPUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 image = Image.open(ROOT / document["source_image"]).convert("RGB")

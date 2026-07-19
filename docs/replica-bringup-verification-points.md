@@ -13,19 +13,19 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `91`
-- Verification-point endpoints checked in PCB: `104`
-- PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2282`
-- All board endpoints checked in routed PCB: `2282`
-- Intentional non-PCB or placement-pending endpoints excluded: `75`
+- Verification-point nets: `88`
+- Verification-point endpoints checked in PCB: `99`
+- PCB endpoint coverage: `FAIL`
+- All board endpoints checked in source PCB: `2281`
+- All board endpoints checked in routed PCB: `2281`
+- Intentional non-PCB or placement-pending endpoints excluded: `77`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 7 |
-| logic | 61 |
-| memory/decode | 3 |
+| logic | 59 |
+| memory/decode | 2 |
 | sound/analog | 1 |
 | timing/I/O | 1 |
 | video/analog | 18 |
@@ -40,8 +40,11 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 104/104 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 104/104 net names matched |
+| Risk endpoints present on PCB pads | PASS | 99/99 matched a footprint pad net |
+| Risk endpoint net names match board JSON | FAIL | 98/99 net names matched |
+
+Mismatched PCB pad-net endpoints:
+- D104.7: `D94_A3_D104_X4_PULLUP` != `D104_X4_IN_BOUNDARY`
 
 ## Full Board Endpoint Coverage
 
@@ -57,8 +60,28 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2282/2282 | 2282/2282 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1871/2282 | 1758/2282 | FAIL |
+| `kicad/juku.kicad_pcb` | 2281/2281 | 2263/2281 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1871/2281 | 1756/2281 | FAIL |
+
+Mismatched endpoints in `kicad/juku.kicad_pcb`:
+- D104.7: `D94_A3_D104_X4_PULLUP` != `D104_X4_IN_BOUNDARY`
+- D93.1: `D94_D4` != `D93_1_OPEN_STUB`
+- D94.14: `D94_A4_D101_Q0_PULLUP` != `D94_A4_D101_Q0`
+- D101.7: `D94_A4_D101_Q0_PULLUP` != `D94_A4_D101_Q0`
+- D94.2: `GND` != `D94_D1_D99_A2N`
+- D99.9: `D99_A2N_BOUNDARY` != `D94_D1_D99_A2N`
+- R89.1: `D94_D0_BOUNDARY` != `D94_D1_D99_A2N`
+- R88.1: `D94_A4_D101_Q0_PULLUP` != `FDC_RE_N`
+- R87.1: `D94_A3_D104_X4_PULLUP` != `FDC_WE_N`
+- D105.3: `D105_GATE1_Y` != `IOWR`
+- D94.13: `D94_A3_D104_X4_PULLUP` != `IOWR`
+- D29.5: `AMW_N` != `IOWR`
+- D5.27: `IOWR` != `IOWR_RAW_N`
+- D7.10: `IOWR` != `IOWR_RAW_N`
+- D6.15: `D6_A7_D105_I1_BOUNDARY` != `IO_CYCLE_H`
+- D105.1: `D6_A7_D105_I1_BOUNDARY` != `IO_CYCLE_H`
+- D7.8: `D7_IOM_STATUS_RECHECK` != `IO_CYCLE_H`
+- D13.3: `D13_I3_BOUNDARY` != `WR`
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -93,6 +116,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D102_RC2_C20_R108: D102.7`
 - `D102_RC2_C20_R108: C20.2`
 - `D102_RC2_C20_R108: R108.1`
+- `D104_X4_IN_BOUNDARY: D104.7`
 - `D104_X4_OUT_BOUNDARY: D104.10`
 - `D105_10_H: D13.13`
 - `D105_10_H: X1.107B`
@@ -111,7 +135,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D106_UP_BOUNDARY: D106.5`
 - `D13_4_D105_2: D11.20`
 - `D13_4_D105_2: D30.11`
-- `D13_I3_BOUNDARY: D13.3`
 - `D14_I2_BOUNDARY: D14.2`
 - `D14_O7_BOUNDARY: D14.7`
 - `D26_PA6_PREN_BOUNDARY: D26.38`
@@ -157,20 +180,17 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D6_V_ENABLE: D6.13`
 - `D6_V_ENABLE: D6.14`
 - `D6_V_ENABLE: D13.12`
-- `D7_IOM_STATUS_RECHECK: D7.8`
+- `D93_1_OPEN_STUB: D93.1`
 - `D93_HLT_BOUNDARY: D93.23`
 - `D93_MR_BOUNDARY: D93.19`
 - `D93_RG_BOUNDARY: D93.25`
 - `D93_TEST_BOUNDARY: D93.22`
 - `D93_WF_VFOE_BOUNDARY: D93.33`
-- `D94_A3_D104_X4_PULLUP: D104.7`
-- `D94_A3_D104_X4_PULLUP: R87.1`
-- `D94_A4_D101_Q0_PULLUP: D101.7`
-- `D94_A4_D101_Q0_PULLUP: R88.1`
+- `D94_A4_D101_Q0: D101.7`
 - `D94_D0_BOUNDARY: D94.1`
-- `D94_D0_BOUNDARY: R89.1`
-- `D94_D4: D94.5`
-- `D94_D4: D93.1`
+- `D94_D1_D99_A2N: D94.2`
+- `D94_D1_D99_A2N: D99.9`
+- `D94_D1_D99_A2N: R89.1`
 - `D94_D5: D94.6`
 - `D94_D6: D94.7`
 - `D94_D7: D94.9`
@@ -203,7 +223,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D98_Y3_S1_2: D97.2`
 - `D98_Y4_BOUNDARY: D98.9`
 - `D99_A1N_BOUNDARY: D99.1`
-- `D99_A2N_BOUNDARY: D99.9`
 - `D99_B2_BOUNDARY: D99.10`
 - `D99_B_TEST_LANDING: D99.2`
 - `D99_C1_BOUNDARY: D99.14`
@@ -239,6 +258,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `FDC_READY: D93.32`
 - `FDC_READY: R84.1`
 - `FDC_RE_N: D94.3`
+- `FDC_RE_N: R88.1`
 - `FDC_SEPARATOR_CLOCK: D95.9`
 - `FDC_SEPARATOR_CLOCK: D106.4`
 - `FDC_STEP_TO_D100: D93.15`
@@ -248,6 +268,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `FDC_WDATA_DELAY_IN: D93.31`
 - `FDC_WDATA_DELAY_IN: D97.10`
 - `FDC_WE_N: D94.4`
+- `FDC_WE_N: R87.1`
 - `FDC_WG_TO_D100: D93.30`
 - `FDC_WPRT_STATUS: D98.13`
 - `FDC_WPRT_STATUS: D93.36`
@@ -267,7 +288,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `GND: D41.3`
 - `GND: D41.4`
 - `GND: D41.5`
-- `GND: D94.2`
 - `GND: AX604.1`
 - `GND: AX406.1`
 - `GND: D97.1`
@@ -286,7 +306,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `INHIB_STATUS_BOUNDARY: D7.5`
 - `INHIB_STATUS_BOUNDARY: D29.3`
 - `IORD: D7.9`
-- `IOWR: D7.10`
+- `IOWR_RAW_N: D7.10`
+- `IO_CYCLE_H: D7.8`
 - `KBD_CONTRDAT: A50.1`
 - `KBD_CTRL: A51.1`
 - `KBD_FK: A55.1`
@@ -426,6 +447,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `W10_QA_SEL: W10.1`
 - `W10_QA_SEL_D50: D51.1`
 - `W10_QA_SEL_D50: W10.2`
+- `WR: D13.3`
 - `WREQ_N: X1.107C`
 - `WREQ_N: D97.3`
 - `WREQ_N: D97.11`
@@ -475,7 +497,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D29.15: `MRC_N` != `AMWC_N`
-- D29.5: `MEMR` != `AMW_N`
 - D107.19: `BA7` != `BA0`
 - D94.10: `BA11` != `BA0`
 - D107.18: `BA6` != `BA1`
@@ -511,10 +532,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D6.1: `MEM_MODE1` != `D3_O4_D6_A6`
 - D6.2: `MEM_MODE0` != `D3_O6_D6_A5`
 - D56.4: `D56_QN` != `D56_QN_D34`
-- D6.15: `FDC_DDEN` != `D6_A7_D105_I1_BOUNDARY`
-- D105.1: `MEMW` != `D6_A7_D105_I1_BOUNDARY`
-- D94.13: `BA14` != `D94_A3_D104_X4_PULLUP`
-- D94.14: `BA15` != `D94_A4_D101_Q0_PULLUP`
+- D94.14: `BA15` != `D94_A4_D101_Q0`
 - D93.7: `FDC_DAL0` != `DB0`
 - D93.8: `FDC_DAL1` != `DB1`
 - D93.9: `FDC_DAL2` != `DB2`
@@ -550,6 +568,12 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D29.4: `MEMW` != `IORD`
 - D94.12: `BA13` != `IORD`
 - D29.13: `IORC_N` != `IOWC_N`
+- D105.3: `D105_GATE1_Y` != `IOWR`
+- D94.13: `BA14` != `IOWR`
+- D29.5: `MEMR` != `IOWR`
+- D5.27: `IOWR` != `IOWR_RAW_N`
+- D6.15: `FDC_DDEN` != `IO_CYCLE_H`
+- D105.1: `MEMW` != `IO_CYCLE_H`
 - D7.1: `MEMR` != `MEMR_D7`
 - D105.12: `MEMR` != `MEMW`
 - D105.13: `MEMR` != `MEMW`
@@ -592,6 +616,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
+| `AMW_N` | logic | `D7.3` | D7 NAND output pin3 remains a boundary. Owner continuity 2026-07-19 disproves the earlier sheet interpretation that joined it to D29.5; D29.5 instead belongs to qualified periph... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C10_1_BOUNDARY` | video/analog | `C10.1` | .009 factory placement immediately right of D93; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C10_2_BOUNDARY` | video/analog | `C10.2` | .009 factory placement immediately right of D93; target electrical destination unread and the .006 VT4-base assignment is revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C11_1_BOUNDARY` | video/analog | `C11.1` | .009 factory placement between D95 and D99; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded | Scope/capture video or timing node during video bring-up. |
@@ -610,8 +635,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D101_D03_BOUNDARY` | logic | `D101.3` | July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_OE0_BOUNDARY` | logic | `D101.1` | July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D102_Q1N_BOUNDARY` | logic | `D102.4` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D104_X4_IN_BOUNDARY` | logic | `D104.7` | owner resistance 2026-07-19 measures approximately 84 kohm between D104.7 and D94.13, disproving the former direct-net claim; D104 receiver input pin7 remains an independent bou... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D104_X4_OUT_BOUNDARY` | logic | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps hide its possible F.C... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D105_GATE1_Y` | logic | `D105.3` | native sheet-1 full-resolution: D105 gate pins 1,2 -> output pin3, which departs on dense-bundle code 7 beside but not joined to D7.8 code 8. The nearby D29.2 conductor has no e... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_BO_BOUNDARY` | logic | `D106.13` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_CLR_BOUNDARY` | logic | `D106.14` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin14 CLR; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_CO_BOUNDARY` | logic | `D106.12` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin12 CO; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -624,7 +649,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D106_Q1_BOUNDARY` | logic | `D106.2` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin2 Q1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_Q2_BOUNDARY` | logic | `D106.6` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_UP_BOUNDARY` | logic | `D106.5` | July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin5 UP; calibrated raw-crop review finds only local copper, with no uninterrupted path to a known P5V anchor... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D13_I3_BOUNDARY` | logic | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_I2_BOUNDARY` | video/analog | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary | Scope/capture video or timing node during video bring-up. |
 | `D14_O7_BOUNDARY` | video/analog | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary | Scope/capture video or timing node during video bring-up. |
 | `D26_PA6_PREN_BOUNDARY` | logic | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -637,14 +661,12 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D56_Q2N_TAG16` | memory/decode | `D56.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D58_STB_TAG5` | logic | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled... | Bench-check waveform/current path with speaker disconnected first. |
-| `D6_A7_D105_I1_BOUNDARY` | memory/decode | `D6.15, D105.1` | direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D6 address input A7/pin15 joins D105 К155ЛА3 input pin1. No other destination was found; D6.15 is... | Probe during ROM/RAM stage; compare address/control timing to twin. |
-| `D7_IOM_STATUS_RECHECK` | logic | `D7.8` | native sheet-1 full-resolution shows D7 output pin8 departing on dense-bundle code 8, visibly separate from adjacent D105.3 code 7. The older interpretation joined D7.8 to D29.4... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D93_HLT_BOUNDARY` | FDC | `D93.23` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_MR_BOUNDARY` | FDC | `D93.19` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_RG_BOUNDARY` | FDC | `D93.25` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_TEST_BOUNDARY` | FDC | `D93.22` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin22 TEST; remote strap continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_WF_VFOE_BOUNDARY` | FDC | `D93.33` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
-| `D94_D0_BOUNDARY` | logic | `D94.1, R89.1` | .009 factory drawing identifies R89 as the rightmost resistor adjacent to D94; registered component/reflected-solder photos join D94.1 to R89.1 and R89.2 to +5 V. No other trace... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_D0_BOUNDARY` | logic | `D94.1, R8.1` | owner continuity 2026-07-19: D94.1 joins R8 through approximately 2 kohm to +5 V; no other connection was found | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D6` | logic | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projec... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D7` | logic | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -661,7 +683,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D98_A4_BOUNDARY` | logic | `D98.10` | July-2026 validated package registration identifies D98 К155ЛП11 pin10 A4; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D98_Y4_BOUNDARY` | logic | `D98.9` | July-2026 validated package registration identifies D98 К155ЛП11 pin9 Y4; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_A1N_BOUNDARY` | logic | `D99.1` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D99_A2N_BOUNDARY` | logic | `D99.9` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_B2_BOUNDARY` | logic | `D99.10` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_C1_BOUNDARY` | logic | `D99.14` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_C2_BOUNDARY` | logic | `D99.6` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

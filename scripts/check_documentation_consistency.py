@@ -323,12 +323,12 @@ def main() -> int:
         "BA0": None,
         "BA1": None,
         "IORD": None,
-        "D94_A3_D104_X4_PULLUP": [["D94", "13"], ["D104", "7"], ["R87", "1"]],
-        "D94_A4_D101_Q0_PULLUP": [["D94", "14"], ["D101", "7"], ["R88", "1"]],
+        "IOWR": None,
+        "D94_A4_D101_Q0": [["D94", "14"], ["D101", "7"]],
     }
     for net_name, expected_nodes in expected_d94_boundaries.items():
         actual_nodes = board_nets.get(net_name, {}).get("nodes")
-        pin = {"BA0": "10", "BA1": "11", "IORD": "12"}.get(net_name)
+        pin = {"BA0": "10", "BA1": "11", "IORD": "12", "IOWR": "13"}.get(net_name)
         if expected_nodes is None:
             ok = ["D94", pin] in (actual_nodes or [])
         else:

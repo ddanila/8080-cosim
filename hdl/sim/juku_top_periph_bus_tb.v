@@ -66,7 +66,6 @@ module juku_top_periph_bus_tb();
     if (port[4:2] == 3'd7) begin
       if (dut.cs_fdc_n) fail("FDC chip-select did not assert on write");
       if (dut.fdc_prom_cs_n) fail("D94 enable did not follow selected FDC write");
-      if (dut.d94_a3_boundary !== dut.iowr_n) fail("D94 A3 did not match active-low IOWR");
       if (dut.fdc_prom_re_n !== 1'b1) fail("D94 /RE asserted during FDC write");
       if (dut.fdc_prom_we_n !== 1'b0) fail("D94 /WE did not assert during FDC write");
     end
@@ -89,7 +88,6 @@ module juku_top_periph_bus_tb();
     if (port[4:2] == 3'd7) begin
       if (dut.cs_fdc_n) fail("FDC chip-select did not assert on read");
       if (dut.fdc_prom_cs_n) fail("D94 enable did not follow selected FDC read");
-      if (dut.d94_a3_boundary !== dut.iowr_n) fail("D94 A3 did not match active-low IOWR");
       if (dut.fdc_prom_re_n !== 1'b0) fail("D94 /RE did not assert during FDC read");
       if (dut.fdc_prom_we_n !== 1'b1) fail("D94 /WE asserted during FDC read");
     end

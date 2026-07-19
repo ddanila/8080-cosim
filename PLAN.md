@@ -490,24 +490,19 @@ Every ask below is queued with exact deliverables in
    R79-R83 (470-ohm X4/D98 input pull-ups), R84/R85 (470-ohm READY/separator
    pull-ups), and R98 (4.7-kohm -D.SEL1 pull-up). These source-proved nets replace the inferred bus
    (`ref/schematics/fdc-x4-ngmd-wire-map.md`).
-2. **Finish D94 `.092` connectivity.** Content truth is closed; direct owner
-   continuity proves D94.15->D93.3, D94.2->D99.8/GND, D94.3->D93.4,
-   D94.4->D93.2, and D94.13->D104.7 plus a +5 V pull-up. An exposed-socket
-   component view now closes D94 D4/pin5 to the internally NC/back-bias D93.1
-   socket contact. D5/pin6 is photo-bounded to a plated layer handoff, but the
-   available cross-side fits do not uniquely identify its continuation. Resolve
-   the D5-D7 destinations and D104.10. Factory drawing plus registered two-sided
-   owner photos now identify the three adjacent pull-ups as R87 on
-   D94.13/D104.7, R88 on D94.14/D101.7, and R89 on the apparently pull-up-only
-   D94.1. Alternate-angle `6К2` markings on R87/R88 plus R89's identical body
-   close all three as 6.2 kΩ; the equipment list's separately designated
-   `ДГШ5.087.009` exactly-three count is corroborative only. Retain D94.1's hidden-branch boundary,
-   and later recheck the D29.4/IORD conflict noted in the source model. The
-   minimized `/RE`/`/WE` equations plus measured A2=`IORD` require A3 to be
-   polarity-equivalent to active-low `IOWR` during selected FDC cycles. First
-   continuity-test D94.13/D104.7 against D5.27; if open, scope both nodes during
-   known FDC reads and writes. This is a firmware-derived functional prediction,
-   not copper evidence, so the source nets remain separate pending measurement.
+2. **Finish D94 `.092` connectivity.** Content truth is closed. The 2026-07-19
+   owner recheck corrects the earlier socket-number interpretation: D94.2 reaches
+   D99.9 and R89, D94.3 reaches D93.4 and R88, and D94.4 reaches D93.2 and R87;
+   all three resistors return to +5 V. D94.1 has its separate R8 2 kΩ pull-up and
+   no other measured branch. Full-resolution visual inspection closes D94.5
+   as NC; D93.1 alone owns the short trace ending at the visible gap.
+   D94.13 is not D104.7 (~84 kΩ between them) and is not D5.27. It is the
+   qualified peripheral `/WR` rail from D105.3, also owner-closed to D29.5,
+   D10.2, D11.10, D26.36, and D27.36. D5.27 is instead raw `IOWR_N` into D7.10.
+   D7.8 reaches D105.1 and D6.15, closing the former D6 A7 boundary as the
+   I/O-cycle-active-high term; D13.3 receives raw CPU `/WR` from D1.18/D5.3 and
+   D13.4 drives D105.2. Thus D105.3 is exactly the NAND-qualified peripheral
+   write strobe predicted by the PROM equations.
    The minimized physical table also gives an exact D0 probe stimulus:
    BA1:BA0=`11`
    with A4/D101.7 low asserts D94.1 regardless of A3/A2 while both D93 `/RE`
@@ -534,12 +529,11 @@ Every ask below is queued with exact deliverables in
    continuity plus visually confirmed bottom-layer D6.13<->D6.14 copper closes
    the enable branch. The complete D6.9->D13.1,
    D13.2->D37.4, D37.6->D58.9 endpoint chain is owner-confirmed. The remaining
-   copper-truth asks are: identify the driver or pull of the D6.15/D105.1
-   conductor (the only D6-area net still missing an endpoint), recheck the
-   surprising D13.12->D16.13 report with D16 removed, and separately chase
-   D105.3 bundle code 7 versus D7.8 code 8. Full-resolution sheet 1 proves
-   those adjacent driven-output risers are distinct and does not draw the
-   tempting D29.2 junction. The D37.5 second NAND
+   copper-truth asks are now reduced to rechecking the surprising
+   D13.12->D16.13 report with D16 removed and the remaining unrelated boundaries.
+   The 2026-07-19 owner measurements close D7.8 to D105.1/D6.15 and independently
+   close D105.3 as the qualified peripheral `/WR` output; the adjacent sheet
+   bundle codes were distinct signals, not unresolved destinations. The D37.5 second NAND
    input is already source-closed by the native sheet-2 route
    MEMR->D33.3/.4->D37.5 and is now regression-guarded together with
    D13.2->D37.4 and D37.6->D58.9. Simulation has narrowed the former
@@ -586,7 +580,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   91 source-risk nets and 8 official FDC devices with untraced functional
+   88 source-risk nets and 8 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
@@ -608,8 +602,9 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-639 observations have dispositions, 46 rows are accepted evidence, and the
-other 593 remain measurement requests (`docs/photo-registration.md`).
+639 observations have dispositions, 44 rows are accepted evidence, two former
+D94.5-D93.1 rows are retracted, and the other 593 remain measurement requests
+(`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated

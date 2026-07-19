@@ -96,7 +96,7 @@ def main() -> int:
          "К556РТ4 outputs are open collector" in devices
          and "assign d[bit_index] = (!v_en_n && !raw[bit_index]) ? 1'b0 : 1'bz;" in devices
          and "Physical R11..R14 recover the four open-collector D6 outputs high" in hdl),
-        ("HDL uses measured physical D6 address order", ".a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
+        ("HDL uses measured physical D6 address order", ".a({io_cycle_h, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
         ("RT4 reader packs D0/pin12 through D3/pin9 into raw bits 0 through 3",
          "RT4 D0..D3 (pins 12,11,10,9)" in reader
          and "value |= (1U << bit)" in reader),
@@ -146,7 +146,7 @@ def main() -> int:
         "address ranges without assigning semantics that the `.009` continuity does",
         "not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.", "",
         "## Guarded artifact", "", f"- Raw image: `ref/physical-proms/validated/d6_038.raw.bin` ({len(data)} bytes)",
-        f"- SHA256: `{sha}`", "- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D6.15/D105.1 boundary`",
+        f"- SHA256: `{sha}`", "- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D7.8 IO_CYCLE_H`",
         "- Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9", "",
         "The factory programming instruction in `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf`",
         "page 16 identifies D6 `.038` as a КР556РТ4 and says its programming table",

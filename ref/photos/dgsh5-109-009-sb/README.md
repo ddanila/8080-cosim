@@ -19,7 +19,8 @@ What the drawing is authoritative for:
   designators follow `ДГШ5.109.009 Э3`.
 - The upper-FDC view identifies the three populated vertical pull-ups immediately
   left of D94 as R87/R88/R89. Registered component and reflected solder views
-  map them respectively to D94.13/D104.7, D94.14/D101.7, and D94.1; their
+  were initially misassigned from photo geometry. Owner continuity on 2026-07-19
+  maps them respectively to D94.4/D93.2, D94.3/D93.4, and D94.2/D99.9; their
   opposite pads enter the common +5 V rail.
 - Edge-connector and cable positions `X1`–`X9`, `S1`, and the off-board cable
   assemblies (X8 lead 300 mm, X9 ribbon 400 mm, poz. 151 shielded cable).

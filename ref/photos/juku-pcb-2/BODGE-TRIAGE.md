@@ -33,7 +33,7 @@ two assemblies must not be mixed.
 | D84-D91 | К565РУ5 | populated RAM bank on the `.158/.009` target |
 | D92 | К555ЛЕ4 | memory/timing support logic |
 | D93 | КР1818ВГ93 | FDC |
-| D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; R87/R88/R89 are photo-closed as the +5 V pull-ups on D94.13/D94.14/D94.1 respectively; D94.1 hidden-branch status and D5-D7 destinations remain open; D4-D7 are invariant released in the adopted table |
+| D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; owner continuity maps R87/R88/R89 as the +5 V pull-ups on D94.4/D94.3/D94.2, while R8 2 kΩ is the pull-up-only D94.1 branch. Full-resolution visual inspection closes D94.5 as NC; D93.1 alone owns the visible open stub. D5-D7 far destinations remain open and D4-D7 are invariant released in the adopted table. |
 | D95, D101 | К555КП12 | FDC quadrant multiplexers |
 | D97, D99, D102 | К155АГ3 | FDC quadrant one-shots; owner photo shows the 8901 packages |
 | D100 | КР580ВА87 | FDC data-bus buffer |

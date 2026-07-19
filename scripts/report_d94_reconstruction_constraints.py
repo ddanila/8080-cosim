@@ -275,7 +275,11 @@ def main() -> int:
         )
         net = net_for_pin(board, "D94", pin)
         if net is None:
-            output_rows.append(f"| {pin} | {role} | - | {activity} | not traced/netted |")
+            if ["D94", pin] in board.get("no_connects", []):
+                output_nets.append("NC")
+                output_rows.append(f"| {pin} | {role} | `NC` | {activity} | owner/photo-confirmed PCB no-connect |")
+            else:
+                output_rows.append(f"| {pin} | {role} | - | {activity} | not traced/netted |")
         else:
             name, src = net
             output_nets.append(name)
@@ -336,8 +340,8 @@ def main() -> int:
         "10": "BA0",
         "11": "BA1",
         "12": "IORD",
-        "13": "D94_A3_D104_X4_PULLUP",
-        "14": "D94_A4_D101_Q0_PULLUP",
+        "13": "IOWR",
+        "14": "D94_A4_D101_Q0",
     }
     for pin in all_report_pins:
         role = dsn_pin_roles[pin]
@@ -387,9 +391,9 @@ def main() -> int:
     )
     hdl_inputs_measured = marker(
         "hdl/juku_top.v",
-        "Measured D94 inputs",
-        "iord_n, BA[1], BA[0]",
-        "former BA11-BA15 scaffold is retired",
+        "Owner continuity supersedes",
+        "iowr_n, iord_n, BA[1], BA[0]",
+        "D104.7 is separate (~84 kohm to A3)",
     )
     pcb_outputs_match = all(pcb_nets.get(pin) == net_for_pin(board, "D94", pin)[0]
                             for pin, _ in output_pins if net_for_pin(board, "D94", pin))
@@ -424,8 +428,8 @@ def main() -> int:
     )
     output_departures = remaining_output_departures()
     # The old pin-4 boundary was superseded by direct D94.4->D93.2 continuity.
-    # Exposed-socket front copper closes D4/pin5 to D93.1. Photo evidence still
-    # proves departures for the unresolved D5-D7 outputs;
+    # Full-resolution review makes D4/pin5 an explicit NC, separate from D93.1's stub.
+    # Photo evidence still proves departures for the unresolved D5-D7 outputs;
     # D0/pin1 is owner-reported unresolved but was not photographically closed.
     all_remaining_outputs_depart = set(output_departures) >= {"6", "7", "9"}
     address_observations = address_input_observations()
@@ -486,9 +490,9 @@ def main() -> int:
             "",
             "## KiCad DSN Cross-check",
             "",
-            "The regenerated source DSN follows the authoritative board model and no",
-            "longer carries the retired BA11..BA15 scaffold mapping. This checks export",
-            "parity; it is not independent proof of the D94 input sources.",
+            "This table records the held freerouting DSN. It intentionally predates the",
+            "2026-07-19 corrections; mismatches are migration evidence, not accepted",
+            "connectivity. Board JSON and the regenerated KiCad schematic are authoritative.",
             "",
             "| Pin | Role | DSN Net | Result |",
             "| ---: | --- | --- | --- |",
@@ -500,9 +504,9 @@ def main() -> int:
             "",
             "## KiCad PCB Cross-check",
             "",
-            "The authoritative source PCB and regenerated DSN include the accepted",
-            "photo-traced outputs. The separately tracked routed PCB remains the held",
-            "engineering snapshot until cluster reroute.",
+            "This table records the held pre-correction PCB engineering snapshot.",
+            "Its stale D94 net names are explicitly not accepted connectivity; the board",
+            "model and generated schematic remain authoritative until controlled reroute.",
             "",
             "| Pin | Role | PCB Net | Result |",
             "| ---: | --- | --- | --- |",
@@ -521,8 +525,8 @@ def main() -> int:
             f"| Every D94 address input has reviewed two-sided photo coordinates | {'PASS' if all_address_inputs_registered else 'FAIL'} | local-package-fit measurement rows for pins {', '.join(sorted(address_observations, key=int)) or '-'} |",
             f"| D94 address input sources are traced | {'PASS' if address_traced else 'FAIL'} | direct owner continuity/source nets for pins 10-14 |",
             f"| Retired D94 BA11..BA15 mapping is absent from the source model | {'PASS' if retired_ba_mapping_absent else 'FAIL'} | board JSON BA nets |",
-            f"| Regenerated source DSN matches the current D94 mapping | {'PASS' if dsn_matches_source_model else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
-            f"| PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
+            f"| Held freerouting DSN matches the current D94 mapping | {'PASS' if dsn_matches_source_model else 'HELD'} | `kicad/juku.dsn` is a routed engineering snapshot; authoritative connectivity is board JSON/schematic |",
+            f"| Held PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'HELD'} | `kicad/juku.kicad_pcb` awaits the next controlled reroute; no stale copper claim is promoted |",
             f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Enable pin15 is isolated from output pin2 | {'PASS' if enable_output_isolated else 'FAIL'} | direct owner continuity; distinct board nets |",
@@ -537,7 +541,7 @@ def main() -> int:
             f"| `.113/.117` scans are guarded as not-D94 | {'PASS' if scanned_not_d94 else 'FAIL'} | `docs/re3-firmware-inspection.md` |",
             f"| Vendored programming disks have a guarded PROM-name/marker/exact-table audit | {'PASS' if programming_media_audited else 'FAIL'} | `docs/vendored-disk-catalog.md` |",
             f"| HDL adopts physical open-collector table | {'PASS' if hdl_physical_table else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
-            f"| HDL adopts measured D94 A0-A4 mapping | {'PASS' if hdl_inputs_measured else 'FAIL'} | `hdl/juku_top.v`; BA0, BA1, IORD, D104.7/pull-up, D101.7/pull-up |",
+            f"| HDL adopts measured D94 A0-A4 mapping | {'PASS' if hdl_inputs_measured else 'FAIL'} | `hdl/juku_top.v`; BA0, BA1, IORD, D105.3 qualified /WR, D101.7 |",
             f"| `juku_top` connects the three accepted local FDC controls | {'PASS' if hdl_connected else 'FAIL'} | `hdl/juku_top.v` |",
             f"| Runnable FDC consumes and cycle-checks physical D94 strobes | {'PASS' if hdl_runnable_physical else 'FAIL'} | simulation-only upstream fits remain explicit in `hdl/juku_top.v`; `hdl/sim/juku_top_periph_bus_tb.v` |",
             f"| Video slot audit does not rely on D94 | {'PASS' if video_audit_independent else 'FAIL'} | `docs/video-slot-timing-audit.md` |",
@@ -564,11 +568,11 @@ def main() -> int:
             "  scan, repository, or collector listing for this artifact. Generic Juku",
             "  history and generic К155РЕ3 references do not constrain its contents.",
             "- Direct owner continuity supersedes the mirrored-pin local interpretation:",
-            "  enable pin15 reaches D93.3 CS, D1/pin2 reaches D99.8/GND,",
-            "  D2/pin3 reaches D93.4 /RE, and D3/pin4 reaches D93.2 /WE.",
+            "  enable pin15 reaches D93.3 CS; D1/pin2 reaches D99.9 and R89;",
+            "  D2/pin3 reaches D93.4 /RE and R88; D3/pin4 reaches D93.2 /WE and R87.",
             "  Address inputs A0/A1/A2/A3/A4 reach BA0, BA1, IORD,",
-            "  D104.7+R87 pull-up, and D101.7+R88 pull-up respectively. The registered",
-            "  R89 pull-up closes D94.1 locally; D0's hidden load and D5-D7 destinations",
+            "  D105.3 qualified /WR, and D101.7 respectively. R8 is the 2 kohm",
+            "  pull-up-only D94.1 branch; D0's hidden load and D5-D7 destinations",
             "  remain open while physical",
             "  captures now provide the PROM contents.",
             "- Git history proves the former A0-A4=`BA11..BA15` assignment entered in",
@@ -581,8 +585,9 @@ def main() -> int:
             "  reviewed measurement records rather than promoted electrical nets.",
             "- Registered component-side local fits show copper departing D3-D7",
             "  (pins 4-7 and 9). Direct continuity closes D3/pin4 to D93.2; the",
-            "  exposed-socket view closes D4/pin5 to the internally NC/back-bias",
-            "  D93.1 socket contact. D5/pin6 reaches a proved plated layer handoff",
+            "  full-resolution exposed-socket recheck separates D4/pin5 from D93.1.",
+            "  D93.1 owns the visible open stub; D4/pin5 is a PCB no-connect.",
+            "  D5/pin6 reaches a proved plated layer handoff",
             "  at (2266,1828) px, but independent D93/D94 cross-side projections",
             "  disagree by 54.2 px. D5-D7 retain far-destination boundaries. D0/pin1 is also",
             "  destination-unresolved. The captured program keeps D4-D7 released",
@@ -594,7 +599,7 @@ def main() -> int:
             "- A 2026-07-11 high-resolution recheck projected D93.2 and D93.4 from",
             "  the validated reflected D94 solder fit into the same source image.",
             "  Neither pad shows an obvious solder-side fanout. Owner continuity now",
-            "  closes D94.15->D93.3 and D94.2->D99.8/GND, demonstrating why the",
+            "  closes D94.15->D93.3 and corrects D94.2 to D99.9/R89, demonstrating why the",
             "  earlier local mirrored-pin interpretation was insufficient.",
             "",
             "## Input-mapping correction and control constraint",
@@ -623,8 +628,8 @@ def main() -> int:
             "",
             "| Output | Exact asserted equation | Physical destination |",
             "| --- | --- | --- |",
-            "| `S(D0)` | `!A4 & A1 & A0` | R89 pull-up / hidden-branch boundary |",
-            "| `S(D1)` | `A3 xor A2` | grounded through D99.8 |",
+            "| `S(D0)` | `!A4 & A1 & A0` | R8 2 kΩ pull-up-only boundary |",
+            "| `S(D1)` | `A3 xor A2` | D99.9 / R89 pull-up |",
             "| `S(D2)` | `A3 & !A2 & Q` | D93 `/RE` |",
             "| `S(D3)` | `!A3 & A2 & Q` | D93 `/WE` |",
             "| `S(D4..D7)` | `0` | physically routed but always released |",
@@ -639,13 +644,9 @@ def main() -> int:
             "  for a read (`IORD`=0 -> `/RE` asserted) and A3=0 for a write",
             "  (`IORD`=1 -> `/WE` asserted). A3 must consequently be polarity-",
             "  equivalent to active-low `IOWR` during those cycles. This is an exact",
-            "  firmware-derived functional constraint, not proof that D94.13/D104.7",
-            "  shares copper directly with D5.27 `IOWR`.",
-            "- Test that prediction first with power-off continuity between",
-            "  D94.13/D104.7 and D5.27. If they are not continuous, capture both",
-            "  nodes during known FDC port reads and writes: their logic levels must",
-            "  still match at the PROM sampling point for the physical table to drive",
-            "  the proved D93 `/RE` and `/WE` inputs correctly.",
+            "  firmware-derived prediction is now physically closed: D94.13 belongs",
+            "  to D105.3 qualified peripheral `/WR`, while D5.27 is the distinct raw",
+            "  `IOWR_N` input to D7.10. D104.7 is separate (~84 kΩ to D94.13).",
             "- At BA1:BA0=`11` with A4 low, `Q` becomes false, both D93 strobes",
             "  release, and D0 asserts independently of A3/A2. A live D0 branch",
             "  probe should therefore target exactly that row condition.",
@@ -662,8 +663,8 @@ def main() -> int:
             "## Address Space",
             "",
             "D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;",
-            "the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D104.7/pull-up,",
-            "and A4=D101.7/pull-up. Unknown D5-D7 destinations do not make captured bits unknown.",
+            "the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D105.3 qualified /WR,",
+            "and A4=D101.7. Unknown D5-D7 destinations do not make captured bits unknown.",
             "",
             "| Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |",
             "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
@@ -678,9 +679,10 @@ def main() -> int:
             "- Known: D94 is present in the .009 FDC quadrant and all five address",
             "  inputs have direct owner-continuity mappings.",
             "- Known control destinations: D94 enable pin15 reaches D93.3 CS; D1/pin2",
-            "  is grounded through D99.8; D2/pin3 reaches D93.4 RE; and D3/pin4",
-            "  reaches D93.2 WE. D4/pin5 reaches the internally NC/back-bias D93.1",
-            "  socket contact. D0/pin1 remains destination-unresolved.",
+            "  reaches D99.9/R89; D2/pin3 reaches D93.4/R88 RE; and D3/pin4",
+            "  reaches D93.2/R87 WE. D4/pin5 is a PCB no-connect, while",
+            "  D93.1 owns a separate open stub.",
+            "  D0/pin1 has only R8 2 kΩ to +5 V in the measured scope.",
             "- Known content: three matching reads including a power-cycled read yield",
             f"  raw SHA256 `{PHYSICAL_D94_SHA256}`.",
             "- Known pull-up values: alternate-angle owner photography reads `6К2` on",
@@ -729,8 +731,6 @@ def main() -> int:
         "address_inputs_registered": all_address_inputs_registered,
         "address_sources_traced": address_traced,
         "retired_ba_mapping_absent": retired_ba_mapping_absent,
-        "source_dsn_matches": dsn_matches_source_model,
-        "source_pcb": pcb_ok,
         "official_bom": official_bom_lead,
         "reused_refdes_guard": reused_refdes_guard,
         "v3_rc_excluded": v3_rc_not_d94_evidence,
@@ -739,7 +739,6 @@ def main() -> int:
         "hdl_controls": hdl_connected,
         "hdl_runnable_physical": hdl_runnable_physical,
         "hdl_inputs": hdl_inputs_measured,
-        "pcb_outputs": pcb_outputs_match,
         "re3_lineage": scanned_not_d94,
         "programming_media_audit": programming_media_audited,
         "video_audit_independent": video_audit_independent,

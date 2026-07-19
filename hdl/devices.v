@@ -147,7 +147,7 @@ endmodule
 // ---- memory map decoder: К556РТ4 256x4 bipolar PROM (D6) ----
 // Address inputs = BA15..BA11 on pins 5,6,7,4,3 plus the measured mode bundle:
 // pin 2/A5 <- D3.6 <- /PC0, pin 1/A6 <- D3.4 <- /PC1, and pin 15/A7 <- the
-// unresolved D105.1 boundary. The banking mode enters the PROM as ADDRESS, not
+// owner-closed D7.8/D105.1 I/O-cycle qualifier. The mode enters the PROM as ADDRESS, not
 // through the V enable. V1/V2 (13,14) join D13.12; modeled enabled when low.
 // Columns (traced): D0/12 = ROM_N -> D8.E_N pager enable; D1/11 = RAM_N -> sheet 2;
 // D2/10 = REV -> D9 io-decode G2A/G2B region enable; D3/9 = "-RAMOUTEN" -> D13 Schmitt.
@@ -158,7 +158,7 @@ module decode_prom (input wire [7:0] a, input wire v_en_n,
                     output wire rom_n, ram_n, rev, roe_n);
     // Validated physical D6 `.038` table. Address bit order is the actual RT4
     // pin order: a[0:7] = pins 5,6,7,4,3,2,1,15 =
-    // BA15,BA14,BA13,BA12,BA11,/PC0,/PC1,D105.1-boundary.
+    // BA15,BA14,BA13,BA12,BA11,/PC0,/PC1,D7.8 IO-cycle-active-high.
 `ifdef YOSYS
     wire [3:0] raw = 4'h0; // contents are irrelevant to structural LVS
 `else

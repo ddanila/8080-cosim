@@ -26,12 +26,13 @@ endpoint table contains 639 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 46 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `accepted` | 44 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
 | `measurement` | 593 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `retracted` | 2 | former D94.5-D93.1 continuous-copper claims disproved by owner continuity and full-resolution review |
 
 Confidence metadata consists of 374 `local-package-fit`, 214
-`registration-only`, and 22 `registration+unique-hole-snap` rows. Four use
-`local-package-fit+continuous-copper`, five use
+`registration-only`, and 22 `registration+unique-hole-snap` rows. Two use
+`local-package-fit+continuous-copper`, two use `local-package-fit+visible-gap`, five use
 `registration+visible-common-landing`, four use
 `registration+unique-joint`, three use `registration+three-lead-identity`, and
 nine use `cross-side-registration`. Four `panorama-projected-region`
@@ -46,10 +47,12 @@ Accepted paths:
 - The former D94.1/.2/.3-to-D93.4/.3/.2 photograph interpretation is
   invalidated by chip-removed owner continuity; those photograph rows establish
   package registration only, not electrical identity.
-- Direct continuity proves D94.15 -> D93.3 / `FDC_CS_N`, D94.2 -> D99.8 /
-  `GND`, D94.3 -> D93.4 / `FDC_RE_N`, and D94.4 -> D93.2 / `FDC_WE_N`.
-- Direct continuity also proves D94.13 -> D104.7 and an unidentified pull-up
-  resistor whose other side is +5 V.
+- Direct continuity proves D94.15 -> D93.3 / `FDC_CS_N`, D94.2 -> D99.9 + R89,
+  D94.3 -> D93.4 + R88 / `FDC_RE_N`, and D94.4 -> D93.2 + R87 / `FDC_WE_N`.
+- Direct continuity proves D94.13 is D105.3 qualified peripheral `/WR`; it is
+  about 84 kΩ from D104.7 and is not directly connected to raw D5.27.
+- Full-resolution review retracts the former D94.5-D93.1 path: D93.1 owns the
+  short trace ending at the visible gap, while D94.5 is visibly NC.
 - А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
 - D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
 - D98.3 -> R94.1 / `D98_Y1_R94` (R94.2 remains unresolved).
@@ -389,10 +392,10 @@ accepted from the photographed layers.
 The exposed-socket `202708344` view also supplies an independent affine D94
 fit: pins 1/8/16 are fit anchors and pins 4/9 hold out at `0.714`/`0.000` px.
 It places D94.5 at `(2477,1768.714)` px in the same raw frame that places
-D93.1 at `(2215,1810)` px. The front-copper line is uninterrupted through the
-repaired socket entry, closing `D94_D4` onto D93.1. The controller datasheet
-still classifies pin 1 as internally NC/back-bias; the new evidence corrects
-the PCB claim only—its socket pad is wired, not a board no-connect.
+D93.1 at `(2215,1810)` px. The earlier review incorrectly read across a break.
+Owner inspection and the clearly readable factory E3 frame
+`ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg` close the corrected
+interpretation: D94.5 is NC, while D93.1 alone owns a short open stub.
 
 D94.6/D5 is now bounded one step further without assigning a destination. In
 the same exposed-socket frame, uninterrupted front copper reaches the plated

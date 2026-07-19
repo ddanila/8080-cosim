@@ -16,23 +16,21 @@ Pin contract
 7   D6 output             15  /CE enable input
 8   GND                   16  +5 V
 
-Juku direct-continuity interpretation, 2026-07-15
+Juku direct-continuity interpretation, corrected 2026-07-19
 -------------------------------------------------
 D94.15 <-> D93.3 (/CS)
-D94.2  <-> D99.8 <-> GND
+D94.2  <-> D99.9 <-> R89 (6.2 kohm to +5 V); not D99.8/GND
 D94.2 is explicitly isolated from D94.15.
-D94.3  <-> D93.4 (/RE)
-D94.4  <-> D93.2 (/WE)
-D94.13 <-> D104.7 and an unidentified pull-up resistor to +5 V
+D94.3  <-> D93.4 (/RE) <-> R88 (6.2 kohm to +5 V)
+D94.4  <-> D93.2 (/WE) <-> R87 (6.2 kohm to +5 V)
+D94.13 <-> D105.3 qualified peripheral /WR; not D104.7 (~84 kohm) or D5.27
 D94.10 <-> D93.5 (A0 / BA0)
 D94.11 <-> D93.6 (A1 / BA1) <-> D27.8
 D94.12 <-> D27.5 (/RD, IORD) <-> D29.4
-D94.14 <-> D101.7 (Q0) and an unidentified pull-up resistor to +5 V
+D94.14 <-> D101.7 (Q0)
 
-D94.1 connects through an unidentified pull-up resistor to +5 V. No other
-trace or branch was observed, but a hidden/missed branch remains possible.
-D93.1 is internally NC/back-bias, but the exposed-socket board photograph
-shows its socket contact connected by front copper to D94.5.
+D94.1 connects through R8, measured approximately 2 kohm, to +5 V. No other
+trace or branch was observed. Full-resolution visual inspection shows D94.5
+is NC. D93.1 alone owns the short trace ending at the visible gap.
 Address pins 10/11/12/14 and output pins 6/7/9 remain incomplete board routes.
-The exposed-socket photograph closes output pin5 to D93.1. Keep programmed-
-output semantics separate from physical destinations.
+Keep programmed-output semantics separate from physical destinations.

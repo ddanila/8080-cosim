@@ -27,10 +27,10 @@ Pin contract used by the Juku model
 19  /MR                39  INTRQ
 20  GND                40  +12 V
 
-Juku direct-continuity interpretation, 2026-07-15
+Juku direct-continuity interpretation, corrected 2026-07-19
 -------------------------------------------------
-D93.1 is internally NC/back-bias. On the Juku PCB its socket contact is not
-unconnected: exposed front copper joins it to D94.5.
+D93.1 is internally NC/back-bias. On the Juku PCB its socket contact owns a
+short trace ending at a visible gap; it does not join D94.5 or another endpoint.
 D93.2 (/WE) <-> D94.4.
 D93.3 (/CS) <-> D94.15 (/CE).
 D93.4 (/RE) <-> D94.3.

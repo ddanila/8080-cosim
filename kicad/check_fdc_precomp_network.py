@@ -30,7 +30,7 @@ EXPECTED = {
     "D102_RC1_C22_R102": {"D102.15", "C22.2", "R102.1"},
     "FDC_WDATA_DELAY_IN": {"D93.31", "D97.10"},
     "D101_D02_R92_R99": {"D101.4", "R92.1", "R99.2"},
-    "D94_A4_D101_Q0_PULLUP": {"D94.14", "D101.7", "R88.1"},
+    "D94_A4_D101_Q0": {"D94.14", "D101.7"},
 }
 
 for name, nodes in EXPECTED.items():

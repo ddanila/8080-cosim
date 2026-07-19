@@ -38,7 +38,7 @@ contacts and the pin-40 end marking. A reflected solder fit then lands on the
 actual joints; together they localize MR_N/pin19 and CLK/pin24 without
 claiming their far destinations.
 Chip-removed owner continuity supersedes the mirrored photograph reading:
-D94.3/.15/.4 drive D93.4/.3/.2, while D94.2 reaches D99.8/GND.
+D94.3/.15/.4 drive D93.4/.3/.2, while D94.2 reaches D99.9/R89.
 The old D94.1/.2/.3 photograph rows retain registration value only.
 
 ## Manufacturer Counter/Separator Constraint
@@ -167,8 +167,8 @@ visible links are modeled; the mux select/output paths remain open.
 | `DB5` | WIRED | system DB directly to `D93.12` | factory `.009` sheet 1 + WD1793 datasheet |
 | `DB6` | WIRED | system DB directly to `D93.13` | factory `.009` sheet 1 + WD1793 datasheet |
 | `DB7` | WIRED | system DB directly to `D93.14` | factory `.009` sheet 1 + WD1793 datasheet |
-| `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D2/D3 to D93 RE/WE; D94 enable pin15 to D93 CS; D94 D1 grounded via D99.8 | direct owner continuity for all three controls and grounded D1 |
-| `D94_D4` / D93.1 back-bias landing | WIRED | D94 output D4 to the wired D93 socket contact whose controller pin is internally NC/back-bias | exposed-socket component photograph with independent affine D94/D93 fits |
+| `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D2/D3 to D93 RE/WE with R88/R87 pull-ups; D94 enable pin15 to D93 CS; D94 D1 to D99.9/R89 | direct owner continuity for all three controls and corrected D1 destination |
+| D94.5 no-connect / `D93_1_OPEN_STUB` | WIRED | D94 output D4 is a PCB no-connect; D93.1 owns the short open stub | owner continuity plus full-resolution exposed-socket photograph recheck |
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
 | `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
 | `FDC_INTRQ` | OWNER-VERIFY | D93 INTRQ to PIC IR0 | MAME-era assumption; owner continuity required |
@@ -221,18 +221,18 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 | `D97.4, D93.27` |
 | `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
 | `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V | `D28.6, D93.32, R84.1` |
-| `FDC_RE_N` | direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation | `D94.3, D93.4` |
+| `FDC_RE_N` | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V | `D94.3, D93.4, R88.1` |
 | `FDC_SEPARATOR_CLOCK` | recovered .009 Э3 sheet 3 directly joins D95 clock-mux output B/pin9 to D106 IE7 DOWN/pin4; the mux selects 8 MHz only for FM/MFM=0 and 5-inch/8-inch=0, otherwise 4 MHz | `D95.9, D106.4` |
 | `FDC_SIDE_SEL` | recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL | `D26.11, D100.8` |
 | `FDC_STEP_TO_D100` | recovered .009 Э3 sheet 3: D93 STEP/pin15 directly drives D100 A3/pin2 | `D93.15, D100.2` |
 | `FDC_TG43_TO_D100` | recovered .009 Э3 sheet 3: D93 TG43/pin29 directly drives D100 A1/pin4 | `D93.29, D100.4` |
 | `FDC_TR00_STATUS` | recovered .009 Э3 sheet 3: D98 output pin11 directly drives D93 TR00/pin34 | `D98.11, D93.34` |
 | `FDC_WDATA_DELAY_IN` | recovered .009 Э3 sheet 3 directly joins D93 WDATA/pin31 to the first write-precomp delay stage D97 B2/pin10 | `D93.31, D97.10` |
-| `FDC_WE_N` | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5 | `D94.4, D93.2` |
+| `FDC_WE_N` | owner continuity 2026-07-19 proves D94 output pin4 reaches D93 write-enable pin2 and R87.1; R87.2 is +5 V | `D94.4, D93.2, R87.1` |
 | `FDC_WG_TO_D100` | recovered .009 Э3 sheet 3: D93 WG/pin30 directly drives D100 A5/pin5 | `D93.30, D100.5` |
 | `FDC_WPRT_STATUS` | recovered .009 Э3 sheet 3: D98 output pin13 directly drives D93 WPRT/pin36 | `D98.13, D93.36` |
 | `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+4)` |
-| `IOWR` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1; direct owner continuity assigns D93.2 only to D94.4 on the target revision | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+1)` |
+| `IOWR` | owner continuity 2026-07-19: D105 NAND output pin3 is the qualified active-low peripheral write rail. Its inputs are D7.8 I/O-cycle-active high and D13.4 CPU-write-active high. Directly confirmed endpoints are D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36; existing sheet-derived PIT write endpoints remain on the same rail. D5.27 is the separate raw IOWR_N source into D7.10 | `D105.3, D94.13, D29.5, D10.2, D11.10, D26.36, D27.36, D54.23, ... (+2)` |
 
 ## Disposition
 

@@ -4370,7 +4370,7 @@
    "prov": {
    "type": "mame+datasheet",
    "refdes": ".009 official (FDC)",
-    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact; direct owner continuity proves D94.4/.15/.3 reach D93 /WE, /CS, /RE respectively; an exposed-socket component photo proves D94.5 reaches the internally NC/back-bias D93.1 socket contact; recovered .009 Э3 sheet 3 proves DAL0-DAL7/pins7-14 join D0-D7 directly, drive outputs feed D100, D98 supplies TR00/INDEX/WPRT and READY through D28, D96.5 supplies RCLK, and D97.4 supplies RAW READ; D93.40 reaches the +12 V rail"
+    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact; direct owner continuity proves D94.4/.15/.3 reach D93 /WE, /CS, /RE respectively. Owner inspection and the clearly readable factory Э3 frame PXL_20260718_101633062 on 2026-07-19 retract the former D94.5-D93.1 claim: D93.1 itself has a short trace ending at an open terminal, while D94.5 is NC. Recovered .009 Э3 sheet 3 proves DAL0-DAL7/pins7-14 join D0-D7 directly, drive outputs feed D100, D98 supplies TR00/INDEX/WPRT and READY through D28, D96.5 supplies RCLK, and D97.4 supplies RAW READ; D93.40 reaches the +12 V rail"
    }
   },
   {
@@ -4395,7 +4395,7 @@
    "prov": {
     "type": "prom",
     "refdes": ".009 official; programming ДГШ5.106.092; validated repeated physical table adopted",
-    "pins": "РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0. Direct owner continuity on 2026-07-15 supersedes the mirrored-pin/photo and BA11-BA15 scaffold interpretations: inputs pin10/11/12/13/14 reach BA0, BA1, IORD, D104.7+R87 pull-up, and D101.7+R88 pull-up respectively; enable pin15 reaches D93.3; outputs pin2/3/4 reach GND, D93.4, and D93.2; exposed-socket front copper closes pin5 to D93.1; output pin1 has the identified R89 pull-up with no other observed branch"
+    "pins": "РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0. Owner continuity through 2026-07-19 supersedes the earlier numbering/photo interpretation: inputs pin10/11/12/13/14 reach BA0, BA1, IORD, the D105.3 qualified peripheral /WR rail, and D101.7 respectively; enable pin15 reaches D93.3. Outputs pin2/3/4 reach D99.9, D93.4, and D93.2, with R89/R88/R87 respectively pulling those three nodes to +5 V. Pin1 has only the measured R8 2 kohm pull-up and no other observed branch. Owner visual inspection and factory Э3 frame PXL_20260718_101633062 show pin5 is NC and is not connected to D93.1. D93.1, not D94.5, owns the open stub. These wiring corrections do not change the validated PROM dump."
    }
   },
   {
@@ -5325,6 +5325,11 @@
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY data pullup", "pins": "P5V to D30.2"}
   },
   {
+   "ref": "R8", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
+   "pcb_placement_pending": true,
+   "prov": {"type": "owner continuity 2026-07-19", "refdes": "R8, physical placement not yet registered in the replica", "pins": "one end joins only D94.1 in the measured scope; the other end reaches +5 V; measured resistance approximately 2 kohm"}
+  },
+  {
    "ref": "R29", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "1к",
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY output series resistor; assembly drawing beside D30", "pins": "D30.5 to D1.23 READY"}
   },
@@ -5333,7 +5338,7 @@
    "prov": {
     "type": ".009 assembly drawing + registered component/solder/value photos + factory BOM",
     "refdes": "leftmost of the R87/R88/R89 vertical row immediately left of D94",
-    "pins": "reflected solder copper joins pin 1 to D94.13/D104.7 and pin 2 to the common +5 V rail; alternate owner photo reads 6K2; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only"
+    "pins": "owner continuity 2026-07-19 proves pin 1 joins D94.4 and D93.2 /WE, while pin 2 joins +5 V; alternate owner photo reads 6K2; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only"
    }
   },
   {
@@ -5341,7 +5346,7 @@
    "prov": {
     "type": ".009 assembly drawing + registered component/solder/value photos + factory BOM",
     "refdes": "middle of the R87/R88/R89 vertical row immediately left of D94",
-    "pins": "reflected solder copper joins pin 1 to D94.14/D101.7 and pin 2 to the common +5 V rail; alternate owner photo reads 6K2; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only"
+    "pins": "owner continuity 2026-07-19 proves pin 1 joins D94.3 and D93.4 /RE, while pin 2 joins +5 V; alternate owner photo reads 6K2; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only"
    }
   },
   {
@@ -5349,7 +5354,7 @@
    "prov": {
     "type": ".009 assembly drawing + registered component/solder/value photos + factory BOM",
     "refdes": "rightmost of the R87/R88/R89 vertical row immediately adjacent to D94",
-    "pins": "reflected solder copper joins pin 1 to D94.1 and pin 2 to the common +5 V rail; body matches the photo-readable R87/R88 parts; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only; no additional D94.1 branch is promoted"
+    "pins": "owner continuity 2026-07-19 proves pin 1 joins D94.2 and D99.9, while pin 2 joins +5 V; body matches the photo-readable R87/R88 parts; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only"
    }
   },
   {
@@ -5785,7 +5790,7 @@
    "nodes": [["D105", "6"], ["D5", "4"]]
   },
   "WR": {
-   "src": "scan",
+   "src": "owner continuity 2026-07-19: CPU D1.18 raw /WR reaches D5.3 and D13.3; D13.4 inverts it to the write-active-high input of D105.2",
    "nodes": [
     [
      "D1",
@@ -5793,6 +5798,10 @@
     ],
     [
      "D5",
+     "3"
+    ],
+    [
+     "D13",
      "3"
     ]
    ]
@@ -7414,9 +7423,9 @@
    "src": "direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D3 К561ЛН2 inverter output pin6 drives D6 К556РТ4 address input A5/pin2; D6.2 is explicitly not connected to any D26 pin",
    "nodes": [["D3", "6"], ["D6", "2"]]
   },
-  "D6_A7_D105_I1_BOUNDARY": {
-   "src": "direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D6 address input A7/pin15 joins D105 К155ЛА3 input pin1. No other destination was found; D6.15 is explicitly not connected to any D26 pin, and D105.1 is explicitly isolated from D105.12/.13 and D5.26 MEMW. With D6 removed, owner resistance measurements from D6.15 to both GND and +5V fluctuate at approximately 100-200 kohm, excluding a simple low-value pull-up or pull-down but not identifying the hidden source; in-circuit charging/leakage is possible. Both proved endpoints are inputs, so the unknown driver remains a required continuity boundary",
-   "nodes": [["D6", "15"], ["D105", "1"]]
+  "IO_CYCLE_H": {
+   "src": "owner continuity 2026-07-19 closes D7 NAND output pin8 to D105.1 and D6 address A7/pin15. D7.9=raw IORD_N and D7.10=raw IOWR_N, so this conductor is high during either I/O read or write cycle",
+   "nodes": [["D6", "15"], ["D105", "1"], ["D7", "8"]]
   },
   "ROE": {
    "src": "direct owner continuity 2026-07-14 confirms D6.9 -> D13.1. Native full-resolution sheet 1 shows rail code 3 = D6.9, drawn name \"-RAM OUT EN\", and the lower labeled R14 1k pull-up branch; merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail",
@@ -7604,40 +7613,12 @@
     ]
    ]
   },
-  "IOWR": {
-   "src": "scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1; direct owner continuity assigns D93.2 only to D94.4 on the target revision",
+  "IOWR_RAW_N": {
+   "src": "owner continuity 2026-07-19: D5.27 raw 8238 IOWR_N reaches D7.10 only in the measured scope and does not reach D94.13 or D105.3",
    "nodes": [
     [
      "D5",
      "27"
-    ],
-    [
-     "D26",
-     "36"
-    ],
-    [
-     "D27",
-     "36"
-    ],
-    [
-     "D11",
-     "10"
-    ],
-    [
-     "D54",
-     "23"
-    ],
-    [
-     "D55",
-     "23"
-    ],
-    [
-     "D57",
-     "23"
-    ],
-    [
-     "D10",
-     "2"
     ],
     [
      "D7",
@@ -10624,10 +10605,6 @@
      "8"
     ],
     [
-     "D94",
-     "2"
-    ],
-    [
      "D100",
      "10"
     ],
@@ -11771,6 +11748,10 @@
     ],
     [
      "R87",
+     "2"
+    ],
+    [
+     "R8",
      "2"
     ],
     [
@@ -13815,16 +13796,16 @@
    ]
   },
   "FDC_RE_N": {
-   "src": "direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation",
-   "nodes": [["D94", "3"], ["D93", "4"]]
+   "src": "owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V",
+   "nodes": [["D94", "3"], ["D93", "4"], ["R88", "1"]]
   },
   "FDC_CS_N": {
    "src": "direct owner continuity 2026-07-15 proves D94 enable pin15 reaches D93 chip-select pin3, and explicitly proves D94 output pin2 is isolated from this conductor. The upstream source is retained separately for later continuity",
    "nodes": [["D94", "15"], ["D93", "3"]]
   },
   "FDC_WE_N": {
-   "src": "direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5",
-   "nodes": [["D94", "4"], ["D93", "2"]]
+   "src": "owner continuity 2026-07-19 proves D94 output pin4 reaches D93 write-enable pin2 and R87.1; R87.2 is +5 V",
+   "nodes": [["D94", "4"], ["D93", "2"], ["R87", "1"]]
   },
   "D96_Q2_N_TEST_LANDING": {
    "src": "July-2026 D99-package-local cross-side affine: D96.8 Q2_N reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
@@ -13835,12 +13816,12 @@
    "nodes": [["D99", "2"]]
   },
   "D94_D0_BOUNDARY": {
-   "src": ".009 factory drawing identifies R89 as the rightmost resistor adjacent to D94; registered component/reflected-solder photos join D94.1 to R89.1 and R89.2 to +5 V. No other trace or branch is observed; retain a guarded destination boundary because a hidden or missed branch cannot yet be excluded",
-   "nodes": [["D94", "1"], ["R89", "1"]]
+   "src": "owner continuity 2026-07-19: D94.1 joins R8 through approximately 2 kohm to +5 V; no other connection was found",
+   "nodes": [["D94", "1"], ["R8", "1"]]
   },
-  "D94_D4": {
-   "src": "July-2026 exposed-socket photo PXL_20260710_202708344: independent affine D94/D93 fits identify D94.5 at (2477,1768.714) px and D93.1 at (2215,1810) px; uninterrupted front copper and the repaired socket entry join them. D93.1 is internally NC/back-bias on the controller but is not an unconnected PCB pad",
-   "nodes": [["D94", "5"], ["D93", "1"]]
+  "D93_1_OPEN_STUB": {
+   "src": "owner continuity/visual inspection 2026-07-19 plus clearly readable factory Э3 frame ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg: D93.1 is not connected to D94.5 or any other endpoint; its short trace terminates at an open terminal. Purpose of the dead-end stub is unknown",
+   "nodes": [["D93", "1"]]
   },
   "D94_D5": {
    "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary",
@@ -13914,9 +13895,9 @@
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D101", "6"]]
   },
-  "D94_A4_D101_Q0_PULLUP": {
-   "src": "direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94.14/A4 reaches D101 К555КП12 Q0/pin7 and R88.1; R88.2 enters the common +5 V rail",
-   "nodes": [["D94", "14"], ["D101", "7"], ["R88", "1"]]
+  "D94_A4_D101_Q0": {
+   "src": "owner continuity 2026-07-19 confirms D94.14/A4 reaches D101 К555КП12 Q0/pin7; the earlier R88 branch is retracted",
+   "nodes": [["D94", "14"], ["D101", "7"]]
   },
   "PRECOMP_TAP_1": {
    "src": "recovered .009 Э3 sheet 3 directly joins the first write-precomp one-shot Q/pin5 to D101 B0/pin10",
@@ -14163,9 +14144,9 @@
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "7"]]
   },
-  "D99_A2N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D99", "9"]]
+  "D94_D1_D99_A2N": {
+   "src": "owner continuity 2026-07-19 proves D94.2 reaches D99 К155АГ3 second-section active-low A input pin9 and R89.1; D94.2 does not reach D99.8 or GND, and R89.2 reaches +5 V",
+   "nodes": [["D94", "2"], ["D99", "9"], ["R89", "1"]]
   },
   "D99_B2_BOUNDARY": {
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary",
@@ -14227,10 +14208,6 @@
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "33"]]
   },
-  "D13_I3_BOUNDARY": {
-   "src": "sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary",
-   "nodes": [["D13", "3"]]
-  },
   "D14_I2_BOUNDARY": {
    "src": "sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary",
    "nodes": [["D14", "2"]]
@@ -14263,13 +14240,9 @@
    "src": "sheet-1 native 5150x3603 command-buffer chase identifies semantic command A1/CCLCK on D29 physical A1 pin2; its westbound conductor enters the dense D5/D105 crossing bundle, where adjacent parallel risers and the absence of an explicit junction do not prove the tempting D105.3 candidate, so the unique source remains unread",
    "nodes": [["D29", "2"]]
   },
-  "D7_IOM_STATUS_RECHECK": {
-   "src": "native sheet-1 full-resolution shows D7 output pin8 departing on dense-bundle code 8, visibly separate from adjacent D105.3 code 7. The older interpretation joined D7.8 to D29.4 as IOM_STATUS, but direct owner continuity 2026-07-15 instead places D29.4 on the D27.5/IORD/D94.12 conductor. D7.8 remains guarded pending later D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 rechecks",
-   "nodes": [["D7", "8"]]
-  },
   "AMW_N": {
-   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into semantic D29 command A5 on physical package channel A4/pin5, paired with physical B4/pin15 routed as -AMWC",
-   "nodes": [["D7", "3"], ["D29", "5"]]
+   "src": "D7 NAND output pin3 remains a boundary. Owner continuity 2026-07-19 disproves the earlier sheet interpretation that joined it to D29.5; D29.5 instead belongs to qualified peripheral /WR",
+   "nodes": [["D7", "3"]]
   },
   "D30_Q2N_D29_AIN7": {
    "src": "direct .009 owner continuity 2026-07-14 proves D30 second flip-flop inverted output pin8 drives D29 VA86 input pin7. This supersedes the prior scan boundary and removes D29.7 from the raw IOWR conductor",
@@ -15825,12 +15798,12 @@
    "nodes": [["D105", "8"], ["D105", "4"], ["D105", "5"]]
   },
   "D13_4_D105_2": {
-   "src": "scan sheet-1 plus direct .009 owner continuity 2026-07-14: uninterrupted D13 TL2 output pin4 conductor reaches D105 NAND input pin2, USART D11 CLK pin20, and D30 second flip-flop clock pin11",
+   "src": "owner continuity through 2026-07-19: D13.3 receives CPU raw WR_N from D1.18/D5.3; its inverted write-active-high output pin4 reaches D105.2, USART D11.20, and D30.11",
    "nodes": [["D13", "4"], ["D105", "2"], ["D11", "20"], ["D30", "11"]]
   },
-  "D105_GATE1_Y": {
-   "src": "native sheet-1 full-resolution: D105 gate pins 1,2 -> output pin3, which departs on dense-bundle code 7 beside but not joined to D7.8 code 8. The nearby D29.2 conductor has no explicit junction to this riser, so the unique destination remains unread",
-   "nodes": [["D105", "3"]]
+  "IOWR": {
+   "src": "owner continuity 2026-07-19: D105 NAND output pin3 is the qualified active-low peripheral write rail. Its inputs are D7.8 I/O-cycle-active high and D13.4 CPU-write-active high. Directly confirmed endpoints are D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36; existing sheet-derived PIT write endpoints remain on the same rail. D5.27 is the separate raw IOWR_N source into D7.10",
+   "nodes": [["D105", "3"], ["D94", "13"], ["D29", "5"], ["D10", "2"], ["D11", "10"], ["D26", "36"], ["D27", "36"], ["D54", "23"], ["D55", "23"], ["D57", "23"]]
   },
   "D105_MEMW_INV": {
    "src": "owner continuity 2026-07-13: tied D105.12/.13 receive D5.26 MEMW_N; D105.11 drives D30 section-B /CLR pin13",
@@ -15859,9 +15832,9 @@
    "src": ".009 factory assembly drawing identifies C94 immediately right of VT2, but the owner views do not uniquely expose its body or either lead; the previous C94.2/VIDEO_OUT promotion is retracted because that visible joint is VT2.1/R65.1",
    "nodes": [["C94", "2"]]
   },
-  "D94_A3_D104_X4_PULLUP": {
-   "src": "direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and R87.1; R87.2 enters the common +5 V rail. К170УП2 primary pinout confirms channel X4 is input7 -> output10",
-   "nodes": [["D94", "13"], ["D104", "7"], ["R87", "1"]]
+  "D104_X4_IN_BOUNDARY": {
+   "src": "owner resistance 2026-07-19 measures approximately 84 kohm between D104.7 and D94.13, disproving the former direct-net claim; D104 receiver input pin7 remains an independent boundary",
+   "nodes": [["D104", "7"]]
   },
   "D104_X4_OUT_BOUNDARY": {
    "src": "July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps hide its possible F.Cu departure behind the same vertical white wire. This singleton preserves the functional receiver output as a targeted continuity boundary, not an inferred no-connect",
@@ -15908,6 +15881,7 @@
   }
  },
  "no_connects": [
+  ["D94", "5"],
   ["D53", "7"],
   ["D53", "9"],
   ["D53", "10"],

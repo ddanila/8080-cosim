@@ -77,7 +77,7 @@ python3 scripts/report_serial_handoff.py
 | `SER_RXD` | `D11.3`, `D104.13` |
 | `SER_CTS_N` | `D104.12`, `D11.17` |
 | `SER_DSR_N` | `D104.11`, `D11.22` |
-| `D94_A3_D104_X4_PULLUP` | `D94.13`, `D104.7`, `R87.1` |
+| `D104_X4_IN_BOUNDARY` | `D104.7` |
 | `D104_X4_OUT_BOUNDARY` | `D104.10` |
 | `USART_RXRDY_IRQ` | `D10.20`, `D11.14` |
 | `USART_TXRDY_IRQ` | `D10.21`, `D11.15` |
@@ -104,8 +104,9 @@ python3 scripts/report_serial_handoff.py
 - `sync/serial_check.sh` now proves a scoped USART behavior slice:
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
-- D104's fourth receiver input pin 7 is owner-closed to D94.13 and
-  its output pin 10 is preserved as `D104_X4_OUT_BOUNDARY`; its far
+- D104's fourth receiver input pin 7 is separate from D94.13 (~84 kΩ)
+  and preserved as `D104_X4_IN_BOUNDARY`; output pin 10 remains
+  `D104_X4_OUT_BOUNDARY`, and its far
   destination remains a targeted continuity measurement.
 - D11 auxiliary pins without a net or explicit NC:
   none; all are dispositioned.

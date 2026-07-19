@@ -1,6 +1,6 @@
 # juku_top peripheral bus check
 
-Status: **PASS**
+Status: **FAIL**
 
 This fast harness drives the LVS-checked `juku_top` buffered CPU bus directly
 through `BA`, `DB`, `iord_n`, `iowr_n`, and `inta_n`, while leaving the
@@ -19,40 +19,40 @@ sync/juku_top_periph_bus_check.sh
 | Check | Result |
 | --- | --- |
 | Vendored `JUKU1.CPM` loaded by top-level FDC | PASS |
-| PIC register write/read through decoded ports `0x00/0x01` | PASS |
-| Frame tick raises `INTR` and INTA returns `CD D4 FE` for vector `0xFED4` | PASS |
-| PPI0 no-key scan reads `0xCF` like the first ROMBIOS keyboard poll | PASS |
-| PPI0 keyboard scan reads shifted `T` as `0x88` through decoded ports `0x04/0x05` | PASS |
-| PPI0 Port C motor-on latch through decoded port `0x06` | PASS |
-| Physical D94 table produces mutually exclusive FDC `/RE` and `/WE` strobes | PASS |
-| Low D101.Q0/A4 steers register 3 from D93 strobes to the pulled-up D94 D0 branch | PASS |
-| Chip-select-qualified diagnostic inversion profile stays one-way on the suppressed-`/RE` branch | PASS |
-| Always-enabled diagnostic inversion profile stays one-way on the suppressed-`/RE` branch | PASS |
-| FDC accepts exact ROMBIOS first command `0x02` as restore and returns track 0 | PASS |
-| FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | PASS |
-| Forced-low READY rejects Type-II/III immediately with NOT READY/INTRQ while Type-I seek still executes and READY-high status recovers | PASS |
-| Timed Type-I physical-head/update, HLT-gated verify with immediate valid-ID mismatch, and exact 15-idle-index HLD release through decoded ports `0x1C..0x1F` | PASS |
-| Forced TR00 proves live TRACK 0 status plus outward Restore stepping and completion when active-low TR00 asserts | PASS |
-| Forced-low HLT holds Type-III BUSY/DRQ-low and its rising edge starts media access | PASS |
-| One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (`0x5C`) through the top-level bus | PASS |
-| A missing Type-II track/sector ID holds BUSY without DRQ for three revolutions and completes RNF on the fourth | PASS |
-| Type-II `C/S` mismatch holds BUSY without DRQ for four index pulses and completes RNF on the fifth | PASS |
-| E-delayed, index-gated Type-III Read Track reconstructs one MFM revolution through logical DB and both diagnostic profile families | PASS |
-| Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | PASS |
-| ROMBIOS `0xA2` write-sector preloads across the 22-byte ID-to-write-gate interval, streams 512 bytes through D94-decoded port `0x1F`, and reads them back from a writable copy | PASS |
-| Write Sector `a0=1` records an `F8` deleted-data mark and Read Sector reports RECORD TYPE bit 5 through the decoded bus | PASS |
-| Type-II deleted multi-write re-arms the 22-byte preload interval, preserves `F8` marks on sectors 9/10, and ends at sector 11 with RNF | PASS |
-| E-delayed, index-gated Type-III Write Track persists sectors 1-10 and an `F8` mark through logical DB and both diagnostic profile families | PASS |
-| CMA-profile CPU bytes cross the unmapped inversion adjunct for restore, seek, media read, and write/readback | PASS |
+| PIC register write/read through decoded ports `0x00/0x01` | FAIL |
+| Frame tick raises `INTR` and INTA returns `CD D4 FE` for vector `0xFED4` | FAIL |
+| PPI0 no-key scan reads `0xCF` like the first ROMBIOS keyboard poll | FAIL |
+| PPI0 keyboard scan reads shifted `T` as `0x88` through decoded ports `0x04/0x05` | FAIL |
+| PPI0 Port C motor-on latch through decoded port `0x06` | FAIL |
+| Physical D94 table produces mutually exclusive FDC `/RE` and `/WE` strobes | FAIL |
+| Low D101.Q0/A4 steers register 3 from D93 strobes to the pulled-up D94 D0 branch | FAIL |
+| Chip-select-qualified diagnostic inversion profile stays one-way on the suppressed-`/RE` branch | FAIL |
+| Always-enabled diagnostic inversion profile stays one-way on the suppressed-`/RE` branch | FAIL |
+| FDC accepts exact ROMBIOS first command `0x02` as restore and returns track 0 | FAIL |
+| FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | FAIL |
+| Forced-low READY rejects Type-II/III immediately with NOT READY/INTRQ while Type-I seek still executes and READY-high status recovers | FAIL |
+| Timed Type-I physical-head/update, HLT-gated verify with immediate valid-ID mismatch, and exact 15-idle-index HLD release through decoded ports `0x1C..0x1F` | FAIL |
+| Forced TR00 proves live TRACK 0 status plus outward Restore stepping and completion when active-low TR00 asserts | FAIL |
+| Forced-low HLT holds Type-III BUSY/DRQ-low and its rising edge starts media access | FAIL |
+| One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (`0x5C`) through the top-level bus | FAIL |
+| A missing Type-II track/sector ID holds BUSY without DRQ for three revolutions and completes RNF on the fourth | FAIL |
+| Type-II `C/S` mismatch holds BUSY without DRQ for four index pulses and completes RNF on the fifth | FAIL |
+| E-delayed, index-gated Type-III Read Track reconstructs one MFM revolution through logical DB and both diagnostic profile families | FAIL |
+| Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | FAIL |
+| ROMBIOS `0xA2` write-sector preloads across the 22-byte ID-to-write-gate interval, streams 512 bytes through D94-decoded port `0x1F`, and reads them back from a writable copy | FAIL |
+| Write Sector `a0=1` records an `F8` deleted-data mark and Read Sector reports RECORD TYPE bit 5 through the decoded bus | FAIL |
+| Type-II deleted multi-write re-arms the 22-byte preload interval, preserves `F8` marks on sectors 9/10, and ends at sector 11 with RNF | FAIL |
+| E-delayed, index-gated Type-III Write Track persists sectors 1-10 and an `F8` mark through logical DB and both diagnostic profile families | FAIL |
+| CMA-profile CPU bytes cross the unmapped inversion adjunct for restore, seek, media read, and write/readback | FAIL |
 
 ## Stop State
 
 - Disk line: `FDC-1793: loaded raw disk media/disks/JUKU1.CPM (2 sides, read-only)`
-- Pass line: `JUKU-TOP-PERIPH-BUS: PASS`
+- Pass line: `none`
 - Writable-copy disk line: `FDC-1793: loaded raw disk <temporary-copy> (2 sides, writable)`
-- Writable-copy pass line: `JUKU-TOP-PERIPH-BUS: PASS`
-- Qualified-D100 writable pass line: `JUKU-TOP-PERIPH-BUS: PASS`
-- Always-enabled-D100 writable pass line: `JUKU-TOP-PERIPH-BUS: PASS`
+- Writable-copy pass line: `none`
+- Qualified-D100 writable pass line: `none`
+- Always-enabled-D100 writable pass line: `none`
 
 ## Boundary
 

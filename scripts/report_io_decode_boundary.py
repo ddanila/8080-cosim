@@ -91,10 +91,10 @@ def main() -> int:
             "`BA10`, `BA11`, `BA12` into D9.A/B/C",
         ),
         (
-            "D7 fourth-gate inputs are wired to IOWR/IORD",
-            has_nodes(board, "IOWR", {("D7", "10"), ("D11", "10"), ("D26", "36"), ("D27", "36")})
+            "D7 fourth-gate inputs are wired to raw IOWR_N/IORD_N",
+            has_nodes(board, "IOWR_RAW_N", {("D5", "27"), ("D7", "10")})
             and has_nodes(board, "IORD", {("D7", "9"), ("D11", "13"), ("D26", "5"), ("D27", "5")}),
-            "`IOWR`/`IORD` fanout",
+            "`IOWR_RAW_N`/`IORD` inputs",
         ),
         (
             "D9 chip-select outputs are routed to the modeled peripherals",
@@ -108,9 +108,9 @@ def main() -> int:
             and has_nodes(board, "CS_FDC", {("D9", "7")})
             and has_nodes(board, "FDC_RE_N", {("D94", "3"), ("D93", "4")})
             and has_nodes(board, "FDC_CS_N", {("D94", "15"), ("D93", "3")})
-            and has_nodes(board, "GND", {("D94", "2"), ("D99", "8")})
+            and has_nodes(board, "D94_D1_D99_A2N", {("D94", "2"), ("D99", "9"), ("R89", "1")})
             and has_nodes(board, "FDC_WE_N", {("D94", "4"), ("D93", "2")}),
-            "`CS_D10`..`CS_FDC`; measured D94.15/.3/.4 controls and grounded D94.2",
+            "`CS_D10`..`CS_FDC`; measured D94.15/.3/.4 controls and corrected D94.2-D99.9/R89 node",
         ),
         (
             "D25 bus turnaround handoff is guarded",
@@ -124,9 +124,9 @@ def main() -> int:
             "D7 fourth-gate strobe inputs are source-proven",
             d7.get("pins", {}).get("9") == "A4"
             and d7.get("pins", {}).get("10") == "B4"
-            and "full-resolution" in board["nets"]["IOWR"]["src"]
+            and "owner continuity 2026-07-19" in board["nets"]["IOWR_RAW_N"]["src"]
             and "full-resolution" in board["nets"]["IORD"]["src"],
-            "IORD/IOWR are on D7.9/D7.10 from the full-resolution sheet",
+            "IORD_N/IOWR_N are on D7.9/D7.10; raw D5.27 is distinct from qualified D105.3",
         ),
         (
             "C99 far physical pad is preserved without assuming ground",
@@ -144,13 +144,11 @@ def main() -> int:
             "Native sheet proves D7.4 -> MEMW/D29.1; D7.5 remains on the distinct -INHIB junction",
         ),
         (
-            "D105.3 code 7 and D7.8 code 8 remain distinct driven outputs",
-            set(nodes(board, "D105_GATE1_Y")) == {("D105", "3")}
-            and set(nodes(board, "D7_IOM_STATUS_RECHECK")) == {("D7", "8")}
-            and "code 7" in board["nets"]["D105_GATE1_Y"]["src"]
-            and "code 8" in board["nets"]["D7_IOM_STATUS_RECHECK"]["src"]
-            and "absence of an explicit junction" in board["nets"]["D29_AIN1_BOUNDARY"]["src"],
-            "Full-resolution sheet-1 keeps the adjacent code-7/code-8 risers separate; D29.2 is not promoted onto either",
+            "D7.8 I/O-cycle qualifier and D105.3 qualified /WR are owner-closed",
+            set(nodes(board, "IO_CYCLE_H")) == {("D7", "8"), ("D105", "1"), ("D6", "15")}
+            and has_nodes(board, "IOWR", {("D105", "3"), ("D94", "13"), ("D29", "5")})
+            and set(nodes(board, "IOWR_RAW_N")) == {("D5", "27"), ("D7", "10")},
+            "Owner continuity 2026-07-19 separates raw D5.27 from qualified D105.3 and closes D7.8 to D105.1/D6.15",
         ),
     ]
     ok = all(result for _, result, _ in checks + boundaries)
