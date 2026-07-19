@@ -97,13 +97,13 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       remain explicitly unresolved.
 - [x] Sheet-3 D96 read-clock toggle completely transcribed: WREQ_N drives both
       asynchronous controls, /Q feeds D, D28.8 clocks section 1, Q drives
-      D93 RCLK, and the undrawn second half is NC except for its independently
-      photo-proved pin-8 test landing
+      D93 RCLK, and section 2 implements the DRQ/INTRQ conditioner while its
+      pin-8 complement remains an independently photo-proved test landing
       (`ref/schematics/fdc-read-clock-toggle-map.md`).
 - [x] Exact-revision unused sections reconciled: the drawing omits D28's last
-      two inverter pairs, D98 buffer pair 4, D97 Q/pin13, and D102 /Q/pin4.
-      Those eight pads are guarded NCs, while live D28 READY pins5/6 are no
-      longer contradicted by stale NC metadata
+      two inverter pairs only from the earlier partial frame; the exact frame
+      restores them in the IRQ conditioner. D98 buffer pair 4, D97 Q/pin13,
+      D102 /Q/pin4, and D96 /CLR2/pin13 remain guarded NCs
       (`ref/schematics/fdc-unused-pin-dispositions.md`).
 - [x] Sheet-1/3 D93 static paths reconciled: `RES (3)` lands on D93.19, and
       sheet 3 directly ties TEST/pin22 to WF/VFOE/pin33. The drawn reset-polarity

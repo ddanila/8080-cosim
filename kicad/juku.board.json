@@ -634,7 +634,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete КР580ВВ51А/8251 package contract including VSS pin4 and +5V VCC pin26; native sheet-1 directly loops RXRDY pin14 to D10 IR2 and TXRDY pin15 to D10 IR3, connects SYNDET to S4, and omits TXEMPTY pin18 as an explicit NC. The separate off-sheet (3) RxRDY/TxRDY arrows enter IR0/IR1 from the alternate interface"
+    "pins": "complete КР580ВВ51А/8251 package contract including VSS pin4 and +5V VCC pin26; native sheet-1 directly loops RXRDY pin14 to D10 IR2 and TXRDY pin15 to D10 IR3, connects SYNDET to S4, and omits TXEMPTY pin18 as an explicit NC. Exact .009 sheet 1 proves D10 IR0/IR1 instead terminate at X2 contacts 214/218 with 12k pull-downs"
    }
   },
   {
@@ -775,7 +775,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete КР580ВН59/8259 package contract including VSS pin14 and +5V VCC pin28; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR2<-D11 RXRDY, IR3<-D11 TXRDY, IR0/IR1<-off-sheet alternate-interface Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB; CAS0/1/2 pins12/13/15 are absent from the full-resolution symbol and explicitly NC",
+    "pins": "complete КР580ВН59/8259 package contract including VSS pin14 and +5V VCC pin28; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR2<-D11 RXRDY, IR3<-D11 TXRDY, IR0<-X2.214 with R105 12k pull-down, IR1<-X2.218/D27.PB7 with R107 12k pull-down, IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB; CAS0/1/2 pins12/13/15 are absent from the full-resolution symbol and explicitly NC",
     "note": "КР580ВН59 marking and notch-left posture are photo-confirmed; July-2026 affine component fit corrects the source footprint centre to (192.44,110.08) mm"
    }
   },
@@ -4057,16 +4057,19 @@
     "219": "P219",
     "211": "P211",
     "212": "P212",
+    "214": "P214",
+    "216": "P216",
     "209": "P209",
     "210": "P210",
     "227": "P227",
+    "228": "P228",
     "229": "P229",
     "230": "P230"
    },
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 X2 codes 201-226",
-    "pins": "scan (PA1/PA5 digit pair uncertain)"
+    "pins": "full СНП59-30 physical contact pattern 201-230; scan (PA1/PA5 digit pair uncertain); exact .009 sheet 1 additionally closes contact 214 to D10 IR0/R105 and contact 218 to D10 IR1/R107; undrawn contacts 216/228 are explicit NCs"
    }
   },
   {
@@ -4329,6 +4332,28 @@
     "pins": "continuous source conductor and local package photo"
    },
    "value": "200"
+  },
+  {
+   "ref": "R105",
+   "type": "R_AXIAL",
+   "value": "12к",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "native schematic + factory assembly drawing + owner photo",
+    "refdes": "exact .009 Э3 sheet 1; ДГШ5.109.009 СБ; registered D10-local owner photograph",
+    "pins": "sheet 1 draws R105 from D10 IR0/contact 214 to ground; assembly artwork identifies the left body and the owner photograph closes its populated vertical landings and directly readable 12K value"
+   }
+  },
+  {
+   "ref": "R107",
+   "type": "R_AXIAL",
+   "value": "12к",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "native schematic + factory assembly drawing + owner photo",
+    "refdes": "exact .009 Э3 sheet 1; ДГШ5.109.009 СБ; registered D10-local owner photograph",
+    "pins": "sheet 1 draws R107 from D10 IR1/contact 218 to ground; assembly artwork identifies the right body and the owner photograph closes its populated vertical landings and directly readable 12K value"
+   }
   },
   {
    "ref": "D93",
@@ -10276,6 +10301,14 @@
      "14"
     ],
     [
+     "R105",
+     "2"
+    ],
+    [
+     "R107",
+     "2"
+    ],
+    [
      "D11",
      "4"
     ],
@@ -12384,7 +12417,7 @@
    ]
   },
   "USART_TXRDY_IRQ": {
-   "src": "traced sheet-1 native full-resolution: D11 TXRDY output pin15 runs east, turns north, and lands directly on D10 PIC IR3 pin21; pinned MAME primary-USART wiring independently agrees. The separate off-sheet (3) TxRDY arrow enters D10 IR1 and belongs to the alternate sheet-3 interface",
+   "src": "traced sheet-1 native full-resolution: D11 TXRDY output pin15 runs east, turns north, and lands directly on D10 PIC IR3 pin21; pinned MAME primary-USART wiring independently agrees. Exact .009 sheet 1 separately closes IR1 to X2.218/D27.PB7/R107",
    "source_risk": false,
    "risk_disposition": "closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded",
    "nodes": [
@@ -12399,7 +12432,7 @@
    ]
   },
   "USART_RXRDY_IRQ": {
-   "src": "traced sheet-1 native full-resolution: D11 RXRDY output pin14 runs east, turns north, and lands directly on D10 PIC IR2 pin20; pinned MAME primary-USART wiring independently agrees. The separate off-sheet (3) RxRDY arrow enters D10 IR0 and belongs to the alternate sheet-3 interface",
+   "src": "traced sheet-1 native full-resolution: D11 RXRDY output pin14 runs east, turns north, and lands directly on D10 PIC IR2 pin20; pinned MAME primary-USART wiring independently agrees. Exact .009 sheet 1 separately closes IR0 to X2.214/R105",
    "source_risk": false,
    "risk_disposition": "closed by the native sheet-1 D11.14-to-D10.20 trace; the separately drawn off-sheet interface is explicitly excluded",
    "nodes": [
@@ -12970,7 +13003,7 @@
    ]
   },
   "X2_PB7": {
-   "src": "scan sheet-1",
+   "src": "exact .009 sheet 1: X2 contact 218 is shared by D27 PB7 and D10 IR1, with R107 12k to ground",
    "nodes": [
     [
      "D27",
@@ -12979,6 +13012,14 @@
     [
      "X2",
      "218"
+    ],
+    [
+     "D10",
+     "19"
+    ],
+    [
+     "R107",
+     "1"
     ]
    ]
   },
@@ -14221,13 +14262,9 @@
    "src": "recovered .009 Э3 sheet 3 directly joins D93 DRQ/pin38 to D28 open-collector inverter input pin11. The drawing labels a 10k pull-up R94 on this node, but target-board photo/continuity proves physical R94 is instead 220 ohms on D98.3, so that conflicting resistor branch is not imported",
    "nodes": [["D93", "38"], ["D28", "11"]]
   },
-  "D10_IR0_FDC_BOUNDARY": {
-   "src": "D10 IR0/pin18 was formerly assigned directly to D93 INTRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so the PIC-side destination remains a sheet-1 continuity boundary",
-   "nodes": [["D10", "18"]]
-  },
-  "D10_IR1_FDC_BOUNDARY": {
-   "src": "D10 IR1/pin19 was formerly assigned directly to D93 DRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so the PIC-side destination remains a sheet-1 continuity boundary",
-   "nodes": [["D10", "19"]]
+  "X2_IRQ0": {
+   "src": "exact .009 sheet 1 directly joins D10 IR0/pin18 to board contact 214 and R105=12k; R105's other terminal is ground. This external input is separate from the sheet-3 FDC conditioner",
+   "nodes": [["D10", "18"], ["X2", "214"], ["R105", "1"]]
   },
   "FDC_DDEN": {
    "src": "recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch",
@@ -15827,6 +15864,8 @@
   ["D98", "10"],
   ["D102", "4"],
   ["D96", "13"],
+  ["X2", "216"],
+  ["X2", "228"],
   ["D106", "2"],
   ["D106", "3"],
   ["D106", "6"],

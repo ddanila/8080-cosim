@@ -13,7 +13,7 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
-- `sync/check.sh` currently compares 112 mapped instances and 286 nets with no
+- `sync/check.sh` currently compares 112 mapped instances and 287 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and zero KiCad copper
   clearance, crossing, short, or unconnected findings. The real
@@ -80,7 +80,7 @@ with the machine-readable board model.
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
   R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 51 modeled nets retain source-risk annotations requiring
+  In total, 49 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

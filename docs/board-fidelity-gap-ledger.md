@@ -18,12 +18,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `332`
-- Nets modeled: `478`
+- Chips modeled: `334`
+- Nets modeled: `477`
 - Chip-level fidelity gaps: `56`
-- Net-level source-risk gaps: `51`
+- Net-level source-risk gaps: `49`
 - Explicitly dispositioned closed net risks: `14`
-- Documented intentional no-connect pins: `67`
+- Documented intentional no-connect pins: `69`
 
 ## Chip Provenance Types
 
@@ -46,7 +46,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | factory wire table + registered two-sided owner photos | 1 |
 | factory wire table + two-sided owner photos | 1 |
 | mame+datasheet | 1 |
-| native schematic + factory assembly drawing + owner photo | 1 |
+| native schematic + factory assembly drawing + owner photo | 3 |
 | owner continuity 2026-07-19 | 1 |
 | photo | 4 |
 | prom | 1 |
@@ -69,7 +69,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 2 | 8 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 5 |
-| logic/source | 13 | 31 |
+| logic/source | 13 | 29 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 26 | 0 |
 | placement/value | 13 | 0 |
@@ -200,6 +200,7 @@ explicit KiCad schematic no-connect markers.
 | `D96` | `13` |
 | `D97` | `13` |
 | `D98` | `9, 10` |
+| `X2` | `216, 228` |
 
 ## Net-Level Source Risks
 
@@ -229,8 +230,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D101_OE0_BOUNDARY` | FDC owner-continuity | `D101.1` | July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary |
 | `D104_X4_IN_BOUNDARY` | logic/source | `D104.7` | owner resistance 2026-07-19 measures approximately 84 kohm between D104.7 and D94.13, disproving the former direct-net claim; D104 receiver input pin7 remain... |
 | `D104_X4_OUT_BOUNDARY` | logic/source | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps h... |
-| `D10_IR0_FDC_BOUNDARY` | logic/source | `D10.18` | D10 IR0/pin18 was formerly assigned directly to D93 INTRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so... |
-| `D10_IR1_FDC_BOUNDARY` | logic/source | `D10.19` | D10 IR1/pin19 was formerly assigned directly to D93 DRQ from a MAME-era assumption; exact .009 sheet 3 instead conditions INTRQ/DRQ through D28 and D96, so t... |
 | `D14_I2_BOUNDARY` | logic/source | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
 | `D14_O7_BOUNDARY` | logic/source | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary |
 | `D26_PA6_PREN_BOUNDARY` | logic/source | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measu... |

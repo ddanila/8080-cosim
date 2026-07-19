@@ -22,12 +22,13 @@ def main() -> None:
         ],
         "D96_IRQ_CLOCK_SHEET1_BOUNDARY": [["D96", "11"]],
         "D96_IRQ_Q_SHEET1_BOUNDARY": [["D96", "9"]],
-        "D10_IR0_FDC_BOUNDARY": [["D10", "18"]],
-        "D10_IR1_FDC_BOUNDARY": [["D10", "19"]],
     }
     for name, nodes in expected.items():
         if nets.get(name, {}).get("nodes") != nodes:
             raise SystemExit(f"{name} changed: {nets.get(name, {}).get('nodes')}")
+    for retired in ("D10_IR0_FDC_BOUNDARY", "D10_IR1_FDC_BOUNDARY"):
+        if retired in nets:
+            raise SystemExit(f"retired direct-FDC PIC boundary returned: {retired}")
     for node in (["R93", "2"], ["R95", "2"]):
         if node not in nets["P5V"]["nodes"]:
             raise SystemExit(f"conditioner pull-up missing: {node}")

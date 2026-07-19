@@ -152,6 +152,9 @@ PASSIVE_PLACE = {
     'A25':(183.86,15.2,0),'A26':(186.40,15.2,0),'A27':(188.94,15.2,0),'A28':(191.48,15.2,0),
     'A29':(194.02,15.2,0),'A30':(196.56,15.2,0),'A31':(199.10,15.2,0),'A32':(201.64,15.2,0),
     'R104':(194.34,25.87,0), # registered photo terminals; 12.7 mm pitch, A21 side at left
+    # Exact .009 sheet 1 identifies the D10 IR0/IR1 12k pull-downs. Factory
+    # refdes order and D10-local owner-photo joints place the vertical pair.
+    'R105':(164.670,108.170,90),'R107':(167.560,109.270,90),
     'R30':(203.74,38.37,270), # registered photo terminals; S_OC at top, ground at bottom
     'R18':(215.20,64.59,278), # registered photo terminals; S_OC at top, SER_TXD at bottom
     # X9 is bracket-mounted. These are its reversed-ribbon PCB landings:
@@ -718,13 +721,12 @@ def main():
     # landings; the old 2x8 edge-connector stand-in was both provisional and
     # physically wrong.
     # X2: СНП59-30 parallel connector, top edge [emaplaat x~118-169].
-    # Sheet-1 traces PPI signal codes 201-226 plus +5 V contacts 227/229/230.
-    x2_codes = ['201','202','203','204','205','206','207','208','209','210','211','212','213',
-                '215','217','218','219','220','221','222','223','224','225','226']
+    # The contact code is connector 2 plus its two-digit physical position.
+    # Preserve all 30 positions so unused contacts cannot compress later pads.
+    x2_codes = [f'2{position:02d}' for position in range(1, 31)]
     x2_pads = {}
     for ci, code in enumerate(x2_codes):
         x2_pads[code] = (128.0 + (ci // 2) * 2.5, 6.6 + (ci % 2) * 2.5)
-    x2_pads.update({'227': (158.0, 6.6), '229': (160.5, 6.6), '230': (160.5, 9.1)})
     make_conn('X2', 143, 7.85, x2_pads)
     # X8 itself is on the bracket. A59..A62 above are its physical PCB
     # cable landings; do not recreate the remote connector on the board.

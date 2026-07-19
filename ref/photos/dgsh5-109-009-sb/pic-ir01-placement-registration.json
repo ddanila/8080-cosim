@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "scope": "D10 IR0/IR1 pull-down placement and identity",
+  "promotion_rule": "the factory assembly drawing establishes refdes/order and the owner component photograph establishes populated landing centres and readable values; electrical connectivity comes only from the exact .009 sheet-1 drawing",
+  "factory_drawing": {
+    "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+    "sha256": "9cfa71a46d1af2224742394c15d249075e59d54ddaf6281eff70fbf55cf65f21",
+    "dimensions_px": [3072, 4080],
+    "observation": "R105 and R107 are the paired vertical bodies immediately left of D10; R105 is left and R107 is right"
+  },
+  "owner_board": {
+    "source": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+    "sha256": "ccd7413567ae5b52b36705661f30bfe641894880b541aaa1fbc59efb226027da",
+    "dimensions_px": [4080, 3072],
+    "coordinate_system": "original source-image pixels transformed through the registered D10 component affine",
+    "d10_registration": "ref/photos/juku-pcb-2/local-package-registration.json",
+    "targets": [
+      {
+        "refdes": "R105",
+        "joint_px": [[1877, 1323], [1877, 1527]],
+        "board_midpoint_mm": [164.67, 108.17],
+        "value": "12к",
+        "observation": "left populated red vertical body; 12K marking is directly readable"
+      },
+      {
+        "refdes": "R107",
+        "joint_px": [[1940, 1334], [1940, 1562]],
+        "board_midpoint_mm": [167.56, 109.27],
+        "value": "12к",
+        "observation": "right populated red vertical body; 12K marking is directly readable"
+      }
+    ]
+  }
+}

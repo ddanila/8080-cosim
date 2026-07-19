@@ -17,6 +17,10 @@ What the drawing is authoritative for:
 - Factory component placement and refdes positions (D/R/C/VT/VD/E designators,
   DRAM row D84–D91, PROM/logic rows), with note 6 stating positional
   designators follow `ДГШ5.109.009 Э3`.
+- The top-centre view identifies R105/R107 as the left/right pair immediately
+  beside D10. Registered owner-board landings place both populated vertical
+  bodies, and both values read `12K`; exact Э3 sheet 1 supplies their PIC-input
+  pull-down connectivity.
 - The upper-FDC view identifies the three populated vertical pull-ups immediately
   left of D94 as R87/R88/R89. Registered component and reflected solder views
   were initially misassigned from photo geometry. Owner continuity on 2026-07-19
@@ -121,3 +125,8 @@ top-to-bottom order R56/R52, R55/R51, R54/R50, R53/R49. Red R49-R52 bodies
 read `75Ω`; tan R53-R56 bodies read `5K1`. The durable target-photo fit is
 stored in `../juku-pcb-2/ras-resistor-bank-registration.json` and supersedes
 the earlier two-horizontal-row placement seed and unverified 100-ohm note.
+
+`pic-ir01-placement-registration.json` registers R105/R107 from the assembly
+drawing into the existing D10-local owner-photo frame. It records placement,
+left/right identity, and the two directly readable 12K values; the separate
+electrical drawing remains the connectivity authority.

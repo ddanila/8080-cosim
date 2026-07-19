@@ -692,8 +692,9 @@ module juku_top (
                       .reset(reset_sys), .pc(ppi0_pc),
                       .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
                       .kcol(kbd_kcol), .kbit(kbd_kbit));
+    wire x2_irq0, x2_pb7_irq1;
     ppi_8255  U_PPI1 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n),
-                      .pa(), .pb(8'hFF),
+                      .pa(), .pb({x2_pb7_irq1, 7'h7F}),
                       .reset(reset_sys), .pc(),
                       .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kcol(4'b0), .kbit(3'b0));
     // PIT cascade per the native sheets: D54 horizontal -> D55 vertical;
@@ -775,17 +776,15 @@ module juku_top (
                       .drq(fdc_drq), .intrq(fdc_intrq));
 `undef JUKU_FDC_DATA_BUS
     wire pic_sp_en = 1'b1; // sheet-1 A-rail strap: standalone/master 8259
-`ifdef YOSYS
-    // Exact sheet 3 routes raw DRQ/INTRQ through D28/D96. The downstream
-    // sheet-1 joins to PIC IR0/IR1 are not yet known, so retain distinct pins.
-    wire pic_fdc_drq_boundary, pic_fdc_intrq_boundary;
-`else
-    wire pic_fdc_drq_boundary = fdc_drq;
-    wire pic_fdc_intrq_boundary = fdc_intrq;
+`ifndef YOSYS
+    // The physical inputs are externally driven at X2 and pulled low by
+    // R105/R107. Use their idle level when no testbench drives the connector.
+    assign x2_irq0 = 1'b0;
+    assign x2_pb7_irq1 = 1'b0;
 `endif
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
-                      .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(ser_txrdy), .ir2(ser_rxrdy), .ir1(pic_fdc_drq_boundary), .ir0(pic_fdc_intrq_boundary),
+                      .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(ser_txrdy), .ir2(ser_rxrdy), .ir1(x2_pb7_irq1), .ir0(x2_irq0),
                       .cas0(), .cas1(), .cas2(), .sp_en(pic_sp_en), .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.
