@@ -60,5 +60,5 @@ sockets. The `.009` populated build uses only D15 and D16.
 
 D8 content, address equations, output activity, and socket destinations are
 closed. Full physical adoption still follows D6: its `/E` source is measured
-to D6.12, but the runnable D6 D0 polarity fit awaits the corrected re-read or
+to D6.12; the corrected reader-3 D6 table now drives this path directly, while
 operating-level probe. No replacement D8 firmware remains to reconstruct.

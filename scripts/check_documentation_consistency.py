@@ -98,18 +98,19 @@ def main() -> int:
                 f"({artifact.stat().st_size}, expected {expected_size})"
             )
 
-    # The physical D6 table replaced the functional decoder in runnable
-    # juku_top on 2026-07-15. Its D0/D3 polarity fit remains explicitly
-    # provisional, but public status must not resurrect the retired oracle.
+    # The corrected physical D6 table directly replaced the functional decoder
+    # and the former sim-only D0/D3 fit on 2026-07-19.
     d6_top = read("hdl/juku_top.v")
     d6_devices = read("hdl/devices.v")
     if (
         "decode_prom U_DECODE" not in d6_top
-        or "wire        rom_sel_n = ~d6_rom_select_n;" not in d6_top
-        or "wire        roe_n     = ~d6_roe_physical;" not in d6_top
+        or "wire        rom_sel_n = d6_rom_select_n;" not in d6_top
+        or "wire        roe_n     = d6_roe_physical;" not in d6_top
+        or "~d6_rom_select_n" in d6_top
+        or "~d6_roe_physical" in d6_top
         or re.search(r"decode_prom_functional\s+U_", d6_top)
     ):
-        failures.append("runnable D6 physical-table/provisional-polarity contract drifted")
+        failures.append("runnable D6 corrected direct-table contract drifted")
     if "module decode_prom_functional" not in d6_devices:
         failures.append("D6 B37A diagnostic comparison model is missing")
     stale_d6_adoption_claims = {
@@ -299,7 +300,7 @@ def main() -> int:
         if stale in plan:
             failures.append(f"PLAN retains stale D6 topology/mode claim: {stale!r}")
     for required in (
-        "separate D6.12/D8 ROM-select and D6.9/D13/D37/D58 timing paths",
+        "revision-3 captures and the direct full-boot comparison",
         "boot firmware observes A6/A5 suffixes `11` and `10`",
     ):
         if required not in plan:

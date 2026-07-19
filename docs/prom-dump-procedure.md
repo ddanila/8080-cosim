@@ -85,12 +85,12 @@ by the validated 32-byte tables; do not replace them silently with asserted bits
   traces first, then identify /CS by trying both candidates.
 Sweep: 256 nibbles → store as 256 bytes (low nibble). Twice + compare, sanity-check.
 
-Use revision 2 of `tools/rt4_dumper/rt4_dumper.ino`: D0-D3 connect to Nano
-D10,D11,D12,A0 (not D13), PROM /CE pin 13 is grounded, and /CE pin 14 connects
-to Nano A1. The reader disables the PROM before every capture and aborts unless
-all four external pull-ups produce stable raw `F`. For the D6 polarity re-read,
-first require a byte-identical D2 control capture; see
-`docs/rt4-dump-acquisition.md` for the exact discriminator.
+The successful 2026-07-19 session reused the RE3 board with revision-3 firmware
+at `tools/re3_board_rt4_dumper/re3_board_rt4_dumper.ino`. PROM pins 9,10,11,12
+connect to Nano A1,D2,D3,D4; both chip-enable pins are controlled and each
+disabled-output test must release all four 3 kOhm pull-ups to raw `F`. See
+`docs/rt4-dump-acquisition.md` for the exact wiring, flashing command, D2 control,
+and D6 capture record.
 
 ## Deliverables → repo
 `proms/re3_1.bin` (32B), `proms/re3_2.bin` (32B), `proms/rt4_d6.bin` (256B, nibbles),
@@ -107,10 +107,10 @@ wiring, polarity, or the unresolved D94 input/enable/output branches.
    board variant. D94's missing input/enable/output continuity still defines the
    physical FDC control boundary.
    Do not substitute the `.113/.117` tables from the `.106.103` family.
-2. **РТ4 D6 → memory-decode corroboration**: a separately power-cycled third
-   read now matches the adopted physical `.038` table. Compare an independent
-   reader or programming-disk artifact next; preserve any stable difference as
-   a board variant.
+2. **РТ4 D6 → memory-decode corroboration**: three revision-3 captures including
+   a power cycle agree. They prove the old artifact was an exact reversal of all
+   four data bits; the corrected `.038` table is adopted directly. Compare an
+   independent reader or programming-disk artifact only as Tier-3 corroboration.
 3. **РТ4 D2 → bus/wait corroboration**: compare another physical `.037` read
    with the three matching adopted captures. It does **not** replace the I/O
    decoder; board evidence puts the functional I/O chip-select decoder at D9

@@ -87,7 +87,7 @@ def main() -> int:
         "Nano D13 LED load affected only D3/pin9, which is an intentional no-connect",
         "on the board. D0 also had its own external pull-up during capture, and direct",
         "continuity puts it on board pull-up R6 and D30.2. The physical D0 raw sense is",
-        "therefore independent of the pending D6 D3 re-read.", "",
+        "therefore independent of the D6 reader-channel correction closed on 2026-07-19.", "",
         "`sync/d2_ready_path_check.sh` executes the preserved table through an",
         "open-collector `wait_prom_037` and functional D30 section A. It guards:", "",
         "- raw row `00` sinks `READY_D` and latches D30/READY low;",

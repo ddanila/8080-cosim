@@ -13,9 +13,16 @@ from pathlib import Path
 ROW = re.compile(r"^([0-9A-Fa-f]{2}),([0-9A-Fa-f]),([0-9A-Fa-f]),(OK|UNSTABLE)$")
 REVISION = re.compile(r"^# reader_revision=(\d+)$")
 DISABLED = re.compile(r"^# disabled_raw=([0-9A-Fa-f]),stable=(OK|UNSTABLE)$")
-REVISION_2_DATA_MAP = (
-    "# data_map=D0:D10,D1:D11,D2:D12,D3:A0; CE14:A1; Nano_D13:NC"
-)
+REVISION_DATA_MAPS = {
+    2: "# data_map=D0:D10,D1:D11,D2:D12,D3:A0; CE14:A1; Nano_D13:NC",
+    3: (
+        "# data_map=D0:D4,D1:D3,D2:D2,D3:A1; "
+        "address_map=A0:D12,A1:D13,A2:A0,A3:D11,A4:D10,A5:D9,A6:D8,A7:D7; "
+        "CE13:D5,CE14:D6"
+    ),
+}
+DISABLED_CE13 = re.compile(r"^# disabled_ce13_raw=([0-9A-Fa-f]),stable=(OK|UNSTABLE)$")
+DISABLED_CE14 = re.compile(r"^# disabled_ce14_raw=([0-9A-Fa-f]),stable=(OK|UNSTABLE)$")
 
 
 @dataclass(frozen=True)
@@ -65,20 +72,37 @@ def parse(path: Path) -> list[Capture]:
         for line in lines
         if (match := DISABLED.fullmatch(line.strip()))
     ]
-    metadata_present = bool(revisions or disabled or REVISION_2_DATA_MAP in lines)
+    known_map_lines = [line for line in lines if line in REVISION_DATA_MAPS.values()]
+    metadata_present = bool(revisions or disabled or known_map_lines)
     if metadata_present:
-        if revisions != [2] * headers:
+        if len(revisions) != headers or len(set(revisions)) != 1:
             raise ValueError(
-                f"{path}: each dump must declare reader_revision=2; "
+                f"{path}: each dump must declare one consistent reader revision; "
                 f"found {revisions!r} for {headers} dump(s)"
             )
-        if lines.count(REVISION_2_DATA_MAP) != headers:
-            raise ValueError(f"{path}: revision-2 data_map missing or changed")
+        revision = revisions[0]
+        if revision not in REVISION_DATA_MAPS:
+            raise ValueError(f"{path}: unsupported reader revision {revision}")
+        expected_map = REVISION_DATA_MAPS[revision]
+        if lines.count(expected_map) != headers:
+            raise ValueError(f"{path}: revision-{revision} data_map missing or changed")
         if disabled != [(0x0F, "OK")] * headers:
             raise ValueError(
-                f"{path}: each revision-2 dump must report disabled_raw=F,stable=OK; "
+                f"{path}: each reader dump must report disabled_raw=F,stable=OK; "
                 f"found {disabled!r}"
             )
+        if revision == 3:
+            for label, pattern in (("CE13", DISABLED_CE13), ("CE14", DISABLED_CE14)):
+                checks = [
+                    (int(match.group(1), 16), match.group(2))
+                    for line in lines
+                    if (match := pattern.fullmatch(line.strip()))
+                ]
+                if checks != [(0x0F, "OK")] * headers:
+                    raise ValueError(
+                        f"{path}: revision-3 {label} release self-test must report "
+                        f"stable F for every dump; found {checks!r}"
+                    )
 
     for line_number, text in enumerate(lines, 1):
         line = text.strip()
@@ -118,6 +142,15 @@ def classify_against(candidate: bytes, baseline: bytes) -> str:
         return "EXACT_MATCH"
     if candidate == bytes(value ^ 0x09 for value in baseline):
         return "EXACT_D0_D3_COMPLEMENT"
+    bit_reversed = bytes(
+        ((value & 0x01) << 3)
+        | ((value & 0x02) << 1)
+        | ((value & 0x04) >> 1)
+        | ((value & 0x08) >> 3)
+        for value in baseline
+    )
+    if candidate == bit_reversed:
+        return "EXACT_BIT_REVERSE"
 
     differences = [
         index for index, (left, right) in enumerate(zip(baseline, candidate))
@@ -198,15 +231,20 @@ def self_test() -> None:
     def capture(
         mutate: tuple[int, int] | None = None,
         unstable: int | None = None,
-        revision_2: bool = False,
+        reader_revision: int | None = None,
     ) -> str:
         lines = []
-        if revision_2:
+        if reader_revision is not None:
             lines.extend([
-                "# reader_revision=2",
-                REVISION_2_DATA_MAP,
+                f"# reader_revision={reader_revision}",
+                REVISION_DATA_MAPS[reader_revision],
                 "# disabled_raw=F,stable=OK",
             ])
+            if reader_revision == 3:
+                lines.extend([
+                    "# disabled_ce14_raw=F,stable=OK",
+                    "# disabled_ce13_raw=F,stable=OK",
+                ])
         lines.extend(["# KR556RT4 dump", "# addr,raw_pins,logical_active_low,stable"])
         for address in range(256):
             raw = ((address >> 4) ^ address) & 0x0F
@@ -223,8 +261,13 @@ def self_test() -> None:
         first.write_text(capture()); second.write_text(capture())
         captures = validate([first, second], False)
         assert len(captures) == 2 and len(captures[0].raw) == 256
-        first.write_text(capture(revision_2=True))
-        second.write_text(capture(revision_2=True))
+        first.write_text(capture(reader_revision=2))
+        second.write_text(capture(reader_revision=2))
+        captures = validate([first, second], False)
+        assert len(captures) == 2
+
+        first.write_text(capture(reader_revision=3))
+        second.write_text(capture(reader_revision=3))
         captures = validate([first, second], False)
         assert len(captures) == 2
 
@@ -260,7 +303,7 @@ def self_test() -> None:
         except ValueError as error:
             assert "at least two complete captures" in str(error)
 
-        revision_lines = capture(revision_2=True).replace(
+        revision_lines = capture(reader_revision=2).replace(
             "# disabled_raw=F,stable=OK", "# disabled_raw=E,stable=OK"
         )
         first.write_text(revision_lines)
@@ -276,6 +319,15 @@ def self_test() -> None:
             classify_against(bytes(value ^ 0x09 for value in baseline), baseline)
             == "EXACT_D0_D3_COMPLEMENT"
         )
+        asymmetric = bytes((value ^ (value >> 1)) & 0x0F for value in range(256))
+        reversed_asymmetric = bytes(
+            ((value & 0x01) << 3)
+            | ((value & 0x02) << 1)
+            | ((value & 0x04) >> 1)
+            | ((value & 0x08) >> 3)
+            for value in asymmetric
+        )
+        assert classify_against(reversed_asymmetric, asymmetric) == "EXACT_BIT_REVERSE"
         other = bytearray(baseline)
         other[0x42] ^= 0x02
         assert classify_against(bytes(other), baseline).startswith(

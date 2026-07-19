@@ -22,6 +22,7 @@ measurement lands, add a row here.
 | `D6.1/A6 <- D3.4 <- /PC1`; `D6.2/A5 <- D3.6 <- /PC0` | owner-continuity | `docs/d6-physical-decode.md` |
 | `D6.15/A7 <-> D105.1` (net exists; driver/pull source NOT yet measured) | owner-continuity (partial) | `docs/d6-input-continuity.md` |
 | D8.15 `/E` has a +5 V pull-up; `D6.12->D8.15` looks direct | photo (grain of salt) | owner note 2026-07-15 (unconfirmed by probe) |
+| Reader wiring `D6 pins 9,10,11,12 -> Nano A1,D2,D3,D4`; three revision-3 D6 reads including a power cycle agree, and a D2 control agrees with the prior D2 artifact | owner-continuity + repeated capture | `docs/rt4-dump-acquisition.md` |
 
 ## D30 / WAIT-READY
 
@@ -40,13 +41,6 @@ measurement lands, add a row here.
 
 ## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
 
-- **D6 РТ4 re-read on pins 12 (D0) and 9 (D3)** with a corrected reader (avoid
-  Arduino D13/LED pin for data; require the revision-2 disabled-output pull-up
-  check and a byte-identical D2 control read). Sim shows only those two bits
-  need inverting to boot from the physical table. The re-read discriminates a
-  capture-path issue from an untraced consumer inversion; it does not presume
-  either result. Cheaper cross-check: D6.12/D8.15 operating LEVELS during a ROM
-  fetch (continuity is already done).
 - D6.15/A7 driver/pull source.
 - Factory Вид В callout conductors at the registered D56.12/D56.5 level,
   D14's photo-exhausted D14.2/.7 and registered fifth-landing conductor /

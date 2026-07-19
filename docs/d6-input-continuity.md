@@ -55,10 +55,10 @@ density merely to supply a functional value.
 The structural model now routes D26 PC1 and PC0 through the measured D3
 inverters before D6 A6 and A5. D6 A7 and D105.1 share an explicit boundary.
 Runnable selection now comes from the physical D6 table through `U_DECODE` under
-the documented provisional sim-only `~D0`/`~D3` correction; the separately named
+the direct physical output mapping. The 2026-07-19 revision-3 reread proved that
+the earlier artifact had all four data channels reversed; the separately named
 functional decoder is retained only by the B37A diagnostic comparison. The A7
-source and physical justification (or removal) of the per-output correction
-remain open until the corrected-reader re-read or operating-level probe closes them.
+source remains open independently of the now-closed output-order question.
 
 ## Chip-removed output correction
 

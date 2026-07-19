@@ -20,18 +20,17 @@ the 1 state". So:
 Therefore an electrically sound reader that supplies a pull-up and records the pin VOLTAGE LEVEL
 (HIGH=1) captures the STORED DATA DIRECTLY — the pull-up does NOT invert. The
 raw table directly. The original `.038`/`.037` captures used external 1k..4.7k
-pull-ups and `raw` = pin level. Their repeats prove capture consistency, while
-reader revision 2 separately checks electrical release before the decisive D6
-re-read. D8 (К155РЕ3) booting from raw `.039` independently excludes a universal
+pull-ups and `raw` = pin level. The 2026-07-19 revision-3 reader separately
+checked electrical release, reproduced D2, and proved that the old D6 artifact
+had its four data channels reversed. D8 (К155РЕ3) booting from raw `.039` independently excludes a universal
 raw/asserted convention error.
 
-Consequence: a uniform logical complement is not justified. The D6 mismatch is
-limited to D0/D3, so the corrected reader must distinguish a capture/channel
-problem from an untraced consumer-side inversion (root PLAN.md highest-priority
-item 1); neither outcome may be assumed in advance.
+Consequence: a uniform logical complement is not justified. The corrected D6
+table uses the continuity-confirmed physical channel order and drives all four
+HDL outputs directly.
 
-Two chip-enable inputs are active-LOW. Reader revision 2 ties pin 13 low and
-drives pin 14 from Nano A1 so the disabled output-release state can be checked.
+Two chip-enable inputs are active-LOW. Reader revision 3 drives both pins so the
+disabled output-release state can be checked independently for each input.
 
 Pinout as wired by tools/rt4_dumper/rt4_dumper.ino (DIP-16)
 ----------------------------------------------------------

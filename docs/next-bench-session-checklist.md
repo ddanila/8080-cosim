@@ -7,23 +7,13 @@ indexes what has already been probed, so nothing gets re-requested.** Produced-b
 photos are the ultimate truth; manual probes are truth at ~95%; the schematic
 PDF is the prototype and may differ.
 
-## Highest value — unblocks the digital twin + VJUGA at once
+## Closed in the 2026-07-19 bench session
 
-1. **D6 corrected re-read / output polarity (unblocks D6 firmware adoption AND
-   VJUGA Phase 2).** Use reader revision 2 in `tools/rt4_dumper`: D3/pin 9 moves
-   from Nano D13 to A0, /CE pin 14 moves to A1, and every capture must pass the
-   disabled-output `F` pull-up check. Re-read known D2 first, then D6 three times
-   including a power cycle; compare raw bytes as described in
-   `docs/rt4-dump-acquisition.md`. This discriminates the capture path from the
-   already measured direct consumer conductors without assuming either answer.
-   - *Cheaper operating-level cross-check:* at the reset fetch (address `0000`, must read
-     ROM), is the D8/РЕ3 enable pin (`D6.12 -> D8.15`) physically **low** (ROM
-     enabled) while `D6.12` itself reads **high**? If so, an inverting stage
-     exists between them and the physical table adoption is justified.
-   - *Photo re-trace:* does `D6.12 -> D8.15` and/or `D6.9 -> D13` pass through
-     an inverting gate rather than the direct route the prototype PDF shows?
-     (`D6.10 -> D9` stays direct — `rev` is already correct.)
-   See root `PLAN.md` highest-priority item 1.
+The revision-3 reader passed an empty-socket release test and known-D2 control
+reads, then produced three identical D6 reads including a power cycle.
+Continuity confirmed `pins 9,10,11,12 -> Nano A1,D2,D3,D4`. The former D6
+artifact was an exact four-bit reversal; the corrected table now executes
+directly. See `docs/rt4-dump-acquisition.md`.
 
 ## Remaining P0 connectivity (batch in the same session)
 
@@ -55,6 +45,5 @@ PDF is the prototype and may differ.
    EPROMs, only as corroboration of the validated captures
    (`docs/community-prom-media-request.md`).
 
-The single most valuable item is **#1**. The corrected re-read can close D6
-adoption directly; if it exactly matches the old bytes, the reset-fetch probe
-or photo re-trace becomes decisive for both the main twin and VJUGA workbench.
+The D6 output-order blocker is closed; the highest-value remaining bench item
+is the D94 continuity batch above.

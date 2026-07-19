@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "firmware-gap-ledger.md"
 EXPECTED_SHA256 = {
     "ref/physical-proms/validated/d2_037.raw.bin": "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
-    "ref/physical-proms/validated/d6_038.raw.bin": "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39",
+    "ref/physical-proms/validated/d6_038.raw.bin": "c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489",
     "ref/physical-proms/validated/d8_039.raw.bin": "345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc",
     "ref/physical-proms/validated/d94_092.raw.bin": "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0",
     "ref/eprom-images/d15_ekta37_low.bin": "d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596",
@@ -129,13 +129,13 @@ def main() -> int:
     fallback_report_ok = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "HISTORICAL D8 FALLBACK RETAINED / PHYSICAL PROM TABLES ADOPTED",
-        "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39",
+        "c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489",
         "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0",
     )
     rt4_validator_ok = marker(
         "docs/rt4-dump-acquisition.md",
-        "CAPTURE CONSISTENCY VALIDATED / D6 ELECTRICAL RE-READ QUEUED",
-        "Reader revision 2 moves D3 to A0",
+        "READER-3 CONTROL VALIDATED / D6 CHANNEL ORDER CORRECTED",
+        "revision-3 reread",
         "*.raw.bin",
         "D94 `.092` requires a",
         "separate К155РЕ3 reader",
@@ -151,8 +151,8 @@ def main() -> int:
         needle in d6_top
         for needle in (
             "decode_prom U_DECODE",
-            "wire        rom_sel_n = ~d6_rom_select_n;",
-            "wire        roe_n     = ~d6_roe_physical;",
+            "wire        rom_sel_n = d6_rom_select_n;",
+            "wire        roe_n     = d6_roe_physical;",
             "Functional decode oracle retired from the boot path",
         )
     ) and "decode_prom_functional U_" not in d6_top
@@ -163,7 +163,7 @@ def main() -> int:
     ) and marker(
         "hdl/sim/prom_fallback_tb.v",
         "D6 disabled outputs did not release",
-        "D6 row 00 is not raw open-collector word 8",
+        "D6 row 00 is not raw open-collector word 1",
     )
     d94_runnable_physical_ok = all(
         needle in d6_top
@@ -191,7 +191,7 @@ def main() -> int:
             "memory decode PROM",
             d6_cell,
             "`ref/physical-proms/README.md`",
-            "revision-2 corrected-reader re-read with byte-identical D2 control; then programming-disk comparison if recovered",
+            "revision-3 reader capture is adopted; programming-disk comparison or independent read is Tier-3 corroboration",
         ],
         [
             "D8",
@@ -244,8 +244,8 @@ def main() -> int:
         ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
         ("D2 open-collector raw polarity executes through the D30 READY latch", d2_ok),
-        ("D6 physical table drives runnable selection under the provisional D0/D3 fit", d6_runnable_physical_ok),
-        ("D6 physical table preserves open-collector release under the provisional fit", d6_open_collector_ok),
+        ("D6 corrected physical table drives runnable selection directly", d6_runnable_physical_ok),
+        ("D6 physical table preserves open-collector release", d6_open_collector_ok),
         ("D94 physical table is adopted while continuity stays guarded", d94_ok),
         ("D94 physical table drives runnable FDC read/write strobes under guarded upstream fits", d94_runnable_physical_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
@@ -301,10 +301,10 @@ def main() -> int:
             "",
             "- D2, D6, D8, and D94 have validated physical raw tables; D15/D16",
             "  still use the deterministic `ekta37` EPROM split.",
-            "- D2 is preservation-strength within current evidence: three captures",
-            "  validate identically and include a separate power cycle. D6 also has three",
-            "  matching preserved captures including a separate power cycle, but its D0/D3",
-            "  electrical provenance remains gated by the revision-2 re-read.",
+            "- Reader-3 reproduced D2 byte-for-byte across three captures including a",
+            "  power cycle. Three equally stable D6 reads then proved the old artifact",
+            "  had all four output channels reversed; socket continuity and the full",
+            "  boot guard adopt the corrected direct table.",
             "- D15/D16 are deterministic Tier-1/2 functional images, not physical",
             "  device dumps. Program them as low/high 8 KiB respectively and",
             "  retain programmer verification records.",
@@ -329,9 +329,8 @@ def main() -> int:
             "  if recovered; use it as independent corroboration of D8/D94 as well.",
             "- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;",
             "  preserve raw pin-level and active-low asserted tables separately.",
-            "- Re-read known D2 and then D6 with RT4 reader revision 2; require the",
-            "  disabled-output pull-up check and classify D6 exactly as documented in",
-            "  `docs/rt4-dump-acquisition.md` before confirming or removing the provisional D0/D3 correction.",
+            "- Preserve future D2/D6 corroboration with the reader-3 metadata and",
+            "  independent enable-release checks documented in `docs/rt4-dump-acquisition.md`.",
             "- Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
             "  the adopted D94 table still requires complete input/enable/output continuity.",
             "- Repeatedly read physical D15/D16 and compare their concatenation",

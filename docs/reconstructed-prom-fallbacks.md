@@ -26,7 +26,7 @@ sync/prom_fallback_check.sh
   `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`.
 - D6 `.038` has three validated captures including a separate power cycle;
   authoritative raw SHA256 is
-  `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`.
+  `c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489`.
   This physical table supersedes the old reconstructed D6 image.
 - D8 `.039` physical raw SHA256 is
   `345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc`.
