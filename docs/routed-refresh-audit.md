@@ -350,6 +350,31 @@ exists even before the other displaced nets return. Closing one VA13 open while
 creating those two MA1 opens has a theoretical 26-open floor, so no remaining
 restore order can beat 25; the transaction is discarded.
 
+The adjacent decoder/control survey likewise preserves the checkpoint. CS_D10,
+IORD, and W10_QA_SEL_D50 have no path even at 0.10 mm diagnostic clearance.
+CS_D11 finds 18 removable items across nine nets, but its 0.20 mm target route
+still adds one clearance finding against fixed D9.6; a 0.205 mm proposal margin
+finds no path. S3_1 needs 13 items and five fixed findings. PHI1_D35 needs eight
+items but retains six fixed D35/R39/W14 findings.
+
+PHI2_D35 reveals a distinct lattice-phase boundary. Its minimal 0.10 mm
+diagnostic identifies nine migrated blockers across D36_D33, GND, P5V, PHI1,
+PHI2TTL, RAM_RD_OE, and VID_MIX1. The 0.10 mm legal target misses D35.2 by only
+2.5 µm, while 0.2025--0.205 mm proposal margins and the 0.125 mm lattice find
+no path. The 0.1375 mm lattice instead produces a clean legal route. The
+transaction wrapper therefore now accepts `--diagnostic-grid-step` separately
+from the target `--grid-step`; omitting it preserves the prior behavior. Both
+lattice values are recorded in diagnostic and accepted-transaction summaries.
+
+The split-grid transaction closes PHI2_D35 and restores the displaced nets but
+leaves one 4.667 mm D36_D33 replacement, so it is a guarded 25-open topology
+swap rather than an improvement. A second 16-item transaction cleanly closes
+D36_D33 and restores PHI2_D35, PHI2TTL, both VID_MIX1 branches, CAS_PRE,
+TIMING_TAG17, and the ground branches. POF remains unroutable at 4.243 mm and
+P5V at 9.211 mm on all four tested phases. Restoring P5V before or after
+POF/TIMING/GND does not change those results; the chain has a 26-open floor and
+is discarded. The independently verified 25-open board remains authoritative.
+
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
   --routed kicad/juku_routed_candidate.kicad_pcb \
@@ -570,6 +595,12 @@ python3 kicad/close_gap_by_ripup.py OUTPUT_27 OUTPUT_26 \
 python3 kicad/close_unconnected_gaps.py OUTPUT_26 OUTPUT_25 \
   --min-distance 0 --max-distance 450 --mode M --search-margin 100 \
   --grid-step 0.125 --route-clearance 0.20 --timeout 180
+python3 kicad/close_gap_by_ripup.py OUTPUT_25 UNUSED_PHI2_SWAP \
+  --net PHI2_D35 --diagnostic-grid-step 0.10 --grid-step 0.1375 \
+  --diagnostic-clearance 0.10 --route-clearance 0.20 \
+  --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
+  --restore-grid-steps 0.1375,0.10,0.125,0.15 \
+  --restore-net-priority PHI1,PHI2TTL,RAM_RD_OE,VID_MIX1,D36_D33,GND,P5V
 ```
 
 A follow-up MA1/MA0 topology experiment exposed a DRC-coordinate interpretation

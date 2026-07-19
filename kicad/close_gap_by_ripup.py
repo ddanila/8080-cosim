@@ -234,6 +234,14 @@ def main() -> None:
     parser.add_argument("--search-margin", type=float, default=60.0)
     parser.add_argument("--grid-step", type=float, default=0.10)
     parser.add_argument(
+        "--diagnostic-grid-step",
+        type=float,
+        help=(
+            "lattice used only to expose blockers; defaults to --grid-step "
+            "and may differ from the legal target-route lattice"
+        ),
+    )
+    parser.add_argument(
         "--restore-grid-steps",
         help=(
             "comma-separated grid phases for each displaced-net restoration; "
@@ -318,7 +326,16 @@ def main() -> None:
         raise SystemExit("transaction diagnostic board must differ from input/output")
     if args.gap_index < 0:
         raise SystemExit("--gap-index must be non-negative")
-    if args.search_margin <= 0 or args.grid_step <= 0:
+    diagnostic_grid_step = (
+        args.grid_step
+        if args.diagnostic_grid_step is None
+        else args.diagnostic_grid_step
+    )
+    if (
+        args.search_margin <= 0
+        or args.grid_step <= 0
+        or diagnostic_grid_step <= 0
+    ):
         raise SystemExit("search margin and grid step must be positive")
     try:
         restore_grid_steps = (
@@ -411,7 +428,7 @@ def main() -> None:
                     f"{x2},{y2}",
                     "M",
                     str(args.search_margin),
-                    str(args.grid_step),
+                    str(diagnostic_grid_step),
                     str(diagnostic_clearance),
                     layer1,
                     layer2,
@@ -463,7 +480,9 @@ def main() -> None:
                 "target_gap_report": str(args.gap_report) if args.gap_report else None,
                 "initial_target_net_gaps": initial_target_open,
                 "diagnostic_clearance_mm": diagnostic_clearance,
+                "diagnostic_grid_step_mm": diagnostic_grid_step,
                 "route_clearance_mm": args.route_clearance,
+                "route_grid_step_mm": args.grid_step,
                 "diagnostic_new_items": len(new_route_uuids),
                 "diagnostic_unremovable_blockers": sorted(unremovable),
                 "removable_conflicts": [
@@ -652,7 +671,9 @@ def main() -> None:
             "initial_target_net_gaps": initial_target_open,
             "final_target_net_gaps": final_target_open,
             "diagnostic_clearance_mm": diagnostic_clearance,
+            "diagnostic_grid_step_mm": diagnostic_grid_step,
             "route_clearance_mm": args.route_clearance,
+            "route_grid_step_mm": args.grid_step,
             "restore_grid_steps_mm": restore_grid_steps,
             "restore_net_order": restore_net_order,
             "diagnostic_new_items": len(new_route_uuids),

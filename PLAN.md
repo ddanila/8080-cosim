@@ -111,6 +111,16 @@ thirteen nets. A 17-item VA13 transaction closes its first branch but creates
 two same-coordinate MA1 layer joins with no legal via position. Tested restore
 orders end at 27 opens or have a theoretical floor of 26, so that topology is
 also discarded.
+The decoder/video follow-up finds no 0.10 mm diagnostic path for CS_D10, IORD,
+or W10_QA_SEL_D50. CS_D11 displaces 18 items but its legal target still clips
+fixed D9.6; S3_1 and PHI1_D35 retain larger fixed-pad sets. PHI2_D35 exposes a
+useful split-phase case: a 0.10 mm diagnostic identifies nine conflicts, while
+only the 0.1375 mm target lattice clears D35.2. `close_gap_by_ripup.py` now
+supports an independent `--diagnostic-grid-step` so that guarded transaction is
+representable. It produces a DRC-neutral PHI2_D35-to-D36_D33 swap. A chained
+D36_D33 transaction can restore PHI2_D35 and the small video/timing branches,
+but both tested restore orders leave P5V and POF replacements and cannot beat
+26 opens, so neither swap is adopted and the 25-gap checkpoint remains current.
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
