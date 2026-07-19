@@ -189,10 +189,10 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | Pin | Status | Needed fact | Current boundary |
 | --- | --- | --- | --- |
 | D10.12/.13/.15/.20/.21/.22 | BOUNDARY | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, IR2/IR3 connect directly to D11 RXRDY/TXRDY, and only IR4 remains an off-sheet boundary |
-| D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
+| D93.22/.23/.25/.33 | BOUNDARY | TEST strap, head-load timing, read-gate, and WF/VFOE separator control | primary FD179X-01 contract and two-sided socket fits localize the four pads; their remote sources remain unproved |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | CONNECTED | source-selected 1/2 MHz FDC clock rail | recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock |
-| D100.9/.11 continuation `1` | CONNECTED | shared drive-output-buffer control source | factory sheet proves pins 9/11 joined; upstream continuation remains untraced |
+| D100.9/.11 continuation `1` | BOUNDARY | shared drive-output-buffer control source | factory sheet proves pins 9/11 joined; upstream continuation remains untraced |
 
 ## Netted FDC Endpoints
 
@@ -242,16 +242,14 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   source-closed through D95's selected 1/2 MHz clock section. First dump
   D15/D16 and identify its guarded CMA/NOP profile; the recovered direct
   D93 bus means physical D100 is not the profile selector. Separately trace
-  shared D100.9/.11 continuation `1` and D100.6's write-data input; see
+  shared D100.9/.11 continuation `1`; D100.6's selected write-data input
+  is already source-closed through D101.9. See
   `docs/fdc-bus-polarity.md`.
   Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
-- Trace every still-open restored D93 drive-interface pin through D99/D101.
+- Trace only the still-open D93.22/.23/.25/.33 functions and the D99/D101
+  support-device boundaries; D93.15-.18/.26-.32/.34-.36 are source-closed.
   D28/D95-D98/D102/D106 are source-closed; only physical waveform quality
   remains a bring-up check. D93.40 to `P12V` is already owner-confirmed.
-  Pin 40 is a power-safety
-  blocker, not an optional functional refinement.
-  The existing photographs have been exhausted for this path: they prove
-  local copper but not an unbroken connection to a known +12 V node.
 - Keep `docs/fdc-readiness.md` as the HDL/media behavior guard; this
   report is only the physical-board handoff checklist.

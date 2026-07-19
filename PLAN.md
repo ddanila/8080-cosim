@@ -470,6 +470,12 @@ Every ask below is queued with exact deliverables in
    The remaining first precomp probes are D101.1/.3/.5/.6; D99's unidentified
    second section remains the other support-device continuity target. The former
    D93 EARLY/LATE, precomp-output, D97.13, and D102.4 probes are source-closed.
+   An automatic handoff audit now also removes stale continuity requests for
+   D93.15-.18/.26-.32/.34-.36 and D100.6: those step, direction, precomp,
+   separator-clock, raw-read, head-load, write, READY, and drive-status paths
+   are already source-closed. The genuine controller-pin asks are narrowed to
+   D93.19/.22/.23/.25/.33, plus the separately guarded DRQ/INTRQ assumptions
+   and shared D100.9/.11 control-source boundary.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
    place `CMA` around all 12 VG93 writes and six reads, while EktaSoft
