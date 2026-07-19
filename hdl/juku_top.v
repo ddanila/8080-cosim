@@ -588,6 +588,8 @@ module juku_top (
     tri1 d94_d1_d99_a2n;
 `endif
     wire d93_1_open_stub;
+    wire d99_b_test_landing, d99_q1n_boundary, d99_q2_boundary;
+    wire d99_clr2_boundary, d99_q2n_boundary, d99_q1_nc;
     // Exact `.009` sheets join D13.6 RES continuation (3) directly to D93.19.
     // The sheet-3 `-RES` text/bubbled input conflicts with the sheet-1 RES name;
     // preserve that physical conductor here. The separate behavioral adjunct
@@ -601,15 +603,22 @@ module juku_top (
                        .wg(fdc_wg), .wdata(fdc_wdata), .ready(fdc_ready),
                        .wf_vfoe(fdc_test_wf_vfoe), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),
                        .drq(fdc_drq), .intrq(fdc_intrq));
-    wire d100_control_1_boundary, d100_wrdata_in_boundary;
+    // Exact sheet 3 ties D99 B2 and both D100 controls to the quoted logic-1
+    // rail. D99 section 1 has grounded A/CLR and an omitted Q;
+    // its four remaining signal outputs/clear stay explicit boundaries.
+    ag3_oneshot U_D99 (.a_n(1'b0), .b(d99_b_test_landing), .clr_n(1'b0),
+                       .q(d99_q1_nc), .q_n(d99_q1n_boundary),
+                       .a2_n(d94_d1_d99_a2n), .b2(1'b1),
+                       .clr2_n(d99_clr2_boundary), .q2(d99_q2_boundary),
+                       .q2_n(d99_q2n_boundary));
+    wire d100_wrdata_in_boundary;
     wire [7:0] d100_drive_in, d100_drive_out;
     assign d100_drive_in = {ppi0_pc[6], ppi0_pc[2], d100_wrdata_in_boundary,
                             fdc_wg, fdc_tg43, fdc_hld, fdc_step, fdc_dir};
     buf_8287 U_D100 (.a(d100_drive_in), .b(d100_drive_out),
-                     .oe_n(d100_control_1_boundary), .t(d100_control_1_boundary),
+                     .oe_n(1'b1), .t(1'b1),
                      .vss_gnd(1'b0), .vcc_5v(1'b1));
 `ifdef YOSYS
-    net_boundary U_D100CTL1LNK (.a(1'b1), .b(d100_control_1_boundary));
     net_boundary U_D100WDATALNK (.a(1'b1), .b(d100_wrdata_in_boundary));
 `elsif FDC_VA87_CS_QUALIFIED
     wire d100_oe_boundary = fdc_prom_cs_n;

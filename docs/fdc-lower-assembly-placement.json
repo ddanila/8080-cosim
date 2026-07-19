@@ -1193,6 +1193,114 @@
       "electrical_evidence": false
     },
     {
+      "refdes": "C17",
+      "drawing_px": [
+        2397.0,
+        1499.0
+      ],
+      "factory_projected_board_mm": [
+        296.812,
+        48.838
+      ],
+      "projected_board_mm": [
+        303.0,
+        55.0
+      ],
+      "current_footprint_mm": [
+        303.017,
+        55.0
+      ],
+      "projected_delta_mm": [
+        -0.017,
+        0.0
+      ],
+      "observation": "factory-drawing identity plus local D98/D99 and target-photo lead correction for the populated vertical 120-uF axial electrolytic; the folded-sheet global affine drifts at this edge",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R103",
+      "drawing_px": [
+        2477.0,
+        1472.0
+      ],
+      "factory_projected_board_mm": [
+        301.225,
+        47.209
+      ],
+      "projected_board_mm": [
+        307.2,
+        47.2
+      ],
+      "current_footprint_mm": [
+        307.2,
+        47.2
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "factory-drawing identity plus local right-edge correction for the vertical 47k timing resistor beside C17",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C18",
+      "drawing_px": [
+        2436.0,
+        1862.0
+      ],
+      "factory_projected_board_mm": [
+        295.39,
+        70.131
+      ],
+      "projected_board_mm": [
+        303.0,
+        70.0
+      ],
+      "current_footprint_mm": [
+        303.017,
+        70.0
+      ],
+      "projected_delta_mm": [
+        -0.017,
+        0.0
+      ],
+      "observation": "factory-drawing identity plus target-photo lead registration for the populated vertical axial electrolytic directly marked 47 uF / 6.3 V",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R97",
+      "drawing_px": [
+        2348.0,
+        1828.0
+      ],
+      "factory_projected_board_mm": [
+        291.14,
+        68.183
+      ],
+      "projected_board_mm": [
+        298.62,
+        67.15
+      ],
+      "current_footprint_mm": [
+        298.62,
+        67.15
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "factory-drawing identity plus local D99/right-edge correction for the vertical 47k timing resistor beside C18",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": false
+    },
+    {
       "refdes": "C63",
       "drawing_px": [
         1570.0,

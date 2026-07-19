@@ -4754,6 +4754,14 @@
    }
   },
   {
+   "ref": "R97", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "47к",
+   "prov": {"type": "scan + factory assembly drawing", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory placement", "pins": "D99 section-2 47-kohm timing resistor from RC2/pin7 to +5 V; factory drawing places the vertical body beside C17"}
+  },
+  {
+   "ref": "R103", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "47к",
+   "prov": {"type": "scan + factory assembly drawing", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory placement", "pins": "D99 section-1 47-kohm timing resistor from RC1/pin15 to +5 V; factory drawing places the vertical body beside C18"}
+  },
+  {
    "ref": "R100",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
@@ -4887,6 +4895,14 @@
     "refdes": "ДГШ5.109.009 СБ, .009 Э3 sheet 3, plus registered owner component and solder photos",
     "pins": "target views prove C19.1 shares R100.1 and D97.7, while C19.2 shares target R86.1 and D97.6; the latter target-board join supersedes the factory R86 reset annotation. The bare 22 marking does not close unit, tolerance, or voltage"
    }
+  },
+  {
+   "ref": "C17", "type": "C_ELEC_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "120 мкФ",
+   "prov": {"type": "scan + factory assembly drawing + registered owner photo", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory placement", "pins": "sheet-3 polarized D99 section-2 timing capacitor marked 120,0 between C2/pin6 and RC2/pin7; target photo shows the populated axial electrolytic at the factory site"}
+  },
+  {
+   "ref": "C18", "type": "C_ELEC_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "47 мкФ",
+   "prov": {"type": "scan + factory assembly drawing + registered owner photo", "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory placement", "pins": "sheet-3 polarized D99 section-1 timing capacitor marked 47,0 between C1/pin14 and RC1/pin15; target body directly reads 47 мкФ / 6.3 V"}
   },
   {
    "ref": "C94",
@@ -5290,7 +5306,7 @@
   {
    "ref": "D99", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; validated photos identify the right-facing notch (270-degree footprint); pin2 reaches a proved isolated test landing and pin3 is visibly grounded to D96.7, while the other 12 functional/RC contacts remain distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan + registered owner photos", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "exact .009 sheet 3 closes A1_N/pin1 and CLR_N/pin3 to ground, B2/pin10 and D100 control pins 9/11 to quoted logic level 1, both C/RC timing pairs through C17/C18 and R97/R103, and omits Q1/pin13 as NC. Validated photos identify the right-facing notch, pin2 isolated test landing, and pin3 ground. Pins4/5/11/12 remain remote-path boundaries"}
   },
   {
    "ref": "D102", "type": "AG3_ONESHOT", "marking": "К155АГ3",
@@ -10775,10 +10791,14 @@
      "D101",
      "15"
     ],
-    [
-     "D99",
-     "3"
-    ],
+      [
+       "D99",
+       "3"
+      ],
+      [
+       "D99",
+       "1"
+      ],
     [
      "R99",
      "1"
@@ -11086,7 +11106,7 @@
    ]
   },
   "P5V": {
-   "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1",
+   "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1; exact .009 sheet 3 ties D99.10 and D100.9/.11 to the quoted logic-high level 1",
    "power": true,
    "nodes": [
     [
@@ -11821,10 +11841,30 @@
      "R108",
      "2"
     ],
-    [
-     "R86",
-     "2"
-    ]
+      [
+       "R86",
+       "2"
+      ],
+      [
+       "R97",
+       "2"
+      ],
+      [
+       "R103",
+       "2"
+      ],
+      [
+       "D99",
+       "10"
+      ],
+      [
+       "D100",
+       "9"
+      ],
+      [
+       "D100",
+       "11"
+      ]
    ]
   },
   "P12V": {
@@ -13854,10 +13894,6 @@
    "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary",
    "nodes": [["D94", "9"]]
   },
-  "D100_CONTROL_1_BOUNDARY": {
-   "src": "recovered .009 Э3 sheet 3 directly joins D100 OE_N/pin9 and T/pin11 to the same continuation marked \"1\"; its upstream source remains untranscribed",
-   "nodes": [["D100", "9"], ["D100", "11"]]
-  },
   "FDC_TG43_TO_D100": {
    "src": "recovered .009 Э3 sheet 3: D93 TG43/pin29 directly drives D100 A1/pin4",
    "nodes": [["D93", "29"], ["D100", "4"]]
@@ -14039,10 +14075,6 @@
    "src": "recovered .009 Э3 sheet 3: D98 output pin13 directly drives D93 WPRT/pin36",
    "nodes": [["D98", "13"], ["D93", "36"]]
   },
-  "D99_A1N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D99", "1"]]
-  },
   "D99_Q1N_BOUNDARY": {
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "4"]]
@@ -14051,21 +14083,17 @@
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "5"]]
   },
-  "D99_C2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D99", "6"]]
+  "D99_C2_TIMING": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D99 C2/pin6 to the negative terminal of polarized C17=120 uF",
+   "nodes": [["D99", "6"], ["C17", "2"]]
   },
-  "D99_RC2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D99", "7"]]
+  "D99_RC2_TIMING": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D99 RC2/pin7, polarized C17 positive/pin1, and R97=47k; R97's other terminal is +5 V",
+   "nodes": [["D99", "7"], ["C17", "1"], ["R97", "1"]]
   },
   "D94_D1_D99_A2N": {
    "src": "owner continuity 2026-07-19 proves D94.2 reaches D99 К155АГ3 second-section active-low A input pin9 and R89.1; D94.2 does not reach D99.8 or GND, and R89.2 reaches +5 V",
    "nodes": [["D94", "2"], ["D99", "9"], ["R89", "1"]]
-  },
-  "D99_B2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D99", "10"]]
   },
   "D99_CLR2_BOUNDARY": {
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
@@ -14075,17 +14103,17 @@
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "12"]]
   },
-  "D99_Q1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary",
+  "D99_Q1_NC": {
+   "src": "recovered .009 Э3 sheet 3 explicitly omits D99 section-1 complementary Q/pin13 while drawing Q_N/pin4; pin13 is unused/open",
    "nodes": [["D99", "13"]]
   },
-  "D99_C1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D99", "14"]]
+  "D99_C1_TIMING": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D99 C1/pin14 to the negative terminal of polarized C18=47 uF",
+   "nodes": [["D99", "14"], ["C18", "2"]]
   },
-  "D99_RC1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D99", "15"]]
+  "D99_RC1_TIMING": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D99 RC1/pin15, polarized C18 positive/pin1, and R103=47k; R103's other terminal is +5 V",
+   "nodes": [["D99", "15"], ["C18", "1"], ["R103", "1"]]
   },
   "D93_TEST_WF_VFOE": {
    "src": "recovered .009 Э3 sheet-3 detail PXL_20260718_101637906.jpg directly ties D93 TEST/pin22 to WF/VFOE/pin33 with one local U-shaped conductor; no other junction is drawn",

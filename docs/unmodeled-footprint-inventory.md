@@ -99,7 +99,7 @@ documented intentional no-connects are excluded.
 
 | Ref | Untraced functional pins |
 | --- | --- |
-| `D99` | 1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
+| `D99` | 4:Q_N, 5:Q2, 11:CLR2_N, 12:Q2_N |
 | `D101` | 1:OE0_N, 3:D03, 5:D01, 6:D00 |
 
 ## Closure Rule

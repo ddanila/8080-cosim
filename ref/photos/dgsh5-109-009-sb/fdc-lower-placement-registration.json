@@ -311,6 +311,10 @@
     {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19; left-hand pin1 shares C19.2 and right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
     {"refdes": "C20", "drawing_px": [2648.0, 2545.0], "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre"},
     {"refdes": "C22", "drawing_px": [2692.0, 2545.0], "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre"},
+    {"refdes": "C17", "drawing_px": [2397.0, 1499.0], "owner_board_mm": [303.0, 55.0], "observation": "factory-drawing identity plus local D98/D99 and target-photo lead correction for the populated vertical 120-uF axial electrolytic; the folded-sheet global affine drifts at this edge"},
+    {"refdes": "R103", "drawing_px": [2477.0, 1472.0], "owner_board_mm": [307.2, 47.2], "observation": "factory-drawing identity plus local right-edge correction for the vertical 47k timing resistor beside C17"},
+    {"refdes": "C18", "drawing_px": [2436.0, 1862.0], "owner_board_mm": [303.0, 70.0], "observation": "factory-drawing identity plus target-photo lead registration for the populated vertical axial electrolytic directly marked 47 uF / 6.3 V"},
+    {"refdes": "R97", "drawing_px": [2348.0, 1828.0], "owner_board_mm": [298.62, 67.15], "observation": "factory-drawing identity plus local D99/right-edge correction for the vertical 47k timing resistor beside C18"},
     {
       "refdes": "C63",
       "drawing_px": [1570.0, 3045.0],

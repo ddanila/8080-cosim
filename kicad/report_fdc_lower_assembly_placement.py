@@ -18,16 +18,16 @@ OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
 RESTORED_FACTORY_PARTS = {
-    "C16", "C19", "R79", "R80", "R81", "R82", "R83", "R84", "R85",
-    "R86", "R92", "R98", "R99", "R100", "R102", "R108",
+    "C16", "C17", "C18", "C19", "R79", "R80", "R81", "R82", "R83", "R84", "R85",
+    "R86", "R92", "R97", "R98", "R99", "R100", "R102", "R103", "R108",
 }
 EXPECTED_RESISTOR_VALUES = {
     "R79": "470", "R80": "470", "R81": "470", "R82": "470",
     "R83": "470", "R84": "470", "R85": "470", "R86": "4,7к",
     "R92": "1,3к", "R98": "4,7к", "R99": "4,7к", "R100": "12к",
-    "R102": "12к", "R108": "12к",
+    "R97": "47к", "R102": "12к", "R103": "47к", "R108": "12к",
 }
-EXPECTED_CAPACITOR_VALUES = {"C20": "1,5 нФ", "C22": "1,5 нФ"}
+EXPECTED_CAPACITOR_VALUES = {"C17": "120 мкФ", "C18": "47 мкФ", "C20": "1,5 нФ", "C22": "1,5 нФ"}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -306,6 +306,8 @@ for item in document["targets"]:
             "R85": {"1": "SEP_D28_CLK", "2": "P5V"},
             "R98": {"1": "X4_DSEL1_N", "2": "P5V"},
             "C16": {"1": "D97_RC1_C16", "2": "D97_C1_C16"},
+            "C17": {"1": "D99_RC2_TIMING", "2": "D99_C2_TIMING"},
+            "C18": {"1": "D99_RC1_TIMING", "2": "D99_C1_TIMING"},
             "C19": {"1": "D97_RC2_C19_R100", "2": "D97_C2_C19_R86_TARGET"},
             "C20": {"1": "D102_C2_C20", "2": "D102_RC2_C20_R108"},
             "C22": {"1": "D102_C1_C22", "2": "D102_RC1_C22_R102"},
@@ -313,6 +315,8 @@ for item in document["targets"]:
             "R102": {"1": "D102_RC1_C22_R102", "2": "P5V"},
             "R108": {"1": "D102_RC2_C20_R108", "2": "P5V"},
             "R86": {"1": "D97_C2_C19_R86_TARGET", "2": "P5V"},
+            "R97": {"1": "D99_RC2_TIMING", "2": "P5V"},
+            "R103": {"1": "D99_RC1_TIMING", "2": "P5V"},
         }
         if item["refdes"] in expected_pad_nets:
             pad_nets = {pad.GetNumber(): pad.GetNetname() for pad in footprint.Pads()}

@@ -113,6 +113,10 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       HLT/pin23 to READY/pin32 (MOTOR EN is the alternate source), and RG/pin25
       is deliberately omitted between the explicit pin-24 and pin-26 paths
       (`ref/schematics/fdc-hlt-rg-map.md`).
+- [x] Sheet-3 D99 timing/control paths reconciled: grounded A1/CLR1, the
+      logic-high D99.10/D100.9/.11 rail, C17/C18/R97/R103 timing
+      networks, and unused pin13 are modeled and structurally guarded
+      (`ref/schematics/fdc-d99-timing-map.md`).
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).

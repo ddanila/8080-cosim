@@ -215,9 +215,9 @@ def main() -> int:
         (
             "P0",
             "FDC interrupt/buffer continuity and fitted ROM profile",
-            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; factory sheet 1 proves D93 pins 7..14 connect directly to DB0..DB7. Trace only the shared D100 pins 9/11 continuation `1`; recovered sheet 3 already closes D100.6 to D101.9 write precompensation",
+            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; factory sheet 1 proves D93 pins 7..14 connect directly to DB0..DB7. Recovered sheet 3 closes shared D100 pins 9/11 to quoted logic level `1` and D100.6 to D101.9 write precompensation",
             "`docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
-            "identifies the exact board/EPROM configuration and closes the remaining drive-output-buffer inputs without reopening source-closed paths",
+            "identifies the exact board/EPROM configuration without reopening source-closed drive-output-buffer inputs",
         ),
         (
             "P0",

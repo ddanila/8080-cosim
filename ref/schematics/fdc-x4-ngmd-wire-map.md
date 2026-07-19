@@ -93,7 +93,7 @@ D28 output pin 2 is drawn back into input pin 3, so pin 2 produces
 `-D.SEL1` and the second inversion at pin 4 produces complementary
 `-D.SEL0`. D100 input pins 4,1,2,5,3 receive D93 TG43, DIR, STEP, WG, and HLD
 respectively; input pin 6 receives the write-data/precompensation path. D100
-control pins 9 and 11 share the sheet-3 continuation marked `"1"`; the
+control pins 9 and 11 share the sheet-3 quoted logic-high marker `"1"`; the
 upstream source of that continuation remains to be transcribed before it is
 named semantically.
 

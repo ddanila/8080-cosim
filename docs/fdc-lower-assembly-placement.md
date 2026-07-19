@@ -34,6 +34,10 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R86 | 298.208, 103.688 | 298.208, 103.688 | +0.000, -0.000 | lowest resistor in the four-part row right of C19; left-hand pin1 shares C19.2 and right-hand pin2 joins the common perimeter rail |
 | C20 | 299.917, 110.117 | 303.997, 110.024 | -4.080, +0.093 | factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre |
 | C22 | 302.204, 110.093 | 306.537, 110.024 | -4.333, +0.069 | factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre |
+| C17 | 303.000, 55.000 | 303.017, 55.000 | -0.017, +0.000 | factory-drawing identity plus local D98/D99 and target-photo lead correction for the populated vertical 120-uF axial electrolytic; the folded-sheet global affine drifts at this edge |
+| R103 | 307.200, 47.200 | 307.200, 47.200 | +0.000, +0.000 | factory-drawing identity plus local right-edge correction for the vertical 47k timing resistor beside C17 |
+| C18 | 303.000, 70.000 | 303.017, 70.000 | -0.017, +0.000 | factory-drawing identity plus target-photo lead registration for the populated vertical axial electrolytic directly marked 47 uF / 6.3 V |
+| R97 | 298.620, 67.150 | 298.620, 67.150 | +0.000, +0.000 | factory-drawing identity plus local D99/right-edge correction for the vertical 47k timing resistor beside C18 |
 | C63 | 239.150, 140.065 | 176.100, 145.600 | +63.050, -5.535 | factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site |
 
 D93, C10, C11, C15, C16, C19, R79-R85, R92, R98, R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected

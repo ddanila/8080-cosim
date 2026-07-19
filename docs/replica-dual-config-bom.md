@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 326
-- Populate for current functional .009 build: 260
+- Board component positions: 330
+- Populate for current functional .009 build: 264
 - Do not populate now (empty/DNP/pending): 66
-- Unique BOM lines: 111
+- Unique BOM lines: 113
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 66 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 214 |
+| source-now | 218 |
 
 ## BOM Lines
 
@@ -72,6 +72,7 @@ readiness report.
 | source-now | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | 1 | 0 | D1 | - |
 | source-now | CT16_CTR | КР531ИЕ17 | 74F/74S163-class fast counter; verify timing | 1 | 1 | 0 | D40 | - |
 | source-now | C_ELEC 47,0 | radial electrolytic 47,0 | modern radial electrolytic with matching value/voltage/polarity | 1 | 1 | 0 | C1 | - |
+| source-now | C_ELEC_AXIAL | C_ELEC_AXIAL | select exact substitute after circuit review | 2 | 2 | 0 | C17, C18 | - |
 | source-now | C_KM 15 нФ | КМ ceramic capacitor 15 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C8 | - |
 | source-now | C_KM 160 | КМ ceramic capacitor 160 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C99 | - |
 | source-now | C_KM 24 | КМ ceramic capacitor 24 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C21 | - |
@@ -125,6 +126,7 @@ readiness report.
 | source-now | R_AXIAL 4,7к | axial resistor 4,7к | modern axial resistor, matching value and power rating | 4 | 4 | 0 | R67, R86, R98, R99 | - |
 | source-now | R_AXIAL 430 | axial resistor 430 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R65 | - |
 | source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 8 | 8 | 0 | R19, R79, R80, R81, R82, R83, R84, R85 | - |
+| source-now | R_AXIAL 47к | axial resistor 47к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R97, R103 | - |
 | source-now | R_AXIAL 5,1к | axial resistor 5,1к | modern axial resistor, matching value and power rating | 7 | 7 | 0 | R53, R54, R55, R56, R58, R60, R64 | - |
 | source-now | R_AXIAL 6,2к | axial resistor 6,2к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R87, R88, R89 | - |
 | source-now | R_AXIAL 620 | axial resistor 620 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R33 | - |

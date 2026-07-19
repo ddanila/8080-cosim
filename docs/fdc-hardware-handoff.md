@@ -193,7 +193,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D10.22 `IR4` | BOUNDARY | stale tape-run continuation disposition | exact .009 sheet 1 labels (3) TAPE RUN INT, but replacement FDC sheet 3 has no matching continuation; ekta37 mask 0xDF keeps IR4 masked |
 | D93.23 HLT / D93.25 RG | SOURCE-CLOSED | selected head-load timing and unused read-gate output | exact .009 sheet 3 draws E11 in position 2-3 (HLT=READY) and deliberately omits RG/pin25 between the explicit pin24/pin26 paths |
 | D93.24 `CLK` | CONNECTED | source-selected 1/2 MHz FDC clock rail | recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock |
-| D100.9/.11 continuation `1` | BOUNDARY | shared drive-output-buffer control source | factory sheet proves pins 9/11 joined; upstream continuation remains untraced |
+| D100.9/.11 logic `1` | SOURCE-CLOSED | shared drive-output-buffer control source | exact .009 sheet 3 prints the same quoted logic-high `1` at D99.10 B2 and at joined D100.9/.11 |
 
 ## Netted FDC Endpoints
 
@@ -244,9 +244,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   a scope check. D93.24 is
   source-closed through D95's selected 1/2 MHz clock section. First dump
   D15/D16 and identify its guarded CMA/NOP profile; the recovered direct
-  D93 bus means physical D100 is not the profile selector. Separately trace
-  shared D100.9/.11 continuation `1`; D100.6's selected write-data input
-  is already source-closed through D101.9. See
+  D93 bus means physical D100 is not the profile selector. D99.10 and
+  D100.9/.11 share the source-proved quoted logic-high `1`; D100.6's selected write-data input
+  is source-closed through D101.9. See
   `docs/fdc-bus-polarity.md`.
   D10 CAS0-2 are source-proved NC, IR2/IR3 are source-connected, and
   SP/EN pin16 is source-proved at +5 V. Only the stale tape IR4

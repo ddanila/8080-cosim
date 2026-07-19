@@ -43,6 +43,7 @@ PASSIVE_FP = {
     'R_AXIAL': ('Resistor_THT.pretty',  'R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal'),
     'C_KM':    ('Capacitor_THT.pretty', 'C_Disc_D4.7mm_W2.5mm_P5.00mm'),
     'C_ELEC':  ('Capacitor_THT.pretty', 'CP_Radial_D5.0mm_P2.00mm'),
+    'C_ELEC_AXIAL': ('Capacitor_THT.pretty', 'CP_Axial_L18.0mm_D6.5mm_P25.00mm_Horizontal'),
     'D_DIODE': ('Diode_THT.pretty',     'D_DO-35_SOD27_P7.62mm_Horizontal'),
     'SW':      ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),
     'JUMPER3': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),   # Е-family config links
@@ -218,6 +219,10 @@ PASSIVE_PLACE = {
     # and R99=4K7; their copper endpoints are closed separately. C16 remains a
     # value/connectivity boundary.
     'C16':(267.094,101.055,0),'R92':(253.869,101.194,0),'R99':(241.207,103.467,0),
+    # Exact .009 sheet-3 D99 timing parts, projected from their factory-drawing
+    # body centres through the guarded lower-FDC affine registration.
+    'C17':(303.000,55.000,90),'R103':(307.200,47.200,90),
+    'C18':(303.000,70.000,90),'R97':(298.620,67.150,90),
     # The factory drawing identifies C19 immediately right of D99; the owner
     # component and solder views independently prove the populated vertical
     # axial body and its two distinct joints. Keep both destinations open.
@@ -474,6 +479,13 @@ def main():
         if ref in {"R33", "R66"}:
             for pad in fp.Pads():
                 pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
+        # R89's photo-registered signal drill sits 1.678 mm from D94.1. Keep
+        # both drill centres fixed and use a 1.25 mm land around the 0.80 mm
+        # drill (0.225 mm annulus), clearing the socket's rectangular pin-1
+        # land without displacing either source-registered centre.
+        if ref == "R89":
+            for pad in fp.Pads():
+                pad.SetSize(pcbnew.VECTOR2I_MM(1.25, 1.25))
         # The stock horizontal TO-126 footprint assumes the tab is bolted to
         # the PCB. The factory VT1 detail and populated owner board instead
         # show the KT-27 body raised/laid flat with its tab hole left open: only

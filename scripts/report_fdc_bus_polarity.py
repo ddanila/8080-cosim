@@ -457,8 +457,8 @@ def main() -> int:
             "  the FD1793 command set. The original Soviet paper defines pins 7..14 as",
             "  the bidirectional DB0..DB7 bus, `/W` as loading that bus into the selected",
             "  register, and Table 3 as the command-register bit codes.",
-            "- D100 pins 9 and 11 are factory-drawn on the same continuation `1`; its",
-            "  upstream source and the D100.6 write-data input remain boundaries.",
+            "- D100 pins 9 and 11 are factory-drawn at quoted logic level `1`; the",
+            "  D100.6 write-data input is source-closed to D101.9.",
             "",
             "Primary references: Intel M8286/M8287 data sheet",
             "(<https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf>);",
@@ -482,8 +482,8 @@ def main() -> int:
             "1. Dump D15 and D16 twice each and identify the installed polarity profile.",
             "2. Identify why the preserved CMA-profile firmware exists; do not attribute",
             "   it to physical D100 without new primary evidence.",
-            "3. Trace the upstream source of shared D100 pins 9/11 continuation `1` and",
-            "   the D100.6 write-data/precompensation input.",
+            "3. Bench-check the source-closed D100 pins 9/11 logic-high control and",
+            "   D100.6 write-data/precompensation path during drive bring-up.",
         ]
     )
     if failures:
