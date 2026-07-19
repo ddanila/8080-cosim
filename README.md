@@ -116,6 +116,8 @@ release.
   policy.
 - [docs/development-workflow.md](docs/development-workflow.md) — canonical
   branch, intermediate commit, and direct-push policy.
+- [docs/git-lfs-policy.md](docs/git-lfs-policy.md) — preservation and
+  bandwidth policy for original reference photographs.
 - [docs/architecture.md](docs/architecture.md) — model boundaries and data flow.
 - [docs/source-coverage-audit.md](docs/source-coverage-audit.md) — adopted
   external evidence and remaining source gaps.

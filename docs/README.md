@@ -14,6 +14,8 @@ history.
 - `hardware-map.md` — concise software-visible machine map and physical
   boundary.
 - `photo-registration.md` — current photo-evidence workflow and accepted paths.
+- `git-lfs-policy.md` — immutable original-photo policy, selective CI fetches,
+  cache maintenance, and usage monitoring.
 - `source-coverage-audit.md` — adopted external evidence and remaining source
   gaps.
 - `d30-section-b-scan-chase.md` — exhausted sheet-1 trace audit for the two

@@ -5,7 +5,9 @@ name: CI (reports — freshness + PROM/photo validation)
 # stale, plus validate the physical PROM captures and the owner photos. The
 # autonomous routing loop touches only kicad/*routed* + kicad routing scripts +
 # docs/, none of which are gated here, so it does not trigger this workflow.
-# Needs Git LFS for the photo checks (ref/photos/**/*.jpg).
+# The photo checks need a limited set of materialized Git LFS objects. Cache
+# those objects between runs and fetch only the evidence used by this workflow;
+# a blanket LFS checkout would re-download every original photo on every run.
 
 on:
   workflow_dispatch:
@@ -51,10 +53,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
+      - name: Restore required Git LFS objects
+        uses: actions/cache@v6
         with:
-          # The photo checks validate the 50 + 26 owner photographs as
-          # materialized JPEG evidence; checkout's default leaves LFS pointer stubs.
-          lfs: true
+          path: .git/lfs/objects
+          key: >-
+            ${{ runner.os }}-git-lfs-photos-${{
+              hashFiles(
+                'ref/photos/juku-pcb-2/*.jpg',
+                'ref/photos/dgsh5-109-009-sb/*.jpg',
+                'ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg',
+                'ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg'
+              )
+            }}
+          restore-keys: |
+            ${{ runner.os }}-git-lfs-photos-
+
+      - name: Materialize photos required by reports
+        run: |
+          git lfs pull --include="ref/photos/juku-pcb-2/*.jpg,ref/photos/dgsh5-109-009-sb/*.jpg,ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg,ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg" --exclude=""
 
       - name: Validate photos and vendored reference artifacts
         run: |
