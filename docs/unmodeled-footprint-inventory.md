@@ -101,7 +101,7 @@ documented intentional no-connects are excluded.
 | `D96` | 1:CLR1_N, 2:D1, 4:PRE1_N, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N |
 | `D97` | 13:Q |
 | `D98` | 9:Y4, 10:A4 |
-| `D99` | 1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
+| `D99` | 1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
 | `D101` | 1:OE0_N, 3:D03, 5:D01, 6:D00 |
 | `D102` | 4:Q_N |
 | `D106` | 1:D1, 2:Q1, 3:Q0, 5:UP, 6:Q2, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0 |
