@@ -373,7 +373,34 @@ D36_D33 and restores PHI2_D35, PHI2TTL, both VID_MIX1 branches, CAS_PRE,
 TIMING_TAG17, and the ground branches. POF remains unroutable at 4.243 mm and
 P5V at 9.211 mm on all four tested phases. Restoring P5V before or after
 POF/TIMING/GND does not change those results; the chain has a 26-open floor and
-is discarded. The independently verified 25-open board remains authoritative.
+is discarded. The independently verified 25-open board remains authoritative
+at that stage.
+
+The next left-edge decoder ranking finds four under-clearance topologies. DC4
+needs 24 migrated items across thirteen nets and retains fixed D1/D5 pads. DC2
+needs 16 items across eight nets and fixed D5 pads. CS_D57 has no fixed blocker
+but needs 27 items across fourteen nets. DC7 is the useful bounded candidate:
+its 0.10 mm diagnostic names only eight migrated items across DB1, DC0, DC5,
+DC6, and ROE, plus fixed IORD pad D5.25. After those removals, legal DC7 target
+routes are independently clean on the 0.10, 0.125, and 0.15 mm lattices; the
+0.1375 mm phase is rejected for one clearance finding.
+
+Restore order is decisive. Recovering DC0 before DC5 closes two DC5 branches
+but leaves one 3.536 mm DC5 replacement, producing only a DRC-neutral DC7/DC5
+swap. Recovering DC5 first closes its 2.828, 3.536, and 9.190 mm branches before
+DC0 occupies the corridor. DC0 then restores at 22.521 mm, DB1 gains its
+same-coordinate layer join, and ROE restores on the 0.125 mm phase. The guarded
+transaction closes DC7 and reduces the board from 25 to 24 opens. It removes
+two transaction-orphaned migrated vias.
+
+Independent stable KiCad DRC on the 24-open checkpoint reports 199
+track-dangling and 45 via-dangling findings and zero short, clearance, crossing,
+hole, or edge blockers. Exact identity, net, and coordinate parity holds for
+all 303 footprints and 2,395 pads. The board contains 32,167 copper items, is
+11,007,712 bytes, and has SHA256
+`054ded89f7524bbbc23190d1d279b9b1e858ec71b565605ca79424d118e77a81`.
+Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps each
+exhaust all 24 residual signatures without acceptance.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
@@ -601,6 +628,12 @@ python3 kicad/close_gap_by_ripup.py OUTPUT_25 UNUSED_PHI2_SWAP \
   --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
   --restore-grid-steps 0.1375,0.10,0.125,0.15 \
   --restore-net-priority PHI1,PHI2TTL,RAM_RD_OE,VID_MIX1,D36_D33,GND,P5V
+python3 kicad/close_gap_by_ripup.py OUTPUT_25 OUTPUT_24 \
+  --net DC7 --diagnostic-clearance 0.10 --route-clearance 0.20 \
+  --grid-step 0.10 --search-margin 100 --max-conflicts 12 \
+  --allow-mixed-diagnostic-blockers --allow-equal-open-swap \
+  --restore-grid-steps 0.10,0.125,0.15,0.1375 \
+  --restore-net-priority DC5,DC0,DC6,DB1,ROE
 ```
 
 A follow-up MA1/MA0 topology experiment exposed a DRC-coordinate interpretation

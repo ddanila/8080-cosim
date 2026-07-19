@@ -46,7 +46,7 @@ remain quarantined. A second item-level DRC salvage now recovers useful
 same-name branches without relaxing safety: it removes 496 migrated items
 actually implicated by current KiCad blockers, retains 17,582 clean items, and
 starts at 433 honest gaps. Guarded A* routing now reaches
-25 gaps with 31,992 copper items, exact parity across all 2,395 current source
+24 gaps with 32,167 copper items, exact parity across all 2,395 current source
 pads, and zero short, clearance, crossing, hole, or edge findings. The decisive
 follow-up uses the board-legal 0.21 mm clearance instead of the earlier
 conservative 0.45 mm proposal keep-out; it closes 111 gaps after targeted INTR,
@@ -121,6 +121,17 @@ representable. It produces a DRC-neutral PHI2_D35-to-D36_D33 swap. A chained
 D36_D33 transaction can restore PHI2_D35 and the small video/timing branches,
 but both tested restore orders leave P5V and POF replacements and cannot beat
 26 opens, so neither swap is adopted and the 25-gap checkpoint remains current.
+The left-edge decoder survey then compares DC4 (24 conflicts), DC2 (16),
+CS_D57 (27), and DC7 (8). DC7 is the bounded topology: legal target routes
+exist on 0.10, 0.125, and 0.15 mm lattices after displacing only DB1, DC0, DC5,
+DC6, and ROE. Restoring DC0 before DC5 merely trades DC7 for a 3.536 mm DC5
+gap. Reversing that order closes all three DC5 branches first, then restores
+DC0, DB1, and ROE, yielding a guarded 25-to-24 improvement. Two orphaned
+migrated vias are removed; independent DRC reports 199 track-dangling and 45
+via-dangling findings, zero electrical blockers, 32,167 copper items, and exact
+2,395-pad parity. Fresh 0.10, 0.125, 0.1375, and 0.15 mm sweeps exhaust all 24
+remaining signatures without acceptance, establishing the current 24-gap
+boundary.
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
