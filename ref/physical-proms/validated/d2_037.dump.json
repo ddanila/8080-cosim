@@ -2,8 +2,8 @@
   "schema_version": 2,
   "device": "KR556RT4 256x4",
   "name": "d2_037",
-  "capture_count": 7,
-  "independent_capture_count": 4,
+  "capture_count": 8,
+  "independent_capture_count": 6,
   "raw_pin_level_sha256": "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
   "active_low_asserted_sha256": "7a0cdb0129e75571811dd193fd99a749ac22d3bb198edc7237071b82d9d5d6db",
   "packing": "256 bytes in address order; low nibble significant; high nibble zero",
@@ -18,14 +18,6 @@
       "sha256": "5aab75296c93eacfd75bce77a18cdd1de45bc89edfdb0b75dc758e151e922908"
     },
     {
-      "path": "ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt",
-      "sha256": "18a2202ec3028ce6394729708e724d072687525d50832fc6259e455311171bb0"
-    },
-    {
-      "path": "ref/physical-proms/captures/d2_037_sukharev_reference_20260713_verify1.txt",
-      "sha256": "b1a34c0e99c85a36c1836846d66622f2a1a9e8096cfa54cf6700dad45527f8af"
-    },
-    {
       "path": "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt",
       "sha256": "18a2202ec3028ce6394729708e724d072687525d50832fc6259e455311171bb0"
     },
@@ -36,16 +28,29 @@
     {
       "path": "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt",
       "sha256": "18a2202ec3028ce6394729708e724d072687525d50832fc6259e455311171bb0"
+    },
+    {
+      "path": "ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control1.txt",
+      "sha256": "72b6ea1627058acd2843f6ef3fe289ba1f68c8cc6c96f90ee931d52383084e23"
+    },
+    {
+      "path": "ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control2.txt",
+      "sha256": "72b6ea1627058acd2843f6ef3fe289ba1f68c8cc6c96f90ee931d52383084e23"
+    },
+    {
+      "path": "ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control3_powercycled.txt",
+      "sha256": "72b6ea1627058acd2843f6ef3fe289ba1f68c8cc6c96f90ee931d52383084e23"
     }
   ],
   "captures": [
     "ref/physical-proms/captures/d2_037_20260713_capture1.txt#1",
     "ref/physical-proms/captures/d2_037_20260713_capture2.txt#1",
-    "ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt#1",
-    "ref/physical-proms/captures/d2_037_sukharev_reference_20260713_verify1.txt#1",
     "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt#1",
     "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture2.txt#1",
-    "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt#1"
+    "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt#1",
+    "ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control1.txt#1",
+    "ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control2.txt#1",
+    "ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control3_powercycled.txt#1"
   ],
-  "alias_note": "The unqualified and arvutimuuseum_CS00015 three-read names are byte-for-byte aliases of the same supplied events; the separate sukharev_reference verification is independent."
+  "alias_note": "The 2026-07-13 unqualified and arvutimuuseum capture1/capture2 names are provenance aliases; the 2026-07-19 reader-3 controls are three new independent events and include a power cycle."
 }

@@ -30,7 +30,7 @@ is not a prerequisite for this replica.
 
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
-| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; the recovered ROMBIOS `0xA0/0xA2` 512-byte write-sector path is implemented in both models and byte-for-byte readback-tested on an explicitly writable disk copy; the C and HDL FDC models share guarded Type-I physical-head versus Track-register motion, update/verify/SEEK-ERROR, dynamic status, nominal 3/6/10/15 ms step plus 15 ms verify-settle timing with HLT gating, immediate valid-ID mismatch, four-revolution missing-ID failure, active-low TR00 status/Restore with a 255-step limit, and partial-D0 motion, nominal Type-II/III `E=1` 15 ms head-settle timing followed by exact HLT gating, exact command-load READY-low Type-II/III rejection with Type-I independence, and exact 15-idle-index head-unload semantics, Type-II multi-record continuation through end-of-track RNF, exact four-revolution missing-ID search, exact `C/S` side-ID comparison with fifth-index RNF, and exact Write Sector `a0` normal/deleted marks with Read Sector bit-5 RECORD TYPE through session metadata, the datasheet's exact 22-byte MFM Write Sector preload interval plus streaming one-byte DRQ/LOST-DATA contract (read overwrite and later-write zero substitution), datasheet completion/status acknowledgement and the full Type-IV Force Interrupt event/acknowledgement/disarm lifecycle, a CRC-checked six-byte Read Address command, index-gated 6,250-byte one-revolution MFM Read Track reconstruction including `FB`/`F8`, and an index-gated/preloaded 6,230-write representable MFM Write Track formatter with all ten sector payloads and marks, partial-D0 persistence, and explicit flat-image representation faults; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes from the validated physical D6 table under the explicitly provisional `~D0`/`~D3` fit, while the old functional decoder is retained only as a diagnostic comparison; the official D1-D5-DB-ROM topology and period КР580ВК38/ВА87 diagrams exclude a hidden D5 inversion; exact static/runtime guards preserve the CMA/NOP firmware-profile split; standalone ВА87 behavior and the source-proved D23-D25 paths exhaustively guard all 256 values in both directions. The former opt-in D100/DAL builds remain diagnostic experiments only: recovered `.009` sheet 3 proves D100 is instead the drive-output buffer | Confirm or remove the D6 per-output fit with the corrected-reader re-read or operating-level probe across the separate D6.12/D8 ROM-select and D6.9/D13/D37/D58 timing paths, and close its physical A7 driver; identify the exact fitted D15/D16 polarity profile and the actual CPU↔D93 DAL wiring now that the inferred D100 bus role is excluded; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior beyond the guarded media subset (including physical D93.24 calibration of byte/Type-I/Type-II/III intervals, physical D93.23 HLT generation, D93.34 TR00 drive-status continuity, and step-interface timing, arbitrary flux/deleted-data layouts beyond session-representable marks, and physical D93.32 READY/index timing), cartridge BASIC loading, and analog behavior |
+| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; the recovered ROMBIOS `0xA0/0xA2` 512-byte write-sector path is implemented in both models and byte-for-byte readback-tested on an explicitly writable disk copy; the C and HDL FDC models share guarded Type-I physical-head versus Track-register motion, update/verify/SEEK-ERROR, dynamic status, nominal 3/6/10/15 ms step plus 15 ms verify-settle timing with HLT gating, immediate valid-ID mismatch, four-revolution missing-ID failure, active-low TR00 status/Restore with a 255-step limit, and partial-D0 motion, nominal Type-II/III `E=1` 15 ms head-settle timing followed by exact HLT gating, exact command-load READY-low Type-II/III rejection with Type-I independence, and exact 15-idle-index head-unload semantics, Type-II multi-record continuation through end-of-track RNF, exact four-revolution missing-ID search, exact `C/S` side-ID comparison with fifth-index RNF, and exact Write Sector `a0` normal/deleted marks with Read Sector bit-5 RECORD TYPE through session metadata, the datasheet's exact 22-byte MFM Write Sector preload interval plus streaming one-byte DRQ/LOST-DATA contract (read overwrite and later-write zero substitution), datasheet completion/status acknowledgement and the full Type-IV Force Interrupt event/acknowledgement/disarm lifecycle, a CRC-checked six-byte Read Address command, index-gated 6,250-byte one-revolution MFM Read Track reconstruction including `FB`/`F8`, and an index-gated/preloaded 6,230-write representable MFM Write Track formatter with all ten sector payloads and marks, partial-D0 persistence, and explicit flat-image representation faults; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes directly from the corrected, validated physical D6 table, while the old functional decoder is retained only as a diagnostic comparison; the official D1-D5-DB-ROM topology and period КР580ВК38/ВА87 diagrams exclude a hidden D5 inversion; exact static/runtime guards preserve the CMA/NOP firmware-profile split; standalone ВА87 behavior and the source-proved D23-D25 paths exhaustively guard all 256 values in both directions. The former opt-in D100/DAL builds remain diagnostic experiments only: recovered `.009` sheet 3 proves D100 is instead the drive-output buffer | Close the physical D6 A7 driver; identify the exact fitted D15/D16 polarity profile and the actual CPU↔D93 DAL wiring now that the inferred D100 bus role is excluded; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior beyond the guarded media subset (including physical D93.24 calibration of byte/Type-I/Type-II/III intervals, physical D93.23 HLT generation, D93.34 TR00 drive-status continuity, and step-interface timing, arbitrary flux/deleted-data layouts beyond session-representable marks, and physical D93.32 READY/index timing), cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 108 mapped instances and 279 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D35 frame-interrupt inversion, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The tracked routed artifact was DRC-clean within its former modeled scope; the accepted W14 topology now deliberately invalidates that stale route and its saved manufacturing packet until the P0 netlist freezes. Before the native rail-E correction, the preserved refresh checkpoint `kicad/juku_routed_candidate.kicad_pcb` had 296 footprints, all 2,383 pad identities, zero internal unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings. Merging that source-proved ground domain now exposes one real missing ground join in its stale copper | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. Its stale copper produces two W14-related shorts and two opens: old PHI2 copper still touches D35.12, and a D53_Y0_R49 track crosses W14.2. The refresh checkpoint is intentionally not current-source copper: later corrections leave 62 pad-net mismatches and 202 moved pads across C69/D5/D7/D8/D9/D13/D37-D39/D50/D51/D105/R13/R14/R46/R49-R57, including the net-only C34.1 correction; it also lacks the fourteen A:7/A:8/A:10/A:11/A:14/A:19/A:20 pads. It copper-routes all ten factory insulated-link nets. The source PCB now preserves A:7, A:8, A:10, A:11, A:14, A:19, and A:20 as landing-island pairs joined only by assembly wires W7/W8/W10/W11/W14/W19/W20; the other six `А:N` terminals and three island splits remain unmodeled. All twenty drawing-pixel endpoints are guarded, both A7/A8/A10/A11/A14/A19/A20 terminals plus the D38-side A9 and C96-side A12 joints are board-fitted/island-assigned, and the A7/A8/A11/A14 cut-length discrepancies are explicit. The other four PCB terminals remain unpromoted; a common raw solder image places A14B 58.911 mm from D41.1, and W14 now preserves the distinct PHI2 landing islands. Both routed artifacts are convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split the remaining islands, then refresh/reroute and adopt the manufacturing packet only after the functional P0 netlist freezes |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
@@ -251,22 +251,18 @@ fabrication file and gate again.
 
 ## Highest-priority work and evidence boundary
 
-These are ordered. The automatic D6 analysis and corrected-reader firmware are
-complete; item 1 now waits on the exact re-read or operating-level observation
-named below. Items 2-3 remain preservation requirements while connectivity is
-measurement-gated.
+These are ordered. The 2026-07-19 revision-3 reader session closed the D6
+output-order problem. Items 2-3 remain preservation requirements while the
+remaining connectivity is measurement-gated.
 
-1. **Physical D6 `.038` firmware — PROVISIONALLY ADOPTED into the runnable twin
-   (owner-directed 2026-07-15); pending a physical level-probe to confirm.** The
-   runnable twin now runs its memory map from the physical `decode_prom` (not the
-   oracle), with a per-output correction (`rom_sel_n=~D0`, `roe_n=~D3`; D1/D2
-   direct; A7=0) that boots byte-identical to cosim across the full guard suite.
-   This is a documented FUNCTIONAL FIT — the reader/dump are faithful and
-   `D6.12->D8.15` is recorded direct, so the two inversions are not yet physically
-   justified. The owner chose to adopt provisionally to unblock progress; the raw
-   dump is preserved untouched and the reset-fetch level probe (below) will
-   promote this from provisional to confirmed (or reveal the true cause). Bench
-   experiment record (the basis):
+1. **Physical D6 `.038` firmware — CONFIRMED and directly adopted
+   (2026-07-19).** The runnable twin now runs its memory map from the corrected
+   physical `decode_prom` table (not the oracle), with D0-D3 direct and A7=0,
+   and boots byte-identical to cosim across the full guard suite.
+   Historical investigation record: before the reader-order fault was found,
+   the old artifact appeared to require two unjustified output inversions. That
+   provisional fit is preserved below as the path that localized the fault; it
+   is superseded by the corrected capture and is no longer implemented.
    physical `decode_prom` with A7=0 boots **byte-identical** to the cosim value
    oracle across the full suite — `boot_check`, the 130,000-read `cosim_check`
    (`CTRACE-END`), EKDOS `A>`, disk-BASIC `READY`, jmon33 Monitor, BASIC-cart,
@@ -274,7 +270,7 @@ measurement-gated.
    map**: with A7=0 the boot modes land in rows `011`/`010`, where word `1` is
    the ROM overlay and word `8` is RAM — matching cosim's PC1/PC0 banking. That
    de-risks the map and is the real progress here.
-   **But** the byte-identical run required a *per-output polarity* with no clean
+   With the old reversed artifact, the byte-identical run required a *per-output polarity* with no clean
    physical basis: `rom_sel_n = ~D0`, `roe_n = ~D3` (inverted) while `rev = D2`,
    `ram_sel_n = D1` (direct). That mix contradicts measured evidence — continuity
    makes `D6.12->D8.15` a **direct** conductor into an active-low `E_N`, and the
@@ -284,9 +280,7 @@ measurement-gated.
    **not** work either: it flips `rev`, which disables the D9 io-decode the boot
    needs. So the earlier "the asserted complement resolves it in simulation"
    claim was wrong. Per the fixed decision that measured evidence outranks
-   inference, this fit is committed only as an explicit, owner-directed
-   PROVISIONAL adoption (labeled in `hdl/juku_top.v` and the D6 docs), not as a
-   proven result; the level probe below is required to confirm it.
+   inference, that fit was explicitly provisional. It has now been removed.
    Gate-chain audit (2026-07-15): D13 (К555ТЛ2) inverts and D37 (К555ЛА3) is a
    NAND, both datasheet-correct, so the modeled chain requires `D6.9`=0 for the
    `B37A` RAM read and `D6.12`=0 to select ROM — but the raw `.038` dump has both
@@ -301,7 +295,7 @@ measurement-gated.
    invert (datasheet vendored at
    `ref/datasheets/82s126-556rt4-256x4-oc-prom.pdf`; D8 РЕ3 also boots from its
    raw `.039`, excluding a universal raw/asserted convention error). The
-   original RT4 capture's electrical loading is not yet independently closed.
+   original RT4 capture's channel order was not yet independently closed.
    Consumer-side chip-polarity audit (2026-07-15,
    against the vendored datasheets) also closes the enable-polarity hypothesis:
    D8/РЕ3 = SN74188 has an active-low enable (as modeled), and D13 (К555ТЛ2
@@ -316,21 +310,17 @@ measurement-gated.
    full guard suite; a uniform 4-bit complement fails (11.2 us) and inverting
    only D3 fails immediately (2.3 us). So the anomaly is genuinely per-pin on
    exactly the two РТ4 outputs feeding D8 and D13.
-   **Decisive test:** since `D6.12->D8.15` is owner-recorded
+   **Decisive test result:** since `D6.12->D8.15` is owner-recorded
    as DIRECT (`docs/owner-measured-facts.md`; a photo re-read also looks direct),
    the effective inversion is not visible in the known copper. The original reader wiring
    (`tools/rt4_dumper/rt4_dumper.ino`): PROM pin 9 (D3) is read on Arduino **D13,
    the on-board LED pin** (LED + series resistor to GND) -- a classic gotcha that
-   can drag an open-collector HIGH down. That risk alone cannot explain a full
-   per-pin complement: the D2 capture read all four channels identically in both
-   states, and D6 D3 already reads high in 238/256 rows. Reader revision 2 now
-   moves D3 to A0, controls /CE from A1, and refuses to dump unless all four
-   disabled outputs release to a stable `F`. The decisive step is a **D6 re-read
-   with that corrected reader**, after a byte-identical known-D2 check, compared
-   against the current `d6_038.raw.bin`. A cheaper cross-check is measuring the D8.15/D6.12
-   operating LEVELS during a ROM fetch (continuity is already done). If the
-   re-read flips D0/D3 in the affected rows, the physical table then boots
-   directly with no transform.
+   can drag an open-collector HIGH down. Revision 3 instead reused the RE3 board,
+   controlled both /CE pins, and required every disabled-output check to release
+   to `F`. Three D2 controls reproduced the established table. Three matching D6
+   reads, including a power cycle, plus continuity-confirmed wiring
+   `pins 9,10,11,12 -> Nano A1,D2,D3,D4`, proved that the old artifact was an
+   exact reversal of all four bits. D2's `0`/`F` values had hidden the fault.
    The recovered `.009 Э3` sheet 1 now independently closes the remaining
    drawing question. Two reviewed read passes over the guarded overview and
    D6/D8 detail frame show D6 D0/pin 12 labeled `ROM` running directly through
@@ -338,15 +328,12 @@ measurement-gated.
    R14 to D13 pin 1. D13 is the only drawn inverter and its pin 2 is the
    `RAMOUTEN` output. Thus the factory drawing agrees with chip-removed
    continuity and rules out an omitted drawn series inverter; it cannot explain
-   the raw-table mismatch. The corrected-reader re-read or operating-level
-   comparison remains decisive (`docs/d6-physical-decode.md`).
-   **Status: provisionally adopted.** The runnable twin now boots from the
-   physical table (with the `~D0`/`~D3` correction) byte-identically; the oracle
+   the old raw-table mismatch (`docs/d6-physical-decode.md`).
+   **Status: confirmed and directly adopted.** The runnable twin now boots from
+   the corrected physical table byte-identically; the oracle
    is retired from the boot path (`decode_prom_functional` kept in `devices.v`
-   only as the B37A-diagnostic reference). The level probe / corrected re-read
-   promotes this to confirmed: if it shows D0/D3 flipped in the raw dump, the
-   model correction can be dropped and the (corrected) table used directly; if it
-   reveals a real consumer-side inversion, the correction becomes justified as-is.
+   only as the B37A-diagnostic reference). The per-output correction and proposed
+   operating-level probe are retired.
    None of this changes copper; the only D6-area netlist ask remains the
    D105.1/A7 driver (P0 connectivity item 4). The same resolution promotes VJUGA
    workbench Phase 2, which routes its decode through the same physical D6 РТ4
@@ -549,11 +536,10 @@ Every ask below is queued with exact deliverables in
    input is already source-closed by the native sheet-2 route
    MEMR->D33.3/.4->D37.5 and is now regression-guarded together with
    D13.2->D37.4 and D37.6->D58.9. Simulation has narrowed the former
-   all-mode `B37A` contradiction to the exact D0/D3 transform, but source truth
-   still waits on the corrected-reader D6 re-read or the operating-level
-   alternative in highest-priority item 1. The five live RAM-read levels named
-   by `docs/d6-runtime-path-diagnostic.md` become Tier-3 confirmation asks once
-   that gate closes and the guarded adoption run is green.
+   all-mode `B37A` contradiction to the reader-order fault, now closed by the
+   revision-3 captures and the direct full-boot comparison. The five live
+   RAM-read levels named by `docs/d6-runtime-path-diagnostic.md` are optional
+   Tier-3 confirmation rather than an adoption gate.
 4. **Map the factory Вид В modifications.** The local Вид В details at D56,
    D15, D14, and D11 mix solder/copper context with assembly callouts. Note 11
    proves position 150 is tubing fitted at solder locations, not a cut; only
@@ -656,7 +642,7 @@ adoption road, in dependency order:
    READY path. The focused guard proves raw `0` sinks READY low and raw `F` or
    disabled output releases the R6 pull-up high before D30 samples it. The used
    D0 reader channel was Nano D10, independent of the Nano D13 LED issue on the
-   board-unused D3 channel, so the pending D6 re-read does not gate D2 polarity.
+   board-unused D3 channel; the later D6 reader correction did not change D2 polarity.
    D30 pins 8/11 are owner-closed; only complete cycle timing through the `H`
    edge contact remains P0 connectivity item 3, not a PROM-content gap.
 2. **D8 `.039` — physical open-collector table executes; enable is still
@@ -669,22 +655,17 @@ adoption road, in dependency order:
    `Q=(BA15==BA14)`, D4/D15 asserts at `Q & !BA13`, D5/D16 at `Q & BA13`,
    BA12/BA11 are don't-cares, and D0-D3/D6-D7 always release
    (`docs/d8-physical-decode.md`).
-3. **D6 `.038` — physical table provisionally executes; output polarity remains
-   unconfirmed.** Runnable selects come from `decode_prom U_DECODE` and the
-   validated physical table, with the sim-only `~D0`/`~D3` correction documented
-   in highest-priority item 1; `decode_prom_functional` is no longer instantiated
-   by `juku_top` and remains only a diagnostic comparison. A direct uncorrected
-   raw-table substitution fails the checkpoint-resume boundary at RAM `B37A`.
-   The firmware-anchored analysis shows that the
-   raw capture contradicts two independent working functional anchors, an exact
-   D0/D3-only transform passes the full suite, and a uniform asserted complement
-   fails. The underlying electrical model is now faithful open collector:
+3. **D6 `.038` — corrected physical table executes directly.** Runnable selects
+   come from `decode_prom U_DECODE` and the validated revision-3 physical table;
+   `decode_prom_functional` is no longer instantiated by `juku_top` and remains
+   only a diagnostic comparison. The superseded reader artifact fails the
+   checkpoint-resume boundary at RAM `B37A` because all four bits were reversed.
+   The underlying electrical model is faithful open collector:
    raw zero sinks and raw one/disabled releases through explicit R11-R14-backed
-   simulation pull-ups; this does not resolve or alter the provisional logical
-   correction. Reader revision 2 and its known-D2 control make the next D6 re-read a
-   decisive electrical/provenance gate; a reset-fetch level comparison is the
-   alternative consumer-side gate that promotes the current provisional fit to
-   confirmed physical adoption or removes it. `docs/d6-firmware-mode-coverage.md` bounds
+   simulation pull-ups. Revision-3 known-D2 controls, three D6 captures including
+   a power cycle, continuity-confirmed reader wiring, and a full direct 6000-write
+   boot comparison close the electrical/provenance gate.
+   `docs/d6-firmware-mode-coverage.md` bounds
    what the trace proves: boot firmware observes A6/A5 suffixes `11` and `10`;
    A7 is functionally forced to `0`
    for all firmware-reachable maps (A7=1 rows emit only words `D`/`F` and can
@@ -737,8 +718,7 @@ After connectivity and programmable-part decisions stop changing:
   ASCII/Intel-hex, or packed-nibble encodings (proprietary transforms remain
   possible);
   keep the ask open opportunistically, but nothing on the critical path may
-  wait on them. The targeted corrected-reader D6 experiment in highest-priority
-  item 1 is on the critical path because it resolves a known contradiction;
+  wait on them. The revision-3 reader experiment resolved the D6 contradiction;
   unrelated independent reads remain Tier-3 corroboration only.
 - **Document gap:** the `.009 Э3` electrical-schematic revision is **recovered**
   — owner-photographed 2026-07-18, all three sheets, under
@@ -984,8 +964,8 @@ Once a released board and programmed parts exist:
   and original D15/D16 contents for Tier 3.
 - [ ] Runnable boot executes from all four physical PROM tables; the D6
   memory-map oracle and the behavioral FDC bypass are retired. (D6 oracle is
-  provisionally retired 2026-07-15 — runnable boot runs from the physical D6
-  table under a documented `~D0`/`~D3` fit pending the level probe; the D94/FDC
+  retired 2026-07-19 — runnable boot runs directly from the corrected physical
+  D6 table; the D94/FDC
   behavioral bypass and its `.092` quadrant remain.)
 - [ ] Main-board design release passes; board is ordered.
 - [ ] Functional parts kit is received and tested.

@@ -74,20 +74,14 @@ module juku_top (
     wire        rev = d6_rev_physical, roe_n = d6_roe_physical;
     wire        rom_sel_n = d6_rom_select_n, ram_sel_n = d6_ram_output_n;
 `else
-    // PROVISIONAL physical-D6 adoption (owner-directed 2026-07-15): the runnable
-    // twin now runs its memory map from the PHYSICAL `.038` table (U_DECODE below),
-    // not the functional oracle. A per-output polarity correction is applied to the
-    // two РТ4 outputs feeding D8 and D13 -- rom_sel_n = ~D0, roe_n = ~D3 -- which
-    // boots byte-identical to the cosim value oracle across the full guard suite;
-    // D1 (-WREQ) and D2 (rev) are used direct, A7 forced 0. This correction is a
-    // FUNCTIONAL FIT: the reader (82S126 non-inverting) and the raw dump are faithful
-    // and `D6.12->D8.15` is recorded direct, so the two inversions are not yet
-    // physically justified -- they await a reset-fetch level probe (docs, PLAN item 1).
-    // The raw dump is preserved untouched; `~` is sim-only so the YOSYS/LVS branch
-    // above keeps the raw net names and no inverter enters the LVS netlist.
+    // The 2026-07-19 revision-3 reread fixed the original reader's reversed
+    // four-channel packing. The corrected physical `.038` table now drives all
+    // four traced outputs directly and boots byte-identical to cosim; no sim-only
+    // output polarity fit remains. A7 is still forced low pending closure of
+    // the measured D6.15/D105.1 conductor's remote driver.
     wire        rev       = d6_rev_physical;
-    wire        roe_n     = ~d6_roe_physical;
-    wire        rom_sel_n = ~d6_rom_select_n;
+    wire        roe_n     = d6_roe_physical;
+    wire        rom_sel_n = d6_rom_select_n;
     wire        ram_sel_n = d6_ram_output_n;
 `endif
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1

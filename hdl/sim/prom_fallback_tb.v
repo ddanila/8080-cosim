@@ -57,8 +57,8 @@ module prom_fallback_tb;
     end
     d6_probe_enable_n = 1'b0;
     #1;
-    if ({d6_probe_roe_n, d6_probe_rev, d6_probe_ram_n, d6_probe_rom_n} !== 4'bz000) begin
-      $display("PROM-FALLBACK: D6 row 00 is not raw open-collector word 8: %b",
+    if ({d6_probe_roe_n, d6_probe_rev, d6_probe_ram_n, d6_probe_rom_n} !== 4'b000z) begin
+      $display("PROM-FALLBACK: D6 row 00 is not raw open-collector word 1: %b",
                {d6_probe_roe_n, d6_probe_rev, d6_probe_ram_n, d6_probe_rom_n});
       errors = errors + 1;
     end

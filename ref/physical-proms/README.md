@@ -1,9 +1,10 @@
 # Physical PROM captures
 
 These files preserve serial reads made from socketed PROMs on two independent
-`.009` processor boards using an Arduino Nano 3. The RT4 reader is
-`tools/rt4_dumper/rt4_dumper.ino`; the RE3 reader is
-`tools/re3_dumper/re3_dumper.ino`. Both used 3 kOhm output pull-ups, a 100 nF
+`.009` processor boards using an Arduino Nano 3. The current RT4 reader reuses
+the RE3 board with `tools/re3_board_rt4_dumper/re3_board_rt4_dumper.ino`; older
+captures used `tools/rt4_dumper/rt4_dumper.ino`. The RE3 reader is
+`tools/re3_dumper/re3_dumper.ino`. The readers used 3 kOhm output pull-ups, a 100 nF
 Vishay MKT bypass capacitor, and Nano USB 5 V. Raw pin-level bytes are the
 authoritative artifacts; `asserted.bin` is the separately named active-low
 complement.
@@ -25,9 +26,10 @@ provenance labels. Each section states the independent count explicitly.
 
 ## D2 — ДГШ5.106.037, К556РТ4
 
-Four independent accepted reads include a power-cycled three-read series and a
-separate verification read. Three additional board-name files are exact aliases
-of that series and are not counted again. All agree at every address.
+Six independent accepted reads are represented by eight manifest inputs: the
+original series plus provenance aliases, followed by three 2026-07-19
+revision-3 controls including a power cycle. All produce the same validated
+table; the JSON manifest records the alias-adjusted independent count.
 
 ```text
 validated/d2_037.raw.bin
@@ -36,15 +38,18 @@ SHA256 953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b
 
 ## D6 — ДГШ5.106.038, К556РТ4
 
-Three independent accepted reads include a separately power-cycled third read;
-two additional board-name files are exact aliases and are not counted again.
-All agree at every address. Pin 9 measured 4.4 V when high and pins 9-12 were confirmed
-isolated in the reader. This cross-machine physical table supersedes the
-retired reconstructed D6 fallback.
+Three 2026-07-19 revision-3 reads include a separately power-cycled third read
+and agree at every address. A known-D2 control first reproduced the established
+D2 table. Owner continuity then confirmed the reader's physical wiring as PROM
+pins `9,10,11,12 -> Nano A1,D2,D3,D4`. The corrected D6 bytes are the exact
+four-bit reversal of the older artifact, exposing a channel-packing error that
+D2 could not reveal because its only values, `0` and `F`, are reversal-invariant.
+The old captures remain as superseded provenance evidence; this corrected table
+is authoritative and drives the HDL outputs directly.
 
 ```text
 validated/d6_038.raw.bin
-SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39
+SHA256 c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489
 ```
 
 ## D8 — ДГШ5.106.039, К155РЕ3

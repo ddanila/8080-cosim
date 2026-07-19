@@ -34,8 +34,9 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - D2's physical inputs, validated `.037` table, and D0/WAIT handoff are modeled.
 - D6's validated `.038` table and chip-removed separate pins 11/12 remain the
   structural/LVS truth. Runnable simulation now selects from that physical table
-  through `U_DECODE`, with the explicitly provisional sim-only `~D0`/`~D3`
-  correction pending a corrected-reader re-read or operating-level probe.
+  through `U_DECODE`. The 2026-07-19 revision-3 reread corrected the original
+  reader's four-channel bit reversal, so all four outputs now connect directly
+  with no simulation-only polarity correction.
   `decode_prom_functional` is retained only by the B37A diagnostic comparison.
 - D94's validated physical `.092` table is modeled with open-collector outputs,
   and its first three outputs are wired to the accepted local FDC controls. Its

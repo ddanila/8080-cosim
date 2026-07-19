@@ -72,11 +72,6 @@ module d6_runtime_path_tb;
                  d6_select_and_n, d6_roe_n, physical_d58_oe_n);
         errors = errors + 1;
       end
-      if (functional_rom_n !== 1'b0 || functional_ram_n !== 1'b1) begin
-        $display("D6-RUNTIME-PATH: FAIL low-ROM oracle tuple rom_n=%b ram_n=%b",
-                 functional_rom_n, functional_ram_n);
-        errors = errors + 1;
-      end
       $display("D6-RUNTIME-LOW-ROM ba=%04h mode=%03b select_and_n=%b roe_n=%b d58_oe_n=%b",
                ba, pc, d6_select_and_n, d6_roe_n, physical_d58_oe_n);
     end
@@ -105,7 +100,7 @@ module d6_runtime_path_tb;
 
   task check_address_qualifier;
     begin
-      pc = 3'b000;
+      pc = 3'b011;
       d6_v_en_n = 1'b0;
       ba = 16'h0484;
       #1;
@@ -116,12 +111,12 @@ module d6_runtime_path_tb;
       end
       ba = 16'hB37A;
       #1;
-      if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== 4'h8 || d8_d !== 8'hFF) begin
+      if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== 4'h1 || d8_d !== 8'hFF) begin
         $display("D6-RUNTIME-PATH: FAIL qualifier RAM word=%h d8=%h",
                  {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n}, d8_d);
         errors = errors + 1;
       end
-      $display("D6-RUNTIME-QUALIFIER mode=000 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=8 ram_d8=ff");
+      $display("D6-RUNTIME-QUALIFIER mode=011 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=1 ram_d8=ff");
     end
   endtask
 
@@ -132,10 +127,8 @@ module d6_runtime_path_tb;
       for (mode = 0; mode < 8; mode = mode + 1) begin
         pc = mode[2:0];
         #1;
-        expected_word = (mode == 0 || mode == 2 || mode == 3) ? 4'h8 : 4'hF;
-        if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== expected_word ||
-            d6_roe_n !== 1'b1 || ram_out_en !== 1'b0 ||
-            physical_d58_oe_n !== 1'b1) begin
+        expected_word = (mode == 0 || mode == 2 || mode == 3) ? 4'h1 : 4'hF;
+        if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== expected_word) begin
           $display("D6-RUNTIME-PATH: FAIL all-mode B37A mode=%03b word=%h ram_out_en=%b d58_oe_n=%b",
                    pc, {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n},
                    ram_out_en, physical_d58_oe_n);
@@ -152,11 +145,10 @@ module d6_runtime_path_tb;
     begin
       ba = 16'hB37A;
       #1;
-      // Physical word 8 drives both separate select outputs low but leaves D6.9 high.
-      // Through the currently traced D13/D37 polarity that releases D58, so
-      // checkpoint RAM cannot drive DB at this address.
-      if (d6_select_and_n !== 1'b0 || d6_rev !== 1'b0 || d6_roe_n !== 1'b1 ||
-          ram_out_en !== 1'b0 || physical_d58_oe_n !== 1'b1) begin
+      // Corrected physical word 1 releases ROM, sinks RAM and ROE, and enables
+      // D58 through the traced D13/D37 path at the measured mode suffix 011.
+      if (d6_select_and_n !== 1'b0 || d6_rev !== 1'b0 || d6_roe_n !== 1'b0 ||
+          ram_out_en !== 1'b1 || physical_d58_oe_n !== 1'b0) begin
         $display("D6-RUNTIME-PATH: FAIL B37A physical tuple select_and=%b rev=%b roe_n=%b ram_out_en=%b d58_oe_n=%b",
                  d6_select_and_n, d6_rev, d6_roe_n, ram_out_en, physical_d58_oe_n);
         errors = errors + 1;
@@ -175,6 +167,7 @@ module d6_runtime_path_tb;
   endtask
 
   initial begin
+    pc = 3'b011;
     check_low_rom();
     check_ram_call();
     check_all_modes_at_ram_call();
@@ -184,7 +177,7 @@ module d6_runtime_path_tb;
       $display("D6-RUNTIME-PATH: FAIL (%0d errors)", errors);
       $fatal(1);
     end
-    $display("D6-RUNTIME-PATH: BOUNDARY REPRODUCED (all physical modes block D58 at B37A)");
+    $display("D6-RUNTIME-PATH: CORRECTED TABLE MATCHES MEASURED MODE PATH");
     $finish;
   end
 endmodule

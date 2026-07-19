@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "ref/physical-proms/validated/d6_038.raw.bin"
 REPORT = ROOT / "docs/d6-physical-decode.md"
-EXPECTED_SHA256 = "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
+EXPECTED_SHA256 = "c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489"
 SHEET1_OVERVIEW = ROOT / "ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg"
 SHEET1_DETAIL = ROOT / "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg"
 EXPECTED_SHEET1_OVERVIEW_SHA256 = "effc98746807ef28dab97051ceba293f4433c0f3b39b86cbb55ddcaad24aeca4"
@@ -47,7 +47,7 @@ def main() -> int:
     if any(value & 0xF0 for value in data):
         raise SystemExit("D6 image contains nonzero high-nibble data")
     words = sorted(set(data))
-    if words != [0x1, 0x8, 0xD, 0xF]:
+    if words != [0x1, 0x8, 0xB, 0xF]:
         raise SystemExit(f"unexpected D6 output vocabulary: {words}")
 
     drawing_hashes = {
@@ -64,14 +64,14 @@ def main() -> int:
 
     mode_values = [[data[row_index(high5, mode)] for high5 in range(32)] for mode in range(8)]
     expected_runs = {
-        0: [(0x0000, 0xFFFF, 0x8)],
-        1: [(0x0000, 0x3FFF, 0x8), (0x4000, 0xBFFF, 0xF), (0xC000, 0xD7FF, 0x8), (0xD800, 0xFFFF, 0x1)],
-        2: [(0x0000, 0xD7FF, 0x8), (0xD800, 0xFFFF, 0x1)],
-        3: [(0x0000, 0x3FFF, 0x1), (0x4000, 0xFFFF, 0x8)],
-        4: [(0x0000, 0x1FFF, 0xD), (0x2000, 0xFFFF, 0xF)],
-        5: [(0x0000, 0x1FFF, 0xD), (0x2000, 0xFFFF, 0xF)],
-        6: [(0x0000, 0x1FFF, 0xD), (0x2000, 0xFFFF, 0xF)],
-        7: [(0x0000, 0x1FFF, 0xD), (0x2000, 0xFFFF, 0xF)],
+        0: [(0x0000, 0xFFFF, 0x1)],
+        1: [(0x0000, 0x3FFF, 0x1), (0x4000, 0xBFFF, 0xF), (0xC000, 0xD7FF, 0x1), (0xD800, 0xFFFF, 0x8)],
+        2: [(0x0000, 0xD7FF, 0x1), (0xD800, 0xFFFF, 0x8)],
+        3: [(0x0000, 0x3FFF, 0x8), (0x4000, 0xFFFF, 0x1)],
+        4: [(0x0000, 0x1FFF, 0xB), (0x2000, 0xFFFF, 0xF)],
+        5: [(0x0000, 0x1FFF, 0xB), (0x2000, 0xFFFF, 0xF)],
+        6: [(0x0000, 0x1FFF, 0xB), (0x2000, 0xFFFF, 0xF)],
+        7: [(0x0000, 0x1FFF, 0xB), (0x2000, 0xFFFF, 0xF)],
     }
     actual_runs = {mode: ranges(values) for mode, values in enumerate(mode_values)}
     if actual_runs != expected_runs:
@@ -83,7 +83,7 @@ def main() -> int:
     wreq_nodes = {tuple(node) for node in board["nets"]["WREQ_N"]["nodes"]}
     hdl = (ROOT / "hdl/juku_top.v").read_text()
     devices = (ROOT / "hdl/devices.v").read_text()
-    reader = (ROOT / "tools/rt4_dumper/rt4_dumper.ino").read_text()
+    reader = (ROOT / "tools/re3_board_rt4_dumper/re3_board_rt4_dumper.ino").read_text()
     validator = (ROOT / "scripts/validate_rt4_dump.py").read_text()
     runtime_report = (ROOT / "docs/d6-runtime-path-diagnostic.md").read_text()
     model_checks = [
@@ -98,38 +98,41 @@ def main() -> int:
          and "Physical R11..R14 recover the four open-collector D6 outputs high" in hdl),
         ("HDL uses measured physical D6 address order", ".a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
         ("RT4 reader packs D0/pin12 through D3/pin9 into raw bits 0 through 3",
-         "PROM D0..D3 (pins 12,11,10,9)" in reader
+         "RT4 D0..D3 (pins 12,11,10,9)" in reader
          and "value |= (1U << bit)" in reader),
-        ("RT4 reader revision 2 avoids Nano D13 and verifies released pull-ups",
-         "DATA_PINS[4] = {10, 11, 12, A0}" in reader
-         and "ENABLE_PIN = A1" in reader
+        ("RT4 reader revision 3 has continuity-confirmed channel order and verifies both enables",
+         "DATA_PINS[4] = {4, 3, 2, A1}" in reader
+         and "ENABLE_13_PIN = 5" in reader
+         and "ENABLE_14_PIN = 6" in reader
          and "disabled_raw=" in reader
-         and "released.raw != 0x0f" in reader
-         and "Nano_D13:NC" in reader),
-        ("RT4 host validation guards revision-2 metadata and classifies the D6 re-read",
+         and "disabled_ce13_raw=" in reader
+         and "disabled_ce14_raw=" in reader),
+        ("RT4 host validation guards revision-3 metadata and the old bit reversal",
          "--compare-raw" in validator
          and "EXACT_MATCH" in validator
-         and "EXACT_D0_D3_COMPLEMENT" in validator
+         and "EXACT_BIT_REVERSE" in validator
          and "OTHER_DIFFERENCE" in validator
-         and "each revision-2 dump must report disabled_raw=F,stable=OK" in validator),
+         and "revision-3" in validator),
         ("Device commentary preserves measured mode pins and separate output conductors",
          "pin 2/A5 <- D3.6 <- /PC0" in devices
          and "pin 1/A6 <- D3.4 <- /PC1" in devices
          and "pins 11 and 12 are separate conductors" in devices
          and "pins 11/12 are joined" not in devices),
-        ("Runnable twin executes from the physical D6 table (oracle retired from boot path)",
-         "wire        rom_sel_n = ~d6_rom_select_n;" in hdl
-         and "wire        roe_n     = ~d6_roe_physical;" in hdl
+        ("Runnable twin executes corrected physical D6 outputs directly",
+         "wire        rom_sel_n = d6_rom_select_n;" in hdl
+         and "wire        roe_n     = d6_roe_physical;" in hdl
+         and "~d6_rom_select_n" not in hdl
+         and "~d6_roe_physical" not in hdl
          and "decode_prom_functional U_D6_FUNCTIONAL" not in hdl
          and "module decode_prom_functional" in devices),
         ("Structural consumers retain separate ROM/RAM conductors",
          "wire        rom_sel_n = d6_rom_select_n, ram_sel_n = d6_ram_output_n;" in hdl),
-        ("All-row B37A RAM-gate boundary has a reproducible diagnostic",
-         "ALL RAW A7..A5 ROWS EXHAUSTED AT THE RAM GATE BOUNDARY" in runtime_report
+        ("Corrected mode path has a reproducible diagnostic",
+         "CORRECTED TABLE MATCHES MEASURED MODE PATH" in runtime_report
          and runtime_report.count("D6-RUNTIME-ALL-MODES ba=b37a") == 8),
         ("Raw-row regression and corrected checkpoint suffix are documented",
-         "D6-RUNTIME-QUALIFIER mode=000 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=8 ram_d8=ff" in runtime_report
-         and "checkpoint on suffix `11`" in runtime_report),
+         "D6-RUNTIME-QUALIFIER mode=011 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=1 ram_d8=ff" in runtime_report
+         and "supply suffix `11`" in runtime_report),
         ("Recovered .009 sheet-1 D6 polarity evidence is checksum-guarded",
          all(path.exists() for path in drawing_hashes)),
     ]
@@ -147,9 +150,10 @@ def main() -> int:
         "- Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9", "",
         "The factory programming instruction in `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf`",
         "page 16 identifies D6 `.038` as a КР556РТ4 and says its programming table",
-        "was supplied on disk. A pin-order audit retained the reader's D0/pin12 through",
-        "D3/pin9 packing: reversing the nibble would contradict the device pin assignment",
-        "and is not a permissible way to make the downstream RAM path run.", "",
+        "was supplied on disk. The 2026-07-19 reader-3 control first reproduced D2",
+        "byte-for-byte, then three D6 reads including a power cycle exposed the old",
+        "capture as an exact nibble bit reversal. Direct continuity confirms reader-3",
+        "D0/pin12 through D3/pin9 packing.", "",
         "## Output words", "", "| Raw word | Rows | D3 D2 D1 D0 | RAM_N D1 | ROM_N D0 |", "| ---: | ---: | --- | ---: | ---: |",
     ]
     for word in words:
@@ -175,9 +179,8 @@ def main() -> int:
         "This reviewed factory-drawing result agrees with the stronger chip-removed",
         "D6.12-to-D8.15 and D6.9-to-D13.1 continuity measurements and with the",
         "modeled D13 polarity. It therefore rules out an omitted *drawn* inverter",
-        "as the cause of the raw-table contradiction; it does not resolve the",
-        "electrical/provenance mismatch in the existing D6 dump. The corrected-reader",
-        "re-read or operating-level comparison remains decisive.", "",
+        "as the cause of the former raw-table contradiction. The corrected reader",
+        "instead proved that the original capture labels reversed all four channels.", "",
         "## Mode maps", "", "Each address interval is inclusive. The 32-character signature is one raw",
         "nibble per 2 KiB block from `0000` through `F800`.", "",
         "| D6 A7 A6 A5 | 2 KiB signature | Inclusive address ranges |", "| --- | --- | --- |",
@@ -187,31 +190,26 @@ def main() -> int:
         rendered = "; ".join(f"`{start:04X}-{end:04X}` -> `{word:X}`" for start, end, word in actual_runs[mode])
         lines.append(f"| `{mode:03b}` | `{signature}` | {rendered} |")
     lines += [
-        "", "## Direct observations", "", "- With raw `A7=1`, A5 and A6 are don't-cares: `0000-1FFF` emits `D` and",
+        "", "## Direct observations", "", "- With raw `A7=1`, A5 and A6 are don't-cares: `0000-1FFF` emits `B` and",
         "  `2000-FFFF` emits `F`.", "- With raw `A7=0`, all four A6/A5 combinations are distinct. Mode `001`",
-        "  contains word `8` at `0000-3FFF` and `C000-D7FF`, word `F` in the",
-        "  middle, and word `1` at `D800-FFFF`; mode `010` extends word `8` through `D7FF`.",
+        "  contains word `1` at `0000-3FFF` and `C000-D7FF`, word `F` in the",
+        "  middle, and word `8` at `D800-FFFF`; mode `010` extends word `1` through `D7FF`.",
         "  Direct `.009` continuity now proves A6=`~PC1` and A5=`~PC0`; A7 joins",
         "  D105.1 but its driver or pull source is still unresolved. The raw mode",
         "  numbers remain useful table coordinates, not a claim about A7 semantics.",
-        "- D3/pin9 is low only in word `1`; D2/pin10 is high in words `D/F`.", "- These are physical electrical facts, not yet a complete explanation of",
+        "- D3/pin9 is low only in word `1`; D2/pin10 is high in words `B/F`.", "- These are physical electrical facts, not yet a complete explanation of",
         "  the downstream D8/D13/D92 memory timing. That behavior must be derived",
         "  from the now-separate ROM/RAM conductors and their confirmed consumers.",
         "- Runnable simulation now executes its memory map from THIS physical table",
         "  (the `decode_prom` instance), not the former `decode_prom_functional`",
-        "  oracle, which is retired from the boot path. A provisional per-output",
-        "  polarity correction is applied to the two РТ4 outputs feeding D8 and D13",
-        "  (`rom_sel_n = ~D0`, `roe_n = ~D3`; D1/-WREQ and D2/rev used direct); it",
-        "  boots byte-identical to cosim but is a FUNCTIONAL FIT pending a reset-fetch",
-        "  level probe, since the reader/dump are faithful and `D6.12->D8.15` is",
-        "  recorded direct. The raw dump is preserved untouched; see PLAN item 1.",
+        "  oracle, which is retired from the boot path. All four physical outputs",
+        "  now execute directly with no per-output transform and pass the 6,000-write",
+        "  byte-identical boot guard.",
         "- `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a",
-        "  full boot. At `B37A`, all eight raw A7..A5 combinations emit word `8` or",
-        "  `F`; D6.9 is therefore high in every physical row, and disabling the PROM",
-        "  also leaves it high. Mode selection and V1/V2 cannot repair the currently",
-        "  modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,",
-        "  polarity/function, and D58-path checks named there must resolve the boundary.",
-        "- Raw row `000` emits word `8` at both PC `0484` and RAM target `B37A`,",
+        "  full boot. The corrected table emits word `1` at both low-ROM `0484` and",
+        "  RAM target `B37A` for raw row `000`, aligning the direct ROM and ROE paths",
+        "  with the runnable behavior without inventing an inverter.",
+        "- Raw row `000` emits word `1` at both PC `0484` and RAM target `B37A`,",
         "  but measured firmware suffix `11` and unresolved A7 prevent identifying",
         "  that raw row as the checkpoint state.",
         "", "## Model adoption guards", "",

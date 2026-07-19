@@ -178,7 +178,7 @@ endmodule
 
 // Historical functional memory-map oracle retained only as the contrast model
 // in d6_runtime_path_tb. Runnable juku_top selection now comes from decode_prom
-// and the validated physical table under its documented provisional polarity fit.
+// and the validated, correctly channel-ordered physical table.
 // This module is neither PROM content nor an LVS-visible claim about the board.
 module decode_prom_functional (input wire [15:11] ba, input wire pc2,
                                output wire rom_n, ram_n, rev, roe_n);

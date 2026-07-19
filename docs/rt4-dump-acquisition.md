@@ -1,36 +1,39 @@
 # К556РТ4 dump acquisition
 
-Status: **CAPTURE CONSISTENCY VALIDATED / D6 ELECTRICAL RE-READ QUEUED**
+Status: **READER-3 CONTROL VALIDATED / D6 CHANNEL ORDER CORRECTED**
 
-Three preserved D2 captures and three preserved D6 captures—each set including
-a separate power cycle—validate with zero unstable or mismatched addresses.
+The 2026-07-19 reader-3 session reproduced D2 byte-for-byte across three reads,
+then captured D6 three times—including a separate power cycle—with zero unstable
+or mismatched addresses.
 Inputs and derived artifacts are under `ref/physical-proms/`.
-Provenance-labelled D2 aliases and the first two D6 aliases are also preserved,
-but byte identity proves they are copies of the canonical serial streams rather
-than additional independent measurements. The D6 CS00015 power-cycled stream
-has no earlier counterpart and is the adopted third read.
+The older D2/D6 capture aliases are preserved as provenance evidence. The
+authoritative D6 artifact is derived only from the three revision-3 Sukharev
+captures; the older D6 streams classify as an exact bit reversal.
 
 `scripts/validate_rt4_dump.py` validates the line-oriented serial format emitted
 by a К556РТ4 reader. It is applicable to D2 `.037` and D6 `.038`; it does not
 read the different К155РЕ3 used for D8 or D94.
 
-The original Nano wiring used D13 for PROM D3/pin 9. Although the D2 capture
-proves that channel observed both released-high and driven-low states in lockstep
-with D0-D2, D13's on-board LED is an unnecessary load and cannot remain in the
-decisive D6 polarity experiment. Reader revision 2 moves D3 to A0 and drives
-PROM /CE pin 14 from A1. Before each dump it disables the PROM and requires all
-four externally pulled-up data inputs to read stable `F`; a failed self-test
-aborts the capture. This removes the loading ambiguity without presuming that
-it caused the existing D6 table.
+The original Nano wiring used D13 for PROM D3/pin 9. Revision 2 removed that
+loading ambiguity; revision 3 then reused the RE3 board and exposed the actual
+problem: the host-side four-channel packing did not match the physical pin
+order. Before each dump revision 3 tests release with both enables high and with
+each enable high separately, requiring all four pulled-up outputs to read stable
+`F`.
+
+The session proved the former D6 artifact was an exact four-channel bit reversal.
+Socket continuity confirms reader-3 pin12..pin9 map to D0..D3; the corrected
+table executes directly and the old sim-only D0/D3 fit is retired.
 
 This D13 caveat does not leave D2's board-used output ambiguous. D2 D0/pin12
 was sampled on Nano D10 with its own external pull-up; only D3 used Nano D13,
 and D2 D3 is an intentional board no-connect. Direct continuity also places
 D0 on D30.2 and R6. The executable guard `sync/d2_ready_path_check.sh` therefore
 pins D2 raw `0` as READY low and raw `F`/disabled as pulled-up READY high while
-the corrected-reader re-read remains specific to D6's D0/D3 anomaly.
+the corrected-reader session was therefore able to expose D6's channel-order
+error without changing the already validated D2 table.
 
-## Revision-2 wiring and D6 discriminator
+## Earlier revision-2 wiring
 
 - PROM A0-A7/pins 5,6,7,4,3,2,1,15 -> Nano D2-D9.
 - PROM D0-D3/pins 12,11,10,9 -> Nano D10,D11,D12,A0. Leave Nano D13 open.
@@ -41,12 +44,53 @@ the corrected-reader re-read remains specific to D6's D0/D3 anomaly.
   known D2 and require byte identity with `d2_037.raw.bin`; then capture D6
   three times including a power cycle.
 
-Compare the new D6 raw image with
-`ref/physical-proms/validated/d6_038.raw.bin`. An exact match eliminates the
-Nano-D13 theory. An exact D0/D3-only complement is the result predicted by the
-byte-identical boot experiment and permits a provenance-reviewed replacement.
-Any other stable difference is a new capture/device-identity investigation,
-not permission to transform the table.
+### Reusing the K155RE3 Nano reader
+
+`tools/re3_board_rt4_dumper/re3_board_rt4_dumper.ino` is reader revision 3.
+It reuses the tracked K155RE3 Nano reader wiring after moving the four external
+3 kOhm output pull-ups to RT4 pins 9-12 and adding a fifth 3 kOhm fail-safe
+pull-up from RT4 /CE pin 14 to +5 V. The former RE3 pull-ups on pins 1-7 must
+be removed. The firmware remaps A0-A7 to Nano D12,D13,A0,D11,D10,D9,D8,D7,
+D0-D3 to Nano D4,D3,D2,A1, and the two active-low enables to Nano D5,D6.
+
+Revision 3 checks output release three ways before reading: both enables high,
+pin 14 high by itself, and pin 13 high by itself. All three checks must report
+stable raw `F`. The host validator accepts this exact mapping and rejects any
+changed/missing mapping or enable check. The same D2-first discriminator and
+three-capture D6 procedure below applies unchanged.
+
+The physical reader's established flashing path is USBasp ISP, detected on the
+2026-07-19 workstation as USB ID `16c0:05dc`. Remove the PROM from the reader
+socket before flashing, run the following commands from the repository root,
+then disconnect USBasp and reconnect the Nano's normal USB serial interface for
+the 115200-baud capture:
+
+```sh
+arduino-cli compile \
+  --fqbn arduino:avr:nano:cpu=atmega328 \
+  --build-path tools/re3_board_rt4_dumper/build \
+  tools/re3_board_rt4_dumper
+avrdude -c usbasp -p m328p \
+  -U flash:w:tools/re3_board_rt4_dumper/build/re3_board_rt4_dumper.ino.hex:i
+```
+
+The Snap-packaged Arduino CLI uploader segfaulted with this USBasp on the
+2026-07-19 workstation; system `avrdude` 7.1 identified signature `0x1e950f`,
+wrote all 3,900 firmware bytes, and verified them successfully. This USBasp's
+old firmware also reports that it cannot set the SCK period; the warning is
+non-fatal when device identification, writing, and verification continue.
+
+ISP programming may erase the Nano serial bootloader; that does not affect the
+reader firmware, but later serial-port uploads require reburning the bootloader.
+Do not power the Nano from USBasp and its normal USB connector simultaneously
+unless the USBasp target-power jumper is disconnected.
+
+Compare any future D6 raw image with
+`ref/physical-proms/validated/d6_038.raw.bin`. A correctly packed repeat must be
+an exact match. `EXACT_BIT_REVERSE` identifies the relationship of the
+superseded original artifact to the corrected baseline. Any other stable
+difference is a new capture/device-identity investigation, not permission to
+transform the table.
 
 The host validator performs this classification directly and also rejects
 revision-2 logs whose revision, pin map, or disabled-output self-test metadata
@@ -59,9 +103,10 @@ python3 scripts/validate_rt4_dump.py d6-read-1.txt d6-read-2.txt d6-read-3.txt \
 ```
 
 The comparison result is exactly one of `EXACT_MATCH`,
-`EXACT_D0_D3_COMPLEMENT`, or `OTHER_DIFFERENCE` with changed-row, first-byte,
-and per-output flip counts. Only the second result matches the already guarded
-physical-table adoption experiment; the third always remains a hold.
+`EXACT_D0_D3_COMPLEMENT`, `EXACT_BIT_REVERSE`, or `OTHER_DIFFERENCE` with
+changed-row, first-byte, and per-output flip counts. The bit-reverse result is
+actionable only when independent socket-to-reader continuity fixes the physical
+pin order, as it did for the 2026-07-19 revision-3 reread.
 When `--out-dir` is used, the dump JSON preserves the comparison path, baseline
 SHA256, and classification alongside the capture hashes.
 
