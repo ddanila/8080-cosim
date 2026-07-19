@@ -37,7 +37,7 @@ module revb_mem_card #(
     decode_prom U_D6 (.a({1'b0, ~MODE1, ~MODE0, A[11], A[12], A[13], A[14], A[15]}),
                       .v_en_n(1'b0),
                       .rom_n(d6_rom_n), .ram_n(d6_ram_n), .rev(d6_rev), .roe_n(d6_roe));
-    wire is_rom_promB = d6_rom_n;              // ~D0 provisional correction, matches vjuga
+    wire is_rom_promB = ~d6_rom_n;             // corrected physical D0/ROM_N is active-low
     wire is_rom_intA  = (A[15:14] == 2'b00);
     wire is_rom       = (DECODE_MODE == 1) ? is_rom_intA : is_rom_promB;
     wire rom_sel_n    = ~is_rom;

@@ -24,8 +24,9 @@ product.
   `re3_prom` D8 К155РЕ3 — all reused verbatim from `hdl/devices.v` with the
   validated dumps) and matches the cosim framebuffer byte-for-byte at 6000 video
   writes. Booting exercises the DRAM and both PROMs in the functional path
-  (workbench goals 2 and 3): a bad socketed chip diverges the boot. The D6 `~D0`
-  correction is provisional (pending the main-twin level probe).
+  (workbench goals 2 and 3): a bad socketed chip diverges the boot. Corrected
+  reader-3 packing proves D6 D0/pin12 is active-low `ROM_N`; Mode B now consumes
+  that polarity directly.
 - **Both decode modes boot byte-identical.** `sim/vjuga_boot_check.sh` builds and
   boots the twin in Mode B (the real D6 РТ4 drives the decode) *and* Mode A (the
   U5 GAL's internal A15/A14 baseline, РТ4 socket empty), and requires each to

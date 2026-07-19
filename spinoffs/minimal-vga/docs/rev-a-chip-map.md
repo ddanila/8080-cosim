@@ -29,10 +29,8 @@ real functional roles; booting the firmware is the self-test.
 | R44 | MODE_B default pull-down | 10k | TH | Floating/no-shunt defaults to Mode A (safe bring-up). |
 
 **Buffered through the GAL, not into the enables directly.** The РТ4 (U3)
-outputs route into U5, which applies the provisional `~D0`/`~D3` polarity
-correction (root `PLAN.md` item 1) as a **reprogrammable GAL term** — when the
-main-twin level probe resolves the polarity, the fix is a GAL reprogram, not a
-board respin. The РЕ3 (U4) is enabled by ROM select and its output byte is only
+outputs route into U5, which now consumes corrected reader-3 D0/pin12 as
+active-low `ROM_N`; the GAL equation uses `/DEC_ROM_N`. The РЕ3 (U4) is enabled by ROM select and its output byte is only
 **observed** (via J95): VJUGA's single 27C256 does not need the pager to gate
 data, and the verified twin (`hdl/vjuga_juku_top.v`) likewise only *asserts* on
 D8 rather than routing it into the data path.

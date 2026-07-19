@@ -16,7 +16,7 @@
 // with CPU wait-states, no FDC, no interrupts (the ekta37 banner draws without
 // them, exactly as cosim runs it). Booting exercises D6/D8/РУ5 in the functional
 // path, so a bad socketed chip on the bench diverges the boot from cosim.
-// The D6 ~D0 output correction is PROVISIONAL (see main-twin PLAN item 1).
+// Corrected reader-3 packing proves physical D6 D0/pin12 is active-low ROM_N.
 `default_nettype none
 module vjuga_juku_top #(
     parameter rom_file  = "ekta37_z80.hex",
@@ -74,18 +74,18 @@ module vjuga_juku_top #(
     // booting self-tests them. D6 (К556РТ4 decode_prom) decides ROM vs RAM;
     // D8 (К155РЕ3 re3_prom) is the ROM-select pager. Both reused verbatim from
     // hdl/devices.v with the validated .038/.039 dumps. D6 inputs mirror the Juku
-    // (A6=/PC1, A5=/PC0, A7=0); the ~D0 output correction matches the main twin's
-    // provisional adoption (PLAN item 1). If either chip misbehaves on the bench,
+    // (A6=/PC1, A5=/PC0, A7=0); corrected reader-3 packing preserves D0 as
+    // active-low ROM_N. If either chip misbehaves on the bench,
     // the boot diverges from cosim -- that is the chip test.
     tri1 d6_rom_n, d6_ram_n, d6_rev, d6_roe;
     decode_prom U_D6 (.a({1'b0, ~portc[1], ~portc[0], A[11], A[12], A[13], A[14], A[15]}),
                       .v_en_n(1'b0),
                       .rom_n(d6_rom_n), .ram_n(d6_ram_n), .rev(d6_rev), .roe_n(d6_roe));
-    // Mode B (J94 = B): the D6 РТ4 decides ROM vs RAM under the provisional ~D0
-    // correction (main-twin PLAN item 1). Mode A (J94 = A): the coarse decode
+    // Mode B (J94 = B): the D6 РТ4 active-low D0/ROM_N decides ROM vs RAM.
+    // Mode A (J94 = A): the coarse decode
     // the U5 GAL derives from A15/A14 alone (ROM = low 32K), needing neither the
     // РТ4 nor the Port C mode bits -- the western-parts bring-up baseline.
-    wire is_rom_promB = d6_rom_n;            // is_rom <=> d6_rom_n high (== ~rom_sel_n, ~D0 correction)
+    wire is_rom_promB = ~d6_rom_n;           // physical D0/ROM_N low selects D8 and the ROM window
     wire is_rom_intA  = (A[15:14] == 2'b00);
     wire is_rom    = (DECODE_MODE == 1) ? is_rom_intA : is_rom_promB;
     wire rom_sel_n = ~is_rom;                // ROM select drives D8 /CE in both modes

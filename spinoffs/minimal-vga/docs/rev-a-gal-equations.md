@@ -16,9 +16,8 @@ The decode GAL is **dual-mode**, selected by the `MODE_B` jumper (J94):
 - **Mode A** (`MODE_B=0`, РТ4 socket empty): the GAL decodes ROM/RAM itself from
   A15/A14 — the western-parts bring-up baseline.
 - **Mode B** (`MODE_B=1`, real К556РТ4 socketed at U3): the РТ4 decides ROM/RAM
-  and the GAL only *conditions* its output (this is where the provisional
-  `~D0`/`~D3` polarity correction lives — root `PLAN.md` item 1 — so resolving
-  the polarity is a **GAL reprogram, not a board respin**).
+  and the GAL conditions its active-low output. Corrected reader-3 packing
+  proves D0/pin12 is `ROM_N`, so no polarity ambiguity remains.
 
 Pinout (a real 22V10: 12 inputs on pins 1-11+13, 10 macrocells on 14-23):
 
@@ -60,11 +59,9 @@ WRITE_CYCLE = /WR_N
 ; ---- ROM/RAM decision, selected by the MODE_B jumper ----
 ; Mode A: coarse western-parts baseline -- ROM is the low 32 KiB (A15=0 & A14=0).
 ROM_A       = /A15 & /A14
-; Mode B: the real К556РТ4 (U3) drives it. DEC_ROM_N is its O1 output. Under the
-; PROVISIONAL polarity (the ~D0 correction), ROM is selected when DEC_ROM_N is
-; HIGH. THIS is the single reprogrammable term: flip it if the D6 level probe
-; (PLAN.md item 1) shows the true polarity is inverted.
-ROM_B       = DEC_ROM_N
+; Mode B: the real К556РТ4 (U3) drives it. Corrected reader-3 packing proves
+; DEC_ROM_N is physical D0/pin12 and ROM is selected when that signal is LOW.
+ROM_B       = /DEC_ROM_N
 
 ROM_SEL     = MEM_CYCLE & ( (/MODE_B & ROM_A) # (MODE_B & ROM_B) )
 

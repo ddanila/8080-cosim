@@ -75,13 +75,13 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    each), mirroring the proven `hdl/sim/dram_unit_tb.v` drive ordering.
 2. **Fold in the real РЕ3 (D8) and РТ4 (D6) in the functional path (goal 3). DONE.**
    `hdl/vjuga_juku_top.v` now routes the ROM/RAM decode through `decode_prom`
-   (D6 `.038`, provisional `~D0` correction) and `re3_prom` (D8 `.039`) — both
+   (D6 `.038`, corrected active-low D0/`ROM_N`) and `re3_prom` (D8 `.039`) — both
    reused verbatim from `hdl/devices.v` — so booting self-tests them. Byte-identical
    to the cosim oracle at 64 and 6000 video writes, with a decode-mismatch
    assertion guarding D6's decision against the reference map.
-   - Rides on the main-twin's provisional D6 adoption (root `PLAN.md` item 1): if
-     the level probe changes the D6 polarity call, this `~D0` correction updates
-     with it. D8 РЕ3 had no blocker.
+   - Corrected reader-3 packing and direct continuity close D6's output order;
+     Mode B inverts active-low `ROM_N` only when deriving the internal boolean
+     `is_rom`. D8 РЕ3 had no blocker.
 3. **Phase 3 — Rev-A physical board + digital-twin LVS.** Turn the byte-identical
    Verilog twin into the physical Rev-A fixture, keeping the twin and the PCB
    provably the same design.
@@ -97,8 +97,8 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets
      (К556РТ4 D6 decode, К155РЕ3 D8 pager) to Rev-A. Their outputs route
      **through the U5 GAL22V10**, not directly into the enables, so the
-     provisional `~D0`/`~D3` polarity correction is a **GAL equation** —
-     reprogrammable when the main-twin level probe resolves, no board respin.
+     corrected active-low D0/`ROM_N` polarity is a **GAL equation**
+     (`ROM_B=/DEC_ROM_N`), with no board respin.
    - **Dual decode mode via jumper.** Mode A (bring-up): the GAL decodes
      ROM/RAM internally (current draft equations) with the PROM sockets empty —
      the board is fully testable with western parts only. Mode B (chip test):
@@ -159,14 +159,14 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
      free-run NOP → Mode A baseline banner → single-step diff → one-scarce-
      chip-at-a-time PASS logging (РУ5 → РЕ3 observed → РТ4 driving in Mode B),
      with per-chip failure signatures and a `bench-log.md` per-serial record.
-   - **D6 polarity resolution on VJUGA itself** (closes root `PLAN.md` item 1):
-     probe J95.1 (`DEC_ROM_N` = D6.12) at the reset fetch in Mode B; either
-     outcome is a one-line fix in the GAL term + both twins, zero copper.
+   - **D6 polarity guard on VJUGA itself:** probe J95.1 (`DEC_ROM_N` = D6.12)
+     at reset in Mode B; it must read low while ROM is selected, matching the
+     corrected reader-3 capture and direct factory/continuity evidence.
 
    **Exit criteria:** baseline board boots the banner in Mode A (proven by
    readback); each scarce chip class (РУ5, РТ4, РЕ3) has at least one part
-   PASS in its functional role; the D6 polarity observation is recorded and
-   the provisional fit promoted or corrected in both twins.
+   PASS in its functional role; the D6 active-low observation is recorded and
+   agrees with both twins.
 
 ## Per-chip pass/fail intent (bench)
 
@@ -188,4 +188,4 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
 - **Phase 4:** the assembled baseline boots the banner in Mode A (verified by
   framebuffer readback); at least one РУ5, one РТ4, and one РЕ3 part PASS in
   Mode B; and the D6 level observation from the fixture promotes or corrects
-  the provisional polarity fit in both twins.
+  the corrected active-low polarity in both twins.

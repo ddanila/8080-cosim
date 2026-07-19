@@ -115,7 +115,7 @@ step runs. Western parts throughout until step (g).
 | e | Mode A baseline boot: + ROM, 8255, 74xx, KM4164 bank | **Profile FB capture → `reassemble.py` → byte-identical to cosim `vram.bin`** = board baseline PASS |
 | f | Single-step session: J96 shorted, UNO rig on | first ~200 M1 fetches `diff`-clean against the twin reference trace |
 | g | Chip tests — ONE scarce part at a time into the proven baseline, re-run the step (e) readback after each swap | byte-identical banner per swap = that part's PASS |
-| h | D6 polarity probe (see 4.6) | level recorded; provisional fit promoted or corrected |
+| h | D6 polarity guard (see 4.6) | `DEC_ROM_N` low during reset fetch and agrees with the corrected twin |
 
 Step (g) order (increasing blast radius, decreasing part count):
 
@@ -140,22 +140,14 @@ and note the bipolar PROMs pull real current (power budget: ~130 mA each).
 | D8 РЕ3 | J95 readback byte wrong at specific `A[15:11]` rows while the boot still passes (Mode A) → dead/shorted output pin or bad row, harmless to the baseline |
 | D6 РТ4 | Mode B boot diverges or dies at the first decode boundary the bad output crosses; Profile CTL shows `ROM_CE_N`/`DEC_ROM_N` disagreeing with the twin's decode at a known address |
 
-## 4.6 The D6 polarity resolution (the bonus that closes root PLAN item 1)
+## 4.6 D6 polarity guard
 
-With the real D6 booting in Mode B, VJUGA itself becomes the level-probe
-instrument — no original Juku board needed, no logic analyzer beyond what is
-already attached:
-
-- At the reset fetch (`A=0x0000`, mode 0), the **provisional** fit predicts
-  `DEC_ROM_N` (J95.1 = D6 pin 12) reads **HIGH** while `ROM_CE_N` is active-low
-  (ROM selected).
-- If instead it reads **LOW** during ROM fetches, the direct-routing
-  interpretation was right, the `~D0` correction is wrong, and the fix is:
-  reprogram the single `ROM_B` GAL term, flip the twin's `is_rom_promB`, and
-  update the main twin's provisional adoption (root `PLAN.md` item 1) — a
-  one-line change in each of the three places, zero copper.
-- Either way the observation gets recorded in `docs/owner-measured-facts.md`
-  (provenance: VJUGA bench probe) and the provisional tag is retired.
+Corrected reader-3 packing, factory labels, and direct continuity agree that
+`DEC_ROM_N` is physical D6 D0/pin12 and is active low. At the reset fetch
+(`A=0x0000`, firmware mode 0), J95.1 must therefore read **LOW** while
+`ROM_CE_N` is asserted. Record that agreement in `docs/owner-measured-facts.md`;
+any high level is a bad PROM/socket/GAL-path result, not a license to restore
+the superseded bit-reversed interpretation.
 
 ## 4.7 Exit criteria
 
@@ -163,8 +155,7 @@ already attached:
   readback (4.2) — not by eyeballing.
 - At least one РУ5, one РТ4, and one РЕ3 part each have a logged PASS in their
   functional role.
-- The D6 polarity observation is recorded and the provisional fit is promoted
-  or corrected in both twins and the GAL source.
+- The D6 active-low observation agrees with both twins and the GAL source.
 - `bench-log.md` holds a per-serial record for every scarce part tested.
 
 ## Build order
