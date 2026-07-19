@@ -430,27 +430,28 @@ Every ask below is queued with exact deliverables in
    it does not promote any of D106's remaining measurement-gated board nets.
    the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
    D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
-   D101.8/GND. Only the surrounding mux select/output paths remain open.
+   D101.8/GND. Recovered `.009` Э3 sheet 3 additionally closes the
+   D97/D102/D101 write-precomp chain from D93.31 through three delay taps and
+   D101.9 to D100.6, including EARLY/LATE selects and timing passives. Direct
+   target continuity overrides the sheet's duplicated R99, conflicting R86,
+   and tied-D101 drafting (`ref/schematics/fdc-write-precomp-map.md`).
    The adjacent C20 and outer C22 body markings are now independently photo-read
    as `1Н5` and source-closed by GOST 11076-69 Table 1 as 1.5 nF; their
-   tolerances, voltages, and endpoints remain explicit boundaries. In the adjacent right-edge
+   tolerances and voltages remain explicit boundaries; sheet 3 closes their D102 endpoints. In the adjacent right-edge
    passive column, two independent target-board angles close R100, R102, and
    R108 as `12К`, and R86 as `4К7`. Uninterrupted component copper joins
-   all four right-hand pin-2 leads to one common perimeter rail, collapsing
-   four singleton endpoints into one boundary. The rail's remote destination
-   plus R102.1 and R108.1 remain explicit measurement boundaries. The latter
-   two joints are now pixel-registered in the July component view; the
-   independent May angle and registered solder field expose no unique remote
-   continuation, making them photo-exhausted continuity asks. Two
+   all four right-hand pin-2 leads to one common perimeter rail; sheet 3 closes
+   that rail to +5 V and closes R102.1/R108.1 into the C22/C20 D102 timing
+   networks. Two
    independent component angles also show C19.1/R100.1 and C19.2/R86.1
-   terminating on their respective common landings; the two joined nets'
-   remote destinations remain open. The
+   terminating on their respective common landings. Sheet 3 closes the upper
+   join to D97.7; target copper closes the lower join to D97.6 and resolves the
+   drawing's conflicting R86 annotation. The
    solder-side D102.8 trace is not treated as a cross-layer join without direct
    continuity evidence. The same target-board angle literally
    resolves bare `27` on C16 and bare `22` on C19, but GOST 11076-69 requires
    a unit/decimal letter for a complete coded capacitance; both capacitors'
-   values/units and C19's joined-net remote destinations remain explicit
-   measurement boundaries rather than guesses.
+   values/units remain explicit measurement boundaries rather than guesses.
    A full-resolution correction identifies the formerly assigned yellow body as
    the three-lead КТ315 VT2 marked `Б / 8901`, not C94. Its emitter/pin 1 shares
    R65.1/`VIDEO_OUT`; its other two component-side lap joints are the collector
@@ -459,8 +460,8 @@ Every ask below is queued with exact deliverables in
    C94 population, value, and both endpoints therefore remain measurement asks.
    The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
-   bounded strap/clock endpoints, and the D95/D101 select pins against
-   D93.18/.17 for the period КП12 write-precompensation pattern.
+   bounded strap/clock endpoints, plus D101.1/.3/.5/.6, D97.13, and D102.4;
+   the former D93 EARLY/LATE and precomp-output probes are source-closed.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
    place `CMA` around all 12 VG93 writes and six reads, while EktaSoft

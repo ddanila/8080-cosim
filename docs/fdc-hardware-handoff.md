@@ -99,21 +99,15 @@ tests for hidden handoffs. In both references
 D93.24 is the controller's separate
 main clock input; D106 Q3 must not be treated as a candidate for D93.24.
 
-The same historical comparison also shows a К555КП12-class write
-precompensation selector: VG93 pins 18/17 reach mux select pins 2/14, mux
-pin 1 is enabled low, and mux output pin 7 proceeds through an inverter to
-drive write data. Juku's D95 and D101 match the mux family, but the source
-of their delay taps and the output inverter are not identified. Target-board
-component copper now closes D95.14-R92.2, D101.4-R92.1-R99.2, and
-R99.1-D101.8/GND, bounding part of the passive ladder without proving the
-historical VG93 select assignment. Check the remaining select candidates
-against D93.18/.17 and both pin-7 destinations. If either approaches
-D28.5/.6, continuity must override the legacy-sheet NC assumption; the
-current photographs do not prove that reuse.
-
-The D106-D28-D96-D93 chain and the three passive-ladder links above are
-promoted from primary factory/copper evidence. Remaining reference paths are guarded
-candidates, not Juku continuity.
+Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:
+D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;
+D93.17 EARLY and D93.18 LATE select them on D101.2/.14; D101.9 then drives
+D100.6. The associated C16/C19/C20/C22 timing networks and R100/R102/R108
++5 V rail are also closed. Direct target copper remains authoritative for
+D101.4-R92-R99, D101.7-D94.14/R88, and physical R86=4.7 kΩ on C19.2/D97.6;
+these override the electrical sheet's duplicated R99 reference, conflicting
+R86=470 annotation, and tied-D101 drafting. See
+`ref/schematics/fdc-write-precomp-map.md` for the exact source hierarchy.
 
 ### Separator candidate raw-crop disposition
 
@@ -214,10 +208,13 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_DRIVE_SIZE_5_8_BOUNDARY` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; the target-revision destination is not shown on sheet 3 | `D26.17` |
 | `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
 | `FDC_DSEL_IN` | recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1 | `D26.12, D28.1` |
+| `FDC_EARLY_SEL` | recovered .009 Э3 sheet 3 directly joins D93 EARLY/pin17 to the common D101 select input A1/pin2 | `D93.17, D101.2` |
 | `FDC_HLD_TO_D100` | recovered .009 Э3 sheet 3: D93 HLD/pin28 directly drives D100 A6/pin3 | `D93.28, D100.3` |
 | `FDC_INDEX_STATUS` | recovered .009 Э3 sheet 3: D98 output pin5 directly drives D93 INDEX/pin35 | `D98.5, D93.35` |
 | `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
+| `FDC_LATE_SEL` | recovered .009 Э3 sheet 3 directly joins D93 LATE/pin18 to the common D101 select input A0/pin14 | `D93.18, D101.14` |
 | `FDC_MOTOR_EN` | recovered .009 Э3 sheet 1 continuation 1 and sheet 3: D26 PC2/pin16 drives D100 A7/pin7 MOTOR EN | `D26.16, D100.7` |
+| `FDC_PRECOMP_WRDATA` | recovered .009 Э3 sheet 3 directly joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; the drawing's simultaneous Q0/pin7 junction is rejected because direct owner continuity instead closes Q0 to D94.14/R88 | `D101.9, D100.6` |
 | `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 | `D97.4, D93.27` |
 | `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
 | `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V | `D28.6, D93.32, R84.1` |
@@ -226,6 +223,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_STEP_TO_D100` | recovered .009 Э3 sheet 3: D93 STEP/pin15 directly drives D100 A3/pin2 | `D93.15, D100.2` |
 | `FDC_TG43_TO_D100` | recovered .009 Э3 sheet 3: D93 TG43/pin29 directly drives D100 A1/pin4 | `D93.29, D100.4` |
 | `FDC_TR00_STATUS` | recovered .009 Э3 sheet 3: D98 output pin11 directly drives D93 TR00/pin34 | `D98.11, D93.34` |
+| `FDC_WDATA_DELAY_IN` | recovered .009 Э3 sheet 3 directly joins D93 WDATA/pin31 to the first write-precomp delay stage D97 B2/pin10 | `D93.31, D97.10` |
 | `FDC_WE_N` | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5 | `D94.4, D93.2` |
 | `FDC_WG_TO_D100` | recovered .009 Э3 sheet 3: D93 WG/pin30 directly drives D100 A5/pin5 | `D93.30, D100.5` |
 | `FDC_WPRT_STATUS` | recovered .009 Э3 sheet 3: D98 output pin13 directly drives D93 WPRT/pin36 | `D98.13, D93.36` |

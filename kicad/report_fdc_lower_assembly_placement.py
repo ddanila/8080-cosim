@@ -84,12 +84,12 @@ if right_edge_value_evidence.get("unresolved") != []:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: closed right-edge values unexpectedly unresolved")
 if c20_value_evidence.get("value") != "1,5 нФ" or c20_value_evidence.get("marking") != "1Н5":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C20 value evidence")
-if "C20.1 endpoint" not in c20_value_evidence.get("unresolved", []) or "C20.2 endpoint" not in c20_value_evidence.get("unresolved", []):
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20 endpoint boundaries are not guarded")
+if c20_value_evidence.get("unresolved") != ["tolerance", "voltage"]:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20 residual value boundaries are not guarded")
 if c22_value_evidence.get("value") != "1,5 нФ" or c22_value_evidence.get("marking") != "1Н5":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C22 value evidence")
-if "C22.1 endpoint" not in c22_value_evidence.get("unresolved", []) or "C22.2 endpoint" not in c22_value_evidence.get("unresolved", []):
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 endpoint boundaries are not guarded")
+if c22_value_evidence.get("unresolved") != ["tolerance", "voltage"]:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 residual value boundaries are not guarded")
 if c16_c19_marking_evidence.get("visible_markings") != {"C16": "27", "C19": "22"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C16/C19 literal marking evidence")
 for refdes in ("C16", "C19"):
@@ -97,19 +97,18 @@ for refdes in ("C16", "C19"):
         raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {refdes} ambiguous value boundary is not guarded")
 expected_rail_endpoints = ["R100.2", "R102.2", "R108.2", "R86.2"]
 if (right_edge_common_rail_evidence.get("joined_endpoints") != expected_rail_endpoints or
-        right_edge_common_rail_evidence.get("net") != "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"):
+        right_edge_common_rail_evidence.get("net") != "P5V"):
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad right-edge common-rail evidence")
-expected_rail_boundaries = ["shared rail remote destination", "R102.1 endpoint", "R108.1 endpoint"]
+expected_rail_boundaries = []
 if right_edge_common_rail_evidence.get("unresolved") != expected_rail_boundaries:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: right-edge rail boundaries are not guarded")
 expected_c19_joins = {
-    "C19_1_R100_1_BOUNDARY": ["C19.1", "R100.1"],
-    "C19_2_R86_1_BOUNDARY": ["C19.2", "R86.1"],
+    "D97_RC2_C19_R100": ["C19.1", "R100.1", "D97.7"],
+    "D97_C2_C19_R86_TARGET": ["C19.2", "R86.1", "D97.6"],
 }
 if c19_resistor_junction_evidence.get("joined_endpoints") != expected_c19_joins:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C19/resistor junction evidence")
-if c19_resistor_junction_evidence.get("unresolved") != [
-        "C19/R100 common-net remote destination", "C19/R86 common-net remote destination"]:
+if c19_resistor_junction_evidence.get("unresolved") != []:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C19/resistor remote boundaries are not guarded")
 for evidence in [*value_evidence.get("owner_photos", []), *right_edge_value_evidence.get("owner_photos", [])]:
     image_path = ROOT / evidence.get("source", "")
@@ -306,11 +305,14 @@ for item in document["targets"]:
             "R84": {"1": "FDC_READY", "2": "P5V"},
             "R85": {"1": "SEP_D28_CLK", "2": "P5V"},
             "R98": {"1": "X4_DSEL1_N", "2": "P5V"},
-            "C19": {"1": "C19_1_R100_1_BOUNDARY", "2": "C19_2_R86_1_BOUNDARY"},
-            "R100": {"1": "C19_1_R100_1_BOUNDARY", "2": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"},
-            "R102": {"1": "R102_1_BOUNDARY", "2": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"},
-            "R108": {"1": "R108_1_BOUNDARY", "2": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"},
-            "R86": {"1": "C19_2_R86_1_BOUNDARY", "2": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"},
+            "C16": {"1": "D97_RC1_C16", "2": "D97_C1_C16"},
+            "C19": {"1": "D97_RC2_C19_R100", "2": "D97_C2_C19_R86_TARGET"},
+            "C20": {"1": "D102_C2_C20", "2": "D102_RC2_C20_R108"},
+            "C22": {"1": "D102_C1_C22", "2": "D102_RC1_C22_R102"},
+            "R100": {"1": "D97_RC2_C19_R100", "2": "P5V"},
+            "R102": {"1": "D102_RC1_C22_R102", "2": "P5V"},
+            "R108": {"1": "D102_RC2_C20_R108", "2": "P5V"},
+            "R86": {"1": "D97_C2_C19_R86_TARGET", "2": "P5V"},
         }
         if item["refdes"] in expected_pad_nets:
             pad_nets = {pad.GetNumber(): pad.GetNetname() for pad in footprint.Pads()}
@@ -374,14 +376,14 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92, R98, R99, and the pop
           "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C63 is an explicit target-board DNP:",
           "the factory drawing shows its intended outline, while the raw owner photo shows the exact D41/D40 gap bare without a body or coherent drilled lead pair. The separately photo-registered inherited DRAM-grid landing at `(176.1,145.6)` mm remains fabricated as bare common artwork.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
-          "that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`. Uninterrupted component copper joins all four right-hand pin-2 leads to one perimeter rail; its remote destination and R102/R108 pin-1 destinations remain continuity tasks. The same two angles directly show C19's upper lead and R100.1 sharing one landing, and C19's lower lead and R86.1 sharing another; only the two joined nets' remote destinations remain open. The registered solder view",
-          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints, while the independent May angle and solder field expose no unique remote continuation for R102.1/R108.1. An oblique May view literally reads `22` on C19's exposed face, but no unambiguous unit/decimal glyph; its value/unit remains a boundary. The same owner views",
+          "that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`. Recovered `.009` Э3 sheet 3 closes the common right-hand rail to +5 V, R102.1 to C22.2/D102.15, R108.1 to C20.2/D102.7, and the C19/R100 side to D97.7. Target copper closes C19.2/R86.1 to D97.6 and overrides the sheet's conflicting R86=470 reset annotation. The registered solder view",
+          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints. An oblique May view literally reads `22` on C19's exposed face, but no unambiguous unit/decimal glyph; its value/unit remains a boundary. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
           "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",
-          "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16, but GOST 11076-69 Table 1 requires a unit/decimal letter for a coded capacitance; C16's value/unit and destinations therefore remain boundaries.",
+          "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16, but GOST 11076-69 Table 1 requires a unit/decimal letter for a coded capacitance; C16's value/unit remains a boundary while sheet 3 closes its endpoints to D97.15/.14.",
           "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels",
-          "read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Their tolerances, voltages, and endpoints remain unpromoted.",
+          "read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Sheet 3 closes their D102 timing endpoints; only tolerances and voltages remain unpromoted.",
           "The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.",
           "The owner component view is bracketed by direct fits of both marked packages and contains neither a fitted C63 body nor a coherent two-hole span.",
           "Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. The schematic retains the intended GND-to-RAIL_H bypass connection and the inherited grid verification footprint while excluding C63 from the populate-now BOM. The unrelated `.006` RF-option C13 is also DNP on the `.009` target and must not be conflated with this C63 site.",

@@ -82,6 +82,10 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
 - [x] Sheet-3 input/open-collector pull-ups reconciled with the `.009 СБ`
       assembly drawing: R79-R85 and R98 are modeled at their registered
       positions with exact values and endpoints.
+- [x] Sheet-3 D97/D102/D101 write-precompensation chain transcribed with all
+      timing passives; target copper resolves the drawing's duplicated R99,
+      conflicting R86, and D101 junctions
+      (`ref/schematics/fdc-write-precomp-map.md`).
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).

@@ -215,9 +215,9 @@ def main() -> int:
         (
             "P0",
             "FDC interrupt/buffer continuity and fitted ROM profile",
-            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; factory sheet 1 proves D93 pins 7..14 connect directly to DB0..DB7, so do not attribute the profile split to D100. Separately trace the upstream source of shared D100 pins 9/11 continuation `1` and D100.6's write-data/precompensation input",
+            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; factory sheet 1 proves D93 pins 7..14 connect directly to DB0..DB7. Trace only the shared D100 pins 9/11 continuation `1`; recovered sheet 3 already closes D100.6 to D101.9 write precompensation",
             "`docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
-            "identifies the exact board/EPROM configuration and closes the remaining drive-output-buffer inputs without reopening the direct D93 data bus",
+            "identifies the exact board/EPROM configuration and closes the remaining drive-output-buffer inputs without reopening source-closed paths",
         ),
         (
             "P0",
@@ -243,9 +243,9 @@ def main() -> int:
         (
             "P0",
             "FDC support signal dispositions",
-            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106. Factory sheet 1 closes D106.7-D28.9, D28.8-D96.3, and D96.5-D93.26 RCLK; preserve that chain. Resistance-test D106.11-D93.27 and D106.14-D93.33 specifically for hidden layer handoffs because calibrated solder-crop review rejects both direct same-layer paths. Meter the now-photo-bounded D106 setup probes: pins 15/1/5 to a known P5V anchor, pins 10/9 to a known GND anchor, and pin 4 to its clock source. For write precompensation, the photo closes the R92/R99 ladder at D95.14, D101.4, and D101.8/GND; test the remaining D95/D101 select candidates against D93.18/.17, pins 1 to ground, and pin 7 toward D100.6/write data. D96 section 2 and D99 section 1 remain excluded from the WD roles",
-            "`docs/fdc-hardware-handoff.md`; `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; Western Digital June-1980 application note Figure 11; Kovalenko et al. МПСС 1986 No. 3 pp. 3-8; `.009` assembly/photo evidence",
-            "the recovered-clock output is now closed from target copper; the remaining probes complete its loading/reset context and test the mux family that the WD-only comparison left unexplained",
+            "pin-level continuity or an explicit redesign/DNP decision for the still-open D28, D95-D99, D101, D102, and D106 pins. Preserve the source-closed D106.7-D28.9-D28.8-D96.3-D96.5-D93.26 chain and recovered sheet-3 D97/D102/D101 write-precomp chain. Resistance-test D106.11-D93.27 and D106.14-D93.33 for hidden handoffs, then meter D106's bounded setup pins. D101.1/.3/.5/.6, D97.13, and D102.4 remain the specific precomp-area boundaries",
+            "`docs/fdc-hardware-handoff.md`; `ref/schematics/fdc-write-precomp-map.md`; `PLAN.md` P0 connectivity gate",
+            "completes only the genuinely open support-circuit context without re-probing source-closed timing paths",
         ),
         (
             "P1",
@@ -263,24 +263,10 @@ def main() -> int:
         ),
         (
             "P1",
-            "lower-FDC C16 continuity",
-            "determine the unit/type behind C16's photo-registered bare `27` marking and identify both lead destinations; GOST 11076-69 does not map a bare numeric string to a unique coded capacitance, while R92=1.3 kΩ and R99=4.7 kΩ are photo-closed with every endpoint traced",
-            "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C16 boundary nets",
-            "turns the remaining restored lower-FDC passive boundary into functional circuitry without guessing from nearby solder rails",
-        ),
-        (
-            "P1",
-            "right-edge resistor column",
-            "determine the unit/type behind C19's photo-registered bare `22` marking, identify the remote destinations of the joined C19.1/R100.1 and C19.2/R86.1 nets, identify the shared right-edge perimeter rail's remote destination, and continuity-trace R102.1/R108.1; R100=R102=R108=12 kΩ and R86=4.7 kΩ are photo-closed, all four right-hand pin-2 leads share one rail, both C19/resistor landings are closed, and two component angles plus the registered solder field are exhausted for the remaining pin-1 paths",
-            "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C19/R100/R102/R108/R86 boundary nets",
-            "turns five restored physical parts into functional FDC-area circuitry while retaining only genuinely remote continuity asks",
-        ),
-        (
-            "P1",
-            "C20/C22 endpoint and rating continuity",
-            "identify both remote lead destinations of the restored grey axial pair immediately right of D102 and read their tolerance/voltage markings if present; independent target-board angles read both C20 and the outer C22 as `1Н5`, source-closed by GOST 11076-69 as 1.5 nF; both identities, adjacent 2.54 mm columns, and 10.00 mm vertical drill spans are already component/solder-photo proved",
-            "`docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`; `kicad/juku.board.json` C20/C22 boundary nets",
-            "turns two newly restored target-board capacitors into functional circuitry without mistaking their leaning bodies for D102 pin connections",
+            "lower-FDC capacitor markings",
+            "determine the unit/type behind C16's bare `27` and C19's bare `22`, plus tolerance/voltage markings for C16/C19/C20/C22. Recovered sheet 3 closes every endpoint and the +5 V timing-resistor rail; do not re-open connectivity from unread body codes",
+            "`docs/fdc-lower-assembly-placement.md`; `ref/schematics/fdc-write-precomp-map.md`",
+            "closes procurement attributes without guessing electrical topology",
         ),
         (
             "P2",

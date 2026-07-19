@@ -103,9 +103,10 @@ C16's exposed face. GOST 11076-69 Table 1 nevertheless requires a unit/decimal
 letter for a complete coded capacitance, and no such glyph is unambiguously
 readable; `27` is
 therefore registered literally without promoting a value. The broad nearby
-solder rails do not establish unique remote destinations, so the model keeps
-C16's value blank and both leads as singleton boundary nets. R92/R99 are
-separately photo-closed as 1.3 kΩ and 4.7 kΩ with all endpoints traced.
+photo alone does not establish the remote destinations, but recovered `.009`
+Э3 sheet 3 now closes C16.1 to D97.15 and C16.2 to D97.14. The model keeps
+only C16's value/unit, tolerance, and voltage open. R92/R99 are separately
+photo-closed as 1.3 kΩ and 4.7 kΩ with all endpoints traced.
 
 ## C19 drill registration
 
@@ -126,25 +127,24 @@ alone does not imply an electrical join. Here, however, two independent
 component angles expose the leads themselves: C19's upper pad 1 and R100.1
 terminate on one physical landing, while C19's lower pad 2 and R86.1 terminate
 on another. Those pairs are therefore modeled as
-`C19_1_R100_1_BOUNDARY` and `C19_2_R86_1_BOUNDARY`; each joined net's remote
-destination remains unresolved. The same oblique May view directly resolves
+`D97_RC2_C19_R100` at D97.7 and `D97_C2_C19_R86_TARGET` at D97.6. The second
+join follows direct target copper and overrides the electrical sheet's
+conflicting R86=470 reset annotation. The same oblique May view directly resolves
 bare `22` on C19's exposed face, but no unambiguous unit/decimal glyph, so the
 marking is registered literally without assigning a capacitance.
 
 The four adjacent horizontal resistors' right-hand pin-2 leads all terminate
 on one uninterrupted component-side perimeter rail. R100.2, R102.2, R108.2,
-and R86.2 are therefore closed to one shared
-`RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` net. The rail's remote destination plus
-R102.1 and R108.1 remain explicit continuity boundaries; the solder-side
-D102.8 ground trace is not promoted as a cross-layer join without visible or
-measured inter-layer continuity.
+and R86.2 are closed to `P5V` by the target common rail plus electrical sheet
+3. The sheet also closes R102.1 to C22.2/D102.15 and R108.1 to
+C20.2/D102.7. The solder-side D102.8 ground trace is not mistaken for this
+component-side +5 V rail.
 
 The July component view now also registers the four left joints at R100.1
 `(3294,1064)`, R102.1 `(3317,1142)`, R108.1 `(3325,1217)`, and R86.1
 `(3320,1276)` pixels. The independent May angle separates the same joints.
-Neither angle nor the registered solder field exposes a complete, uniquely
-attributable remote continuation for R102.1 or R108.1, so those two paths are
-photo-exhausted continuity measurements rather than guessed copper.
+Neither photo alone exposes a complete remote continuation for R102.1 or
+R108.1; their promotion comes specifically from recovered electrical sheet 3.
 
 ## C20/C22 drill registration
 
@@ -168,9 +168,9 @@ the source model now adopts C20=`1,5 нФ`. An independent May component
 angle directly exposes `1Н5` on the outer C22 body too, fixed by D102 and the
 inner C20 body against the already registered column order; C22 therefore also
 adopts `1,5 нФ`. The narrow standard provenance is recorded in
-`ref/datasheets/gost-11076-69-capacitance-code.md`. Both parts' tolerances,
-voltages, and remote destinations remain unread, so the four singleton boundary
-nets retain those connectivity unknowns without omitting the populated hardware.
+`ref/datasheets/gost-11076-69-capacitance-code.md`. Electrical sheet 3 closes
+C20 on D102.6/.7 with R108 and C22 on D102.14/.15 with R102. Only tolerance
+and voltage remain unread.
 
 The R65/R67 increment removed their false D102-pad collisions. A later
 full-source DRC audit correctly exposed ten unique pairs caused by the remaining

@@ -41,7 +41,7 @@ EXPECTED_NET_PINS = {
     "D100": {
         "FDC_DIR_TO_D100": "1", "FDC_STEP_TO_D100": "2",
         "FDC_HLD_TO_D100": "3", "FDC_TG43_TO_D100": "4",
-        "FDC_WG_TO_D100": "5", "D100_WRDATA_IN_BOUNDARY": "6",
+        "FDC_WG_TO_D100": "5", "FDC_PRECOMP_WRDATA": "6",
         "FDC_MOTOR_EN": "7", "FDC_SIDE_SEL": "8",
         "D100_CONTROL_1_BOUNDARY_A": "9", "D100_CONTROL_1_BOUNDARY_B": "11",
         "X4_SIDE_SEL": "12", "X4_MOTOR_ON_N": "13",
@@ -153,7 +153,7 @@ def main() -> None:
         "Sheet 1 routes D107 and D23-D25 straight, permutes D4's high-address",
         "channels, and permutes D29's eight command channels. Board pad endpoints",
         "and per-instance LVS maps preserve those routes while HDL keeps ordered",
-        "logical buses. Factory sheet 1 proves that D100 instead buffers eight",
+        "logical buses. Factory sheets 1 and 3 prove that D100 instead buffers eight",
         "floppy-drive outputs; its paired pads and shared pins 9/11 control",
         "continuation are guarded here independently of the data-bus devices.", "",
         "Primary pinout source:",

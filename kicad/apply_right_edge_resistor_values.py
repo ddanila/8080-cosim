@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transplant generated C19/right-edge values and photo-closed local joins."""
+"""Transplant the source-closed AG3 timing passives from a generated board."""
 from __future__ import annotations
 
 import re
@@ -9,18 +9,12 @@ from pathlib import Path
 from apply_s1_offboard_correction import footprint_span
 
 
-REFS = ("C19", "R100", "R102", "R108", "R86")
-RESISTOR_REFS = REFS[1:]
-JOINED_NETS = {
-    "C19_1_R100_1_BOUNDARY": "C19_1_BOUNDARY",
-    "C19_2_R86_1_BOUNDARY": "C19_2_BOUNDARY",
+REFS = ("C16", "C19", "C20", "C22", "R100", "R102", "R108", "R86")
+REQUIRED_NETS = {
+    "D97_RC1_C16", "D97_C1_C16", "D97_RC2_C19_R100",
+    "D97_C2_C19_R86_TARGET", "D102_C2_C20", "D102_RC2_C20_R108",
+    "D102_C1_C22", "D102_RC1_C22_R102", "P5V",
 }
-RETIRED = (
-    *(f"{ref}_2_BOUNDARY" for ref in RESISTOR_REFS),
-    "R100_1_BOUNDARY",
-    "R86_1_BOUNDARY",
-)
-COMMON_RAIL = "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"
 
 
 def net_ids(text: str) -> dict[str, str]:
@@ -41,33 +35,17 @@ def translate_nets(block: str, target: str) -> str:
 
 def patch(target: str, donor: str) -> str:
     ids = net_ids(target)
-    for joined, seed in JOINED_NETS.items():
-        if joined not in ids:
-            if seed not in ids:
-                raise ValueError(f"target PCB is missing both {joined} and migration seed {seed}")
-            target = target.replace(f'"{seed}"', f'"{joined}"')
-            ids = net_ids(target)
-    if COMMON_RAIL not in ids:
-        seed = "R100_2_BOUNDARY"
-        if seed in ids:
-            target = target.replace(f'"{seed}"', f'"{COMMON_RAIL}"')
-        else:
-            next_id = max(map(int, ids.values())) + 1
-            footprint_at = target.index("\n\t(footprint ")
-            target = target[:footprint_at] + f'\n\t(net {next_id} "{COMMON_RAIL}")' + target[footprint_at:]
+    missing = REQUIRED_NETS - ids.keys()
+    if missing:
+        raise ValueError(
+            "target predates the source-closed precomp model; regenerate it from "
+            f"juku.board.json (missing {sorted(missing)})"
+        )
     for ref in REFS:
         donor_start, donor_end = footprint_span(donor, ref)
         block = translate_nets(donor[donor_start:donor_end], target)
         start, end = footprint_span(target, ref)
         target = target[:start] + block + target[end:]
-    for name in RETIRED:
-        target, count = re.subn(
-            rf'(?m)^\t\(net \d+ "{re.escape(name)}"\)\n', "", target
-        )
-        if count > 1:
-            raise ValueError(f"duplicate retired declaration {name}")
-        if f'"{name}"' in target:
-            raise ValueError(f"retired net {name} still has references")
     return target
 
 
@@ -79,7 +57,7 @@ def main() -> int:
         patch(target_path.read_text(encoding="utf-8"), donor_path.read_text(encoding="utf-8")),
         encoding="utf-8",
     )
-    print(f"patched {target_path}: updated {'/'.join(REFS)} values, C19 joins, and shared pin-2 rail")
+    print(f"patched {target_path}: updated {'/'.join(REFS)} and source-closed AG3 timing nets")
     return 0
 
 

@@ -7,7 +7,7 @@ A0-A7 to DIP pins 1-8 and the paired B0-B7 channels to pins 19-12.
 Sheet 1 routes D107 and D23-D25 straight, permutes D4's high-address
 channels, and permutes D29's eight command channels. Board pad endpoints
 and per-instance LVS maps preserve those routes while HDL keeps ordered
-logical buses. Factory sheet 1 proves that D100 instead buffers eight
+logical buses. Factory sheets 1 and 3 prove that D100 instead buffers eight
 floppy-drive outputs; its paired pads and shared pins 9/11 control
 continuation are guarded here independently of the data-bus devices.
 

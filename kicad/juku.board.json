@@ -4754,8 +4754,8 @@
    "value": "12к",
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "upper resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; two component angles show left-hand pin1 sharing C19.1's bent-lead landing, while pin2 joins the other three resistor pin2 leads on a shared perimeter rail; both combined nets retain remote-destination boundaries"
+    "refdes": "ДГШ5.109.009 СБ, .009 Э3 sheet 3, plus two target-board component-photo angles",
+    "pins": "upper resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K. Electrical sheet 3 and target copper close pin1 to C19.1/D97.7 and pin2 to the common +5 V timing-resistor rail"
    }
   },
   {
@@ -4765,8 +4765,8 @@
    "value": "12к",
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "second resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; uninterrupted component copper joins right-hand pin2 to the other three resistor pin2 leads on a shared perimeter rail whose remote destination remains a continuity boundary; pin1 also remains a boundary"
+    "refdes": "ДГШ5.109.009 СБ, .009 Э3 sheet 3, plus two target-board component-photo angles",
+    "pins": "second resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K. Electrical sheet 3 closes pin1 to C22.2/D102.15 and pin2 to +5 V"
    }
   },
   {
@@ -4776,8 +4776,8 @@
    "value": "12к",
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "third resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; uninterrupted component copper joins right-hand pin2 to the other three resistor pin2 leads on a shared perimeter rail whose remote destination remains a continuity boundary; pin1 also remains a boundary"
+    "refdes": "ДГШ5.109.009 СБ, .009 Э3 sheet 3, plus two target-board component-photo angles",
+    "pins": "third resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K. Electrical sheet 3 closes pin1 to C20.2/D102.7 and pin2 to +5 V"
    }
   },
   {
@@ -4786,9 +4786,9 @@
    "pins": {"1": "P1", "2": "P2"},
    "value": "4,7к",
    "prov": {
-    "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "lowest resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 4K7; two component angles show left-hand pin1 sharing C19.2's bent-lead landing, while pin2 joins the other three resistor pin2 leads on a shared perimeter rail; both combined nets retain remote-destination boundaries"
+    "type": "scan + target-photo override",
+    "refdes": "ДГШ5.109.009 СБ, .009 Э3 sheet 3, plus two target-board component-photo angles",
+    "pins": "target copper and both component angles prove the populated 4K7 part has pin1 on C19.2/D97.6 and pin2 on the common +5 V rail. This target-board fact supersedes the factory electrical sheet's conflicting R86=470 WREQ-reset annotation"
    }
   },
   {
@@ -4865,8 +4865,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
-    "pins": "factory drawing identifies the populated grey horizontal axial capacitor between the upper and lower FDC IC rows; registered component and solder views corroborate its 12.5 mm lead span. Marking, value, and both electrical destinations remain unread"
+    "refdes": "ДГШ5.109.009 СБ, .009 Э3 sheet 3, plus registered owner component and solder photos",
+    "pins": "factory drawing and electrical sheet close C16.1 to D97.15 and C16.2 to D97.14; registered views corroborate the body and lead span. The bare 27 marking does not close unit, tolerance, or voltage"
    }
   },
   {
@@ -4878,8 +4878,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
-    "pins": "factory drawing identifies C19 immediately right of D99; registered July and oblique May component views prove C19.1 shares R100.1's landing and C19.2 shares R86.1's landing, while the solder view independently exposes the two capacitor joints. The bare 22 marking lacks unit context and both combined nets retain remote-destination boundaries"
+    "refdes": "ДГШ5.109.009 СБ, .009 Э3 sheet 3, plus registered owner component and solder photos",
+    "pins": "target views prove C19.1 shares R100.1 and D97.7, while C19.2 shares target R86.1 and D97.6; the latter target-board join supersedes the factory R86 reset annotation. The bare 22 marking does not close unit, tolerance, or voltage"
    }
   },
   {
@@ -4911,7 +4911,7 @@
     "type": "scan",
     "refdes": "ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69",
     "marking": "1Н5",
-    "pins": "factory drawing identifies C20 at the right end of D102; both owner-board sides prove a populated grey axial body on a 10 mm vertical drill span. Full-resolution enhancement reads the body marking verbatim as 1Н5, and GOST 11076-69 Table 1 maps that code exactly to 1500 pF / 1.5 nF; tolerance, voltage, and both electrical destinations remain unread"
+    "pins": "electrical sheet 3 closes C20.1 to D102.6 and C20.2 to D102.7/R108.1. Owner evidence and GOST 11076-69 close the 1Н5 marking to 1500 pF / 1.5 nF; tolerance and voltage remain unread"
    }
   },
   {
@@ -4930,7 +4930,7 @@
     "type": "scan",
     "refdes": "ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69",
     "marking": "1Н5",
-    "pins": "factory drawing identifies C22 at the right end of D102; both owner-board sides prove a populated grey axial body on the outer adjacent 10 mm vertical drill span. An independent May component angle directly reads 1Н5 on that outer body, and GOST 11076-69 Table 1 maps the code exactly to 1500 pF / 1.5 nF; tolerance, voltage, and both electrical destinations remain unread"
+    "pins": "electrical sheet 3 closes C22.1 to D102.14 and C22.2 to D102.15/R102.1. Owner evidence and GOST 11076-69 close the 1Н5 marking to 1500 pF / 1.5 nF; tolerance and voltage remain unread"
    }
   },
   {
@@ -5279,7 +5279,7 @@
   {
    "ref": "D97", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo К155АГ3 8901 marking; D97 is the first lower-row one-shot right of D101", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; validated component and solder fits identify all 14 functional/RC contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking", "pins": "sheet 3 closes the first write-precomp delay: WDATA on pin10, output pin5 to D101.10, cascade pin12 to D102.10, WREQ clear pins3/11, grounded trigger pins1/9, C16 on pins15/14, and C19/R100 on pins7/6. Target R86/C19 copper overrides the sheet's conflicting reset-resistor annotation; output pins4/13 remain boundaries"}
   },
   {
    "ref": "D99", "type": "AG3_ONESHOT", "marking": "К155АГ3",
@@ -5289,7 +5289,7 @@
   {
    "ref": "D102", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo К155АГ3 8901 marking; D102 is the rightmost lower-row one-shot", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; validated component and solder fits identify all 14 functional/RC contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking", "pins": "sheet 3 closes both cascaded write-precomp delays: D97.12 to pin10/output5, pin12 to pin2/output13, WREQ clear pins3/11, grounded trigger pins1/9, C20/R108 on pins6/7, and C22/R102 on pins14/15. Only output pin4 remains a target continuity boundary"}
   },
   {
    "ref": "D106", "type": "IE7_CTR",
@@ -5314,7 +5314,7 @@
   {
    "ref": "D101", "type": "KP12_MUX",
    "pins": {"1": "OE0_N", "2": "A1", "3": "D03", "4": "D02", "5": "D01", "6": "D00", "7": "Q0", "9": "Q1", "10": "D10", "11": "D11", "12": "D12", "13": "D13", "14": "A0", "15": "OE1_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify the right-facing notch (270-degree footprint) and all 14 signal contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan + target-photo override", "refdes": ".009 official population and Э3 sheet 3 plus direct owner continuity", "pins": "no-conflict sheet paths close EARLY D93.17 to pin2, LATE D93.18 to pin14, delay taps D97.5/D102.5/D102.13 to pins10/11/12, grounded pins13/15, and pin9 to D100.6. Direct target continuity retains pin7 to D94.14/R88 and pin4 to R92/R99, overriding the sheet's internally conflicting tied-output/R99 drawing; pins1/3/5/6 remain boundaries"}
   },
   {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
@@ -10696,12 +10696,28 @@
      "8"
     ],
     [
+     "D97",
+     "1"
+    ],
+    [
+     "D97",
+     "9"
+    ],
+    [
      "D99",
      "8"
     ],
     [
      "D102",
      "8"
+    ],
+    [
+     "D102",
+     "1"
+    ],
+    [
+     "D102",
+     "9"
     ],
     [
      "D106",
@@ -10730,6 +10746,14 @@
     [
      "D101",
      "8"
+    ],
+    [
+     "D101",
+     "13"
+    ],
+    [
+     "D101",
+     "15"
     ],
     [
      "D99",
@@ -11755,6 +11779,22 @@
     ],
     [
      "R98",
+     "2"
+    ],
+    [
+     "R100",
+     "2"
+    ],
+    [
+     "R102",
+     "2"
+    ],
+    [
+     "R108",
+     "2"
+    ],
+    [
+     "R86",
      "2"
     ]
    ]
@@ -13790,9 +13830,9 @@
    "src": "recovered .009 Э3 sheet 3: D93 STEP/pin15 directly drives D100 A3/pin2",
    "nodes": [["D93", "15"], ["D100", "2"]]
   },
-  "D100_WRDATA_IN_BOUNDARY": {
-   "src": "recovered .009 Э3 sheet 3 identifies D100 A4/pin6 as the precompensated write-data channel; the upstream selector path remains to be transcribed",
-   "nodes": [["D100", "6"]]
+  "FDC_PRECOMP_WRDATA": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; the drawing's simultaneous Q0/pin7 junction is rejected because direct owner continuity instead closes Q0 to D94.14/R88",
+   "nodes": [["D101", "9"], ["D100", "6"]]
   },
   "FDC_WG_TO_D100": {
    "src": "recovered .009 Э3 sheet 3: D93 WG/pin30 directly drives D100 A5/pin5",
@@ -13814,9 +13854,9 @@
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D101", "1"]]
   },
-  "D101_A1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "2"]]
+  "FDC_EARLY_SEL": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D93 EARLY/pin17 to the common D101 select input A1/pin2",
+   "nodes": [["D93", "17"], ["D101", "2"]]
   },
   "D101_D03_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary",
@@ -13838,137 +13878,69 @@
    "src": "direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94.14/A4 reaches D101 К555КП12 Q0/pin7 and R88.1; R88.2 enters the common +5 V rail",
    "nodes": [["D94", "14"], ["D101", "7"], ["R88", "1"]]
   },
-  "D101_Q1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "9"]]
+  "PRECOMP_TAP_1": {
+   "src": "recovered .009 Э3 sheet 3 directly joins the first write-precomp one-shot Q/pin5 to D101 B0/pin10",
+   "nodes": [["D97", "5"], ["D101", "10"]]
   },
-  "D101_D10_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "10"]]
+  "PRECOMP_TAP_2": {
+   "src": "recovered .009 Э3 sheet 3 directly joins the second write-precomp one-shot Q/pin5 to D101 B1/pin11",
+   "nodes": [["D102", "5"], ["D101", "11"]]
   },
-  "D101_D11_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "11"]]
+  "PRECOMP_TAP_3": {
+   "src": "recovered .009 Э3 sheet 3 directly joins the third write-precomp one-shot Q/pin13 to D101 B2/pin12",
+   "nodes": [["D102", "13"], ["D101", "12"]]
   },
-  "D101_D12_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin12 D12; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "12"]]
+  "FDC_LATE_SEL": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D93 LATE/pin18 to the common D101 select input A0/pin14",
+   "nodes": [["D93", "18"], ["D101", "14"]]
   },
-  "D101_D13_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin13 D13; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "13"]]
-  },
-  "D101_A0_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "14"]]
-  },
-  "D101_OE1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "15"]]
-  },
-  "D102_A1N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "1"]]
-  },
-  "D102_B1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin2 B; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "2"]]
-  },
-  "D102_CLR1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin3 CLR_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "3"]]
+  "PRECOMP_CASCADE_2": {
+   "src": "recovered .009 Э3 sheet 3 directly joins the second-stage complementary output D102.12 to the third-stage B input D102.2",
+   "nodes": [["D102", "12"], ["D102", "2"]]
   },
   "D102_Q1N_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D102", "4"]]
   },
-  "D102_Q2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "5"]]
+  "D102_C2_C20": {
+   "src": "recovered .009 Э3 sheet 3 closes D102 C2/pin6 to the lower target landing C20.1",
+   "nodes": [["D102", "6"], ["C20", "1"]]
   },
-  "D102_C2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "6"]]
+  "D102_RC2_C20_R108": {
+   "src": "recovered .009 Э3 sheet 3 closes D102 RC2/pin7 to C20.2 and R108.1; registered target photos close R108.2 to the common +5 V rail",
+   "nodes": [["D102", "7"], ["C20", "2"], ["R108", "1"]]
   },
-  "D102_RC2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "7"]]
+  "D102_C1_C22": {
+   "src": "recovered .009 Э3 sheet 3 closes D102 C1/pin14 to the lower target landing C22.1",
+   "nodes": [["D102", "14"], ["C22", "1"]]
   },
-  "D102_A2N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "9"]]
+  "D102_RC1_C22_R102": {
+   "src": "recovered .009 Э3 sheet 3 closes D102 RC1/pin15 to C22.2 and R102.1; registered target photos close R102.2 to the common +5 V rail",
+   "nodes": [["D102", "15"], ["C22", "2"], ["R102", "1"]]
   },
-  "D102_B2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "10"]]
+  "D97_C2_C19_R86_TARGET": {
+   "src": "recovered .009 Э3 sheet 3 closes D97 C2/pin6 to the lower C19 terminal; registered target photos prove that terminal is C19.2/R86.1 and read the populated R86 as 4K7. This target node supersedes the drawing's conflicting R86=470 reset annotation",
+   "nodes": [["D97", "6"], ["C19", "2"], ["R86", "1"]]
   },
-  "D102_CLR2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "11"]]
+  "D97_RC2_C19_R100": {
+   "src": "recovered .009 Э3 sheet 3 closes D97 RC2/pin7 to the upper C19 terminal and R100; registered target photos prove that landing is C19.1/R100.1 and close R100.2 to the common +5 V rail",
+   "nodes": [["D97", "7"], ["C19", "1"], ["R100", "1"]]
   },
-  "D102_Q2N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "12"]]
-  },
-  "D102_Q1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "13"]]
-  },
-  "D102_C1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "14"]]
-  },
-  "D102_RC1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D102 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D102", "15"]]
-  },
-  "D97_A1N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "1"]]
-  },
-  "D97_CLR1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin3 CLR_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "3"]]
-  },
-  "D97_Q2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "5"]]
-  },
-  "D97_C2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "6"]]
-  },
-  "D97_RC2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "7"]]
-  },
-  "D97_A2N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "9"]]
-  },
-  "D97_B2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "10"]]
-  },
-  "D97_CLR2_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "11"]]
-  },
-  "D97_Q2N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "12"]]
+  "PRECOMP_CASCADE_1": {
+   "src": "recovered .009 Э3 sheet 3 directly joins the first write-precomp one-shot complementary output D97.12 to the second-stage B input D102.10",
+   "nodes": [["D97", "12"], ["D102", "10"]]
   },
   "D97_Q1_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D97", "13"]]
   },
-  "D97_C1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "14"]]
+  "D97_C1_C16": {
+   "src": "recovered .009 Э3 sheet 3 closes D97 C1/pin14 to the right-hand target landing C16.2",
+   "nodes": [["D97", "14"], ["C16", "2"]]
   },
-  "D97_RC1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D97 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D97", "15"]]
+  "D97_RC1_C16": {
+   "src": "recovered .009 Э3 sheet 3 closes D97 RC1/pin15 to the left-hand target landing C16.1. The drawing's R99 timing-resistor branch is not adopted because registered target copper directly places the sole R99 between D101.4 and ground",
+   "nodes": [["D97", "15"], ["C16", "1"]]
   },
   "D95_OE0_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary",
@@ -14235,14 +14207,6 @@
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "15"]]
   },
-  "D93_EARLY_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "17"]]
-  },
-  "D93_LATE_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin18 LATE; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "18"]]
-  },
   "D93_MR_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "19"]]
@@ -14267,9 +14231,9 @@
    "src": "recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27",
    "nodes": [["D97", "4"], ["D93", "27"]]
   },
-  "D93_WDATA_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin31 WDATA; remote drive-interface continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "31"]]
+  "FDC_WDATA_DELAY_IN": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D93 WDATA/pin31 to the first write-precomp delay stage D97 B2/pin10",
+   "nodes": [["D93", "31"], ["D97", "10"]]
   },
   "FDC_READY": {
    "src": "recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V",
@@ -15861,8 +15825,8 @@
    "nodes": [["D105", "10"], ["D13", "13"], ["X1", "107B"], ["R1", "2"]]
   },
   "WREQ_N": {
-   "src": "traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Chip-removed direct owner continuity on 2026-07-14 proves D6 RAM_N output pin11 joins D2.15; follow-up direct owner continuity on 2026-07-15 proves the same D6.11 conductor reaches D92.5 and R12.2, with R12.1 at +5V. This restores and physically confirms the older-sheet/held-DSN pull-up branch without restoring the invalid D6.11-D6.12 join",
-   "nodes": [["D2", "15"], ["X1", "107C"], ["D6", "11"], ["D92", "5"], ["R12", "2"]]
+   "src": "traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Direct owner continuity closes D6.11/D2.15/D92.5/R12.2; recovered .009 sheet 3 continues the same signal to the clear inputs of the D97.1/D97.2/D102.1/D102.2 precompensation one-shots. The sheet's conflicting R86 reset pull-up is not adopted because registered target photos place R86 on the C19/D97.6 node",
+   "nodes": [["D2", "15"], ["X1", "107C"], ["D6", "11"], ["D92", "5"], ["R12", "2"], ["D97", "3"], ["D97", "11"], ["D102", "3"], ["D102", "11"]]
   },
   "D105_WAIT_STAGE": {
    "src": "traced sheet-1: D105 pin 8 drives both inputs pins 4 and 5 of the following NAND section",
@@ -15902,50 +15866,6 @@
   "C94_2_BOUNDARY": {
    "src": ".009 factory assembly drawing identifies C94 immediately right of VT2, but the owner views do not uniquely expose its body or either lead; the previous C94.2/VIDEO_OUT promotion is retracted because that visible joint is VT2.1/R65.1",
    "nodes": [["C94", "2"]]
-  },
-  "C19_1_R100_1_BOUNDARY": {
-   "src": ".009 factory identity plus registered July and oblique May target-board component views; C19 upper lead/pad1 and R100 left lead/pad1 terminate on the same visible landing, while the remote destination remains unread",
-   "nodes": [["C19", "1"], ["R100", "1"]]
-  },
-  "C19_2_R86_1_BOUNDARY": {
-   "src": ".009 factory identity plus registered July and oblique May target-board component views; C19 lower lead/pad2 and R86 left lead/pad1 terminate on the same visible landing, while the remote destination remains unread",
-   "nodes": [["C19", "2"], ["R86", "1"]]
-  },
-  "C16_1_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove C16 lead 1 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable",
-   "nodes": [["C16", "1"]]
-  },
-  "C16_2_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable",
-   "nodes": [["C16", "2"]]
-  },
-  "R102_1_BOUNDARY": {
-   "src": ".009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
-   "nodes": [["R102", "1"]]
-  },
-  "R108_1_BOUNDARY": {
-   "src": ".009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
-   "nodes": [["R108", "1"]]
-  },
-  "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY": {
-   "src": ".009 factory identity plus registered target-board component photos; uninterrupted copper joins the right-hand pin-2 leads of R100/R102/R108/R86 on one perimeter rail, while its remote destination and any cross-layer handoff remain unread",
-   "nodes": [["R100", "2"], ["R102", "2"], ["R108", "2"], ["R86", "2"]]
-  },
-  "C20_1_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destination is not readable",
-   "nodes": [["C20", "1"]]
-  },
-  "C20_2_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destination is not readable",
-   "nodes": [["C20", "2"]]
-  },
-  "C22_1_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destination is not readable",
-   "nodes": [["C22", "1"]]
-  },
-  "C22_2_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove C22 pad 2 on the second 10 mm vertical drill span right of D102; the remote destination is not readable",
-   "nodes": [["C22", "2"]]
   },
   "D94_A3_D104_X4_PULLUP": {
    "src": "direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and R87.1; R87.2 enters the common +5 V rail. К170УП2 primary pinout confirms channel X4 is input7 -> output10",
