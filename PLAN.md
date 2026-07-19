@@ -142,6 +142,20 @@ zero electrical blockers; exact 303-footprint/2,395-pad parity holds. Fresh
 0.10, 0.125, 0.1375, and 0.15 mm sweeps exhaust all 23 residual signatures
 without acceptance, establishing the current 23-gap boundary.
 
+The next current-topology survey rejects MEMR at the 0.10 mm diagnostic stage
+and finds that CS_D57 has grown to 33 removable conflicts across fourteen
+nets. DC4 and VA9 both admit legal target routes after bounded displacement,
+but neither chain improves the checkpoint. DC4 displaces 28 items across
+thirteen nets; restoring HLDA first recovers every branch except one 14.080 mm
+GND replacement, producing a guarded 23-for-23 swap. That GND gap displaces 26
+items, but every tested legal target topology leaves 0.510 and 36.009 mm MEMW
+replacements and has a 24-open floor. VA9 displaces 27 items across twelve
+nets. Its 0.125 and 0.1375 mm target routes inevitably expose two BA10 branches
+plus BA13 and VA12 gaps that cannot route even when attempted before the other
+restorations; the complete P5V-first transaction ends at 26 opens. Both chains
+are discarded and the independently verified 23-gap checkpoint remains
+authoritative.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

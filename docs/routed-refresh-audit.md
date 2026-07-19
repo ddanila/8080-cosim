@@ -423,6 +423,34 @@ items, is 11,051,620 bytes, and has SHA256
 Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps each
 exhaust all 23 residual signatures without acceptance.
 
+The next route-specific survey is run on that exact 23-open topology. MEMR has
+no 0.10 mm diagnostic path. CS_D57's under-clearance proposal now names 33
+removable items across fourteen nets and no fixed blocker. DC4 names 28 items
+across thirteen nets plus fixed D5.18/DB0, D5.19/DC0, D1.4/DC5, and D1.5/DC6
+pads; legal 0.20 mm-clearance target routes exist on the 0.10 and 0.125 mm
+phases. Restoring DC2 first and HLDA late ends at 24 opens with GND and HLDA
+replacements. Restoring HLDA first reconnects every displaced branch except a
+14.080 mm GND gap, yielding a guarded 23-for-23 DC4/GND swap.
+
+The chained GND diagnostic names 26 items on only DC1, DC2, DC4, DC5, and
+MEMW, with no fixed blocker. Legal GND target routes exist on the 0.10, 0.125,
+and 0.1375 mm phases. All tested target geometries restore the middle 5.657 mm
+MEMW branch but cannot route its 0.510 or 36.009 mm replacements on the four
+standard restoration phases. Even assuming every other displaced net restores,
+the chain therefore has a 24-open floor and the equal swap is discarded.
+
+VA9's 0.10 mm diagnostic names 27 removable items across BA0, BA10, BA13,
+BA14, P5V, RAIL_H, S3_6, VA11, VA12, VA13, VA7, and VID_MUX_G, plus fixed
+R41.1/S3_2 and D50.14/VA1 pads. Its 0.125 and 0.1375 mm target phases are
+independently legal; the 0.10 and 0.15 mm proposals add clearance findings.
+Restoring P5V first recovers all three power branches, all four VID_MUX_G
+branches, and the remaining routable nets, but leaves two BA10 replacements
+(a same-coordinate join and 10.607 mm branch), BA13 at 8.078 mm, and VA12 at
+28.507 mm. Those four gaps also have no route when attempted immediately after
+either legal VA9 target topology on the tested restoration phases. The complete
+transaction ends at 26 opens, so VA9 is likewise rejected and the 23-open
+checkpoint remains authoritative.
+
 ```sh
 /usr/bin/python3 kicad/close_gap_by_ripup.py \
   /tmp/juku-dc7-25-dc5first.kicad_pcb \
