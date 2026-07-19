@@ -98,22 +98,19 @@ jobs:
           python3 scripts/validate_rt4_dump.py \
             ref/physical-proms/captures/d2_037_20260713_capture1.txt \
             ref/physical-proms/captures/d2_037_20260713_capture2.txt \
-            ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt \
-            ref/physical-proms/captures/d2_037_sukharev_reference_20260713_verify1.txt \
             ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt \
             ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture2.txt \
             ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt \
-            --independent-capture-count 4 \
-            --alias-note "The unqualified and arvutimuuseum_CS00015 three-read names are byte-for-byte aliases of the same supplied events; the separate sukharev_reference verification is independent." \
+            ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control1.txt \
+            ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control2.txt \
+            ref/physical-proms/captures/d2_037_sukharev_reference_20260719_reader3_control3_powercycled.txt \
+            --independent-capture-count 6 \
+            --alias-note "The 2026-07-13 unqualified and arvutimuuseum capture1/capture2 names are provenance aliases; the 2026-07-19 reader-3 controls are three new independent events and include a power cycle." \
             --out-dir /tmp/d2-validate --name d2_037
           python3 scripts/validate_rt4_dump.py \
-            ref/physical-proms/captures/d6_038_20260713_capture1.txt \
-            ref/physical-proms/captures/d6_038_20260713_capture2.txt \
-            ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture1.txt \
-            ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture2.txt \
-            ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt \
-            --independent-capture-count 3 \
-            --alias-note "The unqualified and arvutimuuseum_CS00015 capture1/capture2 names are byte-for-byte aliases of the same supplied events; the power-cycled third read is independent." \
+            ref/physical-proms/captures/d6_038_sukharev_reference_20260719_reader3_capture1.txt \
+            ref/physical-proms/captures/d6_038_sukharev_reference_20260719_reader3_capture2.txt \
+            ref/physical-proms/captures/d6_038_sukharev_reference_20260719_reader3_capture3_powercycled.txt \
             --out-dir /tmp/d6-validate --name d6_038
           cmp ref/physical-proms/captures/d2_037_20260713_capture1.txt \
             ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt
