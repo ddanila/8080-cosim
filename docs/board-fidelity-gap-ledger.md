@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `324`
-- Nets modeled: `550`
-- Chip-level fidelity gaps: `65`
-- Net-level source-risk gaps: `152`
+- Nets modeled: `520`
+- Chip-level fidelity gaps: `59`
+- Net-level source-risk gaps: `106`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `58`
 
@@ -49,12 +49,13 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | native schematic + factory assembly drawing + owner photo | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 235 |
+| scan | 233 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
 | scan + registered owner photo | 1 |
 | scan + registered owner photos | 2 |
+| scan + target-photo override | 2 |
 | scan+datasheet | 1 |
 | wire | 1 |
 
@@ -62,13 +63,13 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 8 | 98 |
+| FDC owner-continuity | 8 | 63 |
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 7 |
-| logic/source | 15 | 40 |
+| logic/source | 11 | 29 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 26 | 0 |
-| placement/value | 15 | 0 |
+| placement/value | 13 | 0 |
 | sound/analog | 0 | 1 |
 | video/analog | 0 | 4 |
 
@@ -83,13 +84,13 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D101` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify the... |
-| `D102` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo К155АГ3 8901 marking; D102 is the rightmost lower-row one-shot 16-pin package and standard AG3 pinout; power pins 8/1... |
+| `D101` | `KP12_MUX` | scan + target-photo override | .009 official population and Э3 sheet 3 plus direct owner continuity no-conflict sheet paths close EARLY D93.17 to pin2, LATE D93.18 to pin14, delay taps D97... |
+| `D102` | `AG3_ONESHOT` | scan | .009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking sheet 3 closes both cascaded write-precomp delays: D97.12 to pin10/output5, pin... |
 | `D106` | `IE7_CTR` | scan | .009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout power pins 8/16 routed; corrected component and solder fits identify all 14 co... |
 | `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all... |
 | `D95` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify the... |
 | `D96` | `TM2_DFF` | scan | .009 official FDC population; КМ555ТМ2 identity and standard pinout power pins 7/14 routed; full component registration and reflected solder fit identify the... |
-| `D97` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo К155АГ3 8901 marking; D97 is the first lower-row one-shot right of D101 16-pin package and standard AG3 pinout; power... |
+| `D97` | `AG3_ONESHOT` | scan | .009 assembly position, .009 Э3 sheet 3, and owner-photo К155АГ3 8901 marking sheet 3 closes the first write-precomp delay: WDATA on pin10, output pin5 to D1... |
 | `D99` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking 16-pin package and standard A... |
 
 ### PROM truth
@@ -106,11 +107,7 @@ parts placement and Tier-3 reproduction.
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MEMW -> 11 to D30.13; direct .009 owner continuity on 2026-07-14 proves pin1 joins D6.15... |
 | `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Chip-removed owner continuity on 2026-07-14 supersedes the... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
-| `R100` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles upper resistor in the populated four-part vertical column at the right edge beside C19; both tar... |
-| `R102` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles second resistor in the populated four-part vertical column at the right edge beside C19; both ta... |
-| `R108` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles third resistor in the populated four-part vertical column at the right edge beside C19; both tar... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. The revisi... |
-| `R86` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles lowest resistor in the populated four-part vertical column at the right edge beside C19; both ta... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |
 | `W14` | `WIRE_LINK` | factory wire table + registered owner backside photo | ДГШ5.109.009 СБ conductor position 10 / board point А:14 registered plated through-joints beside the printed 14 marks at (10.449,179.305) and (224.478,193.14... |
@@ -157,10 +154,8 @@ parts placement and Tier-3 reproduction.
 | `C11` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C11 vertically between D95 and D99; both target-revision electrical destinations remain explicit continui... |
 | `C12` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places the target C12 vertically between D94 and D100; the .006 trimmer identity is revision-superseded and both... |
 | `C15` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C15 vertically between D97 and D102; both target-revision electrical destinations remain explicit continu... |
-| `C16` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated grey horizontal axial capacitor between the upper... |
-| `C19` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C19 immediately right of D99; registered July and oblique May co... |
-| `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69 factory drawing identifies C20 at the right end of D102; both owner-board sid... |
-| `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69 factory drawing identifies C22 at the right end of D102; bot... |
+| `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69 electrical sheet 3 closes C20.1 to D102.6 and C20.2 to D102.7/R108.1. Owner e... |
+| `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69 electrical sheet 3 closes C22.1 to D102.14 and C22.2 to D102... |
 | `C38` | `C_KM` | scan | .009 factory drawing directly places C38 above D91 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and... |
 | `C42` | `C_KM` | scan | .009 factory drawing directly places C42 above D89 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and... |
 | `C46` | `C_KM` | scan | .009 factory drawing directly places C46 above D87 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and... |
@@ -217,45 +212,16 @@ same fidelity ledger as the chip provenance gaps.
 | `C12_2_BOUNDARY` | logic/source | `C12.2` | .009 factory placement between D94 and D100; target electrical destination and value unread, and the .006 RF trimmer identity is revision-superseded |
 | `C15_1_BOUNDARY` | logic/source | `C15.1` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-collector assignment is revision-superseded |
 | `C15_2_BOUNDARY` | logic/source | `C15.2` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-emitter assignment is revision-superseded |
-| `C16_1_BOUNDARY` | logic/source | `C16.1` | .009 factory identity plus registered owner component/solder views prove C16 lead 1 on the horizontal 12.5 mm span between the FDC IC rows; its remote destin... |
-| `C16_2_BOUNDARY` | logic/source | `C16.2` | .009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destin... |
-| `C19_1_R100_1_BOUNDARY` | logic/source | `C19.1, R100.1` | .009 factory identity plus registered July and oblique May target-board component views; C19 upper lead/pad1 and R100 left lead/pad1 terminate on the same vi... |
-| `C19_2_R86_1_BOUNDARY` | logic/source | `C19.2, R86.1` | .009 factory identity plus registered July and oblique May target-board component views; C19 lower lead/pad2 and R86 left lead/pad1 terminate on the same vis... |
-| `C20_1_BOUNDARY` | logic/source | `C20.1` | .009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destinati... |
-| `C20_2_BOUNDARY` | logic/source | `C20.2` | .009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destinati... |
-| `C22_1_BOUNDARY` | logic/source | `C22.1` | .009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destinat... |
-| `C22_2_BOUNDARY` | logic/source | `C22.2` | .009 factory identity plus registered owner component/solder views prove C22 pad 2 on the second 10 mm vertical drill span right of D102; the remote destinat... |
 | `C99_FAR` | logic/source | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity bounda... |
 | `C9_1_BOUNDARY` | logic/source | `C9.1` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF ground assignment is revision-superseded |
 | `C9_2_BOUNDARY` | logic/source | `C9.2` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
 | `CPU_WAIT_STATUS` | logic/source | `D1.24` | traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread |
 | `CS_FDC` | PROM/decode | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 r... |
-| `D101_A0_BOUNDARY` | FDC owner-continuity | `D101.14` | July-2026 validated component and solder package fits identify D101 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary |
-| `D101_A1_BOUNDARY` | FDC owner-continuity | `D101.2` | July-2026 validated component and solder package fits identify D101 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D00_BOUNDARY` | FDC owner-continuity | `D101.6` | July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D01_BOUNDARY` | FDC owner-continuity | `D101.5` | July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D03_BOUNDARY` | FDC owner-continuity | `D101.3` | July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary |
-| `D101_D10_BOUNDARY` | FDC owner-continuity | `D101.10` | July-2026 validated component and solder package fits identify D101 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary |
-| `D101_D11_BOUNDARY` | FDC owner-continuity | `D101.11` | July-2026 validated component and solder package fits identify D101 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary |
-| `D101_D12_BOUNDARY` | FDC owner-continuity | `D101.12` | July-2026 validated component and solder package fits identify D101 К555КП12 pin12 D12; no remote destination is proved, so this remains a measurement boundary |
-| `D101_D13_BOUNDARY` | FDC owner-continuity | `D101.13` | July-2026 validated component and solder package fits identify D101 К555КП12 pin13 D13; no remote destination is proved, so this remains a measurement boundary |
 | `D101_OE0_BOUNDARY` | FDC owner-continuity | `D101.1` | July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary |
-| `D101_OE1_BOUNDARY` | FDC owner-continuity | `D101.15` | July-2026 validated component and solder package fits identify D101 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boun... |
-| `D101_Q1_BOUNDARY` | FDC owner-continuity | `D101.9` | July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary |
-| `D102_A1N_BOUNDARY` | FDC owner-continuity | `D102.1` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary |
-| `D102_A2N_BOUNDARY` | FDC owner-continuity | `D102.9` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary |
-| `D102_B1_BOUNDARY` | FDC owner-continuity | `D102.2` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin2 B; no remote destination is proved, so this remains a measurement boundary |
-| `D102_B2_BOUNDARY` | FDC owner-continuity | `D102.10` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary |
-| `D102_C1_BOUNDARY` | FDC owner-continuity | `D102.14` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary |
-| `D102_C2_BOUNDARY` | FDC owner-continuity | `D102.6` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary |
-| `D102_CLR1_BOUNDARY` | FDC owner-continuity | `D102.3` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin3 CLR_N; no remote destination is proved, so this remains a measurement boundary |
-| `D102_CLR2_BOUNDARY` | FDC owner-continuity | `D102.11` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boun... |
 | `D102_Q1N_BOUNDARY` | FDC owner-continuity | `D102.4` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary |
-| `D102_Q1_BOUNDARY` | FDC owner-continuity | `D102.13` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary |
-| `D102_Q2N_BOUNDARY` | FDC owner-continuity | `D102.12` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary |
-| `D102_Q2_BOUNDARY` | FDC owner-continuity | `D102.5` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary |
-| `D102_RC1_BOUNDARY` | FDC owner-continuity | `D102.15` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary |
-| `D102_RC2_BOUNDARY` | FDC owner-continuity | `D102.7` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary |
 | `D104_X4_OUT_BOUNDARY` | logic/source | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps h... |
 | `D105_GATE1_Y` | logic/source | `D105.3` | native sheet-1 full-resolution: D105 gate pins 1,2 -> output pin3, which departs on dense-bundle code 7 beside but not joined to D7.8 code 8. The nearby D29.... |
 | `D106_BO_BOUNDARY` | FDC owner-continuity | `D106.13` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary |
@@ -287,13 +253,10 @@ same fidelity ledger as the chip provenance gaps.
 | `D6_A7_D105_I1_BOUNDARY` | PROM/decode | `D6.15, D105.1` | direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D6 address input A7/pin15 joins D105 К155ЛА3 input pin1. No other destination... |
 | `D7_IOM_STATUS_RECHECK` | PROM/decode | `D7.8` | native sheet-1 full-resolution shows D7 output pin8 departing on dense-bundle code 8, visibly separate from adjacent D105.3 code 7. The older interpretation... |
 | `D93_CLK_BOUNDARY` | FDC owner-continuity | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a me... |
-| `D93_EARLY_BOUNDARY` | FDC owner-continuity | `D93.17` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a me... |
 | `D93_HLT_BOUNDARY` | FDC owner-continuity | `D93.23` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a meas... |
-| `D93_LATE_BOUNDARY` | FDC owner-continuity | `D93.18` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin18 LATE; remote drive-interface continuity is not proved, so this remains a mea... |
 | `D93_MR_BOUNDARY` | FDC owner-continuity | `D93.19` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement b... |
 | `D93_RG_BOUNDARY` | FDC owner-continuity | `D93.25` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement... |
 | `D93_TEST_BOUNDARY` | FDC owner-continuity | `D93.22` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin22 TEST; remote strap continuity is not proved, so this remains a measurement b... |
-| `D93_WDATA_BOUNDARY` | FDC owner-continuity | `D93.31` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin31 WDATA; remote drive-interface continuity is not proved, so this remains a me... |
 | `D93_WF_VFOE_BOUNDARY` | FDC owner-continuity | `D93.33` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a... |
 | `D94_D0_BOUNDARY` | PROM/decode | `D94.1, R89.1` | .009 factory drawing identifies R89 as the rightmost resistor adjacent to D94; registered component/reflected-solder photos join D94.1 to R89.1 and R89.2 to... |
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
@@ -321,18 +284,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D96_PRE2_BOUNDARY` | FDC owner-continuity | `D96.10` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin10 PRE2_N; no remote destination is proved, so this remains a... |
 | `D96_Q1N_BOUNDARY` | FDC owner-continuity | `D96.6` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin6 Q1_N; no remote destination is proved, so this remains a me... |
 | `D96_Q2_BOUNDARY` | FDC owner-continuity | `D96.9` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin9 Q2; no remote destination is proved, so this remains a meas... |
-| `D97_A1N_BOUNDARY` | FDC owner-continuity | `D97.1` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary |
-| `D97_A2N_BOUNDARY` | FDC owner-continuity | `D97.9` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary |
-| `D97_B2_BOUNDARY` | FDC owner-continuity | `D97.10` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary |
-| `D97_C1_BOUNDARY` | FDC owner-continuity | `D97.14` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary |
-| `D97_C2_BOUNDARY` | FDC owner-continuity | `D97.6` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary |
-| `D97_CLR1_BOUNDARY` | FDC owner-continuity | `D97.3` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin3 CLR_N; no remote destination is proved, so this remains a measurement boundary |
-| `D97_CLR2_BOUNDARY` | FDC owner-continuity | `D97.11` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary |
 | `D97_Q1_BOUNDARY` | FDC owner-continuity | `D97.13` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary |
-| `D97_Q2N_BOUNDARY` | FDC owner-continuity | `D97.12` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary |
-| `D97_Q2_BOUNDARY` | FDC owner-continuity | `D97.5` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary |
-| `D97_RC1_BOUNDARY` | FDC owner-continuity | `D97.15` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary |
-| `D97_RC2_BOUNDARY` | FDC owner-continuity | `D97.7` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary |
 | `D98_A4_BOUNDARY` | FDC owner-continuity | `D98.10` | July-2026 validated package registration identifies D98 К155ЛП11 pin10 A4; no remote destination is proved, so this remains a measurement boundary |
 | `D98_Y4_BOUNDARY` | FDC owner-continuity | `D98.9` | July-2026 validated package registration identifies D98 К155ЛП11 pin9 Y4; no remote destination is proved, so this remains a measurement boundary |
 | `D99_A1N_BOUNDARY` | FDC owner-continuity | `D99.1` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement... |
@@ -350,12 +302,9 @@ same fidelity ledger as the chip provenance gaps.
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
-| `R102_1_BOUNDARY` | logic/source | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
-| `R108_1_BOUNDARY` | logic/source | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Registered July and M... |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `READY_PRE_N` | logic/source | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
-| `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` | logic/source | `R100.2, R102.2, R108.2, R86.2` | .009 factory identity plus registered target-board component photos; uninterrupted copper joins the right-hand pin-2 leads of R100/R102/R108/R86 on one perim... |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
