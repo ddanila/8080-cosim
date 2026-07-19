@@ -402,6 +402,50 @@ all 303 footprints and 2,395 pads. The board contains 32,167 copper items, is
 Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps each
 exhaust all 24 residual signatures without acceptance.
 
+Re-running the left-edge diagnosis on that accepted topology changes DC2's
+corridor: its 0.10 mm diagnostic now names 25 removable items across A10, DB0,
+DB1, DC3, DC5, HLDA, INTA, and MEMW, while touching fixed D5.11/DB6 and
+D5.18/DB0 pads. Removing only those derived items permits independently clean
+0.20 mm-clearance DC2 routes on the 0.10, 0.125, and 0.15 mm phases; the
+0.1375 mm proposal is rejected for one clearance finding. Restore order is
+again decisive. DB0-first restoration recovers every other displaced branch
+but leaves a 19.377 mm A10 replacement, making a 24-for-24 swap. Restoring A10
+first, then DB0, MEMW, DC3, HLDA, DB1, DC5, and INTA, reconnects every branch
+and yields a guarded 24-to-23 improvement. Three transaction-orphaned migrated
+vias are removed.
+
+Independent stable KiCad DRC on the 23-open checkpoint reports the unchanged
+199 track-dangling and 45 via-dangling findings and zero short, clearance,
+crossing, hole, or edge blockers. Exact identity, net, and coordinate parity
+holds for all 303 footprints and 2,395 pads. The board contains 32,475 copper
+items, is 11,051,620 bytes, and has SHA256
+`3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c`.
+Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps each
+exhaust all 23 residual signatures without acceptance.
+
+```sh
+/usr/bin/python3 kicad/close_gap_by_ripup.py \
+  /tmp/juku-dc7-25-dc5first.kicad_pcb \
+  /tmp/juku-dc2-24-a10first.kicad_pcb \
+  --net DC2 --diagnostic-clearance 0.10 \
+  --diagnostic-grid-step 0.10 --grid-step 0.125 \
+  --route-clearance 0.20 --search-margin 60 --timeout 240 \
+  --max-conflicts 64 --allow-mixed-diagnostic-blockers \
+  --restore-grid-steps 0.10,0.125,0.1375,0.15 \
+  --restore-net-priority A10,DB0,MEMW,DC3,HLDA,DB1,DC5,INTA \
+  --diagnostic-report /tmp/juku-dc2-24-a10first-diag.json \
+  --transaction-board /tmp/juku-dc2-24-a10first-restored.kicad_pcb \
+  --transaction-report /tmp/juku-dc2-24-a10first-restored.json \
+  --summary /tmp/juku-dc2-24-a10first-summary.json
+python3 kicad/close_unconnected_gaps.py \
+  /tmp/juku-dc2-24-a10first.kicad_pcb OUTPUT \
+  --min-distance 0 --max-distance 450 --mode M --search-margin 100 \
+  --grid-step GRID --route-clearance 0.20 --timeout 180 --limit 0 \
+  --attempted-state STATE
+# Run the final command with fresh OUTPUT/STATE paths for GRID values
+# 0.10, 0.125, 0.1375, and 0.15.
+```
+
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py \
   --routed kicad/juku_routed_candidate.kicad_pcb \
