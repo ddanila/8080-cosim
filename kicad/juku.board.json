@@ -7660,7 +7660,7 @@
    ]
   },
   "RESET": {
-   "src": "scan sheet-1: reset shaper drives D13 inverter input pin 5; D13.6 is the uninterrupted RESET conductor to CPU D1.12, both PPIs, and USART D11.21",
+   "src": "recovered .009 Э3 sheet 1: reset shaper drives D13 inverter input pin5; D13.6 is the uninterrupted RES conductor to CPU D1.12, both PPIs, USART D11.21, and sheet-3 continuation (3). Recovered .009 sheet 3 lands that continuation directly on D93 MR/pin19; preserve the factory connection despite the sheet-3 -RES / active-low-symbol polarity ambiguity",
    "nodes": [
     [
      "D13",
@@ -7681,6 +7681,10 @@
     [
      "D11",
      "21"
+    ],
+    [
+     "D93",
+     "19"
     ]
    ]
   },
@@ -14083,13 +14087,9 @@
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "15"]]
   },
-  "D93_MR_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "19"]]
-  },
-  "D93_TEST_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin22 TEST; remote strap continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "22"]]
+  "D93_TEST_WF_VFOE": {
+   "src": "recovered .009 Э3 sheet-3 detail PXL_20260718_101637906.jpg directly ties D93 TEST/pin22 to WF/VFOE/pin33 with one local U-shaped conductor; no other junction is drawn",
+   "nodes": [["D93", "22"], ["D93", "33"]]
   },
   "D93_HLT_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a measurement boundary",
@@ -14114,10 +14114,6 @@
   "FDC_READY": {
    "src": "recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V",
    "nodes": [["D28", "6"], ["D93", "32"], ["R84", "1"]]
-  },
-  "D93_WF_VFOE_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "33"]]
   },
   "D14_I2_BOUNDARY": {
    "src": "sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary",

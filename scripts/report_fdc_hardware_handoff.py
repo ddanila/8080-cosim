@@ -322,6 +322,14 @@ def main() -> int:
         or not has_node(board, "P12V", "D93", "40")
     ):
         failures.append("D93 measured ground, +5 V, or +12 V supply is absent")
+    if not has_node(board, "RESET", "D93", "19"):
+        failures.append("sheet-1/3 D93 master-reset continuation is absent")
+    if (
+        not has_node(board, "D93_TEST_WF_VFOE", "D93", "22")
+        or not has_node(board, "D93_TEST_WF_VFOE", "D93", "33")
+        or len(net(board, "D93_TEST_WF_VFOE").get("nodes", [])) != 2
+    ):
+        failures.append("sheet-3 D93 TEST-to-WF/VFOE local tie is absent or has extra endpoints")
     if (
         ["D94", "5"] not in board.get("no_connects", [])
         or not has_node(board, "D93_1_OPEN_STUB", "D93", "1")
@@ -459,16 +467,10 @@ def main() -> int:
             "exact .009 sheet 1 labels (3) TAPE RUN INT, but replacement FDC sheet 3 has no matching continuation; ekta37 mask 0xDF keeps IR4 masked",
         ),
         (
-            "D93.22/.23/.25/.33",
-            group_state(board, "D93", ("22", "23", "25", "33")),
-            "TEST strap, head-load timing, read-gate, and WF/VFOE separator control",
-            "primary FD179X-01 contract and two-sided socket fits localize the four pads; their remote sources remain unproved",
-        ),
-        (
-            "D93.19 `MR_N`",
-            endpoint_state(board, "D93", "19"),
-            "master reset source",
-            "photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved",
+            "D93.23/.25",
+            group_state(board, "D93", ("23", "25")),
+            "head-load timing and read-gate sources",
+            "primary FD179X-01 contract and two-sided socket fits localize both pads; their remote sources remain unproved",
         ),
         (
             "D93.24 `CLK`",
@@ -522,8 +524,10 @@ def main() -> int:
         "The guarded D93 component fit specifically uses `PXL_20260710_202708344.jpg`,",
         "taken with the known КР1818ВГ93 removed from its socket. It exposes all 40",
         "contacts and the pin-40 end marking. A reflected solder fit then lands on the",
-        "actual joints; together they localize MR_N/pin19 and CLK/pin24 without",
-        "claiming their far destinations.",
+        "actual joints. Recovered `.009` sheet 1 RES continuation (3) and sheet 3",
+        "now close MR_N/pin19 structurally; the RES versus active-low symbol polarity",
+        "remains a bring-up check. The same sheet-3 detail directly ties TEST/pin22",
+        "to WF/VFOE/pin33. CLK/pin24 is independently source-closed through D95.",
         "Chip-removed owner continuity supersedes the mirrored photograph reading:",
         "D94.3/.15/.4 drive D93.4/.3/.2, while D94.2 reaches D99.9/R89.",
         "The old D94.1/.2/.3 photograph rows retain registration value only.",
@@ -717,7 +721,9 @@ def main() -> int:
             "  pin-15 enable source, pull-up identities, D3-D7 destinations, and the",
             "  recorded D29.4/IORD recheck. The `.092` table is physically captured.",
             "- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to",
-            "  confirm INTRQ/DRQ ordering, then identify D93.19. D93.24 is now",
+            "  confirm INTRQ/DRQ ordering. D93.19 is now source-connected to the",
+            "  sheet-1 RES continuation, while its drawn active-low polarity remains",
+            "  a scope check. D93.24 is",
             "  source-closed through D95's selected 1/2 MHz clock section. First dump",
             "  D15/D16 and identify its guarded CMA/NOP profile; the recovered direct",
             "  D93 bus means physical D100 is not the profile selector. Separately trace",
@@ -728,8 +734,9 @@ def main() -> int:
             "  SP/EN pin16 is source-proved at +5 V. Only the stale tape IR4",
             "  continuation remains a Tier-3 continuity boundary; ROM mask 0xDF",
             "  keeps it disabled in the runnable configuration.",
-            "- Trace only the still-open D93.22/.23/.25/.33 functions and the D99/D101",
-            "  support-device boundaries; D93.15-.18/.26-.32/.34-.36 are source-closed.",
+            "- Trace only the still-open D93.23/.25 functions and the D99/D101",
+            "  support-device boundaries; D93.22/.33 are directly tied on sheet 3,",
+            "  and D93.15-.19/.26-.32/.34-.36 are source-connected.",
             "  D28/D95-D98/D102/D106 are source-closed; only physical waveform quality",
             "  remains a bring-up check. D93.40 to `P12V` is already owner-confirmed.",
             "- Keep `docs/fdc-readiness.md` as the HDL/media behavior guard; this",

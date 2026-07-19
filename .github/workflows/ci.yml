@@ -165,6 +165,8 @@ jobs:
             kicad/check_fdc_unused_pins.py \
             kicad/check_fdc_recovery_counter.py \
             kicad/check_fdc_precomp_network.py \
+            kicad/apply_d93_static_paths.py \
+            kicad/check_d93_static_paths.py \
             kicad/report_d105_h_boundary.py \
             kicad/report_fdc_lower_assembly_placement.py
           python3 -m py_compile kicad/report_d93_pin40_photo_chase.py
@@ -191,6 +193,9 @@ jobs:
 
       - name: Check exact-revision FDC unused pins
         run: python3 kicad/check_fdc_unused_pins.py
+
+      - name: Check D93 reset and static paths
+        run: python3 kicad/check_d93_static_paths.py
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py

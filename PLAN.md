@@ -481,9 +481,12 @@ Every ask below is queued with exact deliverables in
    An automatic handoff audit now also removes stale continuity requests for
    D93.15-.18/.26-.32/.34-.36 and D100.6: those step, direction, precomp,
    separator-clock, raw-read, head-load, write, READY, and drive-status paths
-   are already source-closed. The genuine controller-pin asks are narrowed to
-   D93.19/.22/.23/.25/.33, plus the separately guarded DRQ/INTRQ assumptions
-   and shared D100.9/.11 control-source boundary.
+   are already source-closed. A direct exact-revision reread additionally joins
+   sheet-1 `RES (3)` to D93.19 and ties D93.22 TEST locally to D93.33 WF/VFOE.
+   The RES versus active-low D93 symbol polarity remains a bring-up scope check,
+   not a connectivity gap. The genuine controller-pin asks are now narrowed to
+   D93.23/.25, plus the separately guarded DRQ/INTRQ assumptions and shared
+   D100.9/.11 control-source boundary.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
    place `CMA` around all 12 VG93 writes and six reads, while EktaSoft
@@ -609,7 +612,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   63 source-risk nets and 2 official FDC devices with untraced functional
+   60 source-risk nets and 2 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

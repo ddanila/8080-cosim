@@ -105,6 +105,10 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       Those eight pads are guarded NCs, while live D28 READY pins5/6 are no
       longer contradicted by stale NC metadata
       (`ref/schematics/fdc-unused-pin-dispositions.md`).
+- [x] Sheet-1/3 D93 static paths reconciled: `RES (3)` lands on D93.19, and
+      sheet 3 directly ties TEST/pin22 to WF/VFOE/pin33. The drawn reset-polarity
+      tension remains an explicit scope check
+      (`ref/schematics/fdc-controller-static-map.md`).
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).

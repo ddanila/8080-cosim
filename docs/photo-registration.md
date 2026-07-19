@@ -406,12 +406,14 @@ annotated `d94-d5-layer-handoff.jpg` therefore records the proved handoff and
 explicitly rejects a unique solder continuation until continuity or a stronger
 cross-side registration is available.
 
-D93.19 `MR_N` remains unresolved, but its boundary is narrower. The corrected
-solder joint reaches a through-hole near `(1743,2320)` pixels. Composing the
-D93 solder and exposed-socket fits maps that hole to `(950,1909)` component
-pixels, where the same trace is visible before it returns beneath the socket
-body. The available photographs therefore prove the layer handoff but not the
-far reset source.
+D93.19 `MR_N` is now source-closed by the recovered exact-revision drawing.
+The corrected solder joint reaches a through-hole near `(1743,2320)` pixels;
+composing the D93 solder and exposed-socket fits maps that hole to `(950,1909)`
+component pixels, where the same trace is visible before it returns beneath
+the socket body. Sheet 1 independently sends `RES (3)` from D13.6 and sheet 3
+lands that continuation directly on D93.19. The photographs remain useful
+route evidence, while the drawing supplies the formerly hidden far source.
+The `RES` versus bubbled/`-RES` polarity notation remains a scope check.
 
 The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Its reflected solder fit identifies the two small-joint

@@ -530,9 +530,9 @@ module juku_top (
     // drive outputs, D26 MOTOR/S.SEL controls, and the first status/separator stages.
     wire fdc_drq, fdc_intrq;
     wire fdc_step, fdc_dir, fdc_hld, fdc_tg43, fdc_wg, fdc_wdata;
-    wire fdc_early_boundary, fdc_late_boundary, fdc_test_boundary;
+    wire fdc_early_boundary, fdc_late_boundary, fdc_test_wf_vfoe;
     wire fdc_hlt_boundary, fdc_rg_boundary, fdc_rclk, fdc_raw_read;
-    wire fdc_ready, fdc_wf_vfoe_boundary, fdc_tr00, fdc_index, fdc_wprt;
+    wire fdc_ready, fdc_tr00, fdc_index, fdc_wprt;
     wire fdc_clk, fdc_separator_clk;
     // D95 select A0 is FM/MFM (D26 PC4); select A1 is 5-inch/8-inch
     // (D26 PC3). Section A selects 1 MHz at A1=0 or 2 MHz at A1=1;
@@ -588,14 +588,18 @@ module juku_top (
     tri1 d94_d1_d99_a2n;
 `endif
     wire d93_1_open_stub;
+    // Exact `.009` sheets join D13.6 RES continuation (3) directly to D93.19.
+    // The sheet-3 `-RES` text/bubbled input conflicts with the sheet-1 RES name;
+    // preserve that physical conductor here. The separate behavioral adjunct
+    // below keeps its established inactive-reset fit until bench polarity is known.
     vg93_fdc   U_D93  (.nc_back_bias(d93_1_open_stub), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
-                       .mr_n(1'b1), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
+                       .mr_n(reset_sys), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
                        .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                        .step(fdc_step), .dirc(fdc_dir), .early(fdc_early_boundary), .late(fdc_late_boundary),
-                       .test(fdc_test_boundary), .hlt(fdc_hlt_boundary), .rg(fdc_rg_boundary),
+                       .test(fdc_test_wf_vfoe), .hlt(fdc_hlt_boundary), .rg(fdc_rg_boundary),
                        .rclk(fdc_rclk), .raw_read(fdc_raw_read), .hld(fdc_hld), .tg43(fdc_tg43),
                        .wg(fdc_wg), .wdata(fdc_wdata), .ready(fdc_ready),
-                       .wf_vfoe(fdc_wf_vfoe_boundary), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),
+                       .wf_vfoe(fdc_test_wf_vfoe), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),
                        .drq(fdc_drq), .intrq(fdc_intrq));
     wire d100_control_1_boundary, d100_wrdata_in_boundary;
     wire [7:0] d100_drive_in, d100_drive_out;
