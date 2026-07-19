@@ -15,8 +15,9 @@ the mating pinout of the processor board's X4 drive connector — so the two can
 be reconciled end to end. This is the connector cross-check the import was
 requested for.
 
-Contents: two НГМД drive mechanisms (**ЕС5323.01 / ЕС5323.02**), the inter-unit
-connectors **X1–X5** carrying the standard Shugart-style FDC signal set
+Contents: two НГМД drive mechanisms (**ЕС5323.01 / ЕС5323.02**), their
+hierarchical **X1/X2** power/signal connectors, intermediate **XS3/XS4**, and
+common external **XS5** carrying the standard Shugart-style FDC signal set
 (S.SEL, RD DATA, WR DATA, STEP, DIR, INDEX, W.PROT, TR.0, SEL0/SEL1, M.ON,
 W.GATE, RDY, side-select), and a **БЛОК ПИТАНИЯ** power block (+5 V / +12 V from
 ~220 V "POWER" mains input).
@@ -31,5 +32,6 @@ top-to-bottom):
 
 ## TODO
 
-- [ ] Extract the X1–X5 pinout and reconcile it against the processor board's
-      X4 (sheet 3, `dgsh5-109-009-e3/`) and `ref/wd1772-vg93/` predictions.
+- [x] Extract the X1/X2/XS3/XS4/XS5 pinout and reconcile it against the
+      processor board's X4 (sheet 3, `dgsh5-109-009-e3/`) and the VG93 signal
+      contract (`ref/schematics/fdc-x4-ngmd-wire-map.md`).
