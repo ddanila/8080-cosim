@@ -30,6 +30,7 @@ jobs:
           sh -n sync/serial_check.sh
           sh -n sync/ie7_check.sh
           sh -n sync/ie10_check.sh
+          sh -n sync/kp12_check.sh
           sh -n sync/ag3_check.sh
           sh -n sync/cosim_check.sh
           sh -n sync/boot_check.sh
@@ -158,6 +159,7 @@ jobs:
             kicad/apply_c22_value.py \
             kicad/check_d94_pullups.py \
             kicad/check_kp12_resistor_links.py \
+            kicad/check_fdc_clock_mux.py \
             kicad/check_fdc_precomp_network.py \
             kicad/report_d105_h_boundary.py \
             kicad/report_fdc_lower_assembly_placement.py
@@ -173,6 +175,11 @@ jobs:
 
       - name: Check FDC write-precomp network
         run: python3 kicad/check_fdc_precomp_network.py
+
+      - name: Check FDC clock mux
+        run: |
+          python3 kicad/check_fdc_clock_mux.py
+          sync/kp12_check.sh
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py

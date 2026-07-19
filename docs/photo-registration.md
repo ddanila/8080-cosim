@@ -54,7 +54,7 @@ Accepted paths:
 - D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
 - D98.3 -> R94.1 / `D98_Y1_R94` (R94.2 remains unresolved).
 - D106.7 `Q3` -> D93.26 `RCLK` / `FDC_RCLK`.
-- D95.14 -> R92.2 / `D95_A0_R92`.
+- D95.14 -> R92.2 / `FDC_DDEN` (sheet-identified `FM/MFM`).
 - D101.4 -> R92.1 + R99.2 / `D101_D02_R92_R99`.
 - R99.1 -> D101.8 / `GND`.
 - VT2.1 -> R65.1 / `VIDEO_OUT`; two registered July angles directly expose
@@ -522,7 +522,8 @@ The automated seed/review queue is complete. Further work should be targeted,
 not another broad projection pass:
 
 1. D93 pins 19/24/37/38/39 and D100 pins 9/11; D93.26 RCLK is now closed.
-2. Functional pins of D28, D95-D99, D101, D102, and D106.
+2. Remaining functional pins of D28, D96-D99, D101, D102, and D106; D95 is
+   source-closed by the recovered `.009` electrical sheet.
 3. D94 input pins 10-14, enable pin 15, and output D3 first (D4-D7 are
    invariant released but still need copper-fidelity closure), D30 section B,
    D105 WAIT handoff, and D41 timing boundaries.

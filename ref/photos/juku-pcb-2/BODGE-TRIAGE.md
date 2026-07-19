@@ -260,7 +260,7 @@ bridge, and remote endpoints remain held pending direct continuity.
 This evidence closes several old identity disputes, but it does not release the
 PCB for fabrication. All four small-PROM contents are now preserved physical
 truth; the D2/D30 WAIT edge and D94/FDC connectivity remain incomplete, and 9
-official IC footprints (D28, D95-D99, D101, D102, and D106) still lack complete
+official IC footprints (D28, D96-D99, D101, D102, and D106) still lack complete
 pin-level functional nets. D105 wait/MRD logic is modeled and routed; the FDC
 cluster and remaining READY/WAIT revision boundaries are not complete. See
 `PLAN.md` and the generated reconstruction/unmodeled-footprint reports.

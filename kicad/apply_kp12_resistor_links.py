@@ -10,11 +10,10 @@ from apply_s1_offboard_correction import block_end, footprint_span
 
 
 RENAMES = {
-    "D95_A0_BOUNDARY": "D95_A0_R92",
     "D101_D02_BOUNDARY": "D101_D02_R92_R99",
 }
 ASSIGNMENTS = {
-    ("R92", "2"): "D95_A0_R92",
+    ("R92", "2"): "FDC_DDEN",
     ("R92", "1"): "D101_D02_R92_R99",
     ("R99", "2"): "D101_D02_R92_R99",
     ("R99", "1"): "GND",

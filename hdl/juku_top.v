@@ -122,6 +122,12 @@ module juku_top (
     wire d40_ctrl_pull;
     net_boundary U_R34LNK (.a(1'b1), .b(d40_ctrl_pull));
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(d40_ctrl_pull), .ep(1'b1), .et(1'b1), .pe_n(d40_ctrl_pull), .d(4'bzzzz), .q(d40_q), .co());
+    // Native sheet 2 labels D40 Q3/Q2/Q1/Q0 as 1/2/4/8 MHz respectively.
+    // Recovered .009 sheet 3 carries all four rails into the D95 FDC clock mux.
+    wire clk1m = d40_q[3];
+    wire clk2m = d40_q[2];
+    wire clk4m = d40_q[1];
+    wire clk8m = d40_q[0];
     // D92 is the native sheet-2 RAM-access combiner.  Section 1 qualifies a
     // read from ROE, PHI2TTL, and -MRD; section 2 qualifies
     // a write from PHI2TTL, -MWR, and -RAM SEL.  Section 3 NORs those results
@@ -532,6 +538,17 @@ module juku_top (
     wire fdc_early_boundary, fdc_late_boundary, fdc_test_boundary;
     wire fdc_hlt_boundary, fdc_rg_boundary, fdc_rclk, fdc_raw_read;
     wire fdc_ready, fdc_wf_vfoe_boundary, fdc_tr00, fdc_index, fdc_wprt;
+    wire fdc_clk, fdc_separator_clk;
+    // D95 select A0 is FM/MFM (D26 PC4); select A1 is 5-inch/8-inch
+    // (D26 PC3). Section A selects 1 MHz at A1=0 or 2 MHz at A1=1;
+    // section B selects 8 MHz only at 00 and otherwise 4 MHz. Both enables
+    // are sheet-grounded. The separator consumer D106 is still structurally
+    // outside LVS, but its D95.9-to-D106.4 conductor is source-guarded in KiCad.
+    kp12_mux U_D95 (.a0(ppi0_pc[4]), .a1(ppi0_pc[3]),
+                     .oe0_n(1'b0), .oe1_n(1'b0),
+                     .d0({clk2m, clk2m, clk1m, clk1m}),
+                     .d1({clk4m, clk4m, clk4m, clk8m}),
+                     .q0(fdc_clk), .q1(fdc_separator_clk));
 `ifdef YOSYS
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
 `else
@@ -551,7 +568,7 @@ module juku_top (
     wire d94_d4, d94_d5, d94_d6, d94_d7;
     supply0 d94_d1_grounded;
     vg93_fdc   U_D93  (.nc_back_bias(d94_d4), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
-                       .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(DB),
+                       .mr_n(1'b1), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
                        .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                        .step(fdc_step), .dirc(fdc_dir), .early(fdc_early_boundary), .late(fdc_late_boundary),
                        .test(fdc_test_boundary), .hlt(fdc_hlt_boundary), .rg(fdc_rg_boundary),
@@ -643,8 +660,6 @@ module juku_top (
     // 1 MHz = D40 QD (the same /16 tap that feeds the D37 latch chain, net LATCH_B); 2 MHz =
     // D40 QC; 1.23 MHz (D57 baud clk0) = the now-guarded D103/D33 /13 loop.
     // Its upstream physical XTAL16M source merge remains a continuity boundary.
-    wire clk1m = d40_q[3];
-    wire clk2m = d40_q[2];
     wire clk123m;
     wire pit_hchain, pit_hsync_dsl, pit_vchain, pit_baud, pit_sound;
     pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),

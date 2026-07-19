@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages. The 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. The recovered .009 Э3 sheet 1 supplies the direct D0-D7-to-D93 host bus, D100 drive-output channels, D98 status receiver, complementary D28 drive selects, and first separator/READY stages; sheet 3 closes D95's complete controller/separator clock mux. The 8 official FDC devices with untraced functional pins remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -5304,7 +5304,7 @@
   {
    "ref": "D95", "type": "KP12_MUX",
    "pins": {"1": "OE0_N", "2": "A1", "3": "D03", "4": "D02", "5": "D01", "6": "D00", "7": "Q0", "9": "Q1", "10": "D10", "11": "D11", "12": "D12", "13": "D13", "14": "A0", "15": "OE1_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify the right-facing notch (270-degree footprint) and all 14 signal contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 Э3 sheet 3 plus validated target-package registration", "pins": "sheet 3 closes the complete clock mux: grounded enables pins1/15; 5-inch/8-inch select pin2; FM/MFM select pin14; paired 1 MHz inputs pins5/6 and paired 2 MHz inputs pins3/4 feeding output pin7 to D93 CLK; 8 MHz pin10 and tied 4 MHz pins11/12/13 feeding output pin9 to D106 DOWN. Target copper additionally places R92.2 on the FM/MFM/pin14 node"}
   },
   {
    "ref": "D98", "type": "LP11_BUF",
@@ -9344,9 +9344,13 @@
     [
      "R46",
      "1"
+    ],
+    [
+     "D95",
+     "10"
     ]
    ],
-   "src": "scan"
+   "src": "sheet-2 closes D40 Q0/pin14 as the 8 MHz divider tap; recovered .009 Э3 sheet 3 drives D95 B0/pin10 from the labeled 8 MHz rail"
   },
   "D40_CTRL_PULL": {
    "src": "scan sheet-2: R34 13 kOhm pulls the continuous D40 CLR_N pin1 / LOAD_N pin9 node toward +5V",
@@ -9450,7 +9454,7 @@
    ]
   },
   "D40Q1_D39": {
-   "src": "scan",
+   "src": "sheet-2 closes D40 Q1/pin13 as the 4 MHz divider tap; recovered .009 Э3 sheet 3 ties D95 B1/B2/B3 pins11/12/13 to the labeled 4 MHz rail",
    "nodes": [
     [
      "D40",
@@ -9463,11 +9467,23 @@
     [
      "D36",
      "5"
+    ],
+    [
+     "D95",
+     "11"
+    ],
+    [
+     "D95",
+     "12"
+    ],
+    [
+     "D95",
+     "13"
     ]
    ]
   },
   "D40Q2_D33": {
-   "src": "scan",
+   "src": "sheet-2 closes D40 Q2/pin12 as the 2 MHz divider tap; recovered .009 Э3 sheet 3 ties D95 A2/A3 pins4/3 to the labeled 2 MHz rail",
    "nodes": [
     [
      "D40",
@@ -9480,6 +9496,14 @@
     [
      "D57",
      "15"
+    ],
+    [
+     "D95",
+     "3"
+    ],
+    [
+     "D95",
+     "4"
     ]
    ]
   },
@@ -10184,7 +10208,7 @@
    "intentional_harness_only": true
   },
   "GND": {
-   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; two overlapping reflected D56 solder views prove trigger pins D56.1 and D56.9 share the uninterrupted perimeter rail with package-ground pin D56.8; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; recovered .009 Э3 sheet 3 grounds both D95 mux enables pins1/15; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; two overlapping reflected D56 solder views prove trigger pins D56.1 and D56.9 share the uninterrupted perimeter rail with package-ground pin D56.8; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints",
    "power": true,
    "nodes": [
     [
@@ -10730,6 +10754,14 @@
     [
      "D95",
      "8"
+    ],
+    [
+     "D95",
+     "1"
+    ],
+    [
+     "D95",
+     "15"
     ],
     [
      "D98",
@@ -12058,7 +12090,7 @@
    "nodes": [["D26", "10"], ["D35", "3"]]
   },
   "LATCH_B": {
-   "src": "scan sheet-2 full-resolution source closure: D40 QD/pin11 descends to conductor tag 7 and D37.2 joins that same conductor; D54 CLK0/CLK1/CLK2 pins 9/15/18 are visibly tied together on the rail labeled 1MHz, whose remote end is also marked tag 7",
+   "src": "sheet-2 full-resolution source closure: D40 Q3/pin11 descends to conductor tag 7 and D37.2 plus D54 CLK0/CLK1/CLK2 join the labeled 1 MHz rail; recovered .009 Э3 sheet 3 ties that rail to D95 A0/A1 pins6/5",
    "nodes": [
     [
      "D40",
@@ -12079,6 +12111,14 @@
     [
      "D54",
      "18"
+    ],
+    [
+     "D95",
+     "5"
+    ],
+    [
+     "D95",
+     "6"
     ]
    ]
   },
@@ -13942,62 +13982,6 @@
    "src": "recovered .009 Э3 sheet 3 closes D97 RC1/pin15 to the left-hand target landing C16.1. The drawing's R99 timing-resistor branch is not adopted because registered target copper directly places the sole R99 between D101.4 and ground",
    "nodes": [["D97", "15"], ["C16", "1"]]
   },
-  "D95_OE0_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "1"]]
-  },
-  "D95_A1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "2"]]
-  },
-  "D95_D03_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "3"]]
-  },
-  "D95_D02_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin4 D02; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "4"]]
-  },
-  "D95_D01_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "5"]]
-  },
-  "D95_D00_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "6"]]
-  },
-  "D95_Q0_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin7 Q0; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "7"]]
-  },
-  "D95_Q1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "9"]]
-  },
-  "D95_D10_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "10"]]
-  },
-  "D95_D11_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "11"]]
-  },
-  "D95_D12_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin12 D12; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "12"]]
-  },
-  "D95_D13_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin13 D13; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "13"]]
-  },
-  "D95_A0_R92": {
-   "src": "July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper from D95 К555КП12 pin14 A0 to the right terminal R92.2; the package fit and factory R92 identity fix both endpoints",
-   "nodes": [["D95", "14"], ["R92", "2"]]
-  },
-  "D95_OE1_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "15"]]
-  },
   "D106_D1_BOUNDARY": {
    "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin1 D1; calibrated raw-crop review finds only local copper into a nearby handoff, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
    "nodes": [["D106", "1"]]
@@ -14010,9 +13994,9 @@
    "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin3 Q0; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D106", "3"]]
   },
-  "D106_DOWN_BOUNDARY": {
-   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin4 DOWN and its local copper departure; the path does not remain visibly unbroken to an identified clock source, so the expected recovery-clock input remains an unproved measurement boundary",
-   "nodes": [["D106", "4"]]
+  "FDC_SEPARATOR_CLOCK": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D95 clock-mux output B/pin9 to D106 IE7 DOWN/pin4; the mux selects 8 MHz only for FM/MFM=0 and 5-inch/8-inch=0, otherwise 4 MHz",
+   "nodes": [["D95", "9"], ["D106", "4"]]
   },
   "D106_UP_BOUNDARY": {
    "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin5 UP; calibrated raw-crop review finds only local copper, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
@@ -14219,9 +14203,9 @@
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "23"]]
   },
-  "D93_CLK_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "24"]]
+  "FDC_CLK": {
+   "src": "recovered .009 Э3 sheet 3 directly joins D95 clock-mux output A/pin7 to D93 CLK/pin24; 5-inch/8-inch select A1=0 chooses the tied 1 MHz inputs and A1=1 chooses the tied 2 MHz inputs",
+   "nodes": [["D95", "7"], ["D93", "24"]]
   },
   "D93_RG_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary",
@@ -14328,7 +14312,7 @@
    ]
   },
   "FDC_DDEN": {
-   "src": "recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM and sheet 3 joins that conductor directly to D93 DDEN/pin37; the same sheet proves D28.9 belongs to the separator and is not a DDEN branch",
+   "src": "recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch",
    "nodes": [
     [
      "D26",
@@ -14337,6 +14321,14 @@
     [
      "D93",
      "37"
+    ],
+    [
+     "D95",
+     "14"
+    ],
+    [
+     "R92",
+     "2"
     ]
    ]
   },
@@ -15500,9 +15492,9 @@
    "src": "sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit",
    "nodes": [["C99", "2"]]
   },
-  "FDC_DRIVE_SIZE_5_8_BOUNDARY": {
-   "src": "recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; the target-revision destination is not shown on sheet 3",
-   "nodes": [["D26", "17"]]
+  "FDC_DRIVE_SIZE_5_8": {
+   "src": "recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; sheet 3 directly joins it to D95 clock-mux select A1/pin2",
+   "nodes": [["D26", "17"], ["D95", "2"]]
   },
   "D28_A6_BOUNDARY": {
    "src": "recovered .009 Э3 sheet 3 supersedes the legacy tape assignment on D28 input pin13; its target-revision source remains to be transcribed",

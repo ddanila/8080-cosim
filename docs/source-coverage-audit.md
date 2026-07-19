@@ -27,7 +27,7 @@ deliberately omitted.
 
 1. Compare all four validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` raw tables against Baltijets programming-disk files if those surface.
 2. D94 `ДГШ5.106.092` input/enable/output continuity; the repeated content dump is already adopted.
-3. Pin-level continuity for D93's complete drive interface, plus explicit dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. D93.40->+12 V and the owner-measured D2/D30/D105/D13/D6 corrections are synchronized.
+3. Pin-level continuity for D93's remaining drive interface, plus explicit dispositions for the 8 still-open power-routed FDC-support devices: D28, D96-D99, D101, D102, and D106. D95's complete clock mux, D93.40->+12 V, and the owner-measured D2/D30/D105/D13/D6 corrections are synchronized.
 4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.
 5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.
 

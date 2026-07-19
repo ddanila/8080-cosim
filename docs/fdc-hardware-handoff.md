@@ -74,8 +74,9 @@ Except for the factory-proved separator chain below, these are
 cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas
 Figure 11 contains no mux and only one half of a single 74123. The owner
 photos identify the packages but do not prove the candidate paths end to
-end; in particular D106 pins 9/10 are rail-obscured. Continuity or a
-Juku-specific electrical sheet remains required before board-JSON changes.
+end; in particular D106 pins 9/10 are rail-obscured. The recovered Juku
+sheet now closes D95 completely; continuity remains required only for the
+support pins not explicitly drawn there.
 
 ## Soviet VG93 Circuit Cross-Check
 
@@ -95,9 +96,10 @@ photograph-only interpretation of a direct D106.7-D93.26 net is retired.
 Calibrated review of the same raw solder tile finds no uninterrupted
 same-layer path for D106.11-D93.27 or D106.14-D93.33. This rejects a
 direct visible merge, not cross-layer continuity: both pairs remain meter
-tests for hidden handoffs. In both references
-D93.24 is the controller's separate
-main clock input; D106 Q3 must not be treated as a candidate for D93.24.
+tests for hidden handoffs. Recovered sheet 3 now proves D93.24 is driven
+by D95.7 from the selected 1/2 MHz rail, while D95.9 independently supplies
+D106.4 with selected 4/8 MHz; D106 Q3 is not a D93.24 source.
+See `ref/schematics/fdc-clock-mux-map.md` for the exact four-row tables.
 
 Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:
 D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;
@@ -149,7 +151,7 @@ visible links are modeled; the mux select/output paths remain open.
 | Endpoint | Component coordinate | Modeled net | Disposition |
 | --- | --- | --- | --- |
 | R92.1 | (2341.000, 1317.000) | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
-| R92.2 | (2564.000, 1314.000) | D95_A0_R92 | ACCEPTED TARGET COPPER |
+| R92.2 | (2564.000, 1314.000) | FDC_DDEN | ACCEPTED TARGET COPPER |
 | R99.1 | (2064.000, 1370.000) | GND | ACCEPTED TARGET COPPER |
 | R99.2 | (2287.000, 1367.000) | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
 
@@ -194,7 +196,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D10.12/.13/.15/.20/.21/.22 | BOUNDARY | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, IR2/IR3 connect directly to D11 RXRDY/TXRDY, and only IR4 remains an off-sheet boundary |
 | D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
+| D93.24 `CLK` | CONNECTED | source-selected 1/2 MHz FDC clock rail | recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock |
 | D100.9/.11 continuation `1` | CONNECTED | shared drive-output-buffer control source | factory sheet proves pins 9/11 joined; upstream continuation remains untraced |
 
 ## Netted FDC Endpoints
@@ -202,10 +204,11 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | Net | Source | Endpoints |
 | --- | --- | --- |
 | `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 remains the physical КР1818ВГ93 | `D9.7` |
+| `FDC_CLK` | recovered .009 Э3 sheet 3 directly joins D95 clock-mux output A/pin7 to D93 CLK/pin24; 5-inch/8-inch select A1=0 chooses the tied 1 MHz inputs and A1=1 chooses the tied 2 MHz inputs | `D95.7, D93.24` |
 | `FDC_CS_N` | direct owner continuity 2026-07-15 proves D94 enable pin15 reaches D93 chip-select pin3, and explicitly proves D94 output pin2 is isolated from this conductor. The upstream source is retained separately for later continuity | `D94.15, D93.3` |
-| `FDC_DDEN` | recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM and sheet 3 joins that conductor directly to D93 DDEN/pin37; the same sheet proves D28.9 belongs to the separator and is not a DDEN branch | `D26.13, D93.37` |
+| `FDC_DDEN` | recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch | `D26.13, D93.37, D95.14, R92.2` |
 | `FDC_DIR_TO_D100` | recovered .009 Э3 sheet 3: D93 DIR/pin16 directly drives D100 A2/pin1 | `D93.16, D100.1` |
-| `FDC_DRIVE_SIZE_5_8_BOUNDARY` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; the target-revision destination is not shown on sheet 3 | `D26.17` |
+| `FDC_DRIVE_SIZE_5_8` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; sheet 3 directly joins it to D95 clock-mux select A1/pin2 | `D26.17, D95.2` |
 | `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
 | `FDC_DSEL_IN` | recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1 | `D26.12, D28.1` |
 | `FDC_EARLY_SEL` | recovered .009 Э3 sheet 3 directly joins D93 EARLY/pin17 to the common D101 select input A1/pin2 | `D93.17, D101.2` |
@@ -219,6 +222,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
 | `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V | `D28.6, D93.32, R84.1` |
 | `FDC_RE_N` | direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation | `D94.3, D93.4` |
+| `FDC_SEPARATOR_CLOCK` | recovered .009 Э3 sheet 3 directly joins D95 clock-mux output B/pin9 to D106 IE7 DOWN/pin4; the mux selects 8 MHz only for FM/MFM=0 and 5-inch/8-inch=0, otherwise 4 MHz | `D95.9, D106.4` |
 | `FDC_SIDE_SEL` | recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL | `D26.11, D100.8` |
 | `FDC_STEP_TO_D100` | recovered .009 Э3 sheet 3: D93 STEP/pin15 directly drives D100 A3/pin2 | `D93.15, D100.2` |
 | `FDC_TG43_TO_D100` | recovered .009 Э3 sheet 3: D93 TG43/pin29 directly drives D100 A1/pin4 | `D93.29, D100.4` |
@@ -239,14 +243,15 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   pin-15 enable source, pull-up identities, D3-D7 destinations, and the
   recorded D29.4/IORD recheck. The `.092` table is physically captured.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
-  confirm INTRQ/DRQ ordering, then identify D93.19 and D93.24. First dump
+  confirm INTRQ/DRQ ordering, then identify D93.19. D93.24 is now
+  source-closed through D95's selected 1/2 MHz clock section. First dump
   D15/D16 and identify its guarded CMA/NOP profile; the recovered direct
   D93 bus means physical D100 is not the profile selector. Separately trace
   shared D100.9/.11 continuation `1` and D100.6's write-data input; see
   `docs/fdc-bus-polarity.md`.
   Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
-- Trace every restored D93 drive-interface pin through D28/D95-D99/
+- Trace every still-open restored D93 drive-interface pin through D28/D96-D99/
   D101/D102/D106. D93.40 to `P12V` is already owner-confirmed.
   Pin 40 is a power-safety
   blocker, not an optional functional refinement.

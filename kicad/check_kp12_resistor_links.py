@@ -11,8 +11,8 @@ BOARD = ROOT / "kicad" / "juku.kicad_pcb"
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 EXPECTED_VALUES = {"R92": "1,3к", "R99": "4,7к"}
 EXPECTED = {
-    ("D95", "14"): "D95_A0_R92",
-    ("R92", "2"): "D95_A0_R92",
+    ("D95", "14"): "FDC_DDEN",
+    ("R92", "2"): "FDC_DDEN",
     ("D101", "4"): "D101_D02_R92_R99",
     ("R92", "1"): "D101_D02_R92_R99",
     ("R99", "2"): "D101_D02_R92_R99",

@@ -348,7 +348,7 @@ def main() -> int:
             "- Endpoint coverage proves that modeled nets survive into both PCB files;",
             "  it does not prove that the modeled net is historically correct or that",
             "  omitted functional pins are safe.",
-            "- The 9 official IC footprints with no board-JSON pin model are tracked",
+            "- The 8 official FDC devices with remaining source-risk pins are tracked",
             "  separately in `docs/unmodeled-footprint-inventory.md`; they are outside",
             "  every endpoint count above and remain design-release blockers.",
             "- Any row affecting boot, memory, bus direction, interrupts, or video",

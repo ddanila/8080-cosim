@@ -70,8 +70,9 @@ physical D93/D94 wiring.
   emits at most 255 outward steps, and reports SEEK ERROR if TR00 never asserts;
   the Type-I TRACK 0 status bit is the live inverse of that input. A silent D0 retains every
   already-issued partial seek step. C advances this contract from executed 8080 cycles; focused HDL
-  unit/decoded guards enable it with `FDC_TYPE_I_TIMING`. Exact wall-clock
-  calibration remains a physical D93.24 boundary, while the source and waveform
+  unit/decoded guards enable it with `FDC_TYPE_I_TIMING`. Recovered sheet 3 now
+  closes D95's selected 1/2 MHz source onto D93.24; exact wall-clock and waveform
+  calibration remain physical bring-up boundaries, while the source and waveform
   of the now-modeled HLT input remain a physical D93.23 boundary. The physical
   drive-status source for TR00 remains a D93.34 continuity boundary; the C
   harness defaults it asserted and `juku_top` retains its explicit functional
@@ -88,8 +89,8 @@ physical D93/D94 wiring.
   cover tick 29,999 versus 30,000, and a silent D0 cancels the pending interval.
   With `E=0` the controller waits for HLT immediately; with `E=1` it waits after
   the settle interval. Both hold BUSY with DRQ low and begin media access on the
-  HLT rising edge. The physical D93.23 HLT source/waveform and D93.24 wall-clock
-  calibration remain measurement boundaries rather than assumed copper.
+  HLT rising edge. The physical D93.23 HLT source/waveform and the D95-to-D93.24
+  wall-clock calibration remain measurement boundaries rather than assumed timing.
 - C and HDL sample the external READY input when every Type-II/III command is
   loaded. READY low completes immediately with BUSY/DRQ clear, NOT READY set,
   and INTRQ asserted, including commands carrying the optional E delay; Type-I
@@ -126,10 +127,10 @@ physical D93/D94 wiring.
   substitution, and per-record re-arming; the decoded
   top-level guard proves read overwrite and S2 through D94 plus logical DB and
   both diagnostic inversion-profile families. Exact wall-clock calibration remains conditional on
-  the measurement-gated physical D93.24 clock source. Accordingly, the C oracle
+  measuring the source-closed D95-to-D93.24 clock waveform. Accordingly, the C oracle
   advances the deadline from executed 8080 cycles, while the autonomous HDL
   timer is enabled only in focused unit/decoded guards with `FDC_BYTE_TIMING`;
-  the uninterrupted physical top remains untimed until D93.24 is measured.
+  the uninterrupted physical top remains untimed until that waveform is calibrated.
 - Type-II bit 4 continues across records and increments the sector register.
   Read and writable-image guards traverse sectors 9 and 10 byte-for-byte,
   advance to sector 11, and terminate with Record Not Found exactly as the
@@ -438,7 +439,7 @@ evidence exists.
 - The model is a Juku boot/media shim with datasheet-guarded Read Address,
   reconstructed Read Track, representable MFM Write Track, and Type-II
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
-  not a general WD1793 conformance model. Exact physical D93.24 calibration of
+  not a general WD1793 conformance model. Exact physical D95-to-D93.24 calibration of
   the byte, Type-I, and Type-II/III E-delay intervals,
   physical D93.23 HLT generation, D93.34 TR00 drive-status continuity, and
   step-interface timing, arbitrary flux/sector layouts, cross-reopen
@@ -447,7 +448,8 @@ evidence exists.
   index-event semantics are guarded, but the board's physical D93.32 READY
   source, event pulse widths, and rotational timing remain outside this
   byte-level shim.
-- Physical D93 INTRQ/DRQ, reset, and clock still require targeted continuity
+- Physical D93 INTRQ/DRQ and reset still require targeted continuity; the clock
+  conductor is source-closed but its waveform still requires bench calibration
   checks in `docs/fdc-hardware-handoff.md`. D100's drive-output channels are
   source-proved; shared pins 9/11 continuation `1` and the pin-6 write-data input
   remain open upstream boundaries.

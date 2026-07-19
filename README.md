@@ -52,7 +52,7 @@ with the machine-readable board model.
   snapshot still needs replacement. D94 content truth is closed, but its A0-A4
   input sources, pin 15 source, and the far destinations or branches of outputs
   D3-D7 remain unknown; the former BA11-BA15 input assignment was an unproved
-  scaffold analogy and is retired. There are 9 official
+  scaffold analogy and is retired. There are 8 official
   FDC-support ICs with only their physical pin maps and power endpoints modeled.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
   D6's validated physical table and chip-removed separate ROM/RAM outputs stay LVS-visible,
@@ -70,7 +70,7 @@ with the machine-readable board model.
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
   R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 106 modeled nets retain source-risk annotations requiring
+  In total, 91 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

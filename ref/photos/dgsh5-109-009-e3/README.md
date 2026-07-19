@@ -86,6 +86,10 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       timing passives; target copper resolves the drawing's duplicated R99,
       conflicting R86, and D101 junctions
       (`ref/schematics/fdc-write-precomp-map.md`).
+- [x] Sheet-3 D95 clock mux completely transcribed: D40's 1/2 MHz rails feed
+      D93 CLK, its 4/8 MHz rails feed D106 DOWN, FM/MFM and 5-inch/8-inch are
+      the shared selects, and both enables are grounded
+      (`ref/schematics/fdc-clock-mux-map.md`).
 - [ ] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).

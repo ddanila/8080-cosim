@@ -428,6 +428,15 @@ module ie7_ctr   (input wire up, down, load_n, clr, input wire [3:0] d,
     assign co = ~((cnt == 4'hF) && ~up);     // /CO: low during UP low at terminal F
     assign bo = ~((cnt == 4'h0) && ~down);   // /BO: low during DOWN low at terminal 0
 endmodule
+// D95 К555КП12 / 74LS253 dual 4:1 mux. Both sections share A0/A1 while
+// retaining independent active-low enables. The vector order is literal:
+// d0[0] is physical pin 6 and d1[0] is physical pin 10.
+module kp12_mux (input wire a0, a1, oe0_n, oe1_n,
+                 input wire [3:0] d0, d1, output wire q0, q1);
+    wire [1:0] sel = {a1, a0};
+    assign q0 = oe0_n ? 1'bz : d0[sel];
+    assign q1 = oe1_n ? 1'bz : d1[sel];
+endmodule
 // D48/D49 КП14 quad 2:1 mux: y = sel ? b : a (en_n low = enabled). For DRAM addressing, sel picks
 // the ROW half (b) vs COL half (a) of the CPU address onto the 8-bit muxed bus MA.
 module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0] y);
@@ -2080,7 +2089,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     // The byte-level twin uses 2 MHz-equivalent controller ticks.  At the
     // Juku MFM rate, 64 ticks are one 32 us byte-service window.  Keep the
-    // autonomous timer opt-in until the physical D93.24 clock is measured;
+    // autonomous timer opt-in until the source-closed D95-to-D93.24 waveform is calibrated;
     // focused unit/decoded-bus guards compile with FDC_BYTE_TIMING.
 `ifdef FDC_BYTE_TIMING
     always @(negedge clk) begin
@@ -2112,7 +2121,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     // followed by HLT, immediate valid-ID comparison, and at most four
     // missing-ID revolutions in the flat-image backend. Restore samples active-low
     // TR00 for at most 255 steps. Keep the timer opt-in until the board's
-    // physical D93.24 clock is measured.
+    // source-closed D95-to-D93.24 waveform is calibrated.
 `ifdef FDC_TYPE_I_TIMING
     always @(negedge clk) begin
         step_r = 0;
@@ -2144,7 +2153,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     // Type-II/III E=1 holds BUSY for the datasheet's nominal 15 ms head
     // settle, then waits for HLT before ID search or the Type-III index wait.
-    // Keep the autonomous timer opt-in until D93.24 is calibrated; D93.23's
+    // Keep the autonomous timer opt-in until the D95-to-D93.24 waveform is calibrated; D93.23's
     // physical HLT source remains a separate continuity/waveform boundary.
 `ifdef FDC_TYPE_II_III_TIMING
     always @(negedge clk) begin

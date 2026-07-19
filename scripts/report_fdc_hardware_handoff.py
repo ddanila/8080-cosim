@@ -38,7 +38,7 @@ D106_STATIC_PROBES = {
 }
 KP12_RESISTOR_ENDPOINTS = {
     "kp12-component-R92-1": ("R92", "1", "2341.000", "1317.000", "D101_D02_R92_R99"),
-    "kp12-component-R92-2": ("R92", "2", "2564.000", "1314.000", "D95_A0_R92"),
+    "kp12-component-R92-2": ("R92", "2", "2564.000", "1314.000", "FDC_DDEN"),
     "kp12-component-R99-1": ("R99", "1", "2064.000", "1370.000", "GND"),
     "kp12-component-R99-2": ("R99", "2", "2287.000", "1367.000", "D101_D02_R92_R99"),
 }
@@ -274,8 +274,8 @@ def main() -> int:
     if not rclk_closed:
         failures.append("factory-proved D106-D28-D96-D93 recovered-clock chain is absent")
     kp12_resistor_closed = (
-        has_node(board, "D95_A0_R92", "D95", "14")
-        and has_node(board, "D95_A0_R92", "R92", "2")
+        has_node(board, "FDC_DDEN", "D95", "14")
+        and has_node(board, "FDC_DDEN", "R92", "2")
         and has_node(board, "D101_D02_R92_R99", "D101", "4")
         and has_node(board, "D101_D02_R92_R99", "R92", "1")
         and has_node(board, "D101_D02_R92_R99", "R99", "2")
@@ -449,8 +449,8 @@ def main() -> int:
         (
             "D93.24 `CLK`",
             endpoint_state(board, "D93", "24"),
-            "1 MHz FDC clock rail",
-            "corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved",
+            "source-selected 1/2 MHz FDC clock rail",
+            "recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock",
         ),
         (
             "D100.9/.11 continuation `1`",
@@ -537,8 +537,9 @@ def main() -> int:
         "cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas",
         "Figure 11 contains no mux and only one half of a single 74123. The owner",
         "photos identify the packages but do not prove the candidate paths end to",
-        "end; in particular D106 pins 9/10 are rail-obscured. Continuity or a",
-        "Juku-specific electrical sheet remains required before board-JSON changes.",
+        "end; in particular D106 pins 9/10 are rail-obscured. The recovered Juku",
+        "sheet now closes D95 completely; continuity remains required only for the",
+        "support pins not explicitly drawn there.",
         "",
         "## Soviet VG93 Circuit Cross-Check",
         "",
@@ -558,9 +559,10 @@ def main() -> int:
         "Calibrated review of the same raw solder tile finds no uninterrupted",
         "same-layer path for D106.11-D93.27 or D106.14-D93.33. This rejects a",
         "direct visible merge, not cross-layer continuity: both pairs remain meter",
-        "tests for hidden handoffs. In both references",
-        "D93.24 is the controller's separate",
-        "main clock input; D106 Q3 must not be treated as a candidate for D93.24.",
+        "tests for hidden handoffs. Recovered sheet 3 now proves D93.24 is driven",
+        "by D95.7 from the selected 1/2 MHz rail, while D95.9 independently supplies",
+        "D106.4 with selected 4/8 MHz; D106 Q3 is not a D93.24 source.",
+        "See `ref/schematics/fdc-clock-mux-map.md` for the exact four-row tables.",
         "",
         "Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:",
         "D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;",
@@ -696,14 +698,15 @@ def main() -> int:
             "  pin-15 enable source, pull-up identities, D3-D7 destinations, and the",
             "  recorded D29.4/IORD recheck. The `.092` table is physically captured.",
             "- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to",
-            "  confirm INTRQ/DRQ ordering, then identify D93.19 and D93.24. First dump",
+            "  confirm INTRQ/DRQ ordering, then identify D93.19. D93.24 is now",
+            "  source-closed through D95's selected 1/2 MHz clock section. First dump",
             "  D15/D16 and identify its guarded CMA/NOP profile; the recovered direct",
             "  D93 bus means physical D100 is not the profile selector. Separately trace",
             "  shared D100.9/.11 continuation `1` and D100.6's write-data input; see",
             "  `docs/fdc-bus-polarity.md`.",
             "  Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional",
             "  NCs; SP/EN pin16 is already source-proved and modeled at +5 V.",
-            "- Trace every restored D93 drive-interface pin through D28/D95-D99/",
+            "- Trace every still-open restored D93 drive-interface pin through D28/D96-D99/",
             "  D101/D102/D106. D93.40 to `P12V` is already owner-confirmed.",
             "  Pin 40 is a power-safety",
             "  blocker, not an optional functional refinement.",

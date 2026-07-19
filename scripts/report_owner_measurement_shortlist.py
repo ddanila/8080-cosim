@@ -243,8 +243,8 @@ def main() -> int:
         (
             "P0",
             "FDC support signal dispositions",
-            "pin-level continuity or an explicit redesign/DNP decision for the still-open D28, D95-D99, D101, D102, and D106 pins. Preserve the source-closed D106.7-D28.9-D28.8-D96.3-D96.5-D93.26 chain and recovered sheet-3 D97/D102/D101 write-precomp chain. Resistance-test D106.11-D93.27 and D106.14-D93.33 for hidden handoffs, then meter D106's bounded setup pins. D101.1/.3/.5/.6, D97.13, and D102.4 remain the specific precomp-area boundaries",
-            "`docs/fdc-hardware-handoff.md`; `ref/schematics/fdc-write-precomp-map.md`; `PLAN.md` P0 connectivity gate",
+            "pin-level continuity or an explicit redesign/DNP decision for the still-open D28, D96-D99, D101, D102, and D106 pins. Preserve the source-closed D95 1/2 MHz controller and 4/8 MHz separator clock mux, D106.7-D28.9-D28.8-D96.3-D96.5-D93.26 chain, and D97/D102/D101 write-precomp chain. Resistance-test D106.11-D93.27 and D106.14-D93.33 for hidden handoffs, then meter D106's bounded setup pins. D101.1/.3/.5/.6, D97.13, and D102.4 remain the specific precomp-area boundaries",
+            "`docs/fdc-hardware-handoff.md`; `ref/schematics/fdc-clock-mux-map.md`; `ref/schematics/fdc-write-precomp-map.md`; `PLAN.md` P0 connectivity gate",
             "completes only the genuinely open support-circuit context without re-probing source-closed timing paths",
         ),
         (

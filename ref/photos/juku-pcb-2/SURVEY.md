@@ -51,7 +51,7 @@ Photo sighting alone did not establish D2/D94 contents; repeated programmer
 reads now preserve the byte-level truth for both devices independently of this
 survey. The July grid remains applicable physical evidence for the populated
 FDC board, but refdes-to-pad registration and end-to-end trace extraction must
-be completed before using it to assign the functional nets of D28, D95-D99,
+be completed before using it to assign the remaining functional nets of D28, D96-D99,
 D101, D102, or D106. Traces hidden by sockets, solder, glare, or crossings still
 require continuity measurements. The exact C35-C72 per-position capacitor
 values and the remaining D30 READY/D105 WAIT boundaries also remain open.
