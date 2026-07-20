@@ -118,9 +118,9 @@ BA15, D94_A4_D101_Q0, BA13, CS_D11, CS_D27, IOWC_N, AMWC_N, MEMR, BA12,
 X2_IRQ0, IORC_N, P12V, D6_V_ENABLE, DBIN_GATED, SYNC, D25_T, FRAME_INT, BA7,
 OSC, VIDEO_OUT, XTAL16M, VID_MIX1, E2_COM, INTA, IOWR, FDC_DDEN,
 D30_Q2N_D29_AIN7, FDC_DRIVE_SIZE_5_8, WREQ_N, PIT_BAUD, ROE, STSTB_D38, CTR_LD,
-RAM_OUT_EN, MA2, MA1, S3_5, DB7, MEMR, BA9, BA1, D3_O4_D6_A6, E3_COM, INTR, RES_RC, D13_4_D105_2, D105_10_H, and CS_D54 then
-each pass an independent uncapped check, reducing the exact count to 15; those
-routes are promoted. The last six hundred fifty-eight are
+RAM_OUT_EN, MA2, MA1, S3_5, DB7, MEMR, BA9, BA1, D3_O4_D6_A6, E3_COM, INTR, RES_RC, D13_4_D105_2, D105_10_H, CS_D54, and FDC_DSEL_IN then
+each pass an independent uncapped check, reducing the exact count to 14; those
+routes are promoted. The last six hundred fifty-nine are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
@@ -138,7 +138,7 @@ candidates through 260 mm, beyond the 252.637 mm maximum residual candidate, so
 every distance-ranked gap has been attempted in that mode.
 A targeted finer-lattice phase uses 0.205 mm clearance and a 0.125 mm grid;
 its `MA2`, `MA1`, `S3_5`, `DB7`, `MEMR`, `BA9`, `BA1`, `D3_O4_D6_A6`,
-`E3_COM`, `INTR`, `RES_RC`, `D13_4_D105_2`, `D105_10_H`, and `CS_D54` attempts pass the same complete KiCad DRC guard.
+`E3_COM`, `INTR`, `RES_RC`, `D13_4_D105_2`, `D105_10_H`, `CS_D54`, and `FDC_DSEL_IN` attempts pass the same complete KiCad DRC guard.
 
 ### Additive/rename-safe copper migration
 
