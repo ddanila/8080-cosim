@@ -99,6 +99,16 @@
   "route_probe": {
     "min_distance_mm": 0.01,
     "max_distance_mm": 90,
+    "search_ceiling_mm": 110,
+    "exhausted_without_acceptance": [
+      {"min_distance_mm": 48.43, "max_distance_mm": 50},
+      {"min_distance_mm": 65, "max_distance_mm": 70},
+      {"min_distance_mm": 75, "max_distance_mm": 80},
+      {"min_distance_mm": 90, "max_distance_mm": 95},
+      {"min_distance_mm": 95, "max_distance_mm": 100},
+      {"min_distance_mm": 100, "max_distance_mm": 105},
+      {"min_distance_mm": 105, "max_distance_mm": 110}
+    ],
     "proposal_timeout_seconds": 3,
     "accepted_routes_by_capped_marker_guard": 318,
     "accepted_routes_by_uncapped_guard": 318,

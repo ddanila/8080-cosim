@@ -98,8 +98,10 @@ D98_Y3_S1_2 then each pass an independent uncapped check, reducing the exact
 count to 359; those routes are promoted. The last three hundred fourteen are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
-DRC-regressing candidates. The exact board/DRC
-hashes, parameters, and tool hashes are guarded in
+DRC-regressing candidates. Its standard front/back A* search is exhausted with
+no accepted route across 48.43–50, 65–70, 75–80, and every 5 mm band from 90
+through 110 mm. The exact board/DRC hashes, search ceiling, exhausted ranges,
+parameters, and tool hashes are guarded in
 `ref/routing/current-source-uncapped-prune.json`.
 
 ### Additive/rename-safe copper migration

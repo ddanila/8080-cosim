@@ -72,9 +72,12 @@ D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
 D99_C1_TIMING, RESET, OSC, DBIN, TIMING_TAG17, CLK_123M, CAS, FDC_STEP_TO_D100,
 AVDC, KBD_K0, VID_CPU_SEL, VA11, FDC_PRECOMP_WRDATA, IORC_N, MRC_N, and
 D98_Y3_S1_2, each independently reduce the uncapped graph, reaching 359 opens;
-all three hundred eighteen are promoted. The final three hundred fourteen are selected by
-a transactional orchestrator that rejects
+all three hundred eighteen are promoted. The final three hundred fourteen are
+selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
+The standard guarded front/back A* search is also exhausted without an accepted
+route across 48.43–50, 65–70, 75–80, and every 5 mm band from 90 through 110 mm;
+the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
 Exact hashes, parameters, and tool provenance are guarded in
 `ref/routing/current-source-uncapped-prune.json`; this remains convergence
 evidence rather than production copper.
