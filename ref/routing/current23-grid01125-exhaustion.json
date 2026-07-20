@@ -12,7 +12,7 @@
     "timeout_seconds": 60.0
   },
   "tool_sha256": {
-    "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447",
+    "kicad/repair_fdc_route_gaps.py": "9ae05d1cd0e5c661adf512a925cf14f1f386e9d70edc2210bc1bd4d0c128d8a0",
     "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
     "kicad/close_gap_by_ripup.py": "083ccf4ac24599072a20fc1ef22f90b2830e0a92110ac70bf18e2d3d703cfe89"
   },

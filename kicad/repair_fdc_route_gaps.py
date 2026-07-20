@@ -3,6 +3,7 @@
 
 import heapq
 import math
+import os
 import sys
 
 import pcbnew
@@ -14,6 +15,10 @@ if len(sys.argv) not in (3, 4, 8, 9, 10, 11, 13):
 STEP = float(sys.argv[9]) if len(sys.argv) >= 10 else 0.5
 if STEP <= 0:
     raise SystemExit("grid step must be positive")
+OFFSET_X = float(os.environ.get("JUKU_ROUTE_GRID_OFFSET_X_MM", "0"))
+OFFSET_Y = float(os.environ.get("JUKU_ROUTE_GRID_OFFSET_Y_MM", "0"))
+if not (0 <= OFFSET_X < STEP and 0 <= OFFSET_Y < STEP):
+    raise SystemExit("route grid offsets must be non-negative and smaller than the grid step")
 WIDTH = 0.20
 VIA_WIDTH = 0.60
 VIA_DRILL = 0.30
@@ -33,7 +38,15 @@ def mm(point):
 
 def cell(point):
     x, y = mm(point)
-    return round(x / STEP), round(y / STEP)
+    return round((x - OFFSET_X) / STEP), round((y - OFFSET_Y) / STEP)
+
+
+def grid_x(index):
+    return index * STEP + OFFSET_X
+
+
+def grid_y(index):
+    return index * STEP + OFFSET_Y
 
 
 def point_segment_distance(px, py, ax, ay, bx, by):
@@ -45,11 +58,11 @@ def point_segment_distance(px, py, ax, ay, bx, by):
 
 
 def mark_circle(blocked, x, y, radius, bounds=(0, MAX_X, 0, MAX_Y)):
-    ix0, ix1 = max(bounds[0], math.floor((x - radius) / STEP)), min(bounds[1], math.ceil((x + radius) / STEP))
-    iy0, iy1 = max(bounds[2], math.floor((y - radius) / STEP)), min(bounds[3], math.ceil((y + radius) / STEP))
+    ix0, ix1 = max(bounds[0], math.floor((x - radius - OFFSET_X) / STEP)), min(bounds[1], math.ceil((x + radius - OFFSET_X) / STEP))
+    iy0, iy1 = max(bounds[2], math.floor((y - radius - OFFSET_Y) / STEP)), min(bounds[3], math.ceil((y + radius - OFFSET_Y) / STEP))
     for ix in range(ix0, ix1 + 1):
         for iy in range(iy0, iy1 + 1):
-            if math.hypot(ix * STEP - x, iy * STEP - y) <= radius:
+            if math.hypot(grid_x(ix) - x, grid_y(iy) - y) <= radius:
                 blocked.add((ix, iy))
 
 
@@ -66,14 +79,14 @@ def mark_pad(blocked, pad, conductor_radius, bounds=(0, MAX_X, 0, MAX_Y)):
     y0 = pcbnew.ToMM(box.GetY()) - separation
     x1 = pcbnew.ToMM(box.GetRight()) + separation
     y1 = pcbnew.ToMM(box.GetBottom()) + separation
-    ix0 = max(bounds[0], math.floor(x0 / STEP))
-    ix1 = min(bounds[1], math.ceil(x1 / STEP))
-    iy0 = max(bounds[2], math.floor(y0 / STEP))
-    iy1 = min(bounds[3], math.ceil(y1 / STEP))
+    ix0 = max(bounds[0], math.floor((x0 - OFFSET_X) / STEP))
+    ix1 = min(bounds[1], math.ceil((x1 - OFFSET_X) / STEP))
+    iy0 = max(bounds[2], math.floor((y0 - OFFSET_Y) / STEP))
+    iy1 = min(bounds[3], math.ceil((y1 - OFFSET_Y) / STEP))
     accuracy = pcbnew.FromMM(separation)
     for ix in range(ix0, ix1 + 1):
         for iy in range(iy0, iy1 + 1):
-            point = pcbnew.VECTOR2I_MM(ix * STEP, iy * STEP)
+            point = pcbnew.VECTOR2I_MM(grid_x(ix), grid_y(iy))
             if pad.HitTest(point, accuracy):
                 blocked.add((ix, iy))
 
@@ -88,14 +101,14 @@ def mark_edge_shape(
     y0 = pcbnew.ToMM(box.GetY()) - separation
     x1 = pcbnew.ToMM(box.GetRight()) + separation
     y1 = pcbnew.ToMM(box.GetBottom()) + separation
-    ix0 = max(bounds[0], math.floor(x0 / STEP))
-    ix1 = min(bounds[1], math.ceil(x1 / STEP))
-    iy0 = max(bounds[2], math.floor(y0 / STEP))
-    iy1 = min(bounds[3], math.ceil(y1 / STEP))
+    ix0 = max(bounds[0], math.floor((x0 - OFFSET_X) / STEP))
+    ix1 = min(bounds[1], math.ceil((x1 - OFFSET_X) / STEP))
+    iy0 = max(bounds[2], math.floor((y0 - OFFSET_Y) / STEP))
+    iy1 = min(bounds[3], math.ceil((y1 - OFFSET_Y) / STEP))
     accuracy = pcbnew.FromMM(separation)
     for ix in range(ix0, ix1 + 1):
         for iy in range(iy0, iy1 + 1):
-            point = pcbnew.VECTOR2I_MM(ix * STEP, iy * STEP)
+            point = pcbnew.VECTOR2I_MM(grid_x(ix), grid_y(iy))
             if shape.HitTest(point, accuracy):
                 blocked.add((ix, iy))
 
@@ -129,11 +142,11 @@ def obstacle_map(
             continue
         ax, ay = mm(item.GetStart()); bx, by = mm(item.GetEnd())
         radius = pcbnew.ToMM(item.GetWidth()) / 2 + CLEARANCE + conductor_radius
-        ix0, ix1 = max(bounds[0], math.floor((min(ax, bx) - radius) / STEP)), min(bounds[1], math.ceil((max(ax, bx) + radius) / STEP))
-        iy0, iy1 = max(bounds[2], math.floor((min(ay, by) - radius) / STEP)), min(bounds[3], math.ceil((max(ay, by) + radius) / STEP))
+        ix0, ix1 = max(bounds[0], math.floor((min(ax, bx) - radius - OFFSET_X) / STEP)), min(bounds[1], math.ceil((max(ax, bx) + radius - OFFSET_X) / STEP))
+        iy0, iy1 = max(bounds[2], math.floor((min(ay, by) - radius - OFFSET_Y) / STEP)), min(bounds[3], math.ceil((max(ay, by) + radius - OFFSET_Y) / STEP))
         for ix in range(ix0, ix1 + 1):
             for iy in range(iy0, iy1 + 1):
-                if point_segment_distance(ix * STEP, iy * STEP, ax, ay, bx, by) <= radius:
+                if point_segment_distance(grid_x(ix), grid_y(iy), ax, ay, bx, by) <= radius:
                     blocked.add((ix, iy))
     return blocked
 
@@ -196,7 +209,7 @@ def add_route(netname, start, end, layers=(pcbnew.F_Cu, pcbnew.B_Cu), endpoint_v
     if best is None:
         raise SystemExit(f"no A* route for {netname}")
     _, layer, path = best
-    points = [start] + [pcbnew.VECTOR2I_MM(ix * STEP, iy * STEP) for ix, iy in path[1:-1]] + [end]
+    points = [start] + [pcbnew.VECTOR2I_MM(grid_x(ix), grid_y(iy)) for ix, iy in path[1:-1]] + [end]
     net = board.FindNet(netname)
     if endpoint_vias:
         for position in (start, end):
@@ -320,7 +333,7 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
     segment_count = via_count = 0
     for index in range(1, len(path)):
         x, y, layer_index = path[index]
-        point = end if index == len(path) - 1 else pcbnew.VECTOR2I_MM(x * STEP, y * STEP)
+        point = end if index == len(path) - 1 else pcbnew.VECTOR2I_MM(grid_x(x), grid_y(y))
         if layer_index != last_layer:
             via = pcbnew.PCB_VIA(board); via.SetPosition(last_point)
             via.SetWidth(pcbnew.FromMM(VIA_WIDTH)); via.SetDrill(pcbnew.FromMM(VIA_DRILL))

@@ -140,6 +140,13 @@ its entry layer change is shifted onto the `(86,122)` mm endpoint with a short
 B.Cu bridge to `(85,122.9)` mm. This fourth source-preserving swap retains nine
 opens and the complete DRC baseline, and BA12 now restores inside the preferred
 IOWR_RAW_N transaction. BA15's 7.018 mm corridor is the next failed restoration.
+The gap router now accepts deterministic sub-grid phases through
+`JUKU_ROUTE_GRID_OFFSET_X_MM` and `JUKU_ROUTE_GRID_OFFSET_Y_MM`. A legal
+`(0.05,0)` mm phase replaces BA15's two-item corridor with thirteen B.Cu
+segments, again preserving nine opens and all source copper. This phase forces
+IOWR_RAW_N onto a wider 38-conflict alternate path that does not displace BA12
+or BA15; WREQ_N, A12, A9, BA1, and BA13 restore before BA5's remaining 6.364 mm
+gap becomes the next pre-route target.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

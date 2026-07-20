@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "board_sha256": "14e3586a160ac94444086bdda392805e8426c55f796cfa46204959d57f2a1b79",
-  "board_size": 10159325,
+  "board_sha256": "1c50771619a2a48d1be45151328283dee95faf18c2e55a35451d94f1d8d116d1",
+  "board_size": 10160938,
   "uncapped_unconnected": 9,
   "electrical_blockers": 0,
   "diagnostic_clearance_mm": 0.15,
@@ -11,7 +11,7 @@
   "residuals": [
     {"net": "GND", "distance_mm": 17.780, "result": "legal-route-failed-after-ripup", "removable_conflicts": 8, "fixed_blockers": 5, "affected_nets": 6},
     {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
-    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "pre-route-in-progress", "removable_conflicts": 23, "fixed_blockers": 4, "affected_nets": 11, "unrestored_nets": ["BA15"], "pre_routed_nets": ["BA11", "CS_D10", "VA13", "BA12"], "tested_restore_grid_steps_mm": [0.125, 0.1, 0.0875, 0.075], "tested_route_clearances_mm": [0.205, 0.2]},
+    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "pre-route-in-progress", "removable_conflicts": 38, "fixed_blockers": 6, "affected_nets": 12, "transaction_conflict_limit": 40, "unrestored_nets": ["BA5"], "pre_routed_nets": ["BA11", "CS_D10", "VA13", "BA12", "BA15"], "restored_before_failure": ["WREQ_N", "A12", "A9", "BA1", "BA13"], "tested_restore_grid_steps_mm": [0.125, 0.1, 0.0875, 0.075], "tested_route_clearances_mm": [0.205, 0.2]},
     {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "result": "over-conflict-limit", "removable_conflicts": 26, "fixed_blockers": 4, "affected_nets": 12, "alternate_clearance_mm": 0.18, "alternate_removable_conflicts": 31},
     {"net": "CS_D26", "distance_mm": 177.308, "result": "over-conflict-limit", "removable_conflicts": 35, "fixed_blockers": 13, "affected_nets": 18},
     {"net": "INT7_RAW", "distance_mm": 181.230, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
@@ -21,8 +21,8 @@
   ],
   "tool_sha256": {
     "kicad/close_gap_by_ripup.py": "083ccf4ac24599072a20fc1ef22f90b2830e0a92110ac70bf18e2d3d703cfe89",
-    "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447",
+    "kicad/repair_fdc_route_gaps.py": "9ae05d1cd0e5c661adf512a925cf14f1f386e9d70edc2210bc1bd4d0c128d8a0",
     "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187"
   },
-  "disposition": "Localized conflict-derived rip-up is exhausted on the original nine-open topology. DRC-neutral BA11, CS_D10, VA13, and BA12 pre-routes relocate IOWR blockers without removing source copper; BA12 now restores and BA15 remains the next corridor owner to relocate before retrying IOWR."
+  "disposition": "Localized conflict-derived rip-up is exhausted on the original nine-open topology. DRC-neutral BA11, CS_D10, VA13, BA12, and offset-lattice BA15 pre-routes preserve all source copper. BA15 forces an alternate IOWR transaction that restores WREQ_N, A12, A9, BA1, and BA13 before BA5's 6.364 mm gap becomes the next corridor to relocate."
 }

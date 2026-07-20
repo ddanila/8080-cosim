@@ -689,7 +689,7 @@ def main() -> int:
             or live_prune.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
             or live_prune.get("input_board_sha256")
             != "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2"
-            or live_prune.get("output_board_size") != 10159325
+            or live_prune.get("output_board_size") != 10160938
             or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
             or initial.get("uncapped_unconnected") != 883
             or pruned.get("uncapped_unconnected") != 677
@@ -735,8 +735,8 @@ def main() -> int:
         if (
             residual.get("schema_version") != 1
             or residual.get("board_sha256")
-            != "14e3586a160ac94444086bdda392805e8426c55f796cfa46204959d57f2a1b79"
-            or residual.get("board_size") != 10159325
+            != "1c50771619a2a48d1be45151328283dee95faf18c2e55a35451d94f1d8d116d1"
+            or residual.get("board_size") != 10160938
             or residual.get("uncapped_unconnected") != 9
             or residual.get("electrical_blockers") != 0
             or residual.get("bounded_conflict_limit") != 20
