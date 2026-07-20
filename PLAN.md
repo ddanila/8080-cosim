@@ -804,7 +804,11 @@ After connectivity and programmable-part decisions stop changing:
   guarded as a non-pluggable variant), and
   `dgsh5-106-106-d1/` (`ДГШ5.106.106 Д1` factory ROM programming table; its
   reconstructed 0000–07FF page corrects the sole BAS0 typo at `021A` from
-  photo evidence and matches `jbasic11.bin` exactly).
+  photo evidence and matches `jbasic11.bin` exactly). The `.104.015` keyboard
+  sheet is now also fully transcribed: all 70 fitted positions, the 1-based
+  factory scan-line offset, non-binary 74148 row order, modifiers, and X1
+  pinout are guarded; all prior cosim tuples agree and its omitted ASCII shift
+  pairs/control keys are now implemented.
   **How to work through this batch is planned in
   `docs/factory-drawing-exploitation-plan.md`** — staged: legibility audit →
   targeted reads (D6 decode polarity for item 1, FDC X4↔НГМД, XP bus map) →

@@ -10,6 +10,11 @@ SC0–SC3, −FK, CONTRAST, POWER +5 V). Useful for validating keyboard-controll
 behavior and the X1 pinout against the system schematic
 (`ref/photos/dgsh3-031-011-e6/`).
 
+The guarded transcription and model comparison are in
+`docs/factory-keyboard-matrix.md`.  They fix the factory-line-to-model-column
+offset, the non-binary row encoding, all 70 fitted matrix positions, X1 pins,
+and the exact ASCII tuples consumed by the cosim keyboard injector.
+
 ## Photos
 
 Overview first, then detail tiles in camera order:

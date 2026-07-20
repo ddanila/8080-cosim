@@ -68,7 +68,8 @@ findings. Every status applies only to the boundary named by the report.
   and PCB modeling of the paired A-point landing geometry.
 - Twin: `fdc-readiness.md`, `video-slot-timing-audit.md`,
   `video-readout-readiness.md`, `serial-handoff.md`, and
-  `beeper-readiness.md`.
+  `beeper-readiness.md`, plus `factory-keyboard-matrix.md` (the complete
+  `.104.015` matrix/X1 transcription and exact cosim/HDL coordinate contract).
 - Media/software: `vendored-disk-catalog.md`, `basic-disk-extraction.md`, and
   `cartridge-basic-boundary.md` and the generated
   `cartridge-basic-firmware-lineage.md` and `jmon22-reconstruction.md`, plus

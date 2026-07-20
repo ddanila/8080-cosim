@@ -109,6 +109,9 @@ reset-to-prompt reports are the stronger evidence where both exist.
 - `dgsh5_106_106_check.sh` reconstructs the photographed 2 KiB factory BASIC
   table, guards its single archive correction, and proves exact cartridge-page
   identity.
+- `keyboard_matrix_check.sh` checksum-guards all three `.104.015` factory
+  frames, regenerates the complete 15-by-6 keyboard/X1 transcription, and
+  proves every cosim ASCII tuple against it.
 - `scripts/check_documentation_consistency.py` ensures user-facing status and
   package hashes do not contradict the active design blockers.
 

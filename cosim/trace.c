@@ -103,15 +103,21 @@ static uint8_t pic_icw1 = 0, pic_icw2 = 0, pic_mask = 0xFF;  // mask: 1=masked
 static int     pic_expect_icw2 = 0;
 
 // --- keyboard (opt-in via env JUKU_KEYS): matrix scan via 8255 PortA(col)/PortB(74148) ---
-// char -> (column 0-15, bit 0-7); from MAME juku COL.0..14. Uppercase via SHIFT.
-static const struct { char c; uint8_t col, bit; } KMAP[] = {
-  {'a',5,5},{'b',4,1},{'c',6,1},{'d',6,5},{'e',6,3},{'f',2,5},{'g',4,5},{'h',0,5},
-  {'i',14,3},{'j',7,5},{'k',14,5},{'l',13,5},{'m',7,1},{'n',0,1},{'o',13,3},{'p',12,3},
-  {'q',5,3},{'r',2,3},{'s',1,5},{'t',4,3},{'u',7,3},{'v',2,1},{'w',1,3},{'x',1,1},
-  {'y',0,3},{'z',5,1},
-  {'0',12,4},{'1',5,4},{'2',1,4},{'3',6,4},{'4',2,4},{'5',4,4},{'6',0,4},{'7',7,4},{'8',14,4},{'9',13,4},
-  {' ',11,2},{'\r',8,5},{'\n',8,5},
-  {'.',13,1},{',',14,1},{'/',12,1},{';',11,1},{'-',11,4},{':',10,5},
+// char -> (column 0-14, encoded row bit, SHIFT); independently transcribed from
+// factory keyboard drawing ДГШ5.104.015 Э3.  Its scan lines 1..15 are columns
+// 0..14 here.  Uppercase letters reuse the lowercase entry with SHIFT below.
+static const struct { char c; uint8_t col, bit, shift; } KMAP[] = {
+  {'a',5,5,0},{'b',4,1,0},{'c',6,1,0},{'d',6,5,0},{'e',6,3,0},{'f',2,5,0},{'g',4,5,0},{'h',0,5,0},
+  {'i',14,3,0},{'j',7,5,0},{'k',14,5,0},{'l',13,5,0},{'m',7,1,0},{'n',0,1,0},{'o',13,3,0},{'p',12,3,0},
+  {'q',5,3,0},{'r',2,3,0},{'s',1,5,0},{'t',4,3,0},{'u',7,3,0},{'v',2,1,0},{'w',1,3,0},{'x',1,1,0},
+  {'y',0,3,0},{'z',5,1,0},
+  {'0',12,4,0},{'1',5,4,0},{'2',1,4,0},{'3',6,4,0},{'4',2,4,0},{'5',4,4,0},{'6',0,4,0},{'7',7,4,0},{'8',14,4,0},{'9',13,4,0},
+  {'!',5,4,1},{'"',1,4,1},{'#',6,4,1},{'$',2,4,1},{'%',4,4,1},{'&',0,4,1},{'\'',7,4,1},
+  {'(',14,4,1},{')',13,4,1},{'_',12,4,1},
+  {' ',11,2,0},{'\r',8,5,0},{'\n',8,5,0},{'\t',3,3,0},{'\b',13,2,0},{'\033',3,4,0},
+  {'.',13,1,0},{'>',13,1,1},{',',14,1,0},{'<',14,1,1},{'/',12,1,0},{'?',12,1,1},
+  {';',11,1,0},{'+',11,1,1},{'-',11,4,0},{'=',11,4,1},{':',10,5,0},{'*',10,5,1},
+  {'[',9,3,0},{']',8,3,0},{'\\',11,3,0},{'^',11,3,1},
 };
 static const char* kbd_str = 0;     // keystrokes to "type" (0/empty = keyboard off)
 static int   kbd_pos = 0, kbd_phase = 0;
@@ -173,7 +179,7 @@ static uint8_t kbd_portb(void) {
   if (c) {
     char lc = c; if (c >= 'A' && c <= 'Z') { lc = (char)(c + 32); shift = 1; }
     for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
-      if (KMAP[i].c == lc) { col = KMAP[i].col; bit = KMAP[i].bit; break; }
+      if (KMAP[i].c == lc) { col = KMAP[i].col; bit = KMAP[i].bit; shift |= KMAP[i].shift; break; }
   }
   uint8_t pb = 0xC0;                                   // SHIFT bits released (active-low high)
   if (shift) pb &= (uint8_t)~0x40;                     // SHIFT1 held = bit6 low (active-low)
