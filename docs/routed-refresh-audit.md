@@ -103,13 +103,13 @@ D97_RC2_C19_R100, MEMR, BA7, USART_RXRDY_IRQ, X4_TG43, PRECOMP_CASCADE_1, DB5,
 DC5, SER_DSR_N, S_OC, LATCH_SIG, FDC_LATE_SEL, X4_WR_DATA_N, D33_D36,
 D33_6_D36, W_RAIL16, S_SOUT, VA1, X2_IRQ0, SER_CTS_N, DB6, DB7, DC6, DC7,
 LOAD_PRE, FDC_WG_TO_D100, LATCH_A, FDC_TG43_TO_D100, VA4, FDC_HLD_TO_D100,
-FDC_WDATA_DELAY_IN, VERT_RTR, VA0, and PRECOMP_TAP_3 then each pass an
-independent uncapped check, reducing the exact count to 220; those routes are
-promoted. The last four hundred fifty-three are
+FDC_WDATA_DELAY_IN, VERT_RTR, VA0, PRECOMP_TAP_3, and DC2 then each pass an
+independent uncapped check, reducing the exact count to 217; those routes are
+promoted. The last four hundred fifty-six are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
-through 40 mm. Its standard front/back A* search is exhausted with
+through 50 mm. Its standard front/back A* search is exhausted with
 no accepted route across 48.43–50, 65–70, 75–80, and the tested bands from 90
 through 130 mm. The exact board/DRC hashes, search ceiling, exhausted ranges,
 parameters, and tool hashes are guarded in
