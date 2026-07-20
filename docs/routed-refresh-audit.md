@@ -423,6 +423,17 @@ items, is 11,051,620 bytes, and has SHA256
 Fresh full-distance 0.10, 0.125, 0.1375, and 0.15 mm exact-clearance sweeps each
 exhaust all 23 residual signatures without acceptance.
 
+A fresh 0.1125 mm lattice with 100 mm search margin now exhausts the same exact
+23-open lineage too: 21 signatures produce a proved router no-path and VA6 plus
+CS_D11 reach the guarded 60-second timeout, with zero accepted routes. A
+route-specific CS_D11 diagnostic on that lattice finds a 71-item geometric
+proposal and 30 removable migrated-copper blockers across twelve nets. The
+mixed transaction removes only those eligible items and retains the fixed
+D9.12/CS_D27 and D9.6/V3_RC pads, but the target-net gap count still does not
+decrease, so no candidate is published. The exact board/tool hashes, phase,
+net census, and result are preserved in
+`ref/routing/current23-grid01125-exhaustion.json`.
+
 The next route-specific survey is run on that exact 23-open topology. MEMR has
 no 0.10 mm diagnostic path. CS_D57's under-clearance proposal now names 33
 removable items across fourteen nets and no fixed blocker. DC4 names 28 items

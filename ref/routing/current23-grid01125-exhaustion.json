@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "board_sha256": "3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c",
+  "initial_unconnected": 23,
+  "final_unconnected": 23,
+  "accepted_routes": 0,
+  "router_config": {
+    "mode": "M",
+    "search_margin_mm": 100.0,
+    "grid_step_mm": 0.1125,
+    "route_clearance_mm": 0.2,
+    "timeout_seconds": 60.0
+  },
+  "tool_sha256": {
+    "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447",
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
+    "kicad/close_gap_by_ripup.py": "083ccf4ac24599072a20fc1ef22f90b2830e0a92110ac70bf18e2d3d703cfe89"
+  },
+  "outcomes": {
+    "router_failed": 21,
+    "timeout": 2
+  },
+  "attempted_nets": [
+    "BA5", "CS_D10", "CS_D11", "CS_D57", "D3_O4_D6_A6",
+    "D3_O6_D6_A5", "D6_V_ENABLE", "DC4", "IORD", "MA7", "MEMR",
+    "MEMW_D7P2", "PHI1_D35", "PHI2_D35", "RAM_OUT_EN", "S3_1",
+    "VA13", "VA13", "VA15", "VA6", "VA9", "W10_QA_SEL_D50", "WR"
+  ],
+  "cs_d11_followup": {
+    "diagnostic_grid_step_mm": 0.1125,
+    "diagnostic_clearance_mm": 0.1,
+    "diagnostic_route_items": 71,
+    "removable_conflicts": 30,
+    "affected_nets": [
+      "BA12", "CS_D27", "CS_D54", "CS_D55", "DB6", "FDC_DDEN",
+      "GND", "REV", "ROE", "STSTB", "SYNC", "V3_RC"
+    ],
+    "fixed_blockers": [
+      "D9.12/CS_D27 pad", "D9.6/V3_RC pad", "unattributed fixed clearance"
+    ],
+    "transaction_result": "after removing all 30 eligible migrated-copper blockers, the target-net gap count did not decrease; no candidate published"
+  }
+}

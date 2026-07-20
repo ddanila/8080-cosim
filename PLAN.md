@@ -1,6 +1,6 @@
 # PLAN — working physical Juku recreation
 
-Status date: **2026-07-19**.
+Status date: **2026-07-20**.
 
 Release status: **DESIGN HOLD / PACKAGE INVALID**. The recorded main-board ZIP
 is a checksum-reproducible historical engineering snapshot, not fabrication
@@ -141,6 +141,14 @@ Independent DRC retains 199 track-dangling and 45 via-dangling findings with
 zero electrical blockers; exact 303-footprint/2,395-pad parity holds. Fresh
 0.10, 0.125, 0.1375, and 0.15 mm sweeps exhaust all 23 residual signatures
 without acceptance, establishing the current 23-gap boundary.
+A current-lineage 0.1125 mm/100 mm-margin sweep now exhausts all 23 signatures
+as well, with 21 proved no-path results and two bounded timeouts. Its new
+CS_D11 route-specific diagnostic identifies 30 removable blockers across
+twelve nets, but removing all of them still cannot decrease the CS_D11 gap
+count around the retained D9 pad corridor. The rejected transaction and exact
+tool/board hashes are recorded in
+`ref/routing/current23-grid01125-exhaustion.json`; the 23-gap checkpoint remains
+authoritative.
 
 The next current-topology survey rejects MEMR at the 0.10 mm diagnostic stage
 and finds that CS_D57 has grown to 33 removable conflicts across fourteen

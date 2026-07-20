@@ -470,6 +470,34 @@ def main() -> int:
                 "routed-refresh post-checkpoint drift counts disagree with factory-wire report"
             )
 
+    routing_exhaustion_path = ROOT / "ref/routing/current23-grid01125-exhaustion.json"
+    if not routing_exhaustion_path.exists():
+        failures.append("current 23-gap routing-exhaustion evidence is missing")
+    else:
+        routing_exhaustion = json.loads(routing_exhaustion_path.read_text(encoding="utf-8"))
+        config = routing_exhaustion.get("router_config", {})
+        outcomes = routing_exhaustion.get("outcomes", {})
+        attempted_nets = routing_exhaustion.get("attempted_nets", [])
+        if (
+            routing_exhaustion.get("schema_version") != 1
+            or routing_exhaustion.get("initial_unconnected") != 23
+            or routing_exhaustion.get("final_unconnected") != 23
+            or routing_exhaustion.get("accepted_routes") != 0
+            or config.get("grid_step_mm") != 0.1125
+            or config.get("route_clearance_mm") != 0.2
+            or outcomes.get("router_failed") != 21
+            or outcomes.get("timeout") != 2
+            or len(attempted_nets) != 23
+        ):
+            failures.append("current 23-gap routing-exhaustion summary is malformed")
+        for relative, expected in routing_exhaustion.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"routing-exhaustion tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current23-grid01125-exhaustion.json" not in read(path):
+                failures.append(f"{path} omits the current routing-exhaustion evidence")
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(
