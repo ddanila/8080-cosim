@@ -83,9 +83,9 @@ LOAD_PRE, FDC_WG_TO_D100, LATCH_A, FDC_TG43_TO_D100, VA4, FDC_HLD_TO_D100,
 FDC_WDATA_DELAY_IN, VERT_RTR, VA0, PRECOMP_TAP_3, DC2, D53_Y3_R52, VA9,
 READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, FDC_DIR_TO_D100, POF,
 ROM_CS_D15, BA8, FDC_WPRT_STATUS, FDC_INDEX_STATUS, VA3, BA2, BA4, IO_CYCLE_H,
-FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, and VA13, each independently
-reduce the uncapped graph, reaching 178 opens; all four hundred ninety-nine are
-promoted. The final four hundred ninety-five are
+FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, VA13, WR, and MEMW, each
+independently reduce the uncapped graph, reaching 175 opens; all five hundred
+two are promoted. The final four hundred ninety-eight are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 70 mm.
