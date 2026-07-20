@@ -84,9 +84,9 @@ CAS_PRE, D33_O4, D102_RC1_C22_R102, RESIN, MA0, D34_RC_NODE, PHI2TTL,
 D98_Y1_R94, X4_DIR_N, X4_HLOAD_N, X4_WR_GATE_N, D13_4_D105_2, XTAL16M,
 D103_LD, CAS, XTAL_TRIM, X4_MOTOR_ON_N, X4_SIDE_SEL, X4_READY_N, X4_RD_DATA,
 S_OC, BA11, BA12, BA14, X4_INDEX_N, DB1, ROE, CLKG_D33, X3_HARNESS_1, PHI2,
-WREQ_N, D40QA, and MA5 then each pass an independent uncapped check, reducing
-the exact count to 474; those routes are promoted. The last one hundred
-ninety-nine are
+WREQ_N, D40QA, MA5, OSC_FB, FDC_RE_N, D40_CTRL_PULL, MA7, and VT2_BASE then each
+pass an independent uncapped check, reducing the exact count to 467; those
+routes are promoted. The last two hundred six are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. The exact board/DRC
