@@ -9,6 +9,7 @@ would short the newly separated pads.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from collections import Counter
@@ -21,6 +22,14 @@ SOURCE = ROOT / "kicad/juku.kicad_pcb"
 ROUTED = ROOT / "kicad/juku_routed.kicad_pcb"
 REPORT_START = "<!-- routed-refresh-current:start -->"
 REPORT_END = "<!-- routed-refresh-current:end -->"
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def pads(board: pcbnew.BOARD) -> dict[tuple[str, str], tuple[str, tuple[int, int]]]:
@@ -44,8 +53,10 @@ def copper_key(
     raise ValueError(f"unsupported copper item {item.GetClass()}")
 
 
-def current_result_table(stats: dict[str, int]) -> str:
+def current_result_table(stats: dict[str, int | str]) -> str:
     rows = (
+        ("Source PCB SHA-256", "source_sha256"),
+        ("Routed-snapshot PCB SHA-256", "routed_sha256"),
         ("Source footprints", "source_footprints"),
         ("Routed-snapshot footprints", "routed_footprints"),
         ("Source-only footprints", "source_only_footprints"),
@@ -58,7 +69,12 @@ def current_result_table(stats: dict[str, int]) -> str:
         ("Common-pad net mismatches requiring reroute", "common_pad_mismatches"),
     )
     lines = [REPORT_START, "| Item | Count |", "| --- | ---: |"]
-    lines.extend(f"| {label} | {stats[key]:,} |" for label, key in rows)
+    lines.extend(
+        f"| {label} | {value:,} |" if isinstance(value, int)
+        else f"| {label} | `{value}` |"
+        for label, key in rows
+        for value in (stats[key],)
+    )
     lines.append(REPORT_END)
     return "\n".join(lines)
 
@@ -221,6 +237,8 @@ def main() -> None:
         source.GetDesignSettings().m_CopperEdgeClearance = routed.GetDesignSettings().m_CopperEdgeClearance
         pcbnew.SaveBoard(str(args.output), source)
     stats = {
+        "source_sha256": sha256(args.source),
+        "routed_sha256": sha256(args.routed),
         "source_footprints": len(source_refs),
         "routed_footprints": len(routed_refs),
         "source_only_footprints": len(source_refs - routed_refs),

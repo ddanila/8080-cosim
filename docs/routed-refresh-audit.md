@@ -30,16 +30,18 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source footprints | 303 |
+| Source PCB SHA-256 | `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb` |
+| Routed-snapshot PCB SHA-256 | `f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315` |
+| Source footprints | 321 |
 | Routed-snapshot footprints | 241 |
-| Source-only footprints | 89 |
+| Source-only footprints | 107 |
 | Routed-only footprints | 27 |
 | Routed copper nets classified by the refresh | 324 |
-| Nets with currently reusable routed copper | 94 |
-| Routed nets currently quarantined | 230 |
-| Reusable non-duplicate track/via items | 1,017 |
-| Quarantined/duplicate track/via items | 7,648 |
-| Common-pad net mismatches requiring reroute | 360 |
+| Nets with currently reusable routed copper | 83 |
+| Routed nets currently quarantined | 241 |
+| Reusable non-duplicate track/via items | 963 |
+| Quarantined/duplicate track/via items | 7,702 |
+| Common-pad net mismatches requiring reroute | 381 |
 <!-- routed-refresh-current:end -->
 
 The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly

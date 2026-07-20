@@ -76,6 +76,19 @@ def main() -> int:
         )
         if not match or match.group(1) != sha256(source_path):
             failures.append(f"unmodeled-footprint report has stale {label} SHA-256")
+    routed_refresh = read("docs/routed-refresh-audit.md")
+    routed_refresh_hashes = {
+        "Source PCB": ROOT / "kicad/juku.kicad_pcb",
+        "Routed-snapshot PCB": ROOT / "kicad/juku_routed.kicad_pcb",
+    }
+    for label, source_path in routed_refresh_hashes.items():
+        match = re.search(
+            rf"^\| {re.escape(label)} SHA-256 \| `([0-9a-f]{{64}})` \|$",
+            routed_refresh,
+            re.MULTILINE,
+        )
+        if not match or match.group(1) != sha256(source_path):
+            failures.append(f"routed-refresh table has stale {label} SHA-256")
 
     system_bus_report = read("ref/schematics/system-bus-connector-map.md")
     for marker in (
