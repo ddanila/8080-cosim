@@ -35,7 +35,7 @@
     }
   },
   "tool_sha256": {
-    "kicad/close_gap_by_ripup.py": "083ccf4ac24599072a20fc1ef22f90b2830e0a92110ac70bf18e2d3d703cfe89",
+    "kicad/close_gap_by_ripup.py": "10ba3ac56ec746826da49ca3309e1d86084ea684f33fb9c0067167cb93d5619b",
     "kicad/repair_fdc_route_gaps.py": "9ae05d1cd0e5c661adf512a925cf14f1f386e9d70edc2210bc1bd4d0c128d8a0",
     "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187"
   },

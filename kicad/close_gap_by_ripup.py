@@ -16,6 +16,7 @@ import argparse
 from collections import Counter
 import json
 import math
+import os
 from pathlib import Path
 import re
 import shutil
@@ -181,7 +182,11 @@ def run_closer(
     grid_step: float,
     clearance: float,
     timeout: float,
+    grid_offset: tuple[float, float] = (0.0, 0.0),
 ) -> None:
+    environment = os.environ.copy()
+    environment["JUKU_ROUTE_GRID_OFFSET_X_MM"] = str(grid_offset[0])
+    environment["JUKU_ROUTE_GRID_OFFSET_Y_MM"] = str(grid_offset[1])
     subprocess.run(
         [
             sys.executable,
@@ -208,6 +213,7 @@ def run_closer(
             str(cli),
         ],
         check=True,
+        env=environment,
     )
 
 
@@ -253,6 +259,13 @@ def main() -> None:
         help=(
             "comma-separated affected nets to restore first; all remaining "
             "affected nets follow in sorted order"
+        ),
+    )
+    parser.add_argument(
+        "--restore-net-grid-offsets",
+        help=(
+            "semicolon-separated NET:X,Y lattice offsets used only while "
+            "restoring the named displaced nets"
         ),
     )
     parser.add_argument(
@@ -314,6 +327,11 @@ def main() -> None:
             "final publication invariant fails"
         ),
     )
+    parser.add_argument(
+        "--checkpoint-dir",
+        type=Path,
+        help="retain the target route and each displaced-net restoration state",
+    )
     parser.add_argument("--summary", type=Path)
     args = parser.parse_args()
 
@@ -356,6 +374,19 @@ def main() -> None:
         raise SystemExit("restore net priority must be comma-separated net names")
     if len(set(restore_net_priority)) != len(restore_net_priority):
         raise SystemExit("restore net priority contains duplicates")
+    restore_net_grid_offsets = {}
+    if args.restore_net_grid_offsets:
+        try:
+            for entry in args.restore_net_grid_offsets.split(";"):
+                netname, values = entry.split(":", 1)
+                x_offset, y_offset = map(float, values.split(","))
+                if not netname or x_offset < 0 or y_offset < 0:
+                    raise ValueError
+                restore_net_grid_offsets[netname] = (x_offset, y_offset)
+        except ValueError as error:
+            raise SystemExit(
+                "restore net grid offsets must use NET:X,Y entries"
+            ) from error
     diagnostic_clearance = (
         args.route_clearance
         if args.diagnostic_clearance is None
@@ -523,6 +554,12 @@ def main() -> None:
                 "restore net priority names are not affected by this transaction: "
                 f"{sorted(unknown_restore_nets)}"
             )
+        unknown_offset_nets = set(restore_net_grid_offsets) - affected_nets
+        if unknown_offset_nets:
+            raise SystemExit(
+                "restore grid offset names are not affected by this transaction: "
+                f"{sorted(unknown_offset_nets)}"
+            )
         restore_net_order = restore_net_priority + sorted(
             affected_nets - set(restore_net_priority)
         )
@@ -568,6 +605,9 @@ def main() -> None:
                 "diagnostic conflicts"
             )
         current = target_routed
+        if args.checkpoint_dir:
+            args.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(current, args.checkpoint_dir / "00-target-routed.kicad_pcb")
         for net_index, netname in enumerate(restore_net_order, 1):
             for grid_index, restore_grid_step in enumerate(restore_grid_steps, 1):
                 restored = tmp / f"restored-{net_index}-{grid_index}.kicad_pcb"
@@ -581,9 +621,16 @@ def main() -> None:
                     restore_grid_step,
                     args.route_clearance,
                     args.timeout,
+                    restore_net_grid_offsets.get(netname, (0.0, 0.0)),
                 )
                 current = restored
                 discard_temporary_board(previous, tmp)
+                if args.checkpoint_dir:
+                    checkpoint = (
+                        args.checkpoint_dir
+                        / f"{net_index:02d}-{netname}-{grid_index}.kicad_pcb"
+                    )
+                    shutil.copyfile(current, checkpoint)
 
         final_report_path = tmp / "final.json"
         final_report = run_drc(cli, current, final_report_path)
@@ -676,6 +723,10 @@ def main() -> None:
             "route_grid_step_mm": args.grid_step,
             "restore_grid_steps_mm": restore_grid_steps,
             "restore_net_order": restore_net_order,
+            "restore_net_grid_offsets_mm": {
+                netname: list(offset)
+                for netname, offset in sorted(restore_net_grid_offsets.items())
+            },
             "diagnostic_new_items": len(new_route_uuids),
             "diagnostic_unremovable_blockers": sorted(unremovable),
             "removed_conflicts": [

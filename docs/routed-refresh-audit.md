@@ -173,6 +173,13 @@ segments, again preserving nine opens and all source copper. This phase forces
 IOWR_RAW_N onto a wider 38-conflict alternate path that does not displace BA12
 or BA15; WREQ_N, A12, A9, BA1, and BA13 restore before BA5's remaining 6.364 mm
 gap becomes the next pre-route target.
+The rip-up orchestrator now supports per-net restoration lattice offsets and
+optional retained checkpoints. BA5 closes completely at `(0.05,0)` mm when it
+is restored before A12, but that ordering seals A12's 10.308 mm B.Cu gap;
+restoring A12 first instead seals BA5's 6.364 mm gap. Exhaustive 0.02 mm phase
+sweeps, including multilayer A12 attempts, prove this mutual exclusion on both
+retained intermediate boards. The next topology step must separate A12 and BA5
+rather than retry either restoration order.
 
 ### Additive/rename-safe copper migration
 
