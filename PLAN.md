@@ -967,6 +967,15 @@ After connectivity and programmable-part decisions stop changing:
 
 ## Parallel work
 
+### CI hardening
+
+`docs/ci-hardening-plan.md` is the executable plan for four process
+improvements motivated by the 2026-07-20 twelve-hour red-CI window: a
+one-command report-regeneration script, a shared LFS-aware photo-hash helper,
+a CI-aware pre-push gate, and moving the EKDOS timing expectations into a
+committed data file with a deliberate `--update` path. Items are independent
+commits in the order 2 -> 1 -> 4 -> 3; CI must be green between them.
+
 ### VJUGA spin-off — status and Linux-box handoff
 
 VJUGA (the +5 V Z80 bench fixture for the scarce Juku РУ5/РТ4/РЕ3 parts) is a
