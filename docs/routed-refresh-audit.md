@@ -101,9 +101,9 @@ MEMW_D7P2, SND_OUT, MEMR_D7, FDC_WE_N, STSTB_D38, D97_C2_C19_R86_TARGET,
 PST_CLK, DB3, SER_RXD, S_DTP, D34_RC_DRIVE, A14, A9, RAM_RD_OE,
 D97_RC2_C19_R100, MEMR, BA7, USART_RXRDY_IRQ, X4_TG43, PRECOMP_CASCADE_1, DB5,
 DC5, SER_DSR_N, S_OC, LATCH_SIG, FDC_LATE_SEL, X4_WR_DATA_N, D33_D36,
-D33_6_D36, W_RAIL16, S_SOUT, VA1, X2_IRQ0, and SER_CTS_N then each pass an
-independent uncapped check, reducing the exact count to 239; those routes are
-promoted. The last four hundred thirty-four are
+D33_6_D36, W_RAIL16, S_SOUT, VA1, X2_IRQ0, SER_CTS_N, DB6, and DB7 then each
+pass an independent uncapped check, reducing the exact count to 236; those
+routes are promoted. The last four hundred thirty-seven are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
