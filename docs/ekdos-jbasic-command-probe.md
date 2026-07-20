@@ -24,11 +24,11 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 - Trace exit code: 0
 - Disk image: `media/disks/JUKPROG2.CPM`
 - Keyboard script: `TDD|JBASIC\r` (11 positions including the wait marker)
-- Prompt wait marker: consumed at 73446 VRAM writes, 14400009 cycles, position 3
+- Prompt wait marker: consumed at 73446 VRAM writes, 14400002 cycles, position 3
 - Final keyboard position/phase: `11` / `0`
 - Stop PC: `FED4`
-- Cycles: 900000010
-- Mode switches: 3414903
+- Cycles: 900000003
+- Mode switches: 3414027
 - WD1793 data reads (`0x1F`): 19968
 - Live JBASIC candidate: `ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM`
 - Live JBASIC candidate SHA256: `b1ae68b464c245a888c8e6bbf07037960f5a92d4e968c956c6205a1de6cfc545`
@@ -54,7 +54,7 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 | OUT | 0x1D | 0 | - |
 | OUT | 0x1E | 40 | 0x09 |
 | OUT | 0x1F | 40 | 0x14 |
-| IN | 0x1C | 7750 | - |
+| IN | 0x1C | 15301 | - |
 | IN | 0x1D | 40 | - |
 | IN | 0x1E | 0 | - |
 | IN | 0x1F | 19968 | - |
@@ -77,8 +77,8 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 | 0x17 | PIT1 control | 0x34 | 3 | 0 |
 | 0x18 | PIT2 counter 0 | 0x32 | 1 | 0 |
 | 0x19 | PIT2 counter 1 | 0x03 | 20 | 0 |
-| 0x1A | PIT2 counter 2 | 0xFF | 8956 | 8954 |
-| 0x1B | PIT2 control | 0x80 | 8948 | 0 |
+| 0x1A | PIT2 counter 2 | 0xFF | 8964 | 8962 |
+| 0x1B | PIT2 control | 0x80 | 8956 | 0 |
 
 ## Disposition
 

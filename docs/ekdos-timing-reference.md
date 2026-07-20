@@ -30,7 +30,7 @@ sync/ekdos_timing_reference.py
 | IN | 0x1D | - | 8711535 | E63F | 63095 |
 | OUT | 0x1E | 02 | 8711507 | E639 | 63095 |
 | OUT | 0x1F | 02 | 8711454 | E62D | 63095 |
-| IN | 0x1F | - | 8956831 | E5AA | 63095 |
+| IN | 0x1F | - | 9039953 | E5AA | 63095 |
 
 ## First Frame IRQs
 

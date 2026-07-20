@@ -22,10 +22,10 @@ EKDOS_PROBE_DISK=media/disks/JUKU1.CPM JUKU_KEYS=TDD cosim/trace roms/ekta37.bin
 - Disk image: media/disks/JUKU1.CPM
 - Disk image loaded by cosim: yes
 - Stop PC: FED4
-- Cycles: 250000015
-- Mode switches: 924993
+- Cycles: 250000006
+- Mode switches: 924570
 - WD1793 status/command writes (`0x1C`): 27
-- WD1793 status reads (`0x1C`): 3860
+- WD1793 status reads (`0x1C`): 7644
 - WD1793 data reads (`0x1F`): 10752
 - EKDOS `A>` prompt bitmap: found at x=0, y=70
 - Probe failures: 0
@@ -38,7 +38,7 @@ EKDOS_PROBE_DISK=media/disks/JUKU1.CPM JUKU_KEYS=TDD cosim/trace roms/ekta37.bin
 | OUT | 0x1D | 0 | - |
 | OUT | 0x1E | 22 | 0x06 |
 | OUT | 0x1F | 22 | 0x02 |
-| IN | 0x1C | 3860 | - |
+| IN | 0x1C | 7644 | - |
 | IN | 0x1D | 22 | - |
 | IN | 0x1E | 0 | - |
 | IN | 0x1F | 10752 | - |
