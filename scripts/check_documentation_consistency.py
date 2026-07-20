@@ -149,6 +149,20 @@ def main() -> int:
             if phrase in text:
                 failures.append(f"{path} retains stale D6 A7 boundary claim: {phrase!r}")
 
+    stale_d93_dal_claims = {
+        "PLAN.md": (
+            "actual CPU↔D93 DAL transform must be recovered",
+            "actual CPU↔D93 DAL wiring now that",
+            "verify the source-drawn direct CPU↔D93 DAL wiring",
+        ),
+        "docs/fdc-bus-polarity.md": ("physical D93 data-bus wiring remains open",),
+    }
+    for path, phrases in stale_d93_dal_claims.items():
+        text = read(path)
+        for phrase in phrases:
+            if phrase in text:
+                failures.append(f"{path} retains stale direct D93 DAL boundary claim: {phrase!r}")
+
     stale_prom_claims = {
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md": (
             "signal wiring and contents still open",
