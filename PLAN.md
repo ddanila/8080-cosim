@@ -70,9 +70,9 @@ FDC_EARLY_SEL, DC3, D99_RC2_TIMING, PRECOMP_TAP_1, D105_MEMW_INV, BA1,
 SER_DTR, ROM_CS_EXP17, D53_Y0_R49, DC1, PHI1, IR7, DC0, IOWR, D39Y,
 D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
 D99_C1_TIMING, RESET, OSC, DBIN, TIMING_TAG17, CLK_123M, CAS, FDC_STEP_TO_D100,
-AVDC, and KBD_K0, each independently reduce the uncapped graph, reaching 366
-opens; all three hundred eleven are promoted. The final three hundred seven are
-selected by
+AVDC, KBD_K0, and VID_CPU_SEL, each independently reduce the uncapped graph,
+reaching 365 opens; all three hundred twelve are promoted. The final three
+hundred eight are selected by
 a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Exact hashes, parameters, and tool provenance are guarded in
