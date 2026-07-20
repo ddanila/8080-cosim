@@ -80,9 +80,10 @@ D97_RC1_C16, D99_RC2_TIMING, FDC_CLK, FRAME_INT, D39Y, D102_C2_C20,
 D92_NOACC, D100_CONTROL_SHEET1_BOUNDARY, D33_CLK_RC, RES_RC, FDC_READY,
 OSC_PRE, SEP_D28_CLK, D97_C1_C16, D102_RC2_C20_R108, FDC_INTRQ,
 PRECOMP_CASCADE_2, V3_RC, DB0, RAIL_H, P12V, MA3, BA13, D53_Y1_R50, X4_TR00_N,
-CAS_PRE, D33_O4, D102_RC1_C22_R102, RESIN, MA0, D34_RC_NODE, PHI2TTL, and
-D98_Y1_R94 then each pass an independent uncapped check, reducing the exact
-count to 520; those routes are promoted. The last one hundred fifty-three are
+CAS_PRE, D33_O4, D102_RC1_C22_R102, RESIN, MA0, D34_RC_NODE, PHI2TTL,
+D98_Y1_R94, X4_DIR_N, and X4_HLOAD_N then each pass an independent uncapped
+check, reducing the exact count to 516; those routes are promoted. The last one
+hundred fifty-seven are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. The exact board/DRC

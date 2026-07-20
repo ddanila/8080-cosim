@@ -48,7 +48,7 @@ production copper. Exact hashes and counts are guarded in
 An uncapped connectivity guard then transactionally removes 2,872 migrated
 copper items from that live-source baseline. The exact open count improves
 from 883 to 677, all 199 dangling tracks and 56 dangling vias are eliminated,
-and all electrical blocker categories remain zero. One hundred fifty-seven
+and all electrical blocker categories remain zero. One hundred sixty-one
 bounded nonzero-gap proposals, including P5V, STSTB, GND, W10_QA_SEL, D40Q1_D39,
 LATCH_B, REV, SER_TXD_INV, D6_V_ENABLE, MEMW, D40Q2_D33, D42_Q,
 D106_PRESET_HIGH, D101_D02_R92_R99, X4_DSEL1_N, VID_MUX_G, RAS, PROM_EN,
@@ -57,9 +57,9 @@ D99_RC2_TIMING, FDC_CLK, FRAME_INT, D39Y, D102_C2_C20, D92_NOACC,
 D100_CONTROL_SHEET1_BOUNDARY, D33_CLK_RC, RES_RC, FDC_READY, OSC_PRE,
 SEP_D28_CLK, D97_C1_C16, D102_RC2_C20_R108, FDC_INTRQ, PRECOMP_CASCADE_2,
 V3_RC, DB0, RAIL_H, P12V, MA3, BA13, D53_Y1_R50, X4_TR00_N, CAS_PRE, D33_O4,
-D102_RC1_C22_R102, RESIN, MA0, D34_RC_NODE, PHI2TTL, and D98_Y1_R94, each
-independently reduce the uncapped graph, reaching 520 opens; all one hundred
-fifty-seven are promoted. The final one hundred fifty-three are selected by
+D102_RC1_C22_R102, RESIN, MA0, D34_RC_NODE, PHI2TTL, D98_Y1_R94, X4_DIR_N, and
+X4_HLOAD_N, each independently reduce the uncapped graph, reaching 516 opens;
+all one hundred sixty-one are promoted. The final one hundred fifty-seven are selected by
 a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Exact hashes, parameters, and tool provenance are guarded in
