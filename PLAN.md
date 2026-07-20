@@ -72,9 +72,9 @@ D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
 D99_C1_TIMING, RESET, OSC, DBIN, TIMING_TAG17, CLK_123M, CAS, FDC_STEP_TO_D100,
 AVDC, KBD_K0, VID_CPU_SEL, VA11, FDC_PRECOMP_WRDATA, IORC_N, MRC_N,
 D98_Y3_S1_2, S3_3, RAIL13, D39_MEMCYC, D105_WAIT_STAGE, VIDEO_OUT, RAIL12,
-SOUND_CLAMP, D94_D1_D99_A2N, RAIL14, SND_BASE, and D30B_D_PRE_N, each
-independently reduce the uncapped graph, reaching 330 opens; all three hundred
-forty-seven are promoted. The final three hundred forty-three are
+SOUND_CLAMP, D94_D1_D99_A2N, RAIL14, SND_BASE, D30B_D_PRE_N, and
+D96_TOGGLE_FEEDBACK, each independently reduce the uncapped graph, reaching 323
+opens; all three hundred fifty-four are promoted. The final three hundred fifty are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 The standard guarded front/back A* search is also exhausted without an accepted
