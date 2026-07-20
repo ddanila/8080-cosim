@@ -72,11 +72,12 @@ the CLI's truncated 499-item list as its acceptance boundary. Adaptive
 transactions remove 2,872 migrated items, reduce the exact open count from
 883 to 677, and eliminate all 199 dangling-track plus 56 dangling-via findings
 while preserving the 321-footprint/2,434-pad source identity and zero
-electrical blockers. Fourteen bounded proposals across P5V, STSTB, GND,
-W10_QA_SEL, and D40Q1_D39 then each pass an independent uncapped check,
-reducing the exact count to 663; those routes are promoted. The last ten are
-selected transactionally by `close_unconnected_gaps_uncapped.py`, which
-continues past capped-only or DRC-regressing candidates. The exact board/DRC
+electrical blockers. Nineteen bounded proposals across P5V, STSTB, GND,
+W10_QA_SEL, D40Q1_D39, LATCH_B, and REV then each pass an independent uncapped
+check, reducing the exact count to 658; those routes are promoted. The last
+fifteen are selected transactionally by
+`close_unconnected_gaps_uncapped.py`, which continues past capped-only or
+DRC-regressing candidates. The exact board/DRC
 hashes, parameters, and tool hashes are guarded in
 `ref/routing/current-source-uncapped-prune.json`.
 
