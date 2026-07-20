@@ -35,3 +35,7 @@ top-to-bottom):
 - [x] Extract the X1/X2/XS3/XS4/XS5 pinout and reconcile it against the
       processor board's X4 (sheet 3, `dgsh5-109-009-e3/`) and the VG93 signal
       contract (`ref/schematics/fdc-x4-ngmd-wire-map.md`).
+- [x] Complete the drawing-level transcription: both drive X1/X2 tables,
+      XS3/XS4 fanout, XS5, and the separate +5 V/+12 V power-block boundary
+      are covered by that map. The Э3 presents the PSU as a named block and
+      contains no component-level PSU circuit.
