@@ -106,6 +106,9 @@ reset-to-prompt reports are the stronger evidence where both exist.
 - `system_bus_connector_check.sh` checksum-guards the recovered `.106.103`
   XP and `.031.011` system drawings, proves the shared X1 signal map, and
   preserves their incompatible power-contact maps as a safety boundary.
+- `dgsh5_106_106_check.sh` reconstructs the photographed 2 KiB factory BASIC
+  table, guards its single archive correction, and proves exact cartridge-page
+  identity.
 - `scripts/check_documentation_consistency.py` ensures user-facing status and
   package hashes do not contradict the active design blockers.
 

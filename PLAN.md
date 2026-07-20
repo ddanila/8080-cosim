@@ -802,8 +802,9 @@ After connectivity and programmable-part decisions stop changing:
   system-bus XP pinout, relevant to the rev-B backplane; its data/address/control
   core matches X1 exactly, but its A1-A3 power map conflicts with `.009` and is
   guarded as a non-pluggable variant), and
-  `dgsh5-106-106-d1/` (`ДГШ5.106.106 Д1` factory ROM programming table, hex dump
-  0000–07FF with BASIC strings — cross-check against `ref/reconstructed-proms/`).
+  `dgsh5-106-106-d1/` (`ДГШ5.106.106 Д1` factory ROM programming table; its
+  reconstructed 0000–07FF page corrects the sole BAS0 typo at `021A` from
+  photo evidence and matches `jbasic11.bin` exactly).
   **How to work through this batch is planned in
   `docs/factory-drawing-exploitation-plan.md`** — staged: legibility audit →
   targeted reads (D6 decode polarity for item 1, FDC X4↔НГМД, XP bus map) →

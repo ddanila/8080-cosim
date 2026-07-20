@@ -93,6 +93,18 @@ def main() -> int:
         "`U_D16`, `HALF=1`",
         "not dumps of the original D15/D16 devices",
     ) and exists("scripts/export_eprom_pair.py")
+    factory_basic = ROOT / "ref/reconstructed-firmware/dgsh5-106-106-d1.bin"
+    factory_basic_ok = (
+        factory_basic.exists()
+        and factory_basic.stat().st_size == 2048
+        and sha256(factory_basic) == "2cd7398b167ceebc256614b9de4cd8953b858e4f35722e57723559d990fc80a6"
+        and factory_basic.read_bytes() == (ROOT / "roms/jbasic11.bin").read_bytes()[:2048]
+        and marker(
+            "docs/dgsh5-106-106-rom-table.md",
+            "FACTORY 2 KiB IMAGE RECONSTRUCTED / ONE ARCHIVE TYPO CORRECTED",
+            "| `021A` | `A1` | `21` | `21` | `21` |",
+        )
+    )
     d2_text = read("docs/d2-reconstruction-constraints.md")
     d2_ok = (
         "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**" in d2_text
@@ -242,6 +254,7 @@ def main() -> int:
         ("D16 functional image has exact size and SHA256", d16_ok),
         ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
         ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
+        ("Factory .106.106 BASIC page is reconstructed and photo-adjudicated", factory_basic_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
         ("D2 open-collector raw polarity executes through the D30 READY latch", d2_ok),
         ("D6 corrected physical table drives runnable selection directly", d6_runnable_physical_ok),
@@ -308,6 +321,9 @@ def main() -> int:
             "- D15/D16 are deterministic Tier-1/2 functional images, not physical",
             "  device dumps. Program them as low/high 8 KiB respectively and",
             "  retain programmer verification records.",
+            "- The printed `.106.106` 2 KiB BASIC table is reconstructed separately;",
+            "  its sole BAS0/JBASIC disagreement at `021A` is photo-adjudicated as `21`,",
+            "  yielding an exact match to the first page of `roms/jbasic11.bin`.",
             "- Never substitute the older D2-as-I/O-decode behavioral table; D9 is",
             "  the chip-select decoder and D2 is the separate `.037` READY/wait PROM.",
             "- Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`",

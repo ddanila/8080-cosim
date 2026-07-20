@@ -24,6 +24,7 @@ check_dir ref/ekdos-source
 check_dir ref/extracted-software
 check_dir ref/firmware
 check_dir ref/reconstructed-proms
+check_dir ref/reconstructed-firmware
 check_dir ref/wd1772-vg93
 
 # The owner photographs are Git LFS objects rather than checksum-manifested

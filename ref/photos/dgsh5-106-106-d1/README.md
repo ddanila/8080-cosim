@@ -23,7 +23,10 @@ Observations from the listing:
 - `sheet2_PXL_20260718_122557171.jpg` — Лист 2: `0330`–`05F0`
 - `sheet3_PXL_20260718_122601894.jpg` — Лист 3: `0600`–`07FF`
 
-## TODO
+## Reviewed reconstruction
 
-- [ ] OCR/transcribe to a byte image and diff against the repo's reconstructed
-      and physically-read PROM dumps; record any divergence with provenance.
+`scripts/reconstruct_dgsh5_106_106.py` reconstructs the complete page from
+the archived `BAS0.HEX` transcription and an independent `jbasic11.bin` diff.
+They disagree only at `021A`; the photographed row visibly reads `21`, not
+the archive's `A1`. The resulting image exactly equals cartridge bytes
+`0000-07FF`. See `docs/dgsh5-106-106-rom-table.md`.

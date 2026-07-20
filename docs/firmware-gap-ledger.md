@@ -41,6 +41,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D16 functional image has exact size and SHA256 | PASS |
 | D15+D16 round-trip exactly to roms/ekta37.bin | PASS |
 | D15/D16 split and non-dump provenance are documented | PASS |
+| Factory .106.106 BASIC page is reconstructed and photo-adjudicated | PASS |
 | D2 physical table and continuity are guarded | PASS |
 | D2 open-collector raw polarity executes through the D30 READY latch | PASS |
 | D6 corrected physical table drives runnable selection directly | PASS |
@@ -63,6 +64,9 @@ python3 scripts/report_firmware_gap_ledger.py
 - D15/D16 are deterministic Tier-1/2 functional images, not physical
   device dumps. Program them as low/high 8 KiB respectively and
   retain programmer verification records.
+- The printed `.106.106` 2 KiB BASIC table is reconstructed separately;
+  its sole BAS0/JBASIC disagreement at `021A` is photo-adjudicated as `21`,
+  yielding an exact match to the first page of `roms/jbasic11.bin`.
 - Never substitute the older D2-as-I/O-decode behavioral table; D9 is
   the chip-select decoder and D2 is the separate `.037` READY/wait PROM.
 - Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`
