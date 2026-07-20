@@ -106,13 +106,13 @@ LOAD_PRE, FDC_WG_TO_D100, LATCH_A, FDC_TG43_TO_D100, VA4, FDC_HLD_TO_D100,
 FDC_WDATA_DELAY_IN, VERT_RTR, VA0, PRECOMP_TAP_3, DC2, D53_Y3_R52, VA9,
 READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, FDC_DIR_TO_D100, POF,
 ROM_CS_D15, BA8, FDC_WPRT_STATUS, FDC_INDEX_STATUS, VA3, BA2, BA4, IO_CYCLE_H,
-FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, VA13, WR, and MEMW then
-each pass an independent uncapped check, reducing the exact count to 175;
-those routes are promoted. The last four hundred ninety-eight are
+FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, VA13, WR, MEMW, and HLDA then
+each pass an independent uncapped check, reducing the exact count to 174;
+those routes are promoted. The last four hundred ninety-nine are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
-through 70 mm. Its standard front/back A* search is exhausted with
+through 80 mm. Its standard front/back A* search is exhausted with
 no accepted route across 48.43–50, 65–70, 75–80, and the tested bands from 90
 through 130 mm. The exact board/DRC hashes, search ceiling, exhausted ranges,
 parameters, and tool hashes are guarded in
