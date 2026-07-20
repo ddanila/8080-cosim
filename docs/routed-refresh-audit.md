@@ -133,7 +133,8 @@ parameters, and tool hashes are guarded in
 The following rule-accurate multilayer phase uses 0.21 mm clearance against
 the board's 0.20 mm rule and a 0.25 mm lattice, retaining only complete KiCad
 DRC-neutral improvements. Uncapped sweeps exhaust all remaining distance-ranked
-candidates through 220 mm in that mode.
+candidates through 260 mm, beyond the 252.637 mm maximum residual candidate, so
+every distance-ranked gap has been attempted in that mode.
 
 ### Additive/rename-safe copper migration
 
