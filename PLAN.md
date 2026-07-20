@@ -798,7 +798,7 @@ design-release reports contain no P0 blocker.
 Active generated boundary/gate documents — each names its own pending hold,
 and `docs/owner-measurement-shortlist.md` queues them for the next hardware
 session: `replica-bringup-verification-points.md` (endpoint coverage),
-`unmodeled-footprint-inventory.md` (8 FDC devices),
+`unmodeled-footprint-inventory.md` (3 FDC devices),
 `factory-modification-disposition.md` (Вид В pad mapping),
 `assembly-drawing-extraction.md` (wire-table pin mapping),
 `d30-section-b-scan-chase.md` (D30 section B continuity),

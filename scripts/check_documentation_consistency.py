@@ -415,6 +415,11 @@ def main() -> int:
         evidence["source-risk nets"],
     ):
         failures.append("bring-up checklist exposes a stale untraced FDC-device count")
+    if unmodeled_count and not re.search(
+        rf"`unmodeled-footprint-inventory\.md` \({unmodeled_count} FDC devices\)",
+        read("PLAN.md"),
+    ):
+        failures.append("PLAN active-report index exposes a stale untraced FDC-device count")
 
     risk_match = re.search(r"Verification-point nets: `(\d+)`", evidence["source-risk nets"])
     if risk_match:
