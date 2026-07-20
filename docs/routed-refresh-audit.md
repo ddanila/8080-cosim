@@ -108,7 +108,7 @@ READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, FDC_DIR_TO_D100, POF,
 ROM_CS_D15, BA8, FDC_WPRT_STATUS, FDC_INDEX_STATUS, VA3, BA2, BA4, IO_CYCLE_H,
 FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, VA13, WR, MEMW, HLDA, and
 ROM_CS_4000 then each pass an independent uncapped check, reducing the exact
-count to 167; those routes are promoted. The last five hundred six are
+count to 165; those routes are promoted. The last five hundred eight are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
