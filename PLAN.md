@@ -48,16 +48,17 @@ production copper. Exact hashes and counts are guarded in
 An uncapped connectivity guard then transactionally removes 2,872 migrated
 copper items from that live-source baseline. The exact open count improves
 from 883 to 677, all 199 dangling tracks and 56 dangling vias are eliminated,
-and all electrical blocker categories remain zero. One hundred ten bounded
+and all electrical blocker categories remain zero. One hundred eighteen bounded
 nonzero-gap proposals, including P5V, STSTB, GND, W10_QA_SEL, D40Q1_D39,
 LATCH_B, REV, SER_TXD_INV, D6_V_ENABLE, MEMW, D40Q2_D33, D42_Q,
 D106_PRESET_HIGH, D101_D02_R92_R99, X4_DSEL1_N, VID_MUX_G, RAS, PROM_EN,
 FDC_IRQ_CONDITIONED_N, SER_TXD, LATCH_PRE, D97_RC2_C19_R100, D97_RC1_C16,
 D99_RC2_TIMING, FDC_CLK, FRAME_INT, D39Y, D102_C2_C20, D92_NOACC,
 D100_CONTROL_SHEET1_BOUNDARY, D33_CLK_RC, RES_RC, FDC_READY, OSC_PRE,
-SEP_D28_CLK, D97_C1_C16, and D102_RC2_C20_R108, each independently reduce the
-uncapped graph, reaching 567 opens; all one hundred ten are promoted. The final
-one hundred six are selected by a transactional orchestrator that rejects
+SEP_D28_CLK, D97_C1_C16, D102_RC2_C20_R108, FDC_INTRQ, and
+PRECOMP_CASCADE_2, each independently reduce the uncapped graph, reaching 559
+opens; all one hundred eighteen are promoted. The final one hundred fourteen
+are selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Exact hashes, parameters, and tool
 provenance are guarded in
