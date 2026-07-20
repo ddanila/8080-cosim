@@ -112,7 +112,7 @@ count to 157; those routes are promoted. The last five hundred sixteen are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
-through 200 mm. Its standard front/back A* search is exhausted with
+through 210 mm. Its standard front/back A* search is exhausted with
 no accepted route across 48.43–50, 65–70, 75–80, and the tested bands from 90
 through 130 mm. The exact board/DRC hashes, search ceiling, exhausted ranges,
 parameters, and tool hashes are guarded in
