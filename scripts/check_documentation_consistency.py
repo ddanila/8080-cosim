@@ -674,6 +674,42 @@ def main() -> int:
             if "current-source-salvage-baseline.json" not in read(path):
                 failures.append(f"{path} omits the current-source salvage baseline")
 
+    live_prune_path = ROOT / "ref/routing/current-source-uncapped-prune.json"
+    if not live_prune_path.exists():
+        failures.append("current-source uncapped-prune evidence is missing")
+    else:
+        live_prune = json.loads(live_prune_path.read_text(encoding="utf-8"))
+        identity = live_prune.get("identity", {})
+        initial = live_prune.get("initial", {})
+        final = live_prune.get("final", {})
+        probe = live_prune.get("route_probe", {})
+        if (
+            live_prune.get("schema_version") != 1
+            or live_prune.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
+            or live_prune.get("input_board_sha256")
+            != "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2"
+            or live_prune.get("output_board_size") != 7665339
+            or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
+            or initial.get("uncapped_unconnected") != 883
+            or final.get("uncapped_unconnected") != 857
+            or final.get("routed_nets") != 289
+            or initial.get("routed_items") - final.get("routed_items") != 384
+            or live_prune.get("removed_items") != 384
+            or live_prune.get("removed_source_items") != 0
+            or (final.get("track_dangling"), final.get("via_dangling")) != (199, 42)
+            or probe.get("uncapped_unconnected_before") != probe.get("uncapped_unconnected_after")
+            or probe.get("promoted") is not False
+            or any(final.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
+        ):
+            failures.append("current-source uncapped-prune summary is malformed or stale")
+        for relative, expected in live_prune.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"current-source uncapped-prune tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current-source-uncapped-prune.json" not in read(path):
+                failures.append(f"{path} omits the current-source uncapped-prune evidence")
+
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():
         failures.append("current 21-gap dangling-prune evidence is missing")

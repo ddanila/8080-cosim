@@ -45,6 +45,17 @@ It improves both the 1,814-open bare source and the earlier documented
 production copper. Exact hashes and counts are guarded in
 `ref/routing/current-source-salvage-baseline.json`.
 
+An uncapped connectivity guard then transactionally removes 384 migrated
+copper items from that live-source baseline. The exact open count improves
+from 883 to 857, dangling findings improve from 199 tracks plus 56 vias to
+199 tracks plus 42 vias, and all electrical blocker categories remain zero.
+A bounded nonzero-gap probe accepted one 0.568 mm BA15 proposal under the
+CLI's 499-marker ceiling, but the independent connectivity graph stayed at
+857 opens, so that proposal is deliberately not promoted. Exact hashes,
+parameters, and tool provenance are guarded in
+`ref/routing/current-source-uncapped-prune.json`; this remains convergence
+evidence rather than production copper.
+
 The routed-refresh tool now proves and optionally retains additive/renamed
 copper when every old endpoint survives at the exact same pad coordinate on
 one current net and the old endpoint set is a strict subset. Against the
