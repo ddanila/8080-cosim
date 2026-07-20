@@ -75,9 +75,10 @@ D98_Y3_S1_2, S3_3, RAIL13, D39_MEMCYC, D105_WAIT_STAGE, VIDEO_OUT, RAIL12,
 SOUND_CLAMP, D94_D1_D99_A2N, RAIL14, SND_BASE, D30B_D_PRE_N,
 D96_TOGGLE_FEEDBACK, S3_6, X4_WR_PROTECT_N, MA4, VID_MIX2, D33_CLK_RC,
 MEMW_D7P2, SND_OUT, MEMR_D7, FDC_WE_N, STSTB_D38, D97_C2_C19_R86_TARGET,
-PST_CLK, DB3, SER_RXD, and S_DTP, each independently reduce the uncapped graph,
-reaching 286 opens; all three hundred ninety-one are promoted. The final three
-hundred eighty-seven are
+PST_CLK, DB3, SER_RXD, S_DTP, D34_RC_DRIVE, A14, A9, RAM_RD_OE,
+D97_RC2_C19_R100, and MEMR, each independently reduce the uncapped graph,
+reaching 279 opens; all three hundred ninety-eight are promoted. The final three
+hundred ninety-four are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 The standard guarded front/back A* search is also exhausted without an accepted
