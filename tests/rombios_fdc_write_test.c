@@ -1,4 +1,9 @@
 #define _POSIX_C_SOURCE 200809L
+#ifdef __APPLE__
+/* mkdtemp is a Darwin extension that strict _POSIX_C_SOURCE mode hides; glibc
+ * exposes it under POSIX.1-2008 without this. */
+#define _DARWIN_C_SOURCE
+#endif
 
 #include "../cosim/i8080.h"
 #include "../cosim/juku_fdc.h"
