@@ -260,6 +260,13 @@ findings unchanged. A fresh bounded sweep again tests every gap, accepts no
 route, and is byte-identical to its input. Exact evidence is guarded in
 `ref/routing/current21-ten-tail-prune.json`.
 
+Continuing along the long residual branches removes another 30 migrated items,
+for 1,630 cumulative removals. The warning frontier plateaus at ten dangling
+tracks, but routed items fall to 30,845 without changing the 21 open nets or
+introducing any electrical finding. A fresh all-gap sweep accepts no route and
+is byte-identical to its input. Exact evidence is guarded in
+`ref/routing/current21-ten-tail-plateau-prune.json`.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
