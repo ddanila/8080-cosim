@@ -99,8 +99,8 @@ SOUND_CLAMP, D94_D1_D99_A2N, RAIL14, SND_BASE, D30B_D_PRE_N,
 D96_TOGGLE_FEEDBACK, S3_6, X4_WR_PROTECT_N, MA4, VID_MIX2, D33_CLK_RC,
 MEMW_D7P2, SND_OUT, MEMR_D7, FDC_WE_N, STSTB_D38, D97_C2_C19_R86_TARGET,
 PST_CLK, and DB3 then each pass an independent uncapped check, reducing the
-exact count to 295; those routes are promoted. The last three hundred
-seventy-eight are
+exact count to 291; those routes are promoted. The last three hundred
+eighty-two are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its standard front/back A* search is exhausted with
