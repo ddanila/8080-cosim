@@ -94,9 +94,10 @@ D105_MEMW_INV, BA1, SER_DTR, ROM_CS_EXP17, D53_Y0_R49, DC1, PHI1, IR7, DC0,
 IOWR, D39Y, D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
 D99_C1_TIMING, RESET, OSC, DBIN, TIMING_TAG17, CLK_123M, CAS, FDC_STEP_TO_D100,
 AVDC, KBD_K0, VID_CPU_SEL, VA11, FDC_PRECOMP_WRDATA, IORC_N, MRC_N,
-D98_Y3_S1_2, S3_3, RAIL13, and D39_MEMCYC then each pass an independent uncapped
-check, reducing the exact count to 356; those routes are promoted. The last
-three hundred seventeen are
+D98_Y3_S1_2, S3_3, RAIL13, D39_MEMCYC, D105_WAIT_STAGE, VIDEO_OUT, RAIL12,
+SOUND_CLAMP, and D94_D1_D99_A2N then each pass an independent uncapped check,
+reducing the exact count to 348; those routes are promoted. The last three
+hundred twenty-five are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its standard front/back A* search is exhausted with
