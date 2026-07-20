@@ -47,6 +47,8 @@ findings. Every status applies only to the boundary named by the report.
   `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
   `owner-measurement-shortlist.md`.
 - Programmable parts: `firmware-gap-ledger.md`,
+  `d15-d16-firmware-lineage.md` (factory designations, exact archival EktaSoft
+  3.7 pair identity, and the still-open physical-content boundary),
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `reconstructed-prom-fallbacks.md`, `d6-physical-decode.md`,
   `d8-physical-decode.md` (exhaustive `.039` socket-select equations),

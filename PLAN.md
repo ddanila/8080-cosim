@@ -709,7 +709,13 @@ hex, and the two capture validators (К556РТ4 and К155РЕ3) enforce the repe
 read discipline (`docs/firmware-gap-ledger.md`). Compare against independent
 reads or original programming files if those surface. The deterministic
 D15/D16 `ekta37` split and 2764-class device decision are recorded in
-`docs/eprom-programming-images.md`.
+`docs/eprom-programming-images.md`. A checksum-pinned lineage audit now proves
+that the archival raw `JUKUROM0.HEX`/`JUKUROM1.HEX` pair concatenates exactly
+and uniquely to that EktaSoft 3.7 image, while the owner overview independently
+shows two populated ST `M2764AF1` packages with uncovered windows. Neither
+source binds those bytes to the factory `.087/.041` program designations or to
+the fitted chips, so repeat physical reads and original programming media remain
+the historical-content gates (`docs/d15-d16-firmware-lineage.md`).
 
 The runnable boot does not yet execute from all four physical tables. The
 adoption road, in dependency order:

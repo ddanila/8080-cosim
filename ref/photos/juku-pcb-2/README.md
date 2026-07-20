@@ -39,5 +39,12 @@ positions are not evidence of missing production RAM. Some capacitor positions
 are empty and the photographs do not yet establish a complete per-refdes value
 map, so capacitor-value fidelity remains open.
 
+The May overview `PXL_20260519_201900001.jpg` also resolves both populated,
+socketed ROM-row devices as windowed ST `M2764AF1` EPROMs. Their windows have
+no content-identifying labels, so the photograph proves package/population but
+not a firmware version or programmed-drawing identity. The checksum-pinned
+comparison in `docs/d15-d16-firmware-lineage.md` keeps that boundary separate
+from the archival `JUKUROM0/1` byte identity.
+
 The factory assembly drawing for this module (`ДГШ5.109.009 СБ`) is
 photographed in `ref/photos/dgsh5-109-009-sb/`.

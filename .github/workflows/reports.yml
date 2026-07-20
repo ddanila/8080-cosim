@@ -342,6 +342,9 @@ jobs:
           python3 scripts/report_fdc_bus_polarity.py
           git diff --exit-code -- docs/fdc-bus-polarity.md
 
+      - name: Check D15/D16 firmware lineage freshness
+        run: ./sync/d15_d16_firmware_lineage_check.sh
+
       - name: Check owner measurement shortlist freshness
         run: |
           python3 scripts/report_fdc_hardware_handoff.py

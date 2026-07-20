@@ -115,6 +115,9 @@ reset-to-prompt reports are the stronger evidence where both exist.
 - `dgsh5_109_009_e3_check.sh` checksum-guards all 23 recovered processor
   schematic frames and regenerates the reviewed sheets-1/2 divergence plus
   complete sheet-3 circuit index against adopted board endpoints.
+- `d15_d16_firmware_lineage_check.sh` checksum-guards the factory census,
+  archival EPROM halves, ROM candidates, and owner overview while proving the
+  unique EktaSoft 3.7 byte identity without claiming fitted-chip contents.
 - `scripts/check_documentation_consistency.py` ensures user-facing status and
   package hashes do not contradict the active design blockers.
 

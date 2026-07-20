@@ -7,6 +7,17 @@ NOT the processor module's set: the .006 ВП lists D8's programmed part as ДГ
 .009 ПЭЗ adds .092 for D94. Neither table is printed in this owner scan;
 validated physical `.039` and `.092` captures are preserved separately under
 `ref/physical-proms/validated/`.
+
+## D15/D16 archival EPROM pair
+
+`JUKUROM0.HEX` and `JUKUROM1.HEX` are raw 8 KiB binary images despite their
+suffixes. Their concatenation is byte-for-byte `roms/ekta37.bin`; the guarded
+comparison against every preserved 16 KiB candidate is generated at
+`docs/d15-d16-firmware-lineage.md`. The archival filenames do not bind the
+bytes to physical refdes or to factory programs `ДГШ5.106.087/.041`, so this
+identity supports the functional replica image but is not represented as an
+owner-board dump or original factory-programming record.
+
 Content semantics: low nibble is ONE-COLD (0111/1011/1101/1110) — four active-low selects.
 .117 steps them with 4-address dwell across the 08-17h window; .113 fires each once at 14-17h.
 The earlier role-based assignment D8↔.117 / D94↔.113 is retired. The guarded
