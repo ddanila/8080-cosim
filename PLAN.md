@@ -69,9 +69,9 @@ FDC_SEPARATOR_CLOCK, MA6, WR, S_CTS, D93_TEST_WF_VFOE, CLKG_D36, and
 FDC_EARLY_SEL, DC3, D99_RC2_TIMING, PRECOMP_TAP_1, D105_MEMW_INV, BA1,
 SER_DTR, ROM_CS_EXP17, D53_Y0_R49, DC1, PHI1, IR7, DC0, IOWR, D39Y,
 D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
-D99_C1_TIMING, and RESET, each independently reduce the uncapped graph, reaching
-377 opens; all three hundred are promoted. The final two hundred ninety-six are
-selected by
+D99_C1_TIMING, RESET, OSC, DBIN, and TIMING_TAG17, each independently reduce the
+uncapped graph, reaching 374 opens; all three hundred three are promoted. The
+final two hundred ninety-nine are selected by
 a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Exact hashes, parameters, and tool provenance are guarded in
