@@ -124,7 +124,8 @@ parameters, and tool hashes are guarded in
 `ref/routing/current-source-uncapped-prune.json`.
 The following rule-accurate multilayer phase uses 0.21 mm clearance against
 the board's 0.20 mm rule and a 0.25 mm lattice, retaining only complete KiCad
-DRC-neutral improvements.
+DRC-neutral improvements. A final uncapped zero-yield pass exhausts all six
+remaining distance-ranked candidates through 30 mm in that mode.
 
 ### Additive/rename-safe copper migration
 

@@ -96,8 +96,9 @@ Its conservative multilayer search is exhausted through 260 mm, beyond the
 252.637 mm maximum residual candidate, so all distance-ranked gaps have now
 been attempted in that mode.
 The next rule-accurate multilayer phase uses 0.21 mm clearance against the
-board's 0.20 mm rule and a 0.25 mm lattice; its first eight accepted routes are
-also guarded by complete KiCad DRC comparison.
+board's 0.20 mm rule and a 0.25 mm lattice; its accepted routes are also guarded
+by complete KiCad DRC comparison. A final uncapped zero-yield pass exhausts all
+remaining distance-ranked candidates through 30 mm in that mode.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

@@ -122,7 +122,8 @@
       {"limit": 8, "accepted": 8, "max_attempts": 16, "proposal_timeout_seconds": 60, "min_distance_mm": 6.98, "max_distance_mm": 30, "mode": "M", "search_margin_mm": 30, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
       {"limit": 8, "accepted": 6, "max_attempts": 16, "proposal_timeout_seconds": 60, "min_distance_mm": 16.07, "max_distance_mm": 30, "mode": "M", "search_margin_mm": 30, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
       {"limit": 8, "accepted": 8, "max_attempts": 16, "proposal_timeout_seconds": 60, "min_distance_mm": 19.27, "max_distance_mm": 30, "mode": "M", "search_margin_mm": 30, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
-      {"limit": 8, "accepted": 2, "attempts": 11, "max_attempts": 16, "proposal_timeout_seconds": 60, "min_distance_mm": 19.27, "max_distance_mm": 30, "mode": "M", "search_margin_mm": 30, "grid_step_mm": 0.25, "route_clearance_mm": 0.21}
+      {"limit": 8, "accepted": 2, "attempts": 11, "max_attempts": 16, "proposal_timeout_seconds": 60, "min_distance_mm": 19.27, "max_distance_mm": 30, "mode": "M", "search_margin_mm": 30, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
+      {"limit": 8, "accepted": 0, "attempts": 6, "max_attempts": 0, "proposal_timeout_seconds": 60, "min_distance_mm": 0, "max_distance_mm": 30, "mode": "M", "search_margin_mm": 30, "grid_step_mm": 0.25, "route_clearance_mm": 0.21}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -176,6 +177,7 @@
     "proposal_timeout_seconds": 3,
     "rule_accurate_multilayer_clearance_mm": 0.21,
     "rule_accurate_multilayer_grid_step_mm": 0.25,
+    "rule_accurate_multilayer_exhausted_through_mm": 30,
     "accepted_routes_by_capped_marker_guard": 552,
     "accepted_routes_by_uncapped_guard": 552,
     "routes": [
