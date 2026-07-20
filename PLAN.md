@@ -48,13 +48,14 @@ production copper. Exact hashes and counts are guarded in
 An uncapped connectivity guard then transactionally removes 2,872 migrated
 copper items from that live-source baseline. The exact open count improves
 from 883 to 677, all 199 dangling tracks and 56 dangling vias are eliminated,
-and all electrical blocker categories remain zero. Forty bounded
+and all electrical blocker categories remain zero. Forty-eight bounded
 nonzero-gap proposals, including P5V, STSTB, GND, W10_QA_SEL, D40Q1_D39,
 LATCH_B, REV, SER_TXD_INV, D6_V_ENABLE, MEMW, D40Q2_D33, D42_Q,
-D106_PRESET_HIGH, D101_D02_R92_R99, and X4_DSEL1_N, each independently reduce
-the uncapped graph, reaching 637 opens; all forty are promoted. The final
-thirty-six are selected by a transactional orchestrator that rejects
-capped-only marker advances and continues searching. Exact hashes, parameters, and tool
+D106_PRESET_HIGH, D101_D02_R92_R99, X4_DSEL1_N, VID_MUX_G, and RAS, each
+independently reduce the uncapped graph, reaching 629 opens; all forty-eight
+are promoted. The final forty-four are selected by a transactional
+orchestrator that rejects capped-only marker advances and continues searching.
+Exact hashes, parameters, and tool
 provenance are guarded in
 `ref/routing/current-source-uncapped-prune.json`; this remains convergence
 evidence rather than production copper.
