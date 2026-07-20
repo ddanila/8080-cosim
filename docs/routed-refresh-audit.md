@@ -501,6 +501,19 @@ replacements give the chain a 24-open floor. The transaction was stopped and
 no candidate was published; the verified 23-open checkpoint remains
 authoritative.
 
+Two further exact-clearance lattice phases now close the remaining untested
+spacing around the productive phase family without changing that checkpoint.
+On the exact SHA256 `3dc247...37c` 23-open board, a 0.1625 mm/100 mm-margin
+sweep proves router no-path for all 23 selected gaps. The much finer 0.0875 mm
+phase proves no-path for PHI1_D35 and DC4 and reaches its explicit 45-second
+cap on the other 21; those timeouts are not promoted to no-path claims. Both
+output boards are byte-identical to the input, so neither phase found an
+additive route. KiCad selected alternate all-layer versus B.Cu endpoint
+markers at the same S3_1 coordinate between the two DRC runs; attempted-state
+inheritance therefore remains phase-local. Exact configuration, tool hashes,
+outcome counts, and that marker boundary are guarded in
+`ref/routing/current23-grid-edge-phase-exhaustion.json`.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \

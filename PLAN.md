@@ -184,6 +184,13 @@ unroutable on all four standard phases. Even granting every later restoration,
 the chain has a 24-open floor, so it is discarded and the 23-gap checkpoint
 remains authoritative.
 
+Two interleaved exact-clearance phases extend that negative boundary: the
+0.1625 mm lattice proves no route for all 23 residual signatures, while the
+0.0875 mm lattice proves two no-path results and records 21 bounded timeouts.
+Both results are byte-identical to the current 23-gap input. Their phase-local
+S3_1 marker difference and exact tool/configuration hashes are guarded in
+`ref/routing/current23-grid-edge-phase-exhaustion.json`; no route is adopted.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

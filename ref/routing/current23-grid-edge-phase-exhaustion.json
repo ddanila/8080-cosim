@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "board_sha256": "3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c",
+  "initial_unconnected": 23,
+  "final_unconnected": 23,
+  "accepted_routes": 0,
+  "common_config": {"mode": "M", "search_margin_mm": 100.0, "route_clearance_mm": 0.2, "timeout_seconds": 45.0},
+  "tool_sha256": {
+    "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447",
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187"
+  },
+  "phases": {
+    "0.0875": {"router_failed": 2, "timeout": 21, "output_board_sha256": "3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c"},
+    "0.1625": {"router_failed": 23, "timeout": 0, "output_board_sha256": "3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c"}
+  },
+  "attempted_nets": [
+    "BA5", "CS_D10", "CS_D11", "CS_D57", "D3_O4_D6_A6", "D3_O6_D6_A5", "D6_V_ENABLE", "DC4", "IORD", "MA7", "MEMR", "MEMW_D7P2", "PHI1_D35", "PHI2_D35", "RAM_OUT_EN", "S3_1", "VA13", "VA13", "VA15", "VA6", "VA9", "W10_QA_SEL_D50", "WR"
+  ],
+  "endpoint_marker_boundary": {
+    "net": "S3_1",
+    "common_start": [80.4313, 177.8013, "F"],
+    "grid_0.0875_end": [98.3909, 177.8013, "A"],
+    "grid_0.1625_end": [98.3909, 177.8013, "B"],
+    "disposition": "KiCad selected alternate all-layer versus B.Cu markers at the same coordinate. Preserve phase-local signatures; do not transfer this attempted result across phases."
+  }
+}

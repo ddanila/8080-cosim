@@ -535,6 +535,35 @@ def main() -> int:
             if "current23-grid01125-exhaustion.json" not in read(path):
                 failures.append(f"{path} omits the current routing-exhaustion evidence")
 
+    edge_phase_path = ROOT / "ref/routing/current23-grid-edge-phase-exhaustion.json"
+    if not edge_phase_path.exists():
+        failures.append("current 23-gap edge-phase routing evidence is missing")
+    else:
+        edge = json.loads(edge_phase_path.read_text(encoding="utf-8"))
+        expected_board = "3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c"
+        phases = edge.get("phases", {})
+        fine = phases.get("0.0875", {})
+        coarse = phases.get("0.1625", {})
+        if (
+            edge.get("schema_version") != 1
+            or edge.get("board_sha256") != expected_board
+            or edge.get("initial_unconnected") != 23
+            or edge.get("final_unconnected") != 23
+            or edge.get("accepted_routes") != 0
+            or (fine.get("router_failed"), fine.get("timeout")) != (2, 21)
+            or (coarse.get("router_failed"), coarse.get("timeout")) != (23, 0)
+            or any(phase.get("output_board_sha256") != expected_board for phase in (fine, coarse))
+            or len(edge.get("attempted_nets", [])) != 23
+        ):
+            failures.append("current 23-gap edge-phase routing summary is malformed")
+        for relative, expected in edge.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"edge-phase routing tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current23-grid-edge-phase-exhaustion.json" not in read(path):
+                failures.append(f"{path} omits the edge-phase routing evidence")
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(
