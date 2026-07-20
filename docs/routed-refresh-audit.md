@@ -72,14 +72,14 @@ the CLI's truncated 499-item list as its acceptance boundary. Adaptive
 transactions remove 2,872 migrated items, reduce the exact open count from
 883 to 677, and eliminate all 199 dangling-track plus 56 dangling-via findings
 while preserving the 321-footprint/2,434-pad source identity and zero
-electrical blockers. Eighty-six bounded proposals across P5V, STSTB, GND,
+electrical blockers. Ninety-four bounded proposals across P5V, STSTB, GND,
 W10_QA_SEL, D40Q1_D39, LATCH_B, REV, SER_TXD_INV, D6_V_ENABLE, MEMW,
 D40Q2_D33, D42_Q, D106_PRESET_HIGH, D101_D02_R92_R99, X4_DSEL1_N, VID_MUX_G,
 RAS, PROM_EN, FDC_IRQ_CONDITIONED_N, SER_TXD, LATCH_PRE, D97_RC2_C19_R100,
 D97_RC1_C16, D99_RC2_TIMING, FDC_CLK, FRAME_INT, D39Y, D102_C2_C20,
-D92_NOACC, and D100_CONTROL_SHEET1_BOUNDARY then each pass an independent
-uncapped check, reducing the exact count to 591; those routes are promoted.
-The last eighty-two are selected transactionally
+D92_NOACC, D100_CONTROL_SHEET1_BOUNDARY, D33_CLK_RC, RES_RC, and FDC_READY then
+each pass an independent uncapped check, reducing the exact count to 583;
+those routes are promoted. The last ninety are selected transactionally
 by `close_unconnected_gaps_uncapped.py`, which
 continues past capped-only or
 DRC-regressing candidates. The exact board/DRC
