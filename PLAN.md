@@ -82,12 +82,13 @@ D33_6_D36, W_RAIL16, S_SOUT, VA1, X2_IRQ0, SER_CTS_N, DB6, DB7, DC6, DC7,
 LOAD_PRE, FDC_WG_TO_D100, LATCH_A, FDC_TG43_TO_D100, VA4, FDC_HLD_TO_D100,
 FDC_WDATA_DELAY_IN, VERT_RTR, VA0, PRECOMP_TAP_3, DC2, D53_Y3_R52, VA9,
 READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, FDC_DIR_TO_D100, POF,
-ROM_CS_D15, BA8, FDC_WPRT_STATUS, and FDC_INDEX_STATUS, each independently
-reduce the uncapped graph, reaching 192 opens; all four hundred eighty-five are
-promoted. The final four hundred eighty-one are
+ROM_CS_D15, BA8, FDC_WPRT_STATUS, FDC_INDEX_STATUS, VA3, BA2, BA4, IO_CYCLE_H,
+and FDC_TR00_STATUS, each independently reduce the uncapped graph, reaching 186
+opens; all four hundred ninety-one are promoted. The final four hundred
+eighty-seven are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
-Its conservative multilayer search is exhausted through 60 mm.
+Its conservative multilayer search is exhausted through 70 mm.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
