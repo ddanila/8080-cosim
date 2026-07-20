@@ -2,9 +2,9 @@
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
-  "output_board_sha256": "b490bfce60c312eb090a055b50aa2cbc5a3c96b1b8b4a08437582fbe4cd3923c",
-  "output_board_size": 10154374,
-  "output_drc_sha256": "4410c9774e938175b4f3b6bd28034f44e263358dbeb45d6d0c476b6af1d42106",
+  "output_board_sha256": "14e3586a160ac94444086bdda392805e8426c55f796cfa46204959d57f2a1b79",
+  "output_board_size": 10159325,
+  "output_drc_sha256": "6395750e0c1610fc190432329da784e91345300294e57400fcae992b782675ef",
   "config": {
     "batch_sizes": [32, 64],
     "adaptive_batch": true,
@@ -170,7 +170,8 @@
     "equal_open_topology_swaps": [
       {"net": "BA11", "removed_items": 7, "removed_source_items": 0, "remote_via_mm": [65.0, 125.0], "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
       {"net": "CS_D10", "removed_items": 2, "removed_source_items": 0, "forced_corridor_mm": [[121.0, 116.0], [123.0, 116.0]], "grid_step_mm": 0.1, "route_clearance_mm": 0.2, "initial_unconnected": 9, "final_unconnected": 9},
-      {"net": "VA13", "removed_items": 11, "removed_source_items": 0, "replacement_distance_mm": 22.561, "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9}
+      {"net": "VA13", "removed_items": 11, "removed_source_items": 0, "replacement_distance_mm": 22.561, "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
+      {"net": "BA12", "removed_items": 2, "removed_source_items": 0, "replacement_items": 37, "replacement_vias": 4, "forced_corridor_mm": [[89.5, 122.0], [91.0, 122.0]], "entry_bridge_mm": [[86.0, 122.0], [85.0, 122.9]], "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -188,7 +189,7 @@
     "via_dangling": 0
   },
   "final": {
-    "routed_items": 25306,
+    "routed_items": 25341,
     "routed_nets": 403,
     "uncapped_unconnected": 9,
     "cli_unconnected_ceiling": 9,

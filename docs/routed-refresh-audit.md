@@ -161,6 +161,11 @@ VA13's two-via F.Cu bridge is then replaced by a legal 22.561 mm route between
 its B.Cu endpoints, again preserving nine opens and all source copper. The
 preferred IOWR_RAW_N transaction no longer displaces BA11, CS_D10, or VA13;
 BA12 is now its first unrecoverable restoration and the next pre-route target.
+BA12's two conflicting F.Cu items are replaced by a 37-item multilayer detour;
+its entry layer change is shifted onto the `(86,122)` mm endpoint with a short
+B.Cu bridge to `(85,122.9)` mm. This fourth source-preserving swap retains nine
+opens and the complete DRC baseline, and BA12 now restores inside the preferred
+IOWR_RAW_N transaction. BA15's 7.018 mm corridor is the next failed restoration.
 
 ### Additive/rename-safe copper migration
 
