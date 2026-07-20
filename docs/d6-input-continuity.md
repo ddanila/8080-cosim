@@ -1,8 +1,8 @@
 # D6 input continuity correction
 
-Status date: 2026-07-14
+Status date: 2026-07-20
 
-Status: **D6 A5/A6 MEASURED / A7 SOURCE BOUNDARY**
+Status: **D6 A5/A6/A7 SOURCES MEASURED**
 
 Direct continuity measurements on a physical `.009` processor board correct
 the older-sheet assignment of D6's three high address inputs. The measurements
@@ -28,7 +28,7 @@ and values at D3.3 and D3.5 were not identified.
 The resulting proved D6 address order is:
 
 ```text
-A0..A7 = BA15, BA14, BA13, BA12, BA11, /PC0, /PC1, unresolved A7 source
+A0..A7 = BA15, BA14, BA13, BA12, BA11, /PC0, /PC1, D7.8 IO_CYCLE_H
 ```
 
 ## Explicit negative evidence
@@ -42,23 +42,25 @@ A0..A7 = BA15, BA14, BA13, BA12, BA11, /PC0, /PC1, unresolved A7 source
 - The separately reconfirmed write-strobe net remains
   `D105.12 <-> D105.13 <-> D5.26`.
 
-No continuation beyond the two input endpoints `D6.15 <-> D105.1` was found.
+The initial session found no continuation beyond `D6.15 <-> D105.1`.
 With D6 removed, resistance from D6.15 to both GND and +5 V fluctuates at
 approximately 100-200 kohm. This excludes a simple low-value pull-up or
 pull-down; the variation may reflect in-circuit charging or leakage, but does
-not by itself prove a capacitor. Because both endpoints are inputs, the driver
-or obscured branch remains a continuity boundary. The model must not merge it with MEMW or FDC
-density merely to supply a functional value.
+not by itself prove a capacitor. That observation is retained as measurement
+history. A later owner session on 2026-07-19 directly closed
+`D7.8 -> D105.1 -> D6.15`; D7.8 is the output of the D7 NAND receiving raw
+`/IORD` and `/IOWR`, so A7 is the I/O-cycle-active-high qualifier. The model
+must not merge it with MEMW or FDC density.
 
 ## Modeling consequence
 
 The structural model now routes D26 PC1 and PC0 through the measured D3
-inverters before D6 A6 and A5. D6 A7 and D105.1 share an explicit boundary.
+inverters before D6 A6 and A5, and routes D7.8 to D105.1/D6 A7.
 Runnable selection now comes from the physical D6 table through `U_DECODE` under
 the direct physical output mapping. The 2026-07-19 revision-3 reread proved that
 the earlier artifact had all four data channels reversed; the separately named
 functional decoder is retained only by the B37A diagnostic comparison. The A7
-source remains open independently of the now-closed output-order question.
+source and output-order questions are independently closed.
 
 ## Chip-removed output correction
 

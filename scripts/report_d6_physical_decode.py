@@ -81,6 +81,7 @@ def main() -> int:
     rom_nodes = {tuple(node) for node in board["nets"]["ROM_SEL"]["nodes"]}
     enable_nodes = {tuple(node) for node in board["nets"]["D6_V_ENABLE"]["nodes"]}
     wreq_nodes = {tuple(node) for node in board["nets"]["WREQ_N"]["nodes"]}
+    io_cycle_nodes = {tuple(node) for node in board["nets"]["IO_CYCLE_H"]["nodes"]}
     hdl = (ROOT / "hdl/juku_top.v").read_text()
     devices = (ROOT / "hdl/devices.v").read_text()
     reader = (ROOT / "tools/re3_board_rt4_dumper/re3_board_rt4_dumper.ino").read_text()
@@ -91,6 +92,8 @@ def main() -> int:
         ("D6.11 reaches D2.15/-WREQ and stays separate from ROM select", {("D6", "11"), ("D2", "15")} <= wreq_nodes and ("D6", "11") not in rom_nodes),
         ("D6.11 conductor also reaches D92.5/R12.2", {("D6", "11"), ("D2", "15"), ("D92", "5"), ("R12", "2")} <= wreq_nodes),
         ("D13.12 drives the D6 enable conductor, not either output", ("D13", "12") in enable_nodes and ("D13", "12") not in rom_nodes | wreq_nodes),
+        ("D7.8 drives D105.1 and D6 A7 as IO_CYCLE_H",
+         {("D7", "8"), ("D105", "1"), ("D6", "15")} <= io_cycle_nodes),
         ("HDL keeps the D6 outputs separate", ".rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n)" in hdl),
         ("HDL models D6 raw outputs as open collector with physical pull-up recovery",
          "К556РТ4 outputs are open collector" in devices
@@ -194,8 +197,8 @@ def main() -> int:
         "  `2000-FFFF` emits `F`.", "- With raw `A7=0`, all four A6/A5 combinations are distinct. Mode `001`",
         "  contains word `1` at `0000-3FFF` and `C000-D7FF`, word `F` in the",
         "  middle, and word `8` at `D800-FFFF`; mode `010` extends word `1` through `D7FF`.",
-        "  Direct `.009` continuity now proves A6=`~PC1` and A5=`~PC0`; A7 joins",
-        "  D105.1 but its driver or pull source is still unresolved. The raw mode",
+        "  Direct continuity proves A6=`~PC1`, A5=`~PC0`, and A7 is the",
+        "  D7.8-to-D105.1 `IO_CYCLE_H` qualifier. The raw mode",
         "  numbers remain useful table coordinates, not a claim about A7 semantics.",
         "- D3/pin9 is low only in word `1`; D2/pin10 is high in words `B/F`.", "- These are physical electrical facts, not yet a complete explanation of",
         "  the downstream D8/D13/D92 memory timing. That behavior must be derived",
@@ -210,8 +213,7 @@ def main() -> int:
         "  RAM target `B37A` for raw row `000`, aligning the direct ROM and ROE paths",
         "  with the runnable behavior without inventing an inverter.",
         "- Raw row `000` emits word `1` at both PC `0484` and RAM target `B37A`,",
-        "  but measured firmware suffix `11` and unresolved A7 prevent identifying",
-        "  that raw row as the checkpoint state.",
+        "  but the firmware suffix `11` identifies a different checkpoint row.",
         "", "## Model adoption guards", "",
         "| Check | Result |", "| --- | --- |",
     ]

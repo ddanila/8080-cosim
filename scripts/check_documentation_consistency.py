@@ -137,6 +137,18 @@ def main() -> int:
             if phrase in text:
                 failures.append(f"{path} retains stale D6 runnable-path claim: {phrase!r}")
 
+    stale_d6_a7_claims = {
+        "PLAN.md": ("Close the physical D6 A7 driver", "D105.1/A7 driver (P0", "D105.1 conductor remains"),
+        "docs/d6-physical-decode.md": ("driver or pull source is still unresolved", "unresolved A7"),
+        "docs/d6-input-continuity.md": ("A7 SOURCE BOUNDARY", "A7 source remains open"),
+        "docs/owner-measured-facts.md": ("driver/pull source NOT yet measured",),
+    }
+    for path, phrases in stale_d6_a7_claims.items():
+        text = read(path)
+        for phrase in phrases:
+            if phrase in text:
+                failures.append(f"{path} retains stale D6 A7 boundary claim: {phrase!r}")
+
     stale_prom_claims = {
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md": (
             "signal wiring and contents still open",

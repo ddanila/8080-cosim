@@ -20,7 +20,7 @@ measurement lands, add a row here.
 | `D6.9 -> D13.1`, `D13.2 -> D37.4`, `D37.6 -> D58.9` (RAM-output-enable chain) | owner-continuity | `docs/d6-input-continuity.md` |
 | `D13.12 -> D6.14 V2`; `D6.13 V1 <-> D6.14 V2` (bottom-layer copper) | owner-continuity + visual | `docs/d6-input-continuity.md` |
 | `D6.1/A6 <- D3.4 <- /PC1`; `D6.2/A5 <- D3.6 <- /PC0` | owner-continuity | `docs/d6-physical-decode.md` |
-| `D6.15/A7 <-> D105.1` (net exists; driver/pull source NOT yet measured) | owner-continuity (partial) | `docs/d6-input-continuity.md` |
+| `D7.8 -> D105.1 -> D6.15/A7` (`IO_CYCLE_H`) | owner-continuity, 2026-07-19 | `docs/d6-input-continuity.md` |
 | D8.15 `/E` has a +5 V pull-up; `D6.12->D8.15` looks direct | photo (grain of salt) | owner note 2026-07-15 (unconfirmed by probe) |
 | Reader wiring `D6 pins 9,10,11,12 -> Nano A1,D2,D3,D4`; three revision-3 D6 reads including a power cycle agree, and a D2 control agrees with the prior D2 artifact | owner-continuity + repeated capture | `docs/rt4-dump-acquisition.md` |
 

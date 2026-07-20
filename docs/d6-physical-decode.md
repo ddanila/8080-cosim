@@ -80,8 +80,8 @@ nibble per 2 KiB block from `0000` through `F800`.
 - With raw `A7=0`, all four A6/A5 combinations are distinct. Mode `001`
   contains word `1` at `0000-3FFF` and `C000-D7FF`, word `F` in the
   middle, and word `8` at `D800-FFFF`; mode `010` extends word `1` through `D7FF`.
-  Direct `.009` continuity now proves A6=`~PC1` and A5=`~PC0`; A7 joins
-  D105.1 but its driver or pull source is still unresolved. The raw mode
+  Direct continuity proves A6=`~PC1`, A5=`~PC0`, and A7 is the
+  D7.8-to-D105.1 `IO_CYCLE_H` qualifier. The raw mode
   numbers remain useful table coordinates, not a claim about A7 semantics.
 - D3/pin9 is low only in word `1`; D2/pin10 is high in words `B/F`.
 - These are physical electrical facts, not yet a complete explanation of
@@ -97,8 +97,7 @@ nibble per 2 KiB block from `0000` through `F800`.
   RAM target `B37A` for raw row `000`, aligning the direct ROM and ROE paths
   with the runnable behavior without inventing an inverter.
 - Raw row `000` emits word `1` at both PC `0484` and RAM target `B37A`,
-  but measured firmware suffix `11` and unresolved A7 prevent identifying
-  that raw row as the checkpoint state.
+  but the firmware suffix `11` identifies a different checkpoint row.
 
 ## Model adoption guards
 
@@ -108,6 +107,7 @@ nibble per 2 KiB block from `0000` through `F800`.
 | D6.11 reaches D2.15/-WREQ and stays separate from ROM select | PASS |
 | D6.11 conductor also reaches D92.5/R12.2 | PASS |
 | D13.12 drives the D6 enable conductor, not either output | PASS |
+| D7.8 drives D105.1 and D6 A7 as IO_CYCLE_H | PASS |
 | HDL keeps the D6 outputs separate | PASS |
 | HDL models D6 raw outputs as open collector with physical pull-up recovery | PASS |
 | HDL uses measured physical D6 address order | PASS |
