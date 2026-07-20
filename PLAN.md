@@ -253,6 +253,13 @@ findings remain unchanged. A fresh bounded sweep tests every gap, accepts no
 route, and writes a byte-identical board. Exact evidence is guarded in
 `ref/routing/current21-eleven-tail-prune.json`; eleven migrated tails remain.
 
+A two-item then single-item continuation removes another 13 migrated items,
+for 1,600 cumulative removals. It eliminates the remaining dangling via and
+leaves ten dangling track tails, with all 21 open nets and zero electrical
+findings unchanged. A fresh bounded sweep again tests every gap, accepts no
+route, and is byte-identical to its input. Exact evidence is guarded in
+`ref/routing/current21-ten-tail-prune.json`.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
