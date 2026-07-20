@@ -527,6 +527,24 @@ so neither topology is adopted. Exact phase results, transaction hashes, DRC
 counts, and tool hashes are guarded in
 `ref/routing/current23-cs-d57-transaction.json`.
 
+The next guarded cleanup attacks obstruction rather than another route lattice.
+All 244 dangling findings on the exact 23-gap checkpoint belong to migrated
+copper; none of their UUIDs exists in the source PCB. `prune_dangling_tracks.py`
+now supports nonzero-open boards only when every deletion is non-source copper,
+the open count never rises, no electrical DRC category appears, and no other
+DRC category grows. Its chunked mode tries large deletion sets first and halves
+only after rejection, retaining the same item-by-item proof at a batch size of
+one. A bounded 641-item transaction removes dead chains, reduces track-dangling
+findings from 199 to 87 and via-dangling findings from 45 to 11, and collapses
+one obsolete MEMR island plus one VA13 island. The result has 21 opens, 31,834
+routed items, and zero short, clearance, crossing, hole, or edge findings. A
+fresh 0.10 mm/100 mm-margin sweep accepts no additive route on the cleaned
+topology. `ref/routing/current21-dangling-prune.json` guards the exact board,
+configuration, DRC counts, and tool hashes. The input still belongs to the
+older 303-footprint/2,395-pad convergence lineage rather than the subsequently
+expanded current source PCB, so this supersedes the 23-gap checkpoint only as
+routing evidence and remains inadmissible as production copper.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \

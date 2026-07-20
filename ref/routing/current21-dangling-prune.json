@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "input_board_sha256": "3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c",
+  "output_board_sha256": "1343d4edf48e53de3d1d8d6346198c84d5d718c95b1b0f3929e860b3742d29ec",
+  "output_board_size": 10949611,
+  "config": {"allow_open": true, "batch_size": 32, "max_removals": 641, "source_board": "kicad/juku.kicad_pcb"},
+  "initial": {"unconnected": 23, "routed_items": 32475, "track_dangling": 199, "via_dangling": 45},
+  "final": {
+    "unconnected": 21, "routed_items": 31834,
+    "track_dangling": 87, "via_dangling": 11,
+    "short": 0, "clearance": 0, "track_crossing": 0,
+    "hole_clearance": 0, "hole_to_hole": 0, "copper_edge_clearance": 0
+  },
+  "removed_items": 641,
+  "removed_source_items": 0,
+  "closed_markers": [{"net": "MEMR", "count": 1}, {"net": "VA13", "count": 1}],
+  "residual_nets": [
+    "BA5", "CS_D10", "CS_D11", "CS_D57", "D3_O4_D6_A6", "D3_O6_D6_A5",
+    "D6_V_ENABLE", "DC4", "IORD", "MA7", "MEMW_D7P2", "PHI1_D35",
+    "PHI2_D35", "RAM_OUT_EN", "S3_1", "VA13", "VA15", "VA6", "VA9",
+    "W10_QA_SEL_D50", "WR"
+  ],
+  "lineage_boundary": "The input is the independently verified 303-footprint/2395-pad current23 routing lineage, not the subsequently expanded current source PCB. Track/via deletion preserves every footprint and pad in that lineage; this remains convergence evidence, not production copper.",
+  "tool_sha256": {
+    "kicad/prune_dangling_tracks.py": "cc523f4490cd515015477be0cec86f3f4814060e0d122aa5f8ad002e467a61a0",
+    "kicad/report_board_track_uuids.py": "6f14b9aad3c689e775e90f03e6de17504d7bebbffdf3452f61c217d32152e602",
+    "kicad/remove_board_item.py": "c5458ffb4aac7e16cf4f79827996b5e560cce91360ac2f1844342ec1b91320c6",
+    "kicad/remove_board_items.py": "693a8dce8acb8964d592fd812370a5a287473ec45e4fed1c9625fa18ebb6778f"
+  }
+}

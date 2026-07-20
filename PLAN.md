@@ -199,6 +199,19 @@ second DB5 restoration. Both retained results remain free of electrical DRC
 blockers but cannot beat 23, so neither is adopted
 (`ref/routing/current23-cs-d57-transaction.json`).
 
+The next guarded cleanup attacks obstruction rather than another route lattice.
+All 244 dangling findings on the exact 23-gap checkpoint belong to migrated
+copper; none of their UUIDs exists in the source PCB. `prune_dangling_tracks.py`
+now supports nonzero-open boards only when every deletion is non-source copper,
+the open count never rises, no electrical DRC category appears, and no other
+DRC category grows. A bounded 641-item chunked transaction removes dead chains,
+reduces dangling findings from 244 to 98, and collapses one obsolete MEMR island
+plus one VA13 island, reaching 21 opens with zero electrical findings. A fresh
+0.10 mm/100 mm-margin sweep accepts no additive route on the cleaned topology.
+The exact hashes and the unchanged older-lineage boundary are recorded in
+`ref/routing/current21-dangling-prune.json`; the 21-gap checkpoint now
+supersedes the 23-gap board as routing-convergence evidence only.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

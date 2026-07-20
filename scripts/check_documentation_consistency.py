@@ -595,6 +595,36 @@ def main() -> int:
             if "current23-cs-d57-transaction.json" not in read(path):
                 failures.append(f"{path} omits the CS_D57 transaction evidence")
 
+    prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
+    if not prune_path.exists():
+        failures.append("current 21-gap dangling-prune evidence is missing")
+    else:
+        prune = json.loads(prune_path.read_text(encoding="utf-8"))
+        initial = prune.get("initial", {})
+        final = prune.get("final", {})
+        config = prune.get("config", {})
+        if (
+            prune.get("schema_version") != 1
+            or initial.get("unconnected") != 23
+            or final.get("unconnected") != 21
+            or prune.get("removed_items") != 641
+            or prune.get("removed_source_items") != 0
+            or (initial.get("track_dangling"), initial.get("via_dangling")) != (199, 45)
+            or (final.get("track_dangling"), final.get("via_dangling")) != (87, 11)
+            or config.get("batch_size") != 32
+            or config.get("max_removals") != 641
+            or any(final.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
+            or len(prune.get("residual_nets", [])) != 21
+        ):
+            failures.append("current 21-gap dangling-prune summary is malformed")
+        for relative, expected in prune.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"dangling-prune tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current21-dangling-prune.json" not in read(path):
+                failures.append(f"{path} omits the dangling-prune evidence")
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(
