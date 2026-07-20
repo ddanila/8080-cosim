@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "refdes": "R94",
-  "endpoint": "2",
+  "refdes": "UNASSIGNED_220_NEAR_D98",
+  "endpoint": "formerly modeled as R94.2",
   "board_mm": [297.6, 61.48],
-  "status": "photo-exhausted / continuity required",
+  "status": "superseded R94 identification / retained photo evidence",
   "component_observations": [
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
@@ -40,6 +40,6 @@
       "observation": "independent overlapping solder tile likewise exposes no unique R94.2 annulus or continuation"
     }
   ],
-  "unresolved": ["R94.2 remote destination"],
-  "non_promotion_basis": "both covering component angles are cable-obscured at the far landing and both registered solder regions are non-unique; direct continuity is required"
+  "unresolved": ["reference identity and both endpoints of photographed 220-ohm body"],
+  "non_promotion_basis": "owner inspection and continuity on 2026-07-20 place actual R94 above D28, from D28.11/D93.38 to +5 V, matching the exact electrical drawing. This retained image record therefore describes a different unassigned 220-ohm body near D98; its former R94 attribution and D98.3 net promotion are superseded"
 }

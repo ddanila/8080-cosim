@@ -228,13 +228,6 @@ def main() -> int:
             "corroborates the now-direct corrected D6 decode path, closes its missing address qualifier, and tightens the remaining RAM/video timing nets before netlist freeze",
         ),
         (
-            "P1",
-            "R94 220-ohm far endpoint",
-            "R94.1 is photo-proved and modeled at D98.3; continuity-identify only the lower/far R94.2 endpoint without reopening the separate D98.7/S1.2 harness net. Two overlapping component views are cable-obscured at the landing and two registered solder regions are non-unique, so imagery is exhausted",
-            "`ref/photos/juku-pcb-2/r94-photo-exhaustion.json`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
-            "closes the remaining endpoint of the now-modeled .009 R94 part without reopening the closed S1 harness",
-        ),
-        (
             "P0",
             "factory Вид В pad mapping",
             "at D56 the three physical callout locations are fixed as the separate left annulus plus D56.5/D56.12 and bare-board gaps to the adjacent rail are visible; continuity-map the installed item-159 conductor/material among those three locations and the rail. Note 11 proves position 150 is tubing, not a cut, and position 159 remains an unexpanded solder-location callout. D15 is photo-closed as the cut A2/A1 bridge and needs no continuity probe; D14 row numbering, the local D32.4/GND-to-D14.1 link, and fifth-landing geometry are photo-registered, so continuity-test the fifth landing's conductor, three long drawn traces, and right-row dogleg/D14.7—both component and solder faces are photo-exhausted there, and position 159 does not prove replacements; at D11 the L trace and four solder locations are registered in two component views, the older pins-4-6 solder scar is excluded, and validated two-sided package fits exhaust four solder views without a unique through-hole match—continuity-test the bridge, D11 pin/net, and upper/lower remote endpoints; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",

@@ -452,8 +452,10 @@ evidence exists.
   index-event semantics are guarded, but the board's physical D93.32 READY
   source, event pulse widths, and rotational timing remain outside this
   byte-level shim.
-- Physical D93 INTRQ/DRQ and reset still require targeted continuity; the clock
-  conductor and selector behavior are source/ROM-closed, but its waveform still requires bench calibration
+- Physical D93 DRQ and reset are now owner-closed: DRQ reaches D28.11 and the
+  10k R94 pull-up to +5 V; D1.12 RESET reaches D13.9 and inverted D13.8 drives
+  D93.19 plus the outer-bus rightmost middle-row contact (top view). INTRQ and
+  the clock waveform still require bench calibration
   checks in `docs/fdc-hardware-handoff.md`. D100's drive-output channels are
   source-proved; shared pins 9/11 continue to an unresolved sheet-1 conductor,
   and the pin-6 write-data input is source-closed to D101.9.

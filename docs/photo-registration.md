@@ -26,9 +26,9 @@ endpoint table contains 639 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 44 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 593 | pad/path review is inconclusive; continuity or better local evidence is required |
-| `retracted` | 2 | former D94.5-D93.1 continuous-copper claims disproved by owner continuity and full-resolution review |
+| `accepted` | 42 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `measurement` | 591 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `rejected` | 6 | two former D94.5-D93.1 claims plus four former R94 endpoint assignments disproved by owner continuity/review |
 
 Confidence metadata consists of 374 `local-package-fit`, 214
 `registration-only`, and 22 `registration+unique-hole-snap` rows. Two use
@@ -40,7 +40,7 @@ observations record photo-exhausted regions without pretending that a
 projection is pad identity.
 A hole snap or accurate pad projection is not electrical evidence by itself.
 
-Accepted paths:
+Accepted paths and owner corrections:
 
 - D2.1/.3/.5/.6/.7 -> D4.1/.3/.5/.6/.7 ->
   `A10/A14/A12/A15/A9`;
@@ -55,7 +55,10 @@ Accepted paths:
   short trace ending at the visible gap, while D94.5 is visibly NC.
 - А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
 - D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
-- D98.3 -> R94.1 / `D98_Y1_R94` (R94.2 remains unresolved).
+- D98.3 -> D28.5 remains drawing-supported, but the former R94 branch on the
+  current `D98_Y1_R94` model net is rejected. Owner continuity locates actual
+  10k R94 above D28, from D28.11/D93.38 to +5 V. The photographed 220-ohm body
+  remains unassigned; source-model correction is pending a routed refresh.
 - D106.7 `Q3` -> D93.26 `RCLK` / `FDC_RCLK`.
 - D95.14 -> R92.2 / `FDC_DDEN` (sheet-identified `FM/MFM`).
 - D101.4 -> R92.1 + R99.2 / `D101_D02_R92_R99`.
@@ -406,14 +409,14 @@ annotated `d94-d5-layer-handoff.jpg` therefore records the proved handoff and
 explicitly rejects a unique solder continuation until continuity or a stronger
 cross-side registration is available.
 
-D93.19 `MR_N` is now source-closed by the recovered exact-revision drawing.
+D93.19 `MR_N` is now owner-closed with D93 removed.
 The corrected solder joint reaches a through-hole near `(1743,2320)` pixels;
 composing the D93 solder and exposed-socket fits maps that hole to `(950,1909)`
 component pixels, where the same trace is visible before it returns beneath
-the socket body. Sheet 1 independently sends `RES (3)` from D13.6 and sheet 3
-lands that continuation directly on D93.19. The photographs remain useful
-route evidence, while the drawing supplies the formerly hidden far source.
-The `RES` versus bubbled/`-RES` polarity notation remains a scope check.
+the socket body. Continuity proves D93.19 reaches D13.8 and the outer-bus
+rightmost middle-row contact (top view), while D13.9 reaches D1.12 RESET. The
+photographs remain useful route evidence. This resolves the former polarity
+ambiguity; board-JSON/KiCad/HDL adoption remains pending the routed refresh.
 
 The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Its reflected solder fit identifies the two small-joint

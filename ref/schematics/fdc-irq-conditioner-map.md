@@ -14,10 +14,14 @@ The unambiguous local circuit is:
 | unused pin | D96.13 `/CLR2` is drawn without a connection |
 
 The electrical drawing labels a second `10к` pull-up on raw DRQ as `R94`.
-That branch is not imported: registered target-board imagery and continuity
-prove physical R94 is the separate `220`-ohm part on D98.3. This is another
-internal electrical-drawing reference conflict, not permission to duplicate
-R94 or overwrite target-board evidence.
+Owner inspection and continuity on 2026-07-20 confirm that drawing: physical
+R94 is immediately above D28, with one side on D28.11/D93.38 and the other on
++5 V. Its body may be hidden by the video cable. The previously photographed
+`220`-ohm body below-left of D98 is therefore not R94; its identity and both
+endpoints remain unassigned, and its retained photo record is explicitly
+marked superseded rather than discarded. The current board JSON/KiCad source
+still carries the old 220-ohm/D98 assignment; correct it together with the
+routed refresh rather than treating that generated net as owner evidence.
 
 The earlier direct D93.38/.39-to-D10.19/.18 assignment came from MAME and is
 now retired. D10 IR0/IR1 and the two D96 continuations remain explicit

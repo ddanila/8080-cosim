@@ -601,15 +601,17 @@ remaining connectivity is measurement-gated.
    The sheets 2-6 таблица соединений is transcribed and its two number spaces
    are now explicit: conductor positions are not `А:N` board-point labels
    (`ref/schematics/dgsh5-109-009-sb-wire-table.md`). X3/X4/X6/X8/X9 landings,
-   S1 links, R94.1, and all ten on-board insulated links are endpoint-mapped
+   S1 links and all ten on-board insulated links are endpoint-mapped
    and guarded. Final copper adoption must retain `А:7-А:14` and
    `А:19-А:20` as assembly wire rather than silently replacing them with etch.
 
-The adjacent R94 far-end image chase is also complete: two overlapping
-component tiles show R94.2 disappearing under the same cable before its
-landing, while two registered solder regions are non-unique. R94.2 remains an
-explicit, photo-exhausted continuity ask rather than being conflated with the
-separate D98.7/S1.2 factory harness.
+Owner continuity on 2026-07-20 corrects the adjacent resistor identification:
+R94 is the 10k FDC DRQ pull-up above D28, wired D28.11/D93.38 to +5 V. The
+photo-exhausted 220-ohm body near D98 remains unassigned; its evidence record
+is retained as superseded rather than conflated with R94 or D98.7/S1.2. The
+current board JSON/KiCad/HDL still encode the superseded R94 and direct-reset
+interpretations; correct them together with routed-artifact regeneration so
+the guarded routing baselines are not silently invalidated.
 
 The target-revision R67.2 far end is likewise photo-exhausted. Registered July
 and independent May component views stop at its isolated solder pool. A
@@ -871,8 +873,9 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-639 observations have dispositions, 44 rows are accepted evidence, two former
-D94.5-D93.1 rows are retracted, and the other 593 remain measurement requests
+639 observations have dispositions, 42 rows are accepted evidence, six rows
+are rejected (including the former R94 assignment), and the other 591 remain
+measurement requests
 (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
