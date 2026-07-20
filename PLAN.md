@@ -93,9 +93,9 @@ LATCH_B, X2_PC2, X2_PC3, X2_PB0, X2_PB1, X2_PB2, BA11, VA5, FDC_RCLK, BA5,
 DB3, PRECOMP_TAP_2, S3_2, D40Q2_D33, BA2, BA3, X4_DSEL0_N, BA1, CS_D10, BA10,
 VA6, VA7, BA9, VA10, IOM_N, VA15, MWC_N, INHIB_N, BA6, BA15, D94_A4_D101_Q0,
 BA13, CS_D11, CS_D27, IOWC_N, AMWC_N, MEMR, BA12, X2_IRQ0, IORC_N, P12V,
-D6_V_ENABLE, DBIN_GATED, SYNC, D25_T, and FRAME_INT, each independently reduce
-the uncapped graph, reaching 49 opens; all six hundred twenty-eight are
-promoted. The final six hundred twenty-four are
+D6_V_ENABLE, DBIN_GATED, SYNC, D25_T, FRAME_INT, BA7, OSC, and VIDEO_OUT, each
+independently reduce the uncapped graph, reaching 45 opens; all six hundred
+thirty-two are promoted. The final six hundred twenty-eight are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 260 mm, beyond the
