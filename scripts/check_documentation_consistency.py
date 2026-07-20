@@ -50,6 +50,17 @@ def main() -> int:
         "factory wire routing": read("docs/factory-wire-route-fidelity.md"),
     }
 
+    system_bus_report = read("ref/schematics/system-bus-connector-map.md")
+    for marker in (
+        "SIGNAL CORE MATCHES / POWER MAP IS A DOCUMENTED VARIANT CONFLICT",
+        "| `132C` | `-D0` | `DAT0` | PASS |",
+        "| `117B` | `-ADRF` | `ADR_HI7` | PASS |",
+        "conflict directly at `101A, 102A, 103A`",
+        "A2.2 removable memory expander E6201",
+    ):
+        if marker not in system_bus_report:
+            failures.append(f"system-bus connector report lost guarded marker: {marker!r}")
+
     photo_endpoints = ROOT / "ref/photos/juku-pcb-2/endpoints.csv"
     if not photo_endpoints.exists():
         failures.append("photo endpoint evidence table is missing")

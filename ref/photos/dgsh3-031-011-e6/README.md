@@ -31,3 +31,11 @@ Overview first, then detail tiles in camera order:
 
 - `PXL_20260718_121242143.jpg` — overview
 - `PXL_20260718_121246801.jpg`, `PXL_20260718_121250335.jpg` — detail tiles
+
+## Reviewed result
+
+The complete block/cable map is transcribed in
+`ref/schematics/system-bus-connector-map.md`: A1/X1 selects the alternative
+A2.1 or A2.2 module, while X2, X4, and X6 reach the printer, НГМД block, and
+display respectively. X3 contact 12 belongs to the mains/switch harness; the
+drawing shows no X5 signal cable.

@@ -103,6 +103,9 @@ reset-to-prompt reports are the stronger evidence where both exist.
   firmware, media, and WD1772/VG93 references.
 - Scripts under `scripts/report_*.py` regenerate constraint and boundary
   reports used by CI.
+- `system_bus_connector_check.sh` checksum-guards the recovered `.106.103`
+  XP and `.031.011` system drawings, proves the shared X1 signal map, and
+  preserves their incompatible power-contact maps as a safety boundary.
 - `scripts/check_documentation_consistency.py` ensures user-facing status and
   package hashes do not contradict the active design blockers.
 

@@ -799,7 +799,9 @@ After connectivity and programmable-part decisions stop changing:
   `dgsh3-031-011-e6/` (`ДГШ3.031.011 Э6` system general schematic — inter-module
   connector map X1–X6), `dgsh5-104-015-e3/` (`ДГШ5.104.015 Э3` keyboard module),
   `dgsh5-106-103-e3/` (`ДГШ5.106.103 Э3` 32K memory-expander card — exposes the
-  system-bus XP pinout, relevant to the rev-B backplane), and
+  system-bus XP pinout, relevant to the rev-B backplane; its data/address/control
+  core matches X1 exactly, but its A1-A3 power map conflicts with `.009` and is
+  guarded as a non-pluggable variant), and
   `dgsh5-106-106-d1/` (`ДГШ5.106.106 Д1` factory ROM programming table, hex dump
   0000–07FF with BASIC strings — cross-check against `ref/reconstructed-proms/`).
   **How to work through this batch is planned in
