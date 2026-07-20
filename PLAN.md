@@ -237,6 +237,15 @@ mm. Exact hashes and counts are guarded in
 `ref/routing/current21-fine-dangling-prune.json`; fourteen migrated track tails
 remain for the next guarded continuation.
 
+Two-item continuation removes another 102 migrated segments, bringing the
+cumulative cleanup to 1,517. The track-tail frontier falls from 14 to 13 with
+no dangling vias, no electrical findings, and the same 21 open nets. A fresh
+bounded sweep accepts no route and is byte-identical to its input; deleting the
+long obsolete branch exposes IORD's honest 48.277 mm separation instead of the
+former 33.437 mm intermediate-island marker. Exact evidence is guarded in
+`ref/routing/current21-twoitem-dangling-prune.json`; thirteen migrated track
+tails remain for continuation.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

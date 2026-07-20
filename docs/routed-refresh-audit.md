@@ -572,6 +572,16 @@ to its input. As dead islands retreat, CS_D10's marker grows from 29.610 to
 state are guarded in `ref/routing/current21-fine-dangling-prune.json`;
 fourteen migrated track tails remain for the next guarded continuation.
 
+Two-item continuation removes another 102 migrated segments, bringing the
+cumulative cleanup to 1,517. The track-tail frontier falls from 14 to 13 with
+no dangling vias, no electrical findings, 30,958 routed items, and the same 21
+open nets. A fresh bounded 0.10 mm/100 mm-margin sweep accepts no route and is
+byte-identical to its input. Deleting the long obsolete branch exposes IORD's
+honest 48.277 mm separation instead of the former 33.437 mm intermediate-island
+marker. Exact evidence is guarded in
+`ref/routing/current21-twoitem-dangling-prune.json`; thirteen migrated track
+tails remain for continuation.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \
