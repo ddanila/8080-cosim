@@ -95,9 +95,9 @@ VA6, VA7, BA9, VA10, IOM_N, VA15, MWC_N, INHIB_N, BA6, BA15, D94_A4_D101_Q0,
 BA13, CS_D11, CS_D27, IOWC_N, AMWC_N, MEMR, BA12, X2_IRQ0, IORC_N, P12V,
 D6_V_ENABLE, DBIN_GATED, SYNC, D25_T, FRAME_INT, BA7, OSC, VIDEO_OUT, XTAL16M,
 VID_MIX1, E2_COM, INTA, IOWR, FDC_DDEN, D30_Q2N_D29_AIN7, FDC_DRIVE_SIZE_5_8,
-WREQ_N, PIT_BAUD, ROE, STSTB_D38, CTR_LD, RAM_OUT_EN, MA2, MA1, S3_5, and DB7,
-each independently reduce the uncapped graph, reaching 25 opens; all six
-hundred fifty-two are promoted. The final six hundred forty-eight are
+WREQ_N, PIT_BAUD, ROE, STSTB_D38, CTR_LD, RAM_OUT_EN, MA2, MA1, S3_5, DB7, and
+MEMR, each independently reduce the uncapped graph, reaching 24 opens; all six
+hundred fifty-three are promoted. The final six hundred forty-nine are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 260 mm, beyond the
@@ -110,8 +110,8 @@ distance-ranked candidates through 260 mm, beyond the 252.637 mm maximum
 residual candidate, so every distance-ranked gap has been attempted in that
 mode.
 A targeted finer-lattice phase uses 0.205 mm clearance and a 0.125 mm grid;
-its `MA2`, `MA1`, `S3_5`, and `DB7` attempts pass the same complete KiCad DRC
-guard.
+its `MA2`, `MA1`, `S3_5`, `DB7`, and `MEMR` attempts pass the same complete
+KiCad DRC guard.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
