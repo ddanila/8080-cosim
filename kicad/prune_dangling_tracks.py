@@ -151,6 +151,11 @@ def main() -> None:
         default=0,
         help="stop after this many accepted removals; zero means exhaust the board",
     )
+    parser.add_argument(
+        "--adaptive-batch",
+        action="store_true",
+        help="keep a smaller accepted remainder as the next transaction size",
+    )
     args = parser.parse_args()
 
     if args.input.resolve() == args.output.resolve():
@@ -216,6 +221,8 @@ def main() -> None:
                 current = candidate_report
                 accepted += len(batch)
                 progress = True
+                if args.adaptive_batch and len(batch) < batch_size:
+                    batch_size = len(batch)
                 print(
                     f"accept prune batch={len(batch)}: dangling -> "
                     f"{len(dangling_uuids(current))}",

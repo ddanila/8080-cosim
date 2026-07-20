@@ -212,6 +212,21 @@ The exact hashes and the unchanged older-lineage boundary are recorded in
 `ref/routing/current21-dangling-prune.json`; the 21-gap checkpoint now
 supersedes the 23-gap board as routing-convergence evidence only.
 
+A second bounded continuation adds adaptive batch descent: after accepting a
+short final chunk it keeps that smaller transaction size instead of repeatedly
+rescanning live branches at the original width. Starting from the reproduced
+21-gap board, 614 further non-source items are removed. Track-dangling findings
+fall from 87 to 23 and via-dangling findings from 11 to 2; the same 21 open nets
+and every zero-valued electrical DRC category are preserved. The exact input,
+output, DRC, configuration, and tool hashes are guarded in
+`ref/routing/current21-deep-dangling-prune.json`. The remaining 25 tails and
+21 gaps are the next automatic routing-convergence work. A fresh bounded
+0.10 mm/100 mm-margin sweep attempts all 21 cleaned signatures and accepts
+none; its output is byte-identical to the deep-pruned input. Several honest
+marker distances grow after obsolete islands disappear, including MA7 from
+5.709 to 19.421 mm. This is still the older routing lineage and not production
+copper.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

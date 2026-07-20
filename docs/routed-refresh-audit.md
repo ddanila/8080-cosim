@@ -545,6 +545,23 @@ older 303-footprint/2,395-pad convergence lineage rather than the subsequently
 expanded current source PCB, so this supersedes the 23-gap checkpoint only as
 routing evidence and remains inadmissible as production copper.
 
+A second bounded continuation adds adaptive batch descent: after accepting a
+short final chunk it keeps that smaller transaction size instead of repeatedly
+rescanning live branches at the original width. Starting from the reproduced
+21-gap board, 614 further non-source items are removed. Track-dangling findings
+fall from 87 to 23 and via-dangling findings from 11 to 2, while the same 21
+open nets and every zero-valued electrical DRC category are preserved. This
+leaves 31,220 routed items and frees substantially more corridor area without
+inventing a connection. The exact input/output/DRC/configuration/tool hashes are
+guarded in `ref/routing/current21-deep-dangling-prune.json`. Twenty-five tails
+remain for the next guarded continuation. A fresh bounded 0.10 mm/100 mm-margin
+sweep attempts all 21 cleaned signatures and accepts none; its output is
+byte-identical to the deep-pruned input. Removing obsolete intermediate islands
+exposes wider honest marker pairs, including MA7 changing from 5.709 to 19.421
+mm, CS_D10 from 20.575 to 29.610 mm, and IORD from 20.141 to 32.098 mm. As
+above, this is still the older 303-footprint/2,395-pad convergence lineage and
+not production copper.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \
