@@ -681,6 +681,7 @@ def main() -> int:
         live_prune = json.loads(live_prune_path.read_text(encoding="utf-8"))
         identity = live_prune.get("identity", {})
         initial = live_prune.get("initial", {})
+        pruned = live_prune.get("pruned", {})
         final = live_prune.get("final", {})
         probe = live_prune.get("route_probe", {})
         if (
@@ -688,17 +689,20 @@ def main() -> int:
             or live_prune.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
             or live_prune.get("input_board_sha256")
             != "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2"
-            or live_prune.get("output_board_size") != 7665339
+            or live_prune.get("output_board_size") != 7250368
             or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
             or initial.get("uncapped_unconnected") != 883
-            or final.get("uncapped_unconnected") != 857
-            or final.get("routed_nets") != 289
-            or initial.get("routed_items") - final.get("routed_items") != 384
-            or live_prune.get("removed_items") != 384
+            or pruned.get("uncapped_unconnected") != 677
+            or final.get("uncapped_unconnected") != 674
+            or final.get("routed_nets") != 195
+            or initial.get("routed_items") - pruned.get("routed_items") != 2872
+            or live_prune.get("removed_items") != 2872
             or live_prune.get("removed_source_items") != 0
-            or (final.get("track_dangling"), final.get("via_dangling")) != (199, 42)
-            or probe.get("uncapped_unconnected_before") != probe.get("uncapped_unconnected_after")
-            or probe.get("promoted") is not False
+            or (pruned.get("track_dangling"), pruned.get("via_dangling")) != (0, 0)
+            or (final.get("track_dangling"), final.get("via_dangling")) != (0, 0)
+            or probe.get("accepted_routes_by_uncapped_guard") != 3
+            or probe.get("uncapped_unconnected_before") - probe.get("uncapped_unconnected_after") != 3
+            or probe.get("promoted") is not True
             or any(final.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
         ):
             failures.append("current-source uncapped-prune summary is malformed or stale")

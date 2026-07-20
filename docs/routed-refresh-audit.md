@@ -68,13 +68,13 @@ evidence, not production copper. Exact hashes, configuration, and counts are
 guarded in `ref/routing/current-source-salvage-baseline.json`.
 
 The follow-on uncapped-prune pass uses KiCad's connectivity graph rather than
-the CLI's truncated 499-item list as its acceptance boundary. Two bounded
-transactions remove 384 migrated items, reduce the exact open count from 883
-to 857, and reduce dangling findings from 255 to 241 while preserving the
-321-footprint/2,434-pad source identity and zero electrical blockers. A
-bounded 0.568 mm BA15 route probe changed the capped marker set but left the
-uncapped count at 857; it is recorded but not promoted. The exact board/DRC
-hashes, parameters, and tool hashes are guarded in
+the CLI's truncated 499-item list as its acceptance boundary. Adaptive
+transactions remove 2,872 migrated items, reduce the exact open count from
+883 to 677, and eliminate all 199 dangling-track plus 56 dangling-via findings
+while preserving the 321-footprint/2,434-pad source identity and zero
+electrical blockers. Three bounded P5V/P5V/STSTB proposals then each pass an
+independent uncapped check, reducing the exact count to 674; those routes are
+promoted. The exact board/DRC hashes, parameters, and tool hashes are guarded in
 `ref/routing/current-source-uncapped-prune.json`.
 
 ### Additive/rename-safe copper migration

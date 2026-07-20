@@ -45,14 +45,13 @@ It improves both the 1,814-open bare source and the earlier documented
 production copper. Exact hashes and counts are guarded in
 `ref/routing/current-source-salvage-baseline.json`.
 
-An uncapped connectivity guard then transactionally removes 384 migrated
+An uncapped connectivity guard then transactionally removes 2,872 migrated
 copper items from that live-source baseline. The exact open count improves
-from 883 to 857, dangling findings improve from 199 tracks plus 56 vias to
-199 tracks plus 42 vias, and all electrical blocker categories remain zero.
-A bounded nonzero-gap probe accepted one 0.568 mm BA15 proposal under the
-CLI's 499-marker ceiling, but the independent connectivity graph stayed at
-857 opens, so that proposal is deliberately not promoted. Exact hashes,
-parameters, and tool provenance are guarded in
+from 883 to 677, all 199 dangling tracks and 56 dangling vias are eliminated,
+and all electrical blocker categories remain zero. Three bounded nonzero-gap
+proposals on P5V, P5V, and STSTB each independently reduce the uncapped graph,
+reaching 674 opens; all three are promoted. Exact hashes, parameters, and tool
+provenance are guarded in
 `ref/routing/current-source-uncapped-prune.json`; this remains convergence
 evidence rather than production copper.
 
