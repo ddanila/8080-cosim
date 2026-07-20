@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
+  "routed_snapshot_sha256": "f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315",
+  "raw_candidate_sha256": "d8bcd775b74364e22f53681ab4223893be61ee1d5218f16aa7bc65fd7679534e",
+  "output_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
+  "output_board_size": 7729814,
+  "output_drc_sha256": "39151c8ad74c1291b3ec0c220e5094e87f3472b589b40fbf550208c33f7ae799",
+  "config": {
+    "allow_additive_renames": true,
+    "allow_drc_salvage": true,
+    "max_salvage_rounds": 100
+  },
+  "identity": {"footprints": 321, "pads": 2434},
+  "source": {"routed_items": 0, "uncapped_unconnected": 1814},
+  "raw_candidate": {"routed_items": 8397, "uncapped_unconnected": 653},
+  "salvaged": {
+    "routed_items": 7839,
+    "uncapped_unconnected": 883,
+    "cli_unconnected_ceiling": 499,
+    "migrated_items_removed": 558,
+    "migrated_items_retained": 7839,
+    "blocker_rounds": 1,
+    "track_dangling": 199,
+    "via_dangling": 56,
+    "short": 0,
+    "clearance": 0,
+    "track_crossing": 0,
+    "hole_clearance": 0,
+    "hole_to_hole": 0,
+    "copper_edge_clearance": 0
+  },
+  "classification": {
+    "copied_raw_items": 8397,
+    "compatible_raw_nets": 304,
+    "additive_rename_maps": 15,
+    "retained_additive_rename_nets": 10,
+    "retained_drc_salvage_nets": 211,
+    "quarantined_nets": 20,
+    "common_pad_mismatches": 381
+  },
+  "disposition": "This is the first guarded salvage baseline against the live 321-footprint/2434-pad source. It improves the source-only 1814-open topology and the previously documented 1190-open fresh-source trial, but 883 opens and 255 dangling findings make it convergence evidence rather than production copper.",
+  "tool_sha256": {
+    "kicad/refresh_routed_from_source.py": "ba6ea6998dcc04092256002a93c09162d12bee652d5da30bd72658e251c3a3d7",
+    "kicad/salvage_routed_copper.py": "0da48d9819586f1c387e5e4eba8ed38e7d4e3bddc0e12f433a7d6aad264ec6b7",
+    "kicad/remove_board_items.py": "693a8dce8acb8964d592fd812370a5a287473ec45e4fed1c9625fa18ebb6778f"
+  }
+}

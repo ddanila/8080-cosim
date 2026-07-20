@@ -52,6 +52,21 @@ represents the applicable cable landings instead. X4 is likewise
 schematic-only in the source; its modeled `AX401-AX423` landing row is absent
 from the stale routed snapshot.
 
+### Live-source salvage baseline
+
+The hash-bound live classification also seeds an aggressive, explicitly unsafe
+same-name/additive migration candidate. It imports 8,397 copper items on 304
+nets. `salvage_routed_copper.py` then removes only migrated UUIDs named by
+electrical DRC blockers; one round removes 558 items. The accepted result has
+all 321 source footprints and 2,434 pads, retains 7,839 routed items, and has
+883 uncapped connectivity gaps versus 1,814 on the bare source. KiCad's CLI
+report is capped at 499 markers, but the Python connectivity graph supplies the
+uncapped count. Shorts, clearance, crossing, hole, and edge findings are all
+zero; 199 dangling tracks and 56 dangling vias remain. This improves the older
+1,190-open fresh-source trial on a now larger source, but is still convergence
+evidence, not production copper. Exact hashes, configuration, and counts are
+guarded in `ref/routing/current-source-salvage-baseline.json`.
+
 ### Additive/rename-safe copper migration
 
 Exact whole-net equality is still the default. The optional

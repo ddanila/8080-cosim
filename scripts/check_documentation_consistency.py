@@ -640,6 +640,40 @@ def main() -> int:
             if "current23-cs-d57-transaction.json" not in read(path):
                 failures.append(f"{path} omits the CS_D57 transaction evidence")
 
+    live_salvage_path = ROOT / "ref/routing/current-source-salvage-baseline.json"
+    if not live_salvage_path.exists():
+        failures.append("current-source salvage baseline evidence is missing")
+    else:
+        live = json.loads(live_salvage_path.read_text(encoding="utf-8"))
+        identity = live.get("identity", {})
+        source = live.get("source", {})
+        raw = live.get("raw_candidate", {})
+        salvaged = live.get("salvaged", {})
+        classification = live.get("classification", {})
+        if (
+            live.get("schema_version") != 1
+            or live.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
+            or live.get("routed_snapshot_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
+            or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
+            or source.get("uncapped_unconnected") != 1814
+            or raw.get("uncapped_unconnected") != 653
+            or salvaged.get("uncapped_unconnected") != 883
+            or salvaged.get("routed_items") != 7839
+            or salvaged.get("migrated_items_removed") != 558
+            or (salvaged.get("track_dangling"), salvaged.get("via_dangling")) != (199, 56)
+            or classification.get("compatible_raw_nets") != 304
+            or classification.get("common_pad_mismatches") != 381
+            or any(salvaged.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
+        ):
+            failures.append("current-source salvage baseline summary is malformed or stale")
+        for relative, expected in live.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"current-source salvage tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current-source-salvage-baseline.json" not in read(path):
+                failures.append(f"{path} omits the current-source salvage baseline")
+
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():
         failures.append("current 21-gap dangling-prune evidence is missing")
