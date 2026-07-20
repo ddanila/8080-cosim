@@ -88,7 +88,7 @@ ROM_CS_4000, each independently reduce the uncapped graph, reaching 170 opens;
 all five hundred seven are promoted. The final five hundred three are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
-Its conservative multilayer search is exhausted through 80 mm.
+Its conservative multilayer search is exhausted through 90 mm.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
