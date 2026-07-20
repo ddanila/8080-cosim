@@ -2,9 +2,9 @@
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
-  "output_board_sha256": "7c2b77615656634800af25d4825c4cf66886d6ee730989c63dc2e40dd4e0bb9f",
-  "output_board_size": 8074537,
-  "output_drc_sha256": "d13d3abd8295f7aa984f6c1eb7f4941a4620e2323ee5ad4c58999614a3fae4d4",
+  "output_board_sha256": "2dab548a9e3ccb152b35ae5b27a2755a978e744cc1abc535ba70db8b1e61b709",
+  "output_board_size": 8117664,
+  "output_drc_sha256": "d8c4b9f5a3aa999c07d7dd808b8da9982994c9d37b6ca0d722237ca05f4f6b29",
   "config": {
     "batch_sizes": [32, 64],
     "adaptive_batch": true,
@@ -86,7 +86,8 @@
       {"limit": 8, "accepted": 3, "max_attempts": 16, "proposal_timeout_seconds": 75, "min_distance_mm": 36.58, "max_distance_mm": 40, "mode": "M", "search_margin_mm": 40, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
       {"limit": 8, "accepted": 3, "max_attempts": 16, "proposal_timeout_seconds": 75, "min_distance_mm": 37.70, "max_distance_mm": 40, "mode": "M", "search_margin_mm": 40, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
       {"limit": 8, "accepted": 3, "max_attempts": 16, "proposal_timeout_seconds": 90, "min_distance_mm": 40, "max_distance_mm": 50, "mode": "M", "search_margin_mm": 50, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
-      {"limit": 8, "accepted": 8, "max_attempts": 16, "proposal_timeout_seconds": 90, "min_distance_mm": 42.04, "max_distance_mm": 50, "mode": "M", "search_margin_mm": 50, "grid_step_mm": 0.5, "route_clearance_mm": 0.45}
+      {"limit": 8, "accepted": 8, "max_attempts": 16, "proposal_timeout_seconds": 90, "min_distance_mm": 42.04, "max_distance_mm": 50, "mode": "M", "search_margin_mm": 50, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
+      {"limit": 8, "accepted": 8, "max_attempts": 16, "proposal_timeout_seconds": 90, "min_distance_mm": 45.99, "max_distance_mm": 50, "mode": "M", "search_margin_mm": 50, "grid_step_mm": 0.5, "route_clearance_mm": 0.45}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -104,10 +105,10 @@
     "via_dangling": 0
   },
   "final": {
-    "routed_items": 10821,
-    "routed_nets": 331,
-    "uncapped_unconnected": 228,
-    "cli_unconnected_ceiling": 228,
+    "routed_items": 11127,
+    "routed_nets": 337,
+    "uncapped_unconnected": 220,
+    "cli_unconnected_ceiling": 220,
     "track_dangling": 0,
     "via_dangling": 0,
     "short": 0,
@@ -136,8 +137,8 @@
       {"min_distance_mm": 120, "max_distance_mm": 130}
     ],
     "proposal_timeout_seconds": 3,
-    "accepted_routes_by_capped_marker_guard": 449,
-    "accepted_routes_by_uncapped_guard": 449,
+    "accepted_routes_by_capped_marker_guard": 457,
+    "accepted_routes_by_uncapped_guard": 457,
     "routes": [
       {"net": "P5V", "distance_mm": 1.623},
       {"net": "P5V", "distance_mm": 2.182},
@@ -587,13 +588,21 @@
       {"net": "LATCH_A", "distance_mm": 44.585},
       {"net": "X4_READY_N", "distance_mm": 44.992},
       {"net": "FDC_TG43_TO_D100", "distance_mm": 45.292},
-      {"net": "DB6", "distance_mm": 45.989}
+      {"net": "DB6", "distance_mm": 45.989},
+      {"net": "VA4", "distance_mm": 46.281},
+      {"net": "FDC_HLD_TO_D100", "distance_mm": 46.432},
+      {"net": "FDC_WDATA_DELAY_IN", "distance_mm": 46.562},
+      {"net": "VERT_RTR", "distance_mm": 46.870},
+      {"net": "VA0", "distance_mm": 46.881},
+      {"net": "D40Q1_D39", "distance_mm": 48.058},
+      {"net": "PRECOMP_TAP_3", "distance_mm": 48.420},
+      {"net": "WREQ_N", "distance_mm": 48.431}
     ],
     "uncapped_unconnected_before": 677,
-    "uncapped_unconnected_after": 228,
+    "uncapped_unconnected_after": 220,
     "promoted": true
   },
-  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Four hundred forty-nine independently checked routes reduce the uncapped count again to 228 and are promoted. This remains convergence evidence, not production copper.",
+  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Four hundred fifty-seven independently checked routes reduce the uncapped count again to 220 and are promoted. This remains convergence evidence, not production copper.",
   "tool_sha256": {
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/report_board_unconnected.py": "74d3422d973f216a7137f08fb46409f9a0ad1ec900e491bade9195ad67a98404",
