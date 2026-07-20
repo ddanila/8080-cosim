@@ -95,9 +95,9 @@ VA6, VA7, BA9, VA10, IOM_N, VA15, MWC_N, INHIB_N, BA6, BA15, D94_A4_D101_Q0,
 BA13, CS_D11, CS_D27, IOWC_N, AMWC_N, MEMR, BA12, X2_IRQ0, IORC_N, P12V,
 D6_V_ENABLE, DBIN_GATED, SYNC, D25_T, FRAME_INT, BA7, OSC, VIDEO_OUT, XTAL16M,
 VID_MIX1, E2_COM, INTA, IOWR, FDC_DDEN, D30_Q2N_D29_AIN7, FDC_DRIVE_SIZE_5_8,
-WREQ_N, PIT_BAUD, ROE, and STSTB_D38, each independently reduce the uncapped
-graph, reaching 31 opens; all six hundred forty-six are promoted. The final six
-hundred forty-two are
+WREQ_N, PIT_BAUD, ROE, STSTB_D38, CTR_LD, and RAM_OUT_EN, each independently
+reduce the uncapped graph, reaching 29 opens; all six hundred forty-eight are
+promoted. The final six hundred forty-four are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 260 mm, beyond the
@@ -106,7 +106,7 @@ been attempted in that mode.
 The next rule-accurate multilayer phase uses 0.21 mm clearance against the
 board's 0.20 mm rule and a 0.25 mm lattice; its accepted routes are also guarded
 by complete KiCad DRC comparison. Uncapped sweeps exhaust all remaining
-distance-ranked candidates through 180 mm in that mode.
+distance-ranked candidates through 220 mm in that mode.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
