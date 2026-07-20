@@ -302,6 +302,13 @@ zero electrical findings. A fresh all-gap sweep accepts no route and is
 byte-identical to its input. Exact evidence is guarded in
 `ref/routing/current21-seven-tail-plateau-prune.json`.
 
+A further bounded single-item phase removes 30 migrated items, for 1,847
+cumulative removals and 90 along the current long branch. The seven-tail
+frontier persists, but routed items fall to 30,628 with the same 21 open nets
+and zero electrical findings. A fresh all-gap sweep accepts no route and is
+byte-identical to its input. Exact evidence is guarded in
+`ref/routing/current21-seven-tail-deep-prune.json`.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
