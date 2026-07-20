@@ -108,9 +108,10 @@ READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, FDC_DIR_TO_D100, POF,
 ROM_CS_D15, BA8, FDC_WPRT_STATUS, FDC_INDEX_STATUS, VA3, BA2, BA4, IO_CYCLE_H,
 FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, VA13, WR, MEMW, HLDA, and
 ROM_CS_4000, S_TTL_D3, S3_4, KBD_SC1, D105_10_H, MA4, D13_4_D105_2, KBD_SC2,
-FDC_WE_N, SER_TXD_INV, and CLK_123M then each pass an independent uncapped
-check, reducing the exact count to 141; those routes are promoted. The last
-five hundred thirty-two are
+FDC_WE_N, SER_TXD_INV, CLK_123M, OSC_PRE, KBD_SC3, IOWR, PHI1_D35, and
+D97_C2_C19_R86_TARGET then each pass an independent uncapped check, reducing
+the exact count to 135; those routes are promoted. The last five hundred
+thirty-eight are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted

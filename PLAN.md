@@ -86,8 +86,9 @@ ROM_CS_D15, BA8, FDC_WPRT_STATUS, FDC_INDEX_STATUS, VA3, BA2, BA4, IO_CYCLE_H,
 FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, VA13, WR, MEMW, HLDA, and
 ROM_CS_4000, SHIFT_G, M12V, D26_PC1_D3_I3, D26_PC0_D3_I5, D39_O8, S_TTL_D3,
 S3_4, KBD_SC1, D105_10_H, MA4, D13_4_D105_2, KBD_SC2, FDC_WE_N, SER_TXD_INV,
-and CLK_123M, each independently reduce the uncapped graph, reaching 141 opens;
-all five hundred thirty-six are promoted. The final five hundred thirty-two are
+CLK_123M, OSC_PRE, KBD_SC3, IOWR, PHI1_D35, and D97_C2_C19_R86_TARGET, each
+independently reduce the uncapped graph, reaching 135 opens; all five hundred
+forty-two are promoted. The final five hundred thirty-eight are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 260 mm, beyond the
