@@ -81,9 +81,10 @@ DC5, SER_DSR_N, S_OC, LATCH_SIG, FDC_LATE_SEL, X4_WR_DATA_N, D33_D36,
 D33_6_D36, W_RAIL16, S_SOUT, VA1, X2_IRQ0, SER_CTS_N, DB6, DB7, DC6, DC7,
 LOAD_PRE, FDC_WG_TO_D100, LATCH_A, FDC_TG43_TO_D100, VA4, FDC_HLD_TO_D100,
 FDC_WDATA_DELAY_IN, VERT_RTR, VA0, PRECOMP_TAP_3, DC2, D53_Y3_R52, VA9,
-READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, and FDC_DIR_TO_D100, each
-independently reduce the uncapped graph, reaching 198 opens; all four hundred
-seventy-nine are promoted. The final four hundred seventy-five are
+READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, FDC_DIR_TO_D100, POF,
+ROM_CS_D15, BA8, FDC_WPRT_STATUS, and FDC_INDEX_STATUS, each independently
+reduce the uncapped graph, reaching 192 opens; all four hundred eighty-five are
+promoted. The final four hundred eighty-one are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 60 mm.
