@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "board_sha256": "fb9c9b71cbb1acf6e550cdaf67ac4a8f0228980dd29edd5c655f824b25f01f3b",
-  "board_size": 10146470,
+  "board_sha256": "b490bfce60c312eb090a055b50aa2cbc5a3c96b1b8b4a08437582fbe4cd3923c",
+  "board_size": 10154374,
   "uncapped_unconnected": 9,
   "electrical_blockers": 0,
   "diagnostic_clearance_mm": 0.15,
@@ -11,7 +11,7 @@
   "residuals": [
     {"net": "GND", "distance_mm": 17.780, "result": "legal-route-failed-after-ripup", "removable_conflicts": 8, "fixed_blockers": 5, "affected_nets": 6},
     {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
-    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "pre-route-in-progress", "removable_conflicts": 29, "fixed_blockers": 3, "affected_nets": 10, "unrestored_nets": ["VA13"], "pre_routed_nets": ["BA11", "CS_D10"], "tested_restore_grid_steps_mm": [0.125, 0.1, 0.0875]},
+    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "pre-route-in-progress", "removable_conflicts": 23, "fixed_blockers": 4, "affected_nets": 11, "unrestored_nets": ["BA12"], "pre_routed_nets": ["BA11", "CS_D10", "VA13"], "tested_restore_grid_steps_mm": [0.125, 0.1, 0.0875]},
     {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "result": "over-conflict-limit", "removable_conflicts": 26, "fixed_blockers": 4, "affected_nets": 12, "alternate_clearance_mm": 0.18, "alternate_removable_conflicts": 31},
     {"net": "CS_D26", "distance_mm": 177.308, "result": "over-conflict-limit", "removable_conflicts": 35, "fixed_blockers": 13, "affected_nets": 18},
     {"net": "INT7_RAW", "distance_mm": 181.230, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
@@ -24,5 +24,5 @@
     "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447",
     "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187"
   },
-  "disposition": "Localized conflict-derived rip-up is exhausted on the original nine-open topology. DRC-neutral BA11 and CS_D10 pre-routes relocate two IOWR blockers without removing source copper; VA13 remains the next corridor owner to relocate before retrying IOWR."
+  "disposition": "Localized conflict-derived rip-up is exhausted on the original nine-open topology. DRC-neutral BA11, CS_D10, and VA13 pre-routes relocate IOWR blockers without removing source copper; BA12 remains the next corridor owner to relocate before retrying IOWR."
 }
