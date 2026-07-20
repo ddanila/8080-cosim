@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import struct
 from pathlib import Path
 
@@ -32,6 +33,20 @@ def jpeg_dimensions(path: Path) -> list[int]:
             return [width, height]
         offset += length
     raise SystemExit(f"cannot read JPEG dimensions: {path}")
+
+
+def photo_sha256(path: Path) -> tuple[str, bool]:
+    """Return (sha256, is_lfs_pointer), tolerating an unmaterialized LFS object.
+
+    The generic CI job does not fetch Git LFS, so ``ref/photos/**/*.jpg`` may be a
+    pointer whose ``oid sha256`` already equals the object hash; read it directly
+    there. Mirrors the sibling FDC photo guards (e.g. check_fdc_unused_pins.py)."""
+    payload = path.read_bytes()
+    if payload.startswith(b"version https://git-lfs.github.com/spec/v1\n"):
+        match = re.search(r"^oid sha256:([0-9a-f]{64})$", payload.decode("ascii"),
+                        re.MULTILINE)
+        return (match.group(1) if match else "invalid-lfs-pointer"), True
+    return hashlib.sha256(payload).hexdigest(), False
 
 
 def main() -> None:
@@ -77,12 +92,17 @@ def main() -> None:
     for key in ("drawing_observation", "component_observation", "solder_observation"):
         observation = evidence.get(key, {})
         image_path = ROOT / observation.get("source", "")
-        if (not image_path.is_file() or
-                hashlib.sha256(image_path.read_bytes()).hexdigest() != observation.get("sha256")):
+        if not image_path.is_file():
             raise SystemExit(f"D96.9/.11 evidence hash mismatch: {image_path}")
-        dimensions = jpeg_dimensions(image_path)
-        if observation.get("dimensions_px") != dimensions:
-            raise SystemExit(f"D96.9/.11 evidence dimensions mismatch: {image_path}")
+        digest, is_pointer = photo_sha256(image_path)
+        if digest != observation.get("sha256"):
+            raise SystemExit(f"D96.9/.11 evidence hash mismatch: {image_path}")
+        # SOF dimensions can only be parsed from a materialized JPEG, not an LFS
+        # pointer; the pointer's oid already proves byte identity above.
+        if not is_pointer:
+            dimensions = jpeg_dimensions(image_path)
+            if observation.get("dimensions_px") != dimensions:
+                raise SystemExit(f"D96.9/.11 evidence dimensions mismatch: {image_path}")
     for key in ("component_observation", "solder_observation"):
         observation = evidence[key]
         if set(observation.get("endpoint_px", {})) != {"9", "11"}:
