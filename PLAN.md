@@ -70,13 +70,14 @@ FDC_EARLY_SEL, DC3, D99_RC2_TIMING, PRECOMP_TAP_1, D105_MEMW_INV, BA1,
 SER_DTR, ROM_CS_EXP17, D53_Y0_R49, DC1, PHI1, IR7, DC0, IOWR, D39Y,
 D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
 D99_C1_TIMING, RESET, OSC, DBIN, TIMING_TAG17, CLK_123M, CAS, FDC_STEP_TO_D100,
-AVDC, KBD_K0, VID_CPU_SEL, VA11, FDC_PRECOMP_WRDATA, IORC_N, MRC_N, and
-D98_Y3_S1_2, each independently reduce the uncapped graph, reaching 359 opens;
-all three hundred eighteen are promoted. The final three hundred fourteen are
+AVDC, KBD_K0, VID_CPU_SEL, VA11, FDC_PRECOMP_WRDATA, IORC_N, MRC_N,
+D98_Y3_S1_2, S3_3, RAIL13, and D39_MEMCYC, each independently reduce the
+uncapped graph, reaching 356 opens; all three hundred twenty-one are promoted.
+The final three hundred seventeen are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 The standard guarded front/back A* search is also exhausted without an accepted
-route across 48.43–50, 65–70, 75–80, and every 5 mm band from 90 through 110 mm;
+route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
 Exact hashes, parameters, and tool provenance are guarded in
 `ref/routing/current-source-uncapped-prune.json`; this remains convergence
