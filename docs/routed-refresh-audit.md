@@ -88,9 +88,10 @@ WREQ_N, D40QA, MA5, OSC_FB, FDC_RE_N, D40_CTRL_PULL, MA7, VT2_BASE,
 D102_C1_C22, USART_TXRDY_IRQ, BA15, D99_RC1_TIMING, D36_D33, FDC_RAW_READ, A10,
 A12, A15, SEP_D106_Q3, IORD, ROM_CS_A000, S_DSR, FDC_CS_N, DB2, S_RTS,
 W10_QA_SEL_D50, BA0, VA8, X4_STEP_N, ROM_SEL, D53_Y2_R51, X2_PB7, X2_PB6,
-X2_PB5, X2_PB4, X2_PB3, FDC_SEPARATOR_CLOCK, MA6, WR, and S_CTS then each pass
-an independent uncapped check, reducing the exact count to 413; those routes
-are promoted. The last two hundred sixty are
+X2_PB5, X2_PB4, X2_PB3, FDC_SEPARATOR_CLOCK, MA6, WR, S_CTS,
+D93_TEST_WF_VFOE, CLKG_D36, and FDC_EARLY_SEL then each pass an independent
+uncapped check, reducing the exact count to 410; those routes are promoted. The
+last two hundred sixty-three are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. The exact board/DRC
