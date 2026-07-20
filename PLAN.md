@@ -77,11 +77,12 @@ D96_TOGGLE_FEEDBACK, S3_6, X4_WR_PROTECT_N, MA4, VID_MIX2, D33_CLK_RC,
 MEMW_D7P2, SND_OUT, MEMR_D7, FDC_WE_N, STSTB_D38, D97_C2_C19_R86_TARGET,
 PST_CLK, DB3, SER_RXD, S_DTP, D34_RC_DRIVE, A14, A9, RAM_RD_OE,
 D97_RC2_C19_R100, MEMR, BA7, USART_RXRDY_IRQ, X4_TG43, PRECOMP_CASCADE_1, DB5,
-DC5, SER_DSR_N, S_OC, LATCH_SIG, FDC_LATE_SEL, and X4_WR_DATA_N, each
-independently reduce the uncapped graph, reaching 258 opens; all four hundred
-nineteen are promoted. The final four hundred fifteen are
+DC5, SER_DSR_N, S_OC, LATCH_SIG, FDC_LATE_SEL, X4_WR_DATA_N, and D33_D36, each
+independently reduce the uncapped graph, reaching 257 opens; all four hundred
+twenty are promoted. The final four hundred sixteen are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
+Its conservative multilayer search is exhausted through 30 mm.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
