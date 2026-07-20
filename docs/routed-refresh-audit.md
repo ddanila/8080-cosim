@@ -112,9 +112,9 @@ FDC_WE_N, SER_TXD_INV, CLK_123M, OSC_PRE, KBD_SC3, IOWR, PHI1_D35,
 D97_C2_C19_R86_TARGET, PHI2_D35, CAS, BA14, BA13, DB6, DB7, SER_TXD, RAIL14,
 S_SIN, DB2, SER_RTS, D40QA, FDC_RAW_READ, ROM_CS_D16, D56_QN_D34, D56_Q2_D34,
 DB0, DB4, DB1, X2_PC1, LATCH_B, X2_PC2, X2_PC3, X2_PB0, X2_PB1, X2_PB2, BA11,
-VA5, FDC_RCLK, BA5, DB3, and PRECOMP_TAP_2 then each pass an independent
-uncapped check, reducing the exact count to 97; those routes are promoted. The
-last five hundred seventy-six are
+VA5, FDC_RCLK, BA5, DB3, PRECOMP_TAP_2, S3_2, D40Q2_D33, and BA2 then each pass
+an independent uncapped check, reducing the exact count to 93; those routes are
+promoted. The last five hundred eighty are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
