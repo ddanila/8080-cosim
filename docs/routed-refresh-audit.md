@@ -582,6 +582,14 @@ marker. Exact evidence is guarded in
 `ref/routing/current21-twoitem-dangling-prune.json`; thirteen migrated track
 tails remain for continuation.
 
+Continued two-item pruning removes another 70 migrated items, bringing the
+cumulative cleanup to 1,587. The warning frontier contracts from thirteen
+dangling tracks to ten tracks plus one via, with zero electrical findings,
+30,888 routed items, and the same 21 open nets. A fresh bounded 0.10 mm/100
+mm-margin sweep tests all 21 gaps, accepts no route, and is byte-identical to
+its input. Exact evidence is guarded in
+`ref/routing/current21-eleven-tail-prune.json`; eleven migrated tails remain.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \

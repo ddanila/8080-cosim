@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "input_board_sha256": "050eaadde35e59b50a6bf90fa8906de4ef483cefd02e22bca9d77022e17f3300",
+  "output_board_sha256": "86abe800d9f37e1c9af18b1fb0ea1f7a733bad6672dcfbfd0d54c72303a966cf",
+  "output_board_size": 10804795,
+  "output_drc_sha256": "58d390768590ec8aa6b5485c91e446e6c3f43665e9a6d0d23cb87ab4c0df5da5",
+  "config": {
+    "allow_open": true, "batch_size": 2, "adaptive_batch": true,
+    "max_removals": 70, "source_board": "kicad/juku.kicad_pcb"
+  },
+  "initial": {"unconnected": 21, "routed_items": 30958, "track_dangling": 13, "via_dangling": 0},
+  "final": {
+    "unconnected": 21, "routed_items": 30888,
+    "track_dangling": 10, "via_dangling": 1,
+    "short": 0, "clearance": 0, "track_crossing": 0,
+    "hole_clearance": 0, "hole_to_hole": 0, "copper_edge_clearance": 0
+  },
+  "removed_items": 70,
+  "removed_source_items": 0,
+  "post_prune_sweep": {
+    "grid_step_mm": 0.1, "route_clearance_mm": 0.2,
+    "search_margin_mm": 100.0, "timeout_seconds": 5.0,
+    "attempted_gaps": 21, "accepted_routes": 0,
+    "output_board_sha256": "86abe800d9f37e1c9af18b1fb0ea1f7a733bad6672dcfbfd0d54c72303a966cf",
+    "attempted_state_sha256": "d123bf828e8240c27f4fb114bff49ab74e27b4b340310a9fef5dfead157ffeb6"
+  },
+  "residual_nets": [
+    "BA5", "CS_D10", "CS_D11", "CS_D57", "D3_O4_D6_A6", "D3_O6_D6_A5",
+    "D6_V_ENABLE", "DC4", "IORD", "MA7", "MEMW_D7P2", "PHI1_D35",
+    "PHI2_D35", "RAM_OUT_EN", "S3_1", "VA13", "VA15", "VA6", "VA9",
+    "W10_QA_SEL_D50", "WR"
+  ],
+  "disposition": "Further two-item adaptive pruning removes 70 migrated items without changing the 21-open net set. The warning frontier falls from thirteen dangling tracks to ten dangling tracks and one dangling via.",
+  "lineage_boundary": "This remains the older 303-footprint/2395-pad convergence lineage, not the subsequently expanded current source PCB and not production copper.",
+  "tool_sha256": {
+    "kicad/prune_dangling_tracks.py": "293cd5060686790acd1d069ae78132cc8977c35a355eda3a0317d34195a7d0fb",
+    "kicad/report_board_track_uuids.py": "6f14b9aad3c689e775e90f03e6de17504d7bebbffdf3452f61c217d32152e602",
+    "kicad/remove_board_item.py": "c5458ffb4aac7e16cf4f79827996b5e560cce91360ac2f1844342ec1b91320c6",
+    "kicad/remove_board_items.py": "693a8dce8acb8964d592fd812370a5a287473ec45e4fed1c9625fa18ebb6778f"
+  },
+  "sweep_tool_sha256": {
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
+    "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447"
+  }
+}

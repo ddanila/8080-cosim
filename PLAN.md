@@ -246,6 +246,13 @@ former 33.437 mm intermediate-island marker. Exact evidence is guarded in
 `ref/routing/current21-twoitem-dangling-prune.json`; thirteen migrated track
 tails remain for continuation.
 
+Continued two-item pruning removes another 70 migrated items, for 1,587
+cumulative removals. The warning frontier contracts from thirteen dangling
+tracks to ten tracks plus one via, while all 21 open nets and zero electrical
+findings remain unchanged. A fresh bounded sweep tests every gap, accepts no
+route, and writes a byte-identical board. Exact evidence is guarded in
+`ref/routing/current21-eleven-tail-prune.json`; eleven migrated tails remain.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
