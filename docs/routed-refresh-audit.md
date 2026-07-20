@@ -116,9 +116,9 @@ VA5, FDC_RCLK, BA5, DB3, PRECOMP_TAP_2, S3_2, D40Q2_D33, BA2, BA3, X4_DSEL0_N,
 BA1, CS_D10, BA10, VA6, VA7, BA9, VA10, IOM_N, VA15, MWC_N, INHIB_N, BA6,
 BA15, D94_A4_D101_Q0, BA13, CS_D11, CS_D27, IOWC_N, AMWC_N, MEMR, BA12,
 X2_IRQ0, IORC_N, P12V, D6_V_ENABLE, DBIN_GATED, SYNC, D25_T, FRAME_INT, BA7,
-OSC, and VIDEO_OUT then each pass an independent uncapped check, reducing the
-exact count to 45; those routes are promoted. The last six hundred twenty-eight
-are
+OSC, VIDEO_OUT, XTAL16M, VID_MIX1, E2_COM, INTA, and IOWR then each pass an
+independent uncapped check, reducing the exact count to 39; those routes are
+promoted. The last six hundred thirty-four are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
