@@ -1013,12 +1013,16 @@ After connectivity and programmable-part decisions stop changing:
 
 ### CI hardening
 
-`docs/ci-hardening-plan.md` is the executable plan for four process
+`docs/ci-hardening-plan.md` is the executable plan for four reliability
 improvements motivated by the 2026-07-20 twelve-hour red-CI window: a
 one-command report-regeneration script, a shared LFS-aware photo-hash helper,
 a CI-aware pre-push gate, and moving the EKDOS timing expectations into a
 committed data file with a deliberate `--update` path. Items are independent
-commits in the order 2 -> 1 -> 4 -> 3; CI must be green between them.
+commits in the order 2 -> 1 -> 4 -> 3; CI must be green between them. The same
+file also carries two 2026-07-20 CI cost-reduction items (5, 6): concurrency
+groups with `cancel-in-progress` on all three workflows, and narrowing the
+over-broad `scripts/**` / `ref/**` path gates on `reports.yml` that the routing
+loop trips 77% of the time. Both preserve full coverage; either order.
 
 ### VJUGA spin-off — status and Linux-box handoff
 

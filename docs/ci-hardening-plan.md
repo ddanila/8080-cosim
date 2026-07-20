@@ -186,3 +186,103 @@ and leaves an empty diff.
 stable checks; item 4 touches `hdl.yml` (watch the slow HDL workflow once);
 item 3 last because it changes push behavior for the other machine and needs
 the hook-activation investigation.
+
+# CI cost reduction
+
+Added **2026-07-20**. Separate motivation from items 1-4: those keep CI green,
+these cut GitHub Actions minutes. The autonomous routing loop pushes ~80-120
+commits/day in bursts, and the workflows have no cost controls, so a large
+fraction of billed minutes is spent on runs that are either instantly obsolete
+or triggered on paths the workflow does not read. Both items preserve full
+regression coverage — they only stop redundant work.
+
+Items 5 and 6 are independent; either order. Both are single-workflow-file
+edits with no behavioral change to what actually runs, so CI-green-between is
+trivial to confirm.
+
+## 5. Concurrency groups with `cancel-in-progress`
+
+No workflow has a `concurrency` block, so a burst of loop pushes starts a run
+per commit and every run finishes even when a newer commit has already
+superseded it. Measured 2026-07-20: 552 commits in the prior 7 days.
+
+Design:
+
+- Add to `ci.yml`, `hdl.yml`, and `reports.yml`, at top level (after `on:`):
+
+  ```yaml
+  concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+  ```
+
+- Keyed per workflow and per ref, so a burst on `master` only cancels stale
+  `master` runs of the same workflow.
+
+Steps:
+
+1. Add the block to each of the three workflow files.
+
+Verify: push two commits within a few seconds; confirm the first workflow run
+shows `cancelled` and only the newest completes.
+
+Accepted caveat: with `cancel-in-progress`, intermediate commits inside a burst
+are not each individually verified — only the tip of each burst runs to
+completion. This is the right trade for a latest-wins autonomous loop; if a
+future need for per-commit bisectable green arises, scope the cancel to
+non-default branches only.
+
+Interaction with item 3 (CI-aware pre-push gate): superseded runs become
+`cancelled`, not `failure`, so the gate does not misread them as red. When
+item 3 is built, its "newest completed run per workflow" reducer must treat a
+`cancelled` newest run as *no signal* (advance to the newest conclusive run)
+rather than as green — it already keys blocking on `failure`, so this is a
+"skip cancelled" refinement, not a behavior change.
+
+## 6. Narrow the `reports.yml` over-broad path gates
+
+`reports.yml` is the heaviest workflow (Git LFS pull + ~40 report
+regenerations). Its `push`/`pull_request` `paths` include `scripts/**` and
+`ref/**`, but the routing loop churns two files under those globs that no
+`reports.yml` step reads:
+
+- `scripts/check_documentation_consistency.py` (a `ci.yml` check, never run
+  here), matched by `scripts/**`.
+- `ref/routing/*.json`, matched by `ref/**`.
+
+Result measured 2026-07-20: 425 of 552 commits (77%) triggered the full
+`reports.yml` suite for nothing.
+
+Design:
+
+- Add negation patterns after the positive globs, in **both** the `push.paths`
+  and `pull_request.paths` lists:
+
+  ```yaml
+  - 'scripts/**'
+  - '!scripts/check_documentation_consistency.py'
+  - 'ref/**'
+  - '!ref/routing/**'
+  ```
+
+- Negations must follow the positive pattern they refine; a change touching
+  only excluded paths then does not trigger the workflow.
+
+Steps:
+
+1. `grep -rn "ref/routing\|check_documentation_consistency" .github/workflows/reports.yml`
+   to confirm no step reads either path (expected: no matches).
+2. Edit both `paths` lists identically.
+
+Verify: a routing-style commit (only `ref/routing/*.json` +
+`scripts/check_documentation_consistency.py`) does **not** trigger
+`reports.yml`; a real report-input change (e.g. a `report_*.py` or
+`ref/firmware/**`) still does.
+
+## Not pursued: `push` vs `pull_request` double-run
+
+A standard optimization is to scope `push:` to `master` so PR branches run only
+via the `pull_request` event instead of twice. This repo creates no branches or
+PRs — everything lands directly on `master` — so the `pull_request:` triggers
+never fire and no double-run exists to eliminate. The triggers are inert; drop
+them only as future cosmetic cleanup, not for cost.
