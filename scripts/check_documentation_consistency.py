@@ -903,6 +903,40 @@ def main() -> int:
             if "current21-nine-tail-plateau-prune.json" not in read(path):
                 failures.append(f"{path} omits the nine-tail plateau evidence")
 
+    eight_path = ROOT / "ref/routing/current21-eight-tail-prune.json"
+    if not eight_path.exists():
+        failures.append("current 21-gap eight-tail-prune evidence is missing")
+    else:
+        eight = json.loads(eight_path.read_text(encoding="utf-8"))
+        initial = eight.get("initial", {})
+        final = eight.get("final", {})
+        config = eight.get("config", {})
+        sweep = eight.get("post_prune_sweep", {})
+        if (
+            eight.get("schema_version") != 1
+            or (initial.get("unconnected"), final.get("unconnected")) != (21, 21)
+            or eight.get("removed_items") != 56
+            or eight.get("removed_source_items") != 0
+            or (initial.get("track_dangling"), initial.get("via_dangling")) != (9, 0)
+            or (final.get("track_dangling"), final.get("via_dangling")) != (8, 0)
+            or config.get("batch_size") != 1
+            or sum(phase.get("removed_items", 0) for phase in config.get("phases", [])) != 56
+            or sweep.get("attempted_gaps") != 21
+            or sweep.get("accepted_routes") != 0
+            or sweep.get("output_board_sha256") != eight.get("output_board_sha256")
+            or any(final.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
+            or len(eight.get("residual_nets", [])) != 21
+        ):
+            failures.append("current 21-gap eight-tail-prune summary is malformed")
+        for key in ("tool_sha256", "sweep_tool_sha256"):
+            for relative, expected in eight.get(key, {}).items():
+                tool_path = ROOT / relative
+                if not tool_path.is_file() or sha256(tool_path) != expected:
+                    failures.append(f"eight-tail-prune tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current21-eight-tail-prune.json" not in read(path):
+                failures.append(f"{path} omits the eight-tail dangling-prune evidence")
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(

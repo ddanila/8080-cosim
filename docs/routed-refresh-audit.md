@@ -619,6 +619,14 @@ nets and zero electrical findings. A fresh bounded 0.10 mm/100 mm-margin sweep
 tests all gaps, accepts no route, and is byte-identical to its input. Exact
 evidence is guarded in `ref/routing/current21-nine-tail-plateau-prune.json`.
 
+Two further guarded single-item phases remove 56 migrated items, bringing
+cumulative cleanup to 1,730 and reaching the next endpoint reduction from nine
+to eight dangling tracks. Routed items fall to 30,745 while the 21 open nets
+and zero electrical findings remain unchanged. A fresh bounded 0.10 mm/100
+mm-margin sweep tests all gaps, accepts no route, and is byte-identical to its
+input. Exact evidence is guarded in
+`ref/routing/current21-eight-tail-prune.json`.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \
