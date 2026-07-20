@@ -514,6 +514,19 @@ inheritance therefore remains phase-local. Exact configuration, tool hashes,
 outcome counts, and that marker boundary are guarded in
 `ref/routing/current23-grid-edge-phase-exhaustion.json`.
 
+The remaining no-fixed-blocker candidate `CS_D57` is now transactionally
+exhausted as well. Its 0.10 mm diagnostic route crosses 33 removable migrated
+items on fourteen nets and no fixed pads. Exact-clearance targets at 0.10,
+0.125, and 0.15 mm are rejected by four, two, and one new clearance findings;
+only the 0.1375 mm target is legal. Sorted restoration returns fifteen of the
+nineteen rip-up-created opens and finishes at 26. Restoring the failed
+CS_D55/GND/ROE/SYNC group first recovers the same group but loses one DB5
+branch and finishes at 27. The retained priority-run DRC has zero short,
+clearance, crossing, hole, or edge blockers. Both orders are worse than 23,
+so neither topology is adopted. Exact phase results, transaction hashes, DRC
+counts, and tool hashes are guarded in
+`ref/routing/current23-cs-d57-transaction.json`.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \

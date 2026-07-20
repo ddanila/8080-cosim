@@ -191,6 +191,14 @@ Both results are byte-identical to the current 23-gap input. Their phase-local
 S3_1 marker difference and exact tool/configuration hashes are guarded in
 `ref/routing/current23-grid-edge-phase-exhaustion.json`; no route is adopted.
 
+The last residual candidate without a fixed diagnostic blocker, CS_D57, is
+also now exhausted transactionally. Of four target lattices only 0.1375 mm
+routes legally after displacing 33 items on fourteen nets. Sorted restoration
+ends at 26 opens; prioritizing CS_D55/GND/ROE/SYNC ends at 27 after losing a
+second DB5 restoration. Both retained results remain free of electrical DRC
+blockers but cannot beat 23, so neither is adopted
+(`ref/routing/current23-cs-d57-transaction.json`).
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

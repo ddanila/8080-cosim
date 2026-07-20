@@ -564,6 +564,37 @@ def main() -> int:
             if "current23-grid-edge-phase-exhaustion.json" not in read(path):
                 failures.append(f"{path} omits the edge-phase routing evidence")
 
+    csd57_path = ROOT / "ref/routing/current23-cs-d57-transaction.json"
+    if not csd57_path.exists():
+        failures.append("current 23-gap CS_D57 transaction evidence is missing")
+    else:
+        csd57 = json.loads(csd57_path.read_text(encoding="utf-8"))
+        diagnostic = csd57.get("diagnostic", {})
+        phases = csd57.get("target_phases", {})
+        trials = csd57.get("restoration_trials", {})
+        default = trials.get("sorted_default", {})
+        priority = trials.get("cs_d55_gnd_roe_sync_first", {})
+        if (
+            csd57.get("schema_version") != 1
+            or csd57.get("input_unconnected") != 23
+            or diagnostic.get("removable_conflicts") != 33
+            or diagnostic.get("fixed_blockers") != 0
+            or len(diagnostic.get("affected_nets", [])) != 14
+            or phases.get("0.1375", {}).get("result") != "accepted"
+            or [phases.get(k, {}).get("added_clearance_findings") for k in ("0.10", "0.125", "0.15")] != [4, 2, 1]
+            or default.get("final_unconnected") != 26
+            or priority.get("final_unconnected") != 27
+            or any(priority.get("drc", {}).get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "copper_edge_clearance"))
+        ):
+            failures.append("current 23-gap CS_D57 transaction summary is malformed")
+        for relative, expected in csd57.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"CS_D57 transaction tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current23-cs-d57-transaction.json" not in read(path):
+                failures.append(f"{path} omits the CS_D57 transaction evidence")
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(

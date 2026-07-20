@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "input_board_sha256": "3dc2475580ce6217ad84484146d353a30b12237a5c4def2dbb40872ef763d37c",
+  "input_unconnected": 23,
+  "target_net": "CS_D57",
+  "target_gap_mm": 49.227,
+  "diagnostic": {
+    "clearance_mm": 0.1,
+    "grid_step_mm": 0.1,
+    "new_route_items": 84,
+    "removable_conflicts": 33,
+    "fixed_blockers": 0,
+    "affected_nets": ["BA12", "BA5", "BA7", "CS_D27", "CS_D55", "D25_T", "DB1", "DB5", "DB6", "FDC_DDEN", "GND", "REV", "ROE", "SYNC"]
+  },
+  "target_phases": {
+    "0.10": {"result": "rejected", "added_clearance_findings": 4},
+    "0.125": {"result": "rejected", "added_clearance_findings": 2},
+    "0.1375": {"result": "accepted", "target_unconnected_before": 42, "target_unconnected_after": 41},
+    "0.15": {"result": "rejected", "added_clearance_findings": 1}
+  },
+  "restoration_trials": {
+    "sorted_default": {
+      "final_unconnected": 26,
+      "removed_orphaned_migrated_vias": 5,
+      "result": "rejected; three opens worse than input"
+    },
+    "cs_d55_gnd_roe_sync_first": {
+      "restore_grid_steps_mm": [0.125, 0.1, 0.1375, 0.15],
+      "final_unconnected": 27,
+      "removed_orphaned_migrated_vias": 5,
+      "retained_transaction_board_sha256": "d628e61417ab2f8ea6a8aa81a42e64eb5656e4d3fd86fa8bea21875e6b86f70f",
+      "retained_drc_report_sha256": "81fde367476e02fd2adaf8dd31d0f29ff27757b3e4e7ec5167805a745401bea4",
+      "drc": {"unconnected": 27, "track_dangling": 199, "via_dangling": 45, "short": 0, "clearance": 0, "track_crossing": 0, "hole_clearance": 0, "copper_edge_clearance": 0},
+      "result": "rejected; four opens worse than input and one DB5 restoration worse than default order"
+    }
+  },
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "083ccf4ac24599072a20fc1ef22f90b2830e0a92110ac70bf18e2d3d703cfe89",
+    "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447",
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187"
+  },
+  "disposition": "No tested CS_D57 topology improves the independently verified 23-open checkpoint; no board is adopted."
+}
