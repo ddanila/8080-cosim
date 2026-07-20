@@ -390,6 +390,9 @@ int main(int argc, char** argv) {
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
   const char* checkpoint_cyc_env = getenv("JUKU_CHECKPOINT_CYC");
   unsigned long checkpoint_cyc = (checkpoint_cyc_env && checkpoint_cyc_env[0]) ? strtoul(checkpoint_cyc_env, 0, 0) : 0UL;
+  const char* stop_keys_done_env = getenv("JUKU_STOP_KEYS_DONE");
+  int stop_keys_done = stop_keys_done_env && stop_keys_done_env[0] &&
+                       strcmp(stop_keys_done_env, "0") != 0;
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
   const char* kbd_enabled_env = getenv("JUKU_KEYBOARD_ENABLE");
@@ -471,6 +474,7 @@ int main(int argc, char** argv) {
   while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) &&
          !(g_vw_limit && g_vw >= g_vw_limit) &&
          !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc) &&
+         !(stop_keys_done && kbd_str && !kbd_str[kbd_pos]) &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
     pchist[cpu.pc]++;
     if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
@@ -528,6 +532,9 @@ int main(int argc, char** argv) {
   if (stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)
     fprintf(stderr, "[FDC] stopped after %lu data reads at cyc=%lu pc=%04X g_vw=%lu\n",
             fdc_data_reads, cpu.cyc, cpu.pc, g_vw);
+  if (stop_keys_done && kbd_str && !kbd_str[kbd_pos])
+    fprintf(stderr, "[KBD] stopped after completing scripted input at cyc=%lu pc=%04X g_vw=%lu\n",
+            cpu.cyc, cpu.pc, g_vw);
 
   dump_checkpoint(getenv("JUKU_CHECKPOINT_PREFIX"), &cpu);
 

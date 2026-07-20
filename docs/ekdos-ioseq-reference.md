@@ -17,7 +17,10 @@ sync/ekdos_ioseq_reference.py
 ## Evidence
 
 - Trace exit code: `0`
-- Captured I/O events: `14334`
+- Captured I/O events: `106325`
+- D93 register accesses: `18489`
+- Port-C values at D93 accesses: `0x05, 0x25`
+- D95-selected D93 clocks at those accesses: `1 MHz`
 
 | Event | Access | Value | Cycle | PC | VRAM writes |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -28,6 +31,19 @@ sync/ekdos_ioseq_reference.py
 | Shifted T keyboard read | IN 0x05 | 0x88 | 4201870 | 1463 | 42543 |
 | FDC motor on | OUT 0x06 | 0x04 | 6668323 | D7EF | 63085 |
 | First FDC command | OUT 0x1C | 0x02 | 6666400 | E5DE | 63085 |
+
+## D95 controller-clock selection
+
+Recovered `.009` sheet 3 proves D95 select A1 is D26 Port-C bit 3:
+A1=0 selects the 1 MHz D40.11 rail and A1=1 selects the 2 MHz D40.12
+rail. Replaying every direct Port-C write, mode-set reset, and BSR command
+in this exact ROM trace proves the selected clock at each D93 register
+access instead of inferring it from the final latch value.
+
+| First/last access | Direction/port | Value | Cycle | PC | Port C | D93 clock |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| First | OUT 0x1C | 0x02 | 6666400 | E5DE | 0x25 | 1 MHz |
+| Last | IN 0x1C | 0x00 | 11007574 | E771 | 0x05 | 1 MHz |
 
 ## Boundary
 

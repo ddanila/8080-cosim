@@ -203,6 +203,11 @@ static unsigned type_i_rate_ticks(uint8_t command) {
 }
 
 
+static unsigned controller_delay_ticks(const juku_fdc* fdc, unsigned ticks_2mhz) {
+  return fdc->clock_2mhz ? ticks_2mhz : ticks_2mhz * 2u;
+}
+
+
 static void type_i_step_once(juku_fdc* fdc) {
   const uint8_t command = fdc->type_i_command;
   if ((command & 0xF0) == 0x00) {        // restore
@@ -270,7 +275,7 @@ static void finish_type_i_motion(juku_fdc* fdc) {
   if (fdc->type_i_command & 0x04) {
     fdc->head_loaded = 1;
     fdc->type_i_settling = 1;
-    fdc->type_i_ticks = 30000;  // 15 ms at the FD1793's nominal 2 MHz clock
+    fdc->type_i_ticks = controller_delay_ticks(fdc, 30000);
   } else {
     complete_type_i(fdc);
   }
@@ -289,7 +294,7 @@ static void begin_type_i(juku_fdc* fdc, uint8_t command) {
   }
   update_not_ready(fdc);
   fdc->type_i_command = command;
-  fdc->type_i_rate_ticks = type_i_rate_ticks(command);
+  fdc->type_i_rate_ticks = controller_delay_ticks(fdc, type_i_rate_ticks(command));
   if ((command & 0xF0) == 0x00) {
     fdc->type_i_steps_remaining = fdc->tr00_line ? 255 : 0;
   } else if ((command & 0xF0) == 0x10) {
@@ -732,7 +737,7 @@ static void begin_type_ii_iii(juku_fdc* fdc, uint8_t command) {
   fdc->status &= (uint8_t)~(
       ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
   fdc->command_delay_pending = 1;
-  fdc->command_delay_ticks = 30000;  // E=1: 15 ms at the nominal 2 MHz clock
+  fdc->command_delay_ticks = controller_delay_ticks(fdc, 30000);
   fdc->command_delay_command = command;
   fdc->status |= ST_BUSY;
 }
@@ -854,6 +859,7 @@ void juku_fdc_init(juku_fdc* fdc, juk_disk* disk) {
   memset(fdc, 0, sizeof(*fdc));
   fdc->disk = disk;
   fdc->enabled = disk && disk->fp;
+  fdc->clock_2mhz = 1;
   fdc->step_dir_in = 1;
   fdc->sector = 1;
   fdc->status_type_i = 1;
@@ -866,6 +872,7 @@ void juku_fdc_init(juku_fdc* fdc, juk_disk* disk) {
 
 void juku_fdc_portc(juku_fdc* fdc, uint8_t portc) {
   fdc->motor_on = (portc >> 2) & 1;
+  fdc->clock_2mhz = (portc >> 3) & 1;
   fdc->head = (portc >> 6) & 1;
   fdc->drive = (portc >> 5) & 1;
   update_not_ready(fdc);

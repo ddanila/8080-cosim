@@ -959,7 +959,7 @@ module serial_conn (inout wire pullup_io, aux2, ttl_sout, sin, cts, dsr,
                     aux7, aux8, sout, rts, dtp, oc_sout);
 endmodule
 
-module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, mr_n, clk, dden,
+module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, mr_n, clk, clock_2mhz, dden,
                  input wire nc_back_bias, vss_gnd, vcc_5v, vdd_12v,
                  output wire step, dirc, early, late, rg, hld, tg43, wg, wdata,
                  input wire test, hlt, rclk, raw_read, ready, tr00, index, wprt,
@@ -1125,6 +1125,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     function is_read_sector(input [7:0] cmd); begin
         is_read_sector = ((cmd & 8'hE0) == 8'h80);
+    end endfunction
+
+    function integer controller_delay(input integer ticks_2mhz); begin
+        // Unconnected/z keeps standalone legacy tests on the nominal table.
+        controller_delay = (clock_2mhz === 1'b0) ? ticks_2mhz * 2 : ticks_2mhz;
     end endfunction
 
     function is_type_i(input [7:0] cmd); begin
@@ -1629,7 +1634,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         if (type_i_command[2]) begin
             head_loaded = 1;
             type_i_settling = 1;
-            type_i_ticks = 30000;
+            type_i_ticks = controller_delay(30000);
         end else begin
             complete_type_i_timed();
         end
@@ -1661,6 +1666,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 2'b10: type_i_rate_ticks = 20000;
                 default: type_i_rate_ticks = 30000;
             endcase
+            type_i_rate_ticks = controller_delay(type_i_rate_ticks);
             if ((cmd & 8'hf0) == 8'h00) begin
                 steps = tr00 ? 255 : 0;
                 step_dir_in = 0;
@@ -1933,7 +1939,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             status = status & ~(ST_LOST_DATA | 8'h08 | ST_RNF |
                                 ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
             command_delay_pending = 1;
-            command_delay_ticks = 30000;
+            command_delay_ticks = controller_delay(30000);
             command_delay_command = cmd;
             status = status | ST_BUSY;
         end else begin
@@ -2087,9 +2093,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end
 
-    // The byte-level twin uses 2 MHz-equivalent controller ticks.  At the
-    // Juku MFM rate, 64 ticks are one 32 us byte-service window.  Keep the
-    // autonomous timer opt-in until the source-closed D95-to-D93.24 waveform is calibrated;
+    // At the Juku MFM rate, 64 simulation ticks are one 32 us byte-service
+    // window. This media-rate deadline is independent of D95's controller-clock select. Keep the
+    // autonomous timer opt-in because physical waveform accuracy remains a bring-up measurement;
     // focused unit/decoded-bus guards compile with FDC_BYTE_TIMING.
 `ifdef FDC_BYTE_TIMING
     always @(negedge clk) begin
@@ -2117,11 +2123,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `endif
 
     // Type-I rates are controller-clock contracts from the FD179X table:
-    // 3/6/10/15 ms per step and 15 ms verify settle at a nominal 2 MHz,
+    // 3/6/10/15 ms per step and 15 ms verify settle at 2 MHz, doubled at
+    // 1 MHz. D26 PC3 drives D95 A1 and the ROM trace selects 1 MHz throughout
+    // all observed D93 accesses,
     // followed by HLT, immediate valid-ID comparison, and at most four
     // missing-ID revolutions in the flat-image backend. Restore samples active-low
-    // TR00 for at most 255 steps. Keep the timer opt-in until the board's
-    // source-closed D95-to-D93.24 waveform is calibrated.
+    // TR00 for at most 255 steps. Keep the timer opt-in because physical clock
+    // accuracy and edge quality remain bring-up measurements.
 `ifdef FDC_TYPE_I_TIMING
     always @(negedge clk) begin
         step_r = 0;
@@ -2151,9 +2159,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end
 `endif
 
-    // Type-II/III E=1 holds BUSY for the datasheet's nominal 15 ms head
-    // settle, then waits for HLT before ID search or the Type-III index wait.
-    // Keep the autonomous timer opt-in until the D95-to-D93.24 waveform is calibrated; D93.23's
+    // Type-II/III E=1 holds BUSY for 15 ms at 2 MHz or 30 ms at 1 MHz,
+    // then waits for HLT before ID search or the Type-III index wait.
+    // Keep the autonomous timer opt-in; D93.23's
     // physical HLT source remains a separate continuity/waveform boundary.
 `ifdef FDC_TYPE_II_III_TIMING
     always @(negedge clk) begin

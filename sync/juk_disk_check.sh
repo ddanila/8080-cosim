@@ -31,7 +31,7 @@ root=$PWD
   JUKU_KEY_HOLD_FRAMES=6 \
   JUKU_KEY_GAP_FRAMES=8 \
   JUKU_CHECKPOINT_PREFIX="$tmp/rombios-init" \
-  JUKU_CHECKPOINT_CYC=14200002 \
-    "$tmp/trace" "$root/roms/ekta37.bin" 14300000 0 200000 >/dev/null 2>/dev/null
+  JUKU_STOP_KEYS_DONE=1 \
+    "$tmp/trace" "$root/roms/ekta37.bin" 25000000 0 200000 >/dev/null 2>/dev/null
 )
 "$tmp/rombios_fdc_write_test" "$tmp/rombios-init.ram"

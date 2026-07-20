@@ -23,7 +23,7 @@ IOSEQ_RE = re.compile(
 
 def run_trace() -> subprocess.CompletedProcess[str]:
     cc = os.environ.get("CC", "cc")
-    max_cycles = os.environ.get("EKDOS_IOSEQ_MAX_CYCLES", "7000000")
+    max_cycles = os.environ.get("EKDOS_IOSEQ_MAX_CYCLES", "20000000")
     frame_cycles = os.environ.get("EKDOS_IOSEQ_FRAME_CYCLES", "200000")
     with tempfile.TemporaryDirectory(prefix="ekdos-ioseq.") as tmp:
         trace = Path(tmp) / "trace"
@@ -89,6 +89,38 @@ def find_event(events: list[dict[str, str | int]], direction: str, port: int, va
     return None
 
 
+def fdc_clock_observations(events: list[dict[str, str | int]]) -> list[dict[str, int | str]]:
+    """Replay the 8255 Port-C latch and annotate every D93 register access."""
+    portc = 0
+    observations: list[dict[str, int | str]] = []
+    for event in events:
+        if event["dir"] == "OUT" and event["port"] == 0x06:
+            portc = int(event["value"])
+        elif event["dir"] == "OUT" and event["port"] == 0x07:
+            control = int(event["value"])
+            if control & 0x80:
+                portc = 0
+            else:
+                bit = (control >> 1) & 7
+                if control & 1:
+                    portc |= 1 << bit
+                else:
+                    portc &= ~(1 << bit)
+        if 0x1C <= int(event["port"]) <= 0x1F:
+            observations.append(
+                {
+                    "dir": str(event["dir"]),
+                    "port": int(event["port"]),
+                    "value": int(event["value"]),
+                    "cyc": int(event["cyc"]),
+                    "pc": str(event["pc"]),
+                    "portc": portc,
+                    "clock_mhz": 2 if portc & 0x08 else 1,
+                }
+            )
+    return observations
+
+
 def row(label: str, event) -> str:
     if not event:
         return f"| {label} | - | - | - | - | - |"
@@ -109,12 +141,21 @@ def main() -> int:
     first_kbd_read = find_event(events, "IN", 0x05)
     first_t_read = find_event(events, "IN", 0x05, 0x88)
     first_motor_on = find_event(events, "OUT", 0x06, 0x04)
+    fdc_observations = fdc_clock_observations(events)
+    fdc_portc_values = sorted({int(item["portc"]) for item in fdc_observations})
+    fdc_clock_values = sorted({int(item["clock_mhz"]) for item in fdc_observations})
 
     failures: list[str] = []
     if proc.returncode != 0:
         failures.append(f"trace exited {proc.returncode}")
     if len(events) < 100:
         failures.append(f"too few IOSEQ events captured: {len(events)}")
+    if not fdc_observations:
+        failures.append("no D93 register accesses captured")
+    if fdc_clock_values != [1]:
+        failures.append(
+            f"D95 controller-clock selection changed during FDC accesses: {fdc_clock_values} MHz"
+        )
     expected = [
         ("PIC ICW1", first_pic, "02B9", 30520, 0xD6),
         ("PIC ICW2", pic_icw2, "02BC", 30520, 0xFE),
@@ -156,6 +197,9 @@ def main() -> int:
         "",
         f"- Trace exit code: `{proc.returncode}`",
         f"- Captured I/O events: `{len(events)}`",
+        f"- D93 register accesses: `{len(fdc_observations)}`",
+        f"- Port-C values at D93 accesses: `{', '.join(f'0x{value:02X}' for value in fdc_portc_values)}`",
+        f"- D95-selected D93 clocks at those accesses: `{', '.join(f'{value} MHz' for value in fdc_clock_values)}`",
         "",
         "| Event | Access | Value | Cycle | PC | VRAM writes |",
         "| --- | --- | ---: | ---: | ---: | ---: |",
@@ -166,6 +210,31 @@ def main() -> int:
         row("Shifted T keyboard read", first_t_read),
         row("FDC motor on", first_motor_on),
         row("First FDC command", first_fdc),
+        "",
+        "## D95 controller-clock selection",
+        "",
+        "Recovered `.009` sheet 3 proves D95 select A1 is D26 Port-C bit 3:",
+        "A1=0 selects the 1 MHz D40.11 rail and A1=1 selects the 2 MHz D40.12",
+        "rail. Replaying every direct Port-C write, mode-set reset, and BSR command",
+        "in this exact ROM trace proves the selected clock at each D93 register",
+        "access instead of inferring it from the final latch value.",
+        "",
+        "| First/last access | Direction/port | Value | Cycle | PC | Port C | D93 clock |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
+        (
+            f"| First | {fdc_observations[0]['dir']} 0x{fdc_observations[0]['port']:02X} | "
+            f"0x{fdc_observations[0]['value']:02X} | {fdc_observations[0]['cyc']} | "
+            f"{fdc_observations[0]['pc']} | 0x{fdc_observations[0]['portc']:02X} | "
+            f"{fdc_observations[0]['clock_mhz']} MHz |"
+            if fdc_observations else "| First | - | - | - | - | - | - |"
+        ),
+        (
+            f"| Last | {fdc_observations[-1]['dir']} 0x{fdc_observations[-1]['port']:02X} | "
+            f"0x{fdc_observations[-1]['value']:02X} | {fdc_observations[-1]['cyc']} | "
+            f"{fdc_observations[-1]['pc']} | 0x{fdc_observations[-1]['portc']:02X} | "
+            f"{fdc_observations[-1]['clock_mhz']} MHz |"
+            if fdc_observations else "| Last | - | - | - | - | - | - |"
+        ),
         "",
         "## Boundary",
         "",

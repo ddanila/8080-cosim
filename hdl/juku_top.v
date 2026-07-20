@@ -769,7 +769,8 @@ module juku_top (
 `endif
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(`JUKU_FDC_DATA_BUS), .cs_n(fdc_model_cs_n),  .rd_n(fdc_model_re_n), .wr_n(fdc_model_we_n),
                       .nc_back_bias(1'bz), .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
-                      .mr_n(1'b1), .clk(sclk_i), .dden(ppi0_pc[4]), .motor_on(ppi0_pc[2]), .side(ppi0_pc[6]),
+                      .mr_n(1'b1), .clk(sclk_i), .clock_2mhz(ppi0_pc[3]),
+                      .dden(ppi0_pc[4]), .motor_on(ppi0_pc[2]), .side(ppi0_pc[6]),
                       .step(), .dirc(), .early(), .late(), .test(1'b1), .hlt(1'b1),
                       .rg(), .rclk(1'b0), .raw_read(1'b1), .hld(), .tg43(), .wg(), .wdata(),
                       .ready(1'b1), .wf_vfoe(), .tr00(1'b0), .index(1'b0), .wprt(1'b0),

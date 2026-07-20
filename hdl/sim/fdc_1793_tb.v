@@ -24,9 +24,11 @@ module fdc_1793_tb;
   integer expected_rate = 0;
   integer step_pulses = 0;
   integer step_pulses_before = 0;
+  reg clock_2mhz = 1'b1;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
-               .clk(clk), .motor_on(motor_on), .side(side), .ready(ready), .index(index),
+               .clk(clk), .clock_2mhz(clock_2mhz),
+               .motor_on(motor_on), .side(side), .ready(ready), .index(index),
                .hlt(hlt), .tr00(tr00), .wprt(1'b0),
                .drq(drq), .intrq(intrq), .step(step), .dirc(dirc));
 
@@ -259,6 +261,22 @@ module fdc_1793_tb;
         errors = errors + 1;
       end
     end
+    clock_2mhz = 1'b0;
+    for (i = 0; i < 4; i = i + 1) begin
+      write_reg(2'd0, i[7:0]);
+      case (i)
+        0: expected_rate = 12000;
+        1: expected_rate = 24000;
+        2: expected_rate = 40000;
+        default: expected_rate = 60000;
+      endcase
+      if (dut.type_i_rate_ticks !== expected_rate) begin
+        $display("FDC-1793: FAIL 1MHz rate %0d mapped to %0d ticks expected %0d",
+                 i, dut.type_i_rate_ticks, expected_rate);
+        errors = errors + 1;
+      end
+    end
+    clock_2mhz = 1'b1;
 
     write_reg(2'd3, 8'd12);
     write_reg(2'd0, 8'h12);
@@ -453,6 +471,15 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'hd0);
 
     hlt = 0;
+    clock_2mhz = 1'b0;
+    write_reg(2'd0, 8'hc4);
+    if (dut.command_delay_ticks !== 59999) begin
+      $display("FDC-1793: FAIL 1MHz E-delay=%0d expected=59999 after one timer edge",
+               dut.command_delay_ticks);
+      errors = errors + 1;
+    end
+    write_reg(2'd0, 8'hd0);
+    clock_2mhz = 1'b1;
     write_reg(2'd2, 8'd9);
     write_reg(2'd0, 8'hc4);  // read address with the valid E flag set
     if ((dut.status & 8'h03) !== 8'h01 || !dut.command_delay_pending) begin

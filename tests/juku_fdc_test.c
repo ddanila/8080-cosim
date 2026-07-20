@@ -203,7 +203,7 @@ int main(void) {
 
   juku_fdc fdc;
   juku_fdc_init(&fdc, &disk);
-  juku_fdc_portc(&fdc, 0x04);  // motor on, drive 0, side 0
+  juku_fdc_portc(&fdc, 0x0C);  // motor on, drive 0, side 0, nominal 2 MHz clock
   juku_fdc_write(&fdc, 1, 22);
   juku_fdc_write(&fdc, 0, 0x02);  // restore, as ROMBIOS issues before reading
   fail |= expect_intrq(&fdc, 1, "restore completion");
@@ -297,6 +297,16 @@ int main(void) {
       fail = 1;
     }
   }
+  juku_fdc_portc(&fdc, 0x04);  // exact EKDOS profile: D95 selects 1 MHz
+  for (unsigned rate = 0; rate < 4; rate++) {
+    juku_fdc_write(&fdc, 0, (uint8_t)rate);
+    if (fdc.type_i_rate_ticks != 2u * type_i_rates[rate]) {
+      fprintf(stderr, "1 MHz Type-I rate %u mapped to %u ticks, expected %u\n",
+              rate, fdc.type_i_rate_ticks, 2u * type_i_rates[rate]);
+      fail = 1;
+    }
+  }
+  juku_fdc_portc(&fdc, 0x0C);
 
   juku_fdc_write(&fdc, 3, 12);
   juku_fdc_write(&fdc, 0, 0x12);  // seek to data register
@@ -437,6 +447,15 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0xD0);
 
   juku_fdc_hlt(&fdc, 0);
+  juku_fdc_portc(&fdc, 0x04);
+  juku_fdc_write(&fdc, 0, 0xC4);
+  if (fdc.command_delay_ticks != 60000) {
+    fprintf(stderr, "1 MHz E-delay mapped to %u ticks, expected 60000\n",
+            fdc.command_delay_ticks);
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0xD0);
+  juku_fdc_portc(&fdc, 0x0C);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0xC4);  // read address, including the valid E flag
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
@@ -646,7 +665,7 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0xA0);  // ROMBIOS write-sector command is also protected by default
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, ST_WRITE_PROTECT, "read-only write-sector command");
 
-  juku_fdc_portc(&fdc, 0x44);  // motor on, drive 0, side 1
+  juku_fdc_portc(&fdc, 0x4C);  // motor on, drive 0, side 1, nominal 2 MHz clock
   seek_track(&fdc, 43);
   juku_fdc_write(&fdc, 2, 7);
   juku_fdc_write(&fdc, 0, 0x80);
@@ -672,7 +691,7 @@ int main(void) {
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
                         ST_RNF, "side-compare mismatch fifth-index status");
 
-  juku_fdc_portc(&fdc, 0x04);  // motor on, side 0
+  juku_fdc_portc(&fdc, 0x0C);  // motor on, side 0, nominal 2 MHz clock
   seek_track(&fdc, 12);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0x92);  // multiple-record read
@@ -713,7 +732,7 @@ int main(void) {
     fail = 1;
   }
   juku_fdc_init(&fdc, &disk);
-  juku_fdc_portc(&fdc, 0x44);  // motor on, side 1
+  juku_fdc_portc(&fdc, 0x4C);  // motor on, side 1, nominal 2 MHz clock
   seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 3);
 

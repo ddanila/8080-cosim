@@ -11,6 +11,7 @@ typedef struct {
   int head;
   int drive;
   int motor_on;
+  int clock_2mhz;
   uint8_t status;
   uint8_t track;
   uint8_t physical_track;
@@ -78,9 +79,9 @@ void juku_fdc_hlt(juku_fdc* fdc, int hlt);
 void juku_fdc_tr00(juku_fdc* fdc, int tr00);
 void juku_fdc_ready(juku_fdc* fdc, int ready);
 void juku_fdc_index(juku_fdc* fdc, int index);
-// Advance nominal 2 MHz-equivalent controller timers. One MFM byte time is
-// 64 ticks (32 us), and Type-I verify / Type-II/III E=1 head settle is
-// 30,000 ticks (15 ms). Media access then waits for juku_fdc_hlt(..., 1).
+// Advance CPU-equivalent controller timers. D26 PC3/D95 selects the D93 clock:
+// Type-I and head-settle intervals double at 1 MHz, while the MFM data-rate
+// byte window remains 64 ticks (32 us). Media access then waits for HLT.
 // DRQ service resets the byte timer.
 // A Write Track preload waits for a rising index event and does not age here.
 void juku_fdc_tick(juku_fdc* fdc, unsigned ticks);
