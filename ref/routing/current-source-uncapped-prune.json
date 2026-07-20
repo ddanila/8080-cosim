@@ -109,7 +109,8 @@
       {"limit": 8, "max_attempts": 16, "proposal_timeout_seconds": 240, "min_distance_mm": 140, "max_distance_mm": 150, "mode": "M", "search_margin_mm": 150, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
       {"limit": 8, "max_attempts": 16, "proposal_timeout_seconds": 255, "min_distance_mm": 150, "max_distance_mm": 160, "mode": "M", "search_margin_mm": 160, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
       {"limit": 8, "accepted": 1, "max_attempts": 16, "proposal_timeout_seconds": 270, "min_distance_mm": 160, "max_distance_mm": 170, "mode": "M", "search_margin_mm": 170, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
-      {"limit": 8, "accepted": 2, "max_attempts": 16, "proposal_timeout_seconds": 285, "min_distance_mm": 170, "max_distance_mm": 180, "mode": "M", "search_margin_mm": 180, "grid_step_mm": 0.5, "route_clearance_mm": 0.45}
+      {"limit": 8, "accepted": 2, "max_attempts": 16, "proposal_timeout_seconds": 285, "min_distance_mm": 170, "max_distance_mm": 180, "mode": "M", "search_margin_mm": 180, "grid_step_mm": 0.5, "route_clearance_mm": 0.45},
+      {"limit": 8, "max_attempts": 16, "proposal_timeout_seconds": 285, "min_distance_mm": 176.77, "max_distance_mm": 180, "mode": "M", "search_margin_mm": 180, "grid_step_mm": 0.5, "route_clearance_mm": 0.45}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -146,7 +147,7 @@
     "min_distance_mm": 0.01,
     "max_distance_mm": 90,
     "search_ceiling_mm": 130,
-    "multilayer_exhausted_through_mm": 170,
+    "multilayer_exhausted_through_mm": 180,
     "exhausted_without_acceptance": [
       {"min_distance_mm": 48.43, "max_distance_mm": 50},
       {"min_distance_mm": 65, "max_distance_mm": 70},
