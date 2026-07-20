@@ -107,8 +107,9 @@ FDC_WDATA_DELAY_IN, VERT_RTR, VA0, PRECOMP_TAP_3, DC2, D53_Y3_R52, VA9,
 READY_D, ROM_CS_8000, D99_C2_TIMING, S3_1, VA2, FDC_DIR_TO_D100, POF,
 ROM_CS_D15, BA8, FDC_WPRT_STATUS, FDC_INDEX_STATUS, VA3, BA2, BA4, IO_CYCLE_H,
 FDC_TR00_STATUS, ROM_CS_6000, INHIB_STATUS_BOUNDARY, VA13, WR, MEMW, HLDA, and
-ROM_CS_4000 then each pass an independent uncapped check, reducing the exact
-count to 157; those routes are promoted. The last five hundred sixteen are
+ROM_CS_4000, S_TTL_D3, S3_4, and KBD_SC1 then each pass an independent uncapped
+check, reducing the exact count to 149; those routes are promoted. The last
+five hundred twenty-four are
 selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. Its conservative multilayer search is exhausted
@@ -119,6 +120,9 @@ no accepted route across 48.43–50, 65–70, 75–80, and the tested bands from
 through 130 mm. The exact board/DRC hashes, search ceiling, exhausted ranges,
 parameters, and tool hashes are guarded in
 `ref/routing/current-source-uncapped-prune.json`.
+The following rule-accurate multilayer phase uses 0.21 mm clearance against
+the board's 0.20 mm rule and a 0.25 mm lattice, retaining only complete KiCad
+DRC-neutral improvements.
 
 ### Additive/rename-safe copper migration
 
