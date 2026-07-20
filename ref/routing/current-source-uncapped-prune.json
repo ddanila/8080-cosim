@@ -132,7 +132,8 @@
       {"limit": 8, "accepted": 4, "attempts": 19, "max_attempts": 0, "proposal_timeout_seconds": 90, "min_distance_mm": 30, "max_distance_mm": 60, "mode": "M", "search_margin_mm": 60, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
       {"limit": 8, "accepted": 8, "max_attempts": 16, "proposal_timeout_seconds": 120, "min_distance_mm": 60, "max_distance_mm": 90, "mode": "M", "search_margin_mm": 90, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
       {"limit": 8, "accepted": 8, "max_attempts": 16, "proposal_timeout_seconds": 120, "min_distance_mm": 69.58, "max_distance_mm": 90, "mode": "M", "search_margin_mm": 90, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
-      {"limit": 8, "accepted": 8, "attempts": 12, "max_attempts": 16, "proposal_timeout_seconds": 120, "min_distance_mm": 77.9, "max_distance_mm": 90, "mode": "M", "search_margin_mm": 90, "grid_step_mm": 0.25, "route_clearance_mm": 0.21}
+      {"limit": 8, "accepted": 8, "attempts": 12, "max_attempts": 16, "proposal_timeout_seconds": 120, "min_distance_mm": 77.9, "max_distance_mm": 90, "mode": "M", "search_margin_mm": 90, "grid_step_mm": 0.25, "route_clearance_mm": 0.21},
+      {"limit": 8, "accepted": 0, "attempts": 1, "max_attempts": 0, "proposal_timeout_seconds": 120, "min_distance_mm": 60, "max_distance_mm": 90, "mode": "M", "search_margin_mm": 90, "grid_step_mm": 0.25, "route_clearance_mm": 0.21}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -186,7 +187,7 @@
     "proposal_timeout_seconds": 3,
     "rule_accurate_multilayer_clearance_mm": 0.21,
     "rule_accurate_multilayer_grid_step_mm": 0.25,
-    "rule_accurate_multilayer_exhausted_through_mm": 60,
+    "rule_accurate_multilayer_exhausted_through_mm": 90,
     "accepted_routes_by_capped_marker_guard": 612,
     "accepted_routes_by_uncapped_guard": 612,
     "routes": [

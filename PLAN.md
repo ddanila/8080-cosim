@@ -103,7 +103,7 @@ been attempted in that mode.
 The next rule-accurate multilayer phase uses 0.21 mm clearance against the
 board's 0.20 mm rule and a 0.25 mm lattice; its accepted routes are also guarded
 by complete KiCad DRC comparison. Uncapped sweeps exhaust all remaining
-distance-ranked candidates through 60 mm in that mode.
+distance-ranked candidates through 90 mm in that mode.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

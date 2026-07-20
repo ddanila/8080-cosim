@@ -704,7 +704,7 @@ def main() -> int:
             or probe.get("uncapped_unconnected_before") - probe.get("uncapped_unconnected_after") != 612
             or probe.get("rule_accurate_multilayer_clearance_mm") != 0.21
             or probe.get("rule_accurate_multilayer_grid_step_mm") != 0.25
-            or probe.get("rule_accurate_multilayer_exhausted_through_mm") != 60
+            or probe.get("rule_accurate_multilayer_exhausted_through_mm") != 90
             or probe.get("search_ceiling_mm") != 130
             or probe.get("multilayer_exhausted_through_mm") != 260
             or probe.get("multilayer_max_candidate_distance_mm") != 252.637
