@@ -93,9 +93,9 @@ D93_TEST_WF_VFOE, CLKG_D36, FDC_EARLY_SEL, DC3, D99_RC2_TIMING, PRECOMP_TAP_1,
 D105_MEMW_INV, BA1, SER_DTR, ROM_CS_EXP17, D53_Y0_R49, DC1, PHI1, IR7, DC0,
 IOWR, D39Y, D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
 D99_C1_TIMING, RESET, OSC, DBIN, TIMING_TAG17, CLK_123M, CAS, FDC_STEP_TO_D100,
-AVDC, KBD_K0, VID_CPU_SEL, and VA11 then each pass an independent uncapped check,
-reducing the exact count to 364; those routes are promoted. The last three
-hundred nine are selected transactionally by
+AVDC, KBD_K0, VID_CPU_SEL, VA11, and FDC_PRECOMP_WRDATA then each pass an
+independent uncapped check, reducing the exact count to 362; those routes are
+promoted. The last three hundred eleven are selected transactionally by
 `close_unconnected_gaps_uncapped.py`, which continues past capped-only or
 DRC-regressing candidates. The exact board/DRC
 hashes, parameters, and tool hashes are guarded in
