@@ -15,6 +15,10 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
+- Board JSON SHA-256: `5921caa2f4e7afc9a39b99779ecd12a935d0a82a0835d70fc0c2607571fa2ae3`
+- Source PCB SHA-256: `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb`
+- Routed PCB SHA-256: `f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315`
+- DSN SHA-256: `1680ab03186eab131ee1bcc83f310f377e000fe5db1cccff6c987ca09244f3ab`
 - Modeled board-JSON `D*` ICs: `106`
 - Source PCB IC footprints: `106`
 - Routed PCB IC footprints: `106`

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -32,6 +33,14 @@ RISK_RE = re.compile(
 UNTRACED_RE = re.compile(r"^\s*'([^']+)':\s*\(([^#]+)\),\s*(?:#\s*(.*))?$")
 PCB_REF_RE = re.compile(r'\(property\s+"Reference"\s+"([^"]+)"')
 DSN_PLACE_RE = re.compile(r"\(place\s+([A-Z]+\d+)\s+.*?\(PN\s+([^)]+)\)\)")
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def read(path: Path) -> str:
@@ -214,6 +223,10 @@ def main() -> int:
         "",
         "## Summary",
         "",
+        f"- Board JSON SHA-256: `{sha256(BOARD_JSON)}`",
+        f"- Source PCB SHA-256: `{sha256(SOURCE_PCB)}`",
+        f"- Routed PCB SHA-256: `{sha256(ROUTED_PCB)}`",
+        f"- DSN SHA-256: `{sha256(DSN)}`",
         f"- Modeled board-JSON `D*` ICs: `{len(model)}`",
         f"- Source PCB IC footprints: `{len(source)}`",
         f"- Routed PCB IC footprints: `{len(routed)}`",

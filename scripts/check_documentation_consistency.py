@@ -62,6 +62,20 @@ def main() -> int:
         )
         if not match or match.group(1) != sha256(source_path):
             failures.append(f"bring-up report has stale {label} SHA-256")
+    inventory_source_hashes = {
+        "Board JSON": ROOT / "kicad/juku.board.json",
+        "Source PCB": ROOT / "kicad/juku.kicad_pcb",
+        "Routed PCB": ROOT / "kicad/juku_routed.kicad_pcb",
+        "DSN": ROOT / "kicad/juku.dsn",
+    }
+    for label, source_path in inventory_source_hashes.items():
+        match = re.search(
+            rf"^- {re.escape(label)} SHA-256: `([0-9a-f]{{64}})`$",
+            evidence["unmodeled ICs"],
+            re.MULTILINE,
+        )
+        if not match or match.group(1) != sha256(source_path):
+            failures.append(f"unmodeled-footprint report has stale {label} SHA-256")
 
     system_bus_report = read("ref/schematics/system-bus-connector-map.md")
     for marker in (
