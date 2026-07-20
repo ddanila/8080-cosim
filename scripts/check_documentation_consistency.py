@@ -703,7 +703,7 @@ def main() -> int:
             or probe.get("accepted_routes_by_uncapped_guard") != 515
             or probe.get("uncapped_unconnected_before") - probe.get("uncapped_unconnected_after") != 515
             or probe.get("search_ceiling_mm") != 130
-            or probe.get("multilayer_exhausted_through_mm") != 140
+            or probe.get("multilayer_exhausted_through_mm") != 150
             or probe.get("promoted") is not True
             or any(final.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
         ):
