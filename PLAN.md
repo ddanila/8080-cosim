@@ -288,6 +288,13 @@ electrical findings remain unchanged. A fresh all-gap sweep accepts no route
 and is byte-identical to its input. Exact evidence is guarded in
 `ref/routing/current21-eight-tail-prune.json`.
 
+The next guarded single-item pass removes 27 migrated items, for 1,757
+cumulative removals, and reduces the warning frontier from eight to seven
+dangling tracks. Routed items fall to 30,718 while the 21 open nets and zero
+electrical findings remain unchanged. A fresh all-gap sweep accepts no route
+and is byte-identical to its input. Exact evidence is guarded in
+`ref/routing/current21-seven-tail-prune.json`.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34
