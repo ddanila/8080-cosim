@@ -49,6 +49,19 @@ def main() -> int:
         "source PCB placement": read("docs/source-pcb-drc.md"),
         "factory wire routing": read("docs/factory-wire-route-fidelity.md"),
     }
+    bringup_source_hashes = {
+        "Source board JSON": ROOT / "kicad/juku.board.json",
+        "Final PCB source": ROOT / "kicad/juku.kicad_pcb",
+        "Routed PCB source": ROOT / "kicad/juku_routed.kicad_pcb",
+    }
+    for label, source_path in bringup_source_hashes.items():
+        match = re.search(
+            rf"^- {re.escape(label)} SHA-256: `([0-9a-f]{{64}})`$",
+            evidence["source-risk nets"],
+            re.MULTILINE,
+        )
+        if not match or match.group(1) != sha256(source_path):
+            failures.append(f"bring-up report has stale {label} SHA-256")
 
     system_bus_report = read("ref/schematics/system-bus-connector-map.md")
     for marker in (

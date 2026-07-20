@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 from collections import Counter
 from pathlib import Path
@@ -20,6 +21,14 @@ RISK_RE = re.compile(
     r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
     re.I,
 )
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def net_has_source_risk(name: str, net: dict, text: str) -> bool:
@@ -239,8 +248,11 @@ def main() -> int:
         "## Summary",
         "",
         f"- Source board JSON: `{BOARD_JSON.relative_to(ROOT)}`",
+        f"- Source board JSON SHA-256: `{sha256(BOARD_JSON)}`",
         f"- Final PCB source: `{PCB.relative_to(ROOT)}`",
+        f"- Final PCB source SHA-256: `{sha256(PCB)}`",
         f"- Routed PCB source: `{ROUTED_PCB.relative_to(ROOT)}`",
+        f"- Routed PCB source SHA-256: `{sha256(ROUTED_PCB)}`",
         f"- Verification-point nets: `{len(rows)}`",
         f"- Verification-point endpoints checked in PCB: `{pcb_checked}`",
         f"- PCB endpoint coverage: `{'PASS' if pcb_ok else 'FAIL'}`",
