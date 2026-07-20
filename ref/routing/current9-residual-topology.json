@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "board_sha256": "c8e6da4593e8e7a77f8761c4e3d340326bb5b24e422dd65bf39ffaea9c3ff9b8",
+  "board_size": 10140374,
+  "uncapped_unconnected": 9,
+  "electrical_blockers": 0,
+  "diagnostic_clearance_mm": 0.15,
+  "diagnostic_grid_steps_mm": [0.125, 0.1],
+  "route_clearance_mm": 0.205,
+  "bounded_conflict_limit": 20,
+  "residuals": [
+    {"net": "GND", "distance_mm": 17.780, "result": "legal-route-failed-after-ripup", "removable_conflicts": 8, "fixed_blockers": 5, "affected_nets": 6},
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
+    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "restoration-incomplete", "removable_conflicts": 18, "fixed_blockers": 3, "affected_nets": 6, "unrestored_nets": ["BA11", "CS_D10", "VA13"], "tested_restore_grid_steps_mm": [0.125, 0.1, 0.0875]},
+    {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "result": "over-conflict-limit", "removable_conflicts": 26, "fixed_blockers": 4, "affected_nets": 12, "alternate_clearance_mm": 0.18, "alternate_removable_conflicts": 31},
+    {"net": "CS_D26", "distance_mm": 177.308, "result": "over-conflict-limit", "removable_conflicts": 35, "fixed_blockers": 13, "affected_nets": 18},
+    {"net": "INT7_RAW", "distance_mm": 181.230, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
+    {"net": "CS_D57", "distance_mm": 186.449, "result": "over-conflict-limit", "removable_conflicts": 33, "fixed_blockers": 11, "affected_nets": 12},
+    {"net": "CS_D55", "distance_mm": 195.268, "result": "over-conflict-limit", "removable_conflicts": 30, "fixed_blockers": 22, "affected_nets": 15},
+    {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637, "result": "over-conflict-limit", "removable_conflicts": 66, "fixed_blockers": 15, "affected_nets": 28}
+  ],
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "083ccf4ac24599072a20fc1ef22f90b2830e0a92110ac70bf18e2d3d703cfe89",
+    "kicad/repair_fdc_route_gaps.py": "ba10fadf15aa93e675f273c7ee74f874eb733f08715ba67539c143a53e777447",
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187"
+  },
+  "disposition": "The localized conflict-derived rip-up phase is exhausted on the nine-open board. Wider topology changes or net-specific routing methods are required; no failed diagnostic transaction was promoted."
+}

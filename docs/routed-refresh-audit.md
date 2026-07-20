@@ -143,6 +143,15 @@ DB4 then closes through a guarded conflict-derived transaction that removes six
 non-source blockers and restores DB0, DB3, DB7, DC7, MEMW, and RESET before
 publication. VA14 similarly removes one S3_4 blocker and restores S3_4 on the
 alternate 0.10 mm lattice before publication.
+The resulting nine-open topology is classified in
+`ref/routing/current9-residual-topology.json`. GND cannot find a legal target
+route after its bounded rip-up, while IOWR_RAW_N cannot restore BA11, CS_D10,
+and the final VA13 gap. ROM_CS_EXP18 and INT7_RAW have no diagnostic path on
+the 0.125 or 0.10 mm lattices. D3_O6_D6_A5, CS_D26, CS_D57, CS_D55, and
+D94_D0_BOUNDARY require 26, 35, 33, 30, and 66 removable conflicts,
+respectively, exceeding the guarded twenty-item limit. No failed transaction
+is promoted; these nets require wider topology changes or net-specific routing
+methods.
 
 ### Additive/rename-safe copper migration
 

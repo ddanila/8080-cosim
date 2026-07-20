@@ -726,6 +726,33 @@ def main() -> int:
             if "current-source-uncapped-prune.json" not in read(path):
                 failures.append(f"{path} omits the current-source uncapped-prune evidence")
 
+    residual_path = ROOT / "ref/routing/current9-residual-topology.json"
+    if not residual_path.exists():
+        failures.append("current nine-open residual-topology evidence is missing")
+    else:
+        residual = json.loads(residual_path.read_text(encoding="utf-8"))
+        entries = residual.get("residuals", [])
+        if (
+            residual.get("schema_version") != 1
+            or residual.get("board_sha256")
+            != "c8e6da4593e8e7a77f8761c4e3d340326bb5b24e422dd65bf39ffaea9c3ff9b8"
+            or residual.get("board_size") != 10140374
+            or residual.get("uncapped_unconnected") != 9
+            or residual.get("electrical_blockers") != 0
+            or residual.get("bounded_conflict_limit") != 20
+            or len(entries) != 9
+            or {entry.get("net") for entry in entries}
+            != {"GND", "ROM_CS_EXP18", "IOWR_RAW_N", "D3_O6_D6_A5", "CS_D26", "INT7_RAW", "CS_D57", "CS_D55", "D94_D0_BOUNDARY"}
+        ):
+            failures.append("current nine-open residual-topology summary is malformed")
+        for relative, expected in residual.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"nine-open residual tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current9-residual-topology.json" not in read(path):
+                failures.append(f"{path} omits the nine-open residual evidence")
+
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():
         failures.append("current 21-gap dangling-prune evidence is missing")
