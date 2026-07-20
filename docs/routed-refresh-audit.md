@@ -562,6 +562,16 @@ mm, CS_D10 from 20.575 to 29.610 mm, and IORD from 20.141 to 32.098 mm. As
 above, this is still the older 303-footprint/2,395-pad convergence lineage and
 not production copper.
 
+Fine adaptive continuation from that exact hash removes another 160 migrated
+items, bringing the cumulative cleanup to 1,415 items. Both remaining dangling
+vias are eliminated and track-dangling findings fall from 23 to 14; the same
+21 open nets, 31,060 routed items, and zero electrical findings remain. A fresh
+bounded 0.10 mm/100 mm-margin sweep again accepts no route and is byte-identical
+to its input. As dead islands retreat, CS_D10's marker grows from 29.610 to
+32.314 mm and IORD's from 32.098 to 33.437 mm. Exact hashes, counts, and sweep
+state are guarded in `ref/routing/current21-fine-dangling-prune.json`;
+fourteen migrated track tails remain for the next guarded continuation.
+
 ```sh
 for NET in WR D6_V_ENABLE RAM_OUT_EN D3_O6_D6_A5; do
   /usr/bin/python3 kicad/close_gap_by_ripup.py \

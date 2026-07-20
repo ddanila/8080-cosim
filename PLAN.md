@@ -227,6 +227,16 @@ marker distances grow after obsolete islands disappear, including MA7 from
 5.709 to 19.421 mm. This is still the older routing lineage and not production
 copper.
 
+Fine adaptive continuation from that hash removes another 160 migrated items,
+bringing the cumulative cleanup to 1,415 items. Both remaining dangling vias
+are eliminated and track-dangling findings fall from 23 to 14; the same 21
+open nets and zero electrical findings remain. A fresh bounded sweep again
+accepts no route and is byte-identical to its input. As dead islands retreat,
+CS_D10's marker grows from 29.610 to 32.314 mm and IORD's from 32.098 to 33.437
+mm. Exact hashes and counts are guarded in
+`ref/routing/current21-fine-dangling-prune.json`; fourteen migrated track tails
+remain for the next guarded continuation.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

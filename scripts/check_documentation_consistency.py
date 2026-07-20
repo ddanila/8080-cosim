@@ -663,6 +663,41 @@ def main() -> int:
             if "current21-deep-dangling-prune.json" not in read(path):
                 failures.append(f"{path} omits the deep dangling-prune evidence")
 
+    fine_prune_path = ROOT / "ref/routing/current21-fine-dangling-prune.json"
+    if not fine_prune_path.exists():
+        failures.append("current 21-gap fine-prune evidence is missing")
+    else:
+        fine = json.loads(fine_prune_path.read_text(encoding="utf-8"))
+        initial = fine.get("initial", {})
+        final = fine.get("final", {})
+        config = fine.get("config", {})
+        sweep = fine.get("post_prune_sweep", {})
+        if (
+            fine.get("schema_version") != 1
+            or (initial.get("unconnected"), final.get("unconnected")) != (21, 21)
+            or fine.get("removed_items") != 160
+            or fine.get("removed_source_items") != 0
+            or (initial.get("track_dangling"), initial.get("via_dangling")) != (23, 2)
+            or (final.get("track_dangling"), final.get("via_dangling")) != (14, 0)
+            or config.get("batch_size") != 4
+            or config.get("adaptive_batch") is not True
+            or config.get("max_removals") != 160
+            or sweep.get("attempted_gaps") != 21
+            or sweep.get("accepted_routes") != 0
+            or sweep.get("output_board_sha256") != fine.get("output_board_sha256")
+            or any(final.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
+            or len(fine.get("residual_nets", [])) != 21
+        ):
+            failures.append("current 21-gap fine-prune summary is malformed")
+        for key in ("tool_sha256", "sweep_tool_sha256"):
+            for relative, expected in fine.get(key, {}).items():
+                tool_path = ROOT / relative
+                if not tool_path.is_file() or sha256(tool_path) != expected:
+                    failures.append(f"fine-prune tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current21-fine-dangling-prune.json" not in read(path):
+                failures.append(f"{path} omits the fine dangling-prune evidence")
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(
