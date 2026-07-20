@@ -90,9 +90,9 @@ CLK_123M, OSC_PRE, KBD_SC3, IOWR, PHI1_D35, D97_C2_C19_R86_TARGET, PHI2_D35,
 CAS, BA14, BA13, DB6, DB7, SER_TXD, RAIL14, S_SIN, DB2, SER_RTS, D40QA,
 FDC_RAW_READ, ROM_CS_D16, D56_QN_D34, D56_Q2_D34, DB0, DB4, DB1, X2_PC1,
 LATCH_B, X2_PC2, X2_PC3, X2_PB0, X2_PB1, X2_PB2, BA11, VA5, FDC_RCLK, BA5,
-DB3, PRECOMP_TAP_2, S3_2, D40Q2_D33, and BA2, each independently reduce the
-uncapped graph, reaching 93 opens; all five hundred eighty-four are promoted.
-The final five hundred eighty are
+DB3, PRECOMP_TAP_2, S3_2, D40Q2_D33, BA2, BA3, X4_DSEL0_N, BA1, and CS_D10,
+each independently reduce the uncapped graph, reaching 89 opens; all five
+hundred eighty-eight are promoted. The final five hundred eighty-four are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 260 mm, beyond the
@@ -100,8 +100,8 @@ Its conservative multilayer search is exhausted through 260 mm, beyond the
 been attempted in that mode.
 The next rule-accurate multilayer phase uses 0.21 mm clearance against the
 board's 0.20 mm rule and a 0.25 mm lattice; its accepted routes are also guarded
-by complete KiCad DRC comparison. A final uncapped zero-yield pass exhausts all
-remaining distance-ranked candidates through 30 mm in that mode.
+by complete KiCad DRC comparison. Uncapped sweeps exhaust all remaining
+distance-ranked candidates through 60 mm in that mode.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
