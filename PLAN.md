@@ -267,6 +267,13 @@ introducing any electrical finding. A fresh all-gap sweep accepts no route and
 is byte-identical to its input. Exact evidence is guarded in
 `ref/routing/current21-ten-tail-plateau-prune.json`.
 
+The next adaptive two-item continuation removes 14 more migrated items, for
+1,644 cumulative removals, and breaks the plateau from ten to nine dangling
+tracks. Routed items fall to 30,831 while the 21 open nets and zero electrical
+findings remain unchanged. A fresh all-gap sweep accepts no route and writes a
+byte-identical board. Exact evidence is guarded in
+`ref/routing/current21-nine-tail-prune.json`.
+
 Attempted-gap state retains proven router no-path
 results across additive changes but invalidates DRC rejections and timeouts,
 whose result can change when new copper forces a different path. The former 34

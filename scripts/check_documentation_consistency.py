@@ -835,6 +835,40 @@ def main() -> int:
             if "current21-ten-tail-plateau-prune.json" not in read(path):
                 failures.append(f"{path} omits the ten-tail plateau evidence")
 
+    nine_path = ROOT / "ref/routing/current21-nine-tail-prune.json"
+    if not nine_path.exists():
+        failures.append("current 21-gap nine-tail-prune evidence is missing")
+    else:
+        nine = json.loads(nine_path.read_text(encoding="utf-8"))
+        initial = nine.get("initial", {})
+        final = nine.get("final", {})
+        config = nine.get("config", {})
+        sweep = nine.get("post_prune_sweep", {})
+        if (
+            nine.get("schema_version") != 1
+            or (initial.get("unconnected"), final.get("unconnected")) != (21, 21)
+            or nine.get("removed_items") != 14
+            or nine.get("removed_source_items") != 0
+            or (initial.get("track_dangling"), initial.get("via_dangling")) != (10, 0)
+            or (final.get("track_dangling"), final.get("via_dangling")) != (9, 0)
+            or config.get("batch_size") != 2
+            or config.get("max_removals") != 14
+            or sweep.get("attempted_gaps") != 21
+            or sweep.get("accepted_routes") != 0
+            or sweep.get("output_board_sha256") != nine.get("output_board_sha256")
+            or any(final.get(kind) != 0 for kind in ("short", "clearance", "track_crossing", "hole_clearance", "hole_to_hole", "copper_edge_clearance"))
+            or len(nine.get("residual_nets", [])) != 21
+        ):
+            failures.append("current 21-gap nine-tail-prune summary is malformed")
+        for key in ("tool_sha256", "sweep_tool_sha256"):
+            for relative, expected in nine.get(key, {}).items():
+                tool_path = ROOT / relative
+                if not tool_path.is_file() or sha256(tool_path) != expected:
+                    failures.append(f"nine-tail-prune tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current21-nine-tail-prune.json" not in read(path):
+                failures.append(f"{path} omits the nine-tail dangling-prune evidence")
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(
