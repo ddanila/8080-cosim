@@ -2,9 +2,9 @@
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
-  "output_board_sha256": "8460906c25e00f87e42ed73f35ba946c6ecd4852df7765333e3c89ad68bb4cc1",
-  "output_board_size": 7664474,
-  "output_drc_sha256": "4e8f9034e05f305b46bfc0d85e576d1c3e6fd0c68189d5c20e9d85d9036d67fb",
+  "output_board_sha256": "f3b5e97d90f7fff95219ade5f721f894754718fb8689a36911fcc59ac2f84b3b",
+  "output_board_size": 7683597,
+  "output_drc_sha256": "c0377b217a3009fccada343a229f566ea141207685598300a9f0b92108469c23",
   "config": {
     "batch_sizes": [32, 64],
     "adaptive_batch": true,
@@ -53,7 +53,8 @@
       {"limit": 8, "accepted": 5, "max_attempts": 24, "proposal_timeout_seconds": 75, "min_distance_mm": 33.88, "max_distance_mm": 40},
       {"limit": 8, "accepted": 3, "max_attempts": 24, "proposal_timeout_seconds": 75, "min_distance_mm": 35.05, "max_distance_mm": 40},
       {"limit": 8, "accepted": 7, "max_attempts": 24, "proposal_timeout_seconds": 75, "min_distance_mm": 37.76, "max_distance_mm": 40},
-      {"limit": 8, "accepted": 3, "max_attempts": 24, "proposal_timeout_seconds": 90, "min_distance_mm": 40.00, "max_distance_mm": 45}
+      {"limit": 8, "accepted": 3, "max_attempts": 24, "proposal_timeout_seconds": 90, "min_distance_mm": 40.00, "max_distance_mm": 45},
+      {"limit": 8, "accepted": 5, "max_attempts": 24, "proposal_timeout_seconds": 90, "min_distance_mm": 42.04, "max_distance_mm": 45}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -71,10 +72,10 @@
     "via_dangling": 0
   },
   "final": {
-    "routed_items": 7903,
-    "routed_nets": 287,
-    "uncapped_unconnected": 382,
-    "cli_unconnected_ceiling": 382,
+    "routed_items": 8039,
+    "routed_nets": 289,
+    "uncapped_unconnected": 377,
+    "cli_unconnected_ceiling": 377,
     "track_dangling": 0,
     "via_dangling": 0,
     "short": 0,
@@ -88,10 +89,10 @@
   "removed_source_items": 0,
   "route_probe": {
     "min_distance_mm": 0.01,
-    "max_distance_mm": 40,
+    "max_distance_mm": 45,
     "proposal_timeout_seconds": 3,
-    "accepted_routes_by_capped_marker_guard": 295,
-    "accepted_routes_by_uncapped_guard": 295,
+    "accepted_routes_by_capped_marker_guard": 300,
+    "accepted_routes_by_uncapped_guard": 300,
     "routes": [
       {"net": "P5V", "distance_mm": 1.623},
       {"net": "P5V", "distance_mm": 2.182},
@@ -387,13 +388,18 @@
       {"net": "D39_MEMCYC", "distance_mm": 39.498},
       {"net": "BA11", "distance_mm": 40.023},
       {"net": "PHI2TTL", "distance_mm": 40.396},
-      {"net": "FDC_DRQ", "distance_mm": 41.549}
+      {"net": "FDC_DRQ", "distance_mm": 41.549},
+      {"net": "D34_SIG", "distance_mm": 42.508},
+      {"net": "FDC_DDEN", "distance_mm": 43.161},
+      {"net": "D40Q1_D39", "distance_mm": 43.272},
+      {"net": "D99_C1_TIMING", "distance_mm": 44.208},
+      {"net": "RESET", "distance_mm": 44.954}
     ],
     "uncapped_unconnected_before": 677,
-    "uncapped_unconnected_after": 382,
+    "uncapped_unconnected_after": 377,
     "promoted": true
   },
-  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Two hundred ninety-five independently checked routes reduce the uncapped count again to 382 and are promoted. This remains convergence evidence, not production copper.",
+  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Three hundred independently checked routes reduce the uncapped count again to 377 and are promoted. This remains convergence evidence, not production copper.",
   "tool_sha256": {
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/report_board_unconnected.py": "74d3422d973f216a7137f08fb46409f9a0ad1ec900e491bade9195ad67a98404",
