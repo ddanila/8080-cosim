@@ -77,9 +77,10 @@ D96_TOGGLE_FEEDBACK, S3_6, X4_WR_PROTECT_N, MA4, VID_MIX2, D33_CLK_RC,
 MEMW_D7P2, SND_OUT, MEMR_D7, FDC_WE_N, STSTB_D38, D97_C2_C19_R86_TARGET,
 PST_CLK, DB3, SER_RXD, S_DTP, D34_RC_DRIVE, A14, A9, RAM_RD_OE,
 D97_RC2_C19_R100, MEMR, BA7, USART_RXRDY_IRQ, X4_TG43, PRECOMP_CASCADE_1, DB5,
-DC5, SER_DSR_N, S_OC, LATCH_SIG, FDC_LATE_SEL, X4_WR_DATA_N, and D33_D36, each
-independently reduce the uncapped graph, reaching 257 opens; all four hundred
-twenty are promoted. The final four hundred sixteen are
+DC5, SER_DSR_N, S_OC, LATCH_SIG, FDC_LATE_SEL, X4_WR_DATA_N, D33_D36,
+D33_6_D36, and W_RAIL16, each independently reduce the uncapped graph, reaching
+251 opens; all four hundred twenty-six are promoted. The final four hundred
+twenty-two are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 30 mm.
