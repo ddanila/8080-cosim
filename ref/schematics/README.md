@@ -10,7 +10,9 @@ Two electrical-schematic revisions of the processor module exist; **keep both**:
   `.009 Э3` was not public anywhere. Where the two diverge (sheet-3 FDC vs
   tape, and post-`.006` change notes), the `.009` wins; elsewhere they agree
   and the `.006` scan is the higher-resolution source. See that folder's
-  `README.md` for the per-sheet photo catalog.
+`README.md` for the per-sheet photo catalog.
+The checksum-guarded reviewed transcription/divergence index is
+`dgsh5-109-009-e3-notes.md`.
 
 `juku_es101_processor_module.pdf` is the primary factory electrical schematic
 for the ДГШ5.109.006 processor module. It outranks emulator inference for the

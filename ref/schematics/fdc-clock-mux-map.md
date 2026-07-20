@@ -45,6 +45,7 @@ transcription therefore extends existing clock conductors and does not invent
 new oscillator sources. `kicad/check_fdc_clock_mux.py` guards the complete
 board-JSON mapping, retired boundary names, structural HDL mux, and LVS map.
 
-The exact analog timing at D93 and the untranscribed remainder of D106 remain
-bring-up boundaries; closing their clock conductors does not claim measured
-edge rate, duty cycle, or separator lock margin.
+The complete D106 digital contract is now transcribed separately in
+`fdc-recovery-counter-map.md`. Exact analog timing at D93/D106 remains a
+bring-up boundary: closing the clock conductors does not claim measured edge
+rate, duty cycle, oscillator accuracy, or separator lock margin.

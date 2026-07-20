@@ -95,7 +95,7 @@ def main() -> None:
         key: "D100_CONTROL_SHEET1_BOUNDARY" if key.startswith("D100_CONTROL_SHEET1_BOUNDARY_") else key
         for key in d100_expected
     }
-    checks.append(("D100 drive-interface pad assignments follow factory sheet 1", d100_observed == d100_expected_nets))
+    checks.append(("D100 drive-interface pad assignments follow factory sheet 3", d100_observed == d100_expected_nets))
 
     type_map = mapping["pinmaps"]["kicad"]["BUF8286"]
     checks.append(("LVS type pinmap follows A0-A7 pins 1-8 and B0-B7 pins 19-12", type_map == PHYSICAL))

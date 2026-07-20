@@ -31,7 +31,7 @@ Primary pinout source:
 | D29 uses the Intel DIP-20 logical pin names | PASS |
 | D29 command-channel pads preserve owner-corrected IORD, IOWR, and D30.8 routes | PASS |
 | D100 uses the Intel 8287 DIP-20 pin names | PASS |
-| D100 drive-interface pad assignments follow factory sheet 1 | PASS |
+| D100 drive-interface pad assignments follow factory sheet 3 | PASS |
 | LVS type pinmap follows A0-A7 pins 1-8 and B0-B7 pins 19-12 | PASS |
 | 8287 LVS type pinmap follows the same physical channel pairs | PASS |
 | D100 LVS pinmap follows the complete 8287 contract | PASS |

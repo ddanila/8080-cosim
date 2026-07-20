@@ -112,6 +112,9 @@ reset-to-prompt reports are the stronger evidence where both exist.
 - `keyboard_matrix_check.sh` checksum-guards all three `.104.015` factory
   frames, regenerates the complete 15-by-6 keyboard/X1 transcription, and
   proves every cosim ASCII tuple against it.
+- `dgsh5_109_009_e3_check.sh` checksum-guards all 23 recovered processor
+  schematic frames and regenerates the reviewed sheets-1/2 divergence plus
+  complete sheet-3 circuit index against adopted board endpoints.
 - `scripts/check_documentation_consistency.py` ensures user-facing status and
   package hashes do not contradict the active design blockers.
 

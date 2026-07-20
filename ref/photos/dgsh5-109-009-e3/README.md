@@ -121,8 +121,14 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
 - [x] Sheet-3 DRQ/INTRQ conditioner reconciled: D28 sections 5/6, R93/R95,
       and D96 section 2 are restored; D96.9/.11 remain sheet-1 boundaries
       (`ref/schematics/fdc-irq-conditioner-map.md`).
-- [ ] Transcribe each sheet into a reviewed net/wire interpretation and
+- [x] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).
-- [ ] Cross-check the sheet-3 FDC nets against `ref/wd1772-vg93/` predictions
+- [x] Cross-check the sheet-3 FDC nets against `ref/wd1772-vg93/` predictions
       and the physical-board evidence in `ref/photos/dgsh5-109-009-sb/`.
+
+The reviewed diff-first index is
+`ref/schematics/dgsh5-109-009-e3-notes.md`; it checksum-guards every source
+frame and links each fully transcribed sheet-3 circuit plus the sheets-1/2
+divergence dispositions. Prediction-only analog behavior remains correctly
+separate from drawing-proved connectivity.

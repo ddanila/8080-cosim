@@ -20,6 +20,8 @@ history.
   gaps.
 - `factory-drawing-legibility.md` — complete overview/detail coverage audit
   and re-shoot disposition for the 2026-07-18 recovered drawing batch.
+- `../ref/schematics/dgsh5-109-009-e3-notes.md` — reviewed, generated
+  three-sheet `.009` electrical transcription and `.006` divergence audit.
 - `d30-section-b-scan-chase.md` — exhausted sheet-1 trace audit for the two
   remaining D30 section-B conductors and the exact continuity closure required.
 - `8286-pinout-audit.md` — physical D4/D107/D23-D25/D29/D100 channel pinouts
