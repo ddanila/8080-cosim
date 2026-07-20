@@ -95,8 +95,9 @@ VA6, VA7, BA9, VA10, IOM_N, VA15, MWC_N, INHIB_N, BA6, BA15, D94_A4_D101_Q0,
 BA13, CS_D11, CS_D27, IOWC_N, AMWC_N, MEMR, BA12, X2_IRQ0, IORC_N, P12V,
 D6_V_ENABLE, DBIN_GATED, SYNC, D25_T, FRAME_INT, BA7, OSC, VIDEO_OUT, XTAL16M,
 VID_MIX1, E2_COM, INTA, IOWR, FDC_DDEN, D30_Q2N_D29_AIN7, FDC_DRIVE_SIZE_5_8,
-WREQ_N, and PIT_BAUD, each independently reduce the uncapped graph, reaching 33
-opens; all six hundred forty-four are promoted. The final six hundred forty are
+WREQ_N, PIT_BAUD, ROE, and STSTB_D38, each independently reduce the uncapped
+graph, reaching 31 opens; all six hundred forty-six are promoted. The final six
+hundred forty-two are
 selected by a transactional orchestrator that rejects
 capped-only marker advances and continues searching.
 Its conservative multilayer search is exhausted through 260 mm, beyond the
