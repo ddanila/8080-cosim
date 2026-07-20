@@ -48,10 +48,10 @@ production copper. Exact hashes and counts are guarded in
 An uncapped connectivity guard then transactionally removes 2,872 migrated
 copper items from that live-source baseline. The exact open count improves
 from 883 to 677, all 199 dangling tracks and 56 dangling vias are eliminated,
-and all electrical blocker categories remain zero. Three bounded nonzero-gap
-proposals on P5V, P5V, and STSTB each independently reduce the uncapped graph,
-reaching 674 opens; all three are promoted. Exact hashes, parameters, and tool
-provenance are guarded in
+and all electrical blocker categories remain zero. Four bounded nonzero-gap
+proposals on P5V, P5V, STSTB, and P5V each independently reduce the uncapped
+graph, reaching 673 opens; all four are promoted. Exact hashes, parameters,
+and tool provenance are guarded in
 `ref/routing/current-source-uncapped-prune.json`; this remains convergence
 evidence rather than production copper.
 

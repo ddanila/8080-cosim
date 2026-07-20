@@ -72,8 +72,8 @@ the CLI's truncated 499-item list as its acceptance boundary. Adaptive
 transactions remove 2,872 migrated items, reduce the exact open count from
 883 to 677, and eliminate all 199 dangling-track plus 56 dangling-via findings
 while preserving the 321-footprint/2,434-pad source identity and zero
-electrical blockers. Three bounded P5V/P5V/STSTB proposals then each pass an
-independent uncapped check, reducing the exact count to 674; those routes are
+electrical blockers. Four bounded P5V/P5V/STSTB/P5V proposals then each pass an
+independent uncapped check, reducing the exact count to 673; those routes are
 promoted. The exact board/DRC hashes, parameters, and tool hashes are guarded in
 `ref/routing/current-source-uncapped-prune.json`.
 
