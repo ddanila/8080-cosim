@@ -152,6 +152,11 @@ D94_D0_BOUNDARY require 26, 35, 33, 30, and 66 removable conflicts,
 respectively, exceeding the guarded twenty-item limit. No failed transaction
 is promoted; these nets require wider topology changes or net-specific routing
 methods.
+The first wider topology step relocates BA11's layer transition to a legal via
+at `(65,125)` mm and forces CS_D10 around its former straight B.Cu corridor.
+Both swaps preserve nine opens, remove no source-owned copper, and retain the
+complete DRC baseline. IOWR_RAW_N no longer displaces either net; its remaining
+failed restoration is VA13, which is the next pre-route target.
 
 ### Additive/rename-safe copper migration
 

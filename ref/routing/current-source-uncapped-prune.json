@@ -2,9 +2,9 @@
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
-  "output_board_sha256": "c8e6da4593e8e7a77f8761c4e3d340326bb5b24e422dd65bf39ffaea9c3ff9b8",
-  "output_board_size": 10140374,
-  "output_drc_sha256": "48ed876ded7a23244fc72530b880e49c72ea2f97cf4563e531651ed242c60d3a",
+  "output_board_sha256": "fb9c9b71cbb1acf6e550cdaf67ac4a8f0228980dd29edd5c655f824b25f01f3b",
+  "output_board_size": 10146470,
+  "output_drc_sha256": "d0c83b7f9f1fd05ddbd1a4863c0f17f52637d7295dd40c2e77228ca8d5850f7c",
   "config": {
     "batch_sizes": [32, 64],
     "adaptive_batch": true,
@@ -166,6 +166,10 @@
     "ripup_transactions": [
       {"net": "DB4", "distance_mm": 16.447, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1], "removed_conflicts": 6, "restored_nets": ["DB0", "DB3", "DB7", "DC7", "MEMW", "RESET"], "initial_unconnected": 11, "final_unconnected": 10},
       {"net": "VA14", "distance_mm": 25.101, "diagnostic_clearance_mm": 0.205, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1], "removed_conflicts": 1, "restored_nets": ["S3_4"], "initial_unconnected": 10, "final_unconnected": 9}
+    ],
+    "equal_open_topology_swaps": [
+      {"net": "BA11", "removed_items": 7, "removed_source_items": 0, "remote_via_mm": [65.0, 125.0], "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
+      {"net": "CS_D10", "removed_items": 2, "removed_source_items": 0, "forced_corridor_mm": [[121.0, 116.0], [123.0, 116.0]], "grid_step_mm": 0.1, "route_clearance_mm": 0.2, "initial_unconnected": 9, "final_unconnected": 9}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -183,7 +187,7 @@
     "via_dangling": 0
   },
   "final": {
-    "routed_items": 25208,
+    "routed_items": 25251,
     "routed_nets": 403,
     "uncapped_unconnected": 9,
     "cli_unconnected_ceiling": 9,
