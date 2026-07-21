@@ -12,7 +12,8 @@ module. Owner photographs of the exact `ДГШ5.109.009 Э3` are the primary
 electrical-schematic evidence; the earlier `.006` Э3 scan remains useful only
 where it agrees and is subordinate wherever the revisions differ.
 Generated evidence belongs in `docs/`; completed experiments and debug history
-belong in Git history.
+belong in Git history. Focused execution plans may live under `docs/` only when
+they are subordinate to, and linked from, this project-wide plan.
 
 ## Definition of done
 
@@ -1292,6 +1293,12 @@ Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
 
 The twin is already sufficient as a boot/FDC/BASIC oracle. Further work should
 serve physical bring-up or historical fidelity:
+
+The sample-domain X7 receiver and CRT-display work is specified separately in
+[`docs/crt-cvbs-simulation-plan.md`](docs/crt-cvbs-simulation-plan.md). That
+plan records the `ddanila/famicom-rf-hackrf-decoder` fork, keeps the Juku
+waveform truth in this repository, and separates electrical waveform, receiver
+lock, active-image, and CRT-presentation claims.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.
