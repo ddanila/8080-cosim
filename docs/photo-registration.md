@@ -540,8 +540,10 @@ not another broad projection pass:
    omitted D96.13, D97.13, D98.9/.10, and D102.4 pins remain guarded NCs.
 3. D94's shared upstream chip-select source and D0 hidden branch. Its five
    address inputs, D1-D3 steering outputs, static NC outputs, and physical table
-   are already closed. D30 section B, the D105 WAIT handoff, and D41 timing
-   boundaries are likewise closed and must not be reintroduced as photo asks.
+   are already closed. D30 section B, the D105 WAIT edge handoff, and D41 timing
+   boundaries are likewise closed. D30.4 `/PRE` remains a separate continuity
+   boundary because physical R5 is measured on D30.10/.12, conflicting with the
+   drawing's R5-at-D30.4 callout.
 
 `docs/owner-measurement-shortlist.md` is the generated pin-level session list;
 `PLAN.md` owns release priority.

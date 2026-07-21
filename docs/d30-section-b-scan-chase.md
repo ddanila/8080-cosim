@@ -29,6 +29,11 @@ alone was ambiguous and how direct target-board continuity closes both routes.
 - Direct owner continuity remains authoritative for D30.10/.12/R5 and
   D105.11->D30.13; neither measured net is reopened by this older-sheet chase.
 
+Exact `.009` sheet 1 draws a +5 V resistor labeled R5 at D30.4, but the
+physical target board instead places R5 on D30.10/.12. The measured board
+wins: D30.4 remains a separate continuity boundary rather than being
+silently joined to +5 V through the drawing's conflicting reference.
+
 Direct owner continuity on the physical `.009` board now closes both routes:
 D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8
 reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.
@@ -41,4 +46,5 @@ reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.
 | D30.8 drives D29.7 on a dedicated measured conductor | PASS |
 | D29.7 is removed from raw IOWR | PASS |
 | Measured section-B D and /PRE pull-up is kept separate | PASS |
+| R5 provenance records the exact-sheet/physical-board conflict | PASS |
 | Measured /CLR path from D105.11 is kept separate | PASS |

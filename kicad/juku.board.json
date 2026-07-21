@@ -5371,7 +5371,7 @@
   },
   {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
-   "prov": {"type": "scan", "refdes": "sheet-1 D30 READY preset pullup", "pins": "P5V to D30.4"}
+   "prov": {"type": "scan + owner continuity", "refdes": "exact .009 sheet 1 labels R5 as the D30.4 READY preset pull-up, but direct target-board continuity supersedes that drawing reference", "pins": "physical R5.1 is P5V and R5.2 joins D30.10/.12; D30.4 remains a separate continuity boundary"}
   },
   {
    "ref": "R6", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",

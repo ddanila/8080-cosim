@@ -78,8 +78,9 @@ Relevant local docs:
    D96.11 CLK2's remote source, and the listed D99/D101 boundary pins.
    Exact-revision sheet 3 source-closes D28/D95/D97/D98/D102/D106 plus D96's
    section-1 read-clock toggle and local section-2 conditioner. D105 and the
-   `.009` WAIT/READY handoff are already measured, modeled, and carried by the
-   promoted route; they are no longer continuity asks.
+   measured `.009` WAIT/READY edge handoff are modeled and carried by the
+   promoted route; the separate D30.4 asynchronous-preset boundary remains an
+   exact continuity ask.
 
 ## Minimal Useful Deliverables
 
@@ -158,8 +159,9 @@ omissions. The current owner photographs do
 show the FDC-equipped population, but sockets, wires, crossings, and incomplete
 local registration hide most end-to-end paths. Continuity readings or clearer
 trace-side photographs of those three devices and the remaining source-risk
-nets would directly unblock the board. D30 section B and the `.009` WAIT/READY
-handoff are already owner-closed.
+nets would directly unblock the board. D30 section B and the measured `.009`
+WAIT/READY edge handoff are owner-closed; D30.4 `/PRE` remains separate because
+physical R5 continuity conflicts with the drawing's R5 callout.
 
 The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
 media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking

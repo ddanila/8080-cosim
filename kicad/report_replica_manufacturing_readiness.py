@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ORDER_READINESS = ROOT / "kicad" / "report_order_readiness.py"
 ORDER_EVIDENCE_TEMPLATE = ROOT / "kicad" / "report_replica_order_evidence_template.py"
+UPLOAD_RUNBOOK = ROOT / "kicad" / "report_replica_order_upload_runbook.py"
 DEFAULT_FAB_DIR = ROOT / "fab" / "gerbers"
 DEFAULT_REPORT = ROOT / "docs" / "replica-manufacturing-readiness.md"
 
@@ -103,6 +104,14 @@ def run_order_evidence_template(fab_dir):
     ], cwd=ROOT, text=True, capture_output=True)
 
 
+def refresh_upload_runbook(fab_dir):
+    return subprocess.run([
+        sys.executable,
+        str(UPLOAD_RUNBOOK),
+        str(fab_dir),
+    ], cwd=ROOT, text=True, capture_output=True)
+
+
 def first_match(text, pattern, default="-"):
     match = re.search(pattern, text, re.M)
     return match.group(1).strip() if match else default
@@ -150,6 +159,13 @@ def build_report(fab_dir):
     if evidence_result.returncode not in (0, 3):
         detail = evidence_result.stderr.strip() or evidence_result.stdout.strip()
         failures.append("order-evidence-template regeneration failed" + (f": {detail}" if detail else ""))
+    # Order readiness generates the upload runbook before the evidence template.
+    # Refresh the runbook once after the template so its retained-evidence byte
+    # counts describe the final files from this invocation, not the prior run.
+    runbook_result = refresh_upload_runbook(fab_dir)
+    if runbook_result.returncode not in (0, 3):
+        detail = runbook_result.stderr.strip() or runbook_result.stdout.strip()
+        failures.append("upload-runbook refresh failed" + (f": {detail}" if detail else ""))
 
     report_rows = []
     release_gates_ready = True

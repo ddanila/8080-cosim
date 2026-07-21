@@ -24,6 +24,8 @@ def nodes(spec: dict, net: str) -> set[tuple[str, str]]:
 
 def main() -> int:
     spec = json.loads(BOARD.read_text(encoding="utf-8"))
+    r5 = next(chip for chip in spec["chips"] if chip["ref"] == "R5")
+    r5_provenance = " ".join(map(str, r5.get("prov", {}).values()))
     checks = [
         ("D30.11 joins the measured D13.4/D105.2/D11.20 clock conductor",
          {("D30", "11"), ("D13", "4"), ("D105", "2"), ("D11", "20")} <= nodes(spec, "D13_4_D105_2")),
@@ -33,6 +35,9 @@ def main() -> int:
          ("D29", "7") not in nodes(spec, "IOWR")),
         ("Measured section-B D and /PRE pull-up is kept separate",
          nodes(spec, "D30B_D_PRE_N") == {("D30", "10"), ("D30", "12"), ("R5", "2")}),
+        ("R5 provenance records the exact-sheet/physical-board conflict",
+         "D30.4" in r5_provenance and "D30.10/.12" in r5_provenance
+         and "continuity boundary" in r5_provenance),
         ("Measured /CLR path from D105.11 is kept separate",
          nodes(spec, "D105_MEMW_INV") == {("D105", "11"), ("D30", "13")}),
     ]
@@ -64,6 +69,10 @@ def main() -> int:
         "  dispositioned as an unused package half.",
         "- Direct owner continuity remains authoritative for D30.10/.12/R5 and",
         "  D105.11->D30.13; neither measured net is reopened by this older-sheet chase.", "",
+        "Exact `.009` sheet 1 draws a +5 V resistor labeled R5 at D30.4, but the",
+        "physical target board instead places R5 on D30.10/.12. The measured board",
+        "wins: D30.4 remains a separate continuity boundary rather than being",
+        "silently joined to +5 V through the drawing's conflicting reference.", "",
         "Direct owner continuity on the physical `.009` board now closes both routes:",
         "D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8",
         "reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.",

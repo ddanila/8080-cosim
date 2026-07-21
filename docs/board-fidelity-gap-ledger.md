@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `334`
 - Nets modeled: `476`
-- Chip-level fidelity gaps: `54`
+- Chip-level fidelity gaps: `55`
 - Net-level source-risk gaps: `45`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `70`
@@ -50,11 +50,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | native schematic + factory assembly drawing + owner photo | 3 |
 | photo | 4 |
 | prom | 1 |
-| scan | 231 |
+| scan | 230 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly drawing | 4 |
 | scan + factory assembly drawing + registered owner photo | 4 |
 | scan + factory assembly wire table | 3 |
+| scan + owner continuity | 1 |
 | scan + owner photo | 1 |
 | scan + registered owner photo | 1 |
 | scan + registered owner photos | 3 |
@@ -69,7 +70,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 2 | 8 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 2 |
-| logic/source | 11 | 29 |
+| logic/source | 12 | 29 |
 | memory/timing | 0 | 1 |
 | placement/refdes | 26 | 0 |
 | placement/value | 13 | 0 |
@@ -105,6 +106,7 @@ parts placement and Tier-3 reproduction.
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MEMW -> 11 to D30.13; direct .009 owner continuity on 2026-07-14 proves pin1 joins D6.15... |
 | `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Chip-removed owner continuity on 2026-07-14 supersedes the... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
+| `R5` | `R_AXIAL` | scan + owner continuity | exact .009 sheet 1 labels R5 as the D30.4 READY preset pull-up, but direct target-board continuity supersedes that drawing reference physical R5.1 is P5V and... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. The revisi... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |

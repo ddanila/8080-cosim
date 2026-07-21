@@ -15,7 +15,7 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Board JSON SHA-256: `0259d8cd81cd3e14eb3955df754900d3ed4ac427a95b3bb4d3464667862b3a42`
+- Board JSON SHA-256: `2da3f54d74e80e1d94fc010c87c9e8f26cd44131aba096aa5773cc21211f7c76`
 - Source PCB SHA-256: `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb`
 - Routed PCB SHA-256: `1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015`
 - DSN SHA-256: `1680ab03186eab131ee1bcc83f310f377e000fe5db1cccff6c987ca09244f3ab`
@@ -50,10 +50,11 @@ design release until measured or explicitly dispositioned.
 
 ## D30 READY Flip-Flop Boundary
 
-- The full-resolution sheet-1 source proves D30 section A: pin 4 `/PRE`
-  and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
+- The full-resolution sheet-1 source draws D30 section A pin 4 `/PRE`
+  pulled high through R5 and proves pin 2 `D` is pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
   `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
-  through R29 1 kΩ.
+  through R29 1 kΩ. Direct target-board continuity instead places physical
+  R5 on D30.10/.12, so D30.4 remains a separate continuity boundary.
 - Owner continuity plus the native cross-sheet chase establish that D2.12
   and R6 feed D30.2;
   D30.1 is source-closed to the D38.8/W8.2 status-strobe island; D30.5
@@ -61,7 +62,8 @@ design release until measured or explicitly dispositioned.
   and D105.11 drives D30.13. Section B is also closed: D30.11 joins the
   D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Native
   sheet 1 plus `.009` placement/photo evidence close `H` at X1.107B
-  with R1 2 kΩ to +5 V; no READY/WAIT edge conductor remains open.
+  with R1 2 kΩ to +5 V. The measured READY/WAIT edge conductors are closed;
+  D30.4's asynchronous preset is the remaining section-A control boundary.
 
 ## AG3 Package Correction
 
