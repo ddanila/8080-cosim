@@ -737,14 +737,16 @@ remaining connectivity is measurement-gated.
    owner-confirmed D7.8 I/O-cycle qualifier. The same resolution promotes VJUGA
    workbench Phase 2, which routes its decode through the same physical D6 РТ4
    chip (`spinoffs/minimal-vga/docs/workbench-plan.md`).
-2. **Preserve routing convergence until netlist freeze.** The deterministic
-   router and conflict-derived INTR rip-up workflow produced the preserved
-   routing checkpoint with zero opens and zero electrical-category DRC
-   findings (`docs/routed-refresh-audit.md`). Its ten factory wire nets are
-   held from adoption until the twenty paired A-point landing coordinates and
-   copper-island splits are modeled. A:7, A:8, A:10, A:11, A:14, A:19, and A:20 are the first
-   historically faithful splits: registered landings on separate PHI1, STSTB,
-   W10_QA_SEL, MEMR, PHI2, MEMW, and S_TTL islands joined only by W7/W8/W10/W11/W14/W19/W20.
+2. **Preserve the promoted route until the functional netlist freezes.** The
+   deterministic rip-up/recovery workflow has now promoted an exact-source
+   route with zero opens, zero electrical-category DRC findings, and zero
+   dangling copper (`ref/routing/zero-open-promoted-topology.json`). Its
+   stable-KiCad fabrication package is checksum-verified, but remains under
+   design hold; any source-net change requires a complete reroute/package
+   regeneration rather than carrying this checksum forward. A:7, A:8, A:10,
+   A:11, A:14, A:19, and A:20 remain historically faithful splits: registered
+   landings on separate PHI1, STSTB, W10_QA_SEL, MEMR, PHI2, MEMW, and S_TTL
+   islands joined only by W7/W8/W10/W11/W14/W19/W20.
    All twenty endpoints are now registered
    in original drawing pixels. Both A8/A10/A11/A19/A20 terminals and the
    D38-side A9 terminal are now fitted to their physical joints and copper
@@ -766,11 +768,10 @@ remaining connectivity is measurement-gated.
    joint has been chased across six overlapping
    component tiles and is consistently hidden beneath the factory-wire bundle
    and mastic, so its visible wire approach is not promoted as a landing.
-   (`docs/factory-wire-route-fidelity.md`). Do not replace
-   `kicad/juku_routed.kicad_pcb` yet: copper produced now survives later
-   netlist changes through the per-net quarantine mechanism, but final
-   production reroute/adoption waits for the P0 functional netlist to freeze,
-   followed by repeated endpoint-parity, DRC, and visual review.
+   (`docs/factory-wire-route-fidelity.md`). The promoted board is convergence
+   evidence and a reproducible package snapshot, not production authorization:
+   final release still waits for the P0 functional netlist to freeze, followed
+   by repeated endpoint parity, DRC, package regeneration, and visual review.
 3. **Preserve the adopted factory wire-table construction through release.**
    The sheets 2-6 таблица соединений is transcribed and its two number spaces
    are now explicit: conductor positions are not `А:N` board-point labels
