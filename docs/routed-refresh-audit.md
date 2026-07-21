@@ -247,6 +247,14 @@ transaction close ROM_CS_EXP18; a second transaction closes the displaced
 ROM_SEL branch. Stable KiCad DRC leaves only BA2, BA14, and BA15 open, with no
 electrical or dangling findings. Exact recovery hashes and parameters are in
 `ref/routing/rom-closed-recovery-checkpoint.json`.
+The next bounded cleanup closes BA14 without reopening either ROM net. A
+retained 0.0875 mm diagnostic route identifies the D8.5 pad channel; its layer
+transition is moved to `(83.25,110.25)` mm, and seven ROM_SEL elbow items are
+collapsed to a single real gap. The guarded 0.10 mm closer then accepts a new
+7.666 mm ROM_SEL route. Independent stable KiCad 9.0.8 DRC reports only BA2
+and BA15 open, 28,953 routed items across 411 nets, no electrical or dangling
+findings, and the unchanged 710 cosmetic reports. Exact evidence is in
+`ref/routing/rom-closed-two-residual-checkpoint.json`.
 
 ### Additive/rename-safe copper migration
 

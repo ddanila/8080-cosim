@@ -36,7 +36,7 @@
     {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_step_mm": 0.0875}
   ],
   "tool_sha256": {
-    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/close_gap_by_ripup.py": "cf1ff576fa73c3dd5efb5e48ef9711bf4313c5f47a2af6d86292c3ef22c506ae",
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
   },
   "disposition": "D3_O6_D6_A5 closes through a 39-conflict equal-open swap that displaces one MEMW branch. A phased two-conflict MEMW transaction restores BA12 and BA5, and a 2.06 mm ROE bridge reconnects the retained source segment after orphan pruning. The current source-preserving frontier has only ROM_CS_EXP18 open, no electrical or dangling DRC findings, and the unchanged 710 cosmetic-only reports."

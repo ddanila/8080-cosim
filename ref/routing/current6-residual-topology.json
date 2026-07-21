@@ -21,7 +21,7 @@
     {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637}
   ],
   "tool_sha256": {
-    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/close_gap_by_ripup.py": "cf1ff576fa73c3dd5efb5e48ef9711bf4313c5f47a2af6d86292c3ef22c506ae",
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
   },
   "disposition": "The current source-preserving frontier has six opens. A 46-conflict CS_D57 equal-open swap restores sixteen of seventeen affected nets and exposes PROM_EN; a phased eight-conflict PROM_EN transaction then restores all six affected nets and closes the net. The final board has no electrical or dangling DRC findings and retains the unchanged 710 cosmetic-only reports."

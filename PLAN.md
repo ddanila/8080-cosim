@@ -248,6 +248,15 @@ or dangling findings, and the unchanged 710 cosmetic reports. Exact hashes are
 checkpointed in `ref/routing/rom-closed-recovery-checkpoint.json`; this is a
 recovery milestone rather than the promoted frontier until those three
 displaced nets close.
+The BA14 cleanup gap is now closed as a second recovery checkpoint. Retaining
+the fine-grid diagnostic board exposed a D8.5 pad-channel transition; moving
+that transition to `(83.25,110.25)` mm and collapsing seven displaced ROM_SEL
+items to one true gap let the guarded 0.10 mm closer restore ROM_SEL on a new
+7.666 mm path. Independent stable KiCad 9.0.8 DRC leaves only BA2 and BA15
+open: 28,953 routed items across 411 nets, zero electrical or dangling
+findings, and the unchanged 710 cosmetic reports. Exact hashes are in
+`ref/routing/rom-closed-two-residual-checkpoint.json`; this remains a recovery
+frontier until the last two displaced nets close.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

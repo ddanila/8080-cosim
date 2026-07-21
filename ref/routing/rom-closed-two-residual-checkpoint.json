@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "parent_board_sha256": "7cff68dcadbfb275a343a76cd30c4f18404a3aed771b4181873df704596ce041",
+  "board_sha256": "acc3650acc4e4f4a90e585e16b638b0e40dd5ae78f123712b706ec7fb9bbb904",
+  "board_size": 10693257,
+  "drc_sha256": "d27a51aaf8fd44145865f927b68252441933c8c9789878f29bcea38354cc531c",
+  "routed_items": 28953,
+  "routed_nets": 411,
+  "uncapped_unconnected": 2,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "cosmetic_findings": 710,
+  "closed_targets": ["ROM_CS_EXP18", "ROM_SEL", "BA14"],
+  "residuals": ["BA2", "BA15"],
+  "ba14_transaction": {
+    "target_net": "BA14",
+    "target_distance_mm": 13.979,
+    "diagnostic_grid_step_mm": 0.0875,
+    "diagnostic_grid_offset_mm": [0.025, 0.0625],
+    "diagnostic_clearance_mm": 0.05,
+    "diagnostic_new_items": 14,
+    "fixed_blocker": "PTH pad 5 [ROM_CS_D15] of D8",
+    "replacement_via_mm": [83.25, 110.25],
+    "removed_rom_sel_items": 7,
+    "rom_sel_restore_distance_mm": 7.666,
+    "rom_sel_restore_grid_step_mm": 0.1,
+    "rom_sel_restore_grid_offset_mm": [0.05, 0.05],
+    "route_clearance_mm": 0.2
+  },
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "cf1ff576fa73c3dd5efb5e48ef9711bf4313c5f47a2af6d86292c3ef22c506ae",
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "This recovery checkpoint closes BA14 while retaining the closed ROM_CS_EXP18 and ROM_SEL topology. It is not yet the promoted frontier because BA2 and BA15 remain open, but it reduces the displaced cleanup frontier from three gaps to two with zero electrical or dangling findings."
+}
