@@ -4,8 +4,8 @@ Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**
 
 This generated report catches both IC footprints absent from the board
 model and promoted devices whose functional pins remain untraced or on
-explicit continuity-boundary nets. Closing either class requires a routed-PCB refresh and
-endpoint-coverage proof.
+explicit continuity-boundary nets. Closing either class requires source-model
+and endpoint-coverage proof, followed by complete route/package regeneration.
 
 ## Command
 
@@ -44,9 +44,9 @@ design release until measured or explicitly dispositioned.
 - The same continuity pass proves MEMW on tied D105.12/.13 and
   D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9
   merge and the older `.006` D95 WAIT handoff.
-- The current source placement has zero electrical collisions. The derived
-  routed snapshot predates these corrections and still requires a full
-  refresh after the P0 functional netlist freezes.
+- The promoted routed board has exact source-pad identity and carries
+  these corrections with zero electrical blockers. Any future P0 source
+  closure still requires complete route/package regeneration.
 
 ## D30 READY Flip-Flop Boundary
 

@@ -22,6 +22,7 @@ REQUIRED_REPORTS = [
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
     ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "# Replica bring-up verification points"),
     ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "# Replica sourcing readiness"),
+    ("Factory wire construction", "docs/factory-wire-route-fidelity.md", "# Factory insulated-wire route fidelity"),
     ("Order evidence template", "docs/replica-order-evidence-template.md", "# Replica order evidence template"),
     ("External Gerber review", "fab/gerbers/external-gerber-review.md", "Status: **READY**"),
     ("Review waiver", "fab/gerbers/review-waivers.md", "Status: **ACCEPTED**"),
@@ -36,6 +37,7 @@ RELEASE_MARKERS = {
     "fab/gerbers/order-readiness.md": "Status: **RELEASED FOR ORDER**",
     "docs/replica-bringup-verification-points.md": "Status: **DESIGN RELEASE RISKS CLOSED**",
     "docs/replica-sourcing-readiness.md": "Status: **SOURCING READY**",
+    "docs/factory-wire-route-fidelity.md": "Status: **FACTORY WIRE CONSTRUCTION PRESERVED**",
 }
 
 LOCKED_VENDOR_OPTIONS = [
@@ -109,6 +111,7 @@ def first_match(text, pattern, default="-"):
 def toolchain_rows(fab_dir):
     fab_text = (fab_dir / "fab-readiness.md").read_text(errors="replace")
     external_text = (fab_dir / "external-gerber-review.md").read_text(errors="replace")
+    upload_text = (ROOT / "docs" / "replica-order-upload-runbook.md").read_text(errors="replace")
     job = json.loads((fab_dir / "juku_routed-job.gbrjob").read_text())
     generation = job.get("Header", {}).get("GenerationSoftware", {})
     return [
@@ -127,6 +130,7 @@ def toolchain_rows(fab_dir):
             ),
         ),
         ("External viewer", first_match(external_text, r"^Viewer: `([^`]+)`")),
+        ("Upload ZIP format", first_match(upload_text, r"^- Required metadata: (.+)$")),
     ]
 
 

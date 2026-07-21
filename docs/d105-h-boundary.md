@@ -1,6 +1,6 @@
 # D105 H/DBIN boundary
 
-Status: **D105 H/DBIN + X1.107B/R1 CLOSURE ADOPTED / ROUTED REFRESH REQUIRED**
+Status: **D105 H/DBIN + X1.107B/R1 ROUTED CLOSURE VERIFIED**
 
 The native full-resolution sheet closes edge contact `X1.107B` (`-BLOCK`)
 directly onto D13.13/`H` and labels its pull-up `R1 2 kΩ` to rail A (+5 V).
@@ -12,10 +12,11 @@ D105.9/.10 feed one NAND and tied D105.4/.5 invert it again, so D105.6
 drives D5.4 as `DBIN AND H`. Tied D105.12/.13 receive `MEMW`, while
 D105.11 drives D30.13.
 
-The authoritative board JSON, source PCB, and HDL now preserve that measured
-topology. The routed PCB/DSN/SES predate it and remain deliberately stale:
-they must be regenerated after the separately documented placement collisions
-are resolved, not patched locally around invalid package placement.
+The authoritative board JSON, source PCB, HDL, and promoted routed PCB now
+preserve that measured topology. The routed board has exact source-pad identity
+and the stable-KiCad route/package gates report zero opens and zero electrical
+blockers. Historical DSN/SES and rejected local repair trials remain audit
+artifacts only.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
@@ -44,13 +45,13 @@ are resolved, not patched locally around invalid package placement.
 | D13/D105 preserve their photographed right-facing notches | PASS | `D13=270.0; D105=270.0` |
 | D105 preserves its factory centre with owner-photo orientation | PASS | `(31.9, 215.505)` |
 | HDL models pulled-up H and gated DBIN | PASS | `hdl/juku_top.v` |
-| Invalid routed snapshot is explicitly stale | PASS | `D105.9: D2_WAIT_RAW != DBIN; D105.6: D105_WAIT_PREINV != DBIN_GATED; D5.4: DBIN != DBIN_GATED; D105.12: MEMR != MEMW; D105.13: MEMR != MEMW` |
+| Promoted routed PCB preserves the measured D105 nets | PASS | `exact source parity` |
 
 ## Rejected routed-snapshot repairs
 
 Earlier local copper trials attempted to preserve the obsolete routed netlist.
 They produced shorts or clearance failures around PHI2TTL, PHI2, RESIN, GND,
 RAM_OUT_EN, and the E3 control routing. Those trials remain rejected. The
-correct next operation is a complete routed refresh from the measured source
-netlist after collision-free placement, followed by DRC—not restoration of the
-old D2.12-to-D105.9 assumption or a hidden jumper.
+Promoted exact-source routing supersedes those trials and passes DRC without
+restoring the old D2.12-to-D105.9 assumption or adding a hidden jumper. Any
+future source-net change must regenerate and re-verify the complete package.

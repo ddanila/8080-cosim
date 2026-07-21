@@ -68,13 +68,11 @@ findings. Every status applies only to the boundary named by the report.
   `replica-package-geometry-readiness.md`,
   `replica-fab-drc-disposition.md`, and `replica-power-trace-readiness.md`.
   Package readiness is not design release.
-- Routed-board refresh: `routed-refresh-audit.md` — reproducible audit of the
-  stale routed snapshot against the current source PCB and the running
-  full-refresh routing convergence experiment.
-- Factory-wire routing: `factory-wire-route-fidelity.md` — distinguishes the
-  ten source-closed insulated links from the current candidate's inadmissible
-  copper substitutions and separately guards image registration, board fitting,
-  and PCB modeling of the paired A-point landing geometry.
+- Routed-board refresh: `routed-refresh-audit.md` — reproducible history from
+  the stale candidate through the promoted exact-source zero-open route.
+- Factory-wire routing: `factory-wire-route-fidelity.md` — distinguishes seven
+  explicit wire/island splits from the three promoted-route copper substitutions
+  still held on A9/A12/A13, and separately guards landing registration/fitting.
 - Twin: `fdc-readiness.md`, `video-slot-timing-audit.md`,
   `video-readout-readiness.md`, `serial-handoff.md`, and
   `beeper-readiness.md`, plus `factory-keyboard-matrix.md` (the complete

@@ -15,6 +15,7 @@ from check_factory_wire_links import LINKS
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "kicad/juku.kicad_pcb"
 CANDIDATE = ROOT / "kicad/juku_routed_candidate.kicad_pcb"
+ROUTED = ROOT / "kicad/juku_routed.kicad_pcb"
 REPORT = ROOT / "docs/factory-wire-route-fidelity.md"
 LANDINGS = (
     ROOT
@@ -56,8 +57,11 @@ def row(values: list[object]) -> str:
 def main() -> int:
     source = pcbnew.LoadBoard(str(SOURCE))
     candidate = pcbnew.LoadBoard(str(CANDIDATE))
-    drc = run_drc(CANDIDATE)
+    routed = pcbnew.LoadBoard(str(ROUTED))
+    candidate_drc = run_drc(CANDIDATE)
+    routed_drc = run_drc(ROUTED)
     candidate_tracks = list(candidate.GetTracks())
+    routed_tracks = list(routed.GetTracks())
 
     def pad_map(board: pcbnew.BOARD) -> dict[tuple[str, str], tuple[str, float, float]]:
         return {
@@ -72,6 +76,7 @@ def main() -> int:
 
     source_pads = pad_map(source)
     candidate_pads = pad_map(candidate)
+    routed_pads = pad_map(routed)
     pad_identity_match = source_pads.keys() == candidate_pads.keys()
     common_pads = source_pads.keys() & candidate_pads.keys()
     pad_net_mismatches = sum(
@@ -84,6 +89,19 @@ def main() -> int:
         )
         > 0.00005
         for key in common_pads
+    )
+    routed_pad_identity_match = source_pads.keys() == routed_pads.keys()
+    routed_common_pads = source_pads.keys() & routed_pads.keys()
+    routed_pad_net_mismatches = sum(
+        source_pads[key][0] != routed_pads[key][0] for key in routed_common_pads
+    )
+    routed_moved_pads = sum(
+        max(
+            abs(source_pads[key][1] - routed_pads[key][1]),
+            abs(source_pads[key][2] - routed_pads[key][2]),
+        )
+        > 0.00005
+        for key in routed_common_pads
     )
 
     kicad_python = subprocess.check_output(
@@ -136,7 +154,9 @@ def main() -> int:
 
     link_rows = []
     modeled_terminals = 0
-    copper_substitutions = 0
+    explicit_wire_splits = 0
+    direct_copper_substitutions = 0
+    candidate_copper_nets = 0
     for position, point, length, net_name, endpoints in LINKS:
         wire_ref = f"W{point}"
         present_terminals = [
@@ -145,12 +165,26 @@ def main() -> int:
             if (wire_ref, pin) in source_pads
         ]
         modeled_terminals += len(present_terminals)
-        net_code = candidate.GetNetcodeFromNetname(net_name)
-        copper_count = sum(
-            1 for item in candidate_tracks if item.GetNetCode() == net_code
+        candidate_net_code = candidate.GetNetcodeFromNetname(net_name)
+        candidate_copper_count = sum(
+            1 for item in candidate_tracks if item.GetNetCode() == candidate_net_code
         )
-        if copper_count:
-            copper_substitutions += 1
+        if candidate_copper_count:
+            candidate_copper_nets += 1
+        routed_net_code = routed.GetNetcodeFromNetname(net_name)
+        routed_copper_count = sum(
+            1 for item in routed_tracks if item.GetNetCode() == routed_net_code
+        )
+        wire_pad_nets = {
+            routed_pads[(wire_ref, pin)][0]
+            for pin in ("1", "2")
+            if (wire_ref, pin) in routed_pads
+        }
+        explicitly_split = len(wire_pad_nets) == 2
+        if explicitly_split:
+            explicit_wire_splits += 1
+        else:
+            direct_copper_substitutions += 1
         endpoint_text = ", ".join(
             f"{ref}.{pin}" for ref, pin in sorted(endpoints)
         )
@@ -163,11 +197,13 @@ def main() -> int:
                 endpoint_text,
                 registered_by_point.get(point, 0),
                 len(present_terminals),
-                copper_count,
+                "explicit wire / split islands" if explicitly_split else "same-net copper / landing hold",
+                routed_copper_count,
             ])
         )
 
-    unconnected = len(drc.get("unconnected_items", []))
+    candidate_unconnected = len(candidate_drc.get("unconnected_items", []))
+    routed_unconnected = len(routed_drc.get("unconnected_items", []))
     expected_terminals = 2 * len(LINKS)
     release_ready = (
         logical.returncode == 0
@@ -176,19 +212,20 @@ def main() -> int:
         and image_registered == expected_terminals
         and board_fitted == expected_terminals
         and modeled_terminals == expected_terminals
-        and pad_identity_match
-        and pad_net_mismatches == 0
-        and moved_pads == 0
-        and copper_substitutions == 0
-        and unconnected == len(LINKS)
+        and routed_pad_identity_match
+        and routed_pad_net_mismatches == 0
+        and routed_moved_pads == 0
+        and explicit_wire_splits == len(LINKS)
+        and direct_copper_substitutions == 0
+        and routed_unconnected == 0
     )
     status = (
         "FACTORY WIRE CONSTRUCTION PRESERVED"
         if release_ready
         else (
-            "LOGICAL LINKS ADOPTED / LANDING REGISTRATION PARTIAL / ROUTED CANDIDATE HOLD"
+            "PROMOTED ROUTE VERIFIED / FACTORY WIRE LANDING HOLD"
             if image_registered
-            else "LOGICAL LINKS ADOPTED / PHYSICAL LANDINGS ABSENT / ROUTED CANDIDATE HOLD"
+            else "PROMOTED ROUTE VERIFIED / FACTORY WIRE REGISTRATION HOLD"
         )
     )
 
@@ -200,8 +237,9 @@ def main() -> int:
         "The `.009` assembly table proves ten on-board insulated links. Their",
         "logical endpoints are source-closed, but logical net equality is not",
         "permission to replace the original flying wire with PCB etch. This report",
-        "separates those two claims and blocks production adoption of the preserved",
-        "routing checkpoint.",
+        "separates those two claims. The promoted route is electrically verified,",
+        "but factory-construction release remains held until all ten links are",
+        "represented as explicit assembly wires between split copper islands.",
         "",
         "## Guarded state",
         "",
@@ -213,27 +251,34 @@ def main() -> int:
         f"- Drawing-image landing endpoints registered: `{image_registered}/{expected_terminals}`",
         f"- Landing endpoints fitted to PCB coordinates/islands: `{board_fitted}/{expected_terminals}`",
         f"- Paired A-point landing terminals modeled: `{modeled_terminals}/{expected_terminals}`",
-        f"- Candidate/source pad identities equal: `{'PASS' if pad_identity_match else 'FAIL'}`",
-        f"- Candidate/source pad-net mismatches: `{pad_net_mismatches}`",
-        f"- Candidate/source moved pads (>50 nm): `{moved_pads}`",
-        f"- Link nets carrying candidate copper: `{copper_substitutions}/{len(LINKS)}`",
-        f"- Candidate DRC unconnected items: `{unconnected}`",
-        "- Required release state: twenty registered landing terminals, no copper",
-        "  bridge between each island pair, and exactly ten assembly-wire closures.",
+        f"- Promoted/source pad identities equal: `{'PASS' if routed_pad_identity_match else 'FAIL'}`",
+        f"- Promoted/source pad-net mismatches: `{routed_pad_net_mismatches}`",
+        f"- Promoted/source moved pads (>50 nm): `{routed_moved_pads}`",
+        f"- Explicit assembly-wire island splits: `{explicit_wire_splits}/{len(LINKS)}`",
+        f"- Same-net copper substitutions still held: `{direct_copper_substitutions}/{len(LINKS)}`",
+        f"- Promoted DRC unconnected items: `{routed_unconnected}`",
+        "- Historical pre-promotion candidate audit:",
+        f"  - Candidate/source pad identities equal: `{'PASS' if pad_identity_match else 'FAIL'}`",
+        f"  - Candidate/source pad-net mismatches: `{pad_net_mismatches}`",
+        f"  - Candidate/source moved pads (>50 nm): `{moved_pads}`",
+        f"  - Link nets carrying historical candidate copper: `{candidate_copper_nets}/{len(LINKS)}`",
+        f"  - Historical candidate DRC unconnected items: `{candidate_unconnected}`",
+        "- Required release state: twenty registered and modeled landing terminals,",
+        "  ten split island pairs, ten explicit assembly-wire closures, exact source",
+        "  parity, and zero electrical/unconnected DRC findings.",
         "",
-        "The candidate's one unconnected item is the ground join exposed when native",
-        "sheet-2 evidence merged the formerly separate `RAIL_E` model into `GND`; it",
-        "is a real post-correction reroute item, not a cosmetic net-label discrepancy.",
-        "The same evidence corrected source C34.1 from `RAIL_H` to `P5V`, accounting",
-        "for one current source/candidate pad-net mismatch. For the ten links,",
-        "the remaining copper still proves routing convergence rather than historical",
-        "construction fidelity. Later net and photo-placement corrections must be",
-        "incorporated only after the landing islands and functional netlist freeze.",
+        "The promoted board now has exact source identity and zero KiCad opens. Seven",
+        "links (A7/A8/A10/A11/A14/A19/A20) are explicit W-footprint assembly wires",
+        "between separately named copper islands. A9/A12/A13 lack four evidence-gated",
+        "landing coordinates, so their endpoints remain same-net copper routes. This",
+        "is a historical-construction hold, not an electrical package failure.",
+        "The historical candidate counts remain below only to preserve the migration",
+        "audit that led to the promoted board.",
         "",
         "## Link audit",
         "",
-        "| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Candidate copper items on net |",
-        "| ---: | ---: | ---: | --- | --- | ---: | ---: | ---: |",
+        "| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Promoted construction | Copper items on primary island |",
+        "| ---: | ---: | ---: | --- | --- | ---: | ---: | --- | ---: |",
         *link_rows,
         "",
         "## Remaining release closure",
@@ -246,9 +291,10 @@ def main() -> int:
         "image: the printed A14B joint is 58.911 mm from independently fitted D41.1,",
         "not 0.784 mm. W14 now preserves that landing pair as two through-joints on",
         "separate PHI2 islands; exact wire cut length remains a direct-measurement item.",
-        "The tracked routed board is intentionally stale: old PHI2 copper touches",
-        "D35.12 and a D53_Y0_R49 track crosses W14.2, producing two shorts and two",
-        "opens until the post-P0-freeze reroute. The saved fab package is invalid.",
+        "The promoted routed board has exact source identity, zero shorts, and zero",
+        "opens; its fabrication package is machine-verified. It remains under design",
+        "hold because A9/A12/A13 still substitute same-net copper for the original",
+        "wire construction, and because the broader functional P0 netlist is open.",
         "A:7, A:8, A:10, A:11, A:14, A:19, and A:20 are already split into modeled landing pairs and",
         "explicit assembly-wire components. After owner continuity or a newly exposing",
         "photograph closes the four hidden joints:",
@@ -256,10 +302,11 @@ def main() -> int:
         "1. Finish the twenty landing terminals and split each remaining logical",
         "   net into its two original copper islands joined by an explicit wire-link",
         "   assembly object.",
-        "2. Reroute only the affected islands, require exactly ten intentional",
-        "   unconnected DRC pairs, and emit a wire cut/installation table with the",
-        "   factory lengths.",
-        "3. Only then may the refreshed candidate replace production copper.",
+        "2. Add W9/W12/W13 assembly footprints, split their island net names, reroute",
+        "   only the affected islands, and retain zero electrical/unconnected DRC",
+        "   findings.",
+        "3. Regenerate the fabrication package and emit a wire cut/installation table",
+        "   with the factory lengths before design release.",
         "",
         "`А:20` remains on `S_TTL`: enlarged sheet-1 review reads the adjacent",
         "vertical package as `Д104`, not `Д14`, consistent with owner continuity",

@@ -140,11 +140,12 @@ for ref, pin, wanted in (
     actual = pad_net(routed, ref, pin)
     if actual != wanted:
         routed_mismatches.append(f"{ref}.{pin}: {actual} != {wanted}")
-checks.append(("Invalid routed snapshot is explicitly stale",
-               bool(routed_mismatches), "; ".join(routed_mismatches)))
+checks.append(("Promoted routed PCB preserves the measured D105 nets",
+               not routed_mismatches,
+               "exact source parity" if not routed_mismatches else "; ".join(routed_mismatches)))
 
 ok = all(result for _, result, _ in checks)
-status = "D105 H/DBIN + X1.107B/R1 CLOSURE ADOPTED / ROUTED REFRESH REQUIRED" if ok else "D105 HANDOFF FAILED"
+status = "D105 H/DBIN + X1.107B/R1 ROUTED CLOSURE VERIFIED" if ok else "D105 HANDOFF FAILED"
 lines = [
     "# D105 H/DBIN boundary", "", f"Status: **{status}**", "",
     "The native full-resolution sheet closes edge contact `X1.107B` (`-BLOCK`)",
@@ -156,10 +157,11 @@ lines = [
     "D105.9/.10 feed one NAND and tied D105.4/.5 invert it again, so D105.6",
     "drives D5.4 as `DBIN AND H`. Tied D105.12/.13 receive `MEMW`, while",
     "D105.11 drives D30.13.", "",
-    "The authoritative board JSON, source PCB, and HDL now preserve that measured",
-    "topology. The routed PCB/DSN/SES predate it and remain deliberately stale:",
-    "they must be regenerated after the separately documented placement collisions",
-    "are resolved, not patched locally around invalid package placement.", "",
+    "The authoritative board JSON, source PCB, HDL, and promoted routed PCB now",
+    "preserve that measured topology. The routed board has exact source-pad identity",
+    "and the stable-KiCad route/package gates report zero opens and zero electrical",
+    "blockers. Historical DSN/SES and rejected local repair trials remain audit",
+    "artifacts only.", "",
     "| Check | Result | Evidence |", "| --- | --- | --- |",
 ]
 for name, result, evidence in checks:
@@ -169,9 +171,9 @@ lines += [
     "Earlier local copper trials attempted to preserve the obsolete routed netlist.",
     "They produced shorts or clearance failures around PHI2TTL, PHI2, RESIN, GND,",
     "RAM_OUT_EN, and the E3 control routing. Those trials remain rejected. The",
-    "correct next operation is a complete routed refresh from the measured source",
-    "netlist after collision-free placement, followed by DRC—not restoration of the",
-    "old D2.12-to-D105.9 assumption or a hidden jumper.",
+    "Promoted exact-source routing supersedes those trials and passes DRC without",
+    "restoring the old D2.12-to-D105.9 assumption or adding a hidden jumper. Any",
+    "future source-net change must regenerate and re-verify the complete package.",
 ]
 REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 print(status)

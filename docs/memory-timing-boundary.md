@@ -118,11 +118,10 @@ python3 scripts/report_memory_timing_boundary.py
   the D36.3 -> D33.11/.10 delay leg reaches pin 10, and output pin 8
   drives rail 16 to every DRAM W pin. The direct `we_n = MEMW` simulation
   path remains an explicit timing abstraction, not a copper uncertainty.
-- The routed snapshot retains the former wire-11 copper as MEMR. Two
-  0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` plus a
-  back-layer bridge join the two MEMR islands without crossing the four
-  front-layer select traces. KiCad DRC reports zero MEMR shorts,
-  clearances, crossings, or unconnected items.
+- The promoted route preserves W11 as an explicit assembly wire between
+  the separately routed `MEMR` and `MEMR_D7` copper islands; it does not
+  restore the former etched bridge. Exact source-pad parity and stable
+  KiCad DRC report zero opens or electrical blockers.
 - The exact CAS-driver input source (`D36_CAS_IN`) is still not
   historical-source-complete. D36.12/.13 were
   rechecked across the native 5140x3563 sheet on 2026-07-13; their common

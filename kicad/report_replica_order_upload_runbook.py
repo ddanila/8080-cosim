@@ -31,6 +31,7 @@ RETAINED_EVIDENCE = [
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
     ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "# Replica bring-up verification points"),
     ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "# Replica sourcing readiness"),
+    ("Factory wire construction", "docs/factory-wire-route-fidelity.md", "# Factory insulated-wire route fidelity"),
     ("Checksum file", "SHA256SUMS", None),
     ("Order evidence template", "docs/replica-order-evidence-template.md", "# Replica order evidence template"),
 ]
@@ -48,6 +49,8 @@ ORDER_CHECKS = [
     "Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.",
 ]
 FIXED_ZIP_DATE = (1980, 1, 1, 0, 0, 0)
+ZIP_COMPRESSION = zipfile.ZIP_STORED
+ZIP_COMPRESSION_LABEL = "stored (uncompressed)"
 UPLOAD_ZIP_NAME = "juku-replica-gerbers-drill.zip"
 UPLOAD_SHA_NAME = "SHA256SUMS.txt"
 
@@ -86,12 +89,17 @@ def make_zip(fab_dir, files):
     upload_dir = fab_dir / "upload"
     upload_dir.mkdir(parents=True, exist_ok=True)
     zip_path = upload_dir / UPLOAD_ZIP_NAME
-    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(zip_path, "w", compression=ZIP_COMPRESSION) as archive:
         for _label, name in files:
             info = zipfile.ZipInfo(name)
             info.date_time = FIXED_ZIP_DATE
-            info.compress_type = zipfile.ZIP_DEFLATED
-            info.external_attr = 0o644 << 16
+            info.compress_type = ZIP_COMPRESSION
+            info.create_system = 3
+            info.create_version = 20
+            info.extract_version = 10
+            info.flag_bits = 0
+            info.internal_attr = 0
+            info.external_attr = 0o100644 << 16
             archive.writestr(info, (fab_dir / name).read_bytes())
     return zip_path
 
@@ -111,7 +119,7 @@ def zip_member_metadata_ok(info):
         info.date_time == FIXED_ZIP_DATE
         and not info.filename.startswith("/")
         and ".." not in Path(info.filename).parts
-        and info.compress_type == zipfile.ZIP_DEFLATED
+        and info.compress_type == ZIP_COMPRESSION
         and zip_member_mode(info) == 0o644
     )
 
@@ -252,7 +260,7 @@ def build_report(fab_dir, report_path):
         "",
         "## Upload ZIP Members",
         "",
-        "- Required metadata: timestamp `1980-01-01 00:00:00`, deflated compression, file mode `0644`",
+        f"- Required metadata: timestamp `1980-01-01 00:00:00`, {ZIP_COMPRESSION_LABEL} members, file mode `0644`",
         "",
         "| Member | Bytes | Metadata | Source match |",
         "| --- | ---: | --- | --- |",

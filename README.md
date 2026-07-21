@@ -21,12 +21,12 @@ with the machine-readable board model.
   zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or
   ordered. Current deterministic upload ZIP SHA256:
-  `d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c`.
+  `65dd445248e466ac162896215bb95cb1408e8abbb93cfd7db2f98a86fe3f4a7d`.
   Exact topology evidence is retained in
   `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
   `ref/routing/zero-open-fabrication-package.json`, and fabrication/release
   gates are summarized in `docs/replica-manufacturing-readiness.md`.
-  The separately preserved historical candidate still has 62 pad-net mismatches and 202 moved
+  The separately preserved historical candidate still has 261 pad-net mismatches and 224 moved
   pads against the source; it is audit history, not the promoted board.
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
@@ -48,16 +48,16 @@ with the machine-readable board model.
   The exact-revision sheet makes D97.13, D98.9/.10, and D102.4 intentional
   no-connects, leaving D96, D99, and D101 with open support-device functional pins.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
-  D6's validated physical table and chip-removed separate ROM/RAM outputs stay LVS-visible,
-  while runnable simulation uses an explicit non-LVS memory-map decoder until
-  the downstream D6/D13/D92/D37/D58 timing is fully reconstructed.
+  D6's validated physical table drives runnable memory selection directly and
+  its chip-removed separate ROM/RAM outputs stay LVS-visible; the old functional
+  decoder remains only as a non-LVS diagnostic comparison.
   A focused diagnostic now proves all eight physical modes leave D6.9 high at
   the `B37A` RAM-output failure, excluding mode selection and V1/V2 as causes
   across every raw A7..A5 row. Chip-removed continuity proves D6.12->D8.15
   and isolates D6.11 from D6.12, invalidating the earlier installed-PROM join.
   The report
-  names the isolated endpoint/polarity/live-level measurements needed;
-  the routed snapshot still carries the superseded topology.
+  records the retired reader-order fault and the measurements that closed it;
+  the promoted route carries the corrected topology with exact source parity.
   D30 READY sections A/B are modeled; owner continuity closes pin 8 to D29.7
   and pin 11 to the D105.2/D13.4/D11.20 clock conductor. Native sheet 1 plus
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its

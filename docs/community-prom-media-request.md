@@ -129,9 +129,10 @@ The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
 reproducible but the physical design remains on hold while D94 continuity, the
 Juku-specific nets of 2 still-open modeled FDC-support ICs, and remaining
 programmable-part corroboration are incomplete. D2/D6/D8/D94 now have validated
-physical contents, and D2's measured READY handoff is source-modeled. D105 wait/MRD logic
-and most of D30 READY are also source-modeled; the saved routed snapshot
-predates this accepted topology and must be regenerated later.
+physical contents, and D2's measured READY handoff is source-modeled. D105
+wait/MRD logic and most of D30 READY are also source-modeled and present in the
+promoted exact-source route. The verified package remains under functional
+design hold.
 
 Baltijets doc 007 confirms several programmed-part drawings, but the byte tables
 for the small PROMs are marked "на диске" rather than printed. I am looking for

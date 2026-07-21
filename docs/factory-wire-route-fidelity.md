@@ -1,12 +1,13 @@
 # Factory insulated-wire route fidelity
 
-Status: **LOGICAL LINKS ADOPTED / LANDING REGISTRATION PARTIAL / ROUTED CANDIDATE HOLD**
+Status: **PROMOTED ROUTE VERIFIED / FACTORY WIRE LANDING HOLD**
 
 The `.009` assembly table proves ten on-board insulated links. Their
 logical endpoints are source-closed, but logical net equality is not
 permission to replace the original flying wire with PCB etch. This report
-separates those two claims and blocks production adoption of the preserved
-routing checkpoint.
+separates those two claims. The promoted route is electrically verified,
+but factory-construction release remains held until all ten links are
+represented as explicit assembly wires between split copper islands.
 
 ## Guarded state
 
@@ -16,37 +17,44 @@ routing checkpoint.
 - Drawing-image landing endpoints registered: `20/20`
 - Landing endpoints fitted to PCB coordinates/islands: `16/20`
 - Paired A-point landing terminals modeled: `14/20`
-- Candidate/source pad identities equal: `FAIL`
-- Candidate/source pad-net mismatches: `62`
-- Candidate/source moved pads (>50 nm): `202`
-- Link nets carrying candidate copper: `10/10`
-- Candidate DRC unconnected items: `1`
-- Required release state: twenty registered landing terminals, no copper
-  bridge between each island pair, and exactly ten assembly-wire closures.
+- Promoted/source pad identities equal: `PASS`
+- Promoted/source pad-net mismatches: `0`
+- Promoted/source moved pads (>50 nm): `0`
+- Explicit assembly-wire island splits: `7/10`
+- Same-net copper substitutions still held: `3/10`
+- Promoted DRC unconnected items: `0`
+- Historical pre-promotion candidate audit:
+  - Candidate/source pad identities equal: `FAIL`
+  - Candidate/source pad-net mismatches: `261`
+  - Candidate/source moved pads (>50 nm): `224`
+  - Link nets carrying historical candidate copper: `10/10`
+  - Historical candidate DRC unconnected items: `1`
+- Required release state: twenty registered and modeled landing terminals,
+  ten split island pairs, ten explicit assembly-wire closures, exact source
+  parity, and zero electrical/unconnected DRC findings.
 
-The candidate's one unconnected item is the ground join exposed when native
-sheet-2 evidence merged the formerly separate `RAIL_E` model into `GND`; it
-is a real post-correction reroute item, not a cosmetic net-label discrepancy.
-The same evidence corrected source C34.1 from `RAIL_H` to `P5V`, accounting
-for one current source/candidate pad-net mismatch. For the ten links,
-the remaining copper still proves routing convergence rather than historical
-construction fidelity. Later net and photo-placement corrections must be
-incorporated only after the landing islands and functional netlist freeze.
+The promoted board now has exact source identity and zero KiCad opens. Seven
+links (A7/A8/A10/A11/A14/A19/A20) are explicit W-footprint assembly wires
+between separately named copper islands. A9/A12/A13 lack four evidence-gated
+landing coordinates, so their endpoints remain same-net copper routes. This
+is a historical-construction hold, not an electrical package failure.
+The historical candidate counts remain below only to preserve the migration
+audit that led to the promoted board.
 
 ## Link audit
 
-| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Candidate copper items on net |
-| ---: | ---: | ---: | --- | --- | ---: | ---: | ---: |
-| 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 2 | 2 | 241 |
-| 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 2 | 2 | 317 |
-| 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 2 | 0 | 409 |
-| 6 | А:10 | 13.5 | `W10_QA_SEL` | D41.13, D50.1 | 2 | 2 | 272 |
-| 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 2 | 2 | 189 |
-| 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 2 | 0 | 176 |
-| 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 2 | 0 | 116 |
-| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 2 | 2 | 230 |
-| 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 2 | 141 |
-| 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 2 | 2 | 11 |
+| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Promoted construction | Copper items on primary island |
+| ---: | ---: | ---: | --- | --- | ---: | ---: | --- | ---: |
+| 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 2 | 2 | explicit wire / split islands | 95 |
+| 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 2 | 2 | explicit wire / split islands | 4 |
+| 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 2 | 0 | same-net copper / landing hold | 246 |
+| 6 | А:10 | 13.5 | `W10_QA_SEL` | D41.13, D50.1 | 2 | 2 | explicit wire / split islands | 1 |
+| 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 2 | 2 | explicit wire / split islands | 213 |
+| 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 2 | 0 | same-net copper / landing hold | 208 |
+| 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 2 | 0 | same-net copper / landing hold | 286 |
+| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 2 | 2 | explicit wire / split islands | 48 |
+| 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 2 | explicit wire / split islands | 381 |
+| 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 2 | 2 | explicit wire / split islands | 0 |
 
 ## Remaining release closure
 
@@ -58,9 +66,10 @@ A14B's former fabrication contradiction is resolved in one common raw solder
 image: the printed A14B joint is 58.911 mm from independently fitted D41.1,
 not 0.784 mm. W14 now preserves that landing pair as two through-joints on
 separate PHI2 islands; exact wire cut length remains a direct-measurement item.
-The tracked routed board is intentionally stale: old PHI2 copper touches
-D35.12 and a D53_Y0_R49 track crosses W14.2, producing two shorts and two
-opens until the post-P0-freeze reroute. The saved fab package is invalid.
+The promoted routed board has exact source identity, zero shorts, and zero
+opens; its fabrication package is machine-verified. It remains under design
+hold because A9/A12/A13 still substitute same-net copper for the original
+wire construction, and because the broader functional P0 netlist is open.
 A:7, A:8, A:10, A:11, A:14, A:19, and A:20 are already split into modeled landing pairs and
 explicit assembly-wire components. After owner continuity or a newly exposing
 photograph closes the four hidden joints:
@@ -68,10 +77,11 @@ photograph closes the four hidden joints:
 1. Finish the twenty landing terminals and split each remaining logical
    net into its two original copper islands joined by an explicit wire-link
    assembly object.
-2. Reroute only the affected islands, require exactly ten intentional
-   unconnected DRC pairs, and emit a wire cut/installation table with the
-   factory lengths.
-3. Only then may the refreshed candidate replace production copper.
+2. Add W9/W12/W13 assembly footprints, split their island net names, reroute
+   only the affected islands, and retain zero electrical/unconnected DRC
+   findings.
+3. Regenerate the fabrication package and emit a wire cut/installation table
+   with the factory lengths before design release.
 
 `А:20` remains on `S_TTL`: enlarged sheet-1 review reads the adjacent
 vertical package as `Д104`, not `Д14`, consistent with owner continuity

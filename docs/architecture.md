@@ -62,10 +62,11 @@ been assigned a net. Consequently physical release needs all of the following:
 - programmable-part contents and provenance;
 - explicit disposition of analog/timing assumptions.
 
-The saved Gerber ZIP is a checksum-reproducible historical engineering
-snapshot (tracked status **DESIGN HOLD / PACKAGE INVALID**). Accepted W14
-connectivity supersedes its routed copper and DRC disposition, so it must not
-be uploaded. `PLAN.md` lists the blockers and post-freeze regeneration gate.
+The promoted zero-open route has exact source-pad identity, and its deterministic
+Gerber/drill ZIP passes the machine package gates (tracked status
+**DESIGN HOLD / PACKAGE VERIFIED**). This is not fabrication authorization:
+factory-wire construction, functional connectivity, and sourcing/programming
+holds still forbid upload or ordering. `PLAN.md` lists those release blockers.
 
 ## Design rules
 

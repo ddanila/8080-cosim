@@ -60,9 +60,9 @@ def main() -> int:
             failures.append(f"{ref} footprint value {footprint.GetValue()!r} != {EXPECTED_VALUE!r}")
         pad1 = footprint.FindPadByNumber("1")
         pad2 = footprint.FindPadByNumber("2")
-        # The tracked routed PCB is deliberately a held pre-correction snapshot.
-        # Electrical truth is checked above from board JSON; retain only its
-        # independently useful placement/value checks here until controlled reroute.
+        # Electrical truth is checked above from board JSON.  The promoted routed
+        # board has exact source-pad identity; retain the independent placement/value
+        # checks here so future source changes cannot silently move these pull-ups.
         if pad1 is not None:
             actual = (mm(pad1.GetPosition().x), mm(pad1.GetPosition().y))
             if any(abs(got - want) > 0.002 for got, want in zip(actual, signal_position)):

@@ -284,7 +284,7 @@ board has 29,664 routed items across 411 nets; exact evidence is in
 package is pinned in `ref/routing/zero-open-fabrication-package.json`, and
 cumulative promoted closures are now 677.
 The separately preserved historical candidate remains useful for drift
-auditing: it has 62 pad-net mismatches and 202 moved pads against the live
+auditing: it has 261 pad-net mismatches and 224 moved pads against the live
 source, while the promoted board above has exact source identity.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
@@ -643,7 +643,7 @@ diodes with their sheet-proved polarities. This target-body evidence supersedes
 the older `.006` group list's КД522А allocation without changing VD3/VD5.
 
 The machine-verified upload ZIP SHA256 is
-`d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c`.
+`65dd445248e466ac162896215bb95cb1408e8abbb93cfd7db2f98a86fe3f4a7d`.
 Do not send this package to a fabricator while the design hold remains. After
 the blockers below are closed, regenerate every fabrication file and gate
 again before upload.
@@ -1445,9 +1445,10 @@ Once a released board and programmed parts exist:
 
 - [x] Structural model boots and matches the software oracle.
 - [x] EKDOS and disk BASIC reach visible prompts in uninterrupted HDL.
-- [ ] Current engineering PCB package is regenerated and DRC-clean for the
-  accepted topology. The archived ZIP remains reproducible but is invalidated
-  by the W14 split and intentionally awaits the P0 netlist freeze.
+- [x] Current engineering PCB package is regenerated and DRC-clean for the
+  accepted source topology. The deterministic upload ZIP and machine package
+  gates pass; the separate functional/factory-construction design hold still
+  forbids upload or ordering.
 - [x] Deep value-level cosim guard reaches `CTRACE-END` across the default
   130,000-read window and fails on any address/data divergence.
 - [ ] P0 physical connectivity is complete and rerouted.

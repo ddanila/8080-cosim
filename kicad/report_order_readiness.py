@@ -123,6 +123,11 @@ def design_release_checks():
             ROOT / "docs" / "replica-sourcing-readiness.md",
             "Status: **SOURCING READY**",
         ),
+        (
+            "Factory insulated-wire construction fidelity",
+            ROOT / "docs" / "factory-wire-route-fidelity.md",
+            "Status: **FACTORY WIRE CONSTRUCTION PRESERVED**",
+        ),
     ]
     rows = []
     for label, path, marker in checks:

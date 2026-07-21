@@ -81,5 +81,6 @@ remain open design items. Validated physical D2 contents and the measured
 D2/D30/D105/D13 WAIT/READY handoff are adopted in the source PCB and HDL;
 D30.8->D29.7 and D30.11->D105.2 are owner-confirmed; only the exact `H`
 pull-up/contact remains as the smaller explicit boundary in this cluster.
-The saved routed snapshot predates that corrected topology. `PLAN.md` is the
-living release checklist.
+The promoted route carries that corrected topology with exact source-pad
+identity and a verified local fabrication package. `PLAN.md` is the living
+functional/factory-construction release checklist.

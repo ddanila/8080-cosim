@@ -34,11 +34,11 @@ kicad/check_replica_manufacturing_ready.sh
 
 | File | Bytes | SHA256 | Contents |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 1197416 | `d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 4713480 | `65dd445248e466ac162896215bb95cb1408e8abbb93cfd7db2f98a86fe3f4a7d` | PASS |
 
 ## Upload ZIP Members
 
-- Required metadata: timestamp `1980-01-01 00:00:00`, deflated compression, file mode `0644`
+- Required metadata: timestamp `1980-01-01 00:00:00`, stored (uncompressed) members, file mode `0644`
 
 | Member | Bytes | Metadata | Source match |
 | --- | ---: | --- | --- |
@@ -56,13 +56,13 @@ kicad/check_replica_manufacturing_ready.sh
 
 | File | Bytes | SHA256SUMS entry | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `65dd445248e466ac162896215bb95cb1408e8abbb93cfd7db2f98a86fe3f4a7d` | PASS |
 
 ## Retained Evidence
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2934 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 3030 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1891 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1630 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2127 | PASS |
@@ -71,8 +71,9 @@ kicad/check_replica_manufacturing_ready.sh
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2147 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 16663 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 9109 | PASS |
+| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 12334 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
 
 ## Order-Time Checks
 

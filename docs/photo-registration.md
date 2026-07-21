@@ -83,9 +83,10 @@ coordinates without changing its source placement. At D98.7, the component
 fit also identifies the visible white wire-18 lead; the factory wire table
 independently closes that off-board path as А:18 to S1:2. A new affine solder
 fit corrects a roughly 330 px global-projection displacement and shows that no
-PCB copper departs D98.7; both observations are accepted. The tracked routed PCB and Gerber ZIP intentionally remain the
-last clean pre-correction snapshot until the whole D94/D100 bus cluster can be
-rerouted coherently.
+PCB copper departs D98.7; both observations are accepted. The promoted routed
+PCB carries the registered placement/source topology with exact pad identity,
+and its Gerber ZIP is package-verified. D94/D100 functional boundaries still
+hold design release independently of route/package integrity.
 
 The D93 component fit uses `PXL_20260710_202708344.jpg`, a close-up taken with
 the known КР1818ВГ93 removed from its socket, rather than the populated-board

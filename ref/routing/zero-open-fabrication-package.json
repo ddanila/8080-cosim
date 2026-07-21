@@ -36,9 +36,11 @@
   },
   "upload_zip": {
     "path": "fab/gerbers/upload/juku-replica-gerbers-drill.zip",
-    "bytes": 1197416,
-    "sha256": "d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c",
-    "checksum_file_sha256": "99ca7d2433d58f3b56a209906f73427dcac7b3cd1286a09f710cd1190892f1f0"
+    "bytes": 4713480,
+    "sha256": "65dd445248e466ac162896215bb95cb1408e8abbb93cfd7db2f98a86fe3f4a7d",
+    "checksum_file_sha256": "ba261bf822c4cbd6c3bfc7e6c3cb148c6702be9a2d40d869665e69e748b68825",
+    "member_compression": "stored",
+    "metadata": "1980-01-01 00:00:00, Unix mode 0644"
   },
   "package_status": "DESIGN HOLD / PACKAGE VERIFIED",
   "disposition": "All local fabrication-package integrity gates pass. Do not upload or order while the functional design hold remains."

@@ -16,7 +16,7 @@ python3 scripts/report_d94_reconstruction_constraints.py
 
 Board identity: D94 type is `RE3_PROM_092`.
 
-Address summary: all five address inputs are explicit continuity boundaries.
+Address summary: all five address inputs are owner-continuity-closed nets.
 The former `BA11..BA15` mapping came from the original FDC scaffold's
 same-as-D8 analogy, not from `.009` scan, photo, or owner continuity evidence.
 
@@ -69,9 +69,9 @@ connectivity. Board JSON and the regenerated KiCad schematic are authoritative.
 
 ## KiCad PCB Cross-check
 
-This table records the held pre-correction PCB engineering snapshot.
-Its stale D94 net names are explicitly not accepted connectivity; the board
-model and generated schematic remain authoritative until controlled reroute.
+This table records the authoritative source PCB used by the promoted route.
+Its D94 pad nets are checked directly against the board model; the routed
+candidate identity gate separately proves the promoted board has the same pads.
 
 | Pin | Role | PCB Net | Result |
 | ---: | --- | --- | --- |
@@ -102,7 +102,7 @@ model and generated schematic remain authoritative until controlled reroute.
 | D94 address input sources are traced | PASS | direct owner continuity/source nets for pins 10-14 |
 | Retired D94 BA11..BA15 mapping is absent from the source model | PASS | board JSON BA nets |
 | Held freerouting DSN matches the current D94 mapping | HELD | `kicad/juku.dsn` is a routed engineering snapshot; authoritative connectivity is board JSON/schematic |
-| Held PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb` awaits the next controlled reroute; no stale copper claim is promoted |
+| Source PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb`; promoted route has exact source-pad identity |
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | PASS | board JSON nets |
 | Enable pin15 is isolated from output pin2 | PASS | direct owner continuity; distinct board nets |
