@@ -169,6 +169,14 @@ has 7 opens, 26,082 routed items, no missing source copper, and the unchanged
 710 cosmetic-only DRC reports. Exact evidence is in
 `ref/routing/current7-residual-topology.json`; cumulative promoted closures are
 now 670.
+Fresh diagnostics against that exact seven-open board reclassify five of the
+remaining gaps. ROM_CS_EXP18 has no path on either the 0.125 or 0.10 mm
+lattice. IOWR_RAW_N and D3_O6_D6_A5 require 48 and 61 removable conflicts.
+CS_D57 requires 49 conflicts on the default lattice and 46 at 0.10 mm;
+CS_D55 requires 52 and 56, respectively. None is eligible for the current
+forty-item guarded transaction, so the next bounded work is the unrefreshed
+INT7_RAW and D94_D0_BOUNDARY classification followed by net-specific topology
+changes rather than an unguarded rip-up.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

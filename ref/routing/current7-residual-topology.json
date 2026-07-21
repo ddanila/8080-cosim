@@ -22,12 +22,12 @@
     "final_unconnected": 7
   },
   "residuals": [
-    {"net": "ROM_CS_EXP18", "distance_mm": 45.342},
-    {"net": "IOWR_RAW_N", "distance_mm": 91.265},
-    {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "current_removable_conflicts": 53},
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
+    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "over-conflict-limit", "removable_conflicts": 48, "fixed_blockers": 6, "affected_nets": 13, "transaction_conflict_limit": 40},
+    {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "result": "over-conflict-limit", "removable_conflicts": 61, "fixed_blockers": 4, "affected_nets": 16, "transaction_conflict_limit": 40},
     {"net": "INT7_RAW", "distance_mm": 181.230},
-    {"net": "CS_D57", "distance_mm": 186.449},
-    {"net": "CS_D55", "distance_mm": 195.268},
+    {"net": "CS_D57", "distance_mm": 186.449, "result": "over-conflict-limit", "removable_conflicts": 49, "fixed_blockers": 11, "affected_nets": 15, "alternate_grid_step_mm": 0.1, "alternate_removable_conflicts": 46, "alternate_fixed_blockers": 15, "alternate_affected_nets": 17, "transaction_conflict_limit": 40},
+    {"net": "CS_D55", "distance_mm": 195.268, "result": "over-conflict-limit", "removable_conflicts": 52, "fixed_blockers": 23, "affected_nets": 19, "alternate_grid_step_mm": 0.1, "alternate_removable_conflicts": 56, "alternate_fixed_blockers": 25, "alternate_affected_nets": 28, "transaction_conflict_limit": 40},
     {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637}
   ],
   "tool_sha256": {
@@ -35,5 +35,5 @@
     "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
   },
-  "disposition": "The current source-preserving frontier has seven opens. A guarded CS_D26 transaction restores all twenty displaced nets, closes the prior GND residual, and removes two newly dangling non-source tracks without any electrical DRC finding."
+  "disposition": "The current source-preserving frontier has seven opens. A guarded CS_D26 transaction restores all twenty displaced nets, closes the prior GND residual, and removes two newly dangling non-source tracks without any electrical DRC finding. Fresh diagnostics on this exact topology find no ROM_CS_EXP18 path on the 0.125 or 0.10 mm lattices; IOWR_RAW_N and D3_O6_D6_A5 need 48 and 61 removable conflicts; and the best tested CS_D57 and CS_D55 routes need 46 and 52, all above the forty-item transaction guard."
 }
