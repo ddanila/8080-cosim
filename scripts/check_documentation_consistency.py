@@ -689,20 +689,20 @@ def main() -> int:
             or live_prune.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
             or live_prune.get("input_board_sha256")
             != "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2"
-            or live_prune.get("output_board_size") != 10570467
+            or live_prune.get("output_board_size") != 10641592
             or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
             or initial.get("uncapped_unconnected") != 883
             or pruned.get("uncapped_unconnected") != 677
-            or final.get("uncapped_unconnected") != 2
-            or final.get("routed_nets") != 409
+            or final.get("uncapped_unconnected") != 1
+            or final.get("routed_nets") != 410
             or initial.get("routed_items") - pruned.get("routed_items") != 2872
             or live_prune.get("removed_items") != 2872
             or live_prune.get("removed_source_items") != 0
             or (pruned.get("track_dangling"), pruned.get("via_dangling")) != (0, 0)
             or (final.get("track_dangling"), final.get("via_dangling")) != (0, 0)
-            or probe.get("accepted_routes_by_uncapped_guard") != 675
-            or probe.get("uncapped_unconnected_before") - probe.get("uncapped_unconnected_after") != 675
-            or [item.get("net") for item in live_prune.get("config", {}).get("ripup_transactions", [])] != ["DB4", "VA14", "CS_D26", "PROM_EN", "DB5", "IOWR_RAW_N", "INT7_RAW", "D94_D0_BOUNDARY"]
+            or probe.get("accepted_routes_by_uncapped_guard") != 676
+            or probe.get("uncapped_unconnected_before") - probe.get("uncapped_unconnected_after") != 676
+            or [item.get("net") for item in live_prune.get("config", {}).get("ripup_transactions", [])] != ["DB4", "VA14", "CS_D26", "PROM_EN", "DB5", "IOWR_RAW_N", "INT7_RAW", "D94_D0_BOUNDARY", "MEMW"]
             or probe.get("rule_accurate_multilayer_clearance_mm") != 0.21
             or probe.get("rule_accurate_multilayer_grid_step_mm") != 0.25
             or probe.get("rule_accurate_multilayer_exhausted_through_mm") != 260
@@ -940,6 +940,35 @@ def main() -> int:
         for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
             if "current2-residual-topology.json" not in read(path):
                 failures.append(f"{path} omits the two-open residual evidence")
+
+    current1_path = ROOT / "ref/routing/current1-residual-topology.json"
+    if not current1_path.exists():
+        failures.append("current one-open residual-topology evidence is missing")
+    else:
+        current1 = json.loads(current1_path.read_text(encoding="utf-8"))
+        entries = current1.get("residuals", [])
+        transaction = current1.get("transaction", {})
+        if (
+            current1.get("schema_version") != 1
+            or current1.get("board_sha256") != "c62db440e2c8f7cd2e5617571a94fd453292dfebae314caa4671462521742b26"
+            or current1.get("board_size") != 10641592
+            or current1.get("uncapped_unconnected") != 1
+            or current1.get("electrical_blockers") != 0
+            or (current1.get("track_dangling"), current1.get("via_dangling")) != (0, 0)
+            or current1.get("promoted_closures") != 676
+            or transaction.get("net") != "MEMW"
+            or transaction.get("removed_source_items") != 0
+            or len(entries) != 1
+            or entries[0].get("net") != "ROM_CS_EXP18"
+        ):
+            failures.append("current one-open residual-topology summary is malformed")
+        for relative, expected in current1.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"one-open residual tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current1-residual-topology.json" not in read(path):
+                failures.append(f"{path} omits the one-open residual evidence")
 
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():

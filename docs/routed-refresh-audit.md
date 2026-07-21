@@ -234,6 +234,13 @@ ROM_CS_EXP18 open. The resulting two-open board has 28,123 routed items across
 409 nets, no electrical or dangling findings, and the unchanged 710 cosmetic
 reports. Exact evidence is in `ref/routing/current2-residual-topology.json`;
 cumulative promoted closures are now 675.
+A D3_O6_D6_A5 equal-open swap followed by a `(0.025,0.075)` mm MEMW transaction
+and a 2.06 mm ROE endpoint bridge reduces the source-preserving frontier to one
+open. Independent KiCad 9.0.8 DRC reports only ROM_CS_EXP18 unconnected. The
+board has 28,612 routed items across 410 nets, no electrical or dangling
+findings, and the unchanged 710 cosmetic reports. Exact evidence is in
+`ref/routing/current1-residual-topology.json`; cumulative promoted closures are
+now 676.
 
 ### Additive/rename-safe copper migration
 

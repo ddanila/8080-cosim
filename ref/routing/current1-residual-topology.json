@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "board_sha256": "c62db440e2c8f7cd2e5617571a94fd453292dfebae314caa4671462521742b26",
+  "board_size": 10641592,
+  "drc_sha256": "cdede037dcdeeed4a341cf08065735eaaeb2395159d07db12bc1600641e1ae26",
+  "uncapped_unconnected": 1,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "promoted_closures": 676,
+  "topology_swap": {
+    "net": "D3_O6_D6_A5",
+    "distance_mm": 172.151,
+    "grid_step_mm": 0.1,
+    "removed_conflicts": 39,
+    "affected_nets": 19,
+    "displaced_net": "MEMW",
+    "post_transaction_pruned_items": 77,
+    "removed_source_items": 0,
+    "initial_unconnected": 2,
+    "final_unconnected": 2
+  },
+  "transaction": {
+    "net": "MEMW",
+    "distance_mm": 19.144,
+    "grid_step_mm": 0.1,
+    "grid_offset_mm": [0.025, 0.075],
+    "removed_conflicts": 2,
+    "restored_nets": ["BA12", "BA5"],
+    "roe_bridge_mm": [[46.0, 232.0], [45.5, 230.0]],
+    "removed_source_items": 0,
+    "initial_unconnected": 2,
+    "final_unconnected": 1
+  },
+  "residuals": [
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_step_mm": 0.0875}
+  ],
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "D3_O6_D6_A5 closes through a 39-conflict equal-open swap that displaces one MEMW branch. A phased two-conflict MEMW transaction restores BA12 and BA5, and a 2.06 mm ROE bridge reconnects the retained source segment after orphan pruning. The current source-preserving frontier has only ROM_CS_EXP18 open, no electrical or dangling DRC findings, and the unchanged 710 cosmetic-only reports."
+}

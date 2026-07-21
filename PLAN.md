@@ -227,6 +227,16 @@ conflicts along its 252.637 mm route. Restoration across the 0.125, 0.10, and
 the unchanged 710 cosmetic reports. Exact evidence is in
 `ref/routing/current2-residual-topology.json`; cumulative promoted closures are
 now 675.
+A 0.10 mm D3_O6_D6_A5 transaction next removes 39 non-source conflicts and
+closes its 172.151 mm gap, but leaves one short MEMW branch open after restoring
+the other affected topology. Pruning 77 safe orphan items exposes one retained
+source ROE endpoint. A MEMW phase sweep finds a two-conflict route at
+`(0.025,0.075)` mm, restores BA12 and BA5, and a direct 2.06 mm B.Cu bridge
+reconnects the ROE endpoint to its existing via. Stable KiCad 9.0.8 DRC leaves
+only ROM_CS_EXP18 open: the result has 1 open, 28,612 routed items across 410
+nets, zero electrical or dangling findings, and the unchanged 710 cosmetic
+reports. Exact evidence is in `ref/routing/current1-residual-topology.json`;
+cumulative promoted closures are now 676.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
