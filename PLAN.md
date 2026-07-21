@@ -161,6 +161,14 @@ A complete 0.125 mm phase sweep finds four additional IOWR_RAW_N diagnostics at
 0.205 mm target route after its bounded rip-up, including both matched-phase
 and default-target retries of the 26-conflict case, so this alternate branch is
 exhausted.
+A separate widened transaction is successful on CS_D26. Its 177.308 mm route
+removes 34 non-source conflicts, restores all twenty affected nets across the
+0.125, 0.10, and 0.0875 mm grids, and also closes the previously exhausted GND
+residual. Two newly dangling non-source tracks are pruned afterward. The result
+has 7 opens, 26,082 routed items, no missing source copper, and the unchanged
+710 cosmetic-only DRC reports. Exact evidence is in
+`ref/routing/current7-residual-topology.json`; cumulative promoted closures are
+now 670.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

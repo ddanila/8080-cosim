@@ -2,9 +2,9 @@
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
-  "output_board_sha256": "1c50771619a2a48d1be45151328283dee95faf18c2e55a35451d94f1d8d116d1",
-  "output_board_size": 10160938,
-  "output_drc_sha256": "3db777c3ef692de0c4a48f9e1788644721044b9458e5d40a0038bf635e976513",
+  "output_board_sha256": "16b8c6ed89eff11910e186414eccb95845fcf2376ced10e0cc9ba1a6c2a79c89",
+  "output_board_size": 10270058,
+  "output_drc_sha256": "701522d7f627bf5fb49ee2995c379fc0fe9aa683a434316e28206fdf82bc21e9",
   "config": {
     "batch_sizes": [32, 64],
     "adaptive_batch": true,
@@ -165,7 +165,8 @@
     ],
     "ripup_transactions": [
       {"net": "DB4", "distance_mm": 16.447, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1], "removed_conflicts": 6, "restored_nets": ["DB0", "DB3", "DB7", "DC7", "MEMW", "RESET"], "initial_unconnected": 11, "final_unconnected": 10},
-      {"net": "VA14", "distance_mm": 25.101, "diagnostic_clearance_mm": 0.205, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1], "removed_conflicts": 1, "restored_nets": ["S3_4"], "initial_unconnected": 10, "final_unconnected": 9}
+      {"net": "VA14", "distance_mm": 25.101, "diagnostic_clearance_mm": 0.205, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1], "removed_conflicts": 1, "restored_nets": ["S3_4"], "initial_unconnected": 10, "final_unconnected": 9},
+      {"net": "CS_D26", "distance_mm": 177.308, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 34, "restored_nets": ["BA1", "BA11", "D6_V_ENABLE", "DB0", "DB1", "DB5", "GND", "IORD", "KBD_SC3", "LOAD_PRE", "MA3", "MA7", "NODE_A", "P5V", "RAIL12", "RAIL_G", "RAIL_H", "RAS", "ROM_CS_6000", "W_RAIL16"], "post_transaction_pruned_items": 2, "removed_source_items": 0, "initial_unconnected": 9, "final_unconnected": 7}
     ],
     "equal_open_topology_swaps": [
       {"net": "BA11", "removed_items": 7, "removed_source_items": 0, "remote_via_mm": [65.0, 125.0], "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
@@ -190,10 +191,10 @@
     "via_dangling": 0
   },
   "final": {
-    "routed_items": 25352,
+    "routed_items": 26082,
     "routed_nets": 403,
-    "uncapped_unconnected": 9,
-    "cli_unconnected_ceiling": 9,
+    "uncapped_unconnected": 7,
+    "cli_unconnected_ceiling": 7,
     "track_dangling": 0,
     "via_dangling": 0,
     "short": 0,
@@ -232,7 +233,7 @@
     "fine_multilayer_clearance_mm": 0.205,
     "fine_multilayer_grid_step_mm": 0.125,
     "accepted_routes_by_capped_marker_guard": 668,
-    "accepted_routes_by_uncapped_guard": 668,
+    "accepted_routes_by_uncapped_guard": 670,
     "routes": [
       {"net": "P5V", "distance_mm": 1.623},
       {"net": "P5V", "distance_mm": 2.182},
@@ -901,13 +902,15 @@
       {"net": "FDC_SIDE_SEL", "distance_mm": 225.201},
       {"net": "INT6_RAW", "distance_mm": 188.185},
       {"net": "DB4", "distance_mm": 16.447},
-      {"net": "VA14", "distance_mm": 25.101}
+      {"net": "VA14", "distance_mm": 25.101},
+      {"net": "CS_D26", "distance_mm": 177.308},
+      {"net": "GND", "distance_mm": 17.780}
     ],
     "uncapped_unconnected_before": 677,
-    "uncapped_unconnected_after": 9,
+    "uncapped_unconnected_after": 7,
     "promoted": true
   },
-  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred sixty-eight independently checked routes reduce the uncapped count again to 9 and are promoted. This remains convergence evidence, not production copper.",
+  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred seventy independently checked routes reduce the uncapped count again to 7 and are promoted. The 34-conflict CS_D26 transaction also closes the long GND residual and prunes two non-source dangling tracks. This remains convergence evidence, not production copper.",
   "tool_sha256": {
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/report_board_unconnected.py": "74d3422d973f216a7137f08fb46409f9a0ad1ec900e491bade9195ad67a98404",
