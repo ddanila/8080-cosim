@@ -227,6 +227,8 @@ def main() -> int:
         "ref/schematics/fdc-write-precomp-map.md": ("D101.7 → D94.14/R88",),
         "ref/datasheets/k555kp12-pinout.txt": ("unidentified pull-up resistor to +5 V",),
         "ref/datasheets/k170up2-pinout.txt": ("D104.7 <-> D94.13",),
+        "ref/datasheets/k155re3-pinout.txt": ("Address pins 10/11/12/14 and output pins 6/7/9 remain incomplete",),
+        "docs/owner-measurement-shortlist.md": ("D5-D7 remain PCB-fidelity asks", "D94 .092 live steering capture"),
     }
     for path, phrases in stale_d94_a4_pullup_claims.items():
         text = read(path)

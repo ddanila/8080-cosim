@@ -208,10 +208,10 @@ def main() -> int:
         ),
         (
             "P0",
-            "D94 .092 live steering capture",
-            "owner continuity on 2026-07-21 closes D94 D5-D7/pins6,7,9 and D104.10 as NC, completing the former static-output batch. Optionally scope D101.7, D94.1, /RE, and /WE on port 1F to observe the table's register-3 steering behavior",
+            "D94 .092 shared-enable/D0 closure",
+            "Trace the upstream source beyond the owner-closed D94.15/D93.3 shared-enable conductor. With D94 removed, repeat-check D94.1 against D101.1 and nearby support pins; either identify its hidden load or confirm the R8 2 kΩ pull-up is the only branch. Optionally scope D101.7, D94.1, /RE, and /WE on port 1F to observe register-3 steering",
             "`docs/d94-reconstruction-constraints.md`; `docs/photo-registration.md`; exact two-sided local-fit rows in `ref/photos/juku-pcb-2/endpoints.csv`",
-            "uses the recovered PROM equations to target D0's hidden branch and validates the read/write steering dynamically before an FDC hardware release",
+            "closes the only two remaining D94 physical boundaries; the optional runtime capture validates steering but does not replace continuity",
         ),
         (
             "P0",
@@ -323,7 +323,7 @@ def main() -> int:
             f"- D94 failed evidence checks: `{', '.join(inline(item) for item in d94_failures) if d94_failures else 'none'}`",
             "- D94 A0-A4/pins 10-14 are owner-closed onto BA0, BA1, IORD, D105.3 qualified /WR, and D101.7.",
             "  D94.15->D93.3, D94.2->D99.9/R89, D94.3->D93.4/R88, and D94.4->D93.2/R87 are owner-closed.",
-            "  D94.5 is visibly NC; D93.1 alone owns the visible open stub. R8 2 kΩ is the only measured D94.1 branch; D5-D7 remain PCB-fidelity asks.",
+            "  D94 outputs D4-D7/pins5,6,7,9 are owner/drawing-closed NC; D93.1 alone owns the visible open stub. R8 2 kΩ is the only measured D94.1 branch; its hidden-load status and the shared-enable upstream source remain open.",
             "  D5.27->D7.10 is raw IOWR_N; D7.8->D105.1/D6.15 and D13.4->D105.2 produce D105.3 qualified peripheral /WR. D104.7 is separate at about 84 kΩ from D94.13.",
             "  A4/D101.Q0 only affects BA1:BA0=11: low selects D0 and releases D93 `/RE`/`/WE`; high selects the normal D93 data-register strobe. Scope that four-node transition without assigning D0's unknown load.",
             "  The content table itself is already closed.",

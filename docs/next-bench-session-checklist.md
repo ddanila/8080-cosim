@@ -23,12 +23,16 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
 
 ## Remaining P0 connectivity (batch in the same session)
 
-2. **D94 `.092` live steering:** owner continuity on 2026-07-21 closes
+2. **D94 `.092` shared-enable/D0 closure and live steering:** owner continuity on 2026-07-21 closes
    D94 D5-D7/pins 6, 7, and 9 plus D104.10 as NC, matching the exact-revision
-   drawing. During port `1F` data-register
+   drawing. Trace the upstream source beyond the local D94.15/D93.3 join. With
+   D94 removed, repeat-check D94.1 against D101.1 and nearby support pins;
+   either identify a hidden load or confirm R8 2 kΩ is its only branch.
+   During port `1F` data-register
    transfers, also capture D101.7/A4, D94.1/D0, D93.4 `/RE`, and D93.2 `/WE`:
    A4 low must steer to D0 with both D93 strobes released, while A4 high restores
-   the direction-appropriate D93 strobe
+   the direction-appropriate D93 strobe. This runtime capture corroborates the
+   physical table but does not replace the two continuity checks
    (`docs/d94-reconstruction-constraints.md`).
 3. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
    D101 select

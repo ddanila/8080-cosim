@@ -16,7 +16,7 @@ Pin contract
 7   D6 output             15  /CE enable input
 8   GND                   16  +5 V
 
-Juku direct-continuity interpretation, corrected 2026-07-19
+Juku direct-continuity interpretation, corrected through 2026-07-21
 -------------------------------------------------
 D94.15 <-> D93.3 (/CS)
 D94.2  <-> D99.9 <-> R89 (6.2 kohm to +5 V); not D99.8/GND
@@ -32,5 +32,8 @@ D94.14 <-> D101.7 (Q0)
 D94.1 connects through R8, measured approximately 2 kohm, to +5 V. No other
 trace or branch was observed. Full-resolution visual inspection shows D94.5
 is NC. D93.1 alone owns the short trace ending at the visible gap.
-Address pins 10/11/12/14 and output pins 6/7/9 remain incomplete board routes.
+All five address inputs are owner-closed. Owner continuity plus the exact
+revision drawing closes output pins 6/7/9 as NC; pin 5 is likewise NC.
+The remaining physical boundaries are the upstream source of the shared
+enable at D94.15/D93.3 and whether D94.1 has a hidden load beyond R8.
 Keep programmed-output semantics separate from physical destinations.
