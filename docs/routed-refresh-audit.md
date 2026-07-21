@@ -204,6 +204,15 @@ source copper, no electrical or dangling finding, and the same 710 cosmetic
 reports. Exact hashes and transaction evidence are in
 `ref/routing/current6-residual-topology.json`; cumulative promoted closures are
 now 671.
+On that new topology CS_D55 needs only 39 removable conflicts. A
+`(0.025,0.1)` mm target phase restores twenty-one affected nets and temporarily
+exposes DB5. After 30 safe orphan items are pruned, a `(0.05,0.075)` mm DB5
+route removes one IORD conflict; IORD restores and 94 additional obsolete
+non-source items are pruned. The resulting five-open board has 27,050 routed
+items, no missing source copper, no electrical or dangling findings, and the
+same 710 cosmetic reports. Exact evidence is in
+`ref/routing/current5-residual-topology.json`; cumulative promoted closures are
+now 672.
 
 ### Additive/rename-safe copper migration
 

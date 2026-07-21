@@ -190,6 +190,16 @@ KiCad reports the unchanged 710 cosmetic-only findings, zero electrical or
 dangling findings, and no missing source copper. Exact evidence is in
 `ref/routing/current6-residual-topology.json`; cumulative promoted closures are
 now 671.
+On the six-open topology CS_D55 drops from 52 to 39 removable conflicts. Its
+default legal target route has one clearance violation, but a `(0.025,0.1)` mm
+target phase closes it and restores twenty-one affected nets; only DB5 remains,
+so the result is a DRC-neutral equal-open swap. After 30 safe orphan items are
+pruned, a DB5 phase sweep finds a one-conflict `(0.05,0.075)` mm route that
+displaces only IORD. Restoring IORD and pruning 94 more orphan items produces a
+5-open, 27,050-item board with no missing source copper, no electrical or
+dangling findings, and the same 710 cosmetic reports. Exact evidence is in
+`ref/routing/current5-residual-topology.json`; cumulative promoted closures are
+now 672.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

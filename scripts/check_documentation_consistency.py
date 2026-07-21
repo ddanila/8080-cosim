@@ -689,20 +689,20 @@ def main() -> int:
             or live_prune.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
             or live_prune.get("input_board_sha256")
             != "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2"
-            or live_prune.get("output_board_size") != 10341714
+            or live_prune.get("output_board_size") != 10414896
             or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
             or initial.get("uncapped_unconnected") != 883
             or pruned.get("uncapped_unconnected") != 677
-            or final.get("uncapped_unconnected") != 6
-            or final.get("routed_nets") != 405
+            or final.get("uncapped_unconnected") != 5
+            or final.get("routed_nets") != 406
             or initial.get("routed_items") - pruned.get("routed_items") != 2872
             or live_prune.get("removed_items") != 2872
             or live_prune.get("removed_source_items") != 0
             or (pruned.get("track_dangling"), pruned.get("via_dangling")) != (0, 0)
             or (final.get("track_dangling"), final.get("via_dangling")) != (0, 0)
-            or probe.get("accepted_routes_by_uncapped_guard") != 671
-            or probe.get("uncapped_unconnected_before") - probe.get("uncapped_unconnected_after") != 671
-            or [item.get("net") for item in live_prune.get("config", {}).get("ripup_transactions", [])] != ["DB4", "VA14", "CS_D26", "PROM_EN"]
+            or probe.get("accepted_routes_by_uncapped_guard") != 672
+            or probe.get("uncapped_unconnected_before") - probe.get("uncapped_unconnected_after") != 672
+            or [item.get("net") for item in live_prune.get("config", {}).get("ripup_transactions", [])] != ["DB4", "VA14", "CS_D26", "PROM_EN", "DB5"]
             or probe.get("rule_accurate_multilayer_clearance_mm") != 0.21
             or probe.get("rule_accurate_multilayer_grid_step_mm") != 0.25
             or probe.get("rule_accurate_multilayer_exhausted_through_mm") != 260
@@ -816,6 +816,37 @@ def main() -> int:
         for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
             if "current6-residual-topology.json" not in read(path):
                 failures.append(f"{path} omits the six-open residual evidence")
+
+    current5_path = ROOT / "ref/routing/current5-residual-topology.json"
+    if not current5_path.exists():
+        failures.append("current five-open residual-topology evidence is missing")
+    else:
+        current5 = json.loads(current5_path.read_text(encoding="utf-8"))
+        entries = current5.get("residuals", [])
+        transactions = current5.get("transactions", [])
+        if (
+            current5.get("schema_version") != 1
+            or current5.get("board_sha256")
+            != "d026d4c562c42fcd19d368cd197ec857fa95af08c1e7048300383780197b4205"
+            or current5.get("board_size") != 10414896
+            or current5.get("uncapped_unconnected") != 5
+            or current5.get("electrical_blockers") != 0
+            or (current5.get("track_dangling"), current5.get("via_dangling")) != (0, 0)
+            or current5.get("promoted_closures") != 672
+            or [item.get("net") for item in transactions] != ["CS_D55", "DB5"]
+            or any(item.get("removed_source_items") != 0 for item in transactions)
+            or len(entries) != 5
+            or {entry.get("net") for entry in entries}
+            != {"ROM_CS_EXP18", "IOWR_RAW_N", "D3_O6_D6_A5", "INT7_RAW", "D94_D0_BOUNDARY"}
+        ):
+            failures.append("current five-open residual-topology summary is malformed")
+        for relative, expected in current5.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"five-open residual tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "current5-residual-topology.json" not in read(path):
+                failures.append(f"{path} omits the five-open residual evidence")
 
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():

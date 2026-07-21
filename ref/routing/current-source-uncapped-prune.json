@@ -2,9 +2,9 @@
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
-  "output_board_sha256": "203fc3955421b3744261537a1f781e349cad1ffa60e55548970035c6cc15f074",
-  "output_board_size": 10341714,
-  "output_drc_sha256": "ff4485f1b9958ebc6901789c6a4c11f4d258720c94a677f491ae8ab03f25aa70",
+  "output_board_sha256": "d026d4c562c42fcd19d368cd197ec857fa95af08c1e7048300383780197b4205",
+  "output_board_size": 10414896,
+  "output_drc_sha256": "901735404545c4537252e9fa1e680ebb7de2fda1fff9d55875e345d46f2da470",
   "config": {
     "batch_sizes": [32, 64],
     "adaptive_batch": true,
@@ -167,7 +167,8 @@
       {"net": "DB4", "distance_mm": 16.447, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1], "removed_conflicts": 6, "restored_nets": ["DB0", "DB3", "DB7", "DC7", "MEMW", "RESET"], "initial_unconnected": 11, "final_unconnected": 10},
       {"net": "VA14", "distance_mm": 25.101, "diagnostic_clearance_mm": 0.205, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1], "removed_conflicts": 1, "restored_nets": ["S3_4"], "initial_unconnected": 10, "final_unconnected": 9},
       {"net": "CS_D26", "distance_mm": 177.308, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 34, "restored_nets": ["BA1", "BA11", "D6_V_ENABLE", "DB0", "DB1", "DB5", "GND", "IORD", "KBD_SC3", "LOAD_PRE", "MA3", "MA7", "NODE_A", "P5V", "RAIL12", "RAIL_G", "RAIL_H", "RAS", "ROM_CS_6000", "W_RAIL16"], "post_transaction_pruned_items": 2, "removed_source_items": 0, "initial_unconnected": 9, "final_unconnected": 7},
-      {"net": "PROM_EN", "distance_mm": 19.683, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.1, "grid_offset_mm": [0.075, 0.075], "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 8, "restored_nets": ["BA10", "BA12", "BA5", "GND", "IORD", "ROM_CS_4000"], "removed_source_items": 0, "initial_unconnected": 7, "final_unconnected": 6}
+      {"net": "PROM_EN", "distance_mm": 19.683, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.1, "grid_offset_mm": [0.075, 0.075], "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 8, "restored_nets": ["BA10", "BA12", "BA5", "GND", "IORD", "ROM_CS_4000"], "removed_source_items": 0, "initial_unconnected": 7, "final_unconnected": 6},
+      {"net": "DB5", "distance_mm": 21.145, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "grid_offset_mm": [0.05, 0.075], "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 1, "restored_nets": ["IORD"], "post_transaction_pruned_items": 94, "removed_source_items": 0, "initial_unconnected": 6, "final_unconnected": 5}
     ],
     "equal_open_topology_swaps": [
       {"net": "BA11", "removed_items": 7, "removed_source_items": 0, "remote_via_mm": [65.0, 125.0], "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
@@ -175,7 +176,8 @@
       {"net": "VA13", "removed_items": 11, "removed_source_items": 0, "replacement_distance_mm": 22.561, "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
       {"net": "BA12", "removed_items": 2, "removed_source_items": 0, "replacement_items": 37, "replacement_vias": 4, "forced_corridor_mm": [[89.5, 122.0], [91.0, 122.0]], "entry_bridge_mm": [[86.0, 122.0], [85.0, 122.9]], "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
       {"net": "BA15", "removed_items": 2, "removed_source_items": 0, "replacement_items": 13, "grid_step_mm": 0.1, "grid_offset_mm": [0.05, 0.0], "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
-      {"net": "CS_D57", "distance_mm": 186.449, "removed_items": 46, "removed_source_items": 0, "restored_nets": ["BA1", "CS_D10", "CS_D26", "D33_6_D36", "D33_D36", "D40Q2_D33", "DB4", "DB7", "FDC_DDEN", "FDC_SIDE_SEL", "GND", "IORD", "IOWR", "MEMR", "MEMW", "VID_CPU_SEL"], "displaced_net": "PROM_EN", "post_transaction_pruned_items": 23, "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 7, "final_unconnected": 7}
+      {"net": "CS_D57", "distance_mm": 186.449, "removed_items": 46, "removed_source_items": 0, "restored_nets": ["BA1", "CS_D10", "CS_D26", "D33_6_D36", "D33_D36", "D40Q2_D33", "DB4", "DB7", "FDC_DDEN", "FDC_SIDE_SEL", "GND", "IORD", "IOWR", "MEMR", "MEMW", "VID_CPU_SEL"], "displaced_net": "PROM_EN", "post_transaction_pruned_items": 23, "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 7, "final_unconnected": 7},
+      {"net": "CS_D55", "distance_mm": 195.268, "removed_items": 39, "removed_source_items": 0, "restored_nets": ["BA1", "BA12", "D25_T", "D33_6_D36", "D33_D36", "D39Y", "D40Q2_D33", "DB6", "FDC_DDEN", "FDC_SIDE_SEL", "IORD", "IOWR", "MEMR", "MEMW", "OSC", "P5V", "REV", "ROE", "SYNC", "S_CTS", "VID_CPU_SEL"], "displaced_net": "DB5", "post_transaction_pruned_items": 30, "grid_step_mm": 0.125, "route_grid_offset_mm": [0.025, 0.1], "route_clearance_mm": 0.205, "initial_unconnected": 6, "final_unconnected": 6}
     ]
   },
   "identity": {"footprints": 321, "pads": 2434},
@@ -193,10 +195,10 @@
     "via_dangling": 0
   },
   "final": {
-    "routed_items": 26570,
-    "routed_nets": 405,
-    "uncapped_unconnected": 6,
-    "cli_unconnected_ceiling": 6,
+    "routed_items": 27050,
+    "routed_nets": 406,
+    "uncapped_unconnected": 5,
+    "cli_unconnected_ceiling": 5,
     "track_dangling": 0,
     "via_dangling": 0,
     "short": 0,
@@ -235,7 +237,7 @@
     "fine_multilayer_clearance_mm": 0.205,
     "fine_multilayer_grid_step_mm": 0.125,
     "accepted_routes_by_capped_marker_guard": 668,
-    "accepted_routes_by_uncapped_guard": 671,
+    "accepted_routes_by_uncapped_guard": 672,
     "routes": [
       {"net": "P5V", "distance_mm": 1.623},
       {"net": "P5V", "distance_mm": 2.182},
@@ -907,13 +909,14 @@
       {"net": "VA14", "distance_mm": 25.101},
       {"net": "CS_D26", "distance_mm": 177.308},
       {"net": "GND", "distance_mm": 17.780},
-      {"net": "PROM_EN", "distance_mm": 19.683}
+      {"net": "PROM_EN", "distance_mm": 19.683},
+      {"net": "DB5", "distance_mm": 21.145}
     ],
     "uncapped_unconnected_before": 677,
-    "uncapped_unconnected_after": 6,
+    "uncapped_unconnected_after": 5,
     "promoted": true
   },
-  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred seventy-one independently checked net closures reduce the uncapped count again to 6 and are promoted. A 46-conflict equal-open CS_D57 swap restores sixteen displaced nets, then a phased eight-conflict PROM_EN transaction restores its six displaced nets and turns the swap into a real closure. This remains convergence evidence, not production copper.",
+  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 initial dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred seventy-two independently checked net closures reduce the uncapped count again to 5 and are promoted. A phased 39-conflict CS_D55 equal-open swap restores twenty-one displaced nets; a one-conflict DB5 transaction restores IORD and turns that swap into a real closure. One hundred twenty-four newly exposed non-source orphan items are pruned across the two steps. This remains convergence evidence, not production copper.",
   "tool_sha256": {
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/report_board_unconnected.py": "74d3422d973f216a7137f08fb46409f9a0ad1ec900e491bade9195ad67a98404",

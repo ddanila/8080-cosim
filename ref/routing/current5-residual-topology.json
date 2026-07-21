@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "board_sha256": "d026d4c562c42fcd19d368cd197ec857fa95af08c1e7048300383780197b4205",
+  "board_size": 10414896,
+  "drc_sha256": "901735404545c4537252e9fa1e680ebb7de2fda1fff9d55875e345d46f2da470",
+  "uncapped_unconnected": 5,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "promoted_closures": 672,
+  "transactions": [
+    {"net": "CS_D55", "distance_mm": 195.268, "mode": "equal-open-topology-swap", "removed_conflicts": 39, "route_grid_offset_mm": [0.025, 0.1], "restored_nets": 21, "displaced_net": "DB5", "post_transaction_pruned_items": 30, "removed_source_items": 0, "initial_unconnected": 6, "final_unconnected": 6},
+    {"net": "DB5", "distance_mm": 21.145, "grid_step_mm": 0.125, "grid_offset_mm": [0.05, 0.075], "removed_conflicts": 1, "restored_nets": ["IORD"], "post_transaction_pruned_items": 94, "removed_source_items": 0, "initial_unconnected": 6, "final_unconnected": 5}
+  ],
+  "residuals": [
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342},
+    {"net": "IOWR_RAW_N", "distance_mm": 91.265},
+    {"net": "D3_O6_D6_A5", "distance_mm": 172.151},
+    {"net": "INT7_RAW", "distance_mm": 181.230},
+    {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637}
+  ],
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "The current source-preserving frontier has five opens. A phased 39-conflict CS_D55 equal-open swap restores twenty-one of twenty-two affected nets and exposes DB5; a phased one-conflict DB5 transaction restores IORD and closes the net. A total of 124 newly exposed non-source orphan items are pruned, leaving no electrical or dangling DRC findings and the unchanged 710 cosmetic-only reports."
+}
