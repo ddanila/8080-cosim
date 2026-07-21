@@ -35,8 +35,11 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
    physical table but does not replace the two continuity checks
    (`docs/d94-reconstruction-constraints.md`).
 3. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
-   D101 select
-   pins (`docs/fdc-hardware-handoff.md`).
+   D96.9 Q2 and D96.11 CLK2; D99.4/.5/.10/.11/.12; and
+   D101.1 `/OE0` plus data inputs D101.3/.5/.6. D101's shared EARLY/LATE
+   select pins 2/14 and its complete Q1 write-precomp half are already
+   source-closed and must not be re-probed as missing paths
+   (`docs/fdc-hardware-handoff.md`).
 4. **Factory Вид В details:** D56.5->D34.9 and D56.12->D55.15/.18 are now
    owner-closed. D56's three physical callout locations are fixed as the
    separate left annulus plus D56.5/D56.12; identify the installed item-159
@@ -55,4 +58,5 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
    (`docs/community-prom-media-request.md`).
 
 The D6 output-order and D94 static-output blockers are closed; the highest-value
-remaining live bench item is the D94 port-`1F` steering capture above.
+remaining D94 bench items are the shared-enable and chip-removed D0 continuity
+checks above. The port-`1F` steering capture is secondary corroboration.
