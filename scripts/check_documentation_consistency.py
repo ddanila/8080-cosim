@@ -804,7 +804,8 @@ def main() -> int:
         classification = live.get("classification", {})
         if (
             live.get("schema_version") != 1
-            or live.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
+            or live.get("source_board_sha256") != "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb"
+            or live.get("superseded_by_source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
             or live.get("routed_snapshot_sha256") != "f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315"
             or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
             or source.get("uncapped_unconnected") != 1814
@@ -838,7 +839,8 @@ def main() -> int:
         probe = live_prune.get("route_probe", {})
         if (
             live_prune.get("schema_version") != 1
-            or live_prune.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
+            or live_prune.get("source_board_sha256") != "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb"
+            or live_prune.get("superseded_by_source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
             or live_prune.get("input_board_sha256")
             != "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2"
             or live_prune.get("output_board_size") != 10641592

@@ -1,6 +1,6 @@
 # Replica bring-up verification points
 
-Status: **ENDPOINT COVERAGE FAILED**
+Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**
 
 This report is generated from `kicad/juku.board.json`. It turns the
 remaining source-risk annotations into an explicit checklist for vendor
@@ -13,16 +13,16 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Source board JSON SHA-256: `8bb6c3071b061d9ac4ae209eb7546d737b591d86b94493473fbe35bd590007e4`
 - Final PCB source: `kicad/juku.kicad_pcb`
-- Final PCB source SHA-256: `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb`
+- Final PCB source SHA-256: `8ea610a8241569878e540fc31918b28f3a031dffcac29b8cbea7c2e35feb44b9`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Routed PCB source SHA-256: `1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015`
+- Routed PCB source SHA-256: `6ddfde373d44c5a4875860d3ec5020e6f1867124d06e00f79a4200a1564e3a33`
 - Verification-point nets: `45`
 - Verification-point endpoints checked in PCB: `55`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2291`
 - All board endpoints checked in routed PCB: `2291`
 - Intentional non-PCB or placement-pending endpoints excluded: `75`
-- Full PCB endpoint coverage: `FAIL`
+- Full PCB endpoint coverage: `PASS`
 
 | Category | Nets |
 | --- | ---: |
@@ -59,20 +59,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2291/2291 | 2287/2291 | FAIL |
-| `kicad/juku_routed.kicad_pcb` | 2291/2291 | 2287/2291 | FAIL |
-
-Mismatched endpoints in `kicad/juku.kicad_pcb`:
-- D55.15: `PIT_HSYNC_DSL` != `D56_Q2N_TAG16`
-- D55.18: `PIT_HSYNC_DSL` != `D56_Q2N_TAG16`
-- D56.10: `SYNC_B` != `PIT_HSYNC_DSL`
-- D56.2: `SYNC_B` != `VERT_SYNC`
-
-Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
-- D55.15: `PIT_HSYNC_DSL` != `D56_Q2N_TAG16`
-- D55.18: `PIT_HSYNC_DSL` != `D56_Q2N_TAG16`
-- D56.10: `SYNC_B` != `PIT_HSYNC_DSL`
-- D56.2: `SYNC_B` != `VERT_SYNC`
+| `kicad/juku.kicad_pcb` | 2291/2291 | 2291/2291 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 2291/2291 | 2291/2291 | PASS |
 
 ## Checklist
 

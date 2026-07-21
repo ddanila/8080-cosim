@@ -31,39 +31,41 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb` |
-| Routed-snapshot PCB SHA-256 | `1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015` |
+| Source PCB SHA-256 | `8ea610a8241569878e540fc31918b28f3a031dffcac29b8cbea7c2e35feb44b9` |
+| Routed-snapshot PCB SHA-256 | `6ddfde373d44c5a4875860d3ec5020e6f1867124d06e00f79a4200a1564e3a33` |
 | Source footprints | 321 |
 | Routed-snapshot footprints | 321 |
 | Source-only footprints | 0 |
 | Routed-only footprints | 0 |
-| Routed copper nets classified by the refresh | 411 |
-| Nets with currently reusable routed copper | 411 |
+| Routed copper nets classified by the refresh | 412 |
+| Nets with currently reusable routed copper | 412 |
 | Routed nets currently quarantined | 0 |
-| Reusable non-duplicate track/via items | 29,617 |
+| Reusable non-duplicate track/via items | 29,733 |
 | Quarantined/duplicate track/via items | 47 |
 | Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
 
 The promoted board contains the same 321 footprints and 2,434 pads as the
 source, with no source-only or routed-only footprints and no common-pad net
-mismatches. All 411 routed copper nets pass the refresh classifier; 47 route
+mismatches. All 412 routed copper nets pass the refresh classifier; 47 route
 items are duplicate geometry rather than quarantined topology.
 
-### Live-source salvage baseline
+### Historical live-source salvage baseline
 
-The hash-bound live classification also seeds an aggressive, explicitly unsafe
+Before the D55/D56 owner-timing refresh, the hash-bound live classification
+seeded an aggressive, explicitly unsafe
 same-name/additive migration candidate. It imports 8,397 copper items on 304
 nets. `salvage_routed_copper.py` then removes only migrated UUIDs named by
 electrical DRC blockers; one round removes 558 items. The accepted result has
 all 321 source footprints and 2,434 pads, retains 7,839 routed items, and has
 883 uncapped connectivity gaps versus 1,814 on the bare source. KiCad's CLI
 report is capped at 499 markers, but the Python connectivity graph supplies the
-uncapped count. Shorts, clearance, crossing, hole, and edge findings are all
+uncapped count. Shorts, clearance, crossing, hole, and edge findings were all
 zero; 199 dangling tracks and 56 dangling vias remain. This improves the older
 1,190-open fresh-source trial on a now larger source, but is still convergence
-evidence, not production copper. Exact hashes, configuration, and counts are
-guarded in `ref/routing/current-source-salvage-baseline.json`.
+evidence, not production copper. Exact hashes, configuration, counts, and its
+supersession by the current source are guarded in
+`ref/routing/current-source-salvage-baseline.json`.
 
 The follow-on uncapped-prune pass uses KiCad's connectivity graph rather than
 the CLI's truncated 499-item list as its acceptance boundary. Adaptive
@@ -267,11 +269,15 @@ The final BA2 transaction closes its 56.957 mm remainder after a zero-fixed
 nets; the last REV cleanup uses a four-item BA15 local swap and restores BA15
 over 2.585 mm on the `(0.025,0.0625)` mm phase. Forty-six final tail prunes
 remove the last dangling warning. The promoted
-`kicad/juku_routed.kicad_pcb` has 29,664 routed items across 411 nets.
+`kicad/juku_routed.kicad_pcb` initially had 29,664 routed items across 411 nets.
 Independent KiCad 9.0.8 DRC reports zero opens, zero electrical or dangling
 findings, and 710 cosmetic findings. The source-parity gate proves 321
 footprints, 2,434 pads, and zero coordinate delta. Exact promotion evidence is
-in `ref/routing/zero-open-promoted-topology.json`.
+in `ref/routing/zero-open-promoted-topology.json`. The subsequent D55/D56
+owner-timing topology refresh removes 14 obsolete affected-net items and adds
+130 items (121 segments and nine vias) across four corrected connections. The
+current promoted board therefore has 29,780 routed items across 412 nets while
+retaining exact source parity, zero opens, and zero electrical blockers.
 
 ### Additive/rename-safe copper migration
 
@@ -1454,7 +1460,7 @@ that old copper island and the main ground domain; it must be rerouted rather
 than hidden by another label. The candidate contains 2,383 pad identities,
 while the current source contains 2,393; 2,369 identities are common and 24 are
 source-only, including W7.1/W7.2, W8.1/W8.2, W10.1/W10.2, W11.1/W11.2,
-W14.1/W14.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 261 changed pad-net assignments and 224 pads
+W14.1/W14.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 265 changed pad-net assignments and 224 pads
 whose coordinates moved by more than 50 nm. The moved set is confined to
 C69, D5, D7, D8, D9, D13, D37-D39, D50, D51, D105, R13, R14, R46, and R49-R57; one net-only
 change is source C34.1, corrected from `RAIL_H` to `P5V` by the native E-F

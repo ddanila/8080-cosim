@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
+  "superseded_by_source_board_sha256": "8ea610a8241569878e540fc31918b28f3a031dffcac29b8cbea7c2e35feb44b9",
   "routed_snapshot_sha256": "f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315",
   "raw_candidate_sha256": "d8bcd775b74364e22f53681ab4223893be61ee1d5218f16aa7bc65fd7679534e",
   "output_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
@@ -39,7 +40,7 @@
     "quarantined_nets": 20,
     "common_pad_mismatches": 381
   },
-  "disposition": "This is the first guarded salvage baseline against the live 321-footprint/2434-pad source. It improves the source-only 1814-open topology and the previously documented 1190-open fresh-source trial, but 883 opens and 255 dangling findings make it convergence evidence rather than production copper.",
+  "disposition": "This guarded salvage baseline records the pre-D55/D56-refresh 321-footprint/2434-pad source. It improved the source-only 1814-open topology and the previously documented 1190-open fresh-source trial, but 883 opens and 255 dangling findings made it convergence evidence rather than production copper. The owner-timing refresh supersedes its source hash; the current promoted board is the exact-parity routing authority.",
   "tool_sha256": {
     "kicad/refresh_routed_from_source.py": "ba6ea6998dcc04092256002a93c09162d12bee652d5da30bd72658e251c3a3d7",
     "kicad/salvage_routed_copper.py": "0da48d9819586f1c387e5e4eba8ed38e7d4e3bddc0e12f433a7d6aad264ec6b7",

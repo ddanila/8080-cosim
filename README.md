@@ -16,17 +16,17 @@ with the machine-readable board model.
 - `sync/check.sh` currently compares 112 mapped instances and 288 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
-  321-footprint/2,434-pad source and contains 29,664 copper items across 411
+  321-footprint/2,434-pad source and contains 29,780 copper items across 412
   nets. Stable KiCad 9.0.8 reports zero opens, zero electrical blockers, and
   zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or
   ordered. Current deterministic upload ZIP SHA256:
-  `65dd445248e466ac162896215bb95cb1408e8abbb93cfd7db2f98a86fe3f4a7d`.
+  `cada377a9b9f5626c4417432b962145bdd6e3f67a7abe4fa440f7ccabf8d1631`.
   Exact topology evidence is retained in
   `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
   `ref/routing/zero-open-fabrication-package.json`, and fabrication/release
   gates are summarized in `docs/replica-manufacturing-readiness.md`.
-  The separately preserved historical candidate still has 261 pad-net mismatches and 224 moved
+  The separately preserved historical candidate still has 265 pad-net mismatches and 224 moved
   pads against the source; it is audit history, not the promoted board.
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from

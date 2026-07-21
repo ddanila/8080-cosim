@@ -25,7 +25,7 @@ represented as explicit assembly wires between split copper islands.
 - Promoted DRC unconnected items: `0`
 - Historical pre-promotion candidate audit:
   - Candidate/source pad identities equal: `FAIL`
-  - Candidate/source pad-net mismatches: `261`
+  - Candidate/source pad-net mismatches: `265`
   - Candidate/source moved pads (>50 nm): `224`
   - Link nets carrying historical candidate copper: `10/10`
   - Historical candidate DRC unconnected items: `1`

@@ -25,7 +25,7 @@ EXPECTED_DRILL_HITS = {
     # The promoted zero-open topology uses 2,776 fine 0.30 mm via drills.  The
     # remaining tools are the exact through-hole pad inventory exported by
     # stable KiCad 9.0.8 from the unchanged 310 mm x 266 mm board geometry.
-    "1": 2776,
+    "1": 2785,
     "2": 2324,
     "3": 85,
     "4": 8,

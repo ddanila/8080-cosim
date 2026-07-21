@@ -2,20 +2,20 @@
   "schema_version": 1,
   "promoted_file": "kicad/juku_routed.kicad_pcb",
   "parent_board_sha256": "22402ed64da6bba2eaf574343c77caef8915cb888f0c95dd4335422263f2a030",
-  "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
-  "board_sha256": "1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015",
-  "board_size": 10802526,
-  "drc_sha256": "025378d830c731092c2ae4297485e880f4f4a8f8fad7318f1ce91935ec915698",
+  "source_board_sha256": "8ea610a8241569878e540fc31918b28f3a031dffcac29b8cbea7c2e35feb44b9",
+  "board_sha256": "6ddfde373d44c5a4875860d3ec5020e6f1867124d06e00f79a4200a1564e3a33",
+  "board_size": 10819277,
+  "drc_sha256": "cc1883da0f036779d3549d1b1b9aa160146278052f4451ceaaf789763ed7288c",
   "footprints": 321,
   "pads": 2434,
   "max_pad_delta_mm": 0.0,
-  "routed_items": 29664,
-  "routed_nets": 411,
+  "routed_items": 29780,
+  "routed_nets": 412,
   "uncapped_unconnected": 0,
   "electrical_blockers": 0,
   "track_dangling": 0,
   "via_dangling": 0,
-  "cosmetic_findings": 710,
+  "cosmetic_findings": 701,
   "promoted_closures": 677,
   "ba2_transaction": {
     "target_net": "BA2",
@@ -55,11 +55,38 @@
     "pre_swap_pruned_items": 100,
     "post_zero_pruned_items": 46
   },
+  "d56_owner_timing_refresh": {
+    "parent_source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
+    "parent_routed_board_sha256": "1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015",
+    "corrected_endpoints": {
+      "D55.15": "D56_Q2N_TAG16",
+      "D55.18": "D56_Q2N_TAG16",
+      "D56.10": "PIT_HSYNC_DSL",
+      "D56.2": "VERT_SYNC"
+    },
+    "removed_obsolete_items": 14,
+    "accepted_closures": 4,
+    "added_items": 130,
+    "added_segments": 121,
+    "added_vias": 9,
+    "route_length_mm": 175.041,
+    "route_transactions": [
+      {"net": "D56_Q2N_TAG16", "grid_mm": 0.25, "clearance_mm": 0.21, "accepted_routes": 2},
+      {"net": "PIT_HSYNC_DSL", "grid_mm": 0.125, "clearance_mm": 0.205, "accepted_routes": 1},
+      {"net": "VERT_SYNC", "grid_mm": 0.25, "clearance_mm": 0.21, "accepted_routes": 1}
+    ],
+    "search_margin_mm": 35.0,
+    "max_route_distance_mm": 100.0,
+    "route_mode": "M"
+  },
   "tool_sha256": {
+    "kicad/apply_d56_owner_timing_routes.py": "254356fcee48275da7b1ab2a1057481b847e2b13ad69dc2c480d50dbd532ae04",
+    "kicad/check_d56_owner_timing_routes.py": "dca026198c9a5d674689261aca8c5a03ea9e6109892a19d6c007f3b0a2463f4b",
     "kicad/close_gap_by_ripup.py": "cf1ff576fa73c3dd5efb5e48ef9711bf4313c5f47a2af6d86292c3ef22c506ae",
     "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
+    "kicad/repair_fdc_route_gaps.py": "9ae05d1cd0e5c661adf512a925cf14f1f386e9d70edc2210bc1bd4d0c128d8a0",
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/check_routed_candidate.py": "7d143bc0fd7cbca919b7be066fffb90eaea7a02d17cfcdd22ba5b8d2eb4b5d3a"
   },
-  "disposition": "This is the promoted source-parity routed board. Independent KiCad 9.0.8 DRC and the routed-candidate identity gate report zero opens, zero electrical blockers, zero dangling items, identical 321-footprint/2434-pad source identity, and zero pad-coordinate delta."
+  "disposition": "This is the promoted source-parity routed board after the owner-closed D55/D56 timing-topology refresh. Independent KiCad 9.0.8 DRC, the routed-candidate identity gate, and the dedicated timing-route guard report zero opens, zero electrical blockers, zero dangling items, identical 321-footprint/2434-pad source identity, and zero pad-coordinate delta."
 }

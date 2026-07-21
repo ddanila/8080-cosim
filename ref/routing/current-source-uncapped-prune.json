@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
+  "superseded_by_source_board_sha256": "8ea610a8241569878e540fc31918b28f3a031dffcac29b8cbea7c2e35feb44b9",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
   "output_board_sha256": "c62db440e2c8f7cd2e5617571a94fd453292dfebae314caa4671462521742b26",
   "output_board_size": 10641592,
@@ -925,7 +926,7 @@
     "uncapped_unconnected_after": 1,
     "promoted": true
   },
-  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 initial dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred seventy-six independently checked net closures reduce the uncapped count again to 1 and are promoted. The latest phased MEMW transaction follows a D3_O6_D6_A5 equal-open topology swap and leaves only ROM_CS_EXP18 open. This remains convergence evidence, not production copper.",
+  "disposition": "Against the pre-D55/D56-refresh source, the uncapped guard safely removed 2872 migrated copper items, eliminated all 255 initial dangling findings, and reduced exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred seventy-six independently checked net closures reduced the uncapped count again to 1 and were promoted into the historical routing campaign. The later owner-timing refresh supersedes this source hash; the current exact-parity promoted board is the production-copper authority.",
   "tool_sha256": {
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/report_board_unconnected.py": "74d3422d973f216a7137f08fb46409f9a0ad1ec900e491bade9195ad67a98404",
