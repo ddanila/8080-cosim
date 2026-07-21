@@ -1,8 +1,9 @@
 # Routed PCB refresh audit
 
-The routed fabrication snapshot predates substantial photo-driven placement and
-connectivity work. It cannot safely receive the current source PCB's pad nets by
-name alone: added and moved footprints now intersect old copper corridors.
+This audit began from a routed fabrication snapshot that predated substantial
+photo-driven placement and connectivity work. The guarded refresh and routing
+campaign is now complete: the promoted routed PCB has exact source endpoint and
+coordinate parity, zero opens, and zero electrical DRC blockers.
 
 ## Reproducible audit
 
@@ -31,26 +32,23 @@ routed-snapshot change to regenerate the guarded current-result table.
 | Item | Count |
 | --- | ---: |
 | Source PCB SHA-256 | `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb` |
-| Routed-snapshot PCB SHA-256 | `f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315` |
+| Routed-snapshot PCB SHA-256 | `1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015` |
 | Source footprints | 321 |
-| Routed-snapshot footprints | 241 |
-| Source-only footprints | 107 |
-| Routed-only footprints | 27 |
-| Routed copper nets classified by the refresh | 324 |
-| Nets with currently reusable routed copper | 83 |
-| Routed nets currently quarantined | 241 |
-| Reusable non-duplicate track/via items | 963 |
-| Quarantined/duplicate track/via items | 7,702 |
-| Common-pad net mismatches requiring reroute | 381 |
+| Routed-snapshot footprints | 321 |
+| Source-only footprints | 0 |
+| Routed-only footprints | 0 |
+| Routed copper nets classified by the refresh | 411 |
+| Nets with currently reusable routed copper | 411 |
+| Routed nets currently quarantined | 0 |
+| Reusable non-duplicate track/via items | 29,617 |
+| Quarantined/duplicate track/via items | 47 |
+| Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
 
-The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly
-modeled FDC support/passive parts, the restored target VD1 reset diode, and the
-photo-fitted serial and oscillator parts. The routed-only set contains superseded `.006` option parts and the
-off-board `S1`, `S4`, `X3`, `X8`, and `X9` bodies; the authoritative source
-represents the applicable cable landings instead. X4 is likewise
-schematic-only in the source; its modeled `AX401-AX423` landing row is absent
-from the stale routed snapshot.
+The promoted board contains the same 321 footprints and 2,434 pads as the
+source, with no source-only or routed-only footprints and no common-pad net
+mismatches. All 411 routed copper nets pass the refresh classifier; 47 route
+items are duplicate geometry rather than quarantined topology.
 
 ### Live-source salvage baseline
 
@@ -264,6 +262,16 @@ Independent stable KiCad 9.0.8 DRC leaves only BA2 open, with 29,454 routed
 items across 411 nets, no electrical or dangling findings, and the unchanged
 710 cosmetic reports. Exact evidence is in
 `ref/routing/rom-closed-one-residual-checkpoint.json`.
+The final BA2 transaction closes its 56.957 mm remainder after a zero-fixed
+31-conflict diagnostic. Nineteen displaced branches are restored across 13
+nets; the last REV cleanup uses a four-item BA15 local swap and restores BA15
+over 2.585 mm on the `(0.025,0.0625)` mm phase. Forty-six final tail prunes
+remove the last dangling warning. The promoted
+`kicad/juku_routed.kicad_pcb` has 29,664 routed items across 411 nets.
+Independent KiCad 9.0.8 DRC reports zero opens, zero electrical or dangling
+findings, and 710 cosmetic findings. The source-parity gate proves 321
+footprints, 2,434 pads, and zero coordinate delta. Exact promotion evidence is
+in `ref/routing/zero-open-promoted-topology.json`.
 
 ### Additive/rename-safe copper migration
 

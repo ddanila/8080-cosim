@@ -268,6 +268,18 @@ stable KiCad 9.0.8 DRC leaves only BA2 open: 29,454 routed items across 411
 nets, zero electrical or dangling findings, and the unchanged 710 cosmetic
 reports. Exact hashes are in
 `ref/routing/rom-closed-one-residual-checkpoint.json`.
+The final BA2 recovery is complete and promoted to
+`kicad/juku_routed.kicad_pcb`. A zero-fixed 31-conflict transaction closes the
+56.957 mm BA2 remainder and restores 19 displaced branches across the ROM
+selects, address bus, data bus, interrupt, CAS, and ground nets. The final
+3.930 mm REV cleanup uses a four-item BA15 topology swap; a shifted 0.0875 mm
+phase restores BA15 over 2.585 mm. After 46 final safe tail prunes, independent
+KiCad 9.0.8 DRC reports zero opens, zero electrical blockers, zero dangling
+items, and the unchanged 710 cosmetic reports. The source-parity gate proves
+321 footprints, 2,434 identical pads, and zero coordinate delta. The promoted
+board has 29,664 routed items across 411 nets; exact evidence is in
+`ref/routing/zero-open-promoted-topology.json`, and cumulative promoted
+closures are now 677.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

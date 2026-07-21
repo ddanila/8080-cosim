@@ -653,7 +653,7 @@ def main() -> int:
         if (
             live.get("schema_version") != 1
             or live.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
-            or live.get("routed_snapshot_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
+            or live.get("routed_snapshot_sha256") != "f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315"
             or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
             or source.get("uncapped_unconnected") != 1814
             or raw.get("uncapped_unconnected") != 653
@@ -1040,6 +1040,32 @@ def main() -> int:
         for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
             if "rom-closed-one-residual-checkpoint.json" not in read(path):
                 failures.append(f"{path} omits the ROM-closed one-residual checkpoint")
+
+    zero_path = ROOT / "ref/routing/zero-open-promoted-topology.json"
+    if not zero_path.exists():
+        failures.append("zero-open promoted-topology evidence is missing")
+    else:
+        zero = json.loads(zero_path.read_text(encoding="utf-8"))
+        if (
+            zero.get("schema_version") != 1
+            or zero.get("promoted_file") != "kicad/juku_routed.kicad_pcb"
+            or zero.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
+            or zero.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
+            or zero.get("uncapped_unconnected") != 0
+            or zero.get("electrical_blockers") != 0
+            or (zero.get("track_dangling"), zero.get("via_dangling")) != (0, 0)
+            or (zero.get("footprints"), zero.get("pads")) != (321, 2434)
+            or zero.get("max_pad_delta_mm") != 0.0
+            or zero.get("promoted_closures") != 677
+        ):
+            failures.append("zero-open promoted-topology evidence is malformed or stale")
+        for relative, expected in zero.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"zero-open promotion tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "zero-open-promoted-topology.json" not in read(path):
+                failures.append(f"{path} omits the zero-open promotion evidence")
 
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():
