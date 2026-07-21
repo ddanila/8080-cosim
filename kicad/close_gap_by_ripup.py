@@ -248,6 +248,11 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--diagnostic-grid-offset",
+        default="0,0",
+        help="X,Y lattice offset used only for the diagnostic proposal",
+    )
+    parser.add_argument(
         "--restore-grid-steps",
         help=(
             "comma-separated grid phases for each displaced-net restoration; "
@@ -277,6 +282,11 @@ def main() -> None:
         ),
     )
     parser.add_argument("--route-clearance", type=float, default=0.21)
+    parser.add_argument(
+        "--route-grid-offset",
+        default="0,0",
+        help="X,Y lattice offset used only for the legal target route",
+    )
     parser.add_argument("--timeout", type=float, default=180.0)
     parser.add_argument("--max-conflicts", type=int, default=8)
     parser.add_argument(
@@ -355,6 +365,21 @@ def main() -> None:
         or diagnostic_grid_step <= 0
     ):
         raise SystemExit("search margin and grid step must be positive")
+    try:
+        diagnostic_grid_offset = tuple(
+            map(float, args.diagnostic_grid_offset.split(","))
+        )
+        route_grid_offset = tuple(map(float, args.route_grid_offset.split(",")))
+    except ValueError as error:
+        raise SystemExit("grid offsets must use X,Y numbers") from error
+    if (
+        len(diagnostic_grid_offset) != 2
+        or len(route_grid_offset) != 2
+        or any(value < 0 for value in diagnostic_grid_offset + route_grid_offset)
+        or any(value >= diagnostic_grid_step for value in diagnostic_grid_offset)
+        or any(value >= args.grid_step for value in route_grid_offset)
+    ):
+        raise SystemExit("grid offsets must be non-negative and smaller than their grid step")
     try:
         restore_grid_steps = (
             [float(value) for value in args.restore_grid_steps.split(",")]
@@ -446,6 +471,13 @@ def main() -> None:
         source_uuids = set(track_nets(source))
 
         diagnostic_board = tmp / "diagnostic.kicad_pcb"
+        diagnostic_environment = os.environ.copy()
+        diagnostic_environment["JUKU_ROUTE_GRID_OFFSET_X_MM"] = str(
+            diagnostic_grid_offset[0]
+        )
+        diagnostic_environment["JUKU_ROUTE_GRID_OFFSET_Y_MM"] = str(
+            diagnostic_grid_offset[1]
+        )
         try:
             subprocess.run(
                 [
@@ -466,6 +498,7 @@ def main() -> None:
                 ],
                 check=True,
                 timeout=args.timeout,
+                env=diagnostic_environment,
             )
         except subprocess.CalledProcessError as error:
             raise SystemExit(
@@ -512,8 +545,10 @@ def main() -> None:
                 "initial_target_net_gaps": initial_target_open,
                 "diagnostic_clearance_mm": diagnostic_clearance,
                 "diagnostic_grid_step_mm": diagnostic_grid_step,
+                "diagnostic_grid_offset_mm": list(diagnostic_grid_offset),
                 "route_clearance_mm": args.route_clearance,
                 "route_grid_step_mm": args.grid_step,
+                "route_grid_offset_mm": list(route_grid_offset),
                 "diagnostic_new_items": len(new_route_uuids),
                 "diagnostic_unremovable_blockers": sorted(unremovable),
                 "removable_conflicts": [
@@ -596,6 +631,7 @@ def main() -> None:
             args.grid_step,
             args.route_clearance,
             args.timeout,
+            route_grid_offset,
         )
         discard_temporary_board(target_input, tmp)
         target_report = run_drc(cli, target_routed, tmp / "target-routed.json")
@@ -719,8 +755,10 @@ def main() -> None:
             "final_target_net_gaps": final_target_open,
             "diagnostic_clearance_mm": diagnostic_clearance,
             "diagnostic_grid_step_mm": diagnostic_grid_step,
+            "diagnostic_grid_offset_mm": list(diagnostic_grid_offset),
             "route_clearance_mm": args.route_clearance,
             "route_grid_step_mm": args.grid_step,
+            "route_grid_offset_mm": list(route_grid_offset),
             "restore_grid_steps_mm": restore_grid_steps,
             "restore_net_order": restore_net_order,
             "restore_net_grid_offsets_mm": {

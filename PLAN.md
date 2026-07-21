@@ -154,6 +154,13 @@ restoring A12 first instead seals BA5's 6.364 mm gap. Exhaustive 0.02 mm phase
 sweeps, including multilayer A12 attempts, prove this mutual exclusion on both
 retained intermediate boards. The next topology step must separate A12 and BA5
 rather than retry either restoration order.
+Explicit diagnostic and target lattice offsets are now independently supported.
+A complete 0.125 mm phase sweep finds four additional IOWR_RAW_N diagnostics at
+`(0.025,0.1)`, `(0.05,0.075)`, `(0.075,0.05)`, and `(0.1,0.025)` mm; they need
+36, 28, 29, and 26 removable conflicts and avoid A12. None can produce a legal
+0.205 mm target route after its bounded rip-up, including both matched-phase
+and default-target retries of the 26-conflict case, so this alternate branch is
+exhausted.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

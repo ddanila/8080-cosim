@@ -11,7 +11,7 @@
   "residuals": [
     {"net": "GND", "distance_mm": 17.780, "result": "legal-route-failed-after-ripup", "removable_conflicts": 8, "fixed_blockers": 5, "affected_nets": 6},
     {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
-    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "pre-route-in-progress", "removable_conflicts": 38, "fixed_blockers": 6, "affected_nets": 12, "transaction_conflict_limit": 40, "unrestored_nets": ["A12", "BA5"], "pre_routed_nets": ["BA11", "CS_D10", "VA13", "BA12", "BA15"], "restored_before_failure": ["WREQ_N", "A9", "BA1", "BA13"], "mutually_exclusive_restorations": {"A12_then_BA5": "BA5 6.364 mm blocked", "BA5_offset_then_A12": "A12 10.308 mm blocked", "BA5_grid_offset_mm": [0.05, 0.0], "tested_phase_increment_mm": 0.02, "multilayer_phase_sweep": true}, "tested_restore_grid_steps_mm": [0.125, 0.1, 0.0875, 0.075], "tested_route_clearances_mm": [0.205, 0.2]},
+    {"net": "IOWR_RAW_N", "distance_mm": 91.265, "result": "pre-route-in-progress", "removable_conflicts": 38, "fixed_blockers": 6, "affected_nets": 12, "transaction_conflict_limit": 40, "unrestored_nets": ["A12", "BA5"], "pre_routed_nets": ["BA11", "CS_D10", "VA13", "BA12", "BA15"], "restored_before_failure": ["WREQ_N", "A9", "BA1", "BA13"], "mutually_exclusive_restorations": {"A12_then_BA5": "BA5 6.364 mm blocked", "BA5_offset_then_A12": "A12 10.308 mm blocked", "BA5_grid_offset_mm": [0.05, 0.0], "tested_phase_increment_mm": 0.02, "multilayer_phase_sweep": true}, "diagnostic_phase_alternates": [{"grid_offset_mm": [0.025, 0.1], "removable_conflicts": 36}, {"grid_offset_mm": [0.05, 0.075], "removable_conflicts": 28}, {"grid_offset_mm": [0.075, 0.05], "removable_conflicts": 29}, {"grid_offset_mm": [0.1, 0.025], "removable_conflicts": 26}], "alternate_phase_legal_target_result": "no-route-at-0.205-mm", "tested_restore_grid_steps_mm": [0.125, 0.1, 0.0875, 0.075], "tested_route_clearances_mm": [0.205, 0.2]},
     {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "result": "over-conflict-limit", "removable_conflicts": 26, "fixed_blockers": 4, "affected_nets": 12, "alternate_clearance_mm": 0.18, "alternate_removable_conflicts": 31},
     {"net": "CS_D26", "distance_mm": 177.308, "result": "over-conflict-limit", "removable_conflicts": 35, "fixed_blockers": 13, "affected_nets": 18},
     {"net": "INT7_RAW", "distance_mm": 181.230, "result": "no-diagnostic-route", "tested_grid_steps_mm": [0.125, 0.1]},
@@ -20,9 +20,9 @@
     {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637, "result": "over-conflict-limit", "removable_conflicts": 66, "fixed_blockers": 15, "affected_nets": 28}
   ],
   "tool_sha256": {
-    "kicad/close_gap_by_ripup.py": "10ba3ac56ec746826da49ca3309e1d86084ea684f33fb9c0067167cb93d5619b",
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
     "kicad/repair_fdc_route_gaps.py": "9ae05d1cd0e5c661adf512a925cf14f1f386e9d70edc2210bc1bd4d0c128d8a0",
     "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187"
   },
-  "disposition": "Localized conflict-derived rip-up is exhausted on the original nine-open topology. DRC-neutral BA11, CS_D10, VA13, BA12, and offset-lattice BA15 pre-routes preserve all source copper. BA15 forces an alternate IOWR transaction, but A12 and BA5 are mutually exclusive in the current restoration topology: A12-first seals BA5's 6.364 mm gap, while offset-routed BA5 seals A12's 10.308 mm gap."
+  "disposition": "Localized conflict-derived rip-up is exhausted on the original nine-open topology. DRC-neutral BA11, CS_D10, VA13, BA12, and offset-lattice BA15 pre-routes preserve all source copper. BA15 forces an alternate IOWR transaction, but A12 and BA5 are mutually exclusive in the current restoration topology. Four other diagnostic lattice phases avoid A12, but none produces a legal 0.205 mm target route after bounded rip-up."
 }
