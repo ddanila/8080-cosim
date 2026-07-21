@@ -596,6 +596,15 @@ module juku_top (
     wire d93_1_open_stub;
     wire d99_b_test_landing, d99_q1n_boundary, d99_q2_boundary;
     wire d99_clr2_boundary, d99_q2n_boundary, d99_q1_nc;
+    wire d100_control_sheet1_boundary, d100_wrdata_in_boundary;
+`ifdef YOSYS
+    wire d94_a4_d101_q0;
+`else
+    // D101's first-half inputs and enable remain physical boundaries. Keep the
+    // established pulled-high runnable fit separate from the structural-only
+    // precompensation chain below.
+    supply1 d94_a4_d101_q0;
+`endif
     // Exact `.009` sheets join D13.6 RES continuation (3) directly to D93.19.
     // The sheet-3 `-RES` text/bubbled input conflicts with the sheet-1 RES name;
     // preserve that physical conductor here. The separate behavioral adjunct
@@ -609,6 +618,35 @@ module juku_top (
                        .wg(fdc_wg), .wdata(fdc_wdata), .ready(fdc_ready),
                        .wf_vfoe(fdc_test_wf_vfoe), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),
                        .drq(fdc_drq), .intrq(fdc_intrq));
+`ifdef YOSYS
+    // Exact `.009` sheet 3 closes the D97/D102 delay cascade and D101 Q1
+    // write-precompensation selector. Keep these cells structural-only until
+    // the bare C16/C19 unit markings and installed pulse widths are measured;
+    // LVS can still prove every source-visible digital conductor without
+    // substituting guessed analog timing into the runnable FDC.
+    wire d98_y3_s1_2;
+    wire precomp_tap_1, precomp_tap_2, precomp_tap_3;
+    wire precomp_cascade_1, precomp_cascade_2;
+    wire d101_oe0_boundary, d101_d03_boundary;
+    wire d101_d02_r92_r99, d101_d01_boundary, d101_d00_boundary;
+    ag3_oneshot U_D97 (
+        .a_n(1'b0), .b(d98_y3_s1_2), .clr_n(wreq_n),
+        .q(), .q_n(fdc_raw_read),
+        .a2_n(1'b0), .b2(fdc_wdata), .clr2_n(wreq_n),
+        .q2(precomp_tap_1), .q2_n(precomp_cascade_1));
+    ag3_oneshot U_D102 (
+        .a_n(1'b0), .b(precomp_cascade_2), .clr_n(wreq_n),
+        .q(precomp_tap_3), .q_n(),
+        .a2_n(1'b0), .b2(precomp_cascade_1), .clr2_n(wreq_n),
+        .q2(precomp_tap_2), .q2_n(precomp_cascade_2));
+    kp12_mux U_D101 (
+        .a0(fdc_late_boundary), .a1(fdc_early_boundary),
+        .oe0_n(d101_oe0_boundary), .oe1_n(1'b0),
+        .d0({d101_d03_boundary, d101_d02_r92_r99,
+             d101_d01_boundary, d101_d00_boundary}),
+        .d1({1'b0, precomp_tap_3, precomp_tap_2, precomp_tap_1}),
+        .q0(d94_a4_d101_q0), .q1(d100_wrdata_in_boundary));
+`endif
     // Exact sheet 3 grounds D99 A1/CLR1 and omits Q1. B2 and the four
     // remaining signal outputs/clear leave through distinct remote paths;
     // the `(1)` beside B2 denotes a continuation to sheet 1, not logic high.
@@ -618,7 +656,6 @@ module juku_top (
                        .a2_n(d94_d1_d99_a2n), .b2(d99_b2_sheet1_boundary),
                        .clr2_n(d99_clr2_boundary), .q2(d99_q2_boundary),
                        .q2_n(d99_q2n_boundary));
-    wire d100_control_sheet1_boundary, d100_wrdata_in_boundary;
 `ifndef YOSYS
     // Runnable fallback only: the three remote sheet-1 sources are not yet
     // known. Keep inactive defaults out of the LVS/physical netlist.
@@ -634,7 +671,6 @@ module juku_top (
 `ifdef YOSYS
     net_boundary U_D99B2LNK (.a(1'b1), .b(d99_b2_sheet1_boundary));
     net_boundary U_D100CTL1LNK (.a(1'b1), .b(d100_control_sheet1_boundary));
-    net_boundary U_D100WDATALNK (.a(1'b1), .b(d100_wrdata_in_boundary));
 `elsif FDC_VA87_CS_QUALIFIED
     wire d100_oe_boundary = fdc_prom_cs_n;
     wire d100_t_boundary = fdc_prom_re_n;
@@ -658,14 +694,9 @@ module juku_top (
                                 .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
 `endif
 `endif
-`ifdef YOSYS
-    wire d94_a4_d101_q0;
-`else
-    // Simulation-only functional fallbacks do not assert copper identity. The
-    // A4 is D101.Q0; its runnable behavior remains pulled high while the mux
-    // inputs are unresolved. A3 is the now-measured D105.3 qualified /WR rail.
-    supply1 d94_a4_d101_q0;
-`endif
+    // A4 is physical D101.Q0. Its runnable fallback remains pulled high above
+    // while the four first-half mux inputs are unresolved; Yosys/LVS instead
+    // sees the exact structural D101 connection.
     // Owner continuity supersedes the earlier mirrored/numbering interpretation:
     // D94.2(D1)->D99.9+R89, D94.3(D2)->D93.4+R88, and
     // D94.4(D3)->D93.2+R87. D94.1(D0) has only the R8 2k pull-up.

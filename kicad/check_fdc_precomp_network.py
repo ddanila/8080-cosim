@@ -7,6 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = json.loads((ROOT / "kicad/juku.board.json").read_text(encoding="utf-8"))
+HDL = (ROOT / "hdl/juku_top.v").read_text(encoding="utf-8")
+LVS_MAP = json.loads((ROOT / "sync/map.json").read_text(encoding="utf-8"))
 NETS = {name: {f"{ref}.{pin}" for ref, pin in item["nodes"]}
         for name, item in SPEC["nets"].items()}
 COMPONENTS = {item["ref"]: item for item in SPEC["chips"]}
@@ -62,5 +64,22 @@ obsolete = {"C19_1_R100_1_BOUNDARY", "C19_2_R86_1_BOUNDARY",
             "D97_Q1_BOUNDARY", "D102_Q1N_BOUNDARY"}
 if obsolete & NETS.keys():
     raise SystemExit(f"FDC PRECOMP: obsolete boundaries returned: {sorted(obsolete & NETS.keys())}")
+
+for ref in ("D97", "D101", "D102"):
+    expected_instance = f"U_{ref}"
+    if LVS_MAP["instances"].get(ref) != expected_instance:
+        raise SystemExit(f"FDC PRECOMP: {ref} is outside LVS scope")
+for marker in (
+    "ag3_oneshot U_D97",
+    "ag3_oneshot U_D102",
+    "kp12_mux U_D101",
+    ".q_n(fdc_raw_read)",
+    ".q1(d100_wrdata_in_boundary)",
+    ".q0(d94_a4_d101_q0)",
+):
+    if marker not in HDL:
+        raise SystemExit(f"FDC PRECOMP: structural HDL marker missing: {marker}")
+if "U_D100WDATALNK" in HDL:
+    raise SystemExit("FDC PRECOMP: stale D100 write-data boundary returned")
 
 print("FDC PRECOMP NETWORK: PASS")
