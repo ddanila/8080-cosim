@@ -18,6 +18,6 @@ The sheet prints `R99 4.7k` for both the D97 read-stage timing resistor and the 
 
 The sheet labels a separate `R86 470` WREQ reset pull-up. Target views unambiguously place physical R86=4.7k in the four-resistor timing column, with R86.1 on C19.2/D97.6 and R86.2 on the common +5 V rail. The target identity and connectivity override the sheet annotation.
 
-The sheet also appears to tie D101 outputs/input lines in ways contradicted by direct continuity. The model retains target-proved D101.7 → D94.14/R88 and D101.4 → R92/R99, and imports only the non-conflicting D101 precomp paths above. D97.13 and D102.4 are omitted complementary outputs on otherwise complete, pin-numbered one-shot symbols and are intentional no-connects. D101.1/.3/.5/.6 remain the only precomp-area functional boundaries.
+The sheet also appears to tie D101 outputs/input lines in ways contradicted by direct continuity. The model retains target-proved D101.7 → D94.14 and D101.4 → R92/R99, and imports only the non-conflicting D101 precomp paths above. R88 is separately owner-closed on D94.3/D93.4; it is not an A4/Q0 pull-up. D97.13 and D102.4 are omitted complementary outputs on otherwise complete, pin-numbered one-shot symbols and are intentional no-connects. D101.1/.3/.5/.6 remain the only precomp-area functional boundaries.
 
 Primary image: `ref/photos/dgsh5-109-009-e3/PXL_20260718_101648508.jpg`. Target corroboration: `ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg` and `PXL_20260710_200522685.jpg`.

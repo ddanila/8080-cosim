@@ -112,7 +112,8 @@ D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;
 D93.17 EARLY and D93.18 LATE select them on D101.2/.14; D101.9 then drives
 D100.6. The associated C16/C19/C20/C22 timing networks and R100/R102/R108
 +5 V rail are also closed. Direct target copper remains authoritative for
-D101.4-R92-R99, D101.7-D94.14/R88, and physical R86=4.7 kΩ on C19.2/D97.6;
+D101.4-R92-R99, D101.7-D94.14 (R88 is separately owner-closed on
+D94.3/D93.4), and physical R86=4.7 kΩ on C19.2/D97.6;
 these override the electrical sheet's duplicated R99 reference, conflicting
 R86=470 annotation, and tied-D101 drafting. See
 `ref/schematics/fdc-write-precomp-map.md` for the exact source hierarchy and
@@ -227,7 +228,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_IRQ_CONDITIONED_N` | recovered .009 Э3 sheet 3 wires the open-collector D28 outputs pins10/12 together, pulls the node up through R95=2k, and feeds both D96 section-2 PRE_N/pin10 and D/pin12 | `D28.10, D28.12, D96.10, D96.12, R95.1` |
 | `FDC_LATE_SEL` | recovered .009 Э3 sheet 3 directly joins D93 LATE/pin18 to the common D101 select input A0/pin14 | `D93.18, D101.14` |
 | `FDC_MOTOR_EN` | recovered .009 Э3 sheet 1 continuation 1 and sheet 3: D26 PC2/pin16 drives D100 A7/pin7 MOTOR EN | `D26.16, D100.7` |
-| `FDC_PRECOMP_WRDATA` | recovered .009 Э3 sheet 3 directly joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; the drawing's simultaneous Q0/pin7 junction is rejected because direct owner continuity instead closes Q0 to D94.14/R88 | `D101.9, D100.6` |
+| `FDC_PRECOMP_WRDATA` | recovered .009 Э3 sheet 3 directly joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; the drawing's simultaneous Q0/pin7 junction is rejected because direct owner continuity instead closes Q0 to D94.14, while R88 is separately on D94.3/D93.4 | `D101.9, D100.6` |
 | `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 and D106 parallel-load input pin11 | `D97.4, D93.27, D106.11` |
 | `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
 | `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V; E11 is drawn in its 2-3 position, strapping D93 HLT/pin23 to READY (post 1 is the alternate MOTOR EN source) | `D28.6, D93.23, D93.32, R84.1` |

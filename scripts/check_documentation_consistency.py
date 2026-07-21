@@ -221,6 +221,18 @@ def main() -> int:
                 failures.append(f"{path} retains stale D94 boundary claim: {phrase!r}")
     if "A3 consumes the owner-closed D105.3" not in read("docs/d94-reconstruction-constraints.md"):
         failures.append("D94 report does not preserve the owner-closed D105.3 runtime source")
+    stale_d94_a4_pullup_claims = {
+        "kicad/juku.board.json": ("D94.14/R88", "pin7 to D94.14/R88"),
+        "docs/fdc-hardware-handoff.md": ("D101.7-D94.14/R88", "Q0 to D94.14/R88"),
+        "ref/schematics/fdc-write-precomp-map.md": ("D101.7 → D94.14/R88",),
+        "ref/datasheets/k555kp12-pinout.txt": ("unidentified pull-up resistor to +5 V",),
+        "ref/datasheets/k170up2-pinout.txt": ("D104.7 <-> D94.13",),
+    }
+    for path, phrases in stale_d94_a4_pullup_claims.items():
+        text = read(path)
+        for phrase in phrases:
+            if phrase in text:
+                failures.append(f"{path} retains stale D94/D101/D104 claim: {phrase!r}")
 
     stale_d6_a7_claims = {
         "PLAN.md": ("Close the physical D6 A7 driver", "D105.1/A7 driver (P0", "D105.1 conductor remains"),

@@ -17,4 +17,7 @@ Datasheet pinout
 
 Juku direct continuity, 2026-07-15
 -----------------------------------
-D101.7 (Q0) <-> D94.14 (A4) and an unidentified pull-up resistor to +5 V.
+D101.7 (Q0) <-> D94.14 (A4). The former inferred pull-up is retracted:
+owner continuity places R88 on the separate D94.3/D93.4 /RE node.
+D101.1 /OE0 and data inputs D101.3/.5/.6 remain boundary nets; D101.4
+joins the measured R92/R99 ladder.

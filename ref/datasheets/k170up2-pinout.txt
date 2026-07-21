@@ -30,9 +30,12 @@ D104.5->D104.12 = serial CTS receiver.
 D104.6->D104.11 = serial DSR receiver.
 D104.7 is the fourth receiver input, not NC.
 
-Direct owner continuity, 2026-07-15:
-  D104.7 <-> D94.13 <-> unidentified pull-up resistor -> +5 V.
+Owner resistance recheck, 2026-07-19:
+  D104.7 measures approximately 84 kohm to D94.13 and is not the same net.
+  D94.13 is instead owner-closed to D105.3 qualified peripheral /WR;
+  D104.7 remains an independent receiver-input boundary.
 
-D104.10, threshold pins 1/2/3/14, and the physical +12 V feed at pin16
-still require board-level disposition. Do not infer those connections solely
-from the datasheet.
+Owner continuity plus the exact-revision drawing, 2026-07-21, closes D104.10
+as NC. Threshold pins 1/2/3/14 and the physical +12 V feed at pin16 still
+require board-level disposition. Do not infer those connections solely from
+the datasheet.
