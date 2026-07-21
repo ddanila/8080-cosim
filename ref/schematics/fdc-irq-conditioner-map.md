@@ -37,8 +37,20 @@ marks do not justify joining unrelated arrows. The recovered sheet-1 views do
 not expose a unique pair for these two conductors, so no net is promoted from
 the annotations alone.
 
+## Device-logic contradiction
+
+The primary SN74LS74A truth table does not support calling the locally drawn
+D96 half a complete conditioner. Because D96.10 `/PRE2` and D96.12 D2 share
+the same node, a low node asynchronously sets Q2 and a rising CLK2 edge while
+the node is high samples D2=1. Once set, Q2 cannot return low through either
+documented input. Only `/CLR2` can clear it, but sheet 3 draws pin13
+unconnected. Direct continuity of pins9, 11, and 13 plus a powered capture of
+pins8-13 is therefore required. The exact board transcription remains intact;
+no missing clear net is inferred from the functional contradiction.
+
 Guard:
 
 ```sh
 python3 kicad/check_d93_irq_conditioner.py
+sync/d96_check.sh
 ```

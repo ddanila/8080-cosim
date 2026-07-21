@@ -826,8 +826,14 @@ Every ask below is queued with exact deliverables in
    D93.26 RCLK. A full-resolution reread restores section 2 in the local
    DRQ/INTRQ conditioner: wired D28.10/.12 feeds D96.10/.12 through R95,
    R93 pulls the INTRQ input high, D96.9/.11 continue to sheet 1, D96.13 is
-   unused, and pin8 retains its isolated test landing. D96 is runnable and LVS-mapped
-   (`ref/schematics/fdc-read-clock-toggle-map.md`).
+   drawn unused, and pin8 retains its isolated test landing. The primary
+   SN74LS74A truth table now exposes that exact section-2 wiring as set-only:
+   its shared `/PRE2`/D2 node can set Q2 but cannot clear it, and the only clear
+   pin is the sheet-omitted pin13. Primary truth also corrects section 1: WREQ
+   asserts `/CLR1` and `/PRE1` simultaneously, so both outputs go high and the
+   release phase is not deterministic, though `/Q` feedback divides after the
+   first recovered-clock edge. D96 remains LVS-mapped; both sections' async
+   behavior requires powered capture (`docs/d96-read-clock-readiness.md`).
    The same exact-revision omission convention now closes the remaining unused
    pins on adjacent devices: sheet 3 draws all six D28 inverters and five of
    six D98 buffers, so only D98.9/.10 are NC on those devices; it explicitly
@@ -902,7 +908,9 @@ Every ask below is queued with exact deliverables in
    the joined D100.9/.11 conductor as distinct sheet-1 boundaries rather than
    incorrectly treating each `(1)` marker as logic high. The same read restores
    D28 sections 5/6, D96 section 2, and R93/R95 as the local D93 DRQ/INTRQ
-   conditioner; D96.9/.11 and the PIC-side destinations remain sheet-1 asks.
+   path. Device-truth analysis exposes D96 section 2 as set-only unless its
+   drawn-NC clear pin13 has an unrecorded source; D96.9/.11/.13 and the
+   PIC-side destinations therefore remain functional verification asks.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
    place `CMA` around all 12 VG93 writes and six reads, while EktaSoft

@@ -2382,17 +2382,21 @@ module tm2_dff #(parameter FUNCTIONAL = 0) (input wire clr1_n, d1, clk1, pre1_n,
                 output wire q2, q2_n);
     generate if (FUNCTIONAL) begin : g_functional
         reg q1_r = 1'b1;
+        reg q1_n_r = 1'b0;
         reg q2_r = 1'b1;
+        reg q2_n_r = 1'b0;
         always @(posedge clk1 or negedge clr1_n or negedge pre1_n)
-            if (!clr1_n) q1_r <= 1'b0;
-            else if (!pre1_n) q1_r <= 1'b1;
-            else q1_r <= d1;
+            if (!clr1_n && !pre1_n) begin q1_r <= 1'b1; q1_n_r <= 1'b1; end
+            else if (!clr1_n) begin q1_r <= 1'b0; q1_n_r <= 1'b1; end
+            else if (!pre1_n) begin q1_r <= 1'b1; q1_n_r <= 1'b0; end
+            else begin q1_r <= d1; q1_n_r <= ~d1; end
         always @(posedge clk2 or negedge clr2_n or negedge pre2_n)
-            if (!clr2_n) q2_r <= 1'b0;
-            else if (!pre2_n) q2_r <= 1'b1;
-            else q2_r <= d2;
-        assign q1 = q1_r; assign q1_n = ~q1_r;
-        assign q2 = q2_r; assign q2_n = ~q2_r;
+            if (!clr2_n && !pre2_n) begin q2_r <= 1'b1; q2_n_r <= 1'b1; end
+            else if (!clr2_n) begin q2_r <= 1'b0; q2_n_r <= 1'b1; end
+            else if (!pre2_n) begin q2_r <= 1'b1; q2_n_r <= 1'b0; end
+            else begin q2_r <= d2; q2_n_r <= ~d2; end
+        assign q1 = q1_r; assign q1_n = q1_n_r;
+        assign q2 = q2_r; assign q2_n = q2_n_r;
     end else begin : g_boundary
         assign q1 = 1'bz; assign q1_n = 1'bz;
         assign q2 = 1'bz; assign q2_n = 1'bz;

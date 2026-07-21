@@ -42,11 +42,15 @@ with the machine-readable board model.
   Recovered sheet 3 closes D106 completely: its R78 preset pull-up, RAW READ
   load, D95 recovery clock, grounded clear, Q3 output, and five no-connects are
   now source-modeled and LVS-visible; R78 value/placement stays unresolved.
-  Sheet 3 also closes D96's section-1 divide-by-two read-clock toggle and its
-  WREQ controls. A full-resolution reread restores D96 section 2 plus D28
-  sections 5/6 and R93/R95 as the local DRQ/INTRQ conditioner; D96.13 remains
-  unused and the separately proved pin-8 test landing is retained. The circuit
-  is structural and LVS-visible, while D96.9/.11 remain sheet-1 boundaries.
+  Sheet 3 also closes D96's section-1 divide-by-two read-clock wiring. Primary
+  device truth shows that WREQ asserts `/CLR1` and `/PRE1` together, producing
+  Q1=/Q1=high and leaving restart phase undefined; `/Q` feedback still divides
+  after release. A full-resolution reread restores D96 section 2 plus D28
+  sections 5/6 and R93/R95 as the local DRQ/INTRQ path; D96.13 is drawn unused
+  and the separately proved pin-8 test landing is retained. Primary SN74LS74A
+  truth exposes the shared `/PRE2`/D2 wiring as set-only without a real pin13
+  clear source. The copper is structural and LVS-visible, while D96.9/.11 and
+  the functionally contradictory pin13 disposition remain verification gates.
   The exact-revision sheet makes D97.13, D98.9/.10, and D102.4 intentional
   no-connects, leaving D96, D99, and D101 with open support-device functional pins.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;

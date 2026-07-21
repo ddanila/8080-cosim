@@ -230,6 +230,30 @@ def main() -> int:
             failures.append(f"D101 reconstruction report lost guarded marker: {marker!r}")
     if "d101-reconstruction-constraints.md" not in read("docs/README.md"):
         failures.append("documentation map omits the D101 reconstruction constraints")
+    d96_report = read("docs/d96-read-clock-readiness.md")
+    if "Status: **SECTION 1 DIVIDE GUARDED / RESTART PHASE UNDEFINED / SECTION 2 SET-ONLY**" not in d96_report:
+        failures.append("D96 section-2 logic constraint is missing or stale")
+    for marker in (
+        "D96-RCLK: PASS both-async state exposed; /Q feedback divides after release",
+        "D96-IRQ-CONSTRAINT: PASS shared PRE_N/D only sets Q; CLR_N is sole clear",
+        "requires Q1=1 and /Q1=1",
+        "continuity-check pins9, 11, and 13",
+    ):
+        if marker not in d96_report:
+            failures.append(f"D96 readiness report lost guarded marker: {marker!r}")
+    if "d96-read-clock-readiness.md" not in read("docs/README.md"):
+        failures.append("documentation map omits the D96 reconstruction constraint")
+    stale_d96_claims = {
+        "README.md": ("as the local DRQ/INTRQ conditioner; D96.13 remains",),
+        "docs/d96-read-clock-readiness.md": ("The undrawn second half is unused", "pins 9-13 are explicit no-connects"),
+        "docs/fdc-hardware-handoff.md": ("section 2 local conditioner closed", "and conditioner paths are closed"),
+        "docs/photo-registration.md": ("toggle and local section-2 conditioner are also closed",),
+    }
+    for path, phrases in stale_d96_claims.items():
+        text = read(path)
+        for phrase in phrases:
+            if phrase in text:
+                failures.append(f"{path} retains stale D96 section-2 claim: {phrase!r}")
     d99_report = read("docs/d99-reconstruction-constraints.md")
     if "Status: **D99 TRIGGER/TIMING LOGIC CONSTRAINED / FIVE PINS MEASUREMENT-GATED**" not in d99_report:
         failures.append("D99 trigger/timing reconstruction constraints are missing or failed")

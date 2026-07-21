@@ -535,9 +535,11 @@ not another broad projection pass:
    plus raw D93.38/.39 into D28 are now source-closed.
 2. Remaining functional pins of D99 and D101. D28/D95/D97/D98/D102/D106 are
    source-closed by the recovered `.009` electrical sheet. D96's section-1
-   toggle and local section-2 conditioner are also closed, while its pin9/pin11
-   remote continuations remain the distinct asks in item 1. The explicitly
-   omitted D96.13, D97.13, D98.9/.10, and D102.4 pins remain guarded NCs.
+   toggle and exact local section-2 wiring are also closed, while its pin9/pin11
+   remote continuations remain the distinct asks in item 1. D96.13 remains a
+   drawing-guarded NC but must be functionally rechecked because primary device
+   truth makes the shared `/PRE2`/D2 wiring set-only without a clear source.
+   The omitted D97.13, D98.9/.10, and D102.4 pins remain guarded NCs.
 3. D94's shared upstream chip-select source and D0 hidden branch. Its five
    address inputs, D1-D3 steering outputs, static NC outputs, and physical table
    are already closed. D30 section B, the D105 WAIT edge handoff, and D41 timing

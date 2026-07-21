@@ -75,9 +75,11 @@ Relevant local docs:
    of an actual `.009` FDC-populated board, for the official footprints whose
    device pinouts are modeled but whose Juku signal nets remain untraced:
    D96, D99, and D101? The exact requests are D96.9 Q2's remote destination,
-   D96.11 CLK2's remote source, and the listed D99/D101 boundary pins.
+   D96.11 CLK2's remote source, confirmation that D96.13 `/CLR2` is truly NC,
+   powered D96 async-control captures, and the listed D99/D101 boundary pins.
    Exact-revision sheet 3 source-closes D28/D95/D97/D98/D102/D106 plus D96's
-   section-1 read-clock toggle and local section-2 conditioner. D105 and the
+   local wiring, but primary SN74LS74A truth leaves section-1 restart phase
+   undefined and makes section 2 set-only without a real clear source. D105 and the
    measured `.009` WAIT/READY edge handoff are modeled and carried by the
    promoted route; the separate D30.4 asynchronous-preset boundary remains an
    exact continuity ask.
@@ -152,8 +154,9 @@ programming-disk files and independent reads remain valuable corroboration.
 The `.009` board also has 3 still-open FDC-support devices whose packages and
 device-level pin roles are now represented, but whose Juku-specific functional nets remain
 untraced: D96, D99, and D101. D96's section-1 read-clock toggle and local
-section-2 conditioner are source-closed, but Q2/pin9 and CLK2/pin11 retain
-unresolved sheet-1 continuations. D28/D95/D97/D98/D102/D106 are source-closed
+section-2 copper are source-closed, but section-1 restart phase is undefined,
+section 2 is set-only without a real CLR2 source, and Q2/pin9 plus CLK2/pin11
+retain unresolved sheet-1 continuations. D28/D95/D97/D98/D102/D106 are source-closed
 from the recovered `.009` electrical sheet, including its intentional unused-pin
 omissions. The current owner photographs do
 show the FDC-equipped population, but sockets, wires, crossings, and incomplete

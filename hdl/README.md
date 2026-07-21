@@ -50,11 +50,15 @@ They are not generic cycle-accurate replacements for every original IC mode.
   guarded. Recovered sheet 3 also closes and LVS-maps its actual board straps,
   RAW READ load, selected recovery clock, grounded clear, Q3 output, and five
   explicit no-connects; only physical waveform quality remains a bench check.
-- D96's КМ555ТМ2 section 1 is likewise sheet-closed, runnable, and LVS-mapped:
-  WREQ_N controls /CLR and /PRE, /Q feeds D, D28.8 clocks the toggle, and Q
-  drives D93 RCLK. Section 2 is now structurally restored from the exact sheet:
+- D96's КМ555ТМ2 section 1 is sheet-closed and LVS-mapped: WREQ_N controls
+  /CLR and /PRE, /Q feeds D, D28.8 clocks the toggle, and Q drives D93 RCLK.
+  The device model now preserves the datasheet's Q=/Q=high result when WREQ
+  asserts both asynchronous controls instead of assigning clear priority;
+  restart phase is undefined, while divide-by-two behavior after release is
+  guarded. Section 2 is structurally restored from the exact sheet:
   wired D28.10/.12 feeds /PRE2 and D2, CLK2/Q2 remain distinct sheet-1
-  boundaries, /CLR2 is unused, and /Q2 retains its isolated pin-8 test landing.
+  boundaries, /CLR2 is drawn unused, and /Q2 retains its isolated pin-8 test
+  landing. That half is set-only without a real /CLR2 source.
 - D103's К555ИЕ10/74LS161 behavior and its source-traced D33 feedback are
   guarded through the actual `0011` preset, proving the modulo-13 path from
   16 MHz to the labeled 1.23 MHz Q3 rail. The upstream OSC-to-XTAL16M physical

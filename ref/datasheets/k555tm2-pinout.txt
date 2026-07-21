@@ -45,6 +45,13 @@ hardware-quality/measurement issue, not as a guaranteed logic-high source.
 Consequently D96 section 2 remains a reconstruction contradiction until the
 pin-13 disposition and pins 9/11 remote endpoints are verified on hardware.
 
+D96 section 1 ties 1CLR_N/pin1 and 1PRE_N/pin4 together at WREQ_N. WREQ_N low
+therefore invokes the datasheet's simultaneous-assertion row, with both Q1 and
+Q1_N high rather than a clear-priority reset. Simultaneous release does not
+guarantee restart phase. Q1_N feedback still produces divide-by-two behavior
+after a valid clock resolves the state, but deterministic write-time reset and
+restart claims are not supported by the primary device contract.
+
 Board truth remains in kicad/juku.board.json and the exact-revision sheet/photo
 evidence. This note constrains device behavior; it does not invent a missing
 copper connection.

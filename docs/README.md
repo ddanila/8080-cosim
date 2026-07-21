@@ -75,7 +75,10 @@ findings. Every status applies only to the boundary named by the report.
 - Factory-wire routing: `factory-wire-route-fidelity.md` — distinguishes seven
   explicit wire/island splits from the three promoted-route copper substitutions
   still held on A9/A12/A13, and separately guards landing registration/fitting.
-- Twin: `fdc-readiness.md`, `video-slot-timing-audit.md`,
+- Twin: `fdc-readiness.md`, `d96-read-clock-readiness.md` (source-closed
+  D96 wiring, undefined section-1 restart phase, and the exact section-2
+  set-only contradiction),
+  `video-slot-timing-audit.md`,
   `d99-reconstruction-constraints.md` (grounded-clear constant section 1,
   D94-D1 access trigger, fitted RC timing, and five remote-pin boundaries),
   `video-readout-readiness.md`, `serial-handoff.md`, and

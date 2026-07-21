@@ -459,11 +459,13 @@ evidence exists.
   checks in `docs/fdc-hardware-handoff.md`. D100's drive-output channels are
   source-proved; shared pins 9/11 continue to an unresolved sheet-1 conductor,
   and the pin-6 write-data input is source-closed to D101.9.
-- D94 `.092` uses the validated physical table; direct continuity closes its
-  enable to D93.CS, D1 to ground, D2 to D93.RE, D3 to D93.WE, and D4 to the
-  D93 back-bias/NC socket contact. The runnable model consumes the physical
-  D2/D3 strobes under explicit simulation-only enable, A3, and A4 fits. Their
-  upstream physical sources plus D0/D5-D7 branches still block board release.
+- D94 `.092` uses the validated physical table. All five address inputs are
+  owner/source-closed: BA0, BA1, IORD, qualified IOWR from D105.3, and D101.7
+  Q0. D1 drives D99.9 through its pull-up, while D2/D3 drive D93 `/RE` and
+  `/WE`; D4-D7 are owner/drawing-closed no-connects. The runnable model consumes
+  those physical paths. Remaining board-release boundaries are the upstream
+  source beyond the local D94.15/D93.3 enable join and D0's hidden load beyond
+  its measured R8 pull-up.
 - Adopt a larger upstream controller core only if a concrete required command
   or timing behavior exceeds this guarded scope; re-evaluate license and
   adapter cost at that time.

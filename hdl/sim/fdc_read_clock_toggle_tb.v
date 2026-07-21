@@ -11,11 +11,12 @@ module fdc_read_clock_toggle_tb;
         .clr2_n(1'bz), .d2(1'bz), .clk2(1'bz), .pre2_n(1'bz),
         .q2(), .q2_n(q2_n_test));
 
-    task expect_q(input expected, input [127:0] label);
+    task expect_pair(input expected_q, input expected_q_n, input [191:0] label);
         begin
             #1;
-            if (q !== expected) begin
-                $display("D96-RCLK: FAIL %0s q=%b expected=%b", label, q, expected);
+            if (q !== expected_q || q_n !== expected_q_n) begin
+                $display("D96-RCLK: FAIL %0s q=%b q_n=%b expected=%b/%b",
+                         label, q, q_n, expected_q, expected_q_n);
                 $fatal(1);
             end
         end
@@ -29,24 +30,31 @@ module fdc_read_clock_toggle_tb;
     endtask
 
     initial begin
-        // WREQ_N drives both active-low controls. Clear wins the deliberately
-        // simultaneous write-time assertion; read-clock state is irrelevant
-        // while the controller writes.
+        // WREQ_N drives both active-low controls. The SN74LS74A truth table
+        // makes both outputs high while both controls are asserted; neither
+        // clear nor preset may be assigned priority here.
         #1 wreq_n = 1'b0;
-        expect_q(1'b0, "WREQ assertion");
+        expect_pair(1'b1, 1'b1, "WREQ asserts both asynchronous controls");
+        rising_edge();
+        expect_pair(1'b1, 1'b1, "clock is ignored during both-asserted state");
         #1 wreq_n = 1'b1;
 
-        rising_edge(); expect_q(1'b1, "first recovered edge");
-        rising_edge(); expect_q(1'b0, "second recovered edge");
-        rising_edge(); expect_q(1'b1, "third recovered edge");
-        rising_edge(); expect_q(1'b0, "fourth recovered edge");
+        // Simultaneous release has no guaranteed hardware phase. This model
+        // retains H/H until the first edge; thereafter /Q feedback divides by
+        // two, which is the phase-independent behavior proved here.
+        expect_pair(1'b1, 1'b1, "model retains forbidden state until an edge");
+        rising_edge(); expect_pair(1'b1, 1'b0, "first recovered edge");
+        rising_edge(); expect_pair(1'b0, 1'b1, "second recovered edge");
+        rising_edge(); expect_pair(1'b1, 1'b0, "third recovered edge");
+        rising_edge(); expect_pair(1'b0, 1'b1, "fourth recovered edge");
 
         #1 wreq_n = 1'b0;
-        expect_q(1'b0, "second WREQ assertion");
+        expect_pair(1'b1, 1'b1, "second WREQ assertion");
         #1 wreq_n = 1'b1;
-        rising_edge(); expect_q(1'b1, "restart edge");
+        rising_edge(); expect_pair(1'b1, 1'b0, "first post-release edge");
+        rising_edge(); expect_pair(1'b0, 1'b1, "post-release divide continues");
 
-        $display("D96-RCLK: PASS WREQ controls, /Q feedback, divide-by-two, restart");
+        $display("D96-RCLK: PASS both-async state exposed; /Q feedback divides after release");
         $finish;
     end
 endmodule

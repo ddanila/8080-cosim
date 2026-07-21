@@ -35,7 +35,9 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
    physical table but does not replace the two continuity checks
    (`docs/d94-reconstruction-constraints.md`).
 3. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
-   D96.9 Q2 and D96.11 CLK2; D99.4/.5/.10/.11/.12; and
+   D96.1/.4 WREQ_N with Q1/.5 and Q1_N/.6 for post-release phase; D96.9 Q2,
+   D96.11 CLK2, and the functionally contradictory drawn-NC
+   D96.13 `/CLR2`; D99.4/.5/.10/.11/.12; and
    D101.1 `/OE0` plus data inputs D101.3/.5/.6. D101's shared EARLY/LATE
    select pins 2/14 and its complete Q1 write-precomp half are already
    source-closed and must not be re-probed as missing paths
