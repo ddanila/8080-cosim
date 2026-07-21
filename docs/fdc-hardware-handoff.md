@@ -74,7 +74,9 @@ feedback divides by two after a recovered-clock edge resolves the state.
 Exact-revision sheet 3 also restores the active D28 inverter sections
 on pins 10-13, while it omits D98 buffer pair 4 (pins 9/10), D97 Q/pin13, and D102
 /Q pin4. They are guarded intentional no-connects rather than continuity
-requests. D99.3
+requests. D28 and D98 are structural-only HDL cells and LVS-visible, including
+all six inverter paths, five enabled status buffers, and the explicit D98 pair-4
+no-connect. D99.3
 (/CLR1) is physically grounded and D99.2 (B1) reaches another isolated
 test landing. The SN74123 contract therefore holds Q1/pin13 low and
 Q1_N/pin4 high, excluding section 1 as an active pulse conditioner.

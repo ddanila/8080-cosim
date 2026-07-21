@@ -86,10 +86,13 @@ design release until measured or explicitly dispositioned.
   buffer; its two enable groups and six A/Y pairs follow the device sheet.
   Exact-revision sheet 3 uses five pairs and explicitly omits pair 4/pins 9-10:
   <https://static.chipdip.ru/lib/493/DOC048493374.pdf>.
+  The five used buffers and both grounded enable groups are now structural-only
+  HDL and LVS-visible; pair 4 remains an explicit structural no-connect.
 - `D28` is now typed as the К155ЛН3 six-inverter open-collector family.
   Factory `.009` sheet 3 closes all six sections through drive-select, READY,
   separator-clock, and DRQ/INTRQ conditioner paths. The drawing instead omits
   D96.13, D98.9/.10, and complementary outputs D97.13/D102.4.
+  All six D28 sections are now structural-only HDL and LVS-visible.
 
 ## Footprint-Only ICs
 

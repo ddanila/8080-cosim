@@ -13,7 +13,7 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
-- `sync/check.sh` currently compares 115 mapped instances and 298 nets with no
+- `sync/check.sh` currently compares 117 mapped instances and 309 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
   321-footprint/2,434-pad source and contains 29,780 copper items across 412
@@ -55,6 +55,9 @@ with the machine-readable board model.
   are also now structural and LVS-visible. Their recovered digital conductors
   are proved without assigning analog timing to the still-incomplete C16/C19
   markings or hiding D101.1/.3/.5/.6 behind simulation defaults.
+  Source-closed D28 and D98 are likewise structural and LVS-visible, including
+  all six D28 open-collector inverters, the five used D98 buffers, and the
+  exact-revision omission of D98 buffer pair 4.
   The exact-revision sheet makes D97.13, D98.9/.10, and D102.4 intentional
   no-connects, leaving D96, D99, and D101 with open support-device functional pins.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;

@@ -334,6 +334,34 @@ endmodule
 // the simulated value through unchanged, but as a -lib blackbox cell it keeps the two sides SEPARATE
 // NETS for LVS -- the board netlist has the series part / unknown feed there, the sim does not.
 module net_boundary (input wire a, output wire b); assign b = a; endmodule
+// D28 К155ЛН3: six open-collector inverters. A high input sinks the output;
+// a low input releases it to the board's external pull-up. The separate ports
+// preserve all six exact-revision sections for structural LVS.
+module ln3_oc_inv (
+    input wire a1, a2, a3, a4, a5, a6,
+    output wire y1, y2, y3, y4, y5, y6
+);
+    assign y1 = a1 ? 1'b0 : 1'bz;
+    assign y2 = a2 ? 1'b0 : 1'bz;
+    assign y3 = a3 ? 1'b0 : 1'bz;
+    assign y4 = a4 ? 1'b0 : 1'bz;
+    assign y5 = a5 ? 1'b0 : 1'bz;
+    assign y6 = a6 ? 1'b0 : 1'bz;
+endmodule
+// D98 К155ЛП11 / SN74367: six non-inverting three-state buffers. Pin 1
+// enables channels 1-4 and pin 15 enables channels 5-6, both active low.
+module lp11_buf (
+    input wire oe14_n, oe56_n,
+    input wire a1, a2, a3, a4, a5, a6,
+    output wire y1, y2, y3, y4, y5, y6
+);
+    assign y1 = oe14_n ? 1'bz : a1;
+    assign y2 = oe14_n ? 1'bz : a2;
+    assign y3 = oe14_n ? 1'bz : a3;
+    assign y4 = oe14_n ? 1'bz : a4;
+    assign y5 = oe56_n ? 1'bz : a5;
+    assign y6 = oe56_n ? 1'bz : a6;
+endmodule
 // S4 ВДМ1-2 SPDT interrupt selector. The photographed build is simulated in
 // the external-INT6 position; reading this file as a -lib cell keeps all three
 // switch terminals as separate LVS-visible nets.

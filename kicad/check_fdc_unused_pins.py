@@ -10,6 +10,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = json.loads((ROOT / "kicad/juku.board.json").read_text(encoding="utf-8"))
+HDL = (ROOT / "hdl/juku_top.v").read_text(encoding="utf-8")
+DEVICES = (ROOT / "hdl/devices.v").read_text(encoding="utf-8")
+LVS_MAP = json.loads((ROOT / "sync/map.json").read_text(encoding="utf-8"))
 NETS = {
     name: {f"{ref}.{pin}" for ref, pin in item.get("nodes", [])}
     for name, item in BOARD["nets"].items()
@@ -104,5 +107,20 @@ for node, expected in {
     actual = pad_net(ref, pin)
     if actual != expected:
         raise SystemExit(f"FDC UNUSED: source PCB {node} net {actual!r} != {expected!r}")
+
+for ref in ("D28", "D98"):
+    if LVS_MAP["instances"].get(ref) != f"U_{ref}":
+        raise SystemExit(f"FDC UNUSED: {ref} is outside LVS scope")
+for marker, text in {
+    "module ln3_oc_inv": DEVICES,
+    "module lp11_buf": DEVICES,
+    "ln3_oc_inv U_D28": HDL,
+    "lp11_buf U_D98": HDL,
+    ".a5(fdc_drq), .y5(d96_irq_conditioned_boundary)": HDL,
+    ".a6(fdc_intrq), .y6(d96_irq_conditioned_boundary)": HDL,
+    ".a4(1'bz), .y4()": HDL,
+}.items():
+    if marker not in text:
+        raise SystemExit(f"FDC UNUSED: structural HDL marker missing: {marker}")
 
 print("FDC UNUSED: PASS — D28 IRQ gates restored; D98 buffer 4 and complementary D97/D102 outputs remain omitted")

@@ -550,12 +550,11 @@ module juku_top (
                      .q0(fdc_clk), .q1(fdc_separator_clk));
     wire d106_preset_high;
     wire [3:0] d106_q;
-    wire d106_co_unused, d106_bo_unused, d106_q3_to_d28;
+    wire d106_co_unused, d106_bo_unused;
     net_boundary U_D106PRESET (.a(1'b1), .b(d106_preset_high));
     ie7_ctr U_D106 (.up(d106_preset_high), .down(fdc_separator_clk),
                     .load_n(fdc_raw_read), .clr(1'b0), .d({4{d106_preset_high}}),
                     .q(d106_q), .co(d106_co_unused), .bo(d106_bo_unused));
-    net_boundary U_D106Q3LNK (.a(d106_q[3]), .b(d106_q3_to_d28));
     // D28.2 is the open-collector inverter between D106.Q3 and D96.CLK1;
     // R85 provides its pull-up. Sheet 3 closes D96.1 as a divide-by-two
     // toggle: /Q feeds D, Q drives VG93 RCLK, and WREQ_N holds both
@@ -563,7 +562,33 @@ module juku_top (
     wire d96_separator_clk, d96_q1_n, d96_q2n_test;
     wire d96_irq_conditioned_boundary, d96_irq_clock_boundary;
     wire d96_irq_q_sheet1_boundary;
-    assign d96_separator_clk = ~d106_q3_to_d28;
+`ifdef YOSYS
+    // Exact sheet 3 draws all six D28 open-collector inverters and five of
+    // D98's six enabled buffer channels. Structural cells make the drive
+    // status, READY, separator-clock, and wired DRQ/INTRQ paths LVS-visible;
+    // their external X4 inputs remain honest off-board boundaries.
+    wire d28_x4_dsel1_n, d28_x4_dsel0_n;
+    wire d98_y1_r94, d98_y3_s1_2;
+    wire x4_ready_n, x4_index_n, x4_rd_data;
+    wire x4_tr00_n, x4_wr_protect_n;
+    ln3_oc_inv U_D28 (
+        .a1(ppi0_pc[5]), .y1(d28_x4_dsel1_n),
+        .a2(d28_x4_dsel1_n), .y2(d28_x4_dsel0_n),
+        .a3(d98_y1_r94), .y3(fdc_ready),
+        .a4(d106_q[3]), .y4(d96_separator_clk),
+        .a5(fdc_drq), .y5(d96_irq_conditioned_boundary),
+        .a6(fdc_intrq), .y6(d96_irq_conditioned_boundary));
+    lp11_buf U_D98 (
+        .oe14_n(1'b0), .oe56_n(1'b0),
+        .a1(x4_ready_n), .y1(d98_y1_r94),
+        .a2(x4_index_n), .y2(fdc_index),
+        .a3(x4_rd_data), .y3(d98_y3_s1_2),
+        .a4(1'bz), .y4(),
+        .a5(x4_tr00_n), .y5(fdc_tr00),
+        .a6(x4_wr_protect_n), .y6(fdc_wprt));
+`else
+    assign d96_separator_clk = ~d106_q[3];
+`endif
     tm2_dff #(.FUNCTIONAL(1)) U_D96 (
         .clr1_n(wreq_n), .d1(d96_q1_n), .clk1(d96_separator_clk), .pre1_n(wreq_n),
         .q1(fdc_rclk), .q1_n(d96_q1_n),
@@ -624,7 +649,6 @@ module juku_top (
     // the bare C16/C19 unit markings and installed pulse widths are measured;
     // LVS can still prove every source-visible digital conductor without
     // substituting guessed analog timing into the runnable FDC.
-    wire d98_y3_s1_2;
     wire precomp_tap_1, precomp_tap_2, precomp_tap_3;
     wire precomp_cascade_1, precomp_cascade_2;
     wire d101_oe0_boundary, d101_d03_boundary;
