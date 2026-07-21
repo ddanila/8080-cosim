@@ -1,0 +1,50 @@
+KМ555ТМ2 / SN74LS74A-compatible dual D flip-flop
+===================================================
+
+Primary reference
+-----------------
+Texas Instruments SDLS119, SN54LS74A/SN74LS74A dual positive-edge-triggered
+D-type flip-flops with preset and clear, December 1983, revised March 1988.
+Local file: sn74ls74a-ti.pdf
+
+14-pin package contract
+-----------------------
+1   1CLR_N   asynchronous active-low clear
+2   1D       synchronous data
+3   1CLK     positive-edge clock
+4   1PRE_N   asynchronous active-low preset
+5   1Q       true output
+6   1Q_N     complementary output
+7   GND
+8   2Q_N     complementary output
+9   2Q       true output
+10  2PRE_N   asynchronous active-low preset
+11  2CLK     positive-edge clock
+12  2D       synchronous data
+13  2CLR_N   asynchronous active-low clear
+14  VCC
+
+Functional contract
+-------------------
+- CLR_N low and PRE_N high forces Q=0 and Q_N=1.
+- PRE_N low and CLR_N high forces Q=1 and Q_N=0.
+- With both asynchronous controls high, a rising CLK edge transfers D to Q.
+- With both asynchronous controls high and no rising edge, the prior state is
+  retained.
+- Simultaneously asserting CLR_N and PRE_N is outside normal complementary-
+  output operation and must not be used as a deterministic board state.
+
+D96 board-specific constraint
+-----------------------------
+Recovered .009 sheet 3 ties D96.10 2PRE_N and D96.12 2D to the same
+FDC_IRQ_CONDITIONED_N node, while D96.13 2CLR_N is drawn unconnected. This
+wiring cannot drive 2Q low through any documented deterministic control:
+condition low asynchronously presets Q; condition high makes D=1, so a rising
+clock also sets or preserves Q. Treat an unconnected LS-TTL input as a
+hardware-quality/measurement issue, not as a guaranteed logic-high source.
+Consequently D96 section 2 remains a reconstruction contradiction until the
+pin-13 disposition and pins 9/11 remote endpoints are verified on hardware.
+
+Board truth remains in kicad/juku.board.json and the exact-revision sheet/photo
+evidence. This note constrains device behavior; it does not invent a missing
+copper connection.
