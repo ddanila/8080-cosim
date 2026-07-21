@@ -317,6 +317,11 @@ def main() -> None:
     parser.add_argument("--kicad-cli", type=Path)
     parser.add_argument("--python", type=Path, help="Python interpreter with pcbnew")
     parser.add_argument(
+        "--diagnostic-board",
+        type=Path,
+        help="retain the proposed diagnostic board even when the transaction fails",
+    )
+    parser.add_argument(
         "--diagnostic-report",
         type=Path,
         help="retain the diagnostic KiCad DRC JSON even when the transaction fails",
@@ -347,6 +352,11 @@ def main() -> None:
 
     if args.input.resolve() == args.output.resolve():
         raise SystemExit("input and output must differ")
+    if args.diagnostic_board and args.diagnostic_board.resolve() in {
+        args.input.resolve(),
+        args.output.resolve(),
+    }:
+        raise SystemExit("diagnostic board must differ from input/output")
     if args.transaction_board and args.transaction_board.resolve() in {
         args.input.resolve(),
         args.output.resolve(),
@@ -515,6 +525,10 @@ def main() -> None:
         new_route_uuids = set(diagnostic_tracks) - set(baseline_tracks)
         if not new_route_uuids:
             raise SystemExit("diagnostic route added no track/via UUIDs")
+        if args.diagnostic_board:
+            args.diagnostic_board.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(diagnostic_board, args.diagnostic_board)
+            print(f"wrote {args.diagnostic_board}")
         diagnostic_report_path = tmp / "diagnostic.json"
         diagnostic_report = run_drc(cli, diagnostic_board, diagnostic_report_path)
         if args.diagnostic_report:
