@@ -11,14 +11,12 @@ DEFAULT_BOARD = ROOT / "kicad" / "juku_routed.kicad_pcb"
 DEFAULT_REPORT = ROOT / "docs" / "replica-power-trace-readiness.md"
 
 POWER_NETS = ["GND", "P5V", "P12V", "M12V", "M5V_DERIVED"]
-# The former 992/491 routed envelope included six segments of the rejected
-# D105.10-to-M5V branch plus its 0.133 mm orphan tail.  The corrected retained
-# route removed those seven widened segments, then added six 0.20 mm segments
-# to close the real D1/R19/VD5/E5-derived -5 V rail without restoring D105.10.
-# Native sheet-2 rail E is directly grounded. Its 160 already-routed baseline
-# segments now correctly join the power inventory; no geometry or width changed.
-EXPECTED_POWER_SEGMENTS = 1151
-EXPECTED_WIDENED_SEGMENTS = 484
+# The zero-open rip-up/recovery route replaces portions of the former widened
+# topology with clearance-safe 0.20 mm paths and fine-via bridges.  Pin the
+# resulting power inventory so later routing changes cannot silently alter the
+# reviewed DFM envelope; KiCad DRC remains the clearance authority.
+EXPECTED_POWER_SEGMENTS = 2650
+EXPECTED_WIDENED_SEGMENTS = 284
 BASELINE_WIDTH_MM = 0.20
 MAX_WIDTH_MM = 1.00
 

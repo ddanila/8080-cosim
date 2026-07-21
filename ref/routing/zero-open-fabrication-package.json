@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "board": "kicad/juku_routed.kicad_pcb",
+  "board_sha256": "1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015",
+  "toolchain": {
+    "kicad_cli": "/usr/bin/kicad-cli",
+    "kicad_version": "9.0.8",
+    "gerber_generator": "KiCad Pcbnew 9.0.8+dfsg-1",
+    "external_viewer": "@tracespace/cli"
+  },
+  "routing": {
+    "footprints": 321,
+    "pads": 2434,
+    "copper_items": 29664,
+    "nets": 411,
+    "unconnected_items": 0,
+    "electrical_blockers": 0,
+    "dangling_tracks": 0,
+    "dangling_vias": 0
+  },
+  "drc_review_counts": {
+    "courtyards_overlap": 107,
+    "silk_over_copper": 196,
+    "silk_overlap": 199,
+    "text_thickness": 199,
+    "total": 701
+  },
+  "drill_inventory": {
+    "file_function": "MixedPlating,1,2",
+    "tools_mm": {
+      "0.300": 2776,
+      "0.800": 2324,
+      "1.000": 85,
+      "1.200": 8
+    }
+  },
+  "upload_zip": {
+    "path": "fab/gerbers/upload/juku-replica-gerbers-drill.zip",
+    "bytes": 1197416,
+    "sha256": "d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c",
+    "checksum_file_sha256": "99ca7d2433d58f3b56a209906f73427dcac7b3cd1286a09f710cd1190892f1f0"
+  },
+  "package_status": "DESIGN HOLD / PACKAGE VERIFIED",
+  "disposition": "All local fabrication-package integrity gates pass. Do not upload or order while the functional design hold remains."
+}

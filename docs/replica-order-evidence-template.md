@@ -1,6 +1,6 @@
 # Replica order evidence template
 
-Status: **TEMPLATE INVALID**
+Status: **TEMPLATE READY / DESIGN HOLD**
 
 This is a future private order-record template. Do not upload the current
 package or start an order while the design-release report says DESIGN HOLD.
@@ -20,17 +20,17 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 | Field | Value |
 | --- | --- |
 | Upload ZIP | `fab/gerbers/upload/juku-replica-gerbers-drill.zip` |
-| Upload ZIP SHA256 | `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46` |
+| Upload ZIP SHA256 | `d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c` |
 | Upload checksum command | `(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)` |
 
 ## Required Source Evidence
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
-| Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 30221 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5270 | PASS |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2965 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 16663 | PASS |
 
 ## Vendor Options To Record
 
@@ -74,8 +74,3 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 - [ ] Vendor did not enable impedance control or change the 2-layer stackup.
 - [ ] Final quoted options match the locked options in `docs/replica-manufacturing-readiness.md`.
 - [ ] Upload ZIP SHA256 above is saved with the order.
-
-## Failures
-
-- evidence marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
-- evidence marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**

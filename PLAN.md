@@ -2,10 +2,11 @@
 
 Status date: **2026-07-21**.
 
-Release status: **DESIGN HOLD / PACKAGE INVALID**. The recorded main-board ZIP
-is a checksum-reproducible historical engineering snapshot, not fabrication
-authorization. The accepted W14 topology invalidates its routed copper and DRC
-disposition; a new package must wait for P0 netlist freeze and rerouting.
+Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The promoted zero-open
+main-board route and deterministic Gerber/drill ZIP pass the machine package
+gates, but this is not fabrication authorization. D2/D94 continuity, remaining
+FDC-support pin closure, source-risk nets, and sourcing/programming decisions
+still hold release.
 
 This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
 module. Owner photographs of the exact `ДГШ5.109.009 Э3` are the primary
@@ -34,7 +35,7 @@ is not a prerequisite for this replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; the recovered ROMBIOS `0xA0/0xA2` 512-byte write-sector path is implemented in both models and byte-for-byte readback-tested on an explicitly writable disk copy; the C and HDL FDC models share guarded Type-I physical-head versus Track-register motion, update/verify/SEEK-ERROR, dynamic status, D95-selected 2 MHz 3/6/10/15 ms or 1 MHz 6/12/20/30 ms step timing plus respective 15/30 ms verify-settle timing with HLT gating, immediate valid-ID mismatch, four-revolution missing-ID failure, active-low TR00 status/Restore with a 255-step limit, and partial-D0 motion, D95-selected Type-II/III `E=1` 15/30 ms head-settle timing followed by exact HLT gating, exact command-load READY-low Type-II/III rejection with Type-I independence, and exact 15-idle-index head-unload semantics, Type-II multi-record continuation through end-of-track RNF, exact four-revolution missing-ID search, exact `C/S` side-ID comparison with fifth-index RNF, and exact Write Sector `a0` normal/deleted marks with Read Sector bit-5 RECORD TYPE through session metadata, the datasheet's exact 22-byte MFM Write Sector preload interval plus streaming one-byte DRQ/LOST-DATA contract (read overwrite and later-write zero substitution), datasheet completion/status acknowledgement and the full Type-IV Force Interrupt event/acknowledgement/disarm lifecycle, a CRC-checked six-byte Read Address command, index-gated 6,250-byte one-revolution MFM Read Track reconstruction including `FB`/`F8`, and an index-gated/preloaded 6,230-write representable MFM Write Track formatter with all ten sector payloads and marks, partial-D0 persistence, and explicit flat-image representation faults; an extended exact EKDOS replay proves all 18,489 observed D93 accesses select 1 MHz through D26 PC3/D95; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes directly from the corrected, validated physical D6 table, including the owner-closed D7.8→D105.1/D6.15 A7 qualifier, while the old functional decoder is retained only as a diagnostic comparison; the official D1-D5-DB-ROM topology and period КР580ВК38/ВА87 diagrams exclude a hidden D5 inversion; exact static/runtime guards preserve the CMA/NOP firmware-profile split; standalone ВА87 behavior and the source-proved D23-D25 paths exhaustively guard all 256 values in both directions. The former opt-in D100/DAL builds remain diagnostic experiments only: recovered `.009` sheet 3 proves D100 is instead the drive-output buffer. The same sheet now closes D95's complete 1/2 MHz D93 and 4/8 MHz separator clock mux, which is structural and LVS-visible | Identify the exact fitted D15/D16 firmware profile and the historical purpose of the CMA-profile variants; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior beyond the guarded media subset (including D93.24 oscillator accuracy/edge quality, D93.34 TR00 drive-status continuity, step-interface timing, arbitrary flux/deleted-data layouts beyond session-representable marks, and physical D93.32 READY/index timing through the source-proved E11 HLT strap), cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 112 mapped instances and 288 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D35 frame-interrupt inversion, D41 timing rails, reset/USART paths, D10 IR0/IR1 external-input pull-down paths, D7 strobe topology, D54/D55/D56 timing crossings, D95 clock mux, D106 recovery counter, D96 read-clock toggle, D99 timing/control paths, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The tracked routed artifact was DRC-clean within its former modeled scope; the accepted W14 topology now deliberately invalidates that stale route and its saved manufacturing packet until the P0 netlist freezes. Before the native rail-E correction, the preserved refresh checkpoint `kicad/juku_routed_candidate.kicad_pcb` had 296 footprints, all 2,383 pad identities, zero internal unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings. Merging that source-proved ground domain now exposes one real missing ground join in its stale copper | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. Its stale copper produces two W14-related shorts and two opens: old PHI2 copper still touches D35.12, and a D53_Y0_R49 track crosses W14.2. The refresh checkpoint is intentionally not current-source copper: later corrections leave 62 pad-net mismatches and 202 moved pads across C69/D5/D7/D8/D9/D13/D37-D39/D50/D51/D105/R13/R14/R46/R49-R57, including the net-only C34.1 correction; it also lacks the fourteen A:7/A:8/A:10/A:11/A:14/A:19/A:20 pads. It copper-routes all ten factory insulated-link nets. The source PCB now preserves A:7, A:8, A:10, A:11, A:14, A:19, and A:20 as landing-island pairs joined only by assembly wires W7/W8/W10/W11/W14/W19/W20; the other six `А:N` terminals and three island splits remain unmodeled. All twenty drawing-pixel endpoints are guarded, both A7/A8/A10/A11/A14/A19/A20 terminals plus the D38-side A9 and C96-side A12 joints are board-fitted/island-assigned, and the A7/A8/A11/A14 cut-length discrepancies are explicit. The other four PCB terminals remain unpromoted; a common raw solder image places A14B 58.911 mm from D41.1, and W14 now preserves the distinct PHI2 landing islands. Both routed artifacts are convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split the remaining islands, then refresh/reroute and adopt the manufacturing packet only after the functional P0 netlist freezes |
+| PCB package | The promoted route has exact live-source identity: 321 footprints, 2,434 pads, 29,664 copper items across 411 nets, zero opens, zero electrical blockers, and zero dangling tracks/vias under stable KiCad 9.0.8. The Gerber/drill inventory, exact-count cosmetic waiver, four-tool mixed-plating drill geometry, 0.20–1.00 mm power-width envelope, independent render, deterministic ZIP, and checksums all pass. Exact routing evidence is `ref/routing/zero-open-promoted-topology.json`; package evidence is `docs/replica-manufacturing-readiness.md` | The verified package remains under design hold and must not be uploaded or ordered until D2/D94 continuity, remaining FDC-support functional pins, source-risk nets, and sourcing/programming decisions close. Factory-wire landing geometry and construction fidelity remain explicit bring-up checks; any source or route change requires complete package regeneration and a new exact checksum |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 A fresh salvage against the live 321-footprint/2,434-pad source now establishes
@@ -275,11 +276,16 @@ selects, address bus, data bus, interrupt, CAS, and ground nets. The final
 3.930 mm REV cleanup uses a four-item BA15 topology swap; a shifted 0.0875 mm
 phase restores BA15 over 2.585 mm. After 46 final safe tail prunes, independent
 KiCad 9.0.8 DRC reports zero opens, zero electrical blockers, zero dangling
-items, and the unchanged 710 cosmetic reports. The source-parity gate proves
+items, and 701 exact-count cosmetic review findings after stable-library
+cleanup. The source-parity gate proves
 321 footprints, 2,434 identical pads, and zero coordinate delta. The promoted
 board has 29,664 routed items across 411 nets; exact evidence is in
-`ref/routing/zero-open-promoted-topology.json`, and cumulative promoted
-closures are now 677.
+`ref/routing/zero-open-promoted-topology.json`; the matching deterministic
+package is pinned in `ref/routing/zero-open-fabrication-package.json`, and
+cumulative promoted closures are now 677.
+The separately preserved historical candidate remains useful for drift
+auditing: it has 62 pad-net mismatches and 202 moved pads against the live
+source, while the promoted board above has exact source identity.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.
@@ -636,11 +642,11 @@ May view corroborates its grade-В reverse face. The source PCB carries both phy
 diodes with their sheet-proved polarities. This target-body evidence supersedes
 the older `.006` group list's КД522А allocation without changing VD3/VD5.
 
-The recorded upload ZIP SHA256 is
-`7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
-Do not send this saved package to a fabricator. After the blockers below are
-closed and the corrected board is rerouted and reviewed, regenerate every
-fabrication file and gate again.
+The machine-verified upload ZIP SHA256 is
+`d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c`.
+Do not send this package to a fabricator while the design hold remains. After
+the blockers below are closed, regenerate every fabrication file and gate
+again before upload.
 
 ## Highest-priority work and evidence boundary
 

@@ -15,41 +15,24 @@ with the machine-readable board model.
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
 - `sync/check.sh` currently compares 112 mapped instances and 288 nets with no
   KiCad/HDL mismatch.
-- The routed main-board artifact has 240 footprints and zero KiCad copper
-  clearance, crossing, short, or unconnected findings. The real
-  `M5V_DERIVED` rail is routed independently of the rejected D105.10 branch,
-  and the merged MEMR islands use a two-via back-layer bridge instead of
-  crossing the front-layer select bus. Its saved Gerber/drill ZIP is
-  checksum-reproducible, but remains a stale engineering snapshot and is not
-  released for manufacture. Current ZIP SHA256:
-  `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
-  A 296-footprint replacement routing checkpoint is preserved separately with
-  all 2,383 pad identities and zero electrical DRC findings before the native
-  rail-E correction. Merging that source-proved ground domain exposes one real
-  ground-join open in the preserved copper
-  ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
-  Later source corrections leave it with 62 pad-net mismatches and 202 moved
-  pads across C69/D5/D7/D8/D9/D13/D37-D39/D50/D51/D105/R13/R14/R46/R49-R57; it also lacks the fourteen
-  A:7/A:8/A:10/A:11/A:14/A:19/A:20 assembly-wire pads. It is therefore convergence evidence rather than
-  current-source copper. Its former zero-open state also copper-substitutes ten
-  documented factory insulated links. The source PCB now preserves A:7, A:8,
-  A:10, A:11, A:14, A:19, and A:20 as separate landing-island pairs joined only by explicit
-  assembly wires; the other six A-point terminals remain absent. All ten pairs
-  (`А:7`–`А:14`, `А:19`, and `А:20`) are
-  registered in drawing-image space. Both A7/A8/A10/A11/A14/A19/A20
-  terminals plus the D38-side A9 and C96-side A12 joints are also board-fitted
-  and island-assigned; the other four PCB terminals remain unset. Common-image
-  registration places A14B 58.911 mm from D41.1, and W14 now preserves the
-  distinct PHI2 landing islands. The stale routed board consequently has two
-  W14-related shorts and two opens and must not be rerouted until the P0
-  netlist freeze. The remaining landing
-  geometry is an adoption hold
-  ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
+- The promoted routed main-board artifact exactly matches the live
+  321-footprint/2,434-pad source and contains 29,664 copper items across 411
+  nets. Stable KiCad 9.0.8 reports zero opens, zero electrical blockers, and
+  zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
+  but remains under the functional design hold and must not be uploaded or
+  ordered. Current deterministic upload ZIP SHA256:
+  `d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c`.
+  Exact topology evidence is retained in
+  `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
+  `ref/routing/zero-open-fabrication-package.json`, and fabrication/release
+  gates are summarized in `docs/replica-manufacturing-readiness.md`.
+  The separately preserved historical candidate still has 62 pad-net mismatches and 202 moved
+  pads against the source; it is audit history, not the promoted board.
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
   repeated reads (with D8/D94 provenance aliases counted only once); the measured D2/D30/D105 and
-  D6/D13 continuity is adopted in the source model and HDL, while the routed
-  snapshot still needs replacement. D94 content truth is closed, but its A0-A4
+  D6/D13 continuity is adopted in the source model, HDL, and promoted route.
+  D94 content truth is closed, but its A0-A4
   input sources, pin 15 source, and the far destinations or branches of outputs
   D3-D7 remain unknown; the former BA11-BA15 input assignment was an unproved
   scaffold analogy and is retired. There are 3 official FDC-support ICs whose

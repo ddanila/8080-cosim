@@ -53,7 +53,6 @@
 		)
 		
 	)
-	(duplicate_pad_numbers_are_jumpers no)
 	(pad "101A" thru_hole circle
 		(at -38.75 -2.5)
 		(size 1.6 1.6)

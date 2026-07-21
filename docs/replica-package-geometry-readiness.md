@@ -23,14 +23,13 @@ preview dimensions and drill-file expectations into a reproducible local gate.
 
 | Tool | Diameter mm | Hits | Expected hits | Status |
 | --- | ---: | ---: | ---: | --- |
-| T1 | 0.300 | 396 | 396 | PASS |
-| T2 | 0.750 | 12 | 12 | PASS |
-| T3 | 0.800 | 2311 | 2311 | PASS |
-| T4 | 1.000 | 30 | 30 | PASS |
-| T5 | 1.300 | 5 | 5 | PASS |
+| T1 | 0.300 | 2776 | 2776 | PASS |
+| T2 | 0.800 | 2324 | 2324 | PASS |
+| T3 | 1.000 | 85 | 85 | PASS |
+| T4 | 1.200 | 8 | 8 | PASS |
 
 ## Upload Implications
 
 - Vendor preview should show a 2-layer board.
 - Vendor preview should show the 310 mm x 266 mm Edge.Cuts coordinate box; a 310.15 mm x 266.15 mm rendered job size is the 0.15 mm profile aperture envelope.
-- Vendor preview should ingest one mixed-plating Excellon drill file with the five tool groups above.
+- Vendor preview should ingest one mixed-plating Excellon drill file with the four tool groups above.

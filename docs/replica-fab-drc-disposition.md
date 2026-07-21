@@ -1,7 +1,7 @@
 # Replica fab DRC disposition
 
 Source report: `fab/gerbers/juku_routed-drc.json`
-Status: **REVIEW REQUIRED**
+Status: **READY**
 
 This generated report is the tracked disposition record for the main-board
 fabrication DRC findings. It deliberately fails if a count changes or a new
@@ -14,20 +14,20 @@ silently.
 | --- | ---: | --- |
 | `clearance` | 0 | Pass |
 | `copper_edge_clearance` | 0 | Pass |
-| `lib_footprint_issues` | 1 | Fix before order |
-| `shorting_items` | 2 | Fix before order |
+| `lib_footprint_issues` | 0 | Pass |
+| `shorting_items` | 0 | Pass |
 | `tracks_crossing` | 0 | Pass |
-| `unconnected_items` | 3 | Fix before order |
+| `unconnected_items` | 0 | Pass |
 
 ## Review-Only Classes
 
 | DRC type | Count | Expected | Highest-repeat references | Disposition |
 | --- | ---: | ---: | --- | --- |
-| `courtyards_overlap` | 57 | 57 | D102, D84, D95, D76, D99, C12, C13, D93 | Waived as dense authentic placement after visual assembly-fit review. |
+| `courtyards_overlap` | 107 | 107 | D97, C17, C20, R33, R66, R84, R97, VD3 | Waived as dense authentic placement after visual assembly-fit review. |
 | `pth_inside_courtyard` | 0 | 0 | - | Waived as dense through-hole/socket proximity after visual assembly-fit review. |
-| `silk_over_copper` | 199 | 199 | D95, D84, D76, E13, C9, D48, D102, C12 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
-| `silk_overlap` | 199 | 199 | C1, S1, S3, C33, D23, D2, D25, D24 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
-| `text_thickness` | 80 | 80 | C73, R19, R29, R3, R38, R39, R6, VD3 | GOST/TrueType stroke warning; manufacturing-readability item, not copper geometry. |
+| `silk_over_copper` | 196 | 196 | E14, R62, D104, D48, D53, D65, R39, R48 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
+| `silk_overlap` | 199 | 199 | C1, C33, D23, D25, D48, E13, D64, R31 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
+| `text_thickness` | 199 | 199 | VD3, C6, C73, C99, R103, R13, R19, R29 | GOST/TrueType stroke warning; manufacturing-readability item, not copper geometry. |
 
 ## Order-Time Visual Checks
 
@@ -45,15 +45,8 @@ silently.
 
 ## Resolved Items
 
-- `lib_footprint_issues`: resolved by vendoring `juku:CONN_X1`, `CONN_X2`, `CONN_X3`, `CONN_X8`, and `CONN_X9` under `kicad/juku.pretty/` with the project `kicad/fp-lib-table`.
+- `lib_footprint_issues`: resolved by vendoring stable-KiCad-compatible `juku:CONN_X1`, `CONN_X2`, `CONN_X3`, `CONN_X8`, `CONN_X9`, and factory-wire footprints under `kicad/juku.pretty/` with the project `kicad/fp-lib-table`.
 - `copper_edge_clearance` and `silk_edge_clearance`: resolved by deferring the two conflicting generated cutouts at `(104.0,251.4)` and `(300.3,138.1)` until the exact non-rectangular outline can be re-read.
 - Review-only DRC classes are accepted only at the exact counts above; changed counts require a fresh disposition.
 
-Visual disposition failures: 4
-
-## Failures
-
-- Blocking DRC class `lib_footprint_issues` is nonzero: 1
-- Blocking DRC class `shorting_items` is nonzero: 2
-- Blocking DRC class `unconnected_items` is nonzero: 3
-- Unexpected DRC class without disposition: `solder_mask_bridge`=2
+Visual disposition failures: 0

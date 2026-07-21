@@ -1,9 +1,9 @@
 # Replica manufacturing readiness
 
-Status: **PACKAGE INVALID**
+Status: **DESIGN HOLD / PACKAGE VERIFIED**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Final upload ZIP SHA256: `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`
+Final upload ZIP SHA256: `d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c`
 
 This is the tracked top-level manufacturing packet for the replica main
 board. It separates reproducible package integrity from functional design
@@ -14,34 +14,34 @@ DESIGN HOLD.
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1251 | PASS |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2871 | HOLD |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
-| Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2554 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 30221 | HOLD |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 9575 | HOLD |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
-| External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
-| Review waiver | `fab/gerbers/review-waivers.md` | 1797 | FAIL |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1852 | PASS |
+| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1434 | HOLD |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2934 | HOLD |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5270 | PASS |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2965 | PASS |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2147 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 16663 | HOLD |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 9109 | HOLD |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
+| External Gerber review | `fab/gerbers/external-gerber-review.md` | 2127 | PASS |
+| Review waiver | `fab/gerbers/review-waivers.md` | 1630 | PASS |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1891 | PASS |
 
 ## Toolchain Provenance
 
 | Tool | Version / command |
 | --- | --- |
-| KiCad CLI | /usr/bin/kicad-cli-nightly |
-| KiCad CLI version | 10.99.0 |
-| Gerber job generator | KiCad Pcbnew 10.99.0-unknown-3a2065e8de~189~ubuntu26.04.1 |
+| KiCad CLI | /usr/bin/kicad-cli |
+| KiCad CLI version | 9.0.8 |
+| Gerber job generator | KiCad Pcbnew 9.0.8+dfsg-1 |
 | External viewer | @tracespace/cli |
 
 ## Final Upload Directory
 
 | File | Bytes | SHA256 | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `8262a982aafd3e2e42c6f048167a5feb341115043983e0970681b3e256c8799f` | PASS |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790221 | `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `99ca7d2433d58f3b56a209906f73427dcac7b3cd1286a09f710cd1190892f1f0` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 1197416 | `d950a5e55a7627b731e40373c822dffaa9640354fcc50e4bcf927712cc31304c` | PASS |
 
 ## Locked Vendor Options
 
@@ -73,9 +73,3 @@ Use `docs/replica-order-evidence-template.md` for the private order record.
 - Confirmation that the package was regenerated after the final D2/D94
   changes, FDC-support functional pin dispositions, and source-risk
   net corrections.
-
-## Failures
-
-- required report marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
-- required report marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**
-- required report marker missing in fab/gerbers/review-waivers.md: Status: **ACCEPTED**
