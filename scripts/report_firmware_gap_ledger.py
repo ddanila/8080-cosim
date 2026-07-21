@@ -185,6 +185,18 @@ def main() -> int:
             "wire fdc_model_we_n = fdc_prom_we_n;",
         )
     )
+    all_physical_proms_runnable_ok = all(
+        needle in d6_top
+        for needle in (
+            "wait_prom_037 U_D2",
+            "re3_prom  U_D8",
+            "decode_prom U_DECODE",
+            "re3_prom_092 U_D94",
+            "wire fdc_model_cs_n = fdc_prom_cs_n;",
+            "wire fdc_model_re_n = fdc_prom_re_n;",
+            "wire fdc_model_we_n = fdc_prom_we_n;",
+        )
+    ) and "decode_prom_functional U_" not in d6_top
 
     rows = [
         [
@@ -261,6 +273,7 @@ def main() -> int:
         ("D6 physical table preserves open-collector release", d6_open_collector_ok),
         ("D94 physical table is adopted while continuity stays guarded", d94_ok),
         ("D94 physical table drives runnable FDC read/write strobes under guarded upstream fits", d94_runnable_physical_ok),
+        ("Runnable top executes all four physical small-PROM tables without a functional PROM stand-in", all_physical_proms_runnable_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
         ("Historical fallback report adopts all physical PROM tables", fallback_report_ok),
         ("Repeated RT4 dump validation procedure is available", rt4_validator_ok),

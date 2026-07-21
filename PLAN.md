@@ -1095,8 +1095,8 @@ source binds those bytes to the factory `.087/.041` program designations or to
 the fitted chips, so repeat physical reads and original programming media remain
 the historical-content gates (`docs/d15-d16-firmware-lineage.md`).
 
-The runnable boot does not yet execute from all four physical tables. The
-adoption road, in dependency order:
+The runnable boot executes from all four physical tables. The adoption record,
+in dependency order:
 
 1. **D2 `.037` — physical table and raw polarity execute.** `wait_prom_037`
    now models the РТ4's open-collector outputs and drives the measured D30/R29
@@ -1142,8 +1142,10 @@ adoption road, in dependency order:
    adoption still requires P0 connectivity item 2 plus D93 functional closure,
    after which these three upstream fits are replaced and `fdc_1793` is retired.
 
-Adoption exit criterion: `prom_fallback_tb` equality stays green and every
-boot guard passes with zero functional PROM stand-ins.
+PROM adoption exit criterion is met: `prom_fallback_tb` equality stays green,
+the runnable top instantiates all four physical tables, and every boot guard
+passes with zero functional PROM stand-ins. D94's sim-only upstream wiring fits
+remain a physical-connectivity hold, not a firmware-table fallback.
 
 Exit criterion: every populated programmable part has a burnable file,
 checksum, device/pinout decision, and provenance. Any functional replacement
@@ -1456,11 +1458,11 @@ Once a released board and programmed parts exist:
   image, a device/pinout decision, and an explicit provenance boundary.
 - [ ] Independent programming files/reads corroborate the four factory PROMs
   and original D15/D16 contents for Tier 3.
-- [ ] Runnable boot executes from all four physical PROM tables; the D6
-  memory-map oracle and the behavioral FDC bypass are retired. (D6 oracle is
-  retired 2026-07-19 — runnable boot runs directly from the corrected physical
-  D6 table; the D94/FDC
-  behavioral bypass and its `.092` quadrant remain.)
+- [x] Runnable boot executes from all four physical PROM tables. The D6
+  memory-map oracle and the raw-strobe behavioral FDC bypass are retired;
+  default FDC accesses consume D94's physical `.092` `/RE` and `/WE` outputs.
+  D94's decoded enable/A4 functional fits and the behavioral ВГ93 device core
+  remain explicitly separate connectivity/model-fidelity holds.
 - [ ] Main-board design release passes; board is ordered.
 - [ ] Functional parts kit is received and tested.
 - [ ] Replica completes Tier 1 bring-up.

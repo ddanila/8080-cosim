@@ -48,6 +48,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D6 physical table preserves open-collector release | PASS |
 | D94 physical table is adopted while continuity stays guarded | PASS |
 | D94 physical table drives runnable FDC read/write strobes under guarded upstream fits | PASS |
+| Runnable top executes all four physical small-PROM tables without a functional PROM stand-in | PASS |
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |
 | Historical fallback report adopts all physical PROM tables | PASS |
 | Repeated RT4 dump validation procedure is available | PASS |

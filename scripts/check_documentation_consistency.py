@@ -188,6 +188,15 @@ def main() -> int:
             if phrase in text:
                 failures.append(f"{path} retains stale D6 runnable-path claim: {phrase!r}")
 
+    plan_text = read("PLAN.md")
+    if "- [x] Runnable boot executes from all four physical PROM tables" not in plan_text:
+        failures.append("PLAN does not record the completed all-physical-PROM runnable milestone")
+    if "The runnable boot does not yet execute from all four physical tables" in plan_text:
+        failures.append("PLAN retains the stale all-physical-PROM adoption hold")
+    firmware_ledger = read("docs/firmware-gap-ledger.md")
+    if "Runnable top executes all four physical small-PROM tables without a functional PROM stand-in | PASS" not in firmware_ledger:
+        failures.append("firmware ledger does not guard the all-physical-PROM runnable milestone")
+
     stale_d6_a7_claims = {
         "PLAN.md": ("Close the physical D6 A7 driver", "D105.1/A7 driver (P0", "D105.1 conductor remains"),
         "docs/d6-physical-decode.md": ("driver or pull source is still unresolved", "unresolved A7"),
