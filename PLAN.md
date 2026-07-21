@@ -647,7 +647,7 @@ diodes with their sheet-proved polarities. This target-body evidence supersedes
 the older `.006` group list's КД522А allocation without changing VD3/VD5.
 
 The machine-verified upload ZIP SHA256 is
-`65dd445248e466ac162896215bb95cb1408e8abbb93cfd7db2f98a86fe3f4a7d`.
+`cada377a9b9f5626c4417432b962145bdd6e3f67a7abe4fa440f7ccabf8d1631`.
 Do not send this package to a fabricator while the design hold remains. After
 the blockers below are closed, regenerate every fabrication file and gate
 again before upload.
@@ -1058,10 +1058,10 @@ Every ask below is queued with exact deliverables in
 
 Source-model state feeding this work: the authoritative board JSON defines all 2291/2291
 PCB-scoped board-JSON endpoints, with 75 non-PCB or placement-held
-endpoints intentionally excluded. Its 2026-07-21 D54/D55/D56 and D104 changes
-remain deliberately unapplied to the held source PCB until the controlled
-refresh, so the generated coverage report exposes those pad-net mismatches
-rather than silently invalidating the other agent's routing baseline.
+endpoints intentionally excluded. The controlled D54/D55/D56 owner-timing
+refresh is now applied to both source and promoted routed PCBs; the generated
+coverage report proves 2291/2291 endpoint-name matches on each artifact, and
+the routed-candidate gate preserves zero opens and exact source-pad identity.
 Bracket-mounted S1/X3/X4/X6/X8/X9 use their
 physical A-point cable landings. The photo-proven bare `.009` C63 callout is
 kept distinct from the inherited C63 DRAM-grid verification landing: the full
