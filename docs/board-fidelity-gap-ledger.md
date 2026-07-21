@@ -243,7 +243,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10... |
 | `D94_D0_BOUNDARY` | PROM/decode | `D94.1, R8.1` | owner continuity 2026-07-19: D94.1 joins R8 through approximately 2 kohm to +5 V; no other connection was found |
 | `D99_CLR2_BOUNDARY` | FDC owner-continuity | `D99.11` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measure... |
-| `D99_Q1N_BOUNDARY` | FDC owner-continuity | `D99.4` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement... |
+| `D99_Q1N_BOUNDARY` | FDC owner-continuity | `D99.4` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; the SN74123 contract plus physically grounded CLR1/pin3 constr... |
 | `D99_Q2N_BOUNDARY` | FDC owner-continuity | `D99.12` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measureme... |
 | `D99_Q2_BOUNDARY` | FDC owner-continuity | `D99.5` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |

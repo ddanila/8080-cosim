@@ -347,6 +347,11 @@ jobs:
           python3 scripts/report_d101_reconstruction_constraints.py
           git diff --exit-code -- docs/d101-reconstruction-constraints.md
 
+      - name: Check D99 reconstruction constraint freshness
+        run: |
+          python3 scripts/report_d99_reconstruction_constraints.py
+          git diff --exit-code -- docs/d99-reconstruction-constraints.md
+
       - name: Check D15/D16 firmware lineage freshness
         run: ./sync/d15_d16_firmware_lineage_check.sh
 

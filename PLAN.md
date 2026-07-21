@@ -877,8 +877,12 @@ Every ask below is queued with exact deliverables in
    and base. The factory drawing separately places C94 immediately to its right,
    but owner imagery does not uniquely resolve C94 through the transistor body.
    C94 population, value, and both endpoints therefore remain measurement asks.
-   The remaining first precomp probes are D101.1/.3/.5/.6; D99's unidentified
-   second section remains the other support-device continuity target. The former
+   The remaining first precomp probes are D101.1/.3/.5/.6. A generated D99
+   constraint audit now proves its grounded-clear section 1 holds Q/pin13 low
+   and `/Q`/pin4 high, proves physical D94 D1 drives section-2 A_N low on either
+   selected read or write, and derives the nominal R97/C17 2.538 s pulse plus
+   26.4 ms retrigger-inhibit window. D99 pins4/5/10/11/12 remain the physical
+   remote-path targets (`docs/d99-reconstruction-constraints.md`). The former
    D93 EARLY/LATE, precomp-output, D97.13, and D102.4 probes are source-closed.
    An automatic handoff audit now also removes stale continuity requests for
    D93.15-.18/.26-.32/.34-.36 and D100.6: those step, direction, precomp,

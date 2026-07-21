@@ -99,6 +99,7 @@ jobs:
             scripts/report_d6_runtime_path.py \
             scripts/report_d6_firmware_modes.py \
             scripts/report_d94_reconstruction_constraints.py \
+            scripts/report_d99_reconstruction_constraints.py \
             scripts/report_d101_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
             scripts/report_fdc_hardware_handoff.py \

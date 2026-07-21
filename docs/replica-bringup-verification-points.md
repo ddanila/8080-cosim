@@ -11,7 +11,7 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `1b90f3fec9165ae88f511bc0f0d94b458d8a4a84fa192efd52e89e797fa0c46c`
+- Source board JSON SHA-256: `8bb6c3071b061d9ac4ae209eb7546d737b591d86b94493473fbe35bd590007e4`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Final PCB source SHA-256: `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
@@ -110,7 +110,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled... | Bench-check waveform/current path with speaker disconnected first. |
 | `D94_D0_BOUNDARY` | logic | `D94.1, R8.1` | owner continuity 2026-07-19: D94.1 joins R8 through approximately 2 kohm to +5 V; no other connection was found | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_CLR2_BOUNDARY` | logic | `D99.11` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D99_Q1N_BOUNDARY` | logic | `D99.4` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D99_Q1N_BOUNDARY` | logic | `D99.4` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; the SN74123 contract plus physically grounded CLR1/pin3 constrains this output hig... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_Q2N_BOUNDARY` | logic | `D99.12` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_Q2_BOUNDARY` | logic | `D99.5` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `INHIB_STATUS_BOUNDARY` | logic | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an explicit junction d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

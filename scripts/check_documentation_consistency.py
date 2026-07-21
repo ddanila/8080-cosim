@@ -230,6 +230,16 @@ def main() -> int:
             failures.append(f"D101 reconstruction report lost guarded marker: {marker!r}")
     if "d101-reconstruction-constraints.md" not in read("docs/README.md"):
         failures.append("documentation map omits the D101 reconstruction constraints")
+    d99_report = read("docs/d99-reconstruction-constraints.md")
+    if "Status: **D99 TRIGGER/TIMING LOGIC CONSTRAINED / FIVE PINS MEASUREMENT-GATED**" not in d99_report:
+        failures.append("D99 trigger/timing reconstruction constraints are missing or failed")
+    for marker in ("constant-high", "`D1_active = A3 xor A2`", "2.538 s", "26.4 ms"):
+        if marker not in d99_report:
+            failures.append(f"D99 reconstruction report lost guarded marker: {marker!r}")
+    if "d99-reconstruction-constraints.md" not in read("docs/README.md"):
+        failures.append("documentation map omits the D99 reconstruction constraints")
+    if "D99 section 1 excluded and section 2 unidentified" in read("docs/fdc-hardware-handoff.md"):
+        failures.append("FDC handoff retains the stale unidentified-D99 claim")
     stale_d94_a4_pullup_claims = {
         "kicad/juku.board.json": ("D94.14/R88", "pin7 to D94.14/R88"),
         "docs/fdc-hardware-handoff.md": ("D101.7-D94.14/R88", "Q0 to D94.14/R88"),

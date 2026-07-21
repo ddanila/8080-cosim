@@ -50,7 +50,7 @@ FD1791/FD1793 counter/separator made from exactly these logic families:
 
 | Reference function | Manufacturer device | Juku family match | State |
 | --- | --- | --- | --- |
-| raw-read pulse conditioner | 74123 | D97/D99/D102 К155АГ3 | D97/D102 source-closed; D99 section 1 excluded and section 2 unidentified |
+| raw-read pulse conditioner | 74123 | D97/D99/D102 К155АГ3 | D97/D102 source-closed; D99 section 1 held clear; section 2 access trigger/timing constrained, remote gates/outputs open |
 | recovery counter | 74LS193 | D106 К555ИЕ7 | package family matched |
 | read-clock toggle | 74LS74 | D96 КМ555ТМ2 | section 1 source-closed; section 2 local conditioner closed, remote Q/CLK open |
 
@@ -69,7 +69,10 @@ on pins 10-13, while it omits D98 buffer pair 4 (pins 9/10), D97 Q/pin13, and D1
 /Q pin4. They are guarded intentional no-connects rather than continuity
 requests. D99.3
 (/CLR1) is physically grounded and D99.2 (B1) reaches another isolated
-test landing, excluding D99 section 1 as the active raw-read conditioner.
+test landing. The SN74123 contract therefore holds Q1/pin13 low and
+Q1_N/pin4 high, excluding section 1 as an active pulse conditioner.
+Physical D94 D1 drives section-2 A_N low on either selected FDC read or
+write; B2, CLR2_N, Q2, and Q2_N retain their remote-path boundaries.
 The 3 still-open support devices are D96, D99, and D101.
 
 The Juku

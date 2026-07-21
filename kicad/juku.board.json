@@ -14137,7 +14137,7 @@
    "nodes": [["D99", "10"]]
   },
   "D99_Q1N_BOUNDARY": {
-   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary",
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; the SN74123 contract plus physically grounded CLR1/pin3 constrains this output high, but no remote destination is proved, so it remains a measurement boundary",
    "nodes": [["D99", "4"]]
   },
   "D99_Q2_BOUNDARY": {

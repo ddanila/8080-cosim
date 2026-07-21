@@ -15,7 +15,7 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Board JSON SHA-256: `1b90f3fec9165ae88f511bc0f0d94b458d8a4a84fa192efd52e89e797fa0c46c`
+- Board JSON SHA-256: `8bb6c3071b061d9ac4ae209eb7546d737b591d86b94493473fbe35bd590007e4`
 - Source PCB SHA-256: `141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb`
 - Routed PCB SHA-256: `1a7f9cb6e2c7a7733ca4f5c8465c7c6c33ab4e0f8244183f6a22669979daf015`
 - DSN SHA-256: `1680ab03186eab131ee1bcc83f310f377e000fe5db1cccff6c987ca09244f3ab`
