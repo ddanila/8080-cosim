@@ -227,6 +227,13 @@ routed items, no missing source copper, no electrical or dangling findings,
 and the same 710 cosmetic reports. Exact evidence is in
 `ref/routing/current3-residual-topology.json`; cumulative promoted closures are
 now 674.
+A widened D94_D0_BOUNDARY transaction next removes 66 non-source conflicts on
+the 0.10 mm lattice. After restoring the affected topology and pruning 15 safe
+orphan items, independent KiCad 9.0.8 DRC reports only D3_O6_D6_A5 and
+ROM_CS_EXP18 open. The resulting two-open board has 28,123 routed items across
+409 nets, no electrical or dangling findings, and the unchanged 710 cosmetic
+reports. Exact evidence is in `ref/routing/current2-residual-topology.json`;
+cumulative promoted closures are now 675.
 
 ### Additive/rename-safe copper migration
 

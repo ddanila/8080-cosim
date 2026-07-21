@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "board_sha256": "a611fb02103d789dc14e004ebd454e03b9dc43e0eb24139f6c88f00d66e2866b",
+  "board_size": 10570467,
+  "drc_sha256": "aae2d238e3b7b005f7ea557d13c2310df745ef9c161bf42b02162116005f468d",
+  "uncapped_unconnected": 2,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "promoted_closures": 675,
+  "transaction": {
+    "net": "D94_D0_BOUNDARY",
+    "distance_mm": 252.637,
+    "grid_step_mm": 0.1,
+    "removed_conflicts": 66,
+    "affected_nets": 26,
+    "post_transaction_pruned_items": 15,
+    "removed_source_items": 0,
+    "initial_unconnected": 3,
+    "final_unconnected": 2
+  },
+  "residuals": [
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_step_mm": 0.0875},
+    {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "result": "legal-route-failed-after-ripup", "tested_grid_steps_mm": [0.125, 0.1], "tested_grid_offsets_mm": [[0, 0], [0.025, 0.025], [0.025, 0.075], [0.075, 0.025], [0.075, 0.075], [0.1, 0.025]]}
+  ],
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "A 0.10 mm D94_D0_BOUNDARY transaction removes 66 non-source conflicts. Restoration and a 15-item orphan prune preserve every other connection except the already-open D3_O6_D6_A5 and ROM_CS_EXP18 nets. The current source-preserving frontier has two opens, no electrical or dangling DRC findings, and the unchanged 710 cosmetic-only reports."
+}

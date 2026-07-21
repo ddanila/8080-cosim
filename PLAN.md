@@ -218,6 +218,15 @@ missing source copper, no electrical or dangling findings, and the same 710
 cosmetic reports. Exact evidence is in
 `ref/routing/current3-residual-topology.json`; cumulative promoted closures are
 now 674.
+A widened 0.10 mm D94_D0_BOUNDARY transaction then removes 66 non-source
+conflicts along its 252.637 mm route. Restoration across the 0.125, 0.10, and
+0.0875 mm lattices recovers the affected topology; a follow-up prune removes
+15 newly exposed orphan items without touching source copper. Stable KiCad
+9.0.8 DRC leaves only D3_O6_D6_A5 and ROM_CS_EXP18 open: the result has 2 opens,
+28,123 routed items across 409 nets, zero electrical or dangling findings, and
+the unchanged 710 cosmetic reports. Exact evidence is in
+`ref/routing/current2-residual-topology.json`; cumulative promoted closures are
+now 675.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

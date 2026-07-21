@@ -2,9 +2,9 @@
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
   "input_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",
-  "output_board_sha256": "30029891e5fb5dbc654ee06a01b43dba0c12fa87dff61cd7c75d9a19e1544478",
-  "output_board_size": 10518817,
-  "output_drc_sha256": "7a8728b9e583ba2e6b491fa16aa37e3b4f2f5b0f785ce4851ff4c6c386b758d5",
+  "output_board_sha256": "a611fb02103d789dc14e004ebd454e03b9dc43e0eb24139f6c88f00d66e2866b",
+  "output_board_size": 10570467,
+  "output_drc_sha256": "aae2d238e3b7b005f7ea557d13c2310df745ef9c161bf42b02162116005f468d",
   "config": {
     "batch_sizes": [32, 64],
     "adaptive_batch": true,
@@ -170,7 +170,8 @@
       {"net": "PROM_EN", "distance_mm": 19.683, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.1, "grid_offset_mm": [0.075, 0.075], "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 8, "restored_nets": ["BA10", "BA12", "BA5", "GND", "IORD", "ROM_CS_4000"], "removed_source_items": 0, "initial_unconnected": 7, "final_unconnected": 6},
       {"net": "DB5", "distance_mm": 21.145, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "grid_offset_mm": [0.05, 0.075], "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 1, "restored_nets": ["IORD"], "post_transaction_pruned_items": 94, "removed_source_items": 0, "initial_unconnected": 6, "final_unconnected": 5},
       {"net": "IOWR_RAW_N", "distance_mm": 91.265, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.125, "grid_offset_mm": [0.1, 0.025], "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 33, "restored_nets": ["BA1", "BA11", "D13_4_D105_2", "D25_T", "HLDA", "IORC_N", "IORD", "MEMW", "MEMW_D7P2", "PROM_EN", "ROM_CS_8000", "ROM_CS_A000", "ROM_CS_D16"], "post_transaction_pruned_items": 2, "removed_source_items": 0, "initial_unconnected": 5, "final_unconnected": 4},
-      {"net": "INT7_RAW", "distance_mm": 181.230, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.1, "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 32, "restored_nets": ["A15", "ADR4_N", "ADRF_N", "BA0", "BA1", "CCLCK", "D30_Q2N_D29_AIN7", "DAT7_N", "DB3", "DB5", "INTA", "IOM_N", "IORD", "P5V", "RESET", "SER_RTS", "SER_TXD"], "post_transaction_pruned_items": 8, "removed_source_items": 0, "initial_unconnected": 4, "final_unconnected": 3}
+      {"net": "INT7_RAW", "distance_mm": 181.230, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.1, "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 32, "restored_nets": ["A15", "ADR4_N", "ADRF_N", "BA0", "BA1", "CCLCK", "D30_Q2N_D29_AIN7", "DAT7_N", "DB3", "DB5", "INTA", "IOM_N", "IORD", "P5V", "RESET", "SER_RTS", "SER_TXD"], "post_transaction_pruned_items": 8, "removed_source_items": 0, "initial_unconnected": 4, "final_unconnected": 3},
+      {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637, "diagnostic_clearance_mm": 0.15, "route_clearance_mm": 0.205, "grid_step_mm": 0.1, "restore_grid_steps_mm": [0.125, 0.1, 0.0875], "removed_conflicts": 66, "affected_nets": 26, "post_transaction_pruned_items": 15, "removed_source_items": 0, "initial_unconnected": 3, "final_unconnected": 2}
     ],
     "equal_open_topology_swaps": [
       {"net": "BA11", "removed_items": 7, "removed_source_items": 0, "remote_via_mm": [65.0, 125.0], "grid_step_mm": 0.1, "route_clearance_mm": 0.205, "initial_unconnected": 9, "final_unconnected": 9},
@@ -197,10 +198,10 @@
     "via_dangling": 0
   },
   "final": {
-    "routed_items": 27765,
-    "routed_nets": 408,
-    "uncapped_unconnected": 3,
-    "cli_unconnected_ceiling": 3,
+    "routed_items": 28123,
+    "routed_nets": 409,
+    "uncapped_unconnected": 2,
+    "cli_unconnected_ceiling": 2,
     "track_dangling": 0,
     "via_dangling": 0,
     "short": 0,
@@ -239,7 +240,7 @@
     "fine_multilayer_clearance_mm": 0.205,
     "fine_multilayer_grid_step_mm": 0.125,
     "accepted_routes_by_capped_marker_guard": 668,
-    "accepted_routes_by_uncapped_guard": 674,
+    "accepted_routes_by_uncapped_guard": 675,
     "routes": [
       {"net": "P5V", "distance_mm": 1.623},
       {"net": "P5V", "distance_mm": 2.182},
@@ -914,13 +915,14 @@
       {"net": "PROM_EN", "distance_mm": 19.683},
       {"net": "DB5", "distance_mm": 21.145},
       {"net": "IOWR_RAW_N", "distance_mm": 91.265},
-      {"net": "INT7_RAW", "distance_mm": 181.230}
+      {"net": "INT7_RAW", "distance_mm": 181.230},
+      {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637}
     ],
     "uncapped_unconnected_before": 677,
-    "uncapped_unconnected_after": 3,
+    "uncapped_unconnected_after": 2,
     "promoted": true
   },
-  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 initial dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred seventy-four independently checked net closures reduce the uncapped count again to 3 and are promoted. A 0.10 mm INT7_RAW transaction removes 32 conflicts, restores all seventeen displaced nets, and prunes eight newly exposed non-source orphan items. This remains convergence evidence, not production copper.",
+  "disposition": "The uncapped guard safely removes 2872 migrated copper items, eliminates all 255 initial dangling findings, and reduces exact connectivity gaps from 883 to 677 without electrical blockers. Six hundred seventy-five independently checked net closures reduce the uncapped count again to 2 and are promoted. The latest 0.10 mm D94_D0_BOUNDARY transaction removes 66 conflicts and a follow-up prune removes fifteen newly exposed non-source orphan items. This remains convergence evidence, not production copper.",
   "tool_sha256": {
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/report_board_unconnected.py": "74d3422d973f216a7137f08fb46409f9a0ad1ec900e491bade9195ad67a98404",
