@@ -198,6 +198,7 @@ def main() -> int:
         failures.append("firmware ledger does not guard the all-physical-PROM runnable milestone")
 
     d94_boundary_claims = {
+        "README.md": ("D94 content truth is closed, but its A0-A4", "far destinations or branches of outputs\n  D3-D7 remain unknown"),
         "PLAN.md": ("these three upstream fits", "D2/D94 continuity"),
         "docs/d94-reconstruction-constraints.md": (
             "The equations constrain A3's selected-cycle function but do not prove",

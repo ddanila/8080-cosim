@@ -32,10 +32,12 @@ with the machine-readable board model.
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
   repeated reads (with D8/D94 provenance aliases counted only once); the measured D2/D30/D105 and
   D6/D13 continuity is adopted in the source model, HDL, and promoted route.
-  D94 content truth is closed, but its A0-A4
-  input sources, pin 15 source, and the far destinations or branches of outputs
-  D3-D7 remain unknown; the former BA11-BA15 input assignment was an unproved
-  scaffold analogy and is retired. There are 3 official FDC-support ICs whose
+  D94 content truth and all five A0-A4 sources are owner-closed. D1-D3 reach
+  D99/D93 with their measured pull-ups, while D4-D7 are owner/drawing-closed
+  no-connects. The remaining D94 boundaries are the upstream source beyond the
+  local pin15/D93.3 enable conductor and whether D0/pin1 has a hidden load
+  beyond R8; the former BA11-BA15 input assignment was an unproved scaffold
+  analogy and is retired. There are 3 official FDC-support ICs whose
   functional pin closure is still incomplete.
   Recovered sheet 3 closes D106 completely: its R78 preset pull-up, RAW READ
   load, D95 recovery clock, grounded clear, Q3 output, and five no-connects are
