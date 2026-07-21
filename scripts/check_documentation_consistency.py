@@ -1017,6 +1017,30 @@ def main() -> int:
             if "rom-closed-two-residual-checkpoint.json" not in read(path):
                 failures.append(f"{path} omits the ROM-closed two-residual checkpoint")
 
+    rom_one_path = ROOT / "ref/routing/rom-closed-one-residual-checkpoint.json"
+    if not rom_one_path.exists():
+        failures.append("ROM-closed one-residual checkpoint is missing")
+    else:
+        rom_one = json.loads(rom_one_path.read_text(encoding="utf-8"))
+        if (
+            rom_one.get("schema_version") != 1
+            or rom_one.get("parent_board_sha256") != "acc3650acc4e4f4a90e585e16b638b0e40dd5ae78f123712b706ec7fb9bbb904"
+            or rom_one.get("board_sha256") != "22402ed64da6bba2eaf574343c77caef8915cb888f0c95dd4335422263f2a030"
+            or rom_one.get("uncapped_unconnected") != 1
+            or rom_one.get("electrical_blockers") != 0
+            or (rom_one.get("track_dangling"), rom_one.get("via_dangling")) != (0, 0)
+            or set(rom_one.get("closed_targets", [])) != {"ROM_CS_EXP18", "ROM_SEL", "BA14", "BA15"}
+            or rom_one.get("residuals") != ["BA2"]
+        ):
+            failures.append("ROM-closed one-residual checkpoint is malformed")
+        for relative, expected in rom_one.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"ROM one-residual tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "rom-closed-one-residual-checkpoint.json" not in read(path):
+                failures.append(f"{path} omits the ROM-closed one-residual checkpoint")
+
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():
         failures.append("current 21-gap dangling-prune evidence is missing")

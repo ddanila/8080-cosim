@@ -255,6 +255,15 @@ collapsed to a single real gap. The guarded 0.10 mm closer then accepts a new
 and BA15 open, 28,953 routed items across 411 nets, no electrical or dangling
 findings, and the unchanged 710 cosmetic reports. Exact evidence is in
 `ref/routing/rom-closed-two-residual-checkpoint.json`.
+BA15 is then closed through two bounded phases. The first zero-fixed,
+24-conflict transaction closes the 72.009 mm remainder and exposes short local
+cleanup gaps. A DRC-gated 0.01 mm REV correction, a direct ROM_CS_D16 bridge,
+and 19 safe tail prunes collapse BA15 to 3.926 mm. The final five-conflict
+transaction closes BA15 and restores ROM_CS_D16, ROM_CS_EXP18, and ROM_SEL.
+Independent stable KiCad 9.0.8 DRC leaves only BA2 open, with 29,454 routed
+items across 411 nets, no electrical or dangling findings, and the unchanged
+710 cosmetic reports. Exact evidence is in
+`ref/routing/rom-closed-one-residual-checkpoint.json`.
 
 ### Additive/rename-safe copper migration
 

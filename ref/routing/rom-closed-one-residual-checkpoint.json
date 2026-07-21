@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "parent_board_sha256": "acc3650acc4e4f4a90e585e16b638b0e40dd5ae78f123712b706ec7fb9bbb904",
+  "board_sha256": "22402ed64da6bba2eaf574343c77caef8915cb888f0c95dd4335422263f2a030",
+  "board_size": 10768247,
+  "drc_sha256": "52df9ee875a4e669232df470b22ee0d3e2051e25e06e6e83ded2d6180affeb77",
+  "routed_items": 29454,
+  "routed_nets": 411,
+  "uncapped_unconnected": 1,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "cosmetic_findings": 710,
+  "closed_targets": ["ROM_CS_EXP18", "ROM_SEL", "BA14", "BA15"],
+  "residuals": ["BA2"],
+  "ba15_recovery": {
+    "initial_gap_distance_mm": 72.009,
+    "initial_diagnostic_grid_step_mm": 0.0875,
+    "initial_diagnostic_grid_offset_mm": [0.025, 0.0625],
+    "initial_diagnostic_clearance_mm": 0.05,
+    "initial_removed_conflicts": 24,
+    "intermediate_recovered_nets": ["REV", "ROM_CS_D16"],
+    "intermediate_pruned_items": 19,
+    "final_gap_distance_mm": 3.926,
+    "final_diagnostic_new_items": 18,
+    "final_removed_conflicts": 5,
+    "final_restored_nets": ["ROM_CS_D16", "ROM_CS_EXP18", "ROM_SEL"],
+    "final_removed_newly_dangling_vias": 1,
+    "route_grid_step_mm": 0.0875,
+    "route_grid_offset_mm": [0.025, 0.0625],
+    "route_clearance_mm": 0.205
+  },
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "cf1ff576fa73c3dd5efb5e48ef9711bf4313c5f47a2af6d86292c3ef22c506ae",
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "This recovery checkpoint closes BA15 while retaining ROM_CS_EXP18, ROM_SEL, and BA14. Only BA2 remains open, with zero electrical or dangling findings. It remains separate from the source-preserving promoted frontier until BA2 closes and the complete recovery topology is promoted."
+}
