@@ -213,6 +213,13 @@ items, no missing source copper, no electrical or dangling findings, and the
 same 710 cosmetic reports. Exact evidence is in
 `ref/routing/current5-residual-topology.json`; cumulative promoted closures are
 now 672.
+On the five-open topology a four-phase IOWR_RAW_N sweep finds a 33-conflict
+route at `(0.1,0.025)` mm. The legal target route and all thirteen displaced
+nets now restore, and two new non-source orphan items are pruned. The resulting
+four-open board has 27,281 routed items, no missing source copper, no electrical
+or dangling findings, and the same 710 cosmetic reports. Exact evidence is in
+`ref/routing/current4-residual-topology.json`; cumulative promoted closures are
+now 673.
 
 ### Additive/rename-safe copper migration
 

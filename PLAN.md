@@ -200,6 +200,15 @@ displaces only IORD. Restoring IORD and pruning 94 more orphan items produces a
 dangling findings, and the same 710 cosmetic reports. Exact evidence is in
 `ref/routing/current5-residual-topology.json`; cumulative promoted closures are
 now 672.
+On the five-open topology, IOWR_RAW_N's default route needs 50 conflicts, but a
+four-phase sweep reduces it to 33 at `(0.1,0.025)` mm. Unlike the same phase on
+the older nine-open board, the legal 0.205 mm target route now succeeds. BA1,
+BA11, D13_4_D105_2, D25_T, HLDA, IORC_N, IORD, both MEMW nets, PROM_EN, and all
+three displaced ROM-select nets restore across the proven lattices. Pruning two
+new non-source orphan items yields a 4-open, 27,281-item board with no missing
+source copper, no electrical or dangling findings, and the same 710 cosmetic
+reports. Exact evidence is in `ref/routing/current4-residual-topology.json`;
+cumulative promoted closures are now 673.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

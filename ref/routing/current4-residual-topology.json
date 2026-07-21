@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "board_sha256": "0bda1d229e84fd1b55d2adef44d16b23a3ac06234853164cbe9b6a188c3c0227",
+  "board_size": 10449077,
+  "drc_sha256": "75fe44c570af143bf7ca7f855be3f02f81c2d1f90bd354a5aa8b1e41ce72c2dc",
+  "uncapped_unconnected": 4,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "promoted_closures": 673,
+  "transaction": {
+    "net": "IOWR_RAW_N",
+    "distance_mm": 91.265,
+    "grid_step_mm": 0.125,
+    "grid_offset_mm": [0.1, 0.025],
+    "removed_conflicts": 33,
+    "restored_nets": ["BA1", "BA11", "D13_4_D105_2", "D25_T", "HLDA", "IORC_N", "IORD", "MEMW", "MEMW_D7P2", "PROM_EN", "ROM_CS_8000", "ROM_CS_A000", "ROM_CS_D16"],
+    "post_transaction_pruned_items": 2,
+    "removed_source_items": 0,
+    "initial_unconnected": 5,
+    "final_unconnected": 4
+  },
+  "residuals": [
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342},
+    {"net": "D3_O6_D6_A5", "distance_mm": 172.151},
+    {"net": "INT7_RAW", "distance_mm": 181.230},
+    {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637}
+  ],
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "The current source-preserving frontier has four opens. A `(0.1,0.025)` mm phased IOWR_RAW_N transaction removes 33 conflicts, restores all thirteen affected nets, and prunes two newly exposed non-source orphan items. The final board has no electrical or dangling DRC findings and retains the unchanged 710 cosmetic-only reports."
+}
