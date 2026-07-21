@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "board_sha256": "30029891e5fb5dbc654ee06a01b43dba0c12fa87dff61cd7c75d9a19e1544478",
+  "board_size": 10518817,
+  "drc_sha256": "7a8728b9e583ba2e6b491fa16aa37e3b4f2f5b0f785ce4851ff4c6c386b758d5",
+  "uncapped_unconnected": 3,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "promoted_closures": 674,
+  "transaction": {
+    "net": "INT7_RAW",
+    "distance_mm": 181.230,
+    "grid_step_mm": 0.1,
+    "removed_conflicts": 32,
+    "restored_nets": ["A15", "ADR4_N", "ADRF_N", "BA0", "BA1", "CCLCK", "D30_Q2N_D29_AIN7", "DAT7_N", "DB3", "DB5", "INTA", "IOM_N", "IORD", "P5V", "RESET", "SER_RTS", "SER_TXD"],
+    "post_transaction_pruned_items": 8,
+    "removed_source_items": 0,
+    "initial_unconnected": 4,
+    "final_unconnected": 3
+  },
+  "residuals": [
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342, "result": "no-diagnostic-route", "tested_grid_step_mm": 0.1},
+    {"net": "D3_O6_D6_A5", "distance_mm": 172.151, "result": "legal-route-failed-after-ripup", "diagnostic_grid_offset_mm": [0.1, 0.025], "removable_conflicts": 44, "affected_nets": 15, "tested_route_grid_offsets_mm": [[0, 0], [0.025, 0.1], [0.05, 0.075], [0.075, 0.05], [0.1, 0.025]]},
+    {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637, "result": "over-conflict-limit", "removable_conflicts": 71, "affected_nets": 30}
+  ],
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "The current source-preserving frontier has three opens. A 0.10 mm INT7_RAW transaction removes 32 conflicts, restores all seventeen affected nets, and prunes eight newly exposed non-source orphan items. The final board has no electrical or dangling DRC findings and retains the unchanged 710 cosmetic-only reports."
+}

@@ -209,6 +209,15 @@ new non-source orphan items yields a 4-open, 27,281-item board with no missing
 source copper, no electrical or dangling findings, and the same 710 cosmetic
 reports. Exact evidence is in `ref/routing/current4-residual-topology.json`;
 cumulative promoted closures are now 673.
+After that bus-topology change, INT7_RAW gains a diagnostic path for the first
+time: a 0.10 mm route removes 32 conflicts and restores A15, ADR4_N, both ADRF_N
+branches, BA0, both BA1 branches, CCLCK, D30_Q2N_D29_AIN7, DAT7_N, DB3, DB5,
+INTA, IOM_N, IORD, P5V, RESET, SER_RTS, and SER_TXD. Eight new non-source
+orphan items are pruned. The result has 3 opens and 27,765 routed items, no
+missing source copper, no electrical or dangling findings, and the same 710
+cosmetic reports. Exact evidence is in
+`ref/routing/current3-residual-topology.json`; cumulative promoted closures are
+now 674.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

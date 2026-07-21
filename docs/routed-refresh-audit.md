@@ -220,6 +220,13 @@ four-open board has 27,281 routed items, no missing source copper, no electrical
 or dangling findings, and the same 710 cosmetic reports. Exact evidence is in
 `ref/routing/current4-residual-topology.json`; cumulative promoted closures are
 now 673.
+The new bus topology gives formerly pathless INT7_RAW a 32-conflict route on
+the 0.10 mm lattice. All seventeen displaced nets restore, and eight new
+non-source orphan items are pruned. The resulting three-open board has 27,765
+routed items, no missing source copper, no electrical or dangling findings,
+and the same 710 cosmetic reports. Exact evidence is in
+`ref/routing/current3-residual-topology.json`; cumulative promoted closures are
+now 674.
 
 ### Additive/rename-safe copper migration
 
