@@ -245,14 +245,19 @@ def main() -> int:
             "`D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2`",
         ),
         (
-            "D56 grounded A inputs enable both source-traced B triggers and active outputs reach gate-3",
+            "D56 trigger, clock, and active-output topology is owner-closed",
             has_nodes(board, "D56_Q2_D34", {("D56", "5"), ("D34", "9")})
             and has_nodes(board, "D56_QN_D34", {("D56", "4"), ("D34", "10")})
-            and set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")}
+            and set(nodes(board, "PIT_HSYNC_DSL")) == {("D54", "17"), ("D56", "10")}
+            and set(nodes(board, "VERT_SYNC")) == {("D55", "17"), ("D56", "2")}
+            and set(nodes(board, "D56_Q2N_TAG16")) == {
+                ("D56", "12"), ("D55", "15"), ("D55", "18")
+            }
+            and set(nodes(board, "SYNC_B")) == {("D57", "17")}
             and {("D56", "1"), ("D56", "8"), ("D56", "9")} <= set(nodes(board, "GND"))
             and all(["D56", pin] not in board.get("no_connects", []) for pin in ("1", "9"))
             and ["D56", "13"] in board.get("no_connects", []),
-            "two solder views: D56.1/.9 share GND with D56.8; native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 remains unresolved tag16; unused D56.13 is NC",
+            "exact .009 E3 plus owner continuity 2026-07-21: D54.17->D56.10, D55.17->D56.2, D56.12->D55.15/.18, D56.5/.4->D34.9/.10; D57.17 remains separate",
         ),
         (
             "D35 frame-interrupt inverter path is source-closed",
@@ -295,30 +300,22 @@ def main() -> int:
             and "functional expectation alone cannot prove" in board["nets"]["XTAL16M"]["src"],
             "OSC and XTAL16M remain distinct source nets pending continuity",
         ),
-        (
-            "D56_Q2_N tag-16 far destination remains unresolved",
-            set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")}
-            and ("D56", "12") not in set(nodes(board, "W_RAIL16"))
-            and "automatic scan chase exhausted" in board["nets"]["D56_Q2N_TAG16"]["src"]
-            and "short two push-pull outputs" in board["nets"]["D56_Q2N_TAG16"]["src"],
-            endpoint_text(board, "D56_Q2N_TAG16") + "; explicitly not merged with D36.8/DRAM W rail16",
-        ),
     ]
     ok = all(result for _, result, _ in guarded_checks + boundary_checks)
-    status = "MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING" if ok else "MEMORY TIMING BOUNDARY FAILED"
+    status = "MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING" if ok else "MEMORY TIMING BOUNDARY FAILED"
 
     lines = [
         "# Memory timing boundary",
         "",
-        "Status date: 2026-07-17.",
+        "Status date: 2026-07-21.",
         "",
         f"Status: **{status}**",
         "",
         "This generated report narrows the remaining DRAM/clock timing risks.",
         "The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,",
-        "PHI2TTL fanout, and D56 one-shot RC networks. It also keeps the",
-        "unresolved CAS input and D56 Q2_N tag-16 destination as",
-        "explicit source boundaries instead of silently promoting them.",
+        "PHI2TTL fanout, and D56 one-shot RC networks. Exact-revision `.009 E3`",
+        "imagery plus owner continuity closes the D54/D55/D56 trigger and clock",
+        "crossings; the unresolved CAS input remains an explicit source boundary.",
         "",
         "## Command",
         "",
@@ -384,7 +381,10 @@ def main() -> int:
         "D56_RC2",
         "D56_C2",
         "D56_QN_D34",
+        "PIT_HSYNC_DSL",
+        "VERT_SYNC",
         "D56_Q2N_TAG16",
+        "SYNC_B",
     ):
         net = board["nets"].get(name, {})
         lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
@@ -422,15 +422,14 @@ def main() -> int:
             "  back-layer bridge join the two MEMR islands without crossing the four",
             "  front-layer select traces. KiCad DRC reports zero MEMR shorts,",
             "  clearances, crossings, or unconnected items.",
-            "- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16",
-            "  destination are still not historical-source-complete. D36.12/.13 were",
+            "- The exact CAS-driver input source (`D36_CAS_IN`) is still not",
+            "  historical-source-complete. D36.12/.13 were",
             "  rechecked across the native 5140x3563 sheet on 2026-07-13; their common",
             "  west conductor enters an unlabeled dense timing bundle, so the automated",
             "  scan chase is exhausted.",
-            "- D56.12's printed conductor code 16 is not evidence for a merge with the",
-            "  separate D36.8/DRAM write rail 16. Native full-sheet review shows no",
-            "  junction, and such a merge would short two push-pull outputs; its remote",
-            "  destination therefore remains a continuity boundary.",
+            "- Exact-revision `.009 E3` sheet 2 and owner continuity close D56.12's",
+            "  conductor code 16 onto the tied D55 CLK1/CLK2 inputs at pins 15/18.",
+            "  It remains distinct from the unrelated D36.8/DRAM write rail 16.",
             "- D59.10's local timing-bundle marker 10 is likewise not the D57.13 SOUND",
             "  bundle marker 10. Native full-sheet review shows no continuous conductor,",
             "  and merging them would short active TTL outputs; automatic tag-number",

@@ -126,6 +126,11 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).
 - [x] Cross-check the sheet-3 FDC nets against `ref/wd1772-vg93/` predictions
       and the physical-board evidence in `ref/photos/dgsh5-109-009-sb/`.
+- [x] Sheet-2 D54/D55/D56 timing crossings owner-verified on 2026-07-21:
+      D54.17/H.SYNC DSL reaches D56.10, D55.17/VERT SYNC DSL reaches D56.2,
+      and D56.12/Q2_N reaches tied D55.15/CLK1 and D55.18/CLK2. D56.5/Q2
+      reaches D34.9. These exact-revision paths supersede the older `.006`
+      scan chase that joined D57.17/SYNC B to both D56 triggers.
 
 The reviewed diff-first index is
 `ref/schematics/dgsh5-109-009-e3-notes.md`; it checksum-guards every source

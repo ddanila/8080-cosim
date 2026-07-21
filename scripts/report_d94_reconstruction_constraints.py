@@ -429,9 +429,14 @@ def main() -> int:
     output_departures = remaining_output_departures()
     # The old pin-4 boundary was superseded by direct D94.4->D93.2 continuity.
     # Full-resolution review makes D4/pin5 an explicit NC, separate from D93.1's stub.
-    # Photo evidence still proves departures for the unresolved D5-D7 outputs;
-    # D0/pin1 is owner-reported unresolved but was not photographically closed.
-    all_remaining_outputs_depart = set(output_departures) >= {"6", "7", "9"}
+    # Photo evidence records local copper departures, while exact-revision drawing
+    # review plus owner continuity closes D5-D7 as electrically NC.
+    d5_d7_owner_closed_nc = all(
+        net_for_pin(board, "D94", pin) is not None
+        and len(net_nodes(board, net_for_pin(board, "D94", pin)[0])) == 1
+        and "electrically NC" in net_for_pin(board, "D94", pin)[1]
+        for pin in ("6", "7", "9")
+    ) and set(output_departures) >= {"6", "7", "9"}
     address_observations = address_input_observations()
     all_address_inputs_registered = (
         set(address_observations) == {"10", "11", "12", "13", "14"}
@@ -532,7 +537,7 @@ def main() -> int:
             f"| Enable pin15 is isolated from output pin2 | {'PASS' if enable_output_isolated else 'FAIL'} | direct owner continuity; distinct board nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| Every D94 output pad has an explicit net/boundary | {'PASS' if len(output_nets) == len(output_pins) else 'FAIL'} | {len(output_nets)}/{len(output_pins)} output pins netted |",
-            f"| Every unresolved D94 output has a photographed copper departure | {'PASS' if all_remaining_outputs_depart else 'FAIL'} | component-side local-fit observations for pins {', '.join(sorted(output_departures, key=int)) or '-'} |",
+            f"| D94 D5-D7 are owner/drawing-closed NC despite local copper stubs | {'PASS' if d5_d7_owner_closed_nc else 'FAIL'} | owner continuity 2026-07-21 plus component-side observations for pins {', '.join(sorted(output_departures, key=int)) or '-'} |",
             f"| Captured table asserts only D0-D3; D4-D7 stay released | {'PASS' if output_activity_ok else 'FAIL'} | exhaustive 32-row physical table classification |",
             f"| Minimized active-low equations reproduce all 256 captured bits | {'PASS' if minimized_logic_ok else 'FAIL'} | exhaustive address/output comparison against the physical image |",
             f"| Validated `.092` physical image exists and matches SHA256 | {'PASS' if physical_table_ok else 'FAIL'} | `{PHYSICAL_D94.relative_to(ROOT)}` / `{PHYSICAL_D94_SHA256}` |",
@@ -572,8 +577,8 @@ def main() -> int:
             "  D2/pin3 reaches D93.4 /RE and R88; D3/pin4 reaches D93.2 /WE and R87.",
             "  Address inputs A0/A1/A2/A3/A4 reach BA0, BA1, IORD,",
             "  D105.3 qualified /WR, and D101.7 respectively. R8 is the 2 kohm",
-            "  pull-up-only D94.1 branch; D0's hidden load and D5-D7 destinations",
-            "  remain open while physical",
+            "  pull-up-only D94.1 branch; D0's hidden load remains open, while",
+            "  owner continuity and exact-revision drawing review close D5-D7 as NC. Physical",
             "  captures now provide the PROM contents.",
             "- Git history proves the former A0-A4=`BA11..BA15` assignment entered in",
             "  commit `ed69b9d` as an FDC scaffold explicitly described as the same",
@@ -587,9 +592,10 @@ def main() -> int:
             "  (pins 4-7 and 9). Direct continuity closes D3/pin4 to D93.2; the",
             "  full-resolution exposed-socket recheck separates D4/pin5 from D93.1.",
             "  D93.1 owns the visible open stub; D4/pin5 is a PCB no-connect.",
-            "  D5/pin6 reaches a proved plated layer handoff",
+            "  D5/pin6 reaches a proved plated local handoff",
             "  at (2266,1828) px, but independent D93/D94 cross-side projections",
-            "  disagree by 54.2 px. D5-D7 retain far-destination boundaries. D0/pin1 is also",
+            "  disagree by 54.2 px. Owner continuity and the exact `.009 E3` drawing",
+            "  now close D5-D7 as electrically NC despite those local stubs. D0/pin1 is",
             "  destination-unresolved. The captured program keeps D4-D7 released",
             "  at every row; D0 and the now-closed D3 are behaviorally active.",
             "- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`",
@@ -632,7 +638,7 @@ def main() -> int:
             "| `S(D1)` | `A3 xor A2` | D99.9 / R89 pull-up |",
             "| `S(D2)` | `A3 & !A2 & Q` | D93 `/RE` |",
             "| `S(D3)` | `!A3 & A2 & Q` | D93 `/WE` |",
-            "| `S(D4..D7)` | `0` | physically routed but always released |",
+            "| `S(D4..D7)` | `0` | owner/drawing-closed NC outputs; always released |",
             "",
             "These equations sharpen, but do not replace, continuity evidence:",
             "",
@@ -654,8 +660,8 @@ def main() -> int:
             "  register 3. Because A4 cancels out of `Q` at every other BA1:BA0",
             "  value, D101.Q0 is exactly a register-3 transfer-steering qualifier;",
             "  this does not identify the alternate D0 load or D101's broader role.",
-            "- D4-D7 cannot change digital behavior for any captured address, even",
-            "  though their physical copper must remain preserved for 1:1 fidelity.",
+            "- D4-D7 cannot change digital behavior for any captured address. Owner",
+            "  continuity closes D5-D7 as NC; photographed local stubs remain layout evidence.",
             "- The equations constrain A3's selected-cycle function but do not prove",
             "  its electrical source; A4 semantics and D0's far endpoint likewise",
             "  remain electrical/source boundaries rather than inferred nets.",
@@ -664,7 +670,7 @@ def main() -> int:
             "",
             "D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;",
             "the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D105.3 qualified /WR,",
-            "and A4=D101.7. Unknown D5-D7 destinations do not make captured bits unknown.",
+            "and A4=D101.7. D5-D7 are owner/drawing-closed NC.",
             "",
             "| Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |",
             "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
@@ -682,6 +688,8 @@ def main() -> int:
             "  reaches D99.9/R89; D2/pin3 reaches D93.4/R88 RE; and D3/pin4",
             "  reaches D93.2/R87 WE. D4/pin5 is a PCB no-connect, while",
             "  D93.1 owns a separate open stub.",
+            "  D5-D7/pins6,7,9 are also NC by exact-revision drawing review and",
+            "  owner continuity on 2026-07-21.",
             "  D0/pin1 has only R8 2 kΩ to +5 V in the measured scope.",
             "- Known content: three matching reads including a power-cycled read yield",
             f"  raw SHA256 `{PHYSICAL_D94_SHA256}`.",
@@ -690,8 +698,7 @@ def main() -> int:
             "  equipment list's separately designated `ДГШ5.087.009` group contains",
             "  exactly three МЛТ-0,125 6.2 kΩ ±5% parts as corroboration. The readable",
             "  target-board pair and identical third body close R87/R88/R89 as 6.2 kΩ.",
-            "- Unknown: the shared CS/enable upstream source, D0 hidden-branch status, and D5-D7",
-            "  far destinations remain unresolved behind explicit boundary nets.",
+            "- Unknown: the shared CS/enable upstream source and D0 hidden-branch status.",
             "- Firmware-derived prediction: D94 A3 must equal active-low `IOWR` on",
             "  selected FDC cycles. Confirm by continuity to D5.27 or simultaneous",
             "  operating-level capture; do not merge the nets from this constraint.",
@@ -701,9 +708,9 @@ def main() -> int:
             "  measured physical nets separate and unresolved.",
             "  The fast bus guard also forces A4 low on register 3 and proves D0",
             "  asserts while both D93 strobes release, without assigning D0 a load.",
-            "- D5-D7 are destination-unknown, not unused: registered component-side",
-            "  photographs prove copper leaves all three output pads.",
-            "- D4-D7 are physically wired but program-inert: raw bits 4-7 remain one",
+            "- D5-D7 are electrically NC. Registered component-side photographs show",
+            "  only local copper departures, which continuity does not extend to a load.",
+            "- D4-D7 are program-inert: raw bits 4-7 remain one",
             "  (open-collector released) at all 32 captured rows. D3 is the only",
             "  closed active output; D0 is behaviorally active and destination-unknown.",
             "- The traced `V3_RC` RC network is a negative cross-check here, not a",
@@ -745,7 +752,7 @@ def main() -> int:
         "enable_accounted": enable_accounted,
         "enable_traced": enable_ok,
         "enable_output_isolated": enable_output_isolated,
-        "remaining_output_departures": all_remaining_outputs_depart,
+        "remaining_output_departures": d5_d7_owner_closed_nc,
         "output_activity": output_activity_ok,
         "minimized_logic": minimized_logic_ok,
     }

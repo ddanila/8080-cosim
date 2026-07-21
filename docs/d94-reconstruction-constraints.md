@@ -38,9 +38,9 @@ same-as-D8 analogy, not from `.009` scan, photo, or owner continuity evidence.
 | 3 | D2 | `FDC_RE_N` | asserts at rows 08, 09, 10, 24, 25, 26, 27 | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V |
 | 4 | D3 | `FDC_WE_N` | asserts at rows 04, 05, 06, 20, 21, 22, 23 | owner continuity 2026-07-19 proves D94 output pin4 reaches D93 write-enable pin2 and R87.1; R87.2 is +5 V |
 | 5 | D4 | `NC` | invariant released | owner/photo-confirmed PCB no-connect |
-| 6 | D5 | `D94_D5` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
-| 7 | D6 | `D94_D6` | invariant released | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projection lands on bare substrate, so the far destination remains a boundary |
-| 9 | D7 | `D94_D7` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
+| 6 | D5 | `D94_D5` | invariant released | owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.6 as electrically NC; registered component imagery proves only a local floating copper stub to the plated handoff |
+| 7 | D6 | `D94_D6` | invariant released | owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.7 as electrically NC; registered imagery preserves its local floating copper departure without inventing a load |
+| 9 | D7 | `D94_D7` | invariant released | owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.9 as electrically NC; registered imagery preserves its local floating copper departure without inventing a load |
 
 ## KiCad DSN Cross-check
 
@@ -108,7 +108,7 @@ model and generated schematic remain authoritative until controlled reroute.
 | Enable pin15 is isolated from output pin2 | PASS | direct owner continuity; distinct board nets |
 | Any D94 output net is traced | PASS | `D94_D0_BOUNDARY`, `D94_D1_D99_A2N`, `FDC_RE_N`, `FDC_WE_N`, `NC`, `D94_D5`, `D94_D6`, `D94_D7` |
 | Every D94 output pad has an explicit net/boundary | PASS | 8/8 output pins netted |
-| Every unresolved D94 output has a photographed copper departure | PASS | component-side local-fit observations for pins 4, 6, 7, 9 |
+| D94 D5-D7 are owner/drawing-closed NC despite local copper stubs | PASS | owner continuity 2026-07-21 plus component-side observations for pins 4, 6, 7, 9 |
 | Captured table asserts only D0-D3; D4-D7 stay released | PASS | exhaustive 32-row physical table classification |
 | Minimized active-low equations reproduce all 256 captured bits | PASS | exhaustive address/output comparison against the physical image |
 | Validated `.092` physical image exists and matches SHA256 | PASS | `ref/physical-proms/validated/d94_092.raw.bin` / `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0` |
@@ -148,8 +148,8 @@ model and generated schematic remain authoritative until controlled reroute.
   D2/pin3 reaches D93.4 /RE and R88; D3/pin4 reaches D93.2 /WE and R87.
   Address inputs A0/A1/A2/A3/A4 reach BA0, BA1, IORD,
   D105.3 qualified /WR, and D101.7 respectively. R8 is the 2 kohm
-  pull-up-only D94.1 branch; D0's hidden load and D5-D7 destinations
-  remain open while physical
+  pull-up-only D94.1 branch; D0's hidden load remains open, while
+  owner continuity and exact-revision drawing review close D5-D7 as NC. Physical
   captures now provide the PROM contents.
 - Git history proves the former A0-A4=`BA11..BA15` assignment entered in
   commit `ed69b9d` as an FDC scaffold explicitly described as the same
@@ -163,9 +163,10 @@ model and generated schematic remain authoritative until controlled reroute.
   (pins 4-7 and 9). Direct continuity closes D3/pin4 to D93.2; the
   full-resolution exposed-socket recheck separates D4/pin5 from D93.1.
   D93.1 owns the visible open stub; D4/pin5 is a PCB no-connect.
-  D5/pin6 reaches a proved plated layer handoff
+  D5/pin6 reaches a proved plated local handoff
   at (2266,1828) px, but independent D93/D94 cross-side projections
-  disagree by 54.2 px. D5-D7 retain far-destination boundaries. D0/pin1 is also
+  disagree by 54.2 px. Owner continuity and the exact `.009 E3` drawing
+  now close D5-D7 as electrically NC despite those local stubs. D0/pin1 is
   destination-unresolved. The captured program keeps D4-D7 released
   at every row; D0 and the now-closed D3 are behaviorally active.
 - The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
@@ -208,7 +209,7 @@ gives:
 | `S(D1)` | `A3 xor A2` | D99.9 / R89 pull-up |
 | `S(D2)` | `A3 & !A2 & Q` | D93 `/RE` |
 | `S(D3)` | `!A3 & A2 & Q` | D93 `/WE` |
-| `S(D4..D7)` | `0` | physically routed but always released |
+| `S(D4..D7)` | `0` | owner/drawing-closed NC outputs; always released |
 
 These equations sharpen, but do not replace, continuity evidence:
 
@@ -230,8 +231,8 @@ These equations sharpen, but do not replace, continuity evidence:
   register 3. Because A4 cancels out of `Q` at every other BA1:BA0
   value, D101.Q0 is exactly a register-3 transfer-steering qualifier;
   this does not identify the alternate D0 load or D101's broader role.
-- D4-D7 cannot change digital behavior for any captured address, even
-  though their physical copper must remain preserved for 1:1 fidelity.
+- D4-D7 cannot change digital behavior for any captured address. Owner
+  continuity closes D5-D7 as NC; photographed local stubs remain layout evidence.
 - The equations constrain A3's selected-cycle function but do not prove
   its electrical source; A4 semantics and D0's far endpoint likewise
   remain electrical/source boundaries rather than inferred nets.
@@ -240,7 +241,7 @@ These equations sharpen, but do not replace, continuity evidence:
 
 D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;
 the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D105.3 qualified /WR,
-and A4=D101.7. Unknown D5-D7 destinations do not make captured bits unknown.
+and A4=D101.7. D5-D7 are owner/drawing-closed NC.
 
 | Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -285,6 +286,8 @@ and A4=D101.7. Unknown D5-D7 destinations do not make captured bits unknown.
   reaches D99.9/R89; D2/pin3 reaches D93.4/R88 RE; and D3/pin4
   reaches D93.2/R87 WE. D4/pin5 is a PCB no-connect, while
   D93.1 owns a separate open stub.
+  D5-D7/pins6,7,9 are also NC by exact-revision drawing review and
+  owner continuity on 2026-07-21.
   D0/pin1 has only R8 2 kΩ to +5 V in the measured scope.
 - Known content: three matching reads including a power-cycled read yield
   raw SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
@@ -293,8 +296,7 @@ and A4=D101.7. Unknown D5-D7 destinations do not make captured bits unknown.
   equipment list's separately designated `ДГШ5.087.009` group contains
   exactly three МЛТ-0,125 6.2 kΩ ±5% parts as corroboration. The readable
   target-board pair and identical third body close R87/R88/R89 as 6.2 kΩ.
-- Unknown: the shared CS/enable upstream source, D0 hidden-branch status, and D5-D7
-  far destinations remain unresolved behind explicit boundary nets.
+- Unknown: the shared CS/enable upstream source and D0 hidden-branch status.
 - Firmware-derived prediction: D94 A3 must equal active-low `IOWR` on
   selected FDC cycles. Confirm by continuity to D5.27 or simultaneous
   operating-level capture; do not merge the nets from this constraint.
@@ -304,9 +306,9 @@ and A4=D101.7. Unknown D5-D7 destinations do not make captured bits unknown.
   measured physical nets separate and unresolved.
   The fast bus guard also forces A4 low on register 3 and proves D0
   asserts while both D93 strobes release, without assigning D0 a load.
-- D5-D7 are destination-unknown, not unused: registered component-side
-  photographs prove copper leaves all three output pads.
-- D4-D7 are physically wired but program-inert: raw bits 4-7 remain one
+- D5-D7 are electrically NC. Registered component-side photographs show
+  only local copper departures, which continuity does not extend to a load.
+- D4-D7 are program-inert: raw bits 4-7 remain one
   (open-collector released) at all 32 captured rows. D3 is the only
   closed active output; D0 is behaviorally active and destination-unknown.
 - The traced `V3_RC` RC network is a negative cross-check here, not a

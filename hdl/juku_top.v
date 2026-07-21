@@ -483,10 +483,13 @@ module juku_top (
     // D56 is the adjacent sync/one-shot chain; its Q_N is source-proved separate from this rail.
     // 16MHz source bundle tag14 becomes local control rail3 at D39/D42/D43; native-sheet
     // source-side chase cannot prove its expected physical merge with OSC, so LVS keeps it separate.
-    wire sync_b_w;   // D57.OUT2 "SYNC B." -> both D56 triggers (traced s2_a_rows/s2_pin2_corner)
+    // Exact-revision .009 E3 sheet 2 plus owner continuity (2026-07-21):
+    // D54.OUT2/H.SYNC DSL -> D56.B2, D55.OUT2/VERT SYNC DSL -> D56.B.
+    // D56.Q2_N then clocks both D55 CLK1/CLK2; D57.OUT2/SYNC B is separate.
+    wire pit_hsync_dsl, pit_vert_sync_dsl, sync_b_w;
     wire d56_clr_w;   // shared CLR rail = R61 12k pullup (traced); boundary-driven so yosys keeps the net
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
-    ag3_oneshot U_D56  (.a_n(1'b0), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b0), .b2(sync_b_w), .clr2_n(d56_clr_w),
+    ag3_oneshot U_D56  (.a_n(1'b0), .b(pit_vert_sync_dsl), .clr_n(d56_clr_w), .a2_n(1'b0), .b2(pit_hsync_dsl), .clr2_n(d56_clr_w),
                         .q(), .q_n(d56_qn), .q2(d56_q2), .q2_n(d56_q2_n));
     ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0011), .q(d103_q), .co(d103_co));   // D0/D1 high, D2/D3 low: traced /13 preset; QD (pin 11) = 1.23MHz -> D57.CLK2
 
@@ -703,19 +706,19 @@ module juku_top (
     // D40 QC; 1.23 MHz (D57 baud clk0) = the now-guarded D103/D33 /13 loop.
     // Its upstream physical XTAL16M source merge remains a continuity boundary.
     wire clk123m;
-    wire pit_hchain, pit_hsync_dsl, pit_vchain, pit_baud, pit_sound;
+    wire pit_hchain, pit_vchain, pit_baud, pit_sound;
     pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(clk1m), .gate0(1'b1), .clk1(clk1m), .gate1(pit_hchain),
                       .clk2(clk1m), .gate2(pit_hchain),
                       .out0(pit_hchain), .out1(), .out2(pit_hsync_dsl));
     pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
-                      .clk0(pit_hchain), .gate0(1'b1), .clk1(pit_hsync_dsl), .gate1(pit_vchain),
-                      .clk2(pit_hsync_dsl), .gate2(pit_vchain),
-                      .out0(pit_vchain), .out1(vert_rtr), .out2());
+                      .clk0(pit_hchain), .gate0(1'b1), .clk1(d56_q2_n), .gate1(pit_vchain),
+                      .clk2(d56_q2_n), .gate2(pit_vchain),
+                      .out0(pit_vchain), .out1(vert_rtr), .out2(pit_vert_sync_dsl));
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(d103_q[3]), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
                       .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK0+CLK2 share 1.23M = D103.QD
-                      .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = SYNC B. -> D56 (traced)
+                      .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = separate SYNC B boundary
     wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n, ser_syndet, ser_rxrdy, ser_txrdy;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(d13_o4),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
@@ -739,11 +742,11 @@ module juku_top (
     // build defaults to the external-interrupt throw for simulation.
     spdt_switch U_S4 (.syndet_throw(ser_syndet), .int6_throw(ir6_buf), .ir6_common(ir6_sig));
     la18_oc U_D12 (.i1(ser_txd_inv), .i2(ser_txd_inv), .o3(s_oc));
-    wire d104_x4_in_boundary, d104_x4_out_boundary;
+    wire d104_x4_in_boundary;
     up2_rcv U_D104(.sin_in(s_sin), .sin_out(ser_rxd),
                    .cts_in(s_cts), .cts_out(ser_cts_n),
                    .dsr_in(s_dsr), .dsr_out(ser_dsr_n),
-                   .x4_in(d104_x4_in_boundary), .x4_out(d104_x4_out_boundary));
+                   .x4_in(d104_x4_in_boundary), .x4_out());  // owner continuity + exact .009 drawing: pin 10 NC
     serial_conn U_X3 (.pullup_io(), .aux2(s_oc), .ttl_sout(s_ttl), .sin(s_sin),
                       .cts(s_cts), .dsr(s_dsr), .aux7(), .aux8(),
                       .sout(s_sout), .rts(s_rts), .dtp(s_dtp), .oc_sout(s_oc));

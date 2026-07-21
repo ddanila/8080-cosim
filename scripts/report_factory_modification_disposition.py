@@ -17,7 +17,7 @@ PANORAMA_REGISTRATION = ROOT / "docs/photo-registration/panorama-registration.js
 BOARD_REGISTRATION = ROOT / "docs/photo-registration/board-registration.json"
 LOCAL_PACKAGE_REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
 AFFECTED = {
-    "D56": "АГ3 timing area: trigger pins D56.1/D56.9 are photo-closed to the D56.8 ground perimeter; the separate position-150 tubing and three position-159 solder locations remain held",
+    "D56": "АГ3 timing area: trigger pins D56.1/D56.9 are photo-closed to ground and the D56.5/D56.12 functional nets are owner-closed; the separate position-150 tubing and position-159 material/auxiliary-annulus disposition remain held",
     "D15": "EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail",
     "D14": "АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held",
     "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field",
@@ -205,6 +205,12 @@ def main() -> int:
     d56_ok &= {("D56", "1"), ("D56", "8"), ("D56", "9")} <= gnd_nodes
     d56_ok &= all(["D56", pin] not in board.get("no_connects", []) for pin in ("1", "9"))
     d56_ok &= ["D56", "13"] in board.get("no_connects", [])
+    d56_ok &= {tuple(node) for node in nets["D56_Q2_D34"]["nodes"]} == {
+        ("D56", "5"), ("D34", "9")
+    }
+    d56_ok &= {tuple(node) for node in nets["D56_Q2N_TAG16"]["nodes"]} == {
+        ("D56", "12"), ("D55", "15"), ("D55", "18")
+    }
     d56_ok &= (
         len(d56["package_identity"]["component_observations"]) >= 3
         and "tubing" in d56["drawing"]["observation"]
@@ -370,8 +376,10 @@ def main() -> int:
         "was not photographed. Only the D15 detail explicitly says `Разрезать`.",
         "Three component views plus two overlapping solder views register D56's",
         "callout row. The same two solder views independently close D56.1 and",
-        "D56.9 onto its pin-8 ground perimeter; this trigger closure is separate",
-        "from the still-held position-159 field. Independent evidence also closes",
+        "D56.9 onto its pin-8 ground perimeter. Exact-revision `.009 E3` sheet 2",
+        "plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18; these",
+        "functional-net closures are separate from the still-held position-159 material",
+        "and auxiliary-annulus disposition. Independent evidence also closes",
         "the D15 cut topology and local D14 ground link. D11 bridge endpoints and",
         "the remaining D14 auxiliary paths stay held.",
         "",
@@ -379,8 +387,8 @@ def main() -> int:
         "| --- | --- | --- | --- |",
     ]
     for ref, detail in AFFECTED.items():
-        disposition = "PARTIAL PHOTO-CLOSE — D56.1/D56.9 are grounded with D56.8; all three separate callout locations are fixed but their installed conductor is held"
-        closure = "two solder views show uninterrupted perimeter copper through pins 1/8/9; validated fits also identify the distinct left annulus and D56.5/D56.12 callout row, where continuity or item 159 is still required"
+        disposition = "PARTIAL OWNER-CLOSE — D56.1/D56.9 are grounded; D56.5/D56.12 functional nets are closed; item-159 material and auxiliary-annulus disposition remain held"
+        closure = "two solder views show uninterrupted perimeter copper through pins 1/8/9; exact .009 E3 plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18; the distinct left annulus and item-159 material remain unresolved"
         if ref == "D15":
             disposition = "PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches"
             closure = "two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held"
@@ -408,8 +416,10 @@ def main() -> int:
         "tubing positions 157 and 150 are fitted at solder locations. Position 150",
         "is therefore not a cut",
         "instruction, and the nearby visible wide-rail gap cannot be promoted as",
-        "proof of the D56.12 net partition. Position 159 remains an unexpanded",
-        "solder-location callout until its specification identity is recovered.",
+        "proof of the D56.12 net partition. Exact-revision `.009 E3` sheet 2 and",
+        "owner continuity on 2026-07-21 independently close D56.5 to D34.9 and",
+        "D56.12 to tied D55.15/.18. Position 159 remains an unexpanded",
+        "solder-location/material callout until its specification identity is recovered.",
         "This callout hold is independent of the package trigger inputs: both",
         "overlapping solder views show D56.1 and D56.9 on the same uninterrupted",
         "wide perimeter conductor as ground pin D56.8, so the source model now",
@@ -431,8 +441,9 @@ def main() -> int:
         "Both solder views show small bare-board gaps between the D56.5/D56.12",
         "pads and the adjacent horizontal rail; the separate left annulus belongs",
         "to that rail. This closes the three-location geometry, not the installed",
-        "assembly conductor. Direct continuity or the complete position-159",
-        "specification is required before changing the clean source net partition.",
+        "assembly material. The package-pad functional nets are now continuity-closed;",
+        "the complete position-159 specification or direct auxiliary-annulus probing is",
+        "still required before changing that separate assembly disposition.",
         "",
         "| Ground-rail view | D56.1 registration error | D56.8 registration error | D56.9 registration error | Result |",
         "| --- | ---: | ---: | ---: | --- |",

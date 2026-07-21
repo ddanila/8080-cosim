@@ -160,7 +160,7 @@ def main() -> int:
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM-FIELD ARTWORK/POPULATION CLOSED / VALUES AND NON-FIELD PLACEMENTS PENDING**")),
         ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),
-        ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING**")),
+        ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
         (".009 video / .006 RF disposition guarded", has_phrase("docs/video-analog-boundary.md", "Status: **.009 COMPOSITE HANDOFF GUARDED / .006 RF OPTION DNP**")),
         ("S4 interrupt boundary guarded", has_phrase("docs/s4-interrupt-boundary.md", "Status: **S4 INTERRUPT SELECTOR GUARDED**")),
@@ -208,10 +208,10 @@ def main() -> int:
         ),
         (
             "P0",
-            "D94 .092 remaining outputs",
-            "the 2026-07-19 session closes A3 as D105.3 qualified /WR, separates D104.7 and raw D5.27, maps R87/R88/R89 to D94.4/.3/.2, maps R8 2 kΩ to the pull-up-only D94.1 branch, and retracts D94.5-D93.1. Trace only D94 D5-D7 far destinations and D104.10; optionally scope D101.7, D94.1, /RE, and /WE on port 1F to observe the table's register-3 steering behavior",
+            "D94 .092 live steering capture",
+            "owner continuity on 2026-07-21 closes D94 D5-D7/pins6,7,9 and D104.10 as NC, completing the former static-output batch. Optionally scope D101.7, D94.1, /RE, and /WE on port 1F to observe the table's register-3 steering behavior",
             "`docs/d94-reconstruction-constraints.md`; `docs/photo-registration.md`; exact two-sided local-fit rows in `ref/photos/juku-pcb-2/endpoints.csv`",
-            "uses the recovered PROM equations to target D0's hidden branch, replaces the retired same-as-D8 BA mapping with measured row semantics, and resolves the read/write control path before an FDC hardware release",
+            "uses the recovered PROM equations to target D0's hidden branch and validates the read/write steering dynamically before an FDC hardware release",
         ),
         (
             "P0",
@@ -230,7 +230,7 @@ def main() -> int:
         (
             "P0",
             "factory Вид В pad mapping",
-            "at D56 the three physical callout locations are fixed as the separate left annulus plus D56.5/D56.12 and bare-board gaps to the adjacent rail are visible; continuity-map the installed item-159 conductor/material among those three locations and the rail. Note 11 proves position 150 is tubing, not a cut, and position 159 remains an unexpanded solder-location callout. D15 is photo-closed as the cut A2/A1 bridge and needs no continuity probe; D14 row numbering, the local D32.4/GND-to-D14.1 link, and fifth-landing geometry are photo-registered, so continuity-test the fifth landing's conductor, three long drawn traces, and right-row dogleg/D14.7—both component and solder faces are photo-exhausted there, and position 159 does not prove replacements; at D11 the L trace and four solder locations are registered in two component views, the older pins-4-6 solder scar is excluded, and validated two-sided package fits exhaust four solder views without a unique through-hole match—continuity-test the bridge, D11 pin/net, and upper/lower remote endpoints; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",
+            "D56.5->D34.9 and D56.12->D55.15/.18 are owner-closed, while the three physical callout locations remain fixed as the separate left annulus plus D56.5/D56.12; identify only the installed item-159 material and auxiliary-annulus/adjacent-rail disposition. Note 11 proves position 150 is tubing, not a cut, and position 159 remains an unexpanded solder-location callout. D15 is photo-closed as the cut A2/A1 bridge and needs no continuity probe; D14 row numbering, the local D32.4/GND-to-D14.1 link, and fifth-landing geometry are photo-registered, so continuity-test the fifth landing's conductor, three long drawn traces, and right-row dogleg/D14.7—both component and solder faces are photo-exhausted there, and position 159 does not prove replacements; at D11 the L trace and four solder locations are registered in two component views, the older pins-4-6 solder scar is excluded, and validated two-sided package fits exhaust four solder views without a unique through-hole match—continuity-test the bridge, D11 pin/net, and upper/lower remote endpoints; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",
             "`docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg`",
             "proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release",
         ),

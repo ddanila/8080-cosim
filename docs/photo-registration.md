@@ -400,14 +400,15 @@ Owner inspection and the clearly readable factory E3 frame
 `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg` close the corrected
 interpretation: D94.5 is NC, while D93.1 alone owns a short open stub.
 
-D94.6/D5 is now bounded one step further without assigning a destination. In
+D94.6/D5 is photo-bounded one step further. In
 the same exposed-socket frame, uninterrupted front copper reaches the plated
 handoff at `(2266,1828)` px. Composing that point through the D93-local and
 D94-local cross-side fits gives solder-image candidates near
 `(1829.9,1447.5)` and `(1797.7,1491.1)` px, a `54.2` px disagreement. The
-annotated `d94-d5-layer-handoff.jpg` therefore records the proved handoff and
-explicitly rejects a unique solder continuation until continuity or a stronger
-cross-side registration is available.
+annotated `d94-d5-layer-handoff.jpg` records the local handoff. Direct owner
+continuity on 2026-07-21 and the exact-revision `.009 E3` drawing now close
+D94.6, D94.7, and D94.9 as electrically NC; the photographed departure is a
+local floating stub rather than evidence for a remote load.
 
 D93.19 `MR_N` is now owner-closed with D93 removed.
 The corrected solder joint reaches a through-hole near `(1743,2320)` pixels;
@@ -439,9 +440,9 @@ The new reflected D104 backside fit uses the complete 2x8 joint field in
 `0.728` px. It places D104.10 at `(2350.714,1249.143)` px, where the joint has
 no B.Cu departure; `200509593` independently shows the same isolated backside
 joint. Both component overlaps cover the possible F.Cu departure with the
-same vertical white wire, so D104.10 remains a targeted continuity request,
-not an inferred no-connect. It is modeled as the singleton
-`D104_X4_OUT_BOUNDARY`, and the serial placement guard preserves that boundary.
+same vertical white wire. Direct owner continuity on 2026-07-21 and the exact
+`.009 E3` drawing now close D104.10 as NC; the serial placement guard preserves
+the pad location while requiring it to remain unnetted.
 The same check identifies the marked notch-down К561ЛН2 in
 `PXL_20260710_200418174.jpg` as D3 at `(220.434,80.356)` mm. Its former
 `(205.8,96.4)` placeholder landed on a cable and physically overlapped D10.

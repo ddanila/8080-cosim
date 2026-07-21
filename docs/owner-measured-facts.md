@@ -41,10 +41,19 @@ measurement lands, add a row here.
 | `D106.7 Q3 -> D93.26 RCLK` | photo-closed | `docs/fdc-hardware-handoff.md` |
 | `D93.38 DRQ -> D28.11 -> R94.1`; R94 is `10к`, immediately above D28, and R94.2 -> +5 V. The video cable can obscure its body; the photographed 220-ohm body near D98 is not R94 and remains unassigned. | owner-continuity + owner visual identification, 2026-07-20 | `ref/schematics/fdc-irq-conditioner-map.md`; `ref/photos/juku-pcb-2/r94-photo-exhaustion.json` |
 | With D93 removed, `D93.19 MR_N -> D13.8` and the outer-bus contact physically at the rightmost position of the middle row (board viewed from top). `D13.9 -> D1.12 RESET`; D13 section 9->8 therefore inverts active-high RESET for D93. Exact X1 contact code remains unresolved. | owner-continuity, 2026-07-20 | `ref/schematics/fdc-controller-static-map.md` |
+| D94 outputs D5-D7/pins 6, 7, and 9 are NC; D104 receiver output pin 10 is also NC. Exact-revision `.009 E3` drawing review agrees with direct continuity. | owner-continuity + exact-revision drawing, 2026-07-21 | `docs/d94-reconstruction-constraints.md`; `docs/serial-handoff.md` |
+
+## D54-D57 / D56 video timing
+
+| Fact | Provenance | Source |
+| --- | --- | --- |
+| `D54.17 H.SYNC DSL -> D56.10/B2`; `D55.17 VERT SYNC DSL -> D56.2/B`; the former D57.17-to-both-trigger interpretation is false. | owner-continuity + exact-revision `.009 E3` sheet 2, 2026-07-21 | `docs/memory-timing-boundary.md`; `ref/photos/dgsh5-109-009-e3/` |
+| `D56.12/Q2_N -> D55.15/CLK1 + D55.18/CLK2` on conductor 16; it is distinct from the DRAM write rail also marked 16. | owner-continuity + exact-revision `.009 E3` sheet 2, 2026-07-21 | `docs/memory-timing-boundary.md` |
+| `D56.5/Q2 -> D34.9` as drawn. | owner-continuity + exact-revision `.009 E3` sheet 2, 2026-07-21 | `docs/memory-timing-boundary.md` |
 
 ## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
 
-- Factory Вид В callout conductors at the registered D56.12/D56.5 level,
+- Factory Вид В item-159 material and auxiliary-annulus/adjacent-rail disposition at the registered D56.12/D56.5 level (the package-pad functional nets themselves are closed),
   D14's photo-exhausted D14.2/.7 and registered fifth-landing conductor /
   remaining drawn traces, and D11's registered
   four-landmark bridge endpoints. Position 150 is tubing at solder locations,

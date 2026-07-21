@@ -71,13 +71,13 @@ def main() -> None:
             errors.append("D104.10 solder coordinate drifted")
         d104_pad10 = board.FindFootprintByReference("D104").FindPadByNumber("10")
         if d104_pad10.GetNetname() != "D104_X4_OUT_BOUNDARY":
-            errors.append("D104.10 is not preserved on its explicit hidden-F.Cu boundary")
+            errors.append("D104.10 premeasurement source-PCB boundary changed before controlled refresh")
     if errors:
         raise SystemExit("serial photo placement FAIL\n- " + "\n- ".join(errors))
     print(
         "serial photo placement PASS — D104.10 solder 2350.7,1249.1 px; "
-        "B.Cu departure absent, possible F.Cu departure remains wire-obscured; "
-        "singleton boundary preserved"
+        "B.Cu departure absent; board JSON closes pin 10 NC while the held source PCB "
+        "retains its premeasurement singleton until controlled refresh"
     )
 
 

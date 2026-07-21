@@ -236,12 +236,12 @@ def check_rows(board: dict) -> list[list[object]]:
         "`SER_CTS_N` / `SER_DSR_N`",
     ))
     checks.append((
-        "UP2 fourth receiver output remains an explicit continuity boundary",
+        "UP2 fourth receiver output is owner-closed NC",
         has_node(board, "D104_X4_IN_BOUNDARY", "D104", "7")
-        and has_node(board, "D104_X4_OUT_BOUNDARY", "D104", "10")
+        and pin_is_nc(board, "D104", "10")
         and marker("hdl/juku_top.v", ".x4_in(d104_x4_in_boundary)",
-                   ".x4_out(d104_x4_out_boundary)"),
-        "D104.7 -> D104.10; output destination remains photo-occluded",
+                   ".x4_out());  // owner continuity + exact .009 drawing: pin 10 NC"),
+        "D104.7 remains an input boundary; D104.10 is NC by owner continuity and exact-revision drawing",
     ))
     for net_name, ref, pin in [
         ("S_SOUT", "X3", "9"),
@@ -356,7 +356,6 @@ def main() -> int:
         "SER_CTS_N",
         "SER_DSR_N",
         "D104_X4_IN_BOUNDARY",
-        "D104_X4_OUT_BOUNDARY",
         "USART_RXRDY_IRQ",
         "USART_TXRDY_IRQ",
         "S_SOUT",
@@ -387,9 +386,8 @@ def main() -> int:
             "  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven",
             "  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.",
             "- D104's fourth receiver input pin 7 is separate from D94.13 (~84 kΩ)",
-            "  and preserved as `D104_X4_IN_BOUNDARY`; output pin 10 remains",
-            "  `D104_X4_OUT_BOUNDARY`, and its far",
-            "  destination remains a targeted continuity measurement.",
+            "  and preserved as `D104_X4_IN_BOUNDARY`; owner continuity on",
+            "  2026-07-21 and the exact-revision drawing close output pin 10 as NC.",
             "- D11 auxiliary pins without a net or explicit NC:",
             "  " + (", ".join(
                 f"{pin}:{role}" for pin, role in AUXILIARY_PINS.items()

@@ -1,14 +1,14 @@
 # Memory timing boundary
 
-Status date: 2026-07-17.
+Status date: 2026-07-21.
 
-Status: **MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING**
+Status: **MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING**
 
 This generated report narrows the remaining DRAM/clock timing risks.
 The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,
-PHI2TTL fanout, and D56 one-shot RC networks. It also keeps the
-unresolved CAS input and D56 Q2_N tag-16 destination as
-explicit source boundaries instead of silently promoting them.
+PHI2TTL fanout, and D56 one-shot RC networks. Exact-revision `.009 E3`
+imagery plus owner continuity closes the D54/D55/D56 trigger and clock
+crossings; the unresolved CAS input remains an explicit source boundary.
 
 ## Command
 
@@ -40,7 +40,7 @@ python3 scripts/report_memory_timing_boundary.py
 | D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2 |
 | D42/D43 serializer packages retain their source-proved unused parallel outputs | PASS | sheet-2 draws only QD pin10; QA/QB/QC pins13/12/11 are explicit NCs on both packages |
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
-| D56 grounded A inputs enable both source-traced B triggers and active outputs reach gate-3 | PASS | two solder views: D56.1/.9 share GND with D56.8; native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 remains unresolved tag16; unused D56.13 is NC |
+| D56 trigger, clock, and active-output topology is owner-closed | PASS | exact .009 E3 plus owner continuity 2026-07-21: D54.17->D56.10, D55.17->D56.2, D56.12->D55.15/.18, D56.5/.4->D34.9/.10; D57.17 remains separate |
 | D35 frame-interrupt inverter path is source-closed | PASS | native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2 |
 | D30 READY clear uses the native D38-side status strobe | PASS | sheet-2 D38.8 active-low STB export -> sheet-1 -SSTB/D30.1; W8 still separates the D5-side island |
 
@@ -51,7 +51,6 @@ python3 scripts/report_memory_timing_boundary.py
 | D59 remaining inverter package boundary remains visible | PASS | D59.5/.6 NC; D59.10 tag10 remains distinct from SOUND |
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
 | OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase | PASS | OSC and XTAL16M remain distinct source nets pending continuity |
-| D56_Q2_N tag-16 far destination remains unresolved | PASS | D56.12; explicitly not merged with D36.8/DRAM W rail16 |
 
 ## Current Timing Nets
 
@@ -89,7 +88,10 @@ python3 scripts/report_memory_timing_boundary.py
 | `D56_RC2` | `D56.7, R47.1, C7.1` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: RC pin 7 = R47 20k + C7 560pF |
 | `D56_C2` | `D56.6, C7.2` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: C pin 6 = C7 far plate |
 | `D56_QN_D34` | `D56.4, D34.10` | scan sheet-2 native 5140x3563 review: D56 first-section Q_N pin4 runs east, corners south on its own vertical, and enters D34 gate-3 input pin10; it crosses the horizontal 16 MHz rail without a junction |
-| `D56_Q2N_TAG16` | `D56.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical. No junction to D36.8 or the DRAM W rail is drawn, and merging solely by the repeated numeral 16 would short two push-pull outputs; automatic scan chase exhausted, so the far destination remains a deliberate continuity boundary |
+| `PIT_HSYNC_DSL` | `D54.17, D56.10` | exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D54.OUT2/pin17 H.SYNC DSL drives D56 B2/pin10; it does not join the D55 clock pair |
+| `VERT_SYNC` | `D55.17, D56.2` | exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D55.OUT2/pin17 VERT SYNC DSL drives D56 B/pin2 |
+| `D56_Q2N_TAG16` | `D56.12, D55.15, D55.18` | exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D56 second-section Q2_N/pin12 drives the tied D55 CLK1/pin15 and CLK2/pin18 conductor marked 16; this signal is distinct from D36.8/DRAM write rail 16 |
+| `SYNC_B` | `D57.17` | exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2 remains the separately labeled SYNC B boundary |
 
 ## Interpretation
 
@@ -121,15 +123,14 @@ python3 scripts/report_memory_timing_boundary.py
   back-layer bridge join the two MEMR islands without crossing the four
   front-layer select traces. KiCad DRC reports zero MEMR shorts,
   clearances, crossings, or unconnected items.
-- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16
-  destination are still not historical-source-complete. D36.12/.13 were
+- The exact CAS-driver input source (`D36_CAS_IN`) is still not
+  historical-source-complete. D36.12/.13 were
   rechecked across the native 5140x3563 sheet on 2026-07-13; their common
   west conductor enters an unlabeled dense timing bundle, so the automated
   scan chase is exhausted.
-- D56.12's printed conductor code 16 is not evidence for a merge with the
-  separate D36.8/DRAM write rail 16. Native full-sheet review shows no
-  junction, and such a merge would short two push-pull outputs; its remote
-  destination therefore remains a continuity boundary.
+- Exact-revision `.009 E3` sheet 2 and owner continuity close D56.12's
+  conductor code 16 onto the tied D55 CLK1/CLK2 inputs at pins 15/18.
+  It remains distinct from the unrelated D36.8/DRAM write rail 16.
 - D59.10's local timing-bundle marker 10 is likewise not the D57.13 SOUND
   bundle marker 10. Native full-sheet review shows no continuous conductor,
   and merging them would short active TTL outputs; automatic tag-number

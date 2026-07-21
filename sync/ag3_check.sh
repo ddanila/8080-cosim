@@ -31,6 +31,16 @@ assert required <= gnd, f"D56 trigger ground missing: {sorted(required - gnd)}"
 assert ["D56", "1"] not in board["no_connects"]
 assert ["D56", "9"] not in board["no_connects"]
 assert ["D56", "13"] in board["no_connects"]
+assert {tuple(node) for node in board["nets"]["PIT_HSYNC_DSL"]["nodes"]} == {
+    ("D54", "17"), ("D56", "10")
+}
+assert {tuple(node) for node in board["nets"]["VERT_SYNC"]["nodes"]} == {
+    ("D55", "17"), ("D56", "2")
+}
+assert {tuple(node) for node in board["nets"]["D56_Q2N_TAG16"]["nodes"]} == {
+    ("D56", "12"), ("D55", "15"), ("D55", "18")
+}
+assert {tuple(node) for node in board["nets"]["SYNC_B"]["nodes"]} == {("D57", "17")}
 
 registration = json.loads(Path(
     "ref/photos/dgsh5-109-009-sb/factory-modification-registration.json"
@@ -74,8 +84,12 @@ The native sheet leaves D56.1 and D56.9 unstubbed, but two overlapping owner
 solder photographs resolve the installed \`.009\` target. The reflected local
 package fit places D56.9 directly on D56.8's upper ground rail; D56.1 joins the
 same rail through the uninterrupted wide left-edge return. Both active-low A
-inputs are therefore grounded, enabling the source-traced SYNC-B connections on
-pins 2 and 10. The separate position-159 callout at D56.5/D56.12 remains held.
+inputs are therefore grounded. Exact-revision .009 E3 sheet 2 and direct owner
+continuity on 2026-07-21 close the active-high trigger inputs separately:
+D54.17 H.SYNC DSL drives D56.10/B2, while D55.17 VERT SYNC DSL drives D56.2/B.
+D56.12/Q2_N drives the tied D55.15/CLK1 and D55.18/CLK2 inputs. D57.17/SYNC B
+is a separate boundary, correcting the older scan chase that merged both D56
+triggers onto it. The position-159 callout material itself remains held.
 
 ## Command
 
@@ -93,8 +107,9 @@ $pass_line
 
 The RC-derived widths are datasheet-typical behavioral values, not a substitute
 for measuring the installed К155АГ3 across component tolerance and temperature.
-D56.12's printed tag-16 far destination and the item-159 assembly conductor are
-still explicit physical boundaries.
+D56.12's printed tag-16 destination is owner-closed to D55.15/.18. The exact
+position-159 assembly material and installed auxiliary-annulus disposition remain
+physical boundaries.
 EOF
 
 echo "$pass_line"

@@ -12492,19 +12492,15 @@
    ]
   },
   "PIT_HSYNC_DSL": {
-   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the emulator-derived wiring exactly; D54.OUT2(17) \"H.SYNC DSL\" -> D55.CLK1(15)+CLK2(18) tied pair",
+   "src": "exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D54.OUT2/pin17 H.SYNC DSL drives D56 B2/pin10; it does not join the D55 clock pair",
    "nodes": [
     [
      "D54",
      "17"
     ],
     [
-     "D55",
-     "15"
-    ],
-    [
-     "D55",
-     "18"
+     "D56",
+     "10"
     ]
    ]
   },
@@ -12518,11 +12514,15 @@
    ]
   },
   "VERT_SYNC": {
-   "src": "scan sheet-2: D55.OUT2 pin 17 is explicitly labeled VERT SYNC and exits the timer block",
+   "src": "exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D55.OUT2/pin17 VERT SYNC DSL drives D56 B/pin2",
    "nodes": [
     [
      "D55",
      "17"
+    ],
+    [
+     "D56",
+     "2"
     ]
    ]
   },
@@ -13936,15 +13936,15 @@
    "nodes": [["D93", "1"]]
   },
   "D94_D5": {
-   "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary",
+   "src": "owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.6 as electrically NC; registered component imagery proves only a local floating copper stub to the plated handoff",
    "nodes": [["D94", "6"]]
   },
   "D94_D6": {
-   "src": "July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projection lands on bare substrate, so the far destination remains a boundary",
+   "src": "owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.7 as electrically NC; registered imagery preserves its local floating copper departure without inventing a load",
    "nodes": [["D94", "7"]]
   },
   "D94_D7": {
-   "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary",
+   "src": "owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.9 as electrically NC; registered imagery preserves its local floating copper departure without inventing a load",
    "nodes": [["D94", "9"]]
   },
   "FDC_TG43_TO_D100": {
@@ -15547,19 +15547,11 @@
    ]
   },
   "SYNC_B": {
-   "src": "traced sheet-2 300dpi (crops s2_d57_outs/s2_d56_north/s2_a_rows/s2_pin2_corner): D57.OUT2 \"SYNC B.\" tag 12 wraps east-down-west; the down-leg at x~5174 tees into BOTH D56 A-triggers: pin 10 (sect-2, ~5us pulse shaper) and pin 2 (sect-1, ~220us retriggerable = missing-pulse/V-sync detector)",
+   "src": "exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2 remains the separately labeled SYNC B boundary",
    "nodes": [
     [
      "D57",
      "17"
-    ],
-    [
-     "D56",
-     "10"
-    ],
-    [
-     "D56",
-     "2"
     ]
    ]
   },
@@ -15714,11 +15706,19 @@
    ]
   },
   "D56_Q2N_TAG16": {
-   "src": "scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical. No junction to D36.8 or the DRAM W rail is drawn, and merging solely by the repeated numeral 16 would short two push-pull outputs; automatic scan chase exhausted, so the far destination remains a deliberate continuity boundary",
+   "src": "exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D56 second-section Q2_N/pin12 drives the tied D55 CLK1/pin15 and CLK2/pin18 conductor marked 16; this signal is distinct from D36.8/DRAM write rail 16",
    "nodes": [
     [
      "D56",
      "12"
+    ],
+    [
+     "D55",
+     "15"
+    ],
+    [
+     "D55",
+     "18"
     ]
    ]
   },
@@ -15810,10 +15810,6 @@
    "src": "owner resistance 2026-07-19 measures approximately 84 kohm between D104.7 and D94.13, disproving the former direct-net claim; D104 receiver input pin7 remains an independent boundary",
    "nodes": [["D104", "7"]]
   },
-  "D104_X4_OUT_BOUNDARY": {
-   "src": "July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps hide its possible F.Cu departure behind the same vertical white wire. This singleton preserves the functional receiver output as a targeted continuity boundary, not an inferred no-connect",
-   "nodes": [["D104", "10"]]
-  },
   "STSTB_D38": {
    "src": "native cross-sheet closure: sheet-2 D38.8 exports active-low STB to sheet-1 -SSTB/D30.1 on the D38-side factory-wire А:8 copper island",
    "nodes": [
@@ -15868,6 +15864,7 @@
   ["D106", "12"],
   ["D106", "13"],
   ["D94", "5"],
+  ["D104", "10"],
   ["D53", "7"],
   ["D53", "9"],
   ["D53", "10"],
