@@ -4,7 +4,8 @@
 // It exercises the exact combinational chain which blocked checkpoint-resumed
 // execution when the CPU called RAM at B37A. `pc` below is now only a raw
 // A7..A5 table coordinate; measured board inputs are A6=/PC1, A5=/PC0, while
-// the source of A7 remains unresolved.
+// owner continuity closes A7 as D7.8 IO_CYCLE_H. The runnable memory checks use
+// A7=0 because neither raw /IORD nor /IOWR is asserted during memory cycles.
 module d6_runtime_path_tb;
   reg [15:0] ba = 16'h0000;
   reg [2:0] pc = 3'b000; // raw {D6 A7,A6,A5}

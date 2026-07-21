@@ -2,6 +2,7 @@
 """Trace firmware Port-C writes and distinguish physical D6 modes from emulator banking."""
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
@@ -10,10 +11,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs/d6-firmware-mode-coverage.md"
+BOARD_JSON = ROOT / "kicad/juku.board.json"
+D6_RAW = ROOT / "ref/physical-proms/validated/d6_038.raw.bin"
 IO_RE = re.compile(r"\[IOSEQ\] OUT port=0x(06|07) value=0x([0-9A-F]{2}) cyc=(\d+) pc=([0-9A-F]{4}) g_vw=(\d+)")
 
 
 def main() -> int:
+    board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
+    io_cycle_nodes = {
+        tuple(map(str, node)) for node in board["nets"]["IO_CYCLE_H"]["nodes"]
+    }
+    if io_cycle_nodes != {("D6", "15"), ("D105", "1"), ("D7", "8")}:
+        raise SystemExit(f"D6 A7 IO_CYCLE_H continuity changed: {sorted(io_cycle_nodes)}")
+    d6_raw = D6_RAW.read_bytes()
+    a7_high_words = set(d6_raw[0x80:])
+    if len(d6_raw) != 256 or a7_high_words != {0xB, 0xF}:
+        raise SystemExit(
+            f"D6 A7=1 table boundary changed: bytes={len(d6_raw)} "
+            f"words={sorted(a7_high_words)}"
+        )
     with tempfile.TemporaryDirectory(prefix="d6-firmware-modes.") as tmp_name:
         tmp = Path(tmp_name)
         trace = tmp / "trace"
@@ -76,11 +92,12 @@ def main() -> int:
         raise SystemExit(f"later checkpoint Port-C evidence changed: {later_values}")
 
     lines = [
-        "# D6 firmware mode coverage", "", "Status: **A6/A5 SUFFIXES 11/10 OBSERVED / A7 SOURCE UNRESOLVED**", "",
+        "# D6 firmware mode coverage", "", "Status: **A6/A5 11/10 OBSERVED / A7 IO-CYCLE SOURCE CLOSED**", "",
         "This generated report traces authentic ROMBIOS Port-C writes and separates",
         "the measured physical D6 inputs A6=`/PC1`, A5=`/PC0` from the historical",
-        "emulator's non-inverted `PC1..PC0` banking convention. D6 A7 joins D105.1,",
-        "but its driver or pull source remains unresolved.", "", "## Reproduction", "",
+        "emulator's non-inverted `PC1..PC0` banking convention. Owner continuity",
+        "closes D6 A7 through D105.1 to D7.8, the I/O-cycle-active-high NAND of raw",
+        "`/IORD` and `/IOWR`.", "", "## Reproduction", "",
         "```sh", "python3 scripts/report_d6_firmware_modes.py", "```", "",
         "The generator builds the C trace harness, runs `ekta37` through 32,000 video",
         "writes with `JUKU_TRACE_IO=1`, and replays every PPI0 port `06/07` update.", "",
@@ -91,12 +108,14 @@ def main() -> int:
         "| ---: | ---: | ---: | --- | --- | --- | --- |",
     ]
     for cyc, pc, writes, port, value, before, after, physical, legacy in events:
-        lines.append(f"| {cyc} | `{pc}` | {writes} | `0x{port}=0x{value:02X}` | `0x{before:02X}->0x{after:02X}` | `{physical:03b}` | `{legacy:02b}` |")
+        lines.append(f"| {cyc} | `{pc}` | {writes} | `0x{port}=0x{value:02X}` | `0x{before:02X}->0x{after:02X}` | `{physical:02b}` | `{legacy:02b}` |")
     lines += [
         "", "ROMBIOS toggles `0x00/0x01` sixteen times around its high-ROM transition.",
         "Those writes change PC0 and therefore toggle physical D6 A5 after the D3",
-        "inverter. The structural table row is `?11` or `?10`; A7 cannot be inferred",
-        "from Port C and remains a measured continuity boundary.", "",
+        "inverter. Port C alone determines only suffix `11` or `10`; A7 is independent.",
+        "During memory cycles D7.8 is low, so the runnable table rows are `011` and",
+        "`010`. During the OUT event itself A7 is high, but those rows do not select",
+        "a firmware memory map.", "",
         "## Later FDC/EKDOS evidence", "",
         "The guarded long-run/checkpoint reports below all finish with Port C `0x04`,",
         "which sets PC2 but leaves PC1/PC0 clear. It therefore retains A6/A5=`11`:", "",
@@ -107,14 +126,17 @@ def main() -> int:
     lines += [
         "", "## Coverage boundary", "",
         "- Physical A6/A5 suffixes `11` and `10` have firmware execution evidence.",
-        "- A7 is not a Port-C bit on the measured board. Until its source is traced,",
-        "  firmware writes cannot identify complete three-bit D6 table rows.",
+        "- A7 is not a Port-C bit: owner continuity proves D7.8 drives D105.1/D6.15",
+        "  high only while raw `/IORD` or `/IOWR` is asserted. Memory-map selection",
+        "  therefore uses A7=`0`.",
+        "- Every physical A7=`1` row emits only `B` or `F`; both release ROM/RAM",
+        "  selects, so the I/O-cycle quadrant cannot express a competing memory map.",
         "- This trace guards firmware writes, not the unresolved downstream meaning of",
         "  every D6 output word; see `docs/d6-physical-decode.md`.", "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    print("Status: A6/A5 SUFFIXES 11/10 OBSERVED / A7 SOURCE UNRESOLVED")
+    print("Status: A6/A5 11/10 OBSERVED / A7 IO-CYCLE SOURCE CLOSED")
     return 0
 
 

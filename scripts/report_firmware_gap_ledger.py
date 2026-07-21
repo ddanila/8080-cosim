@@ -114,7 +114,7 @@ def main() -> int:
     d94_ok = marker(
         "docs/d94-reconstruction-constraints.md",
         "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**",
-        "all five address inputs are explicit continuity boundaries",
+        "all five address inputs are owner-continuity-closed nets",
         "Minimized active-low equations reproduce all 256 captured bits | PASS",
         "validated/d94_092.raw.bin",
     ) and d94_image_ok

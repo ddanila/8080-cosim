@@ -1129,7 +1129,7 @@ adoption road, in dependency order:
    `docs/d6-firmware-mode-coverage.md` bounds
    what the trace proves: boot firmware observes A6/A5 suffixes `11` and `10`;
    A7 is functionally forced to `0`
-   for all firmware-reachable maps (A7=1 rows emit only words `D`/`F` and can
+   for all firmware-reachable maps (A7=1 rows emit only words `B`/`F` and can
    express neither observed banking map), while its physical driver on the
    D105.1 conductor is owner-closed to D7.8 as the I/O-cycle-active-high qualifier.
 4. **D94 `.092` — physical table executes with guarded upstream fits.** The

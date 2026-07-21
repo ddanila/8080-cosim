@@ -55,7 +55,7 @@ findings. Every status applies only to the boundary named by the report.
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `reconstructed-prom-fallbacks.md`, `d6-physical-decode.md`,
   `d8-physical-decode.md` (exhaustive `.039` socket-select equations),
-  `d6-input-continuity.md` (measured `/PC1`, `/PC0`, and unresolved A7 routes),
+  `d6-input-continuity.md` (measured `/PC1`, `/PC0`, and A7 I/O-cycle routes),
   `d6-runtime-path-diagnostic.md` (all-mode B37A RAM-output boundary),
   `d6-firmware-mode-coverage.md`,
   `eprom-programming-images.md`, and

@@ -192,7 +192,11 @@ def main() -> int:
         "PLAN.md": ("Close the physical D6 A7 driver", "D105.1/A7 driver (P0", "D105.1 conductor remains"),
         "docs/d6-physical-decode.md": ("driver or pull source is still unresolved", "unresolved A7"),
         "docs/d6-input-continuity.md": ("A7 SOURCE BOUNDARY", "A7 source remains open"),
+        "docs/d6-firmware-mode-coverage.md": ("A7 SOURCE UNRESOLVED", "source remains unresolved"),
+        "docs/d6-runtime-path-diagnostic.md": ("temporarily forced-low unresolved A7",),
+        "docs/README.md": ("unresolved A7 routes",),
         "docs/owner-measured-facts.md": ("driver/pull source NOT yet measured",),
+        "hdl/sim/d6_runtime_path_tb.v": ("source of A7 remains unresolved",),
     }
     for path, phrases in stale_d6_a7_claims.items():
         text = read(path)
