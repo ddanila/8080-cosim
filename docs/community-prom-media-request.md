@@ -74,11 +74,12 @@ Relevant local docs:
 6. Can an owner provide continuity readings, or clear trace-side photographs
    of an actual `.009` FDC-populated board, for the official footprints whose
    device pinouts are modeled but whose Juku signal nets remain untraced:
-   D99 and D101? Exact-revision sheet 3 now source-closes D28/D95-D98/D102/D106,
-   including the explicitly omitted unused pins, clock mux, read-clock toggle,
-   and recovery counter. The remaining FDC support cluster is the first
-   priority. D105 is modeled; the useful WAIT ask is the `.009` replacement for
-   the older sheet's D95 inverter after D105.6.
+   D96, D99, and D101? The exact requests are D96.9 Q2's remote destination,
+   D96.11 CLK2's remote source, and the listed D99/D101 boundary pins.
+   Exact-revision sheet 3 source-closes D28/D95/D97/D98/D102/D106 plus D96's
+   section-1 read-clock toggle and local section-2 conditioner. D105 and the
+   `.009` WAIT/READY handoff are already measured, modeled, and carried by the
+   promoted route; they are no longer continuity asks.
 
 ## Minimal Useful Deliverables
 
@@ -127,7 +128,7 @@ https://github.com/ddanila/8080-cosim
 
 The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
 reproducible but the physical design remains on hold while D94 continuity, the
-Juku-specific nets of 2 still-open modeled FDC-support ICs, and remaining
+Juku-specific nets of 3 still-open modeled FDC-support ICs, and remaining
 programmable-part corroboration are incomplete. D2/D6/D8/D94 now have validated
 physical contents, and D2's measured READY handoff is source-modeled. D105
 wait/MRD logic and most of D30 READY are also source-modeled and present in the
@@ -147,15 +148,18 @@ programming-disk files and independent reads remain valuable corroboration.
 - the FDC-era D94 PROM ДГШ5.106.092 on the .009 board
 - the D15/D16 2764/M2764 ROM pair, if a physical board can be read
 
-The `.009` board also has 2 still-open FDC-support devices whose packages and
+The `.009` board also has 3 still-open FDC-support devices whose packages and
 device-level pin roles are now represented, but whose Juku-specific functional nets remain
-untraced: D99 and D101. D28/D95-D98/D102/D106 are source-closed from the
-recovered `.009` electrical sheet, including its intentional unused-pin
+untraced: D96, D99, and D101. D96's section-1 read-clock toggle and local
+section-2 conditioner are source-closed, but Q2/pin9 and CLK2/pin11 retain
+unresolved sheet-1 continuations. D28/D95/D97/D98/D102/D106 are source-closed
+from the recovered `.009` electrical sheet, including its intentional unused-pin
 omissions. The current owner photographs do
 show the FDC-equipped population, but sockets, wires, crossings, and incomplete
 local registration hide most end-to-end paths. Continuity readings or clearer
-trace-side photographs of those devices, D30's remaining section-B endpoints,
-and the `.009` WAIT handoff would directly unblock the board.
+trace-side photographs of those three devices and the remaining source-risk
+nets would directly unblock the board. D30 section B and the `.009` WAIT/READY
+handoff are already owner-closed.
 
 The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
 media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking

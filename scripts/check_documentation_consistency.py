@@ -460,6 +460,34 @@ def main() -> int:
         read("PLAN.md"),
     ):
         failures.append("PLAN active-report index exposes a stale untraced FDC-device count")
+    if unmodeled_count:
+        for path in (
+            "docs/community-prom-media-request.md",
+            "docs/fdc-hardware-handoff.md",
+            "docs/owner-measurement-shortlist.md",
+            "docs/source-coverage-audit.md",
+        ):
+            if f"{unmodeled_count} still-open" not in read(path):
+                failures.append(f"{path} exposes a stale still-open FDC-device count")
+        stale_fdc_claims = {
+            "docs/community-prom-media-request.md": (
+                "D99 and D101? Exact-revision",
+                "the useful WAIT ask",
+            ),
+            "docs/fdc-hardware-handoff.md": (
+                "section 2 unused",
+                "closes D95, D106, and D96 completely",
+                "Only D99 and D101",
+            ),
+            "docs/photo-registration.md": (
+                "D30 section B,\n   D105 WAIT handoff",
+            ),
+        }
+        for path, phrases in stale_fdc_claims.items():
+            text = read(path)
+            for phrase in phrases:
+                if phrase in text:
+                    failures.append(f"{path} retains stale FDC/WAIT claim {phrase!r}")
 
     risk_match = re.search(r"Verification-point nets: `(\d+)`", evidence["source-risk nets"])
     if risk_match:

@@ -109,7 +109,7 @@ def main() -> int:
         row([
             "Western Digital FD179X references, the original 1986 КР1818ВГ93 paper, a historical Soviet circuit comparison, and the local WD1772 transistor/PLA reference",
             "WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, source-closed D106 recovery counter and D96 read-clock toggle, remaining separator probes, a KP12 precompensation candidate, and normalized PLA are documented",
-            "factory sheet 3 proves every D106 and D96 signal/strap/NC disposition plus their D28 continuation; device/manufacturer references narrow the remaining support probes but do not prove other Juku-specific support nets or D94 connectivity",
+            "factory sheet 3 proves every D106 disposition and D96's local toggle/conditioner/NC wiring plus their D28 continuation; D96.9 Q2 and D96.11 CLK2 still have unresolved sheet-1 continuations, and device/manufacturer references do not prove other Juku-specific support nets or D94 connectivity",
         ]),
         row([
             "Owner photographs of exact `ДГШ5.109.009 Э3` sheets 1-3",
@@ -126,7 +126,7 @@ def main() -> int:
         "",
         "1. Compare all four validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` raw tables against Baltijets programming-disk files if those surface.",
         "2. D94 `ДГШ5.106.092` upstream enable/D0 branch and optional live port-1F steering capture; inputs and D4-D7/D104.10 NC dispositions are owner-closed, and the repeated content dump is adopted.",
-        "3. Pin-level continuity for D93's remaining drive interface, plus explicit dispositions for the 2 still-open power-routed FDC-support devices: D99 and D101. Exact-revision sheet 3 now also closes the unused D28/D97/D98/D102 pins as NC; D95's clock mux, D106's recovery counter, D96's read-clock toggle, D93.40->+12 V, and the owner-measured D2/D30/D105/D13/D6 corrections are synchronized.",
+        "3. Pin-level continuity for D93's remaining drive interface, plus explicit dispositions for the 3 still-open power-routed FDC-support devices: D96, D99, and D101. Exact-revision sheet 3 closes D96's section-1 read-clock toggle and local section-2 conditioner, but D96.9 Q2 and D96.11 CLK2 retain unresolved sheet-1 continuations; D95's clock mux, D106's recovery counter, D93.40->+12 V, the unused D97/D98/D102 pins, and the owner-measured D2/D30/D105/D13/D6 corrections are synchronized.",
         "4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.",
         "5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.",
         "",
