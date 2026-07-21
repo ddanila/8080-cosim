@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "board_sha256": "7cff68dcadbfb275a343a76cd30c4f18404a3aed771b4181873df704596ce041",
+  "board_size": 10686052,
+  "drc_sha256": "b28cf115bf72edf7e98485c05f3a10211bbe88a1384b124d4ef1e44e2cddf098",
+  "routed_items": 28904,
+  "routed_nets": 411,
+  "uncapped_unconnected": 3,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "closed_targets": ["ROM_CS_EXP18", "ROM_SEL"],
+  "residuals": ["BA2", "BA14", "BA15"],
+  "rom_transaction": {
+    "breakout_net": "BA13",
+    "breakout_removed_items": 2,
+    "target_net": "ROM_CS_EXP18",
+    "target_distance_mm": 42.433,
+    "diagnostic_grid_step_mm": 0.0875,
+    "diagnostic_grid_offset_mm": [0.025, 0.0625],
+    "diagnostic_clearance_mm": 0.05,
+    "route_clearance_mm": 0.205,
+    "removed_conflicts": 32,
+    "post_transaction_pruned_items": 74
+  },
+  "rom_sel_transaction": {
+    "target_net": "ROM_SEL",
+    "target_distance_mm": 24.854,
+    "grid_step_mm": 0.1,
+    "grid_offset_mm": [0.05, 0.05],
+    "removed_conflicts": 10,
+    "post_transaction_pruned_items": 55
+  },
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/close_unconnected_gaps.py": "e1dcbb6d39a863f652c4b1b4083cb33e5f02b13e9e8e2e5c820bc98f73b15187",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "This recovery checkpoint closes the formerly final ROM_CS_EXP18 residual and the displaced ROM_SEL branch. It is not yet the promoted frontier because BA2, BA14, and BA15 remain open, but it preserves the successful ROM topology independently of temporary routing state."
+}

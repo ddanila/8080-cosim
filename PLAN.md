@@ -237,6 +237,17 @@ only ROM_CS_EXP18 open: the result has 1 open, 28,612 routed items across 410
 nets, zero electrical or dangling findings, and the unchanged 710 cosmetic
 reports. Exact evidence is in `ref/routing/current1-residual-topology.json`;
 cumulative promoted closures are now 676.
+The final ROM_CS_EXP18 gap is now closed in a separately guarded recovery
+topology. Legal F.Cu breakouts escape both DIP pad cages; a
+`(0.025,0.0625)` mm diagnostic phase exposes a zero-fixed, 32-conflict corridor
+and the restored 0.205 mm route closes the 42.433 mm remainder. A follow-up
+ROM_SEL transaction closes that displaced select branch. After safe orphan
+pruning and phased BA13 recovery, stable KiCad 9.0.8 DRC reports only BA2,
+BA14, and BA15 open, with 28,904 routed items across 411 nets, zero electrical
+or dangling findings, and the unchanged 710 cosmetic reports. Exact hashes are
+checkpointed in `ref/routing/rom-closed-recovery-checkpoint.json`; this is a
+recovery milestone rather than the promoted frontier until those three
+displaced nets close.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

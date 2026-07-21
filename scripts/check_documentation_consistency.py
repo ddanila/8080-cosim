@@ -970,6 +970,29 @@ def main() -> int:
             if "current1-residual-topology.json" not in read(path):
                 failures.append(f"{path} omits the one-open residual evidence")
 
+    rom_recovery_path = ROOT / "ref/routing/rom-closed-recovery-checkpoint.json"
+    if not rom_recovery_path.exists():
+        failures.append("ROM-closed recovery checkpoint is missing")
+    else:
+        rom_recovery = json.loads(rom_recovery_path.read_text(encoding="utf-8"))
+        if (
+            rom_recovery.get("schema_version") != 1
+            or rom_recovery.get("board_sha256") != "7cff68dcadbfb275a343a76cd30c4f18404a3aed771b4181873df704596ce041"
+            or rom_recovery.get("uncapped_unconnected") != 3
+            or rom_recovery.get("electrical_blockers") != 0
+            or (rom_recovery.get("track_dangling"), rom_recovery.get("via_dangling")) != (0, 0)
+            or set(rom_recovery.get("closed_targets", [])) != {"ROM_CS_EXP18", "ROM_SEL"}
+            or set(rom_recovery.get("residuals", [])) != {"BA2", "BA14", "BA15"}
+        ):
+            failures.append("ROM-closed recovery checkpoint is malformed")
+        for relative, expected in rom_recovery.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"ROM recovery tool hash changed: {relative}")
+        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
+            if "rom-closed-recovery-checkpoint.json" not in read(path):
+                failures.append(f"{path} omits the ROM-closed recovery checkpoint")
+
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():
         failures.append("current 21-gap dangling-prune evidence is missing")

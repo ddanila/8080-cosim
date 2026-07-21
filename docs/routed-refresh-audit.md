@@ -241,6 +241,12 @@ board has 28,612 routed items across 410 nets, no electrical or dangling
 findings, and the unchanged 710 cosmetic reports. Exact evidence is in
 `ref/routing/current1-residual-topology.json`; cumulative promoted closures are
 now 676.
+The formerly final ROM_CS_EXP18 gap is also closed in a guarded recovery
+checkpoint. Two legal DIP breakouts and a zero-fixed 32-conflict phased
+transaction close ROM_CS_EXP18; a second transaction closes the displaced
+ROM_SEL branch. Stable KiCad DRC leaves only BA2, BA14, and BA15 open, with no
+electrical or dangling findings. Exact recovery hashes and parameters are in
+`ref/routing/rom-closed-recovery-checkpoint.json`.
 
 ### Additive/rename-safe copper migration
 
