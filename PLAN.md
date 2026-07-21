@@ -179,6 +179,17 @@ lattice, while D94_D0_BOUNDARY needs 75 removable conflicts across 29 affected
 nets. Every residual on the seven-open board is therefore freshly classified;
 the next bounded work requires net-specific topology changes rather than an
 unguarded rip-up.
+A widened CS_D57 transaction then proves that the former forty-item ceiling
+was conservative: its 46 removable conflicts are bounded and all but PROM_EN
+restore, producing a DRC-neutral equal-open swap after 23 non-source orphan
+items are pruned. PROM_EN has no route on the default lattice, but a 0.10 mm
+phase sweep finds an eight-conflict path at `(0.075,0.075)` mm that avoids
+CS_D57. That second transaction restores BA10, BA12, BA5, GND, IORD, and
+ROM_CS_4000 and reduces the board to 6 opens and 26,570 routed items. Stable
+KiCad reports the unchanged 710 cosmetic-only findings, zero electrical or
+dangling findings, and no missing source copper. Exact evidence is in
+`ref/routing/current6-residual-topology.json`; cumulative promoted closures are
+now 671.
 The standard guarded front/back A* search is also exhausted without an accepted
 route across 48.43–50, 65–70, 75–80, and the tested bands from 90 through 130 mm;
 the tested search ceiling and zero-yield ranges are recorded to prevent repeats.

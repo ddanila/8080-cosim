@@ -195,6 +195,15 @@ has 7 opens, 26,082 routed items, no missing source copper, and the unchanged
 710 cosmetic-only DRC reports. Exact evidence is in
 `ref/routing/current7-residual-topology.json`; cumulative promoted closures are
 now 670.
+A widened 46-conflict CS_D57 transaction restores sixteen affected nets and
+temporarily exposes PROM_EN as a DRC-neutral equal-open swap. After 23 safe
+non-source orphan items are pruned, a `(0.075,0.075)` mm phased PROM_EN route
+removes eight conflicts and restores BA10, BA12, BA5, GND, IORD, and
+ROM_CS_4000. The resulting six-open board has 26,570 routed items, no missing
+source copper, no electrical or dangling finding, and the same 710 cosmetic
+reports. Exact hashes and transaction evidence are in
+`ref/routing/current6-residual-topology.json`; cumulative promoted closures are
+now 671.
 
 ### Additive/rename-safe copper migration
 

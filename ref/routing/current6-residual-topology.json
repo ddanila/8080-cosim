@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "board_sha256": "203fc3955421b3744261537a1f781e349cad1ffa60e55548970035c6cc15f074",
+  "board_size": 10341714,
+  "drc_sha256": "ff4485f1b9958ebc6901789c6a4c11f4d258720c94a677f491ae8ab03f25aa70",
+  "uncapped_unconnected": 6,
+  "electrical_blockers": 0,
+  "track_dangling": 0,
+  "via_dangling": 0,
+  "promoted_closures": 671,
+  "transactions": [
+    {"net": "CS_D57", "distance_mm": 186.449, "mode": "equal-open-topology-swap", "removed_conflicts": 46, "restored_nets": 16, "displaced_net": "PROM_EN", "post_transaction_pruned_items": 23, "removed_source_items": 0, "initial_unconnected": 7, "final_unconnected": 7},
+    {"net": "PROM_EN", "distance_mm": 19.683, "grid_step_mm": 0.1, "grid_offset_mm": [0.075, 0.075], "removed_conflicts": 8, "restored_nets": ["BA10", "BA12", "BA5", "GND", "IORD", "ROM_CS_4000"], "removed_source_items": 0, "initial_unconnected": 7, "final_unconnected": 6}
+  ],
+  "residuals": [
+    {"net": "ROM_CS_EXP18", "distance_mm": 45.342},
+    {"net": "IOWR_RAW_N", "distance_mm": 91.265},
+    {"net": "D3_O6_D6_A5", "distance_mm": 172.151},
+    {"net": "INT7_RAW", "distance_mm": 181.230},
+    {"net": "CS_D55", "distance_mm": 195.268},
+    {"net": "D94_D0_BOUNDARY", "distance_mm": 252.637}
+  ],
+  "tool_sha256": {
+    "kicad/close_gap_by_ripup.py": "8d4a965576312e9d40bda2e7da9bea3581657a2cddc2c733e73161b9dc817d06",
+    "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80"
+  },
+  "disposition": "The current source-preserving frontier has six opens. A 46-conflict CS_D57 equal-open swap restores sixteen of seventeen affected nets and exposes PROM_EN; a phased eight-conflict PROM_EN transaction then restores all six affected nets and closes the net. The final board has no electrical or dangling DRC findings and retains the unchanged 710 cosmetic-only reports."
+}
