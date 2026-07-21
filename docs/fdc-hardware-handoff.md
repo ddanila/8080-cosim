@@ -250,8 +250,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   private D94-to-D93 RE/CS/WE controls are present in board JSON and
   guarded by this report. All D94 A0-A4 inputs and the private D93
   controls are owner-mapped; remaining decode boundaries are the upstream
-  pin-15 enable source, pull-up identities, D3-D7 destinations, and the
-  recorded D29.4/IORD recheck. The `.092` table is physically captured.
+  pin-15 enable source and D0 hidden load. R87/R88/R89 and D3-D7 are
+  owner/drawing-closed; the recorded D29.4/IORD recheck is optional
+  corroboration. The `.092` table is physically captured.
 - Before real FDC bring-up, continuity-identify D96.9 Q2's remote
   destination and D96.11 CLK2's remote source. The registered solder
   view excludes B.Cu departures at both pads, and the obscured F.Cu

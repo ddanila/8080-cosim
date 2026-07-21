@@ -23,7 +23,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D2 | К556РТ4 | `ДГШ5.106.037` | READY/bus-control PROM | `ref/physical-proms/validated/d2_037.raw.bin` (256 bytes, SHA256 `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`) | `docs/d2-reconstruction-constraints.md`; `docs/d2-physical-dump-and-continuity.md` | programming-disk comparison or independent future read |
 | D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes, SHA256 `c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489`) | `ref/physical-proms/README.md` | revision-3 reader capture is adopted; programming-disk comparison or independent read is Tier-3 corroboration |
 | D8 | К155РЕ3 | `ДГШ5.106.039` | ROM-socket pager PROM | `ref/physical-proms/validated/d8_039.raw.bin` (32 bytes, SHA256 `345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc`) | `ref/physical-proms/README.md` | programming-disk comparison or independent future read |
-| D94 | К155РЕ3 | `ДГШ5.106.092` | FDC control/decode PROM | `ref/physical-proms/validated/d94_092.raw.bin` (32 bytes, SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`) | `docs/d94-reconstruction-constraints.md` | programming-disk comparison plus the equation-targeted D0 hidden-branch probe, pull-up resistor identities, and the guarded D29.4/IORD recheck; D4-D7 and D104.10 are owner/drawing-closed NC |
+| D94 | К155РЕ3 | `ДГШ5.106.092` | FDC control/decode PROM | `ref/physical-proms/validated/d94_092.raw.bin` (32 bytes, SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`) | `docs/d94-reconstruction-constraints.md` | programming-disk comparison plus the shared-enable and equation-targeted D0 hidden-branch probes; the guarded D29.4/IORD recheck is optional corroboration, while R87-R89 and D4-D7/D104.10 are owner/drawing-closed |
 | D15 | M2764/2764 | repository EktaSoft BIOS split | BIOS low 8 KiB | `ref/eprom-images/d15_ekta37_low.bin` (8192 bytes, SHA256 `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596`) | `docs/eprom-programming-images.md` | repeat physical D15 dump for Tier-3 truth |
 | D16 | M2764/2764 | repository EktaSoft BIOS split | BIOS high 8 KiB | `ref/eprom-images/d16_ekta37_high.bin` (8192 bytes, SHA256 `35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817`) | `docs/eprom-programming-images.md` | repeat physical D16 dump for Tier-3 truth |
 
@@ -75,11 +75,10 @@ python3 scripts/report_firmware_gap_ledger.py
   module programming tables.
 - D94 content and all A0-A4 input destinations are owner-closed. Its
   physical table now drives the runnable FDC `/RE` and `/WE` inputs;
-  decoded enable, A3=`IOWR`, and pulled-high A4 remain explicit sim-only
-  upstream fits rather than claimed copper closure. The enable source,
-  pull-up identities, guarded D29.4/IORD recheck, and apparently
-  pull-up-only D0 resistor identity
-  remain unresolved
+  A3 already consumes the owner-closed D105.3 qualified `/WR` conductor.
+  The decoded enable and pulled-high A4 runtime behavior remain explicit
+  simulation fits rather than claimed functional closure. The shared
+  enable source and D0 hidden load remain unresolved
   connectivity boundaries and still block an FDC hardware release.
 
 ## Required External Closure
@@ -92,6 +91,6 @@ python3 scripts/report_firmware_gap_ledger.py
 - Preserve future D2/D6 corroboration with the reader-3 metadata and
   independent enable-release checks documented in `docs/rt4-dump-acquisition.md`.
 - Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;
-  the adopted D94 table still requires complete input/enable/output continuity.
+  the adopted D94 table still requires shared-enable and D0-load closure.
 - Repeatedly read physical D15/D16 and compare their concatenation
   with `roms/ekta37.bin`; preserve any stable mismatch as a variant.

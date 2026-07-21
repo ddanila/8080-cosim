@@ -4,7 +4,7 @@ Status date: **2026-07-21**.
 
 Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The promoted zero-open
 main-board route and deterministic Gerber/drill ZIP pass the machine package
-gates, but this is not fabrication authorization. D2/D94 continuity, remaining
+gates, but this is not fabrication authorization. D2 timing and D94 shared-enable/D0 closure, remaining
 FDC-support pin closure, source-risk nets, and sourcing/programming decisions
 still hold release.
 
@@ -35,7 +35,7 @@ is not a prerequisite for this replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; the recovered ROMBIOS `0xA0/0xA2` 512-byte write-sector path is implemented in both models and byte-for-byte readback-tested on an explicitly writable disk copy; the C and HDL FDC models share guarded Type-I physical-head versus Track-register motion, update/verify/SEEK-ERROR, dynamic status, D95-selected 2 MHz 3/6/10/15 ms or 1 MHz 6/12/20/30 ms step timing plus respective 15/30 ms verify-settle timing with HLT gating, immediate valid-ID mismatch, four-revolution missing-ID failure, active-low TR00 status/Restore with a 255-step limit, and partial-D0 motion, D95-selected Type-II/III `E=1` 15/30 ms head-settle timing followed by exact HLT gating, exact command-load READY-low Type-II/III rejection with Type-I independence, and exact 15-idle-index head-unload semantics, Type-II multi-record continuation through end-of-track RNF, exact four-revolution missing-ID search, exact `C/S` side-ID comparison with fifth-index RNF, and exact Write Sector `a0` normal/deleted marks with Read Sector bit-5 RECORD TYPE through session metadata, the datasheet's exact 22-byte MFM Write Sector preload interval plus streaming one-byte DRQ/LOST-DATA contract (read overwrite and later-write zero substitution), datasheet completion/status acknowledgement and the full Type-IV Force Interrupt event/acknowledgement/disarm lifecycle, a CRC-checked six-byte Read Address command, index-gated 6,250-byte one-revolution MFM Read Track reconstruction including `FB`/`F8`, and an index-gated/preloaded 6,230-write representable MFM Write Track formatter with all ten sector payloads and marks, partial-D0 persistence, and explicit flat-image representation faults; an extended exact EKDOS replay proves all 18,489 observed D93 accesses select 1 MHz through D26 PC3/D95; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes directly from the corrected, validated physical D6 table, including the owner-closed D7.8→D105.1/D6.15 A7 qualifier, while the old functional decoder is retained only as a diagnostic comparison; the official D1-D5-DB-ROM topology and period КР580ВК38/ВА87 diagrams exclude a hidden D5 inversion; exact static/runtime guards preserve the CMA/NOP firmware-profile split; standalone ВА87 behavior and the source-proved D23-D25 paths exhaustively guard all 256 values in both directions. The former opt-in D100/DAL builds remain diagnostic experiments only: recovered `.009` sheet 3 proves D100 is instead the drive-output buffer. The same sheet now closes D95's complete 1/2 MHz D93 and 4/8 MHz separator clock mux, which is structural and LVS-visible | Identify the exact fitted D15/D16 firmware profile and the historical purpose of the CMA-profile variants; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior beyond the guarded media subset (including D93.24 oscillator accuracy/edge quality, D93.34 TR00 drive-status continuity, step-interface timing, arbitrary flux/deleted-data layouts beyond session-representable marks, and physical D93.32 READY/index timing through the source-proved E11 HLT strap), cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 112 mapped instances and 288 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D35 frame-interrupt inversion, D41 timing rails, reset/USART paths, D10 IR0/IR1 external-input pull-down paths, D7 strobe topology, D54/D55/D56 timing crossings, D95 clock mux, D106 recovery counter, D96 read-clock toggle, D99 timing/control paths, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The promoted route has exact live-source identity: 321 footprints, 2,434 pads, 29,664 copper items across 411 nets, zero opens, zero electrical blockers, and zero dangling tracks/vias under stable KiCad 9.0.8. The Gerber/drill inventory, exact-count cosmetic waiver, four-tool mixed-plating drill geometry, 0.20–1.00 mm power-width envelope, independent render, deterministic ZIP, and checksums all pass. Exact routing evidence is `ref/routing/zero-open-promoted-topology.json`; package evidence is `docs/replica-manufacturing-readiness.md` | The verified package remains under design hold and must not be uploaded or ordered until D2/D94 continuity, remaining FDC-support functional pins, source-risk nets, and sourcing/programming decisions close. Factory-wire landing geometry and construction fidelity remain explicit bring-up checks; any source or route change requires complete package regeneration and a new exact checksum |
+| PCB package | The promoted route has exact live-source identity: 321 footprints, 2,434 pads, 29,664 copper items across 411 nets, zero opens, zero electrical blockers, and zero dangling tracks/vias under stable KiCad 9.0.8. The Gerber/drill inventory, exact-count cosmetic waiver, four-tool mixed-plating drill geometry, 0.20–1.00 mm power-width envelope, independent render, deterministic ZIP, and checksums all pass. Exact routing evidence is `ref/routing/zero-open-promoted-topology.json`; package evidence is `docs/replica-manufacturing-readiness.md` | The verified package remains under design hold and must not be uploaded or ordered until D2 timing, D94 shared-enable/D0 closure, remaining FDC-support functional pins, source-risk nets, and sourcing/programming decisions close. Factory-wire landing geometry and construction fidelity remain explicit bring-up checks; any source or route change requires complete package regeneration and a new exact checksum |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 A fresh salvage against the live 321-footprint/2,434-pad source now establishes
@@ -1134,17 +1134,19 @@ in dependency order:
    D105.1 conductor is owner-closed to D7.8 as the I/O-cycle-active-high qualifier.
 4. **D94 `.092` — physical table executes with guarded upstream fits.** The
    runnable behavioral `fdc_1793` now consumes the physical PROM's open-
-   collector `/RE` and `/WE` outputs. Simulation alone derives the still-
-   unresolved shared enable from `cs_fdc_n`, applies the equation-required
-   A3=`iowr_n` functional constraint, and holds the locally pulled-up A4 high;
-   Yosys/LVS retains the separate physical boundary nets. The fast top-level
+   collector `/RE` and `/WE` outputs. A3 consumes the owner-closed D105.3
+   qualified peripheral `/WR` conductor (`iowr_n`). Simulation alone derives
+   the still-unresolved shared enable from `cs_fdc_n` and holds A4 high while
+   D101's runtime mux semantics remain open; Yosys/LVS retains the separate
+   physical boundary nets. The fast top-level
    bus guard checks both PROM strobes on every FDC register read/write. Full
-   adoption still requires P0 connectivity item 2 plus D93 functional closure,
-   after which these three upstream fits are replaced and `fdc_1793` is retired.
+   hardware release still requires shared-enable/D0 closure plus D93 functional
+   closure, after which the two remaining upstream fits are replaced and
+   `fdc_1793` is retired.
 
 PROM adoption exit criterion is met: `prom_fallback_tb` equality stays green,
 the runnable top instantiates all four physical tables, and every boot guard
-passes with zero functional PROM stand-ins. D94's sim-only upstream wiring fits
+passes with zero functional PROM stand-ins. D94's sim-only enable/A4 behavior fits
 remain a physical-connectivity hold, not a firmware-table fallback.
 
 Exit criterion: every populated programmable part has a burnable file,

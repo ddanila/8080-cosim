@@ -101,13 +101,13 @@ and D6 capture record.
 
 Host validation rejects missing, duplicate, out-of-range, unstable, or
 repeat-mismatched RE3 rows. It proves capture consistency, not socket identity,
-wiring, polarity, or the unresolved D94 input/enable/output branches.
+wiring, polarity, or the unresolved D94 shared-enable/D0 branches.
 
 ## What each dump unlocks
 1. **РЕ3 dumps**: socket/refdes identification is essential. D8 `.039` and
    D94 `.092` repeated reads are adopted; new reads corroborate or identify a
-   board variant. D94's missing input/enable/output continuity still defines the
-   physical FDC control boundary.
+   board variant. D94's missing shared-enable source and D0 hidden load still
+   define the physical FDC control boundary.
    Do not substitute the `.113/.117` tables from the `.106.103` family.
 2. **РТ4 D6 → memory-decode corroboration**: three revision-3 captures including
    a power cycle agree. They prove the old artifact was an exact reversal of all

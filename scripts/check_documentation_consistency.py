@@ -197,6 +197,31 @@ def main() -> int:
     if "Runnable top executes all four physical small-PROM tables without a functional PROM stand-in | PASS" not in firmware_ledger:
         failures.append("firmware ledger does not guard the all-physical-PROM runnable milestone")
 
+    d94_boundary_claims = {
+        "PLAN.md": ("these three upstream fits", "D2/D94 continuity"),
+        "docs/d94-reconstruction-constraints.md": (
+            "The equations constrain A3's selected-cycle function but do not prove",
+            "Its decoded enable, A3=`IOWR`, and",
+            "D94 input/enable/output continuity",
+        ),
+        "docs/firmware-gap-ledger.md": (
+            "decoded enable, A3=`IOWR`, and pulled-high A4",
+            "pull-up identities, guarded D29.4/IORD recheck",
+            "complete input/enable/output continuity",
+        ),
+        "docs/fdc-hardware-handoff.md": ("pin-15 enable source, pull-up identities, D3-D7 destinations",),
+        "docs/fdc-readiness.md": ("simulation-only enable, A3, and A4 fits",),
+        "docs/reconstructed-prom-fallbacks.md": ("D94 input/enable/output continuity",),
+        "docs/prom-dump-procedure.md": ("missing input/enable/output continuity",),
+    }
+    for path, phrases in d94_boundary_claims.items():
+        text = read(path)
+        for phrase in phrases:
+            if phrase in text:
+                failures.append(f"{path} retains stale D94 boundary claim: {phrase!r}")
+    if "A3 consumes the owner-closed D105.3" not in read("docs/d94-reconstruction-constraints.md"):
+        failures.append("D94 report does not preserve the owner-closed D105.3 runtime source")
+
     stale_d6_a7_claims = {
         "PLAN.md": ("Close the physical D6 A7 driver", "D105.1/A7 driver (P0", "D105.1 conductor remains"),
         "docs/d6-physical-decode.md": ("driver or pull source is still unresolved", "unresolved A7"),

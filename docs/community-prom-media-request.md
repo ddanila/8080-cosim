@@ -21,8 +21,8 @@ truth:
   provenance is still useful.
 - D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` now have validated repeated
   physical tables. Independent reads or original programming-disk files would
-  provide useful corroboration. D94 continuity remains incomplete even though
-  its content truth is closed.
+  provide useful corroboration. D94's shared-enable source and D0 hidden load
+  remain incomplete even though its content and other local continuity are closed.
 - Disk-side `JBASIC.COM` now reaches a visible `READY` prompt in cosim and
   uninterrupted HDL, but the public 8 KiB removable-memory BASIC cartridge
   remains a Monitor 3.3 compatibility boundary. Current probes show the body is
@@ -128,7 +128,7 @@ recreation and digital twin:
 https://github.com/ddanila/8080-cosim
 
 The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
-reproducible but the physical design remains on hold while D94 continuity, the
+reproducible but the physical design remains on hold while D94 shared-enable/D0 closure, the
 Juku-specific nets of 3 still-open modeled FDC-support ICs, and remaining
 programmable-part corroboration are incomplete. D2/D6/D8/D94 now have validated
 physical contents, and D2's measured READY handoff is source-modeled. D105

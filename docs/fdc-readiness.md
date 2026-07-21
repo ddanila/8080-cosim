@@ -420,10 +420,12 @@ evidence exists.
   source-proved; shared pins 9/11 continue to an unresolved sheet-1 conductor,
   and the pin-6 write-data input is source-closed to D101.9.
 - D94 `.092` uses the validated physical table; direct continuity closes its
-  enable to D93.CS, D1 to ground, D2 to D93.RE, D3 to D93.WE, and D4 to the
-  D93 back-bias/NC socket contact. The runnable model consumes the physical
-  D2/D3 strobes under explicit simulation-only enable, A3, and A4 fits. Their
-  upstream physical sources plus D0/D5-D7 branches still block board release.
+  enable to D93.CS, D1 to D99.9/R89, D2 to D93.RE/R88, D3 to D93.WE/R87, and
+  D4-D7 as no-connects. A3 is owner-closed to D105.3 qualified peripheral
+  `/WR`; A4's physical endpoint is D101.7. The runnable model consumes the
+  physical D2/D3 strobes with explicit simulation-only shared-enable and A4
+  runtime-behavior fits. The enable source and D0 hidden load still block board
+  release.
 - Adopt a larger upstream controller core only if a concrete required command
   or timing behavior exceeds this guarded scope; re-evaluate license and
   adapter cost at that time.
