@@ -12,7 +12,11 @@ schematic parity against it without a matching routed schematic/project.
 
 | Check | Count | Result |
 | --- | ---: | --- |
-| ERC error violations | 53 | BLOCK |
+| Raw ERC error violations | 53 | GUARDED |
+| Unexpected ERC/mapping findings | 0 | PASS |
+| Exact singleton-label findings | 53 / 53 | PASS |
+| Source-risk singleton nets | 38 | BLOCK |
+| Other source-risk nets | 7 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
 | Explicit board-JSON no-connects | 70 | PASS |
 | KiCad schematic no-connect markers | 70 | PASS |
@@ -20,15 +24,21 @@ schematic parity against it without a matching routed schematic/project.
 | Duplicate board-JSON endpoint memberships | 0 | PASS |
 | Unknown/conflicting NC records | 0 | PASS |
 
+Stable KiCad reports one `label_dangling` error for every one-endpoint
+local-label net. The exact label-name/count guard above proves these are
+the modeled singleton boundary surface, not geometrically detached labels.
+Of those `53` singleton nets, `38` remain source-risk
+boundaries and `15` have closed or intentional dispositions.
+
 ## Unresolved endpoint priorities
 
 | Priority | Count |
 | --- | ---: |
-| P0 | 0 |
-| P1 | 0 |
-| P2 | 0 |
+| P0 | 11 |
+| P1 | 26 |
+| P2 | 1 |
 
-The complete machine-readable backlog is
+The complete machine-readable singleton-endpoint backlog is
 `docs/main-board-unresolved-endpoints.csv`.
 
 ## ERC types
@@ -41,9 +51,11 @@ The complete machine-readable backlog is
 
 ## Release interpretation
 
-Parity currently passes, but unconnected functional pins and ERC errors remain
-release blockers. They must be traced, redesigned, or individually recorded as
-intentional no-connects. This gate deliberately does not exclude or waive them.
+The raw ERC findings are exactly accounted for by modeled singleton nets, and
+parity plus endpoint ownership pass. Source-risk nets remain release blockers.
+They must be traced, redesigned, or individually given an evidence-backed
+disposition. This gate does not suppress the singleton labels or convert them
+to no-connects merely to obtain a zero-error ERC count.
 
 Raw machine-readable reports:
 

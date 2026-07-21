@@ -465,9 +465,36 @@ def main() -> int:
     if risk_match:
         risk_count = int(risk_match.group(1))
         fidelity_ledger = read("docs/board-fidelity-gap-ledger.md")
+        erc_parity = read("docs/main-board-erc-parity.md")
         ledger_risk_match = re.search(r"Net-level source-risk gaps: `(\d+)`", fidelity_ledger)
         if not ledger_risk_match or int(ledger_risk_match.group(1)) != risk_count:
             failures.append("fidelity ledger and bring-up checklist disagree on source-risk net count")
+        erc_singleton_match = re.search(r"\| Source-risk singleton nets \| (\d+) \|", erc_parity)
+        erc_other_match = re.search(r"\| Other source-risk nets \| (\d+) \|", erc_parity)
+        if (
+            not erc_singleton_match
+            or not erc_other_match
+            or int(erc_singleton_match.group(1)) + int(erc_other_match.group(1)) != risk_count
+        ):
+            failures.append("ERC/parity report and bring-up checklist disagree on source-risk net count")
+        singleton_total = sum(
+            1 for net in board_model.get("nets", {}).values() if len(net.get("nodes", [])) == 1
+        )
+        erc_singleton_total_match = re.search(
+            r"\| Exact singleton-label findings \| (\d+) / (\d+) \| PASS \|",
+            erc_parity,
+        )
+        if (
+            not erc_singleton_total_match
+            or tuple(map(int, erc_singleton_total_match.groups()))
+            != (singleton_total, singleton_total)
+        ):
+            failures.append("ERC/parity report has stale singleton-label accounting")
+        endpoint_backlog = list(
+            csv.DictReader((ROOT / "docs/main-board-unresolved-endpoints.csv").open(newline=""))
+        )
+        if erc_singleton_match and len(endpoint_backlog) != int(erc_singleton_match.group(1)):
+            failures.append("ERC singleton-endpoint CSV count is stale")
         closed_overrides = [
             (name, net)
             for name, net in board_model.get("nets", {}).items()

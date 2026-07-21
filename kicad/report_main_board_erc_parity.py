@@ -24,6 +24,13 @@ ENDPOINTS = ROOT / "docs/main-board-unresolved-endpoints.csv"
 P0_REFS = {"D2", "D28", "D30", "D41", "D93", "D94", "D95", "D96", "D97", "D98",
            "D99", "D100", "D101", "D102", "D104", "D105", "D106"}
 P0_MEMORY_REFS = {"D6", "D7", "D25", "D36", "D39", "D53"}
+OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X6", "X8", "X9"}
+RISK_RE = re.compile(
+    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|"
+    r"not readable|cannot be uniquely followed|pending|unread|await|owner-verify|"
+    r"mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
+    re.I,
+)
 
 
 def cli() -> str:
@@ -56,6 +63,17 @@ def refs(violations: list[dict]) -> Counter:
     return found
 
 
+def net_has_source_risk(name: str, net: dict) -> bool:
+    override = net.get("source_risk")
+    if override is None:
+        return bool(RISK_RE.search(f"{net.get('src', '')} {net.get('note', '')}"))
+    if not isinstance(override, bool):
+        raise SystemExit(f"{name}: source_risk override must be boolean")
+    if override is False and not str(net.get("risk_disposition", "")).strip():
+        raise SystemExit(f"{name}: source_risk=false requires risk_disposition")
+    return override
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     erc_schematic = OUT / "juku-erc.kicad_sch"
@@ -69,6 +87,41 @@ def main() -> int:
     violations = all_erc(erc)
     parity_issues = parity.get("schematic_parity", [])
     spec = json.loads(BOARD_JSON.read_text())
+    singleton_nets = {
+        str(name): net
+        for name, net in spec["nets"].items()
+        if len(net.get("nodes", [])) == 1
+    }
+    source_risk_nets = {
+        str(name): net
+        for name, net in spec["nets"].items()
+        if net_has_source_risk(str(name), net)
+    }
+    source_risk_singletons = {
+        name: net for name, net in source_risk_nets.items() if name in singleton_nets
+    }
+    closed_singletons = {
+        name: net for name, net in singleton_nets.items() if name not in source_risk_nets
+    }
+    dangling_labels = Counter()
+    unexpected_erc = []
+    for violation in violations:
+        items = violation.get("items", [])
+        match = (
+            re.fullmatch(r"Label '(.+)'", items[0].get("description", ""))
+            if violation.get("type") == "label_dangling" and len(items) == 1
+            else None
+        )
+        if match and match.group(1) in singleton_nets:
+            dangling_labels[match.group(1)] += 1
+        else:
+            unexpected_erc.append(violation)
+    expected_dangling_labels = Counter({name: 1 for name in singleton_nets})
+    missing_dangling_labels = expected_dangling_labels - dangling_labels
+    extra_dangling_labels = dangling_labels - expected_dangling_labels
+    singleton_mismatch_count = sum(missing_dangling_labels.values()) + sum(extra_dangling_labels.values())
+    unexpected_erc_count = len(unexpected_erc) + singleton_mismatch_count
+    singleton_erc_ok = not unexpected_erc_count
     explicit = [tuple(map(str, row)) for row in spec.get("no_connects", [])]
     endpoint_owners: dict[tuple[str, str], list[str]] = {}
     for net_name, net in spec["nets"].items():
@@ -98,13 +151,43 @@ def main() -> int:
             priority, reason = "P0", "PLAN physical-connectivity blocker"
         elif ref in P0_MEMORY_REFS:
             priority, reason = "P0", "memory/decode source-risk blocker"
-        elif ref.startswith("X"):
+        elif ref in OFF_BOARD_REFS or ref.startswith("X"):
             priority, reason = "P2", "connector/peripheral boundary"
         else:
             priority, reason = "P1", "functional endpoint lacks disposition"
         priority_counts[priority] += 1
         endpoint_rows.append({"priority": priority, "ref": ref, "pin": pin,
                               "type": str(chip["type"]), "role": role, "reason": reason})
+    for net_name, net in sorted(source_risk_singletons.items()):
+        ref, pin = map(str, net["nodes"][0])
+        chip = chips[ref]
+        role = str(chip.get("pins", {}).get(pin, "symbol-union boundary"))
+        if ref in P0_REFS:
+            priority = "P0"
+        elif ref in P0_MEMORY_REFS:
+            priority = "P0"
+        elif ref in OFF_BOARD_REFS or ref.startswith("X"):
+            priority = "P2"
+        else:
+            priority = "P1"
+        priority_counts[priority] += 1
+        endpoint_rows.append(
+            {
+                "priority": priority,
+                "ref": ref,
+                "pin": pin,
+                "type": str(chip["type"]),
+                "role": role,
+                "reason": f"source-risk singleton net {net_name} lacks a proved remote endpoint",
+            }
+        )
+    endpoint_rows.sort(
+        key=lambda row: (
+            row["priority"],
+            int(row["ref"][1:]) if re.fullmatch(r"[A-Z]+\d+", row["ref"]) else row["ref"],
+            int(row["pin"]) if row["pin"].isdigit() else row["pin"],
+        )
+    )
     with ENDPOINTS.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=("priority", "ref", "pin", "type", "role", "reason"))
         writer.writeheader(); writer.writerows(endpoint_rows)
@@ -112,7 +195,12 @@ def main() -> int:
     schematic_nc = len(re.findall(r"\(no_connect\s+\(at\s", schematic_text))
     nc_ok = not unknown_nc and not conflicting_nc and schematic_nc == len(explicit)
     parity_ok = not parity_issues
-    status = "READY" if not violations and parity_ok and nc_ok and not unowned and not duplicate_owners else "DESIGN HOLD"
+    status = (
+        "READY"
+        if singleton_erc_ok and parity_ok and nc_ok and not unowned
+        and not duplicate_owners and not source_risk_nets
+        else "DESIGN HOLD"
+    )
     by_type = Counter(v.get("type", "unknown") for v in violations)
     top_refs = refs(violations)
     lines = [
@@ -123,18 +211,27 @@ def main() -> int:
         "artifact; KiCad cannot run",
         "schematic parity against it without a matching routed schematic/project.", "",
         "## Summary", "", "| Check | Count | Result |", "| --- | ---: | --- |",
-        f"| ERC error violations | {len(violations)} | {'PASS' if not violations else 'BLOCK'} |",
+        f"| Raw ERC error violations | {len(violations)} | {'GUARDED' if singleton_erc_ok else 'BLOCK'} |",
+        f"| Unexpected ERC/mapping findings | {unexpected_erc_count} | {'PASS' if singleton_erc_ok else 'BLOCK'} |",
+        f"| Exact singleton-label findings | {sum(dangling_labels.values())} / {len(singleton_nets)} | {'PASS' if singleton_erc_ok else 'FAIL'} |",
+        f"| Source-risk singleton nets | {len(source_risk_singletons)} | {'PASS' if not source_risk_singletons else 'BLOCK'} |",
+        f"| Other source-risk nets | {len(source_risk_nets) - len(source_risk_singletons)} | {'PASS' if len(source_risk_nets) == len(source_risk_singletons) else 'BLOCK'} |",
         f"| PCB/schematic parity issues | {len(parity_issues)} | {'PASS' if parity_ok else 'BLOCK'} |",
         f"| Explicit board-JSON no-connects | {len(explicit)} | {'PASS' if nc_ok else 'FAIL'} |",
         f"| KiCad schematic no-connect markers | {schematic_nc} | {'PASS' if schematic_nc == len(explicit) else 'FAIL'} |",
         f"| Functional pins without net or explicit NC | {len(unowned)} | {'PASS' if not unowned else 'BLOCK'} |",
         f"| Duplicate board-JSON endpoint memberships | {len(duplicate_owners)} | {'PASS' if not duplicate_owners else 'BLOCK'} |",
         f"| Unknown/conflicting NC records | {len(unknown_nc)+len(conflicting_nc)} | {'PASS' if not unknown_nc and not conflicting_nc else 'FAIL'} |",
+        "", "Stable KiCad reports one `label_dangling` error for every one-endpoint",
+        "local-label net. The exact label-name/count guard above proves these are",
+        "the modeled singleton boundary surface, not geometrically detached labels.",
+        f"Of those `{len(singleton_nets)}` singleton nets, `{len(source_risk_singletons)}` remain source-risk",
+        f"boundaries and `{len(closed_singletons)}` have closed or intentional dispositions.",
         "", "## Unresolved endpoint priorities", "",
         "| Priority | Count |", "| --- | ---: |",
     ]
     lines += [f"| {priority} | {priority_counts.get(priority, 0)} |" for priority in ("P0", "P1", "P2")]
-    lines += ["", "The complete machine-readable backlog is",
+    lines += ["", "The complete machine-readable singleton-endpoint backlog is",
               "`docs/main-board-unresolved-endpoints.csv`.", "", "## ERC types", ""]
     lines += [f"- `{typ}`: {count}" for typ, count in sorted(by_type.items())] or ["- None."]
     lines += ["", "## Most affected references", ""]
@@ -148,15 +245,21 @@ def main() -> int:
         ]
         lines += [""]
     if status == "READY":
-        lines += ["ERC, parity, endpoint ownership, and explicit no-connect accounting all pass."]
+        lines += ["ERC structure, parity, source-risk closure, endpoint ownership, and explicit no-connect accounting all pass."]
     else:
         lines += [
-            "Parity currently passes, but unconnected functional pins and ERC errors remain",
-            "release blockers. They must be traced, redesigned, or individually recorded as",
-            "intentional no-connects. This gate deliberately does not exclude or waive them.",
+            "The raw ERC findings are exactly accounted for by modeled singleton nets, and",
+            "parity plus endpoint ownership pass. Source-risk nets remain release blockers.",
+            "They must be traced, redesigned, or individually given an evidence-backed",
+            "disposition. This gate does not suppress the singleton labels or convert them",
+            "to no-connects merely to obtain a zero-error ERC count.",
         ]
     if unknown_nc: lines += ["", "Unknown NC records: " + ", ".join(f"`{r}.{p}`" for r,p in unknown_nc)]
     if conflicting_nc: lines += ["", "Conflicting NC records: " + ", ".join(f"`{r}.{p}`" for r,p in conflicting_nc)]
+    if missing_dangling_labels:
+        lines += ["", "Singleton labels missing from ERC: " + ", ".join(f"`{name}`" for name in sorted(missing_dangling_labels))]
+    if extra_dangling_labels:
+        lines += ["", "Duplicate singleton-label ERC findings: " + ", ".join(f"`{name}`" for name in sorted(extra_dangling_labels))]
     lines += ["", "Raw machine-readable reports:", "",
               "- `fab/audit/main-board-erc.json`", "- `fab/audit/main-board-parity-drc.json`", ""]
     REPORT.write_text("\n".join(lines))

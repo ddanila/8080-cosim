@@ -14,7 +14,7 @@ DESIGN HOLD.
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1434 | HOLD |
+| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 2105 | HOLD |
 | Order readiness | `fab/gerbers/order-readiness.md` | 3030 | HOLD |
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5364 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |

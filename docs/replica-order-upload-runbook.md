@@ -73,7 +73,7 @@ kicad/check_replica_manufacturing_ready.sh
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 9109 | PASS |
 | Factory wire construction | `docs/factory-wire-route-fidelity.md` | 12334 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
 
 ## Order-Time Checks
 
