@@ -1,0 +1,55 @@
+К155АГ3 / SN74123-compatible pinout interpretation — Juku D99
+================================================================
+
+Primary artifact: sn74ls123-ti.pdf
+Package: 16-pin DIP
+Function: dual retriggerable monostable multivibrator
+
+Datasheet pin contract
+----------------------
+1   1A_N                 9   2A_N
+2   1B                  10   2B
+3   1CLR_N              11   2CLR_N
+4   1Q_N                12   2Q_N
+5   2Q                  13   1Q
+6   2Cext               14   1Cext
+7   2Rext/Cext          15   1Rext/Cext
+8   GND                 16   +5 V
+
+Datasheet trigger contract
+--------------------------
+/CLR low overrides the section: Q=0 and Q_N=1. With /CLR high, a pulse
+starts or validly retriggers on any of these gated events:
+
+- A_N falling while B is high;
+- B rising while A_N is low; or
+- /CLR rising while A_N is low and B is high.
+
+The external R/C network sets the pulse duration. Q is high during the
+pulse and Q_N is its complement. The datasheet notes that a retrigger
+arriving sooner than 0.22*Cext(pF) ns after the initial trigger is ignored.
+
+Juku D99 disposition, corrected through 2026-07-21
+---------------------------------------------------
+Section 1:
+  pin1 A_N and pin3 /CLR are grounded.
+  pin2 B reaches an isolated component-side test landing.
+  pin4 Q_N remains a remote-destination boundary.
+  pin13 Q is omitted on the exact-revision drawing and owner-closed NC.
+  pins14/15 use C18=47 uF and R103=47 kohm to +5 V.
+
+Because /CLR is physically grounded, the datasheet contract constrains
+section 1 to Q/pin13=0 and Q_N/pin4=1 regardless of B or its fitted RC network.
+This functional constant does not identify pin4's remote conductor.
+
+Section 2:
+  pin9 A_N is owner-closed to D94 D1/pin2 and R89=6.2 kohm to +5 V.
+  pin10 B leaves through a distinct unresolved sheet-1 continuation.
+  pin11 /CLR, pin5 Q, and pin12 Q_N remain remote-path boundaries.
+  pins6/7 use C17=120 uF and R97=47 kohm to +5 V.
+
+D94 D1 is open collector. Its physical PROM equation asserts low when
+D94 A3 differs from A2, so an enabled selected FDC read or write produces
+the A_N falling-edge condition. A section-2 pulse additionally requires
+B2 high and /CLR2 high. These are functional constraints, not inferred
+connections for pins 10/11/5/12.
