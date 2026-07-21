@@ -238,7 +238,7 @@ def main() -> int:
             "P0",
             "FDC support signal dispositions",
             "pin-level continuity or an explicit redesign/DNP decision for the 3 still-open support devices D96, D99, and D101. For D96, probe only the remote destination of Q2/pin9 and source of CLK2/pin11; preserve its source-closed section-1 toggle and local D28.10/.12-D96.10/.12 conditioner. Also preserve the source-closed D28/D95/D97/D98/D102/D106 paths and D97/D102/D101 write-precomp chain. Exact-revision sheet 3 explicitly omits D96.13, D97.13, D98.9/.10, and D102.4 in this area; D101.1/.3/.5/.6 remain the specific precomp-area boundaries. Closed timing paths need waveform validation at bring-up, not another continuity probe",
-            "`docs/fdc-hardware-handoff.md`; `ref/schematics/fdc-unused-pin-dispositions.md`; `ref/schematics/fdc-clock-mux-map.md`; `ref/schematics/fdc-recovery-counter-map.md`; `ref/schematics/fdc-read-clock-toggle-map.md`; `ref/schematics/fdc-write-precomp-map.md`; `PLAN.md` P0 connectivity gate",
+            "`docs/fdc-hardware-handoff.md`; `docs/d101-reconstruction-constraints.md`; `ref/schematics/fdc-unused-pin-dispositions.md`; `ref/schematics/fdc-clock-mux-map.md`; `ref/schematics/fdc-recovery-counter-map.md`; `ref/schematics/fdc-read-clock-toggle-map.md`; `ref/schematics/fdc-write-precomp-map.md`; `PLAN.md` P0 connectivity gate",
             "completes only the genuinely open support-circuit context without re-probing source-closed timing paths",
         ),
         (

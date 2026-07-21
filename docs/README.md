@@ -53,6 +53,8 @@ findings. Every status applies only to the boundary named by the report.
   `d15-d16-firmware-lineage.md` (factory designations, exact archival EktaSoft
   3.7 pair identity, and the still-open physical-content boundary),
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
+  `d101-reconstruction-constraints.md` (datasheet-exact first-half select cases,
+  D02 ladder, conditional D0-to-`/OE0` test, and four measured-pin boundaries),
   `reconstructed-prom-fallbacks.md`, `d6-physical-decode.md`,
   `d8-physical-decode.md` (exhaustive `.039` socket-select equations),
   `d6-input-continuity.md` (measured `/PC1`, `/PC0`, and A7 I/O-cycle routes),

@@ -842,6 +842,12 @@ Every ask below is queued with exact deliverables in
    D101.9 to D100.6, including EARLY/LATE selects and timing passives. Direct
    target continuity overrides the sheet's duplicated R99, conflicting R86,
    and tied-D101 drafting (`ref/schematics/fdc-write-precomp-map.md`).
+   A generated first-half constraint audit now fixes D101's exact 74LS253
+   select cases, Q0 tri-state behavior, measured D02 density-control ladder,
+   and the physical D94 register-3 response. It keeps the polarity-compatible
+   D94.1/D0-to-D101.1 `/OE0` feedback possibility conditional on chip-removed
+   continuity and reduces the true D101 asks to pins 1, 3, 5, and 6
+   (`docs/d101-reconstruction-constraints.md`).
    The adjacent C20 and outer C22 body markings are now independently photo-read
    as `1Н5` and source-closed by GOST 11076-69 Table 1 as 1.5 nF; their
    tolerances and voltages remain explicit boundaries; sheet 3 closes their D102 endpoints. In the adjacent right-edge

@@ -222,6 +222,14 @@ def main() -> int:
                 failures.append(f"{path} retains stale D94 boundary claim: {phrase!r}")
     if "A3 consumes the owner-closed D105.3" not in read("docs/d94-reconstruction-constraints.md"):
         failures.append("D94 report does not preserve the owner-closed D105.3 runtime source")
+    d101_report = read("docs/d101-reconstruction-constraints.md")
+    if "Status: **D101 FIRST HALF LOGIC-CONSTRAINED / FOUR PINS MEASUREMENT-GATED**" not in d101_report:
+        failures.append("D101 first-half reconstruction constraints are missing or failed")
+    for marker in ("D101.1 `/OE0`, D03/pin3, D01/pin5, D00/pin6", "does **not**", "R92=1.3 kΩ"):
+        if marker not in d101_report:
+            failures.append(f"D101 reconstruction report lost guarded marker: {marker!r}")
+    if "d101-reconstruction-constraints.md" not in read("docs/README.md"):
+        failures.append("documentation map omits the D101 reconstruction constraints")
     stale_d94_a4_pullup_claims = {
         "kicad/juku.board.json": ("D94.14/R88", "pin7 to D94.14/R88"),
         "docs/fdc-hardware-handoff.md": ("D101.7-D94.14/R88", "Q0 to D94.14/R88"),
@@ -231,6 +239,7 @@ def main() -> int:
         "ref/datasheets/k155re3-pinout.txt": ("Address pins 10/11/12/14 and output pins 6/7/9 remain incomplete",),
         "docs/owner-measurement-shortlist.md": ("D5-D7 remain PCB-fidelity asks", "D94 .092 live steering capture"),
         "docs/next-bench-session-checklist.md": ("D101 select\n   pins", "highest-value\nremaining live bench item is the D94 port-`1F` steering capture"),
+        "docs/fdc-hardware-handoff.md": ("mux select/output paths remain open",),
     }
     for path, phrases in stale_d94_a4_pullup_claims.items():
         text = read(path)
