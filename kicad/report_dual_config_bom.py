@@ -75,10 +75,15 @@ AUTHENTIC_MARK = {
     "SW": "switch",
     "SW_DIP6": "DIP switch",
     "EXPANSION_CONN": "СНП59-96 Р-20-2-В",
-    "SERIAL_CONN": "СНП59-30-23-В / serial connector",
+    # Owner-corrected 2026-07-22: СНП59-30-23-В (30 contacts) is X2's parallel
+    # connector (matches the 30-contact СНП in the photo survey); X3 has only
+    # 12 wired lines (A21-A32). Owner identifies X3 as the РШ2Н-1/РГ1Н-1
+    # rectangular family; exact variant (12- vs 16-contact, bracket gender)
+    # pending a contact count on board #2.
+    "SERIAL_CONN": "РШ2Н-1/РГ1Н-1-family serial connector, exact variant pending owner check",
     "POWER_CONN": "СНО51-30/56х9В-23 power connector",
     "KBD_CONN": "keyboard connector",
-    "PAR_CONN": "parallel/interface connector",
+    "PAR_CONN": "СНП59-30-23-В / parallel connector",
     "VIDEO_CONN": "BNC/composite video connector",
     "RF_CONN": "RF connector",
     "JUMPER2": "wire/link",

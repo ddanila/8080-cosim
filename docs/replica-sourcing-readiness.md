@@ -83,10 +83,10 @@ against drawings/board photos before ordering final quantities.
 | mechanical-review | JUMPER3 | wire/link | 4 | E1, E2, E3, E4 | select exact substitute after circuit review |
 | mechanical-review | JUMPER4 | wire/link | 2 | E13, E14 | select exact substitute after circuit review |
 | mechanical-review | KBD_CONN | keyboard connector | 1 | X9 | select exact substitute after circuit review |
-| mechanical-review | PAR_CONN | parallel/interface connector | 1 | X2 | select exact substitute after circuit review |
+| mechanical-review | PAR_CONN | СНП59-30-23-В / parallel connector | 1 | X2 | select exact substitute after circuit review |
 | mechanical-review | POWER_CONN | СНО51-30/56х9В-23 power connector | 1 | X8 | select exact substitute after circuit review |
 | mechanical-review | RF_CONN | RF connector | 1 | X6 | select exact substitute after circuit review |
-| mechanical-review | SERIAL_CONN | СНП59-30-23-В / serial connector | 1 | X3 | select exact substitute after circuit review |
+| mechanical-review | SERIAL_CONN | РШ2Н-1/РГ1Н-1-family serial connector, exact variant pending owner check | 1 | X3 | select exact substitute after circuit review |
 | mechanical-review | SW | switch | 2 | S1, S4 | select exact substitute after circuit review |
 | mechanical-review | SW_DIP6 | DIP switch | 1 | S3 | select exact substitute after circuit review |
 | mechanical-review | VIDEO_CONN | BNC/composite video connector | 1 | X7 | select exact substitute after circuit review |
