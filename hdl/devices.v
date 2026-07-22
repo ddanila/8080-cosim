@@ -799,10 +799,12 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                  output wire out0, out1, out2);
 `ifndef YOSYS
     reg [7:0] regs [0:3]; integer i;
-    reg [1:0] access [0:2], phase [0:2];
+    reg [1:0] access [0:2], phase [0:2], read_phase [0:2];
     // Seventeen bits preserve the 8253 binary zero-count meaning (65536).
     reg [16:0] reload [0:2], count [0:2];
     reg [7:0] low_latch [0:2];
+    reg [15:0] output_latch [0:2];
+    reg latch_valid [0:2];
     reg [2:0] mode [0:2];
     reg bcd [0:2], running [0:2];
     reg [2:0] ch;
@@ -810,6 +812,8 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg [2:0] ctl_ch;
     reg [2:0] ctl_mode;
     reg [2:0] out_r = 3'b000;
+    reg [15:0] read_value;
+    reg [7:0] read_data;
 
     function [16:0] normalized_count;
         input [15:0] raw;
@@ -824,6 +828,23 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 normalized_count = (value == 0) ? 17'd10000 : value;
             end else begin
                 normalized_count = (raw == 0) ? 17'd65536 : raw;
+            end
+        end
+    endfunction
+
+    function [15:0] encoded_count;
+        input [16:0] value;
+        input is_bcd;
+        integer decimal;
+        begin
+            if (!is_bcd) begin
+                encoded_count = (value == 17'd65536) ? 16'h0000 : value[15:0];
+            end else begin
+                decimal = (value == 17'd10000) ? 0 : value;
+                encoded_count[3:0] = decimal % 10;
+                encoded_count[7:4] = (decimal / 10) % 10;
+                encoded_count[11:8] = (decimal / 100) % 10;
+                encoded_count[15:12] = (decimal / 1000) % 10;
             end
         end
     endfunction
@@ -849,8 +870,9 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     initial begin
         for (i=0;i<4;i=i+1) regs[i]=0;
         for (i=0;i<3;i=i+1) begin
-            access[i]=2'b11; phase[i]=0; reload[i]=0; count[i]=0;
-            low_latch[i]=0; mode[i]=0; bcd[i]=0; running[i]=0;
+            access[i]=2'b11; phase[i]=0; read_phase[i]=0;
+            reload[i]=0; count[i]=0; low_latch[i]=0; output_latch[i]=0;
+            latch_valid[i]=0; mode[i]=0; bcd[i]=0; running[i]=0;
         end
     end
 
@@ -860,17 +882,29 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             regs[A] = D;
             if (A == 2'd3) begin
                 ctl_ch = D[7:6];
-                // RL=00 is a counter-latch command, not a mode reprogramming write.
-                // Count reads remain a bounded register-latch approximation here.
-                if (ctl_ch < 3 && D[5:4] != 2'b00) begin
-                    access[ctl_ch] = D[5:4];
-                    ctl_mode = D[3:1];
-                    if (ctl_mode >= 3'd6) ctl_mode = ctl_mode - 3'd4;
-                    mode[ctl_ch] = ctl_mode;
-                    bcd[ctl_ch] = D[0];
-                    phase[ctl_ch] = 0;
-                    running[ctl_ch] = 0;
-                    out_r[ctl_ch] = (ctl_mode == 3'd0) ? 1'b0 : 1'b1;
+                if (ctl_ch < 3) begin
+                    // RL=00 is the 8253 counter-latch command, not a mode write.
+                    if (D[5:4] == 2'b00) begin
+                        // A pending output latch remains owned by the first
+                        // command until its programmed byte(s) are consumed.
+                        if (!latch_valid[ctl_ch]) begin
+                            output_latch[ctl_ch] = encoded_count(
+                                count[ctl_ch], bcd[ctl_ch]);
+                            latch_valid[ctl_ch] = 1;
+                            read_phase[ctl_ch] = 0;
+                        end
+                    end else begin
+                        access[ctl_ch] = D[5:4];
+                        ctl_mode = D[3:1];
+                        if (ctl_mode >= 3'd6) ctl_mode = ctl_mode - 3'd4;
+                        mode[ctl_ch] = ctl_mode;
+                        bcd[ctl_ch] = D[0];
+                        phase[ctl_ch] = 0;
+                        read_phase[ctl_ch] = 0;
+                        latch_valid[ctl_ch] = 0;
+                        running[ctl_ch] = 0;
+                        out_r[ctl_ch] = (ctl_mode == 3'd0) ? 1'b0 : 1'b1;
+                    end
                 end
             end else begin
                 ch = A;
@@ -892,10 +926,32 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         phase[ch] = 0;
                     end
                 end
+                latch_valid[ch] = 0;
+                read_phase[ch] = 0;
             end
         end
     end
-    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+    always @* begin
+        read_value = 0;
+        read_data = 0;
+        if (A < 3) begin
+            read_value = latch_valid[A] ? output_latch[A]
+                                        : encoded_count(count[A], bcd[A]);
+            if (access[A] == 2'b10) read_data = read_value[15:8];
+            else if (access[A] == 2'b11 && read_phase[A] != 0)
+                read_data = read_value[15:8];
+            else read_data = read_value[7:0];
+        end
+    end
+    assign D = (~cs_n & ~rd_n && A < 3) ? read_data : 8'bz;
+    always @(posedge rd_n) if (~cs_n && A < 3) begin
+        if (access[A] == 2'b11 && read_phase[A] == 0)
+            read_phase[A] <= 1;
+        else begin
+            read_phase[A] <= 0;
+            latch_valid[A] <= 0;
+        end
+    end
     assign out0 = out_r[0]; assign out1 = out_r[1]; assign out2 = out_r[2];
     always @(posedge gate0) if (mode[0] == 3'd1 && reload[0] != 0) begin
         count[0] <= reload[0]; running[0] <= 1'b1; out_r[0] <= 1'b0;

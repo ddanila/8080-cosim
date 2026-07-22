@@ -28,6 +28,9 @@ paths also have HDL oracles.
 The CPU, memory/ROM paging, populated bit-sliced DRAM bank, PPI/PIT/PIC/USART
 behavior, FDC boot subset, serializer, and raster helper are functional models.
 They are not generic cycle-accurate replacements for every original IC mode.
+The 8253 slice implements binary/BCD count loading, LSB/MSB access formats,
+live or latched count reads, first-latch ownership, and the video-used modes;
+the Juku-specific HDL clocks remain authoritative for count progression.
 
 ## Honest boundaries
 

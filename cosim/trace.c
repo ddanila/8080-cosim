@@ -33,6 +33,7 @@
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
 // PIC:   JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH faults the 8259 IMR readback.
 // PPI:   JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D27 port readback.
+// PIT:   JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D54/D55/D57 count reads.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,6 +90,106 @@ static int           ppi_fault_enabled = 0;
 static uint8_t       ppi_fault_port = 0;
 static uint8_t       ppi_fault_stuck_low = 0;
 static uint8_t       ppi_fault_stuck_high = 0;
+static int           pit_fault_enabled = 0;
+static uint8_t       pit_fault_port = 0;
+static uint8_t       pit_fault_stuck_low = 0;
+static uint8_t       pit_fault_stuck_high = 0;
+
+// --- minimal 8253 register/load/latch model -------------------------------
+// This preserves the software-visible count-register protocol needed by the
+// diagnostic ROM. It intentionally does not synthesize the three board PITs'
+// distinct/cascaded clock domains; HDL remains authoritative for live timing.
+typedef struct {
+  uint16_t count_register;
+  uint16_t write_latch;
+  uint16_t output_latch;
+  uint8_t access;
+  uint8_t write_phase;
+  uint8_t read_phase;
+  uint8_t latch_valid;
+} pit_counter;
+
+static pit_counter pit_counters[3][3];
+
+static int is_pit_data_port(uint8_t port) {
+  return port >= 0x10 && port <= 0x1A && (port & 3) != 3;
+}
+
+static pit_counter* pit_counter_for_port(uint8_t port) {
+  unsigned chip = (port - 0x10) >> 2;
+  unsigned channel = port & 3;
+  return &pit_counters[chip][channel];
+}
+
+static void pit_write(uint8_t port, uint8_t value) {
+  unsigned chip = (port - 0x10) >> 2;
+  unsigned reg = port & 3;
+  if (reg == 3) {
+    unsigned channel = value >> 6;
+    unsigned access = (value >> 4) & 3;
+    if (channel >= 3) return;  // 8253 has no 8254-style read-back command
+    pit_counter* counter = &pit_counters[chip][channel];
+    if (access == 0) {
+      // A pending latch owns the output latch until its programmed byte(s)
+      // are consumed; later counter-latch commands are ignored.
+      if (!counter->latch_valid) {
+        counter->output_latch = counter->count_register;
+        counter->latch_valid = 1;
+        counter->read_phase = 0;
+      }
+    } else {
+      counter->access = (uint8_t)access;
+      counter->write_phase = 0;
+      counter->read_phase = 0;
+      counter->latch_valid = 0;
+    }
+    return;
+  }
+
+  pit_counter* counter = &pit_counters[chip][reg];
+  counter->latch_valid = 0;
+  counter->read_phase = 0;
+  if (counter->access == 1) {
+    counter->count_register = value;
+  } else if (counter->access == 2) {
+    counter->count_register = (uint16_t)value << 8;
+  } else if (counter->access == 3) {
+    if (!counter->write_phase) {
+      counter->write_latch = value;
+      counter->write_phase = 1;
+      return;
+    }
+    counter->count_register = (uint16_t)(((uint16_t)value << 8) |
+                                         (counter->write_latch & 0xFF));
+    counter->write_phase = 0;
+  }
+}
+
+static uint8_t pit_read(uint8_t port) {
+  pit_counter* counter = pit_counter_for_port(port);
+  uint16_t value = counter->latch_valid
+      ? counter->output_latch : counter->count_register;
+  uint8_t result;
+  if (counter->access == 2) {
+    result = (uint8_t)(value >> 8);
+    counter->latch_valid = 0;
+  } else if (counter->access == 3 && counter->read_phase) {
+    result = (uint8_t)(value >> 8);
+    counter->read_phase = 0;
+    counter->latch_valid = 0;
+  } else {
+    result = (uint8_t)value;
+    if (counter->access == 3) counter->read_phase = 1;
+    else counter->latch_valid = 0;
+  }
+  return result;
+}
+
+static void pit_init(void) {
+  for (unsigned chip = 0; chip < 3; ++chip)
+    for (unsigned channel = 0; channel < 3; ++channel)
+      pit_counters[chip][channel].access = 3;
+}
 
 static uint8_t apply_ram_fault(uint16_t address, uint8_t value) {
   if (!ram_fault_enabled || (!ram_fault_all && address != ram_fault_addr))
@@ -450,6 +551,7 @@ static uint8_t pin(void* u, uint8_t p) {
     if (fdc_bus_invert) value = (uint8_t)~value;
     if (p == 0x1F) fdc_data_reads++;
   }
+  else if (is_pit_data_port(p)) value = pit_read(p);
   else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
   if (p == 0x01 && pic_fault_enabled)
     value = (uint8_t)((value & (uint8_t)~pic_fault_stuck_low) |
@@ -457,6 +559,9 @@ static uint8_t pin(void* u, uint8_t p) {
   if (p == ppi_fault_port && ppi_fault_enabled)
     value = (uint8_t)((value & (uint8_t)~ppi_fault_stuck_low) |
                       ppi_fault_stuck_high);
+  if (p == pit_fault_port && pit_fault_enabled)
+    value = (uint8_t)((value & (uint8_t)~pit_fault_stuck_low) |
+                      pit_fault_stuck_high);
   if (io_trace) {
     fprintf(stderr, "[IOSEQ] IN  port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, value, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, in_count[p]);
@@ -482,6 +587,7 @@ static void pout(void* u, uint8_t p, uint8_t v) {
     juku_fdc_write(&fdc, p & 3, fdc_bus_invert ? (uint8_t)~v : v);
   if (usart.enabled && p >= 0x08 && p <= 0x0B)
     usart_write(p & 1, v, cpu ? cpu->cyc : 0);
+  if (p >= 0x10 && p <= 0x1B) pit_write(p, v);
 
   if (p == 0x04) kbd_col = v & 0x0F;   // 8255 Port A low nibble = keyboard column select
 
@@ -610,6 +716,10 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "ppi_fault_port=%02X\n", ppi_fault_port);
   fprintf(state_out, "ppi_fault_stuck_low=%02X\n", ppi_fault_stuck_low);
   fprintf(state_out, "ppi_fault_stuck_high=%02X\n", ppi_fault_stuck_high);
+  fprintf(state_out, "pit_fault_enabled=%d\n", pit_fault_enabled);
+  fprintf(state_out, "pit_fault_port=%02X\n", pit_fault_port);
+  fprintf(state_out, "pit_fault_stuck_low=%02X\n", pit_fault_stuck_low);
+  fprintf(state_out, "pit_fault_stuck_high=%02X\n", pit_fault_stuck_high);
   fprintf(state_out, "fdc_enabled=%d\n", fdc_enabled);
   fprintf(state_out, "fdc_bus_invert=%d\n", fdc_bus_invert);
   fprintf(state_out, "fdc_head=%d\n", fdc.head);
@@ -645,6 +755,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
 }
 
 int main(int argc, char** argv) {
+  pit_init();
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
   g_vw_limit            = argc > 3 ? strtoul(argv[3], 0, 0) : 0UL;   // 0 = no video-write limit
@@ -690,6 +801,7 @@ int main(int argc, char** argv) {
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
   const char* pic_fault = getenv("JUKU_PIC_FAULT");
   const char* ppi_fault = getenv("JUKU_PPI_FAULT");
+  const char* pit_fault = getenv("JUKU_PIT_FAULT");
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
     usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
     if (!usart.transfer_cycles) usart.transfer_cycles = 1;
@@ -741,6 +853,28 @@ int main(int argc, char** argv) {
     fprintf(stderr,
             "[PPI] D27 port 0x%02X fault stuck-low=0x%02X stuck-high=0x%02X\n",
             ppi_fault_port, ppi_fault_stuck_low, ppi_fault_stuck_high);
+  }
+  if (pit_fault && pit_fault[0]) {
+    unsigned port, stuck_low, stuck_high;
+    char trailing;
+    if (sscanf(pit_fault, "%x:%x:%x%c", &port, &stuck_low, &stuck_high,
+               &trailing) != 3 || port < 0x10 || port > 0x1A ||
+        (port & 3) == 3 || stuck_low > 0xFF || stuck_high > 0xFF ||
+        (stuck_low & stuck_high)) {
+      fprintf(stderr,
+              "invalid JUKU_PIT_FAULT=%s "
+              "(expected PORT:STUCK_LOW:STUCK_HIGH, "
+              "PORT=10..12/14..16/18..1A)\n",
+              pit_fault);
+      return 2;
+    }
+    pit_fault_enabled = 1;
+    pit_fault_port = (uint8_t)port;
+    pit_fault_stuck_low = (uint8_t)stuck_low;
+    pit_fault_stuck_high = (uint8_t)stuck_high;
+    fprintf(stderr,
+            "[PIT] port 0x%02X fault stuck-low=0x%02X stuck-high=0x%02X\n",
+            pit_fault_port, pit_fault_stuck_low, pit_fault_stuck_high);
   }
   if (ram_fault && ram_fault[0]) {
     unsigned address, stuck_low, stuck_high;

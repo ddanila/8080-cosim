@@ -320,9 +320,12 @@ harness; sync/parity and physical baud timing remain outside this step.
 The alive, CPU, ROM-convention, PIC, PPI, serial, and mode-0 RAM-survey
 diagnostic-ROM rungs now run under cosim and the vm80a-based HDL twin,
 including injected ROM, PIC, PPI, USART, protocol, and bit-sliced RAM failure
-paths,
-while the D57 beeper path has its own waveform/connectivity guard. The next D0
-implementation step is the remaining PIT register-test rung.
+paths, while the D57 beeper path has its own waveform/connectivity guard. The
+8253 prerequisite is also guarded now: cosim and HDL implement the original
+counter-latch command and programmed LSB/MSB read order, with focused tests for
+all three chip selects and single- and double-byte formats; the HDL guard also
+covers BCD conversion and pending-latch ownership. The next D0 implementation
+step is the PIT diagnostic ROM that consumes this interface.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
@@ -333,10 +336,13 @@ Then:
   `JUKU_USART_FAULT=tx_stuck`,
   `JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH`,
   `JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH`,
+  `JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH`,
   `JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH` (or `*` for every address), and
   `JUKU_RAM_ALIAS=PAGE_A:PAGE_B`; the D0 matrix asserts their exact protocol
-  masks and host window verdicts. Row/column-shaped and later PIT faults remain
-  additions to the same regression model.
+  masks and host window verdicts. The cosim PIT slice deliberately preserves
+  register/load/latch semantics without inventing a common clock for the three
+  differently clocked and cascaded chips; live progression is cross-checked in
+  HDL. Row/column-shaped RAM faults remain a later addition.
 
 Per the commons contract, the 8251 model lands in root `cosim/`, not here —
 this spin-off consumes it, and any bench finding it produces flows back to

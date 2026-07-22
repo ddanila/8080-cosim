@@ -1635,7 +1635,16 @@ an active `/Q1` feedback output.
    bit-sliced DRAM bank. X2 must be disconnected because this is a register and
    decode test, not an external-load test. Failure gives a distinct continuous
    nominal 750 Hz tone with D10 masked, IFF clear, and no USART or RAM write.
-   The PIT register test is next.
+   The PIT register test is next. Its model prerequisite is now complete:
+   cosim and HDL implement the 8253 counter-latch command, programmed LSB/MSB
+   read order, single-byte formats, and first-latch ownership; HDL also
+   re-encodes live BCD counts. Focused guards cover all three decoded chip
+   selects and restricted `JUKU_PIT_FAULT` read faults. Cosim intentionally
+   does not invent a shared
+   time base for the differently clocked/cascaded D54, D55, and D57 counters;
+   live progression remains HDL-authoritative, so the firmware must use a
+   phase-tolerant count predicate. The cumulative burn image remains the next
+   bounded D0 checkpoint.
 
 ## Physical bring-up sequence
 

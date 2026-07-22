@@ -18,6 +18,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
+python3 tests/cosim_pit_latch_test.py "$tmp/trace"
 python3 tests/jukuravi_d0_alive_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-alive.bin
 python3 tests/jukuravi_d0_cpu_test.py \
@@ -38,6 +39,14 @@ python3 tests/jukuravi_d0_ppi_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-ppi.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
+iverilog -g2012 -s pit_8253_latch_tb -o "$tmp/pit_8253_latch_tb" \
+  hdl/devices.v hdl/sim/pit_8253_latch_tb.v
+pit_out=$(vvp "$tmp/pit_8253_latch_tb")
+printf '%s\n' "$pit_out"
+grep -q "PIT8253-LATCH: PASS" <<<"$pit_out"
+if grep -q "PIT8253-LATCH: FAIL" <<<"$pit_out"; then
+  exit 1
+fi
 python3 - "$tmp/success.hex" "$tmp/failure.hex" <<'PY'
 from pathlib import Path
 import sys

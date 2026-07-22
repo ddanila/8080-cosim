@@ -441,4 +441,11 @@ The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next D0
-firmware rung is the remaining PIT register-wiggle test.
+firmware rung is the remaining PIT register-wiggle test. Its prerequisite is
+now explicit and regression-guarded: both twins implement the 8253
+counter-latch command and the programmed LSB/MSB read sequence, while
+`JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH` is restricted to the nine D54/D55/D57
+counter ports. Cosim intentionally leaves live count progression to HDL because
+the board uses distinct 1 MHz, 2 MHz, 1.23 MHz, and cascaded clocks. The ROM
+must therefore use a phase-tolerant count predicate rather than compare an
+exact free-running 16-bit value.
