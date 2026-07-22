@@ -603,6 +603,16 @@ bodies read 5K1, retiring the former horizontal placement seed, unvalued/100
 ohm working note, and fictional C69/R52 close pass without changing the traced
 D53/RAS/GND connectivity.
 
+D53's timing evidence is now bounded without inventing physical-board delays.
+The exact-revision identity and complete КР531ИД7 pin contract are guarded
+against the board JSON, while a checksum-pinned primary TI SN54S138 sheet
+supplies a pin/function-compatible 12 ns maximum at its published 5 V, 25 °C,
+280 Ω/15 pF test point. `docs/memory-timing-boundary.md` keeps that value as an
+order-of-magnitude comparison only: an exact КР531ИД7 process guarantee,
+loaded-board behavior, decoder-enable origins, CPU/video slot schedule, and
+D36 CAS-input source still require stronger evidence or measurements, so no
+dynamic HDL delay was added.
+
 The same target-photo pass corrects a package-identity error in the CAS timing
 area without changing connectivity. The previously registered upper,
 top-notched `КР1533ЛА3` beside decapped D92 is D39, not D37. The `.006`

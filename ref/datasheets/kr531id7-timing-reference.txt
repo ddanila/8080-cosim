@@ -1,0 +1,51 @@
+D53 КР531ИД7 / SN54S138 timing reference
+==========================================
+
+Board facts
+-----------
+
+The exact-revision Juku sheet and board model identify D53 as КР531ИД7. The
+traced package contract is the 16-pin 3-to-8 active-low decoder arrangement:
+A/B/C on pins 1/2/3, active-high G1 on pin 6, active-low G2A/G2B on pins 4/5,
+and Y0..Y7 on pins 15/14/13/12/11/10/9/7. On Juku, Y0..Y3 feed R49..R52 and
+the four RAS rails; Y4..Y7 are source-proved no-connects.
+
+Primary compatible-device timing reference
+------------------------------------------
+
+Texas Instruments SN54S138 is the same Schottky-TTL 3-to-8 decoder function
+and pin arrangement used as the closest manufacturer timing reference. The
+preserved PDF is `sn54s138-ti.pdf`, TI document SDLS014 (December 1972,
+revised March 1988), retrieved 2026-07-22:
+
+  SHA256 9c33e08a3bfb7ab3b685848eee0d80457774918ce0bd3224e17cd0c1970a20a9
+  https://www.ti.com/lit/ds/symlink/sn54s138.pdf
+
+The SN54S138 switching table states VCC=5 V, TA=25 C, RL=280 ohm, CL=15 pF:
+
+  path                    delay  typical  maximum
+  binary select, 2 levels tPLH     4.5 ns    7 ns
+  binary select, 2 levels tPHL     7 ns     10.5 ns
+  binary select, 3 levels tPLH     7.5 ns   12 ns
+  binary select, 3 levels tPHL     8 ns     12 ns
+  enable, 2 levels        tPLH     5 ns      9 ns
+  enable, 2 levels        tPHL     7 ns     11 ns
+  enable, 3 levels        tPLH     7 ns     11 ns
+  enable, 3 levels        tPHL     7 ns     11 ns
+
+The largest published compatible-device value at that test point is 12 ns.
+
+Evidence boundary
+-----------------
+
+This is a primary manufacturer limit for the compatible SN54S138, not an
+exact КР531ИД7 production guarantee. It bounds the expected order of magnitude
+and prevents a zero-context timing assumption, but it does not prove Soviet
+process corners or the populated part's behavior.
+
+It also does not close the Juku-specific D53 G1/G2 enable origins, the
+VID_CPU_SEL/slot schedule, the D36 CAS-input source, board loading, or the
+physical RAS pulse widths. Therefore the untimed structural HDL must not gain
+invented `#delay` values from this reference. Use the 12 ns figure only as a
+compatible-device comparison until an exact КР531ИД7 manufacturer sheet and
+board measurements are available.

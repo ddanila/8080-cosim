@@ -2,6 +2,7 @@
 """Generate the DRAM/clock timing boundary report."""
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -11,6 +12,13 @@ BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "memory-timing-boundary.md"
 SOURCE_PCB = ROOT / "kicad" / "juku.kicad_pcb"
 ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
+D53_DATASHEET = ROOT / "ref" / "datasheets" / "sn54s138-ti.pdf"
+D53_TIMING_REFERENCE = ROOT / "ref" / "datasheets" / "kr531id7-timing-reference.txt"
+D53_DATASHEET_SHA256 = "9c33e08a3bfb7ab3b685848eee0d80457774918ce0bd3224e17cd0c1970a20a9"
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def load_board() -> dict:
@@ -46,8 +54,10 @@ def main() -> int:
     d35 = chips["D35"]
     d36 = chips["D36"]
     d37 = chips["D37"]
+    d53 = chips["D53"]
     d59 = chips["D59"]
     d92 = chips["D92"]
+    d53_timing_reference = D53_TIMING_REFERENCE.read_text(encoding="utf-8")
     hex_contract = {
         "1": "I1", "2": "O2", "3": "I3", "4": "O4", "5": "I5", "6": "O6",
         "9": "I9", "8": "O8",
@@ -122,6 +132,26 @@ def main() -> int:
             "D53 RAS/CAS ladder outputs are guarded",
             all(has_nodes(board, name, expected) for name, expected in d53_outputs.items()),
             "`D53_Y0_R49`..`D53_Y3_R52`",
+        ),
+        (
+            "D53 identity and compatible decoder timing evidence are guarded",
+            d53.get("marking") == "КР531ИД7"
+            and d53.get("pins", {}) == {
+                "1": "A", "2": "B", "3": "C", "6": "G",
+                "15": "Y_N0", "14": "Y_N1", "13": "Y_N2", "12": "Y_N3",
+                "11": "Y_N4", "10": "Y_N5", "9": "Y_N6", "7": "Y_N7",
+                "4": "G2A_N", "5": "G2B_N",
+            }
+            and D53_DATASHEET.is_file()
+            and sha256(D53_DATASHEET) == D53_DATASHEET_SHA256
+            and all(token in d53_timing_reference for token in (
+                "VCC=5 V, TA=25 C, RL=280 ohm, CL=15 pF",
+                "binary select, 3 levels tPLH     7.5 ns   12 ns",
+                "binary select, 3 levels tPHL     8 ns     12 ns",
+                "compatible-device comparison",
+                "must not gain",
+            )),
+            "physical D53=КР531ИД7; TI SN54S138 primary compatible reference SHA256 guarded; published comparison max=12 ns",
         ),
         (
             "D53 unused Y4-Y7 outputs remain source-proved no-connects",
@@ -319,7 +349,9 @@ def main() -> int:
         "The board model preserves the traced E1 and E13/E14 selector straps, RAS/CAS ladder, write rail,",
         "PHI2TTL fanout, and D56 one-shot RC networks. Exact-revision `.009 E3`",
         "imagery plus owner continuity closes the D54/D55/D56 trigger and clock",
-        "crossings; the unresolved CAS input remains an explicit source boundary.",
+        "crossings. A primary SN54S138 comparison bounds compatible D53 decoder",
+        "propagation at 12 ns maximum under its published test conditions; it does",
+        "not replace the unresolved Juku enables, slot schedule, or CAS source.",
         "",
         "## Command",
         "",
@@ -335,6 +367,17 @@ def main() -> int:
     lines.extend(row([name, "PASS" if result else "FAIL", evidence]) for name, result, evidence in guarded_checks)
     lines.extend(
         [
+            "",
+            "## Compatible D53 Decoder Timing Envelope",
+            "",
+            "| Evidence | Published condition | Maximum | Model use |",
+            "| --- | --- | --- | --- |",
+            row([
+                "TI SN54S138 primary manufacturer sheet (compatible function/pinout, not the exact КР531ИД7 process)",
+                "VCC=5 V, TA=25 C, RL=280 ohm, CL=15 pF; binary-select and enable paths",
+                "12 ns",
+                "guarded order-of-magnitude comparison only; no invented HDL delay",
+            ]),
             "",
             "## Pending Boundary Checks",
             "",
@@ -401,6 +444,11 @@ def main() -> int:
             "- The functional board model has enough traced structure for fabrication",
             "  and staged bring-up: RAS/CAS ladder endpoints, the DRAM write rail,",
             "  and the key PHI2TTL/D56 support nets are guarded.",
+            "- Physical D53 is guarded as КР531ИД7 with its traced 16-pin decoder",
+            "  contract. The preserved primary TI SN54S138 sheet supplies a 12 ns",
+            "  compatible-device maximum only at 5 V, 25 C, RL=280 ohm, CL=15 pF.",
+            "  It does not guarantee the Soviet process, loaded board, or slot timing,",
+            "  so the structural HDL remains untimed and those boundaries stay open.",
             "- The runnable CPU-memory scaffold now models a complete row/column transaction:",
             "  RAS remains active from the row phase through the CAS column pulse, and the",
             "  РУ5 model strobes DIN on the latter falling edge of CAS or WE for early and",

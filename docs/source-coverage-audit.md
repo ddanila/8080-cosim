@@ -1,6 +1,6 @@
 # Source coverage audit
 
-Status date: **2026-07-16**.
+Status date: **2026-07-22**.
 
 Status: **PASS**
 
@@ -20,6 +20,7 @@ deliberately omitted.
 | [MAME PR #14817](https://github.com/mamedev/mame/pull/14817) | real-hardware-tested 241st raster line and corrected JBASIC byte | already reflected in the local reference and video/BASIC guards |
 | Arvutimuuseum/community pages | historical context and owner/contact leads only | promote a claim into the repo only when a file, checksum, photo, or measurement is obtained |
 | Emu80v4 and public WD1793 HDL/software models | reviewed as implementation checklists; no code adopted | the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core |
+| Guarded component references under `ref/datasheets/` | exact-device К555ЛП5 and period КТ315-family sheets constrain D34/VT2 electrical corners; TI SN74LS86A independently compares the XOR output conditions; the primary TI SN54S138 sheet bounds a pin/function-compatible D53 decoder at 12 ns maximum under its published test point | К555ЛП5 still lacks a nonlinear output I/V curve; SN54S138 timing is a compatible-device comparison rather than an exact КР531ИД7 process guarantee; Juku loading, decoder enables, and CPU/video slot timing still require measurements or stronger primary evidence |
 | Western Digital FD179X references, the original 1986 КР1818ВГ93 paper, a historical Soviet circuit comparison, and the local WD1772 transistor/PLA reference | WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, source-closed D106 recovery counter, D96 read-clock wiring plus async-control constraints, remaining separator probes, a KP12 precompensation candidate, and normalized PLA are documented | factory sheet 3 proves every D106 disposition and D96's local wiring plus its D28 continuation; primary SN74LS74A truth makes section-1 restart phase undefined when WREQ releases both async controls and exposes the shared PRE2_N/D2 section as set-only without a real CLR2_N source, so D96.9 Q2, D96.11 CLK2, the drawn-NC D96.13 clear disposition, and powered async behavior remain verification gates; device/manufacturer references do not prove other Juku-specific support nets or D94 connectivity |
 | Owner photographs of exact `ДГШ5.109.009 Э3` sheets 1-3 | the exact FDC-era electrical revision is checksum-guarded under `ref/photos/dgsh5-109-009-e3/` and is the primary schematic source; owner continuity on 2026-07-21 confirms its D54/D55/D56 sheet-2 timing paths and the D94/D104 NC dispositions | retain the older `.006 Э3` as secondary evidence only where it agrees; exact `.009` imagery and physical-board continuity outrank it wherever they differ |
 | Owner photographs of `ДГШ5.109.009 СБ` | 26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and local D56/D15/D14/D11 assembly work; note 11 proves position 150 is tubing rather than a cut, owner-board registration closes D15 as an A2/A1 bridge cut and the D14 local D32.4/GND-to-D14.1 link, the D56 callout row is fixed at D56.12/D56.5, and target component/solder registration closes the complete 4x8 inherited DRAM-decoupler artwork as four factory-fitted plus 28 footprint-retained assembly-DNP positions | C51-C53/C70-C72 placement/population and every exact factory capacitance remain unresolved; the six former non-field fit-to-space coordinates are retired from the generator/source PCB until evidence closes them. The bare .009 C63 callout remains distinct from its inherited DRAM-grid verification landing, and C69 is restored to the photographed eighth column. D56.5/D56.12 functional nets are owner-closed, while the installed item-159 material and auxiliary-annulus/adjacent-rail disposition still require continuity or the missing specification row; D14's registered fifth-landing conductor/remaining drawn traces still require exact mapping; position 159 marks solder locations and does not prove replacement conductors; D11's four solder locations are component-photo registered and two-sided package-local projection exhausts four solder views without a unique through-hole match, so their electrical endpoints require direct continuity; assembly detail does not prove every copper endpoint or programmable-part truth |
@@ -69,6 +70,13 @@ web/archive work should be tied to one of these named deliverables.
 | `ref/wd1772-vg93/fd179x-application-notes-jun1980.pdf` | present |
 | `ref/wd1772-vg93/wd1772.pdf` | present |
 | `ref/wd1772-vg93/wd1772pla.normalized.json` | present |
+| `ref/datasheets/k555lp5-eandc.pdf` | present |
+| `ref/datasheets/sn74ls86a-ti.pdf` | present |
+| `ref/datasheets/k555lp5-output-reference.txt` | present |
+| `ref/datasheets/kt315-family-promelec.pdf` | present |
+| `ref/datasheets/kt315b-output-reference.txt` | present |
+| `ref/datasheets/sn54s138-ti.pdf` | present |
+| `ref/datasheets/kr531id7-timing-reference.txt` | present |
 | `docs/d2-reconstruction-constraints.md` | present |
 | `docs/d94-reconstruction-constraints.md` | present |
 | `docs/firmware-gap-ledger.md` | present |

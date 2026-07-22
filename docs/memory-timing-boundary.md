@@ -8,7 +8,9 @@ This generated report narrows the remaining DRAM/clock timing risks.
 The board model preserves the traced E1 and E13/E14 selector straps, RAS/CAS ladder, write rail,
 PHI2TTL fanout, and D56 one-shot RC networks. Exact-revision `.009 E3`
 imagery plus owner continuity closes the D54/D55/D56 trigger and clock
-crossings; the unresolved CAS input remains an explicit source boundary.
+crossings. A primary SN54S138 comparison bounds compatible D53 decoder
+propagation at 12 ns maximum under its published test conditions; it does
+not replace the unresolved Juku enables, slot schedule, or CAS source.
 
 ## Command
 
@@ -26,6 +28,7 @@ python3 scripts/report_memory_timing_boundary.py
 | E1 MA7/DRAM-size selector retains all three source endpoints | PASS | sheet-2: E1.1=+5 V, E1.2=MA7 rail 28, E1.3=D51.9/MA6 |
 | D59/E13/E14 complementary mux-enable topology is source-closed | PASS | sheet-2: D59.5->E14.1-3->D50/D51 /G; D59.6->E13.1-3->D48/D49 /G |
 | D53 RAS/CAS ladder outputs are guarded | PASS | `D53_Y0_R49`..`D53_Y3_R52` |
+| D53 identity and compatible decoder timing evidence are guarded | PASS | physical D53=КР531ИД7; TI SN54S138 primary compatible reference SHA256 guarded; published comparison max=12 ns |
 | D53 unused Y4-Y7 outputs remain source-proved no-connects | PASS | sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs |
 | D36 write-gate inputs and rail are guarded to all modeled DRAM W pins | PASS | MEMW->D36.9; D36.3->D33.11/.10->D36.10; D36.8->32 DRAM pin-3 inputs |
 | D36 CAS pre-driver reaches R57 | PASS | `CAS_PRE`: D36.11 -> R57.1 |
@@ -43,6 +46,12 @@ python3 scripts/report_memory_timing_boundary.py
 | D56 trigger, clock, and active-output topology is owner-closed | PASS | exact .009 E3 plus owner continuity 2026-07-21: D54.17->D56.10, D55.17->D56.2, D56.12->D55.15/.18, D56.5/.4->D34.9/.10; D57.17 remains separate |
 | D35 frame-interrupt inverter path is source-closed | PASS | native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2 |
 | D30 READY clear uses the native D38-side status strobe | PASS | sheet-2 D38.8 active-low STB export -> sheet-1 -SSTB/D30.1; W8 still separates the D5-side island |
+
+## Compatible D53 Decoder Timing Envelope
+
+| Evidence | Published condition | Maximum | Model use |
+| --- | --- | --- | --- |
+| TI SN54S138 primary manufacturer sheet (compatible function/pinout, not the exact КР531ИД7 process) | VCC=5 V, TA=25 C, RL=280 ohm, CL=15 pF; binary-select and enable paths | 12 ns | guarded order-of-magnitude comparison only; no invented HDL delay |
 
 ## Pending Boundary Checks
 
@@ -98,6 +107,11 @@ python3 scripts/report_memory_timing_boundary.py
 - The functional board model has enough traced structure for fabrication
   and staged bring-up: RAS/CAS ladder endpoints, the DRAM write rail,
   and the key PHI2TTL/D56 support nets are guarded.
+- Physical D53 is guarded as КР531ИД7 with its traced 16-pin decoder
+  contract. The preserved primary TI SN54S138 sheet supplies a 12 ns
+  compatible-device maximum only at 5 V, 25 C, RL=280 ohm, CL=15 pF.
+  It does not guarantee the Soviet process, loaded board, or slot timing,
+  so the structural HDL remains untimed and those boundaries stay open.
 - The runnable CPU-memory scaffold now models a complete row/column transaction:
   RAS remains active from the row phase through the CAS column pulse, and the
   РУ5 model strobes DIN on the latter falling edge of CAS or WE for early and
