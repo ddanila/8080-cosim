@@ -85,7 +85,12 @@ def main() -> int:
         ),
         (
             "Runnable byte-to-pixel readout is guarded",
-            marker("docs/video-readout-readiness.md", "Status: **RUNNABLE VIDEO READOUT GUARDED**", "byte-identical"),
+            marker(
+                "docs/video-readout-readiness.md",
+                "Status: **RUNNABLE ABSTRACT VIDEO READOUT GUARDED**",
+                "byte-identical",
+                "not composite voltage",
+            ),
             "`docs/video-readout-readiness.md` / `sync/video_readout_check.sh`",
         ),
         (
