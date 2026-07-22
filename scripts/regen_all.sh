@@ -51,6 +51,7 @@ run python3 scripts/report_memory_timing_boundary.py
 run python3 scripts/report_io_decode_boundary.py
 run python3 scripts/report_video_analog_boundary.py
 run python3 scripts/model_x7_output_stage.py
+run python3 scripts/report_crt_decoder_baseline.py
 run python3 scripts/report_s4_interrupt_boundary.py
 run python3 scripts/report_ekdos_source_inspection.py
 run python3 scripts/report_vendored_disk_catalog.py

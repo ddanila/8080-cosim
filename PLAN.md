@@ -1374,7 +1374,10 @@ guards the traced R62-R65/VT2/X7 DC topology, both 75-ohm and unterminated
 loads, and a declared tolerance sweep. That result is deliberately provisional:
 the fixed D34 pin-voltage approximation exceeds a closest SN74LS86A comparison
 source-current condition, so exact-revision К555ЛП5 drive behavior and physical
-calibration remain open before the model can claim X7 levels.
+calibration remain open before the model can claim X7 levels. The separate
+decoder fork point is also clean-checkout reproduced on Linux: all three targets
+build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
+fork-local README provenance and CI remain separate-repository work.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

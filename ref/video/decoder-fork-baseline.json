@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-22",
+  "decoder": {
+    "fork_url": "https://github.com/ddanila/famicom-rf-hackrf-decoder",
+    "upstream_url": "https://github.com/GOROman/famicom-rf-hackrf-decoder",
+    "commit": "6cce72d4a0e35ed364d086470191d61e3f6cd116",
+    "checkout_mode": "detached clean checkout",
+    "source_tree_clean_after_tests": true
+  },
+  "8080_cosim_context_commit": "ae7918afe81024b462c8337dc23f509874e35e76",
+  "host": {
+    "os": "Ubuntu resolute amd64",
+    "cmake": "4.2.3",
+    "compiler": "g++ 15.2.0",
+    "dependency_setup": "No host packages installed. Ubuntu packages libhackrf-dev 2026.01.3-1, libhackrf0 2026.01.3-1, and libsdl2-dev 2.32.10+dfsg-6 were downloaded and extracted under /tmp; the already-installed libsdl2-2.0-0 2.32.10+dfsg-6 runtime was copied into that temporary sysroot."
+  },
+  "results": {
+    "cmake_configure": "pass",
+    "full_build": "pass",
+    "built_targets": ["fam_dsp", "famidec", "synth_ntsc"],
+    "ctest": {
+      "passed": 1,
+      "failed": 0,
+      "elapsed_seconds": 0.61,
+      "max_rss_kib": 20604
+    },
+    "synth_ntsc": {
+      "status": "pass",
+      "decoded_frames": 29,
+      "decoded_lines": 7854,
+      "coasted_lines": 87,
+      "bars_passed": 7,
+      "bars_total": 7,
+      "elapsed_seconds": 0.62,
+      "max_rss_kib": 19128
+    }
+  },
+  "build_warnings": [
+    "GCC 15 warns that the channel HUD snprintf into an 8-byte buffer can truncate for an unconstrained integer channel.",
+    "GCC 15 warns that the recording-time HUD snprintf into a 16-byte buffer can truncate for a sufficiently large or negative integer duration."
+  ],
+  "scope": {
+    "proved": "The recorded unmodified decoder fork point configures, builds all targets, and passes its sole upstream synthetic NTSC CTest on this host.",
+    "not_proved": [
+      "HackRF hardware access or RF reception",
+      "Juku baseband ingestion or non-NTSC synchronization",
+      "decoder-fork CI configuration",
+      "fork README provenance changes",
+      "any Juku X7 receiver or image claim"
+    ]
+  }
+}

@@ -178,6 +178,14 @@ waveform or receiver.
 
 ### WP0 — Baseline and reproducibility
 
+Progress: the recorded fork point now has a guarded clean-checkout baseline in
+`docs/crt-decoder-baseline.md`. On the 2026-07-22 Linux host, the unmodified
+fork configured and built `fam_dsp`, `famidec`, and `synth_ntsc`; CTest passed
+1/1, and the direct synthetic test decoded 29 frames with all seven bars in
+tolerance. Development packages were extracted below `/tmp`, not installed on
+the host. The fork's own README provenance and CI remain pending separate-repo
+work, so WP0 as a whole is not marked complete.
+
 - Record upstream and fork remotes and the fork point in the decoder README.
 - Build the unmodified fork on the development host.
 - Run `synth_ntsc` and upstream CTest before changing the pipeline.
@@ -356,7 +364,8 @@ The task is complete only when all of the following hold:
 
 ## Immediate next actions
 
-1. Clone/build the decoder fork and preserve the upstream `synth_ntsc` result.
+1. Preserve the reproduced clean-checkout baseline while adding fork-local
+   provenance and CI before receiver changes.
 2. Implement the generic float32 baseband input and headless output first.
 3. Refactor synchronization constants into profiles while keeping NTSC green.
 4. Generate a synthetic non-NTSC monochrome fixture and prove receiver lock.
