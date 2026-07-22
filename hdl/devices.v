@@ -386,8 +386,9 @@ module la1_gate  (input wire i0, i1, i2, i3, i4, i5, i6, i7, output wire y, y2);
 endmodule
 
 // ===== I/O chip-select decoder: К555ИД7 (74138) =====
-// Functional (merge step 1): standard 1-of-8 active-low decode, enabled by g1 & !(g2a_n|g2b_n).
-// On the board g2a_n/g2b_n = iord_n/iowr_n (enable on either strobe = the documented strobe-OR intent).
+// Standard 1-of-8 active-low decode, enabled by g1 & !(g2a_n|g2b_n).
+// Physical D9 has G1 on the D7/R17/C99 I/O strobe and tied G2A_N/G2B_N on
+// D6.10 REV. BA10..BA12 select the eight mirrored peripheral groups.
 // D9 ИД7 takes its selects from the address rails; D8 is the separate РЕ3
 // ROM-socket pager. Its validated physical `.039` table is implemented below.
 module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);

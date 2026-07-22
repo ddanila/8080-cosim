@@ -8,6 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
+HDL_TOP = ROOT / "hdl" / "juku_top.v"
+LVS_MAP = ROOT / "sync" / "map.json"
 REPORT = ROOT / "docs" / "io-decode-boundary.md"
 
 
@@ -45,6 +47,8 @@ def row(values: list[object]) -> str:
 
 def main() -> int:
     board = load_board()
+    hdl_top = HDL_TOP.read_text(encoding="utf-8")
+    lvs_map = json.loads(LVS_MAP.read_text(encoding="utf-8"))
     d9 = chip(board, "D9")
     d7 = chip(board, "D7")
     d5 = chip(board, "D5")
@@ -61,6 +65,15 @@ def main() -> int:
             "D9 is the physical К555ИД7 I/O decoder",
             d9.get("type") == "IO_DEC138" and "D2 is a separate" in d9.get("prov", {}).get("refdes", ""),
             "`kicad/juku.board.json` D9 provenance",
+        ),
+        (
+            "Runnable HDL and LVS use the physical D9 identity and traced pins",
+            "io_dec138 U_D9" in hdl_top
+            and ".a(BA[10]), .b(BA[11]), .c(BA[12])" in hdl_top
+            and ".g1(d9_g1_w), .g2a_n(rev), .g2b_n(rev)" in hdl_top
+            and lvs_map.get("instances", {}).get("D9") == "U_D9"
+            and "U_DID7" not in hdl_top,
+            "U_D9: BA10/11/12, G1=V3_RC, G2A/G2B=REV; no placeholder refdes",
         ),
         (
             "D7 strobe-NAND output reaches the R17/C99 D9.G1 RC node",
@@ -157,7 +170,7 @@ def main() -> int:
     lines = [
         "# I/O decode boundary",
         "",
-        "Status date: 2026-07-13.",
+        "Status date: 2026-07-22.",
         "",
         f"Status: **{status}**",
         "",

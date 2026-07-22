@@ -296,8 +296,9 @@ module juku_top (
                          .dat(dat), .adr_lo(adr_lo), .adr_hi(adr_hi));
 
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
-    // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
-    // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
+    // Physical D9: BA10..BA12 select the mirrored I/O group, G1 receives the
+    // D7.11 -> R17/C99 strobe, and tied active-low enables G2A/G2B receive REV.
+    // Y0..Y7 route in package order to D10/D26/D11/D27/D54/D55/D57/FDC.
 `ifdef YOSYS
     wire [7:0] d8_d;
 `else
@@ -307,7 +308,7 @@ module juku_top (
 `endif
     re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));
     net_boundary U_R17LNK (.a(io_strobe_h), .b(d9_g1_w));   // R17 200R (+C99 160pF deglitch) in series [traced]
-    io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
+    io_dec138 U_D9 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
                       .g1(d9_g1_w), .g2a_n(rev), .g2b_n(rev),   // traced: G1 <- RC'd D7.11 strobe-NAND; G2A+G2B bridged <- REV
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
