@@ -6,6 +6,10 @@ command -v git-lfs >/dev/null 2>&1 || { printf >&2 "\n%s\n\n" "This repository i
 input=$(cat)
 printf '%s\n' "$input" | git lfs pre-push "$@" || exit $?
 
+# Stop a push before the deep local guard when the newest conclusive master run
+# for any workflow is red. Missing/unauthenticated gh degrades to a warning.
+scripts/ci_gate.sh || exit $?
+
 # The deep cosim value guard (sync/cosim_check.sh) is intentionally kept out of CI
 # because it is slow. Run it here instead, but only when the commits being pushed
 # actually touch the model it verifies (hdl/, cosim/, roms/) -- doc/routing pushes

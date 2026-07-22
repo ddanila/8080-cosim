@@ -71,9 +71,12 @@ A inputs and traced board RC timing parameters.
 raw polarity through the D30 READY latch; it does not claim complete WAIT timing.
 
 `sync/cosim_check.sh` is slower than the others (it drives `juku_top` to ~20 ms
-of simulated boot); see `docs/cosim-runtime-reference.md`. It is kept out of CI
-and runs automatically via `.githooks/pre-push` before any push that touches
-`hdl/`, `cosim/`, or `roms/` (override a failure with `git push --no-verify`).
+of simulated boot); see `docs/cosim-runtime-reference.md`. Activate the tracked
+hooks once per checkout with `git config core.hooksPath .githooks`. Before a
+push, the hook blocks on the newest conclusive failed master workflow, then runs
+the deep cosim guard when `hdl/`, `cosim/`, or `roms/` changed. `CI_GATE=off`
+overrides only the remote-CI check; `git push --no-verify` bypasses the complete
+hook and should be reserved for a deliberate, documented exception.
 
 CI is split by relevance: `ci.yml` (always-on, syntax + doc consistency),
 `reports.yml` (report-freshness + PROM/photo validation, gated on generator and
