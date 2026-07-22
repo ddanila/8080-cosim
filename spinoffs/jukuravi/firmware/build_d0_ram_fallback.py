@@ -8,7 +8,12 @@ import hashlib
 import sys
 from pathlib import Path
 
-from build_d0_alive import Assembler, ROM_SIZE, emit_alive_beep
+from build_d0_alive import (
+    Assembler,
+    DELAY_COUNT_OFFSET as ALIVE_DELAY_COUNT_OFFSET,
+    ROM_SIZE,
+    emit_alive_beep,
+)
 from build_d0_cpu import (
     EXPECTED_SIGNATURE,
     FAIL_TONE_DIVISOR as CPU_FAIL_TONE_DIVISOR,
@@ -58,6 +63,10 @@ PULSE_GAP_COUNT = 4167          # nominally about 0.05 seconds
 WINDOWS_FOUND_PULSES = 3
 WINDOWS_FOUND_DIVISOR = 1000    # nominal 2 kHz
 CHIP_ID_DIVISOR = 2000          # nominal 1 kHz
+ROM_CHECKSUM_OFFSET = 0x000A
+ROM_CHECKSUM_START = 0x000B
+ROM_CHECKSUM_END = 0x0800
+ROM_CHECK_FAIL_DIVISOR = 1000   # nominal 2 kHz, continuous
 
 
 def lxi_h(asm: Assembler, value: int) -> None:
@@ -176,7 +185,27 @@ def emit_pulse_loop(
     return pulse_offset, gap_offset
 
 
-def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
+def emit_rom_convention_check(asm: Assembler) -> dict[str, int]:
+    """Verify EktaSoft's stored additive checksum without RAM or a stack."""
+    asm.emit(0x16, 0x00)  # MVI D,0 additive accumulator
+    lxi_h(asm, ROM_CHECKSUM_START)
+    asm.lxi_b(ROM_CHECKSUM_END - ROM_CHECKSUM_START)
+    asm.label("rom_checksum_loop")
+    asm.emit(0x7A, 0x86, 0x57)        # MOV A,D / ADD M / MOV D,A
+    asm.emit(0x23, 0x0B, 0x78, 0xB1)  # INX H / DCX B / MOV A,B / ORA C
+    asm.jump(0xC2, "rom_checksum_loop")
+    asm.emit(0x3A, ROM_CHECKSUM_OFFSET & 0xFF, ROM_CHECKSUM_OFFSET >> 8)
+    asm.emit(0xBA)  # CMP D
+    asm.jump(0xC2, "rom_fail")
+    return {
+        "rom_checksum_loop": asm.labels["rom_checksum_loop"],
+        "rom_check_pass": asm.pc,
+    }
+
+
+def build_variant(
+    *, rom_version: int, identity: bytes, rom_convention: bool
+) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -184,12 +213,25 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     end_frame = protocol.encode_frame(protocol.TYPE_RAM_END, end_payload)
 
     asm = Assembler()
+    if rom_convention:
+        # Match the official EktaSoft block-1 layout: reset jumps over a
+        # reserved header whose byte 000Ah stores sum(000Bh..07FFh) mod 256.
+        asm.jump(0xC3, "entry")
+        while asm.pc < ROM_CHECKSUM_OFFSET:
+            asm.emit(0x76)
+        asm.emit(0x00)  # additive checksum placeholder
+        while asm.pc < 0x0010:
+            asm.emit(0x76)
+        asm.label("entry")
+    alive_start = asm.pc
     emit_alive_beep(asm, halt=False)
+    alive_delay_offset = alive_start + ALIVE_DELAY_COUNT_OFFSET
     signature_expected_offset = emit_cpu_self_test(asm)
+    rom_metadata = emit_rom_convention_check(asm) if rom_convention else {}
     local_timeout_offsets = emit_local_usart_test(asm)
     train_timeout_offset = emit_train(asm, failure_label="ram_fallback")
 
-    placeholder_payload = bytes((protocol.PROTOCOL_VERSION, ROM_VERSION, 0, 0))
+    placeholder_payload = bytes((protocol.PROTOCOL_VERSION, rom_version, 0, 0))
     placeholder_banner = protocol.encode_frame(protocol.TYPE_BANNER, placeholder_payload)
     placeholder_ack = protocol.encode_frame(protocol.TYPE_ACK, placeholder_payload)
     banner_timeout_offsets = emit_table_tx(
@@ -221,6 +263,12 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     emit_failure_tone(asm, CPU_FAIL_TONE_DIVISOR)
     cpu_fail_halt = asm.pc
     asm.emit(0x76)
+    rom_fail_halt = -1
+    if rom_convention:
+        asm.label("rom_fail")
+        emit_failure_tone(asm, ROM_CHECK_FAIL_DIVISOR)
+        rom_fail_halt = asm.pc
+        asm.emit(0x76)
     asm.label("usart_fail")
     emit_failure_tone(asm, USART_FAIL_TONE_DIVISOR)
     usart_fail_halt = asm.pc
@@ -274,6 +322,13 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     no_windows_halt = asm.pc
     asm.emit(0x76)
 
+    if rom_convention:
+        if asm.pc > ROM_CHECKSUM_END:
+            raise ValueError(
+                "ROM-convention executable overlaps the protocol-table boundary"
+            )
+        while asm.pc < ROM_CHECKSUM_END:
+            asm.emit(0x76)
     asm.label("banner")
     banner_offset = asm.pc
     asm.emit(*placeholder_banner)
@@ -284,7 +339,13 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     code = bytearray(asm.resolve())
     image = bytearray([0x76] * ROM_SIZE)
     image[: len(code)] = code
-    image[IDENTITY_OFFSET : IDENTITY_OFFSET + len(IDENTITY)] = IDENTITY
+    image[IDENTITY_OFFSET : IDENTITY_OFFSET + len(identity)] = identity
+    rom_checksum = -1
+    if rom_convention:
+        if banner_offset != ROM_CHECKSUM_END:
+            raise ValueError("ROM-convention protocol tables must start at 0800h")
+        rom_checksum = sum(image[ROM_CHECKSUM_START:ROM_CHECKSUM_END]) & 0xFF
+        image[ROM_CHECKSUM_OFFSET] = rom_checksum
     checksum_offsets = [
         banner_offset + 6, banner_offset + 7,
         ack_offset + 6, ack_offset + 7,
@@ -295,15 +356,20 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
         checksum_image[offset] = 0
     checksum = protocol.crc16_ccitt_false(bytes(checksum_image))
     banner_payload = bytes(
-        (protocol.PROTOCOL_VERSION, ROM_VERSION, checksum >> 8, checksum & 0xFF)
+        (protocol.PROTOCOL_VERSION, rom_version, checksum >> 8, checksum & 0xFF)
     )
     banner = protocol.encode_frame(protocol.TYPE_BANNER, banner_payload)
     ack = protocol.encode_frame(protocol.TYPE_ACK, banner_payload)
     image[banner_offset : banner_offset + len(banner)] = banner
     image[ack_offset : ack_offset + len(ack)] = ack
+    if rom_convention:
+        computed = sum(image[ROM_CHECKSUM_START:ROM_CHECKSUM_END]) & 0xFF
+        if computed != rom_checksum:
+            raise ValueError("protocol patch changed the historical ROM checksum")
 
     metadata: dict[str, int | list[int] | bytes] = {
         "code_size": len(code),
+        "alive_delay_offset": alive_delay_offset,
         "signature_expected_offset": signature_expected_offset,
         "local_timeout_offsets": local_timeout_offsets,
         "train_timeout_offset": train_timeout_offset,
@@ -316,6 +382,7 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
         "final_empty_timeout_offset": final_empty_timeout_offset,
         "success_halt": success_halt,
         "cpu_fail_halt": cpu_fail_halt,
+        "rom_fail_halt": rom_fail_halt,
         "usart_fail_halt": usart_fail_halt,
         "ram_fallback": asm.labels["ram_fallback"],
         "windows_found_halt": windows_found_halt,
@@ -338,9 +405,21 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
         "ack": ack,
         "begin_frame": begin_frame,
         "end_frame": end_frame,
+        "rom_checksum_offset": ROM_CHECKSUM_OFFSET,
+        "rom_checksum_start": ROM_CHECKSUM_START,
+        "rom_checksum_end": ROM_CHECKSUM_END,
+        "rom_checksum": rom_checksum,
+        "rom_fault_offset": ROM_CHECKSUM_END - 1,
+        **rom_metadata,
         **survey_metadata,
     }
     return bytes(image), metadata
+
+
+def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
+    return build_variant(
+        rom_version=ROM_VERSION, identity=IDENTITY, rom_convention=False
+    )
 
 
 def main() -> int:

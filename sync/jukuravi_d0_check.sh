@@ -12,6 +12,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -27,6 +28,8 @@ python3 tests/jukuravi_d0_ram_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-ram.bin
 python3 tests/jukuravi_d0_ram_fallback_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-ram-fallback.bin
+python3 tests/jukuravi_d0_romcheck_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-romcheck.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 python3 - "$tmp/success.hex" "$tmp/failure.hex" <<'PY'
@@ -279,6 +282,51 @@ for fixture in clean fault; do
   printf '%s\n' "$hdl_out"
   grep -q "JUKURAVI-D0-RAM-FALLBACK-HDL: PASS" <<<"$hdl_out"
   if grep -q "JUKURAVI-D0-RAM-FALLBACK-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+python3 - "$tmp/romcheck-clean.hex" "$tmp/romcheck-corrupt.hex" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "spinoffs/jukuravi/firmware"))
+import build_d0_romcheck
+
+image, metadata = build_d0_romcheck.build()
+clean = bytearray(image + bytes([0x76]) * 8192)
+# Compress only the already-guarded alive delay. Since that immediate is in
+# block 1, regenerate the fixture's historical stored sum before injection.
+alive = int(metadata["alive_delay_offset"])
+clean[alive] = 1
+clean[alive + 1] = 0
+offset = int(metadata["rom_checksum_offset"])
+start = int(metadata["rom_checksum_start"])
+end = int(metadata["rom_checksum_end"])
+clean[offset] = sum(clean[start:end]) & 0xFF
+corrupt = bytearray(clean)
+corrupt[int(metadata["rom_fault_offset"])] ^= 1
+for path, data in zip(map(Path, sys.argv[1:]), (clean, corrupt)):
+    path.write_text("\n".join(f"{byte:02x}" for byte in data) + "\n")
+PY
+romcheck_fail_pc=$(
+  PYTHONPATH=spinoffs/jukuravi/firmware python3 - <<'PY'
+import build_d0_romcheck
+_, metadata = build_d0_romcheck.build()
+print(f"{metadata['rom_fail_halt']:04x}")
+PY
+)
+iverilog -g2012 -o "$tmp/jukuravi_d0_romcheck_tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
+  hdl/sim/jukuravi_d0_romcheck_tb.v
+for fixture in clean corrupt; do
+  args=(+rom="$tmp/romcheck-$fixture.hex" +rom_fail="$romcheck_fail_pc")
+  [[ $fixture == corrupt ]] && args+=(+expect_fail)
+  hdl_out=$(vvp "$tmp/jukuravi_d0_romcheck_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-ROMCHECK-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-ROMCHECK-HDL: FAIL" <<<"$hdl_out"; then
     exit 1
   fi
 done

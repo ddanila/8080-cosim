@@ -1615,8 +1615,13 @@ an active `/Q1` feedback output.
    125 Hz tail declares no window. Exact-image cosim retains the acknowledged
    192-page path and proves clean/no-ACK plus global-D87-dead/no-ACK outcomes;
    the vm80a full top executes both fallback results through the bit-sliced
-   DRAM bank with exact traffic and cadence. The remaining D0 ROM-convention
-   and PPI/PIT/PIC register tests are next.
+   DRAM bank with exact traffic and cadence. The next cumulative image adopts
+   the official EktaSoft block-1 convention: `000A` stores the additive sum of
+   `000B..07FF`, and a stack-free runtime loop checks all 2,037 bytes after the
+   CPU signature but before D11 or RAM activity. Exact-image cosim retains the
+   acknowledged survey and no-ACK fallback, while a `07FF` bit flip reaches
+   only the continuous nominal 2 kHz ROM-bad tone; clean/corrupt vm80a paths
+   prove the same D15 read branch. PPI/PIT/PIC register tests are next.
 
 ## Physical bring-up sequence
 
@@ -1667,6 +1672,10 @@ Once a released board and programmed parts exist:
   no-ACK fixed-window tests, windows-found cadence, D84–D91 chip-ID count, and
   no-window continuous tone execute for clean and globally dead-bit RAM in
   cosim and through the bit-sliced vm80a HDL DRAM bank.
+- [x] Jukuravi D0 rung 5a has an exact-hash-guarded cumulative D15 image whose
+  official `000A=sum(000B..07FF)` convention, clean continuation, and distinct
+  corrupt-ROM halt execute in cosim and through vm80a's physical D15 path
+  before USART, RAM, interrupts, or a memory-mode change.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

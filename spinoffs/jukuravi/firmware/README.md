@@ -2,7 +2,7 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–4B SIMULATION CHECKPOINT — SERIAL-DEAD RAM FALLBACK GUARDED**
+Status: **D0 RUNGS 1–5A SIMULATION CHECKPOINT — ROM CONVENTION GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
@@ -10,7 +10,8 @@ not read by these checkpoints. `diag-d0-alive.bin` isolates rung 1,
 `diag-d0-cpu.bin` adds rung 2, `diag-d0-usart-local.bin` isolates the local
 D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake, and
 `diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey, and
-`diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback.
+`diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback, and
+`diag-d0-romcheck.bin` adds the historical ROM block-1 convention self-test.
 
 SHA256:
 
@@ -21,6 +22,7 @@ c708f78adc9b87ba6dfc926314f3937798814d79f1e66512c9ae8d1db8b03a7f  diag-d0-usart-
 e9bebf4cbcca4556a779eef3fcb42f69706892df28a2cc93fc1f3a5d235eb2e0  diag-d0-serial.bin
 50f35da507947232c2e2ab0e7b6ab519f3ce16e8310c4c1f02d544b504149baf  diag-d0-ram.bin
 96a9417e4dc3a9270671d76b85500727d8a519c76ff977f15fd48e9f3076c8fc  diag-d0-ram-fallback.bin
+d102a6320f9446e103ab34a07b73ddca72907163a9444c061efdccbd47841da5  diag-d0-romcheck.bin
 ```
 
 ## Build and guard
@@ -32,6 +34,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
 sync/jukuravi_d0_check.sh
 ```
 
@@ -39,7 +42,8 @@ The builders are the sources of truth and deterministically emit the committed
 images. The alive-only executed code is 30 bytes. The combined CPU image
 contains 382 bytes; the local-USART image contains 509; the serial image
 contains 684; the RAM-survey image contains 1,496; the fallback image contains
-1,967. Their identities are stored at `0x1F00`, and unused space is fail-closed
+1,967; the ROM-convention builder span is 2,066 bytes. Their identities are
+stored at `0x1F00`, and unused space is fail-closed
 `HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
@@ -275,6 +279,7 @@ The audible vocabulary is now executable and unambiguous by cadence:
 | --- | --- |
 | alive | one approximately 0.5 s nominal 1 kHz beep |
 | CPU bad | continuous nominal 250 Hz |
+| ROM block-1 checksum bad | continuous nominal 2 kHz after the alive beep |
 | local USART bad | continuous nominal 500 Hz |
 | serial confirmed | one approximately 0.125 s nominal 2 kHz beep |
 | serial dead before fallback | one approximately 0.25 s nominal 125 Hz marker |
@@ -300,6 +305,50 @@ physical writes and reads through D84–D91, check all banner/timer/cadence
 operations, retain mode 0 and IFF clear, and reach their distinct terminal
 states.
 
+## Rung 5a: historical ROM block-1 convention
+
+The next cumulative image advertises ROM version `04`, full-image
+self-checksum `1198`, and these exact handshake records:
+
+```text
+banner: A5 5A 01 04 01 04 11 98 98
+ack:    A5 5A 81 04 01 04 11 98 74
+```
+
+It also adopts and executes EktaSoft's own early-ROM integrity convention:
+byte `0x000A` stores the eight-bit additive sum of bytes
+`0x000B..0x07FF`. The exact diagnostic value is `CF`. Reset now executes
+`JMP 0010h` over the reserved header. After the alive beep and proven CPU
+signature, a stack-free loop reads all 2,037 covered bytes through D15, compares
+the computed sum with `0x000A`, and only then begins the local USART test. A
+mismatch programs a continuous nominal 2 kHz tone and halts before any USART,
+PPI, RAM, or memory-mode write.
+
+This layout is source-compatible rather than merely checksum-equivalent. All
+five official repository EktaSoft images use the same bounds and pass with
+stored values `7B`, `D3`, `8F`, `EE`, and `1A` for versions 2.4, 3.1, 3.2,
+3.5, and 3.7. The diagnostic's banner and ACK tables start exactly at
+`0x0800`, outside the additive block, so the historical sum and framed
+full-image CRC have no circular dependency. The CRC-16 still covers the stored
+`CF`; only its own four payload copies and two derived frame CRC bytes retain
+the previously documented zeroing rule.
+
+The runtime verdict intentionally claims only that historical block, not an
+independent readback of all 8 KiB. Every diagnostic instruction after the
+reset header fits below `0x0800`; later bytes contain protocol/identity data
+and fail-closed fill, while the host-visible CRC-16 names the exact complete
+burn image.
+
+`tests/jukuravi_d0_romcheck_test.py` proves the exact burn image against the
+five official headers, re-runs both the acknowledged 192-page survey and the
+no-ACK clean fallback, and flips the fail-closed byte at `0x07FF`. The corrupt
+image executes exactly 2,037 checksum-loop iterations, transmits nothing,
+writes no RAM, and reaches only the continuous 2 kHz ROM-fail halt. The vm80a
+fixture shortens only the alive delay and regenerates its stored block sum;
+clean D15 data reaches the first post-check USART recovery write, while the
+same `0x07FF` bit flip reaches the ROM-fail tone with zero RAM writes. Both
+paths retain mode 0, IFF clear, and the `D0` CPU signature.
+
 Broader row/column-shaped fault generators and the user-facing session CLI
 remain later host-tool work; rung 4's required serial and beep-only RAM paths
 are now both represented by exact burn images.
@@ -308,4 +357,4 @@ The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next D0
-firmware rung is the remaining ROM-convention and PPI/PIT/PIC register tests.
+firmware rung is the remaining PPI/PIT/PIC register-wiggle tests.

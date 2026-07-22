@@ -23,6 +23,21 @@ sync/cosim_check.sh
 Runtime is dominated by driving `juku_top` to ~20 ms of simulated boot (a few minutes), not by a
 multi-hour full-banner run. `WINDOW` (ns) and `TRACE_LIMIT` (reads) bound it.
 
+## EktaSoft block-1 checksum convention
+
+The boot ROM stores at `0x000A` the eight-bit additive sum of bytes
+`0x000B..0x07FF`. This is the convention exercised by the checksum routine at
+`0x03E0`; `cosim/trace.c` logs its computed/stored comparison. All five
+official repository images satisfy it: EktaSoft 2.4/3.1/3.2/3.5/3.7 store
+`7B`/`D3`/`8F`/`EE`/`1A`, respectively. The homebrew 4.3 image is the known
+counterexample: it stores stale `F2` while its covered bytes compute to `57`,
+so the boot harness applies its explicitly logged compatibility patch.
+
+Jukuravi rung 5a deliberately uses these exact offsets rather than inventing a
+second short-ROM convention. Its D15-only diagnostic reserves `0x000A`, starts
+framed protocol tables at `0x0800`, and recomputes all 2,037 covered bytes at
+runtime before touching the USART or RAM.
+
 ## Why it references cosim, not a second Verilog model
 
 Until 2026-07-14 this guard locked `juku_top` against a second Verilog model, `juku_struct` (a
