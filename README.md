@@ -13,6 +13,9 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
+- The C emulator also has an opt-in D11/8251 PTY transport for diagnostic-ROM
+  development. Its data/status mirrors, ready transitions, TX, and RX/echo are
+  guarded by `tests/cosim_usart_pty_test.py` via `sync/juk_disk_check.sh`.
 - `sync/check.sh` currently compares 117 mapped instances and 309 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live

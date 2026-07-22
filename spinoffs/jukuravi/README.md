@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-22.
 
-Status: **PLANNED / ASSESSED — no execution yet.**
+Status: **EXECUTION STARTED — cosim 8251/PTY transport guarded; diagnostic ROM next.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -214,10 +214,18 @@ A Nano is sufficient for every stage except the optional bus-master stage
 
 ## The cosim-first loop
 
-The one gap: **cosim does not model the 8251 at all** (`cosim/trace.c` has
-keyboard/PPI/video, no USART). The natural first commit of this spin-off is a
-minimal 8251 model — data/status at `0x08/0x09`, TX/RX on a pty or socket.
-Then:
+The first infrastructure gap is closed in root `cosim/trace.c`: opt-in
+`JUKU_USART_PTY` attaches either a host-created PTY or an automatically created
+one, and models the D11 data/status mirrors at `0x08..0x0B`, the 8251
+mode/command sequence, TxRDY/RxRDY/TxEMPTY, and one-byte TX/RX holding
+registers. `tests/cosim_usart_pty_test.py`, run by `sync/juk_disk_check.sh`,
+executes a stack-free synthetic 8080 ROM through a real PTY: it sends `55 A5`,
+receives `3C`, echoes it, and can finish only after observing the ready-state
+transitions. The model is deliberately limited to the async slice needed by
+the harness; sync/parity and physical baud timing remain outside this step.
+
+The next implementation step is the first diagnostic-ROM rung against this
+transport. Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
   twin (`sync/cosim_check.sh` precedent);
@@ -267,7 +275,7 @@ root first.
 
 Before bench connection, at minimum:
 
-1. 8251 model merged in root `cosim/` with a pty/socket transport;
+1. **DONE:** 8251 model merged in root `cosim/` with guarded PTY transport;
 2. diagnostic ROM passes in cosim **and** the HDL twin, including injected
    faults (each fault class produces the intended verdict);
 3. host tool round-trips the full protocol against cosim;

@@ -39,7 +39,7 @@
     "uart_ctl": {"port": 9, "port_hex": "0x09", "device": "8251-class USART (D11)", "role": "A0=1: mode/command write, status read (TxRDY/RxRDY/TxEMPTY)"},
     "uart_window_hex": "0x08-0x0B",
     "fdc": {"ports": [28, 29, 30, 31], "ports_hex": "0x1C-0x1F", "device": "ВГ93/WD1793-class FDC", "role": "port & 3 = command/status, track, sector, data (0x1F)"},
-    "provenance": "cosim/trace.c:255-260 (PIC 0x00/0x01), :253 (0x04 kbd col), :220 (0x05 kbd read), :263-277 (0x06/0x07 Port C mode), :221 & :250 (0x1C-0x1F FDC); USART window 0x08-0x0B from docs/serial-handoff.md ('bus-visible at the decoded 0x08..0x0B USART window') + hdl/juku_top.v cs_sio0_n on the '138 decode row"
+    "provenance": "cosim/trace.c port dispatcher (PIC 0x00/0x01, PPI 0x04-0x07, opt-in D11 USART mirrors 0x08-0x0B, FDC 0x1C-0x1F); USART decode corroborated by docs/serial-handoff.md and hdl/juku_top.v cs_sio0_n on the '138 decode row"
   },
 
   "pic_wiring": {

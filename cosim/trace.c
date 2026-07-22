@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 600
+
 // Traced 8080 boot harness for the Juku E5104 (ekta43.bin).
 //
 // Memory model is now faithful to MAME's ussr/juku.cpp (BSD-3, ref/mame_juku.cpp):
@@ -20,13 +22,19 @@
 //     bytes 0x000B..0x07FF sum to 0x57); patched at load so it boots too. All 5
 //     official ekta ROMs pass block-1; only ekta43 fails (confirms our checksum).
 //
-// Build: cc -O2 -o trace trace.c i8080.c
+// Build: cc -O2 -o trace trace.c i8080.c juk_disk.c juku_fdc.c
 // Run:   ./trace /path/to/ekta43.bin [max_cycles]
+// USART: JUKU_USART_PTY=auto prints a new slave path; a host-created PTY path
+//        may be supplied instead. JUKU_USART_BYTE_CYCLES controls ready delay.
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <unistd.h>
 #include "i8080.h"
 #include "juk_disk.h"
 #include "juku_fdc.h"
@@ -59,6 +67,161 @@ static unsigned long fdc_data_reads, stop_fdc_data_reads;
 static unsigned long fdc_last_cyc;
 static int           timing_log = 0;
 static int           io_trace = 0;
+
+// --- minimal 8251 USART + PTY transport (opt-in via JUKU_USART_PTY) -------
+// The diagnostic-ROM path needs only the asynchronous 8-bit mode/command
+// sequence, TxRDY/RxRDY/TxEMPTY, and one-byte TX/RX holding registers.  The
+// PTY is deliberately byte-oriented: baud recovery belongs to the Nano/host
+// protocol, while this model preserves the firmware-visible ready transition.
+typedef struct {
+  int fd;
+  int enabled;
+  int expect_mode;
+  uint8_t mode_word;
+  uint8_t command;
+  uint8_t rx_data;
+  uint8_t tx_data;
+  int rx_ready;
+  int tx_busy;
+  unsigned long tx_complete_cyc;
+  unsigned long byte_cycles;
+  unsigned long tx_bytes;
+  unsigned long rx_bytes;
+} juku_usart;
+
+static juku_usart usart = {
+  .fd = -1,
+  .expect_mode = 1,
+  .byte_cycles = 256,
+};
+
+static int env_enabled(const char* value) {
+  return value && value[0] && strcmp(value, "0") != 0;
+}
+
+static int set_raw_tty(int fd) {
+  struct termios tty;
+  if (tcgetattr(fd, &tty) != 0) return -1;
+  tty.c_iflag &= (tcflag_t)~(IGNBRK | BRKINT | PARMRK | ISTRIP |
+                             INLCR | IGNCR | ICRNL | IXON);
+  tty.c_oflag &= (tcflag_t)~OPOST;
+  tty.c_lflag &= (tcflag_t)~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+  tty.c_cflag &= (tcflag_t)~(CSIZE | PARENB);
+  tty.c_cflag |= CS8 | CLOCAL | CREAD;
+  tty.c_cc[VMIN] = 0;
+  tty.c_cc[VTIME] = 0;
+  return tcsetattr(fd, TCSANOW, &tty);
+}
+
+static int set_nonblocking(int fd) {
+  int flags = fcntl(fd, F_GETFL, 0);
+  return flags < 0 ? -1 : fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+}
+
+static int usart_open_transport(const char* setting) {
+  if (!setting || !setting[0]) return 0;
+
+  int fd;
+  if (strcmp(setting, "auto") == 0) {
+    fd = posix_openpt(O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if (fd < 0 || grantpt(fd) != 0 || unlockpt(fd) != 0) {
+      if (fd >= 0) close(fd);
+      return -1;
+    }
+    char* slave_name = ptsname(fd);
+    if (!slave_name) {
+      close(fd);
+      return -1;
+    }
+    int slave = open(slave_name, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if (slave < 0 || set_raw_tty(slave) != 0) {
+      if (slave >= 0) close(slave);
+      close(fd);
+      return -1;
+    }
+    close(slave);
+    fprintf(stderr, "[USART] PTY slave=%s\n", slave_name);
+  } else {
+    fd = open(setting, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if (fd < 0 || set_raw_tty(fd) != 0) {
+      if (fd >= 0) close(fd);
+      return -1;
+    }
+    fprintf(stderr, "[USART] attached PTY=%s\n", setting);
+  }
+  if (set_nonblocking(fd) != 0) {
+    close(fd);
+    return -1;
+  }
+  usart.fd = fd;
+  usart.enabled = 1;
+  return 0;
+}
+
+static void usart_reset(void) {
+  usart.expect_mode = 1;
+  usart.mode_word = 0;
+  usart.command = 0;
+  usart.rx_ready = 0;
+  usart.tx_busy = 0;
+}
+
+static void usart_poll(unsigned long cyc) {
+  if (!usart.enabled) return;
+  if (usart.tx_busy && cyc >= usart.tx_complete_cyc) {
+    ssize_t written = write(usart.fd, &usart.tx_data, 1);
+    if (written == 1) {
+      usart.tx_busy = 0;
+      usart.tx_bytes++;
+    } else if (written < 0 && errno != EAGAIN && errno != EWOULDBLOCK && errno != EIO) {
+      perror("JUKU USART PTY write");
+      exit(2);
+    }
+  }
+  if ((usart.command & 0x04) && !usart.rx_ready) {
+    uint8_t value;
+    ssize_t received = read(usart.fd, &value, 1);
+    if (received == 1) {
+      usart.rx_data = value;
+      usart.rx_ready = 1;
+      usart.rx_bytes++;
+    } else if (received < 0 && errno != EAGAIN && errno != EWOULDBLOCK && errno != EIO) {
+      perror("JUKU USART PTY read");
+      exit(2);
+    }
+  }
+}
+
+static uint8_t usart_status(void) {
+  return (uint8_t)((usart.tx_busy ? 0 : 0x05) | (usart.rx_ready ? 0x02 : 0));
+}
+
+static uint8_t usart_read(int control, unsigned long cyc) {
+  usart_poll(cyc);
+  if (control) return usart_status();
+  uint8_t value = usart.rx_data;
+  usart.rx_ready = 0;
+  return value;
+}
+
+static void usart_write(int control, uint8_t value, unsigned long cyc) {
+  usart_poll(cyc);
+  if (control) {
+    if (usart.expect_mode) {
+      usart.mode_word = value;
+      usart.expect_mode = 0;
+    } else if (value & 0x40) {
+      usart_reset();
+    } else {
+      usart.command = value;
+      if (value & 0x10) usart.rx_ready = 0;
+    }
+  } else if ((usart.command & 0x01) && !usart.tx_busy) {
+    usart.tx_data = value;
+    usart.tx_busy = 1;
+    usart.tx_complete_cyc = cyc + usart.byte_cycles;
+  }
+}
 
 static void set_mode(int m) {
   if (m != mode) {
@@ -214,16 +377,18 @@ static void sync_fdc_time(i8080* cpu) {
 }
 
 static uint8_t pin(void* u, uint8_t p) {
-  sync_fdc_time((i8080*)u);
+  i8080* cpu = (i8080*)u;
+  sync_fdc_time(cpu);
   if (!in_seen[p]) { in_seen[p] = 1; fprintf(stderr, "[IN ] first read  port 0x%02X\n", p); }
   if (timing_log && in_count[p] == 0) {
-    i8080* cpu = (i8080*)u;
     fprintf(stderr, "[IOT] first IN  port 0x%02X cyc=%lu pc=%04X g_vw=%lu\n",
             p, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw);
   }
   in_count[p]++;
   uint8_t value;
   if (p == 0x05 && kbd_enabled) value = kbd_portb();             // 8255 Port B = keyboard 74148
+  else if (usart.enabled && p >= 0x08 && p <= 0x0B)
+    value = usart_read(p & 1, cpu ? cpu->cyc : 0);
   else if (fdc_enabled && p >= 0x1C && p <= 0x1F) {
     value = juku_fdc_read(&fdc, p & 3);
     if (fdc_bus_invert) value = (uint8_t)~value;
@@ -231,7 +396,6 @@ static uint8_t pin(void* u, uint8_t p) {
   }
   else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
   if (io_trace) {
-    i8080* cpu = (i8080*)u;
     fprintf(stderr, "[IOSEQ] IN  port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, value, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, in_count[p]);
   }
@@ -239,22 +403,23 @@ static uint8_t pin(void* u, uint8_t p) {
 }
 
 static void pout(void* u, uint8_t p, uint8_t v) {
-  sync_fdc_time((i8080*)u);
+  i8080* cpu = (i8080*)u;
+  sync_fdc_time(cpu);
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
   if (timing_log && out_count[p] == 0) {
-    i8080* cpu = (i8080*)u;
     fprintf(stderr, "[IOT] first OUT port 0x%02X val=0x%02X cyc=%lu pc=%04X g_vw=%lu\n",
             p, v, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw);
   }
   out_count[p]++;
   out_last[p] = v;
   if (io_trace) {
-    i8080* cpu = (i8080*)u;
     fprintf(stderr, "[IOSEQ] OUT port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, v, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, out_count[p]);
   }
   if (fdc_enabled && p >= 0x1C && p <= 0x1F)
     juku_fdc_write(&fdc, p & 3, fdc_bus_invert ? (uint8_t)~v : v);
+  if (usart.enabled && p >= 0x08 && p <= 0x0B)
+    usart_write(p & 1, v, cpu ? cpu->cyc : 0);
 
   if (p == 0x04) kbd_col = v & 0x0F;   // 8255 Port A low nibble = keyboard column select
 
@@ -380,6 +545,12 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "fdc_drq_ticks=%u\n", fdc.drq_ticks);
   fprintf(state_out, "fdc_write_first_byte_pending=%d\n", fdc.write_first_byte_pending);
   fprintf(state_out, "fdc_data_reads=%lu\n", fdc_data_reads);
+  fprintf(state_out, "usart_enabled=%d\n", usart.enabled);
+  fprintf(state_out, "usart_mode=%02X\n", usart.mode_word);
+  fprintf(state_out, "usart_command=%02X\n", usart.command);
+  fprintf(state_out, "usart_status=%02X\n", usart_status());
+  fprintf(state_out, "usart_tx_bytes=%lu\n", usart.tx_bytes);
+  fprintf(state_out, "usart_rx_bytes=%lu\n", usart.rx_bytes);
   for (int p = 0; p < 256; p++) {
     if (out_count[p] || in_count[p] || out_last[p])
       fprintf(state_out, "port_%02X=last:%02X,out:%lu,in:%lu\n",
@@ -427,6 +598,16 @@ int main(int argc, char** argv) {
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
   io_trace = getenv("JUKU_TRACE_IO") && getenv("JUKU_TRACE_IO")[0] &&
              strcmp(getenv("JUKU_TRACE_IO"), "0") != 0;
+  const char* usart_pty = getenv("JUKU_USART_PTY");
+  const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
+  if (usart_byte_cycles && usart_byte_cycles[0]) {
+    usart.byte_cycles = strtoul(usart_byte_cycles, 0, 0);
+    if (!usart.byte_cycles) usart.byte_cycles = 1;
+  }
+  if (env_enabled(usart_pty) && usart_open_transport(usart_pty) != 0) {
+    fprintf(stderr, "JUKU_USART_PTY=%s could not be opened: %s\n", usart_pty, strerror(errno));
+    return 2;
+  }
   const char* fdc_bus_invert_env = getenv("JUKU_FDC_BUS_INVERT");
   fdc_bus_invert = fdc_bus_invert_env && fdc_bus_invert_env[0] &&
                    strcmp(fdc_bus_invert_env, "0") != 0;
@@ -503,6 +684,7 @@ int main(int argc, char** argv) {
               cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
     i8080_step(&cpu);
     sync_fdc_time(&cpu);
+    usart_poll(cpu.cyc);
     // --- frame interrupt: 8253 VER-RTR -> 8259 IR5 -> CPU (MCS-80 CALL to the ICW vector) ---
     if (frame_cyc && cpu.cyc >= next_frame) {
       next_frame += frame_cyc;
@@ -581,5 +763,6 @@ int main(int argc, char** argv) {
            printf("\nwrote vram.bin (%d bytes, %dx%d @ 0x%04X)\n",
                   VID_STRIDE * VID_LINES, VID_STRIDE * 8, VID_LINES, VRAM_BASE); }
   if (fdc_enabled) juk_disk_close(&disk);
+  if (usart.fd >= 0) close(usart.fd);
   return 0;
 }

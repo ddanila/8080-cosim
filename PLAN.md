@@ -27,8 +27,8 @@ they are subordinate to, and linked from, this project-wide plan.
 
 Tape, classroom networking, mouse, and Multibus expansion are outside the
 current critical path. The VJUGA/minimal-VGA board is a separate experiment and
-is not a prerequisite for this replica, as is Jukuravi, the planned diagnostic
-harness for the real .009 board (`spinoffs/jukuravi/README.md`).
+is not a prerequisite for this replica, as is Jukuravi, the in-progress
+diagnostic harness for the real .009 board (`spinoffs/jukuravi/README.md`).
 
 ## Verified repository state
 
@@ -1554,6 +1554,13 @@ an active `/Q1` feedback output.
    three-byte-context donor and rejects the tempting `0x3BAA` EktaSoft match as
    a different restart-vector initializer; blocks 6 and 7 remain unpatched.
 4. Extend sound/serial behavior only to answer concrete bench questions.
+   The first Jukuravi prerequisite is now guarded: opt-in cosim D11/8251
+   data/status mirrors at `0x08..0x0B` implement the async mode/command and
+   TxRDY/RxRDY/TxEMPTY slice over a real PTY. A stack-free synthetic ROM sends
+   `55 A5`, receives `3C`, and echoes it through the same transport
+   (`tests/cosim_usart_pty_test.py`). The first diagnostic-ROM boot rung is the
+   next harness implementation step; sync/parity modes and physical baud
+   timing remain outside this bounded model.
 
 ## Physical bring-up sequence
 
@@ -1581,6 +1588,8 @@ Once a released board and programmed parts exist:
   forbids upload or ordering.
 - [x] Deep value-level cosim guard reaches `CTRACE-END` across the default
   130,000-read window and fails on any address/data divergence.
+- [x] Cosim exposes a regression-guarded 8251 async data/status slice through
+  a PTY for Jukuravi diagnostic-ROM and host-tool development.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

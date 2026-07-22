@@ -23,6 +23,7 @@ trap 'rm -rf "$tmp"' EXIT
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
+python3 tests/cosim_usart_pty_test.py "$tmp/trace"
 root=$PWD
 (
   cd "$tmp"
