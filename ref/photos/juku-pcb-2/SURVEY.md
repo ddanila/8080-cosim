@@ -50,7 +50,7 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
 Two additional owner photographs (outside the original 50-photo session)
 close the X3 serial connector's physical identity:
 
-- `x3-bracket-face-20260722.png` — bracket edge-on view of X4 and X3. The X3
+- `x3-bracket-face-20260722.jpg` — bracket edge-on view of X4 and X3. The X3
   insert is a hoodless brown rectangular panel connector with a spring-bail
   retainer and **12 contacts in two rows of six**, with molded contact
   numbers `1` and `12` visible on the insert corners. In the РШ2Н/РГ1Н

@@ -79,7 +79,7 @@ AUTHENTIC_MARK = {
     # connector; X3 is photo-closed as a 12-contact РГ1Н-1-4 panel socket
     # (two rows of six, molded 1/12 contact numbers, hoodless with spring
     # bail; cable mate is РШ2Н-1-23/-24). Evidence:
-    # ref/photos/juku-pcb-2/x3-bracket-face-20260722.png and SURVEY.md.
+    # ref/photos/juku-pcb-2/x3-bracket-face-20260722.jpg and SURVEY.md.
     "SERIAL_CONN": "РГ1Н-1-4 12-contact serial socket (cable mate РШ2Н-1-23/-24)",
     "POWER_CONN": "СНО51-30/56х9В-23 power connector",
     "KBD_CONN": "keyboard connector",
