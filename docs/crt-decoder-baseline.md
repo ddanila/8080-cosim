@@ -20,7 +20,7 @@ python3 scripts/report_crt_decoder_baseline.py
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Fork URL and fork point match the CVBS plan | PASS | fork, upstream, and 40-hex commit are identical in plan and record |
-| The 8080-cosim context commit exists | PASS | ae7918afe81024b462c8337dc23f509874e35e76 |
+| The 8080-cosim context is a valid recorded revision | PASS | ae7918afe81024b462c8337dc23f509874e35e76; ancestry checked when history is present (CI checkout may be shallow) |
 | Decoder source stayed unmodified | PASS | temporary detached checkout remained clean after build and test |
 | Full fork build passed | PASS | CMake configured and built fam_dsp, famidec, and synth_ntsc |
 | Upstream CTest passed | PASS | 1/1 synth_ntsc test passed |

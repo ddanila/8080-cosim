@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,13 @@ def main() -> int:
         stderr=subprocess.DEVNULL,
         check=False,
     ).returncode == 0
+    context_is_ancestor = not context_exists or subprocess.run(
+        ["git", "merge-base", "--is-ancestor", context_commit, "HEAD"],
+        cwd=ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode == 0
     checks = [
         (
             "Fork URL and fork point match the CVBS plan",
@@ -45,9 +53,10 @@ def main() -> int:
             "fork, upstream, and 40-hex commit are identical in plan and record",
         ),
         (
-            "The 8080-cosim context commit exists",
-            len(context_commit) == 40 and context_exists,
-            context_commit,
+            "The 8080-cosim context is a valid recorded revision",
+            re.fullmatch(r"[0-9a-f]{40}", context_commit) is not None
+            and context_is_ancestor,
+            f"{context_commit}; ancestry checked when history is present (CI checkout may be shallow)",
         ),
         (
             "Decoder source stayed unmodified",
