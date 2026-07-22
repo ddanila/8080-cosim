@@ -32,6 +32,7 @@
 //        (ADDR=* applies the stuck masks globally);
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
 // PIC:   JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH faults the 8259 IMR readback.
+// PPI:   JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D27 port readback.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,6 +85,10 @@ static uint8_t       ram_alias_page_b = 0;
 static int           pic_fault_enabled = 0;
 static uint8_t       pic_fault_stuck_low = 0;
 static uint8_t       pic_fault_stuck_high = 0;
+static int           ppi_fault_enabled = 0;
+static uint8_t       ppi_fault_port = 0;
+static uint8_t       ppi_fault_stuck_low = 0;
+static uint8_t       ppi_fault_stuck_high = 0;
 
 static uint8_t apply_ram_fault(uint16_t address, uint8_t value) {
   if (!ram_fault_enabled || (!ram_fault_all && address != ram_fault_addr))
@@ -449,6 +454,9 @@ static uint8_t pin(void* u, uint8_t p) {
   if (p == 0x01 && pic_fault_enabled)
     value = (uint8_t)((value & (uint8_t)~pic_fault_stuck_low) |
                       pic_fault_stuck_high);
+  if (p == ppi_fault_port && ppi_fault_enabled)
+    value = (uint8_t)((value & (uint8_t)~ppi_fault_stuck_low) |
+                      ppi_fault_stuck_high);
   if (io_trace) {
     fprintf(stderr, "[IOSEQ] IN  port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, value, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, in_count[p]);
@@ -594,6 +602,14 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "pic_fault_enabled=%d\n", pic_fault_enabled);
   fprintf(state_out, "pic_fault_stuck_low=%02X\n", pic_fault_stuck_low);
   fprintf(state_out, "pic_fault_stuck_high=%02X\n", pic_fault_stuck_high);
+  fprintf(state_out, "ppi1_control=%02X\n", out_last[0x0F]);
+  fprintf(state_out, "ppi1_pa_latch=%02X\n", out_last[0x0C]);
+  fprintf(state_out, "ppi1_pb_latch=%02X\n", out_last[0x0D]);
+  fprintf(state_out, "ppi1_pc_latch=%02X\n", out_last[0x0E]);
+  fprintf(state_out, "ppi_fault_enabled=%d\n", ppi_fault_enabled);
+  fprintf(state_out, "ppi_fault_port=%02X\n", ppi_fault_port);
+  fprintf(state_out, "ppi_fault_stuck_low=%02X\n", ppi_fault_stuck_low);
+  fprintf(state_out, "ppi_fault_stuck_high=%02X\n", ppi_fault_stuck_high);
   fprintf(state_out, "fdc_enabled=%d\n", fdc_enabled);
   fprintf(state_out, "fdc_bus_invert=%d\n", fdc_bus_invert);
   fprintf(state_out, "fdc_head=%d\n", fdc.head);
@@ -673,6 +689,7 @@ int main(int argc, char** argv) {
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
   const char* pic_fault = getenv("JUKU_PIC_FAULT");
+  const char* ppi_fault = getenv("JUKU_PPI_FAULT");
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
     usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
     if (!usart.transfer_cycles) usart.transfer_cycles = 1;
@@ -703,6 +720,27 @@ int main(int argc, char** argv) {
     pic_fault_stuck_high = (uint8_t)stuck_high;
     fprintf(stderr, "[PIC] IMR fault stuck-low=0x%02X stuck-high=0x%02X\n",
             pic_fault_stuck_low, pic_fault_stuck_high);
+  }
+  if (ppi_fault && ppi_fault[0]) {
+    unsigned port, stuck_low, stuck_high;
+    char trailing;
+    if (sscanf(ppi_fault, "%x:%x:%x%c", &port, &stuck_low, &stuck_high,
+               &trailing) != 3 ||
+        port < 0x0C || port > 0x0E || stuck_low > 0xFF ||
+        stuck_high > 0xFF || (stuck_low & stuck_high)) {
+      fprintf(stderr,
+              "invalid JUKU_PPI_FAULT=%s "
+              "(expected PORT:STUCK_LOW:STUCK_HIGH, PORT=0C..0E)\n",
+              ppi_fault);
+      return 2;
+    }
+    ppi_fault_enabled = 1;
+    ppi_fault_port = (uint8_t)port;
+    ppi_fault_stuck_low = (uint8_t)stuck_low;
+    ppi_fault_stuck_high = (uint8_t)stuck_high;
+    fprintf(stderr,
+            "[PPI] D27 port 0x%02X fault stuck-low=0x%02X stuck-high=0x%02X\n",
+            ppi_fault_port, ppi_fault_stuck_low, ppi_fault_stuck_high);
   }
   if (ram_fault && ram_fault[0]) {
     unsigned address, stuck_low, stuck_high;

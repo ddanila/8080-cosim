@@ -47,7 +47,7 @@ def read_master(master: int, outbound: bytearray) -> bool:
 
 def run_fallback(
     trace: Path, image: bytes, label: str, *, ram_fault: str | None = None,
-    pic_fault: str | None = None,
+    pic_fault: str | None = None, ppi_fault: str | None = None,
 ) -> tuple[subprocess.CompletedProcess[str], dict[str, str], bytes, bytes]:
     with tempfile.TemporaryDirectory(prefix=f"juku-d0-fallback-{label}-") as tmp_name:
         tmp = Path(tmp_name)
@@ -70,6 +70,8 @@ def run_fallback(
             env["JUKU_RAM_FAULT"] = ram_fault
         if pic_fault:
             env["JUKU_PIC_FAULT"] = pic_fault
+        if ppi_fault:
+            env["JUKU_PPI_FAULT"] = ppi_fault
         with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
             process = subprocess.Popen(
                 [str(trace), str(rom), "100000000"], cwd=tmp, env=env,

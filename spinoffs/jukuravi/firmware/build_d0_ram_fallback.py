@@ -74,6 +74,11 @@ PIC_ICW2 = 0xFE                 # exact EktaSoft vector-page initialization
 PIC_TEST_PATTERNS = (0x00, 0xFF)
 PIC_SAFE_MASK = 0xFF
 PIC_CHECK_FAIL_DIVISOR = 500    # nominal 4 kHz, continuous
+PPI1_PORTS = (0x0C, 0x0D, 0x0E)
+PPI1_CONTROL_PORT = 0x0F
+PPI1_ALL_OUTPUT = 0x80           # mode 0, PA/PB/PC all output
+PPI1_ALL_INPUT = 0x9B            # mode 0, PA/PB/PC all input
+PPI_CHECK_FAIL_DIVISOR = 2667    # nominal 750 Hz, continuous
 
 
 def lxi_h(asm: Assembler, value: int) -> None:
@@ -145,6 +150,98 @@ def emit_fixed_window_test(
     asm.label(f"{stem}_bad")
     return {
         "count_offsets": count_offsets,
+        "retention_offset": retention_offset,
+    }
+
+
+def emit_compact_fixed_window_tests(
+    asm: Assembler, *, first_start: int, second_start: int, size: int
+) -> dict[str, int | list[int]]:
+    """Share one complete march body across both fixed candidate windows."""
+    if size <= 0 or size & 0xFF or size > 0xFF00:
+        raise ValueError("compact fallback needs a whole-page 8-bit page count")
+    if first_start & 0xFF or second_start & 0xFF:
+        raise ValueError("compact fallback windows must be page-aligned")
+    pages = size >> 8
+    count_offsets: list[int] = []
+    rewind_offsets: list[int] = []
+
+    def setup_count() -> None:
+        count_offsets.append(asm.pc + 1)
+        asm.lxi_b(size)
+
+    def rewind_h() -> None:
+        rewind_offsets.append(asm.pc + 2)
+        asm.emit(0x7C, 0xD6, pages, 0x67)  # MOV A,H / SUI pages / MOV H,A
+
+    lxi_h(asm, first_start)
+    asm.label("compact_window_start")
+    asm.emit(0x16, 0x00)  # MVI D,0 failure mask
+
+    setup_count()
+    asm.label("compact_fill_00")
+    asm.emit(0x36, 0x00)
+    emit_window_loop_tail(asm, "compact_fill_00")
+    rewind_h()
+
+    setup_count()
+    asm.label("compact_test_00")
+    asm.emit(0x7E, 0xB2, 0x57, 0x36, 0xFF)
+    emit_window_loop_tail(asm, "compact_test_00")
+    rewind_h()
+
+    setup_count()
+    asm.label("compact_test_ff")
+    asm.emit(0x7E, 0xEE, 0xFF, 0xB2, 0x57)
+    asm.emit(0x7C, 0xAD, 0x77)
+    emit_window_loop_tail(asm, "compact_test_ff")
+    rewind_h()
+
+    setup_count()
+    asm.label("compact_test_address")
+    asm.emit(0x7C, 0xAD, 0xAE, 0xB2, 0x57)
+    asm.emit(0x7C, 0xAD, 0x2F, 0x77)
+    emit_window_loop_tail(asm, "compact_test_address")
+    rewind_h()
+
+    setup_count()
+    asm.label("compact_test_inverse")
+    asm.emit(0x7C, 0xAD, 0x2F, 0xAE, 0xB2, 0x57)
+    asm.emit(0x36, 0x55)
+    emit_window_loop_tail(asm, "compact_test_inverse")
+    rewind_h()
+
+    retention_offset = asm.pc + 1
+    asm.lxi_b(RETENTION_DELAY_COUNT)
+    asm.label("compact_retention_delay")
+    asm.emit(0x0B, 0x78, 0xB1)
+    asm.jump(0xC2, "compact_retention_delay")
+
+    setup_count()
+    asm.label("compact_test_retained")
+    asm.emit(0x7E, 0xEE, 0x55, 0xB2, 0x57)
+    emit_window_loop_tail(asm, "compact_test_retained")
+
+    first_end_page = (first_start + size) >> 8
+    first_end_page_offset = asm.pc + 2
+    asm.emit(0x7C, 0xFE, first_end_page)  # MOV A,H / CPI first end page
+    asm.jump(0xC2, "compact_second_result")
+    asm.emit(0x7A, 0xB7)                 # MOV A,D / ORA A
+    asm.jump(0xC2, "compact_first_bad")
+    asm.emit(0x7B, 0xF6, 0x01, 0x5F)     # first window good -> E bit 0
+    asm.label("compact_first_bad")
+    lxi_h(asm, second_start)
+    asm.jump(0xC3, "compact_window_start")
+
+    asm.label("compact_second_result")
+    asm.emit(0x7A, 0xB7)
+    asm.jump(0xC2, "compact_windows_done")
+    asm.emit(0x7B, 0xF6, 0x02, 0x5F)     # second window good -> E bit 1
+    asm.label("compact_windows_done")
+    return {
+        "count_offsets": count_offsets,
+        "rewind_offsets": rewind_offsets,
+        "first_end_page_offsets": [first_end_page_offset],
         "retention_offset": retention_offset,
     }
 
@@ -238,12 +335,49 @@ def emit_pic_register_check(asm: Assembler) -> dict[str, int | list[int]]:
     }
 
 
+def emit_ppi_register_check(asm: Assembler) -> dict[str, int | list[int]]:
+    """Read back both polarities from every D27 port, then tri-state them."""
+    asm.mvi_a(PPI1_ALL_OUTPUT)
+    asm.out(PPI1_CONTROL_PORT)
+    read_offsets: list[int] = []
+    for index, port in enumerate(PPI1_PORTS):
+        if index == 0:
+            asm.emit(0xAF)  # XRA A: first zero pattern
+        asm.out(port)
+        read_offsets.append(asm.pc)
+        asm.emit(0xDB, port, 0xB7)  # IN port / ORA A: expect 00
+        asm.jump(0xC2, "ppi_fail")
+        asm.emit(0x2F)              # CMA: A=FF
+        asm.out(port)
+        read_offsets.append(asm.pc)
+        asm.emit(0xDB, port, 0x3C)  # IN port / INR A: expect FF -> 00
+        asm.jump(0xC2, "ppi_fail")
+
+    # Return every connector pin to mode-0 input. Writes made after the mode
+    # word only clear hidden output latches; input pins remain high impedance.
+    asm.mvi_a(PPI1_ALL_INPUT)
+    asm.out(PPI1_CONTROL_PORT)
+    asm.emit(0xAF)
+    for port in PPI1_PORTS:
+        asm.out(port)
+    return {
+        "ppi_read_offsets": read_offsets,
+        "ppi_ports": list(PPI1_PORTS),
+        "ppi_check_pass": asm.pc,
+    }
+
+
 def build_variant(
     *, rom_version: int, identity: bytes, rom_convention: bool,
     entry_offset: int = 0x0010, pic_check: bool = False,
+    compact_fallback: bool = False, ppi_check: bool = False,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     if pic_check and not rom_convention:
         raise ValueError("PIC profile requires the cumulative ROM convention")
+    if compact_fallback and not rom_convention:
+        raise ValueError("compact fallback profile requires the ROM convention")
+    if ppi_check and (not pic_check or not compact_fallback):
+        raise ValueError("PPI profile requires cumulative PIC and compact fallback")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -269,6 +403,7 @@ def build_variant(
     signature_expected_offset = emit_cpu_self_test(asm)
     rom_metadata = emit_rom_convention_check(asm) if rom_convention else {}
     pic_metadata = emit_pic_register_check(asm) if pic_check else {}
+    ppi_metadata = emit_ppi_register_check(asm) if ppi_check else {}
     local_timeout_offsets = emit_local_usart_test(asm)
     train_timeout_offset = emit_train(asm, failure_label="ram_fallback")
 
@@ -318,6 +453,17 @@ def build_variant(
         emit_failure_tone(asm, PIC_CHECK_FAIL_DIVISOR)
         pic_fail_halt = asm.pc
         asm.emit(0x76)
+    ppi_fail_halt = -1
+    if ppi_check:
+        asm.label("ppi_fail")
+        asm.mvi_a(PPI1_ALL_INPUT)
+        asm.out(PPI1_CONTROL_PORT)
+        asm.emit(0xAF)
+        for port in PPI1_PORTS:
+            asm.out(port)
+        emit_failure_tone(asm, PPI_CHECK_FAIL_DIVISOR)
+        ppi_fail_halt = asm.pc
+        asm.emit(0x76)
     asm.label("usart_fail")
     emit_failure_tone(asm, USART_FAIL_TONE_DIVISOR)
     usart_fail_halt = asm.pc
@@ -332,13 +478,24 @@ def build_variant(
     )
     emit_video_pit_init(asm)
     asm.emit(0x1E, 0x00)  # MVI E,0 candidate-good flags
-    fallback_tests = [
-        emit_fixed_window_test(
-            asm, stem=f"fallback_window_{index}", start=start,
-            size=size, flag=1 << index,
-        )
-        for index, (start, size) in enumerate(FALLBACK_WINDOWS)
-    ]
+    if compact_fallback:
+        (first_start, first_size), (second_start, second_size) = FALLBACK_WINDOWS
+        if first_size != second_size:
+            raise ValueError("compact fallback windows must have equal sizes")
+        fallback_tests = [emit_compact_fixed_window_tests(
+            asm,
+            first_start=first_start,
+            second_start=second_start,
+            size=first_size,
+        )]
+    else:
+        fallback_tests = [
+            emit_fixed_window_test(
+                asm, stem=f"fallback_window_{index}", start=start,
+                size=size, flag=1 << index,
+            )
+            for index, (start, size) in enumerate(FALLBACK_WINDOWS)
+        ]
     asm.emit(0x7B, 0xB7)  # MOV A,E / ORA A
     asm.jump(0xCA, "no_windows")
 
@@ -433,6 +590,7 @@ def build_variant(
         "cpu_fail_halt": cpu_fail_halt,
         "rom_fail_halt": rom_fail_halt,
         "pic_fail_halt": pic_fail_halt,
+        "ppi_fail_halt": ppi_fail_halt,
         "usart_fail_halt": usart_fail_halt,
         "ram_fallback": asm.labels["ram_fallback"],
         "windows_found_halt": windows_found_halt,
@@ -442,6 +600,16 @@ def build_variant(
         "chip_pulse_offsets": list(chip_pulse_offsets),
         "fallback_count_offsets": [
             offset for item in fallback_tests for offset in item["count_offsets"]
+        ],
+        "fallback_rewind_offsets": [
+            offset
+            for item in fallback_tests
+            for offset in item.get("rewind_offsets", [])
+        ],
+        "fallback_first_end_page_offsets": [
+            offset
+            for item in fallback_tests
+            for offset in item.get("first_end_page_offsets", [])
         ],
         "fallback_retention_offsets": [
             item["retention_offset"] for item in fallback_tests
@@ -462,6 +630,7 @@ def build_variant(
         "rom_fault_offset": ROM_CHECKSUM_END - 1,
         **rom_metadata,
         **pic_metadata,
+        **ppi_metadata,
         **survey_metadata,
     }
     return bytes(image), metadata

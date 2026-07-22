@@ -1626,7 +1626,16 @@ an active `/Q1` feedback output.
    `00` and `FF`, and restores every IRQ masked on success and failure. Cosim
    proves both stuck-bit polarities plus the cumulative ACK/no-ACK paths; vm80a
    proves clean and forced-low D10 readback with a distinct continuous nominal
-   4 kHz failure tone, IFF clear, and no RAM write. PPI/PIT tests are next.
+   4 kHz failure tone, IFF clear, and no RAM write. The next cumulative image
+   tests D27/8255 ports A/B/C as mode-0 outputs with complementary `00`/`FF`
+   readback, then restores mode-0 all-input control and clears all output
+   latches on success or failure. Exact-image cosim proves both stuck-bit
+   polarities plus the cumulative ACK and fixed-window paths; vm80a proves the
+   early clean/fault branches and the shared two-window fallback through the
+   bit-sliced DRAM bank. X2 must be disconnected because this is a register and
+   decode test, not an external-load test. Failure gives a distinct continuous
+   nominal 750 Hz tone with D10 masked, IFF clear, and no USART or RAM write.
+   The PIT register test is next.
 
 ## Physical bring-up sequence
 
@@ -1685,6 +1694,11 @@ Once a released board and programmed parts exist:
   D10 command/data decode, complementary IMR readback, safe terminal mask, and
   distinct PIC-bad halt execute for clean and stuck-bit cases in cosim and
   through the vm80a HDL twin before USART, RAM, or interrupt enable.
+- [x] Jukuravi D0 rung 5c has an exact-hash-guarded cumulative D15 image whose
+  D27 A/B/C complementary readback, all-input/zero-latch recovery, and distinct
+  PPI-bad halt execute for clean and stuck-bit cases in cosim and vm80a, while
+  the compact shared fallback loop is replayed through both physical DRAM
+  windows for clean and forced-D87 outcomes.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

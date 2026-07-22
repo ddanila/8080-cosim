@@ -24,6 +24,8 @@ module jukuravi_d0_ram_fallback_tb;
   reg [15:0] no_windows_pc = 0;
   reg [15:0] checksum = 0;
   reg [7:0] banner_crc = 0;
+  reg [7:0] rom_version = 8'h03;
+  integer prefix_writes = 0;
   reg [7:0] expected_pit_port [1:14];
   reg [7:0] expected_pit_value [1:14];
 
@@ -77,7 +79,7 @@ module jukuravi_d0_ram_fallback_tb;
       19: if (value !== 8'h01) fail("banner type");
       20: if (value !== 8'h04) fail("banner length");
       21: if (value !== 8'h01) fail("protocol version");
-      22: if (value !== 8'h03) fail("ROM version");
+      22: if (value !== rom_version) fail("ROM version");
       23: if (value !== checksum[15:8]) fail("ROM checksum high");
       24: if (value !== checksum[7:0]) fail("ROM checksum low");
       25: if (value !== banner_crc) fail("banner CRC");
@@ -135,10 +137,11 @@ module jukuravi_d0_ram_fallback_tb;
     integer expected_io;
     integer expected_tones;
     integer expected_silences;
+    integer bad_cells;
     finishing = 1;
     expected_pc = inject_fault ? no_windows_pc : windows_found_pc;
     expected_e = inject_fault ? 8'h00 : 8'h03;
-    expected_io = inject_fault ? 81 : 73;
+    expected_io = (inject_fault ? 81 : 73) + prefix_writes;
     expected_tones = inject_fault ? 7 : 5;
     expected_silences = inject_fault ? 6 : 5;
     if (pc != expected_pc + 16'd1) fail("wrong terminal HLT");
@@ -157,10 +160,14 @@ module jukuravi_d0_ram_fallback_tb;
     end else if (dut.U_PIT2.mode[1] !== 3'd0 || dut.U_PIT2.reload[1] !== 17'd1) begin
       fail("windows-found terminal silence");
     end
+    bad_cells = 0;
     for (index = 16'h4000; index <= 16'h40FF; index = index + 1)
-      if (dram_byte(index) !== 8'h55) fail("first window final fill");
+      if (dram_byte(index) !== 8'h55) bad_cells = bad_cells + 1;
+    if (bad_cells != 0) fail("first window final fill");
+    bad_cells = 0;
     for (index = 16'hC000; index <= 16'hC0FF; index = index + 1)
-      if (dram_byte(index) !== 8'h55) fail("second window final fill");
+      if (dram_byte(index) !== 8'h55) bad_cells = bad_cells + 1;
+    if (bad_cells != 0) fail("second window final fill");
     if (failures == 0)
       $display("JUKURAVI-D0-RAM-FALLBACK-HDL: PASS fault=%0d pc=%04h flags=%02h tx=%0d writes=%0d reads=%0d tones=%0d/%0d",
                inject_fault, pc, architectural_e, data_writes, ram_writes,
@@ -175,6 +182,8 @@ module jukuravi_d0_ram_fallback_tb;
       fail("missing +no_windows PC");
     if (!$value$plusargs("checksum=%h", checksum)) fail("missing +checksum");
     if (!$value$plusargs("banner_crc=%h", banner_crc)) fail("missing +banner_crc");
+    if (!$value$plusargs("rom_version=%h", rom_version)) rom_version = 8'h03;
+    if (!$value$plusargs("prefix_writes=%d", prefix_writes)) prefix_writes = 0;
     inject_fault = $test$plusargs("inject_fault");
 
     expected_pit_port[1]=8'h13; expected_pit_value[1]=8'h15;
@@ -194,7 +203,7 @@ module jukuravi_d0_ram_fallback_tb;
   end
 
   initial begin
-    #150000000;
+    #20000000;
     $display("JUKURAVI-D0-RAM-FALLBACK-HDL: TIMEOUT pc=%04h tx=%0d writes=%0d reads=%0d",
              pc, data_writes, ram_writes, ram_reads);
     fail("time cap before terminal PC");

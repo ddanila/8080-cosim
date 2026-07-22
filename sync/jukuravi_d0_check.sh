@@ -14,6 +14,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -33,6 +34,8 @@ python3 tests/jukuravi_d0_romcheck_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-romcheck.bin
 python3 tests/jukuravi_d0_pic_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-pic.bin
+python3 tests/jukuravi_d0_ppi_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-ppi.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 python3 - "$tmp/success.hex" "$tmp/failure.hex" <<'PY'
@@ -370,6 +373,89 @@ for fixture in clean fault; do
   printf '%s\n' "$hdl_out"
   grep -q "JUKURAVI-D0-PIC-HDL: PASS" <<<"$hdl_out"
   if grep -q "JUKURAVI-D0-PIC-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+python3 - "$tmp/ppi.hex" "$tmp/ppi-fallback.hex" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "spinoffs/jukuravi/firmware"))
+import build_d0_ppi
+import build_d0_ram_fallback
+
+image, metadata = build_d0_ppi.build()
+early = bytearray(image + bytes([0x76]) * 8192)
+alive = int(metadata["alive_delay_offset"])
+early[alive] = 1
+early[alive + 1] = 0
+checksum_offset = int(metadata["rom_checksum_offset"])
+checksum_start = int(metadata["rom_checksum_start"])
+checksum_end = int(metadata["rom_checksum_end"])
+early[checksum_offset] = sum(early[checksum_start:checksum_end]) & 0xFF
+
+fallback = bytearray(early)
+for offset in (
+    metadata["ack_timeout_offsets"][0],
+    metadata["serial_dead_mark_delay_offset"],
+    *metadata["fallback_retention_offsets"],
+    *metadata["windows_pulse_offsets"],
+    *metadata["chip_pulse_offsets"],
+):
+    fallback[offset] = 1
+    fallback[offset + 1] = 0
+for offset in metadata["fallback_count_offsets"]:
+    fallback[offset] = 0
+    fallback[offset + 1] = 1  # 0100h: one page per candidate window
+for offset in metadata["fallback_rewind_offsets"]:
+    fallback[offset] = 1      # rewind one page after each shortened pass
+first_start = build_d0_ram_fallback.FALLBACK_WINDOWS[0][0]
+for offset in metadata["fallback_first_end_page_offsets"]:
+    fallback[offset] = (first_start + 0x100) >> 8
+fallback[checksum_offset] = sum(fallback[checksum_start:checksum_end]) & 0xFF
+
+for path, data in zip(map(Path, sys.argv[1:]), (early, fallback)):
+    path.write_text("\n".join(f"{byte:02x}" for byte in data) + "\n")
+PY
+read -r ppi_fail_pc ppi_found_pc ppi_dead_pc ppi_checksum ppi_banner_crc < <(
+  PYTHONPATH=spinoffs/jukuravi/firmware python3 - <<'PY'
+import build_d0_ppi
+_, metadata = build_d0_ppi.build()
+print(
+    f"{metadata['ppi_fail_halt']:04x} {metadata['windows_found_halt']:04x} "
+    f"{metadata['no_windows_halt']:04x} {metadata['checksum']:04x} "
+    f"{metadata['banner'][-1]:02x}"
+)
+PY
+)
+iverilog -g2012 -o "$tmp/jukuravi_d0_ppi_tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
+  hdl/sim/jukuravi_d0_ppi_tb.v
+for fixture in clean fault; do
+  args=(+rom="$tmp/ppi.hex" +ppi_fail="$ppi_fail_pc")
+  [[ $fixture == fault ]] && args+=(+inject_fault)
+  hdl_out=$(vvp "$tmp/jukuravi_d0_ppi_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-PPI-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-PPI-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+# Reuse the fixed-window top-level fixture for the version-6 shared loop. Its
+# six count, five rewind, and one first-end sentinel immediates are all patched
+# together, so the one-page fixture preserves the burn image's two-window flow.
+for fixture in clean fault; do
+  args=(+rom="$tmp/ppi-fallback.hex" +windows_found="$ppi_found_pc" \
+        +no_windows="$ppi_dead_pc" +checksum="$ppi_checksum" \
+        +banner_crc="$ppi_banner_crc" +rom_version=06 +prefix_writes=16)
+  [[ $fixture == fault ]] && args+=(+inject_fault)
+  hdl_out=$(vvp "$tmp/jukuravi_d0_ram_fallback_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-RAM-FALLBACK-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-RAM-FALLBACK-HDL: FAIL" <<<"$hdl_out"; then
     exit 1
   fi
 done

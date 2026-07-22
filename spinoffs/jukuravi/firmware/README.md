@@ -2,17 +2,18 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–5B SIMULATION CHECKPOINT — PIC IMR GUARDED**
+Status: **D0 RUNGS 1–5C SIMULATION CHECKPOINT — D27/PPI GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
 not read by these checkpoints. `diag-d0-alive.bin` isolates rung 1,
 `diag-d0-cpu.bin` adds rung 2, `diag-d0-usart-local.bin` isolates the local
-D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake, and
-`diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey, and
-`diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback, and
+D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake,
+`diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey,
+`diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback,
 `diag-d0-romcheck.bin` adds the historical ROM block-1 convention self-test,
-and `diag-d0-pic.bin` adds the D10/8259 interrupt-mask register test.
+`diag-d0-pic.bin` adds the D10/8259 interrupt-mask register test, and
+`diag-d0-ppi.bin` adds the safe D27/8255 all-port register test.
 
 SHA256:
 
@@ -25,6 +26,7 @@ e9bebf4cbcca4556a779eef3fcb42f69706892df28a2cc93fc1f3a5d235eb2e0  diag-d0-serial
 96a9417e4dc3a9270671d76b85500727d8a519c76ff977f15fd48e9f3076c8fc  diag-d0-ram-fallback.bin
 d102a6320f9446e103ab34a07b73ddca72907163a9444c061efdccbd47841da5  diag-d0-romcheck.bin
 65d84269bcd0d2859e31ca343e3640899c3179b0af6404e184a53a304b1b9496  diag-d0-pic.bin
+c75fc47b4966532c67794a317ab23b0e75c32977acb799d3e08a94d53baf2685  diag-d0-ppi.bin
 ```
 
 ## Build and guard
@@ -38,6 +40,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 sync/jukuravi_d0_check.sh
 ```
 
@@ -45,7 +48,7 @@ The builders are the sources of truth and deterministically emit the committed
 images. The alive-only executed code is 30 bytes. The combined CPU image
 contains 382 bytes; the local-USART image contains 509; the serial image
 contains 684; the RAM-survey image contains 1,496; the fallback image contains
-1,967; the ROM-convention and PIC builder spans are each 2,066 bytes. Their
+1,967; the ROM-convention, PIC, and PPI builder spans are each 2,066 bytes. Their
 identities are stored at `0x1F00`, and unused space is fail-closed
 `HLT` fill.
 
@@ -284,6 +287,7 @@ The audible vocabulary is now executable and unambiguous by cadence:
 | CPU bad | continuous nominal 250 Hz |
 | ROM block-1 checksum bad | continuous nominal 2 kHz after the alive beep |
 | PIC mask-register bad | continuous nominal 4 kHz after the alive beep |
+| D27 PPI register bad | continuous nominal 750 Hz after the alive beep |
 | local USART bad | continuous nominal 500 Hz |
 | serial confirmed | one approximately 0.125 s nominal 2 kHz beep |
 | serial dead before fallback | one approximately 0.25 s nominal 125 Hz marker |
@@ -389,6 +393,46 @@ priority resolution, external IR inputs, INTR, the three INTA cycles, or the
 MCS-80 `CALL` vector. Those behaviors already have separate boot/frame-interrupt
 guards and remain a physical bring-up boundary for this ROM-only checkpoint.
 
+## Rung 5c: D27/8255 all-port register test
+
+The cumulative PPI image advertises ROM version `06`, historical block-1 sum
+`23`, full-image self-checksum `1C68`, and these exact records:
+
+```text
+banner: A5 5A 01 04 01 06 1C 68 79
+ack:    A5 5A 81 04 01 06 1C 68 95
+```
+
+This rung requires the X2 auxiliary connector to be disconnected. After the
+CPU, ROM, and PIC checks, it writes D27 control `80` (mode 0, all ports output)
+and writes/reads `00` then `FF` on ports A, B, and C at `0C..0E`. Every data
+bit and all four D27 register selects therefore participate. Both success and
+failure finish by writing control `9B` (mode 0, all ports input), then writing
+zero to A/B/C to clear the hidden output latches while the pins remain inputs.
+A mismatch stops before D11 or RAM and selects the continuous nominal 750 Hz
+PPI-bad tone. The D10 mask remains `FF` and the CPU IFF remains clear; this is
+also important because D27 PB7 shares the D10 IR1 path.
+
+The version-6 profile fits this test below `0800` by sharing one complete RAM
+march body between the two beep-fallback windows. The burn image still performs
+the same five writes, five reads, retention interval, per-window verdicts, and
+final `55` contents as rung 4b. Builder metadata now names all six loop counts,
+five page rewinds, and the first-window end sentinel together, preventing a
+shortened HDL fixture from changing the shared loop's control flow.
+
+`tests/jukuravi_d0_ppi_test.py` proves the exact image's acknowledged 192-page
+survey, clean/second-only/dead-chip fallback results, complementary D27 stuck
+polarities, exact port traffic, and safe terminal state. Cosim accepts only
+`JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH` for D27 data ports `0C..0E`.
+The vm80a fixtures separately prove the early clean and forced Port-C-low
+branches, then replay the shared fallback through both physical candidate
+windows for clean and forced-D87 outcomes with exact traffic and cadence.
+
+This is a D27 register/latch/decode check, not an electrical test of X2 or its
+external loads, handshake modes, drive strength, or contention behavior. Keep
+X2 disconnected for this image; connector and cable tests require a controlled
+harness after the register-only checkpoint.
+
 Broader row/column-shaped fault generators and the user-facing session CLI
 remain later host-tool work; rung 4's required serial and beep-only RAM paths
 are now both represented by exact burn images.
@@ -397,4 +441,4 @@ The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next D0
-firmware rung is the remaining PPI and PIT register-wiggle tests.
+firmware rung is the remaining PIT register-wiggle test.
