@@ -147,10 +147,24 @@ A Nano is sufficient for every stage except the optional bus-master stage
 
   **Optional fallback channels** (not gating, recorded so they aren't
   re-invented): if the 8251 path is broken, the ROM can bit-bang slow
-  telemetry on the beeper/PIT-OUT1 line the Nano probe already samples —
-  serial-dead need not mean data-dead; and once RAM + video prove good,
-  verdicts can be mirrored to the framebuffer, letting the Juku diagnose
-  itself to its own monitor with no Nano attached.
+  telemetry on the beeper — serial-dead need not mean data-dead; and once
+  RAM + video prove good, verdicts can be mirrored to the framebuffer,
+  letting the Juku diagnose itself to its own monitor with no Nano
+  attached.
+
+  **Analog beeper tap (optional Nano channel):** the speaker unit
+  (ДГШ5.884.001) solders to two posts — the easiest attachment point on
+  the whole board, no IC clips — and VD4 already clamps the coil kickback
+  (`docs/beeper-readiness.md`); a series resistor makes it ADC-safe. What
+  it buys: (a) completes fault isolation — activity at PIT OUT1 but
+  silence at the posts pinpoints the analog stage (VT1/VD4/R48/speaker),
+  silence at both pinpoints the PIT; (b) the Nano *hears* the beep codes
+  (~10 kHz ADC sampling suffices for cadence and coarse pitch), so the
+  beep vocabulary is machine-decoded even with serial down; (c) it is the
+  natural front-end for the bit-banged telemetry fallback. For the rung-1
+  clock measurement the digital OUT1 clip remains the precision option;
+  the speaker tap gives a serviceable estimate with zero IC clips. The
+  Nano ADC is ~10-bit/~10 kHz — cadence and envelope, not an oscilloscope.
 - **Stage D1 — Nano + host software.** Nano firmware (bridge + liveness
   probes) and the Python CLI with human-readable verdicts.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
