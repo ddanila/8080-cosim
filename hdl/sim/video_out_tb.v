@@ -1,8 +1,8 @@
-// Runnable-video check: drive juku_top's OWN video-output stage. Preload a banner framebuffer into juku_top's
-// bit-sliced РУ5, run the dot clock, and capture the composite video (vid_out) the model emits --
-// then reconstruct the image from that serial stream. If it matches the loaded framebuffer, the
-// video-output stage (video_raster -> ИР16 -> ЛП5) inside juku_top faithfully turns stored bytes into
-// the pixel stream a display sees. (Physical µP/video arbitration remains open; this uses the РУ5 2nd read port.)
+// Runnable abstract-serializer check. Preload a banner framebuffer into juku_top's bit-sliced РУ5,
+// run the dot clock, and capture its sim-only vid_out pixel bitstream, then reconstruct the image.
+// If it matches the loaded framebuffer, the video_raster -> ИР16 -> ЛП5 oracle faithfully turns
+// stored bytes into serial bits. This is not D34/X7 composite: sync summing, VT2, loading, voltage,
+// and physical µP/video arbitration are absent (the test uses the РУ5 second read port).
 `timescale 1ns/100ps
 `default_nettype none
 
@@ -27,7 +27,7 @@ module video_out_tb;
   end
   always #10 dotclk = ~dotclk;
 
-  // capture the emitted video: the internal video_raster scans 0xD800.. in lockstep, MSB-first
+  // capture the abstract bitstream: internal video_raster scans 0xD800.. in lockstep, MSB-first
   reg [7:0] recon [0:16383]; reg [2:0] cpix = 0; integer caddr = 0; reg [7:0] csh; reg done = 0;
   integer fd, i;
   always @(negedge dotclk) if (!done) begin
@@ -43,7 +43,7 @@ module video_out_tb;
     fd = $fopen("hdl/sim/vram_vidout.bin","wb");
     for (i=0;i<40*241;i=i+1) $fwrite(fd,"%c", recon[i]);
     $fclose(fd);
-    $display("[vidout] captured %0d bytes of composite video from juku_top -> hdl/sim/vram_vidout.bin", 40*241);
+    $display("[vidout] captured %0d bytes from juku_top's abstract pixel oracle -> hdl/sim/vram_vidout.bin", 40*241);
     $finish;
   end endtask
   initial begin #6000000; $display("[vidout] TIMEOUT caddr=%0d", caddr); $finish; end

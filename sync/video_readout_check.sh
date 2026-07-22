@@ -35,7 +35,7 @@ iverilog -g2012 -o "$TMP/video_readout_tb" hdl/vendor/vm80a.v hdl/devices.v hdl/
 vvp "$TMP/video_readout_tb" >/dev/null 2>&1
 cmp -s hdl/sim/vram_top.bin hdl/sim/vram_readout.bin
 
-echo "== juku_top video-output readout =="
+echo "== juku_top abstract pixel-oracle readout =="
 iverilog -g2012 -o "$TMP/video_out_tb" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/video_out_tb.v
 vvp "$TMP/video_out_tb" >/dev/null 2>&1
 cmp -s hdl/sim/vram_top.bin hdl/sim/vram_vidout.bin
@@ -47,21 +47,25 @@ vidout_bytes=$(wc -c < hdl/sim/vram_vidout.bin | tr -d ' ')
 cat > "$REPORT" <<EOF
 # Video readout readiness
 
-Status: **RUNNABLE VIDEO READOUT GUARDED**
+Status: **RUNNABLE ABSTRACT VIDEO READOUT GUARDED**
 
 This guard proves the current runnable video-readout path:
 
 - hdl/sim/video_readout_tb.v serializes a booted framebuffer through the
   abstracted ir16_sr pixel serializer and reconstructs the bytes.
 - hdl/sim/video_out_tb.v drives juku_top's own video_raster -> ir16_sr ->
-  lp5_xor1 path and reconstructs the emitted vid_out stream.
+  lp5_xor1 path and reconstructs the emitted abstract vid_out bitstream.
 - Both reconstructed byte streams must compare exactly against the booted
   juku_top framebuffer.
 
+The sim-only vid_out port is not composite voltage and is not a simulated D34
+or X7 node. It contains no sync summing, VT2 output stage, termination, or edge
+model. Its name is retained only for HDL interface compatibility.
+
 The remaining physical boundary is the shared-DRAM slot timing: arbitration
 through the КП14 muxes and the РЕ3/АГ3 timing network. This check does not claim
-that timing is closed; it locks the byte-to-pixel serializer and runnable
-juku_top output stage. The companion raster-geometry guard is
+that timing is closed; it locks only the byte-to-pixel serializer and runnable
+juku_top abstract oracle. The companion raster-geometry guard is
 \`sync/video_timing_check.sh\` / \`docs/video-timing-reference.md\`.
 
 ## Command
@@ -76,7 +80,7 @@ sync/video_readout_check.sh
 | --- | ---: | --- |
 | hdl/sim/vram_top.bin | $src_bytes | source framebuffer from juku_top_tb |
 | hdl/sim/vram_readout.bin | $readout_bytes | byte-identical standalone serializer reconstruction |
-| hdl/sim/vram_vidout.bin | $vidout_bytes | byte-identical juku_top video-output reconstruction |
+| hdl/sim/vram_vidout.bin | $vidout_bytes | byte-identical juku_top abstract-oracle reconstruction |
 
 ## Remaining Boundary
 

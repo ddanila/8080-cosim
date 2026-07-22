@@ -20,7 +20,7 @@ module juku_top (
                                 // Drives the U_INTR adjunct (unmapped -> LVS-invisible).
     input  wire dotclk,         // SIM-ONLY video dot clock (real: D56 АГ3 16MHz -> D103 ИЕ10). Drives
                                 // the video-output stage below (unmapped chips -> LVS-invisible).
-    output wire vid_out         // composite video out (pixel stream from the framebuffer)
+    output wire vid_out         // SIM-ONLY abstract framebuffer pixel bitstream; not D34/X7 composite
 );
     // ---- CPU-local buses (between 8080 and its buffers/controller) ----
     wire [15:0] A;          // CPU address out -> 8286 buffers
@@ -496,10 +496,11 @@ module juku_top (
                         .q(), .q_n(d56_qn), .q2(d56_q2), .q2_n(d56_q2_n));
     ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0011), .q(d103_q), .co(d103_co));   // D0/D1 high, D2/D3 low: traced /13 preset; QD (pin 11) = 1.23MHz -> D57.CLK2
 
-    // ---- runnable video-output stage: raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
+    // ---- runnable abstract video oracle: raster-scan framebuffer -> ИР16 serialize -> ЛП5 pass-through
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
-    // serializes each byte at the dot clock through the ИР16, and drives the composite video the
-    // display sees. Driven by the sim `dotclk`. The RUNNABLE demo uses the abstracted 8-bit ir16_sr
+    // serializes each byte at the dot clock through the ИР16, and exposes only a pixel bitstream.
+    // It has no sync summing, transistor stage, load, or voltage semantics and is not D34/X7.
+    // Driven by the sim `dotclk`. The RUNNABLE demo uses the abstracted 8-bit ir16_sr
     // (U_IR16) -> lp5_xor (U_D34V); the REAL chips D42/D43 (ИР16) are instantiated below for the LVS
     // structure (traced sheet-2 top-right; see board JSON provenance). The 2x4-bit +
     // analog node-"A" byte->pixel scheme + the КП14 µP/video arbitration remain physical boundaries.
@@ -507,7 +508,7 @@ module juku_top (
     video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
                     .d(vbyte), .so(vpixel));                            // abstracted serializer (runnable)
-    lp5_xor1 U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));                 // composite video out (runnable)
+    lp5_xor1 U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));                 // abstract pixel oracle only
     // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. Parallel data
     // reads the REAL system data bus DB (the bit-sliced РУ5 drives the byte there during a video
     // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q -> node "A" (analog mix =

@@ -1,7 +1,7 @@
-// Video-readout demo (arc V1): serialize a real framebuffer through the ИР16 (ir16_sr) pixel
-// shift-register at the dot clock -- exactly what the video output stage does -- capture the serial
-// pixel stream, and reconstruct the image from it. If the reconstruction == the input framebuffer,
-// the serializer + readout timing faithfully turn stored bytes into the pixel stream a display sees.
+// Abstract video-readout demo (arc V1): serialize a real framebuffer through the ИР16 (ir16_sr)
+// pixel shift-register at the dot clock, capture the serial bitstream, and reconstruct the image.
+// If reconstruction == input, the serializer oracle preserves stored bytes. This test has no sync,
+// transistor/load, voltage, or other D34/X7 composite semantics.
 // (The µP/video КП14 arbitration on the shared РУ5 remains open; here we read the framebuffer
 // array directly, since a sim read doesn't contend.) Loads hdl/sim/vram_top.hex (a booted screen).
 `timescale 1ns/100ps
