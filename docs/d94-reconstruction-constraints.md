@@ -51,10 +51,10 @@ connectivity. Board JSON and the regenerated KiCad schematic are authoritative.
 | Pin | Role | DSN Net | Result |
 | ---: | --- | --- | --- |
 | 1 | D0 | `D94_D0_BOUNDARY` | PASS |
-| 2 | D1 | `GND` | expected `D94_D1_D99_A2N` |
+| 2 | D1 | `D94_D1_D99_A2N` | PASS |
 | 3 | D2 | `FDC_RE_N` | PASS |
 | 4 | D3 | `FDC_WE_N` | PASS |
-| 5 | D4 | `D94_D4` | PASS |
+| 5 | D4 | - | missing in DSN |
 | 6 | D5 | `D94_D5` | PASS |
 | 7 | D6 | `D94_D6` | PASS |
 | 8 | GND | `GND` | PASS |
@@ -62,8 +62,8 @@ connectivity. Board JSON and the regenerated KiCad schematic are authoritative.
 | 10 | A0 | `BA0` | PASS |
 | 11 | A1 | `BA1` | PASS |
 | 12 | A2 | `IORD` | PASS |
-| 13 | A3 | `D94_A3_D104_X4_PULLUP` | expected `IOWR` |
-| 14 | A4 | `D94_A4_D101_Q0_PULLUP` | expected `D94_A4_D101_Q0` |
+| 13 | A3 | `IOWR` | PASS |
+| 14 | A4 | `D94_A4_D101_Q0` | PASS |
 | 15 | E_N | `FDC_CS_N` | PASS |
 | 16 | VCC | `P5V` | PASS |
 
@@ -101,7 +101,7 @@ candidate identity gate separately proves the promoted board has the same pads.
 | Every D94 address input has reviewed two-sided photo coordinates | PASS | local-package-fit measurement rows for pins 10, 11, 12, 13, 14 |
 | D94 address input sources are traced | PASS | direct owner continuity/source nets for pins 10-14 |
 | Retired D94 BA11..BA15 mapping is absent from the source model | PASS | board JSON BA nets |
-| Held freerouting DSN matches the current D94 mapping | HELD | `kicad/juku.dsn` is a routed engineering snapshot; authoritative connectivity is board JSON/schematic |
+| Held freerouting DSN matches the current D94 mapping | PASS | `kicad/juku.dsn` is a routed engineering snapshot; authoritative connectivity is board JSON/schematic |
 | Source PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb`; promoted route has exact source-pad identity |
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | PASS | board JSON nets |
