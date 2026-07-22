@@ -21,9 +21,18 @@ The `custom` branch (submodule `external/freerouting`) carries:
 ## Use it
 
 ```sh
-# builds from the submodule if needed, then routes HEADLESS (no GUI):
+# builds from the submodule if needed, then routes HEADLESS (no GUI).
+# Reproducible by default (single-threaded -> stable board_sha256):
+scripts/run-freerouting.sh -de kicad/juku.dsn -do kicad/juku.ses -mp 100
+
+# ...opt into parallel speed for throwaway/exploratory routing (not reproducible):
 scripts/run-freerouting.sh -de kicad/juku.dsn -do out.ses -mp 10 -mt 10
 ```
+
+`run-freerouting.sh` **defaults to `-mt 1`** so the promoted route's `.ses` is
+byte-reproducible; the `.ses` then goes through `kicad/finalize_route.py`
+(imports it into the board) and the promotion/salvage/prune steps. Pass `-mt N`
+only for routing you will throw away.
 
 `run-freerouting.sh` refuses to run a stock jar: it checks the installed
 `.tools/freerouting/freerouting.jar` for a custom-only marker string and rebuilds

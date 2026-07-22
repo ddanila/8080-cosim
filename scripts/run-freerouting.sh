@@ -32,6 +32,19 @@ find_java() {
   fi
   command -v java
 }
+# Canonical routing must be REPRODUCIBLE: default to single-threaded (-mt 1)
+# unless the caller sets -mt explicitly. The custom build's RNG is seeded, so a
+# single-threaded route is byte-reproducible (stable board_sha256 for the pinned
+# fabrication evidence); -mt >1 is faster but its .ses varies with thread timing.
+# So the promoted route is produced single-threaded here by default; pass -mt N
+# to opt into parallel speed for throwaway/exploratory routing.
+mt_set=0
+for a in "$@"; do case "$a" in -mt|-mt=*) mt_set=1 ;; esac; done
+if [ "$mt_set" -eq 0 ]; then
+  echo "run-freerouting: canonical reproducible mode (-mt 1); pass -mt N for faster, non-reproducible routing" >&2
+  set -- -mt 1 "$@"
+fi
+
 JAVA="$(find_java)"
 # -Djava.awt.headless=true guarantees no window even though the custom build
 # defaults the GUI off; harmless belt-and-braces.
