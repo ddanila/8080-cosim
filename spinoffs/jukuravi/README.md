@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D0 ROM/serial/RAM paths guarded.**
+Status: **EXECUTION STARTED — D0 ROM/PIC/serial/RAM paths guarded.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -213,11 +213,21 @@ A Nano is sufficient for every stage except the optional bus-master stage
      before touching D11. Exact-image cosim retains both acknowledged-survey
      and no-ACK fallback paths; a covered-byte flip produces only a continuous
      nominal 2 kHz ROM-bad tone with no serial or RAM activity. The vm80a twin
-     proves the same clean/corrupt branch through D15. PPI/PIT/PIC register
-     wiggles and the later RAM-backed framebuffer pattern remain next.
+     proves the same clean/corrupt branch through D15. At that checkpoint,
+     peripheral register wiggles and the later RAM-backed framebuffer pattern
+     remained next.
+     **PIC-register simulation checkpoint implemented:** the eighth exact
+     8 KiB image performs the BIOS's `D6/FE` MCS-80 initialization, writes and
+     reads D10's interrupt mask as `00` then `FF`, and restores `FF` on success
+     or failure while CPU interrupts remain disabled. Exact-image cosim proves
+     both stuck-bit polarities plus the cumulative serial/RAM paths; vm80a
+     proves clean and forced-low D10 readback through the physical port decode.
+     A mismatch gives a continuous nominal 4 kHz PIC-bad tone before USART or
+     RAM activity. This bounded test does not claim the priority/INTR/INTA
+     engine; PPI/PIT register wiggles remain next.
 
   The beep vocabulary is a tiny fixed set (alive / cpu-bad / rom-bad /
-  usart-bad / serial-ok / serial-dead / chip-N-dead / windows-found),
+  pic-bad / usart-bad / serial-ok / serial-dead / chip-N-dead / windows-found),
   documented so a human with no Nano attached can triage by ear.
 
   **ROM discipline:** interrupts stay disabled for the diag ROM's whole
@@ -296,11 +306,11 @@ transitions; the HDL unit guard proves the same intermediate status around its
 8N1 shifter. The model is deliberately limited to the async slice needed by the
 harness; sync/parity and physical baud timing remain outside this step.
 
-The alive, CPU, ROM-convention, serial, and mode-0 RAM-survey diagnostic-ROM
-rungs now run under cosim and the vm80a-based HDL twin, including injected ROM,
-USART, protocol, and bit-sliced RAM failure paths, while the D57 beeper path
-has its own waveform/connectivity guard. The next D0 implementation step is
-the remaining PPI/PIT/PIC register-test rung.
+The alive, CPU, ROM-convention, PIC, serial, and mode-0 RAM-survey
+diagnostic-ROM rungs now run under cosim and the vm80a-based HDL twin,
+including injected ROM, PIC, USART, protocol, and bit-sliced RAM failure paths,
+while the D57 beeper path has its own waveform/connectivity guard. The next D0
+implementation step is the remaining PPI/PIT register-test rung.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
@@ -309,10 +319,11 @@ Then:
   bench;
 - fault injection is scriptable rather than manual. Cosim now accepts
   `JUKU_USART_FAULT=tx_stuck`,
+  `JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH`,
   `JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH` (or `*` for every address), and
   `JUKU_RAM_ALIAS=PAGE_A:PAGE_B`; the D0 matrix asserts their exact protocol
-  masks and host window verdicts. Dead PPI, row/column-shaped, and later
-  peripheral faults remain additions to the same regression model.
+  masks and host window verdicts. Dead PPI, row/column-shaped, and later PIT
+  faults remain additions to the same regression model.
 
 Per the commons contract, the 8251 model lands in root `cosim/`, not here —
 this spin-off consumes it, and any bench finding it produces flows back to

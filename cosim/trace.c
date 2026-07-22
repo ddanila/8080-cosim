@@ -31,6 +31,7 @@
 // RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte
 //        (ADDR=* applies the stuck masks globally);
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
+// PIC:   JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH faults the 8259 IMR readback.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,6 +81,9 @@ static int           ram_fault_all = 0;
 static int           ram_alias_enabled = 0;
 static uint8_t       ram_alias_page_a = 0;
 static uint8_t       ram_alias_page_b = 0;
+static int           pic_fault_enabled = 0;
+static uint8_t       pic_fault_stuck_low = 0;
+static uint8_t       pic_fault_stuck_high = 0;
 
 static uint8_t apply_ram_fault(uint16_t address, uint8_t value) {
   if (!ram_fault_enabled || (!ram_fault_all && address != ram_fault_addr))
@@ -442,6 +446,9 @@ static uint8_t pin(void* u, uint8_t p) {
     if (p == 0x1F) fdc_data_reads++;
   }
   else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
+  if (p == 0x01 && pic_fault_enabled)
+    value = (uint8_t)((value & (uint8_t)~pic_fault_stuck_low) |
+                      pic_fault_stuck_high);
   if (io_trace) {
     fprintf(stderr, "[IOSEQ] IN  port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, value, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, in_count[p]);
@@ -584,6 +591,9 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "pic_icw2=%02X\n", pic_icw2);
   fprintf(state_out, "pic_mask=%02X\n", pic_mask);
   fprintf(state_out, "pic_expect_icw2=%d\n", pic_expect_icw2);
+  fprintf(state_out, "pic_fault_enabled=%d\n", pic_fault_enabled);
+  fprintf(state_out, "pic_fault_stuck_low=%02X\n", pic_fault_stuck_low);
+  fprintf(state_out, "pic_fault_stuck_high=%02X\n", pic_fault_stuck_high);
   fprintf(state_out, "fdc_enabled=%d\n", fdc_enabled);
   fprintf(state_out, "fdc_bus_invert=%d\n", fdc_bus_invert);
   fprintf(state_out, "fdc_head=%d\n", fdc.head);
@@ -662,6 +672,7 @@ int main(int argc, char** argv) {
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
+  const char* pic_fault = getenv("JUKU_PIC_FAULT");
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
     usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
     if (!usart.transfer_cycles) usart.transfer_cycles = 1;
@@ -676,6 +687,22 @@ int main(int argc, char** argv) {
       return 2;
     }
     usart.fault_tx_stuck = 1;
+  }
+  if (pic_fault && pic_fault[0]) {
+    unsigned stuck_low, stuck_high;
+    char trailing;
+    if (sscanf(pic_fault, "%x:%x%c", &stuck_low, &stuck_high, &trailing) != 2 ||
+        stuck_low > 0xFF || stuck_high > 0xFF || (stuck_low & stuck_high)) {
+      fprintf(stderr,
+              "invalid JUKU_PIC_FAULT=%s (expected STUCK_LOW:STUCK_HIGH)\n",
+              pic_fault);
+      return 2;
+    }
+    pic_fault_enabled = 1;
+    pic_fault_stuck_low = (uint8_t)stuck_low;
+    pic_fault_stuck_high = (uint8_t)stuck_high;
+    fprintf(stderr, "[PIC] IMR fault stuck-low=0x%02X stuck-high=0x%02X\n",
+            pic_fault_stuck_low, pic_fault_stuck_high);
   }
   if (ram_fault && ram_fault[0]) {
     unsigned address, stuck_low, stuck_high;

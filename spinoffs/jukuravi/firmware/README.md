@@ -2,7 +2,7 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–5A SIMULATION CHECKPOINT — ROM CONVENTION GUARDED**
+Status: **D0 RUNGS 1–5B SIMULATION CHECKPOINT — PIC IMR GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
@@ -11,7 +11,8 @@ not read by these checkpoints. `diag-d0-alive.bin` isolates rung 1,
 D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake, and
 `diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey, and
 `diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback, and
-`diag-d0-romcheck.bin` adds the historical ROM block-1 convention self-test.
+`diag-d0-romcheck.bin` adds the historical ROM block-1 convention self-test,
+and `diag-d0-pic.bin` adds the D10/8259 interrupt-mask register test.
 
 SHA256:
 
@@ -23,6 +24,7 @@ e9bebf4cbcca4556a779eef3fcb42f69706892df28a2cc93fc1f3a5d235eb2e0  diag-d0-serial
 50f35da507947232c2e2ab0e7b6ab519f3ce16e8310c4c1f02d544b504149baf  diag-d0-ram.bin
 96a9417e4dc3a9270671d76b85500727d8a519c76ff977f15fd48e9f3076c8fc  diag-d0-ram-fallback.bin
 d102a6320f9446e103ab34a07b73ddca72907163a9444c061efdccbd47841da5  diag-d0-romcheck.bin
+65d84269bcd0d2859e31ca343e3640899c3179b0af6404e184a53a304b1b9496  diag-d0-pic.bin
 ```
 
 ## Build and guard
@@ -35,6 +37,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 sync/jukuravi_d0_check.sh
 ```
 
@@ -42,8 +45,8 @@ The builders are the sources of truth and deterministically emit the committed
 images. The alive-only executed code is 30 bytes. The combined CPU image
 contains 382 bytes; the local-USART image contains 509; the serial image
 contains 684; the RAM-survey image contains 1,496; the fallback image contains
-1,967; the ROM-convention builder span is 2,066 bytes. Their identities are
-stored at `0x1F00`, and unused space is fail-closed
+1,967; the ROM-convention and PIC builder spans are each 2,066 bytes. Their
+identities are stored at `0x1F00`, and unused space is fail-closed
 `HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
@@ -280,6 +283,7 @@ The audible vocabulary is now executable and unambiguous by cadence:
 | alive | one approximately 0.5 s nominal 1 kHz beep |
 | CPU bad | continuous nominal 250 Hz |
 | ROM block-1 checksum bad | continuous nominal 2 kHz after the alive beep |
+| PIC mask-register bad | continuous nominal 4 kHz after the alive beep |
 | local USART bad | continuous nominal 500 Hz |
 | serial confirmed | one approximately 0.125 s nominal 2 kHz beep |
 | serial dead before fallback | one approximately 0.25 s nominal 125 Hz marker |
@@ -349,6 +353,42 @@ clean D15 data reaches the first post-check USART recovery write, while the
 same `0x07FF` bit flip reaches the ROM-fail tone with zero RAM writes. Both
 paths retain mode 0, IFF clear, and the `D0` CPU signature.
 
+## Rung 5b: D10/8259 interrupt-mask register
+
+The cumulative PIC image advertises ROM version `05`, historical block-1 sum
+`01`, full-image self-checksum `0FEA`, and these exact records:
+
+```text
+banner: A5 5A 01 04 01 05 0F EA 2B
+ack:    A5 5A 81 04 01 05 0F EA C7
+```
+
+After the CPU and ROM checks, it writes the real EktaSoft MCS-80 initialization
+pair `D6` to command port `00` and `FE` to data port `01`. It then writes and
+reads back IMR masks `00` and `FF`, so every mask bit is exercised in both
+polarities and both PIC register selects participate. Success writes `FF`
+again before continuing to D11. Any mismatch also writes `FF` before selecting
+a continuous nominal 4 kHz PIC-bad tone and halting. The 8080 IFF remains
+clear throughout, so the deliberately brief `00` test mask cannot dispatch an
+interrupt even if an external request is already active.
+
+The tighter version-5 header jumps directly to `000B`; all executable bytes,
+including the PIC recovery path, still end below `0800`, and the framed tables
+still begin exactly at `0800`. `tests/jukuravi_d0_pic_test.py` proves the exact
+burn image's acknowledged 192-page survey and no-ACK clean fallback, then uses
+`JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH` to force both mismatch polarities. Both
+fault cases transmit nothing, touch no RAM or memory-mode bit, retain the `D0`
+CPU signature, and finish with the active mask restored to `FF`. The vm80a
+fixture shortens only the alive delay and regenerates its block sum; clean and
+forced-low D10 readback paths prove the exact command/data traffic, terminal
+mask, and distinct 4 kHz path through `juku_top`.
+
+This is intentionally an IMR and register-decode test, not a claim about the
+whole 8259. It does not enable CPU interrupts or exercise IRR/ISR selection,
+priority resolution, external IR inputs, INTR, the three INTA cycles, or the
+MCS-80 `CALL` vector. Those behaviors already have separate boot/frame-interrupt
+guards and remain a physical bring-up boundary for this ROM-only checkpoint.
+
 Broader row/column-shaped fault generators and the user-facing session CLI
 remain later host-tool work; rung 4's required serial and beep-only RAM paths
 are now both represented by exact burn images.
@@ -357,4 +397,4 @@ The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next D0
-firmware rung is the remaining PPI/PIT/PIC register-wiggle tests.
+firmware rung is the remaining PPI and PIT register-wiggle tests.

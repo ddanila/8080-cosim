@@ -67,6 +67,13 @@ ROM_CHECKSUM_OFFSET = 0x000A
 ROM_CHECKSUM_START = 0x000B
 ROM_CHECKSUM_END = 0x0800
 ROM_CHECK_FAIL_DIVISOR = 1000   # nominal 2 kHz, continuous
+PIC_COMMAND_PORT = 0x00
+PIC_DATA_PORT = 0x01
+PIC_ICW1 = 0xD6                 # MCS-80 CALL mode, single, no ICW4
+PIC_ICW2 = 0xFE                 # exact EktaSoft vector-page initialization
+PIC_TEST_PATTERNS = (0x00, 0xFF)
+PIC_SAFE_MASK = 0xFF
+PIC_CHECK_FAIL_DIVISOR = 500    # nominal 4 kHz, continuous
 
 
 def lxi_h(asm: Assembler, value: int) -> None:
@@ -203,9 +210,40 @@ def emit_rom_convention_check(asm: Assembler) -> dict[str, int]:
     }
 
 
+def emit_pic_register_check(asm: Assembler) -> dict[str, int | list[int]]:
+    """Wiggle every 8259 IMR bit, then leave every interrupt masked."""
+    if PIC_TEST_PATTERNS != (0x00, 0xFF):
+        raise ValueError("compact PIC check requires complementary 00/FF patterns")
+    asm.mvi_a(PIC_ICW1)
+    asm.out(PIC_COMMAND_PORT)
+    asm.mvi_a(PIC_ICW2)
+    asm.out(PIC_DATA_PORT)
+    read_offsets: list[int] = []
+    asm.emit(0xAF)                     # XRA A: all IRQs unmasked, IFF stays clear
+    asm.out(PIC_DATA_PORT)
+    read_offsets.append(asm.pc)
+    asm.emit(0xDB, PIC_DATA_PORT, 0xB7)  # IN IMR / ORA A: expect 00
+    asm.jump(0xC2, "pic_fail")
+    asm.emit(0x2F)                     # CMA: A=FF, all IRQs masked
+    asm.out(PIC_DATA_PORT)
+    read_offsets.append(asm.pc)
+    asm.emit(0xDB, PIC_DATA_PORT, 0x3C)  # IN IMR / INR A: expect FF -> 00
+    asm.jump(0xC2, "pic_fail")
+    asm.mvi_a(PIC_SAFE_MASK)
+    asm.out(PIC_DATA_PORT)
+    return {
+        "pic_read_offsets": read_offsets,
+        "pic_patterns": list(PIC_TEST_PATTERNS),
+        "pic_check_pass": asm.pc,
+    }
+
+
 def build_variant(
-    *, rom_version: int, identity: bytes, rom_convention: bool
+    *, rom_version: int, identity: bytes, rom_convention: bool,
+    entry_offset: int = 0x0010, pic_check: bool = False,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
+    if pic_check and not rom_convention:
+        raise ValueError("PIC profile requires the cumulative ROM convention")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -220,7 +258,9 @@ def build_variant(
         while asm.pc < ROM_CHECKSUM_OFFSET:
             asm.emit(0x76)
         asm.emit(0x00)  # additive checksum placeholder
-        while asm.pc < 0x0010:
+        if entry_offset < ROM_CHECKSUM_START:
+            raise ValueError("ROM-convention entry overlaps the stored checksum")
+        while asm.pc < entry_offset:
             asm.emit(0x76)
         asm.label("entry")
     alive_start = asm.pc
@@ -228,6 +268,7 @@ def build_variant(
     alive_delay_offset = alive_start + ALIVE_DELAY_COUNT_OFFSET
     signature_expected_offset = emit_cpu_self_test(asm)
     rom_metadata = emit_rom_convention_check(asm) if rom_convention else {}
+    pic_metadata = emit_pic_register_check(asm) if pic_check else {}
     local_timeout_offsets = emit_local_usart_test(asm)
     train_timeout_offset = emit_train(asm, failure_label="ram_fallback")
 
@@ -268,6 +309,14 @@ def build_variant(
         asm.label("rom_fail")
         emit_failure_tone(asm, ROM_CHECK_FAIL_DIVISOR)
         rom_fail_halt = asm.pc
+        asm.emit(0x76)
+    pic_fail_halt = -1
+    if pic_check:
+        asm.label("pic_fail")
+        asm.mvi_a(PIC_SAFE_MASK)
+        asm.out(PIC_DATA_PORT)
+        emit_failure_tone(asm, PIC_CHECK_FAIL_DIVISOR)
+        pic_fail_halt = asm.pc
         asm.emit(0x76)
     asm.label("usart_fail")
     emit_failure_tone(asm, USART_FAIL_TONE_DIVISOR)
@@ -383,6 +432,7 @@ def build_variant(
         "success_halt": success_halt,
         "cpu_fail_halt": cpu_fail_halt,
         "rom_fail_halt": rom_fail_halt,
+        "pic_fail_halt": pic_fail_halt,
         "usart_fail_halt": usart_fail_halt,
         "ram_fallback": asm.labels["ram_fallback"],
         "windows_found_halt": windows_found_halt,
@@ -411,6 +461,7 @@ def build_variant(
         "rom_checksum": rom_checksum,
         "rom_fault_offset": ROM_CHECKSUM_END - 1,
         **rom_metadata,
+        **pic_metadata,
         **survey_metadata,
     }
     return bytes(image), metadata

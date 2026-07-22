@@ -1621,7 +1621,12 @@ an active `/Q1` feedback output.
    CPU signature but before D11 or RAM activity. Exact-image cosim retains the
    acknowledged survey and no-ACK fallback, while a `07FF` bit flip reaches
    only the continuous nominal 2 kHz ROM-bad tone; clean/corrupt vm80a paths
-   prove the same D15 read branch. PPI/PIT/PIC register tests are next.
+   prove the same D15 read branch. The next cumulative image initializes D10
+   with the real `D6/FE` MCS-80 pair, reads the interrupt mask back as both
+   `00` and `FF`, and restores every IRQ masked on success and failure. Cosim
+   proves both stuck-bit polarities plus the cumulative ACK/no-ACK paths; vm80a
+   proves clean and forced-low D10 readback with a distinct continuous nominal
+   4 kHz failure tone, IFF clear, and no RAM write. PPI/PIT tests are next.
 
 ## Physical bring-up sequence
 
@@ -1676,6 +1681,10 @@ Once a released board and programmed parts exist:
   official `000A=sum(000B..07FF)` convention, clean continuation, and distinct
   corrupt-ROM halt execute in cosim and through vm80a's physical D15 path
   before USART, RAM, interrupts, or a memory-mode change.
+- [x] Jukuravi D0 rung 5b has an exact-hash-guarded cumulative D15 image whose
+  D10 command/data decode, complementary IMR readback, safe terminal mask, and
+  distinct PIC-bad halt execute for clean and stuck-bit cases in cosim and
+  through the vm80a HDL twin before USART, RAM, or interrupt enable.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

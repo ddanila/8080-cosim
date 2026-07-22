@@ -13,6 +13,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -30,6 +31,8 @@ python3 tests/jukuravi_d0_ram_fallback_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-ram-fallback.bin
 python3 tests/jukuravi_d0_romcheck_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-romcheck.bin
+python3 tests/jukuravi_d0_pic_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-pic.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 python3 - "$tmp/success.hex" "$tmp/failure.hex" <<'PY'
@@ -327,6 +330,46 @@ for fixture in clean corrupt; do
   printf '%s\n' "$hdl_out"
   grep -q "JUKURAVI-D0-ROMCHECK-HDL: PASS" <<<"$hdl_out"
   if grep -q "JUKURAVI-D0-ROMCHECK-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+python3 - "$tmp/pic.hex" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "spinoffs/jukuravi/firmware"))
+import build_d0_pic
+
+image, metadata = build_d0_pic.build()
+fixture = bytearray(image + bytes([0x76]) * 8192)
+alive = int(metadata["alive_delay_offset"])
+fixture[alive] = 1
+fixture[alive + 1] = 0
+offset = int(metadata["rom_checksum_offset"])
+start = int(metadata["rom_checksum_start"])
+end = int(metadata["rom_checksum_end"])
+fixture[offset] = sum(fixture[start:end]) & 0xFF
+Path(sys.argv[1]).write_text("\n".join(f"{byte:02x}" for byte in fixture) + "\n")
+PY
+pic_fail_pc=$(
+  PYTHONPATH=spinoffs/jukuravi/firmware python3 - <<'PY'
+import build_d0_pic
+_, metadata = build_d0_pic.build()
+print(f"{metadata['pic_fail_halt']:04x}")
+PY
+)
+iverilog -g2012 -o "$tmp/jukuravi_d0_pic_tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
+  hdl/sim/jukuravi_d0_pic_tb.v
+for fixture in clean fault; do
+  args=(+rom="$tmp/pic.hex" +pic_fail="$pic_fail_pc")
+  [[ $fixture == fault ]] && args+=(+inject_fault)
+  hdl_out=$(vvp "$tmp/jukuravi_d0_pic_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-PIC-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-PIC-HDL: FAIL" <<<"$hdl_out"; then
     exit 1
   fi
 done
