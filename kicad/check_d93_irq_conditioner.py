@@ -54,7 +54,7 @@ def main() -> None:
     nets = spec["nets"]
     expected = {
         "FDC_INTRQ": [["D93", "39"], ["D28", "13"], ["R93", "1"]],
-        "FDC_DRQ": [["D93", "38"], ["D28", "11"]],
+        "FDC_DRQ": [["D93", "38"], ["D28", "11"], ["R94", "1"]],
         "FDC_IRQ_CONDITIONED_N": [
             ["D28", "10"], ["D28", "12"], ["D96", "10"],
             ["D96", "12"], ["R95", "1"],
@@ -68,11 +68,11 @@ def main() -> None:
     for retired in ("D10_IR0_FDC_BOUNDARY", "D10_IR1_FDC_BOUNDARY"):
         if retired in nets:
             raise SystemExit(f"retired direct-FDC PIC boundary returned: {retired}")
-    for node in (["R93", "2"], ["R95", "2"]):
+    for node in (["R93", "2"], ["R94", "2"], ["R95", "2"]):
         if node not in nets["P5V"]["nodes"]:
             raise SystemExit(f"conditioner pull-up missing: {node}")
     chips = {chip["ref"]: chip for chip in spec["chips"]}
-    for ref, value in {"R93": "10к", "R95": "2к"}.items():
+    for ref, value in {"R93": "10к", "R94": "10к", "R95": "2к"}.items():
         if chips.get(ref, {}).get("value") != value:
             raise SystemExit(f"{ref} value missing: {chips.get(ref, {}).get('value')}")
     forbidden_nc = {("D28", pin) for pin in ("10", "11", "12", "13")}

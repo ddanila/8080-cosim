@@ -40,7 +40,7 @@ module juku_top (
     // READY section A is represented by D30 below; native sheet-2 D38.8 exports
     // active-low STB to sheet-1 -SSTB/D30.1 on the D38 side of factory wire W8.
     // STSTB(8238) comes from D38.8 over factory wire 8.
-    wire        phi1, phi2, phi1_d35, phi2_d35, phi2ttl, ready, reset_sys, ststb_n;
+    wire        phi1, phi2, phi1_d35, phi2_d35, phi2ttl, ready, reset_sys, fdc_reset_n, ststb_n;
     wire        stb_d38;
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
@@ -211,15 +211,18 @@ module juku_top (
                      .i4(d39_memcyc), .i5(timing_tag2), .i6(1'b0), .i7(cas_n), .y2(load_pre));  // sect2 LOAD: pins5/4/2/1 <- rails4/2/1/15; only rail2 origin remains pending
     // D38.8 is the physical 8238 status-strobe source: ~sync -> ststb_n -> D5 STB(pin1).
     // D13 remains the separate Schmitt inverter package for RAMOUTEN, system-clock handoff,
-    // reset, and the D6/D105 edge path. [cpu-core.md]
+    // reset, the now owner-closed D13.9->.8 FDC reset inversion, and the
+    // D6/D105 edge path. [cpu-core.md]
     wire d37_y3;                      // D37 sect-3 out -> D58.OE (owner-confirmed D37.6-D58.9)
     wire ram_out_en;                  // RAMOUTEN rail: owner-confirmed D13.2 -> D37.4
     // D13 = К555ТЛ2 hex Schmitt inverter (traced + census). Section 1->2 = the RAMOUTEN driver:
     // in <- D6.9 "-RAMOUTEN" (roe_n, modeled permissive-low => ram_out_en stays 1 = the old tri1
     // boot-verified value). Section 5->6 = RESIN Schmitt -> RES (boundary). Old dual-4-NAND
     // stand-in retired; STSTB comes from D38 directly (beeper wires 8/9).
+    // Chip-removed continuity proves active-high RESET enters pin9 and pin8
+    // drives the VG93 active-low master-reset input.
     tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(wr_n), .o4(d13_o4),
-                     .i5(1'b1), .o6(reset_sys), .i9(1'b1), .o8(),
+                     .i5(1'b1), .o6(reset_sys), .i9(reset_sys), .o8(fdc_reset_n),
                      .i11(1'b1), .o10(), .i13(d105_h), .o12(d6_v_enable));
     // Factory wire A:8 is an assembly conductor, not PCB copper. Keeping it as
     // a mapped boundary cell makes its two registered landing islands visible
@@ -568,19 +571,19 @@ module juku_top (
     // status, READY, separator-clock, and wired DRQ/INTRQ paths LVS-visible;
     // their external X4 inputs remain honest off-board boundaries.
     wire d28_x4_dsel1_n, d28_x4_dsel0_n;
-    wire d98_y1_r94, d98_y3_s1_2;
+    wire d98_y1_ready, d98_y3_s1_2;
     wire x4_ready_n, x4_index_n, x4_rd_data;
     wire x4_tr00_n, x4_wr_protect_n;
     ln3_oc_inv U_D28 (
         .a1(ppi0_pc[5]), .y1(d28_x4_dsel1_n),
         .a2(d28_x4_dsel1_n), .y2(d28_x4_dsel0_n),
-        .a3(d98_y1_r94), .y3(fdc_ready),
+        .a3(d98_y1_ready), .y3(fdc_ready),
         .a4(d106_q[3]), .y4(d96_separator_clk),
         .a5(fdc_drq), .y5(d96_irq_conditioned_boundary),
         .a6(fdc_intrq), .y6(d96_irq_conditioned_boundary));
     lp11_buf U_D98 (
         .oe14_n(1'b0), .oe56_n(1'b0),
-        .a1(x4_ready_n), .y1(d98_y1_r94),
+        .a1(x4_ready_n), .y1(d98_y1_ready),
         .a2(x4_index_n), .y2(fdc_index),
         .a3(x4_rd_data), .y3(d98_y3_s1_2),
         .a4(1'bz), .y4(),
@@ -630,12 +633,10 @@ module juku_top (
     // precompensation chain below.
     supply1 d94_a4_d101_q0;
 `endif
-    // Exact `.009` sheets join D13.6 RES continuation (3) directly to D93.19.
-    // The sheet-3 `-RES` text/bubbled input conflicts with the sheet-1 RES name;
-    // preserve that physical conductor here. The separate behavioral adjunct
-    // below keeps its established inactive-reset fit until bench polarity is known.
+    // Owner continuity supersedes the ambiguous drawing continuation: D13.6
+    // active-high RESET enters D13.9, and D13.8 drives D93.19 MR_N.
     vg93_fdc   U_D93  (.nc_back_bias(d93_1_open_stub), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
-                       .mr_n(reset_sys), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
+                       .mr_n(fdc_reset_n), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
                        .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                        .step(fdc_step), .dirc(fdc_dir), .early(fdc_early_boundary), .late(fdc_late_boundary),
                        .test(fdc_test_wf_vfoe), .hlt(fdc_ready), .rg(fdc_rg_nc),

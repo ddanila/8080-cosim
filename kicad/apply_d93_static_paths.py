@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply exact-revision D93 reset and TEST/WF-VFOE source closures."""
+"""Apply owner-measured D13/D93 reset and exact static-pin source closures."""
 from __future__ import annotations
 
 import sys
@@ -22,11 +22,12 @@ def main() -> None:
     path = sys.argv[1]
     board = pcbnew.LoadBoard(path)
     d93 = next((fp for fp in board.GetFootprints() if fp.GetReference() == "D93"), None)
-    if d93 is None:
-        raise SystemExit("D93 footprint is missing")
+    d13 = next((fp for fp in board.GetFootprints() if fp.GetReference() == "D13"), None)
+    if d93 is None or d13 is None:
+        raise SystemExit("D13/D93 footprint is missing")
 
     expected = {
-        "19": {"D93_MR_BOUNDARY", "RESET"},
+        "19": {"D93_MR_BOUNDARY", "RESET", "FDC_RESET_N"},
         "22": {"D93_TEST_BOUNDARY", "D93_TEST_WF_VFOE"},
         "33": {"D93_WF_VFOE_BOUNDARY", "D93_TEST_WF_VFOE"},
     }
@@ -39,12 +40,23 @@ def main() -> None:
                 f"D93.{pin} unexpected existing net {pad.GetNetname()!r}; expected {sorted(allowed)}"
             )
 
-    d93.FindPadByNumber("19").SetNet(net(board, "RESET"))
+    reset = net(board, "RESET")
+    fdc_reset = net(board, "FDC_RESET_N")
+    for pin, target, allowed in (
+        ("9", reset, {"", "RESET"}),
+        ("8", fdc_reset, {"", "FDC_RESET_N"}),
+    ):
+        pad = d13.FindPadByNumber(pin)
+        if pad is None or pad.GetNetname() not in allowed:
+            actual = None if pad is None else pad.GetNetname()
+            raise SystemExit(f"D13.{pin} unexpected existing net {actual!r}")
+        pad.SetNet(target)
+    d93.FindPadByNumber("19").SetNet(fdc_reset)
     static = net(board, "D93_TEST_WF_VFOE")
     d93.FindPadByNumber("22").SetNet(static)
     d93.FindPadByNumber("33").SetNet(static)
     pcbnew.SaveBoard(path, board)
-    print("D93 STATIC PATHS: APPLIED — RESET->19, TEST 22<->WF/VFOE 33")
+    print("D93 STATIC PATHS: APPLIED — RESET->D13.9/.8->D93.19, TEST 22<->WF/VFOE 33")
 
 
 if __name__ == "__main__":

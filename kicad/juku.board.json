@@ -2399,7 +2399,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Chip-removed owner continuity on 2026-07-14 supersedes the invalid installed-PROM reading: section output pin12 reaches D6 enable pin14, not D6 output pins11/12; its reported D16.13 branch remains held pending a D16-removed recheck. Exhaustive symbol census never uses sections 9->8 or 11->10, whose four pins are explicit NCs; WIRE 12 corroborates pin2->D37.4 and WIRE 13 pin1->D92.1"
+    "pins": "ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Owner continuity on 2026-07-20 proves RESET enters the formerly unaccounted section at pin9 and inverted pin8 drives D93.19 MR_N; only section 11->10 remains unused. Chip-removed owner continuity on 2026-07-14 supersedes the invalid installed-PROM reading: section output pin12 reaches D6 enable pin14, not D6 output pins11/12; its reported D16.13 branch remains held pending a D16-removed recheck. WIRE 12 corroborates pin2->D37.4 and WIRE 13 pin1->D92.1"
    }
   },
   {
@@ -3157,9 +3157,23 @@
     "2": "P2"
    },
    "prov": {
-    "type": ".009 assembly drawing + owner photo",
-    "refdes": "ДГШ5.109.009 СБ identifies R94 below-left of D98",
-    "pins": "photo color code and owner continuity identify 220 ohm; visible component copper connects the upper terminal to D98.3; far terminal remains unresolved"
+    "type": "scan + owner continuity",
+    "refdes": "ДГШ5.109.009 Э3 sheet 3 and СБ factory placement; owner measurement 2026-07-20",
+    "pins": "10-kohm pull-up immediately above D28; owner continuity proves pin1 joins D93 DRQ/pin38 and D28.11, while pin2 joins +5 V. This supersedes the rejected attribution of the separate photographed 220-ohm body near D98"
+   },
+   "value": "10к"
+  },
+  {
+   "ref": "RUNK1",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "registered owner photo",
+    "refdes": "local evidence placeholder only; historical reference remains unidentified",
+    "pins": "populated 220-ohm body below-left of D98 retained at its photographed position after owner continuity disproved the former R94 identity; both endpoints remain explicit measurement boundaries"
    },
    "value": "220"
   },
@@ -7705,7 +7719,7 @@
    ]
   },
   "RESET": {
-   "src": "recovered .009 Э3 sheet 1: reset shaper drives D13 inverter input pin5; D13.6 is the uninterrupted RES conductor to CPU D1.12, both PPIs, USART D11.21, and sheet-3 continuation (3). Recovered .009 sheet 3 lands that continuation directly on D93 MR/pin19; preserve the factory connection despite the sheet-3 -RES / active-low-symbol polarity ambiguity",
+   "src": "recovered .009 Э3 sheet 1: reset shaper drives D13 inverter input pin5; D13.6 is the uninterrupted active-high RESET conductor to CPU D1.12, both PPIs, USART D11.21, and D13.9. Chip-removed owner continuity on 2026-07-20 proves D13.8 supplies the separate active-low FDC master-reset net",
    "nodes": [
     [
      "D13",
@@ -7728,10 +7742,14 @@
      "21"
     ],
     [
-     "D93",
-     "19"
+     "D13",
+     "9"
     ]
    ]
+  },
+  "FDC_RESET_N": {
+   "src": "chip-removed owner continuity 2026-07-20: D13 Schmitt inverter output pin8 drives D93 MR_N/pin19 and the physical outer-bus rightmost middle-row contact; exact connector code remains deliberately unassigned until X1 orientation is reconciled",
+   "nodes": [["D13", "8"], ["D93", "19"]]
   },
   "OSC": {
    "nodes": [
@@ -11897,6 +11915,10 @@
       [
        "R95",
        "2"
+      ],
+      [
+       "R94",
+       "2"
       ]
    ]
   },
@@ -12059,23 +12081,18 @@
    ],
    "_note": "off-board wire 18; S1 is bracket-mounted and must not become an on-board two-pin footprint"
   },
-  "D98_Y1_R94": {
-   "src": "recovered .009 Э3 sheet 3 drives D28 READY inverter input pin5 from D98 READY output pin3; registered component imagery independently proves the photographed 220-ohm R94.1 branch on the same D98.3 node",
+  "D98_Y1_D28_READY": {
+   "src": "recovered .009 Э3 sheet 3 directly drives D28 READY inverter input pin5 from D98 READY output pin3. Owner continuity disproves the former R94 branch; the separate photographed 220-ohm body remains an unidentified physical component",
    "nodes": [
     [
      "D98",
      "3"
     ],
     [
-     "R94",
-     "1"
-    ],
-    [
      "D28",
      "5"
     ]
-   ],
-   "_note": "R94.2 far terminal remains a physical-connectivity blocker"
+   ]
   },
   "RESIN": {
    "src": "scan",
@@ -14242,9 +14259,13 @@
    "risk_disposition": "closed by direct owner continuity; the word boundary refers only to the superseded scan interpretation",
    "nodes": [["D30", "8"], ["D29", "7"]]
   },
-  "R94_P2_BOUNDARY": {
-   "src": "July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary",
-   "nodes": [["R94", "2"]]
+  "RUNK1_P1_BOUNDARY": {
+   "src": "registered owner photo preserves the first physical landing of the populated 220-ohm body near D98; historical reference and remote endpoint remain unidentified after the former R94 attribution was rejected",
+   "nodes": [["RUNK1", "1"]]
+  },
+  "RUNK1_P2_BOUNDARY": {
+   "src": "registered owner photo preserves the second physical landing of the populated 220-ohm body near D98; historical reference and remote endpoint remain unidentified after the former R94 attribution was rejected",
+   "nodes": [["RUNK1", "2"]]
   },
   "S1_3_BOUNDARY": {
    "src": "ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains a measurement boundary",
@@ -14255,8 +14276,8 @@
    "nodes": [["D93", "39"], ["D28", "13"], ["R93", "1"]]
   },
   "FDC_DRQ": {
-   "src": "recovered .009 Э3 sheet 3 directly joins D93 DRQ/pin38 to D28 open-collector inverter input pin11. The drawing labels a 10k pull-up R94 on this node, but target-board photo/continuity proves physical R94 is instead 220 ohms on D98.3, so that conflicting resistor branch is not imported",
-   "nodes": [["D93", "38"], ["D28", "11"]]
+   "src": "recovered .009 Э3 sheet 3 and owner continuity 2026-07-20 directly join D93 DRQ/pin38, D28 open-collector inverter input pin11, and R94.1; physical R94 is the 10-kohm pull-up immediately above D28 and its other terminal joins +5 V",
+   "nodes": [["D93", "38"], ["D28", "11"], ["R94", "1"]]
   },
   "X2_IRQ0": {
    "src": "exact .009 sheet 1 directly joins D10 IR0/pin18 to board contact 214 and R105=12k; R105's other terminal is ground. This external input is separate from the sheet-3 FDC conditioner",
@@ -15906,8 +15927,6 @@
   ["D10", "12"],
   ["D10", "13"],
   ["D10", "15"],
-  ["D13", "8"],
-  ["D13", "9"],
   ["D13", "10"],
   ["D13", "11"],
   ["D35", "1"],

@@ -35,12 +35,12 @@ if connected:
     raise SystemExit(f"FDC UNUSED: NC pins returned to nets: {connected}")
 
 EXPECTED_USED = {
-    "D98_Y1_R94": {"D98.3", "R94.1", "D28.5"},
+    "D98_Y1_D28_READY": {"D98.3", "D28.5"},
     "FDC_READY": {"D28.6", "D93.23", "D93.32", "R84.1"},
     "FDC_RAW_READ": {"D97.4", "D93.27", "D106.11"},
     "PRECOMP_TAP_3": {"D102.13", "D101.12"},
     "FDC_INTRQ": {"D93.39", "D28.13", "R93.1"},
-    "FDC_DRQ": {"D93.38", "D28.11"},
+    "FDC_DRQ": {"D93.38", "D28.11", "R94.1"},
     "FDC_IRQ_CONDITIONED_N": {"D28.10", "D28.12", "D96.10", "D96.12", "R95.1"},
 }
 for name, expected in EXPECTED_USED.items():
@@ -99,7 +99,7 @@ for node in sorted(EXPECTED_NC):
     if actual is not None:
         raise SystemExit(f"FDC UNUSED: source PCB {node} still has net {actual!r}")
 for node, expected in {
-    "D28.5": "D98_Y1_R94", "D28.6": "FDC_READY",
+    "D28.5": "D98_Y1_D28_READY", "D28.6": "FDC_READY",
     "D28.10": "FDC_IRQ_CONDITIONED_N", "D28.11": "FDC_DRQ",
     "D28.12": "FDC_IRQ_CONDITIONED_N", "D28.13": "FDC_INTRQ",
 }.items():

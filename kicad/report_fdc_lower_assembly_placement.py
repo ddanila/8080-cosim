@@ -18,13 +18,13 @@ OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
 RESTORED_FACTORY_PARTS = {
-    "C16", "C17", "C18", "C19", "R78", "R79", "R80", "R81", "R82", "R83", "R84", "R85", "R93", "R95",
+    "C16", "C17", "C18", "C19", "R78", "R79", "R80", "R81", "R82", "R83", "R84", "R85", "R93", "R94", "R95",
     "R86", "R92", "R97", "R98", "R99", "R100", "R102", "R103", "R108",
 }
 EXPECTED_RESISTOR_VALUES = {
     "R78": "10к", "R79": "470", "R80": "470", "R81": "470", "R82": "470",
     "R83": "470", "R84": "470", "R85": "470", "R86": "4,7к",
-    "R92": "1,3к", "R93": "10к", "R95": "2к", "R98": "4,7к", "R99": "4,7к", "R100": "12к",
+    "R92": "1,3к", "R93": "10к", "R94": "10к", "R95": "2к", "R98": "4,7к", "R99": "4,7к", "R100": "12к",
     "R97": "47к", "R102": "12к", "R103": "47к", "R108": "12к",
 }
 EXPECTED_CAPACITOR_VALUES = {"C17": "120 мкФ", "C18": "47 мкФ", "C20": "1,5 нФ", "C22": "1,5 нФ"}
@@ -306,6 +306,7 @@ for item in document["targets"]:
             "R84": {"1": "FDC_READY", "2": "P5V"},
             "R85": {"1": "SEP_D28_CLK", "2": "P5V"},
             "R93": {"1": "FDC_INTRQ", "2": "P5V"},
+            "R94": {"1": "FDC_DRQ", "2": "P5V"},
             "R95": {"1": "FDC_IRQ_CONDITIONED_N", "2": "P5V"},
             "R98": {"1": "X4_DSEL1_N", "2": "P5V"},
             "C16": {"1": "D97_RC1_C16", "2": "D97_C1_C16"},
@@ -365,7 +366,7 @@ lines = ["# FDC lower assembly placement", "",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
          "placement only, except where the owner-evidence records below explicitly close",
-         "R79-R85/R93/R95/R98 plus R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.", "",
+         "R79-R85/R93/R94/R95/R98 plus R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.", "",
          f"Held-out errors: D99 `{next(x['error_mm'] for x in checks if x['refdes']=='D99'):.3f}` mm; "
          f"D97 `{next(x['error_mm'] for x in checks if x['refdes']=='D97'):.3f}` mm.", "",
          "| Ref | Projected x,y mm | Current x,y mm | Delta mm | Drawing observation |", 
@@ -377,7 +378,7 @@ for item in targets:
     delta = "-" if item["projected_delta_mm"] is None else ", ".join(
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {projected} | {current} | {delta} | {item['observation']} |")
-lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
+lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
           "factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the",
           "overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns",
           "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C63 is an explicit target-board DNP:",

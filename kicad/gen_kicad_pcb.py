@@ -64,7 +64,7 @@ PASSIVE_FP_REF = {
     'C19': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'C20': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'C22': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
-    'R94': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'RUNK1': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R87': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R88': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R89': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
@@ -187,7 +187,10 @@ PASSIVE_PLACE = {
     'AX413':(251.98,15.2,0),'AX414':(254.52,15.2,0),'AX415':(257.06,15.2,0),'AX416':(259.60,15.2,0),
     'AX417':(262.14,15.2,0),'AX418':(264.68,15.2,0),'AX419':(267.22,15.2,0),'AX420':(269.76,15.2,0),
     'AX421':(272.30,15.2,0),'AX422':(274.84,15.2,0),'AX423':(277.38,15.2,0),
-    'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
+    # The registered 220-ohm body below-left of D98 is real but not R94.
+    # Preserve its photographed placement under an explicitly non-historical
+    # evidence placeholder until continuity identifies the original refdes.
+    'RUNK1':(297.6,56.4,270),
     # .009 labels the three vertical bodies left of D94 as R87/R88/R89.
     # D94-local component/solder fits place pad 1 on the three signal traces;
     # pad 2 is the shared upper +5 V rail. All three values are photo-closed at 6K2.
@@ -219,7 +222,8 @@ PASSIVE_PLACE = {
     'R84':(245.220,97.300,90),'R85':(278.302,66.090,90),
     # D106/D28-local owner-photo joints supersede the folded-drawing affine:
     # R78 is the left 10K body and R98 the right 4K7 body, both at 10.16 mm pitch.
-    'R78':(267.999,68.177,90),'R93':(277.443,54.083,90),'R95':(282.852,54.319,90),
+    'R78':(267.999,68.177,90),'R94':(271.987,54.141,90),
+    'R93':(277.443,54.083,90),'R95':(282.852,54.319,90),
     'R98':(270.485,68.177,90),
     'C11':(268.232,93.540,90),'C94':(289.870,130.321,90),
     # Remaining retained R6x grid refdes-to-slot assignments are approximate.

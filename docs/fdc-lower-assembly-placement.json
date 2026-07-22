@@ -679,6 +679,33 @@
       "electrical_evidence": true
     },
     {
+      "refdes": "R94",
+      "drawing_px": [
+        1935.0,
+        1585.0
+      ],
+      "factory_projected_board_mm": [
+        271.987,
+        54.141
+      ],
+      "projected_board_mm": [
+        271.987,
+        54.141
+      ],
+      "current_footprint_mm": [
+        271.987,
+        54.141
+      ],
+      "projected_delta_mm": [
+        0.0,
+        -0.0
+      ],
+      "observation": "leftmost vertical body in the R94/R93/R95 row above D28; owner identification and continuity confirm the sheet-3 10-kohm DRQ pull-up and supersede the former 220-ohm/D98 attribution",
+      "owner_evidence": [],
+      "owner_absence_evidence": [],
+      "electrical_evidence": true
+    },
+    {
       "refdes": "R93",
       "drawing_px": [
         2040.0,
