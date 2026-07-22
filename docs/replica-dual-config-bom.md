@@ -20,6 +20,14 @@ readiness report.
 - Do not populate now (empty/DNP/pending): 64
 - Unique BOM lines: 112
 
+## Sockets
+
+These parts are socketed on the original board -- order 11 DIP
+sockets (matching each part's pin count) in addition to the ICs, and fit the
+IC into the socket rather than soldering it to the board:
+
+- D2, D6, D8, D15, D16, D17, D18, D19, D20, D21, D22
+
 ## Action Totals
 
 | Action | Count basis |

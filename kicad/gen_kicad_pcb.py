@@ -322,13 +322,15 @@ BOARD_SILK_NOTES = [
     ("8080 HEART", 32, 134, 0),
     ("BOOT ROM FIELD", 93, 72, 0),
     ("DRAM MEMORY FIELD", 160, 132, 0),
-    ("VIDEO TIMING", 96, 188, 0),
+    ("VIDEO TIMING", 96, 189, 0),
     ("CLOCK MILL", 256, 127, 0),
-    ("FDC OUTPOST", 270, 18, 0),
-    ("SERIAL / TAPE", 201, 37, 0),
+    ("FDC OUTPOST", 255, 50, 0),   # in the open band between the transceiver row
+                                   # (y~34) and the lower FDC chip row (y~73); the
+                                   # old (270,18) sat on the AX4xx wire-pad refdes.
+    ("SERIAL / TAPE", 204, 38, 0),
     ("KEYBOARD SCANNER", 222, 246, 0),
     ("POWER EDGE", 58, 248, 0),
-    ("EXPANSION BUS", 62, 36, 0),
+    ("EXPANSION BUS", 62, 33, 0),
 ]
 
 def patch_text_fonts(path):
@@ -463,10 +465,18 @@ def main():
     placed, n_pads = {}, 0
 
     def apply_population_flags(fp, chip):
-        """Carry assembly intent into native KiCad manufacturing metadata."""
-        if chip.get('assembly_dnp'):
+        """Carry assembly intent into native KiCad manufacturing metadata.
+
+        A bare-artwork passive (assembly_dnp) or an unpopulated socket
+        (populated:false) is marked DNP and excluded from placement files. An
+        unpopulated socket also hides its chip value, so the silk/preview shows
+        an empty socket (outline + refdes) instead of a phantom populated part
+        -- keeping the preview consistent with the modeled population."""
+        if chip.get('assembly_dnp') or chip.get('populated') is False:
             fp.SetDNP(True)
             fp.SetExcludedFromPosFiles(True)
+        if chip.get('populated') is False:
+            fp.Value().SetVisible(False)
 
     def add_passive(ref, x, y, rot=0):
         nonlocal n_pads
@@ -871,7 +881,11 @@ def main():
         t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         board.Add(t)
 
-    silk_box(15, 13, 107, 21, "X1"); silk_box(118, 13, 171.5, 21, "X2") # X2 ends immediately before photo-fitted A21
+    # X1/X2 connector bodies sit ABOVE their solder pins, toward the top board
+    # edge (pins at y~6.6-11.6; the connector mates up/off the edge, not into the
+    # board). Draw each body outline in the y~1.5-6.3 band over its pad x-span --
+    # the old y=13-21 boxes sat below the pins, on the interior, which read backwards.
+    silk_box(20, 1.5, 102, 6.3, "X1"); silk_box(126, 1.5, 165, 6.3, "X2")
     silk_box(222, 283, 273, 287.6, "X9")   # bottom connector (read mm222..273, pins 58..45; box held 0.4 off the edge cut for silk-edge DRC)
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
     # traced yet (toward-76), so show them as PLACEMENT-ONLY silk socket outlines to complete the

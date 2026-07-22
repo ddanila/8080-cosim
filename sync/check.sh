@@ -49,5 +49,17 @@ fi
 echo "==> silkscreen glyph coverage (no tofu)"
 python3 kicad/check_silk_glyphs.py
 
+echo "==> board population / assembly consistency (preview <-> model)"
+python3 kicad/check_board_population.py
+
+# Silk-overlap needs pcbnew; run it only when a KiCad python is available.
+KPY="$(scripts/find-kicad-python.sh 2>/dev/null || true)"
+if [ -n "$KPY" ] && "$KPY" -c "import pcbnew" >/dev/null 2>&1; then
+  echo "==> silkscreen sign overlap"
+  "$KPY" kicad/check_silk_overlap.py kicad/juku_routed.kicad_pcb
+else
+  echo "==> silkscreen sign overlap (SKIPPED -- no pcbnew)"
+fi
+
 echo "==> provenance"
 python3 sync/provenance.py kicad/juku.board.json | tail -2

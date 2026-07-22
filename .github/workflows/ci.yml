@@ -232,6 +232,9 @@ jobs:
       - name: Check silkscreen glyph coverage (no tofu)
         run: python3 kicad/check_silk_glyphs.py
 
+      - name: Check board population / assembly consistency
+        run: python3 kicad/check_board_population.py
+
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py
 

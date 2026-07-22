@@ -157,6 +157,7 @@
   },
   {
    "ref": "D6",
+   "socketed": true,
    "type": "DEC_PROM",
    "pins": {
     "5": "A0",
@@ -206,6 +207,7 @@
   },
   {
    "ref": "D15",
+   "socketed": true,
    "type": "EPROM8K",
    "pins": {
     "10": "A0",
@@ -246,6 +248,7 @@
   },
   {
    "ref": "D16",
+   "socketed": true,
    "type": "EPROM8K",
    "pins": {
     "10": "A0",
@@ -286,6 +289,7 @@
   },
   {
    "ref": "D60",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -313,6 +317,7 @@
   },
   {
    "ref": "D61",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -340,6 +345,7 @@
   },
   {
    "ref": "D62",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -367,6 +373,7 @@
   },
   {
    "ref": "D63",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -394,6 +401,7 @@
   },
   {
    "ref": "D64",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -421,6 +429,7 @@
   },
   {
    "ref": "D65",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -448,6 +457,7 @@
   },
   {
    "ref": "D66",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -475,6 +485,7 @@
   },
   {
    "ref": "D67",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1481,6 +1492,7 @@
   },
   {
    "ref": "D68",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1508,6 +1520,7 @@
   },
   {
    "ref": "D69",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1535,6 +1548,7 @@
   },
   {
    "ref": "D70",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1562,6 +1576,7 @@
   },
   {
    "ref": "D71",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1589,6 +1604,7 @@
   },
   {
    "ref": "D72",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1616,6 +1632,7 @@
   },
   {
    "ref": "D73",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1643,6 +1660,7 @@
   },
   {
    "ref": "D74",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1670,6 +1688,7 @@
   },
   {
    "ref": "D75",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1697,6 +1716,7 @@
   },
   {
    "ref": "D76",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1724,6 +1744,7 @@
   },
   {
    "ref": "D77",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1751,6 +1772,7 @@
   },
   {
    "ref": "D78",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1778,6 +1800,7 @@
   },
   {
    "ref": "D79",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1805,6 +1828,7 @@
   },
   {
    "ref": "D80",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1832,6 +1856,7 @@
   },
   {
    "ref": "D81",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1859,6 +1884,7 @@
   },
   {
    "ref": "D82",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -1886,6 +1912,7 @@
   },
   {
    "ref": "D83",
+   "populated": false,
    "type": "RU5",
    "pins": {
     "6": "MA0",
@@ -2145,6 +2172,8 @@
   },
   {
    "ref": "D17",
+   "socketed": true,
+   "populated": false,
    "type": "EPROM8K",
    "pins": {
     "10": "A0",
@@ -2184,6 +2213,8 @@
   },
   {
    "ref": "D18",
+   "socketed": true,
+   "populated": false,
    "type": "EPROM8K",
    "pins": {
     "10": "A0",
@@ -2223,6 +2254,8 @@
   },
   {
    "ref": "D19",
+   "socketed": true,
+   "populated": false,
    "type": "EPROM8K",
    "marking": "К573РФ6",
    "pins": {
@@ -2263,6 +2296,8 @@
   },
   {
    "ref": "D20",
+   "socketed": true,
+   "populated": false,
    "type": "EPROM8K",
    "pins": {
     "10": "A0",
@@ -2302,6 +2337,8 @@
   },
   {
    "ref": "D21",
+   "socketed": true,
+   "populated": false,
    "type": "EPROM8K",
    "pins": {
     "10": "A0",
@@ -2341,6 +2378,8 @@
   },
   {
    "ref": "D22",
+   "socketed": true,
+   "populated": false,
    "type": "EPROM8K",
    "pins": {
     "10": "A0",
@@ -3922,6 +3961,7 @@
   },
   {
    "ref": "D8",
+   "socketed": true,
    "type": "RE3_PROM",
    "pins": {
     "10": "A0",
@@ -3947,6 +3987,7 @@
   },
   {
    "ref": "D2",
+   "socketed": true,
    "type": "WAIT_PROM",
    "marking": "КР556РТ4А",
    "pins": {

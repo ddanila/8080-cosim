@@ -205,10 +205,14 @@ def procurement_of(chip):
 
 
 def populated(chip):
+    if chip.get("populated") is False:
+        return False
     if chip.get("pcb_dnp") or chip.get("assembly_dnp") or chip.get("pcb_placement_pending"):
         return False
     typ = chip["type"]
     if typ in EMPTY_SOCKET_TYPES:
+        if chip.get("populated") is True:
+            return True
         text = " ".join(str(v) for v in chip.get("prov", {}).values()).lower()
         return "populated" in text and "unpopulated" not in text
     return True
@@ -333,6 +337,9 @@ def write_csv(path, rows):
 
 
 def write_markdown(path, rows, board_json, csv_path):
+    spec = json.loads(board_json.read_text())
+    socketed_refs = sorted((c["ref"] for c in spec["chips"] if c.get("socketed")),
+                           key=natural_key)
     socket_positions = sum(row["board_positions"] for row in rows)
     populate_now = sum(row["populate_now"] for row in rows)
     leave_empty = sum(row["leave_empty"] for row in rows)
@@ -365,6 +372,14 @@ def write_markdown(path, rows, board_json, csv_path):
         f"- Populate for current functional .009 build: {populate_now}",
         f"- Do not populate now (empty/DNP/pending): {leave_empty}",
         f"- Unique BOM lines: {len(rows)}",
+        "",
+        "## Sockets",
+        "",
+        f"These parts are socketed on the original board -- order {len(socketed_refs)} DIP",
+        "sockets (matching each part's pin count) in addition to the ICs, and fit the",
+        "IC into the socket rather than soldering it to the board:",
+        "",
+        f"- {format_refs(socketed_refs)}",
         "",
         "## Action Totals",
         "",

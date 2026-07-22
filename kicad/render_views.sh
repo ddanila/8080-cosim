@@ -17,6 +17,13 @@ KCLI="$(scripts/find-kicad-cli.sh)"
 BOARD="${1:-kicad/juku_routed.kicad_pcb}"
 mkdir -p renders
 
+# Preview resolution. Bump these to trade file size for detail.
+DPI_2D=600          # KiCad 9 raster png export
+WIDTH_2D=6000       # KiCad 10 SVG-fallback raster width (px)
+WIDTH_3D=3000       # 3D raytrace width (px); heights keep the framing aspect
+HEIGHT_3D_TOP=2574
+HEIGHT_3D_PERSP=2145
+
 # Does this kicad-cli still ship the raster png exporter? (KiCad 9 yes, 10 no.)
 if "$KCLI" pcb export --help 2>&1 | grep -qw png; then
   HAVE_PNG_EXPORT=1
@@ -43,7 +50,7 @@ render_2d() {
     tmp="$(mktemp -d "${TMPDIR:-/tmp}/juku_png_XXXXXX")"
     # shellcheck disable=SC2086
     "$KCLI" pcb export png --layers "$cu" --common-layers "$silk",Edge.Cuts $mirror \
-        --scale 0 --dpi 300 -o "$tmp" "$BOARD" >/dev/null 2>&1
+        --scale 0 --dpi "$DPI_2D" -o "$tmp" "$BOARD" >/dev/null 2>&1
     mv "$tmp"/*.png "$out"
     rm -rf "$tmp"
   else
@@ -70,7 +77,7 @@ body = silk[re.search(r'<svg\b[^>]*>', silk).end():silk.rfind('</svg>')]
 open(sys.argv[3], 'w').write(cu[:cu.rfind('</svg>')] + body + '</svg>\n')
 PY
     # Black background to match the KiCad 9 png style (copper on black).
-    rsvg-convert --background-color=black -w 3600 "$merged" -o "$out"
+    rsvg-convert --background-color=black -w "$WIDTH_2D" "$merged" -o "$out"
     rm -f "$cusvg" "$sksvg" "$merged"
   fi
 }
@@ -78,8 +85,8 @@ PY
 render_2d front
 render_2d back
 
-"$KCLI" pcb render --side top --quality high --width 2000 --height 1716 \
+"$KCLI" pcb render --side top --quality high --width "$WIDTH_3D" --height "$HEIGHT_3D_TOP" \
     --background opaque -o renders/board_3d_top.png "$BOARD" >/dev/null 2>&1
-"$KCLI" pcb render --rotate "-30,20,-20" --zoom 0.9 --quality high --width 2000 --height 1430 \
+"$KCLI" pcb render --rotate "-30,20,-20" --zoom 0.9 --quality high --width "$WIDTH_3D" --height "$HEIGHT_3D_PERSP" \
     --background opaque -o renders/board_3d_persp.png "$BOARD" >/dev/null 2>&1
 echo "renders/ updated: $(ls renders/*.png | wc -l | tr -d ' ') views"
