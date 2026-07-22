@@ -14,8 +14,10 @@ on:
   push:
     paths:
       - 'scripts/**'
+      - '!scripts/check_documentation_consistency.py'
       - 'tools/**'
       - 'ref/**'
+      - '!ref/routing/**'
       - 'roms/**'
       - 'media/**'
       - 'kicad/juku.board.json'
@@ -32,8 +34,10 @@ on:
   pull_request:
     paths:
       - 'scripts/**'
+      - '!scripts/check_documentation_consistency.py'
       - 'tools/**'
       - 'ref/**'
+      - '!ref/routing/**'
       - 'roms/**'
       - 'media/**'
       - 'kicad/juku.board.json'
