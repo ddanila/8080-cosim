@@ -70,7 +70,10 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   during hookup and pulse it before each session for deterministic runs.
 - **Host tool** (Python CLI) drives the protocol and prints verdicts. It talks
   to cosim's pty during development and to the Nano's USB port on the bench —
-  same code, same protocol.
+  same code, same protocol. Every session is logged verbatim (raw stream +
+  decoded verdicts, timestamped), matching the repo's provenance culture: a
+  verdict like "D87 bad rows 0x80–0xFF" is a citable artifact from a named
+  session, not a memory.
 
 A Nano is sufficient for every stage except the optional bus-master stage
 (~30 GPIO needed for address+data+control — that is Mega 2560 territory).
@@ -89,15 +92,25 @@ A Nano is sufficient for every stage except the optional bus-master stage
      timestamps OUT1 edges through its probe, and known divisor × measured
      frequency yields the PIT's actual input clock — empirically closing
      the CPU-Φ/baud-clock open unknown on the very first boot.
-  2. **Serial handshake** — before the RAM survey, because the 8251 is
-     polled I/O and needs no RAM: init, then a train of `0x55` bytes
-     (alternating bits — a bit-width ruler) so the Nano auto-bauds and
-     locks regardless of the unresolved baud-clock divisor, then the
-     banner (carrying ROM version + self-checksum so the host knows
-     exactly what it is talking to), then await the Nano's ack with a
-     register-loop timeout. Distinct beeps for serial-confirmed vs
-     serial-dead; if dead, all later results fall back to beep codes.
-  3. **RAM survey — find usable windows, don't just fail.** The populated
+  2. **CPU self-test** — "executes" is not "computes correctly": a failing
+     КР580 can run code yet get flags, rotates, or DAA wrong, silently
+     poisoning every later verdict. A register-only instruction smoke test
+     (ALU ops, rotates, flag behavior, DAA) accumulates a signature in
+     registers and compares against the known-good constant; a distinct
+     beep code on mismatch. ~100 bytes, zero RAM.
+  3. **Serial handshake** — before the RAM survey, because the 8251 is
+     polled I/O and needs no RAM. First a **local 8251 self-test** (after
+     init, do TxRDY/TxEMPTY status transitions behave across a written
+     byte?) so "serial dead" splits into *8251 dead* vs *8251 fine,
+     path/cable/Nano side dead* — different beeps, different bench
+     actions. Then the link proper: a train of `0x55` bytes (alternating
+     bits — a bit-width ruler) so the Nano auto-bauds and locks regardless
+     of the unresolved baud-clock divisor, then the banner (carrying ROM
+     version + self-checksum so the host knows exactly what it is talking
+     to), then await the Nano's ack with a register-loop timeout. Distinct
+     beeps for serial-confirmed vs serial-dead; if dead, all later results
+     fall back to beep codes.
+  4. **RAM survey — find usable windows, don't just fail.** The populated
      bank is bit-sliced: D84–D91 (К565РУ5, 64K×1) each hold ONE BIT of
      every byte across the whole 64 KiB (`docs/hardware-map.md`) — no chip
      owns an address block. Therefore: a fully dead chip leaves NO usable
@@ -131,13 +144,13 @@ A Nano is sufficient for every stage except the optional bus-master stage
      PITs, RAM decays silently during ROM-only loops. The diag ROM
      replicates the BIOS timer init early, and the survey includes a
      retention pass (write, wait, re-read), not just a march.
-  4. **Everything else:** ROM checksum (the firmware's own block-1
+  5. **Everything else:** ROM checksum (the firmware's own block-1
      convention, `docs/cosim-runtime-reference.md`), PPI/PIT/PIC
      register-wiggle tests, framebuffer test pattern (needs RAM).
 
-  The beep vocabulary is a tiny fixed set (alive / serial-ok / serial-dead /
-  chip-N-dead / windows-found), documented so a human with no Nano attached
-  can triage by ear.
+  The beep vocabulary is a tiny fixed set (alive / cpu-bad / usart-bad /
+  serial-ok / serial-dead / chip-N-dead / windows-found), documented so a
+  human with no Nano attached can triage by ear.
 
   **ROM discipline:** interrupts stay disabled for the diag ROM's whole
   life (the 8080 resets with them off; never `EI` — PIC state is unproven
@@ -145,12 +158,21 @@ A Nano is sufficient for every stage except the optional bus-master stage
   D15's 8 KiB with zero dependence on D16's contents: one socket swapped,
   one variable changed.
 
+  **Protocol discipline:** the serial protocol is framed records
+  (type/length/payload/CRC), not free text, from day one — self-delimiting
+  so the host can re-attach mid-stream after a reset pulse and resume
+  decoding at the next frame boundary. Cheap now, painful to retrofit.
+
   **Optional fallback channels** (not gating, recorded so they aren't
   re-invented): if the 8251 path is broken, the ROM can bit-bang slow
-  telemetry on the beeper — serial-dead need not mean data-dead; and once
-  RAM + video prove good, verdicts can be mirrored to the framebuffer,
-  letting the Juku diagnose itself to its own monitor with no Nano
-  attached.
+  telemetry on the beeper — serial-dead need not mean data-dead; the
+  input direction has a mirror fallback via the keyboard lines (PPI Port
+  A/B, reachable at X9): the Nano can drive matrix lines to send slow
+  commands with the 8251 fully dead, and — simpler — the ROM samples the
+  keyboard at boot so a human holding a key selects a test mode with no
+  host attached at all; and once RAM + video prove good, verdicts can be
+  mirrored to the framebuffer, letting the Juku diagnose itself to its
+  own monitor with no Nano attached.
 
   **Analog beeper tap (optional Nano channel):** the speaker unit
   (ДГШ5.884.001) solders to two posts — the easiest attachment point on
@@ -165,6 +187,10 @@ A Nano is sufficient for every stage except the optional bus-master stage
   clock measurement the digital OUT1 clip remains the precision option;
   the speaker tap gives a serviceable estimate with zero IC clips. The
   Nano ADC is ~10-bit/~10 kHz — cadence and envelope, not an oscilloscope.
+  A spare ADC channel is worth pointing at the +5 V rail: logging it
+  alongside test results catches the "RAM fails only when the rail sags
+  under load" class that pure logic testing misattributes to chips
+  (negative rails would need dividers — optional extras).
 - **Stage D1 — Nano + host software.** Nano firmware (bridge + liveness
   probes) and the Python CLI with human-readable verdicts.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
@@ -199,6 +225,11 @@ Then:
   bench;
 - fault injection is trivial in the emulator (stuck RAM bit, dead PPI, bad
   checksum) — each diagnosis is proven correct before any EPROM is burned.
+  Make it **scriptable, not manual**: cosim grows a fault config (e.g.
+  `JUKU_FAULT="ram_bit:3:rows:0x80-0xFF"`, `"8251:dead"`,
+  `"rom:checksum"`), and a CI test matrix asserts that every fault class
+  yields exactly its intended verdict — diagnosis correctness becomes a
+  regression suite that runs on every commit, not a one-time exercise.
 
 Per the commons contract, the 8251 model lands in root `cosim/`, not here —
 this spin-off consumes it, and any bench finding it produces flows back to
