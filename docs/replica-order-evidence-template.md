@@ -20,7 +20,7 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 | Field | Value |
 | --- | --- |
 | Upload ZIP | `fab/gerbers/upload/juku-replica-gerbers-drill.zip` |
-| Upload ZIP SHA256 | `dd074e982cea6d9d4945817506e5a1c6a894b675124f30260b06b9562a87310a` |
+| Upload ZIP SHA256 | `09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9` |
 | Upload checksum command | `(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)` |
 
 ## Required Source Evidence
@@ -29,7 +29,7 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 | --- | --- | ---: | --- |
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5364 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2965 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2962 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 15976 | PASS |
 
 ## Vendor Options To Record

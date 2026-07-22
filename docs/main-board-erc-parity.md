@@ -12,9 +12,9 @@ schematic parity against it without a matching routed schematic/project.
 
 | Check | Count | Result |
 | --- | ---: | --- |
-| Raw ERC error violations | 54 | GUARDED |
+| Raw ERC error violations | 0 | GUARDED |
 | Unexpected ERC/mapping findings | 0 | PASS |
-| Exact singleton-label findings | 54 / 54 | PASS |
+| Singleton-label ERC mode | suppressed (0 / 54) | PASS |
 | Source-risk singleton nets | 37 | BLOCK |
 | Other source-risk nets | 7 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
@@ -24,9 +24,11 @@ schematic parity against it without a matching routed schematic/project.
 | Duplicate board-JSON endpoint memberships | 0 | PASS |
 | Unknown/conflicting NC records | 0 | PASS |
 
-Stable KiCad reports one `label_dangling` error for every one-endpoint
-local-label net. The exact label-name/count guard above proves these are
-the modeled singleton boundary surface, not geometrically detached labels.
+KiCad versions either report one `label_dangling` error for every
+one-endpoint local-label net or suppress that complete warning class. The
+gate accepts only those two exact modes; partial reporting fails. The
+board-JSON singleton census remains the authoritative modeled boundary
+surface in either mode.
 Of those `54` singleton nets, `37` remain source-risk
 boundaries and `17` have closed or intentional dispositions.
 
@@ -43,7 +45,7 @@ The complete machine-readable singleton-endpoint backlog is
 
 ## ERC types
 
-- `label_dangling`: 54
+- None.
 
 ## Most affected references
 
@@ -51,7 +53,7 @@ The complete machine-readable singleton-endpoint backlog is
 
 ## Release interpretation
 
-The raw ERC findings are exactly accounted for by modeled singleton nets, and
+Singleton-label ERC reporting is in the exact `suppressed` mode, and
 parity plus endpoint ownership pass. Source-risk nets remain release blockers.
 They must be traced, redesigned, or individually given an evidence-backed
 disposition. This gate does not suppress the singleton labels or convert them

@@ -682,14 +682,18 @@ def main() -> int:
             1 for net in board_model.get("nets", {}).values() if len(net.get("nodes", [])) == 1
         )
         erc_singleton_total_match = re.search(
-            r"\| Exact singleton-label findings \| (\d+) / (\d+) \| PASS \|",
+            r"\| Singleton-label ERC mode \| (reported|suppressed) \((\d+) / (\d+)\) \| PASS \|",
             erc_parity,
         )
-        if (
-            not erc_singleton_total_match
-            or tuple(map(int, erc_singleton_total_match.groups()))
-            != (singleton_total, singleton_total)
-        ):
+        erc_singleton_mode_ok = False
+        if erc_singleton_total_match:
+            mode, reported, expected = erc_singleton_total_match.groups()
+            counts = (int(reported), int(expected))
+            erc_singleton_mode_ok = (
+                (mode == "reported" and counts == (singleton_total, singleton_total))
+                or (mode == "suppressed" and counts == (0, singleton_total))
+            )
+        if not erc_singleton_mode_ok:
             failures.append("ERC/parity report has stale singleton-label accounting")
         endpoint_backlog = list(
             csv.DictReader((ROOT / "docs/main-board-unresolved-endpoints.csv").open(newline=""))

@@ -657,7 +657,7 @@ diodes with their sheet-proved polarities. This target-body evidence supersedes
 the older `.006` group list's КД522А allocation without changing VD3/VD5.
 
 The machine-verified upload ZIP SHA256 is
-`dd074e982cea6d9d4945817506e5a1c6a894b675124f30260b06b9562a87310a`.
+`09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9`.
 Do not send this package to a fabricator while the design hold remains. After
 the blockers below are closed, regenerate every fabrication file and gate
 again before upload.

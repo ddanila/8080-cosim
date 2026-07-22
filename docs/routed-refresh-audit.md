@@ -31,8 +31,8 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `a794125b63e35dca4a8144f989a4daac50fc66c114e969c822a8914289d17d31` |
-| Routed-snapshot PCB SHA-256 | `d43d62639f68e81b23ee56dc87dea6776d6570510ab80ea5f0e35da727c6a4e3` |
+| Source PCB SHA-256 | `bcd9d4f941fab58b3c70c72baac8d624027680458be467a6cc9b2640119ec4ce` |
+| Routed-snapshot PCB SHA-256 | `4ca4a22922163f9d3e813a73dbf5647615889d33500607a37e97aed7b87e72d3` |
 | Source footprints | 322 |
 | Routed-snapshot footprints | 322 |
 | Source-only footprints | 0 |

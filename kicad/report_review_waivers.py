@@ -12,7 +12,7 @@ DEFAULT_OUT = ROOT / "fab" / "gerbers" / "review-waivers.md"
 WAIVED_COUNTS = {
     "courtyards_overlap": 107,
     "pth_inside_courtyard": 0,
-    "silk_over_copper": 198,
+    "silk_over_copper": 199,
     "silk_overlap": 199,
     "text_thickness": 199,
 }

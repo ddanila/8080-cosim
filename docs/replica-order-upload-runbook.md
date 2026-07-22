@@ -20,21 +20,21 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Purpose | File | Bytes | SHA256 | Status |
 | --- | --- | ---: | --- | --- |
-| Top copper | `juku_routed-F_Cu.gtl` | 980982 | `319ae5453e9b09709073b1a8d7761001ee52d458e8e838c979cdc6f284a44943` | PASS |
-| Bottom copper | `juku_routed-B_Cu.gbl` | 852436 | `b6b02c1ad477d73178f44badaac11475bea1e4f4248a38281ccbc729676a71e0` | PASS |
-| Top soldermask | `juku_routed-F_Mask.gts` | 71079 | `e7185626a89f5dfa25693a1938e92c83641f1364343dea2458aca66bbc8f02ff` | PASS |
-| Bottom soldermask | `juku_routed-B_Mask.gbs` | 70372 | `5dc2937ac02b6e17e2842eae39e58e51d88633ac5ee476caea1ad321b3008d62` | PASS |
-| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 2697367 | `562367e433d7d0e8df2cacc47550be47b50570086a0ef63d9f725b99ebd7527c` | PASS |
-| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 469 | `94f51694a32716c8e9215dc85951099e83f131f92164ad3ca82d29156e748d1a` | PASS |
-| Board outline | `juku_routed-Edge_Cuts.gm1` | 1238 | `1c12329a3d38f1034644e5984c341b712d71b4160759ad06a317f9e48c2ca164` | PASS |
-| Gerber job | `juku_routed-job.gbrjob` | 2413 | `bb0922fffdb07a57e12383f3eeb5a8422f4b66d3891c53f4c6b920e846273293` | PASS |
-| Excellon drill | `juku_routed.drl` | 81050 | `2c3adb5cab041d59550d0a7a7bb604bf215b3240838546db1969263027e04ef3` | PASS |
+| Top copper | `juku_routed-F_Cu.gtl` | 981046 | `91f1ebee4f7e6bba959288dafa0e31ea75c0fb74badcae80c938958c739394d2` | PASS |
+| Bottom copper | `juku_routed-B_Cu.gbl` | 852500 | `cb96cd268ad589e41281a7107f7cb315c0e372e3da564ea6ec9ed47d6400934f` | PASS |
+| Top soldermask | `juku_routed-F_Mask.gts` | 71143 | `17f3daa2a75353eaecdedfa4425d179206f20d46261ca055ca50fb53a7da7425` | PASS |
+| Bottom soldermask | `juku_routed-B_Mask.gbs` | 70436 | `34584c1d3e24222ea99f817d129960cf518010e61cf1bd0294227a380ba047ee` | PASS |
+| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 3129059 | `d159c51a69618b53afed6b126e9af53029b126f025bebe4901cbbbdbcfc1cf81` | PASS |
+| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 533 | `4e7ae71b8ecaa44f2a49cffc5e9d59d0c7c82d445c10fe5a671000166640c783` | PASS |
+| Board outline | `juku_routed-Edge_Cuts.gm1` | 1302 | `92214e79e3ab5892c8a651d43ed06d06f7cb3c461dfc3eb9d0ca8331a136ef04` | PASS |
+| Gerber job | `juku_routed-job.gbrjob` | 2445 | `5df73a030854525ec17625976f78d14e7a341bc7f737c02032e983dfcd452d2a` | PASS |
+| Excellon drill | `juku_routed.drl` | 81107 | `2ab4e1779a0f0136cbab4eaed4343a1c181c82db60e955b0b73719f3675667c8` | PASS |
 
 ## Upload Archive
 
 | File | Bytes | SHA256 | Contents |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 4758516 | `dd074e982cea6d9d4945817506e5a1c6a894b675124f30260b06b9562a87310a` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 5190681 | `09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9` | PASS |
 
 ## Upload ZIP Members
 
@@ -42,31 +42,31 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Member | Bytes | Metadata | Source match |
 | --- | ---: | --- | --- |
-| juku_routed-F_Cu.gtl | 980982 | PASS | PASS |
-| juku_routed-B_Cu.gbl | 852436 | PASS | PASS |
-| juku_routed-F_Mask.gts | 71079 | PASS | PASS |
-| juku_routed-B_Mask.gbs | 70372 | PASS | PASS |
-| juku_routed-F_Silkscreen.gto | 2697367 | PASS | PASS |
-| juku_routed-B_Silkscreen.gbo | 469 | PASS | PASS |
-| juku_routed-Edge_Cuts.gm1 | 1238 | PASS | PASS |
-| juku_routed-job.gbrjob | 2413 | PASS | PASS |
-| juku_routed.drl | 81050 | PASS | PASS |
+| juku_routed-F_Cu.gtl | 981046 | PASS | PASS |
+| juku_routed-B_Cu.gbl | 852500 | PASS | PASS |
+| juku_routed-F_Mask.gts | 71143 | PASS | PASS |
+| juku_routed-B_Mask.gbs | 70436 | PASS | PASS |
+| juku_routed-F_Silkscreen.gto | 3129059 | PASS | PASS |
+| juku_routed-B_Silkscreen.gbo | 533 | PASS | PASS |
+| juku_routed-Edge_Cuts.gm1 | 1302 | PASS | PASS |
+| juku_routed-job.gbrjob | 2445 | PASS | PASS |
+| juku_routed.drl | 81107 | PASS | PASS |
 
 ## Upload Checksum
 
 | File | Bytes | SHA256SUMS entry | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `dd074e982cea6d9d4945817506e5a1c6a894b675124f30260b06b9562a87310a` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9` | PASS |
 
 ## Retained Evidence
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
 | Order readiness | `fab/gerbers/order-readiness.md` | 3030 | PASS |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1891 | PASS |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1901 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1630 | PASS |
-| External Gerber review | `fab/gerbers/external-gerber-review.md` | 2127 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2965 | PASS |
+| External Gerber review | `fab/gerbers/external-gerber-review.md` | 2126 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2962 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2147 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 15976 | PASS |
@@ -84,7 +84,7 @@ kicad/check_replica_manufacturing_ready.sh
 - [ ] Select 1.6 mm FR-4 unless deliberately changed after DFM review.
 - [ ] Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.
 - [ ] Do not request impedance control or stackup changes; this is the intentional 2-layer authenticity build.
-- [ ] Review the 703 accepted courtyard/silk/text findings against the vendor preview before payment.
+- [ ] Review the 704 accepted courtyard/silk/text findings against the vendor preview before payment.
 - [ ] Review `docs/replica-bringup-verification-points.md` and confirm no listed residual source-risk net blocks PCB fabrication.
 - [ ] Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.
 
