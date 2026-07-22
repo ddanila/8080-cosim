@@ -26,6 +26,67 @@
       "synth_ntsc": "pass"
     }
   },
+  "wp1_followup": {
+    "fork_head_commit": "d383beb3dd038154364fb76f993ad32d12fe2d44",
+    "commits": {
+      "validated_source": "eb7aad861cd68a7705f702475f6b1d2c799b53b2",
+      "decoder_routing": "f016056fca6af4decce37b57bec969cd8716efaf",
+      "deterministic_headless": "2becb089d17c2b611de222e1a4ab91d1dcc46b52",
+      "generated_e2e": "fde8618a763c109516b9fbd2f72c3bc9891c7a75",
+      "documented_contract": "d383beb3dd038154364fb76f993ad32d12fe2d44"
+    },
+    "artifact_sha256": {
+      "readme": "8c68db69d87dfaecf052b9d656c3cf75a5e1971168e5f1d46ca0af3b1c00db4c",
+      "baseband_source": "2ff562cd14d7eb26561121373788a50eeb167a262f0a6f21bc189e8affd8c44e",
+      "fixture_generator": "1f2b338b9d2972f22ce4381dfd278d2db2aaebaaadf6260c10f31e4f36c48632",
+      "e2e_driver": "308f72299f9bfe678762a1361fc2cd87cfa43fd08687d9850852d1cfca3da2a4"
+    },
+    "source_contract": {
+      "format": "headerless little-endian IEEE-754 float32",
+      "sample_rate": "explicit positive --rate required",
+      "transform_order": ["optional polarity inversion", "gain", "offset"],
+      "agc": ["auto", "fixed post-transform sync and blank levels"],
+      "rejections": ["empty", "byte length not divisible by four", "NaN or infinity"],
+      "bypassed_stages": ["IQ DC blocker", "NCO", "channel LPF", "AM detector", "FM audio", "spectrum", "IQ recorder"]
+    },
+    "tests": {
+      "source_test": {
+        "status": "pass",
+        "cases": ["valid transform", "loop", "empty", "truncated", "non-finite"]
+      },
+      "e2e": {
+        "status": "pass",
+        "fixture_samples": 999093,
+        "fixture_fields": 6,
+        "fixture_storage": "generated during test and removed after success",
+        "decoded_frames": 5,
+        "decoded_lines": 1386,
+        "coasted_lines": 15,
+        "bars_expected": [0, 64, 128, 191, 255],
+        "bars_observed": [0, 64, 128, 191, 255],
+        "negative_cli_cases": 5
+      }
+    },
+    "ci_run": {
+      "id": 29886015187,
+      "url": "https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886015187",
+      "head_sha": "d383beb3dd038154364fb76f993ad32d12fe2d44",
+      "job": "linux",
+      "conclusion": "success",
+      "full_rf_iq_build": "pass",
+      "ctest_passed": 3,
+      "ctest_failed": 0,
+      "synth_ntsc": "pass"
+    },
+    "scope": {
+      "proved": "Strict generic float32 baseband ingestion bypasses RF-only DSP and produces a deterministic grayscale headless frame while the upstream RF/IQ regression remains green.",
+      "not_proved": [
+        "non-NTSC or Juku timing-profile synchronization",
+        "physical Juku X7 voltage or loaded analog behavior",
+        "agreement with a Juku framebuffer or physical capture"
+      ]
+    }
+  },
   "8080_cosim_context_commit": "ae7918afe81024b462c8337dc23f509874e35e76",
   "host": {
     "os": "Ubuntu resolute amd64",

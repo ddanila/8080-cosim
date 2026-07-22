@@ -1379,7 +1379,14 @@ decoder fork point is also clean-checkout reproduced on Linux: all three targets
 build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
 fork now records its upstream/fork authority and deterministic-fixture policy,
 and Linux CI run `29885055666` passes the full RF/IQ build, CTest, and direct
-synthetic regression. CVBS-plan WP0 is complete.
+synthetic regression. CVBS-plan WP0 is complete. WP1 is also complete at fork
+commit `d383beb3dd038154364fb76f993ad32d12fe2d44`: strict little-endian float32
+baseband ingestion bypasses RF-only DSP, supports polarity/gain/offset plus
+auto or fixed AGC, and produces deterministic headless output. An independent
+temporary six-field grayscale fixture matches all five output bars exactly;
+Linux CI run `29886015187` passes the full build, all three CTests, and the
+unchanged direct RF/IQ regression. This proves only the generic NTSC-rate
+baseband boundary, not Juku timing, physical X7 voltage, or receiver lock.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

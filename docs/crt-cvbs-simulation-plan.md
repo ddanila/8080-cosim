@@ -2,7 +2,7 @@
 
 Status date: **2026-07-22**.
 
-Status: **IN PROGRESS / STATIC X7 TOPOLOGY MODEL ONLY / NO RAW-X7 RECEIVER CLAIM YET**.
+Status: **IN PROGRESS / GENERIC BASEBAND INPUT + STATIC X7 TOPOLOGY MODEL / NO RAW-X7 RECEIVER CLAIM YET**.
 
 This is a subordinate execution plan for the video/composite item in
 `../PLAN.md`. The main plan remains authoritative for project priorities and
@@ -199,20 +199,41 @@ Exit gate: the fork builds and its upstream tests pass from a clean checkout.
 
 ### WP1 — Generic baseband input
 
-- Add an explicit baseband file/source mode, for example:
+Progress: **complete** in decoder fork commit
+`d383beb3dd038154364fb76f993ad32d12fe2d44`. The implementation keeps the
+`.cs8`/HackRF route intact and adds a separate headerless little-endian
+IEEE-754 float32 source. It rejects empty, non-four-byte-aligned, and
+non-finite input; requires an explicit positive sample rate; applies optional
+polarity, gain, and offset before auto or fixed AGC; and bypasses every RF/IQ
+DC/NCO/filter/AM/audio/spectrum/recording stage. Fixed AGC levels describe the
+post-transform stream and require sync greater than blank.
+
+The generated fixture is decoder-independent and temporary: 999,093 samples
+cover six grayscale fields without storing a binary fixture in Git. The real
+headless CLI decoded five frames, and its first retained PPM matched all five
+bars exactly at 0/64/128/191/255. Source tests separately cover transforms,
+looping, empty/truncated files, and NaN rejection. GitHub CI run
+`29886015187` built the full RF/IQ application and all test targets, passed the
+three-test CTest suite (upstream RF synthetic, baseband source, baseband E2E),
+and passed direct `synth_ntsc` on the exact fork commit.
+
+- [x] Add an explicit baseband file/source mode:
 
   ```text
   --input baseband-f32 --file x7.f32 --rate HZ --mode gray
   ```
 
-- Bypass RF-only DC/NCO/channel-filter/AM stages in this mode.
-- Retain optional polarity, gain, offset, and AGC controls.
-- Make headless frame dumping work with baseband input.
-- Reject missing sample-rate and malformed/truncated input clearly.
-- Add a generated grayscale composite fixture independent of Juku.
+- [x] Bypass RF-only DC/NCO/channel-filter/AM stages in this mode.
+- [x] Retain optional polarity, gain, offset, and AGC controls.
+- [x] Make headless frame dumping work with baseband input.
+- [x] Reject missing sample-rate and malformed/truncated input clearly.
+- [x] Add a generated grayscale composite fixture independent of Juku.
 
-Exit gate: a synthetic baseband fixture locks and produces a deterministic
-frame without passing through RF modulation or HackRF code.
+Exit gate: **passed at the generic NTSC-rate boundary**. A synthetic baseband
+fixture locks and produces a deterministic frame without passing through RF
+modulation or HackRF code. This does not claim non-NTSC/Juku synchronization,
+physical X7 voltage, or agreement with a Juku framebuffer; those remain WP2,
+WP3/WP4, and WP5 respectively.
 
 ### WP2 — Parameterized synchronization receiver
 
@@ -367,7 +388,7 @@ The task is complete only when all of the following hold:
 ## Immediate next actions
 
 1. Keep the now-guarded fork baseline and RF/IQ CI green through receiver changes.
-2. Implement the generic float32 baseband input and headless output first.
+2. Keep the completed generic float32 baseband/headless E2E path green.
 3. Refactor synchronization constants into profiles while keeping NTSC green.
 4. Generate a synthetic non-NTSC monochrome fixture and prove receiver lock.
 5. In parallel with later decoder work, close the remaining Juku physical

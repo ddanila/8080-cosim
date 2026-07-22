@@ -28,6 +28,10 @@ def main() -> int:
     decoder = data["decoder"]
     followup = data["wp0_followup"]
     ci_run = followup["ci_run"]
+    wp1 = data["wp1_followup"]
+    wp1_ci = wp1["ci_run"]
+    wp1_tests = wp1["tests"]
+    wp1_e2e = wp1_tests["e2e"]
     results = data["results"]
     synth = results["synth_ntsc"]
     context_commit = data["8080_cosim_context_commit"]
@@ -106,9 +110,63 @@ def main() -> int:
             and all(ci_run[item] == "pass" for item in ("full_rf_iq_build", "ctest", "synth_ntsc")),
             f"run {ci_run['id']} at `{ci_run['head_sha'][:8]}`: full build + CTest + synth_ntsc",
         ),
+        (
+            "WP1 fork tip and bounded commits are pinned",
+            re.fullmatch(r"[0-9a-f]{40}", wp1["fork_head_commit"]) is not None
+            and wp1["fork_head_commit"] == wp1["commits"]["documented_contract"]
+            and wp1["fork_head_commit"] in plan
+            and all(
+                re.fullmatch(r"[0-9a-f]{40}", commit) is not None
+                for commit in wp1["commits"].values()
+            )
+            and all(
+                re.fullmatch(r"[0-9a-f]{64}", digest) is not None
+                for digest in wp1["artifact_sha256"].values()
+            ),
+            f"five bounded commits ending at `{wp1['fork_head_commit'][:8]}`",
+        ),
+        (
+            "WP1 float32 source contract is explicit",
+            wp1["source_contract"]["format"]
+            == "headerless little-endian IEEE-754 float32"
+            and wp1["source_contract"]["sample_rate"]
+            == "explicit positive --rate required"
+            and wp1["source_contract"]["transform_order"]
+            == ["optional polarity inversion", "gain", "offset"]
+            and set(wp1["source_contract"]["rejections"])
+            == {"empty", "byte length not divisible by four", "NaN or infinity"},
+            "LE f32; explicit rate; polarity/gain/offset; structural and finite checks",
+        ),
+        (
+            "WP1 source and generated end-to-end tests pass",
+            wp1_tests["source_test"]["status"] == "pass"
+            and wp1_e2e["status"] == "pass"
+            and wp1_e2e["fixture_samples"] > 0
+            and wp1_e2e["fixture_fields"] >= 2
+            and wp1_e2e["fixture_storage"]
+            == "generated during test and removed after success"
+            and wp1_e2e["bars_observed"] == wp1_e2e["bars_expected"]
+            and len(wp1_e2e["bars_observed"]) == 5
+            and wp1_e2e["negative_cli_cases"] >= 5,
+            f"{wp1_e2e['fixture_samples']} samples; {len(wp1_e2e['bars_observed'])}/5 bars; {wp1_e2e['negative_cli_cases']} CLI failures",
+        ),
+        (
+            "WP1 CI keeps the full RF/IQ route and all CTests green",
+            wp1_ci["conclusion"] == "success"
+            and wp1_ci["head_sha"] == wp1["fork_head_commit"]
+            and wp1_ci["full_rf_iq_build"] == "pass"
+            and wp1_ci["ctest_passed"] == 3
+            and wp1_ci["ctest_failed"] == 0
+            and wp1_ci["synth_ntsc"] == "pass",
+            f"run {wp1_ci['id']} at `{wp1_ci['head_sha'][:8]}`: full build + 3 CTests + synth_ntsc",
+        ),
     ]
     ok = all(result for _, result, _ in checks)
-    status = "WP0 BASELINE, PROVENANCE, FIXTURE POLICY, AND FORK CI GUARDED" if ok else "DECODER BASELINE RECORD FAILED"
+    status = (
+        "WP0 BASELINE + GENERIC BASEBAND WP1 GUARDED"
+        if ok
+        else "DECODER BASELINE RECORD FAILED"
+    )
     lines = [
         "# CRT decoder fork baseline",
         "",
@@ -116,10 +174,11 @@ def main() -> int:
         "",
         f"Status: **{status}**.",
         "",
-        "This generated report records CVBS-plan WP0 work performed in a temporary,",
-        "detached checkout. It proves that the recorded unmodified decoder fork point",
-        "builds and passes its upstream synthetic NTSC regression on the named host.",
-        "It makes no Juku baseband, X7, receiver-lock, or hardware claim.",
+        "This generated report records the CVBS-plan WP0 clean-checkout baseline and",
+        "the later fork-owned WP1 generic baseband follow-up. It proves that the",
+        "recorded unmodified fork point builds and passes its upstream synthetic NTSC",
+        "regression, then pins the separate float32/headless E2E implementation.",
+        "It makes no Juku-timing, physical-X7, framebuffer-agreement, or hardware claim.",
         "",
         "## Command",
         "",
@@ -143,6 +202,7 @@ def main() -> int:
         row(["Upstream", decoder["upstream_url"]]),
         row(["Decoder commit", f"`{decoder['commit']}`"]),
         row(["Fork WP0 head", f"`{followup['fork_head_commit']}`"]),
+        row(["Fork WP1 head", f"`{wp1['fork_head_commit']}`"]),
         row(["8080-cosim context", f"`{context_commit}`"]),
         row(["Host", data["host"]["os"]]),
         row(["CMake", data["host"]["cmake"]]),
@@ -171,6 +231,24 @@ def main() -> int:
             "42 s",
             "GitHub-hosted runner",
         ]),
+        row([
+            "baseband source CTest",
+            f"PASS; {len(wp1_tests['source_test']['cases'])} validation/transform cases",
+            "included in CI",
+            "GitHub-hosted runner",
+        ]),
+        row([
+            "generated baseband E2E",
+            f"{wp1_e2e['decoded_frames']} frames; {len(wp1_e2e['bars_observed'])}/5 exact grayscale bars",
+            "included in CI",
+            "GitHub-hosted runner",
+        ]),
+        row([
+            "WP1 fork Linux CI",
+            f"full build + 3 CTests + synth_ntsc PASS ([run {wp1_ci['id']}]({wp1_ci['url']}))",
+            "27 s",
+            "GitHub-hosted runner",
+        ]),
         "",
         "The direct run reported 87 coasted lines and still recovered all seven",
         "golden color bars within the upstream tolerance.",
@@ -185,15 +263,16 @@ def main() -> int:
         "resolved in the decoder fork before treating GCC 15 warnings as a clean CI",
         "baseline.",
         "",
-        "## Boundaries after WP0",
+        "## Boundaries after WP1",
         "",
     ])
-    lines.extend(f"- {item}" for item in data["scope"]["not_proved"])
+    lines.extend(f"- {item}" for item in wp1["scope"]["not_proved"])
     lines.extend([
         "",
-        "WP0 is complete: the fork now owns its provenance, deterministic-fixture",
-        "policy, and green full-build/test CI. These remaining items belong to later",
-        "work packages or physical validation.",
+        "WP0 and generic-input WP1 are complete: the fork owns its provenance,",
+        "deterministic-fixture policy, strict raw-float source, headless E2E path, and",
+        "green full-build/test CI. The remaining items belong to WP2-WP5 or physical",
+        "validation.",
         "",
     ])
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
