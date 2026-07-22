@@ -85,7 +85,9 @@ findings. Every status applies only to the boundary named by the report.
   `ir16-readiness.md` (datasheet-exact falling-edge LD/SH and active-high OC
   semantics for physical D41/D42/D43, while their board timing sources remain open),
   `kp14-readiness.md` (datasheet-exact inverting, three-state D48-D52 mux
-  semantics with CPU-linear DRAM normalization),
+  semantics with CPU-linear DRAM normalization; the adjacent D59.5/.6
+  complementary E14-video/E13-CPU enable topology is source-traced while its
+  external timing drive remains open),
   `video-physical-probes.md` (executable controlled-stimulus probes for the
   source-proved D42/D43/D37 and D56/D34_SYNC contributors, with the shared-DRAM
   slot schedule and D34 signal input explicitly open),

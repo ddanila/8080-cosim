@@ -122,13 +122,19 @@ module juku_top (
     // Full-resolution bundle read: D41.LD/SH joins rail17/D36.B2; D41.CLK joins
     // rail8/D42.OC/D43.OC. ИР16 pin 8 is active-high output control, not a clock gate.
     wire d41_qa, d41_qa_d41, d41_qb, d36_b2_tag17, shift_g, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
+    wire cpu_mux_g_n;
+`ifdef YOSYS
+    wire vid_mux_g_n;                // structural boundary stays undriven so LVS retains one physical net
+`else
+    tri1 vid_mux_g_n;                 // D59.5/E14 source has no proved driver; TTL-high default is explicit
+`endif
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld_sh(d36_b2_tag17), .oc(1'b1), .clk(shift_g),
                      .ser(1'b1), .qd(), .qa(d41_qa_d41), .qb(d41_qb), .qc());
     net_boundary U_W10 (.a(d41_qa), .b(d41_qa_d41));
     wire pst_clk;
     wire osc_fb, osc_pre;
     ln1_osc   U_D59 (.sclk(clk), .xin(osc_pre), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8), .o10(d59_o10_tag10),
-                     .i3(osc_clk), .o4(pst_clk), .i5(1'bz), .o6(), .i9(osc_fb), .o8(osc_pre));
+                     .i3(osc_clk), .o4(pst_clk), .i5(vid_mux_g_n), .o6(cpu_mux_g_n), .i9(osc_fb), .o8(osc_pre));
     assign osc_fb = 1'bz; // R31/R32/Z1 meet here physically; analog crystal loop is outside HDL
     wire d40_ctrl_pull;
     net_boundary U_R34LNK (.a(1'b1), .b(d40_ctrl_pull));
@@ -445,24 +451,18 @@ module juku_top (
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
     // 4,7,9,12 order until the mux INPUT rails are read (a line-swap must be applied to both
     // sides at once or the video-va path desyncs). Queued in round-2 notes.
-`ifdef YOSYS
-    wire cpu_mux_g_n;                 // E13 strap -> D48/D49 G (posts: 1=rail, 2=+5, 4=GND)
-`else
-    tri0 cpu_mux_g_n;                 // undriven boundary; tri0 = strap-enabled default (CPU pair drives MA)
-`endif
+    // D59.6 -> E13.1-3 -> D48/D49 /G. D59.5 is the complementary E14/video
+    // source; its unproved external origin defaults TTL-high, enabling this CPU pair.
     kp14_mux U_D48 (.a({BA[1], BA[2], BA[3], BA[0]}), .b({BA[13], BA[11], BA[10], BA[9]}),
                     .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D49 (.a({BA[5], BA[6], BA[7], BA[4]}), .b({BA[14], BA[15], BA[8], BA[12]}),
                     .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
     // D50/D51 = the VIDEO-address mux pair on the SAME tri-state MA bus (sheet-2: Q -> rails
-    // 21-28). A/B ins <- video counters + S3 config [unread boundaries]; G enables alternate
-    // with D48/D49 on the video cycle [source unread] -- held disabled here (z), so the CPU
-    // pair keeps driving MA and boot stays identical. SEL <- D41.QA [WIRE 10, beeper ✓].
-`ifdef YOSYS
-    wire vid_mux_g_n;                 // E14 strap -> D50/D51 G (video-cycle enable; boundary)
-`else
-    tri1 vid_mux_g_n;                 // undriven boundary; tri1 = E14's +5 strap default (video pair disabled)
-`endif
+    // 21-28). A/B ins <- video counters + S3 config. G is the D59.5 side of the
+    // complementary D59/E13/E14 enable pair; that input's dynamic source remains open, so
+    // it defaults high here and the CPU pair keeps driving MA. SEL <- D41.QA [WIRE 10].
+    // D59.5 -> E14.1-3 -> D50/D51 /G. The full-resolution sheet closes the
+    // complementary inverter topology but does not prove a dynamic driver for D59.5.
     kp14_mux U_D50 (.a({VA[1], VA[2], VA[3], VA[0]}), .b({VA[13], VA[11], VA[10], VA[9]}),
                     .sel(d41_qa), .en_n(vid_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D51 (.a({VA[5], VA[6], VA[7], VA[4]}), .b({VA[14], VA[15], VA[8], VA[12]}),

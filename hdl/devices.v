@@ -278,7 +278,7 @@ module ln1_osc   (input wire sclk, xin, input wire i13, i11, i3, i5, i9,
     assign o12 = ~i13;  // section 13->12 = LOAD   (D38.6 -> D59.13, sheet-2)
     assign o10 = ~i11;  // section 11->10 = D39.8 -> D59.11 chain (sheet-2)
     assign o4  = ~i3;   // section 3->4 = PST CLK (3rd ring section; buffered osc out -> D44.UP)
-    assign o6  = ~i5;   // physical section 5->6; board destination unresolved
+    assign o6  = ~i5;   // section 5->6: E14/video /G source -> E13/CPU /G complement
     assign o8  = ~i9;   // section 9->8 returns through R31 to physical pin 1
 endmodule
 // D35 ЛН5 phase/frame generator. Sections 9->8 invert D55.OUT1/VER RTR into

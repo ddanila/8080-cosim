@@ -24,6 +24,7 @@ python3 scripts/report_video_slot_timing_audit.py
 | Physical serializer instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Physical CPU/video mux and D53 decode instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | D48-D52 КП14 inversion and three-state behavior are datasheet-guarded | PASS | `docs/kp14-readiness.md`: SN74LS/S258 truth table |
+| D59 complementary CPU/video mux-enable inverter is source-traced | PASS | sheet-2 D59.5->E14/video /G; inverted D59.6->E13/CPU /G |
 | Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
 | D53 bank/RAS ladder outputs are present in the board JSON | PASS | `kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52 |
 | PIT video/baud timing endpoints are source-complete | PASS | sheet-2 D54 HOR RTR, D55 VERT SYNC, and D57 CLK0/GATE0 labels |
@@ -59,6 +60,10 @@ python3 scripts/report_video_slot_timing_audit.py
 - D48-D52 now preserve the physical КП14/258 output inversion and
   three-state disable behavior; the DRAM model normalizes that inversion
   only at its internal logical address index.
+- Full-resolution sheet review restores the previously missed D59 5->6
+  inverter: D59.5 reaches E14/video /G and D59.6 reaches E13/CPU /G.
+  Their complementary topology is now exact, while D59.5's external dynamic
+  source remains unproved and therefore defaults to the physical TTL-high state.
 - D41's role is now narrowed: QA/QB, its fixed data/enable straps, and
   intentional QC/QD no-connects are modeled; only the remote LD/CK
   timing-bundle sources remain continuity boundaries.

@@ -1,11 +1,11 @@
 # Memory timing boundary
 
-Status date: 2026-07-21.
+Status date: 2026-07-22.
 
 Status: **MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING**
 
 This generated report narrows the remaining DRAM/clock timing risks.
-The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,
+The board model preserves the traced E1 and E13/E14 selector straps, RAS/CAS ladder, write rail,
 PHI2TTL fanout, and D56 one-shot RC networks. Exact-revision `.009 E3`
 imagery plus owner continuity closes the D54/D55/D56 trigger and clock
 crossings; the unresolved CAS input remains an explicit source boundary.
@@ -24,7 +24,7 @@ python3 scripts/report_memory_timing_boundary.py
 | All 32 DRAM sockets retain complete option-rail roles | PASS | D60-D91 pins 1/8/16 -> RAIL_H/RAIL_G/GND; native rail E is ground; pin 1 is internal NC for populated РУ5 |
 | C34 bypass follows the native rail-E to rail-F drawing | PASS | native sheet-2 power corner: C34 spans E/GND to F/+5 V |
 | E1 MA7/DRAM-size selector retains all three source endpoints | PASS | sheet-2: E1.1=+5 V, E1.2=MA7 rail 28, E1.3=D51.9/MA6 |
-| E14 video-mux enable retains the drawn 1-3 strap | PASS | sheet-2: E14.1-E14.3 fitted strap; E14.2=+5 V; E14.4=GND |
+| D59/E13/E14 complementary mux-enable topology is source-closed | PASS | sheet-2: D59.5->E14.1-3->D50/D51 /G; D59.6->E13.1-3->D48/D49 /G |
 | D53 RAS/CAS ladder outputs are guarded | PASS | `D53_Y0_R49`..`D53_Y3_R52` |
 | D53 unused Y4-Y7 outputs remain source-proved no-connects | PASS | sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs |
 | D36 write-gate inputs and rail are guarded to all modeled DRAM W pins | PASS | MEMW->D36.9; D36.3->D33.11/.10->D36.10; D36.8->32 DRAM pin-3 inputs |
@@ -48,7 +48,7 @@ python3 scripts/report_memory_timing_boundary.py
 
 | Boundary | Result | Current endpoints |
 | --- | --- | --- |
-| D59 remaining inverter package boundary remains visible | PASS | D59.5/.6 NC; D59.10 tag10 remains distinct from SOUND |
+| D59 remaining timing boundary remains visible | PASS | D59.5/.6 mux-enable inverter is traced; D59.10 tag10 remains distinct from SOUND |
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
 | OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase | PASS | OSC and XTAL16M remain distinct source nets pending continuity |
 

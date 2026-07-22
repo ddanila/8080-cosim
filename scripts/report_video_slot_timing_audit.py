@@ -141,6 +141,14 @@ def main() -> int:
             "`docs/kp14-readiness.md`: SN74LS/S258 truth table",
         ),
         (
+            "D59 complementary CPU/video mux-enable inverter is source-traced",
+            net_has(board, "VID_MUX_G", ("D59", "5"), ("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15"))
+            and net_has(board, "CPU_MUX_G", ("D59", "6"), ("E13", "1"), ("E13", "3"), ("D48", "15"), ("D49", "15"))
+            and ["D59", "5"] not in board.get("no_connects", [])
+            and ["D59", "6"] not in board.get("no_connects", []),
+            "sheet-2 D59.5->E14/video /G; inverted D59.6->E13/CPU /G",
+        ),
+        (
             "Video counter address nets VA0-VA15 are present in the board JSON",
             va_ok,
             "`kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage",
@@ -262,6 +270,10 @@ def main() -> int:
             "- D48-D52 now preserve the physical КП14/258 output inversion and",
             "  three-state disable behavior; the DRAM model normalizes that inversion",
             "  only at its internal logical address index.",
+            "- Full-resolution sheet review restores the previously missed D59 5->6",
+            "  inverter: D59.5 reaches E14/video /G and D59.6 reaches E13/CPU /G.",
+            "  Their complementary topology is now exact, while D59.5's external dynamic",
+            "  source remains unproved and therefore defaults to the physical TTL-high state.",
             "- D41's role is now narrowed: QA/QB, its fixed data/enable straps, and",
             "  intentional QC/QD no-connects are modeled; only the remote LD/CK",
             "  timing-bundle sources remain continuity boundaries.",

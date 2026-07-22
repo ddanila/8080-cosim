@@ -1423,7 +1423,12 @@ remote source and `TIMING_TAG17` remain open. The adjacent D48-D52 КП14 model 
 also corrected to the datasheet's inverting 74LS/S258 truth table and active-low
 output enable. The РУ5 model removes that physical inversion only at its internal
 storage index, preserving CPU-linear addressing and the guarded boot behavior;
-the dynamic CPU/video mux-enable schedule remains open.
+full-resolution sheet-2 review also retracts the former D59.5/.6 no-connect
+claim. D59.5 reaches E14 and the D50/D51 video-mux /G inputs, while its inverted
+D59.6 output reaches E13 and the D48/D49 CPU-mux /G inputs. This closes the
+complementary enable topology without inventing a driver: D59.5's external
+dynamic source remains open and the runnable boundary retains its TTL-high
+default.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

@@ -800,7 +800,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К531ЛН1 standard hex-inverter package contract; exhaustive sheet-2 symbol census traces sections 9->8 and 1->2 in the crystal oscillator, 3->4 as PST CLK, 11->10 in the timing chain with output 10 reaching bundle tag 10, and 13->12 as LOAD; section 5->6 is absent from every D59 symbol occurrence and pins 5/6 are explicit NCs"
+    "pins": "К531ЛН1 standard hex-inverter package contract; sheet-2 traces sections 9->8 and 1->2 in the crystal oscillator, 3->4 as PST CLK, 11->10 in the timing chain with output 10 reaching bundle tag 10, 13->12 as LOAD, and the separately drawn 5->6 section between the CPU/video mux banks. Full-resolution review corrects the former false NC disposition: D59.5 reaches E14.1 and D59.6 reaches E13.1 through the mux-enable service links"
    }
   },
   {
@@ -13785,8 +13785,12 @@
    ]
   },
   "VID_MUX_G": {
-   "src": "scan sheet-2 (E14 posts 1-3 visibly strapped -> D50/D51 G)",
+   "src": "scan sheet-2 full-resolution: D59 inverter input pin5 descends to E14.1; the drawn E14 1-3 link continues to D50/D51 active-low G pins. E14.2=+5 V and E14.4=GND remain alternate service/test posts; no external dynamic driver is proved",
    "nodes": [
+    [
+     "D59",
+     "5"
+    ],
     [
      "E14",
      "3"
@@ -13823,8 +13827,12 @@
    ]
   },
   "CPU_MUX_G": {
-   "src": "scan sheet-2 (E13 post 3 -> D48/D49 G; strap 1-3)",
+   "src": "scan sheet-2 full-resolution: D59 inverter output pin6 rises to E13.1; the drawn E13 1-3 link continues to D48/D49 active-low G pins. This makes CPU_MUX_G the complement of the still-undriven D59.5/VID_MUX_G source",
    "nodes": [
+    [
+     "D59",
+     "6"
+    ],
     [
      "E13",
      "3"
@@ -15922,8 +15930,6 @@
   ["D103", "13"],
   ["D103", "14"],
   ["D11", "18"],
-  ["D59", "5"],
-  ["D59", "6"],
   ["D10", "12"],
   ["D10", "13"],
   ["D10", "15"],

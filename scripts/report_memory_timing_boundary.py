@@ -108,11 +108,15 @@ def main() -> int:
             "sheet-2: E1.1=+5 V, E1.2=MA7 rail 28, E1.3=D51.9/MA6",
         ),
         (
-            "E14 video-mux enable retains the drawn 1-3 strap",
-            has_nodes(board, "VID_MUX_G", {("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15")})
+            "D59/E13/E14 complementary mux-enable topology is source-closed",
+            has_nodes(board, "VID_MUX_G", {("D59", "5"), ("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15")})
+            and has_nodes(board, "CPU_MUX_G", {("D59", "6"), ("E13", "1"), ("E13", "3"), ("D48", "15"), ("D49", "15")})
             and has_nodes(board, "P5V", {("E14", "2")})
-            and has_nodes(board, "GND", {("E14", "4")}),
-            "sheet-2: E14.1-E14.3 fitted strap; E14.2=+5 V; E14.4=GND",
+            and has_nodes(board, "GND", {("E14", "4")})
+            and has_nodes(board, "P5V", {("E13", "2")})
+            and has_nodes(board, "GND", {("E13", "4")})
+            and all(["D59", pin] not in board.get("no_connects", []) for pin in ("5", "6")),
+            "sheet-2: D59.5->E14.1-3->D50/D51 /G; D59.6->E13.1-3->D48/D49 /G",
         ),
         (
             "D53 RAS/CAS ladder outputs are guarded",
@@ -279,12 +283,12 @@ def main() -> int:
     ]
     boundary_checks = [
         (
-            "D59 remaining inverter package boundary remains visible",
+            "D59 remaining timing boundary remains visible",
             all(d59.get("pins", {}).get(pin) == role for pin, role in d59_contract.items())
             and set(nodes(board, "D59_O10_TAG10")) == {("D59", "10")}
             and ("D59", "10") not in set(nodes(board, "SOUND"))
             and "Automatic tag-number chase exhausted" in board["nets"]["D59_O10_TAG10"]["src"],
-            "D59.5/.6 NC; D59.10 tag10 remains distinct from SOUND",
+            "D59.5/.6 mux-enable inverter is traced; D59.10 tag10 remains distinct from SOUND",
         ),
         (
             "D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge",
@@ -307,12 +311,12 @@ def main() -> int:
     lines = [
         "# Memory timing boundary",
         "",
-        "Status date: 2026-07-21.",
+        "Status date: 2026-07-22.",
         "",
         f"Status: **{status}**",
         "",
         "This generated report narrows the remaining DRAM/clock timing risks.",
-        "The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,",
+        "The board model preserves the traced E1 and E13/E14 selector straps, RAS/CAS ladder, write rail,",
         "PHI2TTL fanout, and D56 one-shot RC networks. Exact-revision `.009 E3`",
         "imagery plus owner continuity closes the D54/D55/D56 trigger and clock",
         "crossings; the unresolved CAS input remains an explicit source boundary.",

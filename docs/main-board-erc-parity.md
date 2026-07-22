@@ -18,8 +18,8 @@ schematic parity against it without a matching routed schematic/project.
 | Source-risk singleton nets | 37 | BLOCK |
 | Other source-risk nets | 7 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
-| Explicit board-JSON no-connects | 68 | PASS |
-| KiCad schematic no-connect markers | 68 | PASS |
+| Explicit board-JSON no-connects | 66 | PASS |
+| KiCad schematic no-connect markers | 66 | PASS |
 | Functional pins without net or explicit NC | 0 | PASS |
 | Duplicate board-JSON endpoint memberships | 0 | PASS |
 | Unknown/conflicting NC records | 0 | PASS |

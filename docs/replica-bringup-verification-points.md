@@ -1,6 +1,6 @@
 # Replica bring-up verification points
 
-Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**
+Status: **ENDPOINT COVERAGE FAILED**
 
 This report is generated from `kicad/juku.board.json`. It turns the
 remaining source-risk annotations into an explicit checklist for vendor
@@ -11,7 +11,7 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `c94c6ebef9c18a6eec5731665be896de2f04ac1610e6c44e4c4bc743e370983c`
+- Source board JSON SHA-256: `ac3424b1c120a593a21b14e6b17c090071bbaa191a18378a0c3c9246b4cdfd54`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Final PCB source SHA-256: `bfeff14f3998237b95b09284171cdeae3c42aa6faaca0f200dbee1e3579e03d1`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
@@ -19,10 +19,10 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `44`
 - Verification-point endpoints checked in PCB: `54`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2295`
-- All board endpoints checked in routed PCB: `2295`
+- All board endpoints checked in source PCB: `2297`
+- All board endpoints checked in routed PCB: `2297`
 - Intentional non-PCB or placement-pending endpoints excluded: `75`
-- Full PCB endpoint coverage: `PASS`
+- Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
@@ -59,8 +59,16 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2295/2295 | 2295/2295 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 2295/2295 | 2295/2295 | PASS |
+| `kicad/juku.kicad_pcb` | 2295/2297 | 2295/2297 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 2295/2297 | 2295/2297 | FAIL |
+
+Missing endpoints in `kicad/juku.kicad_pcb`:
+- `CPU_MUX_G: D59.6`
+- `VID_MUX_G: D59.5`
+
+Missing endpoints in `kicad/juku_routed.kicad_pcb`:
+- `CPU_MUX_G: D59.6`
+- `VID_MUX_G: D59.5`
 
 ## Checklist
 

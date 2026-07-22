@@ -56,10 +56,16 @@ def main() -> int:
             "owner board #2: 1K0; sheet-2 scan: 820 ohm",
         ),
         (
-            "Undrawn D59 section 5->6 is explicitly unused",
-            ["D59", "5"] in board.get("no_connects", [])
-            and ["D59", "6"] in board.get("no_connects", []),
-            "all five drawn D59 sections are accounted for; pins 5/6 never occur on sheet 2",
+            "D59 section 5->6 is traced into the mux-enable links",
+            ["D59", "5"] not in board.get("no_connects", [])
+            and ["D59", "6"] not in board.get("no_connects", [])
+            and {("D59", "5"), ("E14", "1")} <= {
+                tuple(node) for node in board["nets"]["VID_MUX_G"]["nodes"]
+            }
+            and {("D59", "6"), ("E13", "1")} <= {
+                tuple(node) for node in board["nets"]["CPU_MUX_G"]["nodes"]
+            },
+            "full-resolution sheet 2: D59.5 feeds E14/video /G and D59.6 feeds E13/CPU /G",
         ),
     ))
     ok = all(result for _, result, _ in checks)
@@ -67,7 +73,7 @@ def main() -> int:
     lines = [
         "# Master oscillator boundary",
         "",
-        "Status date: 2026-07-12.",
+        "Status date: 2026-07-22.",
         "",
         f"Status: **{status}**",
         "",
