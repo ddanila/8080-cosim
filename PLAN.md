@@ -1286,6 +1286,8 @@ file also carries two 2026-07-20 CI cost-reduction items (5, 6): concurrency
 groups with `cancel-in-progress` on all three workflows, and narrowing the
 over-broad `scripts/**` / `ref/**` path gates on `reports.yml` that the routing
 loop trips 77% of the time. Both preserve full coverage; either order.
+After changing board JSON, report generators, or timing-relevant HDL, run
+`scripts/regen_all.sh` (`--deep` for HDL/cosim changes) and commit its drift.
 
 ### VJUGA spin-off — status and Linux-box handoff
 

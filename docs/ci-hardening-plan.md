@@ -7,7 +7,7 @@ item, but items are independent commits and CI must be green between them.
 ## Progress
 
 - [x] 2. Shared LFS-aware photo-hash helper.
-- [ ] 1. One-command report regeneration.
+- [x] 1. One-command report regeneration.
 - [ ] 4. Timing expectations as data.
 - [ ] 3. CI-aware pre-push gate.
 - [ ] 5. Workflow concurrency groups.

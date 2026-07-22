@@ -80,6 +80,11 @@ CI is split by relevance: `ci.yml` (always-on, syntax + doc consistency),
 data paths), and `hdl.yml` (LVS + behavioral boot, gated on `hdl/`, `cosim/`,
 `roms/`, `sync/`, `media/`, and the board JSON).
 
+After changing `kicad/juku.board.json`, timing-relevant HDL, or any
+`report_*.py`, run `scripts/regen_all.sh`; add `--deep` when HDL/cosim behavior
+changed. Commit every resulting artifact, and use `--check` for a CI-style
+nonzero exit when generated `docs/` or `ref/` output drifts.
+
 ## Current user-visible oracles
 
 - `ekdos_fdc_probe.py` — ROMBIOS `TDD` to EKDOS `A>` in the C oracle.
