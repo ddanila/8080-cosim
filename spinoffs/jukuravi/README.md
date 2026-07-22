@@ -77,13 +77,38 @@ A Nano is sufficient for every stage except the optional bus-master stage
 
 ## Staged plan
 
-- **Stage D0 — diagnostic ROM alone.** Stack-free sign-of-life over serial →
-  ROM checksum (the firmware's own block-1 convention,
-  `docs/cosim-runtime-reference.md`) → RAM march test streamed byte-by-byte.
-  Because the populated bank is bit-per-chip (D84–D91 К565РУ5,
-  `docs/hardware-map.md`), a failing bit pattern names the exact chip.
-  Then PPI/PIT/PIC register-wiggle tests, framebuffer test pattern (needs
-  RAM), beeper codes (`docs/beeper-readiness.md`) as the serial-less fallback.
+- **Stage D0 — diagnostic ROM alone.** A strict boot ladder in which every
+  rung is stack-free (registers + JMP only) and no rung assumes anything the
+  previous rungs have not proven:
+  1. **Alive-beep** (~0.5 s) as the very first act: PIT #2/D57 channel 1
+     drives the speaker (`docs/beeper-readiness.md`), programmable with OUT
+     instructions and a register delay loop — zero RAM. One beep proves
+     CPU + ROM fetch + bus + PIT + the analog path. (No beep at all is
+     disambiguated by the Nano's `−MRDC` liveness probe: CPU dead vs beeper
+     path broken.)
+  2. **Serial handshake** — before the RAM survey, because the 8251 is
+     polled I/O and needs no RAM: init, send banner, await the Nano's ack
+     with a register-loop timeout. Distinct beeps for serial-confirmed vs
+     serial-dead; if dead, all later results fall back to beep codes.
+  3. **RAM survey — find usable windows, don't just fail.** The populated
+     bank is bit-sliced: D84–D91 (К565РУ5, 64K×1) each hold ONE BIT of
+     every byte across the whole 64 KiB (`docs/hardware-map.md`) — no chip
+     owns an address block. Therefore: a fully dead chip leaves NO usable
+     window anywhere, but the failing bit position names the exact chip to
+     replace (N beeps = D84+N, or named over serial). Partial failures
+     (bad cells/rows/columns — the common case; internally 256×256 per
+     chip) corrupt only the addresses sharing the bad row/column, so the
+     survey builds a per-bit health map and adopts the largest window where
+     all eight bits pass as the D2 landing zone + stack. Results stream
+     live over serial when rung 2 passed. (The empty D60–D83 sockets are
+     the 16K×1-era banks, not a software-selectable alternative bank.)
+  4. **Everything else:** ROM checksum (the firmware's own block-1
+     convention, `docs/cosim-runtime-reference.md`), PPI/PIT/PIC
+     register-wiggle tests, framebuffer test pattern (needs RAM).
+
+  The beep vocabulary is a tiny fixed set (alive / serial-ok / serial-dead /
+  chip-N-dead / windows-found), documented so a human with no Nano attached
+  can triage by ear.
 - **Stage D1 — Nano + host software.** Nano firmware (bridge + liveness
   probes) and the Python CLI with human-readable verdicts.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
@@ -96,7 +121,8 @@ A Nano is sufficient for every stage except the optional bus-master stage
   until the RAM march passes, ordinary stack code after); the ROM exposes a
   fixed-address jump-table API (serial in/out, print, return-to-loader) so
   uploaded tests get reporting for free; in mode 0 the region
-  0x4000–0xD7FF is a clean landing zone with no bank switching needed.
+  0x4000–0xD7FF is a clean landing zone with no bank switching needed —
+  specifically, the all-eight-bits-good window the D0 RAM survey adopted.
 - **Stage D3 (optional, likely never needed) — external bus master.**
   Mega-based probe via X1/`−INHIBIT`, or CPU-socket ICE. This is NOT the
   memory-upload path (that is D2, done in firmware); it exists solely for
