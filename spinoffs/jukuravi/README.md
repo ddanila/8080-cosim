@@ -1,4 +1,7 @@
-# Juku diagnostic harness (diag-ROM + Arduino Nano + host tool)
+# Jukuravi — Juku diagnostic harness (diag-ROM + Arduino Nano + host tool)
+
+"Jukuravi" = Estonian for "Juku-therapy": the harness that examines and
+treats a sick board.
 
 Status date: 2026-07-22.
 

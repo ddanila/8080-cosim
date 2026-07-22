@@ -27,8 +27,8 @@ they are subordinate to, and linked from, this project-wide plan.
 
 Tape, classroom networking, mouse, and Multibus expansion are outside the
 current critical path. The VJUGA/minimal-VGA board is a separate experiment and
-is not a prerequisite for this replica, as is the planned diagnostic harness
-for the real .009 board (`spinoffs/diag-harness/README.md`).
+is not a prerequisite for this replica, as is Jukuravi, the planned diagnostic
+harness for the real .009 board (`spinoffs/jukuravi/README.md`).
 
 ## Verified repository state
 
