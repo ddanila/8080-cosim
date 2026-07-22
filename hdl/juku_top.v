@@ -27,7 +27,9 @@ module juku_top (
     , output wire probe_d42_q, probe_d43_q, probe_d37_pixel_n
     , output wire probe_d34_sync
     , output wire probe_d56_q_n, probe_d56_q2, probe_d56_q2_n
-    , output wire probe_pit_hsync, probe_pit_vsync, probe_load_vid
+    , output wire probe_pit_hchain, probe_pit_vchain
+    , output wire probe_pit_hsync, probe_pit_vsync
+    , output wire probe_hor_rtr, probe_vert_rtr, probe_load_vid
     , output wire probe_slot_schedule_known
 `endif
 );
@@ -548,8 +550,12 @@ module juku_top (
     assign probe_d56_q_n = d56_qn;
     assign probe_d56_q2 = d56_q2;
     assign probe_d56_q2_n = d56_q2_n;
+    assign probe_pit_hchain = pit_hchain;
+    assign probe_pit_vchain = pit_vchain;
     assign probe_pit_hsync = pit_hsync_dsl;
     assign probe_pit_vsync = pit_vert_sync_dsl;
+    assign probe_hor_rtr = hor_rtr;
+    assign probe_vert_rtr = vert_rtr;
     assign probe_load_vid = load_vid;
     assign probe_slot_schedule_known = 1'b0;
 `endif
@@ -785,11 +791,11 @@ module juku_top (
     // D40 QC; 1.23 MHz (D57 baud clk0) = the now-guarded D103/D33 /13 loop.
     // Its upstream physical XTAL16M source merge remains a continuity boundary.
     wire clk123m;
-    wire pit_hchain, pit_vchain, pit_baud, pit_sound;
+    wire pit_hchain, pit_vchain, pit_baud, pit_sound, hor_rtr;
     pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(clk1m), .gate0(1'b1), .clk1(clk1m), .gate1(pit_hchain),
                       .clk2(clk1m), .gate2(pit_hchain),
-                      .out0(pit_hchain), .out1(), .out2(pit_hsync_dsl));
+                      .out0(pit_hchain), .out1(hor_rtr), .out2(pit_hsync_dsl));
     pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(pit_hchain), .gate0(1'b1), .clk1(d56_q2_n), .gate1(pit_vchain),
                       .clk2(d56_q2_n), .gate2(pit_vchain),

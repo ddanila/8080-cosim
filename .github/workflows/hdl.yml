@@ -19,6 +19,8 @@ on:
       - 'kicad/juku.board.json'
       - 'scripts/report_video_physical_probes.py'
       - 'docs/video-physical-probes.md'
+      - 'scripts/report_video_pit_timing.py'
+      - 'docs/video-pit-timing.md'
       - 'spinoffs/minimal-vga/hdl/u24_dram_timing*.v'
       - 'spinoffs/minimal-vga/hdl/vjuga_juku*.v'
       - 'spinoffs/minimal-vga/sim/u24_dram_timing_check.sh'
@@ -52,6 +54,8 @@ on:
       - 'kicad/juku.board.json'
       - 'scripts/report_video_physical_probes.py'
       - 'docs/video-physical-probes.md'
+      - 'scripts/report_video_pit_timing.py'
+      - 'docs/video-pit-timing.md'
       - 'spinoffs/minimal-vga/hdl/u24_dram_timing*.v'
       - 'spinoffs/minimal-vga/hdl/vjuga_juku*.v'
       - 'spinoffs/minimal-vga/sim/u24_dram_timing_check.sh'
@@ -175,6 +179,8 @@ jobs:
           ./sync/video_readout_check.sh
           python3 scripts/report_video_physical_probes.py
           git diff --exit-code -- docs/video-physical-probes.md
+          python3 scripts/report_video_pit_timing.py
+          git diff --exit-code -- docs/video-pit-timing.md
 
       - name: Check boot report freshness
         run: |
@@ -202,7 +208,8 @@ jobs:
             docs/jmon33-idle-command-probe.md \
             docs/video-timing-reference.md \
             docs/video-readout-readiness.md \
-            docs/video-physical-probes.md
+            docs/video-physical-probes.md \
+            docs/video-pit-timing.md
 
       - name: Run boot regression check
         run: ./sync/boot_check.sh

@@ -284,11 +284,19 @@ also carries `slot_schedule_known=0`; D34_SIG is deliberately absent. This prove
 component-chain observability only, not a Juku raster, framebuffer reconstruction,
 composite voltage, or X7 samples. See `video-physical-probes.md`.
 
+The second checkpoint decodes and executes the exact `ekta37` PIT programming
+sequence through `juku_top`. Correct 8253 BCD, mode-1, and mode-2 behavior now
+drives the autonomous physical D54/D55/D56/D34_SYNC chain. The guard measures
+64 us lines (15.625 kHz), 313-line/20.032 ms frames (49.920128 Hz), 8 us/25-line
+front porches, 24 us/72-line blank intervals, and the D56 pulses. The resulting
+320x241 active geometry independently matches the vendored MAME reference.
+This closes raster timing, but not physical framebuffer slots or D34_SIG. See
+`video-pit-timing.md`.
+
 - [x] Add explicit HDL probes for the physical pixel and sync contributors instead
   of using the current abstract `vid_out` as X7.
-- [ ] Drive D54/D55/D56/D34 through the physical structural path where evidence is
-  complete. The downstream D56/D34 chain is guarded under controlled PIT-output
-  stimulus; an autonomous D54/D55 raster remains open.
+- [x] Drive D54/D55/D56/D34_SYNC through the physical structural path where
+  evidence is complete. D34_SIG remains separately open.
 - [x] Export timestamped controlled-stimulus logic events for the bounded physical
   contributors, with unresolved fields machine-marked. A complete Juku waveform
   remains open.

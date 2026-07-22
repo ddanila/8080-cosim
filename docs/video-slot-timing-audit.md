@@ -18,6 +18,7 @@ python3 scripts/report_video_slot_timing_audit.py
 | --- | --- | --- |
 | Runnable raster geometry is guarded | PASS | `docs/video-timing-reference.md` / `sync/video_timing_check.sh` |
 | Runnable byte-to-pixel readout is guarded | PASS | `docs/video-readout-readiness.md` / `sync/video_readout_check.sh` |
+| ROM-programmed autonomous raster timing is guarded | PASS | `docs/video-pit-timing.md`: D54/D55/D56/D34_SYNC timing |
 | Physical D42/D43 ИР16 serializers are identified in the board model | PASS | `kicad/juku.board.json` D42/D43 identities |
 | Physical serializer instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Physical CPU/video mux and D53 decode instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
@@ -52,8 +53,10 @@ python3 scripts/report_video_slot_timing_audit.py
 - D41's role is now narrowed: QA/QB, its fixed data/enable straps, and
   intentional QC/QD no-connects are modeled; only the remote LD/CK
   timing-bundle sources remain continuity boundaries.
-- The missing piece is the exact video-read slot schedule around D41, D52,
-  D53, D56, and the adjacent one-shot/counter timing. D94 is not used as
+- The ROM-programmed D54/D55/D56/D34_SYNC raster timing is now executable
+  and independently agrees with the 320x241 reference geometry.
+- The missing piece is the exact video-read slot schedule around D41, D50,
+  D51, D52, and D53, plus the D34 signal input. D94 is not used as
   video-timing evidence: its only proved outputs terminate at FDC D93.
 - Until those physical slot-control paths are traced, the honest
   model keeps `VA/VQ` and `video_raster` as a sim-only runnable adjunct rather

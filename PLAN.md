@@ -1402,7 +1402,12 @@ export. Controlled stimulus verifies the modeled D56 pulse widths and traced
 D34 sync XOR, while every event machine-marks the shared-DRAM slot schedule as
 unknown and deliberately omits the unresolved D34 signal input. It therefore
 does not claim a Juku raster, framebuffer reconstruction, composite voltage, or
-X7 samples.
+X7 samples. The following guarded checkpoint now executes the exact `ekta37`
+D54/D55 control/count bytes through `juku_top` with 8253 BCD and modes 1/2:
+the autonomous physical chain measures 15.625 kHz horizontal timing,
+313-line/49.920128 Hz frames, 320x241 active geometry, and the modeled D56 sync
+pulses. This closes digital raster timing only; shared-DRAM video slots,
+D34_SIG, fetched pixels, and X7 voltage remain open.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

@@ -85,6 +85,8 @@ findings. Every status applies only to the boundary named by the report.
   `video-physical-probes.md` (executable controlled-stimulus probes for the
   source-proved D42/D43/D37 and D56/D34_SYNC contributors, with the shared-DRAM
   slot schedule and D34 signal input explicitly open),
+  `video-pit-timing.md` (exact-ROM autonomous 15.625 kHz/313-line D54/D55/D56
+  raster timing, independently matched to the 320x241 reference geometry),
   `d99-reconstruction-constraints.md` (grounded-clear constant section 1,
   D94-D1 access trigger, fitted RC timing, and five remote-pin boundaries),
   `video-readout-readiness.md`, `x7-output-stage-model.md` (guarded static
