@@ -85,10 +85,17 @@ A Nano is sufficient for every stage except the optional bus-master stage
      instructions and a register delay loop — zero RAM. One beep proves
      CPU + ROM fetch + bus + PIT + the analog path. (No beep at all is
      disambiguated by the Nano's `−MRDC` liveness probe: CPU dead vs beeper
-     path broken.)
+     path broken.) **The beep doubles as a measurement:** the Nano
+     timestamps OUT1 edges through its probe, and known divisor × measured
+     frequency yields the PIT's actual input clock — empirically closing
+     the CPU-Φ/baud-clock open unknown on the very first boot.
   2. **Serial handshake** — before the RAM survey, because the 8251 is
-     polled I/O and needs no RAM: init, send banner, await the Nano's ack
-     with a register-loop timeout. Distinct beeps for serial-confirmed vs
+     polled I/O and needs no RAM: init, then a train of `0x55` bytes
+     (alternating bits — a bit-width ruler) so the Nano auto-bauds and
+     locks regardless of the unresolved baud-clock divisor, then the
+     banner (carrying ROM version + self-checksum so the host knows
+     exactly what it is talking to), then await the Nano's ack with a
+     register-loop timeout. Distinct beeps for serial-confirmed vs
      serial-dead; if dead, all later results fall back to beep codes.
   3. **RAM survey — find usable windows, don't just fail.** The populated
      bank is bit-sliced: D84–D91 (К565РУ5, 64K×1) each hold ONE BIT of
@@ -113,6 +120,17 @@ A Nano is sufficient for every stage except the optional bus-master stage
      windows and beeps found/not-found — without serial nothing can be
      uploaded anyway. (The empty D60–D83 sockets are the 16K×1-era banks,
      not a software-selectable alternative bank.)
+     **Coverage limit:** in mode 0 the ROM overlay hides 0x0000–0x3FFF, so
+     the D0 survey covers 0x4000–0xFFFF only (ample for a landing zone);
+     the low 16 KiB is tested later by *uploaded* code that runs from RAM
+     and can switch to mode 3 freely — the ROM never mode-switches itself
+     out from under its own program counter.
+     **Refresh caveat (open unknown):** DRAM strobes flow through the
+     video/timing chain and refresh scheduling is an open boundary
+     (`docs/memory-timing-boundary.md`) — if refresh requires programmed
+     PITs, RAM decays silently during ROM-only loops. The diag ROM
+     replicates the BIOS timer init early, and the survey includes a
+     retention pass (write, wait, re-read), not just a march.
   4. **Everything else:** ROM checksum (the firmware's own block-1
      convention, `docs/cosim-runtime-reference.md`), PPI/PIT/PIC
      register-wiggle tests, framebuffer test pattern (needs RAM).
@@ -120,6 +138,19 @@ A Nano is sufficient for every stage except the optional bus-master stage
   The beep vocabulary is a tiny fixed set (alive / serial-ok / serial-dead /
   chip-N-dead / windows-found), documented so a human with no Nano attached
   can triage by ear.
+
+  **ROM discipline:** interrupts stay disabled for the diag ROM's whole
+  life (the 8080 resets with them off; never `EI` — PIC state is unproven
+  and a spurious RST vectors into nothing). The entire diag ROM fits
+  D15's 8 KiB with zero dependence on D16's contents: one socket swapped,
+  one variable changed.
+
+  **Optional fallback channels** (not gating, recorded so they aren't
+  re-invented): if the 8251 path is broken, the ROM can bit-bang slow
+  telemetry on the beeper/PIT-OUT1 line the Nano probe already samples —
+  serial-dead need not mean data-dead; and once RAM + video prove good,
+  verdicts can be mirrored to the framebuffer, letting the Juku diagnose
+  itself to its own monitor with no Nano attached.
 - **Stage D1 — Nano + host software.** Nano firmware (bridge + liveness
   probes) and the Python CLI with human-readable verdicts.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
@@ -172,6 +203,11 @@ root first.
 - S1 reset-switch contact arrangement: which contact pair closes to assert
   reset, and the node polarity — needed before wiring the Nano's reset opto
   across it.
+- Whether DRAM refresh runs before the BIOS programs the PITs (refresh
+  scheduling is an open root boundary, `docs/memory-timing-boundary.md`).
+  Determines how early the diag ROM must replicate the timer init; resolve
+  in cosim/HDL before trusting any bench RAM verdict. The rung-1 beep
+  clock measurement also feeds back here (it pins the PIT input clock).
 
 ## Non-goals and guardrails
 
