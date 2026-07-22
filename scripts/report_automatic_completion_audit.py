@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import re
 import subprocess
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -18,6 +19,7 @@ TEMPLATES = {
     "docs/replica-order-evidence-template.md",
 }
 UNCHECKED_RE = re.compile(r"^\s*[-*]\s+\[ \]\s+(.+?)\s*$", re.MULTILINE)
+CHECKBOX_RE = re.compile(r"^\s*[-*]\s+\[([ xX])\]\s+(.+?)\s*$", re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -134,14 +136,32 @@ def markdown_files() -> list[Path]:
     return sorted(files)
 
 
-def active_tasks() -> list[tuple[str, str]]:
-    tasks: list[tuple[str, str]] = []
+def task_states() -> dict[tuple[str, str], str]:
+    states: dict[tuple[str, str], str] = {}
     for path in markdown_files():
-        tasks.extend((rel(path), task) for task in UNCHECKED_RE.findall(path.read_text(encoding="utf-8")))
-    return tasks
+        for state, task in CHECKBOX_RE.findall(path.read_text(encoding="utf-8")):
+            key = (rel(path), task)
+            if key in states:
+                raise SystemExit(f"duplicate tracked checkbox task: {key[0]}: {key[1]}")
+            states[key] = state.lower()
+    return states
 
 
-def validate(tasks: list[tuple[str, str]]) -> tuple[dict[str, list[tuple[str, str]]], int]:
+def active_tasks(states: dict[tuple[str, str], str] | None = None) -> list[tuple[str, str]]:
+    states = task_states() if states is None else states
+    return [task for task, state in states.items() if state == " "]
+
+
+def validate(
+    tasks: list[tuple[str, str]], states: dict[tuple[str, str], str] | None = None
+) -> tuple[dict[str, list[tuple[str, str]]], int]:
+    states = task_states() if states is None else states
+    missing_manifest_tasks = sorted(set(CLASSIFICATIONS) - set(states))
+    if missing_manifest_tasks:
+        details = "\n".join(f"  - {path}: {task}" for path, task in missing_manifest_tasks)
+        raise SystemExit(
+            "classified milestone checkbox disappeared; update the manifest intentionally:\n" + details
+        )
     unknown = sorted(set(tasks) - set(CLASSIFICATIONS))
     if unknown:
         details = "\n".join(f"  - {path}: {task}" for path, task in unknown)
@@ -177,7 +197,7 @@ def validate(tasks: list[tuple[str, str]]) -> tuple[dict[str, list[tuple[str, st
 
 
 def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]]], template_count: int) -> str:
-    plan_count = len({path for path, _ in tasks})
+    task_counts = Counter(path for path, _ in tasks)
     lines = [
         "# Automatic completion audit",
         "",
@@ -196,10 +216,15 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "",
         "## Active unchecked work",
         "",
-        f"There are {len(tasks)} unchecked items in the active project plans: seven in",
-        "`PLAN.md`, one in the CRT/CVBS subordinate plan, and one external community",
-        "coordination decision. Every one now requires evidence, hardware, purchasing,",
-        "fabrication, or owner authorization.",
+        f"There are {len(tasks)} unchecked items across {len(task_counts)} tracked project-plan",
+        "documents. Every one now requires evidence, hardware, purchasing, fabrication,",
+        "or owner authorization.",
+        "",
+        "| Plan | Unchecked tasks |",
+        "| --- | ---: |",
+    ]
+    lines += [f"| `{path}` | {count} |" for path, count in sorted(task_counts.items())]
+    lines += [
         "",
         "| Plan item | Tasks | Why automation must stop | Required next input |",
         "| --- | ---: | --- | --- |",
@@ -243,7 +268,7 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "",
         "## Guard",
         "",
-        f"This writer scanned {plan_count} Markdown file(s) containing active unchecked tasks.",
+        f"This writer found active unchecked tasks in {len(task_counts)} tracked Markdown file(s).",
         "Any new unchecked task outside the three operator templates must have an exact",
         "classification and all cited evidence markers must exist, otherwise generation",
         "fails closed. `scripts/check_documentation_consistency.py` runs this writer in",
@@ -260,8 +285,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true", help="fail if the committed report is stale")
     args = parser.parse_args()
-    tasks = active_tasks()
-    grouped, template_count = validate(tasks)
+    states = task_states()
+    tasks = active_tasks(states)
+    grouped, template_count = validate(tasks, states)
     output = render(tasks, grouped, template_count)
     if args.check:
         if not REPORT.exists() or REPORT.read_text(encoding="utf-8") != output:

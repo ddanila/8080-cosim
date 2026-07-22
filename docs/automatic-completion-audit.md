@@ -15,10 +15,15 @@ python3 scripts/report_automatic_completion_audit.py
 
 ## Active unchecked work
 
-There are 9 unchecked items in the active project plans: seven in
-`PLAN.md`, one in the CRT/CVBS subordinate plan, and one external community
-coordination decision. Every one now requires evidence, hardware, purchasing,
-fabrication, or owner authorization.
+There are 9 unchecked items across 3 tracked project-plan
+documents. Every one now requires evidence, hardware, purchasing, fabrication,
+or owner authorization.
+
+| Plan | Unchecked tasks |
+| --- | ---: |
+| `PLAN.md` | 7 |
+| `docs/crt-cvbs-simulation-plan.md` | 1 |
+| `docs/factory-drawing-exploitation-plan.md` | 1 |
 
 | Plan item | Tasks | Why automation must stop | Required next input |
 | --- | ---: | --- | --- |
@@ -61,7 +66,7 @@ implementation backlog.
 
 ## Guard
 
-This writer scanned 3 Markdown file(s) containing active unchecked tasks.
+This writer found active unchecked tasks in 3 tracked Markdown file(s).
 Any new unchecked task outside the three operator templates must have an exact
 classification and all cited evidence markers must exist, otherwise generation
 fails closed. `scripts/check_documentation_consistency.py` runs this writer in
