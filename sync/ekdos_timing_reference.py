@@ -2,6 +2,7 @@
 """Cosim timing reference for the ROMBIOS TDD -> EKDOS path."""
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
@@ -12,26 +13,51 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "ekdos-timing-reference.md"
+EXPECTED = ROOT / "sync" / "ekdos_timing_expected.json"
 ROM = ROOT / "roms" / "ekta37.bin"
 DISK = ROOT / "media" / "disks" / "JUKU1.CPM"
-EXPECTED_FIRSTS = {
-    ("OUT", 0x00): {"cyc": "3061541", "pc": "02B9", "g_vw": "30520", "value": "D6"},
-    ("OUT", 0x01): {"cyc": "3061556", "pc": "02BC", "g_vw": "30520", "value": "FE"},
-    ("IN", 0x05): {"cyc": "3062006", "pc": "1213", "g_vw": "30520", "value": "-"},
-    ("OUT", 0x1C): {"cyc": "6666400", "pc": "E5DE", "g_vw": "63085", "value": "02"},
-    ("IN", 0x1F): {"cyc": "9039953", "pc": "E5AA", "g_vw": "63095", "value": "-"},
-}
-EXPECTED_IRQS = [
-    {"n": "1", "cyc": "3200001", "pc": "0E21", "vec": "FED4", "g_vw": "33812"},
-    {"n": "2", "cyc": "3400004", "pc": "0E25", "vec": "FED4", "g_vw": "38733"},
-    {"n": "3", "cyc": "3600000", "pc": "E2E5", "vec": "FED4", "g_vw": "40633"},
-]
+UPDATE_HINT = (
+    "if the model change is intentional, run "
+    "sync/ekdos_timing_reference.py --update and commit the diff"
+)
 
 IOT_RE = re.compile(
     r"^\[IOT\] first (IN |OUT) port 0x([0-9A-Fa-f]{2})(?: val=0x([0-9A-Fa-f]{2}))? "
     r"cyc=([0-9]+) pc=([0-9A-Fa-f]{4}) g_vw=([0-9]+)"
 )
 IRQ_RE = re.compile(r"^\[IRQ\] taken #([0-9]+) g_vw=([0-9]+) cyc=([0-9]+) pc=([0-9A-Fa-f]{4}).*vec=([0-9A-Fa-f]{4})")
+
+
+def load_expectations() -> tuple[dict[tuple[str, int], dict[str, str]], list[dict[str, str]]]:
+    payload = json.loads(EXPECTED.read_text(encoding="utf-8"))
+    raw_firsts = payload.get("firsts")
+    raw_irqs = payload.get("irqs")
+    if not isinstance(raw_firsts, dict) or not isinstance(raw_irqs, list):
+        raise SystemExit(f"invalid timing expectation schema: {EXPECTED}")
+    firsts: dict[tuple[str, int], dict[str, str]] = {}
+    for label, item in raw_firsts.items():
+        match = re.fullmatch(r"(IN|OUT) 0x([0-9A-Fa-f]{2})", label)
+        if match is None or not isinstance(item, dict):
+            raise SystemExit(f"invalid timing expectation entry: {label!r}")
+        firsts[(match.group(1), int(match.group(2), 16))] = item
+    return firsts, raw_irqs
+
+
+def measured_expectations(
+    keys: list[tuple[str, int]],
+    first_in: dict[int, dict[str, str]],
+    first_out: dict[int, dict[str, str]],
+    irqs: list[dict[str, str]],
+) -> dict[str, object]:
+    firsts: dict[str, dict[str, str]] = {}
+    for kind, port in keys:
+        actual = first_in.get(port) if kind == "IN" else first_out.get(port)
+        if actual is None:
+            raise SystemExit(f"cannot update missing {kind} 0x{port:02X} timing")
+        firsts[f"{kind} 0x{port:02X}"] = actual
+    if len(irqs) < 3:
+        raise SystemExit("cannot update timing expectations without three frame IRQs")
+    return {"firsts": firsts, "irqs": irqs[:3]}
 
 
 def run_trace() -> subprocess.CompletedProcess[str]:
@@ -97,6 +123,12 @@ def row(kind: str, port: int, item: dict[str, str] | None) -> str:
 
 
 def main() -> int:
+    args = sys.argv[1:]
+    if args not in ([], ["--update"]):
+        print("Usage: sync/ekdos_timing_reference.py [--update]", file=sys.stderr)
+        return 2
+    update = args == ["--update"]
+    expected_firsts, expected_irqs = load_expectations()
     proc = run_trace()
     log = (proc.stderr or "") + "\n" + (proc.stdout or "")
     first_in, first_out, irqs = parse(log)
@@ -110,12 +142,23 @@ def main() -> int:
             failures.append(f"no first-access timing captured for port 0x{port:02X}")
     if not irqs:
         failures.append("no frame IRQ timing captured")
-    for (kind, port), expected in EXPECTED_FIRSTS.items():
-        actual = first_in.get(port) if kind == "IN" else first_out.get(port)
-        if actual != expected:
-            failures.append(f"{kind} 0x{port:02X} timing changed: got {actual}, expected {expected}")
-    if irqs[:3] != EXPECTED_IRQS:
-        failures.append(f"first frame IRQ timing changed: got {irqs[:3]}, expected {EXPECTED_IRQS}")
+    if update and not failures:
+        payload = measured_expectations(list(expected_firsts), first_in, first_out, irqs)
+        EXPECTED.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        expected_firsts, expected_irqs = load_expectations()
+        print(f"Updated {EXPECTED.relative_to(ROOT)}")
+    else:
+        timing_changed = False
+        for (kind, port), expected in expected_firsts.items():
+            actual = first_in.get(port) if kind == "IN" else first_out.get(port)
+            if actual != expected:
+                timing_changed = True
+                failures.append(f"{kind} 0x{port:02X} timing changed: got {actual}, expected {expected}")
+        if irqs[:3] != expected_irqs:
+            timing_changed = True
+            failures.append(f"first frame IRQ timing changed: got {irqs[:3]}, expected {expected_irqs}")
+        if timing_changed:
+            failures.append(UPDATE_HINT)
 
     lines = [
         "# EKDOS timing reference",

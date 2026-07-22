@@ -172,6 +172,7 @@ jobs:
             docs/ekdos-fdc-probe.md \
             docs/ekdos-jbasic-command-probe.md \
             docs/ekdos-timing-reference.md \
+            sync/ekdos_timing_expected.json \
             docs/ekdos-checkpoint-reference.md \
             docs/ekdos-ioseq-reference.md \
             docs/juku-top-checkpoint-load.md \
