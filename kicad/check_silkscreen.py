@@ -5,7 +5,7 @@ import sys
 import pcbnew
 
 
-SILK_FONT_FACE = "GOST type B italic"
+SILK_FONT_FACE = "GOST CAD KK"
 BOARD_SILK_NOTES = (
     "8080 HEART",
     "BOOT ROM FIELD",

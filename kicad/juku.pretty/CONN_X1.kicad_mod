@@ -8,7 +8,7 @@
 		(hide yes)
 		(effects
 			(font
-				(face "GOST type B italic")
+				(face "GOST CAD KK")
 				(size 1.27 1.27)
 				(italic yes)
 			)
@@ -20,7 +20,7 @@
 		(layer "F.Fab")
 		(effects
 			(font
-				(face "GOST type B italic")
+				(face "GOST CAD KK")
 				(size 1.27 1.27)
 				(italic yes)
 			)
@@ -33,7 +33,7 @@
 		(hide yes)
 		(effects
 			(font
-				(face "GOST type B italic")
+				(face "GOST CAD KK")
 				(size 1.27 1.27)
 				(italic yes)
 			)
@@ -46,7 +46,7 @@
 		(hide yes)
 		(effects
 			(font
-				(face "GOST type B italic")
+				(face "GOST CAD KK")
 				(size 1.27 1.27)
 				(italic yes)
 			)

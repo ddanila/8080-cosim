@@ -11,7 +11,12 @@
 #       kicad/gen_kicad_pcb.py kicad/juku.board.json kicad/juku.kicad_pcb
 import os, sys, json, pcbnew
 
-SILK_FONT_FACE = "GOST type B italic"
+# GOST engineering silkscreen face. Must be a GOST face that carries Cyrillic
+# glyphs -- the chip values are Cyrillic (К573РФ5, КР580ВА86, ...). "GOST type B
+# italic" (fonts/gost-type-b-italic.ttf) has NO Cyrillic and renders every such
+# value as tofu boxes; "GOST CAD KK" (fonts/gost.ttf) is a GOST italic face with
+# full Cyrillic coverage. check_silk_glyphs.py guards this against regressions.
+SILK_FONT_FACE = "GOST CAD KK"
 
 def footprint_root():
     candidates = [
