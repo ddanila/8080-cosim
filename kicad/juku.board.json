@@ -1211,10 +1211,10 @@
     "3": "B",
     "4": "C",
     "5": "D",
-    "6": "LD",
-    "8": "G",
-    "9": "CK",
-    "1": "DS",
+    "6": "LD_SH",
+    "8": "OC",
+    "9": "CLK",
+    "1": "SER",
     "10": "QD",
     "11": "QC",
     "12": "QB",
@@ -1235,10 +1235,10 @@
     "3": "B",
     "4": "C",
     "5": "D",
-    "6": "LD",
-    "8": "G",
-    "9": "CK",
-    "1": "DS",
+    "6": "LD_SH",
+    "8": "OC",
+    "9": "CLK",
+    "1": "SER",
     "10": "QD",
     "11": "QC",
     "12": "QB",
@@ -3851,10 +3851,10 @@
     "3": "B",
     "4": "C",
     "5": "D",
-    "6": "LD",
-    "8": "G",
-    "9": "CK",
-    "1": "DS",
+    "6": "LD_SH",
+    "8": "OC",
+    "9": "CLK",
+    "1": "SER",
     "10": "QD",
     "11": "QC",
     "13": "QA",
@@ -3863,7 +3863,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-2 package census: A-D pins2-5 share ground, DS1/G8 share +5V rail A, QB12/QA13 are traced, QC11/QD10 have no external stubs and are explicit NCs, LD6 joins numbered rail17/D36.2, and CK9 joins numbered rail8/D42.8/D43.8; July-2026 photo fit corrects the horizontal notch-right landing"
+     "pins": "complete sheet-2 package census plus Texas Instruments SDLS154 device contract: A-D pins2-5 share ground, SER1/OC8 share +5V rail A, QB12/QA13 are traced, QC11/QD10 have no external stubs and are explicit NCs, LD/SH6 joins numbered rail17/D36.2, and CLK9 joins numbered rail8/D42.8/D43.8; July-2026 photo fit corrects the horizontal notch-right landing"
    }
   },
   {
@@ -13202,7 +13202,7 @@
    ]
   },
   "SHIFT_G": {
-   "src": "scan sheet-2 full-resolution (D41 control-bundle crop): numbered timing rail 8 has a direct junction to D41 clock pin9 and continues to the D42/D43 G inputs",
+   "src": "scan sheet-2 full-resolution (D41 control-bundle crop): numbered timing rail 8 has a direct junction to D41 CLK pin9 and continues to the D42/D43 OC inputs; Texas Instruments SDLS154 identifies pin8 as active-high three-state output control",
    "nodes": [
     [
      "D41",

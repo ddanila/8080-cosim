@@ -34,8 +34,8 @@ python3 scripts/report_d41_timing_boundary.py
 | --- | --- | --- | --- |
 | 12 | QB | LATCH_A | D41.QB feeds D37.1 in the modeled latch/preload chain |
 | 13 | QA | W10_QA_SEL -> W10 -> W10_QA_SEL_D50 | D41.QA selects both D50/D51 video/uP mux inputs via documented assembly wire 10 |
-| 6 | LD | TIMING_TAG17 | Direct sheet-2 junction to numbered rail 17 shared with D36.2 |
-| 9 | CK | SHIFT_G | Direct sheet-2 junction to numbered rail 8 shared with D42.8/D43.8 |
+| 6 | LD_SH | TIMING_TAG17 | Direct sheet-2 junction to numbered rail 17 shared with D36.2 |
+| 9 | CLK | SHIFT_G | Direct sheet-2 junction to numbered rail 8 shared with D42.8/D43.8 |
 
 ## Intentional No-Connect D41 Pins
 

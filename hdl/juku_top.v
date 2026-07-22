@@ -119,10 +119,11 @@ module juku_top (
     // the divider is frozen at 0 -> d39_y=clkg_d33=1 -> ststb_n=~sync, i.e. boot stays byte-identical.
     wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6, xtal16m_w; wire [3:0] d40_q;
     // sheet-2 LATCH/LOAD chain (D41 ИР16 -> D37 gate2 -> D33 inv; D38 gate2 -> D59 inv).
-    // Full-resolution bundle read: D41.LD joins rail17/D36.B2; D41.CK joins rail8/D42.G/D43.G.
+    // Full-resolution bundle read: D41.LD/SH joins rail17/D36.B2; D41.CLK joins
+    // rail8/D42.OC/D43.OC. ИР16 pin 8 is active-high output control, not a clock gate.
     wire d41_qa, d41_qa_d41, d41_qb, d36_b2_tag17, shift_g, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
-    ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(d36_b2_tag17), .g(1'b1), .ck(shift_g),
-                     .ds(1'b1), .qd(), .qa(d41_qa_d41), .qb(d41_qb), .qc());
+    ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld_sh(d36_b2_tag17), .oc(1'b1), .clk(shift_g),
+                     .ser(1'b1), .qd(), .qa(d41_qa_d41), .qb(d41_qb), .qc());
     net_boundary U_W10 (.a(d41_qa), .b(d41_qa_d41));
     wire pst_clk;
     wire osc_fb, osc_pre;
@@ -531,12 +532,12 @@ module juku_top (
     // 1-8 (D67.DO enters D42.D directly on the sheet), D43.Q -> D42.DS cascade, CK = ctrl-rail 3
     // (dot clock), LD = ctrl-rail 6 = D59.12 (the INVERTED load strobe: D38.6 -> D59.13, and
     // 13->12 feeds rail 6 -- one-inversion correction of the earlier array read; net LOAD_VID).
-    // G <- ctrl-rail 8, shared with D41.CK. Q -> D37 inverter -> analog video mix.
+    // OC <- ctrl-rail 8, shared with D41.CLK. Q -> D37 inverter -> analog video mix.
     net_boundary U_SHIFTGLNK (.a(1'b1), .b(shift_g));
     ir16 U_D42 (.d(rdo[7]), .c(rdo[6]), .b(rdo[5]), .a(rdo[4]),
-                .ld(load_vid), .g(shift_g), .ck(xtal16m_w), .ds(d43_q), .qd(d42_q), .qa(), .qb(), .qc());
+                .ld_sh(load_vid), .oc(shift_g), .clk(xtal16m_w), .ser(d43_q), .qd(d42_q), .qa(), .qb(), .qc());
     ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
-                .ld(load_vid), .g(shift_g), .ck(xtal16m_w), .ds(1'b0), .qd(d43_q), .qa(), .qb(), .qc());
+                .ld_sh(load_vid), .oc(shift_g), .clk(xtal16m_w), .ser(1'b0), .qd(d43_q), .qa(), .qb(), .qc());
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;

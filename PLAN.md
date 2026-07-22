@@ -1414,7 +1414,12 @@ explicitly synthetic five-bar Juku-timing waveform. Linux CI run `29888769589`
 passes the full application build, all six CTests, and the unchanged NTSC
 regression. This closes only the planned known-good receiver fixture: it is not
 a built-in Juku preset and makes no physical shared-DRAM, D34_SIG, X7-voltage,
-or framebuffer-agreement claim.
+or framebuffer-agreement claim. The physical pixel-chain audit also corrects
+the shared D41/D42/D43 ИР16 primitive against the SN74LS295B contract: LD/SH
+high loads on the falling clock edge, LD/SH low shifts right, and pin 8 is an
+active-high three-state output control. Consequently `SHIFT_G` is now correctly
+bounded as D42/D43 OC plus D41 clock, not a guessed serializer clock gate; its
+remote source and `TIMING_TAG17` remain open.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

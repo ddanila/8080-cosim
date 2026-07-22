@@ -82,6 +82,8 @@ findings. Every status applies only to the boundary named by the report.
   D96 wiring, undefined section-1 restart phase, and the exact section-2
   set-only contradiction),
   `video-slot-timing-audit.md`,
+  `ir16-readiness.md` (datasheet-exact falling-edge LD/SH and active-high OC
+  semantics for physical D41/D42/D43, while their board timing sources remain open),
   `video-physical-probes.md` (executable controlled-stimulus probes for the
   source-proved D42/D43/D37 and D56/D34_SYNC contributors, with the shared-DRAM
   slot schedule and D34 signal input explicitly open),

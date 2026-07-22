@@ -110,6 +110,17 @@ def main() -> int:
             "`kicad/juku.board.json` D42/D43 identities",
         ),
         (
+            "D41/D42/D43 ИР16 primitive semantics are datasheet-guarded",
+            marker(
+                "docs/ir16-readiness.md",
+                "DATASHEET-EXACT ИР16 PRIMITIVE GUARDED",
+                "falling clock edge",
+                "active-high three-state output control",
+                "SHIFT_G",
+            ),
+            "`docs/ir16-readiness.md`: LD/SH, clock edge, and OC behavior",
+        ),
+        (
             "Physical serializer instances exist in `juku_top`",
             marker("hdl/juku_top.v", "ir16 U_D42", "ir16 U_D43", "load_vid"),
             "`hdl/juku_top.v`",
@@ -234,6 +245,10 @@ def main() -> int:
             "  expected 40 x 241 framebuffer stream.",
             "- The physical chips for the serializer and mux/decode path are present in",
             "  the structural model, so this is no longer a vague video-output gap.",
+            "- The shared ИР16 primitive is now datasheet-exact: falling-edge clock,",
+            "  high LD/SH for parallel load, low LD/SH for right shift, and active-high",
+            "  output control. This reclassifies `SHIFT_G` as D42/D43 OC rather than",
+            "  a clock gate; its remote source remains open.",
             "- D41's role is now narrowed: QA/QB, its fixed data/enable straps, and",
             "  intentional QC/QD no-connects are modeled; only the remote LD/CK",
             "  timing-bundle sources remain continuity boundaries.",

@@ -20,6 +20,7 @@ python3 scripts/report_video_slot_timing_audit.py
 | Runnable byte-to-pixel readout is guarded | PASS | `docs/video-readout-readiness.md` / `sync/video_readout_check.sh` |
 | ROM-programmed autonomous raster timing is guarded | PASS | `docs/video-pit-timing.md`: D54/D55/D56/D34_SYNC timing |
 | Physical D42/D43 ИР16 serializers are identified in the board model | PASS | `kicad/juku.board.json` D42/D43 identities |
+| D41/D42/D43 ИР16 primitive semantics are datasheet-guarded | PASS | `docs/ir16-readiness.md`: LD/SH, clock edge, and OC behavior |
 | Physical serializer instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Physical CPU/video mux and D53 decode instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
@@ -50,6 +51,10 @@ python3 scripts/report_video_slot_timing_audit.py
   expected 40 x 241 framebuffer stream.
 - The physical chips for the serializer and mux/decode path are present in
   the structural model, so this is no longer a vague video-output gap.
+- The shared ИР16 primitive is now datasheet-exact: falling-edge clock,
+  high LD/SH for parallel load, low LD/SH for right shift, and active-high
+  output control. This reclassifies `SHIFT_G` as D42/D43 OC rather than
+  a clock gate; its remote source remains open.
 - D41's role is now narrowed: QA/QB, its fixed data/enable straps, and
   intentional QC/QD no-connects are modeled; only the remote LD/CK
   timing-bundle sources remain continuity boundaries.

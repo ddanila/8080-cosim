@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "device": "К555ИР16",
+  "equivalent": "SN74LS295B",
+  "primary_document": "Texas Instruments SDLS154, March 1988 revision",
+  "source_url": "https://www.syntax.com.tw/upload/pdf/IC-74LS295.pdf",
+  "source_pdf_sha256": "3e7070d9a860483b9b332e980d81af85062bda260ed59568a5fd5c67f26c7ad6",
+  "pins": {
+    "1": "SER",
+    "2": "A",
+    "3": "B",
+    "4": "C",
+    "5": "D",
+    "6": "LD/SH",
+    "7": "GND",
+    "8": "OC",
+    "9": "CLK",
+    "10": "QD",
+    "11": "QC",
+    "12": "QB",
+    "13": "QA",
+    "14": "VCC"
+  },
+  "clock_edge": "high-to-low",
+  "modes": {
+    "ld_sh_high": "parallel load A-D",
+    "ld_sh_low": "right shift QA toward QD with SER entering QA",
+    "oc_high": "outputs enabled",
+    "oc_low": "outputs high impedance; sequential operation unaffected"
+  },
+  "board_scope": {
+    "D41": "timing sequence; OC tied high",
+    "D42_D43": "cascaded physical pixel serializer; OC is unresolved SHIFT_G rail",
+    "boundary": "This device contract does not identify the remote SHIFT_G or TIMING_TAG17 sources."
+  }
+}

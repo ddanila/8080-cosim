@@ -659,20 +659,23 @@ endmodule
 // ---- ЛП5 (К531ЛП5, XOR "=1"): D34 video-output combine (pixel stream XOR sync/blanking) ----
 module lp5_xor1 (input wire a, b, output wire y); assign y = a ^ b; endmodule  // sim video-out adjunct section
 
-// ---- ИР16 (factory К555ИР16): 4-bit parallel-load shift register — the video PIXEL SERIALIZERS D42/D43 ----
-// Traced (owner + sheet-2 top-right): D=pin5,C=pin4,B=pin3,A=pin2 parallel data in; LD=pin6 load;
-// G=pin8 control; CK=pin9 clock; DS=pin1 serial in; QA/QB/QC/QD = pins13/12/11/10.
+// ---- ИР16 (factory К555ИР16 / SN74LS295B): 4-bit shift register — D41/D42/D43 ----
+// Traced (owner + sheet-2): D=pin5,C=pin4,B=pin3,A=pin2 parallel data in; LD/SH=pin6;
+// OC=pin8 active-HIGH output control; CLK=pin9 falling-edge clock; SER=pin1;
+// QA/QB/QC/QD = pins13/12/11/10. TI SDLS154 specifies LD/SH=1 as parallel load,
+// LD/SH=0 as QA-to-QD right shift, and OC=0 as high impedance without stopping the register.
 // The serializer uses QD/pin10 as its serial output -> node "A"
 // (the analog video-mix summing node) -> D34. Two of these (D42 high nibble, D43 low nibble) form the
 // 8-bit serializer. Connectivity for LVS (the runnable video demo uses the abstracted ir16_sr; the
 // exact 2x4-bit + analog-sum byte->pixel scheme is the documented boundary — see dram-video-timing.md).
-module ir16 (input wire a, b, c, d, ld, g, ck, ds, output wire qd, output wire qa, qb, qc);
+module ir16 (input wire a, b, c, d, ld_sh, oc, clk, ser,
+             output wire qd, output wire qa, qb, qc);
     reg [3:0] r = 0;
-    always @(posedge ck) if (~ld) r <= {d, c, b, a}; else r <= {r[2:0], ds};
-    assign qd = r[3];
-    assign qa = r[0];   // pin 13 (QA) -- D41 (sheet-2 LATCH chain) taps the parallel outputs
-    assign qb = r[1];   // pin 12 (QB)
-    assign qc = r[2];   // pin 11 (QC)
+    always @(negedge clk) if (ld_sh) r <= {d, c, b, a}; else r <= {r[2:0], ser};
+    assign qd = oc ? r[3] : 1'bz;
+    assign qa = oc ? r[0] : 1'bz;   // pin 13 (QA) -- D41 taps the parallel outputs
+    assign qb = oc ? r[1] : 1'bz;   // pin 12 (QB)
+    assign qc = oc ? r[2] : 1'bz;   // pin 11 (QC)
 endmodule
 
 // ---- video raster scanner (the ИЕ7 counter chain + timing, as one behavioral block) ----
