@@ -55,7 +55,9 @@ check_photo_dir() {
   fi
 }
 
-check_photo_dir ref/photos/juku-pcb-2 50
+# 50 from the original survey session + the two 2026-07-22 X3-connector
+# supplemental photos (SURVEY.md "2026-07-22 supplemental photos" section).
+check_photo_dir ref/photos/juku-pcb-2 52
 check_photo_dir ref/photos/dgsh5-109-009-sb 26
 
 echo "REFERENCE-ARTIFACT-CHECK: PASS"
