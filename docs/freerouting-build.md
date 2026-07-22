@@ -47,11 +47,22 @@ Needs a JDK 25+ (the jar targets class-file 69.0). The scripts find Homebrew
 `.tools/freerouting/PROVENANCE.txt` records the submodule commit the installed
 jar was built from and its sha256.
 
-## Speed & follow-ups
+## Custom-build behavior (branch `custom`)
+
+- **Telemetry hardwired off** — no analytics or update-check network calls
+  regardless of config, and no 1 s analytics startup sleep. Offline by default.
+- **GUI forced off when headless** — `gui.enabled` is set false under
+  `GraphicsEnvironment.isHeadless()`, so the "Couldn't get screen resolution"
+  warning no longer prints on every headless/CI run.
+- **Deterministic routing** — the RNG is already seeded (`new Random(0)` /
+  `setSeed(ripup_costs)`). Verified: two `-mt 1` runs of the same DSN produce a
+  **byte-identical `.ses`**, so single-threaded routing is reproducible
+  (→ stable `board_sha256` for the pinned fabrication evidence). Multi-threaded
+  runs (`-mt >1`) trade that reproducibility for speed.
+
+## Speed
 
 The core autoroute pass is effectively single-threaded (`-mt` mainly helps
 fanout/optimize), so it is single-core bound: ~2 min/pass on an M4 Pro for the
 full source board, converging over several passes with the last few nets
-hand-finished. Open fork work: pin the RNG seed for reproducible `.ses`
-(→ stable `board_sha256` for the pinned fabrication evidence) and hardwire
-telemetry off by default.
+hand-finished.
