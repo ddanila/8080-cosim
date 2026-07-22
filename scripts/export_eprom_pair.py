@@ -73,11 +73,13 @@ def main() -> int:
 
     report = f"""# D15/D16 EPROM programming images
 
-Status: **TIER-1/2 FUNCTIONAL IMAGES READY / PHYSICAL DUMPS PENDING**
+Status: **ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY**
 
 These deterministic 2764 programming images are split from the repository's
 boot-validated 16 KiB `roms/ekta37.bin`. They are functional replica inputs,
-not dumps of the original D15/D16 devices and not Tier-3 factory truth.
+not direct reads of the photographed D15/D16 devices. Their bytes are independently
+preserved as the adopted third-source archival pair; the absent `.087/.041`
+filename cross-reference is provenance nuance rather than a content gate.
 
 ## Reproduce
 
@@ -133,9 +135,8 @@ the board socket.
 - Keep physical board reads under the separately documented
   `proms/m2764_d15.bin` and `proms/m2764_d16.bin` names, with board, socket,
   date, programmer, and repeat-read provenance.
-- A repeatable physical dump wins over these generated images for Tier-3
-  historical claims. Compare its D15+D16 concatenation against `ekta37.bin`;
-  preserve a mismatch as a possible BIOS variant until independently checked.
+- Compare future physical dumps with `ekta37.bin` and preserve a stable mismatch
+  as a possible BIOS variant. It does not invalidate the adopted archival pair.
 """
     REPORT.write_text(report, encoding="utf-8")
     print(

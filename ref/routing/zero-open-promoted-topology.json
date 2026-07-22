@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
   "promoted_file": "kicad/juku_routed.kicad_pcb",
-  "parent_board_sha256": "964795d21c02092b4adb4efbfb2707905b89ea5bb598bb6d389e5e7d715730bf",
-  "source_board_sha256": "ed864c21f9b64efee3258f52ccbac79b28f743e48250448f16e8f58834871a8b",
-  "board_sha256": "12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37",
-  "board_size": 6562718,
-  "drc_sha256": "eae42174c61347cbfd4c169ced92a542c651156962ee69973dec7e980212decd",
+  "parent_board_sha256": "12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37",
+  "source_board_sha256": "968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0",
+  "board_sha256": "7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a",
+  "board_size": 11828965,
+  "drc_sha256": "05c2816c4a12cd2c9782f0b7d3a5c0acb632b622d4d677534a39474c79d93b1c",
   "footprints": 322,
   "pads": 2436,
   "max_pad_delta_mm": 0.0,
-  "routed_items": 30343,
-  "routed_nets": 413,
+  "routed_items": 30495,
+  "routed_nets": 412,
   "uncapped_unconnected": 0,
   "electrical_blockers": 0,
   "track_dangling": 0,
@@ -142,6 +142,20 @@
     "final_added_segments": 181,
     "final_added_vias": 35
   },
+  "d30_common_control_refresh": {
+    "parent_source_board_sha256": "ed864c21f9b64efee3258f52ccbac79b28f743e48250448f16e8f58834871a8b",
+    "parent_routed_board_sha256": "12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37",
+    "measured_common_net": "STSTB_D38",
+    "merged_endpoints": ["D30.1", "D30.4", "D30.10", "D30.12", "R5.2", "D38.8", "W8.2"],
+    "pullup": "R5.1 -> +5 V",
+    "accepted_closures": 2,
+    "added_items": 152,
+    "added_segments": 131,
+    "added_vias": 21,
+    "route_mode": "guarded multilayer A*",
+    "route_clearance_mm": 0.25,
+    "fine_grid_mm": 0.25
+  },
   "tool_sha256": {
     "kicad/apply_d59_mux_enable_endpoints.py": "a97691e78e8d1bb8c822c6818944e08ae82f8085682851e11d6e918bab10fdae",
     "kicad/apply_d56_owner_timing_routes.py": "254356fcee48275da7b1ab2a1057481b847e2b13ad69dc2c480d50dbd532ae04",
@@ -153,7 +167,8 @@
     "kicad/check_d93_static_paths.py": "f5cc64cdc330ea563e811b0924a61c0d51a5f2821457a6dc559fedaa73ad8bbd",
     "kicad/check_r94_landing.py": "6acf7fd34942213a3cf8d56d13a9a178e2ca527503e238e4ebfa91f3c2631991",
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
-    "kicad/check_routed_candidate.py": "7d143bc0fd7cbca919b7be066fffb90eaea7a02d17cfcdd22ba5b8d2eb4b5d3a"
+    "kicad/check_routed_candidate.py": "7d143bc0fd7cbca919b7be066fffb90eaea7a02d17cfcdd22ba5b8d2eb4b5d3a",
+    "scripts/close_d30_status_strobe.py": "0bd48a80397a32f03cedee8bd2934c05a7396eb4dbe0e5755e97bdace7b1e529"
   },
-  "disposition": "This is the promoted source-parity routed board after restoring the source-proved D59.5 VID_MUX_G input and D59.6 CPU_MUX_G inverter output. Independent KiCad 9.0.8 DRC and the routed-candidate identity gate report zero opens, zero electrical blockers, zero dangling items, identical 322-footprint/2436-pad source identity, and zero pad-coordinate delta."
+  "disposition": "This is the promoted source-parity routed board after adopting the exact-sheet and owner-measured D30.1/.4/.10/.12/R5 common control conductor. Independent KiCad DRC and the routed-candidate identity gate report zero opens, zero electrical blockers, zero dangling items, identical 322-footprint/2436-pad source identity, and zero pad-coordinate delta."
 }

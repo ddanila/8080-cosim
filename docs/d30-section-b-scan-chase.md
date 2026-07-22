@@ -26,13 +26,12 @@ alone was ambiguous and how direct target-board continuity closes both routes.
 - D30.9 is omitted from the factory symbol and remains the already-recorded
   explicit no-connect. The visible section-B output is D30.8, so it cannot be
   dispositioned as an unused package half.
-- Direct owner continuity remains authoritative for D30.10/.12/R5 and
+- Direct owner continuity remains authoritative for D30.1/.4/.10/.12/R5 and
   D105.11->D30.13; neither measured net is reopened by this older-sheet chase.
 
-Exact `.009` sheet 1 draws a +5 V resistor labeled R5 at D30.4, but the
-physical target board instead places R5 on D30.10/.12. The measured board
-wins: D30.4 remains a separate continuity boundary rather than being
-silently joined to +5 V through the drawing's conflicting reference.
+The exact `.009` sheet and direct target-board continuity agree: D30.1,
+D30.4, D30.10, and D30.12 are one conductor with R5.2; R5.1 goes to
++5 V. D38.8 drives that common active-low STB conductor.
 
 Direct owner continuity on the physical `.009` board now closes both routes:
 D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8
@@ -45,6 +44,6 @@ reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.
 | D30.11 joins the measured D13.4/D105.2/D11.20 clock conductor | PASS |
 | D30.8 drives D29.7 on a dedicated measured conductor | PASS |
 | D29.7 is removed from raw IOWR | PASS |
-| Measured section-B D and /PRE pull-up is kept separate | PASS |
-| R5 provenance records the exact-sheet/physical-board conflict | PASS |
+| Measured common D30 asynchronous-control and section-B D conductor is adopted | PASS |
+| R5 provenance records agreement between the exact sheet and target board | PASS |
 | Measured /CLR path from D105.11 is kept separate | PASS |

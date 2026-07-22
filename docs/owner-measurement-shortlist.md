@@ -24,7 +24,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | D30 section-B continuity closure guarded | PASS |
 | D94 constraint report generated | PASS |
 | FDC hardware handoff generated | PASS |
-| FDC firmware profiles proved; physical D100 attribution retired | PASS |
+| FDC firmware profiles proved; Ekta 3.7 direct-bus profile adopted | PASS |
 | Beeper source/handoff guarded | PASS |
 | Serial USART behavior guarded | PASS |
 | Decap value boundary guarded | PASS |
@@ -45,11 +45,11 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 | Priority | Ask | Exact deliverable | Evidence source | Why it matters |
 | --- | --- | --- | --- | --- |
-| P0 | programming disk / PROM truth | Baltijets doc 007 programming files; physical dumps of D15/D16 EPROMs; independent future D2/D6/D8/D94 reads only as corroboration of the validated captures | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | cross-checks all four validated physical PROM tables and supplies missing Tier-3 EPROM truth |
+| P2 | optional PROM provenance | Baltijets doc 007 programming files or further physical reads, if they surface; preserve any stable board variant without reopening the adopted content set | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | adds preservation provenance beyond the two-board small-PROM reads and third-source archival D15/D16 pair already adopted |
 | P2 | JUKU-1 media provenance | independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM` | `docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md` | turns the public EKDOS boot image into stronger physical-media evidence |
 | P2 | cartridge BASIC truth | larger/different removable-memory BASIC cartridge image, programming artifact, or hardware-confirmed Monitor 3.3 launch procedure to BASIC `READY` | `docs/community-prom-media-request.md`; `docs/cartridge-basic-boundary.md` | closes the remaining Monitor 3.3 cartridge BASIC compatibility boundary |
 | P0 | D94 .092 shared-enable/D0 closure | Trace the upstream source beyond the owner-closed D94.15/D93.3 shared-enable conductor. With D94 removed, repeat-check D94.1 against D101.1 and nearby support pins; either identify its hidden load or confirm the R8 2 kΩ pull-up is the only branch. Optionally scope D101.7, D94.1, /RE, and /WE on port 1F to observe register-3 steering | `docs/d94-reconstruction-constraints.md`; `docs/photo-registration.md`; exact two-sided local-fit rows in `ref/photos/juku-pcb-2/endpoints.csv` | closes the only two remaining D94 physical boundaries; the optional runtime capture validates steering but does not replace continuity |
-| P0 | FDC interrupt/buffer continuity and fitted ROM profile | Continuity-identify the remote destination of D96.9 Q2, the remote source of D96.11 CLK2, and whether sheet-omitted D96.13 CLR2_N is truly NC, plus the shared D100.9/.11 control continuation. Exact sheet 3 closes raw D93 DRQ/INTRQ through D28.11/.13, wired outputs D28.10/.12, R93/R95, and D96.10/.12, but the SN74LS74A truth table makes that shared PRE2_N/D2 wiring set-only without a real pin13 clear source. Capture D96.8-.13 during request and acknowledge; separately capture WREQ_N at D96.1/.4 with Q1/.5 and Q1_N/.6 because simultaneous async release does not define section-1 restart phase. Registered two-sided photos prove neither D96.9/.11 departs on B.Cu, while F.Cu is obscured; do not infer a PIC join from the non-unique drawing continuation marks. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; D100.6 is source-closed to D101.9 write precompensation | `ref/photos/juku-pcb-2/d96-irq-photo-exhaustion.json`; `docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate | identifies the exact board/EPROM configuration and resolves the set-only D96 section-2 contradiction without reopening source-closed paths |
+| P0 | FDC interrupt/buffer continuity | Continuity-identify the remote destination of D96.9 Q2, the remote source of D96.11 CLK2, and whether sheet-omitted D96.13 CLR2_N is truly NC, plus the shared D100.9/.11 control continuation. Exact sheet 3 closes raw D93 DRQ/INTRQ through D28.11/.13, wired outputs D28.10/.12, R93/R95, and D96.10/.12, but the SN74LS74A truth table makes that shared PRE2_N/D2 wiring set-only without a real pin13 clear source. Capture D96.8-.13 during request and acknowledge; separately capture WREQ_N at D96.1/.4 with Q1/.5 and Q1_N/.6 because simultaneous async release does not define section-1 restart phase. Registered two-sided photos prove neither D96.9/.11 departs on B.Cu, while F.Cu is obscured; do not infer a PIC join from the non-unique drawing continuation marks. D100.6 is source-closed to D101.9 write precompensation; the adopted archival Ekta 3.7 pair already fixes the replica's direct-bus/NOP profile | `ref/photos/juku-pcb-2/d96-irq-photo-exhaustion.json`; `docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate | resolves the set-only D96 section-2 contradiction without reopening source-closed paths or the adopted firmware profile |
 | P0 | memory-decode stragglers | D6.15-D105.1 is now closed to D7.8 as the I/O-cycle-active-high qualifier, and D105.3 is independently closed as qualified peripheral /WR. Recheck only the surprising D13.12-D16.13 report with D16 removed. Still close C99 far plate, the upstream D7.5/D29.3 -INHIB source, and remaining D36 timing feeds; the D6.1<-D3.4<-/PC1, D6.2<-D3.6<-/PC0, D6.11/-WREQ, D6.12-D8.15, enable, and RAM-read endpoint chains are already closed | `docs/d6-runtime-path-diagnostic.md`; `docs/d6-physical-decode.md`; `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `PLAN.md` P0 connectivity gate | corroborates the now-direct corrected D6 decode path, closes its missing address qualifier, and tightens the remaining RAM/video timing nets before netlist freeze |
 | P0 | factory Вид В pad mapping | D56.5->D34.9 and D56.12->D55.15/.18 are owner-closed, while the three physical callout locations remain fixed as the separate left annulus plus D56.5/D56.12; identify only the installed item-159 material and auxiliary-annulus/adjacent-rail disposition. Note 11 proves position 150 is tubing, not a cut, and position 159 remains an unexpanded solder-location callout. D15 is photo-closed as the cut A2/A1 bridge and needs no continuity probe; D14 row numbering, the local D32.4/GND-to-D14.1 link, and fifth-landing geometry are photo-registered, so continuity-test the fifth landing's conductor, three long drawn traces, and right-row dogleg/D14.7—both component and solder faces are photo-exhausted there, and position 159 does not prove replacements; at D11 the L trace and four solder locations are registered in two component views, the older pins-4-6 solder scar is excluded, and validated two-sided package fits exhaust four solder views without a unique through-hole match—continuity-test the bridge, D11 pin/net, and upper/lower remote endpoints; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity | `docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg` | proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release |
 | P0 | FDC support signal dispositions | pin-level continuity or an explicit redesign/DNP decision for the 3 still-open support devices D96, D99, and D101. For D96, probe the remote destination of Q2/pin9, source of CLK2/pin11, and the functionally contradictory drawn-NC CLR2_N/pin13; preserve its source-closed section-1 copper and exact local D28.10/.12-D96.10/.12 wiring. Section 1 divides after release but has undefined restart phase because WREQ asserts both async controls; the shared section-2 PRE2_N/D2 node is set-only without a real clear source. Also preserve the source-closed D28/D95/D97/D98/D102/D106 paths and D97/D102/D101 write-precomp chain. Exact-revision sheet 3 explicitly omits D97.13, D98.9/.10, and D102.4 in this area; D101.1/.3/.5/.6 remain the specific precomp-area boundaries. Closed timing paths need waveform validation at bring-up, not another continuity probe | `docs/fdc-hardware-handoff.md`; `docs/d99-reconstruction-constraints.md`; `docs/d101-reconstruction-constraints.md`; `ref/schematics/fdc-unused-pin-dispositions.md`; `ref/schematics/fdc-clock-mux-map.md`; `ref/schematics/fdc-recovery-counter-map.md`; `ref/schematics/fdc-read-clock-toggle-map.md`; `ref/schematics/fdc-write-precomp-map.md`; `PLAN.md` P0 connectivity gate | completes only the genuinely open support-circuit context without re-probing source-closed timing paths |
@@ -81,20 +81,18 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `44`
+- Generated bring-up verification nets: `43`
 - `logic`: `22` net(s)
 - `memory/decode`: `1` net(s)
 - `sound/analog`: `1` net(s)
 - `timing/I/O`: `1` net(s)
-- `video/analog`: `19` net(s)
+- `video/analog`: `18` net(s)
 
 ## Practical sequencing
 
-1. Ask for programming disk files and BASIC cartridge artifacts first;
-   they can close PROM/software truth without touching fragile sockets.
-2. If a board owner can help, dump socketed PROM/EPROM parts before
-   continuity probing; repeated reads plus socket photos are enough to
-   compare against the validated physical tables and retained historical evidence.
-3. Use continuity only for the P1 nets above; broad bring-up checklist
-   probes are deferred until a replica or owner board is already on the
-   bench.
+1. Use the owner-board session for the P0 D94, FDC-support,
+   memory/decode, and factory-modification continuity asks; firmware content is closed.
+2. Capture powered FDC timing only where the shortlist names a functional
+   contradiction that continuity cannot resolve.
+3. Treat programming files, further PROM/EPROM reads, JUKU-1 provenance,
+   and cartridge BASIC artifacts as optional preservation follow-up.

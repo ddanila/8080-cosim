@@ -301,9 +301,10 @@ physical D93/D94 wiring.
 - Factory sheet 1 proves the behavioral controller's direct system-`DB` path.
   `docs/fdc-bus-polarity.md` proves two preserved firmware profiles: EktaSoft
   2.4 and Monitor 3.3 wrap every VG93 transfer in `CMA`, while EktaSoft
-  3.1/3.5/3.7 use NOPs. The former remains an unmapped diagnostic inversion
-  adjunct (`JUKU_FDC_BUS_INVERT=1`); fitted D15/D16 dumps are still required,
-  but physical D100 is now source-proved as the drive-output buffer.
+  3.1/3.5/3.7 use NOPs. The adopted third-source archival D15/D16 pair selects
+  EktaSoft 3.7 and the direct-bus/NOP profile. The former remains an unmapped
+  diagnostic inversion adjunct (`JUKU_FDC_BUS_INVERT=1`), while physical D100
+  is source-proved as the drive-output buffer.
 - The committed uninterrupted Verilator report
   `docs/juku-top-fdc-verilator-probe.md` drains all 10,752 FDC data-register
   reads and reaches the EKDOS `A>` bitmap; `sync/juku_top_fdc_prompt_check.sh`

@@ -155,7 +155,7 @@ def main() -> int:
         ("D30 section-B continuity closure guarded", has_phrase("docs/d30-section-b-scan-chase.md", "Status: **OWNER CONTINUITY CLOSED / OLDER SCAN AMBIGUITY RETAINED**")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
-        ("FDC firmware profiles proved; physical D100 attribution retired", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE PROFILES PROVED / PHYSICAL D100 ATTRIBUTION RETIRED / TARGET EPROM DUMPS PENDING**")),
+        ("FDC firmware profiles proved; Ekta 3.7 direct-bus profile adopted", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE PROFILES PROVED / EKTA 3.7 DIRECT-BUS PROFILE ADOPTED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM-FIELD ARTWORK/POPULATION CLOSED / VALUES AND NON-FIELD PLACEMENTS PENDING**")),
@@ -186,11 +186,11 @@ def main() -> int:
 
     priority_rows = [
         (
-            "P0",
-            "programming disk / PROM truth",
-            "Baltijets doc 007 programming files; physical dumps of D15/D16 EPROMs; independent future D2/D6/D8/D94 reads only as corroboration of the validated captures",
+            "P2",
+            "optional PROM provenance",
+            "Baltijets doc 007 programming files or further physical reads, if they surface; preserve any stable board variant without reopening the adopted content set",
             "`docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md`",
-            "cross-checks all four validated physical PROM tables and supplies missing Tier-3 EPROM truth",
+            "adds preservation provenance beyond the two-board small-PROM reads and third-source archival D15/D16 pair already adopted",
         ),
         (
             "P2",
@@ -215,10 +215,10 @@ def main() -> int:
         ),
         (
             "P0",
-            "FDC interrupt/buffer continuity and fitted ROM profile",
-            "Continuity-identify the remote destination of D96.9 Q2, the remote source of D96.11 CLK2, and whether sheet-omitted D96.13 CLR2_N is truly NC, plus the shared D100.9/.11 control continuation. Exact sheet 3 closes raw D93 DRQ/INTRQ through D28.11/.13, wired outputs D28.10/.12, R93/R95, and D96.10/.12, but the SN74LS74A truth table makes that shared PRE2_N/D2 wiring set-only without a real pin13 clear source. Capture D96.8-.13 during request and acknowledge; separately capture WREQ_N at D96.1/.4 with Q1/.5 and Q1_N/.6 because simultaneous async release does not define section-1 restart phase. Registered two-sided photos prove neither D96.9/.11 departs on B.Cu, while F.Cu is obscured; do not infer a PIC join from the non-unique drawing continuation marks. Dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile; D100.6 is source-closed to D101.9 write precompensation",
+            "FDC interrupt/buffer continuity",
+            "Continuity-identify the remote destination of D96.9 Q2, the remote source of D96.11 CLK2, and whether sheet-omitted D96.13 CLR2_N is truly NC, plus the shared D100.9/.11 control continuation. Exact sheet 3 closes raw D93 DRQ/INTRQ through D28.11/.13, wired outputs D28.10/.12, R93/R95, and D96.10/.12, but the SN74LS74A truth table makes that shared PRE2_N/D2 wiring set-only without a real pin13 clear source. Capture D96.8-.13 during request and acknowledge; separately capture WREQ_N at D96.1/.4 with Q1/.5 and Q1_N/.6 because simultaneous async release does not define section-1 restart phase. Registered two-sided photos prove neither D96.9/.11 departs on B.Cu, while F.Cu is obscured; do not infer a PIC join from the non-unique drawing continuation marks. D100.6 is source-closed to D101.9 write precompensation; the adopted archival Ekta 3.7 pair already fixes the replica's direct-bus/NOP profile",
             "`ref/photos/juku-pcb-2/d96-irq-photo-exhaustion.json`; `docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
-            "identifies the exact board/EPROM configuration and resolves the set-only D96 section-2 contradiction without reopening source-closed paths",
+            "resolves the set-only D96 section-2 contradiction without reopening source-closed paths or the adopted firmware profile",
         ),
         (
             "P0",
@@ -355,14 +355,12 @@ def main() -> int:
             "",
             "## Practical sequencing",
             "",
-            "1. Ask for programming disk files and BASIC cartridge artifacts first;",
-            "   they can close PROM/software truth without touching fragile sockets.",
-            "2. If a board owner can help, dump socketed PROM/EPROM parts before",
-            "   continuity probing; repeated reads plus socket photos are enough to",
-            "   compare against the validated physical tables and retained historical evidence.",
-            "3. Use continuity only for the P1 nets above; broad bring-up checklist",
-            "   probes are deferred until a replica or owner board is already on the",
-            "   bench.",
+        "1. Use the owner-board session for the P0 D94, FDC-support,",
+        "   memory/decode, and factory-modification continuity asks; firmware content is closed.",
+        "2. Capture powered FDC timing only where the shortlist names a functional",
+        "   contradiction that continuity cannot resolve.",
+        "3. Treat programming files, further PROM/EPROM reads, JUKU-1 provenance,",
+        "   and cartridge BASIC artifacts as optional preservation follow-up.",
         ]
     )
 

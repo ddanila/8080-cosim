@@ -15,9 +15,9 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Board JSON SHA-256: `218f4b554d308ec555ec88dbeac325d168aa243b84652b7a02e2b61e5a55ed06`
-- Source PCB SHA-256: `ed864c21f9b64efee3258f52ccbac79b28f743e48250448f16e8f58834871a8b`
-- Routed PCB SHA-256: `12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37`
+- Board JSON SHA-256: `4edd70b62e965b9f114aa810ddb5985b9f4fdbc9bea1bacd2fcd828320d04f12`
+- Source PCB SHA-256: `968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0`
+- Routed PCB SHA-256: `7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a`
 - DSN SHA-256: `1749c96384dbadd8518ac6137bb47bdc186c0e38bca798c75aeabd094658f501`
 - Modeled board-JSON `D*` ICs: `106`
 - Source PCB IC footprints: `106`
@@ -50,20 +50,20 @@ design release until measured or explicitly dispositioned.
 
 ## D30 READY Flip-Flop Boundary
 
-- The full-resolution sheet-1 source draws D30 section A pin 4 `/PRE`
-  pulled high through R5 and proves pin 2 `D` is pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
-  `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
-  through R29 1 kΩ. Direct target-board continuity instead places physical
-  R5 on D30.10/.12, so D30.4 remains a separate continuity boundary.
+- The full-resolution sheet-1 source and direct target-board continuity agree:
+  D30.1 `/CLR1`, D30.4 `/PRE1`, D30.10 `/PRE2`, and D30.12 `D2`
+  share the D38.8 active-low STB conductor, pulled high through R5.
+  Pin 2 `D1` is pulled high through R6, pin 3 `CLK1` is `PHI2TTL`, and
+  pin 5 `Q1` reaches D1 READY/pin 23 through R29 1 kΩ.
 - Owner continuity plus the native cross-sheet chase establish that D2.12
   and R6 feed D30.2;
-  D30.1 is source-closed to the D38.8/W8.2 status-strobe island; D30.5
-  reaches CPU READY through R29; D30.10/.12 share the R5 pull-up;
+  D30.1/.4/.10/.12 and R5 are closed to the D38.8/W8.2 status-strobe island; D30.5
+  reaches CPU READY through R29;
   and D105.11 drives D30.13. Section B is also closed: D30.11 joins the
   D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Native
   sheet 1 plus `.009` placement/photo evidence close `H` at X1.107B
-  with R1 2 kΩ to +5 V. The measured READY/WAIT edge conductors are closed;
-  D30.4's asynchronous preset is the remaining section-A control boundary.
+  with R1 2 kΩ to +5 V. The measured READY/WAIT continuity is closed;
+  a powered waveform remains optional bring-up validation.
 
 ## AG3 Package Correction
 

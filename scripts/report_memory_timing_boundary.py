@@ -305,10 +305,15 @@ def main() -> int:
             "native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2",
         ),
         (
-            "D30 READY clear uses the native D38-side status strobe",
-            set(nodes(board, "STSTB_D38")) == {("D38", "8"), ("W8", "2"), ("D30", "1")}
-            and "SSTB_N" not in board["nets"],
-            "sheet-2 D38.8 active-low STB export -> sheet-1 -SSTB/D30.1; W8 still separates the D5-side island",
+            "D30 common asynchronous-control conductor uses the native D38-side status strobe",
+            set(nodes(board, "STSTB_D38")) == {
+                ("D38", "8"), ("W8", "2"), ("D30", "1"), ("D30", "4"),
+                ("D30", "10"), ("D30", "12"), ("R5", "2")
+            }
+            and "SSTB_N" not in board["nets"]
+            and "READY_PRE_N" not in board["nets"]
+            and "D30B_D_PRE_N" not in board["nets"],
+            "exact .009 sheets plus owner continuity: D38.8 STB -> D30.1/.4/.10/.12 and R5 pull-up; W8 still separates the D5-side island",
         ),
     ]
     boundary_checks = [

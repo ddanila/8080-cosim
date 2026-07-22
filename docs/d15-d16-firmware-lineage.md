@@ -1,12 +1,13 @@
 # D15/D16 firmware lineage
 
-Status: **ARCHIVAL EKTA 3.7 IDENTITY PROVED / FITTED CONTENTS STILL PENDING**
+Status: **THIRD-SOURCE ARCHIVAL EKTA 3.7 PAIR ADOPTED**
 
 This generated audit keeps four different evidence claims separate. The
 factory parts list names programmed drawings, the preservation archive
 contains two raw 8 KiB programmer files, the replica uses a boot-validated
 functional image, and the owner photographs show the fitted package bodies.
-Only the archival and functional byte streams can presently be joined.
+The independent archival and functional byte streams join exactly; the
+project adopts that pair as replica content truth.
 
 ## Command
 
@@ -53,15 +54,17 @@ but cannot identify bytes, version, or factory program number.
 
 - The previously loose `JUKUROM0/1` provenance is now closed to one
   unique repository image: EktaSoft 3.7.
-- The evidence does **not** establish that `ДГШ5.106.087/.041` are the
-  two halves of EktaSoft 3.7. No surviving cross-reference binds those
-  drawing numbers to the archival filenames or bytes.
-- The evidence also does **not** establish that the photographed D15/D16
-  contain EktaSoft 3.7. Package markings do not encode programmed content.
+- The independent archival pair is adopted as the D15/D16 content source
+  for the replica; it exactly and uniquely supplies EktaSoft 3.7.
+- No surviving paper cross-reference binds factory drawing numbers
+  `ДГШ5.106.087/.041` to the archival filenames. Under the project's
+  adopted-dump rule this remains provenance nuance, not a content gate.
+- The photographed D15/D16 package markings establish compatible fitted
+  hardware but do not independently identify the bytes.
 - EktaSoft 3.7 belongs to the direct-bus/NOP family proved in
   `docs/fdc-bus-polarity.md`. That makes it electrically consistent with
   the recovered `.009` D93 bus, but does not explain the historical CMA
-  family or elevate the owner board to a content-verified Ekta 3.7 unit.
-- Repeat reads of both physical EPROMs remain the decisive fitted-profile
-  test. Original `.087/.041` programming media are separately required to
-  identify the factory designations' byte contents.
+  family; explaining those non-adopted variants is optional historical work.
+- Future physical EPROM reads or original `.087/.041` programming media
+  should be preserved if found, but they are not replica, milestone, or
+  release gates.

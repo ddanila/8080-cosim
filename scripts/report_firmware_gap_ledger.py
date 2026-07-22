@@ -88,11 +88,17 @@ def main() -> int:
     )
     eprom_report_ok = marker(
         "docs/eprom-programming-images.md",
-        "TIER-1/2 FUNCTIONAL IMAGES READY / PHYSICAL DUMPS PENDING",
+        "ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY",
         "`U_D15`, `HALF=0`",
         "`U_D16`, `HALF=1`",
-        "not dumps of the original D15/D16 devices",
+        "adopted third-source archival pair",
     ) and exists("scripts/export_eprom_pair.py")
+    eprom_lineage_ok = marker(
+        "docs/d15-d16-firmware-lineage.md",
+        "Status: **THIRD-SOURCE ARCHIVAL EKTA 3.7 PAIR ADOPTED**",
+        "project adopts that pair as replica content truth",
+        "not a content gate",
+    )
     factory_basic = ROOT / "ref/reconstructed-firmware/dgsh5-106-106-d1.bin"
     factory_basic_ok = (
         factory_basic.exists()
@@ -206,7 +212,7 @@ def main() -> int:
             "READY/bus-control PROM",
             d2_cell,
             "`docs/d2-reconstruction-constraints.md`; `docs/d2-physical-dump-and-continuity.md`",
-            "programming-disk comparison or independent future read",
+            "adopted from two boards; future programming-disk comparison is optional provenance",
         ],
         [
             "D6",
@@ -215,7 +221,7 @@ def main() -> int:
             "memory decode PROM",
             d6_cell,
             "`ref/physical-proms/README.md`",
-            "revision-3 reader capture is adopted; programming-disk comparison or independent read is Tier-3 corroboration",
+            "adopted cross-machine table; future programming-disk comparison is optional provenance",
         ],
         [
             "D8",
@@ -224,7 +230,7 @@ def main() -> int:
             "ROM-socket pager PROM",
             d8_cell,
             "`ref/physical-proms/README.md`",
-            "programming-disk comparison or independent future read",
+            "adopted from two boards; future programming-disk comparison is optional provenance",
         ],
         [
             "D94",
@@ -233,7 +239,7 @@ def main() -> int:
             "FDC control/decode PROM",
             d94_cell,
             "`docs/d94-reconstruction-constraints.md`",
-            "programming-disk comparison plus the shared-enable and equation-targeted D0 hidden-branch probes; the guarded D29.4/IORD recheck is optional corroboration, while R87-R89 and D4-D7/D104.10 are owner/drawing-closed",
+            "content adopted from two boards; shared-enable and D0 hidden-branch probes remain separate connectivity work",
         ],
         [
             "D15",
@@ -242,7 +248,7 @@ def main() -> int:
             "BIOS low 8 KiB",
             d15_cell,
             "`docs/eprom-programming-images.md`",
-            "repeat physical D15 dump for Tier-3 truth",
+            "third-source archival pair adopted; future socket read is optional variant preservation",
         ],
         [
             "D16",
@@ -251,7 +257,7 @@ def main() -> int:
             "BIOS high 8 KiB",
             d16_cell,
             "`docs/eprom-programming-images.md`",
-            "repeat physical D16 dump for Tier-3 truth",
+            "third-source archival pair adopted; future socket read is optional variant preservation",
         ],
     ]
 
@@ -265,7 +271,8 @@ def main() -> int:
         ("D15 functional image has exact size and SHA256", d15_ok),
         ("D16 functional image has exact size and SHA256", d16_ok),
         ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
-        ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
+        ("D15/D16 split and adopted archival provenance are documented", eprom_report_ok),
+        ("Third-source archival D15/D16 pair is adopted as content truth", eprom_lineage_ok),
         ("Factory .106.106 BASIC page is reconstructed and photo-adjudicated", factory_basic_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
         ("D2 open-collector raw polarity executes through the D30 READY latch", d2_ok),
@@ -280,7 +287,7 @@ def main() -> int:
         ("Repeated RE3 dump validation procedure is available", re3_validator_ok),
     ]
     status = (
-        "BURNABLE SET VERIFIED / TIER-3 CORROBORATION PENDING"
+        "ADOPTED FIRMWARE SET VERIFIED"
         if all(ok for _, ok in checks)
         else "FIRMWARE GAP LEDGER FAILED"
     )
@@ -292,11 +299,11 @@ def main() -> int:
         "",
         "This generated ledger is the single-page burnability view for the",
         "small PROMs that still matter to replica and Tier-3 preservation work.",
-        "It separates boot-validated functional EPROM images from dumped factory",
-        "PROM truth. Every populated device has an exact-hash-guarded burnable",
-        "repository image for Tier 1/2. Programming-disk files, independent PROM",
-        "reads, and original D15/D16 reads remain Tier-3 corroboration and win",
-        "if a stable difference appears.",
+        "It records the adopted small-PROM tables read from two physical boards and",
+        "the independent archival D15/D16 pair. Every populated device has an",
+        "exact-hash-guarded burnable repository image accepted as content truth.",
+        "Later programming files or socket reads are preservation evidence and must",
+        "be retained as variants if they differ; they do not keep this set open.",
         "",
         "## Command",
         "",
@@ -325,15 +332,15 @@ def main() -> int:
             "",
             "## Practical Burn Rule",
             "",
-            "- D2, D6, D8, and D94 have validated physical raw tables; D15/D16",
-            "  still use the deterministic `ekta37` EPROM split.",
+            "- D2, D6, D8, and D94 have cross-machine validated physical raw tables;",
+            "  D15/D16 use the independently preserved archival `ekta37` pair.",
             "- Reader-3 reproduced D2 byte-for-byte across three captures including a",
             "  power cycle. Three equally stable D6 reads then proved the old artifact",
             "  had all four output channels reversed; socket continuity and the full",
             "  boot guard adopt the corrected direct table.",
-            "- D15/D16 are deterministic Tier-1/2 functional images, not physical",
-            "  device dumps. Program them as low/high 8 KiB respectively and",
-            "  retain programmer verification records.",
+            "- D15/D16 are the adopted third-source archival contents, not direct",
+            "  reads of the photographed sockets. Program them as low/high 8 KiB",
+            "  respectively and retain programmer verification records.",
             "- The printed `.106.106` 2 KiB BASIC table is reconstructed separately;",
             "  its sole BAS0/JBASIC disagreement at `021A` is photo-adjudicated as `21`,",
             "  yielding an exact match to the first page of `roms/jbasic11.bin`.",
@@ -350,9 +357,9 @@ def main() -> int:
             "  enable source and D0 hidden load remain unresolved",
             "  connectivity boundaries and still block an FDC hardware release.",
             "",
-            "## Required External Closure",
+            "## Optional Preservation Follow-up",
             "",
-            "- Locate the Baltijets programming-disk files referenced by doc 007.",
+            "- Preserve the Baltijets programming-disk files referenced by doc 007 if found.",
             "- Compare the validated D2/D6 tables against Baltijets programming files",
             "  if recovered; use it as independent corroboration of D8/D94 as well.",
             "- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;",
@@ -361,14 +368,14 @@ def main() -> int:
             "  independent enable-release checks documented in `docs/rt4-dump-acquisition.md`.",
             "- Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
             "  the adopted D94 table still requires shared-enable and D0-load closure.",
-            "- Repeatedly read physical D15/D16 and compare their concatenation",
+            "- If accessible, repeatedly read physical D15/D16 and compare their concatenation",
             "  with `roms/ekta37.bin`; preserve any stable mismatch as a variant.",
             "",
         ]
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {rel(REPORT)}")
-    return 0 if status.startswith("BURNABLE SET VERIFIED") else 1
+    return 0 if status == "ADOPTED FIRMWARE SET VERIFIED" else 1
 
 
 if __name__ == "__main__":

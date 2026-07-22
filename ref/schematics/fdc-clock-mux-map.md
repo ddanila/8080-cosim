@@ -31,6 +31,13 @@ The literal level mapping is `5″/8″=0` -> controller 1 MHz and
 does not annotate the software-level meanings beyond those signal names, so
 the model preserves the levels without inventing a mode convention.
 
+Pins 5 and 6 are separate КП12 data inputs and are joined by the external
+junction drawn immediately west of D95, not internally by the package. Owner
+continuity on 2026-07-22 extends that same 1 MHz copper back through D40.11,
+D59.5, and D92.2; sheet 2 also visibly ties D92.2/.3. The consolidated route
+and its pending atomic model correction are recorded in
+`docs/d40-d59-d92-d95-1mhz-route.md`.
+
 ## Evidence hierarchy
 
 | Drawing region | Primary frame | SHA256 |

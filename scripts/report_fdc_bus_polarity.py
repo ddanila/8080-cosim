@@ -342,7 +342,7 @@ def main() -> int:
     )
 
     status = (
-        "FIRMWARE PROFILES PROVED / PHYSICAL D100 ATTRIBUTION RETIRED / TARGET EPROM DUMPS PENDING"
+        "FIRMWARE PROFILES PROVED / EKTA 3.7 DIRECT-BUS PROFILE ADOPTED"
         if not failures
         else "FDC BUS POLARITY AUDIT FAILED"
     )
@@ -355,8 +355,9 @@ def main() -> int:
         "every transfer, while the other replaces every complement with a NOP.",
         "Factory sheet 1 now proves D93 DAL0..DAL7 connect directly to system",
         "DB0..DB7 and D100 instead buffers eight floppy-drive outputs. Therefore the",
-        "old attribution of the firmware split to D100 is retired; the installed ROM",
-        "pair and the historical reason for the two profiles remain open.",
+        "old attribution of the firmware split to D100 is retired. The adopted",
+        "third-source EktaSoft 3.7 ROM pair selects the direct-bus/NOP profile; only",
+        "the historical reason for the non-adopted CMA profile remains open.",
         "",
         "## Command",
         "",
@@ -419,9 +420,10 @@ def main() -> int:
             "- EktaSoft 3.1, 3.5, and 3.7 match the recovered direct bus. EktaSoft 2.4",
             "  and Monitor 3.3 retain systematic CMA sites whose hardware context is",
             "  not yet identified.",
-            "- The public ROM names do not prove which pair was installed in this exact",
-            "  board. Repeatable physical D15/D16 dumps remain the Tier-3 configuration",
-            "  authority and must be preserved as a variant if they differ.",
+            "- The third-source archival D15/D16 pair is adopted as EktaSoft 3.7,",
+            "  selecting the direct-bus/NOP profile for the replica. A future physical",
+            "  read that differs is preserved as another board variant, not used to",
+            "  reopen the adopted content set.",
             "",
             "## Direct physical bus constraint",
             "",
@@ -439,8 +441,8 @@ def main() -> int:
             f"  `{ROM_SHA256}`",
             "  ekta37 image. Its reset bytes are `C3 17 00` (8080",
             "  `JMP 0017`); one complement would be `3C E8 FF`, which is not that boot",
-            "  vector. This is a logical replica constraint, not a substitute for the",
-            "  still-requested Tier-3 physical D15/D16 repeat dumps.",
+            "  vector. Together with the adopted independent archival pair, this closes",
+            "  the replica firmware-profile choice.",
             "",
             "The runnable `sysctl_8238` bridge therefore remains non-inverting. Making",
             "D5 invert merely to explain the CMA profile would contradict the device symbol, the",
@@ -480,10 +482,9 @@ def main() -> int:
             "",
             "## Remaining physical closure",
             "",
-            "1. Dump D15 and D16 twice each and identify the installed polarity profile.",
-            "2. Identify why the preserved CMA-profile firmware exists; do not attribute",
+            "1. Optionally identify why the preserved CMA-profile firmware exists; do not attribute",
             "   it to physical D100 without new primary evidence.",
-            "3. Trace the shared D100 pins 9/11 sheet-1 continuation; bench-check",
+            "2. Trace the shared D100 pins 9/11 sheet-1 continuation; bench-check",
             "   the source-closed D100.6 write-data/precompensation path.",
         ]
     )

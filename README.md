@@ -13,15 +13,15 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
-- `sync/check.sh` currently compares 117 mapped instances and 310 nets with no
+- `sync/check.sh` currently compares 117 mapped instances and 309 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
-  322-footprint/2,436-pad source and contains 30,343 copper items across 413
+  322-footprint/2,436-pad source and contains 30,495 copper items across 412
   nets. Stable KiCad 9.0.8 reports zero opens, zero electrical blockers, and
   zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or
   ordered. Current deterministic upload ZIP SHA256:
-  `136f0b701a1442eda40e72590822233f278851f516a5404bcf1ad19c4a3b6b28`.
+  `cef15e3abd93398fa40030662db62feaca805ba7c86c7bf61c54bd982f39e16a`.
   Exact topology evidence is retained in
   `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
   `ref/routing/zero-open-fabrication-package.json`, and fabrication/release
@@ -30,7 +30,7 @@ with the machine-readable board model.
   pads against the source; it is audit history, not the promoted board.
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
-  repeated reads (with D8/D94 provenance aliases counted only once); the measured D2/D30/D105 and
+  repeated reads across two `.009` boards; the measured D2/D30/D105 and
   D6/D13 continuity is adopted in the source model, HDL, and promoted route.
   D94 content truth and all five A0-A4 sources are owner-closed. D1-D3 reach
   D99/D93 with their measured pull-ups, while D4-D7 are owner/drawing-closed
@@ -76,7 +76,7 @@ with the machine-readable board model.
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
   R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 44 modeled nets retain source-risk annotations requiring
+  In total, 43 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

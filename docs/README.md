@@ -53,6 +53,9 @@ findings. Every status applies only to the boundary named by the report.
   the restored reset-diode footprint, VT1/VT2/VD3/VD5 native markings,
   transistor E-C-B package pinouts, and generated PCB pad/net guards),
   `master-oscillator-boundary.md`,
+  `d40-d59-d92-d95-1mhz-route.md` (owner-continuity and exact-sheet closure of
+  the D40.11/D59.5/D92.2/.3/D95.5/.6 1 MHz slot-clock route, with the required
+  atomic source/HDL/PCB correction and rejected tentative D96.6 join),
   `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
   `owner-measurement-shortlist.md`.
 - Programmable parts: `firmware-gap-ledger.md`,

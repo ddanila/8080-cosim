@@ -28,6 +28,7 @@ measurement lands, add a row here.
 
 | Fact | Provenance | Source |
 | --- | --- | --- |
+| `D30.1 /CLR1 <-> D30.4 /PRE1 <-> D30.10 /PRE2 <-> D30.12 D2 <-> R5.2`; `R5.1 -> +5 V`; the common conductor is driven by `D38.8` active-low STB | exact `.009` sheet + owner-continuity, 2026-07-22 | `docs/d30-section-b-scan-chase.md`; `docs/d2-physical-dump-and-continuity.md` |
 | `D30.11 -> D105.2 / D13.4 / D11.20`; `D30.8 -> D29.7` | owner-continuity | `docs/d30-section-b-scan-chase.md` |
 | `X1.107B -BLOCK / H -> D13.13 -> D105.10`, pulled up by R1 2 kΩ to +5 V | native sheet + `.009` drawing/photo + owner-continuity | `docs/d105-h-boundary.md` |
 
@@ -57,6 +58,14 @@ measurement lands, add a row here.
 | --- | --- | --- |
 | X3 = РГ1Н-1-4 12-contact panel socket (two rows of six, molded 1/12 numbering, spring bail, no hood); mating cable plug is РШ2Н-1-23/-24. 12-wire harness to A21-A32 confirmed. Former СНП59-30-23-В label was a BOM mislabel — the 30-contact СНП59 is X2. | photo, 2026-07-22 | `ref/photos/juku-pcb-2/x3-bracket-face-20260722.jpg`, `x3-serial-area-rear-20260722.jpg`, SURVEY.md 2026-07-22 section |
 | Blue bracket-edge connector stamped `СНО51-30-23 8903` — corroborates the X8 power-connector BOM designation | photo, 2026-07-22 | `ref/photos/juku-pcb-2/x3-serial-area-rear-20260722.jpg` |
+
+## D40/D59/D92/D95 1 MHz slot clock
+
+| Fact | Provenance | Source |
+| --- | --- | --- |
+| `D40.11 -> D59.5 -> D92.2 -> D95.5/.6`; D95.5 and D95.6 are externally tied КП12 inputs, not an internal IC short. The `.009` drawing independently labels D40.11 and the D95 arrival as 1 MHz and visibly ties D92.2/.3. | owner-continuity + exact `.009` sheets 2/3, 2026-07-22 | `docs/d40-d59-d92-d95-1mhz-route.md`; `ref/schematics/fdc-clock-mux-map.md` |
+| `D59.5 -> D51.15 /G`; inverted `D59.6 -> D48.15 /G`. The factory drawing extends the paired enable islands to D50.15 and D49.15 through E14/E13. | owner-continuity + exact `.009` sheet 2, 2026-07-22 | `docs/d40-d59-d92-d95-1mhz-route.md` |
+| Tentative `D96.6` membership is not accepted: sheet 3 makes it the active `/Q1` output fed back only to D96.2, so a real join to active D40.11 would be a conflict. | unconfirmed continuity-beeper observation + exact `.009` sheet 3 | `docs/d40-d59-d92-d95-1mhz-route.md`; `ref/schematics/fdc-read-clock-toggle-map.md` |
 
 ## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
 

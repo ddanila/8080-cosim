@@ -124,9 +124,9 @@ module juku_top (
     wire d41_qa, d41_qa_d41, d41_qb, d36_b2_tag17, shift_g, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
     wire cpu_mux_g_n;
 `ifdef YOSYS
-    wire vid_mux_g_n;                // structural boundary stays undriven so LVS retains one physical net
+    wire vid_mux_g_n;                // pending atomic merge onto D40.Q3/1 MHz; see route review
 `else
-    tri1 vid_mux_g_n;                 // D59.5/E14 source has no proved driver; TTL-high default is explicit
+    tri1 vid_mux_g_n;                 // stale fallback until JSON/HDL/PCB 1 MHz merge lands atomically
 `endif
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld_sh(d36_b2_tag17), .oc(1'b1), .clk(shift_g),
                      .ser(1'b1), .qd(), .qa(d41_qa_d41), .qb(d41_qb), .qc());
@@ -191,10 +191,10 @@ module juku_top (
     wire d105_memw_inv, d105_dbin_n, d105_dbin_gated;
     wire [3:1] d2_nc; // factory symbol draws only D0/pin12; D1-D3 are intentional NCs
 `ifdef YOSYS
-    wire d105_h, ready_d, d30b_d_pre_n, d30_pre1_n;
+    wire d105_h, ready_d;
     wire wreq_n;
 `else
-    tri1 d105_h, ready_d, d30b_d_pre_n, d30_pre1_n;
+    tri1 d105_h, ready_d;
     tri1 wreq_n;
 `endif
 `ifdef YOSYS
@@ -208,10 +208,10 @@ module juku_top (
                      .a3(d105_dbin_n), .b3(d105_dbin_n), .y3(d105_dbin_gated),
                      .a4(dbin), .b4(d105_h), .y4(d105_dbin_n));
     // Owner continuity: D2.12 + R6 -> D30.D1; Q1 -> R29 -> CPU READY.
-    // D30.10/.12 share the R5 pull-up; D105.11 clears section B from ~MEMW.
-    tm2_dff #(.FUNCTIONAL(1)) U_D30 (.clr1_n(stb_d38), .d1(ready_d), .clk1(phi2ttl), .pre1_n(d30_pre1_n),
-                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(d105_memw_inv), .d2(d30b_d_pre_n),
-                   .clk2(d13_o4), .pre2_n(d30b_d_pre_n), .q2(d30_q2), .q2_n(d30_q2n));
+    // D30.1/.4/.10/.12 share D38 STB and the R5 pull-up; D105.11 clears section B from ~MEMW.
+    tm2_dff #(.FUNCTIONAL(1)) U_D30 (.clr1_n(stb_d38), .d1(ready_d), .clk1(phi2ttl), .pre1_n(stb_d38),
+                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(d105_memw_inv), .d2(stb_d38),
+                   .clk2(d13_o4), .pre2_n(stb_d38), .q2(d30_q2), .q2_n(d30_q2n));
     net_boundary U_R29LNK (.a(d30_q), .b(ready));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
     // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
@@ -452,18 +452,18 @@ module juku_top (
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
     // 4,7,9,12 order until the mux INPUT rails are read (a line-swap must be applied to both
     // sides at once or the video-va path desyncs). Queued in round-2 notes.
-    // D59.6 -> E13.1-3 -> D48/D49 /G. D59.5 is the complementary E14/video
-    // source; its unproved external origin defaults TTL-high, enabling this CPU pair.
+    // D59.6 -> E13.1-3 -> D48/D49 /G. Owner continuity now proves D59.5 is
+    // D40.Q3/1 MHz; the still-split structural net is an explicit correction hold.
     kp14_mux U_D48 (.a({BA[1], BA[2], BA[3], BA[0]}), .b({BA[13], BA[11], BA[10], BA[9]}),
                     .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D49 (.a({BA[5], BA[6], BA[7], BA[4]}), .b({BA[14], BA[15], BA[8], BA[12]}),
                     .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
     // D50/D51 = the VIDEO-address mux pair on the SAME tri-state MA bus (sheet-2: Q -> rails
     // 21-28). A/B ins <- video counters + S3 config. G is the D59.5 side of the
-    // complementary D59/E13/E14 enable pair; that input's dynamic source remains open, so
-    // it defaults high here and the CPU pair keeps driving MA. SEL <- D41.QA [WIRE 10].
+    // complementary D59/E13/E14 enable pair. Its measured D40.Q3/1 MHz source is pending
+    // the atomic JSON/PCB net merge, so this stale fallback still keeps the CPU pair driving MA.
     // D59.5 -> E14.1-3 -> D50/D51 /G. The full-resolution sheet closes the
-    // complementary inverter topology but does not prove a dynamic driver for D59.5.
+    // local complementary topology; owner continuity closes the remote driver separately.
     kp14_mux U_D50 (.a({VA[1], VA[2], VA[3], VA[0]}), .b({VA[13], VA[11], VA[10], VA[9]}),
                     .sel(d41_qa), .en_n(vid_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D51 (.a({VA[5], VA[6], VA[7], VA[4]}), .b({VA[14], VA[15], VA[8], VA[12]}),

@@ -33,11 +33,15 @@ def main() -> int:
          nodes(spec, "D30_Q2N_D29_AIN7") == {("D30", "8"), ("D29", "7")}),
         ("D29.7 is removed from raw IOWR",
          ("D29", "7") not in nodes(spec, "IOWR")),
-        ("Measured section-B D and /PRE pull-up is kept separate",
-         nodes(spec, "D30B_D_PRE_N") == {("D30", "10"), ("D30", "12"), ("R5", "2")}),
-        ("R5 provenance records the exact-sheet/physical-board conflict",
-         "D30.4" in r5_provenance and "D30.10/.12" in r5_provenance
-         and "continuity boundary" in r5_provenance),
+        ("Measured common D30 asynchronous-control and section-B D conductor is adopted",
+         nodes(spec, "STSTB_D38") == {
+             ("D38", "8"), ("W8", "2"), ("D30", "1"), ("D30", "4"),
+             ("D30", "10"), ("D30", "12"), ("R5", "2")
+         }
+         and "READY_PRE_N" not in spec["nets"]
+         and "D30B_D_PRE_N" not in spec["nets"]),
+        ("R5 provenance records agreement between the exact sheet and target board",
+         "D30.1/.4/.10/.12" in r5_provenance and "P5V" in r5_provenance),
         ("Measured /CLR path from D105.11 is kept separate",
          nodes(spec, "D105_MEMW_INV") == {("D105", "11"), ("D30", "13")}),
     ]
@@ -67,12 +71,11 @@ def main() -> int:
         "- D30.9 is omitted from the factory symbol and remains the already-recorded",
         "  explicit no-connect. The visible section-B output is D30.8, so it cannot be",
         "  dispositioned as an unused package half.",
-        "- Direct owner continuity remains authoritative for D30.10/.12/R5 and",
+        "- Direct owner continuity remains authoritative for D30.1/.4/.10/.12/R5 and",
         "  D105.11->D30.13; neither measured net is reopened by this older-sheet chase.", "",
-        "Exact `.009` sheet 1 draws a +5 V resistor labeled R5 at D30.4, but the",
-        "physical target board instead places R5 on D30.10/.12. The measured board",
-        "wins: D30.4 remains a separate continuity boundary rather than being",
-        "silently joined to +5 V through the drawing's conflicting reference.", "",
+        "The exact `.009` sheet and direct target-board continuity agree: D30.1,",
+        "D30.4, D30.10, and D30.12 are one conductor with R5.2; R5.1 goes to",
+        "+5 V. D38.8 drives that common active-low STB conductor.", "",
         "Direct owner continuity on the physical `.009` board now closes both routes:",
         "D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8",
         "reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.",
