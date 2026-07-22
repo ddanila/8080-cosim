@@ -91,6 +91,15 @@ def main() -> int:
             "D1.19 SYNC -> D7.12; D7.11 -> D7.13 feedback before R17",
         ),
         (
+            "D7 second-gate provenance preserves the owner-disproved D29.5 split",
+            "singleton AMW_N boundary at pin3" in d7.get("prov", {}).get("pins", "")
+            and "disproves the former D7.3-to-D29.5 interpretation" in d7.get("prov", {}).get("pins", "")
+            and "AMW_N/D29.5" not in d7.get("prov", {}).get("pins", "")
+            and set(nodes(board, "AMW_N")) == {("D7", "3")}
+            and has_nodes(board, "IOWR", {("D29", "5"), ("D105", "3")}),
+            "owner continuity 2026-07-19: D7.3 remains AMW_N-only; D29.5 is qualified IOWR",
+        ),
+        (
             "D9 region-enable inputs are tied to REV",
             has_nodes(board, "REV", {("D6", "10"), ("D9", "4"), ("D9", "5"), ("R13", "2")})
             and board["nets"]["REV"].get("source_risk") is False,

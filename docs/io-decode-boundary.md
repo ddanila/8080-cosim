@@ -24,6 +24,7 @@ python3 scripts/report_io_decode_boundary.py
 | Runnable HDL and LVS use the physical D9 identity and traced pins | PASS | U_D9: BA10/11/12, G1=V3_RC, G2A/G2B=REV; no placeholder refdes |
 | D7 strobe-NAND output reaches the R17/C99 D9.G1 RC node | PASS | `PROM_EN` -> `V3_RC` |
 | D7 first-gate SYNC/feedback topology is source-proven | PASS | D1.19 SYNC -> D7.12; D7.11 -> D7.13 feedback before R17 |
+| D7 second-gate provenance preserves the owner-disproved D29.5 split | PASS | owner continuity 2026-07-19: D7.3 remains AMW_N-only; D29.5 is qualified IOWR |
 | D9 region-enable inputs are tied to REV | PASS | native sheet-1 code-2 branch: D6.10/R13.2 -> D9.4/D9.5 |
 | D9 select inputs are BA10..BA12 | PASS | `BA10`, `BA11`, `BA12` into D9.A/B/C |
 | D7 fourth-gate inputs are wired to raw IOWR_N/IORD_N | PASS | `IOWR_RAW_N`/`IORD` inputs |

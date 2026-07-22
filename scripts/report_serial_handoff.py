@@ -242,9 +242,11 @@ def check_rows(board: dict) -> list[list[object]]:
         "UP2 fourth receiver output is owner-closed NC",
         has_node(board, "D104_X4_IN_BOUNDARY", "D104", "7")
         and pin_is_nc(board, "D104", "10")
+        and "disproving the former D94.13/R87.1 merge" in chip(board, "D104").get("prov", {}).get("pins", "")
+        and "pin7 shares D94.13" not in chip(board, "D104").get("prov", {}).get("pins", "")
         and marker("hdl/juku_top.v", ".x4_in(d104_x4_in_boundary)",
                    ".x4_out());  // owner continuity + exact .009 drawing: pin 10 NC"),
-        "D104.7 remains an input boundary; D104.10 is NC by owner continuity and exact-revision drawing",
+        "D104.7 remains separate from D94.13/R87; D104.10 is NC by owner continuity and exact-revision drawing",
     ))
     for net_name, ref, pin in [
         ("S_SOUT", "X3", "9"),

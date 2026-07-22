@@ -50,7 +50,7 @@ python3 scripts/report_serial_handoff.py
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
 | USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
-| UP2 fourth receiver output is owner-closed NC | PASS | D104.7 remains an input boundary; D104.10 is NC by owner continuity and exact-revision drawing |
+| UP2 fourth receiver output is owner-closed NC | PASS | D104.7 remains separate from D94.13/R87; D104.10 is NC by owner continuity and exact-revision drawing |
 | S_SOUT reaches X3.9 | PASS | `S_SOUT` |
 | S_RTS reaches X3.10 | PASS | `S_RTS` |
 | S_DTP reaches X3.11 | PASS | `S_DTP` |

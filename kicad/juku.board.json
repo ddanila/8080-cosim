@@ -201,7 +201,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 before R17; section1,2->3 is the source-closed MEMR/MEMW NAND driving AMW_N/D29.5, with factory wire 11 extending the sheet-2 -MRD landing D92.13 to D7.1; section5,4->6 drives D25.T, with pin4 joining MEMW at the same T that feeds D29 physical pin1 and pin5 sharing the explicit -INHIB junction at D29 physical pin3; section9,10->8 is IORD/IOWR NAND with output on tag8"
+    "pins": "complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 before R17; section1,2->3 consumes the factory-wire-separated MEMR_D7/MEMW_D7P2 inputs and drives the singleton AMW_N boundary at pin3; owner continuity 2026-07-19 disproves the former D7.3-to-D29.5 interpretation, and D29.5 instead belongs to qualified peripheral IOWR; section5,4->6 drives D25.T, with pin4 joining MEMW at the same T that feeds D29 physical pin1 and pin5 sharing the explicit -INHIB junction at D29 physical pin3; section9,10->8 is IORD/IOWR NAND with output on tag8"
    }
   },
   {
@@ -2487,7 +2487,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 triple К170УП2 receiver and power-pin table",
-    "pins": "A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; datasheet fourth receiver is 7->10. Direct owner continuity plus factory/photo registration proves input pin7 shares D94.13 and R87.1, with R87.2 at +5 V; +5 V pin15, ground pin8"
+    "pins": "A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; datasheet fourth receiver is 7->10. Owner resistance 2026-07-19 measures about 84 kohm from input pin7 to D94.13, disproving the former D94.13/R87.1 merge; pin7 remains the independent D104_X4_IN_BOUNDARY, while owner continuity plus exact-revision drawing close output pin10 as NC; +5 V pin15, ground pin8"
    }
   },
   {

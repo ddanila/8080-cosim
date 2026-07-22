@@ -281,6 +281,17 @@ def main() -> int:
             if phrase in text:
                 failures.append(f"{path} retains stale D94/D101/D104 claim: {phrase!r}")
 
+    board_model = read("kicad/juku.board.json")
+    for phrase in ("AMW_N/D29.5", "pin7 shares D94.13"):
+        if phrase in board_model:
+            failures.append(f"board chip provenance retains superseded owner claim: {phrase!r}")
+    for marker in (
+        "disproves the former D7.3-to-D29.5 interpretation",
+        "disproving the former D94.13/R87.1 merge",
+    ):
+        if marker not in board_model:
+            failures.append(f"board chip provenance lost owner correction: {marker!r}")
+
     stale_d6_a7_claims = {
         "PLAN.md": ("Close the physical D6 A7 driver", "D105.1/A7 driver (P0", "D105.1 conductor remains"),
         "docs/d6-physical-decode.md": ("driver or pull source is still unresolved", "unresolved A7"),
