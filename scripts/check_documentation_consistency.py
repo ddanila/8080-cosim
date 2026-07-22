@@ -415,6 +415,51 @@ def main() -> int:
     if not shared_package_digests:
         failures.append("tracked release documents do not share a recorded package SHA256")
 
+    package_evidence_path = ROOT / "ref/routing/zero-open-fabrication-package.json"
+    package_evidence: dict[str, object] = {}
+    if not package_evidence_path.exists():
+        failures.append("zero-open fabrication-package evidence is missing")
+    else:
+        package_evidence = json.loads(package_evidence_path.read_text(encoding="utf-8"))
+        package_routing = package_evidence.get("routing", {})
+        package_drc = package_evidence.get("drc_review_counts", {})
+        package_upload = package_evidence.get("upload_zip", {})
+        package_toolchain = package_evidence.get("toolchain", {})
+        package_sha = str(package_upload.get("sha256", "")).lower()
+        package_checksum_sha = str(package_upload.get("checksum_file_sha256", "")).lower()
+        package_drc_total = sum(
+            int(package_drc.get(name, 0))
+            for name in ("courtyards_overlap", "silk_over_copper", "silk_overlap", "text_thickness")
+        )
+        if (
+            package_evidence.get("schema_version") != 1
+            or package_evidence.get("board") != "kicad/juku_routed.kicad_pcb"
+            or package_evidence.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
+            or (package_routing.get("footprints"), package_routing.get("pads")) != (322, 2436)
+            or (package_routing.get("copper_items"), package_routing.get("nets")) != (30343, 413)
+            or any(
+                package_routing.get(name) != 0
+                for name in ("unconnected_items", "electrical_blockers", "dangling_tracks", "dangling_vias")
+            )
+            or package_drc_total != package_drc.get("total")
+            or package_upload.get("path") != "fab/gerbers/upload/juku-replica-gerbers-drill.zip"
+            or not isinstance(package_upload.get("bytes"), int)
+            or package_upload.get("bytes", 0) <= 0
+            or not SHA256_RE.fullmatch(package_sha)
+            or not SHA256_RE.fullmatch(package_checksum_sha)
+            or not all(package_toolchain.get(name) for name in ("kicad_cli", "kicad_version", "gerber_generator", "external_viewer"))
+            or package_evidence.get("package_status") != "DESIGN HOLD / PACKAGE VERIFIED"
+        ):
+            failures.append("zero-open fabrication-package evidence is malformed or stale")
+        if package_sha and package_sha not in shared_package_digests:
+            failures.append("zero-open fabrication-package ZIP hash disagrees with tracked release docs")
+        for path in (
+            "docs/replica-order-evidence-template.md",
+            "docs/replica-order-upload-runbook.md",
+        ):
+            if package_sha and package_sha not in read(path):
+                failures.append(f"{path} does not contain fabrication-package ZIP SHA256 {package_sha}")
+
     fab_root = ROOT / "fab"
     upload_zip = fab_root / "gerbers/upload/juku-replica-gerbers-drill.zip"
     if fab_root.exists() and not upload_zip.exists():
@@ -424,6 +469,15 @@ def main() -> int:
         for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
             if digest not in read(path):
                 failures.append(f"{path} does not contain current upload ZIP SHA256 {digest}")
+        package_upload = package_evidence.get("upload_zip", {})
+        if package_upload.get("bytes") != upload_zip.stat().st_size or package_upload.get("sha256") != digest:
+            failures.append("zero-open fabrication-package evidence disagrees with local upload ZIP")
+        upload_checksum = upload_zip.parent / "SHA256SUMS.txt"
+        if (
+            not upload_checksum.exists()
+            or package_upload.get("checksum_file_sha256") != sha256(upload_checksum)
+        ):
+            failures.append("zero-open fabrication-package evidence disagrees with local upload checksum file")
 
     order = read("fab/gerbers/order-readiness.md")
     if design_held:

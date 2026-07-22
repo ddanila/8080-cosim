@@ -20,21 +20,21 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Purpose | File | Bytes | SHA256 | Status |
 | --- | --- | ---: | --- | --- |
-| Top copper | `juku_routed-F_Cu.gtl` | 981046 | `91f1ebee4f7e6bba959288dafa0e31ea75c0fb74badcae80c938958c739394d2` | PASS |
-| Bottom copper | `juku_routed-B_Cu.gbl` | 852500 | `cb96cd268ad589e41281a7107f7cb315c0e372e3da564ea6ec9ed47d6400934f` | PASS |
-| Top soldermask | `juku_routed-F_Mask.gts` | 71143 | `17f3daa2a75353eaecdedfa4425d179206f20d46261ca055ca50fb53a7da7425` | PASS |
-| Bottom soldermask | `juku_routed-B_Mask.gbs` | 70436 | `34584c1d3e24222ea99f817d129960cf518010e61cf1bd0294227a380ba047ee` | PASS |
-| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 3129059 | `d159c51a69618b53afed6b126e9af53029b126f025bebe4901cbbbdbcfc1cf81` | PASS |
-| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 533 | `4e7ae71b8ecaa44f2a49cffc5e9d59d0c7c82d445c10fe5a671000166640c783` | PASS |
-| Board outline | `juku_routed-Edge_Cuts.gm1` | 1302 | `92214e79e3ab5892c8a651d43ed06d06f7cb3c461dfc3eb9d0ca8331a136ef04` | PASS |
-| Gerber job | `juku_routed-job.gbrjob` | 2445 | `5df73a030854525ec17625976f78d14e7a341bc7f737c02032e983dfcd452d2a` | PASS |
-| Excellon drill | `juku_routed.drl` | 81107 | `2ab4e1779a0f0136cbab4eaed4343a1c181c82db60e955b0b73719f3675667c8` | PASS |
+| Top copper | `juku_routed-F_Cu.gtl` | 981046 | `63126a8cc6066a8c21e0b5fe4ad0a91b331d6cdf85b6fdee71d1660e4a1b27f8` | PASS |
+| Bottom copper | `juku_routed-B_Cu.gbl` | 852500 | `b3dad4d8157af3b1ec1323da65e70ecb85a34c56fbb7262dd1aaaf9b2c37fa7c` | PASS |
+| Top soldermask | `juku_routed-F_Mask.gts` | 71143 | `bdfdebc6796b8d4008076ed16ad5cd34566944c79caf51e6b76ffb93ce30ec51` | PASS |
+| Bottom soldermask | `juku_routed-B_Mask.gbs` | 70436 | `cc0bc694a44a00810424809ff187eac68834cee596f254f93d4470beab94d1c9` | PASS |
+| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 2814327 | `020543c717bada7cf39552e876d3c8b0802987a7879f159b5286916f050ce312` | PASS |
+| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 533 | `d7c89dfea4053fdd70cab2efffe67d5d0fc29c2305cee05741603d69c566c513` | PASS |
+| Board outline | `juku_routed-Edge_Cuts.gm1` | 1302 | `5fbda94db39fa31108bcf2213ce737ca3ad42bf2e386f7e40329226139e2f2b9` | PASS |
+| Gerber job | `juku_routed-job.gbrjob` | 2445 | `3190faa7a174581bae6b95aee8c94122c245b9cac50cabbaca410dce7c94d11c` | PASS |
+| Excellon drill | `juku_routed.drl` | 81107 | `1b8ddc98c502b66f44d4026f6be5b500f218a4980ac83cb79b41eae06123aa9a` | PASS |
 
 ## Upload Archive
 
 | File | Bytes | SHA256 | Contents |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 5190681 | `09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 4875949 | `136f0b701a1442eda40e72590822233f278851f516a5404bcf1ad19c4a3b6b28` | PASS |
 
 ## Upload ZIP Members
 
@@ -46,7 +46,7 @@ kicad/check_replica_manufacturing_ready.sh
 | juku_routed-B_Cu.gbl | 852500 | PASS | PASS |
 | juku_routed-F_Mask.gts | 71143 | PASS | PASS |
 | juku_routed-B_Mask.gbs | 70436 | PASS | PASS |
-| juku_routed-F_Silkscreen.gto | 3129059 | PASS | PASS |
+| juku_routed-F_Silkscreen.gto | 2814327 | PASS | PASS |
 | juku_routed-B_Silkscreen.gbo | 533 | PASS | PASS |
 | juku_routed-Edge_Cuts.gm1 | 1302 | PASS | PASS |
 | juku_routed-job.gbrjob | 2445 | PASS | PASS |
@@ -56,7 +56,7 @@ kicad/check_replica_manufacturing_ready.sh
 
 | File | Bytes | SHA256SUMS entry | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `136f0b701a1442eda40e72590822233f278851f516a5404bcf1ad19c4a3b6b28` | PASS |
 
 ## Retained Evidence
 
@@ -66,7 +66,7 @@ kicad/check_replica_manufacturing_ready.sh
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1901 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1630 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2126 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2962 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2959 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2147 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 15976 | PASS |

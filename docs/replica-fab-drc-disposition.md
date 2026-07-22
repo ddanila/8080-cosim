@@ -25,8 +25,8 @@ silently.
 | --- | ---: | ---: | --- | --- |
 | `courtyards_overlap` | 107 | 107 | D97, C17, C20, R33, R66, R84, R97, VD3 | Waived as dense authentic placement after visual assembly-fit review. |
 | `pth_inside_courtyard` | 0 | 0 | - | Waived as dense through-hole/socket proximity after visual assembly-fit review. |
-| `silk_over_copper` | 199 | 199 | R1, D97, E14, E13, D104, D105, D13, D35 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
-| `silk_overlap` | 199 | 199 | C1, C33, D23, D25, D64, E13, D48, C40 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
+| `silk_over_copper` | 199 | 199 | X1, X2, R1, E14, E13, D105, D13, D35 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
+| `silk_overlap` | 199 | 199 | C1, C33, D23, D25, R39, E13, D48, D53 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
 | `text_thickness` | 199 | 199 | VD3, VD4, C1, C18, C21, C5, C73, R1 | GOST/TrueType stroke warning; manufacturing-readability item, not copper geometry. |
 
 ## Order-Time Visual Checks

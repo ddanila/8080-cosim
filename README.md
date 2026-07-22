@@ -21,7 +21,7 @@ with the machine-readable board model.
   zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or
   ordered. Current deterministic upload ZIP SHA256:
-  `09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9`.
+  `136f0b701a1442eda40e72590822233f278851f516a5404bcf1ad19c4a3b6b28`.
   Exact topology evidence is retained in
   `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
   `ref/routing/zero-open-fabrication-package.json`, and fabrication/release

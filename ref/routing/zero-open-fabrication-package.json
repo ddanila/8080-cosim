@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "board": "kicad/juku_routed.kicad_pcb",
-  "board_sha256": "4ca4a22922163f9d3e813a73dbf5647615889d33500607a37e97aed7b87e72d3",
+  "board_sha256": "12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37",
   "toolchain": {
     "kicad_cli": "/usr/bin/kicad-cli-nightly",
     "kicad_version": "10.99.0",
@@ -36,9 +36,9 @@
   },
   "upload_zip": {
     "path": "fab/gerbers/upload/juku-replica-gerbers-drill.zip",
-    "bytes": 5190681,
-    "sha256": "09253384d703c8a200d49ee360661825a6b0c057364d5308115c9f0b6e116ca9",
-    "checksum_file_sha256": "fb3fb12e207f06ef246902cbf678ded57e52b4395ea703a8f55b150b17ec81ad",
+    "bytes": 4875949,
+    "sha256": "136f0b701a1442eda40e72590822233f278851f516a5404bcf1ad19c4a3b6b28",
+    "checksum_file_sha256": "c4c081f31a40e851eb3c0ee4b375d05915d0073616c4c8297c0921afcc2fce56",
     "member_compression": "stored",
     "metadata": "1980-01-01 00:00:00, Unix mode 0644"
   },
