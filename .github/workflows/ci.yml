@@ -224,6 +224,9 @@ jobs:
       - name: Check D99 timing and sheet-1 continuations
         run: python3 kicad/check_d99_source_paths.py
 
+      - name: Check silkscreen glyph coverage (no tofu)
+        run: python3 kicad/check_silk_glyphs.py
+
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py
 

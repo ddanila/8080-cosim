@@ -46,5 +46,8 @@ else
   python3 sync/lvs.py --hdl hdl/juku_top.json --board kicad/juku.board.json --map sync/map.json
 fi
 
+echo "==> silkscreen glyph coverage (no tofu)"
+python3 kicad/check_silk_glyphs.py
+
 echo "==> provenance"
 python3 sync/provenance.py kicad/juku.board.json | tail -2
