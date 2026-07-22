@@ -113,11 +113,11 @@ module vjuga_juku_top #(
     end endgenerate
 
     // DRAM access sequencer + CPU wait-state handshake.
-    // dram_64kx1 un-permutes the row byte internally (row_lin) to model the D48-D51
-    // scramble, so the row it is FED must be pre-scrambled; this is the inverse
-    // permutation (identical to hdl/sim/dram_unit_tb.v raw_row) so mem stays linear.
+    // dram_64kx1 normalizes both the physical KP14 output inversion and the
+    // D48-D51 row-bit permutation internally. This compact twin drives the RU5
+    // pins directly, so pre-apply both effects here and keep mem[] CPU-linear.
     function [7:0] raw_row(input [7:0] lin);
-        raw_row = {lin[0], lin[7], lin[6], lin[4], lin[2], lin[3], lin[5], lin[1]};
+        raw_row = ~{lin[0], lin[7], lin[6], lin[4], lin[2], lin[3], lin[5], lin[1]};
     endfunction
 
     localparam [2:0] S_IDLE=3'b000, S_ROW=3'b001, S_RAS=3'b011,
@@ -172,7 +172,7 @@ module vjuga_juku_top #(
             // U24 enters COL after this edge; switch the external mux only
             // after RAS has latched the row.
             if (u24_state == S_RAS && !refresh_tick_u24)
-                dram_ma <= acc_addr[7:0];
+                dram_ma <= ~acc_addr[7:0];
             // Sample while CAS is still low, immediately before PRECHARGE.
             if (u24_state == S_HOLD && !acc_write)
                 ram_rdata <= rdo;
