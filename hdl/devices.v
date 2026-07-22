@@ -854,40 +854,43 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end
 
-    always @(negedge wr_n) if (~cs_n) begin
-        regs[A] = D;
-        if (A == 2'd3) begin
-            ctl_ch = D[7:6];
-            // RL=00 is a counter-latch command, not a mode reprogramming write.
-            // Count reads remain a bounded register-latch approximation here.
-            if (ctl_ch < 3 && D[5:4] != 2'b00) begin
-                access[ctl_ch] = D[5:4];
-                ctl_mode = D[3:1];
-                if (ctl_mode >= 3'd6) ctl_mode = ctl_mode - 3'd4;
-                mode[ctl_ch] = ctl_mode;
-                bcd[ctl_ch] = D[0];
-                phase[ctl_ch] = 0;
-                running[ctl_ch] = 0;
-                out_r[ctl_ch] = (ctl_mode == 3'd0) ? 1'b0 : 1'b1;
-            end
-        end else begin
-            ch = A;
-            if (access[ch] == 2'b01) begin
-                next_reload = {8'h00, D};
-                install_count(ch, next_reload);
-                phase[ch] = 0;
-            end else if (access[ch] == 2'b10) begin
-                next_reload = {D, 8'h00};
-                install_count(ch, next_reload);
-                phase[ch] = 0;
-            end else if (access[ch] == 2'b11) begin
-                if (phase[ch] == 0) begin
-                    low_latch[ch] = D;
-                    phase[ch] = 1;
-                end else begin
-                    next_reload = {D, low_latch[ch]};
+    always @(negedge wr_n) begin
+        #1; // allow the board's decoded chip-select and data bus to settle
+        if (~cs_n) begin
+            regs[A] = D;
+            if (A == 2'd3) begin
+                ctl_ch = D[7:6];
+                // RL=00 is a counter-latch command, not a mode reprogramming write.
+                // Count reads remain a bounded register-latch approximation here.
+                if (ctl_ch < 3 && D[5:4] != 2'b00) begin
+                    access[ctl_ch] = D[5:4];
+                    ctl_mode = D[3:1];
+                    if (ctl_mode >= 3'd6) ctl_mode = ctl_mode - 3'd4;
+                    mode[ctl_ch] = ctl_mode;
+                    bcd[ctl_ch] = D[0];
+                    phase[ctl_ch] = 0;
+                    running[ctl_ch] = 0;
+                    out_r[ctl_ch] = (ctl_mode == 3'd0) ? 1'b0 : 1'b1;
+                end
+            end else begin
+                ch = A;
+                if (access[ch] == 2'b01) begin
+                    next_reload = {8'h00, D};
                     install_count(ch, next_reload);
                     phase[ch] = 0;
+                end else if (access[ch] == 2'b10) begin
+                    next_reload = {D, 8'h00};
+                    install_count(ch, next_reload);
+                    phase[ch] = 0;
+                end else if (access[ch] == 2'b11) begin
+                    if (phase[ch] == 0) begin
+                        low_latch[ch] = D;
+                        phase[ch] = 1;
+                    end else begin
+                        next_reload = {D, low_latch[ch]};
+                        install_count(ch, next_reload);
+                        phase[ch] = 0;
+                    end
                 end
             end
         end
@@ -987,6 +990,7 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
 
     wire tx_enable = command[0];
     wire rx_enable = command[2];
+    wire tx_allowed = tx_enable & ~cts_n;
     wire tx_empty_i = ~tx_busy & ~tx_buffer_full;
     wire [7:0] status = {5'b00000, tx_empty_i, rx_ready, ~tx_buffer_full};
 
@@ -995,35 +999,42 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
     assign rts = ~command[5];
     assign dtr = ~command[1];
     assign rxrdy = rx_ready;
-    assign txrdy = ~tx_buffer_full;
+    // The status bit reports only holding-register space; the external TxRDY
+    // pin and actual shift start are additionally gated by TxEN and active-low
+    // CTS, as on the 8251A.
+    assign txrdy = tx_allowed & ~tx_buffer_full;
     assign txempty = tx_empty_i;
     assign syndet = 1'b0;
 
-    always @(negedge wr_n) if (~cs_n) begin
-        if (A) begin
-            if (!mode_seen) begin
-                mode <= D;
-                mode_seen <= 1'b1;
-            end else if (D[6]) begin
-                command <= 8'h00;
-                mode_seen <= 1'b0;
-                txd_r <= 1'b1;
-                tx_busy <= 1'b0;
-                tx_buffer_full <= 1'b0;
-                rx_busy <= 1'b0;
-                rx_ready <= 1'b0;
-            end else begin
-                command <= D;
-                if (D[4]) rx_ready <= 1'b0;  // error reset also clears the minimal RX latch.
+    always @(negedge wr_n) begin
+        #1; // allow the board's decoded chip-select and data bus to settle
+        if (~cs_n) begin
+            if (A) begin
+                if (!mode_seen) begin
+                    mode <= D;
+                    mode_seen <= 1'b1;
+                end else if (D[6]) begin
+                    command <= 8'h00;
+                    mode_seen <= 1'b0;
+                    txd_r <= 1'b1;
+                    tx_busy <= 1'b0;
+                    tx_buffer_full <= 1'b0;
+                    rx_busy <= 1'b0;
+                    rx_ready <= 1'b0;
+                end else begin
+                    command <= D;
+                    if (D[4]) rx_ready <= 1'b0;  // error reset also clears the minimal RX latch.
+                end
+            end else if (tx_enable && !tx_buffer_full) begin
+                tx_buffer <= D;
+                tx_buffer_full <= 1'b1;
             end
-        end else if (tx_enable && !tx_buffer_full) begin
-            tx_buffer <= D;
-            tx_buffer_full <= 1'b1;
         end
     end
 
-    always @(negedge rd_n) if (~cs_n && !A) begin
-        rx_ready <= 1'b0;
+    always @(negedge rd_n) begin
+        #1;
+        if (~cs_n && !A) rx_ready <= 1'b0;
     end
 
     // Minimal async 8N1 shifter. It is enough for digital loopback/bring-up
@@ -1039,7 +1050,7 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
             end else begin
                 tx_bits <= tx_bits - 1;
             end
-        end else if (tx_buffer_full) begin
+        end else if (tx_buffer_full && tx_allowed) begin
             // A TxC edge moves the CPU-side holding byte into the shifter:
             // TxRDY rises here, while TxEMPTY remains low through the frame.
             tx_shift <= {1'b1, tx_buffer};

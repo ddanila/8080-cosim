@@ -27,6 +27,7 @@
 // USART: JUKU_USART_PTY=auto prints a new slave path; a host-created PTY path
 //        may be supplied instead. JUKU_USART_TRANSFER_CYCLES controls the
 //        holding-to-shift delay; JUKU_USART_BYTE_CYCLES controls frame time.
+//        JUKU_USART_FAULT=tx_stuck holds the transmit input register full.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,8 +74,9 @@ static int           io_trace = 0;
 // The diagnostic-ROM path needs only the asynchronous 8-bit mode/command
 // sequence, RxRDY, and separate TxRDY/TxEMPTY transitions around a one-byte
 // transmit holding register and shifter. The PTY is deliberately byte-oriented:
-// baud recovery belongs to the Nano/host protocol, while this model preserves
-// the firmware-visible ready transitions.
+// attaching it represents a connected harness with active CTS; baud recovery
+// belongs to the Nano/host protocol, while this model preserves the
+// firmware-visible ready transitions.
 typedef struct {
   int fd;
   int enabled;
@@ -87,6 +89,7 @@ typedef struct {
   int rx_ready;
   int tx_holding_full;
   int tx_busy;
+  int fault_tx_stuck;
   unsigned long tx_transfer_cyc;
   unsigned long tx_complete_cyc;
   unsigned long transfer_cycles;
@@ -188,7 +191,8 @@ static void usart_poll(unsigned long cyc) {
       exit(2);
     }
   }
-  if (usart.tx_holding_full && !usart.tx_busy && cyc >= usart.tx_transfer_cyc) {
+  if (!usart.fault_tx_stuck && usart.tx_holding_full && !usart.tx_busy &&
+      cyc >= usart.tx_transfer_cyc) {
     usart.tx_shift_data = usart.tx_data;
     usart.tx_holding_full = 0;
     usart.tx_busy = 1;
@@ -570,6 +574,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "usart_status=%02X\n", usart_status());
   fprintf(state_out, "usart_tx_holding_full=%d\n", usart.tx_holding_full);
   fprintf(state_out, "usart_tx_shift_busy=%d\n", usart.tx_busy);
+  fprintf(state_out, "usart_fault_tx_stuck=%d\n", usart.fault_tx_stuck);
   fprintf(state_out, "usart_tx_bytes=%lu\n", usart.tx_bytes);
   fprintf(state_out, "usart_rx_bytes=%lu\n", usart.rx_bytes);
   for (int p = 0; p < 256; p++) {
@@ -620,6 +625,7 @@ int main(int argc, char** argv) {
   io_trace = getenv("JUKU_TRACE_IO") && getenv("JUKU_TRACE_IO")[0] &&
              strcmp(getenv("JUKU_TRACE_IO"), "0") != 0;
   const char* usart_pty = getenv("JUKU_USART_PTY");
+  const char* usart_fault = getenv("JUKU_USART_FAULT");
   const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
@@ -629,6 +635,13 @@ int main(int argc, char** argv) {
   if (usart_byte_cycles && usart_byte_cycles[0]) {
     usart.byte_cycles = strtoul(usart_byte_cycles, 0, 0);
     if (!usart.byte_cycles) usart.byte_cycles = 1;
+  }
+  if (usart_fault && usart_fault[0]) {
+    if (strcmp(usart_fault, "tx_stuck") != 0) {
+      fprintf(stderr, "unknown JUKU_USART_FAULT=%s (expected tx_stuck)\n", usart_fault);
+      return 2;
+    }
+    usart.fault_tx_stuck = 1;
   }
   if (env_enabled(usart_pty) && usart_open_transport(usart_pty) != 0) {
     fprintf(stderr, "JUKU_USART_PTY=%s could not be opened: %s\n", usart_pty, strerror(errno));

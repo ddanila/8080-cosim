@@ -68,14 +68,13 @@ def immediate(asm: Assembler, opcode: int, value: int) -> None:
     asm.emit(opcode, value)
 
 
-def build() -> tuple[bytes, dict[str, int]]:
+def emit_cpu_self_test(asm: Assembler) -> int:
+    """Emit rung 2 and return the expected-signature immediate offset."""
     if signature_oracle() != EXPECTED_SIGNATURE:
         raise ValueError(
             f"signature oracle {signature_oracle():02X} != {EXPECTED_SIGNATURE:02X}"
         )
 
-    asm = Assembler()
-    emit_alive_beep(asm, halt=False)
     mvi(asm, 0x1E, SIGNATURE_SEED)  # MVI E,seed
 
     # ADD: 7F+01=80; S=1, Z=0, CY=0, parity odd.
@@ -184,18 +183,30 @@ def build() -> tuple[bytes, dict[str, int]]:
     signature_expected_offset = asm.pc + 1
     immediate(asm, 0xFE, EXPECTED_SIGNATURE)  # CPI expected signature
     fail_if(asm, 0xC2)  # JNZ cpu_fail
+    return signature_expected_offset
+
+
+def emit_failure_tone(asm: Assembler, divisor: int) -> None:
+    """Program a continuous D57 channel-1 mode-3 failure tone."""
+    asm.mvi_a(0x76)
+    asm.out(0x1B)
+    asm.mvi_a(divisor & 0xFF)
+    asm.out(0x19)
+    asm.mvi_a(divisor >> 8)
+    asm.out(0x19)
+
+
+def build() -> tuple[bytes, dict[str, int]]:
+    asm = Assembler()
+    emit_alive_beep(asm, halt=False)
+    signature_expected_offset = emit_cpu_self_test(asm)
     success_halt = asm.pc
     asm.emit(0x76)
 
     # A mismatch leaves a continuous, unmistakably lower CPU-bad tone. The PIT
     # runs after HLT, so this path does not depend on another delay loop.
     asm.label("cpu_fail")
-    asm.mvi_a(0x76)
-    asm.out(0x1B)
-    asm.mvi_a(FAIL_TONE_DIVISOR & 0xFF)
-    asm.out(0x19)
-    asm.mvi_a(FAIL_TONE_DIVISOR >> 8)
-    asm.out(0x19)
+    emit_failure_tone(asm, FAIL_TONE_DIVISOR)
     fail_halt = asm.pc
     asm.emit(0x76)
 

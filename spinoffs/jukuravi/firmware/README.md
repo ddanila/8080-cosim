@@ -2,18 +2,20 @@
 
 Status date: 2026-07-22.
 
-Status: **D0 RUNGS 1–2 SIMULATION CHECKPOINT — ALIVE BEEP AND CPU SELF-TEST GUARDED**
+Status: **D0 RUNGS 1–3A SIMULATION CHECKPOINT — ALIVE, CPU, AND LOCAL 8251 GUARDED**
 
-Both images below are directly burnable Jukuravi images for the D15 2764
+All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
-not read by either checkpoint. `diag-d0-alive.bin` isolates rung 1, while
-`diag-d0-cpu.bin` includes that same alive sequence followed by rung 2.
+not read by these checkpoints. `diag-d0-alive.bin` isolates rung 1,
+`diag-d0-cpu.bin` adds rung 2, and `diag-d0-usart-local.bin` adds the local
+D11/8251 test that precedes an external serial handshake.
 
 SHA256:
 
 ```text
 dfd4327b2752a143fdbd4c199013e53dfb9dc2b9ea897379f3015b4cda92ec9c  diag-d0-alive.bin
 a9ca9d59a2a23891b90eb088e1b6901cc210baca30dc03c46c900048efdb67ec  diag-d0-cpu.bin
+c708f78adc9b87ba6dfc926314f3937798814d79f1e66512c9ae8d1db8b03a7f  diag-d0-usart-local.bin
 ```
 
 ## Build and guard
@@ -21,13 +23,14 @@ a9ca9d59a2a23891b90eb088e1b6901cc210baca30dc03c46c900048efdb67ec  diag-d0-cpu.bi
 ```sh
 python3 spinoffs/jukuravi/firmware/build_d0_alive.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_cpu.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
 sync/jukuravi_d0_check.sh
 ```
 
-The two builders are the sources of truth and deterministically emit the
-committed images. The alive-only executed code is 30 bytes. The combined CPU
-image contains 382 bytes of code and a `JUKURAVI-D0-CPU-1` identity at
-`0x1F00`. Unused space is fail-closed `HLT` fill.
+The builders are the sources of truth and deterministically emit the committed
+images. The alive-only executed code is 30 bytes. The combined CPU image
+contains 382 bytes; the local-USART image contains 509. Their identities are
+stored at `0x1F00`, and unused space is fail-closed `HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
 
@@ -88,8 +91,52 @@ test remains bounded; every CPU-test and terminal-path byte is identical to the
 burn image. The physical core's reset SP is undefined, so the HDL contract is
 the instruction/memory-write guarantee rather than a particular SP value.
 
+## Rung 3a: local 8251 transmit-state self-test
+
+The local-USART image first sends the standard recovery sequence (`00 00 00
+40`) to D11's control register, then selects asynchronous x16, 8 data bits, no
+parity, one stop bit (`4E`) and enables Tx/Rx, DTR, RTS, and error reset (`37`).
+It requires idle status `05`, writes a `55` test byte while D57 channel 0 is
+stopped and requires holding-full status `00`, then starts that channel in
+binary mode 2 with divisor 8. The source-proved nominal 1.23 MHz input divided
+by 8 and the USART's x16 mode gives approximately 9600 baud.
+
+Two BC-only `FFFF` timeouts bound the wait for `TxRDY` and `TxEMPTY`. The first
+must end at status `01`, proving the holding byte entered an active shifter;
+the second must end at `05`, proving the frame completed. A complete failed
+wait is 3,342,295 CPU T-states, nominally 1.6711475 seconds at 2 MHz. Any
+initial, intermediate, final, or timeout mismatch selects a continuous
+nominal 500 Hz USART-bad tone (D57 channel 1 divisor 4000), distinct from the
+short 1 kHz alive tone and continuous 250 Hz CPU-bad tone. Success halts after
+the `55` byte reaches the transport. The [Intel 8251A datasheet](https://community.intel.com/cipcp26785/attachments/cipcp26785/programmable-devices/89914/1/P8251A.pdf)
+requires active-low CTS before shifting, while the [TI MC1489 datasheet](https://www.ti.com/lit/ds/symlink/mc1489a.pdf)
+specifies a high output for an open receiver input. The Nano/level-shifter harness
+must therefore drive X3 CTS active before reset. This checkpoint needs no
+received byte or ack: it proves the D11 host interface and D57/D11 clocked
+transmit states under a known asserted CTS, but does not prove the outbound
+line driver or an end-to-end serial link. An unplugged or non-asserting harness
+correctly reaches the same bounded USART-stage failure code rather than hanging.
+
+`tests/jukuravi_d0_usart_local_test.py` runs the exact burn image through a real
+PTY (representing an attached harness with CTS asserted), checks status `05 ->
+00 -> 01 -> 05`, and receives exactly `55`. It then
+uses the cosim `JUKU_USART_FAULT=tx_stuck` injection to exhaust the complete
+timeout and select the 500 Hz path, and separately corrupts the predecessor
+CPU signature comparison to prove it still selects 250 Hz before any USART
+access. The full vm80a `juku_top` executes the same three outcomes; its fault
+fixture shortens only the timeout count and its common fixture shortens only
+the half-second alive delay. Because the physical merge feeding `xtal16m_w`
+remains a documented continuity boundary, that upstream rail alone is driven
+by the testbench and X3 CTS is explicitly asserted; D104, D103 /13, D57 channel
+0 mode 2/divisor 8, and the D11 TxC/RxC path remain integrated. The guard
+also proves that deliberately inactive X3 CTS takes the bounded 500 Hz path,
+then observes at least ten resulting baud edges, exact I/O, IFF clear, and zero
+RAM writes. All paths remain free of CALL, RET, PUSH, POP, and memory-writing
+instructions.
+
 The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next
-firmware rung is the local 8251 self-test and serial handshake.
+firmware rung is the external `55` train, version/checksum banner, and Nano ack
+handshake.

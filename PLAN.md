@@ -1572,9 +1572,20 @@ an active `/Q1` feedback output.
    or final-signature mismatch selects a continuous nominal 250 Hz CPU-bad
    tone. Cosim and the vm80a-based full HDL top execute both success and
    injected-failure paths with exact I/O and no memory writes; the program uses
-   no stack instructions. The local 8251 self-test and serial handshake are the
-   next harness rung; USART sync/parity modes and physical baud timing remain
-   outside the bounded model.
+   no stack instructions. The next exact-hash-guarded image recovers and
+   initializes D11, emits `55`, and requires the distinct `05 -> 00 -> 01 ->
+   05` idle/holding/shift/empty states under two bounded register-only timeouts.
+   Cosim and the full vm80a HDL top prove normal, injected stuck-TX (continuous
+   nominal 500 Hz USART-bad tone), and predecessor CPU-bad paths with exact I/O
+   and no memory writes. The HDL fixture drives only the already-documented
+   unresolved upstream 16 MHz rail boundary and an explicitly asserted X3 CTS
+   input; D104 and D103/D57/D11 remain integrated. The real Nano harness must
+   likewise assert active-low CTS before reset because an open line receiver
+   leaves transmission disabled; an HDL inactive-CTS injection proves that case
+   takes the bounded 500 Hz path. This stage needs no received byte or ack.
+   The external `55` train, version/checksum banner, and Nano ack are the next
+   harness rung; USART sync/parity modes and physical baud timing remain outside
+   the bounded model.
 
 ## Physical bring-up sequence
 
@@ -1610,6 +1621,9 @@ Once a released board and programmed parts exist:
 - [x] Jukuravi D0 rung 2 has an exact-hash-guarded, burn-sized D15 image whose
   register-only CPU signature test and distinct CPU-bad tone execute through
   both success and injected-failure paths in cosim and the vm80a HDL twin.
+- [x] Jukuravi D0 rung 3a has an exact-hash-guarded, burn-sized D15 image whose
+  local 8251 transmit-state test, bounded timeout, and distinct USART-bad tone
+  execute through success and injected-failure paths in cosim and vm80a HDL.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

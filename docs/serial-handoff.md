@@ -106,7 +106,13 @@ python3 scripts/report_serial_handoff.py
   mode/command writes, the `TxRDY=0,TxEMPTY=0` holding-full state,
   the `TxRDY=1,TxEMPTY=0` holding-to-shift transition, final
   `TxEMPTY=1`, RxRDY, command-driven RTS/DTR, and one 8N1 byte
-  through a digital TxD->RxD loopback.
+  through a digital TxD->RxD loopback with active-low CTS asserted.
+  PTY attachment likewise represents an attached harness with CTS
+  active; on hardware the Nano/level-shifter must drive X3 CTS low
+  before reset because an open MC1489-class input yields inactive CTS.
+  This follows the [Intel 8251A datasheet](https://community.intel.com/cipcp26785/attachments/cipcp26785/programmable-devices/89914/1/P8251A.pdf)
+  CTS gating and the [TI MC1489 datasheet](https://www.ti.com/lit/ds/symlink/mc1489a.pdf)
+  open-input output guarantee.
 - D104's fourth receiver input pin 7 is separate from D94.13 (~84 kΩ)
   and preserved as `D104_X4_IN_BOUNDARY`; owner continuity on
   2026-07-21 and the exact-revision drawing close output pin 10 as NC.

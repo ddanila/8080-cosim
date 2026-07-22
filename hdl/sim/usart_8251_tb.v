@@ -1,15 +1,16 @@
 module usart_8251_tb;
-  reg A = 0, cs_n = 1, rd_n = 1, wr_n = 1, baud = 0;
+  reg A = 0, cs_n = 1, rd_n = 1, wr_n = 1, baud = 0, cts_n = 1;
   reg drive = 0;
   reg [7:0] dout = 8'h00;
   wire [7:0] D;
-  wire txd, rts, dtr;
+  wire txd, rts, dtr, txrdy;
 
   assign D = drive ? dout : 8'bz;
 
   usart_8251 UUT(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                  .clk(1'b0), .rxc(baud), .txc(baud),
-                 .txd(txd), .rts(rts), .dtr(dtr), .rxd(txd));
+                 .txd(txd), .rts(rts), .dtr(dtr), .txrdy(txrdy),
+                 .rxd(txd), .cts_n(cts_n));
 
   task write_reg(input reg addr, input reg [7:0] value); begin
     A = addr; dout = value; drive = 1; cs_n = 0; #1 wr_n = 0; #1 wr_n = 1; #1 cs_n = 1; drive = 0; #1;
@@ -51,8 +52,16 @@ module usart_8251_tb;
 
     baud_tick();
     read_reg(1'b1, status);
-    if ((status & 8'h05) != 8'h01) begin
-      $display("USART8251: FAIL holding-to-shift status %02x", status);
+    if ((status & 8'h05) != 8'h00 || txrdy !== 1'b0) begin
+      $display("USART8251: FAIL inactive-CTS status %02x txrdy=%b", status, txrdy);
+      $finish;
+    end
+
+    cts_n = 0;
+    baud_tick();
+    read_reg(1'b1, status);
+    if ((status & 8'h05) != 8'h01 || txrdy !== 1'b1) begin
+      $display("USART8251: FAIL holding-to-shift status %02x txrdy=%b", status, txrdy);
       $finish;
     end
 

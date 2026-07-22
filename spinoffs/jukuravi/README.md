@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-22.
 
-Status: **EXECUTION STARTED — D0 alive-beep and CPU self-test images guarded; serial handshake next.**
+Status: **EXECUTION STARTED — D0 alive, CPU, and local 8251 images guarded; external handshake next.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -123,6 +123,20 @@ A Nano is sufficient for every stage except the optional bus-master stage
      to), then await the Nano's ack with a register-loop timeout. Distinct
      beeps for serial-confirmed vs serial-dead; if dead, all later results
      fall back to beep codes.
+     **Local-test simulation checkpoint implemented:** the third exact 8 KiB
+     image recovers and initializes D11, verifies the independent idle,
+     holding-full, frame-active, and fully-empty transmit states around a `55`
+     byte, and uses bounded register-only timeouts. A stuck transmitter selects
+     a continuous nominal 500 Hz USART-bad tone. Cosim and the full vm80a HDL
+     top prove success, injected stuck-TX, and predecessor CPU-bad paths with
+     exact I/O and no RAM writes. This separates a working D11/baud-clock core
+     from the still-untested outbound line-driver and ack path. Because the
+     8251A cannot start without active-low CTS and the receiver is inactive for
+     an open input, the Nano/level-shifter must assert X3 CTS before reset; a
+     missing/non-asserting harness takes the bounded USART-stage failure path.
+     The HDL fixture drives that connector input plus the already-documented
+     unresolved upstream 16 MHz rail boundary; D104 and the modeled
+     D103/D57/D11 clock chain remain in circuit.
   4. **RAM survey — find usable windows, don't just fail.** The populated
      bank is bit-sliced: D84–D91 (К565РУ5, 64K×1) each hold ONE BIT of
      every byte across the whole 64 KiB (`docs/hardware-map.md`) — no chip
@@ -241,10 +255,10 @@ transitions; the HDL unit guard proves the same intermediate status around its
 8N1 shifter. The model is deliberately limited to the async slice needed by the
 harness; sync/parity and physical baud timing remain outside this step.
 
-The first two diagnostic-ROM rungs now run under cosim. The CPU self-test's
-success and injected-failure paths are also executed by the vm80a-based HDL
-twin, while the D57 beeper path has its own waveform/connectivity guard. The
-next implementation step is the local 8251 self-test and serial handshake.
+The alive, CPU, and local-8251 diagnostic-ROM rungs now run under cosim and the
+vm80a-based HDL twin, including their injected failure paths, while the D57
+beeper path has its own waveform/connectivity guard. The next implementation
+step is the external `55` train, version/checksum banner, and Nano ack handshake.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

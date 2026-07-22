@@ -8,6 +8,7 @@ trap 'rm -rf "$tmp"' EXIT
 
 python3 spinoffs/jukuravi/firmware/build_d0_alive.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_cpu.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -15,6 +16,8 @@ python3 tests/jukuravi_d0_alive_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-alive.bin
 python3 tests/jukuravi_d0_cpu_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-cpu.bin
+python3 tests/jukuravi_d0_usart_local_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-usart-local.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 python3 - "$tmp/success.hex" "$tmp/failure.hex" <<'PY'
@@ -53,6 +56,54 @@ for fixture in success failure; do
   printf '%s\n' "$hdl_out"
   grep -q "JUKURAVI-D0-CPU-HDL: PASS" <<<"$hdl_out"
   if grep -q "JUKURAVI-D0-CPU-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+python3 - "$tmp/usart-success.hex" "$tmp/usart-stuck.hex" "$tmp/usart-cpu-bad.hex" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "spinoffs/jukuravi/firmware"))
+import build_d0_alive
+import build_d0_usart_local
+
+image, metadata = build_d0_usart_local.build()
+success = bytearray(image + bytes([0x76]) * 8192)
+success[build_d0_alive.DELAY_COUNT_OFFSET] = 1
+success[build_d0_alive.DELAY_COUNT_OFFSET + 1] = 0
+stuck = bytearray(success)
+first_timeout = metadata["timeout_offsets"][0]
+stuck[first_timeout] = 1
+stuck[first_timeout + 1] = 0
+cpu_bad = bytearray(success)
+cpu_bad[metadata["signature_expected_offset"]] ^= 1
+for path, data in zip(map(Path, sys.argv[1:]), (success, stuck, cpu_bad)):
+    path.write_text("\n".join(f"{byte:02x}" for byte in data) + "\n")
+PY
+read -r usart_success_pc usart_cpu_fail_pc usart_fail_pc < <(
+  PYTHONPATH=spinoffs/jukuravi/firmware python3 - <<'PY'
+import build_d0_usart_local
+_, metadata = build_d0_usart_local.build()
+print(f"{metadata['success_halt']:04x} {metadata['cpu_fail_halt']:04x} {metadata['usart_fail_halt']:04x}")
+PY
+)
+iverilog -g2012 -o "$tmp/jukuravi_d0_usart_local_tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
+  hdl/sim/jukuravi_d0_usart_local_tb.v
+for fixture in success stuck cts-blocked cpu-bad; do
+  rom_fixture=$fixture
+  [[ $fixture == cts-blocked ]] && rom_fixture=stuck
+  args=(+rom="$tmp/usart-$rom_fixture.hex" +success="$usart_success_pc" \
+        +cpu_fail="$usart_cpu_fail_pc" +usart_fail="$usart_fail_pc")
+  [[ $fixture == stuck ]] && args+=(+expect_usart_fail +inject_stuck)
+  [[ $fixture == cts-blocked ]] && args+=(+expect_usart_fail +block_cts)
+  [[ $fixture == cpu-bad ]] && args+=(+expect_cpu_fail)
+  hdl_out=$(vvp "$tmp/jukuravi_d0_usart_local_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-USART-LOCAL-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-USART-LOCAL-HDL: FAIL" <<<"$hdl_out"; then
     exit 1
   fi
 done
