@@ -8,22 +8,25 @@
 #define JUK_SECTORS_PER_TRACK 10
 #define JUK_SECTOR_SIZE 512
 #define JUK_MFM_TRACK_SIZE 6250
+#define JUK_DELETED_MARK_COUNT (JUK_TRACKS * 2 * JUK_SECTORS_PER_TRACK)
 #define JUK_SINGLE_SIDED_SIZE (JUK_TRACKS * 1 * JUK_SECTORS_PER_TRACK * JUK_SECTOR_SIZE)
 #define JUK_DOUBLE_SIDED_SIZE (JUK_TRACKS * 2 * JUK_SECTORS_PER_TRACK * JUK_SECTOR_SIZE)
 
 typedef struct {
   FILE* fp;
+  FILE* deleted_marks_fp;
   int heads;
   long size;
   int writable;
   // The historical raw image stores payload bytes only. Preserve data-address
-  // mark type for the lifetime of an open image so the controller can model
-  // deleted records without pretending the metadata is on disk.
-  uint8_t deleted_data[JUK_TRACKS * 2 * JUK_SECTORS_PER_TRACK];
+  // mark type in memory, optionally backed by an explicitly attached companion
+  // file, without pretending the metadata is part of the raw image.
+  uint8_t deleted_data[JUK_DELETED_MARK_COUNT];
 } juk_disk;
 
 int juk_disk_open(juk_disk* disk, const char* path);
 int juk_disk_open_writable(juk_disk* disk, const char* path);
+int juk_disk_attach_deleted_marks(juk_disk* disk, const char* path);
 void juk_disk_close(juk_disk* disk);
 long juk_disk_offset(const juk_disk* disk, int track, int head, int sector);
 int juk_disk_read_sector(juk_disk* disk, int track, int head, int sector, uint8_t out[JUK_SECTOR_SIZE]);

@@ -45,7 +45,52 @@ int juk_disk_open_writable(juk_disk* disk, const char* path) {
 }
 
 
+int juk_disk_attach_deleted_marks(juk_disk* disk, const char* path) {
+  if (!disk || !disk->fp || !path || !path[0]) return -EINVAL;
+  if (disk->deleted_marks_fp) return -EBUSY;
+
+  FILE* fp = fopen(path, disk->writable ? "r+b" : "rb");
+  if (!fp && disk->writable && errno == ENOENT) {
+    fp = fopen(path, "w+b");
+    if (!fp) return -errno;
+    uint8_t empty[JUK_DELETED_MARK_COUNT] = {0};
+    if (fwrite(empty, 1, sizeof(empty), fp) != sizeof(empty) || fflush(fp) != 0) {
+      int saved_errno = errno;
+      fclose(fp);
+      return saved_errno ? -saved_errno : -EIO;
+    }
+    if (fseek(fp, 0, SEEK_SET) != 0) {
+      int saved_errno = errno;
+      fclose(fp);
+      return saved_errno ? -saved_errno : -EIO;
+    }
+  } else if (!fp) {
+    return -errno;
+  }
+
+  if (file_size(fp) != JUK_DELETED_MARK_COUNT) {
+    fclose(fp);
+    return -EINVAL;
+  }
+  if (fread(disk->deleted_data, 1, JUK_DELETED_MARK_COUNT, fp) != JUK_DELETED_MARK_COUNT) {
+    fclose(fp);
+    memset(disk->deleted_data, 0, sizeof(disk->deleted_data));
+    return -EIO;
+  }
+  for (int i = 0; i < JUK_DELETED_MARK_COUNT; i++) {
+    if (disk->deleted_data[i] > 1) {
+      fclose(fp);
+      memset(disk->deleted_data, 0, sizeof(disk->deleted_data));
+      return -EINVAL;
+    }
+  }
+  disk->deleted_marks_fp = fp;
+  return 0;
+}
+
+
 void juk_disk_close(juk_disk* disk) {
+  if (disk->deleted_marks_fp) fclose(disk->deleted_marks_fp);
   if (disk->fp) fclose(disk->fp);
   memset(disk, 0, sizeof(*disk));
 }
@@ -105,6 +150,13 @@ int juk_disk_set_sector_deleted(juk_disk* disk, int track, int head, int sector,
   if (!disk || !disk->writable) return -EROFS;
   long index = metadata_index(disk, track, head, sector);
   if (index < 0) return -EINVAL;
-  disk->deleted_data[index] = deleted != 0;
+  uint8_t value = deleted != 0;
+  if (disk->deleted_marks_fp) {
+    if (fseek(disk->deleted_marks_fp, index, SEEK_SET) != 0)
+      return errno ? -errno : -EIO;
+    if (fwrite(&value, 1, 1, disk->deleted_marks_fp) != 1) return -EIO;
+    if (fflush(disk->deleted_marks_fp) != 0) return errno ? -errno : -EIO;
+  }
+  disk->deleted_data[index] = value;
   return 0;
 }

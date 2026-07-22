@@ -58,12 +58,21 @@ a Force Interrupt leaves earlier sectors changed and later ones untouched.
 
 The raw file cannot encode arbitrary ID order/geometry, data-address-mark type,
 damaged headers, or noncanonical gap/flux content. The loader therefore keeps
-an explicit session-only normal/deleted bit for each sector. WD1793 Write
-Sector `a0` and representable Write Track `FB`/`F8` fields update it; Read
-Sector and reconstructed Read Track consume it. Closing and reopening the raw
-image deliberately resets every mark to normal because no such bits exist on
-disk. Other unrepresentable complete revolutions set behavioral WRITE FAULT
-instead of being falsely serialized as an unchanged valid raw image.
+an explicit normal/deleted bit for each sector. WD1793 Write Sector `a0` and
+representable Write Track `FB`/`F8` fields update it; Read Sector and
+reconstructed Read Track consume it. By default, closing and reopening the raw
+image resets every mark to normal because no such bits exist on disk.
+
+For workflows that need deleted marks to survive a process restart, both
+backends accept an explicit companion file: set `JUKU_DISK_DELETED_MARKS` for
+`cosim/trace`, or pass `+disk_deleted_marks=<path>` to the HDL model. The file
+is exactly 1,600 bytes, one binary `0` or `1` for every fixed
+`((track * 2 + side) * 10 + sector - 1)` slot. A writable mount creates and
+updates it; a read-only mount can consume an existing file. This sidecar is a
+simulation representation and is never embedded in or inferred from a raw
+`.juk`/`.CPM` payload. Other unrepresentable complete revolutions set
+behavioral WRITE FAULT instead of being falsely serialized as an unchanged
+valid raw image.
 
 ## Guard
 
@@ -74,13 +83,15 @@ sync/juk_disk_check.sh
 ```
 
 The guard creates synthetic single- and double-sided images, validates CHS
-sector reads, checks session mark set/clear plus reopen reset, and checks
-out-of-range addressing failures. It does not ship or validate any copyrighted
-EKDOS image.
+sector reads, checks default session reset and explicit-sidecar reopen
+persistence, and checks out-of-range addressing failures. `sync/fdc_check.sh`
+also writes the sidecar in one HDL process and reloads it read-only in another.
+It does not ship or validate any copyrighted EKDOS image.
 
 ## Next Use
 
 `cosim/juku_fdc.c` consumes this loader for the disk-backed WD1793 model. Use
 `sync/ekdos_fdc_probe.py` for the ROMBIOS boot-path probe; it defaults to the
 vendored `media/disks/JUKU1.CPM`. Use `JUKU_DISK=/path/to/image` when invoking
-`cosim/trace` directly.
+`cosim/trace` directly, and set `JUKU_DISK_DELETED_MARKS=/path/to/marks` only
+when cross-run mark persistence is wanted.

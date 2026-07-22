@@ -98,7 +98,7 @@ static int check_image(const char* path, int heads) {
 }
 
 
-static int check_writable_image(const char* path) {
+static int check_writable_image(const char* path, const char* marks_path) {
   juk_disk disk;
   int rc = juk_disk_open_writable(&disk, path);
   if (rc != 0) {
@@ -127,6 +127,17 @@ static int check_writable_image(const char* path) {
   if (juk_disk_set_sector_deleted(&disk, 7, 1, 3, 1) != -EROFS) fail = 1;
   if (juk_disk_write_sector(&disk, 7, 1, 3, put) != -EROFS) fail = 1;
   juk_disk_close(&disk);
+
+  if (juk_disk_open_writable(&disk, path) != 0) return 1;
+  if (juk_disk_attach_deleted_marks(&disk, marks_path) != 0) fail = 1;
+  if (juk_disk_set_sector_deleted(&disk, 7, 1, 3, 1) != 0) fail = 1;
+  juk_disk_close(&disk);
+
+  if (juk_disk_open(&disk, path) != 0) return 1;
+  if (juk_disk_attach_deleted_marks(&disk, marks_path) != 0) fail = 1;
+  if (juk_disk_sector_deleted(&disk, 7, 1, 3) != 1) fail = 1;
+  if (juk_disk_set_sector_deleted(&disk, 7, 1, 3, 0) != -EROFS) fail = 1;
+  juk_disk_close(&disk);
   return fail;
 }
 
@@ -139,18 +150,21 @@ int main(void) {
   }
   char ss[256];
   char ds[256];
+  char marks[256];
   snprintf(ss, sizeof(ss), "%s/single.juk", dir);
   snprintf(ds, sizeof(ds), "%s/double.juk", dir);
+  snprintf(marks, sizeof(marks), "%s/double.deleted", dir);
 
   int fail = 0;
   fail |= write_image(ss, 1);
   fail |= write_image(ds, 2);
   fail |= check_image(ss, 1);
   fail |= check_image(ds, 2);
-  fail |= check_writable_image(ds);
+  fail |= check_writable_image(ds, marks);
 
   unlink(ss);
   unlink(ds);
+  unlink(marks);
   rmdir(dir);
   if (fail) {
     fprintf(stderr, "JUK disk loader test: FAIL\n");

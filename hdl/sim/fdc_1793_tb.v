@@ -15,6 +15,7 @@ module fdc_1793_tb;
   reg [7:0] missed_read_next;
   reg disk_mode = 0;
   reg writable_mode = 0;
+  reg deleted_metadata_mode = 0;
   reg [7:0] format_stream [0:6249];
   reg [7:0] baseline_sector [0:511];
   integer format_len = 0;
@@ -158,6 +159,7 @@ module fdc_1793_tb;
   initial begin
     disk_mode = $test$plusargs("expect_disk");
     writable_mode = $test$plusargs("expect_writable");
+    deleted_metadata_mode = $test$plusargs("expect_deleted_metadata");
     repeat (4) @(posedge clk);
     expect_status(8'h80, 8'h80, "initial motor-off status");
     motor_on = 1;
@@ -736,6 +738,14 @@ module fdc_1793_tb;
     expect_status(8'h13, 8'h10, "side-compare mismatch fifth-index RNF");
 
     if (disk_mode && !writable_mode) begin
+      if (deleted_metadata_mode) begin
+        side = 0;
+        seek_track(8'd8);
+        write_reg(2'd2, 8'd3);
+        write_reg(2'd0, 8'h82);
+        for (i = 0; i < 512; i = i + 1) read_reg(2'd3, got);
+        expect_status(8'h20, 8'h20, "reopened deleted-record metadata");
+      end
       write_reg(2'd0, 8'hA0);
       expect_status(8'h43, 8'h40, "read-only write-sector reject");
     end

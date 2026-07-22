@@ -1130,11 +1130,15 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `ifndef YOSYS
     reg [7:0] track_buf [0:6249];
     // Raw Juku images have no address-mark channel. Keep deleted-record
-    // metadata for the lifetime of this loaded image only.
+    // metadata in memory, with an optional explicit companion file for
+    // cross-run persistence without modifying the raw sector payload.
     reg [1599:0] deleted_data = 0;
+    reg [7:0] deleted_mark_bytes [0:1599];
 `endif
     reg [1023:0] disk_path;
+    reg [1023:0] deleted_marks_path;
     integer disk_file = 0;
+    integer deleted_marks_file = 0;
     integer disk_heads = 0;
     integer disk_requested = 0;
     integer disk_loaded = 0;
@@ -1143,6 +1147,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer disk_read_count = 0;
     integer disk_seek_status = 0;
     integer disk_sector_ok = 0;
+    integer deleted_marks_read_count = 0;
+    integer deleted_marks_index = 0;
     integer write_transfer = 0;
     integer write_track_transfer = 0;
     integer read_address_transfer = 0;
@@ -1255,6 +1261,36 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             end else begin
                 $display("FDC-1793: could not open raw disk %0s", disk_path);
             end
+            if (disk_loaded && $value$plusargs("disk_deleted_marks=%s", deleted_marks_path)) begin
+                if (disk_writable) deleted_marks_file = $fopen(deleted_marks_path, "r+b");
+                else deleted_marks_file = $fopen(deleted_marks_path, "rb");
+                if (!deleted_marks_file && disk_writable) begin
+                    deleted_marks_file = $fopen(deleted_marks_path, "wb");
+                    if (!deleted_marks_file)
+                        $fatal(1, "FDC-1793: could not create deleted-record metadata %0s",
+                               deleted_marks_path);
+                    for (deleted_marks_index = 0; deleted_marks_index < 1600;
+                         deleted_marks_index = deleted_marks_index + 1)
+                        $fwrite(deleted_marks_file, "%c", 8'h00);
+                    $fflush(deleted_marks_file);
+                    $fclose(deleted_marks_file);
+                    deleted_marks_file = $fopen(deleted_marks_path, "r+b");
+                end
+                if (!deleted_marks_file)
+                    $fatal(1, "FDC-1793: could not open deleted-record metadata %0s",
+                           deleted_marks_path);
+                deleted_marks_read_count = $fread(deleted_mark_bytes, deleted_marks_file);
+                if (deleted_marks_read_count != 1600 || $fgetc(deleted_marks_file) != -1)
+                    $fatal(1, "FDC-1793: deleted-record metadata must contain exactly 1600 bytes");
+                for (deleted_marks_index = 0; deleted_marks_index < 1600;
+                     deleted_marks_index = deleted_marks_index + 1) begin
+                    if (deleted_mark_bytes[deleted_marks_index] > 1)
+                        $fatal(1, "FDC-1793: invalid deleted-record metadata byte at %0d",
+                               deleted_marks_index);
+                    deleted_data[deleted_marks_index] = deleted_mark_bytes[deleted_marks_index][0];
+                end
+                $display("FDC-1793: loaded deleted-record metadata %0s", deleted_marks_path);
+            end
         end
     end
 `endif
@@ -1332,6 +1368,18 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end endfunction
 
 `ifndef YOSYS
+    task set_deleted_mark(input integer mark_index, input integer mark_value); begin
+        deleted_data[mark_index] = mark_value != 0;
+        if (deleted_marks_file) begin
+            disk_seek_status = $fseek(deleted_marks_file, mark_index, 0);
+            if (disk_seek_status != 0)
+                $fatal(1, "FDC-1793: could not seek deleted-record metadata index %0d",
+                       mark_index);
+            $fwrite(deleted_marks_file, "%c", mark_value != 0 ? 8'h01 : 8'h00);
+            $fflush(deleted_marks_file);
+        end
+    end endtask
+
     task load_disk_sector; begin
         disk_sector_ok = 0;
         if (!disk_loaded) begin
@@ -1472,7 +1520,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             buffer_pos = buffer_pos + 1;
             if (buffer_pos >= buffer_len) begin
                 $fflush(disk_file);
-                deleted_data[sector_metadata_index(physical_track, side, sector)] = command[0];
+                set_deleted_mark(
+                    sector_metadata_index(physical_track, side, sector), command[0]);
                 if (!multi_record) begin
                     complete_transfer();
                 end else begin
@@ -1881,9 +1930,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1)
                     $fwrite(disk_file, "%c", sector_buf[byte_index]);
                 $fflush(disk_file);
-                deleted_data[sector_metadata_index(
-                    physical_track, side, write_track_pending_sector)] =
-                    write_track_pending_deleted;
+                set_deleted_mark(
+                    sector_metadata_index(physical_track, side, write_track_pending_sector),
+                    write_track_pending_deleted);
                 sector_bit = 10'b1 << (write_track_pending_sector - 1);
                 if (write_track_seen & sector_bit) write_track_format_error = 1;
                 write_track_seen = write_track_seen | sector_bit;

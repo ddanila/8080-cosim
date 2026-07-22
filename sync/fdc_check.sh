@@ -30,9 +30,16 @@ echo "== HDL WD1793 writable-copy write-sector check =="
 cp media/disks/JUKU1.CPM "$TMP/JUKU1-writable.CPM"
 writable_out=$(vvp "$TMP/fdc_1793_tb" \
   +disk="$TMP/JUKU1-writable.CPM" +disk_heads=2 +disk_writable \
-  +expect_disk +expect_writable)
+  +disk_deleted_marks="$TMP/JUKU1.deleted" +expect_disk +expect_writable)
 echo "$writable_out"
 grep -q "FDC-1793: PASS" <<<"$writable_out" || { echo "FDC-CHECK: FAIL"; exit 1; }
+
+echo "== HDL WD1793 deleted-record metadata reopen check =="
+metadata_out=$(vvp "$TMP/fdc_1793_tb" \
+  +disk=media/disks/JUKU1.CPM +disk_heads=2 \
+  +disk_deleted_marks="$TMP/JUKU1.deleted" +expect_disk +expect_deleted_metadata)
+echo "$metadata_out"
+grep -q "FDC-1793: PASS" <<<"$metadata_out" || { echo "FDC-CHECK: FAIL"; exit 1; }
 
 echo "== juku_top decoded peripheral bus check =="
 sync/juku_top_periph_bus_check.sh
@@ -148,11 +155,15 @@ physical D93/D94 wiring.
   `0xF8`; a completed Read Sector exposes the selected mark as bit-5 RECORD
   TYPE without confusing a deleted record with WRITE FAULT. The payload-only
   Juku raw format cannot serialize marks, so both backends keep one explicit
-  bit per sector for the lifetime of the mounted image. Normal/deleted writes,
+  bit per sector. Normal/deleted writes,
   multi-record transitions, Read Sector status, Write Track `FB`/`F8` parsing,
   and Read Track mark/CRC reconstruction are guarded in C and HDL; decoded
-  top-level tests cover both Write Sector `a0` and Write Track `F8`. Closing and
-  reopening the raw file deliberately resets this session metadata to normal.
+  top-level tests cover both Write Sector `a0` and Write Track `F8`. By default,
+  closing and reopening the raw file resets this metadata to normal. An explicit
+  1,600-byte companion file (`JUKU_DISK_DELETED_MARKS` in C or
+  `+disk_deleted_marks=` in HDL) persists exactly one 0/1 byte per possible
+  track/side/sector mark without changing the raw image; C and two-process HDL
+  reopen guards prove the optional format.
 - Type-II side flags follow the FD179X ID-search contract. With `C=0`, the
   recorded ID side is ignored; with `C=1`, the ID side bit must match `S`.
   The sector-only backend uses the selected image head as the reconstructed ID
@@ -183,7 +194,7 @@ physical D93/D94 wiring.
   leaves the sector register unchanged. The byte stream reconstructs
   all ten MFM ID/data fields from the raw image: 32-byte index gap; per-sector
   12-byte sync, three decoded `0xA1` missing-clock sync bytes, `0xFE` ID mark,
-  CHRN and CRC; 22-byte gap; another sync/A1 run, the session's `0xFB`/`0xF8`
+  CHRN and CRC; 22-byte gap; another sync/A1 run, the mounted metadata's `0xFB`/`0xF8`
   data mark, 512 payload bytes and CRC; 35-byte gap; then 128 bytes of end gap.
   This is the exact
   2,000 ns-cell/32-22-35 descriptor recorded by MAME's Juku format at commit
@@ -204,7 +215,7 @@ physical D93/D94 wiring.
   the canonical ten-sector Juku layout consumes 6,230 CPU data writes while
   producing 6,250 on-disk bytes. Both models parse all ten CHRN fields, require
   track/side/sector/512-byte geometry representable by the flat image, and
-  persist every completed data field and its normal/deleted mark in session
+  persist every completed data field and its normal/deleted mark in mounted
   metadata. The writable guards read all ten sectors back; a mid-track D0 test
   proves sector 1 persists while untouched sector 2
   remains byte-identical, matching a non-atomic physical abort. A full
@@ -212,8 +223,10 @@ physical D93/D94 wiring.
   bit and leaves the flat image unchanged instead of silently claiming that
   unrepresentable flux/ID metadata was saved. Read-only and motor-off commands
   still complete with WRITE PROTECT and NOT READY respectively. Actual index
-  timing, cross-reopen deleted-mark persistence, arbitrary sector geometry,
-  and partial gap/header damage remain explicit backend/timing boundaries.
+  timing, arbitrary sector geometry, and partial gap/header damage remain
+  explicit backend/timing boundaries. Cross-reopen deleted marks are supported
+  only through the explicit companion format, not inside payload-only
+  `.juk`/`.CPM` files.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
 - The generic КР580ВА87/8287 model complements all 256 byte values in both
@@ -446,8 +459,8 @@ evidence exists.
   not a general WD1793 conformance model. D95 selector-dependent Type-I and
   Type-II/III E-delay intervals are guarded, but physical D93.24 oscillator accuracy/edges,
   physical D93.23 HLT generation, D93.34 TR00 drive-status continuity, and
-  step-interface timing, arbitrary flux/sector layouts, cross-reopen
-  deleted-mark persistence, inter-record delays, and physical rotational timing remain outside
+  step-interface timing, arbitrary flux/sector layouts, inter-record delays,
+  and physical rotational timing remain outside
   its proved scope. Command-load READY sampling and Type-IV READY-transition and
   index-event semantics are guarded, but the board's physical D93.32 READY
   source, event pulse widths, and rotational timing remain outside this

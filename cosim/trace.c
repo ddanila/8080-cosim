@@ -447,12 +447,24 @@ int main(int argc, char** argv) {
       fprintf(stderr, "JUKU_DISK=%s could not be opened as a raw Juku disk image (rc=%d)\n", disk_path, rc);
       return 2;
     }
+    const char* deleted_marks_path = getenv("JUKU_DISK_DELETED_MARKS");
+    if (deleted_marks_path && deleted_marks_path[0]) {
+      rc = juk_disk_attach_deleted_marks(&disk, deleted_marks_path);
+      if (rc != 0) {
+        fprintf(stderr, "JUKU_DISK_DELETED_MARKS=%s could not be attached (rc=%d)\n",
+                deleted_marks_path, rc);
+        juk_disk_close(&disk);
+        return 2;
+      }
+    }
     juku_fdc_init(&fdc, &disk);
     fdc_enabled = 1;
     fprintf(stderr, "loaded JUKU disk image %s (%ld bytes, %d side%s, %s, FDC bus %s)\n",
             disk_path, disk.size, disk.heads, disk.heads == 1 ? "" : "s",
             disk_writable ? "writable" : "read-only",
             fdc_bus_invert ? "inverting" : "non-inverting");
+    if (deleted_marks_path && deleted_marks_path[0])
+      fprintf(stderr, "loaded JUKU deleted-record metadata %s\n", deleted_marks_path);
   }
 
   size_t n = load_image(rom_path, rom, ROM_SIZE, 0x00);
