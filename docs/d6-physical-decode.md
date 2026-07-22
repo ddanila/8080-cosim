@@ -108,6 +108,7 @@ nibble per 2 KiB block from `0000` through `F800`.
 | D6.11 conductor also reaches D92.5/R12.2 | PASS |
 | D13.12 drives the D6 enable conductor, not either output | PASS |
 | D7.8 drives D105.1 and D6 A7 as IO_CYCLE_H | PASS |
+| D6 package provenance names the adopted table and current A7 net | PASS |
 | HDL keeps the D6 outputs separate | PASS |
 | HDL models D6 raw outputs as open collector with physical pull-up recovery | PASS |
 | HDL uses measured physical D6 address order | PASS |

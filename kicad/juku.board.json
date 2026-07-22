@@ -177,7 +177,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "validated physical dump uses RT4 address order A0-A7=5/6/7/4/3/2/1/15. Direct .009 owner continuity on 2026-07-14 proves board signals BA15,BA14,BA13,BA12,BA11,/PC0,/PC1,D6_A7_D105_I1_BOUNDARY respectively, superseding the older PC2/PC3/PC4 assignment. Program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged; five accepted cross-machine reads including a power-cycled capture agree at all 256 addresses with raw SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
+    "pins": "validated physical dump uses RT4 address order A0-A7=5/6/7/4/3/2/1/15. Direct .009 owner continuity through 2026-07-19 proves board signals BA15,BA14,BA13,BA12,BA11,/PC0,/PC1,IO_CYCLE_H respectively, superseding the older PC2/PC3/PC4 assignment and the retired D6 A7 boundary. Program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged. Three independent reader-3 captures, including a power-cycled capture, agree at all 256 addresses with adopted raw SHA256 c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489; the earlier capture had all four output channels reversed."
    }
   },
   {
@@ -5335,7 +5335,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official placement; sheet-1 .006 wait/MRD logic",
-    "pins": "12+13 tied from MEMW -> 11 to D30.13; direct .009 owner continuity on 2026-07-14 proves pin1 joins D6.15 but not pins12/13 or D5.26, superseding the older-sheet MWR assignment; pin2 receives D13.4 and output3 remains a boundary. D1.17 DBIN -> 9 with named off-sheet H -> 10, producing 8; 8 ties 4+5 -> 6 and feeds D5.4"
+    "pins": "12+13 tied from MEMW -> 11 to D30.13; direct .009 owner continuity through 2026-07-19 proves pin1 joins D7.8 and D6.15 on IO_CYCLE_H but not pins12/13 or D5.26, superseding the older-sheet MWR assignment; pin2 receives D13.4 and output3 is the qualified active-low peripheral IOWR rail reaching D94.13, D29.5, D10.2, D11.10, D26.36, D27.36, and the PIT write inputs. D1.17 DBIN -> 9 with named off-sheet H -> 10, producing 8; 8 ties 4+5 -> 6 and feeds D5.4"
    }
   },
   {

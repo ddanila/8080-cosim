@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `335`
 - Nets modeled: `478`
-- Chip-level fidelity gaps: `58`
+- Chip-level fidelity gaps: `57`
 - Net-level source-risk gaps: `44`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `66`
@@ -70,7 +70,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 2 | 8 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 2 |
-| logic/source | 15 | 28 |
+| logic/source | 14 | 28 |
 | memory/timing | 0 | 1 |
 | placement/refdes | 26 | 0 |
 | placement/value | 13 | 0 |
@@ -95,7 +95,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D6` | `DEC_PROM` | scan | validated physical dump uses RT4 address order A0-A7=5/6/7/4/3/2/1/15. Direct .009 owner continuity on 2026-07-14 proves board signals BA15,BA14,BA13,BA12,BA... |
+| `D6` | `DEC_PROM` | scan | validated physical dump uses RT4 address order A0-A7=5/6/7/4/3/2/1/15. Direct .009 owner continuity through 2026-07-19 proves board signals BA15,BA14,BA13,BA... |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092; validated repeated physical table adopted РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16c... |
 
 ### logic/source
@@ -104,7 +104,6 @@ parts placement and Tier-3 reproduction.
 | --- | --- | --- | --- |
 | `D1` | `CPU8080` | scan | complete КР580ВМ80А/8080 package contract: scan traces VSS pin2 to GND, VBB pin11 to locally derived -5V, VCC pin20 to +5V, and VDD pin28 to +12V; HOLD/pin13... |
 | `D104` | `UP2` | scan | sheet-1 triple К170УП2 receiver and power-pin table A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; datasheet fourth receiver is 7->10. Owner resistance 2026-07... |
-| `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MEMW -> 11 to D30.13; direct .009 owner continuity on 2026-07-14 proves pin1 joins D6.15... |
 | `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Owner continuity on 2026-07-20 proves RESET enters the form... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
 | `D7` | `LA3_GATE` | scan | complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 befor... |

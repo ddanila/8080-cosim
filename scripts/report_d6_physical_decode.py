@@ -78,6 +78,8 @@ def main() -> int:
         raise SystemExit(f"D6 mode-map classification changed: {actual_runs}")
 
     board = json.loads((ROOT / "kicad/juku.board.json").read_text())
+    d6 = next(chip for chip in board["chips"] if chip.get("ref") == "D6")
+    d6_provenance = d6.get("prov", {}).get("pins", "")
     rom_nodes = {tuple(node) for node in board["nets"]["ROM_SEL"]["nodes"]}
     enable_nodes = {tuple(node) for node in board["nets"]["D6_V_ENABLE"]["nodes"]}
     wreq_nodes = {tuple(node) for node in board["nets"]["WREQ_N"]["nodes"]}
@@ -94,6 +96,12 @@ def main() -> int:
         ("D13.12 drives the D6 enable conductor, not either output", ("D13", "12") in enable_nodes and ("D13", "12") not in rom_nodes | wreq_nodes),
         ("D7.8 drives D105.1 and D6 A7 as IO_CYCLE_H",
          {("D7", "8"), ("D105", "1"), ("D6", "15")} <= io_cycle_nodes),
+        ("D6 package provenance names the adopted table and current A7 net",
+         EXPECTED_SHA256 in d6_provenance
+         and "Three independent reader-3 captures" in d6_provenance
+         and "IO_CYCLE_H" in d6_provenance
+         and "D6_A7_D105_I1_BOUNDARY" not in d6_provenance
+         and "05a127c330762600" not in d6_provenance),
         ("HDL keeps the D6 outputs separate", ".rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n)" in hdl),
         ("HDL models D6 raw outputs as open collector with physical pull-up recovery",
          "К556РТ4 outputs are open collector" in devices

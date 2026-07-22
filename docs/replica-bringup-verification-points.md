@@ -11,7 +11,7 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `67591c0564beef004f9464b4df4f223f96c40ba7c242aaf19e98a478b3422977`
+- Source board JSON SHA-256: `b5660af24f7c3fbd14bbfa7809c9ebd91b88affbb34c6e1677b16fa13bcdfacd`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Final PCB source SHA-256: `a794125b63e35dca4a8144f989a4daac50fc66c114e969c822a8914289d17d31`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`

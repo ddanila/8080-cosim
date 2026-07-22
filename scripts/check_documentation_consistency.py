@@ -282,12 +282,19 @@ def main() -> int:
                 failures.append(f"{path} retains stale D94/D101/D104 claim: {phrase!r}")
 
     board_model = read("kicad/juku.board.json")
-    for phrase in ("AMW_N/D29.5", "pin7 shares D94.13"):
+    for phrase in (
+        "AMW_N/D29.5",
+        "pin7 shares D94.13",
+        "output3 remains a boundary",
+        "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39",
+    ):
         if phrase in board_model:
             failures.append(f"board chip provenance retains superseded owner claim: {phrase!r}")
     for marker in (
         "disproves the former D7.3-to-D29.5 interpretation",
         "disproving the former D94.13/R87.1 merge",
+        "Three independent reader-3 captures",
+        "output3 is the qualified active-low peripheral IOWR rail",
     ):
         if marker not in board_model:
             failures.append(f"board chip provenance lost owner correction: {marker!r}")

@@ -52,6 +52,7 @@ def main() -> int:
     d9 = chip(board, "D9")
     d7 = chip(board, "D7")
     d5 = chip(board, "D5")
+    d105 = chip(board, "D105")
     checks = [
         (
             "D5 system-controller power contract is routed",
@@ -169,7 +170,9 @@ def main() -> int:
             "D7.8 I/O-cycle qualifier and D105.3 qualified /WR are owner-closed",
             set(nodes(board, "IO_CYCLE_H")) == {("D7", "8"), ("D105", "1"), ("D6", "15")}
             and has_nodes(board, "IOWR", {("D105", "3"), ("D94", "13"), ("D29", "5")})
-            and set(nodes(board, "IOWR_RAW_N")) == {("D5", "27"), ("D7", "10")},
+            and set(nodes(board, "IOWR_RAW_N")) == {("D5", "27"), ("D7", "10")}
+            and "output3 is the qualified active-low peripheral IOWR rail" in d105.get("prov", {}).get("pins", "")
+            and "output3 remains a boundary" not in d105.get("prov", {}).get("pins", ""),
             "Owner continuity 2026-07-19 separates raw D5.27 from qualified D105.3 and closes D7.8 to D105.1/D6.15",
         ),
     ]
