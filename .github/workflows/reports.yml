@@ -275,6 +275,26 @@ jobs:
           python3 scripts/report_video_analog_boundary.py
           git diff --exit-code -- docs/video-analog-boundary.md
 
+      - name: Check X7 output-stage model freshness
+        run: |
+          (cd ref/datasheets && sha256sum -c SHA256SUMS)
+          python3 scripts/model_x7_output_stage.py --fixture-dir /tmp/juku-x7-static
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/juku-x7-static')
+          metadata = json.loads((root / 'x7-static-step.json').read_text())
+          waveform = (root / metadata['waveform_file']).read_bytes()
+          assert metadata['classification'] == 'synthetic static transfer diagnostic; not a video waveform'
+          assert len(waveform) == metadata['sample_count'] * 4
+          assert hashlib.sha256(waveform).hexdigest() == metadata['waveform_sha256']
+          PY
+          git diff --exit-code -- \
+            docs/x7-output-stage-model.md \
+            ref/video/x7-output-stage-summary.json
+
       - name: Check S4 interrupt boundary freshness
         run: |
           python3 scripts/report_s4_interrupt_boundary.py
@@ -372,6 +392,7 @@ jobs:
           python3 scripts/report_memory_timing_boundary.py
           python3 scripts/report_io_decode_boundary.py
           python3 scripts/report_video_analog_boundary.py
+          python3 scripts/model_x7_output_stage.py
           python3 scripts/report_s4_interrupt_boundary.py
           python3 scripts/report_unmodeled_footprint_inventory.py
           python3 scripts/report_d30_section_b_scan_chase.py
@@ -387,6 +408,7 @@ jobs:
             docs/memory-timing-boundary.md \
             docs/io-decode-boundary.md \
             docs/video-analog-boundary.md \
+            docs/x7-output-stage-model.md \
             docs/s4-interrupt-boundary.md \
             docs/unmodeled-footprint-inventory.md \
             docs/d30-section-b-scan-chase.md \

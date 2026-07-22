@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "model_id": "juku-x7-static-v1",
+  "authority": {
+    "topology": "kicad/juku.board.json",
+    "component_values": "ref/schematics/native-resistor-value-registration.json",
+    "device_identity": "ref/schematics/native-semiconductor-registration.json",
+    "d34_exact_revision_identity": "ref/juku-official-009-ic-census.json",
+    "d34_comparison_limits": "ref/datasheets/k555lp5-output-reference.txt"
+  },
+  "scope": {
+    "included": "DC transfer from the two D34 TTL output-pin voltages through R62/R63/R64, VT2, R65, and an optional external load",
+    "excluded": [
+      "C94, whose population, value, and endpoints are unresolved",
+      "frequency-dependent transistor behavior and cable/probe capacitance",
+      "D34 edge shape, output impedance, and propagation delay",
+      "physical D34 logic polarity and video timing",
+      "installed-part calibration"
+    ]
+  },
+  "nominal": {
+    "resistance_ohm": {
+      "R62": 2000.0,
+      "R63": 1000.0,
+      "R64": 5100.0,
+      "R65": 430.0
+    },
+    "ttl_pin_voltage_v": {
+      "low": 0.25,
+      "high": 3.4
+    },
+    "supply_v": 5.0,
+    "external_load_ohm": 75.0,
+    "transistor": {
+      "beta": 100.0,
+      "vbe_v": 0.7,
+      "vce_saturation_v": 0.2
+    }
+  },
+  "sweep": {
+    "resistor_tolerance_fraction": 0.05,
+    "ttl_low_v": [0.25, 0.4, 0.5],
+    "ttl_high_v": [2.7, 3.4],
+    "supply_v": [4.75, 5.0, 5.25],
+    "external_load_ohm": [73.5, 75.0, 76.5],
+    "beta": [40.0, 100.0, 250.0],
+    "vbe_v": [0.55, 0.7, 0.85]
+  },
+  "d34_compatibility_reference": {
+    "board_device": "К555ЛП5",
+    "comparison_device": "Texas Instruments SN74LS86A",
+    "comparison_only_not_equivalence_evidence": true,
+    "datasheet": "ref/datasheets/sn74ls86a-ti.pdf, SDLS124 revision March 1988, document page 4",
+    "datasheet_sha256": "0552f028f377ad641659bd44d671e420db08839bd45adbcf8c04de7bf11795ad",
+    "high_source_current_ma": 0.4,
+    "low_sink_current_ma": 8.0,
+    "voh_typical_v_at_high_source_current": 3.4,
+    "voh_min_v_at_high_source_current": 2.7,
+    "vol_max_v_at_low_sink_current": 0.5
+  },
+  "diagnostic_fixture": {
+    "sample_rate_hz": 1000000,
+    "samples_per_state": 1024,
+    "state_sequence": [[0, 0], [1, 0], [1, 1], [0, 1]],
+    "sample_format": "float32-le-volts",
+    "load_ohm": 75.0
+  },
+  "assumptions": [
+    "D34 is the exact-revision К555ЛП5. TTL inputs are fixed pin voltages, not unloaded logic-source voltages; SN74LS86A values bound a comparison only and do not establish Soviet-part equivalence or a nonlinear D34 output model.",
+    "VT2 is a piecewise-linear NPN emitter follower: off below VBE, otherwise IE=(beta+1)*IB, with saturation checked but not needed by the declared corners.",
+    "The 75-ohm termination is in parallel with the fitted R65 emitter resistor.",
+    "The beta and VBE ranges are engineering sensitivity bounds, not measurements of the installed KT315Б."
+  ]
+}

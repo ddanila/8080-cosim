@@ -1,0 +1,39 @@
+К555ЛП5 / SN74LS86A output-stage comparison for Juku D34
+=========================================================
+
+Board identity
+--------------
+
+The exact-revision ДГШ5.109.009 ПЭЗ census identifies D34 as К555ЛП5.
+This is guarded independently by ref/juku-official-009-ic-census.json and
+scripts/report_official_009_ic_census.py.
+
+Closest local manufacturer reference
+------------------------------------
+
+ref/datasheets/sn74ls86a-ti.pdf is Texas Instruments SDLS124, "SN5486,
+SN54LS86A, SN54S86, SN7486, SN74LS86A, SN74S86 — Quadruple 2-Input
+Exclusive-OR Gates", December 1972, revised March 1988. The relevant
+SN74LS86A table is on document page 4.
+
+At VCC=5 V and TA=25 C the table gives typical VOH=3.4 V at IOH=-0.4 mA.
+Across the recommended commercial operating range it gives VOH >= 2.7 V at
+IOH=-0.4 mA, VOL <= 0.4 V at IOL=4 mA, and VOL <= 0.5 V at IOL=8 mA. The
+recommended output-current conditions are IOH=-0.4 mA and IOL=8 mA.
+
+Model boundary
+--------------
+
+SN74LS86A is a closest LS-TTL XOR comparison, not evidence that the installed
+К555ЛП5 has identical DC curves. The limits above are used only to flag when
+the fixed-pin-voltage X7 approximation requests more current than this
+comparison device's characterized test condition. They are not used as a
+К555ЛП5 acceptance limit and do not define a nonlinear output impedance.
+
+Source URL
+----------
+
+https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf
+
+Retrieved 2026-07-22. SHA256 of the preserved PDF:
+0552f028f377ad641659bd44d671e420db08839bd45adbcf8c04de7bf11795ad

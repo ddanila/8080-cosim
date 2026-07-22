@@ -1369,7 +1369,12 @@ The sample-domain X7 receiver and CRT-display work is specified separately in
 [`docs/crt-cvbs-simulation-plan.md`](docs/crt-cvbs-simulation-plan.md). That
 plan records the `ddanila/famicom-rf-hackrf-decoder` fork, keeps the Juku
 waveform truth in this repository, and separates electrical waveform, receiver
-lock, active-image, and CRT-presentation claims.
+lock, active-image, and CRT-presentation claims. Its first WP4 checkpoint now
+guards the traced R62-R65/VT2/X7 DC topology, both 75-ohm and unterminated
+loads, and a declared tolerance sweep. That result is deliberately provisional:
+the fixed D34 pin-voltage approximation exceeds a closest SN74LS86A comparison
+source-current condition, so exact-revision К555ЛП5 drive behavior and physical
+calibration remain open before the model can claim X7 levels.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

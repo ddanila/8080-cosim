@@ -25,6 +25,7 @@ Current artifacts:
 | D96 | КМ555ТМ2 / SN74LS74A-compatible | `sn74ls74a-ti.pdf` | `k555tm2-pinout.txt` |
 | D84-D91 | К565РУ5Г / 4164-class 64Kx1 DRAM | `mk4564-64kx1-dram.pdf` | `k565ru5-pinout.txt` |
 | D2, D6 | К556РТ4 / 82S126 256x4 OC PROM | `82s126-556rt4-256x4-oc-prom.pdf` | `k556rt4-pinout.txt` |
+| D34 | К555ЛП5 / SN74LS86A comparison only | `sn74ls86a-ti.pdf` | `k555lp5-output-reference.txt` |
 
 Checksums:
 
@@ -39,6 +40,7 @@ abe37431fa9098d0230544c83e4490cc3e788f6be92ef23e99124047f2b59707  sn74ls123-ti.p
 d162b65235d894394a5438eef01cc890b0a95b38d3cdd1931eb8c5ed532c697d  sn74ls74a-ti.pdf
 8a6169963c020c1ff8b3c413356ed8f354b9963b77dab8f9bd2af22560c44093  mk4564-64kx1-dram.pdf
 63938c06d5c4645aaa462bb8c87dd8555f324056a64fca3585f5f725320b5223  82s126-556rt4-256x4-oc-prom.pdf
+0552f028f377ad641659bd44d671e420db08839bd45adbcf8c04de7bf11795ad  sn74ls86a-ti.pdf
 ```
 
 Sources:
@@ -55,3 +57,6 @@ Sources:
   bank D84-D91): `https://www.minuszerodegrees.net/memory/4164/datasheet_MK4564-12.pdf`
 - Signetics 82S126 (К556РТ4 = 82S126/3601/74S387 equivalent, the D2/D6 OC PROM):
   `https://www.retrotechnology.com/restore/82S126_signetics.pdf`
+- SN74LS86A Texas Instruments PDF, used only as an LS-TTL XOR output-current
+  comparison for exact-revision D34 К555ЛП5:
+  `https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf`

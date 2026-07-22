@@ -1,8 +1,8 @@
 # Juku X7 composite-video and CRT simulation task plan
 
-Status date: **2026-07-21**.
+Status date: **2026-07-22**.
 
-Status: **PLANNED / NO RAW-X7 RECEIVER CLAIM YET**.
+Status: **IN PROGRESS / STATIC X7 TOPOLOGY MODEL ONLY / NO RAW-X7 RECEIVER CLAIM YET**.
 
 This is a subordinate execution plan for the video/composite item in
 `../PLAN.md`. The main plan remains authoritative for project priorities and
@@ -108,13 +108,20 @@ Already guarded in `8080-cosim`:
   D54/D55/D56 crossings into D34;
 - the composite handoff topology and values are recorded as R62=2 kOhm,
   R63=1 kOhm, R64=5.1 kOhm, VT2=KT315, and R65=430 Ohm; and
-- X7 is the VIDEO_OUT/GND connector.
+- X7 is the VIDEO_OUT/GND connector; and
+- `scripts/model_x7_output_stage.py` now guards the traced DC topology, solves
+  all four D34 logic combinations with 75-ohm and unterminated loads, sweeps
+  7,776 terminated corners per state, and emits an optional metadata-complete
+  float32 stepped diagnostic. This is a static transfer result, not video.
 
 Not yet proved:
 
 - the exact shared-DRAM video-read slot schedule;
 - a faithful physical D34 picture/sync waveform in the runnable HDL;
 - X7 voltage levels and edge shape under a 75-ohm monitor load;
+- a nonlinear output model or measured DC curves for exact-revision D34
+  К555ЛП5; the provisional fixed-pin-voltage model exceeds the SN74LS86A
+  comparison source-current condition in three nominal active combinations;
 - the installed KT315 device parameters and tolerance spread;
 - the function and endpoints of C94 beside VT2;
 - monitor lock against the actual Juku line/frame waveform; and
@@ -232,6 +239,16 @@ pixels reconstruct the guarded framebuffer without metadata assistance.
 
 ### WP4 — X7 output-stage model
 
+Progress: the traced resistor rails, VT2 E-C-B mapping, +5 V collector, grounded
+emitter load, and X7 endpoint are machine-guarded by the static model. The
+piecewise-linear emitter follower, declared beta/VBE sensitivity bounds,
+independent resistor corners, supply/load sweep, compact JSON summary, and
+on-demand float32 step fixture are implemented. C94 stays absent. The result
+deliberately does **not** pass the WP4 exit gate: D34 is К555ЛП5, and a closest
+SN74LS86A comparison shows that the fixed-voltage source approximation requests
+more high-state current than its characterized condition. A nonlinear D34
+driver model backed by К555ЛП5 data or hardware measurement remains necessary.
+
 - Model the two D34 logic sources and their real output characteristics.
 - Model R62/R63/R64, the KT315 emitter follower, R65, +5 V, and X7.
 - Include an explicit 75-ohm monitor termination and an unterminated diagnostic
@@ -345,7 +362,8 @@ The task is complete only when all of the following hold:
 4. Generate a synthetic non-NTSC monochrome fixture and prove receiver lock.
 5. In parallel with later decoder work, close the remaining Juku physical
    video-slot and D34 signal boundaries before calling any HDL waveform X7.
-6. Add the terminated VT2 circuit model and connect its sample output to the
-   decoder.
+6. Replace the provisional fixed-pin-voltage D34 sources with a data- or
+   measurement-backed К555ЛП5 driver, then connect the existing terminated VT2
+   transfer model's samples to the decoder.
 7. Calibrate against physical scope captures before promoting the result from
    a nominal model to verified monitor behavior.

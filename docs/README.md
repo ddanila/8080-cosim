@@ -81,7 +81,9 @@ findings. Every status applies only to the boundary named by the report.
   `video-slot-timing-audit.md`,
   `d99-reconstruction-constraints.md` (grounded-clear constant section 1,
   D94-D1 access trigger, fitted RC timing, and five remote-pin boundaries),
-  `video-readout-readiness.md`, `serial-handoff.md`, and
+  `video-readout-readiness.md`, `x7-output-stage-model.md` (guarded static
+  emitter-follower transfer plus an explicit К555ЛП5 drive-current boundary),
+  `serial-handoff.md`, and
   `beeper-readiness.md`, plus `factory-keyboard-matrix.md` (the complete
   `.104.015` matrix/X1 transcription and exact cosim/HDL coordinate contract).
 - Media/software: `vendored-disk-catalog.md`, `basic-disk-extraction.md`, and

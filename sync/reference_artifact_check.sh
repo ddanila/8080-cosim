@@ -26,6 +26,7 @@ check_dir ref/firmware
 check_dir ref/reconstructed-proms
 check_dir ref/reconstructed-firmware
 check_dir ref/wd1772-vg93
+check_dir ref/datasheets
 
 # The owner photographs are Git LFS objects rather than checksum-manifested
 # reference directories.  A pointer stub is useful to Git but cannot support
