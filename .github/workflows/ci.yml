@@ -94,6 +94,7 @@ jobs:
             scripts/report_re3_firmware_inspection.py \
             scripts/report_d15_d16_firmware_lineage.py \
             scripts/report_video_slot_timing_audit.py \
+            scripts/report_video_physical_probes.py \
             scripts/report_d2_reconstruction_constraints.py \
             scripts/report_d2_physical_truth.py \
             scripts/report_d30_section_b_scan_chase.py \

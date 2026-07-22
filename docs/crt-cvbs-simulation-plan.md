@@ -275,14 +275,26 @@ framebuffer. Actual Juku timing/profile values and X7 lock remain WP3-WP5 work.
 
 ### WP3 — Juku digital waveform source
 
-- Add explicit HDL probes for the physical pixel and sync contributors instead
+Progress: the first bounded physical-probe checkpoint is implemented. Simulation-
+only top-level probes expose the source-proved D42/D43/D37 pixel contributor and
+D54/D55/D56/D34_SYNC chain without changing the Yosys/LVS interface. A guarded
+controlled-stimulus exporter verifies the modeled 223 us and 5.04 us D56 pulses,
+the traced D34 sync XOR truth, and exact board endpoints. Every exported event
+also carries `slot_schedule_known=0`; D34_SIG is deliberately absent. This proves
+component-chain observability only, not a Juku raster, framebuffer reconstruction,
+composite voltage, or X7 samples. See `video-physical-probes.md`.
+
+- [x] Add explicit HDL probes for the physical pixel and sync contributors instead
   of using the current abstract `vid_out` as X7.
-- Drive D54/D55/D56/D34 through the physical structural path where evidence is
-  complete.
-- Export timestamped logic events or a uniformly sampled ideal-level waveform.
-- Initially use a synthetic known-good Juku timing fixture to develop the
+- [ ] Drive D54/D55/D56/D34 through the physical structural path where evidence is
+  complete. The downstream D56/D34 chain is guarded under controlled PIT-output
+  stimulus; an autonomous D54/D55 raster remains open.
+- [x] Export timestamped controlled-stimulus logic events for the bounded physical
+  contributors, with unresolved fields machine-marked. A complete Juku waveform
+  remains open.
+- [ ] Initially use a synthetic known-good Juku timing fixture to develop the
   receiver; keep it visibly distinct from the physical HDL result.
-- Replace the simulation-only framebuffer read port only after the
+- [ ] Replace the simulation-only framebuffer read port only after the
   shared-DRAM video-slot schedule is evidence-complete.
 
 Exit gate: the exported digital waveform contains independently measurable

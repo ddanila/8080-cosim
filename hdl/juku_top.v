@@ -21,6 +21,15 @@ module juku_top (
     input  wire dotclk,         // SIM-ONLY video dot clock (real: D56 АГ3 16MHz -> D103 ИЕ10). Drives
                                 // the video-output stage below (unmapped chips -> LVS-invisible).
     output wire vid_out         // SIM-ONLY abstract framebuffer pixel bitstream; not D34/X7 composite
+`ifndef YOSYS
+    // SIM-ONLY observability ports for source-proved physical video contributors.
+    // They do not imply that the still-open shared-DRAM slot schedule is valid.
+    , output wire probe_d42_q, probe_d43_q, probe_d37_pixel_n
+    , output wire probe_d34_sync
+    , output wire probe_d56_q_n, probe_d56_q2, probe_d56_q2_n
+    , output wire probe_pit_hsync, probe_pit_vsync, probe_load_vid
+    , output wire probe_slot_schedule_known
+`endif
 );
     // ---- CPU-local buses (between 8080 and its buffers/controller) ----
     wire [15:0] A;          // CPU address out -> 8286 buffers
@@ -531,6 +540,19 @@ module juku_top (
     wire d37_out;
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
                     .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3), .a4(1'bz), .b4(1'bz), .y4());  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]; sect4 undrawn/NC
+`ifndef YOSYS
+    assign probe_d42_q = d42_q;
+    assign probe_d43_q = d43_q;
+    assign probe_d37_pixel_n = d37_out;
+    assign probe_d34_sync = d34_sync_phys;
+    assign probe_d56_q_n = d56_qn;
+    assign probe_d56_q2 = d56_q2;
+    assign probe_d56_q2_n = d56_q2_n;
+    assign probe_pit_hsync = pit_hsync_dsl;
+    assign probe_pit_vsync = pit_vert_sync_dsl;
+    assign probe_load_vid = load_vid;
+    assign probe_slot_schedule_known = 1'b0;
+`endif
 
     // ============ Physical FDC quadrant (.009): КР1818ВГ93 + РЕ3 .092 + drive ВА87 ============
     // Recovered .009 Э3 sheet 3 closes the direct D0-D7 host bus, D93-to-D100

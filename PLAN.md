@@ -1395,7 +1395,14 @@ range. An independent 12.5 kHz/200-line fixture matches five exact bars, while
 five malformed fixtures distinguish horizontal and vertical lock failure.
 Linux CI run `29886839537` passes the full build, five CTests, and unchanged RF
 regression. No Juku preset or timing constant has been guessed; physical Juku
-waveform generation and lock remain separate later work packages.
+waveform generation and lock remain separate later work packages. The first
+WP3 checkpoint now exposes the source-proved D42/D43/D37 and D56/D34_SYNC
+contributors through simulation-only probes and a guarded timestamped event
+export. Controlled stimulus verifies the modeled D56 pulse widths and traced
+D34 sync XOR, while every event machine-marks the shared-DRAM slot schedule as
+unknown and deliberately omits the unresolved D34 signal input. It therefore
+does not claim a Juku raster, framebuffer reconstruction, composite voltage, or
+X7 samples.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.
