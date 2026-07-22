@@ -71,6 +71,10 @@ on:
       - 'spinoffs/minimal-vga/kicad/check_rev_a_physical.py'
       - '.github/workflows/hdl.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lvs:
     runs-on: ubuntu-latest

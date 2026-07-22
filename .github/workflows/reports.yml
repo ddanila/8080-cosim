@@ -48,6 +48,10 @@ on:
       - 'kicad/check_factory_wire_landing_registration.py'
       - '.github/workflows/reports.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   reports:
     runs-on: ubuntu-latest
