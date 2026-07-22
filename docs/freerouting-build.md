@@ -34,6 +34,22 @@ byte-reproducible; the `.ses` then goes through `kicad/finalize_route.py`
 (imports it into the board) and the promotion/salvage/prune steps. Pass `-mt N`
 only for routing you will throw away.
 
+### Regenerating `kicad/juku.dsn`
+
+`kicad/juku.dsn` is a committed, SHA-pinned input; you only regenerate it when
+the source board (`kicad/juku.kicad_pcb`) placement or nets change. There is no
+`kicad-cli` Specctra export (dropped in KiCad 10), so export via `pcbnew`:
+
+```sh
+"$(scripts/find-kicad-python.sh)" -c \
+  "import pcbnew; b=pcbnew.LoadBoard('kicad/juku.kicad_pcb'); pcbnew.ExportSpecctraDSN(b,'kicad/juku.dsn')"
+```
+
+This changes `juku.dsn`'s SHA-256, which is pinned in the fabrication evidence
+(`docs/unmodeled-footprint-inventory.md`, checked by
+`scripts/check_documentation_consistency.py`), so regenerate that evidence
+afterward on the canonical (Linux) toolchain. It is not a routine step.
+
 `run-freerouting.sh` refuses to run a stock jar: it checks the installed
 `.tools/freerouting/freerouting.jar` for a custom-only marker string and rebuilds
 from the submodule if it is missing or stock. Build explicitly with:
