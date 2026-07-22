@@ -858,7 +858,7 @@ Every ask below is queued with exact deliverables in
    and tied-D101 drafting (`ref/schematics/fdc-write-precomp-map.md`).
    D97, D102, and D101 are now included as structural-only HDL cells and in the
    LVS instance map. Together with structural D28/D98 coverage, this raises the
-   proved scope to 117 instances/309 nets and
+   proved scope to 117 instances/310 nets and
    checks the delay cascade, EARLY/LATE selection, Q0-to-D94 path, and Q1-to-D100
    output without guessing C16/C19 timing or resolving the four real D101
    singleton boundaries by simulation fiat.
@@ -907,10 +907,13 @@ Every ask below is queued with exact deliverables in
    An automatic handoff audit now also removes stale continuity requests for
    D93.15-.18/.26-.32/.34-.36 and D100.6: those step, direction, precomp,
    separator-clock, raw-read, head-load, write, READY, and drive-status paths
-   are already source-closed. A direct exact-revision reread additionally joins
-   sheet-1 `RES (3)` to D93.19 and ties D93.22 TEST locally to D93.33 WF/VFOE.
-   The RES versus active-low D93 symbol polarity remains a bring-up scope check,
-   not a connectivity gap. Exact-revision sheet 3 now closes both final
+   are already source-closed. Chip-removed owner continuity supersedes the
+   ambiguous exact-revision `RES (3)` reading: active-high CPU `RESET` reaches
+   D13.9, and Schmitt-inverter output D13.8 drives D93.19 `MR_N` plus the
+   outer-bus contact. The reset polarity and controller connection are therefore
+   source-closed, while the exact outer-bus contact code remains a connector-
+   orientation boundary. The exact-revision drawing also ties D93.22 TEST
+   locally to D93.33 WF/VFOE. Exact-revision sheet 3 now closes both final
    anonymous controller pins: E11 is drawn in its 2-3 position, strapping
    D93.23 HLT to D93.32 READY (with MOTOR EN on the alternate post), while
    D93.25 RG is deliberately omitted between the explicitly drawn pin-24 and
@@ -1084,7 +1087,7 @@ placement collisions (`docs/source-pcb-drc.md`) and no undeclared non-power
 package endpoints (`docs/package-endpoint-coverage.md`). Off-board S4 is
 likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
-The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
+Neither source nor routed PCB has an endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
 639 observations have dispositions, 42 rows are accepted evidence, six rows
 are rejected (including the former R94 assignment), and the other 591 remain
