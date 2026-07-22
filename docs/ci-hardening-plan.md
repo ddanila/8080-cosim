@@ -62,8 +62,11 @@ Design:
     `sync/juku_top_checkpoint_resume_probe.py`,
     `scripts/report_juku_top_fdc_alignment.py`,
     `scripts/report_d6_runtime_path.py`, plus the doc-writing shell guards
-    `sync/fdc_check.sh` and `sync/d96_check.sh`). Requires gcc + iverilog;
-    takes minutes.
+    `sync/fdc_check.sh` and `sync/d96_check.sh`, and the HDL-owned
+    `scripts/report_video_physical_probes.py` / `report_video_pit_timing.py`
+    reports). Requires gcc + iverilog; takes minutes. The two video writers
+    were added on 2026-07-22 after HDL CI exposed that their omission could
+    leave a locally undiscovered freshness failure.
   - `--check`: after regenerating, `git diff --exit-code -- docs/ ref/` so
     CI-style callers get a non-zero exit on drift. Without it, print the
     drift list and exit 0.

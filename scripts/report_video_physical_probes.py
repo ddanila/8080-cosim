@@ -167,8 +167,10 @@ def main() -> int:
         "  as the open `pixel^REV?` boundary in the board evidence.",
         "- D42/D43/D37 probes are physical-net observability only; under this controlled",
         "  test they do not claim a valid fetched framebuffer byte.",
-        "- D34 output-drive current, VT2, the 75-ohm load, C94, and X7 voltage remain",
-        "  separate WP4/physical-calibration boundaries.",
+        "- D34's nonlinear loaded output, the installed VT2 parameters, C94, and X7",
+        "  voltage remain separate WP4/physical-calibration boundaries. The traced",
+        "  75-ohm transfer and published К555ЛП5/КТ315Б limits are guarded separately by",
+        "  `scripts/model_x7_output_stage.py`.",
         "",
     ])
     REPORT.write_text("\n".join(lines), encoding="utf-8")

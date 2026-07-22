@@ -104,6 +104,8 @@ if ((deep)); then
   run ./sync/fdc_check.sh
   run python3 scripts/report_d6_runtime_path.py
   run ./sync/d96_check.sh
+  run python3 scripts/report_video_physical_probes.py
+  run python3 scripts/report_video_pit_timing.py
 fi
 
 if ((check)); then
