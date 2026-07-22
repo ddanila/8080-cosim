@@ -126,11 +126,14 @@ def check_rows(board: dict) -> list[list[object]]:
         "sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor",
     ))
     checks.append((
-        "Undrawn D13 inverter sections are explicitly unused",
-        all(pin_is_nc(board, "D13", pin) for pin in ("8", "9", "10", "11"))
+        "D13 reset inverter is assigned and only section 11->10 remains unused",
+        all(pin_is_nc(board, "D13", pin) for pin in ("10", "11"))
+        and has_node(board, "RESET", "D13", "9")
+        and has_node(board, "FDC_RESET_N", "D13", "8")
+        and has_node(board, "FDC_RESET_N", "D93", "19")
         and has_node(board, "D6_V_ENABLE", "D13", "12")
         and has_node(board, "D105_10_H", "D13", "13"),
-        "sheet-1 uses sections 1->2, 3->4, 5->6, and 13->12; only 9->8 and 11->10 are unused",
+        "sheet-1 plus owner continuity use sections 1->2, 3->4, 5->6, 9->8, and 13->12; only 11->10 is unused",
     ))
     checks.append(
         (

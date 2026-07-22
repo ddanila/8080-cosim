@@ -34,6 +34,5 @@ P1,D57,17,PIT8253,OUT2,source-risk singleton net SYNC_B lacks a proved remote en
 P1,D58,11,IR82,STB,source-risk singleton net D58_STB_TAG5 lacks a proved remote endpoint
 P1,D59,10,LN1_OSC,O10,source-risk singleton net D59_O10_TAG10 lacks a proved remote endpoint
 P1,R67,2,R_AXIAL,P2,source-risk singleton net R67_2_BOUNDARY lacks a proved remote endpoint
-P1,R94,2,R_AXIAL,P2,source-risk singleton net R94_P2_BOUNDARY lacks a proved remote endpoint
 P1,C99,2,C_KM,P2,source-risk singleton net C99_FAR lacks a proved remote endpoint
 P2,S1,3,SW,P3,source-risk singleton net S1_3_BOUNDARY lacks a proved remote endpoint

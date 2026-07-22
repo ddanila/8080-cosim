@@ -15,8 +15,8 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 334
-- Populate for current functional .009 build: 270
+- Board component positions: 335
+- Populate for current functional .009 build: 271
 - Do not populate now (empty/DNP/pending): 64
 - Unique BOM lines: 112
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 64 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 224 |
+| source-now | 225 |
 
 ## BOM Lines
 
@@ -110,7 +110,7 @@ readiness report.
 | source-now | R_AXIAL 1,3к | axial resistor 1,3к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R92 | - |
 | source-now | R_AXIAL 1,5к | axial resistor 1,5к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R20 | - |
 | source-now | R_AXIAL 100 | axial resistor 100 | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R3, R4 | - |
-| source-now | R_AXIAL 10к | axial resistor 10к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R78, R93 | - |
+| source-now | R_AXIAL 10к | axial resistor 10к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R78, R93, R94 | - |
 | source-now | R_AXIAL 120 | axial resistor 120 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R104 | - |
 | source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 7 | 7 | 0 | R39, R61, R100, R102, R105, R107, R108 | - |
 | source-now | R_AXIAL 13к | axial resistor 13к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R34 | - |
@@ -119,7 +119,7 @@ readiness report.
 | source-now | R_AXIAL 20 | axial resistor 20 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R57 | - |
 | source-now | R_AXIAL 200 | axial resistor 200 | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R17, R46 | - |
 | source-now | R_AXIAL 20к | axial resistor 20к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R47 | - |
-| source-now | R_AXIAL 220 | axial resistor 220 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R94 | - |
+| source-now | R_AXIAL 220 | axial resistor 220 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | RUNK1 | - |
 | source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 7 | 7 | 0 | R1, R5, R6, R8, R62, R90, R95 | - |
 | source-now | R_AXIAL 33к | axial resistor 33к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R18, R30, R59 | - |
 | source-now | R_AXIAL 4,7к | axial resistor 4,7к | modern axial resistor, matching value and power rating | 4 | 4 | 0 | R67, R86, R98, R99 | - |

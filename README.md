@@ -13,15 +13,15 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
-- `sync/check.sh` currently compares 117 mapped instances and 309 nets with no
+- `sync/check.sh` currently compares 117 mapped instances and 310 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
-  321-footprint/2,434-pad source and contains 29,780 copper items across 412
+  322-footprint/2,436-pad source and contains 30,132 copper items across 413
   nets. Stable KiCad 9.0.8 reports zero opens, zero electrical blockers, and
   zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or
   ordered. Current deterministic upload ZIP SHA256:
-  `cada377a9b9f5626c4417432b962145bdd6e3f67a7abe4fa440f7ccabf8d1631`.
+  `bc5a9b2d3f027d455a5bd4a0eafa9e602a3bdd9b1b6d72d9037c508b2da615da`.
   Exact topology evidence is retained in
   `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
   `ref/routing/zero-open-fabrication-package.json`, and fabrication/release
@@ -76,7 +76,7 @@ with the machine-readable board model.
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
   R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 45 modeled nets retain source-risk annotations requiring
+  In total, 44 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

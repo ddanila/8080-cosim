@@ -19,9 +19,9 @@ R94 is immediately above D28, with one side on D28.11/D93.38 and the other on
 +5 V. Its body may be hidden by the video cable. The previously photographed
 `220`-ohm body below-left of D98 is therefore not R94; its identity and both
 endpoints remain unassigned, and its retained photo record is explicitly
-marked superseded rather than discarded. The current board JSON/KiCad source
-still carries the old 220-ohm/D98 assignment; correct it together with the
-routed refresh rather than treating that generated net as owner evidence.
+marked superseded rather than discarded. The board JSON, KiCad source, HDL,
+and promoted zero-open route now carry the corrected 10k R94 pull-up plus a
+separate `RUNK1` 220-ohm physical placeholder with two measurement boundaries.
 
 The earlier direct D93.38/.39-to-D10.19/.18 assignment came from MAME and is
 now retired. D10 IR0/IR1 and the two D96 continuations remain explicit

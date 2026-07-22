@@ -12,14 +12,14 @@ schematic parity against it without a matching routed schematic/project.
 
 | Check | Count | Result |
 | --- | ---: | --- |
-| Raw ERC error violations | 53 | GUARDED |
+| Raw ERC error violations | 54 | GUARDED |
 | Unexpected ERC/mapping findings | 0 | PASS |
-| Exact singleton-label findings | 53 / 53 | PASS |
-| Source-risk singleton nets | 38 | BLOCK |
+| Exact singleton-label findings | 54 / 54 | PASS |
+| Source-risk singleton nets | 37 | BLOCK |
 | Other source-risk nets | 7 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
-| Explicit board-JSON no-connects | 70 | PASS |
-| KiCad schematic no-connect markers | 70 | PASS |
+| Explicit board-JSON no-connects | 68 | PASS |
+| KiCad schematic no-connect markers | 68 | PASS |
 | Functional pins without net or explicit NC | 0 | PASS |
 | Duplicate board-JSON endpoint memberships | 0 | PASS |
 | Unknown/conflicting NC records | 0 | PASS |
@@ -27,15 +27,15 @@ schematic parity against it without a matching routed schematic/project.
 Stable KiCad reports one `label_dangling` error for every one-endpoint
 local-label net. The exact label-name/count guard above proves these are
 the modeled singleton boundary surface, not geometrically detached labels.
-Of those `53` singleton nets, `38` remain source-risk
-boundaries and `15` have closed or intentional dispositions.
+Of those `54` singleton nets, `37` remain source-risk
+boundaries and `17` have closed or intentional dispositions.
 
 ## Unresolved endpoint priorities
 
 | Priority | Count |
 | --- | ---: |
 | P0 | 11 |
-| P1 | 26 |
+| P1 | 25 |
 | P2 | 1 |
 
 The complete machine-readable singleton-endpoint backlog is
@@ -43,7 +43,7 @@ The complete machine-readable singleton-endpoint backlog is
 
 ## ERC types
 
-- `label_dangling`: 53
+- `label_dangling`: 54
 
 ## Most affected references
 

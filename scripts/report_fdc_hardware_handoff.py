@@ -327,8 +327,12 @@ def main() -> int:
         or not has_node(board, "P12V", "D93", "40")
     ):
         failures.append("D93 measured ground, +5 V, or +12 V supply is absent")
-    if not has_node(board, "RESET", "D93", "19"):
-        failures.append("sheet-1/3 D93 master-reset continuation is absent")
+    if (
+        not has_node(board, "RESET", "D13", "9")
+        or not has_node(board, "FDC_RESET_N", "D13", "8")
+        or not has_node(board, "FDC_RESET_N", "D93", "19")
+    ):
+        failures.append("owner-proved D13-inverted D93 master-reset path is absent")
     if (
         not has_node(board, "D93_TEST_WF_VFOE", "D93", "22")
         or not has_node(board, "D93_TEST_WF_VFOE", "D93", "33")
@@ -452,10 +456,10 @@ def main() -> int:
         ),
         (
             "`FDC_DRQ`",
-            "D93 DRQ into local D28 conditioner",
-            [("FDC_DRQ", "D93", "38"), ("FDC_DRQ", "D28", "11")],
+            "D93 DRQ into local D28 conditioner and 10k R94 pull-up",
+            [("FDC_DRQ", "D93", "38"), ("FDC_DRQ", "D28", "11"), ("FDC_DRQ", "R94", "1"), ("P5V", "R94", "2")],
             False,
-            "exact .009 sheet 3; conflicting drawn R94 branch withheld",
+            "exact .009 sheet 3 plus owner continuity/identification",
         ),
         (
             "`X2_IRQ0` / `X2_PB7`",
@@ -772,9 +776,9 @@ def main() -> int:
             "  was a retired MAME-era assumption: sheet 3 instead proves the local",
             "  D28/R93/R95/D96 path. Primary device truth makes the shared",
             "  /PRE2/D2 wiring set-only without a real pin13 clear source; capture",
-            "  pins8-13 during request and acknowledge. D93.19 is source-connected to the",
-            "  sheet-1 RES continuation, while its drawn active-low polarity remains",
-            "  a scope check. D93.24 is",
+            "  pins8-13 during request and acknowledge. D93.19 is source-connected to",
+            "  D13.8; active-high RESET enters D13.9 and is inverted for MR_N.",
+            "  D93.24 is",
             "  source-closed through D95's selected 1/2 MHz clock section. First dump",
             "  D15/D16 and identify its guarded CMA/NOP profile; the recovered direct",
             "  D93 bus means physical D100 is not the profile selector. D99.10 and",

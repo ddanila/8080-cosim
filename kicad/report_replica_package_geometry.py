@@ -22,11 +22,10 @@ EXPECTED_DRILL_TOOLS = {
     "4": 1.200,
 }
 EXPECTED_DRILL_HITS = {
-    # The promoted zero-open topology uses 2,776 fine 0.30 mm via drills.  The
-    # remaining tools are the exact through-hole pad inventory exported by
-    # stable KiCad 9.0.8 from the unchanged 310 mm x 266 mm board geometry.
-    "1": 2785,
-    "2": 2324,
+    # The owner-corrected zero-open topology adds 52 fine route vias and two
+    # through-hole pads for the separately preserved unidentified resistor.
+    "1": 2837,
+    "2": 2326,
     "3": 85,
     "4": 8,
 }

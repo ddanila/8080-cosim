@@ -1208,7 +1208,7 @@ def main() -> int:
             or zero.get("uncapped_unconnected") != 0
             or zero.get("electrical_blockers") != 0
             or (zero.get("track_dangling"), zero.get("via_dangling")) != (0, 0)
-            or (zero.get("footprints"), zero.get("pads")) != (321, 2434)
+            or (zero.get("footprints"), zero.get("pads")) != (322, 2436)
             or zero.get("max_pad_delta_mm") != 0.0
             or zero.get("promoted_closures") != 677
         ):

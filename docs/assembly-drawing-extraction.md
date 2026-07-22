@@ -29,14 +29,14 @@ is promoted as a copper netlist.
 | Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |
 | Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction |
 | Dedicated А:17 landing is present on RES_RC in the board spec and source PCB | PASS | two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py` |
-| R94 is modeled as 220 ohms from D98.3 with its far endpoint unresolved | PASS | `.009` assembly drawing; four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py` |
+| R94 is the owner-confirmed 10k FDC DRQ pull-up; the separate 220-ohm body remains explicit and unidentified | PASS | `.009` assembly drawing; owner continuity; retained four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py` |
 | X9 is schematic-only and its reversed ribbon uses PCB landings A45-A58 | PASS | sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py` |
 | X8 is schematic-only and its six-conductor cable uses PCB landings A59-A62 | PASS | sheet 2 X8 power-cable table; `kicad/check_x8_offboard_landings.py` |
 | X6 is bracket-mounted and its 12 cm cable uses surface landings A:3/A:4 | PASS | sheet 3 cable table; two owner-photo angles; `kicad/check_x6_offboard_landings.py` |
 | X3 is schematic-only and its cable uses photo-fitted PCB landings A21-A32 | PASS | sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py` |
 | X4 first five legacy circuit exits are explicitly dispositioned | PASS | `.006` sheet-1 exit codes 401-405; `.009` target continuity still required |
 | X4 bracket harness has all 23 physical board landings | PASS | `.009` sheets4-5 wires27-49; `kicad/check_x4_offboard_landings.py` |
-| D26 PC2-PC6 retain the five source-drawn D28 sections and the sixth is unused | PASS | `.006` sheet-1 direct conductors + К155ЛН3 pin contract + pinned MAME Port-C roles |
+| D26 PC2-PC6 retain the five recovered target-revision FDC control paths | PASS | recovered `.009` sheets 1/3 plus pinned PPI Port-C roles |
 | Connection-table sheets 2-6 are adopted and transcribed | PASS | `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` |
 
 ## Photograph inventory

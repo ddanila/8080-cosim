@@ -191,10 +191,15 @@ def main() -> int:
             "two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py`",
         ),
         (
-            "R94 is modeled as 220 ohms from D98.3 with its far endpoint unresolved",
-            marker(read(BOARD_SPEC), '"ref": "R94"', '"value": "220"', '"D98_Y1_R94"')
+            "R94 is the owner-confirmed 10k FDC DRQ pull-up; the separate 220-ohm body remains explicit and unidentified",
+            marker(
+                read(BOARD_SPEC),
+                '"ref": "R94"', '"value": "10к"', '"FDC_DRQ"',
+                '"ref": "RUNK1"', '"value": "220"',
+                '"RUNK1_P1_BOUNDARY"', '"RUNK1_P2_BOUNDARY"',
+            )
             and r94_landing.returncode == 0,
-            "`.009` assembly drawing; four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py`",
+            "`.009` assembly drawing; owner continuity; retained four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py`",
         ),
         (
             "X9 is schematic-only and its reversed ribbon uses PCB landings A45-A58",
@@ -234,28 +239,21 @@ def main() -> int:
             "X4 bracket harness has all 23 physical board landings",
             x4_landings.returncode == 0 and marker(
                 read(BOARD_SPEC), '"ref": "X4"', '"ref":"AX401"', '"ref":"AX423"',
-                '"X4_06_BOUNDARY"', '"X4_23_BOUNDARY"', '"X4_FF_N"', '"X4_STOP_N"',
+                '"X4_01_NC_HARNESS"', '"X4_05_BOUNDARY"', '"X4_RD_DATA"',
             ),
             "`.009` sheets4-5 wires27-49; `kicad/check_x4_offboard_landings.py`",
         ),
         (
-            "D26 PC2-PC6 retain the five source-drawn D28 sections and the sixth is unused",
+            "D26 PC2-PC6 retain the five recovered target-revision FDC control paths",
             marker(
                 read(BOARD_SPEC),
-                '"MEM_MODE0"', "directly into D28 input pin11",
-                '"MEM_MODE1"', "directly into D28 input pin13",
-                '"FDC_DDEN"', "directly into D28 input pin9",
-                '"D26_PC5_RN_IN"', '[["D26", "12"], ["D28", "3"]]',
-                '"D26_PC6_STOP_IN"', '[["D26", "11"], ["D28", "1"]]',
-                '"X4_FF_N"', '[["D28", "8"], ["AX401", "1"], ["X4", "1"]]',
-                '"X4_REC_N"', '[["D28", "10"], ["AX402", "1"], ["X4", "2"]]',
-                '"X4_PLAY_N"', '[["D28", "12"], ["AX403", "1"], ["X4", "3"]]',
-                "The D28.4 target-board output destination remains a separate continuity boundary",
-                "The D28.2 target-board output destination remains a separate continuity boundary",
-                '"D28", "5"', '"D28", "6"',
-                "omits the sixth section pins5/6 as explicit NCs",
+                '"FDC_MOTOR_EN"', "D26 PC2/pin16 drives D100 A7/pin7",
+                '"FDC_DRIVE_SIZE_5_8"', "D26 PC3/pin17 as 5-inch/8-inch selection",
+                '"FDC_DDEN"', "D26 PC4/pin13 FM/MFM",
+                '"FDC_DSEL_IN"', "D26 PC5/pin12 D_SEL to D28 input pin1",
+                '"FDC_SIDE_SEL"', "D26 PC6/pin11 drives D100 A8/pin8",
             ),
-            "`.006` sheet-1 direct conductors + К155ЛН3 pin contract + pinned MAME Port-C roles",
+            "recovered `.009` sheets 1/3 plus pinned PPI Port-C roles",
         ),
         (
             "Connection-table sheets 2-6 are adopted and transcribed",

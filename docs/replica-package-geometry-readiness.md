@@ -23,8 +23,8 @@ preview dimensions and drill-file expectations into a reproducible local gate.
 
 | Tool | Diameter mm | Hits | Expected hits | Status |
 | --- | ---: | ---: | ---: | --- |
-| T1 | 0.300 | 2785 | 2785 | PASS |
-| T2 | 0.800 | 2324 | 2324 | PASS |
+| T1 | 0.300 | 2837 | 2837 | PASS |
+| T2 | 0.800 | 2326 | 2326 | PASS |
 | T3 | 1.000 | 85 | 85 | PASS |
 | T4 | 1.200 | 8 | 8 | PASS |
 

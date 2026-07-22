@@ -37,7 +37,7 @@ python3 scripts/report_serial_handoff.py
 | D11 write strobe is wired | PASS | `IOWR` |
 | USART reset follows the system reset inverter | PASS | sheet-1 uninterrupted D13.6 -> D1.12/D11.21 conductor; `RESET` |
 | USART main clock reaches D13 inverter output | PASS | sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor |
-| Undrawn D13 inverter sections are explicitly unused | PASS | sheet-1 uses sections 1->2, 3->4, 5->6, and 13->12; only 9->8 and 11->10 are unused |
+| D13 reset inverter is assigned and only section 11->10 remains unused | PASS | sheet-1 plus owner continuity use sections 1->2, 3->4, 5->6, 9->8, and 13->12; only 11->10 is unused |
 | D57 baud output reaches D11 TxC/RxC | PASS | native sheet-2 `BAUD R.` handoff and sheet-1 TxC/RxC fork |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
@@ -68,7 +68,7 @@ python3 scripts/report_serial_handoff.py
 | Net | Endpoints |
 | --- | --- |
 | `CS_D11` | `D9.13`, `D11.11` |
-| `RESET` | `D13.6`, `D1.12`, `D26.35`, `D27.35`, `D11.21`, `D93.19` |
+| `RESET` | `D13.6`, `D1.12`, `D26.35`, `D27.35`, `D11.21`, `D13.9` |
 | `D13_4_D105_2` | `D13.4`, `D105.2`, `D11.20`, `D30.11` |
 | `PIT_BAUD` | `D57.10`, `D11.25`, `D11.9` |
 | `SER_TXD` | `D11.19`, `D14.3`, `D3.11`, `D3.9`, `R18.2` |

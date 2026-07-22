@@ -28,7 +28,7 @@ REVIEW_ONLY_TYPES = {
         "disposition": "Waived as dense through-hole/socket proximity after visual assembly-fit review.",
     },
     "silk_over_copper": {
-        "expected": 196,
+        "expected": 198,
         "disposition": "Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable.",
     },
     "silk_overlap": {

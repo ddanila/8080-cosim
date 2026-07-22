@@ -31,17 +31,17 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `8ea610a8241569878e540fc31918b28f3a031dffcac29b8cbea7c2e35feb44b9` |
-| Routed-snapshot PCB SHA-256 | `6ddfde373d44c5a4875860d3ec5020e6f1867124d06e00f79a4200a1564e3a33` |
-| Source footprints | 321 |
-| Routed-snapshot footprints | 321 |
+| Source PCB SHA-256 | `bfeff14f3998237b95b09284171cdeae3c42aa6faaca0f200dbee1e3579e03d1` |
+| Routed-snapshot PCB SHA-256 | `964795d21c02092b4adb4efbfb2707905b89ea5bb598bb6d389e5e7d715730bf` |
+| Source footprints | 322 |
+| Routed-snapshot footprints | 322 |
 | Source-only footprints | 0 |
 | Routed-only footprints | 0 |
-| Routed copper nets classified by the refresh | 412 |
-| Nets with currently reusable routed copper | 412 |
+| Routed copper nets classified by the refresh | 413 |
+| Nets with currently reusable routed copper | 413 |
 | Routed nets currently quarantined | 0 |
-| Reusable non-duplicate track/via items | 29,733 |
-| Quarantined/duplicate track/via items | 47 |
+| Reusable non-duplicate track/via items | 30,132 |
+| Quarantined/duplicate track/via items | 0 |
 | Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
 
@@ -275,9 +275,14 @@ findings, and 710 cosmetic findings. The source-parity gate proves 321
 footprints, 2,434 pads, and zero coordinate delta. Exact promotion evidence is
 in `ref/routing/zero-open-promoted-topology.json`. The subsequent D55/D56
 owner-timing topology refresh removes 14 obsolete affected-net items and adds
-130 items (121 segments and nine vias) across four corrected connections. The
-current promoted board therefore has 29,780 routed items across 412 nets while
-retaining exact source parity, zero opens, and zero electrical blockers.
+130 items (121 segments and nine vias) across four corrected connections. That
+snapshot had 29,780 routed items across 412 nets. The subsequent owner-evidence
+correction moves R94 to its measured 10k DRQ pull-up position, preserves the
+separate unidentified 220-ohm body as `RUNK1`, and inserts D13.9->D13.8 between
+active-high RESET and D93.19. Its guarded copper-reuse transaction restores the
+affected RESET/READY branches and routes `FDC_RESET_N`; the current board has
+30,132 routed items across 413 nets, 322 footprints, 2,436 pads, exact source
+parity, zero opens, and zero electrical blockers.
 
 ### Additive/rename-safe copper migration
 

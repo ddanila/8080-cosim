@@ -44,7 +44,7 @@ ORDER_CHECKS = [
     "Select 1.6 mm FR-4 unless deliberately changed after DFM review.",
     "Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.",
     "Do not request impedance control or stackup changes; this is the intentional 2-layer authenticity build.",
-    "Review the 701 accepted courtyard/silk/text findings against the vendor preview before payment.",
+    "Review the 703 accepted courtyard/silk/text findings against the vendor preview before payment.",
     "Review `docs/replica-bringup-verification-points.md` and confirm no listed residual source-risk net blocks PCB fabrication.",
     "Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.",
 ]

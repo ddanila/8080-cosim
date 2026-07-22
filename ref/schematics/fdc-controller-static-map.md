@@ -1,6 +1,6 @@
 # D93 controller reset and static-pin map
 
-Status: **OWNER-CLOSED CONNECTIVITY / SOURCE-MODEL CORRECTION PENDING**
+Status: **OWNER-CLOSED CONNECTIVITY / SOURCE MODEL AND ROUTE CORRECTED**
 
 The recovered `ДГШ5.109.009 Э3` sheets close three formerly isolated
 КР1818ВГ93 pins from primary evidence.
@@ -26,8 +26,7 @@ description and must be reconciled separately.
 
 Model disposition:
 
-The current board JSON, KiCad source, HDL, and `check_d93_static_paths.py` still
-encode the superseded direct `RESET -> D93.19` interpretation. They must be
-changed as one routed-refresh transaction to
-`RESET -> D13.9 -> D13.8 -> FDC_RESET_N -> D93.19`; until then this measured
-map, not the generated net name, is authoritative for physical reconstruction.
+The board JSON, KiCad source, structural HDL, and promoted routed board now
+encode `RESET -> D13.9 -> D13.8 -> FDC_RESET_N -> D93.19`. The correction was
+applied as one guarded routed-refresh transaction; `check_d93_static_paths.py`
+and the zero-open routed-candidate gate enforce the measured topology.

@@ -18,18 +18,17 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `334`
-- Nets modeled: `476`
-- Chip-level fidelity gaps: `55`
-- Net-level source-risk gaps: `45`
+- Chips modeled: `335`
+- Nets modeled: `478`
+- Chip-level fidelity gaps: `56`
+- Net-level source-risk gaps: `44`
 - Explicitly dispositioned closed net risks: `14`
-- Documented intentional no-connect pins: `70`
+- Documented intentional no-connect pins: `68`
 
 ## Chip Provenance Types
 
 | Provenance type | Chips |
 | --- | ---: |
-| .009 assembly drawing + owner photo | 1 |
 | .009 assembly drawing + registered component/solder/value photos + factory BOM | 3 |
 | datasheet | 1 |
 | factory X3 cable table + registered owner photos | 12 |
@@ -50,12 +49,13 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | native schematic + factory assembly drawing + owner photo | 3 |
 | photo | 4 |
 | prom | 1 |
+| registered owner photo | 1 |
 | scan | 230 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly drawing | 4 |
 | scan + factory assembly drawing + registered owner photo | 4 |
 | scan + factory assembly wire table | 3 |
-| scan + owner continuity | 1 |
+| scan + owner continuity | 2 |
 | scan + owner photo | 1 |
 | scan + registered owner photo | 1 |
 | scan + registered owner photos | 3 |
@@ -70,7 +70,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 2 | 8 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 2 |
-| logic/source | 12 | 29 |
+| logic/source | 13 | 28 |
 | memory/timing | 0 | 1 |
 | placement/refdes | 26 | 0 |
 | placement/value | 13 | 0 |
@@ -104,10 +104,11 @@ parts placement and Tier-3 reproduction.
 | --- | --- | --- | --- |
 | `D1` | `CPU8080` | scan | complete КР580ВМ80А/8080 package contract: scan traces VSS pin2 to GND, VBB pin11 to locally derived -5V, VCC pin20 to +5V, and VDD pin28 to +12V; HOLD/pin13... |
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MEMW -> 11 to D30.13; direct .009 owner continuity on 2026-07-14 proves pin1 joins D6.15... |
-| `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Chip-removed owner continuity on 2026-07-14 supersedes the... |
+| `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Owner continuity on 2026-07-20 proves RESET enters the form... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
 | `R5` | `R_AXIAL` | scan + owner continuity | exact .009 sheet 1 labels R5 as the D30.4 READY preset pull-up, but direct target-board continuity supersedes that drawing reference physical R5.1 is P5V and... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. The revisi... |
+| `RUNK1` | `R_AXIAL` | registered owner photo | local evidence placeholder only; historical reference remains unidentified populated 220-ohm body below-left of D98 retained at its photographed position aft... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |
 | `W14` | `WIRE_LINK` | factory wire table + registered owner backside photo | ДГШ5.109.009 СБ conductor position 10 / board point А:14 registered plated through-joints beside the printed 14 marks at (10.449,179.305) and (224.478,193.14... |
@@ -179,7 +180,7 @@ explicit KiCad schematic no-connect markers.
 | `D104` | `10` |
 | `D106` | `2, 3, 6, 12, 13` |
 | `D11` | `18` |
-| `D13` | `8, 9, 10, 11` |
+| `D13` | `10, 11` |
 | `D2` | `9, 10, 11` |
 | `D26` | `39` |
 | `D30` | `6, 9` |
@@ -248,7 +249,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D99_Q2_BOUNDARY` | FDC owner-continuity | `D99.5` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Registered July and M... |
-| `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `READY_PRE_N` | logic/source | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
 | `SYNC_B` | logic/source | `D57.17` | exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2... |

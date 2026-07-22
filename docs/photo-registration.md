@@ -56,9 +56,10 @@ Accepted paths and owner corrections:
 - А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
 - D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
 - D98.3 -> D28.5 remains drawing-supported, but the former R94 branch on the
-  current `D98_Y1_R94` model net is rejected. Owner continuity locates actual
+  superseded `D98_Y1_R94` model net is rejected. Owner continuity locates actual
   10k R94 above D28, from D28.11/D93.38 to +5 V. The photographed 220-ohm body
-  remains unassigned; source-model correction is pending a routed refresh.
+  remains unassigned; the source model and promoted zero-open route now preserve
+  it separately as `RUNK1` with two explicit measurement boundaries.
 - D106.7 `Q3` -> D93.26 `RCLK` / `FDC_RCLK`.
 - D95.14 -> R92.2 / `FDC_DDEN` (sheet-identified `FM/MFM`).
 - D101.4 -> R92.1 + R99.2 / `D101_D02_R92_R99`.

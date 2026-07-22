@@ -197,7 +197,7 @@ remain open. Its selects and both outputs are source/owner-closed.
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
 | `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
 | `FDC_INTRQ` | WIRED | D93 INTRQ into local D28/R93 conditioner | exact .009 sheet 3 |
-| `FDC_DRQ` | WIRED | D93 DRQ into local D28 conditioner | exact .009 sheet 3; conflicting drawn R94 branch withheld |
+| `FDC_DRQ` | WIRED | D93 DRQ into local D28 conditioner and 10k R94 pull-up | exact .009 sheet 3 plus owner continuity/identification |
 | `X2_IRQ0` / `X2_PB7` | WIRED | source-closed D10 IR0/IR1 external inputs (not assigned to FDC) | exact .009 sheet 1; retired as inferred FDC destinations |
 
 ## D93 Source-Risk Pad Review
@@ -235,7 +235,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_DDEN` | recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch | `D26.13, D93.37, D95.14, R92.2` |
 | `FDC_DIR_TO_D100` | recovered .009 Э3 sheet 3: D93 DIR/pin16 directly drives D100 A2/pin1 | `D93.16, D100.1` |
 | `FDC_DRIVE_SIZE_5_8` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; sheet 3 directly joins it to D95 clock-mux select A1/pin2 | `D26.17, D95.2` |
-| `FDC_DRQ` | recovered .009 Э3 sheet 3 directly joins D93 DRQ/pin38 to D28 open-collector inverter input pin11. The drawing labels a 10k pull-up R94 on this node, but target-board photo/continuity proves physical R94 is instead 220 ohms on D98.3, so that conflicting resistor branch is not imported | `D93.38, D28.11` |
+| `FDC_DRQ` | recovered .009 Э3 sheet 3 and owner continuity 2026-07-20 directly join D93 DRQ/pin38, D28 open-collector inverter input pin11, and R94.1; physical R94 is the 10-kohm pull-up immediately above D28 and its other terminal joins +5 V | `D93.38, D28.11, R94.1` |
 | `FDC_DSEL_IN` | recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1 | `D26.12, D28.1` |
 | `FDC_EARLY_SEL` | recovered .009 Э3 sheet 3 directly joins D93 EARLY/pin17 to the common D101 select input A1/pin2 | `D93.17, D101.2` |
 | `FDC_HLD_TO_D100` | recovered .009 Э3 sheet 3: D93 HLD/pin28 directly drives D100 A6/pin3 | `D93.28, D100.3` |
@@ -248,6 +248,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 and D106 parallel-load input pin11 | `D97.4, D93.27, D106.11` |
 | `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
 | `FDC_READY` | recovered .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V; E11 is drawn in its 2-3 position, strapping D93 HLT/pin23 to READY (post 1 is the alternate MOTOR EN source) | `D28.6, D93.23, D93.32, R84.1` |
+| `FDC_RESET_N` | chip-removed owner continuity 2026-07-20: D13 Schmitt inverter output pin8 drives D93 MR_N/pin19 and the physical outer-bus rightmost middle-row contact; exact connector code remains deliberately unassigned until X1 orientation is reconciled | `D13.8, D93.19` |
 | `FDC_RE_N` | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V | `D94.3, D93.4, R88.1` |
 | `FDC_SEPARATOR_CLOCK` | recovered .009 Э3 sheet 3 directly joins D95 clock-mux output B/pin9 to D106 IE7 DOWN/pin4; the mux selects 8 MHz only for FM/MFM=0 and 5-inch/8-inch=0, otherwise 4 MHz | `D95.9, D106.4` |
 | `FDC_SIDE_SEL` | recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL | `D26.11, D100.8` |
@@ -280,9 +281,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   was a retired MAME-era assumption: sheet 3 instead proves the local
   D28/R93/R95/D96 path. Primary device truth makes the shared
   /PRE2/D2 wiring set-only without a real pin13 clear source; capture
-  pins8-13 during request and acknowledge. D93.19 is source-connected to the
-  sheet-1 RES continuation, while its drawn active-low polarity remains
-  a scope check. D93.24 is
+  pins8-13 during request and acknowledge. D93.19 is source-connected to
+  D13.8; active-high RESET enters D13.9 and is inverted for MR_N.
+  D93.24 is
   source-closed through D95's selected 1/2 MHz clock section. First dump
   D15/D16 and identify its guarded CMA/NOP profile; the recovered direct
   D93 bus means physical D100 is not the profile selector. D99.10 and
