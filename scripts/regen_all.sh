@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# This list mirrors .github/workflows/reports.yml and hdl.yml; update all three together.
+# The report writers mirror .github/workflows/reports.yml and hdl.yml; the
+# final automatic-completion audit is additionally checked by generic CI.
 set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -87,6 +88,7 @@ run python3 scripts/report_owner_measurement_shortlist.py
 run python3 kicad/report_replica_bringup_verification.py
 run python3 kicad/report_dual_config_bom.py
 run python3 kicad/report_replica_sourcing_readiness.py
+run python3 scripts/report_automatic_completion_audit.py
 
 if ((deep)); then
   command -v gcc >/dev/null || { echo "regen_all.sh --deep: gcc not found" >&2; exit 2; }

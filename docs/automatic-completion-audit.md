@@ -2,27 +2,47 @@
 
 Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**
 
-This audit answers a narrow question: whether the repository's owned plans
-still contain an unchecked implementation task that can be completed from the
-evidence and tools already present. It does not declare the replica complete or
-release the PCB. The package remains verified under design hold.
+This generated audit answers a narrow question: whether any tracked project
+Markdown outside vendored `external/` material and operator templates contains
+an unchecked implementation task that can be completed from repository evidence
+and tools. It does not declare the replica complete or release the PCB.
+
+## Command
+
+```sh
+python3 scripts/report_automatic_completion_audit.py
+```
 
 ## Active unchecked work
 
-There are nine unchecked items in the active project plans: seven in
+There are 9 unchecked items in the active project plans: seven in
 `PLAN.md`, one in the CRT/CVBS subordinate plan, and one external community
 coordination decision. Every one now requires evidence, hardware, purchasing,
 fabrication, or owner authorization.
 
-| Plan item | Why automation must stop | Required next input |
-| --- | --- | --- |
-| P0 physical connectivity and reroute | Remaining endpoints are hidden, contradictory under powered behavior, or continuity-only | owner continuity and powered captures from `docs/owner-measurement-shortlist.md` |
-| Independent PROM/EPROM corroboration | Repository search, history audit, physical small-PROM reads, and deterministic D15/D16 functional images are exhausted | programming-disk files, independent PROM reads, and repeat physical D15/D16 dumps |
-| Main-board release and order | The verified zero-open package is intentionally held by the physical-connectivity and sourcing gates | closed P0 evidence, explicit release, vendor upload, and payment |
-| Functional parts kit | No purchase is authorized and seller stock cannot establish fitted historical truth | procurement choice, purchase, receipt, and physical testing |
-| Tier 1, 2, and 3 bring-up | These milestones require a fabricated and assembled physical replica | board, parts, instruments, staged power-up, and surviving-machine comparison |
-| Physical framebuffer readout | D41/shared-DRAM slot timing, `SHIFT_G`, `TIMING_TAG17`, and `D34_SIG` are not evidence-complete | continuity/drawing closure and captured timing; no guessed serializer schedule |
-| juku3000 community exchange | Publishing scope and venue are external-facing decisions | owner approval |
+| Plan item | Tasks | Why automation must stop | Required next input |
+| --- | ---: | --- | --- |
+| P0 physical connectivity and reroute | 1 | Remaining endpoints are hidden, contradictory under powered behavior, or continuity-only | owner continuity and powered captures from `docs/owner-measurement-shortlist.md` |
+| Independent PROM/EPROM corroboration | 1 | Repository donor search, history audit, physical small-PROM reads, and deterministic D15/D16 functional images are exhausted | programming-disk files, independent PROM reads, and repeat physical D15/D16 dumps |
+| Main-board release and order | 1 | The verified zero-open package is intentionally held by physical-connectivity and sourcing gates | closed P0 evidence, explicit release, vendor upload, and payment |
+| Functional parts kit | 1 | No purchase is authorized and seller stock cannot establish fitted historical truth | procurement choice, purchase, receipt, and physical testing |
+| Tier 1, 2, and 3 bring-up | 3 | These milestones require a fabricated and assembled physical replica | board, parts, instruments, staged power-up, and surviving-machine comparison |
+| Physical framebuffer readout | 1 | D41/shared-DRAM slot timing, `SHIFT_G`, `TIMING_TAG17`, and `D34_SIG` are not evidence-complete | continuity/drawing closure and captured timing; no guessed serializer schedule |
+| juku3000 community exchange | 1 | Publishing scope and venue are external-facing decisions | owner approval |
+
+## Machine-checked classification
+
+| Plan | Unchecked task | Class | External-boundary evidence |
+| --- | --- | --- | --- |
+| `PLAN.md` | P0 physical connectivity is complete and rerouted. | `connectivity` | `docs/owner-measurement-shortlist.md` (owner/bench packet ready); `docs/replica-bringup-verification-points.md` (source-risk net index unresolved); `docs/main-board-erc-parity.md` (release parity gate held) |
+| `PLAN.md` | Independent programming files/reads corroborate the four factory PROMs | `firmware` | `docs/firmware-gap-ledger.md` (Tier-1/2 burnable set guarded; Tier-3 truth absent); `docs/cartridge-basic-boundary.md` (remaining cartridge artifact boundary explicit) |
+| `PLAN.md` | Main-board design release passes; board is ordered. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
+| `PLAN.md` | Functional parts kit is received and tested. | `parts` | `docs/replica-sourcing-readiness.md` (sourcing gate held) |
+| `PLAN.md` | Replica completes Tier 1 bring-up. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
+| `PLAN.md` | Replica completes Tier 2. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
+| `PLAN.md` | Replica completes Tier 3. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
+| `docs/crt-cvbs-simulation-plan.md` | Replace the simulation-only framebuffer read port only after the | `framebuffer` | `docs/video-slot-timing-audit.md` (physical video-slot schedule pending); `docs/crt-cvbs-simulation-plan.md` (implementation explicitly evidence-gated) |
+| `docs/factory-drawing-exploitation-plan.md` | After Stage 1.2, decide what to share on juku3000 #25 (the MAME | `community` | `docs/factory-drawing-exploitation-plan.md` (external publication is owner-gated) |
 
 The 28 unchecked boxes in the order, order-evidence, and parts-inventory
 documents are operator templates. They deliberately remain blank until an
@@ -31,30 +51,21 @@ implementation backlog.
 
 ## Automatically closed scope
 
-- The source and routed PCBs have exact pad parity, zero opens, zero electrical
-  blockers, and zero dangling copper; fabrication outputs and checksums pass.
-- Every populated PROM/EPROM has a hash-guarded Tier-1/2 burnable image. The
-  runnable twin executes all four validated physical small-PROM tables.
-- Firmware reconstruction has consumed every defensible repository donor: the
-  D15/D16 archive pair is uniquely EktaSoft 3.7, one Monitor 2.2 byte is proven,
-  and unresolved ROM blocks/pages remain unpatched rather than guessed.
-- The C and HDL FDC backends now support explicit 1,600-byte companion metadata
-  for cross-run normal/deleted marks while keeping raw `.juk`/`.CPM` payloads
-  unchanged. Arbitrary flux, damaged headers, and noncanonical ID geometry are
-  still honestly outside the flat-image representation.
-- Shared-DRAM framebuffer replacement, X7 voltage fidelity, and later receiver
-  work are correctly dependency-blocked by missing physical timing/driver
-  evidence rather than incomplete code scaffolding. Public exact-device sheets
-  now guard the К555ЛП5 voltage and fanout-derived current envelope plus КТ315Б
-  limits; the remaining X7 blocker is specifically the absent D34 loaded I/V
-  curve or bench capture.
+- Source/routed PCB identity, zero-open copper, fabrication-package integrity,
+  burnable Tier-1/2 firmware, and runnable HDL/cosim behavior have dedicated
+  generated reports and CI guards.
+- Firmware reconstruction has consumed every defensible repository donor;
+  unresolved physical ROM truth remains unpatched rather than guessed.
+- Physical shared-DRAM video timing and analog-output fidelity remain explicitly
+  evidence-gated rather than replaced with a simulation convenience path.
 
 ## Guard
 
-`python3 scripts/check_documentation_consistency.py` checks the exact nine-item
-active set, the 28 template boxes, this status marker, and the external-boundary
-markers. A newly introduced unchecked active task makes the consistency check
-fail until it is either implemented or explicitly classified with evidence.
+This writer scanned 3 Markdown file(s) containing active unchecked tasks.
+Any new unchecked task outside the three operator templates must have an exact
+classification and all cited evidence markers must exist, otherwise generation
+fails closed. `scripts/check_documentation_consistency.py` runs this writer in
+`--check` mode, and `scripts/regen_all.sh` regenerates the committed report.
 
 The practical next action is therefore the owner/bench shortlist—not another
 inference pass over the same files.

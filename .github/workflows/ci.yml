@@ -111,6 +111,7 @@ jobs:
             scripts/report_d99_reconstruction_constraints.py \
             scripts/report_d101_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
+            scripts/report_automatic_completion_audit.py \
             scripts/report_fdc_hardware_handoff.py \
             scripts/report_fdc_bus_polarity.py \
             scripts/report_serial_handoff.py \
@@ -233,6 +234,9 @@ jobs:
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py
+
+      - name: Check automatic completion audit freshness
+        run: python3 scripts/report_automatic_completion_audit.py --check
 
       - name: Check spin-off shared commons
         run: python3 scripts/check_spinoff_commons.py

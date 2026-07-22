@@ -9,8 +9,9 @@ history.
 - `../README.md` — project overview and honest current status.
 - `../PLAN.md` — sole project-wide plan, priorities, milestones, and
   fabrication-release criteria.
-- `automatic-completion-audit.md` — guarded classification of every active
-  unchecked item as evidence-, hardware-, procurement-, or authorization-gated.
+- `automatic-completion-audit.md` — generated, fail-closed classification of
+  every active unchecked item as evidence-, hardware-, procurement-, or
+  authorization-gated.
 - `crt-cvbs-simulation-plan.md` — subordinate execution plan for generating a
   loaded X7 voltage waveform, adapting the forked sample-domain receiver, and
   validating monitor lock before optional CRT presentation.
