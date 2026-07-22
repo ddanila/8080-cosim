@@ -439,8 +439,9 @@ module juku_top (
 `endif
     ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(s3_hi_preset), .q(VA[11:8]),  .co(co2), .bo());
     ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(s3_hi_preset), .q(VA[15:12]), .co(), .bo());
-    // DRAM address mux: sel=Φ1 puts the ROW (BA[15:8]) on MA during RAS, the COL (BA[7:0]) during
-    // CAS. (CPU row/col realized; the video path through this mux is the un-modeled boundary.)
+    // DRAM address mux: sel=Φ1 puts the inverted ROW (BA[15:8]) on MA during RAS,
+    // the inverted COL (BA[7:0]) during CAS. The РУ5 normalization removes the
+    // physical КП14/258 inversion so its internal mem[] stays CPU-linear.
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
     // 4,7,9,12 order until the mux INPUT rails are read (a line-swap must be applied to both
     // sides at once or the video-va path desyncs). Queued in round-2 notes.
@@ -450,9 +451,9 @@ module juku_top (
     tri0 cpu_mux_g_n;                 // undriven boundary; tri0 = strap-enabled default (CPU pair drives MA)
 `endif
     kp14_mux U_D48 (.a({BA[1], BA[2], BA[3], BA[0]}), .b({BA[13], BA[11], BA[10], BA[9]}),
-                    .sel(phi1), .en_n(cpu_mux_g_n), .y({MA[1], MA[2], MA[3], MA[0]}));
+                    .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D49 (.a({BA[5], BA[6], BA[7], BA[4]}), .b({BA[14], BA[15], BA[8], BA[12]}),
-                    .sel(phi1), .en_n(cpu_mux_g_n), .y({MA[5], MA[6], MA[7], MA[4]}));
+                    .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
     // D50/D51 = the VIDEO-address mux pair on the SAME tri-state MA bus (sheet-2: Q -> rails
     // 21-28). A/B ins <- video counters + S3 config [unread boundaries]; G enables alternate
     // with D48/D49 on the video cycle [source unread] -- held disabled here (z), so the CPU
@@ -463,9 +464,9 @@ module juku_top (
     tri1 vid_mux_g_n;                 // undriven boundary; tri1 = E14's +5 strap default (video pair disabled)
 `endif
     kp14_mux U_D50 (.a({VA[1], VA[2], VA[3], VA[0]}), .b({VA[13], VA[11], VA[10], VA[9]}),
-                    .sel(d41_qa), .en_n(vid_mux_g_n), .y({MA[1], MA[2], MA[3], MA[0]}));
+                    .sel(d41_qa), .en_n(vid_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D51 (.a({VA[5], VA[6], VA[7], VA[4]}), .b({VA[14], VA[15], VA[8], VA[12]}),
-                    .sel(d41_qa), .en_n(vid_mux_g_n), .y({MA[5], MA[6], MA[7], MA[4]}));
+                    .sel(d41_qa), .en_n(vid_mux_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
     wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
     // D53 per sheet-2: A/B from the D52 КП14 mux via the E2/E3 config jumpers (2-3 position ties
@@ -481,7 +482,7 @@ module juku_top (
     wire [3:0] d52_y; wire e2_com, e3_com;
     wire d53_g_in; wire [3:0] d53_y; wire d53_cas_sim;
     kp14_mux  U_D52 (.a({2'bzz, BA[8], BA[7]}), .b({2'bzz, VA[8], VA[7]}),
-                     .sel(vid_cpu_sel), .en_n(1'b0), .y(d52_y));   // video/µP addr mux (bite-2)
+                     .sel(vid_cpu_sel), .en_n(1'b0), .y_n(d52_y)); // inverted video/µP addr mux (bite-2)
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
     net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));

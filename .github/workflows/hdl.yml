@@ -176,6 +176,7 @@ jobs:
       - name: Run video output guards
         run: |
           ./sync/ir16_check.sh
+          ./sync/kp14_check.sh
           ./sync/video_timing_check.sh
           ./sync/video_readout_check.sh
           python3 scripts/report_video_physical_probes.py
@@ -208,6 +209,7 @@ jobs:
             docs/jmon33-command-probe.md \
             docs/jmon33-idle-command-probe.md \
             docs/ir16-readiness.md \
+            docs/kp14-readiness.md \
             docs/video-timing-reference.md \
             docs/video-readout-readiness.md \
             docs/video-physical-probes.md \

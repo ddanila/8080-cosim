@@ -1419,7 +1419,11 @@ the shared D41/D42/D43 ИР16 primitive against the SN74LS295B contract: LD/SH
 high loads on the falling clock edge, LD/SH low shifts right, and pin 8 is an
 active-high three-state output control. Consequently `SHIFT_G` is now correctly
 bounded as D42/D43 OC plus D41 clock, not a guessed serializer clock gate; its
-remote source and `TIMING_TAG17` remain open.
+remote source and `TIMING_TAG17` remain open. The adjacent D48-D52 КП14 model is
+also corrected to the datasheet's inverting 74LS/S258 truth table and active-low
+output enable. The РУ5 model removes that physical inversion only at its internal
+storage index, preserving CPU-linear addressing and the guarded boot behavior;
+the dynamic CPU/video mux-enable schedule remains open.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

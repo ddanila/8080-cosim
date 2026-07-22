@@ -465,10 +465,10 @@ module kp12_mux (input wire a0, a1, oe0_n, oe1_n,
     assign q0 = oe0_n ? 1'bz : d0[sel];
     assign q1 = oe1_n ? 1'bz : d1[sel];
 endmodule
-// D48/D49 КП14 quad 2:1 mux: y = sel ? b : a (en_n low = enabled). For DRAM addressing, sel picks
-// the ROW half (b) vs COL half (a) of the CPU address onto the 8-bit muxed bus MA.
-module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0] y);
-    assign y = en_n ? 4'bz : (sel ? b : a); endmodule
+// D48-D52 КП14 = SN74LS/S258-class quad 2:1 INVERTING mux. /G high makes
+// every output high impedance; /G low emits the complement of the selected A/B input.
+module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0] y_n);
+    assign y_n = en_n ? 4'bz : ~(sel ? b : a); endmodule
 // D53 ИД7 -- realized as the DRAM RAS/CAS strobe generator (the РЕ3/АГ3 timing it really comes from
 // is un-modeled -> boundary). Repurposed inputs: a = RAM-select (ram_n, active-low), b = Φ1, c = Φ2.
 // RAS falls on Φ1 of a RAM access (latches the row) and remains active through the Φ2/CAS
@@ -710,10 +710,12 @@ module dram_64kx1 (input wire [7:0] ma,
     // arbitration remains a physical boundary); in sim a read doesn't contend, so we expose the framebuffer
     // bit at `va` directly. `va`/`vq` are sim artifacts (not real pins) -> LVS allowlist drops them.
     assign vq = mem[va];
-    // The drawn D48-D51 mux tables scramble BA[15:8] onto the row-phase MA lines (finding 24;
-    // identical scramble on CPU + video pairs -> behaviorally neutral). Normalize here so mem[]
-    // stays CPU-linear (tbs + the va video port index it directly): un-permute the raw row byte.
-    wire [7:0] row_lin = {row[6], row[5], row[1], row[4], row[2], row[3], row[0], row[7]};
+    // The D48-D51 КП14/258 muxes invert every selected address bit. Their row table also
+    // scrambles BA[15:8] (identically on CPU + video pairs). Normalize both effects here so
+    // mem[] stays CPU-linear and the sim-only va port indexes the same logical cells.
+    wire [7:0] row_mux_order = {row[6], row[5], row[1], row[4], row[2], row[3], row[0], row[7]};
+    wire [7:0] row_lin = ~row_mux_order;
+    wire [7:0] col_lin = ~ma;
     // К565РУ5Г address/data setup (4164-class, "-20" = 200 ns tRAC; family AC spec vendored at
     // ref/datasheets/mk4564-64kx1-dram.pdf). The device captures the ROW at RAS and the COLUMN at
     // CAS, and each address must be SET UP and settled around its strobe (tASR/tRAH row, tASC/tCAH
@@ -730,13 +732,13 @@ module dram_64kx1 (input wire [7:0] ma,
     always @(negedge cas_n) begin
         #TSU;                                                // COLUMN + controls settled on MA (tASC/tCAH)
         if (~ras_n && ~cas_n) begin
-            if (~we_n) mem[{row_lin, ma}] <= di;             // early write (WE already low): strobe DIN now
-            else       held <= mem[{row_lin, ma}];           // read, or capture the cell before a read-modify write
+            if (~we_n) mem[{row_lin, col_lin}] <= di;        // early write (WE already low): strobe DIN now
+            else       held <= mem[{row_lin, col_lin}];      // read, or capture the cell before a read-modify write
         end
     end
     always @(negedge we_n) begin
         #TSU;                                                // data + column settled (tDS): later-of-CAS/WE DIN strobe
-        if (~ras_n && ~cas_n) mem[{row_lin, ma}] <= di;      // delayed / read-modify write into the settled column
+        if (~ras_n && ~cas_n) mem[{row_lin, col_lin}] <= di; // delayed / read-modify write into the settled column
     end
     // Keep the sampled value available through the functional access window. Exact DOUT turn-off
     // awaits the still-untraced D36/R57 delays; the CPU must not see a scheduling-dependent Z when

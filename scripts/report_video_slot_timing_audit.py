@@ -131,6 +131,16 @@ def main() -> int:
             "`hdl/juku_top.v`",
         ),
         (
+            "D48-D52 КП14 inversion and three-state behavior are datasheet-guarded",
+            marker(
+                "docs/kp14-readiness.md",
+                "DATASHEET-EXACT INVERTING КП14 PRIMITIVE GUARDED",
+                "selected A or B input is inverted",
+                "/G=1 produces Z",
+            ),
+            "`docs/kp14-readiness.md`: SN74LS/S258 truth table",
+        ),
+        (
             "Video counter address nets VA0-VA15 are present in the board JSON",
             va_ok,
             "`kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage",
@@ -249,6 +259,9 @@ def main() -> int:
             "  high LD/SH for parallel load, low LD/SH for right shift, and active-high",
             "  output control. This reclassifies `SHIFT_G` as D42/D43 OC rather than",
             "  a clock gate; its remote source remains open.",
+            "- D48-D52 now preserve the physical КП14/258 output inversion and",
+            "  three-state disable behavior; the DRAM model normalizes that inversion",
+            "  only at its internal logical address index.",
             "- D41's role is now narrowed: QA/QB, its fixed data/enable straps, and",
             "  intentional QC/QD no-connects are modeled; only the remote LD/CK",
             "  timing-bundle sources remain continuity boundaries.",

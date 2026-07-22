@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "device": "К555КП14 / КР531КП14",
+  "equivalent": "SN74LS258B / SN74S258",
+  "primary_document": "Texas Instruments SDLS148, March 1988 revision",
+  "source_url": "https://www.ti.com/lit/ds/symlink/sn74ls258b.pdf",
+  "source_pdf_sha256": "00064b7ad7f3ac2753566d52a896235252ab2bf230aadb271ccfcbe4d62cef2b",
+  "function": {
+    "enable_high": "all outputs high impedance",
+    "enable_low_select_low": "Y is NOT A",
+    "enable_low_select_high": "Y is NOT B"
+  },
+  "board_scope": {
+    "D48_D49": "CPU row/column address mux pair",
+    "D50_D51": "video row/column address mux pair",
+    "D52": "CPU/video bank-address mux",
+    "boundary": "This contract corrects mux polarity but does not identify dynamic D48-D51 enable timing."
+  }
+}

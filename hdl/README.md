@@ -84,8 +84,9 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - 44 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
-  Physical D41/D42/D43 and mux/decode instances exist, but faithful shared-DRAM
-  slot timing still needs D41 and adjacent one-shot/mux/counter evidence;
+  Physical D41/D42/D43 and mux/decode instances exist. Their ИР16 falling-edge
+  LD/SH/OC behavior and D48-D52 inverting КП14/258 behavior are guarded, but
+  faithful shared-DRAM slot timing still needs the remote control sources;
   D94's proved outputs belong to FDC control.
 - CPU DRAM transactions are functionally closed: RAS spans row through CAS,
   and the РУ5 model implements early/delayed asynchronous writes without a

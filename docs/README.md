@@ -84,6 +84,8 @@ findings. Every status applies only to the boundary named by the report.
   `video-slot-timing-audit.md`,
   `ir16-readiness.md` (datasheet-exact falling-edge LD/SH and active-high OC
   semantics for physical D41/D42/D43, while their board timing sources remain open),
+  `kp14-readiness.md` (datasheet-exact inverting, three-state D48-D52 mux
+  semantics with CPU-linear DRAM normalization),
   `video-physical-probes.md` (executable controlled-stimulus probes for the
   source-proved D42/D43/D37 and D56/D34_SYNC contributors, with the shared-DRAM
   slot schedule and D34 signal input explicitly open),

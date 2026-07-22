@@ -23,6 +23,7 @@ python3 scripts/report_video_slot_timing_audit.py
 | D41/D42/D43 ИР16 primitive semantics are datasheet-guarded | PASS | `docs/ir16-readiness.md`: LD/SH, clock edge, and OC behavior |
 | Physical serializer instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Physical CPU/video mux and D53 decode instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
+| D48-D52 КП14 inversion and three-state behavior are datasheet-guarded | PASS | `docs/kp14-readiness.md`: SN74LS/S258 truth table |
 | Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
 | D53 bank/RAS ladder outputs are present in the board JSON | PASS | `kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52 |
 | PIT video/baud timing endpoints are source-complete | PASS | sheet-2 D54 HOR RTR, D55 VERT SYNC, and D57 CLK0/GATE0 labels |
@@ -55,6 +56,9 @@ python3 scripts/report_video_slot_timing_audit.py
   high LD/SH for parallel load, low LD/SH for right shift, and active-high
   output control. This reclassifies `SHIFT_G` as D42/D43 OC rather than
   a clock gate; its remote source remains open.
+- D48-D52 now preserve the physical КП14/258 output inversion and
+  three-state disable behavior; the DRAM model normalizes that inversion
+  only at its internal logical address index.
 - D41's role is now narrowed: QA/QB, its fixed data/enable straps, and
   intentional QC/QD no-connects are modeled; only the remote LD/CK
   timing-bundle sources remain continuity boundaries.
