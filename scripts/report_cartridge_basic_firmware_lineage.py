@@ -19,6 +19,13 @@ CART_BODY_END = 0x1D38
 MONITOR_BODY_START = 0x03C8
 MONITOR_BODY_END = 0x2000
 DELTA = MONITOR_BODY_START - CART_BODY_START
+CARTRIDGE_LOAD_BASE = 0x0100
+BOOTSTRAP_OFFSET = 0x1F00
+BOOTSTRAP_ADDRESS = CARTRIDGE_LOAD_BASE + BOOTSTRAP_OFFSET
+BOOTSTRAP_PREFIX = bytes.fromhex("21 00 02 11 00 01 01 00 20")
+BOOTSTRAP_LOOP = bytes.fromhex("7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01")
+CATALOG_URL = "https://j3k.infoaed.ee/tarkvara-kataloog/"
+CATALOG_CHECKED = "2026-07-22"
 
 
 def sha256(data: bytes) -> str:
@@ -56,9 +63,33 @@ def main() -> int:
         monitor_results.append((label, path, data, body, mismatches, checksum_rows(data)))
 
     zero_gap = cart[CART_BODY_END:0x1F00]
-    bootstrap = cart[0x1F00:0x2000]
-    loop_tail = bytes.fromhex("7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01")
-    loop_offset = bootstrap.find(loop_tail)
+    bootstrap = cart[BOOTSTRAP_OFFSET:0x2000]
+    if bootstrap[:len(BOOTSTRAP_PREFIX)] != BOOTSTRAP_PREFIX:
+        raise SystemExit("relocation bootstrap prefix changed")
+    loop_offset = bootstrap.find(BOOTSTRAP_LOOP)
+    if loop_offset != len(BOOTSTRAP_PREFIX):
+        raise SystemExit(f"relocation loop moved to bootstrap offset 0x{loop_offset:02X}")
+
+    source_start = int.from_bytes(bootstrap[1:3], "little")
+    destination_start = int.from_bytes(bootstrap[4:6], "little")
+    copy_length = int.from_bytes(bootstrap[7:9], "little")
+    source_end = source_start + copy_length - 1
+    destination_end = destination_start + copy_length - 1
+    available_source_end = CARTRIDGE_LOAD_BASE + len(cart) - 1
+    missing_source_start = available_source_end + 1
+    missing_length = source_end - available_source_end
+    if (
+        BOOTSTRAP_ADDRESS != 0x2000
+        or source_start != 0x0200
+        or destination_start != 0x0100
+        or copy_length != 0x2000
+        or source_end != 0x21FF
+        or destination_end != 0x20FF
+        or available_source_end != 0x20FF
+        or missing_source_start != 0x2100
+        or missing_length != 0x0100
+    ):
+        raise SystemExit("relocation range contract changed")
 
     lines = [
         "# Cartridge BASIC firmware-lineage audit",
@@ -110,6 +141,33 @@ def main() -> int:
             "2.2 differs at only one byte. This proves that the public cartridge and",
             "the onboard BASIC are the same firmware lineage, and it supplies the",
             "entire meaningful BASIC body already present in the 8 KiB cartridge.",
+            "",
+            "## Relocation range contract",
+            "",
+            "The 22-byte bootstrap at cartridge offset `0x1F00` executes at",
+            f"`0x{BOOTSTRAP_ADDRESS:04X}`. Its literal 8080 operands load",
+            f"`HL=0x{source_start:04X}`, `DE=0x{destination_start:04X}`, and",
+            f"`BC=0x{copy_length:04X}`; the guarded loop copies one byte, increments",
+            "HL/DE, decrements BC, and repeats until BC is zero.",
+            "",
+            "| Quantity | Derived range/value |",
+            "| --- | --- |",
+            f"| Copy source | `0x{source_start:04X}..0x{source_end:04X}` |",
+            f"| Copy destination | `0x{destination_start:04X}..0x{destination_end:04X}` |",
+            f"| Public image mapped span | `0x{CARTRIDGE_LOAD_BASE:04X}..0x{available_source_end:04X}` (`{len(cart)}` bytes) |",
+            f"| Missing source span | `0x{missing_source_start:04X}..0x{source_end:04X}` (`{missing_length}` bytes, exactly one page) |",
+            f"| Missing page destination | `0x{available_source_end + 1 - source_start + destination_start:04X}..0x{destination_end:04X}` |",
+            "",
+            "The copy count is therefore direct firmware evidence for a 256-byte",
+            "shortfall; it is not inferred from a failed runtime experiment.",
+            "",
+            "## Public artifact recheck",
+            "",
+            f"The [Juku software catalog]({CATALOG_URL}) was rechecked on",
+            f"{CATALOG_CHECKED}. Its `JUKUROMS` inventory still identifies",
+            "`JBASIC11.BIN` as `8K` and exposes no larger cartridge BASIC image.",
+            "That public inventory therefore ends at the same `0x20FF` mapped",
+            "source boundary and cannot supply the required `0x2100..0x21FF` page.",
             "",
             "## Cartridge suffix",
             "",
@@ -167,6 +225,9 @@ def main() -> int:
             "- The exact shared span ends at cartridge offset `0x1D37`; extrapolating the",
             "  `+0x2C8` source delta into later monitor/bootstrap code is not a defensible",
             "  missing-page donor.",
+            "- The bootstrap's literal `HL=0x0200`, `DE=0x0100`, `BC=0x2000`",
+            "  operands independently prove the source extends through `0x21FF`, one",
+            "  256-byte page past the public image's mapped end at `0x20FF`.",
             "- A mirrored bootstrap/survival page fixes relocation mechanics but does not",
             "  fix the later monitor ABI/configuration mismatch or reach `READY`.",
             "- The remaining preservation input is therefore a complete removable-memory",

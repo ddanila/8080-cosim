@@ -19,7 +19,10 @@ they are not active project reports.
 - The cartridge bootstrap copies source `0x0200..0x21FF` to runtime
   `0x0100..0x20FF`, but the public 8 KiB image supplies data only through
   source `0x20FF`. The missing source page is exactly `0x2100..0x21FF`, mapped
-  to runtime `0x2000..0x20FF`.
+  to runtime `0x2000..0x20FF`. The generated lineage audit now derives these
+  ranges directly from the guarded `LXI H,0200` / `LXI D,0100` /
+  `LXI B,2000` bootstrap operands rather than retaining arithmetic only in
+  prose.
 - The self-overwriting relocation loop requires the missing page to preserve
   its tail at source `0x2109..0x2115`:
   `7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01`.
@@ -34,6 +37,10 @@ they are not active project reports.
   monitor/bootstrap code would not be a source-proven reconstruction.
 - No current ROM, extracted software file, or vendored disk provides a
   defensible page-shaped donor.
+- The [public Juku software catalog](https://j3k.infoaed.ee/tarkvara-kataloog/)
+  was rechecked on 2026-07-22. It still lists `JBASIC11.BIN` as `8K` in
+  `JUKUROMS` and exposes no larger cartridge BASIC artifact, so it ends at the
+  same one-page boundary.
 
 ## Rejected shortcuts
 

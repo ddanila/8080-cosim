@@ -94,6 +94,11 @@ def main() -> int:
             "no labeled RT4/RE3 table or factory PROM-programming payload; deleted `prog1.juk` blob `ed7fc2e3a289f25da5006143c9f45d9ac20ed3c2` is byte-identical to local `JUKPROG1.CPM` (SHA256 `94670f3333b29e205c1586a0f52882aaa0f8cff2d45c3493676ce3ab263ae269`)",
         ]),
         row([
+            "[Juku software catalog](https://j3k.infoaed.ee/tarkvara-kataloog/)",
+            "2026-07-22 cartridge recheck: the public `JUKUROMS` inventory still lists `JBASIC11.BIN` as 8K; the guarded bootstrap operands independently require 8,192 copied bytes from source `0x0200`, through `0x21FF`",
+            "no larger image or missing `0x2100..0x21FF` source page is exposed; a complete artifact or documented loading procedure remains required",
+        ]),
+        row([
             "[MAME Juku driver](https://github.com/mamedev/mame/blob/master/src/mame/ussr/juku.cpp)",
             "behavioral oracle, I/O map, floppy geometry, raster constants; 2026-07-11 master is vendored byte-for-byte as `ref/mame_juku.cpp` (SHA256 `3b9dde3d3bc5eefd1271cd7a29266165d86f41882443f210437020d230a6202e`)",
             "emulator behavior cannot supply omitted physical nets or PROM truth",

@@ -1279,9 +1279,11 @@ After connectivity and programmable-part decisions stop changing:
   `ref/wd1772-vg93/README.md`; see the probe predictions in P0 connectivity
   item 1.
 - Recheck external sources only for a named blocker; the current inventory is
-  `docs/source-coverage-audit.md` (2026-07-11 audit: MAME driver unchanged,
-  museum `JUKUROMS.ZIP` duplicates local ROMs, `CASTOOLS.JUK` is cassette
-  media, not the programming disk).
+  `docs/source-coverage-audit.md` (the 2026-07-22 cartridge-BASIC recheck still
+  finds only the catalogued 8 KiB `JBASIC11.BIN`, while its literal bootstrap
+  requires one more 256-byte source page; the 2026-07-11 museum audit found
+  duplicate `JUKUROMS.ZIP` ROMs and cassette-only `CASTOOLS.JUK`, not the
+  programming disk).
 
 ## Parallel work
 

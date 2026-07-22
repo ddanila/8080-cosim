@@ -1837,13 +1837,19 @@ def main() -> int:
                 )
             if any(cartridge_bytes[0x1D38:0x1F00]):
                 failures.append("jbasic11 padding before the relocation bootstrap is no longer zero")
-            loop_tail = bytes.fromhex("7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01")
-            if cartridge_bytes[0x1F09:0x1F16] != loop_tail:
-                failures.append("jbasic11 relocation bootstrap survival bytes changed")
+            bootstrap = bytes.fromhex(
+                "21 00 02 11 00 01 01 00 20 "
+                "7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01"
+            )
+            if cartridge_bytes[0x1F00:0x1F16] != bootstrap:
+                failures.append("jbasic11 relocation bootstrap contract changed")
             for marker in (
                 "`7224` bytes (`0x1C38`)",
                 "cartridge `0x1C34=0xDA`; Monitor ROM `0x1EFC=0x9A`",
                 "blocks 3, 6, and 7",
+                "`HL=0x0200`, `DE=0x0100`, and",
+                "`0x2100..0x21FF` (`256` bytes, exactly one page)",
+                "still identifies\n`JBASIC11.BIN` as `8K`",
             ):
                 if marker not in cartridge_lineage:
                     failures.append(

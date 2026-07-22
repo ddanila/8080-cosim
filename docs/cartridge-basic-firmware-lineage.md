@@ -34,6 +34,33 @@ The Monitor 3.3 slice is byte-identical to the cartridge slice. Monitor
 the onboard BASIC are the same firmware lineage, and it supplies the
 entire meaningful BASIC body already present in the 8 KiB cartridge.
 
+## Relocation range contract
+
+The 22-byte bootstrap at cartridge offset `0x1F00` executes at
+`0x2000`. Its literal 8080 operands load
+`HL=0x0200`, `DE=0x0100`, and
+`BC=0x2000`; the guarded loop copies one byte, increments
+HL/DE, decrements BC, and repeats until BC is zero.
+
+| Quantity | Derived range/value |
+| --- | --- |
+| Copy source | `0x0200..0x21FF` |
+| Copy destination | `0x0100..0x20FF` |
+| Public image mapped span | `0x0100..0x20FF` (`8192` bytes) |
+| Missing source span | `0x2100..0x21FF` (`256` bytes, exactly one page) |
+| Missing page destination | `0x2000..0x20FF` |
+
+The copy count is therefore direct firmware evidence for a 256-byte
+shortfall; it is not inferred from a failed runtime experiment.
+
+## Public artifact recheck
+
+The [Juku software catalog](https://j3k.infoaed.ee/tarkvara-kataloog/) was rechecked on
+2026-07-22. Its `JUKUROMS` inventory still identifies
+`JBASIC11.BIN` as `8K` and exposes no larger cartridge BASIC image.
+That public inventory therefore ends at the same `0x20FF` mapped
+source boundary and cannot supply the required `0x2100..0x21FF` page.
+
 ## Cartridge suffix
 
 | Span | Bytes | Non-zero bytes | SHA256 | Interpretation |
@@ -84,6 +111,9 @@ not authority to alter the reproduced E5104 decode or publish a patched ROM.
 - The exact shared span ends at cartridge offset `0x1D37`; extrapolating the
   `+0x2C8` source delta into later monitor/bootstrap code is not a defensible
   missing-page donor.
+- The bootstrap's literal `HL=0x0200`, `DE=0x0100`, `BC=0x2000`
+  operands independently prove the source extends through `0x21FF`, one
+  256-byte page past the public image's mapped end at `0x20FF`.
 - A mirrored bootstrap/survival page fixes relocation mechanics but does not
   fix the later monitor ABI/configuration mismatch or reach `READY`.
 - The remaining preservation input is therefore a complete removable-memory
