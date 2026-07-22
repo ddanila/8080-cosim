@@ -42,6 +42,7 @@ sync/juk_disk_check.sh
 sync/fdc_check.sh
 sync/video_timing_check.sh
 sync/video_readout_check.sh
+sync/jukuravi_d0_check.sh
 sync/beeper_check.sh
 sync/serial_check.sh
 sync/ie7_check.sh
@@ -61,7 +62,7 @@ streaming one-byte DRQ/LOST-DATA service semantics, completion/status and all Ty
 one-revolution MFM Read Track plus index-gated, preloaded writable-track formatting
 and optional cross-run deleted-mark companion metadata,
 raster/serializer behavior,
-beeper and USART slices, the full standard К555ИЕ7/74LS193 asynchronous
+the Jukuravi stack-free D0 alive-beep ROM plus beeper and USART slices, the full standard К555ИЕ7/74LS193 asynchronous
 load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
 К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced
 `0011`-preset modulo-13 feedback loop, and the BASIC cartridge window.

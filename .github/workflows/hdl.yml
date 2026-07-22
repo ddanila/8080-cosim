@@ -12,6 +12,8 @@ on:
     paths:
       - 'hdl/**'
       - 'cosim/**'
+      - 'tests/**'
+      - 'spinoffs/jukuravi/**'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -47,6 +49,8 @@ on:
     paths:
       - 'hdl/**'
       - 'cosim/**'
+      - 'tests/**'
+      - 'spinoffs/jukuravi/**'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -151,6 +155,7 @@ jobs:
           git diff --exit-code -- docs/d6-runtime-path-diagnostic.md
           python3 scripts/validate_rt4_dump.py --self-test
           python3 scripts/validate_re3_dump.py --self-test
+          ./sync/jukuravi_d0_check.sh
           ./sync/beeper_check.sh
           ./sync/serial_check.sh
           ./sync/ie7_check.sh

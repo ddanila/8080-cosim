@@ -107,6 +107,7 @@ if ((deep)); then
   run ./sync/basic_cart_check.sh
   run ./sync/d2_ready_path_check.sh
   run python3 scripts/report_d6_runtime_path.py
+  run ./sync/jukuravi_d0_check.sh
   run ./sync/beeper_check.sh
   run ./sync/serial_check.sh
   run ./sync/ie7_check.sh

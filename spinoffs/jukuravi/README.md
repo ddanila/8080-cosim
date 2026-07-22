@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-22.
 
-Status: **EXECUTION STARTED — cosim 8251/PTY transport guarded; diagnostic ROM next.**
+Status: **EXECUTION STARTED — D0 alive-beep image guarded; CPU self-test next.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -92,6 +92,11 @@ A Nano is sufficient for every stage except the optional bus-master stage
      timestamps OUT1 edges through its probe, and known divisor × measured
      frequency yields the PIT's actual input clock — empirically closing
      the CPU-Φ/baud-clock open unknown on the very first boot.
+     **Implemented simulation checkpoint:** the exact 8 KiB D15 image, build
+     contract, disassembly, hash, and cosim/HDL guard are in
+     `firmware/README.md`. It programs a nominal 1 kHz tone for 0.5000175 s,
+     silences D57, and halts without changing SP or writing RAM. This is not
+     yet a bench-burn authorization.
   2. **CPU self-test** — "executes" is not "computes correctly": a failing
      КР580 can run code yet get flags, rotates, or DAA wrong, silently
      poisoning every later verdict. A register-only instruction smoke test
@@ -224,8 +229,9 @@ receives `3C`, echoes it, and can finish only after observing the ready-state
 transitions. The model is deliberately limited to the async slice needed by
 the harness; sync/parity and physical baud timing remain outside this step.
 
-The next implementation step is the first diagnostic-ROM rung against this
-transport. Then:
+The first diagnostic-ROM rung now runs under cosim and is cross-checked against
+the HDL D57 beeper guard. The next implementation step is the register-only CPU
+self-test and its distinct failure beep. Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
   twin (`sync/cosim_check.sh` precedent);

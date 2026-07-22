@@ -32,6 +32,7 @@ jobs:
           sh -n sync/video_timing_check.sh
           sh -n sync/video_readout_check.sh
           sh -n sync/serial_check.sh
+          bash -n sync/jukuravi_d0_check.sh
           sh -n sync/ie7_check.sh
           sh -n sync/d96_check.sh
           sh -n sync/ie10_check.sh
@@ -137,6 +138,8 @@ jobs:
             scripts/report_unmodeled_footprint_inventory.py \
             scripts/check_spinoff_commons.py \
             scripts/check_revb_boards.py \
+            spinoffs/jukuravi/firmware/build_d0_alive.py \
+            tests/jukuravi_d0_alive_test.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
             sync/ekdos_timing_reference.py \

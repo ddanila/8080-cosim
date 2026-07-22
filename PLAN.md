@@ -1558,9 +1558,14 @@ an active `/Q1` feedback output.
    data/status mirrors at `0x08..0x0B` implement the async mode/command and
    TxRDY/RxRDY/TxEMPTY slice over a real PTY. A stack-free synthetic ROM sends
    `55 A5`, receives `3C`, and echoes it through the same transport
-   (`tests/cosim_usart_pty_test.py`). The first diagnostic-ROM boot rung is the
-   next harness implementation step; sync/parity modes and physical baud
-   timing remain outside this bounded model.
+   (`tests/cosim_usart_pty_test.py`). The first diagnostic-ROM boot rung is now
+   a deterministic, exact-hash-guarded 8 KiB D15 image: it programs D57 for a
+   nominal 1 kHz tone, delays 1,000,035 T-states, silences the channel, and
+   halts with unchanged SP, IFF clear, mode 0, and no RAM writes. Its cosim I/O
+   guard and the existing HDL SOUND-path guard are composed by
+   `sync/jukuravi_d0_check.sh`; analog output remains a bench boundary. The
+   register-only CPU self-test is the next harness rung; USART sync/parity modes
+   and physical baud timing remain outside the bounded model.
 
 ## Physical bring-up sequence
 
@@ -1590,6 +1595,9 @@ Once a released board and programmed parts exist:
   130,000-read window and fails on any address/data divergence.
 - [x] Cosim exposes a regression-guarded 8251 async data/status slice through
   a PTY for Jukuravi diagnostic-ROM and host-tool development.
+- [x] Jukuravi D0 rung 1 has an exact-hash-guarded, burn-sized D15 image whose
+  stack-free/RAM-free alive-beep sequence executes under cosim and reaches the
+  independently guarded HDL D57/SOUND path.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.
