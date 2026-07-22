@@ -90,6 +90,11 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       D93 CLK, its 4/8 MHz rails feed D106 DOWN, FM/MFM and 5-inch/8-inch are
       the shared selects, and both enables are grounded
       (`ref/schematics/fdc-clock-mux-map.md`).
+- [x] Owner continuity plus sheets 2/3 reconcile the long 1 MHz slot route:
+      D40.11 reaches D59.5, tied D92.2/.3, and externally tied D95.5/.6.
+      This exposes a pending atomic correction to the source model's former
+      `LATCH_B`/`VID_MUX_G` split and D92 `PHI2TTL` attribution
+      (`docs/d40-d59-d92-d95-1mhz-route.md`).
 - [x] Sheet-3 D106 recovery counter completely transcribed: R78 pulls UP and
       all four preset inputs high, D95 clocks DOWN, RAW READ drives /LOAD,
       CLR is grounded, Q3 drives D28.9, and the five undrawn outputs are NC

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "board": "kicad/juku_routed.kicad_pcb",
-  "board_sha256": "12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37",
+  "board_sha256": "7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a",
   "toolchain": {
     "kicad_cli": "/usr/bin/kicad-cli-nightly",
     "kicad_version": "10.99.0",
@@ -11,8 +11,8 @@
   "routing": {
     "footprints": 322,
     "pads": 2436,
-    "copper_items": 30343,
-    "nets": 413,
+    "copper_items": 30495,
+    "nets": 412,
     "unconnected_items": 0,
     "electrical_blockers": 0,
     "dangling_tracks": 0,
@@ -28,7 +28,7 @@
   "drill_inventory": {
     "file_function": "MixedPlating,1,2",
     "tools_mm": {
-      "0.300": 2872,
+      "0.300": 2893,
       "0.800": 2326,
       "1.000": 85,
       "1.200": 8
@@ -36,12 +36,12 @@
   },
   "upload_zip": {
     "path": "fab/gerbers/upload/juku-replica-gerbers-drill.zip",
-    "bytes": 4875949,
-    "sha256": "136f0b701a1442eda40e72590822233f278851f516a5404bcf1ad19c4a3b6b28",
-    "checksum_file_sha256": "c4c081f31a40e851eb3c0ee4b375d05915d0073616c4c8297c0921afcc2fce56",
+    "bytes": 4883804,
+    "sha256": "cef15e3abd93398fa40030662db62feaca805ba7c86c7bf61c54bd982f39e16a",
+    "checksum_file_sha256": "6ba80339c06e8e404fe768b9bf6a3b23e49dd122eea1741ba4155cb565d14d4f",
     "member_compression": "stored",
     "metadata": "1980-01-01 00:00:00, Unix mode 0644"
   },
   "package_status": "DESIGN HOLD / PACKAGE VERIFIED",
-  "disposition": "All local fabrication-package integrity gates pass. Do not upload or order while the functional design hold remains."
+  "disposition": "All local fabrication-package integrity gates pass after the measured D30 common-control route refresh. Do not upload or order while the functional design hold remains."
 }

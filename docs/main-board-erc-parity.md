@@ -14,8 +14,8 @@ schematic parity against it without a matching routed schematic/project.
 | --- | ---: | --- |
 | Raw ERC error violations | 0 | GUARDED |
 | Unexpected ERC/mapping findings | 0 | PASS |
-| Singleton-label ERC mode | suppressed (0 / 54) | PASS |
-| Source-risk singleton nets | 37 | BLOCK |
+| Singleton-label ERC mode | suppressed (0 / 53) | PASS |
+| Source-risk singleton nets | 36 | BLOCK |
 | Other source-risk nets | 7 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
 | Explicit board-JSON no-connects | 66 | PASS |
@@ -29,14 +29,14 @@ one-endpoint local-label net or suppress that complete warning class. The
 gate accepts only those two exact modes; partial reporting fails. The
 board-JSON singleton census remains the authoritative modeled boundary
 surface in either mode.
-Of those `54` singleton nets, `37` remain source-risk
+Of those `53` singleton nets, `36` remain source-risk
 boundaries and `17` have closed or intentional dispositions.
 
 ## Unresolved endpoint priorities
 
 | Priority | Count |
 | --- | ---: |
-| P0 | 11 |
+| P0 | 10 |
 | P1 | 25 |
 | P2 | 1 |
 

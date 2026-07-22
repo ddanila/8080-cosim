@@ -8,11 +8,11 @@ Primary public target: `infoaed/juku3000`
 
 ## Why We Are Asking
 
-The replica can boot `ROMBIOS 3.43` in the digital twin and the archived PCB
-ZIP is checksum-reproducible but topology-invalid, so the physical design
-remains on hold. Several
-connectivity and programmable-part items still need real media or silicon
-truth:
+The replica boots in the digital twin and its zero-open PCB package is
+checksum-verified under design hold. Several connectivity items still need
+hardware evidence.
+Additional media and silicon reads are requested for preservation and
+board-variant detection, not because the adopted PROM/EPROM set is incomplete:
 
 - Baltijets doc 007 confirms the programmed-part drawings, but the small-PROM
   byte tables are marked `на диске` instead of printed.
@@ -20,9 +20,13 @@ truth:
   boots `media/disks/JUKU1.CPM` to the EKDOS `A>` prompt, but physical-media
   provenance is still useful.
 - D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` now have validated repeated
-  physical tables. Independent reads or original programming-disk files would
-  provide useful corroboration. D94's shared-enable source and D0 hidden load
+  physical tables from two `.009` boards. Independent reads or original
+  programming-disk files would provide optional further provenance. D94's
+  shared-enable source and D0 hidden load
   remain incomplete even though its content and other local continuity are closed.
+- The third-source archival `JUKUROM0/1` pair is adopted as the D15/D16 EktaSoft
+  3.7 content. Further EPROM reads may expose a board variant but are not a
+  content or release gate.
 - Disk-side `JBASIC.COM` now reaches a visible `READY` prompt in cosim and
   uninterrupted HDL, but the public 8 KiB removable-memory BASIC cartridge
   remains a Monitor 3.3 compatibility boundary. Current probes show the body is
@@ -81,8 +85,8 @@ Relevant local docs:
    local wiring, but primary SN74LS74A truth leaves section-1 restart phase
    undefined and makes section 2 set-only without a real clear source. D105 and the
    measured `.009` WAIT/READY edge handoff are modeled and carried by the
-   promoted route; the separate D30.4 asynchronous-preset boundary remains an
-   exact continuity ask.
+   promoted route. D30.1/.4/.10/.12 and R5 are now continuity-closed as one
+   D38-driven conductor, so there is no remaining D30 continuity ask.
 
 ## Minimal Useful Deliverables
 
@@ -163,8 +167,8 @@ show the FDC-equipped population, but sockets, wires, crossings, and incomplete
 local registration hide most end-to-end paths. Continuity readings or clearer
 trace-side photographs of those three devices and the remaining source-risk
 nets would directly unblock the board. D30 section B and the measured `.009`
-WAIT/READY edge handoff are owner-closed; D30.4 `/PRE` remains separate because
-physical R5 continuity conflicts with the drawing's R5 callout.
+WAIT/READY edge handoff are owner-closed; direct continuity and the exact sheet
+agree that D30.1/.4/.10/.12 share the R5 pull-up and D38 strobe conductor.
 
 The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
 media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking

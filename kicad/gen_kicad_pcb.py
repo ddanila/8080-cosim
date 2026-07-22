@@ -631,7 +631,7 @@ def main():
         body_wid = 2*hw if vert else 2*hh
         ts = min(2.7, body_wid * 0.42, (body_len - 2.0) / (0.95 * max(len(mark), 1)))
         ts = max(ts, 1.0)
-        v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
+        v.SetVisible(c.get('populated') is not False); v.SetLayer(pcbnew.F_SilkS)
         v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(ts), pcbnew.FromMM(ts)))
         v.SetTextThickness(pcbnew.FromMM(max(0.15, ts * 0.16)))
         v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)

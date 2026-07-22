@@ -20,16 +20,17 @@ The filenames deliberately retain the board identity:
 - `arvutimuuseum_CS00015` identifies a different physical machine held by
   Arvutimuuseum, inventory/machine identifier `CS00015`.
 
-Several board-name pairs are byte-for-byte file aliases, not extra read events
-or proof of another device. Both names are retained to preserve the supplied
-provenance labels. Each section states the independent count explicitly.
+Some serial transcripts are byte-for-byte identical because the independently
+read devices contain the same table; identical files do not collapse the two
+recorded board/socket provenances into one physical source. Both board names
+are retained deliberately. Repeated reads on one device establish stability;
+agreement across the two `.009` boards establishes content corroboration.
 
 ## D2 — ДГШ5.106.037, К556РТ4
 
-Six independent accepted reads are represented by eight manifest inputs: the
-original series plus provenance aliases, followed by three 2026-07-19
-revision-3 controls including a power cycle. All produce the same validated
-table; the JSON manifest records the alias-adjusted independent count.
+The Arvutimuuseum and Sukharev devices produce the same validated table. The
+retained series includes repeat and power-cycled reads plus the 2026-07-19
+revision-3 reader controls.
 
 ```text
 validated/d2_037.raw.bin
@@ -44,8 +45,10 @@ D2 table. Owner continuity then confirmed the reader's physical wiring as PROM
 pins `9,10,11,12 -> Nano A1,D2,D3,D4`. The corrected D6 bytes are the exact
 four-bit reversal of the older artifact, exposing a channel-packing error that
 D2 could not reveal because its only values, `0` and `F`, are reversal-invariant.
-The old captures remain as superseded provenance evidence; this corrected table
-is authoritative and drives the HDL outputs directly.
+The Arvutimuuseum device's older captures agree after correcting that documented
+channel-packing reversal. The Sukharev device's revision-3 captures provide the
+direct authoritative byte order used by HDL, so the table is cross-machine as
+well as repeat-read validated.
 
 ```text
 validated/d6_038.raw.bin
@@ -54,10 +57,9 @@ SHA256 c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489
 
 ## D8 — ДГШ5.106.039, К155РЕ3
 
-Three independent accepted reads include one power-cycled capture; the second
-board-name series is an exact set of aliases and is not counted again. All
-three reads agree. The physical table differs from the old reconstructed
-fallback at 19 of 32 addresses and therefore supersedes it.
+Three reads from each of the two physical boards include a power-cycled capture.
+All six agree byte-for-byte. The physical table differs from the old
+reconstructed fallback at 19 of 32 addresses and therefore supersedes it.
 
 ```text
 validated/d8_039.raw.bin
@@ -73,10 +75,9 @@ Active-low asserted table:
 
 ## D94 — ДГШ5.106.092, К155РЕ3
 
-Three independent accepted reads include one power-cycled capture; the second
-board-name series is an exact set of aliases and is not counted again. All
-three reads agree, and the resulting table differs from D8 at 25 of 32
-addresses.
+Three reads from each of the two physical boards include a power-cycled capture.
+All six agree byte-for-byte, and the resulting table differs from D8 at 25 of
+32 addresses.
 
 ```text
 validated/d94_092.raw.bin

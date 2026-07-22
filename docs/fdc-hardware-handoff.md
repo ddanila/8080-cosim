@@ -286,9 +286,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   pins8-13 during request and acknowledge. D93.19 is source-connected to
   D13.8; active-high RESET enters D13.9 and is inverted for MR_N.
   D93.24 is
-  source-closed through D95's selected 1/2 MHz clock section. First dump
-  D15/D16 and identify its guarded CMA/NOP profile; the recovered direct
-  D93 bus means physical D100 is not the profile selector. D99.10 and
+  source-closed through D95's selected 1/2 MHz clock section. The adopted
+  archival D15/D16 pair fixes the replica to the direct-bus/NOP profile;
+  physical D100 is not the profile selector. D99.10 and
   joined D100.9/.11 are distinct unresolved sheet-1 continuations; D100.6's selected write-data input
   is source-closed through D101.9. See
   `docs/fdc-bus-polarity.md`.

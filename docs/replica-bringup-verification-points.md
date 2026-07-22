@@ -11,13 +11,13 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `218f4b554d308ec555ec88dbeac325d168aa243b84652b7a02e2b61e5a55ed06`
+- Source board JSON SHA-256: `4edd70b62e965b9f114aa810ddb5985b9f4fdbc9bea1bacd2fcd828320d04f12`
 - Final PCB source: `kicad/juku.kicad_pcb`
-- Final PCB source SHA-256: `ed864c21f9b64efee3258f52ccbac79b28f743e48250448f16e8f58834871a8b`
+- Final PCB source SHA-256: `968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Routed PCB source SHA-256: `12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37`
-- Verification-point nets: `44`
-- Verification-point endpoints checked in PCB: `54`
+- Routed PCB source SHA-256: `7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a`
+- Verification-point nets: `43`
+- Verification-point endpoints checked in PCB: `53`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2297`
 - All board endpoints checked in routed PCB: `2297`
@@ -30,7 +30,7 @@ visible and actionable before manufacturing and first power-on.
 | memory/decode | 1 |
 | sound/analog | 1 |
 | timing/I/O | 1 |
-| video/analog | 19 |
+| video/analog | 18 |
 
 ## KiCad PCB Endpoint Coverage
 
@@ -42,8 +42,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 54/54 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 54/54 net names matched |
+| Risk endpoints present on PCB pads | PASS | 53/53 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 53/53 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -103,7 +103,6 @@ fabrication-source coverage gate, not a historical-source proof.
 | `D99_Q2_BOUNDARY` | logic | `D99.5` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `INHIB_STATUS_BOUNDARY` | logic | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an explicit junction d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Registered July and May component views e... | Scope/capture video or timing node during video bring-up. |
-| `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |
 | `S1_3_BOUNDARY` | logic | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `SYNC_B` | video/analog | `D57.17` | exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2 remains the separat... | Scope/capture video or timing node during video bring-up. |
 | `TAPE_RUN_INT` | timing/I/O | `D10.22` | recovered .009 Э3 sheet 1 explicitly labels D10 IR4/pin22 as continuation (3) TAPE RUN INT, but the complete recovered .009 sheet 3 is the replacement FDC circuit and contains n... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

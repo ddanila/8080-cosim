@@ -21,9 +21,14 @@ D93.1 alone owns the open stub, and D94.13 is D105.3 qualified peripheral `/WR`.
 Raw D5.27 reaches D7.10; D7.8 closes to D105.1/D6.15, and D13.4 closes to
 D105.2. D104.7 remains separate (~84 kΩ from D94.13).
 
+On 2026-07-22, direct continuity plus the exact `.009` sheet closed the last
+D30 control singleton: `D30.1/.4/.10/.12` and `R5.2` are one conductor driven
+by D38.8; `R5.1` goes to +5 V. A powered capture of D30.2/.3/.5 may still be
+useful validation, but no further D30 continuity measurement is requested.
+
 ## Remaining P0 connectivity (batch in the same session)
 
-2. **D94 `.092` shared-enable/D0 closure and live steering:** owner continuity on 2026-07-21 closes
+1. **D94 `.092` shared-enable/D0 closure and live steering:** owner continuity on 2026-07-21 closes
    D94 D5-D7/pins 6, 7, and 9 plus D104.10 as NC, matching the exact-revision
    drawing. Trace the upstream source beyond the local D94.15/D93.3 join. With
    D94 removed, repeat-check D94.1 against D101.1 and nearby support pins;
@@ -34,7 +39,11 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
    the direction-appropriate D93 strobe. This runtime capture corroborates the
    physical table but does not replace the two continuity checks
    (`docs/d94-reconstruction-constraints.md`).
-3. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
+2. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
+   first isolate the tentative D96.6 observation from the newly closed 1 MHz
+   slot route. Measure resistance from D96.6 to D40.11 in both probe
+   polarities, preferably with D96 removed; sheet 3 requires D96.6 to remain
+   local to D96.2 and not join the D40.11/D59.5/D92.2/.3/D95.5/.6 net.
    D96.1/.4 WREQ_N with Q1/.5 and Q1_N/.6 for post-release phase; D96.9 Q2,
    D96.11 CLK2, and the functionally contradictory drawn-NC
    D96.13 `/CLR2`; D99.4/.5/.10/.11/.12; and
@@ -42,7 +51,7 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
    select pins 2/14 and its complete Q1 write-precomp half are already
    source-closed and must not be re-probed as missing paths
    (`docs/fdc-hardware-handoff.md`).
-4. **Factory Вид В details:** D56.5->D34.9 and D56.12->D55.15/.18 are now
+3. **Factory Вид В details:** D56.5->D34.9 and D56.12->D55.15/.18 are now
    owner-closed. D56's three physical callout locations are fixed as the
    separate left annulus plus D56.5/D56.12; identify the installed item-159
    material and the remaining auxiliary-annulus/adjacent-rail disposition.
@@ -55,7 +64,7 @@ D105.2. D104.7 remains separate (~84 kΩ from D94.13).
 
 ## Programmable-parts corroboration (optional, Tier-3)
 
-5. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
+4. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
    EPROMs, only as corroboration of the validated captures
    (`docs/community-prom-media-request.md`).
 

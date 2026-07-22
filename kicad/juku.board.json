@@ -5360,7 +5360,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official; assembly drawing position and sheet-1 READY circuit",
-    "pins": "section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CLR1=-SSTB is source-closed to D38.8 on the D38-side A:8 island, /PRE4 remains a continuity boundary, and Q5->R29->D1.READY; section B: /PRE2 pin10 and D pin12 share the R5 pull-up, /CLR2 pin13 is driven by D105.11, pins6 /Q1 and9 Q2 are intentional NCs; direct .009 owner continuity on 2026-07-14 proves CLK2 pin11 joins D105.2/D13.4/D11.20 and Q_N2 pin8 drives D29.7"
+    "pins": "section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, and direct owner continuity plus the exact .009 sheet prove /CLR1 pin1 and /PRE1 pin4 share the D38.8 active-low STB conductor; Q5->R29->D1.READY. The same measured STB conductor reaches section-B /PRE2 pin10 and D pin12 and is pulled to +5 V through R5; /CLR2 pin13 is driven by D105.11, pins6 /Q1 and9 Q2 are intentional NCs; direct .009 owner continuity on 2026-07-14 proves CLK2 pin11 joins D105.2/D13.4/D11.20 and Q_N2 pin8 drives D29.7"
    }
   },
   {
@@ -5426,7 +5426,7 @@
   },
   {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
-   "prov": {"type": "scan + owner continuity", "refdes": "exact .009 sheet 1 labels R5 as the D30.4 READY preset pull-up, but direct target-board continuity supersedes that drawing reference", "pins": "physical R5.1 is P5V and R5.2 joins D30.10/.12; D30.4 remains a separate continuity boundary"}
+   "prov": {"type": "exact .009 sheet + owner continuity", "refdes": "exact .009 sheet 1 and direct target-board continuity agree that R5 pulls up the common D30 asynchronous-control conductor", "pins": "R5.1 is P5V; R5.2 joins D30.1/.4/.10/.12 and the D38.8 active-low STB conductor"}
   },
   {
    "ref": "R6", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
@@ -15813,10 +15813,6 @@
    "src": "owner continuity 2026-07-13: D2 D0/pin12 and R6 2k pullup feed D30 section-A D input pin2; D2 open-collector output overrides the pullup",
    "nodes": [["R6", "2"], ["D30", "2"], ["D2", "12"]]
   },
-  "READY_PRE_N": {
-   "src": "D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12",
-   "nodes": [["D30", "4"]]
-  },
   "READY_Q": {
    "src": "traced sheet-1: D30 section-A Q pin 5 reaches R29 1k series resistor",
    "nodes": [["D30", "5"], ["R29", "1"]]
@@ -15824,10 +15820,6 @@
   "READY": {
    "src": "traced sheet-1: R29 1k output reaches D1 READY pin 23",
    "nodes": [["R29", "2"], ["D1", "23"]]
-  },
-  "D30B_D_PRE_N": {
-   "src": "owner continuity 2026-07-13: D30 /PRE2 pin10 and section-B D input pin12 are tied together and to R5.2; R5.1 is +5 V",
-   "nodes": [["D30", "10"], ["D30", "12"], ["R5", "2"]]
   },
   "D105_10_H": {
    "src": "native full-resolution sheet 1 directly labels edge contact 107B -BLOCK on the D13.13/H conductor and R1 2k from that junction to rail A (+5 V). The .009 assembly drawing labels R1 between D13 and D105, the registered owner photo proves the populated body/landings, and direct owner continuity 2026-07-13 independently closes D13.13 to D105.10. This disproves the old H(-5) supply merge",
@@ -15881,11 +15873,15 @@
    "nodes": [["D104", "7"]]
   },
   "STSTB_D38": {
-   "src": "native cross-sheet closure: sheet-2 D38.8 exports active-low STB to sheet-1 -SSTB/D30.1 on the D38-side factory-wire А:8 copper island",
+   "src": "exact .009 sheets plus direct owner continuity 2026-07-22: sheet-2 D38.8 exports active-low STB to the common sheet-1 D30.1/.4/.10/.12 conductor, pulled to +5 V by R5; this is the D38-side factory-wire А:8 copper island",
    "nodes": [
     ["D38", "8"],
     ["W8", "2"],
-    ["D30", "1"]
+    ["D30", "1"],
+    ["D30", "4"],
+    ["D30", "10"],
+    ["D30", "12"],
+    ["R5", "2"]
    ],
    "note": "D38.8 reaches the registered A8B surface landing; insulated assembly wire W8 continues to STSTB/D5.1"
   },

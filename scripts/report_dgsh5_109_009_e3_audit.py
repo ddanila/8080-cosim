@@ -43,6 +43,7 @@ MARKERS = {
     "docs/serial-handoff.md": ("TAPE RUN INT", "D11.16", "SYNDET"),
     "docs/d41-timing-boundary.md": ("D95.5/.6", "1 MHz"),
     "docs/memory-timing-boundary.md": ("D33.3", "D92.13", "MEMR"),
+    "docs/d40-d59-d92-d95-1mhz-route.md": ("D40.11", "D59.5", "D92.2", "D95.5 + D95.6"),
     "ref/schematics/fdc-x4-ngmd-wire-map.md": ("D100 is not", "D93 DAL0-DAL7", "X4.23"),
     "ref/schematics/fdc-clock-mux-map.md": ("D95", "D93 CLK/pin 24", "D106 DOWN/pin 4"),
     "ref/schematics/fdc-recovery-counter-map.md": ("D106", "D28.9", "Q3"),
@@ -120,7 +121,7 @@ layout oracle only; its eight native detail frames are the pin-level evidence.
 | direct FDC host bus | Sheet-1 D0–D7 bundle continues directly to D93.7–.14; the inference-era D100 DAL transceiver is disproved. | `docs/fdc-bus-polarity.md` |
 | serial/PIC | RxRDY→IR2, shared TxC/RxC baud path, SYNDET switch path and X3/X5/X6 handoff are source-closed. IR4 still says `(3) TAPE RUN INT`, but replacement sheet 3 has no mate; it remains a stale-sheet boundary, not an invented FDC IRQ. | `docs/serial-handoff.md` |
 | sheet-2 memory read | Native `-MRD` arrivals close D33.3 and D92.13 onto MEMR, including the factory W11 continuation. | `docs/memory-timing-boundary.md` |
-| sheet-2 clocks | Native tags close the D40/D37/D54 1 MHz family and its sheet-3 D95 continuation without merging adjacent latch nets. | `docs/d41-timing-boundary.md` |
+| sheet-2 clocks | Native labels plus owner continuity close D40.11 onto the D59.5 mux-enable source, tied D92.2/.3 timing inputs, and the sheet-3 D95.5/.6 1 MHz continuation. This exposes a pending atomic correction to the model's former `LATCH_B`/`VID_MUX_G` split and D92 `PHI2TTL` attribution. | `docs/d40-d59-d92-d95-1mhz-route.md` |
 | sheet-2 analog/video | Populated non-RF video path is retained; `.006` RF-only parts are absent from the `.009` target. Exact `.009` C94 and several passive attributes remain honest photo/measurement boundaries. | `docs/video-analog-boundary.md` |
 
 No further sheet-1/2 difference is promoted merely because a continuation mark

@@ -31,17 +31,17 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `ed864c21f9b64efee3258f52ccbac79b28f743e48250448f16e8f58834871a8b` |
-| Routed-snapshot PCB SHA-256 | `12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37` |
+| Source PCB SHA-256 | `968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0` |
+| Routed-snapshot PCB SHA-256 | `7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a` |
 | Source footprints | 322 |
 | Routed-snapshot footprints | 322 |
 | Source-only footprints | 0 |
 | Routed-only footprints | 0 |
-| Routed copper nets classified by the refresh | 413 |
-| Nets with currently reusable routed copper | 413 |
+| Routed copper nets classified by the refresh | 412 |
+| Nets with currently reusable routed copper | 412 |
 | Routed nets currently quarantined | 0 |
-| Reusable non-duplicate track/via items | 30,343 |
-| Quarantined/duplicate track/via items | 0 |
+| Reusable non-duplicate track/via items | 30,492 |
+| Quarantined/duplicate track/via items | 3 |
 | Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
 
@@ -95,7 +95,7 @@ IOWR, D39Y, D39_MEMCYC, BA11, PHI2TTL, FDC_DRQ, D34_SIG, FDC_DDEN, D40Q1_D39,
 D99_C1_TIMING, RESET, OSC, DBIN, TIMING_TAG17, CLK_123M, CAS, FDC_STEP_TO_D100,
 AVDC, KBD_K0, VID_CPU_SEL, VA11, FDC_PRECOMP_WRDATA, IORC_N, MRC_N,
 D98_Y3_S1_2, S3_3, RAIL13, D39_MEMCYC, D105_WAIT_STAGE, VIDEO_OUT, RAIL12,
-SOUND_CLAMP, D94_D1_D99_A2N, RAIL14, SND_BASE, D30B_D_PRE_N,
+SOUND_CLAMP, D94_D1_D99_A2N, RAIL14, SND_BASE,
 D96_TOGGLE_FEEDBACK, S3_6, X4_WR_PROTECT_N, MA4, VID_MIX2, D33_CLK_RC,
 MEMW_D7P2, SND_OUT, MEMR_D7, FDC_WE_N, STSTB_D38, D97_C2_C19_R86_TARGET,
 PST_CLK, DB3, SER_RXD, S_DTP, D34_RC_DRIVE, A14, A9, RAM_RD_OE,

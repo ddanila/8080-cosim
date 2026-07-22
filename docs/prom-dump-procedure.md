@@ -27,7 +27,8 @@ remain separately named.
 EPROM programming update: `scripts/export_eprom_pair.py` deterministically
 splits the boot-validated `roms/ekta37.bin` into low D15 and high D16 8 KiB
 images under `ref/eprom-images/`, with SHA256 and concatenation guards. These
-are Tier-1/2 functional programming images, not physical-device dumps; see
+are the adopted third-source archival contents, not direct reads of the
+photographed devices; see
 `docs/eprom-programming-images.md`.
 
 ## What to pull (label each with its socket refdes + board # before removing!)
@@ -112,12 +113,13 @@ wiring, polarity, or the unresolved D94 shared-enable/D0 branches.
 2. **РТ4 D6 → memory-decode corroboration**: three revision-3 captures including
    a power cycle agree. They prove the old artifact was an exact reversal of all
    four data bits; the corrected `.038` table is adopted directly. Compare an
-   independent reader or programming-disk artifact only as Tier-3 corroboration.
+   independent reader or programming-disk artifact only as optional provenance.
 3. **РТ4 D2 → bus/wait corroboration**: compare another physical `.037` read
    with the three matching adopted captures. It does **not** replace the I/O
    decoder; board evidence puts the functional I/O chip-select decoder at D9
    К555ИД7.
-4. **M2764 ×2**: validates (or forks) our ekta37 ROM image against this physical board.
+4. **M2764 ×2**: optionally corroborates (or forks) the adopted Ekta 3.7 pair
+   against another physical board.
 
 If a future owner dump differs from `ref/physical-proms/validated/*.bin`, keep
 it as a candidate board variant until repeated reads and socket provenance are

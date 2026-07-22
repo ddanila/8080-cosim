@@ -217,7 +217,6 @@ def main() -> int:
     expected_categories = {
         "C12_1_BOUNDARY": "logic/source",
         "C12_2_BOUNDARY": "logic/source",
-        "READY_PRE_N": "logic/source",
         "TAPE_RUN_INT": "logic/source",
         "USART_RXRDY_IRQ": "logic/source",
         "USART_TXRDY_IRQ": "logic/source",

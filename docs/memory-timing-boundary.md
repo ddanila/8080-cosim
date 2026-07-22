@@ -45,7 +45,7 @@ python3 scripts/report_memory_timing_boundary.py
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
 | D56 trigger, clock, and active-output topology is owner-closed | PASS | exact .009 E3 plus owner continuity 2026-07-21: D54.17->D56.10, D55.17->D56.2, D56.12->D55.15/.18, D56.5/.4->D34.9/.10; D57.17 remains separate |
 | D35 frame-interrupt inverter path is source-closed | PASS | native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2 |
-| D30 READY clear uses the native D38-side status strobe | PASS | sheet-2 D38.8 active-low STB export -> sheet-1 -SSTB/D30.1; W8 still separates the D5-side island |
+| D30 common asynchronous-control conductor uses the native D38-side status strobe | PASS | exact .009 sheets plus owner continuity: D38.8 STB -> D30.1/.4/.10/.12 and R5 pull-up; W8 still separates the D5-side island |
 
 ## Compatible D53 Decoder Timing Envelope
 

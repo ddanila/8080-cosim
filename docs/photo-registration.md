@@ -544,9 +544,9 @@ not another broad projection pass:
 3. D94's shared upstream chip-select source and D0 hidden branch. Its five
    address inputs, D1-D3 steering outputs, static NC outputs, and physical table
    are already closed. D30 section B, the D105 WAIT edge handoff, and D41 timing
-   boundaries are likewise closed. D30.4 `/PRE` remains a separate continuity
-   boundary because physical R5 is measured on D30.10/.12, conflicting with the
-   drawing's R5-at-D30.4 callout.
+   boundaries are likewise closed. Direct continuity plus the exact sheet close
+   D30.1/.4/.10/.12 and R5 as one D38-driven conductor; there is no remaining
+   D30.4 continuity boundary.
 
 `docs/owner-measurement-shortlist.md` is the generated pin-level session list;
 `PLAN.md` owns release priority.

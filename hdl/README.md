@@ -81,16 +81,19 @@ They are not generic cycle-accurate replacements for every original IC mode.
   D7.2/A19B landing, with W19 as the only modeled closure.
 - Factory wire A:20 separates D3.10/A20B from the co-located A20A/A23.1/X3.3
   cable island; W20 remains transparent in HDL while preserving that assembly.
-- 44 modeled nets still carry source-risk annotations requiring
+- 43 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist. Their ИР16 falling-edge
   LD/SH/OC behavior and D48-D52 inverting КП14/258 behavior are guarded, but
   faithful shared-DRAM slot timing still needs the remote control sources. The
-  formerly missed D59 5->6 inverter is now wired exactly: D59.5 reaches the
-  E14/video /G link and D59.6 reaches the E13/CPU /G link. The external driver
-  of D59.5 remains unproved, so the runnable boundary uses its TTL-high default;
-  D94's proved outputs belong to FDC control.
+  formerly missed D59 5->6 inverter is now wired locally: D59.5 reaches the
+  E14/video /G link and D59.6 reaches the E13/CPU /G link. Owner continuity on
+  2026-07-22 proves D59.5 is driven by the D40.11 1 MHz slot rail, shared with
+  D92.2/.3 and D95.5/.6. The runnable boundary still uses its old TTL-high
+  fallback until that net merge is applied atomically to JSON, HDL, and both
+  PCB representations; see `docs/d40-d59-d92-d95-1mhz-route.md`. D94's proved
+  outputs belong to FDC control.
 - CPU DRAM transactions are functionally closed: RAS spans row through CAS,
   and the РУ5 model implements early/delayed asynchronous writes without a
   synthetic sampling clock. Exact D36/R57 delays and DOUT turn-off remain

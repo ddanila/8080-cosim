@@ -19,6 +19,7 @@ PCBS = (
 )
 SOURCE = "SSTB_N"
 DESTINATION = "STSTB_D38"
+MEASURED_SOURCES = ("READY_PRE_N", "D30B_D_PRE_N")
 
 
 def replace_once(text: str, old: str, new: str, label: str) -> str:
@@ -28,25 +29,42 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
     return text.replace(old, new)
 
 
-def merge_or_rename_pcb(path: Path) -> None:
+def merge_or_rename_pcb(path: Path, source_name: str = SOURCE) -> None:
     text = path.read_text()
-    source = re.search(rf'^\s*\(net (\d+) "{SOURCE}"\)$', text, re.MULTILINE)
+    source = re.search(rf'^\s*\(net (\d+) "{source_name}"\)$', text, re.MULTILINE)
     destination = re.search(rf'^\s*\(net (\d+) "{DESTINATION}"\)$', text, re.MULTILINE)
     if not source:
-        raise SystemExit(f"{path}: missing {SOURCE} declaration")
+        raise SystemExit(f"{path}: missing {source_name} declaration")
     source_id = source.group(1)
     if destination:
         destination_id = destination.group(1)
         text = text.replace(source.group(0) + "\n", "", 1)
-        text = text.replace(f'(net {source_id} "{SOURCE}")', f'(net {destination_id} "{DESTINATION}")')
+        text = text.replace(f'(net {source_id} "{source_name}")', f'(net {destination_id} "{DESTINATION}")')
         text = text.replace(f"(net {source_id})", f"(net {destination_id})")
-        text = text.replace(f'(net_name "{SOURCE}")', f'(net_name "{DESTINATION}")')
+        text = text.replace(f'(net_name "{source_name}")', f'(net_name "{DESTINATION}")')
     else:
-        text = text.replace(f'(net {source_id} "{SOURCE}")', f'(net {source_id} "{DESTINATION}")')
-        text = text.replace(f'(net_name "{SOURCE}")', f'(net_name "{DESTINATION}")')
-    if SOURCE in text:
-        raise SystemExit(f"{path}: residual {SOURCE} text")
+        text = text.replace(f'(net {source_id} "{source_name}")', f'(net {source_id} "{DESTINATION}")')
+        text = text.replace(f'(net_name "{source_name}")', f'(net_name "{DESTINATION}")')
+    if source_name in text:
+        raise SystemExit(f"{path}: residual {source_name} text")
     path.write_text(text)
+
+
+def apply_measured_common() -> None:
+    board = json.loads(BOARD.read_text())
+    expected = {
+        ("D38", "8"), ("W8", "2"), ("D30", "1"), ("D30", "4"),
+        ("D30", "10"), ("D30", "12"), ("R5", "2")
+    }
+    if set(map(tuple, board["nets"][DESTINATION]["nodes"])) != expected:
+        raise SystemExit("board JSON does not contain the measured common D30 conductor")
+    if any(name in board["nets"] for name in MEASURED_SOURCES):
+        raise SystemExit("board JSON still contains a pre-measurement D30 net")
+    for pcb in PCBS[1:]:
+        text = pcb.read_text()
+        for source_name in MEASURED_SOURCES:
+            if source_name in text:
+                merge_or_rename_pcb(pcb, source_name)
 
 
 def apply() -> None:
@@ -101,7 +119,10 @@ def check() -> None:
     failures = []
     if SOURCE in board["nets"]:
         failures.append(f"board retains {SOURCE}")
-    expected = {("D38", "8"), ("W8", "2"), ("D30", "1")}
+    expected = {
+        ("D38", "8"), ("W8", "2"), ("D30", "1"), ("D30", "4"),
+        ("D30", "10"), ("D30", "12"), ("R5", "2")
+    }
     actual = set(map(tuple, board["nets"][DESTINATION]["nodes"]))
     if actual != expected:
         failures.append(f"{DESTINATION} endpoints differ: {sorted(actual)}")
@@ -114,17 +135,26 @@ def check() -> None:
         text = pcb.read_text()
         if SOURCE in text:
             failures.append(f"{pcb.relative_to(ROOT)} retains {SOURCE}")
+        for source_name in MEASURED_SOURCES:
+            if source_name in text:
+                failures.append(f"{pcb.relative_to(ROOT)} retains {source_name}")
     if failures:
         raise SystemExit("\n".join(failures))
-    print("D30-STATUS-STROBE: PASS (D30.1 joins D38.8/W8.2, not the D5-side island)")
+    print("D30-STATUS-STROBE: PASS (D30.1/.4/.10/.12 and R5 join D38.8/W8.2, not the D5-side island)")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true", help="perform the one-time closure")
+    parser.add_argument(
+        "--apply-measured-common", action="store_true",
+        help="merge the measured D30.4/.10/.12 branches into STSTB_D38 on routed PCBs",
+    )
     args = parser.parse_args()
     if args.apply:
         apply()
+    if args.apply_measured_common:
+        apply_measured_common()
     check()
 
 

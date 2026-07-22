@@ -1,6 +1,5 @@
 priority,ref,pin,type,role,reason
 P0,D7,3,LA3_GATE,Y2,source-risk singleton net AMW_N lacks a proved remote endpoint
-P0,D30,4,TM2_DFF,PRE1_N,source-risk singleton net READY_PRE_N lacks a proved remote endpoint
 P0,D99,4,AG3_ONESHOT,Q_N,source-risk singleton net D99_Q1N_BOUNDARY lacks a proved remote endpoint
 P0,D99,5,AG3_ONESHOT,Q2,source-risk singleton net D99_Q2_BOUNDARY lacks a proved remote endpoint
 P0,D99,11,AG3_ONESHOT,CLR2_N,source-risk singleton net D99_CLR2_BOUNDARY lacks a proved remote endpoint

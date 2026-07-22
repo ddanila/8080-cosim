@@ -436,7 +436,7 @@ def main() -> int:
             or package_evidence.get("board") != "kicad/juku_routed.kicad_pcb"
             or package_evidence.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
             or (package_routing.get("footprints"), package_routing.get("pads")) != (322, 2436)
-            or (package_routing.get("copper_items"), package_routing.get("nets")) != (30343, 413)
+            or (package_routing.get("copper_items"), package_routing.get("nets")) != (30495, 412)
             or any(
                 package_routing.get(name) != 0
                 for name in ("unconnected_items", "electrical_blockers", "dangling_tracks", "dangling_vias")
@@ -557,7 +557,7 @@ def main() -> int:
             failures.append(f"automatic-completion audit is stale; missing {marker!r}")
     for path, marker in (
         ("docs/owner-measurement-shortlist.md", "Status: **READY**"),
-        ("docs/firmware-gap-ledger.md", "TIER-3 CORROBORATION PENDING"),
+        ("docs/firmware-gap-ledger.md", "ADOPTED FIRMWARE SET VERIFIED"),
         ("docs/cartridge-basic-boundary.md", "ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED"),
         ("docs/crt-cvbs-simulation-plan.md", "shared-DRAM video-slot schedule is evidence-complete"),
     ):
