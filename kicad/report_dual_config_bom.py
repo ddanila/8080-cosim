@@ -76,11 +76,11 @@ AUTHENTIC_MARK = {
     "SW_DIP6": "DIP switch",
     "EXPANSION_CONN": "СНП59-96 Р-20-2-В",
     # Owner-corrected 2026-07-22: СНП59-30-23-В (30 contacts) is X2's parallel
-    # connector (matches the 30-contact СНП in the photo survey); X3 has only
-    # 12 wired lines (A21-A32). Owner identifies X3 as the РШ2Н-1/РГ1Н-1
-    # rectangular family; exact variant (12- vs 16-contact, bracket gender)
-    # pending a contact count on board #2.
-    "SERIAL_CONN": "РШ2Н-1/РГ1Н-1-family serial connector, exact variant pending owner check",
+    # connector; X3 is photo-closed as a 12-contact РГ1Н-1-4 panel socket
+    # (two rows of six, molded 1/12 contact numbers, hoodless with spring
+    # bail; cable mate is РШ2Н-1-23/-24). Evidence:
+    # ref/photos/juku-pcb-2/x3-bracket-face-20260722.png and SURVEY.md.
+    "SERIAL_CONN": "РГ1Н-1-4 12-contact serial socket (cable mate РШ2Н-1-23/-24)",
     "POWER_CONN": "СНО51-30/56х9В-23 power connector",
     "KBD_CONN": "keyboard connector",
     "PAR_CONN": "СНП59-30-23-В / parallel connector",

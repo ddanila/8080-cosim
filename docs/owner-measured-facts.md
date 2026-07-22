@@ -51,6 +51,13 @@ measurement lands, add a row here.
 | `D56.12/Q2_N -> D55.15/CLK1 + D55.18/CLK2` on conductor 16; it is distinct from the DRAM write rail also marked 16. | owner-continuity + exact-revision `.009 E3` sheet 2, 2026-07-21 | `docs/memory-timing-boundary.md` |
 | `D56.5/Q2 -> D34.9` as drawn. | owner-continuity + exact-revision `.009 E3` sheet 2, 2026-07-21 | `docs/memory-timing-boundary.md` |
 
+## Bracket connectors
+
+| Fact | Provenance | Source |
+| --- | --- | --- |
+| X3 = РГ1Н-1-4 12-contact panel socket (two rows of six, molded 1/12 numbering, spring bail, no hood); mating cable plug is РШ2Н-1-23/-24. 12-wire harness to A21-A32 confirmed. Former СНП59-30-23-В label was a BOM mislabel — the 30-contact СНП59 is X2. | photo, 2026-07-22 | `ref/photos/juku-pcb-2/x3-bracket-face-20260722.png`, `x3-serial-area-rear-20260722.jpg`, SURVEY.md 2026-07-22 section |
+| Blue bracket-edge connector stamped `СНО51-30-23 8903` — corroborates the X8 power-connector BOM designation | photo, 2026-07-22 | `ref/photos/juku-pcb-2/x3-serial-area-rear-20260722.jpg` |
+
 ## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
 
 - Factory Вид В item-159 material and auxiliary-annulus/adjacent-rail disposition at the registered D56.12/D56.5 level (the package-pad functional nets themselves are closed),

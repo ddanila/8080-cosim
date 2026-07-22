@@ -19,7 +19,7 @@ mechanical-review,KBD_CONN,,keyboard connector,select exact substitute after cir
 mechanical-review,PAR_CONN,,СНП59-30-23-В / parallel connector,select exact substitute after circuit review,1,1,0,X2,X2,
 mechanical-review,POWER_CONN,,СНО51-30/56х9В-23 power connector,select exact substitute after circuit review,1,1,0,X8,X8,
 mechanical-review,RF_CONN,,RF connector,select exact substitute after circuit review,1,1,0,X6,X6,
-mechanical-review,SERIAL_CONN,,"РШ2Н-1/РГ1Н-1-family serial connector, exact variant pending owner check",select exact substitute after circuit review,1,1,0,X3,X3,
+mechanical-review,SERIAL_CONN,,РГ1Н-1-4 12-contact serial socket (cable mate РШ2Н-1-23/-24),select exact substitute after circuit review,1,1,0,X3,X3,
 mechanical-review,SW,,switch,select exact substitute after circuit review,2,2,0,"S1, S4","S1, S4",
 mechanical-review,SW_DIP6,,DIP switch,select exact substitute after circuit review,1,1,0,S3,S3,
 mechanical-review,VIDEO_CONN,,BNC/composite video connector,select exact substitute after circuit review,1,1,0,X7,X7,

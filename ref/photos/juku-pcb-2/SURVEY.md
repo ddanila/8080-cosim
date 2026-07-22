@@ -45,6 +45,27 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
   normally obscured by the package. The view improves package registration but
   does not by itself establish the remaining VG93 pin destinations.
 
+## 2026-07-22 supplemental photos — X3 connector identity
+
+Two additional owner photographs (outside the original 50-photo session)
+close the X3 serial connector's physical identity:
+
+- `x3-bracket-face-20260722.png` — bracket edge-on view of X4 and X3. The X3
+  insert is a hoodless brown rectangular panel connector with a spring-bail
+  retainer and **12 contacts in two rows of six**, with molded contact
+  numbers `1` and `12` visible on the insert corners. In the РШ2Н/РГ1Н
+  family (panel half = РГ1Н-1 socket, cable half = РШ2Н-1 hooded plug) this
+  identifies X3 as a **РГ1Н-1-4** 12-contact panel socket; the mating cable
+  part is РШ2Н-1-23 (straight hood) or РШ2Н-1-24 (angled hood).
+- `x3-serial-area-rear-20260722.jpg` — component-side view of the same edge:
+  the 12-wire white harness from X3 to the A21-A32 landings (matching the
+  `.009` cable table's 12 lines), adjacent to the serial chain (two К170АП2,
+  К170УП2, КР580ВВ51А). The blue connector stamped `СНО51-30-23 8903`
+  corroborates the BOM's X8 power-connector designation.
+
+This supersedes the former СНП59-30-23-В labeling of X3 (a BOM part-name-map
+mislabel; the 30-contact СНП59 is X2's parallel connector).
+
 ## Limitations
 
 Photo sighting alone did not establish D2/D94 contents; repeated programmer
