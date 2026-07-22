@@ -8,6 +8,24 @@
     "checkout_mode": "detached clean checkout",
     "source_tree_clean_after_tests": true
   },
+  "wp0_followup": {
+    "fork_head_commit": "feec5d7ac173fdc6389cd03a7da87eb175ccfc2e",
+    "upstream_head_at_followup": "6cce72d4a0e35ed364d086470191d61e3f6cd116",
+    "readme_and_ci_commit": "175cb65de38c003a94ac1c38813d246ff9e90491",
+    "ci_dependency_fix_commit": "feec5d7ac173fdc6389cd03a7da87eb175ccfc2e",
+    "readme_sha256": "6b6a407d51d0549588e26a920872554513acc7a6360d1ce9ba6014cf6c8467e7",
+    "workflow_sha256": "d46d03804deb9214a5f5016539b666b72134ea5b733bc26bad27388aa880abe9",
+    "ci_run": {
+      "id": 29885055666,
+      "url": "https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29885055666",
+      "head_sha": "feec5d7ac173fdc6389cd03a7da87eb175ccfc2e",
+      "job": "linux",
+      "conclusion": "success",
+      "full_rf_iq_build": "pass",
+      "ctest": "pass",
+      "synth_ntsc": "pass"
+    }
+  },
   "8080_cosim_context_commit": "ae7918afe81024b462c8337dc23f509874e35e76",
   "host": {
     "os": "Ubuntu resolute amd64",
@@ -41,12 +59,10 @@
     "GCC 15 warns that the recording-time HUD snprintf into a 16-byte buffer can truncate for a sufficiently large or negative integer duration."
   ],
   "scope": {
-    "proved": "The recorded unmodified decoder fork point configures, builds all targets, and passes its sole upstream synthetic NTSC CTest on this host.",
+    "proved": "The recorded unmodified decoder fork point configures, builds all targets, and passes its sole upstream synthetic NTSC CTest on this host. The fork now records fork/upstream authority and fixture policy, and its Linux CI builds the full RF/IQ application plus tests and passes CTest and synth_ntsc.",
     "not_proved": [
       "HackRF hardware access or RF reception",
       "Juku baseband ingestion or non-NTSC synchronization",
-      "decoder-fork CI configuration",
-      "fork README provenance changes",
       "any Juku X7 receiver or image claim"
     ]
   }

@@ -1377,7 +1377,9 @@ source-current condition, so exact-revision К555ЛП5 drive behavior and physic
 calibration remain open before the model can claim X7 levels. The separate
 decoder fork point is also clean-checkout reproduced on Linux: all three targets
 build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
-fork-local README provenance and CI remain separate-repository work.
+fork now records its upstream/fork authority and deterministic-fixture policy,
+and Linux CI run `29885055666` passes the full RF/IQ build, CTest, and direct
+synthetic regression. CVBS-plan WP0 is complete.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

@@ -178,19 +178,21 @@ waveform or receiver.
 
 ### WP0 — Baseline and reproducibility
 
-Progress: the recorded fork point now has a guarded clean-checkout baseline in
+Progress: **complete**. The recorded fork point has a guarded clean-checkout baseline in
 `docs/crt-decoder-baseline.md`. On the 2026-07-22 Linux host, the unmodified
 fork configured and built `fam_dsp`, `famidec`, and `synth_ntsc`; CTest passed
 1/1, and the direct synthetic test decoded 29 frames with all seven bars in
 tolerance. Development packages were extracted below `/tmp`, not installed on
-the host. The fork's own README provenance and CI remain pending separate-repo
-work, so WP0 as a whole is not marked complete.
+the host. Fork commits `175cb65`/`feec5d7` now record the upstream/fork point,
+authority split, and deterministic-fixture policy and add Linux CI. CI run
+`29885055666` builds the full RF/IQ application and tests, then passes CTest
+and direct `synth_ntsc`.
 
-- Record upstream and fork remotes and the fork point in the decoder README.
-- Build the unmodified fork on the development host.
-- Run `synth_ntsc` and upstream CTest before changing the pipeline.
-- Add CI for the existing RF/IQ path and the future baseband path.
-- Define a small deterministic fixture policy; do not commit multi-gigabyte
+- [x] Record upstream and fork remotes and the fork point in the decoder README.
+- [x] Build the unmodified fork on the development host.
+- [x] Run `synth_ntsc` and upstream CTest before changing the pipeline.
+- [x] Add CI for the existing RF/IQ path and the future baseband path.
+- [x] Define a small deterministic fixture policy; do not commit multi-gigabyte
   captures.
 
 Exit gate: the fork builds and its upstream tests pass from a clean checkout.
@@ -364,8 +366,7 @@ The task is complete only when all of the following hold:
 
 ## Immediate next actions
 
-1. Preserve the reproduced clean-checkout baseline while adding fork-local
-   provenance and CI before receiver changes.
+1. Keep the now-guarded fork baseline and RF/IQ CI green through receiver changes.
 2. Implement the generic float32 baseband input and headless output first.
 3. Refactor synchronization constants into profiles while keeping NTSC green.
 4. Generate a synthetic non-NTSC monochrome fixture and prove receiver lock.

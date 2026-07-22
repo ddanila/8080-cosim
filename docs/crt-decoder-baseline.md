@@ -2,7 +2,7 @@
 
 Status date: **2026-07-22**.
 
-Status: **UPSTREAM BASELINE REPRODUCED / FORK README AND CI PENDING**.
+Status: **WP0 BASELINE, PROVENANCE, FIXTURE POLICY, AND FORK CI GUARDED**.
 
 This generated report records CVBS-plan WP0 work performed in a temporary,
 detached checkout. It proves that the recorded unmodified decoder fork point
@@ -26,6 +26,8 @@ python3 scripts/report_crt_decoder_baseline.py
 | Upstream CTest passed | PASS | 1/1 synth_ntsc test passed |
 | Direct synthetic NTSC result is internally complete | PASS | 29 frames; 7/7 bars |
 | Temporary dependencies did not mutate host package state | PASS | development packages were extracted only below /tmp |
+| Fork README provenance and deterministic-fixture policy are committed | PASS | fork `175cb65d`; upstream remained `6cce72d4` |
+| Fork Linux CI builds RF/IQ and passes both test entry points | PASS | run 29885055666 at `feec5d7a`: full build + CTest + synth_ntsc |
 
 ## Recorded environment
 
@@ -34,6 +36,7 @@ python3 scripts/report_crt_decoder_baseline.py
 | Decoder fork | https://github.com/ddanila/famicom-rf-hackrf-decoder |
 | Upstream | https://github.com/GOROman/famicom-rf-hackrf-decoder |
 | Decoder commit | `6cce72d4a0e35ed364d086470191d61e3f6cd116` |
+| Fork WP0 head | `feec5d7ac173fdc6389cd03a7da87eb175ccfc2e` |
 | 8080-cosim context | `ae7918afe81024b462c8337dc23f509874e35e76` |
 | Host | Ubuntu resolute amd64 |
 | CMake | 4.2.3 |
@@ -46,6 +49,7 @@ python3 scripts/report_crt_decoder_baseline.py
 | --- | --- | ---: | ---: |
 | CTest | 1/1 passed | 0.61 s | 20604 KiB |
 | direct synth_ntsc | 29 frames; 7854 lines; 7/7 bars | 0.62 s | 19128 KiB |
+| fork Linux CI | full RF/IQ build + CTest + synth_ntsc PASS ([run 29885055666](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29885055666)) | 42 s | GitHub-hosted runner |
 
 The direct run reported 87 coasted lines and still recovered all seven
 golden color bars within the upstream tolerance.
@@ -59,13 +63,12 @@ These HUD-format warnings do not affect `synth_ntsc`, but they should be
 resolved in the decoder fork before treating GCC 15 warnings as a clean CI
 baseline.
 
-## Remaining WP0 work
+## Boundaries after WP0
 
 - HackRF hardware access or RF reception
 - Juku baseband ingestion or non-NTSC synchronization
-- decoder-fork CI configuration
-- fork README provenance changes
 - any Juku X7 receiver or image claim
 
-The fork's README provenance and CI are intentionally not changed from this
-repository. Those are separate-repository writes and remain pending.
+WP0 is complete: the fork now owns its provenance, deterministic-fixture
+policy, and green full-build/test CI. These remaining items belong to later
+work packages or physical validation.

@@ -13,7 +13,7 @@ history.
   loaded X7 voltage waveform, adapting the forked sample-domain receiver, and
   validating monitor lock before optional CRT presentation.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC
-  baseline for the decoder fork point, with fork-local README/CI work still open.
+  baseline plus fork-owned provenance, fixture policy, and green Linux CI.
 - `architecture.md` — data flow and scope of each verification layer.
 - `vision.md` — project invariant and source-of-truth policy.
 - `hardware-map.md` — concise software-visible machine map and physical

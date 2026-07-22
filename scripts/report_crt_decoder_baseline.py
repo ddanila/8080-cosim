@@ -26,6 +26,8 @@ def main() -> int:
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     plan = PLAN_PATH.read_text(encoding="utf-8")
     decoder = data["decoder"]
+    followup = data["wp0_followup"]
+    ci_run = followup["ci_run"]
     results = data["results"]
     synth = results["synth_ntsc"]
     context_commit = data["8080_cosim_context_commit"]
@@ -88,9 +90,25 @@ def main() -> int:
             data["host"]["dependency_setup"].startswith("No host packages installed."),
             "development packages were extracted only below /tmp",
         ),
+        (
+            "Fork README provenance and deterministic-fixture policy are committed",
+            re.fullmatch(r"[0-9a-f]{40}", followup["readme_and_ci_commit"]) is not None
+            and re.fullmatch(r"[0-9a-f]{64}", followup["readme_sha256"]) is not None
+            and re.fullmatch(r"[0-9a-f]{64}", followup["workflow_sha256"]) is not None
+            and followup["upstream_head_at_followup"] == EXPECTED_COMMIT,
+            f"fork `{followup['readme_and_ci_commit'][:8]}`; upstream remained `{EXPECTED_COMMIT[:8]}`",
+        ),
+        (
+            "Fork Linux CI builds RF/IQ and passes both test entry points",
+            ci_run["conclusion"] == "success"
+            and ci_run["head_sha"] == followup["fork_head_commit"]
+            and ci_run["head_sha"] == followup["ci_dependency_fix_commit"]
+            and all(ci_run[item] == "pass" for item in ("full_rf_iq_build", "ctest", "synth_ntsc")),
+            f"run {ci_run['id']} at `{ci_run['head_sha'][:8]}`: full build + CTest + synth_ntsc",
+        ),
     ]
     ok = all(result for _, result, _ in checks)
-    status = "UPSTREAM BASELINE REPRODUCED / FORK README AND CI PENDING" if ok else "DECODER BASELINE RECORD FAILED"
+    status = "WP0 BASELINE, PROVENANCE, FIXTURE POLICY, AND FORK CI GUARDED" if ok else "DECODER BASELINE RECORD FAILED"
     lines = [
         "# CRT decoder fork baseline",
         "",
@@ -124,6 +142,7 @@ def main() -> int:
         row(["Decoder fork", decoder["fork_url"]]),
         row(["Upstream", decoder["upstream_url"]]),
         row(["Decoder commit", f"`{decoder['commit']}`"]),
+        row(["Fork WP0 head", f"`{followup['fork_head_commit']}`"]),
         row(["8080-cosim context", f"`{context_commit}`"]),
         row(["Host", data["host"]["os"]]),
         row(["CMake", data["host"]["cmake"]]),
@@ -146,6 +165,12 @@ def main() -> int:
             f"{synth['elapsed_seconds']:.2f} s",
             f"{synth['max_rss_kib']} KiB",
         ]),
+        row([
+            "fork Linux CI",
+            f"full RF/IQ build + CTest + synth_ntsc PASS ([run {ci_run['id']}]({ci_run['url']}))",
+            "42 s",
+            "GitHub-hosted runner",
+        ]),
         "",
         "The direct run reported 87 coasted lines and still recovered all seven",
         "golden color bars within the upstream tolerance.",
@@ -160,14 +185,15 @@ def main() -> int:
         "resolved in the decoder fork before treating GCC 15 warnings as a clean CI",
         "baseline.",
         "",
-        "## Remaining WP0 work",
+        "## Boundaries after WP0",
         "",
     ])
     lines.extend(f"- {item}" for item in data["scope"]["not_proved"])
     lines.extend([
         "",
-        "The fork's README provenance and CI are intentionally not changed from this",
-        "repository. Those are separate-repository writes and remain pending.",
+        "WP0 is complete: the fork now owns its provenance, deterministic-fixture",
+        "policy, and green full-build/test CI. These remaining items belong to later",
+        "work packages or physical validation.",
         "",
     ])
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
