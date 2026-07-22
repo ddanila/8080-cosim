@@ -16,6 +16,7 @@ from typing import Any, Iterable
 ROOT = Path(__file__).resolve().parents[1]
 BOARD_PATH = ROOT / "kicad" / "juku.board.json"
 CENSUS_PATH = ROOT / "ref" / "juku-official-009-ic-census.json"
+SEMICONDUCTOR_PATH = ROOT / "ref" / "schematics" / "native-semiconductor-registration.json"
 MODEL_PATH = ROOT / "ref" / "video" / "x7-output-stage-model.json"
 SUMMARY_PATH = ROOT / "ref" / "video" / "x7-output-stage-summary.json"
 REPORT_PATH = ROOT / "docs" / "x7-output-stage-model.md"
@@ -78,6 +79,7 @@ def solve_stage(
         "saturation_margin_v": saturation_limit_v - output_v,
         "base_current_ma": base_current_a * 1000.0,
         "collector_current_ma": collector_current_a * 1000.0,
+        "collector_dissipation_mw": (supply_v - output_v) * collector_current_a * 1000.0,
         "emitter_current_ma": emitter_current_a * 1000.0,
         "external_load_current_ma": 0.0 if load_ohm is None else output_v / load_ohm * 1000.0,
         "r65_current_ma": output_v / r65 * 1000.0,
@@ -106,7 +108,10 @@ def find_chip(board: dict[str, Any], ref: str) -> dict[str, Any]:
 
 
 def topology_checks(
-    board: dict[str, Any], census: dict[str, Any], model: dict[str, Any]
+    board: dict[str, Any],
+    census: dict[str, Any],
+    semiconductors: dict[str, Any],
+    model: dict[str, Any],
 ) -> list[dict[str, Any]]:
     expected_nets = {
         "D34_SYNC": {("D34", "8"), ("R62", "1")},
@@ -168,13 +173,52 @@ def topology_checks(
         and any("C94" in item for item in model["scope"]["excluded"]),
         "evidence": "unresolved population/value/endpoints retained as a boundary",
     })
-    comparison = model["d34_compatibility_reference"]
-    datasheet_path = ROOT / comparison["datasheet"].split(",", 1)[0]
+    d34_reference = model["d34_output_reference"]
+    exact_d34 = d34_reference["exact_device"]
+    exact_d34_path = ROOT / exact_d34["datasheet"].split(",", 1)[0]
     checks.append({
-        "name": "Preserved SN74LS86A comparison datasheet hash matches",
-        "pass": hashlib.sha256(datasheet_path.read_bytes()).hexdigest()
+        "name": "Preserved exact-device К555ЛП5 datasheet hash and limits match",
+        "pass": (
+            hashlib.sha256(exact_d34_path.read_bytes()).hexdigest()
+            == exact_d34["datasheet_sha256"]
+            and exact_d34["voh_min_v"] == 2.7
+            and exact_d34["vol_max_v"] == 0.5
+            and exact_d34["fanout"] == 10
+            and not exact_d34["output_current_test_conditions_present"]
+            and not exact_d34["nonlinear_output_curve_present"]
+        ),
+        "evidence": "К555ЛП5: 5 V +/-5%, VOH >=2.7 V, VOL <=0.5 V, fanout 10; no output I/V curve",
+    })
+    comparison = d34_reference["current_condition_comparison"]
+    comparison_path = ROOT / comparison["datasheet"].split(",", 1)[0]
+    checks.append({
+        "name": "Preserved SN74LS86A current-comparison datasheet hash matches",
+        "pass": hashlib.sha256(comparison_path.read_bytes()).hexdigest()
         == comparison["datasheet_sha256"],
-        "evidence": "TI SDLS124 page 4; comparison only, not К555ЛП5 equivalence",
+        "evidence": "TI SDLS124 page 4; current threshold only, not К555ЛП5 equivalence",
+    })
+    vt2 = model["vt2_output_reference"]
+    vt2_path = ROOT / vt2["datasheet"].split(",", 1)[0]
+    checks.append({
+        "name": "Preserved КТ315Б datasheet hash, package, and model limits match",
+        "pass": (
+            hashlib.sha256(vt2_path.read_bytes()).hexdigest()
+            == vt2["datasheet_sha256"]
+            and vt2["board_device"] == "КТ315Б"
+            and "Б/8901" in semiconductors["physical_source"]["observation"]
+            and vt2["pin_order_front_view"] == ["E", "C", "B"]
+            and model["sweep"]["beta"] == [50.0, 100.0, 350.0]
+            and vt2["hfe_at_vce_10v_ic_1ma"] == [50.0, 350.0]
+            and model["nominal"]["transistor"]["vce_saturation_v"]
+            == vt2["vce_saturation_max_v_at_ic_20ma_ib_2ma"]
+            and vt2["vbe_saturation_max_v_at_ic_20ma_ib_2ma"] == 1.0
+            and vt2["continuous_vce_max_v_with_rbe_10kohm"] == 20.0
+            and vt2["collector_current_max_ma"] == 100.0
+            and vt2["collector_dissipation_max_mw_at_25c"] == 150.0
+            and vt2["collector_junction_capacitance_max_pf_at_vcb_10v"] == 7.0
+            and vt2["transition_frequency_min_mhz_at_vce_10v_ic_1ma"] == 250.0
+        ),
+        "evidence": "owner marking Б/8901; old KT-13 E-C-B; hFE 50..350; VCE(sat) <=0.4 V",
     })
     return checks
 
@@ -232,10 +276,12 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
             "base_v_min": math.inf,
             "base_v_max": -math.inf,
             "collector_current_ma_max": 0.0,
+            "collector_dissipation_mw_max": 0.0,
+            "vce_v_max": 0.0,
             "abs_d34_sync_pin_current_ma_max": 0.0,
             "abs_d34_signal_pin_current_ma_max": 0.0,
-            "d34_sync_comparison_limit_violation_count": 0,
-            "d34_signal_comparison_limit_violation_count": 0,
+            "d34_sync_current_comparison_warning_count": 0,
+            "d34_signal_current_comparison_warning_count": 0,
             "saturation_margin_v_min": math.inf,
             "saturated_corner_count": 0,
         } for state in STATES
@@ -262,17 +308,22 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
             item["collector_current_ma_max"] = max(
                 float(item["collector_current_ma_max"]), float(result["collector_current_ma"])
             )
+            item["collector_dissipation_mw_max"] = max(
+                float(item["collector_dissipation_mw_max"]),
+                float(result["collector_dissipation_mw"]),
+            )
+            item["vce_v_max"] = max(float(item["vce_v_max"]), float(result["vce_v"]))
             for source in ("sync", "signal"):
                 field = f"abs_d34_{source}_pin_current_ma_max"
                 item[field] = max(float(item[field]), abs(float(result[f"d34_{source}_pin_current_ma"])))
-            comparison = model["d34_compatibility_reference"]
+            comparison = model["d34_output_reference"]["current_condition_comparison"]
             for source, logic_level in zip(("sync", "signal"), state):
                 current = float(result[f"d34_{source}_pin_current_ma"])
                 relevant_current = max(0.0, current if logic_level else -current)
                 limit = comparison[
                     "high_source_current_ma" if logic_level else "low_sink_current_ma"
                 ]
-                field = f"d34_{source}_comparison_limit_violation_count"
+                field = f"d34_{source}_current_comparison_warning_count"
                 item[field] = int(item[field]) + int(relevant_current > limit + 1e-12)
             item["saturation_margin_v_min"] = min(
                 float(item["saturation_margin_v_min"]), float(result["saturation_margin_v"])
@@ -286,7 +337,7 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
 def comparison_result(
     state: tuple[int, int], result: dict[str, Any], model: dict[str, Any]
 ) -> dict[str, Any]:
-    reference = model["d34_compatibility_reference"]
+    reference = model["d34_output_reference"]["current_condition_comparison"]
     output: dict[str, Any] = {}
     for source, logic_level in zip(("sync", "signal"), state):
         current = float(result[f"d34_{source}_pin_current_ma"])
@@ -299,16 +350,19 @@ def comparison_result(
             "logic_level": logic_level,
             "comparison_mode": mode,
             "relevant_current_ma": round(relevant_current, 9),
-            "comparison_limit_ma": limit,
-            "within_comparison_limit": relevant_current <= limit + 1e-12,
+            "current_comparison_ma": limit,
+            "within_current_comparison": relevant_current <= limit + 1e-12,
         }
     return output
 
 
 def build_summary(
-    board: dict[str, Any], census: dict[str, Any], model: dict[str, Any]
+    board: dict[str, Any],
+    census: dict[str, Any],
+    semiconductors: dict[str, Any],
+    model: dict[str, Any],
 ) -> dict[str, Any]:
-    checks = topology_checks(board, census, model)
+    checks = topology_checks(board, census, semiconductors, model)
     loaded = nominal_results(model, model["nominal"]["external_load_ohm"])
     unloaded = nominal_results(model, None)
     loaded_count, loaded_sweep = sweep_results(model, True)
@@ -329,6 +383,15 @@ def build_summary(
         for table in (loaded_sweep, unloaded_sweep)
         for item in table.values()
     )
+    vt2 = model["vt2_output_reference"]
+    vt2_limits_ok = all(
+        item["collector_current_ma_max"] <= vt2["collector_current_max_ma"]
+        and item["collector_dissipation_mw_max"]
+        <= vt2["collector_dissipation_max_mw_at_25c"]
+        and item["vce_v_max"] <= vt2["continuous_vce_max_v_with_rbe_10kohm"]
+        for table in (loaded_sweep, unloaded_sweep)
+        for item in table.values()
+    )
     checks.extend([
         {
             "name": "Nominal four-state transfer is ordered by the traced resistor weights",
@@ -345,6 +408,11 @@ def build_summary(
             "pass": no_saturation,
             "evidence": f"{loaded_count} terminated + {unloaded_count} unterminated parameter corners per logic state",
         },
+        {
+            "name": "Declared DC corners remain inside published КТ315Б absolute limits",
+            "pass": vt2_limits_ok,
+            "evidence": "Ic <=100 mA, P <=150 mW at 25 C, VCE <=20 V",
+        },
     ])
     nominal_comparison = {
         state_name(state): comparison_result(
@@ -352,18 +420,19 @@ def build_summary(
         ) for state in STATES
     }
     comparison_exceeded = any(
-        not pin["within_comparison_limit"]
+        not pin["within_current_comparison"]
         for state in nominal_comparison.values()
         for pin in state.values()
     )
     numerical_pass = all(item["pass"] for item in checks)
     status = (
-        "topology-pass-drive-open" if numerical_pass and comparison_exceeded
+        "topology-and-device-limits-pass-d34-drive-open"
+        if numerical_pass and comparison_exceeded
         else "pass" if numerical_pass
         else "fail"
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "model_id": model["model_id"],
         "proof_layer": "analog-output static transfer only",
         "status": status,
@@ -376,15 +445,21 @@ def build_summary(
             "terminated": {"corner_count_per_state": loaded_count, "states": loaded_sweep},
             "unterminated": {"corner_count_per_state": unloaded_count, "states": unloaded_sweep},
         },
-        "d34_compatibility_comparison": {
-            "device": model["d34_compatibility_reference"]["comparison_device"],
+        "d34_output_boundary": {
+            "device": model["d34_output_reference"]["board_device"],
+            "exact_device_voltage_envelope": model["d34_output_reference"]["exact_device"],
+            "current_comparison_device": (
+                model["d34_output_reference"]["current_condition_comparison"]["device"]
+            ),
             "not_equivalence_evidence": True,
             "nominal_75_ohm": nominal_comparison,
             "nominal_limit_exceeded": comparison_exceeded,
             "interpretation": (
                 "The fixed-pin-voltage approximation requests more high-state source "
-                "current than the comparison device's characterized condition; physical "
-                "X7 voltages require a nonlinear К555ЛП5 driver model or measurement."
+                "current than the independent comparison device's characterized "
+                "condition. The exact К555ЛП5 sheet confirms the voltage/fanout "
+                "envelope but omits output-current conditions and curves; physical X7 "
+                "voltages still require a nonlinear driver source or measurement."
                 if comparison_exceeded else
                 "Nominal pin currents stay within the comparison device conditions."
             ),
@@ -404,12 +479,13 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "",
         "Status date: **2026-07-22**.",
         "",
-        "Status: **TOPOLOGY GUARDED / D34 DRIVE MODEL AND HARDWARE CALIBRATION OPEN**.",
+        "Status: **TOPOLOGY + DEVICE LIMITS GUARDED / D34 DRIVE CURVE AND HARDWARE CALIBRATION OPEN**.",
         "",
         "This generated report is the first evidence-bounded part of CVBS-plan WP4.",
         "It proves only the DC transfer of the traced X7 emitter-follower topology; it",
         "does not prove a physical D34 waveform, monitor timing, edge shape, or the",
-        "installed KT315Б parameters.",
+        "installed KT315Б parameters. The published КТ315Б grade limits are guarded,",
+        "but they do not measure the individual transistor.",
         "",
         "## Commands",
         "",
@@ -432,25 +508,25 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "",
         "## D34 drive-current boundary",
         "",
-        "D34 is the exact-revision К555ЛП5. The preserved TI SN74LS86A",
-        "datasheet is only a closest-family comparison: it characterizes a high output",
-        "at 0.4 mA source current and a low output at up to 8 mA sink current. It does",
-        "not prove identical К555ЛП5 curves.",
+        "The preserved exact-device К555ЛП5 sheet guarantees VOH >=2.7 V,",
+        "VOL <=0.5 V, and fanout 10, but omits output-current test conditions and",
+        "nonlinear I/V curves. The independent TI SN74LS86A sheet supplies only a",
+        "comparison threshold: 0.4 mA high-state source and 8 mA low-state sink.",
         "",
         "| State | Pin | Mode | Relevant current (mA) | Comparison condition (mA) | Result |",
         "| --- | --- | --- | ---: | ---: | --- |",
     ])
     for state in STATES:
-        for source, item in summary["d34_compatibility_comparison"]["nominal_75_ohm"][state_name(state)].items():
+        for source, item in summary["d34_output_boundary"]["nominal_75_ohm"][state_name(state)].items():
             lines.append(markdown_table_row((
                 state_name(state), source, item["comparison_mode"],
                 f'{item["relevant_current_ma"]:.3f}',
-                f'{item["comparison_limit_ma"]:.3f}',
-                "WITHIN" if item["within_comparison_limit"] else "EXCEEDS",
+                f'{item["current_comparison_ma"]:.3f}',
+                "WITHIN" if item["within_current_comparison"] else "EXCEEDS",
             )))
     lines.extend([
         "",
-        summary["d34_compatibility_comparison"]["interpretation"],
+        summary["d34_output_boundary"]["interpretation"],
     ])
     lines.extend([
         "",
@@ -482,8 +558,8 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         f"The unterminated diagnostic evaluates **{summary['sweep']['unterminated']['corner_count_per_state']:,}**",
         "corners per state with only fitted R65 loading the emitter.",
         "",
-        "The two final columns count corners that exceed the SN74LS86A",
-        "comparison current condition; they are warnings, not К555ЛП5 pass/fail limits.",
+        "The two final columns count corners that exceed the independent SN74LS86A",
+        "current condition. They are warnings, not invented К555ЛП5 current limits.",
         "",
         "| Load | State | X7 range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |",
         "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
@@ -500,8 +576,8 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
                 f'{item["abs_d34_sync_pin_current_ma_max"]:.3f}',
                 f'{item["abs_d34_signal_pin_current_ma_max"]:.3f}',
                 f'{item["saturation_margin_v_min"]:.3f}',
-                item["d34_sync_comparison_limit_violation_count"],
-                item["d34_signal_comparison_limit_violation_count"],
+                item["d34_sync_current_comparison_warning_count"],
+                item["d34_signal_current_comparison_warning_count"],
             )))
     lines.extend([
         "",
@@ -515,14 +591,15 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "",
         "The fixed TTL pin-voltage approximation exposes the D34 source/sink currents",
         "but is not yet a nonlinear К555ЛП5 output model. Beta and VBE are sensitivity",
-        "bounds, not installed-part measurements. C94 remains absent. Consequently the",
+        "bounds; only beta endpoints are exact-grade data, not installed-part measurements.",
+        "C94 remains absent. Consequently the",
         "stepped fixture has ideal discontinuities and must not be used as evidence of",
         "rise/fall time, bandwidth, actual composite polarity, or receiver lock.",
         "",
         "## Next evidence",
         "",
-        "- Link D34 output characteristics and KT315Б limits to primary component data,",
-        "  then replace or qualify the fixed pin-voltage approximation.",
+        "- Obtain a К555ЛП5 nonlinear output curve or measure D34 under the traced",
+        "  load, then replace the fixed pin-voltage approximation.",
         "- Feed independently timed D34_SYNC/D34_SIG events into this transfer model only",
         "  after the physical video-slot and D34 waveform boundaries close.",
         "- Inspect C94 and capture terminated X7 plus VT2 base on hardware before adding",
@@ -588,8 +665,9 @@ def main() -> int:
     args = parser.parse_args()
     board = json.loads(BOARD_PATH.read_text(encoding="utf-8"))
     census = json.loads(CENSUS_PATH.read_text(encoding="utf-8"))
+    semiconductors = json.loads(SEMICONDUCTOR_PATH.read_text(encoding="utf-8"))
     model = json.loads(MODEL_PATH.read_text(encoding="utf-8"))
-    summary = build_summary(board, census, model)
+    summary = build_summary(board, census, semiconductors, model)
     SUMMARY_PATH.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_report(model, summary)
     print(f"Wrote {SUMMARY_PATH.relative_to(ROOT)}")

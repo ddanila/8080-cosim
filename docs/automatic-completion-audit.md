@@ -44,7 +44,9 @@ implementation backlog.
   still honestly outside the flat-image representation.
 - Shared-DRAM framebuffer replacement, X7 voltage fidelity, and later receiver
   work are correctly dependency-blocked by missing physical timing/driver
-  evidence rather than incomplete code scaffolding.
+  evidence rather than incomplete code scaffolding. Public exact-device sheets
+  now guard the К555ЛП5 voltage/fanout envelope and КТ315Б limits; the remaining
+  X7 blocker is specifically the absent D34 loaded I/V curve or bench capture.
 
 ## Guard
 

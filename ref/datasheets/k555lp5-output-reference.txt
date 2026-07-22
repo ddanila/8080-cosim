@@ -1,5 +1,5 @@
-К555ЛП5 / SN74LS86A output-stage comparison for Juku D34
-=========================================================
+К555ЛП5 output-stage references for Juku D34
+==========================================
 
 Board identity
 --------------
@@ -8,11 +8,24 @@ The exact-revision ДГШ5.109.009 ПЭЗ census identifies D34 as К555ЛП5.
 This is guarded independently by ref/juku-official-009-ic-census.json and
 scripts/report_official_009_ic_census.py.
 
-Closest local manufacturer reference
-------------------------------------
+Exact-device reference
+----------------------
+
+ref/datasheets/k555lp5-eandc.pdf describes К555ЛП5, К555ЛП5В, and
+КМ555ЛП5. For К555ЛП5 it gives a 5 V +/-5% supply, VOL <= 0.5 V,
+VOH >= 2.7 V, low input current <= 0.8 mA magnitude, high input current
+<= 40 uA, fanout 10, and propagation-delay limits of 17/22 ns on and
+23/30 ns off for its two stated input conditions.
+
+The sheet does not state the output-current test conditions for its VOH/VOL
+limits and contains no output I/V curves. It therefore proves the exact-device
+logic-level envelope, but cannot by itself supply a nonlinear loaded driver.
+
+Independent LS-TTL comparison
+-----------------------------
 
 ref/datasheets/sn74ls86a-ti.pdf is Texas Instruments SDLS124, "SN5486,
-SN54LS86A, SN54S86, SN7486, SN74LS86A, SN74S86 — Quadruple 2-Input
+SN54LS86A, SN54S86, SN7486, SN74LS86A, SN74S86 -- Quadruple 2-Input
 Exclusive-OR Gates", December 1972, revised March 1988. The relevant
 SN74LS86A table is on document page 4.
 
@@ -24,16 +37,22 @@ recommended output-current conditions are IOH=-0.4 mA and IOL=8 mA.
 Model boundary
 --------------
 
-SN74LS86A is a closest LS-TTL XOR comparison, not evidence that the installed
-К555ЛП5 has identical DC curves. The limits above are used only to flag when
-the fixed-pin-voltage X7 approximation requests more current than this
-comparison device's characterized test condition. They are not used as a
-К555ЛП5 acceptance limit and do not define a nonlinear output impedance.
+The exact К555ЛП5 sheet and the independent SN74LS86A sheet agree on the
+2.7 V/0.5 V logic-level envelope. The 0.4 mA source and 8 mA sink conditions
+remain comparison thresholds because the preserved К555ЛП5 sheet omits its
+output-current test conditions. Exceeding them flags that a fixed 3.4 V source
+is not defensible; it is not a fabricated К555ЛП5 acceptance limit.
 
-Source URL
-----------
+Neither sheet defines the installed D34 nonlinear output impedance. Physical
+X7 voltages still require a better К555ЛП5 curve source or hardware measurement.
+
+Sources
+-------
+
+https://static.insales-cdn.com/files/1/1346/27395394/original/%D0%9A555%D0%9B%D0%9F5.pdf
+Retrieved 2026-07-22. SHA256:
+03d48a8503d9693d23081b9a42c278abbbae94245cbb8e3d76ad584d950d89ca
 
 https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf
-
-Retrieved 2026-07-22. SHA256 of the preserved PDF:
+Retrieved 2026-07-22. SHA256:
 0552f028f377ad641659bd44d671e420db08839bd45adbcf8c04de7bf11795ad

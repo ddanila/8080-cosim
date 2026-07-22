@@ -112,7 +112,9 @@ Already guarded in `8080-cosim`:
 - `scripts/model_x7_output_stage.py` now guards the traced DC topology, solves
   all four D34 logic combinations with 75-ohm and unterminated loads, sweeps
   7,776 terminated corners per state, and emits an optional metadata-complete
-  float32 stepped diagnostic. This is a static transfer result, not video.
+  float32 stepped diagnostic. The model also hash-guards exact-device
+  К555ЛП5 voltage/fanout data and the old-package КТ315Б E-C-B and electrical
+  limits. This is a static transfer result, not video.
 
 Not yet proved:
 
@@ -120,9 +122,11 @@ Not yet proved:
 - a faithful physical D34 picture/sync waveform in the runnable HDL;
 - X7 voltage levels and edge shape under a 75-ohm monitor load;
 - a nonlinear output model or measured DC curves for exact-revision D34
-  К555ЛП5; the provisional fixed-pin-voltage model exceeds the SN74LS86A
-  comparison source-current condition in three nominal active combinations;
-- the installed KT315 device parameters and tolerance spread;
+  К555ЛП5; its preserved sheet omits output-current test conditions and I/V
+  curves, while the provisional fixed-pin-voltage model exceeds the independent
+  SN74LS86A comparison source-current condition in three nominal active
+  combinations;
+- the installed КТ315Б device's actual gain and active-region VBE;
 - the function and endpoints of C94 beside VT2;
 - monitor lock against the actual Juku line/frame waveform; and
 - agreement with an oscilloscope capture from surviving hardware.
@@ -322,13 +326,15 @@ pixels reconstruct the guarded framebuffer without metadata assistance.
 
 Progress: the traced resistor rails, VT2 E-C-B mapping, +5 V collector, grounded
 emitter load, and X7 endpoint are machine-guarded by the static model. The
-piecewise-linear emitter follower, declared beta/VBE sensitivity bounds,
-independent resistor corners, supply/load sweep, compact JSON summary, and
-on-demand float32 step fixture are implemented. C94 stays absent. The result
-deliberately does **not** pass the WP4 exit gate: D34 is К555ЛП5, and a closest
-SN74LS86A comparison shows that the fixed-voltage source approximation requests
-more high-state current than its characterized condition. A nonlinear D34
-driver model backed by К555ЛП5 data or hardware measurement remains necessary.
+piecewise-linear emitter follower, exact КТ315Б beta endpoints and absolute
+limits, declared VBE sensitivity bounds, independent resistor corners,
+supply/load sweep, compact JSON summary, and on-demand float32 step fixture are
+implemented. The exact-device К555ЛП5 sheet guards its voltage/fanout envelope;
+it contains no output-current test conditions or nonlinear I/V curve. C94 stays
+absent. The result deliberately does **not** pass the WP4 exit gate: the
+fixed-voltage source approximation requests more high-state current than the
+independent SN74LS86A characterized condition. A nonlinear D34 source or
+hardware measurement remains necessary.
 
 - Model the two D34 logic sources and their real output characteristics.
 - Model R62/R63/R64, the KT315 emitter follower, R65, +5 V, and X7.

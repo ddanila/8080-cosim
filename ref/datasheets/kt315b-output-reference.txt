@@ -1,0 +1,42 @@
+КТ315Б output-stage reference for Juku VT2
+=======================================
+
+Board identity and package
+--------------------------
+
+The exact-revision owner photographs identify VT2 as КТ315Б, marking
+"Б / 8901". The board model uses 1=E, 2=C, 3=B. The old KT-13 outline in
+ref/datasheets/kt315-family-promelec.pdf shows emitter, collector, base from
+left to right in its front view, matching that board mapping. A later TO-92
+package variant must not be used to infer this board's physical lead order.
+
+Exact-grade limits from the preserved family scan
+-------------------------------------------------
+
+For КТ315Б the scan states:
+
+- DC current gain h21e = 50..350 at VCE=10 V and IC=1 mA;
+- transition frequency >= 250 MHz at VCE=10 V and IC=1 mA;
+- VCE(sat) <= 0.4 V at IC=20 mA and IB=2 mA;
+- VBE(sat) <= 1.0 V at IC=20 mA and IB=2 mA;
+- collector-junction capacitance <= 7 pF at VCB=10 V;
+- continuous VCE <= 20 V with RBE=10 kOhm;
+- continuous collector current <= 100 mA; and
+- collector dissipation <= 150 mW at ambient <= +25 C.
+
+Model boundary
+--------------
+
+The static X7 sweep uses 50..350 as published grade limits. The 0.4 V
+VCE(sat) value is a conservative saturation-headroom threshold, even though
+its data-sheet test point is well above the model's collector current. The
+0.55..0.85 V active VBE range remains an engineering sensitivity range: the
+published 1.0 V number is a forced-saturation limit, not an active-region VBE
+curve. None of these data identify the installed transistor's actual gain.
+
+Source
+------
+
+https://cdn.promelec.ru/upload/items/2020/02/06/kt315_.pdf
+Retrieved 2026-07-22. SHA256:
+22c783f99350b178b11a3f33269d24bb9f36c5634215ed39040fef0736500e99

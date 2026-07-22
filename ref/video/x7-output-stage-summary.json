@@ -51,8 +51,18 @@
       "pass": true
     },
     {
-      "evidence": "TI SDLS124 page 4; comparison only, not \u041a555\u041b\u041f5 equivalence",
-      "name": "Preserved SN74LS86A comparison datasheet hash matches",
+      "evidence": "\u041a555\u041b\u041f5: 5 V +/-5%, VOH >=2.7 V, VOL <=0.5 V, fanout 10; no output I/V curve",
+      "name": "Preserved exact-device \u041a555\u041b\u041f5 datasheet hash and limits match",
+      "pass": true
+    },
+    {
+      "evidence": "TI SDLS124 page 4; current threshold only, not \u041a555\u041b\u041f5 equivalence",
+      "name": "Preserved SN74LS86A current-comparison datasheet hash matches",
+      "pass": true
+    },
+    {
+      "evidence": "owner marking \u0411/8901; old KT-13 E-C-B; hFE 50..350; VCE(sat) <=0.4 V",
+      "name": "Preserved \u041a\u0422315\u0411 datasheet hash, package, and model limits match",
       "pass": true
     },
     {
@@ -69,74 +79,91 @@
       "evidence": "7776 terminated + 2592 unterminated parameter corners per logic state",
       "name": "Declared DC corners remain outside transistor saturation",
       "pass": true
+    },
+    {
+      "evidence": "Ic <=100 mA, P <=150 mW at 25 C, VCE <=20 V",
+      "name": "Declared DC corners remain inside published \u041a\u0422315\u0411 absolute limits",
+      "pass": true
     }
   ],
-  "d34_compatibility_comparison": {
-    "device": "Texas Instruments SN74LS86A",
-    "interpretation": "The fixed-pin-voltage approximation requests more high-state source current than the comparison device's characterized condition; physical X7 voltages require a nonlinear \u041a555\u041b\u041f5 driver model or measurement.",
+  "d34_output_boundary": {
+    "current_comparison_device": "Texas Instruments SN74LS86A",
+    "device": "\u041a555\u041b\u041f5",
+    "exact_device_voltage_envelope": {
+      "datasheet": "ref/datasheets/k555lp5-eandc.pdf, document page 1",
+      "datasheet_sha256": "03d48a8503d9693d23081b9a42c278abbbae94245cbb8e3d76ad584d950d89ca",
+      "fanout": 10,
+      "nonlinear_output_curve_present": false,
+      "output_current_test_conditions_present": false,
+      "supply_nominal_v": 5.0,
+      "supply_tolerance_fraction": 0.05,
+      "voh_min_v": 2.7,
+      "vol_max_v": 0.5
+    },
+    "interpretation": "The fixed-pin-voltage approximation requests more high-state source current than the independent comparison device's characterized condition. The exact \u041a555\u041b\u041f5 sheet confirms the voltage/fanout envelope but omits output-current conditions and curves; physical X7 voltages still require a nonlinear driver source or measurement.",
     "nominal_75_ohm": {
       "sync=0,signal=0": {
         "signal": {
-          "comparison_limit_ma": 8.0,
           "comparison_mode": "sink",
+          "current_comparison_ma": 8.0,
           "logic_level": 0,
           "relevant_current_ma": 0.0,
-          "within_comparison_limit": true
+          "within_current_comparison": true
         },
         "sync": {
-          "comparison_limit_ma": 8.0,
           "comparison_mode": "sink",
+          "current_comparison_ma": 8.0,
           "logic_level": 0,
           "relevant_current_ma": 0.0,
-          "within_comparison_limit": true
+          "within_current_comparison": true
         }
       },
       "sync=0,signal=1": {
         "signal": {
-          "comparison_limit_ma": 0.4,
           "comparison_mode": "source",
+          "current_comparison_ma": 0.4,
           "logic_level": 1,
           "relevant_current_ma": 1.43711664,
-          "within_comparison_limit": false
+          "within_current_comparison": false
         },
         "sync": {
-          "comparison_limit_ma": 8.0,
           "comparison_mode": "sink",
+          "current_comparison_ma": 8.0,
           "logic_level": 0,
           "relevant_current_ma": 0.85644168,
-          "within_comparison_limit": true
+          "within_current_comparison": true
         }
       },
       "sync=1,signal=0": {
         "signal": {
-          "comparison_limit_ma": 8.0,
           "comparison_mode": "sink",
+          "current_comparison_ma": 8.0,
           "logic_level": 0,
           "relevant_current_ma": 0.862045818,
-          "within_comparison_limit": true
+          "within_current_comparison": true
         },
         "sync": {
-          "comparison_limit_ma": 0.4,
           "comparison_mode": "source",
+          "current_comparison_ma": 0.4,
           "logic_level": 1,
           "relevant_current_ma": 1.143977091,
-          "within_comparison_limit": false
+          "within_current_comparison": false
         }
       },
       "sync=1,signal=1": {
         "signal": {
-          "comparison_limit_ma": 0.4,
           "comparison_mode": "source",
+          "current_comparison_ma": 0.4,
           "logic_level": 1,
           "relevant_current_ma": 0.586279098,
-          "within_comparison_limit": false
+          "within_current_comparison": false
         },
         "sync": {
-          "comparison_limit_ma": 0.4,
           "comparison_mode": "source",
+          "current_comparison_ma": 0.4,
           "logic_level": 1,
           "relevant_current_ma": 0.293139549,
-          "within_comparison_limit": true
+          "within_current_comparison": true
         }
       }
     },
@@ -150,13 +177,14 @@
     "physical D34 logic polarity and video timing",
     "installed-part calibration"
   ],
-  "model_id": "juku-x7-static-v1",
+  "model_id": "juku-x7-static-v2",
   "nominal": {
     "terminated_75_ohm": {
       "sync=0,signal=0": {
         "base_current_ma": 0.0,
         "base_v": 0.221098266,
         "collector_current_ma": 0.0,
+        "collector_dissipation_mw": 0.0,
         "d34_signal_pin_current_ma": 0.028901734,
         "d34_sync_pin_current_ma": 0.014450867,
         "emitter_current_ma": 0.0,
@@ -165,13 +193,14 @@
         "r65_current_ma": 0.0,
         "region": "off",
         "saturated": false,
-        "saturation_margin_v": 4.8,
+        "saturation_margin_v": 4.6,
         "vce_v": 5.0
       },
       "sync=0,signal=1": {
         "base_current_ma": 0.19579587,
         "base_v": 1.96288336,
         "collector_current_ma": 19.579586977,
+        "collector_dissipation_mw": 73.171200296,
         "d34_signal_pin_current_ma": 1.43711664,
         "d34_sync_pin_current_ma": -0.85644168,
         "emitter_current_ma": 19.775382847,
@@ -180,13 +209,14 @@
         "r65_current_ma": 2.936938047,
         "region": "active",
         "saturated": false,
-        "saturation_margin_v": 3.53711664,
+        "saturation_margin_v": 3.33711664,
         "vce_v": 3.73711664
       },
       "sync=1,signal=0": {
         "base_current_ma": 0.063883073,
         "base_v": 1.112045818,
         "collector_current_ma": 6.388307263,
+        "collector_dissipation_mw": 29.309261019,
         "d34_signal_pin_current_ma": -0.862045818,
         "d34_sync_pin_current_ma": 1.143977091,
         "emitter_current_ma": 6.452190335,
@@ -195,13 +225,14 @@
         "r65_current_ma": 0.958246089,
         "region": "active",
         "saturated": false,
-        "saturation_margin_v": 4.387954182,
+        "saturation_margin_v": 4.187954182,
         "vce_v": 4.587954182
       },
       "sync=1,signal=1": {
         "base_current_ma": 0.327708667,
         "base_v": 2.813720902,
         "collector_current_ma": 32.770866691,
+        "collector_dissipation_mw": 94.585867568,
         "d34_signal_pin_current_ma": 0.586279098,
         "d34_sync_pin_current_ma": 0.293139549,
         "emitter_current_ma": 33.098575358,
@@ -210,7 +241,7 @@
         "r65_current_ma": 4.915630004,
         "region": "active",
         "saturated": false,
-        "saturation_margin_v": 2.686279098,
+        "saturation_margin_v": 2.486279098,
         "vce_v": 2.886279098
       }
     },
@@ -219,6 +250,7 @@
         "base_current_ma": 0.0,
         "base_v": 0.221098266,
         "collector_current_ma": 0.0,
+        "collector_dissipation_mw": 0.0,
         "d34_signal_pin_current_ma": 0.028901734,
         "d34_sync_pin_current_ma": 0.014450867,
         "emitter_current_ma": 0.0,
@@ -227,13 +259,14 @@
         "r65_current_ma": 0.0,
         "region": "off",
         "saturated": false,
-        "saturation_margin_v": 4.8,
+        "saturation_margin_v": 4.6,
         "vce_v": 5.0
       },
       "sync=0,signal=1": {
         "base_current_ma": 0.031311594,
         "base_v": 2.059862528,
         "collector_current_ma": 3.131159402,
+        "collector_dissipation_mw": 11.39785067,
         "d34_signal_pin_current_ma": 1.340137472,
         "d34_sync_pin_current_ma": -0.904931264,
         "emitter_current_ma": 3.162470996,
@@ -242,13 +275,14 @@
         "r65_current_ma": 3.162470996,
         "region": "active",
         "saturated": false,
-        "saturation_margin_v": 3.440137472,
+        "saturation_margin_v": 3.240137472,
         "vce_v": 3.640137472
       },
       "sync=1,signal=0": {
         "base_current_ma": 0.010216154,
         "base_v": 1.143687585,
         "collector_current_ma": 1.021615439,
+        "collector_dissipation_mw": 4.654799109,
         "d34_signal_pin_current_ma": -0.893687585,
         "d34_sync_pin_current_ma": 1.128156207,
         "emitter_current_ma": 1.031831594,
@@ -257,13 +291,14 @@
         "r65_current_ma": 1.031831594,
         "region": "active",
         "saturated": false,
-        "saturation_margin_v": 4.356312415,
+        "saturation_margin_v": 4.156312415,
         "vce_v": 4.556312415
       },
       "sync=1,signal=1": {
         "base_current_ma": 0.052407034,
         "base_v": 2.976037471,
         "collector_current_ma": 5.240703365,
+        "collector_dissipation_mw": 14.27547959,
         "d34_signal_pin_current_ma": 0.423962529,
         "d34_sync_pin_current_ma": 0.211981264,
         "emitter_current_ma": 5.293110399,
@@ -272,14 +307,14 @@
         "r65_current_ma": 5.293110399,
         "region": "active",
         "saturated": false,
-        "saturation_margin_v": 2.523962529,
+        "saturation_margin_v": 2.323962529,
         "vce_v": 2.723962529
       }
     }
   },
   "proof_layer": "analog-output static transfer only",
-  "schema_version": 1,
-  "status": "topology-pass-drive-open",
+  "schema_version": 2,
+  "status": "topology-and-device-limits-pass-d34-drive-open",
   "sweep": {
     "terminated": {
       "corner_count_per_state": 7776,
@@ -290,51 +325,59 @@
           "base_v_max": 0.447119399,
           "base_v_min": 0.218440036,
           "collector_current_ma_max": 0.0,
-          "d34_signal_comparison_limit_violation_count": 0,
-          "d34_sync_comparison_limit_violation_count": 0,
+          "collector_dissipation_mw_max": 0.0,
+          "d34_signal_current_comparison_warning_count": 0,
+          "d34_sync_current_comparison_warning_count": 0,
           "output_v_max": 0.0,
           "output_v_min": 0.0,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 4.55
+          "saturation_margin_v_min": 4.35,
+          "vce_v_max": 5.25
         },
         "sync=0,signal=1": {
-          "abs_d34_signal_pin_current_ma_max": 1.680598227,
-          "abs_d34_sync_pin_current_ma_max": 0.952491688,
-          "base_v_max": 2.17781191,
-          "base_v_min": 1.405325681,
-          "collector_current_ma_max": 25.818994864,
-          "d34_signal_comparison_limit_violation_count": 7776,
-          "d34_sync_comparison_limit_violation_count": 0,
-          "output_v_max": 1.617526889,
-          "output_v_min": 0.61189011,
+          "abs_d34_signal_pin_current_ma_max": 1.632364943,
+          "abs_d34_sync_pin_current_ma_max": 0.958597928,
+          "base_v_max": 2.19090904,
+          "base_v_min": 1.438161191,
+          "collector_current_ma_max": 26.115834301,
+          "collector_dissipation_mw_max": 94.501298181,
+          "d34_signal_current_comparison_warning_count": 7776,
+          "d34_sync_current_comparison_warning_count": 0,
+          "output_v_max": 1.633481678,
+          "output_v_min": 0.635380255,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 2.932473111
+          "saturation_margin_v_min": 2.716518322,
+          "vce_v_max": 4.614619745
         },
         "sync=1,signal=0": {
-          "abs_d34_signal_pin_current_ma_max": 0.949568976,
-          "abs_d34_sync_pin_current_ma_max": 1.241134769,
-          "base_v_max": 1.342394932,
-          "base_v_min": 0.829532678,
-          "collector_current_ma_max": 12.478664531,
-          "d34_signal_comparison_limit_violation_count": 0,
-          "d34_sync_comparison_limit_violation_count": 7776,
-          "output_v_max": 0.781811279,
-          "output_v_min": 0.034763952,
+          "abs_d34_signal_pin_current_ma_max": 0.952618633,
+          "abs_d34_sync_pin_current_ma_max": 1.23167145,
+          "base_v_max": 1.347394217,
+          "base_v_min": 0.840001402,
+          "collector_current_ma_max": 12.625916976,
+          "collector_dissipation_mw_max": 56.327486974,
+          "d34_signal_current_comparison_warning_count": 0,
+          "d34_sync_current_comparison_warning_count": 7776,
+          "output_v_max": 0.789749009,
+          "output_v_min": 0.03606589,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 3.768188721
+          "saturation_margin_v_min": 3.560250991,
+          "vce_v_max": 5.21393411
         },
         "sync=1,signal=1": {
-          "abs_d34_signal_pin_current_ma_max": 0.899642151,
-          "abs_d34_sync_pin_current_ma_max": 0.460678711,
-          "base_v_max": 2.967377887,
-          "base_v_min": 2.009602836,
-          "collector_current_ma_max": 38.428377219,
-          "d34_signal_comparison_limit_violation_count": 6543,
-          "d34_sync_comparison_limit_violation_count": 810,
-          "output_v_max": 2.407375107,
-          "output_v_min": 1.21756637,
+          "abs_d34_signal_pin_current_ma_max": 0.820982061,
+          "abs_d34_sync_pin_current_ma_max": 0.420779705,
+          "base_v_max": 2.987684426,
+          "base_v_min": 2.067076779,
+          "collector_current_ma_max": 38.859172175,
+          "collector_dissipation_mw_max": 109.678766758,
+          "d34_signal_current_comparison_warning_count": 6480,
+          "d34_sync_current_comparison_warning_count": 162,
+          "output_v_max": 2.430462841,
+          "output_v_min": 1.265509782,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 2.142624893
+          "saturation_margin_v_min": 1.919537159,
+          "vce_v_max": 3.984490218
         }
       }
     },
@@ -347,51 +390,59 @@
           "base_v_max": 0.447119399,
           "base_v_min": 0.218440036,
           "collector_current_ma_max": 0.0,
-          "d34_signal_comparison_limit_violation_count": 0,
-          "d34_sync_comparison_limit_violation_count": 0,
+          "collector_dissipation_mw_max": 0.0,
+          "d34_signal_current_comparison_warning_count": 0,
+          "d34_sync_current_comparison_warning_count": 0,
           "output_v_max": 0.0,
           "output_v_min": 0.0,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 4.55
+          "saturation_margin_v_min": 4.35,
+          "vce_v_max": 5.25
         },
         "sync=0,signal=1": {
-          "abs_d34_signal_pin_current_ma_max": 1.443298561,
-          "abs_d34_sync_pin_current_ma_max": 0.971177934,
-          "base_v_max": 2.217913957,
-          "base_v_min": 1.567998197,
-          "collector_current_ma_max": 4.060823228,
-          "d34_signal_comparison_limit_violation_count": 2592,
-          "d34_sync_comparison_limit_violation_count": 0,
-          "output_v_max": 1.666378793,
-          "output_v_min": 0.728264148,
+          "abs_d34_signal_pin_current_ma_max": 1.433357907,
+          "abs_d34_sync_pin_current_ma_max": 0.97210775,
+          "base_v_max": 2.219911145,
+          "base_v_min": 1.574874874,
+          "collector_current_ma_max": 4.072008881,
+          "collector_dissipation_mw_max": 14.585250722,
+          "d34_signal_current_comparison_warning_count": 2592,
+          "d34_sync_current_comparison_warning_count": 0,
+          "output_v_max": 1.668811747,
+          "output_v_min": 0.733183644,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 2.883621207
+          "saturation_margin_v_min": 2.681188253,
+          "vce_v_max": 4.516816356
         },
         "sync=1,signal=0": {
-          "abs_d34_signal_pin_current_ma_max": 0.958901502,
-          "abs_d34_sync_pin_current_ma_max": 1.194576826,
-          "base_v_max": 1.35771127,
-          "base_v_min": 0.88121173,
-          "collector_current_ma_max": 1.964438859,
-          "d34_signal_comparison_limit_violation_count": 0,
-          "d34_sync_comparison_limit_violation_count": 2592,
-          "output_v_max": 0.806130145,
-          "output_v_min": 0.041190994,
+          "abs_d34_signal_pin_current_ma_max": 0.959365882,
+          "abs_d34_sync_pin_current_ma_max": 1.19262648,
+          "base_v_max": 1.358474767,
+          "base_v_min": 0.883386207,
+          "collector_current_ma_max": 1.969945046,
+          "collector_dissipation_mw_max": 8.752422975,
+          "d34_signal_current_comparison_warning_count": 0,
+          "d34_sync_current_comparison_warning_count": 2592,
+          "output_v_max": 0.807342405,
+          "output_v_min": 0.041461422,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 3.743869855
+          "saturation_margin_v_min": 3.542657595,
+          "vce_v_max": 5.208538578
         },
         "sync=1,signal=1": {
-          "abs_d34_signal_pin_current_ma_max": 0.511335125,
-          "abs_d34_sync_pin_current_ma_max": 0.263012474,
-          "base_v_max": 3.029519723,
-          "base_v_min": 2.29541234,
-          "collector_current_ma_max": 6.038834882,
-          "d34_signal_comparison_limit_violation_count": 1089,
-          "d34_sync_comparison_limit_violation_count": 0,
-          "output_v_max": 2.478027923,
-          "output_v_min": 1.455981939,
+          "abs_d34_signal_pin_current_ma_max": 0.494996504,
+          "abs_d34_sync_pin_current_ma_max": 0.254656503,
+          "base_v_max": 3.03261186,
+          "base_v_min": 2.307553935,
+          "collector_current_ma_max": 6.055193262,
+          "collector_dissipation_mw_max": 16.769169124,
+          "d34_signal_current_comparison_warning_count": 1035,
+          "d34_sync_current_comparison_warning_count": 0,
+          "output_v_max": 2.481543561,
+          "output_v_min": 1.466110172,
           "saturated_corner_count": 0,
-          "saturation_margin_v_min": 2.071972077
+          "saturation_margin_v_min": 1.868456439,
+          "vce_v_max": 3.783889828
         }
       }
     }

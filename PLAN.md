@@ -1373,10 +1373,14 @@ waveform truth in this repository, and separates electrical waveform, receiver
 lock, active-image, and CRT-presentation claims. Its first WP4 checkpoint now
 guards the traced R62-R65/VT2/X7 DC topology, both 75-ohm and unterminated
 loads, and a declared tolerance sweep. That result is deliberately provisional:
-the fixed D34 pin-voltage approximation exceeds a closest SN74LS86A comparison
-source-current condition, so exact-revision К555ЛП5 drive behavior and physical
-calibration remain open before the model can claim X7 levels. The separate
-decoder fork point is also clean-checkout reproduced on Linux: all three targets
+exact-device sheets now guard the К555ЛП5 voltage/fanout envelope and the
+old-package КТ315Б pinout, gain endpoints, saturation, current, voltage, and
+power limits. The fixed D34 pin-voltage approximation still exceeds an
+independent SN74LS86A comparison source-current condition, and the preserved
+К555ЛП5 sheet has no output-current test point or I/V curve. D34 loaded-drive
+behavior and physical calibration therefore remain open before the model can
+claim X7 levels. The separate decoder fork point is also clean-checkout
+reproduced on Linux: all three targets
 build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
 fork now records its upstream/fork authority and deterministic-fixture policy,
 and Linux CI run `29885055666` passes the full RF/IQ build, CTest, and direct

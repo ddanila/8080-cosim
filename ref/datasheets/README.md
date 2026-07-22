@@ -25,7 +25,8 @@ Current artifacts:
 | D96 | КМ555ТМ2 / SN74LS74A-compatible | `sn74ls74a-ti.pdf` | `k555tm2-pinout.txt` |
 | D84-D91 | К565РУ5Г / 4164-class 64Kx1 DRAM | `mk4564-64kx1-dram.pdf` | `k565ru5-pinout.txt` |
 | D2, D6 | К556РТ4 / 82S126 256x4 OC PROM | `82s126-556rt4-256x4-oc-prom.pdf` | `k556rt4-pinout.txt` |
-| D34 | К555ЛП5 / SN74LS86A comparison only | `sn74ls86a-ti.pdf` | `k555lp5-output-reference.txt` |
+| D34 | К555ЛП5, with SN74LS86A current-condition comparison | `k555lp5-eandc.pdf`, `sn74ls86a-ti.pdf` | `k555lp5-output-reference.txt` |
+| VT2 | КТ315Б, old KT-13 package | `kt315-family-promelec.pdf` | `kt315b-output-reference.txt` |
 
 Checksums:
 
@@ -41,6 +42,8 @@ d162b65235d894394a5438eef01cc890b0a95b38d3cdd1931eb8c5ed532c697d  sn74ls74a-ti.p
 8a6169963c020c1ff8b3c413356ed8f354b9963b77dab8f9bd2af22560c44093  mk4564-64kx1-dram.pdf
 63938c06d5c4645aaa462bb8c87dd8555f324056a64fca3585f5f725320b5223  82s126-556rt4-256x4-oc-prom.pdf
 0552f028f377ad641659bd44d671e420db08839bd45adbcf8c04de7bf11795ad  sn74ls86a-ti.pdf
+03d48a8503d9693d23081b9a42c278abbbae94245cbb8e3d76ad584d950d89ca  k555lp5-eandc.pdf
+22c783f99350b178b11a3f33269d24bb9f36c5634215ed39040fef0736500e99  kt315-family-promelec.pdf
 ```
 
 Sources:
@@ -60,3 +63,10 @@ Sources:
 - SN74LS86A Texas Instruments PDF, used only as an LS-TTL XOR output-current
   comparison for exact-revision D34 К555ЛП5:
   `https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf`
+- Exact-device К555ЛП5 data sheet preserved from Electronics & Communications;
+  it supplies the Soviet-device voltage, fanout, input-current, and timing limits
+  but no output-current test condition or nonlinear output curve:
+  `https://static.insales-cdn.com/files/1/1346/27395394/original/%D0%9A555%D0%9B%D0%9F5.pdf`
+- Period КТ315-family reference scan preserved by Promelec. Its old KT-13
+  outline and E-C-B lead order match the installed КТ315Б package:
+  `https://cdn.promelec.ru/upload/items/2020/02/06/kt315_.pdf`
