@@ -139,7 +139,9 @@ jobs:
             scripts/check_spinoff_commons.py \
             scripts/check_revb_boards.py \
             spinoffs/jukuravi/firmware/build_d0_alive.py \
+            spinoffs/jukuravi/firmware/build_d0_cpu.py \
             tests/jukuravi_d0_alive_test.py \
+            tests/jukuravi_d0_cpu_test.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
             sync/ekdos_timing_reference.py \

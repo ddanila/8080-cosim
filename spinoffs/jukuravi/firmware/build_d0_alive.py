@@ -24,6 +24,7 @@ TONE_DIVISOR = 2000
 # the completed tone programming write to the silence control write: 0.5000175
 # seconds at the nominal 2 MHz CPU clock.
 DELAY_COUNT = 41667
+DELAY_COUNT_OFFSET = 0x000D
 
 
 class Assembler:
@@ -56,7 +57,10 @@ class Assembler:
         self.emit(0x01, value & 0xFF, value >> 8)
 
     def jnz(self, label: str) -> None:
-        self.emit(0xC2, 0x00, 0x00)
+        self.jump(0xC2, label)
+
+    def jump(self, opcode: int, label: str) -> None:
+        self.emit(opcode, 0x00, 0x00)
         self.fixups.append((self.pc - 2, label))
 
     def resolve(self) -> bytes:
@@ -69,9 +73,7 @@ class Assembler:
         return bytes(self.code)
 
 
-def build() -> tuple[bytes, int]:
-    asm = Assembler()
-
+def emit_alive_beep(asm: Assembler, *, halt: bool) -> None:
     # Program D57 channel 1 for binary, LSB+MSB, mode 3, divisor 2000.
     asm.mvi_a(0x76)
     asm.out(0x1B)
@@ -94,7 +96,13 @@ def build() -> tuple[bytes, int]:
     asm.out(0x1B)
     asm.mvi_a(0x01)
     asm.out(0x19)
-    asm.emit(0x76)  # HLT; reset IFF is still clear, so execution stops here.
+    if halt:
+        asm.emit(0x76)  # HLT; reset IFF is still clear, so execution stops here.
+
+
+def build() -> tuple[bytes, int]:
+    asm = Assembler()
+    emit_alive_beep(asm, halt=True)
 
     code = asm.resolve()
     image = bytearray([0x76] * ROM_SIZE)  # fail-closed HLT fill, not executable RAM use

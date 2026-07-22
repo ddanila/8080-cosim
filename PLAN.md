@@ -1564,8 +1564,14 @@ an active `/Q1` feedback output.
    halts with unchanged SP, IFF clear, mode 0, and no RAM writes. Its cosim I/O
    guard and the existing HDL SOUND-path guard are composed by
    `sync/jukuravi_d0_check.sh`; analog output remains a bench boundary. The
-   register-only CPU self-test is the next harness rung; USART sync/parity modes
-   and physical baud timing remain outside the bounded model.
+   next exact-hash-guarded 8 KiB image now adds the register-only CPU self-test:
+   17 ALU/flag/rotate/DAA results fold to signature `D0`, while any conditional
+   or final-signature mismatch selects a continuous nominal 250 Hz CPU-bad
+   tone. Cosim and the vm80a-based full HDL top execute both success and
+   injected-failure paths with exact I/O and no memory writes; the program uses
+   no stack instructions. The local 8251 self-test and serial handshake are the
+   next harness rung; USART sync/parity modes and physical baud timing remain
+   outside the bounded model.
 
 ## Physical bring-up sequence
 
@@ -1598,6 +1604,9 @@ Once a released board and programmed parts exist:
 - [x] Jukuravi D0 rung 1 has an exact-hash-guarded, burn-sized D15 image whose
   stack-free/RAM-free alive-beep sequence executes under cosim and reaches the
   independently guarded HDL D57/SOUND path.
+- [x] Jukuravi D0 rung 2 has an exact-hash-guarded, burn-sized D15 image whose
+  register-only CPU signature test and distinct CPU-bad tone execute through
+  both success and injected-failure paths in cosim and the vm80a HDL twin.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

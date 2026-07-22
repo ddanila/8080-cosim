@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-22.
 
-Status: **EXECUTION STARTED — D0 alive-beep image guarded; CPU self-test next.**
+Status: **EXECUTION STARTED — D0 alive-beep and CPU self-test images guarded; serial handshake next.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -102,7 +102,15 @@ A Nano is sufficient for every stage except the optional bus-master stage
      poisoning every later verdict. A register-only instruction smoke test
      (ALU ops, rotates, flag behavior, DAA) accumulates a signature in
      registers and compares against the known-good constant; a distinct
-     beep code on mismatch. ~100 bytes, zero RAM.
+     beep code on mismatch. Zero RAM.
+     **Implemented simulation checkpoint:** the combined 8 KiB D15 image
+     preserves the rung-1 alive sequence, checks 17 ALU/flag/rotate/DAA
+     results through a rolling `D0` signature, and halts on success. Any
+     branch or signature mismatch selects a continuous nominal 250 Hz
+     CPU-bad tone. Cosim and the vm80a-based full HDL top prove both the
+     success path and an injected bad-signature path, with no stack
+     instructions and no RAM writes; exact image/hash details are in
+     `firmware/README.md`.
   3. **Serial handshake** — before the RAM survey, because the 8251 is
      polled I/O and needs no RAM. First a **local 8251 self-test** (after
      init, do TxRDY/TxEMPTY status transitions behave across a written
@@ -229,9 +237,11 @@ receives `3C`, echoes it, and can finish only after observing the ready-state
 transitions. The model is deliberately limited to the async slice needed by
 the harness; sync/parity and physical baud timing remain outside this step.
 
-The first diagnostic-ROM rung now runs under cosim and is cross-checked against
-the HDL D57 beeper guard. The next implementation step is the register-only CPU
-self-test and its distinct failure beep. Then:
+The first two diagnostic-ROM rungs now run under cosim. The CPU self-test's
+success and injected-failure paths are also executed by the vm80a-based HDL
+twin, while the D57 beeper path has its own waveform/connectivity guard. The
+next implementation step is the local 8251 self-test and serial handshake.
+Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
   twin (`sync/cosim_check.sh` precedent);
