@@ -71,13 +71,23 @@ A Nano is sufficient for every stage except the optional bus-master stage
   RAM), beeper codes (`docs/beeper-readiness.md`) as the serial-less fallback.
 - **Stage D1 — Nano + host software.** Nano firmware (bridge + liveness
   probes) and the Python CLI with human-readable verdicts.
-- **Stage D2 — upload-to-RAM.** Serial loader in the same ROM: receive
-  length+payload+checksum into tested-good RAM, jump. This turns the harness
-  into a development channel for the real board, not just diagnostics.
-- **Stage D3 (optional) — external bus master.** Mega-based probe via
-  X1/`−INHIBIT`, or CPU-socket ICE. Only worth it for boards where the CPU
-  path itself is dead; the CPU-socket route is genuinely complex (КР580ВК38
-  expects the status byte during SYNC; the socket carries +12/−5 V rails).
+- **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
+  ROM: on a host command ("load at address, N bytes, payload, checksum") the
+  ROM writes the received bytes into tested-good onboard RAM, verifies, and
+  jumps on a "run" command. Pure firmware + serial — no bus hardware
+  involved. This removes the diag-ROM's own limitations: every new test
+  (FDC, video, keyboard, timing) is a file the host sends, with no EPROM
+  re-burn per iteration. Design notes: two-phase discipline (stack-free
+  until the RAM march passes, ordinary stack code after); the ROM exposes a
+  fixed-address jump-table API (serial in/out, print, return-to-loader) so
+  uploaded tests get reporting for free; in mode 0 the region
+  0x4000–0xD7FF is a clean landing zone with no bank switching needed.
+- **Stage D3 (optional, likely never needed) — external bus master.**
+  Mega-based probe via X1/`−INHIBIT`, or CPU-socket ICE. This is NOT the
+  memory-upload path (that is D2, done in firmware); it exists solely for
+  boards so dead the CPU cannot execute ROM code at all. The CPU-socket
+  route is genuinely complex (КР580ВК38 expects the status byte during
+  SYNC; the socket carries +12/−5 V rails).
 
 ## The cosim-first loop
 
