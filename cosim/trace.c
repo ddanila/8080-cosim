@@ -25,7 +25,8 @@
 // Build: cc -O2 -o trace trace.c i8080.c juk_disk.c juku_fdc.c
 // Run:   ./trace /path/to/ekta43.bin [max_cycles]
 // USART: JUKU_USART_PTY=auto prints a new slave path; a host-created PTY path
-//        may be supplied instead. JUKU_USART_BYTE_CYCLES controls ready delay.
+//        may be supplied instead. JUKU_USART_TRANSFER_CYCLES controls the
+//        holding-to-shift delay; JUKU_USART_BYTE_CYCLES controls frame time.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,9 +71,10 @@ static int           io_trace = 0;
 
 // --- minimal 8251 USART + PTY transport (opt-in via JUKU_USART_PTY) -------
 // The diagnostic-ROM path needs only the asynchronous 8-bit mode/command
-// sequence, TxRDY/RxRDY/TxEMPTY, and one-byte TX/RX holding registers.  The
-// PTY is deliberately byte-oriented: baud recovery belongs to the Nano/host
-// protocol, while this model preserves the firmware-visible ready transition.
+// sequence, RxRDY, and separate TxRDY/TxEMPTY transitions around a one-byte
+// transmit holding register and shifter. The PTY is deliberately byte-oriented:
+// baud recovery belongs to the Nano/host protocol, while this model preserves
+// the firmware-visible ready transitions.
 typedef struct {
   int fd;
   int enabled;
@@ -81,9 +83,13 @@ typedef struct {
   uint8_t command;
   uint8_t rx_data;
   uint8_t tx_data;
+  uint8_t tx_shift_data;
   int rx_ready;
+  int tx_holding_full;
   int tx_busy;
+  unsigned long tx_transfer_cyc;
   unsigned long tx_complete_cyc;
+  unsigned long transfer_cycles;
   unsigned long byte_cycles;
   unsigned long tx_bytes;
   unsigned long rx_bytes;
@@ -92,6 +98,7 @@ typedef struct {
 static juku_usart usart = {
   .fd = -1,
   .expect_mode = 1,
+  .transfer_cycles = 16,
   .byte_cycles = 256,
 };
 
@@ -163,20 +170,29 @@ static void usart_reset(void) {
   usart.mode_word = 0;
   usart.command = 0;
   usart.rx_ready = 0;
+  usart.tx_holding_full = 0;
   usart.tx_busy = 0;
 }
 
 static void usart_poll(unsigned long cyc) {
   if (!usart.enabled) return;
   if (usart.tx_busy && cyc >= usart.tx_complete_cyc) {
-    ssize_t written = write(usart.fd, &usart.tx_data, 1);
+    ssize_t written = write(usart.fd, &usart.tx_shift_data, 1);
     if (written == 1) {
       usart.tx_busy = 0;
       usart.tx_bytes++;
+      if (usart.tx_holding_full)
+        usart.tx_transfer_cyc = cyc + usart.transfer_cycles;
     } else if (written < 0 && errno != EAGAIN && errno != EWOULDBLOCK && errno != EIO) {
       perror("JUKU USART PTY write");
       exit(2);
     }
+  }
+  if (usart.tx_holding_full && !usart.tx_busy && cyc >= usart.tx_transfer_cyc) {
+    usart.tx_shift_data = usart.tx_data;
+    usart.tx_holding_full = 0;
+    usart.tx_busy = 1;
+    usart.tx_complete_cyc = cyc + usart.byte_cycles;
   }
   if ((usart.command & 0x04) && !usart.rx_ready) {
     uint8_t value;
@@ -193,7 +209,9 @@ static void usart_poll(unsigned long cyc) {
 }
 
 static uint8_t usart_status(void) {
-  return (uint8_t)((usart.tx_busy ? 0 : 0x05) | (usart.rx_ready ? 0x02 : 0));
+  uint8_t tx_ready = usart.tx_holding_full ? 0 : 0x01;
+  uint8_t tx_empty = (!usart.tx_holding_full && !usart.tx_busy) ? 0x04 : 0;
+  return (uint8_t)(tx_ready | tx_empty | (usart.rx_ready ? 0x02 : 0));
 }
 
 static uint8_t usart_read(int control, unsigned long cyc) {
@@ -216,10 +234,11 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
       usart.command = value;
       if (value & 0x10) usart.rx_ready = 0;
     }
-  } else if ((usart.command & 0x01) && !usart.tx_busy) {
+  } else if ((usart.command & 0x01) && !usart.tx_holding_full) {
     usart.tx_data = value;
-    usart.tx_busy = 1;
-    usart.tx_complete_cyc = cyc + usart.byte_cycles;
+    usart.tx_holding_full = 1;
+    if (!usart.tx_busy)
+      usart.tx_transfer_cyc = cyc + usart.transfer_cycles;
   }
 }
 
@@ -549,6 +568,8 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "usart_mode=%02X\n", usart.mode_word);
   fprintf(state_out, "usart_command=%02X\n", usart.command);
   fprintf(state_out, "usart_status=%02X\n", usart_status());
+  fprintf(state_out, "usart_tx_holding_full=%d\n", usart.tx_holding_full);
+  fprintf(state_out, "usart_tx_shift_busy=%d\n", usart.tx_busy);
   fprintf(state_out, "usart_tx_bytes=%lu\n", usart.tx_bytes);
   fprintf(state_out, "usart_rx_bytes=%lu\n", usart.rx_bytes);
   for (int p = 0; p < 256; p++) {
@@ -599,7 +620,12 @@ int main(int argc, char** argv) {
   io_trace = getenv("JUKU_TRACE_IO") && getenv("JUKU_TRACE_IO")[0] &&
              strcmp(getenv("JUKU_TRACE_IO"), "0") != 0;
   const char* usart_pty = getenv("JUKU_USART_PTY");
+  const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
+  if (usart_transfer_cycles && usart_transfer_cycles[0]) {
+    usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
+    if (!usart.transfer_cycles) usart.transfer_cycles = 1;
+  }
   if (usart_byte_cycles && usart_byte_cycles[0]) {
     usart.byte_cycles = strtoul(usart_byte_cycles, 0, 0);
     if (!usart.byte_cycles) usart.byte_cycles = 1;

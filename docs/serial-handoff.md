@@ -6,7 +6,8 @@ This generated report separates the serial-port facts already guarded by
 the board JSON and HDL from the remaining functional serial boundary.
 It covers the D11 8251 host bus path, the D57 baud-clock handoff, and
 the X3 line-driver/receiver wiring. It now also guards a minimal
-bus-visible 8251-style async Tx/Rx loopback slice; it does not claim
+bus-visible 8251-style async Tx/Rx slice with separate transmit holding
+and shift stages; it does not claim
 external X3 loopback or full protocol-mode coverage.
 
 ## Command
@@ -60,7 +61,7 @@ python3 scripts/report_serial_handoff.py
 | S_CTS reaches X3.5 | PASS | `S_CTS` |
 | S_DSR reaches X3.6 | PASS | `S_DSR` |
 | Factory wire W20 closes D3.10 to the S_TTL connector island | PASS | assembly wire W20; `S_TTL_D3` -> `S_TTL` |
-| HDL USART model has guarded Tx/Rx loopback | PASS | `hdl/devices.v`; `hdl/sim/usart_8251_tb.v`; `sync/serial_check.sh` |
+| HDL USART model separates TxRDY/TxEMPTY and guards Tx/Rx loopback | PASS | `hdl/devices.v`; `hdl/sim/usart_8251_tb.v`; `sync/serial_check.sh` |
 | HDL serial connector and drivers are instantiated | PASS | `hdl/juku_top.v` |
 
 ## Serial Nets
@@ -102,8 +103,10 @@ python3 scripts/report_serial_handoff.py
   output drivers and D104 receiver to X3 signal pins. D3.10 reaches
   X3.3 through the explicit W20 assembly-wire closure.
 - `sync/serial_check.sh` now proves a scoped USART behavior slice:
-  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
-  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
+  mode/command writes, the `TxRDY=0,TxEMPTY=0` holding-full state,
+  the `TxRDY=1,TxEMPTY=0` holding-to-shift transition, final
+  `TxEMPTY=1`, RxRDY, command-driven RTS/DTR, and one 8N1 byte
+  through a digital TxD->RxD loopback.
 - D104's fourth receiver input pin 7 is separate from D94.13 (~84 kΩ)
   and preserved as `D104_X4_IN_BOUNDARY`; owner continuity on
   2026-07-21 and the exact-revision drawing close output pin 10 as NC.

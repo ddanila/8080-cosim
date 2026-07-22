@@ -230,12 +230,16 @@ A Nano is sufficient for every stage except the optional bus-master stage
 The first infrastructure gap is closed in root `cosim/trace.c`: opt-in
 `JUKU_USART_PTY` attaches either a host-created PTY or an automatically created
 one, and models the D11 data/status mirrors at `0x08..0x0B`, the 8251
-mode/command sequence, TxRDY/RxRDY/TxEMPTY, and one-byte TX/RX holding
-registers. `tests/cosim_usart_pty_test.py`, run by `sync/juk_disk_check.sh`,
+mode/command sequence, RxRDY, and the TxRDY/TxEMPTY transmit states. The
+transmit side separates its CPU holding register from the shift register, so
+the planned local test can distinguish status `00`
+(holding full), `01` (holding empty but frame active), and `05` (transmitter
+empty). `tests/cosim_usart_pty_test.py`, run by `sync/juk_disk_check.sh`,
 executes a stack-free synthetic 8080 ROM through a real PTY: it sends `55 A5`,
 receives `3C`, echoes it, and can finish only after observing the ready-state
-transitions. The model is deliberately limited to the async slice needed by
-the harness; sync/parity and physical baud timing remain outside this step.
+transitions; the HDL unit guard proves the same intermediate status around its
+8N1 shifter. The model is deliberately limited to the async slice needed by the
+harness; sync/parity and physical baud timing remain outside this step.
 
 The first two diagnostic-ROM rungs now run under cosim. The CPU self-test's
 success and injected-failure paths are also executed by the vm80a-based HDL

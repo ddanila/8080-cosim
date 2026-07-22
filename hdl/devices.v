@@ -976,7 +976,8 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
     reg [7:0] mode = 8'h00, command = 8'h00, rx_data = 8'h00;
     reg mode_seen = 1'b0;
 
-    reg txd_r = 1'b1, tx_busy = 1'b0;
+    reg txd_r = 1'b1, tx_busy = 1'b0, tx_buffer_full = 1'b0;
+    reg [7:0] tx_buffer = 8'h00;
     reg [8:0] tx_shift = 9'h1ff;
     integer tx_bits = 0;
 
@@ -986,15 +987,16 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
 
     wire tx_enable = command[0];
     wire rx_enable = command[2];
-    wire [7:0] status = {5'b00000, ~tx_busy, rx_ready, ~tx_busy};
+    wire tx_empty_i = ~tx_busy & ~tx_buffer_full;
+    wire [7:0] status = {5'b00000, tx_empty_i, rx_ready, ~tx_buffer_full};
 
     assign D = (~cs_n & ~rd_n) ? (A ? status : rx_data) : 8'bz;
     assign txd = txd_r;
     assign rts = ~command[5];
     assign dtr = ~command[1];
     assign rxrdy = rx_ready;
-    assign txrdy = ~tx_busy;
-    assign txempty = ~tx_busy;
+    assign txrdy = ~tx_buffer_full;
+    assign txempty = tx_empty_i;
     assign syndet = 1'b0;
 
     always @(negedge wr_n) if (~cs_n) begin
@@ -1007,17 +1009,16 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
                 mode_seen <= 1'b0;
                 txd_r <= 1'b1;
                 tx_busy <= 1'b0;
+                tx_buffer_full <= 1'b0;
                 rx_busy <= 1'b0;
                 rx_ready <= 1'b0;
             end else begin
                 command <= D;
                 if (D[4]) rx_ready <= 1'b0;  // error reset also clears the minimal RX latch.
             end
-        end else if (tx_enable && !tx_busy) begin
-            tx_shift <= {1'b1, D};  // 8 data bits, then stop; start bit is driven immediately.
-            tx_bits <= 9;
-            txd_r <= 1'b0;
-            tx_busy <= 1'b1;
+        end else if (tx_enable && !tx_buffer_full) begin
+            tx_buffer <= D;
+            tx_buffer_full <= 1'b1;
         end
     end
 
@@ -1028,14 +1029,24 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
     // Minimal async 8N1 shifter. It is enough for digital loopback/bring-up
     // guards; mode word parity/stop-bit variants and sync mode remain out of
     // scope until software needs them.
-    always @(posedge txc) if (tx_busy) begin
-        txd_r <= tx_shift[0];
-        tx_shift <= {1'b1, tx_shift[8:1]};
-        if (tx_bits <= 1) begin
-            tx_busy <= 1'b0;
-            tx_bits <= 0;
-        end else begin
-            tx_bits <= tx_bits - 1;
+    always @(posedge txc) begin
+        if (tx_busy) begin
+            txd_r <= tx_shift[0];
+            tx_shift <= {1'b1, tx_shift[8:1]};
+            if (tx_bits <= 1) begin
+                tx_busy <= 1'b0;
+                tx_bits <= 0;
+            end else begin
+                tx_bits <= tx_bits - 1;
+            end
+        end else if (tx_buffer_full) begin
+            // A TxC edge moves the CPU-side holding byte into the shifter:
+            // TxRDY rises here, while TxEMPTY remains low through the frame.
+            tx_shift <= {1'b1, tx_buffer};
+            tx_bits <= 9;
+            txd_r <= 1'b0;
+            tx_busy <= 1'b1;
+            tx_buffer_full <= 1'b0;
         end
     end
 

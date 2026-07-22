@@ -49,7 +49,14 @@ module usart_8251_tb;
       $finish;
     end
 
-    for (i = 0; i < 12; i = i + 1) baud_tick();
+    baud_tick();
+    read_reg(1'b1, status);
+    if ((status & 8'h05) != 8'h01) begin
+      $display("USART8251: FAIL holding-to-shift status %02x", status);
+      $finish;
+    end
+
+    for (i = 0; i < 11; i = i + 1) baud_tick();
 
     read_reg(1'b1, status);
     if ((status & 8'h07) != 8'h07) begin

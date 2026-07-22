@@ -1556,9 +1556,12 @@ an active `/Q1` feedback output.
 4. Extend sound/serial behavior only to answer concrete bench questions.
    The first Jukuravi prerequisite is now guarded: opt-in cosim D11/8251
    data/status mirrors at `0x08..0x0B` implement the async mode/command and
-   TxRDY/RxRDY/TxEMPTY slice over a real PTY. A stack-free synthetic ROM sends
-   `55 A5`, receives `3C`, and echoes it through the same transport
-   (`tests/cosim_usart_pty_test.py`). The first diagnostic-ROM boot rung is now
+   TxRDY/RxRDY/TxEMPTY slice over a real PTY. Its transmit holding register and
+   shifter now expose the distinct `00` (holding full), `01` (frame active),
+   and `05` (fully empty) status stages in both cosim and HDL. A stack-free
+   synthetic ROM sends `55 A5`, receives `3C`, and echoes it only after proving
+   those transitions (`tests/cosim_usart_pty_test.py`). The first
+   diagnostic-ROM boot rung is now
    a deterministic, exact-hash-guarded 8 KiB D15 image: it programs D57 for a
    nominal 1 kHz tone, delays 1,000,035 T-states, silences the channel, and
    halts with unchanged SP, IFF clear, mode 0, and no RAM writes. Its cosim I/O
