@@ -2,7 +2,7 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–5C SIMULATION CHECKPOINT — D27/PPI GUARDED**
+Status: **D0 RUNGS 1–5D SIMULATION CHECKPOINT — D54/D55/D57 PIT GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
@@ -12,8 +12,9 @@ D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake,
 `diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey,
 `diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback,
 `diag-d0-romcheck.bin` adds the historical ROM block-1 convention self-test,
-`diag-d0-pic.bin` adds the D10/8259 interrupt-mask register test, and
-`diag-d0-ppi.bin` adds the safe D27/8255 all-port register test.
+`diag-d0-pic.bin` adds the D10/8259 interrupt-mask register test,
+`diag-d0-ppi.bin` adds the safe D27/8255 all-port register test, and
+`diag-d0-pit.bin` adds the guarded D54/D55/D57 all-counter register test.
 
 SHA256:
 
@@ -27,6 +28,7 @@ e9bebf4cbcca4556a779eef3fcb42f69706892df28a2cc93fc1f3a5d235eb2e0  diag-d0-serial
 d102a6320f9446e103ab34a07b73ddca72907163a9444c061efdccbd47841da5  diag-d0-romcheck.bin
 65d84269bcd0d2859e31ca343e3640899c3179b0af6404e184a53a304b1b9496  diag-d0-pic.bin
 c75fc47b4966532c67794a317ab23b0e75c32977acb799d3e08a94d53baf2685  diag-d0-ppi.bin
+b7ab8c3c5d7b32c5402510787216e099b0adbd37d64fb2c4a01f5695eb5401cf  diag-d0-pit.bin
 ```
 
 ## Build and guard
@@ -41,6 +43,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
 sync/jukuravi_d0_check.sh
 ```
 
@@ -48,8 +51,9 @@ The builders are the sources of truth and deterministically emit the committed
 images. The alive-only executed code is 30 bytes. The combined CPU image
 contains 382 bytes; the local-USART image contains 509; the serial image
 contains 684; the RAM-survey image contains 1,496; the fallback image contains
-1,967; the ROM-convention, PIC, and PPI builder spans are each 2,066 bytes. Their
-identities are stored at `0x1F00`, and unused space is fail-closed
+1,967; the ROM-convention, PIC, and PPI builder spans are each 2,066 bytes. The
+PIT image spans 2,317 bytes because its guarded extension follows the framed
+tables. Their identities are stored at `0x1F00`, and unused space is fail-closed
 `HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
@@ -288,6 +292,7 @@ The audible vocabulary is now executable and unambiguous by cadence:
 | ROM block-1 checksum bad | continuous nominal 2 kHz after the alive beep |
 | PIC mask-register bad | continuous nominal 4 kHz after the alive beep |
 | D27 PPI register bad | continuous nominal 750 Hz after the alive beep |
+| D54/D55/D57 PIT register bad | continuous nominal 1.5 kHz after the alive beep |
 | local USART bad | continuous nominal 500 Hz |
 | serial confirmed | one approximately 0.125 s nominal 2 kHz beep |
 | serial dead before fallback | one approximately 0.25 s nominal 125 Hz marker |
@@ -433,6 +438,47 @@ external loads, handshake modes, drive strength, or contention behavior. Keep
 X2 disconnected for this image; connector and cable tests require a controlled
 harness after the register-only checkpoint.
 
+## Rung 5d: D54/D55/D57 all-counter register test
+
+The cumulative PIT image advertises ROM version `07`, historical block-1 sum
+`0E`, full-image self-checksum `1882`, and these exact records:
+
+```text
+banner: A5 5A 01 04 01 07 18 82 DE
+ack:    A5 5A 81 04 01 07 18 82 32
+```
+
+Only 21 bytes remained below the historical table boundary at `0800`. The rung
+uses 20 of them for a stack-free additive guard over a 251-byte extension at
+`0812..090C`; its exact eight-bit sum is `8A`. The banner remains at `0800` and
+the ACK at `0809`. A bad extension branches to the existing ROM-fail halt before
+any PIT test, USART access, or RAM write, so moving executable code beyond the
+historical block does not create an unchecked execution path.
+
+For every counter port `10..12`, `14..16`, and `18..1A`, the extension selects
+binary mode 0 with MSB-only access, writes `FF`, latches the count, reads it, and
+requires DB7 high. It then repeats channel 0 on each chip with `3F` and requires
+DB7 low. This exercises all nine counter selects, all three control selects, and
+both DB7 polarities without comparing an exact live count. The predicate remains
+valid across the source-proved 1 MHz, 2 MHz, 1.23 MHz, and cascaded inputs and
+does not invent a common cosim clock.
+
+Both verdicts recover D57 channels 1 and 2 to silent mode-0 count 1. Success then
+continues into the existing local-USART setup, which immediately programs D57
+channel 0. Failure instead programs channel 1 for the continuous nominal 1.5 kHz
+PIT-bad tone (divisor 1333) and halts before USART or RAM. D54 and D55 retain
+their test programming only until the already-guarded serial-success or fallback
+timer initialization; no RAM is touched before that recovery.
+
+`tests/jukuravi_d0_pit_test.py` proves the exact image, header sums, extension
+guard, all-counter traffic, both injected DB7 mismatch polarities, acknowledged
+192-page survey, and no-ACK fallback predecessors. Cosim accepts only
+`JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH` for the nine counter ports. The vm80a
+fixture independently executes clean, forced-D55-DB7-high, and corrupted-
+extension paths through all three physical PITs, then replays the cumulative
+version-7 fixed-window fallback for clean and forced-D87 outcomes with exact
+PIT-prefix traffic and cadence.
+
 Broader row/column-shaped fault generators and the user-facing session CLI
 remain later host-tool work; rung 4's required serial and beep-only RAM paths
 are now both represented by exact burn images.
@@ -441,11 +487,5 @@ The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next D0
-firmware rung is the remaining PIT register-wiggle test. Its prerequisite is
-now explicit and regression-guarded: both twins implement the 8253
-counter-latch command and the programmed LSB/MSB read sequence, while
-`JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH` is restricted to the nine D54/D55/D57
-counter ports. Cosim intentionally leaves live count progression to HDL because
-the board uses distinct 1 MHz, 2 MHz, 1.23 MHz, and cascaded clocks. The ROM
-must therefore use a phase-tolerant count predicate rather than compare an
-exact free-running 16-bit value.
+firmware rung is the RAM-backed framebuffer test pattern; it must consume only
+a RAM window already proven by the serial survey or fixed-window fallback.

@@ -16,6 +16,7 @@ module jukuravi_d0_ram_fallback_tb;
   integer ram_writes = 0;
   integer ram_reads = 0;
   integer pit_writes = 0;
+  integer video_pit_writes = 0;
   integer tone_programs = 0;
   integer silences = 0;
   integer failures = 0;
@@ -26,6 +27,8 @@ module jukuravi_d0_ram_fallback_tb;
   reg [7:0] banner_crc = 0;
   reg [7:0] rom_version = 8'h03;
   integer prefix_writes = 0;
+  integer prefix_pit_writes = 0;
+  integer prefix_silences = 0;
   reg [7:0] expected_pit_port [1:14];
   reg [7:0] expected_pit_value [1:14];
 
@@ -96,9 +99,13 @@ module jukuravi_d0_ram_fallback_tb;
     end
     if (dut.BA[7:0] >= 8'h10 && dut.BA[7:0] <= 8'h17) begin
       pit_writes = pit_writes + 1;
-      if (pit_writes > 14 || dut.BA[7:0] !== expected_pit_port[pit_writes]
-          || dut.DB !== expected_pit_value[pit_writes])
-        fail("video PIT initialization");
+      if (pit_writes > prefix_pit_writes) begin
+        video_pit_writes = video_pit_writes + 1;
+        if (video_pit_writes > 14
+            || dut.BA[7:0] !== expected_pit_port[video_pit_writes]
+            || dut.DB !== expected_pit_value[video_pit_writes])
+          fail("video PIT initialization");
+      end
     end
     if (dut.BA[7:0] == 8'h1B && dut.DB == 8'h76)
       tone_programs = tone_programs + 1;
@@ -143,12 +150,13 @@ module jukuravi_d0_ram_fallback_tb;
     expected_e = inject_fault ? 8'h00 : 8'h03;
     expected_io = (inject_fault ? 81 : 73) + prefix_writes;
     expected_tones = inject_fault ? 7 : 5;
-    expected_silences = inject_fault ? 6 : 5;
+    expected_silences = (inject_fault ? 6 : 5) + prefix_silences;
     if (pc != expected_pc + 16'd1) fail("wrong terminal HLT");
     if (architectural_e !== expected_e) fail("candidate-good flags");
     if (io_writes != expected_io) fail("I/O write count");
     if (data_writes != 25 || data_reads != 0) fail("serial byte counts");
-    if (pit_writes != 14) fail("video PIT write count");
+    if (pit_writes != prefix_pit_writes + 14 || video_pit_writes != 14)
+      fail("video PIT write count");
     if (tone_programs != expected_tones || silences != expected_silences)
       fail("beep cadence counts");
     if (ram_writes != 2560 || ram_reads != 2560) fail("fallback RAM traffic");
@@ -184,6 +192,10 @@ module jukuravi_d0_ram_fallback_tb;
     if (!$value$plusargs("banner_crc=%h", banner_crc)) fail("missing +banner_crc");
     if (!$value$plusargs("rom_version=%h", rom_version)) rom_version = 8'h03;
     if (!$value$plusargs("prefix_writes=%d", prefix_writes)) prefix_writes = 0;
+    if (!$value$plusargs("prefix_pit_writes=%d", prefix_pit_writes))
+      prefix_pit_writes = 0;
+    if (!$value$plusargs("prefix_silences=%d", prefix_silences))
+      prefix_silences = 0;
     inject_fault = $test$plusargs("inject_fault");
 
     expected_pit_port[1]=8'h13; expected_pit_value[1]=8'h15;

@@ -48,6 +48,7 @@ def read_master(master: int, outbound: bytearray) -> bool:
 def run_fallback(
     trace: Path, image: bytes, label: str, *, ram_fault: str | None = None,
     pic_fault: str | None = None, ppi_fault: str | None = None,
+    pit_fault: str | None = None,
 ) -> tuple[subprocess.CompletedProcess[str], dict[str, str], bytes, bytes]:
     with tempfile.TemporaryDirectory(prefix=f"juku-d0-fallback-{label}-") as tmp_name:
         tmp = Path(tmp_name)
@@ -72,6 +73,8 @@ def run_fallback(
             env["JUKU_PIC_FAULT"] = pic_fault
         if ppi_fault:
             env["JUKU_PPI_FAULT"] = ppi_fault
+        if pit_fault:
+            env["JUKU_PIT_FAULT"] = pit_fault
         with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
             process = subprocess.Popen(
                 [str(trace), str(rom), "100000000"], cwd=tmp, env=env,
@@ -105,6 +108,7 @@ def verify_fallback(
     *,
     expected_e: int,
     no_windows: bool,
+    pit_prefix_events: list[tuple[str, int, int]] | None = None,
 ) -> list[str]:
     proc, state, outbound, ram = result
     failures: list[str] = []
@@ -134,12 +138,23 @@ def verify_fallback(
         CHIP_PULSE_IO * 4 + NO_WINDOW_IO
         if no_windows else WINDOW_PULSE_IO * firmware.WINDOWS_FOUND_PULSES
     )
-    expected_tones = ALIVE_TONE_IO + BAUD_CONTROL_IO + SERIAL_DEAD_MARK_IO + terminal_io
+    prefix_tones = [
+        (port, value) for direction, port, value in (pit_prefix_events or [])
+        if direction == "OUT" and port in (0x19, 0x1B)
+    ]
+    expected_tones = (
+        ALIVE_TONE_IO + prefix_tones + BAUD_CONTROL_IO
+        + SERIAL_DEAD_MARK_IO + terminal_io
+    )
     if tone_writes != expected_tones:
         failures.append(f"{label}: tone writes differ: {tone_writes}")
     pit_writes = [(port, value) for direction, port, value in events
                   if direction == "OUT" and 0x10 <= port <= 0x17]
-    if pit_writes != list(firmware.VIDEO_PIT_WRITES):
+    prefix_video = [
+        (port, value) for direction, port, value in (pit_prefix_events or [])
+        if direction == "OUT" and 0x10 <= port <= 0x17
+    ]
+    if pit_writes != prefix_video + list(firmware.VIDEO_PIT_WRITES):
         failures.append(f"{label}: video PIT init differs: {pit_writes}")
     not_ready = sum(direction == "IN" and port == 0x09 and value & 0x02 == 0
                     for direction, port, value in events)

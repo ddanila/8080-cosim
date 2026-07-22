@@ -111,6 +111,8 @@ def verify_run(
     metadata: dict[str, int | list[int] | bytes],
     expected_masks: dict[int, int],
     expected_window: protocol.RamWindow,
+    *,
+    pit_prefix_writes: list[tuple[int, int]] | None = None,
 ) -> list[str]:
     proc, state, outbound, ram = result
     failures: list[str] = []
@@ -206,7 +208,8 @@ def verify_run(
         for port, value in [(int(match.group(2), 16), int(match.group(3), 16))]
         if 0x10 <= port <= 0x17
     ]
-    if pit_writes != list(firmware.VIDEO_PIT_WRITES):
+    expected_pit_writes = (pit_prefix_writes or []) + list(firmware.VIDEO_PIT_WRITES)
+    if pit_writes != expected_pit_writes:
         failures.append(f"{label}: video PIT init differs: {pit_writes}")
     return failures
 

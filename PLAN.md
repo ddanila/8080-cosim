@@ -1635,16 +1635,16 @@ an active `/Q1` feedback output.
    bit-sliced DRAM bank. X2 must be disconnected because this is a register and
    decode test, not an external-load test. Failure gives a distinct continuous
    nominal 750 Hz tone with D10 masked, IFF clear, and no USART or RAM write.
-   The PIT register test is next. Its model prerequisite is now complete:
-   cosim and HDL implement the 8253 counter-latch command, programmed LSB/MSB
-   read order, single-byte formats, and first-latch ownership; HDL also
-   re-encodes live BCD counts. Focused guards cover all three decoded chip
-   selects and restricted `JUKU_PIT_FAULT` read faults. Cosim intentionally
-   does not invent a shared
-   time base for the differently clocked/cascaded D54, D55, and D57 counters;
-   live progression remains HDL-authoritative, so the firmware must use a
-   phase-tolerant count predicate. The cumulative burn image remains the next
-   bounded D0 checkpoint.
+   The next cumulative image tests every D54/D55/D57 counter with latched,
+   phase-tolerant DB7-high and DB7-low predicates. Its 251-byte post-table
+   extension has a separate stack-free additive guard, and both verdicts
+   recover D57 before continuing or selecting a distinct continuous nominal
+   1.5 kHz PIT-bad tone. Exact-image cosim proves all counter/control selects,
+   both restricted `JUKU_PIT_FAULT` mismatch polarities, the corrupt-extension
+   branch, and cumulative ACK/no-ACK paths. vm80a proves clean, forced-D55,
+   corrupt-extension, and both physical fallback outcomes across all three PIT
+   instances. The next bounded D0 checkpoint is the RAM-backed framebuffer
+   test pattern, consuming only a window already proven by rung 4.
 
 ## Physical bring-up sequence
 
@@ -1708,6 +1708,11 @@ Once a released board and programmed parts exist:
   PPI-bad halt execute for clean and stuck-bit cases in cosim and vm80a, while
   the compact shared fallback loop is replayed through both physical DRAM
   windows for clean and forced-D87 outcomes.
+- [x] Jukuravi D0 rung 5d has an exact-hash-guarded cumulative D15 image whose
+  separately checksummed extension exercises all nine D54/D55/D57 counters
+  with phase-tolerant complementary predicates, restores D57, and reaches the
+  distinct PIT-bad halt for injected faults in cosim and vm80a, while both
+  version-7 fallback outcomes retain exact physical PIT and DRAM traffic.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

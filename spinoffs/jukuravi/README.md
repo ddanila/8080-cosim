@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D0 ROM/PIC/PPI/serial/RAM paths guarded.**
+Status: **EXECUTION STARTED — D0 ROM/PIC/PPI/PIT/serial/RAM paths guarded.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -233,13 +233,22 @@ A Nano is sufficient for every stage except the optional bus-master stage
      forced-low Port-C branches plus the shared two-window fallback loop. The
      X2 auxiliary connector must be disconnected: this is a register/latch and
      decode test, not a connector-load test. A mismatch gives a continuous
-     nominal 750 Hz PPI-bad tone before USART or RAM activity. PIT register
-     wiggles remain next.
+     nominal 750 Hz PPI-bad tone before USART or RAM activity.
+     **PIT-register simulation checkpoint implemented:** the tenth exact 8 KiB
+     image checks all nine D54/D55/D57 counters with latched, phase-tolerant
+     DB7-high and DB7-low predicates, then recovers D57 before continuing or
+     selecting a continuous nominal 1.5 kHz PIT-bad tone. A 251-byte extension
+     after the framed tables has its own stack-free additive guard; corruption
+     reaches the earlier ROM-bad halt before PIT, USART, or RAM activity.
+     Exact-image cosim proves every counter/control select, both stuck-bit
+     polarities, and cumulative ACK/no-ACK paths. vm80a proves clean, forced
+     D55 failure, corrupt-extension, and both shared fallback outcomes through
+     the three physical PITs. The RAM-backed framebuffer pattern remains next.
 
   The beep vocabulary is a tiny fixed set (alive / cpu-bad / rom-bad /
-  pic-bad / ppi-bad / usart-bad / serial-ok / serial-dead / chip-N-dead /
-  windows-found), documented so a human with no Nano attached can triage by
-  ear.
+  pic-bad / ppi-bad / pit-bad / usart-bad / serial-ok / serial-dead /
+  chip-N-dead / windows-found), documented so a human with no Nano attached
+  can triage by ear.
 
   **ROM discipline:** interrupts stay disabled for the diag ROM's whole
   life (the 8080 resets with them off; never `EI` — the PIC IMR is now tested,
@@ -317,15 +326,15 @@ transitions; the HDL unit guard proves the same intermediate status around its
 8N1 shifter. The model is deliberately limited to the async slice needed by the
 harness; sync/parity and physical baud timing remain outside this step.
 
-The alive, CPU, ROM-convention, PIC, PPI, serial, and mode-0 RAM-survey
+The alive, CPU, ROM-convention, PIC, PPI, PIT, serial, and mode-0 RAM-survey
 diagnostic-ROM rungs now run under cosim and the vm80a-based HDL twin,
-including injected ROM, PIC, PPI, USART, protocol, and bit-sliced RAM failure
-paths, while the D57 beeper path has its own waveform/connectivity guard. The
-8253 prerequisite is also guarded now: cosim and HDL implement the original
-counter-latch command and programmed LSB/MSB read order, with focused tests for
-all three chip selects and single- and double-byte formats; the HDL guard also
-covers BCD conversion and pending-latch ownership. The next D0 implementation
-step is the PIT diagnostic ROM that consumes this interface.
+including injected ROM, PIC, PPI, PIT, USART, protocol, and bit-sliced RAM
+failure paths, while the D57 beeper path has its own waveform/connectivity
+guard. The 8253 register model and the cumulative diagnostic now compose:
+focused model tests cover latch/read formats, BCD conversion, and pending-latch
+ownership, while the ROM guard covers all physical counter selects with
+phase-tolerant live-count predicates. The next D0 implementation step is the
+RAM-backed framebuffer test pattern.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

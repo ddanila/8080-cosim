@@ -79,10 +79,19 @@ PPI1_CONTROL_PORT = 0x0F
 PPI1_ALL_OUTPUT = 0x80           # mode 0, PA/PB/PC all output
 PPI1_ALL_INPUT = 0x9B            # mode 0, PA/PB/PC all input
 PPI_CHECK_FAIL_DIVISOR = 2667    # nominal 750 Hz, continuous
+PIT_CHIP_BASES = (0x10, 0x14, 0x18)
+PIT_HIGH_COUNT = 0xFF            # MSB-only FF00h, sign must remain set
+PIT_LOW_COUNT = 0x3F             # MSB-only 3F00h, sign must remain clear
+PIT_FAIL_DIVISOR = 1333          # nominal 1.5 kHz, continuous
 
 
 def lxi_h(asm: Assembler, value: int) -> None:
     asm.emit(0x21, value & 0xFF, value >> 8)
+
+
+def lxi_h_label(asm: Assembler, label: str) -> None:
+    asm.emit(0x21, 0x00, 0x00)
+    asm.fixups.append((asm.pc - 2, label))
 
 
 def emit_window_loop_setup(
@@ -367,10 +376,95 @@ def emit_ppi_register_check(asm: Assembler) -> dict[str, int | list[int]]:
     }
 
 
+def emit_pit_extension_guard(asm: Assembler) -> dict[str, int]:
+    """Checksum a sub-256-byte post-table extension, then jump into it."""
+    asm.emit(0xAF)  # XRA A: additive accumulator
+    lxi_h_label(asm, "pit_extension_start")
+    length_offset = asm.pc + 1
+    asm.emit(0x0E, 0x00)  # MVI C, extension length (patched after assembly)
+    asm.label("pit_extension_checksum_loop")
+    asm.emit(0x86, 0x23, 0x0D)  # ADD M / INX H / DCR C
+    asm.jump(0xC2, "pit_extension_checksum_loop")
+    checksum_offset = asm.pc + 1
+    asm.emit(0xFE, 0x00)  # CPI extension additive checksum (patched)
+    asm.jump(0xC2, "rom_fail")
+    asm.jump(0xC3, "pit_extension_start")
+    return {
+        "pit_extension_length_offset": length_offset,
+        "pit_extension_checksum_offset": checksum_offset,
+        "pit_extension_guard_pass": asm.pc,
+    }
+
+
+def emit_pit_register_check(asm: Assembler) -> dict[str, int | list[int]]:
+    """Exercise every 8253 counter select with phase-tolerant DB7 predicates."""
+    high_read_offsets: list[int] = []
+    low_read_offsets: list[int] = []
+    tested_ports: list[int] = []
+
+    for base in PIT_CHIP_BASES:
+        control_port = base + 3
+        for channel in range(3):
+            data_port = base + channel
+            tested_ports.append(data_port)
+            asm.mvi_a(0x20 | (channel << 6))  # MSB-only, binary mode 0
+            asm.out(control_port)
+            asm.mvi_a(PIT_HIGH_COUNT)
+            asm.out(data_port)
+            if channel == 0:
+                asm.emit(0xAF)               # latch command 00
+            else:
+                asm.mvi_a(channel << 6)       # latch command 40/80
+            asm.out(control_port)
+            high_read_offsets.append(asm.pc)
+            asm.emit(0xDB, data_port, 0xB7)   # IN / ORA A: sign must remain set
+            asm.jump(0xF2, "pit_fail")       # JP means DB7 cleared
+
+        # One low-range read per chip proves the opposite DB7 polarity while
+        # every channel above independently proves its control/data decode.
+        asm.mvi_a(0x20)                       # channel 0, MSB-only, mode 0
+        asm.out(control_port)
+        asm.mvi_a(PIT_LOW_COUNT)
+        asm.out(base)
+        asm.emit(0xAF)
+        asm.out(control_port)                 # channel-0 latch command
+        low_read_offsets.append(asm.pc)
+        asm.emit(0xDB, base, 0xB7)            # IN / ORA A: sign must remain clear
+        asm.jump(0xFA, "pit_fail")            # JM means DB7 stuck/set
+
+    asm.emit(0x16, 0x00)  # MVI D,0: success through shared D57 recovery
+    asm.jump(0xC3, "pit_recover")
+    asm.label("pit_fail")
+    asm.emit(0x16, 0x01)  # MVI D,1: failure through the same recovery
+    asm.label("pit_recover")
+
+    # Channel 0 is immediately reprogrammed by the local USART test. Restore
+    # SOUND and the otherwise-unused SYNC B output to static high levels now.
+    for control, port in ((0x50, 0x19), (0x90, 0x1A)):
+        asm.mvi_a(control)  # LSB-only, binary mode 0
+        asm.out(0x1B)
+        asm.mvi_a(0x01)
+        asm.out(port)
+
+    asm.emit(0x7A, 0xB7)  # MOV A,D / ORA A
+    asm.jump(0xCA, "after_pit")
+    emit_failure_tone(asm, PIT_FAIL_DIVISOR)
+    pit_fail_halt = asm.pc
+    asm.emit(0x76)
+    return {
+        "pit_ports": tested_ports,
+        "pit_high_read_offsets": high_read_offsets,
+        "pit_low_read_offsets": low_read_offsets,
+        "pit_fail_halt": pit_fail_halt,
+        "pit_check_pass": asm.labels["after_pit"],
+    }
+
+
 def build_variant(
     *, rom_version: int, identity: bytes, rom_convention: bool,
     entry_offset: int = 0x0010, pic_check: bool = False,
     compact_fallback: bool = False, ppi_check: bool = False,
+    pit_check: bool = False,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     if pic_check and not rom_convention:
         raise ValueError("PIC profile requires the cumulative ROM convention")
@@ -378,6 +472,8 @@ def build_variant(
         raise ValueError("compact fallback profile requires the ROM convention")
     if ppi_check and (not pic_check or not compact_fallback):
         raise ValueError("PPI profile requires cumulative PIC and compact fallback")
+    if pit_check and not ppi_check:
+        raise ValueError("PIT profile requires the cumulative PPI profile")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -404,6 +500,9 @@ def build_variant(
     rom_metadata = emit_rom_convention_check(asm) if rom_convention else {}
     pic_metadata = emit_pic_register_check(asm) if pic_check else {}
     ppi_metadata = emit_ppi_register_check(asm) if ppi_check else {}
+    pit_guard_metadata = emit_pit_extension_guard(asm) if pit_check else {}
+    if pit_check:
+        asm.label("after_pit")
     local_timeout_offsets = emit_local_usart_test(asm)
     train_timeout_offset = emit_train(asm, failure_label="ram_fallback")
 
@@ -541,8 +640,28 @@ def build_variant(
     asm.label("ack_expected")
     ack_offset = asm.pc
     asm.emit(*placeholder_ack)
+    pit_metadata: dict[str, int | list[int]] = {}
+    if pit_check:
+        asm.label("pit_extension_start")
+        pit_metadata = emit_pit_register_check(asm)
+        asm.label("pit_extension_end")
 
     code = bytearray(asm.resolve())
+    if pit_check:
+        extension_start = asm.labels["pit_extension_start"]
+        extension_end = asm.labels["pit_extension_end"]
+        extension_length = extension_end - extension_start
+        if extension_length <= 0 or extension_length > 0xFF:
+            raise ValueError("PIT extension must fit the 8-bit checksum loop")
+        extension_checksum = sum(code[extension_start:extension_end]) & 0xFF
+        code[pit_guard_metadata["pit_extension_length_offset"]] = extension_length
+        code[pit_guard_metadata["pit_extension_checksum_offset"]] = extension_checksum
+        pit_metadata.update({
+            "pit_extension_start": extension_start,
+            "pit_extension_end": extension_end,
+            "pit_extension_length": extension_length,
+            "pit_extension_checksum": extension_checksum,
+        })
     image = bytearray([0x76] * ROM_SIZE)
     image[: len(code)] = code
     image[IDENTITY_OFFSET : IDENTITY_OFFSET + len(identity)] = identity
@@ -631,6 +750,8 @@ def build_variant(
         **rom_metadata,
         **pic_metadata,
         **ppi_metadata,
+        **pit_guard_metadata,
+        **pit_metadata,
         **survey_metadata,
     }
     return bytes(image), metadata
