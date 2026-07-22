@@ -53,6 +53,18 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   the failure class where the ROM never speaks: reset released? derived clock
   toggling? `−MRDC` pulsing? Candidate probe nets are already cataloged in
   `docs/replica-bringup-verification-points.md`.
+- **Nano-driven hardware reset (required for unattended runs).** The 8080
+  has no NMI, so no firmware watchdog can reclaim a hung uploaded test that
+  runs with interrupts masked — a hardware reset is the only reliable
+  recovery. Implementation: a Nano GPIO drives an optocoupler or
+  open-collector transistor **across the S1 reset-switch contacts**
+  (electrically "pressing the switch"; never push-pull-drive the reset-RC
+  node — VD1 sits in that corner, and the measured chain reaches D1.12
+  active-high RESET, `docs/owner-measured-facts.md`). Reset also returns
+  the PPI memory mode to 0, so the ROM regains control at 0x0000 and
+  re-announces over serial: upload → run → heartbeat timeout → reset pulse →
+  banner → host retries, fully unattended. The Nano can also hold reset
+  during hookup and pulse it before each session for deterministic runs.
 - **Host tool** (Python CLI) drives the protocol and prints verdicts. It talks
   to cosim's pty during development and to the Nano's USB port on the bench —
   same code, same protocol.
@@ -114,7 +126,12 @@ root first.
   `docs/video-pit-timing.md`). Mitigation: conservative baud + auto-baud on
   the Nano side.
 - X3 pinout must be continuity-confirmed before plugging anything in — check
-  `docs/owner-measured-facts.md` first, as always.
+  `docs/owner-measured-facts.md` first, as always. (The connector identity is
+  already photo-closed: РГ1Н-1-4 12-contact panel socket, cable mate
+  РШ2Н-1-23/-24 — see the owner-measured-facts bracket-connectors row.)
+- S1 reset-switch contact arrangement: which contact pair closes to assert
+  reset, and the node polarity — needed before wiring the Nano's reset opto
+  across it.
 
 ## Non-goals and guardrails
 
@@ -133,6 +150,7 @@ Before bench connection, at minimum:
 2. diagnostic ROM passes in cosim **and** the HDL twin, including injected
    faults (each fault class produces the intended verdict);
 3. host tool round-trips the full protocol against cosim;
-4. X3 pinout and levels continuity-confirmed on the real board;
+4. X3 pinout and levels continuity-confirmed on the real board, and S1
+   reset-switch contacts identified for the Nano reset line;
 5. upload-to-RAM (D2) demonstrated end-to-end in cosim before it is ever run
    on hardware.
