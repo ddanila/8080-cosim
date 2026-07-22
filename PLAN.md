@@ -1387,6 +1387,15 @@ temporary six-field grayscale fixture matches all five output bars exactly;
 Linux CI run `29886015187` passes the full build, all three CTests, and the
 unchanged direct RF/IQ regression. This proves only the generic NTSC-rate
 baseband boundary, not Juku timing, physical X7 voltage, or receiver lock.
+CVBS-plan WP2 is now complete at decoder fork commit
+`10bfa4b9ae6c1ce071633459170b067fe3e2d91f`: explicit timing profiles drive
+line/sync/frame/active-window acquisition, monochrome bypasses NTSC chroma,
+and JSON reports measured line/frame lock, rates, sync width, blank, and video
+range. An independent 12.5 kHz/200-line fixture matches five exact bars, while
+five malformed fixtures distinguish horizontal and vertical lock failure.
+Linux CI run `29886839537` passes the full build, five CTests, and unchanged RF
+regression. No Juku preset or timing constant has been guessed; physical Juku
+waveform generation and lock remain separate later work packages.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.

@@ -32,6 +32,10 @@ def main() -> int:
     wp1_ci = wp1["ci_run"]
     wp1_tests = wp1["tests"]
     wp1_e2e = wp1_tests["e2e"]
+    wp2 = data["wp2_followup"]
+    wp2_ci = wp2["ci_run"]
+    wp2_fixture = wp2["positive_fixture"]
+    wp2_stats = wp2["measured_statistics"]
     results = data["results"]
     synth = results["synth_ntsc"]
     context_commit = data["8080_cosim_context_commit"]
@@ -160,10 +164,70 @@ def main() -> int:
             and wp1_ci["synth_ntsc"] == "pass",
             f"run {wp1_ci['id']} at `{wp1_ci['head_sha'][:8]}`: full build + 3 CTests + synth_ntsc",
         ),
+        (
+            "WP2 profile receiver tip and artifacts are pinned",
+            wp2["fork_head_commit"] == wp2["commits"]["documented_contract"]
+            and wp2["fork_head_commit"] in plan
+            and all(
+                re.fullmatch(r"[0-9a-f]{40}", commit) is not None
+                for commit in wp2["commits"].values()
+            )
+            and all(
+                re.fullmatch(r"[0-9a-f]{64}", digest) is not None
+                for digest in wp2["artifact_sha256"].values()
+            ),
+            f"five bounded commits ending at `{wp2['fork_head_commit'][:8]}`",
+        ),
+        (
+            "WP2 independent non-NTSC fixture passes exactly",
+            wp2_fixture["sample_rate_hz"] == 8_000_000
+            and wp2_fixture["line_rate_hz"] == 12_500
+            and wp2_fixture["lines_per_frame"] == 200
+            and wp2_fixture["samples"] > 0
+            and wp2_fixture["bars_observed"] == wp2_fixture["bars_expected"]
+            and len(wp2_fixture["bars_observed"]) == 5,
+            f"{wp2_fixture['samples']} samples; {wp2_fixture['line_rate_hz']} Hz; 5/5 bars",
+        ),
+        (
+            "WP2 telemetry guards measured lock, timing, and levels",
+            wp2_stats["format"] == "JSON schema_version 1"
+            and wp2_stats["line_locked"] is True
+            and wp2_stats["frame_locked"] is True
+            and wp2_stats["line_rate_hz_min"] < wp2_fixture["line_rate_hz"]
+            < wp2_stats["line_rate_hz_max"]
+            and wp2_stats["frame_rate_hz_min"] < 62.5
+            < wp2_stats["frame_rate_hz_max"]
+            and wp2_stats["sync_width_us_min"] < wp2_fixture["hsync_us"]
+            < wp2_stats["sync_width_us_max"],
+            "line/frame lock; 12.5 kHz, 62.5 Hz, 6 us, blank and 0..100 IRE bounds",
+        ),
+        (
+            "WP2 negative fixtures distinguish horizontal and frame loss",
+            set(wp2["negative_fixtures"]) == {
+                "reversed_polarity",
+                "missing_hsync",
+                "malformed_vsync",
+                "clipped_sync",
+                "excessive_period_error",
+            }
+            and "horizontal lock remains" in
+            wp2["negative_fixtures"]["malformed_vsync"],
+            "five generated failures; malformed vsync uniquely retains horizontal lock",
+        ),
+        (
+            "WP2 CI keeps all receiver paths green",
+            wp2_ci["conclusion"] == "success"
+            and wp2_ci["head_sha"] == wp2["fork_head_commit"]
+            and wp2_ci["full_rf_iq_build"] == "pass"
+            and wp2_ci["ctest_passed"] == 5
+            and wp2_ci["ctest_failed"] == 0
+            and wp2_ci["synth_ntsc"] == "pass",
+            f"run {wp2_ci['id']} at `{wp2_ci['head_sha'][:8]}`: full build + 5 CTests + synth_ntsc",
+        ),
     ]
     ok = all(result for _, result, _ in checks)
     status = (
-        "WP0 BASELINE + GENERIC BASEBAND WP1 GUARDED"
+        "WP0 BASELINE + GENERIC BASEBAND WP1 + PROFILE RECEIVER WP2 GUARDED"
         if ok
         else "DECODER BASELINE RECORD FAILED"
     )
@@ -175,9 +239,9 @@ def main() -> int:
         f"Status: **{status}**.",
         "",
         "This generated report records the CVBS-plan WP0 clean-checkout baseline and",
-        "the later fork-owned WP1 generic baseband follow-up. It proves that the",
+        "the later fork-owned WP1/WP2 receiver follow-ups. It proves that the",
         "recorded unmodified fork point builds and passes its upstream synthetic NTSC",
-        "regression, then pins the separate float32/headless E2E implementation.",
+        "regression, then pins the float32/headless and explicit-profile E2E paths.",
         "It makes no Juku-timing, physical-X7, framebuffer-agreement, or hardware claim.",
         "",
         "## Command",
@@ -203,6 +267,7 @@ def main() -> int:
         row(["Decoder commit", f"`{decoder['commit']}`"]),
         row(["Fork WP0 head", f"`{followup['fork_head_commit']}`"]),
         row(["Fork WP1 head", f"`{wp1['fork_head_commit']}`"]),
+        row(["Fork WP2 head", f"`{wp2['fork_head_commit']}`"]),
         row(["8080-cosim context", f"`{context_commit}`"]),
         row(["Host", data["host"]["os"]]),
         row(["CMake", data["host"]["cmake"]]),
@@ -249,6 +314,24 @@ def main() -> int:
             "27 s",
             "GitHub-hosted runner",
         ]),
+        row([
+            "non-NTSC profile E2E",
+            f"{wp2_fixture['line_rate_hz']} Hz / {wp2_fixture['lines_per_frame']} lines; 5/5 bars + measured JSON",
+            "included in CI",
+            "GitHub-hosted runner",
+        ]),
+        row([
+            "negative profile fixtures",
+            f"{len(wp2['negative_fixtures'])}/5 lock failures distinguished",
+            "included in CI",
+            "GitHub-hosted runner",
+        ]),
+        row([
+            "WP2 fork Linux CI",
+            f"full build + 5 CTests + synth_ntsc PASS ([run {wp2_ci['id']}]({wp2_ci['url']}))",
+            "42 s",
+            "GitHub-hosted runner",
+        ]),
         "",
         "The direct run reported 87 coasted lines and still recovered all seven",
         "golden color bars within the upstream tolerance.",
@@ -263,16 +346,16 @@ def main() -> int:
         "resolved in the decoder fork before treating GCC 15 warnings as a clean CI",
         "baseline.",
         "",
-        "## Boundaries after WP1",
+        "## Boundaries after WP2",
         "",
     ])
-    lines.extend(f"- {item}" for item in wp1["scope"]["not_proved"])
+    lines.extend(f"- {item}" for item in wp2["scope"]["not_proved"])
     lines.extend([
         "",
-        "WP0 and generic-input WP1 are complete: the fork owns its provenance,",
-        "deterministic-fixture policy, strict raw-float source, headless E2E path, and",
-        "green full-build/test CI. The remaining items belong to WP2-WP5 or physical",
-        "validation.",
+        "WP0-WP2 are complete at their generic boundaries: the fork owns provenance,",
+        "strict raw-float input, explicit timing profiles, measured lock telemetry,",
+        "positive/negative generated fixtures, and green full-build/test CI. The",
+        "remaining items belong to Juku waveform/X7 integration or physical validation.",
         "",
     ])
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")

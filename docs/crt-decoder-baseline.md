@@ -2,12 +2,12 @@
 
 Status date: **2026-07-22**.
 
-Status: **WP0 BASELINE + GENERIC BASEBAND WP1 GUARDED**.
+Status: **WP0 BASELINE + GENERIC BASEBAND WP1 + PROFILE RECEIVER WP2 GUARDED**.
 
 This generated report records the CVBS-plan WP0 clean-checkout baseline and
-the later fork-owned WP1 generic baseband follow-up. It proves that the
+the later fork-owned WP1/WP2 receiver follow-ups. It proves that the
 recorded unmodified fork point builds and passes its upstream synthetic NTSC
-regression, then pins the separate float32/headless E2E implementation.
+regression, then pins the float32/headless and explicit-profile E2E paths.
 It makes no Juku-timing, physical-X7, framebuffer-agreement, or hardware claim.
 
 ## Command
@@ -33,6 +33,11 @@ python3 scripts/report_crt_decoder_baseline.py
 | WP1 float32 source contract is explicit | PASS | LE f32; explicit rate; polarity/gain/offset; structural and finite checks |
 | WP1 source and generated end-to-end tests pass | PASS | 999093 samples; 5/5 bars; 5 CLI failures |
 | WP1 CI keeps the full RF/IQ route and all CTests green | PASS | run 29886015187 at `d383beb3`: full build + 3 CTests + synth_ntsc |
+| WP2 profile receiver tip and artifacts are pinned | PASS | five bounded commits ending at `10bfa4b9` |
+| WP2 independent non-NTSC fixture passes exactly | PASS | 768000 samples; 12500 Hz; 5/5 bars |
+| WP2 telemetry guards measured lock, timing, and levels | PASS | line/frame lock; 12.5 kHz, 62.5 Hz, 6 us, blank and 0..100 IRE bounds |
+| WP2 negative fixtures distinguish horizontal and frame loss | PASS | five generated failures; malformed vsync uniquely retains horizontal lock |
+| WP2 CI keeps all receiver paths green | PASS | run 29886839537 at `10bfa4b9`: full build + 5 CTests + synth_ntsc |
 
 ## Recorded environment
 
@@ -43,6 +48,7 @@ python3 scripts/report_crt_decoder_baseline.py
 | Decoder commit | `6cce72d4a0e35ed364d086470191d61e3f6cd116` |
 | Fork WP0 head | `feec5d7ac173fdc6389cd03a7da87eb175ccfc2e` |
 | Fork WP1 head | `d383beb3dd038154364fb76f993ad32d12fe2d44` |
+| Fork WP2 head | `10bfa4b9ae6c1ce071633459170b067fe3e2d91f` |
 | 8080-cosim context | `ae7918afe81024b462c8337dc23f509874e35e76` |
 | Host | Ubuntu resolute amd64 |
 | CMake | 4.2.3 |
@@ -59,6 +65,9 @@ python3 scripts/report_crt_decoder_baseline.py
 | baseband source CTest | PASS; 5 validation/transform cases | included in CI | GitHub-hosted runner |
 | generated baseband E2E | 5 frames; 5/5 exact grayscale bars | included in CI | GitHub-hosted runner |
 | WP1 fork Linux CI | full build + 3 CTests + synth_ntsc PASS ([run 29886015187](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886015187)) | 27 s | GitHub-hosted runner |
+| non-NTSC profile E2E | 12500 Hz / 200 lines; 5/5 bars + measured JSON | included in CI | GitHub-hosted runner |
+| negative profile fixtures | 5/5 lock failures distinguished | included in CI | GitHub-hosted runner |
+| WP2 fork Linux CI | full build + 5 CTests + synth_ntsc PASS ([run 29886839537](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886839537)) | 42 s | GitHub-hosted runner |
 
 The direct run reported 87 coasted lines and still recovered all seven
 golden color bars within the upstream tolerance.
@@ -72,13 +81,13 @@ These HUD-format warnings do not affect `synth_ntsc`, but they should be
 resolved in the decoder fork before treating GCC 15 warnings as a clean CI
 baseline.
 
-## Boundaries after WP1
+## Boundaries after WP2
 
-- non-NTSC or Juku timing-profile synchronization
+- actual Juku timing values or a Juku receiver preset
 - physical Juku X7 voltage or loaded analog behavior
 - agreement with a Juku framebuffer or physical capture
 
-WP0 and generic-input WP1 are complete: the fork owns its provenance,
-deterministic-fixture policy, strict raw-float source, headless E2E path, and
-green full-build/test CI. The remaining items belong to WP2-WP5 or physical
-validation.
+WP0-WP2 are complete at their generic boundaries: the fork owns provenance,
+strict raw-float input, explicit timing profiles, measured lock telemetry,
+positive/negative generated fixtures, and green full-build/test CI. The
+remaining items belong to Juku waveform/X7 integration or physical validation.

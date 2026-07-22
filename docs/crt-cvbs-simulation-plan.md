@@ -2,7 +2,7 @@
 
 Status date: **2026-07-22**.
 
-Status: **IN PROGRESS / GENERIC BASEBAND INPUT + STATIC X7 TOPOLOGY MODEL / NO RAW-X7 RECEIVER CLAIM YET**.
+Status: **IN PROGRESS / PARAMETERIZED GENERIC RECEIVER + STATIC X7 TOPOLOGY MODEL / NO RAW-X7 RECEIVER CLAIM YET**.
 
 This is a subordinate execution plan for the video/composite item in
 `../PLAN.md`. The main plan remains authoritative for project priorities and
@@ -237,20 +237,41 @@ WP3/WP4, and WP5 respectively.
 
 ### WP2 — Parameterized synchronization receiver
 
-- Replace hard-coded NTSC constants with a `VideoTimingProfile` or equivalent.
-- Parameterize acquisition bounds for line period, sync width, frame length,
+Progress: **complete at the generic synthetic boundary** in decoder fork
+commit `10bfa4b9ae6c1ce071633459170b067fe3e2d91f`. A
+`VideoTimingProfile` now owns nominal line rate, hsync acquisition/track bounds,
+broad-pulse vsync criteria, frame length, active rows/window, and AGC porch.
+Custom mode is deliberately accepted only for float32 baseband grayscale and
+requires every field explicitly; there is no guessed Juku preset. The
+monochrome path bypasses the NTSC chroma filters and scales an arbitrary
+declared active-line count into the 480-row output.
+
+The independent positive fixture differs materially from NTSC: 8 MS/s,
+12.5 kHz lines, 200-line frames, four broad-pulse vsync lines, 180 active
+lines, 6 us hsync, and an 80 us line period. Its five bars decode exactly.
+Machine-readable statistics guard independent line/frame lock, measured
+12.5 kHz/62.5 Hz rates, 6 us sync width, about 0 IRE blank, and a 0..100 IRE
+video range. Five negative fixtures prove explicit failure for reversed
+polarity, missing hsync, malformed vsync, clipped sync, and excessive period
+error; malformed vsync retains horizontal lock but fails frame lock. GitHub CI
+run `29886839537` builds the full RF/IQ app, passes all five CTests, and keeps
+direct `synth_ntsc` green at the exact fork tip.
+
+- [x] Replace hard-coded NTSC constants with a `VideoTimingProfile`.
+- [x] Parameterize acquisition bounds for line period, sync width, frame length,
   active-line count, and active-window position.
-- Retain measured line-PLL state and lost-lock/coast reporting.
-- Support broad-pulse vertical sync without requiring NTSC equalizing pulses.
-- Provide a monochrome-only decode path that does not run chroma filters.
-- Report measured line rate, frame rate, sync width, blank level, and video
+- [x] Retain measured line-PLL state and lost-lock/coast reporting.
+- [x] Support broad-pulse vertical sync without requiring NTSC equalizing pulses.
+- [x] Provide a monochrome-only decode path that does not run chroma filters.
+- [x] Report measured line rate, frame rate, sync width, blank level, and video
   range in machine-readable output.
-- Add negative fixtures: reversed polarity, missing horizontal pulses,
+- [x] Add negative fixtures: reversed polarity, missing horizontal pulses,
   malformed vertical sync, clipped levels, and excessive period error.
 
-Exit gate: both the original synthetic NTSC test and a non-NTSC monochrome
-fixture pass, and failures identify loss of lock rather than silently rendering
-a framebuffer.
+Exit gate: **passed for generic synthetic input**. Both the original synthetic
+NTSC test and a non-NTSC monochrome fixture pass; failures distinguish
+horizontal from frame-lock loss instead of silently claiming a successful
+framebuffer. Actual Juku timing/profile values and X7 lock remain WP3-WP5 work.
 
 ### WP3 — Juku digital waveform source
 
@@ -389,8 +410,8 @@ The task is complete only when all of the following hold:
 
 1. Keep the now-guarded fork baseline and RF/IQ CI green through receiver changes.
 2. Keep the completed generic float32 baseband/headless E2E path green.
-3. Refactor synchronization constants into profiles while keeping NTSC green.
-4. Generate a synthetic non-NTSC monochrome fixture and prove receiver lock.
+3. Keep explicit timing profiles, measured telemetry, and NTSC compatibility green.
+4. Keep the completed non-NTSC positive/negative lock suite green.
 5. In parallel with later decoder work, close the remaining Juku physical
    video-slot and D34 signal boundaries before calling any HDL waveform X7.
 6. Replace the provisional fixed-pin-voltage D34 sources with a data- or

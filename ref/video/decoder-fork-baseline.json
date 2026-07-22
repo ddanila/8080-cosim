@@ -87,6 +87,79 @@
       ]
     }
   },
+  "wp2_followup": {
+    "fork_head_commit": "10bfa4b9ae6c1ce071633459170b067fe3e2d91f",
+    "commits": {
+      "timing_profile": "82a16c1f03df2666082db52e2b1cbf737c038940",
+      "non_ntsc_decode": "ce7951953d81d6860f44ba403a3861302318a754",
+      "measured_statistics": "1b1ec45bed8a03522cbaba143378d0626031013b",
+      "negative_fixtures": "b9b9e61dc6fa59f76cbb741b8688319075dbfb95",
+      "documented_contract": "10bfa4b9ae6c1ce071633459170b067fe3e2d91f"
+    },
+    "artifact_sha256": {
+      "readme": "99fb375464bff9341423e41394ea6c4bbdd9175ae2f5e90055625baa3a4fe346",
+      "timing_profile": "4c9bdcd2860788bafdb463f7e4f1d888e455a483ebe41665477eb7f90c9d9182",
+      "decoder": "5d0eee8ae9c808f9f0b4248a19286a1e54cf2ed84d56c98a1ffd38b5193c7a4c",
+      "fixture_generator": "17064d2ec7b5b0cc9b0281193a5538e5bf4c617ea1ce8d1a599c90195d32b527",
+      "positive_e2e": "f788572fdc396b632b1501e37589d8dd3a7f4f73971292a694e06936f1432d60",
+      "negative_e2e": "bafccc94dbe45da2139ded79637d0e47ff9a766bf34efeb340916a2741fa4ecd"
+    },
+    "positive_fixture": {
+      "classification": "independent generated non-NTSC monochrome composite",
+      "sample_rate_hz": 8000000,
+      "line_rate_hz": 12500,
+      "line_period_us": 80,
+      "hsync_us": 6,
+      "lines_per_frame": 200,
+      "vsync_lines": 4,
+      "active_lines": 180,
+      "fields": 6,
+      "samples": 768000,
+      "bars_expected": [0, 64, 128, 191, 255],
+      "bars_observed": [0, 64, 128, 191, 255]
+    },
+    "measured_statistics": {
+      "format": "JSON schema_version 1",
+      "line_locked": true,
+      "frame_locked": true,
+      "line_rate_hz_min": 12499,
+      "line_rate_hz_max": 12501,
+      "frame_rate_hz_min": 62,
+      "frame_rate_hz_max": 63,
+      "sync_width_us_min": 5.8,
+      "sync_width_us_max": 6.2,
+      "blank_ire_min": -0.1,
+      "blank_ire_max": 0.1,
+      "video_min_ire_max": 1,
+      "video_max_ire_min": 99
+    },
+    "negative_fixtures": {
+      "reversed_polarity": "horizontal and frame lock fail",
+      "missing_hsync": "horizontal and frame lock fail",
+      "malformed_vsync": "horizontal lock remains; frame lock fails",
+      "clipped_sync": "horizontal and frame lock fail",
+      "excessive_period_error": "horizontal and frame lock fail"
+    },
+    "ci_run": {
+      "id": 29886839537,
+      "url": "https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886839537",
+      "head_sha": "10bfa4b9ae6c1ce071633459170b067fe3e2d91f",
+      "job": "linux",
+      "conclusion": "success",
+      "full_rf_iq_build": "pass",
+      "ctest_passed": 5,
+      "ctest_failed": 0,
+      "synth_ntsc": "pass"
+    },
+    "scope": {
+      "proved": "An explicit generic timing profile locks a materially non-NTSC monochrome waveform, reports measured timing and levels, rejects five malformed waveform classes, and preserves the RF/NTSC regression.",
+      "not_proved": [
+        "actual Juku timing values or a Juku receiver preset",
+        "physical Juku X7 voltage or loaded analog behavior",
+        "agreement with a Juku framebuffer or physical capture"
+      ]
+    }
+  },
   "8080_cosim_context_commit": "ae7918afe81024b462c8337dc23f509874e35e76",
   "host": {
     "os": "Ubuntu resolute amd64",

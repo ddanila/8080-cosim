@@ -14,7 +14,7 @@ history.
   validating monitor lock before optional CRT presentation.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC
   baseline plus fork-owned provenance, fixture policy, green Linux CI, and the
-  pinned generic float32 baseband WP1 follow-up.
+  pinned generic float32 WP1 and profile-driven receiver WP2 follow-ups.
 - `architecture.md` — data flow and scope of each verification layer.
 - `vision.md` — project invariant and source-of-truth policy.
 - `hardware-map.md` — concise software-visible machine map and physical
