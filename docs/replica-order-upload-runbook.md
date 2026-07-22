@@ -20,21 +20,21 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Purpose | File | Bytes | SHA256 | Status |
 | --- | --- | ---: | --- | --- |
-| Top copper | `juku_routed-F_Cu.gtl` | 976797 | `d503428327ebdf1c42f60114b02cce0e2c43405822215928fd7039e03a69605a` | PASS |
-| Bottom copper | `juku_routed-B_Cu.gbl` | 845600 | `3bd4d6a1009ed493637a61d07ff7699e22706b63329ddb07513f4df1ed70cf59` | PASS |
-| Top soldermask | `juku_routed-F_Mask.gts` | 71079 | `ca99bde8910a19e13ec591d08c868a0a63770d48a7c3c27fc55bfcbeec680144` | PASS |
-| Bottom soldermask | `juku_routed-B_Mask.gbs` | 70372 | `416903d5ab7cbd984c8eaa8ab6105bf2fa55c497f88e39357ae43bfaf10ffe04` | PASS |
-| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 2697367 | `0c8c7ae332260aea430de8193aef03026bdc3803ace8daecd189f6cae96ac215` | PASS |
-| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 469 | `0d40aee447cd3f97f47b9e950d5198d22daf960e167d4a2435906b0569d6b056` | PASS |
-| Board outline | `juku_routed-Edge_Cuts.gm1` | 1238 | `54520a6e7ddefb284b195d853eaee4bd984c47dbcbd3a1d93e0b45740b539443` | PASS |
-| Gerber job | `juku_routed-job.gbrjob` | 2413 | `0681d0240dff170a7676350343e1477bfe8c585095ef62d25a4e4459b2364fc6` | PASS |
-| Excellon drill | `juku_routed.drl` | 80534 | `247c9c6c529b104eaa0b27eb1e651c1bb33dd6d41a7acafe156738697ff401ea` | PASS |
+| Top copper | `juku_routed-F_Cu.gtl` | 980982 | `319ae5453e9b09709073b1a8d7761001ee52d458e8e838c979cdc6f284a44943` | PASS |
+| Bottom copper | `juku_routed-B_Cu.gbl` | 852436 | `b6b02c1ad477d73178f44badaac11475bea1e4f4248a38281ccbc729676a71e0` | PASS |
+| Top soldermask | `juku_routed-F_Mask.gts` | 71079 | `e7185626a89f5dfa25693a1938e92c83641f1364343dea2458aca66bbc8f02ff` | PASS |
+| Bottom soldermask | `juku_routed-B_Mask.gbs` | 70372 | `5dc2937ac02b6e17e2842eae39e58e51d88633ac5ee476caea1ad321b3008d62` | PASS |
+| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 2697367 | `562367e433d7d0e8df2cacc47550be47b50570086a0ef63d9f725b99ebd7527c` | PASS |
+| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 469 | `94f51694a32716c8e9215dc85951099e83f131f92164ad3ca82d29156e748d1a` | PASS |
+| Board outline | `juku_routed-Edge_Cuts.gm1` | 1238 | `1c12329a3d38f1034644e5984c341b712d71b4160759ad06a317f9e48c2ca164` | PASS |
+| Gerber job | `juku_routed-job.gbrjob` | 2413 | `bb0922fffdb07a57e12383f3eeb5a8422f4b66d3891c53f4c6b920e846273293` | PASS |
+| Excellon drill | `juku_routed.drl` | 81050 | `2c3adb5cab041d59550d0a7a7bb604bf215b3240838546db1969263027e04ef3` | PASS |
 
 ## Upload Archive
 
 | File | Bytes | SHA256 | Contents |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 4746979 | `bc5a9b2d3f027d455a5bd4a0eafa9e602a3bdd9b1b6d72d9037c508b2da615da` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 4758516 | `dd074e982cea6d9d4945817506e5a1c6a894b675124f30260b06b9562a87310a` | PASS |
 
 ## Upload ZIP Members
 
@@ -42,21 +42,21 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Member | Bytes | Metadata | Source match |
 | --- | ---: | --- | --- |
-| juku_routed-F_Cu.gtl | 976797 | PASS | PASS |
-| juku_routed-B_Cu.gbl | 845600 | PASS | PASS |
+| juku_routed-F_Cu.gtl | 980982 | PASS | PASS |
+| juku_routed-B_Cu.gbl | 852436 | PASS | PASS |
 | juku_routed-F_Mask.gts | 71079 | PASS | PASS |
 | juku_routed-B_Mask.gbs | 70372 | PASS | PASS |
 | juku_routed-F_Silkscreen.gto | 2697367 | PASS | PASS |
 | juku_routed-B_Silkscreen.gbo | 469 | PASS | PASS |
 | juku_routed-Edge_Cuts.gm1 | 1238 | PASS | PASS |
 | juku_routed-job.gbrjob | 2413 | PASS | PASS |
-| juku_routed.drl | 80534 | PASS | PASS |
+| juku_routed.drl | 81050 | PASS | PASS |
 
 ## Upload Checksum
 
 | File | Bytes | SHA256SUMS entry | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `bc5a9b2d3f027d455a5bd4a0eafa9e602a3bdd9b1b6d72d9037c508b2da615da` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `dd074e982cea6d9d4945817506e5a1c6a894b675124f30260b06b9562a87310a` | PASS |
 
 ## Retained Evidence
 

@@ -24,7 +24,7 @@ EXPECTED_DRILL_TOOLS = {
 EXPECTED_DRILL_HITS = {
     # The owner-corrected zero-open topology adds 52 fine route vias and two
     # through-hole pads for the separately preserved unidentified resistor.
-    "1": 2837,
+    "1": 2872,
     "2": 2326,
     "3": 85,
     "4": 8,

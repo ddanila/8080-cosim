@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "board": "kicad/juku_routed.kicad_pcb",
-  "board_sha256": "964795d21c02092b4adb4efbfb2707905b89ea5bb598bb6d389e5e7d715730bf",
+  "board_sha256": "d43d62639f68e81b23ee56dc87dea6776d6570510ab80ea5f0e35da727c6a4e3",
   "toolchain": {
     "kicad_cli": "/usr/bin/kicad-cli",
     "kicad_version": "9.0.8",
@@ -11,7 +11,7 @@
   "routing": {
     "footprints": 322,
     "pads": 2436,
-    "copper_items": 30132,
+    "copper_items": 30343,
     "nets": 413,
     "unconnected_items": 0,
     "electrical_blockers": 0,
@@ -28,7 +28,7 @@
   "drill_inventory": {
     "file_function": "MixedPlating,1,2",
     "tools_mm": {
-      "0.300": 2837,
+      "0.300": 2872,
       "0.800": 2326,
       "1.000": 85,
       "1.200": 8
@@ -36,9 +36,9 @@
   },
   "upload_zip": {
     "path": "fab/gerbers/upload/juku-replica-gerbers-drill.zip",
-    "bytes": 4746979,
-    "sha256": "bc5a9b2d3f027d455a5bd4a0eafa9e602a3bdd9b1b6d72d9037c508b2da615da",
-    "checksum_file_sha256": "ea3b12b1ac2878da0d4bb4224f586ca56fa296ae7f05f54575095f916b6eb397",
+    "bytes": 4758516,
+    "sha256": "dd074e982cea6d9d4945817506e5a1c6a894b675124f30260b06b9562a87310a",
+    "checksum_file_sha256": "e7e41e3ee4c0fa3532629862d3f6820ecfae3cc01a6c418d728d5914e82cf457",
     "member_compression": "stored",
     "metadata": "1980-01-01 00:00:00, Unix mode 0644"
   },
