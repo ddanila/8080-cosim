@@ -458,6 +458,64 @@ def main() -> int:
         if (ROOT / path).exists():
             failures.append(f"superseded live-status document still exists: {path}")
 
+    # Keep the automatic/external completion boundary explicit. Templates stay
+    # unchecked until a real order or build exists; active project plans may
+    # not silently acquire a new automatable backlog item.
+    unchecked_active_expected = {
+        "PLAN.md": {
+            "P0 physical connectivity is complete and rerouted.",
+            "Independent programming files/reads corroborate the four factory PROMs",
+            "Main-board design release passes; board is ordered.",
+            "Functional parts kit is received and tested.",
+            "Replica completes Tier 1 bring-up.",
+            "Replica completes Tier 2.",
+            "Replica completes Tier 3.",
+        },
+        "docs/crt-cvbs-simulation-plan.md": {
+            "Replace the simulation-only framebuffer read port only after the",
+        },
+        "docs/factory-drawing-exploitation-plan.md": {
+            "After Stage 1.2, decide what to share on juku3000 #25 (the MAME",
+        },
+    }
+    unchecked_re = re.compile(r"^\s*[-*]\s+\[ \]\s+(.+?)\s*$", re.MULTILINE)
+    for path, expected in unchecked_active_expected.items():
+        actual = set(unchecked_re.findall(read(path)))
+        if actual != expected:
+            failures.append(
+                f"active unchecked-task set changed in {path}: "
+                f"expected {sorted(expected)!r}, got {sorted(actual)!r}"
+            )
+    unchecked_template_counts = {
+        "docs/replica-order-upload-runbook.md": 10,
+        "docs/replica-parts-inventory-template.md": 9,
+        "docs/replica-order-evidence-template.md": 9,
+    }
+    for path, expected_count in unchecked_template_counts.items():
+        actual_count = len(unchecked_re.findall(read(path)))
+        if actual_count != expected_count:
+            failures.append(
+                f"operator-template unchecked count changed in {path}: "
+                f"expected {expected_count}, got {actual_count}"
+            )
+    completion_audit = read("docs/automatic-completion-audit.md")
+    for marker in (
+        "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**",
+        "There are nine unchecked items in the active project plans",
+        "The 28 unchecked boxes in the order, order-evidence, and parts-inventory",
+        "The practical next action is therefore the owner/bench shortlist",
+    ):
+        if marker not in completion_audit:
+            failures.append(f"automatic-completion audit is stale; missing {marker!r}")
+    for path, marker in (
+        ("docs/owner-measurement-shortlist.md", "Status: **READY**"),
+        ("docs/firmware-gap-ledger.md", "TIER-3 CORROBORATION PENDING"),
+        ("docs/cartridge-basic-boundary.md", "ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED"),
+        ("docs/crt-cvbs-simulation-plan.md", "shared-DRAM video-slot schedule is evidence-complete"),
+    ):
+        if marker not in read(path):
+            failures.append(f"automatic-completion boundary lost marker {marker!r} in {path}")
+
     board = read("kicad/juku.board.json")
     try:
         board_model = json.loads(board)
