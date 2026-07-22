@@ -1376,12 +1376,12 @@ loads, and a declared tolerance sweep. That result is deliberately provisional:
 exact-device sheets now guard the К555ЛП5 voltage/fanout envelope and the
 old-package КТ315Б pinout, gain endpoints, saturation, current, voltage, and
 power limits. The fixed D34 pin-voltage approximation still exceeds an
-independent SN74LS86A comparison source-current condition, and the preserved
-К555ЛП5 sheet has no output-current test point or I/V curve. D34 loaded-drive
-behavior and physical calibration therefore remain open before the model can
-claim X7 levels. The separate decoder fork point is also clean-checkout
-reproduced on Linux: all three targets
-build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
+exact-device fanout-derived source-current envelope. The SN74LS86A sheet
+independently corroborates those full-fanout currents, but neither sheet has a
+К555ЛП5 output I/V curve. D34 loaded-drive behavior and physical calibration
+therefore remain open before the model can claim X7 levels. The separate
+decoder fork point is also clean-checkout reproduced on Linux: all three
+targets build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
 fork now records its upstream/fork authority and deterministic-fixture policy,
 and Linux CI run `29885055666` passes the full RF/IQ build, CTest, and direct
 synthetic regression. CVBS-plan WP0 is complete. WP1 is also complete at fork

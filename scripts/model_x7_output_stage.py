@@ -184,10 +184,17 @@ def topology_checks(
             and exact_d34["voh_min_v"] == 2.7
             and exact_d34["vol_max_v"] == 0.5
             and exact_d34["fanout"] == 10
+            and exact_d34["input_low_current_abs_max_ma"] == 0.8
+            and exact_d34["input_high_current_max_ma"] == 0.04
+            and exact_d34["fanout_derived_high_source_current_ma"]
+            == exact_d34["fanout"] * exact_d34["input_high_current_max_ma"]
+            and exact_d34["fanout_derived_low_sink_current_ma"]
+            == exact_d34["fanout"] * exact_d34["input_low_current_abs_max_ma"]
+            and exact_d34["output_current_values_are_derived_not_explicit"]
             and not exact_d34["output_current_test_conditions_present"]
             and not exact_d34["nonlinear_output_curve_present"]
         ),
-        "evidence": "К555ЛП5: 5 V +/-5%, VOH >=2.7 V, VOL <=0.5 V, fanout 10; no output I/V curve",
+        "evidence": "К555ЛП5: VOH >=2.7 V, VOL <=0.5 V; fanout-derived 0.4 mA source/8 mA sink; no output I/V curve",
     })
     comparison = d34_reference["current_condition_comparison"]
     comparison_path = ROOT / comparison["datasheet"].split(",", 1)[0]
@@ -280,8 +287,8 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
             "vce_v_max": 0.0,
             "abs_d34_sync_pin_current_ma_max": 0.0,
             "abs_d34_signal_pin_current_ma_max": 0.0,
-            "d34_sync_current_comparison_warning_count": 0,
-            "d34_signal_current_comparison_warning_count": 0,
+            "d34_sync_fanout_envelope_warning_count": 0,
+            "d34_signal_fanout_envelope_warning_count": 0,
             "saturation_margin_v_min": math.inf,
             "saturated_corner_count": 0,
         } for state in STATES
@@ -316,14 +323,15 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
             for source in ("sync", "signal"):
                 field = f"abs_d34_{source}_pin_current_ma_max"
                 item[field] = max(float(item[field]), abs(float(result[f"d34_{source}_pin_current_ma"])))
-            comparison = model["d34_output_reference"]["current_condition_comparison"]
+            exact_d34 = model["d34_output_reference"]["exact_device"]
             for source, logic_level in zip(("sync", "signal"), state):
                 current = float(result[f"d34_{source}_pin_current_ma"])
                 relevant_current = max(0.0, current if logic_level else -current)
-                limit = comparison[
-                    "high_source_current_ma" if logic_level else "low_sink_current_ma"
+                limit = exact_d34[
+                    "fanout_derived_high_source_current_ma"
+                    if logic_level else "fanout_derived_low_sink_current_ma"
                 ]
-                field = f"d34_{source}_current_comparison_warning_count"
+                field = f"d34_{source}_fanout_envelope_warning_count"
                 item[field] = int(item[field]) + int(relevant_current > limit + 1e-12)
             item["saturation_margin_v_min"] = min(
                 float(item["saturation_margin_v_min"]), float(result["saturation_margin_v"])
@@ -334,24 +342,25 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
     }
 
 
-def comparison_result(
+def drive_envelope_result(
     state: tuple[int, int], result: dict[str, Any], model: dict[str, Any]
 ) -> dict[str, Any]:
-    reference = model["d34_output_reference"]["current_condition_comparison"]
+    reference = model["d34_output_reference"]["exact_device"]
     output: dict[str, Any] = {}
     for source, logic_level in zip(("sync", "signal"), state):
         current = float(result[f"d34_{source}_pin_current_ma"])
         mode = "source" if logic_level else "sink"
         relevant_current = max(0.0, current if logic_level else -current)
         limit = reference[
-            "high_source_current_ma" if logic_level else "low_sink_current_ma"
+            "fanout_derived_high_source_current_ma"
+            if logic_level else "fanout_derived_low_sink_current_ma"
         ]
         output[source] = {
             "logic_level": logic_level,
-            "comparison_mode": mode,
+            "drive_mode": mode,
             "relevant_current_ma": round(relevant_current, 9),
-            "current_comparison_ma": limit,
-            "within_current_comparison": relevant_current <= limit + 1e-12,
+            "fanout_derived_limit_ma": limit,
+            "within_fanout_derived_limit": relevant_current <= limit + 1e-12,
         }
     return output
 
@@ -414,20 +423,20 @@ def build_summary(
             "evidence": "Ic <=100 mA, P <=150 mW at 25 C, VCE <=20 V",
         },
     ])
-    nominal_comparison = {
-        state_name(state): comparison_result(
+    nominal_envelope = {
+        state_name(state): drive_envelope_result(
             state, loaded[state_name(state)], model
         ) for state in STATES
     }
-    comparison_exceeded = any(
-        not pin["within_current_comparison"]
-        for state in nominal_comparison.values()
+    envelope_exceeded = any(
+        not pin["within_fanout_derived_limit"]
+        for state in nominal_envelope.values()
         for pin in state.values()
     )
     numerical_pass = all(item["pass"] for item in checks)
     status = (
         "topology-and-device-limits-pass-d34-drive-open"
-        if numerical_pass and comparison_exceeded
+        if numerical_pass and envelope_exceeded
         else "pass" if numerical_pass
         else "fail"
     )
@@ -448,20 +457,20 @@ def build_summary(
         "d34_output_boundary": {
             "device": model["d34_output_reference"]["board_device"],
             "exact_device_voltage_envelope": model["d34_output_reference"]["exact_device"],
-            "current_comparison_device": (
+            "independent_current_corroboration_device": (
                 model["d34_output_reference"]["current_condition_comparison"]["device"]
             ),
-            "not_equivalence_evidence": True,
-            "nominal_75_ohm": nominal_comparison,
-            "nominal_limit_exceeded": comparison_exceeded,
+            "corroboration_not_equivalence_evidence": True,
+            "nominal_75_ohm": nominal_envelope,
+            "nominal_fanout_envelope_exceeded": envelope_exceeded,
             "interpretation": (
                 "The fixed-pin-voltage approximation requests more high-state source "
-                "current than the independent comparison device's characterized "
-                "condition. The exact К555ЛП5 sheet confirms the voltage/fanout "
-                "envelope but omits output-current conditions and curves; physical X7 "
-                "voltages still require a nonlinear driver source or measurement."
-                if comparison_exceeded else
-                "Nominal pin currents stay within the comparison device conditions."
+                "current than the exact К555ЛП5 sheet's fanout-derived envelope. "
+                "The independent SN74LS86A sheet corroborates the derived 0.4 mA/8 mA "
+                "loads, but neither source supplies a nonlinear output curve; physical "
+                "X7 voltages still require a better source or measurement."
+                if envelope_exceeded else
+                "Nominal pin currents stay within the exact-device fanout-derived envelope."
             ),
         },
         "limitations": model["scope"]["excluded"],
@@ -510,19 +519,21 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "",
         "The preserved exact-device К555ЛП5 sheet guarantees VOH >=2.7 V,",
         "VOL <=0.5 V, and fanout 10, but omits output-current test conditions and",
-        "nonlinear I/V curves. The independent TI SN74LS86A sheet supplies only a",
-        "comparison threshold: 0.4 mA high-state source and 8 mA low-state sink.",
+        "nonlinear I/V curves. Its stated input currents under the standard fanout",
+        "meaning imply 0.4 mA high-state source and 8 mA low-state sink",
+        "full-fanout loads. The independent TI SN74LS86A sheet",
+        "corroborates those values but does not supply К555ЛП5 curves.",
         "",
-        "| State | Pin | Mode | Relevant current (mA) | Comparison condition (mA) | Result |",
+        "| State | Pin | Mode | Relevant current (mA) | Fanout-derived limit (mA) | Result |",
         "| --- | --- | --- | ---: | ---: | --- |",
     ])
     for state in STATES:
         for source, item in summary["d34_output_boundary"]["nominal_75_ohm"][state_name(state)].items():
             lines.append(markdown_table_row((
-                state_name(state), source, item["comparison_mode"],
+                state_name(state), source, item["drive_mode"],
                 f'{item["relevant_current_ma"]:.3f}',
-                f'{item["current_comparison_ma"]:.3f}',
-                "WITHIN" if item["within_current_comparison"] else "EXCEEDS",
+                f'{item["fanout_derived_limit_ma"]:.3f}',
+                "WITHIN" if item["within_fanout_derived_limit"] else "EXCEEDS",
             )))
     lines.extend([
         "",
@@ -558,8 +569,9 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         f"The unterminated diagnostic evaluates **{summary['sweep']['unterminated']['corner_count_per_state']:,}**",
         "corners per state with only fitted R65 loading the emitter.",
         "",
-        "The two final columns count corners that exceed the independent SN74LS86A",
-        "current condition. They are warnings, not invented К555ЛП5 current limits.",
+        "The two final columns count corners that exceed the exact sheet's",
+        "fanout-derived loads. They warn that fixed pin voltages have crossed the",
+        "stated same-family load envelope; they do not predict nonlinear droop.",
         "",
         "| Load | State | X7 range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |",
         "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
@@ -576,8 +588,8 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
                 f'{item["abs_d34_sync_pin_current_ma_max"]:.3f}',
                 f'{item["abs_d34_signal_pin_current_ma_max"]:.3f}',
                 f'{item["saturation_margin_v_min"]:.3f}',
-                item["d34_sync_current_comparison_warning_count"],
-                item["d34_signal_current_comparison_warning_count"],
+                item["d34_sync_fanout_envelope_warning_count"],
+                item["d34_signal_fanout_envelope_warning_count"],
             )))
     lines.extend([
         "",

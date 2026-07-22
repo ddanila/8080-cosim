@@ -122,10 +122,10 @@ Not yet proved:
 - a faithful physical D34 picture/sync waveform in the runnable HDL;
 - X7 voltage levels and edge shape under a 75-ohm monitor load;
 - a nonlinear output model or measured DC curves for exact-revision D34
-  К555ЛП5; its preserved sheet omits output-current test conditions and I/V
-  curves, while the provisional fixed-pin-voltage model exceeds the independent
-  SN74LS86A comparison source-current condition in three nominal active
-  combinations;
+  К555ЛП5; its preserved sheet's fanout and input-current limits imply 0.4 mA
+  source/8 mA sink full-fanout loads but give no I/V curves, while the
+  provisional fixed-pin-voltage model exceeds that exact-device derived
+  envelope in three nominal active combinations;
 - the installed КТ315Б device's actual gain and active-region VBE;
 - the function and endpoints of C94 beside VT2;
 - monitor lock against the actual Juku line/frame waveform; and
@@ -330,11 +330,12 @@ piecewise-linear emitter follower, exact КТ315Б beta endpoints and absolute
 limits, declared VBE sensitivity bounds, independent resistor corners,
 supply/load sweep, compact JSON summary, and on-demand float32 step fixture are
 implemented. The exact-device К555ЛП5 sheet guards its voltage/fanout envelope;
-it contains no output-current test conditions or nonlinear I/V curve. C94 stays
-absent. The result deliberately does **not** pass the WP4 exit gate: the
-fixed-voltage source approximation requests more high-state current than the
-independent SN74LS86A characterized condition. A nonlinear D34 source or
-hardware measurement remains necessary.
+fanout and input-current limits imply 0.4 mA source/8 mA sink full-fanout loads,
+independently corroborated by the SN74LS86A sheet, but neither source supplies
+a nonlinear К555ЛП5 I/V curve. C94 stays absent. The result deliberately does
+**not** pass the WP4 exit gate: the fixed-voltage source approximation requests
+more high-state current than that exact-device derived envelope. A nonlinear
+D34 source or hardware measurement remains necessary.
 
 - Model the two D34 logic sources and their real output characteristics.
 - Model R62/R63/R64, the KT315 emitter follower, R65, +5 V, and X7.

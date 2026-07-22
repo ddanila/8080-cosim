@@ -35,7 +35,7 @@ rate, load, state schedule, model hash, and sample hash.
 | Exact-revision D34 identity is К555ЛП5 | PASS | ДГШ5.109.009 ПЭЗ census D34 + board LP5_XOR type |
 | Fitted resistor identities and model values agree | PASS | R62=2 kΩ, R63=1 kΩ, R64=5.1 kΩ, R65=430 Ω |
 | C94 is absent from the nominal model | PASS | unresolved population/value/endpoints retained as a boundary |
-| Preserved exact-device К555ЛП5 datasheet hash and limits match | PASS | К555ЛП5: 5 V +/-5%, VOH >=2.7 V, VOL <=0.5 V, fanout 10; no output I/V curve |
+| Preserved exact-device К555ЛП5 datasheet hash and limits match | PASS | К555ЛП5: VOH >=2.7 V, VOL <=0.5 V; fanout-derived 0.4 mA source/8 mA sink; no output I/V curve |
 | Preserved SN74LS86A current-comparison datasheet hash matches | PASS | TI SDLS124 page 4; current threshold only, not К555ЛП5 equivalence |
 | Preserved КТ315Б datasheet hash, package, and model limits match | PASS | owner marking Б/8901; old KT-13 E-C-B; hFE 50..350; VCE(sat) <=0.4 V |
 | Nominal four-state transfer is ordered by the traced resistor weights | PASS | 00 < sync-only < signal-only < 11 |
@@ -47,10 +47,12 @@ rate, load, state schedule, model hash, and sample hash.
 
 The preserved exact-device К555ЛП5 sheet guarantees VOH >=2.7 V,
 VOL <=0.5 V, and fanout 10, but omits output-current test conditions and
-nonlinear I/V curves. The independent TI SN74LS86A sheet supplies only a
-comparison threshold: 0.4 mA high-state source and 8 mA low-state sink.
+nonlinear I/V curves. Its stated input currents under the standard fanout
+meaning imply 0.4 mA high-state source and 8 mA low-state sink
+full-fanout loads. The independent TI SN74LS86A sheet
+corroborates those values but does not supply К555ЛП5 curves.
 
-| State | Pin | Mode | Relevant current (mA) | Comparison condition (mA) | Result |
+| State | Pin | Mode | Relevant current (mA) | Fanout-derived limit (mA) | Result |
 | --- | --- | --- | ---: | ---: | --- |
 | sync=0,signal=0 | sync | sink | 0.000 | 8.000 | WITHIN |
 | sync=0,signal=0 | signal | sink | 0.000 | 8.000 | WITHIN |
@@ -61,7 +63,7 @@ comparison threshold: 0.4 mA high-state source and 8 mA low-state sink.
 | sync=1,signal=1 | sync | source | 0.293 | 0.400 | WITHIN |
 | sync=1,signal=1 | signal | source | 0.586 | 0.400 | EXCEEDS |
 
-The fixed-pin-voltage approximation requests more high-state source current than the independent comparison device's characterized condition. The exact К555ЛП5 sheet confirms the voltage/fanout envelope but omits output-current conditions and curves; physical X7 voltages still require a nonlinear driver source or measurement.
+The fixed-pin-voltage approximation requests more high-state source current than the exact К555ЛП5 sheet's fanout-derived envelope. The independent SN74LS86A sheet corroborates the derived 0.4 mA/8 mA loads, but neither source supplies a nonlinear output curve; physical X7 voltages still require a better source or measurement.
 
 ## Nominal DC transfer
 
@@ -87,8 +89,9 @@ the declared TTL pin levels, +5 V supply, 75 Ω load, beta, and VBE values.
 The unterminated diagnostic evaluates **2,592**
 corners per state with only fitted R65 loading the emitter.
 
-The two final columns count corners that exceed the independent SN74LS86A
-current condition. They are warnings, not invented К555ЛП5 current limits.
+The two final columns count corners that exceed the exact sheet's
+fanout-derived loads. They warn that fixed pin voltages have crossed the
+stated same-family load envelope; they do not predict nonlinear droop.
 
 | Load | State | X7 range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |

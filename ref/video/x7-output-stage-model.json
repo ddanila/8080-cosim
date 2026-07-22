@@ -57,6 +57,11 @@
       "voh_min_v": 2.7,
       "vol_max_v": 0.5,
       "fanout": 10,
+      "input_low_current_abs_max_ma": 0.8,
+      "input_high_current_max_ma": 0.04,
+      "fanout_derived_high_source_current_ma": 0.4,
+      "fanout_derived_low_sink_current_ma": 8.0,
+      "output_current_values_are_derived_not_explicit": true,
       "output_current_test_conditions_present": false,
       "nonlinear_output_curve_present": false
     },
@@ -95,7 +100,7 @@
     "load_ohm": 75.0
   },
   "assumptions": [
-    "D34 is the exact-revision К555ЛП5. Its preserved exact-device sheet guards the voltage/fanout envelope but omits output-current test conditions and nonlinear curves; SN74LS86A currents therefore remain comparison thresholds only.",
+    "D34 is the exact-revision К555ЛП5. Its preserved exact-device sheet states fanout 10 and 0.8 mA low/0.04 mA high input-current limits, implying 8 mA sink/0.4 mA source full-fanout loads; the output-current values are derived rather than explicit test conditions, and no nonlinear curves are supplied.",
     "VT2 is a piecewise-linear NPN emitter follower: off below VBE, otherwise IE=(beta+1)*IB, with saturation checked but not needed by the declared corners.",
     "The 75-ohm termination is in parallel with the fitted R65 emitter resistor.",
     "The beta sweep uses the published КТ315Б 50..350 grade limits at its stated test point; VBE remains an engineering sensitivity bound and neither parameter is a measurement of the installed part."

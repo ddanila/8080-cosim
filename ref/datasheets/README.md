@@ -65,7 +65,8 @@ Sources:
   `https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf`
 - Exact-device К555ЛП5 data sheet preserved from Electronics & Communications;
   it supplies the Soviet-device voltage, fanout, input-current, and timing limits
-  but no output-current test condition or nonlinear output curve:
+  (the fanout/input currents imply 0.4 mA source and 8 mA sink full-fanout
+  loads) but no explicit output-current test condition or nonlinear output curve:
   `https://static.insales-cdn.com/files/1/1346/27395394/original/%D0%9A555%D0%9B%D0%9F5.pdf`
 - Period КТ315-family reference scan preserved by Promelec. Its old KT-13
   outline and E-C-B lead order match the installed КТ315Б package:

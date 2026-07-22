@@ -17,9 +17,12 @@ VOH >= 2.7 V, low input current <= 0.8 mA magnitude, high input current
 <= 40 uA, fanout 10, and propagation-delay limits of 17/22 ns on and
 23/30 ns off for its two stated input conditions.
 
-The sheet does not state the output-current test conditions for its VOH/VOL
-limits and contains no output I/V curves. It therefore proves the exact-device
-logic-level envelope, but cannot by itself supply a nonlinear loaded driver.
+The sheet does not state output-current test conditions beside its VOH/VOL
+limits. However, under the standard meaning of fanout, its fanout of 10 and
+per-input current limits imply full-fanout loads of 10 * 40 uA = 0.4 mA sourced
+at high level and 10 * 0.8 mA = 8 mA sunk at low level. Those two current values
+are derived, not verbatim data-sheet test conditions. The sheet contains no
+output I/V curves, so it still cannot supply a nonlinear loaded driver.
 
 Independent LS-TTL comparison
 -----------------------------
@@ -38,10 +41,11 @@ Model boundary
 --------------
 
 The exact К555ЛП5 sheet and the independent SN74LS86A sheet agree on the
-2.7 V/0.5 V logic-level envelope. The 0.4 mA source and 8 mA sink conditions
-remain comparison thresholds because the preserved К555ЛП5 sheet omits its
-output-current test conditions. Exceeding them flags that a fixed 3.4 V source
-is not defensible; it is not a fabricated К555ЛП5 acceptance limit.
+2.7 V/0.5 V logic-level envelope. The TI sheet also independently corroborates
+the exact sheet's fanout-derived 0.4 mA source and 8 mA sink loads. Exceeding
+those loads flags that a fixed 3.4 V source is outside the exact device's stated
+same-family fanout envelope. It does not reveal how far the physical pin voltage
+droops or define a general К555ЛП5 acceptance curve.
 
 Neither sheet defines the installed D34 nonlinear output impedance. Physical
 X7 voltages still require a better К555ЛП5 curve source or hardware measurement.
