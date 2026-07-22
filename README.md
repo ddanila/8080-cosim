@@ -16,7 +16,7 @@ with the machine-readable board model.
 - `sync/check.sh` currently compares 117 mapped instances and 310 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
-  322-footprint/2,436-pad source and contains 30,132 copper items across 413
+  322-footprint/2,436-pad source and contains 30,343 copper items across 413
   nets. Stable KiCad 9.0.8 reports zero opens, zero electrical blockers, and
   zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or

@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "promoted_file": "kicad/juku_routed.kicad_pcb",
-  "parent_board_sha256": "6ddfde373d44c5a4875860d3ec5020e6f1867124d06e00f79a4200a1564e3a33",
-  "source_board_sha256": "bfeff14f3998237b95b09284171cdeae3c42aa6faaca0f200dbee1e3579e03d1",
-  "board_sha256": "964795d21c02092b4adb4efbfb2707905b89ea5bb598bb6d389e5e7d715730bf",
-  "board_size": 11260118,
-  "drc_sha256": "3cad6a53c28129578d8f52c90e77acef93626ec3602b08207375d8e62252c7e0",
+  "parent_board_sha256": "964795d21c02092b4adb4efbfb2707905b89ea5bb598bb6d389e5e7d715730bf",
+  "source_board_sha256": "a794125b63e35dca4a8144f989a4daac50fc66c114e969c822a8914289d17d31",
+  "board_sha256": "d43d62639f68e81b23ee56dc87dea6776d6570510ab80ea5f0e35da727c6a4e3",
+  "board_size": 11290766,
+  "drc_sha256": "3e807d61e24da8cf81b65058fba81324d85717e01ec37105bf7315b325d47eda",
   "footprints": 322,
   "pads": 2436,
   "max_pad_delta_mm": 0.0,
-  "routed_items": 30132,
+  "routed_items": 30343,
   "routed_nets": 413,
   "uncapped_unconnected": 0,
   "electrical_blockers": 0,
@@ -107,7 +107,43 @@
       {"net": "GND", "scope": "D13 escape recovery", "grid_mm": 0.10, "clearance_mm": 0.20, "segments": 25, "vias": 4}
     ]
   },
+  "d59_mux_enable_refresh": {
+    "parent_source_board_sha256": "bfeff14f3998237b95b09284171cdeae3c42aa6faaca0f200dbee1e3579e03d1",
+    "parent_routed_board_sha256": "964795d21c02092b4adb4efbfb2707905b89ea5bb598bb6d389e5e7d715730bf",
+    "corrected_endpoints": {
+      "D59.5": "VID_MUX_G",
+      "D59.6": "CPU_MUX_G"
+    },
+    "diagnostic_route": {
+      "net": "VID_MUX_G",
+      "grid_mm": 0.2,
+      "grid_offset_mm": [
+        0.0,
+        0.05
+      ],
+      "clearance_mm": 0.18,
+      "new_items": 136
+    },
+    "clearance_corrections_mm": {
+      "D51.6_target_track": 0.01,
+      "adjacent_W10_trunk": 0.01,
+      "D51.16_target_via": 0.02
+    },
+    "removed_conflicts": 5,
+    "restored_nets": [
+      "BA0",
+      "MA5",
+      "MA7",
+      "VA1"
+    ],
+    "cpu_route_grid_mm": 0.25,
+    "final_added_items": 216,
+    "final_removed_items": 5,
+    "final_added_segments": 181,
+    "final_added_vias": 35
+  },
   "tool_sha256": {
+    "kicad/apply_d59_mux_enable_endpoints.py": "a97691e78e8d1bb8c822c6818944e08ae82f8085682851e11d6e918bab10fdae",
     "kicad/apply_d56_owner_timing_routes.py": "254356fcee48275da7b1ab2a1057481b847e2b13ad69dc2c480d50dbd532ae04",
     "kicad/check_d56_owner_timing_routes.py": "dca026198c9a5d674689261aca8c5a03ea9e6109892a19d6c007f3b0a2463f4b",
     "kicad/close_gap_by_ripup.py": "cf1ff576fa73c3dd5efb5e48ef9711bf4313c5f47a2af6d86292c3ef22c506ae",
@@ -119,5 +155,5 @@
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/check_routed_candidate.py": "7d143bc0fd7cbca919b7be066fffb90eaea7a02d17cfcdd22ba5b8d2eb4b5d3a"
   },
-  "disposition": "This is the promoted source-parity routed board after the owner-closed R94 and D13-inverted FDC-reset refresh. Independent KiCad 9.0.8 DRC, the routed-candidate identity gate, and the dedicated owner-evidence guards report zero opens, zero electrical blockers, zero dangling items, identical 322-footprint/2436-pad source identity, and zero pad-coordinate delta."
+  "disposition": "This is the promoted source-parity routed board after restoring the source-proved D59.5 VID_MUX_G input and D59.6 CPU_MUX_G inverter output. Independent KiCad 9.0.8 DRC and the routed-candidate identity gate report zero opens, zero electrical blockers, zero dangling items, identical 322-footprint/2436-pad source identity, and zero pad-coordinate delta."
 }

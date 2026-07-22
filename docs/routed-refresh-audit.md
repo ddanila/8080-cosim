@@ -31,8 +31,8 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `bfeff14f3998237b95b09284171cdeae3c42aa6faaca0f200dbee1e3579e03d1` |
-| Routed-snapshot PCB SHA-256 | `964795d21c02092b4adb4efbfb2707905b89ea5bb598bb6d389e5e7d715730bf` |
+| Source PCB SHA-256 | `a794125b63e35dca4a8144f989a4daac50fc66c114e969c822a8914289d17d31` |
+| Routed-snapshot PCB SHA-256 | `d43d62639f68e81b23ee56dc87dea6776d6570510ab80ea5f0e35da727c6a4e3` |
 | Source footprints | 322 |
 | Routed-snapshot footprints | 322 |
 | Source-only footprints | 0 |
@@ -40,7 +40,7 @@ routed-snapshot change to regenerate the guarded current-result table.
 | Routed copper nets classified by the refresh | 413 |
 | Nets with currently reusable routed copper | 413 |
 | Routed nets currently quarantined | 0 |
-| Reusable non-duplicate track/via items | 30,132 |
+| Reusable non-duplicate track/via items | 30,343 |
 | Quarantined/duplicate track/via items | 0 |
 | Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
@@ -281,8 +281,10 @@ correction moves R94 to its measured 10k DRQ pull-up position, preserves the
 separate unidentified 220-ohm body as `RUNK1`, and inserts D13.9->D13.8 between
 active-high RESET and D93.19. Its guarded copper-reuse transaction restores the
 affected RESET/READY branches and routes `FDC_RESET_N`; the current board has
-30,132 routed items across 413 nets, 322 footprints, 2,436 pads, exact source
-parity, zero opens, and zero electrical blockers.
+30,132 routed items across 413 nets. The subsequent source-proved D59.5/D59.6
+mux-enable restoration adds the complementary video/CPU enable endpoints and
+promotes 30,343 routed items across 413 nets, 322 footprints, 2,436 pads, exact
+source parity, zero opens, and zero electrical blockers.
 
 ### Additive/rename-safe copper migration
 
