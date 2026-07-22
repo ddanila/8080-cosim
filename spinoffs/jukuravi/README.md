@@ -97,11 +97,22 @@ A Nano is sufficient for every stage except the optional bus-master stage
      window anywhere, but the failing bit position names the exact chip to
      replace (N beeps = D84+N, or named over serial). Partial failures
      (bad cells/rows/columns — the common case; internally 256×256 per
-     chip) corrupt only the addresses sharing the bad row/column, so the
-     survey builds a per-bit health map and adopts the largest window where
-     all eight bits pass as the D2 landing zone + stack. Results stream
-     live over serial when rung 2 passed. (The empty D60–D83 sockets are
-     the 16K×1-era banks, not a software-selectable alternative bank.)
+     chip) corrupt only the addresses sharing the bad row/column, so a
+     usable window can exist — and **the window analysis lives on the
+     host, not in the ROM**: with no proven RAM there is nowhere on-device
+     to store a health map. The ROM marches the map in 256-byte blocks and
+     emits one byte per block (OR-mask of failing bit positions,
+     register-accumulated) — constant 256-bytes-per-pass traffic whether
+     RAM is pristine or a chip is dead. The host reconstructs per-chip
+     health and failure geometry, picks the largest all-eight-bits-good
+     window, and simply parameterizes the D2 loader with addresses inside
+     it (including the uploaded code's stack pointer) — the ROM never
+     needs window logic at all. First upload into a fresh window can be a
+     better RAM tester running from RAM. Beep-only fallback (serial dead)
+     does no window-finding: it wholesale-tests a couple of fixed candidate
+     windows and beeps found/not-found — without serial nothing can be
+     uploaded anyway. (The empty D60–D83 sockets are the 16K×1-era banks,
+     not a software-selectable alternative bank.)
   4. **Everything else:** ROM checksum (the firmware's own block-1
      convention, `docs/cosim-runtime-reference.md`), PPI/PIT/PIC
      register-wiggle tests, framebuffer test pattern (needs RAM).
