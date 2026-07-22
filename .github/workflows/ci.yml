@@ -96,6 +96,7 @@ jobs:
             scripts/report_video_slot_timing_audit.py \
             scripts/report_video_physical_probes.py \
             scripts/report_video_pit_timing.py \
+            scripts/check_generated_report_coverage.py \
             scripts/report_d2_reconstruction_constraints.py \
             scripts/report_d2_physical_truth.py \
             scripts/report_d30_section_b_scan_chase.py \
@@ -196,6 +197,9 @@ jobs:
 
       - name: Check C63 target-board DNP
         run: python3 kicad/check_c63_target_dnp.py
+
+      - name: Check generated-report coverage
+        run: python3 scripts/check_generated_report_coverage.py
 
       - name: Check FDC write-precomp network
         run: python3 kicad/check_fdc_precomp_network.py

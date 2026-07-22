@@ -199,10 +199,12 @@ jobs:
             docs/juku-top-jbasic-verilator-probe.md \
             docs/fdc-readiness.md \
             docs/basic-cart-readiness.md \
+            docs/d2-ready-path-check.md \
             docs/beeper-readiness.md \
             docs/serial-handoff.md \
             docs/ie7-counter-readiness.md \
             docs/ie10-counter-readiness.md \
+            docs/ag3-oneshot-readiness.md \
             docs/jmon33-hdl-probe.md \
             docs/jmon33-interrupt-probe.md \
             docs/jmon33-ready-probe.md \

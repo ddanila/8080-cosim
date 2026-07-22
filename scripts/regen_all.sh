@@ -102,8 +102,25 @@ if ((deep)); then
   run ./sync/juku_top_checkpoint_load_check.py
   run ./sync/juku_top_checkpoint_resume_probe.py
   run ./sync/fdc_check.sh
+  run ./sync/basic_cart_check.sh
+  run ./sync/d2_ready_path_check.sh
   run python3 scripts/report_d6_runtime_path.py
+  run ./sync/beeper_check.sh
+  run ./sync/serial_check.sh
+  run ./sync/ie7_check.sh
   run ./sync/d96_check.sh
+  run ./sync/ie10_check.sh
+  run ./sync/ag3_check.sh
+  run ./sync/juku_top_periph_bus_check.sh
+  run ./sync/jmon33_hdl_probe.sh
+  run ./sync/jmon33_interrupt_probe.py
+  run ./sync/jmon33_ready_probe.py
+  run ./sync/jmon33_command_probe.py
+  run ./sync/jmon33_idle_command_probe.py
+  run ./sync/ir16_check.sh
+  run ./sync/kp14_check.sh
+  run ./sync/video_timing_check.sh
+  run ./sync/video_readout_check.sh
   run python3 scripts/report_video_physical_probes.py
   run python3 scripts/report_video_pit_timing.py
 fi
