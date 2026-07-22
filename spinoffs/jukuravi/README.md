@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D0 serial RAM survey guarded; beep fallback next.**
+Status: **EXECUTION STARTED — D0 serial and beep-fallback RAM paths guarded.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -195,8 +195,15 @@ A Nano is sufficient for every stage except the optional bus-master stage
      stuck-low/stuck-high cell fault plus a two-page address alias; the vm80a top proves the identical loop
      body against clean and forced-D87 physical DRAM cells. Exact bytes,
      checksum, traffic counts, and bounded HDL-fixture scope are documented in
-     `firmware/README.md`. The fixed-window beep-only fallback for a missing
-     external ACK is still the next D0 sub-rung.
+     `firmware/README.md`.
+     **Beep-fallback simulation checkpoint implemented:** the sixth exact 8 KiB
+     image retains the acknowledged full survey. Without an ACK it gives a
+     finite serial-dead marker, tests fixed 4 KiB windows at `4000` and `C000`,
+     and emits either three windows-found pulses or 1–8 D84–D91 chip-ID pulses
+     followed by continuous no-window tone. Exact-image cosim and the bit-sliced
+     vm80a DRAM path prove clean and globally dead-D87 outcomes without stack,
+     interrupts, or a memory-mode switch. The complete cadence table and
+     fixture scope are in `firmware/README.md`.
   5. **Everything else:** ROM checksum (the firmware's own block-1
      convention, `docs/cosim-runtime-reference.md`), PPI/PIT/PIC
      register-wiggle tests, framebuffer test pattern (needs RAM).
@@ -284,8 +291,8 @@ harness; sync/parity and physical baud timing remain outside this step.
 The alive, CPU, serial, and mode-0 RAM-survey diagnostic-ROM rungs now run under
 cosim and the vm80a-based HDL twin, including injected USART, protocol, and
 bit-sliced RAM failure paths, while the D57 beeper path has its own
-waveform/connectivity guard. The next implementation step is the serial-dead
-fixed-window RAM fallback and beep vocabulary.
+waveform/connectivity guard. The next D0 implementation step is the remaining
+ROM-convention and PPI/PIT/PIC register-test rung.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
@@ -294,7 +301,7 @@ Then:
   bench;
 - fault injection is scriptable rather than manual. Cosim now accepts
   `JUKU_USART_FAULT=tx_stuck`,
-  `JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH`, and
+  `JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH` (or `*` for every address), and
   `JUKU_RAM_ALIAS=PAGE_A:PAGE_B`; the D0 matrix asserts their exact protocol
   masks and host window verdicts. Dead PPI, ROM-checksum, row/column-shaped,
   and later peripheral faults remain additions to the same regression model.

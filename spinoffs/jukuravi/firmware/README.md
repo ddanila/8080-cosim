@@ -2,14 +2,15 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–4A SIMULATION CHECKPOINT — SERIAL RAM SURVEY GUARDED**
+Status: **D0 RUNGS 1–4B SIMULATION CHECKPOINT — SERIAL-DEAD RAM FALLBACK GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
 not read by these checkpoints. `diag-d0-alive.bin` isolates rung 1,
 `diag-d0-cpu.bin` adds rung 2, `diag-d0-usart-local.bin` isolates the local
 D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake, and
-`diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey.
+`diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey, and
+`diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback.
 
 SHA256:
 
@@ -19,6 +20,7 @@ a9ca9d59a2a23891b90eb088e1b6901cc210baca30dc03c46c900048efdb67ec  diag-d0-cpu.bi
 c708f78adc9b87ba6dfc926314f3937798814d79f1e66512c9ae8d1db8b03a7f  diag-d0-usart-local.bin
 e9bebf4cbcca4556a779eef3fcb42f69706892df28a2cc93fc1f3a5d235eb2e0  diag-d0-serial.bin
 50f35da507947232c2e2ab0e7b6ab519f3ce16e8310c4c1f02d544b504149baf  diag-d0-ram.bin
+96a9417e4dc3a9270671d76b85500727d8a519c76ff977f15fd48e9f3076c8fc  diag-d0-ram-fallback.bin
 ```
 
 ## Build and guard
@@ -29,14 +31,16 @@ python3 spinoffs/jukuravi/firmware/build_d0_cpu.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_ram_fallback.py --check
 sync/jukuravi_d0_check.sh
 ```
 
 The builders are the sources of truth and deterministically emit the committed
 images. The alive-only executed code is 30 bytes. The combined CPU image
 contains 382 bytes; the local-USART image contains 509; the serial image
-contains 684; the RAM-survey image contains 1,496. Their identities are stored
-at `0x1F00`, and unused space is fail-closed `HLT` fill.
+contains 684; the RAM-survey image contains 1,496; the fallback image contains
+1,967. Their identities are stored at `0x1F00`, and unused space is fail-closed
+`HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
 
@@ -245,13 +249,63 @@ enable interrupts. Its fixture shortens the three register delays and changes
 only the survey and alias-probe end-page immediates from `FF` to `40`; the
 memory-test and framing opcodes are identical to the burn image.
 
-This is rung 4a rather than the whole RAM stage. The fixed-window beep-only
-survey for a locally working but externally unacknowledged USART remains the
-next firmware checkpoint; broader row/column fault shapes and the user-facing
-session CLI remain later host-tool work.
+## Rung 4b: serial-dead fixed-window fallback
+
+The cumulative fallback image advertises ROM version `03`, self-checksum
+`9FCC`, and these exact handshake records:
+
+```text
+banner: A5 5A 01 04 01 03 9F CC 45
+ack:    A5 5A 81 04 01 03 9F CC A9
+```
+
+A matching ACK retains the complete rung-4a 192-page framed survey. A missing
+or malformed ACK, or a later result-transport timeout, instead selects the
+stack-free fallback. It first gives a finite approximately 0.25-second nominal
+125 Hz serial-dead marker, replays the D54/D55 timing initialization, and then
+wholesale-tests `0x4000..0x4FFF` and `0xC000..0xCFFF`. Each 4 KiB candidate
+gets five complete writes and reads using `00`, `FF`, address, inverse-address,
+and `55`, followed by the same approximately 20 ms retention verification.
+Only two bits in E record whether the fixed candidates passed; no result or
+working state is trusted to the RAM being tested.
+
+The audible vocabulary is now executable and unambiguous by cadence:
+
+| Outcome | D57 channel-1 code |
+| --- | --- |
+| alive | one approximately 0.5 s nominal 1 kHz beep |
+| CPU bad | continuous nominal 250 Hz |
+| local USART bad | continuous nominal 500 Hz |
+| serial confirmed | one approximately 0.125 s nominal 2 kHz beep |
+| serial dead before fallback | one approximately 0.25 s nominal 125 Hz marker |
+| one or both fixed windows found | three short nominal 2 kHz pulses, then silence |
+| no fixed window | 1–8 short nominal 1 kHz pulses naming D84–D91's first bad bit, then continuous nominal 125 Hz |
+
+One chip-ID pulse means D84/bit 0 and eight mean D91/bit 7. The continuous tail
+makes “no window” distinct even if the human misses the count; reset repeats
+the complete sequence. A fully dead chip therefore cannot be mistaken for an
+address-local usable window.
+
+`tests/jukuravi_d0_ram_fallback_test.py` proves the exact burn image's normal
+ACK path still emits and decodes all 192 page records. With no ACK, pristine
+RAM produces flags `03` and the three-pulse windows-found code. A single-cell
+fault in the first candidate produces flags `02` and the same found verdict,
+proving that either window suffices. A final no-ACK run uses
+`JUKU_RAM_FAULT=*:08:00` to model D87 globally stuck low; both fixed windows
+fail, four chip-ID pulses identify D87, and the ROM reaches continuous 125 Hz.
+All paths execute identical 20,480 writes and 20,480 reads per fixed window.
+The full vm80a fixture shortens each window to one page and only
+compresses register counts; clean and forced-D87 paths each perform 2,560
+physical writes and reads through D84–D91, check all banner/timer/cadence
+operations, retain mode 0 and IFF clear, and reach their distinct terminal
+states.
+
+Broader row/column-shaped fault generators and the user-facing session CLI
+remain later host-tool work; rung 4's required serial and beep-only RAM paths
+are now both represented by exact burn images.
 
 The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
-guard models speaker voltage/current or authorizes a bench burn. The next
-firmware rung is the serial-dead fixed-window RAM fallback and its beep codes.
+guard models speaker voltage/current or authorizes a bench burn. The next D0
+firmware rung is the remaining ROM-convention and PPI/PIT/PIC register tests.

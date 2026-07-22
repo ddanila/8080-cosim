@@ -28,7 +28,8 @@
 //        may be supplied instead. JUKU_USART_TRANSFER_CYCLES controls the
 //        holding-to-shift delay; JUKU_USART_BYTE_CYCLES controls frame time.
 //        JUKU_USART_FAULT=tx_stuck holds the transmit input register full.
-// RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte;
+// RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte
+//        (ADDR=* applies the stuck masks globally);
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
 
 #include <stdio.h>
@@ -75,12 +76,14 @@ static int           ram_fault_enabled = 0;
 static uint16_t      ram_fault_addr = 0;
 static uint8_t       ram_fault_stuck_low = 0;
 static uint8_t       ram_fault_stuck_high = 0;
+static int           ram_fault_all = 0;
 static int           ram_alias_enabled = 0;
 static uint8_t       ram_alias_page_a = 0;
 static uint8_t       ram_alias_page_b = 0;
 
 static uint8_t apply_ram_fault(uint16_t address, uint8_t value) {
-  if (!ram_fault_enabled || address != ram_fault_addr) return value;
+  if (!ram_fault_enabled || (!ram_fault_all && address != ram_fault_addr))
+    return value;
   return (uint8_t)((value & (uint8_t)~ram_fault_stuck_low) |
                    ram_fault_stuck_high);
 }
@@ -570,6 +573,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "ram_fault_addr=%04X\n", ram_fault_addr);
   fprintf(state_out, "ram_fault_stuck_low=%02X\n", ram_fault_stuck_low);
   fprintf(state_out, "ram_fault_stuck_high=%02X\n", ram_fault_stuck_high);
+  fprintf(state_out, "ram_fault_all=%d\n", ram_fault_all);
   fprintf(state_out, "ram_alias_enabled=%d\n", ram_alias_enabled);
   fprintf(state_out, "ram_alias_page_a=%02X\n", ram_alias_page_a);
   fprintf(state_out, "ram_alias_page_b=%02X\n", ram_alias_page_b);
@@ -676,11 +680,22 @@ int main(int argc, char** argv) {
   if (ram_fault && ram_fault[0]) {
     unsigned address, stuck_low, stuck_high;
     char trailing;
-    if (sscanf(ram_fault, "%x:%x:%x%c", &address, &stuck_low, &stuck_high,
-               &trailing) != 3 || address > 0xFFFF || stuck_low > 0xFF ||
-        stuck_high > 0xFF || (stuck_low & stuck_high)) {
+    int parsed;
+    if (ram_fault[0] == '*' && ram_fault[1] == ':') {
+      parsed = sscanf(ram_fault + 2, "%x:%x%c", &stuck_low, &stuck_high,
+                      &trailing);
+      address = 0;
+      ram_fault_all = 1;
+    } else {
+      parsed = sscanf(ram_fault, "%x:%x:%x%c", &address, &stuck_low,
+                      &stuck_high, &trailing);
+    }
+    if (parsed != (ram_fault_all ? 2 : 3) || address > 0xFFFF ||
+        stuck_low > 0xFF || stuck_high > 0xFF ||
+        (stuck_low & stuck_high)) {
       fprintf(stderr,
-              "invalid JUKU_RAM_FAULT=%s (expected ADDR:STUCK_LOW:STUCK_HIGH)\n",
+              "invalid JUKU_RAM_FAULT=%s "
+              "(expected ADDR:STUCK_LOW:STUCK_HIGH or *:STUCK_LOW:STUCK_HIGH)\n",
               ram_fault);
       return 2;
     }
@@ -688,8 +703,13 @@ int main(int argc, char** argv) {
     ram_fault_addr = (uint16_t)address;
     ram_fault_stuck_low = (uint8_t)stuck_low;
     ram_fault_stuck_high = (uint8_t)stuck_high;
-    fprintf(stderr, "[RAM] fault address=0x%04X stuck-low=0x%02X stuck-high=0x%02X\n",
-            ram_fault_addr, ram_fault_stuck_low, ram_fault_stuck_high);
+    if (ram_fault_all)
+      fprintf(stderr, "[RAM] global fault stuck-low=0x%02X stuck-high=0x%02X\n",
+              ram_fault_stuck_low, ram_fault_stuck_high);
+    else
+      fprintf(stderr,
+              "[RAM] fault address=0x%04X stuck-low=0x%02X stuck-high=0x%02X\n",
+              ram_fault_addr, ram_fault_stuck_low, ram_fault_stuck_high);
   }
   if (ram_alias && ram_alias[0]) {
     unsigned page_a, page_b;

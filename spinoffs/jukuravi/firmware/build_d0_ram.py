@@ -161,7 +161,9 @@ def emit_crc_fold(asm: Assembler, *, stem: str) -> None:
     asm.emit(0x5F)       # MOV E,A
 
 
-def emit_page_frame(asm: Assembler) -> list[int]:
+def emit_page_frame(
+    asm: Assembler, *, failure_label: str = "serial_dead"
+) -> list[int]:
     """Emit TYPE_RAM_BLOCK payload [H=current page, D=failure mask]."""
     asm.emit(0x1E, 0x00)  # MVI E,0 CRC accumulator
     for stem, load in (
@@ -188,14 +190,16 @@ def emit_page_frame(asm: Assembler) -> list[int]:
             asm,
             stem=f"page_tx_{index}",
             mask=0x01,
-            failure_label="serial_dead",
+            failure_label=failure_label,
         ))
         asm.emit(*load)
         asm.out(0x08)
     return offsets
 
 
-def emit_ram_survey(asm: Assembler) -> dict[str, int | list[int]]:
+def emit_ram_survey(
+    asm: Assembler, *, failure_label: str = "serial_dead"
+) -> dict[str, int | list[int]]:
     start_page_offset = asm.pc + 1
     asm.emit(0x26, SURVEY_START_PAGE)  # MVI H,start page
     asm.emit(0x2E, 0x00)               # MVI L,0
@@ -221,7 +225,9 @@ def emit_ram_survey(asm: Assembler) -> dict[str, int | list[int]]:
     emit_memory_pass(asm, stem="test_55_retained", expected=0x55, replacement=None)
     alias_end_page_offset = emit_page_alias_probe(asm)
 
-    page_frame_timeout_offsets = emit_page_frame(asm)
+    page_frame_timeout_offsets = emit_page_frame(
+        asm, failure_label=failure_label
+    )
     asm.emit(0x7C)  # MOV A,H
     end_page_offset = asm.pc + 1
     asm.emit(0xFE, SURVEY_END_PAGE)  # CPI end page

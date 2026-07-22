@@ -1606,7 +1606,17 @@ an active `/Q1` feedback output.
    the largest all-bits-good window. The vm80a full top executes the identical
    loop body through clean and forced-D87 DRAM cells on a one-page bounded
    fixture, with exact framed output, mode 0 retained, and interrupts clear.
-   The fixed-window serial-dead beep fallback remains the next D0 sub-rung.
+   The next cumulative image now implements the fixed-window serial-dead
+   fallback as well. Missing/malformed ACK gives a finite nominal 125 Hz marker,
+   initializes D54/D55, and wholesale-tests 4 KiB candidates at `4000` and
+   `C000` with data/address/complement and retention passes. Any good candidate
+   gives three short nominal 2 kHz pulses. If neither passes, 1–8 nominal 1 kHz
+   pulses identify the first failing D84–D91 bit and a continuous nominal
+   125 Hz tail declares no window. Exact-image cosim retains the acknowledged
+   192-page path and proves clean/no-ACK plus global-D87-dead/no-ACK outcomes;
+   the vm80a full top executes both fallback results through the bit-sliced
+   DRAM bank with exact traffic and cadence. The remaining D0 ROM-convention
+   and PPI/PIT/PIC register tests are next.
 
 ## Physical bring-up sequence
 
@@ -1653,6 +1663,10 @@ Once a released board and programmed parts exist:
   full mode-0 48 KiB page survey, framed bit-mask output, retention pass, and
   host largest-good-window verdict execute in cosim, while clean and forced-bit
   loop paths execute through the bit-sliced vm80a HDL DRAM bank.
+- [x] Jukuravi D0 rung 4b has an exact-hash-guarded cumulative D15 image whose
+  no-ACK fixed-window tests, windows-found cadence, D84–D91 chip-ID count, and
+  no-window continuous tone execute for clean and globally dead-bit RAM in
+  cosim and through the bit-sliced vm80a HDL DRAM bank.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.
