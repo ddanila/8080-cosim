@@ -1593,7 +1593,20 @@ an active `/Q1` feedback output.
    nominal 2 kHz serial-confirmed beep, while missing/malformed ACK gives a
    continuous nominal 125 Hz serial-dead tone. USART sync/parity modes and
    physical baud timing remain outside the bounded model. The stack-free mode-0
-   RAM survey and framed result stream are the next harness rung.
+   RAM survey and framed result stream are the next harness rung. That rung now
+   has an exact-hash-guarded image: it replays the source-guarded D54/D55 timing
+   setup, stays in mode 0, and runs fixed data/address/complement passes, a
+   retention verification, and cross-page alias probes over every page
+   `40..FF`. One CRC-protected record
+   per page carries its page number and OR-mask of failing D84–D91 data bits.
+   Full-range cosim proves identical traffic on every clean or failed page,
+   maps a `7A5C` stuck-low/stuck-high injection to only page `7A`/mask `28`,
+   and maps a page-`90`/page-`50` alias to exactly those pages with mask `FF`.
+   The host decoder groups bad pages by chip and selects
+   the largest all-bits-good window. The vm80a full top executes the identical
+   loop body through clean and forced-D87 DRAM cells on a one-page bounded
+   fixture, with exact framed output, mode 0 retained, and interrupts clear.
+   The fixed-window serial-dead beep fallback remains the next D0 sub-rung.
 
 ## Physical bring-up sequence
 
@@ -1632,6 +1645,14 @@ Once a released board and programmed parts exist:
 - [x] Jukuravi D0 rung 3a has an exact-hash-guarded, burn-sized D15 image whose
   local 8251 transmit-state test, bounded timeout, and distinct USART-bad tone
   execute through success and injected-failure paths in cosim and vm80a HDL.
+- [x] Jukuravi D0 rung 3b has an exact-hash-guarded, burn-sized D15 image whose
+  framed version/checksum banner, exact ACK, and distinct serial-confirmed/dead
+  outcomes execute through valid, malformed, and timeout paths in cosim and
+  through X3/D104/D11 in the vm80a HDL twin.
+- [x] Jukuravi D0 rung 4a has an exact-hash-guarded, burn-sized D15 image whose
+  full mode-0 48 KiB page survey, framed bit-mask output, retention pass, and
+  host largest-good-window verdict execute in cosim, while clean and forced-bit
+  loop paths execute through the bit-sliced vm80a HDL DRAM bank.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

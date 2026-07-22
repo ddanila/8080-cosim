@@ -2,13 +2,14 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–3B SIMULATION CHECKPOINT — FRAMED EXTERNAL HANDSHAKE GUARDED**
+Status: **D0 RUNGS 1–4A SIMULATION CHECKPOINT — SERIAL RAM SURVEY GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
 not read by these checkpoints. `diag-d0-alive.bin` isolates rung 1,
 `diag-d0-cpu.bin` adds rung 2, `diag-d0-usart-local.bin` isolates the local
-D11/8251 test, and `diag-d0-serial.bin` adds the external framed handshake.
+D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake, and
+`diag-d0-ram.bin` adds the mode-0 48 KiB serial RAM survey.
 
 SHA256:
 
@@ -17,6 +18,7 @@ dfd4327b2752a143fdbd4c199013e53dfb9dc2b9ea897379f3015b4cda92ec9c  diag-d0-alive.
 a9ca9d59a2a23891b90eb088e1b6901cc210baca30dc03c46c900048efdb67ec  diag-d0-cpu.bin
 c708f78adc9b87ba6dfc926314f3937798814d79f1e66512c9ae8d1db8b03a7f  diag-d0-usart-local.bin
 e9bebf4cbcca4556a779eef3fcb42f69706892df28a2cc93fc1f3a5d235eb2e0  diag-d0-serial.bin
+50f35da507947232c2e2ab0e7b6ab519f3ce16e8310c4c1f02d544b504149baf  diag-d0-ram.bin
 ```
 
 ## Build and guard
@@ -26,14 +28,15 @@ python3 spinoffs/jukuravi/firmware/build_d0_alive.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_cpu.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 sync/jukuravi_d0_check.sh
 ```
 
 The builders are the sources of truth and deterministically emit the committed
 images. The alive-only executed code is 30 bytes. The combined CPU image
 contains 382 bytes; the local-USART image contains 509; the serial image
-contains 684. Their identities are stored at `0x1F00`, and unused space is
-fail-closed `HLT` fill.
+contains 684; the RAM-survey image contains 1,496. Their identities are stored
+at `0x1F00`, and unused space is fail-closed `HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
 
@@ -183,8 +186,72 @@ all nine received bytes where applicable, the physical baud chain, exact
 terminal path, IFF clear, and zero memory writes. Generated HDL fixtures
 shorten only the initial/confirmed tone delays and the timeout-case ACK count.
 
+## Rung 4a: serial mode-0 RAM survey
+
+The RAM image changes the banner ROM version to `02` and self-checksum to
+`12B6`:
+
+```text
+banner:    A5 5A 01 04 01 02 12 B6 97
+ack:       A5 5A 81 04 01 02 12 B6 7B
+RAM_BEGIN: A5 5A 10 04 01 40 FF 01 51
+RAM_BLOCK: A5 5A 11 02 page failure-mask crc
+RAM_END:   A5 5A 12 02 40 FF 35
+```
+
+After the exact predecessor handshake and short serial-confirmed beep, the ROM
+replays the source-guarded Ekta 3.7 D54/D55 initialization so autonomous video
+timing supplies the board's available DRAM activity. It remains in reset memory
+mode 0 and surveys `0x4000..0xFFFF`; the ROM-covered low 16 KiB stays deferred
+until uploaded code can run from proven RAM.
+
+Each 256-byte page receives five address-complete write passes and five
+address-complete read passes. It fills `00`, performs read-before-write
+transitions `00 -> FF -> L -> ~L -> 55`, waits approximately 20 ms using BC
+only, then verifies retained `55`. The `L/~L` pair exposes low-address aliasing.
+A second register-only probe writes a page-specific sentinel at offset `00`,
+perturbs and restores every other page's offset `00`, and verifies the sentinel
+after each perturbation, exposing high-address page aliasing without changing
+the final `55` fill. Every mismatch is XORed with the expected value and ORed
+into D, producing one eight-bit failure mask per page: bit 0 names D84, through
+bit 7 naming D91. Healthy and failed pages execute identical traffic—1,664
+writes per page, with five full 256-byte read passes plus 191 cross-page reads—
+and every page emits exactly one CRC-protected `RAM_BLOCK`. No result is stored
+in the RAM under test, no stack instruction is used, interrupts stay disabled,
+and mode 0 is never changed.
+
+`spinoffs/jukuravi/protocol.py` validates the complete ordered record set,
+groups bad page numbers by DRAM bit/chip, and selects the largest contiguous
+all-eight-bits-good page window. A pristine stream yields `0x4000..0x10000`;
+the guarded sample fault at `0x7A5C` yields bad page `7A` for bits 3/D87 and
+5/D89 and selects the larger good window `0x7B00..0x10000`. Mapping logical
+page `90` onto page `50` makes exactly those two pages report `FF` and selects
+`0x9100..0x10000`.
+
+`tests/jukuravi_d0_ram_test.py` executes the exact 8 KiB burn image through a
+PTY over all 192 pages. It proves every clean mask, exact full-range traffic,
+the final `55` pattern, the D54/D55 write sequence, CRC framing, terminal state,
+and host window verdict. A second run uses
+`JUKU_RAM_FAULT=7A5C:08:20` (address, stuck-low mask, stuck-high mask) and
+requires only page `7A` to report `28`. A third run uses
+`JUKU_RAM_ALIAS=50:90` and requires exactly pages `50` and `90` to report
+`FF`, proving that the advertised window cannot hide a page-address alias.
+The full vm80a top executes the same loop body on a one-page time-bounded
+fixture through the bit-sliced D84–D91
+models: clean RAM reports `00`, while a D87 cell forced low reports `08`.
+Both HDL paths perform exactly 1,282 physical writes and 1,280 reads, receive
+the ACK through X3/D104/D11, emit all expected frames, retain mode 0, and never
+enable interrupts. Its fixture shortens the three register delays and changes
+only the survey and alias-probe end-page immediates from `FF` to `40`; the
+memory-test and framing opcodes are identical to the burn image.
+
+This is rung 4a rather than the whole RAM stage. The fixed-window beep-only
+survey for a locally working but externally unacknowledged USART remains the
+next firmware checkpoint; broader row/column fault shapes and the user-facing
+session CLI remain later host-tool work.
+
 The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next
-firmware rung is the stack-free mode-0 RAM survey and framed result stream.
+firmware rung is the serial-dead fixed-window RAM fallback and its beep codes.

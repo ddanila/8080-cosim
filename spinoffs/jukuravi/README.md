@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D0 serial handshake guarded; RAM survey next.**
+Status: **EXECUTION STARTED — D0 serial RAM survey guarded; beep fallback next.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -184,6 +184,19 @@ A Nano is sufficient for every stage except the optional bus-master stage
      PITs, RAM decays silently during ROM-only loops. The diag ROM
      replicates the BIOS timer init early, and the survey includes a
      retention pass (write, wait, re-read), not just a march.
+     **Serial-survey simulation checkpoint implemented:** the fifth exact
+     8 KiB image stays in mode 0 and surveys every page from `40` through `FF`
+     with `00`, `FF`, low-address, inverse-address, and `55` patterns, including
+     an approximately 20 ms retention interval and a cross-page alias probe.
+     Each page executes identical traffic and emits a framed page/failure-mask
+     record. The shared host decoder
+     groups bad pages by D84–D91 data bit and chooses the largest contiguous
+     all-bits-good window. Full-range cosim proves pristine RAM and a combined
+     stuck-low/stuck-high cell fault plus a two-page address alias; the vm80a top proves the identical loop
+     body against clean and forced-D87 physical DRAM cells. Exact bytes,
+     checksum, traffic counts, and bounded HDL-fixture scope are documented in
+     `firmware/README.md`. The fixed-window beep-only fallback for a missing
+     external ACK is still the next D0 sub-rung.
   5. **Everything else:** ROM checksum (the firmware's own block-1
      convention, `docs/cosim-runtime-reference.md`), PPI/PIT/PIC
      register-wiggle tests, framebuffer test pattern (needs RAM).
@@ -268,23 +281,23 @@ transitions; the HDL unit guard proves the same intermediate status around its
 8N1 shifter. The model is deliberately limited to the async slice needed by the
 harness; sync/parity and physical baud timing remain outside this step.
 
-The alive, CPU, and local-8251 diagnostic-ROM rungs now run under cosim and the
-vm80a-based HDL twin, including their injected failure paths, while the D57
-beeper path has its own waveform/connectivity guard. The next implementation
-step is the stack-free mode-0 RAM survey and framed block-result stream.
+The alive, CPU, serial, and mode-0 RAM-survey diagnostic-ROM rungs now run under
+cosim and the vm80a-based HDL twin, including injected USART, protocol, and
+bit-sliced RAM failure paths, while the D57 beeper path has its own
+waveform/connectivity guard. The next implementation step is the serial-dead
+fixed-window RAM fallback and beep vocabulary.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
   twin (`sync/cosim_check.sh` precedent);
 - the host tool is developed against cosim's pty and reused unchanged on the
   bench;
-- fault injection is trivial in the emulator (stuck RAM bit, dead PPI, bad
-  checksum) — each diagnosis is proven correct before any EPROM is burned.
-  Make it **scriptable, not manual**: cosim grows a fault config (e.g.
-  `JUKU_FAULT="ram_bit:3:rows:0x80-0xFF"`, `"8251:dead"`,
-  `"rom:checksum"`), and a CI test matrix asserts that every fault class
-  yields exactly its intended verdict — diagnosis correctness becomes a
-  regression suite that runs on every commit, not a one-time exercise.
+- fault injection is scriptable rather than manual. Cosim now accepts
+  `JUKU_USART_FAULT=tx_stuck`,
+  `JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH`, and
+  `JUKU_RAM_ALIAS=PAGE_A:PAGE_B`; the D0 matrix asserts their exact protocol
+  masks and host window verdicts. Dead PPI, ROM-checksum, row/column-shaped,
+  and later peripheral faults remain additions to the same regression model.
 
 Per the commons contract, the 8251 model lands in root `cosim/`, not here —
 this spin-off consumes it, and any bench finding it produces flows back to

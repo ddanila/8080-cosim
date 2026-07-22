@@ -28,6 +28,8 @@
 //        may be supplied instead. JUKU_USART_TRANSFER_CYCLES controls the
 //        holding-to-shift delay; JUKU_USART_BYTE_CYCLES controls frame time.
 //        JUKU_USART_FAULT=tx_stuck holds the transmit input register full.
+// RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte;
+//        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,6 +71,25 @@ static unsigned long fdc_data_reads, stop_fdc_data_reads;
 static unsigned long fdc_last_cyc;
 static int           timing_log = 0;
 static int           io_trace = 0;
+static int           ram_fault_enabled = 0;
+static uint16_t      ram_fault_addr = 0;
+static uint8_t       ram_fault_stuck_low = 0;
+static uint8_t       ram_fault_stuck_high = 0;
+static int           ram_alias_enabled = 0;
+static uint8_t       ram_alias_page_a = 0;
+static uint8_t       ram_alias_page_b = 0;
+
+static uint8_t apply_ram_fault(uint16_t address, uint8_t value) {
+  if (!ram_fault_enabled || address != ram_fault_addr) return value;
+  return (uint8_t)((value & (uint8_t)~ram_fault_stuck_low) |
+                   ram_fault_stuck_high);
+}
+
+static uint16_t map_ram_address(uint16_t address) {
+  if (ram_alias_enabled && (address >> 8) == ram_alias_page_b)
+    return (uint16_t)(((uint16_t)ram_alias_page_a << 8) | (address & 0xFF));
+  return address;
+}
 
 // --- minimal 8251 USART + PTY transport (opt-in via JUKU_USART_PTY) -------
 // The diagnostic-ROM path needs only the asynchronous 8-bit mode/command
@@ -275,7 +296,7 @@ static uint8_t rb(void* u, uint16_t a) {
   int ov = overlay(a, &idx);
   if (ov == 1) v = rom[idx];
   else if (ov == 2) v = cart_enabled ? cart[a - 0x4000] : 0xFF;
-  else v = ram[a];
+  else v = apply_ram_fault(a, ram[map_ram_address(a)]);
   if (rdtrace_fp) {
     fprintf(rdtrace_fp, "%04x %02x\n", a, v);
     if (rdtrace_limit && ++rdtrace_n >= rdtrace_limit) { fclose(rdtrace_fp); rdtrace_fp = NULL; }
@@ -382,7 +403,7 @@ static void wb(void* u, uint16_t a, uint8_t v) {
   // ROM. High-ROM and cartridge windows remain read-only overlays; allowing
   // those writes corrupts the independently guarded Monitor 3.3 framebuffer.
   if (ov && !(mode == 0 && a <= 0x3FFF)) return;
-  ram[a] = v;
+  ram[map_ram_address(a)] = apply_ram_fault(a, v);
   wpage[a >> 8]++;
   if (a >= VRAM_BASE) {            // for CI: stop+dump after N video writes (match HDL)
     if (g_vw == 0) {
@@ -545,6 +566,13 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "mode=%d\n", mode);
   fprintf(state_out, "portc=%02X\n", portc);
   fprintf(state_out, "mode_switches=%lu\n", mode_switches);
+  fprintf(state_out, "ram_fault_enabled=%d\n", ram_fault_enabled);
+  fprintf(state_out, "ram_fault_addr=%04X\n", ram_fault_addr);
+  fprintf(state_out, "ram_fault_stuck_low=%02X\n", ram_fault_stuck_low);
+  fprintf(state_out, "ram_fault_stuck_high=%02X\n", ram_fault_stuck_high);
+  fprintf(state_out, "ram_alias_enabled=%d\n", ram_alias_enabled);
+  fprintf(state_out, "ram_alias_page_a=%02X\n", ram_alias_page_a);
+  fprintf(state_out, "ram_alias_page_b=%02X\n", ram_alias_page_b);
   fprintf(state_out, "kbd_pos=%d\n", kbd_pos);
   fprintf(state_out, "kbd_phase=%d\n", kbd_phase);
   fprintf(state_out, "kbd_col=%02X\n", kbd_col);
@@ -628,6 +656,8 @@ int main(int argc, char** argv) {
   const char* usart_fault = getenv("JUKU_USART_FAULT");
   const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
+  const char* ram_fault = getenv("JUKU_RAM_FAULT");
+  const char* ram_alias = getenv("JUKU_RAM_ALIAS");
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
     usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
     if (!usart.transfer_cycles) usart.transfer_cycles = 1;
@@ -642,6 +672,39 @@ int main(int argc, char** argv) {
       return 2;
     }
     usart.fault_tx_stuck = 1;
+  }
+  if (ram_fault && ram_fault[0]) {
+    unsigned address, stuck_low, stuck_high;
+    char trailing;
+    if (sscanf(ram_fault, "%x:%x:%x%c", &address, &stuck_low, &stuck_high,
+               &trailing) != 3 || address > 0xFFFF || stuck_low > 0xFF ||
+        stuck_high > 0xFF || (stuck_low & stuck_high)) {
+      fprintf(stderr,
+              "invalid JUKU_RAM_FAULT=%s (expected ADDR:STUCK_LOW:STUCK_HIGH)\n",
+              ram_fault);
+      return 2;
+    }
+    ram_fault_enabled = 1;
+    ram_fault_addr = (uint16_t)address;
+    ram_fault_stuck_low = (uint8_t)stuck_low;
+    ram_fault_stuck_high = (uint8_t)stuck_high;
+    fprintf(stderr, "[RAM] fault address=0x%04X stuck-low=0x%02X stuck-high=0x%02X\n",
+            ram_fault_addr, ram_fault_stuck_low, ram_fault_stuck_high);
+  }
+  if (ram_alias && ram_alias[0]) {
+    unsigned page_a, page_b;
+    char trailing;
+    if (sscanf(ram_alias, "%x:%x%c", &page_a, &page_b, &trailing) != 2 ||
+        page_a > 0xFF || page_b > 0xFF || page_a == page_b) {
+      fprintf(stderr, "invalid JUKU_RAM_ALIAS=%s (expected distinct PAGE_A:PAGE_B)\n",
+              ram_alias);
+      return 2;
+    }
+    ram_alias_enabled = 1;
+    ram_alias_page_a = (uint8_t)page_a;
+    ram_alias_page_b = (uint8_t)page_b;
+    fprintf(stderr, "[RAM] alias logical page 0x%02X -> physical page 0x%02X\n",
+            ram_alias_page_b, ram_alias_page_a);
   }
   if (env_enabled(usart_pty) && usart_open_transport(usart_pty) != 0) {
     fprintf(stderr, "JUKU_USART_PTY=%s could not be opened: %s\n", usart_pty, strerror(errno));

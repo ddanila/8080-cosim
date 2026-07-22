@@ -63,12 +63,12 @@ def emit_status_wait(
     return timeout_offset
 
 
-def emit_train(asm: Assembler) -> int:
+def emit_train(asm: Assembler, *, failure_label: str = "serial_dead") -> int:
     """The local-test 55 is byte one; emit the remaining train bytes."""
     asm.emit(0x16, TRAIN_LENGTH - 1)  # MVI D,n
     asm.label("train_next")
     timeout = emit_status_wait(
-        asm, stem="train_tx", mask=0x01, failure_label="serial_dead"
+        asm, stem="train_tx", mask=0x01, failure_label=failure_label
     )
     asm.mvi_a(USART_TEST_BYTE)
     asm.out(USART_DATA)
@@ -77,36 +77,45 @@ def emit_train(asm: Assembler) -> int:
     return timeout
 
 
-def emit_table_tx(asm: Assembler, table_label: str, count: int) -> list[int]:
+def emit_table_tx(
+    asm: Assembler,
+    table_label: str,
+    count: int,
+    *,
+    stem: str = "banner",
+    failure_label: str = "serial_dead",
+) -> list[int]:
     label_address(asm, 0x21, table_label)  # LXI H,table
     asm.emit(0x16, count)                 # MVI D,count
-    asm.label("banner_next")
+    asm.label(f"{stem}_next")
     timeout = emit_status_wait(
-        asm, stem="banner_tx", mask=0x01, failure_label="serial_dead"
+        asm, stem=f"{stem}_tx", mask=0x01, failure_label=failure_label
     )
     asm.emit(0x7E)       # MOV A,M
     asm.out(USART_DATA)
     asm.emit(0x23, 0x15)  # INX H / DCR D
-    asm.jump(0xC2, "banner_next")
+    asm.jump(0xC2, f"{stem}_next")
     return [timeout]
 
 
-def emit_ack_rx(asm: Assembler, count: int) -> list[int]:
+def emit_ack_rx(
+    asm: Assembler, count: int, *, failure_label: str = "serial_dead"
+) -> list[int]:
     label_address(asm, 0x21, "ack_expected")
     asm.emit(0x16, count)
     asm.label("ack_next")
     timeout = emit_status_wait(
-        asm, stem="ack_rx", mask=0x02, failure_label="serial_dead"
+        asm, stem="ack_rx", mask=0x02, failure_label=failure_label
     )
     inp(asm, USART_DATA)
     asm.emit(0xBE)  # CMP M
-    asm.jump(0xC2, "serial_dead")
+    asm.jump(0xC2, failure_label)
     asm.emit(0x23, 0x15)  # INX H / DCR D
     asm.jump(0xC2, "ack_next")
     return [timeout]
 
 
-def emit_serial_ok(asm: Assembler) -> int:
+def emit_serial_ok(asm: Assembler, *, halt: bool = True) -> int:
     emit_failure_tone(asm, SERIAL_OK_TONE_DIVISOR)
     delay_offset = asm.pc + 1
     asm.lxi_b(SERIAL_OK_DELAY_COUNT)
@@ -117,7 +126,8 @@ def emit_serial_ok(asm: Assembler) -> int:
     asm.out(0x1B)
     asm.mvi_a(0x01)
     asm.out(0x19)
-    asm.emit(0x76)
+    if halt:
+        asm.emit(0x76)
     return delay_offset
 
 

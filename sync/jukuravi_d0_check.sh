@@ -10,6 +10,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_alive.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_cpu.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_ram.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -21,6 +22,8 @@ python3 tests/jukuravi_d0_usart_local_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-usart-local.bin
 python3 tests/jukuravi_d0_serial_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-serial.bin
+python3 tests/jukuravi_d0_ram_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-ram.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 python3 - "$tmp/success.hex" "$tmp/failure.hex" <<'PY'
@@ -162,6 +165,65 @@ for fixture in valid malformed timeout; do
   printf '%s\n' "$hdl_out"
   grep -q "JUKURAVI-D0-SERIAL-HDL: PASS" <<<"$hdl_out"
   if grep -q "JUKURAVI-D0-SERIAL-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+python3 - "$tmp/ram.hex" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "spinoffs/jukuravi/firmware"))
+import build_d0_alive
+import build_d0_ram
+
+image, metadata = build_d0_ram.build()
+fixture = bytearray(image + bytes([0x76]) * 8192)
+for offset in (
+    build_d0_alive.DELAY_COUNT_OFFSET,
+    metadata["serial_ok_delay_offset"],
+    metadata["retention_delay_offset"],
+):
+    fixture[offset] = 1
+    fixture[offset + 1] = 0
+# One page executes the exact survey loop body through the full DRAM bank.
+fixture[metadata["end_page_offset"]] = build_d0_ram.SURVEY_START_PAGE
+fixture[metadata["alias_end_page_offset"]] = build_d0_ram.SURVEY_START_PAGE
+Path(sys.argv[1]).write_text("\n".join(f"{byte:02x}" for byte in fixture) + "\n")
+PY
+read -r ram_success_pc ram_checksum ram_banner_crc ram_ack_crc ram_clean_crc ram_fault_crc < <(
+  PYTHONPATH=spinoffs/jukuravi/firmware:spinoffs/jukuravi python3 - <<'PY'
+import build_d0_ram
+import protocol
+
+_, metadata = build_d0_ram.build()
+clean = protocol.encode_frame(protocol.TYPE_RAM_BLOCK, bytes((0x40, 0x00)))[-1]
+fault = protocol.encode_frame(protocol.TYPE_RAM_BLOCK, bytes((0x40, 0x08)))[-1]
+print(
+    f"{metadata['success_halt']:04x} {metadata['checksum']:04x} "
+    f"{metadata['banner'][-1]:02x} {metadata['ack'][-1]:02x} "
+    f"{clean:02x} {fault:02x}"
+)
+PY
+)
+iverilog -g2012 -o "$tmp/jukuravi_d0_ram_tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
+  hdl/sim/jukuravi_d0_ram_tb.v
+for fixture in clean fault; do
+  block_crc=$ram_clean_crc
+  args=(+rom="$tmp/ram.hex" +success="$ram_success_pc" \
+        +checksum="$ram_checksum" +banner_crc="$ram_banner_crc" \
+        +ack_crc="$ram_ack_crc")
+  if [[ $fixture == fault ]]; then
+    block_crc=$ram_fault_crc
+    args+=(+inject_fault)
+  fi
+  args+=(+block_crc="$block_crc")
+  hdl_out=$(vvp "$tmp/jukuravi_d0_ram_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-RAM-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-RAM-HDL: FAIL" <<<"$hdl_out"; then
     exit 1
   fi
 done

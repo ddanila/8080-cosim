@@ -9,6 +9,9 @@ SYNC = bytes((0xA5, 0x5A))
 PROTOCOL_VERSION = 1
 TYPE_BANNER = 0x01
 TYPE_ACK = 0x81
+TYPE_RAM_BEGIN = 0x10
+TYPE_RAM_BLOCK = 0x11
+TYPE_RAM_END = 0x12
 MAX_PAYLOAD = 255
 
 
@@ -49,6 +52,97 @@ def encode_frame(record_type: int, payload: bytes) -> bytes:
 class Frame:
     record_type: int
     payload: bytes
+
+
+@dataclass(frozen=True)
+class RamWindow:
+    start: int
+    end: int  # exclusive; may be 0x10000
+
+    @property
+    def length(self) -> int:
+        return self.end - self.start
+
+
+@dataclass(frozen=True)
+class RamSurvey:
+    version: int
+    pattern_set: int
+    start_page: int
+    end_page: int
+    masks: tuple[int, ...]
+    bad_pages_by_bit: tuple[tuple[int, ...], ...]
+    largest_good_window: RamWindow | None
+
+
+def decode_ram_survey(frames: list[Frame]) -> RamSurvey:
+    """Validate one complete ordered RAM survey and derive its host verdict."""
+    begin_index = next(
+        (index for index, frame in enumerate(frames) if frame.record_type == TYPE_RAM_BEGIN),
+        None,
+    )
+    if begin_index is None:
+        raise ValueError("RAM_BEGIN record is missing")
+    begin = frames[begin_index]
+    if len(begin.payload) != 4:
+        raise ValueError("RAM_BEGIN payload length is not four")
+    version, start_page, end_page, pattern_set = begin.payload
+    if start_page > end_page:
+        raise ValueError("RAM survey page range is reversed")
+
+    page_count = end_page - start_page + 1
+    block_frames = frames[begin_index + 1 : begin_index + 1 + page_count]
+    if len(block_frames) != page_count:
+        raise ValueError("RAM survey block records are incomplete")
+    masks: list[int] = []
+    for index, frame in enumerate(block_frames):
+        expected_page = start_page + index
+        if frame.record_type != TYPE_RAM_BLOCK or len(frame.payload) != 2:
+            raise ValueError(f"RAM block {expected_page:02X} has wrong type or length")
+        page, mask = frame.payload
+        if page != expected_page:
+            raise ValueError(
+                f"RAM block page {page:02X} is out of order; expected {expected_page:02X}"
+            )
+        masks.append(mask)
+
+    end_index = begin_index + 1 + page_count
+    if end_index >= len(frames):
+        raise ValueError("RAM_END record is missing")
+    end = frames[end_index]
+    if end != Frame(TYPE_RAM_END, bytes((start_page, end_page))):
+        raise ValueError("RAM_END does not match RAM_BEGIN range")
+
+    bad_pages_by_bit = tuple(
+        tuple(start_page + index for index, mask in enumerate(masks) if mask & (1 << bit))
+        for bit in range(8)
+    )
+    best_start: int | None = None
+    best_length = 0
+    run_start: int | None = None
+    for index, mask in enumerate((*masks, 0xFF)):
+        if mask == 0 and run_start is None:
+            run_start = index
+        elif mask != 0 and run_start is not None:
+            run_length = index - run_start
+            if run_length > best_length:
+                best_start, best_length = run_start, run_length
+            run_start = None
+    largest = None
+    if best_start is not None:
+        largest = RamWindow(
+            (start_page + best_start) << 8,
+            (start_page + best_start + best_length) << 8,
+        )
+    return RamSurvey(
+        version=version,
+        pattern_set=pattern_set,
+        start_page=start_page,
+        end_page=end_page,
+        masks=tuple(masks),
+        bad_pages_by_bit=bad_pages_by_bit,
+        largest_good_window=largest,
+    )
 
 
 class StreamDecoder:
