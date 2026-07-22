@@ -3,9 +3,9 @@
 "Jukuravi" = Estonian for "Juku-therapy": the harness that examines and
 treats a sick board.
 
-Status date: 2026-07-22.
+Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D0 alive, CPU, and local 8251 images guarded; external handshake next.**
+Status: **EXECUTION STARTED — D0 serial handshake guarded; RAM survey next.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -137,6 +137,19 @@ A Nano is sufficient for every stage except the optional bus-master stage
      The HDL fixture drives that connector input plus the already-documented
      unresolved upstream 16 MHz rail boundary; D104 and the modeled
      D103/D57/D11 clock chain remain in circuit.
+     **External-link simulation checkpoint implemented:** the fourth exact
+     8 KiB image extends the first `55` into a 16-byte training run, emits a
+     self-delimiting `A5 5A` banner carrying protocol version, ROM version, and
+     full-image CRC-16, and accepts only the matching CRC-8-protected ACK under
+     bounded register-only waits. A valid ACK gives a short nominal 2 kHz
+     serial-confirmed beep; malformed or missing ACK gives a continuous
+     nominal 125 Hz serial-dead tone. Cosim proves valid, malformed, complete
+     timeout, local-transmitter-fault, and CPU-fault paths through a PTY. The
+     full vm80a top additionally shifts valid and corrupt ACKs from X3 `SIN`
+     through D104 into D11 and proves the timeout path, with zero RAM writes.
+     Exact wire bytes, checksum exclusions, hashes, and guard details are in
+     `firmware/README.md`; this remains a simulation checkpoint, not bench-burn
+     authorization.
   4. **RAM survey — find usable windows, don't just fail.** The populated
      bank is bit-sliced: D84–D91 (К565РУ5, 64K×1) each hold ONE BIT of
      every byte across the whole 64 KiB (`docs/hardware-map.md`) — no chip
@@ -258,7 +271,7 @@ harness; sync/parity and physical baud timing remain outside this step.
 The alive, CPU, and local-8251 diagnostic-ROM rungs now run under cosim and the
 vm80a-based HDL twin, including their injected failure paths, while the D57
 beeper path has its own waveform/connectivity guard. The next implementation
-step is the external `55` train, version/checksum banner, and Nano ack handshake.
+step is the stack-free mode-0 RAM survey and framed block-result stream.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

@@ -38,14 +38,17 @@ def inp(asm: Assembler, port: int) -> None:
     asm.emit(0xDB, port)
 
 
-def compare_masked(asm: Assembler, mask: int, expected: int) -> None:
+def compare_masked(
+    asm: Assembler, mask: int, expected: int, *, failure_label: str = "usart_fail"
+) -> None:
     asm.emit(0xE6, mask)      # ANI mask
     asm.emit(0xFE, expected)  # CPI expected
-    asm.jump(0xC2, "usart_fail")  # JNZ
+    asm.jump(0xC2, failure_label)  # JNZ
 
 
 def emit_timeout_wait(
-    asm: Assembler, *, label: str, mask: int, done_label: str
+    asm: Assembler, *, label: str, mask: int, done_label: str,
+    failure_label: str = "usart_fail",
 ) -> int:
     """Poll a status bit with BC only; return the timeout immediate offset."""
     timeout_offset = asm.pc + 1
@@ -58,12 +61,14 @@ def emit_timeout_wait(
     asm.emit(0x78)             # MOV A,B
     asm.emit(0xB1)             # ORA C
     asm.jump(0xC2, label)      # JNZ poll
-    asm.jump(0xC3, "usart_fail")
+    asm.jump(0xC3, failure_label)
     asm.label(done_label)
     return timeout_offset
 
 
-def emit_local_usart_test(asm: Assembler) -> list[int]:
+def emit_local_usart_test(
+    asm: Assembler, *, failure_label: str = "usart_fail"
+) -> list[int]:
     # Recover a known mode-instruction state even if D11 did not see a clean
     # board reset: sync mode + two sync bytes + internal-reset command.
     for value in (0x00, 0x00, 0x00, 0x40, USART_MODE, USART_COMMAND):
@@ -72,14 +77,14 @@ def emit_local_usart_test(asm: Assembler) -> list[int]:
 
     # At rest both the CPU-side holding register and transmitter must be empty.
     inp(asm, USART_CONTROL)
-    compare_masked(asm, 0x05, 0x05)
+    compare_masked(asm, 0x05, 0x05, failure_label=failure_label)
 
     # Keep D57 channel 0 stopped until this read, making the holding-full state
     # observable before the first TxC edge transfers the byte to the shifter.
     asm.mvi_a(USART_TEST_BYTE)
     asm.out(USART_DATA)
     inp(asm, USART_CONTROL)
-    compare_masked(asm, 0x05, 0x00)
+    compare_masked(asm, 0x05, 0x00, failure_label=failure_label)
 
     # D57 channel 0: binary mode 2, LSB+MSB, divisor 8. With the source-proved
     # nominal 1.23 MHz input and the 8251 x16 mode this is approximately 9600.
@@ -91,18 +96,20 @@ def emit_local_usart_test(asm: Assembler) -> list[int]:
     asm.out(PIT_BAUD_COUNT)
 
     timeout_offsets = [emit_timeout_wait(
-        asm, label="wait_tx_ready", mask=0x01, done_label="tx_ready_seen"
+        asm, label="wait_tx_ready", mask=0x01, done_label="tx_ready_seen",
+        failure_label=failure_label,
     )]
     # TxRDY must rise while TxEMPTY remains low: the holding byte moved into
     # the active shifter rather than disappearing or remaining stuck.
     inp(asm, USART_CONTROL)
-    compare_masked(asm, 0x05, 0x01)
+    compare_masked(asm, 0x05, 0x01, failure_label=failure_label)
 
     timeout_offsets.append(emit_timeout_wait(
-        asm, label="wait_tx_empty", mask=0x04, done_label="tx_empty_seen"
+        asm, label="wait_tx_empty", mask=0x04, done_label="tx_empty_seen",
+        failure_label=failure_label,
     ))
     inp(asm, USART_CONTROL)
-    compare_masked(asm, 0x05, 0x05)
+    compare_masked(asm, 0x05, 0x05, failure_label=failure_label)
     return timeout_offsets
 
 

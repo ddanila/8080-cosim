@@ -9,6 +9,7 @@ trap 'rm -rf "$tmp"' EXIT
 python3 spinoffs/jukuravi/firmware/build_d0_alive.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_cpu.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -18,6 +19,8 @@ python3 tests/jukuravi_d0_cpu_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-cpu.bin
 python3 tests/jukuravi_d0_usart_local_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-usart-local.bin
+python3 tests/jukuravi_d0_serial_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-serial.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 python3 - "$tmp/success.hex" "$tmp/failure.hex" <<'PY'
@@ -104,6 +107,61 @@ for fixture in success stuck cts-blocked cpu-bad; do
   printf '%s\n' "$hdl_out"
   grep -q "JUKURAVI-D0-USART-LOCAL-HDL: PASS" <<<"$hdl_out"
   if grep -q "JUKURAVI-D0-USART-LOCAL-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+python3 - "$tmp/serial-valid.hex" "$tmp/serial-timeout.hex" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "spinoffs/jukuravi/firmware"))
+import build_d0_alive
+import build_d0_serial
+
+image, metadata = build_d0_serial.build()
+valid = bytearray(image + bytes([0x76]) * 8192)
+valid[build_d0_alive.DELAY_COUNT_OFFSET] = 1
+valid[build_d0_alive.DELAY_COUNT_OFFSET + 1] = 0
+ok_delay = metadata["serial_ok_delay_offset"]
+valid[ok_delay] = 1
+valid[ok_delay + 1] = 0
+timeout = bytearray(valid)
+ack_timeout = metadata["ack_timeout_offsets"][0]
+timeout[ack_timeout] = 1
+timeout[ack_timeout + 1] = 0
+for path, data in zip(map(Path, sys.argv[1:]), (valid, timeout)):
+    path.write_text("\n".join(f"{byte:02x}" for byte in data) + "\n")
+PY
+read -r serial_ok_pc serial_dead_pc serial_checksum banner_crc ack_crc < <(
+  PYTHONPATH=spinoffs/jukuravi/firmware:spinoffs/jukuravi python3 - <<'PY'
+import build_d0_serial
+_, metadata = build_d0_serial.build()
+print(
+    f"{metadata['serial_ok_halt']:04x} {metadata['serial_dead_halt']:04x} "
+    f"{metadata['checksum']:04x} {metadata['banner'][-1]:02x} "
+    f"{metadata['ack'][-1]:02x}"
+)
+PY
+)
+iverilog -g2012 -o "$tmp/jukuravi_d0_serial_tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
+  hdl/sim/jukuravi_d0_serial_tb.v
+for fixture in valid malformed timeout; do
+  rom_fixture=valid
+  args=(+rom="$tmp/serial-$rom_fixture.hex" +serial_ok="$serial_ok_pc" \
+        +serial_dead="$serial_dead_pc" +checksum="$serial_checksum" \
+        +banner_crc="$banner_crc" +ack_crc="$ack_crc")
+  [[ $fixture == malformed ]] && args+=(+malformed)
+  if [[ $fixture == timeout ]]; then
+    args[0]=+rom="$tmp/serial-timeout.hex"
+    args+=(+timeout)
+  fi
+  hdl_out=$(vvp "$tmp/jukuravi_d0_serial_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-SERIAL-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-SERIAL-HDL: FAIL" <<<"$hdl_out"; then
     exit 1
   fi
 done

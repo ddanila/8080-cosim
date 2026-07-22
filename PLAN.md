@@ -1,6 +1,6 @@
 # PLAN — working physical Juku recreation
 
-Status date: **2026-07-22**.
+Status date: **2026-07-23**.
 
 Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The promoted zero-open
 main-board route and deterministic Gerber/drill ZIP pass the machine package
@@ -1583,9 +1583,17 @@ an active `/Q1` feedback output.
    likewise assert active-low CTS before reset because an open line receiver
    leaves transmission disabled; an HDL inactive-CTS injection proves that case
    takes the bounded 500 Hz path. This stage needs no received byte or ack.
-   The external `55` train, version/checksum banner, and Nano ack are the next
-   harness rung; USART sync/parity modes and physical baud timing remain outside
-   the bounded model.
+   The next exact-hash-guarded image extends that first byte into a 16-byte `55`
+   training run, emits a self-delimiting CRC-8 record carrying protocol/ROM
+   versions and a whole-image CRC-16, and accepts only the matching framed ACK
+   under bounded register-only waits. Cosim proves valid ACK, corrupt ACK, full
+   timeout, local-TX failure, and CPU failure through a PTY. The vm80a full top
+   shifts valid and corrupt ACK bits from X3 `SIN` through D104 into D11 and
+   separately proves timeout; all paths write no RAM. Success gives a short
+   nominal 2 kHz serial-confirmed beep, while missing/malformed ACK gives a
+   continuous nominal 125 Hz serial-dead tone. USART sync/parity modes and
+   physical baud timing remain outside the bounded model. The stack-free mode-0
+   RAM survey and framed result stream are the next harness rung.
 
 ## Physical bring-up sequence
 

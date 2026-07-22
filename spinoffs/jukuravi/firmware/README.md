@@ -1,14 +1,14 @@
 # Jukuravi diagnostic firmware
 
-Status date: 2026-07-22.
+Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–3A SIMULATION CHECKPOINT — ALIVE, CPU, AND LOCAL 8251 GUARDED**
+Status: **D0 RUNGS 1–3B SIMULATION CHECKPOINT — FRAMED EXTERNAL HANDSHAKE GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
 not read by these checkpoints. `diag-d0-alive.bin` isolates rung 1,
-`diag-d0-cpu.bin` adds rung 2, and `diag-d0-usart-local.bin` adds the local
-D11/8251 test that precedes an external serial handshake.
+`diag-d0-cpu.bin` adds rung 2, `diag-d0-usart-local.bin` isolates the local
+D11/8251 test, and `diag-d0-serial.bin` adds the external framed handshake.
 
 SHA256:
 
@@ -16,6 +16,7 @@ SHA256:
 dfd4327b2752a143fdbd4c199013e53dfb9dc2b9ea897379f3015b4cda92ec9c  diag-d0-alive.bin
 a9ca9d59a2a23891b90eb088e1b6901cc210baca30dc03c46c900048efdb67ec  diag-d0-cpu.bin
 c708f78adc9b87ba6dfc926314f3937798814d79f1e66512c9ae8d1db8b03a7f  diag-d0-usart-local.bin
+e9bebf4cbcca4556a779eef3fcb42f69706892df28a2cc93fc1f3a5d235eb2e0  diag-d0-serial.bin
 ```
 
 ## Build and guard
@@ -24,13 +25,15 @@ c708f78adc9b87ba6dfc926314f3937798814d79f1e66512c9ae8d1db8b03a7f  diag-d0-usart-
 python3 spinoffs/jukuravi/firmware/build_d0_alive.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_cpu.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_usart_local.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_serial.py --check
 sync/jukuravi_d0_check.sh
 ```
 
 The builders are the sources of truth and deterministically emit the committed
 images. The alive-only executed code is 30 bytes. The combined CPU image
-contains 382 bytes; the local-USART image contains 509. Their identities are
-stored at `0x1F00`, and unused space is fail-closed `HLT` fill.
+contains 382 bytes; the local-USART image contains 509; the serial image
+contains 684. Their identities are stored at `0x1F00`, and unused space is
+fail-closed `HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
 
@@ -134,9 +137,54 @@ then observes at least ten resulting baud edges, exact I/O, IFF clear, and zero
 RAM writes. All paths remain free of CALL, RET, PUSH, POP, and memory-writing
 instructions.
 
+## Rung 3b: external framed handshake
+
+The serial image preserves all predecessor tests, counts their first `55` as
+the first byte of a 16-byte training run, and then emits this self-delimiting
+record:
+
+```text
+A5 5A | type | length | payload | CRC-8/ATM
+banner: A5 5A 01 04 01 01 60 7A 4F
+ack:    A5 5A 81 04 01 01 60 7A A3
+```
+
+The banner payload is protocol version `01`, ROM version `01`, and big-endian
+ROM self-checksum `607A`. CRC-8/ATM uses polynomial `07`, initial value `00`,
+no reflection, and xor-out `00`, over type through payload. The shared
+`spinoffs/jukuravi/protocol.py` decoder discards noise or a corrupt candidate
+and resumes at the next `A5 5A`, so a host that attaches after reset can regain
+record alignment without session state.
+
+The self-checksum is CRC-16/CCITT-FALSE (polynomial `1021`, initial `FFFF`, no
+reflection, xor-out `0000`) across the entire 8,192-byte burn image. Its four
+stored checksum-byte copies and the two frame-CRC bytes derived from them are
+treated as zero during that calculation, explicitly avoiding direct and
+indirect fixed-point definitions. All other bytes—including executable code,
+identity, framing fields, and `HLT` fill—are covered. The ACK repeats the exact
+banner payload under type `81`; firmware compares all nine bytes.
+
+Every transmit wait, the final `TxEMPTY` wait, and every expected ACK byte use
+a fresh BC-only `FFFF` bound. A valid ACK selects a short nominal 2 kHz,
+approximately 0.125-second serial-confirmed beep and silence. Timeout or any
+wrong ACK byte selects a continuous nominal 125 Hz serial-dead tone, distinct
+from the continuous 500 Hz local-USART and 250 Hz CPU fault tones. The image
+reads immutable protocol tables from ROM through HL but never writes memory,
+uses the reset `SP` for nothing, and never enables interrupts.
+
+`tests/jukuravi_d0_serial_test.py` connects the exact image to a PTY, decodes
+the banner with the shared stream parser, sends its ACK, and checks the short
+confirmation path. It separately proves a corrupt ACK CRC, the complete ACK
+timeout, a stuck local transmitter, and the predecessor CPU fault, including
+exact output, terminal tones, unchanged `SP=0`, and zero RAM writes. The full
+vm80a `juku_top` fixture sends valid and corrupt ACK bits through X3 `SIN` and
+D104 into D11 and also proves timeout; it checks all 25 transmitted bytes,
+all nine received bytes where applicable, the physical baud chain, exact
+terminal path, IFF clear, and zero memory writes. Generated HDL fixtures
+shorten only the initial/confirmed tone delays and the timeout-case ACK count.
+
 The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The next
-firmware rung is the external `55` train, version/checksum banner, and Nano ack
-handshake.
+firmware rung is the stack-free mode-0 RAM survey and framed result stream.
