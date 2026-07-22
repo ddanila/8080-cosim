@@ -36,6 +36,9 @@ def main() -> int:
     wp2_ci = wp2["ci_run"]
     wp2_fixture = wp2["positive_fixture"]
     wp2_stats = wp2["measured_statistics"]
+    wp3 = data["wp3_synthetic_followup"]
+    wp3_ci = wp3["ci_run"]
+    wp3_fixture = wp3["fixture"]
     results = data["results"]
     synth = results["synth_ntsc"]
     context_commit = data["8080_cosim_context_commit"]
@@ -224,10 +227,54 @@ def main() -> int:
             and wp2_ci["synth_ntsc"] == "pass",
             f"run {wp2_ci['id']} at `{wp2_ci['head_sha'][:8]}`: full build + 5 CTests + synth_ntsc",
         ),
+        (
+            "WP3 synthetic Juku fixture is source-pinned",
+            wp3["fork_head_commit"] == wp3["commits"]["evidence_linked_fixture"]
+            and wp3["fork_head_commit"] in plan
+            and wp3["8080_cosim_source_commit"] in plan
+            and all(
+                re.fullmatch(r"[0-9a-f]{40}", commit) is not None
+                for commit in (
+                    wp3["fork_head_commit"],
+                    wp3["8080_cosim_source_commit"],
+                )
+            )
+            and all(
+                re.fullmatch(r"[0-9a-f]{64}", digest) is not None
+                for digest in wp3["artifact_sha256"].values()
+            ),
+            f"decoder `{wp3['fork_head_commit'][:8]}` consumes raster evidence `{wp3['8080_cosim_source_commit'][:8]}`",
+        ),
+        (
+            "WP3 ideal fixture carries the exact guarded raster contract",
+            wp3_fixture["sample_rate_hz"] == 8_000_000
+            and wp3_fixture["line_rate_hz"] == 15_625
+            and wp3_fixture["line_period_us"] == 64
+            and wp3_fixture["lines_per_frame"] == 313
+            and wp3_fixture["horizontal_sync_us"] == 5.04
+            and wp3_fixture["vertical_sync_us"] == 223
+            and wp3_fixture["active_start_absolute_line"] == 47
+            and wp3_fixture["active_start_receiver_line"] == 44
+            and wp3_fixture["active_lines"] == 241
+            and wp3_fixture["active_pixels"] == 320
+            and wp3_fixture["samples"] == 961_536
+            and wp3_fixture["bars_observed"] == wp3_fixture["bars_expected"],
+            "64 us x 313; 5.04/223 us sync; 320x241; 5/5 bars",
+        ),
+        (
+            "WP3 synthetic receiver CI preserves every route",
+            wp3_ci["conclusion"] == "success"
+            and wp3_ci["head_sha"] == wp3["fork_head_commit"]
+            and wp3_ci["full_rf_iq_build"] == "pass"
+            and wp3_ci["ctest_passed"] == 6
+            and wp3_ci["ctest_failed"] == 0
+            and wp3_ci["synth_ntsc"] == "pass",
+            f"run {wp3_ci['id']} at `{wp3_ci['head_sha'][:8]}`: full build + 6 CTests + synth_ntsc",
+        ),
     ]
     ok = all(result for _, result, _ in checks)
     status = (
-        "WP0 BASELINE + GENERIC BASEBAND WP1 + PROFILE RECEIVER WP2 GUARDED"
+        "WP0-WP2 + EVIDENCE-LINKED SYNTHETIC JUKU WP3 GUARDED"
         if ok
         else "DECODER BASELINE RECORD FAILED"
     )
@@ -239,10 +286,12 @@ def main() -> int:
         f"Status: **{status}**.",
         "",
         "This generated report records the CVBS-plan WP0 clean-checkout baseline and",
-        "the later fork-owned WP1/WP2 receiver follow-ups. It proves that the",
-        "recorded unmodified fork point builds and passes its upstream synthetic NTSC",
+        "the later fork-owned WP1/WP2 receiver follow-ups and the bounded WP3",
+        "synthetic Juku-timing fixture. The recorded unmodified fork point builds",
+        "and passes its upstream synthetic NTSC",
         "regression, then pins the float32/headless and explicit-profile E2E paths.",
-        "It makes no Juku-timing, physical-X7, framebuffer-agreement, or hardware claim.",
+        "The WP3 fixture consumes exact Juku raster evidence, but it makes no",
+        "physical-X7, framebuffer-agreement, or hardware claim.",
         "",
         "## Command",
         "",
@@ -268,6 +317,8 @@ def main() -> int:
         row(["Fork WP0 head", f"`{followup['fork_head_commit']}`"]),
         row(["Fork WP1 head", f"`{wp1['fork_head_commit']}`"]),
         row(["Fork WP2 head", f"`{wp2['fork_head_commit']}`"]),
+        row(["Fork WP3 synthetic head", f"`{wp3['fork_head_commit']}`"]),
+        row(["WP3 raster source", f"`{wp3['8080_cosim_source_commit']}`"]),
         row(["8080-cosim context", f"`{context_commit}`"]),
         row(["Host", data["host"]["os"]]),
         row(["CMake", data["host"]["cmake"]]),
@@ -332,6 +383,18 @@ def main() -> int:
             "42 s",
             "GitHub-hosted runner",
         ]),
+        row([
+            "synthetic Juku-timing E2E",
+            f"{wp3_fixture['line_rate_hz']} Hz / {wp3_fixture['lines_per_frame']} lines; 5/5 bars",
+            "included in CI",
+            "GitHub-hosted runner",
+        ]),
+        row([
+            "WP3 synthetic fork Linux CI",
+            f"full build + 6 CTests + synth_ntsc PASS ([run {wp3_ci['id']}]({wp3_ci['url']}))",
+            "46 s",
+            "GitHub-hosted runner",
+        ]),
         "",
         "The direct run reported 87 coasted lines and still recovered all seven",
         "golden color bars within the upstream tolerance.",
@@ -346,16 +409,18 @@ def main() -> int:
         "resolved in the decoder fork before treating GCC 15 warnings as a clean CI",
         "baseline.",
         "",
-        "## Boundaries after WP2",
+        "## Boundaries after the synthetic WP3 checkpoint",
         "",
     ])
-    lines.extend(f"- {item}" for item in wp2["scope"]["not_proved"])
+    lines.extend(f"- {item}" for item in wp3["scope"]["not_proved"])
     lines.extend([
         "",
         "WP0-WP2 are complete at their generic boundaries: the fork owns provenance,",
         "strict raw-float input, explicit timing profiles, measured lock telemetry,",
         "positive/negative generated fixtures, and green full-build/test CI. The",
-        "remaining items belong to Juku waveform/X7 integration or physical validation.",
+        "bounded WP3 fixture additionally proves receiver lock at the exact guarded",
+        "Juku raster timing without promoting it to a built-in preset. Physical pixel",
+        "slots, D34_SIG/X7 integration, and framebuffer validation remain open.",
         "",
     ])
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")

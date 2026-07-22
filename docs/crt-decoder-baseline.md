@@ -2,13 +2,15 @@
 
 Status date: **2026-07-22**.
 
-Status: **WP0 BASELINE + GENERIC BASEBAND WP1 + PROFILE RECEIVER WP2 GUARDED**.
+Status: **WP0-WP2 + EVIDENCE-LINKED SYNTHETIC JUKU WP3 GUARDED**.
 
 This generated report records the CVBS-plan WP0 clean-checkout baseline and
-the later fork-owned WP1/WP2 receiver follow-ups. It proves that the
-recorded unmodified fork point builds and passes its upstream synthetic NTSC
+the later fork-owned WP1/WP2 receiver follow-ups and the bounded WP3
+synthetic Juku-timing fixture. The recorded unmodified fork point builds
+and passes its upstream synthetic NTSC
 regression, then pins the float32/headless and explicit-profile E2E paths.
-It makes no Juku-timing, physical-X7, framebuffer-agreement, or hardware claim.
+The WP3 fixture consumes exact Juku raster evidence, but it makes no
+physical-X7, framebuffer-agreement, or hardware claim.
 
 ## Command
 
@@ -38,6 +40,9 @@ python3 scripts/report_crt_decoder_baseline.py
 | WP2 telemetry guards measured lock, timing, and levels | PASS | line/frame lock; 12.5 kHz, 62.5 Hz, 6 us, blank and 0..100 IRE bounds |
 | WP2 negative fixtures distinguish horizontal and frame loss | PASS | five generated failures; malformed vsync uniquely retains horizontal lock |
 | WP2 CI keeps all receiver paths green | PASS | run 29886839537 at `10bfa4b9`: full build + 5 CTests + synth_ntsc |
+| WP3 synthetic Juku fixture is source-pinned | PASS | decoder `b1d62c08` consumes raster evidence `eb4d6ab6` |
+| WP3 ideal fixture carries the exact guarded raster contract | PASS | 64 us x 313; 5.04/223 us sync; 320x241; 5/5 bars |
+| WP3 synthetic receiver CI preserves every route | PASS | run 29888769589 at `b1d62c08`: full build + 6 CTests + synth_ntsc |
 
 ## Recorded environment
 
@@ -49,6 +54,8 @@ python3 scripts/report_crt_decoder_baseline.py
 | Fork WP0 head | `feec5d7ac173fdc6389cd03a7da87eb175ccfc2e` |
 | Fork WP1 head | `d383beb3dd038154364fb76f993ad32d12fe2d44` |
 | Fork WP2 head | `10bfa4b9ae6c1ce071633459170b067fe3e2d91f` |
+| Fork WP3 synthetic head | `b1d62c085e416c80cff35d8a77a8fbc397eead51` |
+| WP3 raster source | `eb4d6ab6777db3f97306c9111e9c723c97dcf750` |
 | 8080-cosim context | `ae7918afe81024b462c8337dc23f509874e35e76` |
 | Host | Ubuntu resolute amd64 |
 | CMake | 4.2.3 |
@@ -68,6 +75,8 @@ python3 scripts/report_crt_decoder_baseline.py
 | non-NTSC profile E2E | 12500 Hz / 200 lines; 5/5 bars + measured JSON | included in CI | GitHub-hosted runner |
 | negative profile fixtures | 5/5 lock failures distinguished | included in CI | GitHub-hosted runner |
 | WP2 fork Linux CI | full build + 5 CTests + synth_ntsc PASS ([run 29886839537](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886839537)) | 42 s | GitHub-hosted runner |
+| synthetic Juku-timing E2E | 15625 Hz / 313 lines; 5/5 bars | included in CI | GitHub-hosted runner |
+| WP3 synthetic fork Linux CI | full build + 6 CTests + synth_ntsc PASS ([run 29888769589](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29888769589)) | 46 s | GitHub-hosted runner |
 
 The direct run reported 87 coasted lines and still recovered all seven
 golden color bars within the upstream tolerance.
@@ -81,13 +90,16 @@ These HUD-format warnings do not affect `synth_ntsc`, but they should be
 resolved in the decoder fork before treating GCC 15 warnings as a clean CI
 baseline.
 
-## Boundaries after WP2
+## Boundaries after the synthetic WP3 checkpoint
 
-- actual Juku timing values or a Juku receiver preset
-- physical Juku X7 voltage or loaded analog behavior
+- the unresolved shared-DRAM video-slot schedule or physical Juku pixels
+- D34_SIG, physical X7 voltage, or loaded analog behavior
 - agreement with a Juku framebuffer or physical capture
+- a built-in guessed Juku receiver preset
 
 WP0-WP2 are complete at their generic boundaries: the fork owns provenance,
 strict raw-float input, explicit timing profiles, measured lock telemetry,
 positive/negative generated fixtures, and green full-build/test CI. The
-remaining items belong to Juku waveform/X7 integration or physical validation.
+bounded WP3 fixture additionally proves receiver lock at the exact guarded
+Juku raster timing without promoting it to a built-in preset. Physical pixel
+slots, D34_SIG/X7 integration, and framebuffer validation remain open.

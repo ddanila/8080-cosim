@@ -160,6 +160,60 @@
       ]
     }
   },
+  "wp3_synthetic_followup": {
+    "fork_head_commit": "b1d62c085e416c80cff35d8a77a8fbc397eead51",
+    "8080_cosim_source_commit": "eb4d6ab6777db3f97306c9111e9c723c97dcf750",
+    "commits": {
+      "evidence_linked_fixture": "b1d62c085e416c80cff35d8a77a8fbc397eead51"
+    },
+    "artifact_sha256": {
+      "readme": "b4ce874782440a3ffc741ea2119ba687bee4b841ae2af771d4813c6b24a301d6",
+      "cmake": "512e74e4145bce9b3df94c8c603eb6a668473f7a0351fb93be8d10eca50e58e7",
+      "fixture_generator": "6f49c512bcbe5dd77d6bd5837e6e85ea67de3d4c2407d6a371c01dc213d57f56",
+      "e2e_driver": "520bd28309b076b31e42665e0368e902d59408c2fc311e782b8e79dd7142e7e2"
+    },
+    "fixture": {
+      "classification": "ideal five-bar Juku-timing receiver fixture, not a physical X7 waveform",
+      "sample_rate_hz": 8000000,
+      "line_rate_hz": 15625,
+      "line_period_us": 64,
+      "lines_per_frame": 313,
+      "frame_rate_hz": 49.920128,
+      "horizontal_sync_us": 5.04,
+      "vertical_sync_us": 223,
+      "fully_broad_sync_lines": 3,
+      "active_start_absolute_line": 47,
+      "active_start_receiver_line": 44,
+      "active_lines": 241,
+      "active_start_us": 16,
+      "active_width_us": 40,
+      "active_pixels": 320,
+      "fields": 6,
+      "samples": 961536,
+      "bars_expected": [0, 64, 128, 191, 255],
+      "bars_observed": [0, 64, 128, 191, 255]
+    },
+    "ci_run": {
+      "id": 29888769589,
+      "url": "https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29888769589",
+      "head_sha": "b1d62c085e416c80cff35d8a77a8fbc397eead51",
+      "job": "linux",
+      "conclusion": "success",
+      "full_rf_iq_build": "pass",
+      "ctest_passed": 6,
+      "ctest_failed": 0,
+      "synth_ntsc": "pass"
+    },
+    "scope": {
+      "proved": "The generic receiver locks to an ideal generated waveform using the exact ROM-programmed Juku raster timing and guarded D56 pulse widths, recovers five grayscale bars, and preserves all earlier regressions.",
+      "not_proved": [
+        "the unresolved shared-DRAM video-slot schedule or physical Juku pixels",
+        "D34_SIG, physical X7 voltage, or loaded analog behavior",
+        "agreement with a Juku framebuffer or physical capture",
+        "a built-in guessed Juku receiver preset"
+      ]
+    }
+  },
   "8080_cosim_context_commit": "ae7918afe81024b462c8337dc23f509874e35e76",
   "host": {
     "os": "Ubuntu resolute amd64",

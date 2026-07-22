@@ -293,6 +293,15 @@ front porches, 24 us/72-line blank intervals, and the D56 pulses. The resulting
 This closes raster timing, but not physical framebuffer slots or D34_SIG. See
 `video-pit-timing.md`.
 
+The decoder fork now consumes that bounded timing evidence in commit
+`b1d62c085e416c80cff35d8a77a8fbc397eead51`, explicitly pinned to source
+commit `eb4d6ab6777db3f97306c9111e9c723c97dcf750`. Its ideal five-bar waveform
+uses the exact 64 us/313-line raster and guarded 5.04 us/223 us D56 pulse
+widths. Linux CI run `29888769589` passes the full RF/IQ build, all six CTests,
+and the unchanged direct NTSC regression. This is a receiver-development
+fixture, not a built-in Juku preset or a claim about shared-DRAM pixels,
+D34_SIG, analog X7 voltage, or a physical capture.
+
 - [x] Add explicit HDL probes for the physical pixel and sync contributors instead
   of using the current abstract `vid_out` as X7.
 - [x] Drive D54/D55/D56/D34_SYNC through the physical structural path where
@@ -300,7 +309,7 @@ This closes raster timing, but not physical framebuffer slots or D34_SIG. See
 - [x] Export timestamped controlled-stimulus logic events for the bounded physical
   contributors, with unresolved fields machine-marked. A complete Juku waveform
   remains open.
-- [ ] Initially use a synthetic known-good Juku timing fixture to develop the
+- [x] Initially use a synthetic known-good Juku timing fixture to develop the
   receiver; keep it visibly distinct from the physical HDL result.
 - [ ] Replace the simulation-only framebuffer read port only after the
   shared-DRAM video-slot schedule is evidence-complete.

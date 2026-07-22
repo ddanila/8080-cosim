@@ -1407,7 +1407,14 @@ D54/D55 control/count bytes through `juku_top` with 8253 BCD and modes 1/2:
 the autonomous physical chain measures 15.625 kHz horizontal timing,
 313-line/49.920128 Hz frames, 320x241 active geometry, and the modeled D56 sync
 pulses. This closes digital raster timing only; shared-DRAM video slots,
-D34_SIG, fetched pixels, and X7 voltage remain open.
+D34_SIG, fetched pixels, and X7 voltage remain open. Decoder fork commit
+`b1d62c085e416c80cff35d8a77a8fbc397eead51`, pinned to this repository's
+`eb4d6ab6777db3f97306c9111e9c723c97dcf750` timing evidence, now exercises an
+explicitly synthetic five-bar Juku-timing waveform. Linux CI run `29888769589`
+passes the full application build, all six CTests, and the unchanged NTSC
+regression. This closes only the planned known-good receiver fixture: it is not
+a built-in Juku preset and makes no physical shared-DRAM, D34_SIG, X7-voltage,
+or framebuffer-agreement claim.
 
 1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
    slot timing is evidence-complete.
