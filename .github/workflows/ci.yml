@@ -164,6 +164,7 @@ jobs:
             kicad/check_d94_pullups.py \
             kicad/check_kp12_resistor_links.py \
             kicad/check_fdc_clock_mux.py \
+            kicad/photo_evidence.py \
             kicad/check_fdc_read_clock_toggle.py \
             kicad/check_fdc_unused_pins.py \
             kicad/check_fdc_recovery_counter.py \

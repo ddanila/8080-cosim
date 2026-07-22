@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 import re
 from pathlib import Path
+
+from photo_evidence import photo_sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,13 +63,7 @@ sources = {
 }
 photo_dir = ROOT / "ref/photos/dgsh5-109-009-e3"
 for name, expected in sources.items():
-    payload = (photo_dir / name).read_bytes()
-    if payload.startswith(b"version https://git-lfs.github.com/spec/v1\n"):
-        pointer = payload.decode("ascii")
-        match = re.search(r"^oid sha256:([0-9a-f]{64})$", pointer, re.MULTILINE)
-        actual = match.group(1) if match else "invalid-lfs-pointer"
-    else:
-        actual = hashlib.sha256(payload).hexdigest()
+    actual, _ = photo_sha256(photo_dir / name)
     if actual != expected:
         raise SystemExit(f"FDC RCLK: source hash changed for {name}: {actual}")
 

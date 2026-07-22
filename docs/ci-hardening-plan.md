@@ -4,6 +4,15 @@ Status date: **2026-07-20**. Handwritten execution plan, not a generated
 report. Owner: repo maintainer; any session (human or agent) may execute an
 item, but items are independent commits and CI must be green between them.
 
+## Progress
+
+- [x] 2. Shared LFS-aware photo-hash helper.
+- [ ] 1. One-command report regeneration.
+- [ ] 4. Timing expectations as data.
+- [ ] 3. CI-aware pre-push gate.
+- [ ] 5. Workflow concurrency groups.
+- [ ] 6. Narrow `reports.yml` path gates.
+
 ## Motivation
 
 On 2026-07-20 all three workflows were red for ~12 hours. Root causes, each
