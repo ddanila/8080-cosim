@@ -260,6 +260,7 @@ class HostSession:
         self.banner_payload: bytes | None = None
         self.survey: protocol.RamSurvey | None = None
         self.loader: dict[str, object] | None = None
+        self.nano_liveness: dict[str, object] | None = None
         self.attempts: list[dict[str, object]] = []
         self._attempt_number: int | None = None
         self._attempt_rx_start = 0
@@ -272,6 +273,7 @@ class HostSession:
         self.banner_payload = None
         self.survey = None
         self.loader = None
+        self.nano_liveness = None
         self._attempt_number = number
         self._attempt_rx_start = len(self.raw_rx)
         self._attempt_tx_start = len(self.raw_tx)
@@ -292,6 +294,7 @@ class HostSession:
                     self.nano_dtr_sequences_completed > self._attempt_dtr_start
                 ),
                 "loader": copy.deepcopy(self.loader),
+                "nano_liveness": copy.deepcopy(self.nano_liveness),
             }
         )
         self._attempt_number = None
@@ -322,6 +325,31 @@ class HostSession:
         write_all(self.fd, ack, deadline, "banner ACK")
         self.logs.tx(ack)
         self.raw_tx.extend(ack)
+
+    def _accept_nano_liveness(self, frame: protocol.Frame) -> None:
+        if self.banner_payload is not None:
+            raise SessionError("Nano liveness record arrived after the ROM banner")
+        if self.nano_liveness is not None:
+            raise SessionError("duplicate Nano liveness record")
+        if len(frame.payload) != 2:
+            raise SessionError("Nano liveness payload length is not two")
+        version, flags = frame.payload
+        if version != protocol.NANO_LIVENESS_VERSION:
+            raise SessionError(
+                f"Nano liveness version {version} != "
+                f"{protocol.NANO_LIVENESS_VERSION}"
+            )
+        if flags & ~protocol.NANO_LIVENESS_KNOWN_FLAGS:
+            raise SessionError("Nano liveness flags contain unknown bits")
+        if not flags & protocol.NANO_LIVENESS_ENABLED:
+            raise SessionError("Nano liveness record is not enabled")
+        self.nano_liveness = {
+            "version": version,
+            "flags_hex": f"{flags:02X}",
+            "reset_released": bool(flags & protocol.NANO_LIVENESS_RESET_RELEASED),
+            "clock_seen": bool(flags & protocol.NANO_LIVENESS_CLOCK_SEEN),
+            "mrdc_seen": bool(flags & protocol.NANO_LIVENESS_MRDC_SEEN),
+        }
 
     def _read_frames(self, deadline: float, context: str) -> list[protocol.Frame]:
         remaining = deadline - time.monotonic()
@@ -356,13 +384,19 @@ class HostSession:
             if remaining <= 0:
                 if self.banner_payload is None:
                     if self.frames:
+                        if self.nano_liveness is not None:
+                            raise SessionError(
+                                "timeout after Nano liveness but before session banner"
+                            )
                         raise SessionError(
                             "timeout after protocol frames but before session banner"
                         )
                     raise BannerTimeout("timeout before session banner")
                 raise SessionError("timeout before a complete RAM survey")
             for frame in self._read_frames(active_deadline, "before RAM_END"):
-                if frame.record_type == protocol.TYPE_BANNER:
+                if frame.record_type == protocol.TYPE_NANO_LIVENESS:
+                    self._accept_nano_liveness(frame)
+                elif frame.record_type == protocol.TYPE_BANNER:
                     self._accept_banner(frame, deadline)
                 elif frame.record_type == protocol.TYPE_RAM_END:
                     if self.banner_payload is None:
@@ -402,6 +436,8 @@ class HostSession:
             while cursor < len(self.frames):
                 frame = self.frames[cursor]
                 cursor += 1
+                if frame.record_type == protocol.TYPE_NANO_LIVENESS:
+                    self._accept_nano_liveness(frame)
                 if frame.record_type == protocol.TYPE_LOADER_ERROR:
                     if len(frame.payload) != 1:
                         raise SessionError("loader error payload length is not one")
@@ -649,6 +685,7 @@ class HostSession:
                     self.heartbeat_reset_retries_requested
                 ),
                 "heartbeat_reset_retries_used": self.heartbeat_reset_retries_used,
+                "liveness": self.nano_liveness,
             },
             "attempts": self.attempts,
             "image": image,
@@ -711,6 +748,13 @@ def print_verdict(session: HostSession, logs: SessionLogs) -> None:
         print(
             "JUKURAVI: nano-reset DTR sequences completed "
             f"{session.nano_dtr_sequences_completed}"
+        )
+    if session.nano_liveness is not None:
+        print(
+            "JUKURAVI: nano-liveness "
+            f"reset={'yes' if session.nano_liveness['reset_released'] else 'no'} "
+            f"clock={'yes' if session.nano_liveness['clock_seen'] else 'no'} "
+            f"mrdc={'yes' if session.nano_liveness['mrdc_seen'] else 'no'}"
         )
     if len(session.attempts) > 1:
         print(f"JUKURAVI: session attempts {len(session.attempts)}")

@@ -10,6 +10,7 @@
 #include <SoftwareSerial.h>
 
 #include "bridge_core.h"
+#include "liveness_core.h"
 #include "reset_core.h"
 
 constexpr uint32_t kUsbBaud = 115200;
@@ -22,6 +23,44 @@ constexpr uint8_t kErrorLedPin = LED_BUILTIN;
 SoftwareSerial jukuSerial(kJukuRxPin, kJukuTxPin, false);
 jukuravi::BridgeCounters bridgeCounters;
 jukuravi::StartupResetSequencer startupReset;
+jukuravi::LivenessMonitor livenessMonitor;
+volatile bool clockEdgeSeen = false;
+volatile bool mrdcEdgeSeen = false;
+bool livenessEnabled = false;
+bool probeInterruptsArmed = false;
+
+void clockEdgeInterrupt() {
+  clockEdgeSeen = true;
+  EIMSK &= static_cast<uint8_t>(~_BV(INT0));
+}
+
+void mrdcEdgeInterrupt() {
+  mrdcEdgeSeen = true;
+  EIMSK &= static_cast<uint8_t>(~_BV(INT1));
+}
+
+void armProbeInterrupts() {
+  noInterrupts();
+  clockEdgeSeen = false;
+  mrdcEdgeSeen = false;
+  EIFR = _BV(INTF0) | _BV(INTF1);
+  attachInterrupt(digitalPinToInterrupt(jukuravi::kClockSeenPin),
+                  clockEdgeInterrupt, FALLING);
+  attachInterrupt(digitalPinToInterrupt(jukuravi::kMrdcSeenPin),
+                  mrdcEdgeInterrupt, FALLING);
+  probeInterruptsArmed = true;
+  interrupts();
+}
+
+void disarmProbeInterrupts() {
+  detachInterrupt(digitalPinToInterrupt(jukuravi::kClockSeenPin));
+  detachInterrupt(digitalPinToInterrupt(jukuravi::kMrdcSeenPin));
+  noInterrupts();
+  clockEdgeSeen = false;
+  mrdcEdgeSeen = false;
+  interrupts();
+  probeInterruptsArmed = false;
+}
 
 void setup() {
   // A MAX3232 driver inverts: LOW at T2IN produces the positive RS-232 level
@@ -34,6 +73,18 @@ void setup() {
   // D5 is a low-voltage service input only. INPUT_PULLUP makes an open switch
   // AUTO and a jumper/switch to Nano GND HOLD; it never touches the Juku.
   pinMode(jukuravi::kResetHoldPin, INPUT_PULLUP);
+
+  // All liveness inputs are local active-low, pulled-up Nano-side contracts.
+  // They require a separately verified isolated/open-collector front end and
+  // must never touch a Juku net directly. Open D7 disables the feature and
+  // preserves the byte-transparent bridge with no Nano-generated frame.
+  pinMode(jukuravi::kClockSeenPin, INPUT_PULLUP);
+  pinMode(jukuravi::kMrdcSeenPin, INPUT_PULLUP);
+  pinMode(jukuravi::kResetReleasedPin, INPUT_PULLUP);
+  pinMode(jukuravi::kLivenessEnablePin, INPUT_PULLUP);
+  livenessEnabled = jukuravi::livenessEnabledRequested(
+      digitalRead(jukuravi::kLivenessEnablePin) == HIGH);
+  livenessMonitor.begin(livenessEnabled);
 
   // D4 never touches the board-side reset node. A 10 kOhm pull-down keeps the
   // optocoupler LED off while the bootloader owns the Nano. Load the safe level
@@ -58,8 +109,20 @@ void loop() {
   const jukuravi::StartupResetState reset =
       startupReset.update(millis(), hold_requested);
   digitalWrite(jukuravi::kResetDrivePin, reset.asserted ? HIGH : LOW);
+  const jukuravi::LivenessState liveness = livenessMonitor.update(
+      millis(), reset.bridge_ready,
+      digitalRead(jukuravi::kResetReleasedPin) == LOW, clockEdgeSeen,
+      mrdcEdgeSeen);
+  if (liveness.observing && !probeInterruptsArmed) {
+    armProbeInterrupts();
+  } else if (!liveness.observing && probeInterruptsArmed) {
+    disarmProbeInterrupts();
+  }
+  if (liveness.emit_report) {
+    jukuravi::writeNanoLivenessFrame(Serial, liveness.flags);
+  }
   jukuravi::pumpBridgeIfReady(
-      reset.bridge_ready, Serial, jukuSerial, bridgeCounters);
+      liveness.bridge_ready, Serial, jukuSerial, bridgeCounters);
 
   // SoftwareSerial exposes a sticky receive-overflow flag. Keep the data path
   // byte-transparent: signal loss on the onboard LED instead of inserting a

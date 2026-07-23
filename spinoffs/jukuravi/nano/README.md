@@ -1,8 +1,8 @@
 # Jukuravi Nano firmware
 
-Status: the Stage D1 serial bridge and isolated startup-reset/hold driver are
-implemented and guarded; liveness probes remain measurement-gated follow-up
-work.
+Status: the Stage D1 serial bridge, isolated startup-reset/hold driver, and
+default-off Nano-side liveness observation/report are implemented and guarded.
+Juku-side liveness testpoints and conditioning remain measurement-gated.
 
 ## Serial bridge checkpoint
 
@@ -42,6 +42,49 @@ second receiver is currently spare.
 The onboard D13 LED latches on if the Juku-side `SoftwareSerial` receive FIFO
 overflows. Nothing is injected into the USB stream because that would corrupt
 the host's framed evidence. Power-cycle or reset the Nano to clear the LED.
+
+## Default-off liveness checkpoint
+
+The Nano-side roles are fixed without assigning any Juku net:
+
+| Nano | Mode | Low-voltage meaning |
+|---|---|---|
+| D2/INT0 | `INPUT_PULLUP`, one-shot falling edge | conditioned derived-clock activity |
+| D3/INT1 | `INPUT_PULLUP`, one-shot falling edge | conditioned `-MRDC` activity |
+| D6 | `INPUT_PULLUP`, active low | conditioned board RESET is released |
+| D7 | `INPUT_PULLUP`, active low | local LIVENESS ENABLE service jumper to Nano GND |
+
+Open D7 is the default. It bypasses the observation gate, emits no Nano bytes,
+and preserves the existing bridge timing and missing-banner retry behavior.
+Ground D7 only after the low-voltage harness is ready; the setting is latched
+at sketch start. Once the 250+50 ms reset sequence reaches ready, an enabled
+sketch holds the bridge for a further 100 ms. D2 and D3 use one-shot external
+interrupts that disable themselves on the first falling edge, avoiding an ISR
+storm on a fast clock. D6 is sampled throughout the window. The latches clear
+on every new reset cycle and all timing uses rollover-safe unsigned
+subtraction.
+
+At the boundary, the Nano sends one seven-byte CRC-8/ATM record directly on the
+USB UART, then releases the buffered Juku bridge:
+
+```text
+A5 5A 40 02 01 FLAGS CRC
+```
+
+`FLAGS` bit 0 is ENABLED, bit 1 RESET RELEASED, bit 2 CLOCK SEEN, and bit 3
+`-MRDC` SEEN; bits 4–7 are reserved. The host validates the frame, stores the
+decoded result in session and per-attempt JSON, and prints it. A valid report
+followed by no ROM banner is evidence, so the host stops instead of blindly
+reset-retrying.
+
+D2/D3/D6 are **not TTL test leads**. They may receive only active-low
+open-collector outputs from a separately powered/isolated or otherwise
+voltage-proven conditioning stage, with a common reference confined to the
+low-voltage side as that stage requires. Do not attach them directly to the
+8080 clock, RESET, `-MRDC`, an edge connector, or an unknown testpoint.
+Continuity must first identify accessible target-revision nodes; voltage,
+polarity, bandwidth, loading, and isolation must then be measured and designed.
+Until that closes, leave D7 open and all three signal inputs disconnected.
 
 ## Isolated startup reset checkpoint
 
@@ -105,9 +148,11 @@ The always-available host test sends all 256 byte values plus the exact
 version-8 ACK through the shared bridge core in both directions, checks the
 per-direction work bound and counters, and proves reset assertion, release,
 recovery, rollover, long HOLD, HOLD release, and post-ready reassertion
-boundaries. It also pins D4/D5 and active-low input polarity. When `arduino-cli`
-and the `arduino:avr` core are installed, the same guard also compiles the
-actual Nano sketch. To upload manually after a successful build:
+boundaries. It also proves default-off liveness transparency, exact D2/D3/D6/D7
+roles and active-low polarity, the 100 ms and rollover boundaries, reset-cycle
+latch clearing, and the exact report CRC. When `arduino-cli` and the
+`arduino:avr` core are installed, the same guard also compiles the actual Nano
+sketch. To upload manually after a successful build:
 
 ```sh
 arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328 \
@@ -127,5 +172,7 @@ Local reset hold is guarded through the active-low D5 service input.
 Host-side uploaded-test heartbeat supervision and default-off bounded
 DTR/re-upload recovery are now guarded. That software does not authorize the
 measurement-gated board-side S1 connection.
-Derived-clock and `-MRDC` probe pins will likewise be assigned only after
-continuity identifies accessible, voltage-safe testpoints.
+The Nano-side derived-clock/`-MRDC`/RESET inputs and report are guarded, but
+their board-side target nodes and conditioning may be assigned only after
+continuity identifies accessible points and voltage/polarity/loading are
+measured.

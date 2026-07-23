@@ -15,6 +15,7 @@ TYPE_RAM_END = 0x12
 TYPE_LOAD = 0x20
 TYPE_RUN = 0x22
 TYPE_HEARTBEAT = 0x30
+TYPE_NANO_LIVENESS = 0x40
 TYPE_LOAD_RESULT = 0xA0
 TYPE_RUN_ACK = 0xA2
 TYPE_LOADER_READY = 0xA3
@@ -27,6 +28,12 @@ LOADER_MAX_DATA = MAX_PAYLOAD - 2
 LOADER_LOAD_MIN = 0x4000
 LOADER_LOAD_END = 0xD800
 HEARTBEAT_VERSION = 1
+NANO_LIVENESS_VERSION = 1
+NANO_LIVENESS_ENABLED = 0x01
+NANO_LIVENESS_RESET_RELEASED = 0x02
+NANO_LIVENESS_CLOCK_SEEN = 0x04
+NANO_LIVENESS_MRDC_SEEN = 0x08
+NANO_LIVENESS_KNOWN_FLAGS = 0x0F
 LOADER_STATUS_OK = 0
 LOADER_STATUS_BAD_CRC = 1
 LOADER_STATUS_BAD_COMMAND = 2
@@ -58,6 +65,15 @@ def encode_heartbeat_frame(sequence: int) -> bytes:
     if not 0 <= sequence <= 0xFF:
         raise ValueError("heartbeat sequence does not fit one byte")
     return encode_frame(TYPE_HEARTBEAT, bytes((HEARTBEAT_VERSION, sequence)))
+
+
+def encode_nano_liveness_frame(flags: int) -> bytes:
+    """Encode one Nano-side liveness observation record."""
+    if not 0 <= flags <= NANO_LIVENESS_KNOWN_FLAGS:
+        raise ValueError("Nano liveness flags contain unknown bits")
+    if not flags & NANO_LIVENESS_ENABLED:
+        raise ValueError("Nano liveness record is not enabled")
+    return encode_frame(TYPE_NANO_LIVENESS, bytes((NANO_LIVENESS_VERSION, flags)))
 
 
 def crc8_atm(data: bytes) -> int:

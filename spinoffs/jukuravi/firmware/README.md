@@ -608,7 +608,9 @@ firmware ladder and the first D2 loader core are now represented by exact
 simulation checkpoints. Host file/chunk orchestration is guarded; D1
 uploaded-test heartbeat supervision and its default-off bounded host recovery
 policy are guarded as well. Physical reset hookup and liveness probes remain
-measurement-dependent work. The host session CLI,
+measurement-dependent work; the disconnected-safe, default-off Nano-side
+liveness capture/report and host evidence path are guarded separately. The host
+session CLI,
 DTR-commanded session
 restart, bounded missing-banner retry, Nano serial bridge, and isolated startup
 reset/hold are guarded separately in the parent directory.

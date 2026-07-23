@@ -1721,7 +1721,21 @@ an active `/Q1` feedback output.
    while malformed heartbeats, upload/protocol/transport errors, and every
    other post-banner failure remain non-retryable. Mocked modem control proves
    success, exhaustion, counter accuracy, and all non-retry boundaries. The
-   S1 board-side contact remains forbidden until directly measured.
+   S1 board-side contact remains forbidden until directly measured. The
+   eleventh checkpoint implements the disconnected-safe Nano side of liveness
+   probing without inventing a Juku testpoint. Open/pulled-up D7 leaves the
+   feature byte-transparent and emits nothing. A local D7-to-GND service jumper
+   opts into a rollover-safe 100 ms post-reset observation: one-shot falling
+   edges on D2/D3 latch conditioned clock/`-MRDC` activity and active-low D6
+   latches conditioned RESET-released state. The Nano emits one exact type
+   `0x40`, version-1 flags frame before releasing the buffered serial bridge.
+   The host validates and retains it in both session and attempt evidence; a
+   report without a subsequent ROM banner aborts rather than entering the
+   evidence-free missing-banner reset loop. The portable core, exact CRC,
+   reset-cycle clearing, default-off path, host rejection cases, and actual AVR
+   sketch compile are guarded. D2/D3/D6 may connect only to a future
+   isolated/open-collector conditioner; target board nets, voltage/polarity,
+   and physical hookup remain measurement-gated.
 
 ## Physical bring-up sequence
 
@@ -1839,6 +1853,11 @@ Once a released board and programmed parts exist:
   real-port/reset-only, bounded independently from missing-banner retries, and
   preserves each full loader/heartbeat attempt; only heartbeat gaps retry, and
   the board-side S1 connection remains forbidden pending measurement.
+- [x] Jukuravi D1 Nano-side liveness capture is default-off and
+  disconnected-safe, uses a local enable plus one-shot conditioned
+  RESET/clock/`-MRDC` inputs, emits an exact framed report before bridge
+  release, and is durable host evidence; Juku-side testpoints and conditioning
+  remain measurement-gated.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

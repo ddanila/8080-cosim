@@ -59,8 +59,10 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   checkpoint:** the classic-Nano sketch keeps D0/D1 for 115200 USB, bridges D8/
   D9 at nominal 9600 through the level shifter, and asserts CTS with D10. Its
   shared core is binary-transparency tested and the exact sketch AVR-compiles;
-  see `nano/README.md`. D4 now drives the isolated startup-reset input; probe
-  pins and all board-side contacts remain measurement-gated.
+  see `nano/README.md`. D4 now drives the isolated startup-reset input. The
+  default-off Nano-side liveness inputs/report are also guarded; their
+  conditioners, testpoints, and all board-side contacts remain
+  measurement-gated.
 - **Nano-driven hardware reset (required for unattended runs).** The 8080
   has no NMI, so no firmware watchdog can reclaim a hung uploaded test that
   runs with interrupts masked — a hardware reset is the only reliable
@@ -352,9 +354,10 @@ A Nano is sufficient for every stage except the optional bus-master stage
   recovery are boundary-tested before the bridge can run. Active-low D5 can
   hold or reassert that isolated drive without entering the serial stream; its
   release and reassertion boundaries are guarded. The S1 contact side and
-  liveness probes remain gated. Uploaded-test heartbeat supervision and its
-  default-off bounded host recovery policy are guarded; the board-side reset
-  contact remains future measurement work.
+  liveness front ends and board testpoints remain gated. The default-off
+  Nano-side liveness observation/report, uploaded-test heartbeat supervision,
+  and bounded host recovery policy are guarded; the board-side reset contact
+  remains future measurement work.
   **Host-controlled session-reset checkpoint implemented:** real `--port`
   sessions perform a release/wait/assert DTR sequence before reading, flush
   stale bytes, and log requested/completed state. Mocked modem-control ordering
@@ -443,6 +446,17 @@ and how many complete release/wait/assert/flush sequences succeeded. Its
 attempt list preserves each attempt's outcome, error, byte/frame counts, banner
 state, and DTR completion while the raw logs preserve the combined wire stream.
 
+With the optional Nano liveness service jumper enabled, one type-`0x40` frame
+may precede the ROM training/banner. Its payload is `01 FLAGS`: bit 0 proves the
+Nano feature was explicitly enabled, bit 1 records conditioned RESET release,
+bit 2 a conditioned derived-clock edge, and bit 3 a conditioned `-MRDC` edge.
+The host rejects wrong versions, lengths, reserved bits, duplicates, disabled
+records, and records arriving after the ROM banner. Valid evidence appears
+under `nano_control.liveness` and in the corresponding attempt snapshot and is
+printed in the human verdict. If no ROM banner follows, the report makes the
+failure evidence-bearing and therefore prevents blind missing-banner retries.
+No report is emitted with the default-open service input.
+
 With `--load`, the CLI continues beyond RAM_END and waits up to
 `--loader-timeout` seconds (default 60) for each loader response. The upload
 must fit `0x4000..0xD7FF`, must lie wholly inside the session's largest
@@ -510,7 +524,7 @@ missing-banner recovery and the Nano's local D5 reset hold are also guarded.
 The first D2 loader ROM core is guarded in cosim. Host upload orchestration is
 also guarded through the real CLI, as is bounded post-RUN heartbeat
 supervision and the default-off host recovery policy. Physical reset hookup and
-liveness probes remain behind their measurement gates.
+the liveness conditioners/testpoints remain behind their measurement gates.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "bridge_core.h"
+#include "liveness_core.h"
 #include "reset_core.h"
 
 namespace {
@@ -192,8 +193,78 @@ int main() {
              gatedJuku.output() == std::vector<uint8_t>({0x81}),
          "ready bridge did not release both queued directions");
 
+  expect(jukuravi::kClockSeenPin == 2 && jukuravi::kMrdcSeenPin == 3 &&
+             jukuravi::kResetReleasedPin == 6 &&
+             jukuravi::kLivenessEnablePin == 7,
+         "Nano-side liveness pin contract differs");
+  expect(jukuravi::livenessEnabledRequested(false) &&
+             !jukuravi::livenessEnabledRequested(true),
+         "liveness service input is not active-low");
+
+  jukuravi::LivenessMonitor disabledLiveness;
+  disabledLiveness.begin(false);
+  jukuravi::LivenessState liveness =
+      disabledLiveness.update(1000, true, true, true, true);
+  expect(liveness.bridge_ready && !liveness.observing &&
+             !liveness.emit_report && liveness.flags == 0,
+         "disabled liveness changed bridge timing or emitted evidence");
+
+  jukuravi::LivenessMonitor enabledLiveness;
+  enabledLiveness.begin(true);
+  liveness = enabledLiveness.update(900, false, false, false, false);
+  expect(!liveness.bridge_ready && !liveness.observing &&
+             !liveness.emit_report,
+         "liveness observed while board reset recovery was incomplete");
+  liveness = enabledLiveness.update(1000, true, true, false, false);
+  expect(!liveness.bridge_ready && liveness.observing &&
+             !liveness.emit_report,
+         "liveness did not start a gated observation window");
+  liveness = enabledLiveness.update(1099, true, false, true, false);
+  expect(!liveness.bridge_ready && liveness.observing &&
+             !liveness.emit_report,
+         "liveness observation ended one ms early");
+  liveness = enabledLiveness.update(1100, true, false, false, true);
+  expect(liveness.bridge_ready && !liveness.observing &&
+             liveness.emit_report &&
+             liveness.flags == jukuravi::kLivenessKnownFlags,
+         "complete liveness evidence or boundary timing differs");
+  liveness = enabledLiveness.update(1101, true, false, false, false);
+  expect(liveness.bridge_ready && !liveness.emit_report &&
+             liveness.flags == jukuravi::kLivenessKnownFlags,
+         "liveness report repeated or lost its latched evidence");
+
+  enabledLiveness.update(1200, false, false, false, false);
+  enabledLiveness.update(1300, true, false, false, false);
+  liveness = enabledLiveness.update(1400, true, false, false, false);
+  expect(liveness.emit_report &&
+             liveness.flags == jukuravi::kLivenessEnabledFlag,
+         "new board-reset cycle did not clear old liveness evidence");
+
+  jukuravi::LivenessMonitor wrapLiveness;
+  wrapLiveness.begin(true);
+  constexpr uint32_t livenessWrapStart = UINT32_MAX - 49;
+  wrapLiveness.update(livenessWrapStart, true, true, true, true);
+  liveness = wrapLiveness.update(
+      static_cast<uint32_t>(livenessWrapStart + 99), true, false, false, false);
+  expect(liveness.observing && !liveness.emit_report,
+         "rollover liveness window ended early");
+  liveness = wrapLiveness.update(
+      static_cast<uint32_t>(livenessWrapStart + 100), true, false, false,
+      false);
+  expect(liveness.bridge_ready && liveness.emit_report &&
+             liveness.flags == jukuravi::kLivenessKnownFlags,
+         "rollover liveness window did not complete exactly");
+
+  FakeStream livenessFrame;
+  expect(jukuravi::writeNanoLivenessFrame(
+             livenessFrame, jukuravi::kLivenessKnownFlags) == 7,
+         "Nano liveness frame byte count differs");
+  expect(livenessFrame.output() ==
+             std::vector<uint8_t>({0xA5, 0x5A, 0x40, 0x02, 0x01, 0x0F, 0x75}),
+         "Nano liveness frame or CRC differs");
+
   std::cout
       << "JUKURAVI-NANO-BRIDGE: PASS (all 256 byte values; exact ACK; "
-         "bounded pump; rollover-safe 250+50 ms reset with D5 hold)\n";
+         "bounded pump; reset/hold; opt-in rollover-safe liveness)\n";
   return 0;
 }

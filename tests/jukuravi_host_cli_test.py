@@ -150,6 +150,7 @@ def run_case(
         "dtr_sequences_completed": 0,
         "heartbeat_reset_retries_requested": 0,
         "heartbeat_reset_retries_used": 0,
+        "liveness": None,
     }:
         failures.append(f"{label}: fd transport unexpectedly requested Nano reset")
     if summary.get("attempts") != [
@@ -163,6 +164,7 @@ def run_case(
             "banner_seen": True,
             "dtr_sequence_completed": False,
             "loader": None,
+            "nano_liveness": None,
         }
     ]:
         failures.append(f"{label}: single-attempt evidence differs")
