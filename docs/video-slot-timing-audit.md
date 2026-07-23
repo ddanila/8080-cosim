@@ -62,10 +62,15 @@ python3 scripts/report_video_slot_timing_audit.py
   only at its internal logical address index.
 - Full-resolution sheet review restores the previously missed D59 5->6
   inverter: D59.5 reaches E14/video /G and D59.6 reaches E13/CPU /G.
-  Owner continuity now closes D59.5 onto the D40.11 1 MHz slot rail shared
-  with D92.2/.3 and D95.5/.6. The runnable TTL-high fallback remains only
-  until the JSON, HDL, and PCB net merge is applied atomically; see
+  Owner continuity closes D59.5 onto the D40.11 1 MHz slot rail shared
+  with D92.2/.3 and D95.5/.6. JSON, HDL, schematic, and both PCB
+  representations now carry that single-driver net; see
   `docs/d40-d59-d92-d95-1mhz-route.md`.
+- The Yosys/LVS structural view applies those complementary enables to
+  D48-D51. Runnable simulation deliberately keeps CPU MA selected while
+  video uses its SIM-ONLY second DRAM port: applying the raw phase to the
+  untimed RAS/CAS scaffold would invent a slot schedule that is still
+  awaiting D41/D53 timing closure.
 - D41's role is now narrowed: QA/QB, its fixed data/enable straps, and
   intentional QC/QD no-connects are modeled; only the remote LD/CK
   timing-bundle sources remain continuity boundaries.

@@ -83,7 +83,7 @@ python3 scripts/report_memory_timing_boundary.py
 | `D92_RD_NOR` | `D92.12, D92.11` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D92_WR_NOR` | `D92.6, D92.10, D92.9` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D92_NOACC` | `D92.8, D39.5` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `PHI2TTL` | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | native .006 sheets 1-2 cross-reference closure: sheet-2 D35.13/R35/C29/R106 RC shaper is the Ф2TTL rail feeding D39.1, D92.2/.3, and D53.4 before export marked (1); sheet-1 matching arrival (2) Ф2 TTL lands directly on D30 CLK1/pin3 |
+| `PHI2TTL` | `D35.13, D39.1, D53.4, D30.3` | exact .009 sheet-2 correction plus native sheets 1-2 cross-reference closure: D35.13/R35/C29/R106 RC shaper is the Ф2TTL rail feeding D39.1 and D53.4 before export marked (1); sheet-1 matching arrival (2) Ф2 TTL lands directly on D30 CLK1/pin3. Owner continuity moves tied D92.2/.3 to the separate D40.11 1 MHz slot rail |
 | `XTAL16M` | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate from D56.Q_N. A continuous source-side conductor to D59.2/D59.3 OSC is not drawn through the intervening bundle, so functional expectation alone cannot prove the PCB merge; automatic scan chase exhausted and each net remains a deliberate continuity boundary |
 | `D39_O8` | `D39.8, D59.11` | scan |
 | `D39Y` | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); formerly provisional, now traced |

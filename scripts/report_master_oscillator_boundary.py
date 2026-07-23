@@ -59,8 +59,8 @@ def main() -> int:
             "D59 section 5->6 is traced into the mux-enable links",
             ["D59", "5"] not in board.get("no_connects", [])
             and ["D59", "6"] not in board.get("no_connects", [])
-            and {("D59", "5"), ("E14", "1")} <= {
-                tuple(node) for node in board["nets"]["VID_MUX_G"]["nodes"]
+            and {("D40", "11"), ("D59", "5"), ("E14", "1")} <= {
+                tuple(node) for node in board["nets"]["LATCH_B"]["nodes"]
             }
             and {("D59", "6"), ("E13", "1")} <= {
                 tuple(node) for node in board["nets"]["CPU_MUX_G"]["nodes"]
@@ -73,7 +73,7 @@ def main() -> int:
     lines = [
         "# Master oscillator boundary",
         "",
-        "Status date: 2026-07-22.",
+        "Status date: 2026-07-23.",
         "",
         f"Status: **{status}**",
         "",

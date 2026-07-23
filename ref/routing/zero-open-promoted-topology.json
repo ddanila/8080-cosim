@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "promoted_file": "kicad/juku_routed.kicad_pcb",
-  "parent_board_sha256": "12e8a982ee0590ed5185a3ff00b68979a2a6ccfaf2816e1877becd5edf189e37",
-  "source_board_sha256": "968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0",
-  "board_sha256": "7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a",
-  "board_size": 11828965,
-  "drc_sha256": "05c2816c4a12cd2c9782f0b7d3a5c0acb632b622d4d677534a39474c79d93b1c",
+  "parent_board_sha256": "7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a",
+  "source_board_sha256": "6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e",
+  "board_sha256": "3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266",
+  "board_size": 11888907,
+  "drc_sha256": "a6538620cb839334aa1aed48150972be1ac40ba913a6f074c633eede70eb6285",
   "footprints": 322,
   "pads": 2436,
   "max_pad_delta_mm": 0.0,
-  "routed_items": 30495,
+  "routed_items": 30904,
   "routed_nets": 412,
   "uncapped_unconnected": 0,
   "electrical_blockers": 0,
@@ -156,6 +156,41 @@
     "route_clearance_mm": 0.25,
     "fine_grid_mm": 0.25
   },
+  "d40_1mhz_refresh": {
+    "parent_source_board_sha256": "968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0",
+    "parent_routed_board_sha256": "7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a",
+    "corrected_endpoints": {
+      "D59.5": "LATCH_B",
+      "D92.2": "LATCH_B",
+      "D92.3": "LATCH_B"
+    },
+    "retired_pad_net": "VID_MUX_G",
+    "removed_phi2ttl_items": 33,
+    "merged_video_enable_items": 151,
+    "initial_connectivity_opens": 3,
+    "transaction_removed_conflicts": 29,
+    "transaction_affected_nets": [
+      "CAS",
+      "D53_Y3_R52",
+      "GND",
+      "LOAD_PRE",
+      "MA4",
+      "PIT_BAUD",
+      "RAIL_H",
+      "SHIFT_G",
+      "TIMING_TAG17"
+    ],
+    "rail_h_equivalent_closure": {
+      "from": "D76.1",
+      "to": "D84.1",
+      "segments": 31,
+      "vias": 1,
+      "grid_mm": 0.125,
+      "clearance_mm": 0.205
+    },
+    "pruned_redundant_items": 4,
+    "prune_manifest": "ref/routing/d40-1mhz-dangling-prune.json"
+  },
   "tool_sha256": {
     "kicad/apply_d59_mux_enable_endpoints.py": "a97691e78e8d1bb8c822c6818944e08ae82f8085682851e11d6e918bab10fdae",
     "kicad/apply_d56_owner_timing_routes.py": "254356fcee48275da7b1ab2a1057481b847e2b13ad69dc2c480d50dbd532ae04",
@@ -168,7 +203,10 @@
     "kicad/check_r94_landing.py": "6acf7fd34942213a3cf8d56d13a9a178e2ca527503e238e4ebfa91f3c2631991",
     "kicad/prune_dangling_tracks_uncapped.py": "5f4ea4a89b625762c6674801e3afe3e26a7f0b37c8965c1a89f4b1c232764b80",
     "kicad/check_routed_candidate.py": "7d143bc0fd7cbca919b7be066fffb90eaea7a02d17cfcdd22ba5b8d2eb4b5d3a",
-    "scripts/close_d30_status_strobe.py": "0bd48a80397a32f03cedee8bd2934c05a7396eb4dbe0e5755e97bdace7b1e529"
+    "scripts/close_d30_status_strobe.py": "0bd48a80397a32f03cedee8bd2934c05a7396eb4dbe0e5755e97bdace7b1e529",
+    "kicad/apply_d40_1mhz_route.py": "1b7b8c038473358f10f97304bf8f0a64debbf7ac70eb1c08664df130d9063aba",
+    "kicad/check_d40_1mhz_route.py": "ddcb0db0375ca16d3ff667cff6b62ae799d448a9b9227335d76627a9c8058d7e",
+    "ref/routing/d40-1mhz-dangling-prune.json": "fc9e8923d9f4b7ac5b91361fa47840df97a9cc738a41b79dfc1d696e9cb516d7"
   },
-  "disposition": "This is the promoted source-parity routed board after adopting the exact-sheet and owner-measured D30.1/.4/.10/.12/R5 common control conductor. Independent KiCad DRC and the routed-candidate identity gate report zero opens, zero electrical blockers, zero dangling items, identical 322-footprint/2436-pad source identity, and zero pad-coordinate delta."
+  "disposition": "This is the promoted source-parity routed board after adopting the exact-sheet and owner-measured D40.11/D59.5/D92.2/.3/D95.5/.6 1 MHz slot conductor. Independent KiCad DRC, the dedicated endpoint/tie guard, and the routed-candidate identity gate report zero opens, zero electrical blockers, zero dangling items, identical 322-footprint/2436-pad source identity, and zero pad-coordinate delta."
 }

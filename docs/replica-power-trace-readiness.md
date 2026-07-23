@@ -11,9 +11,9 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 
 ## Summary
 
-- Routed power segments: 2669
+- Routed power segments: 2738
 - Widened power segments (`>0.20 mm`): 284
-- Total routed power length: 7157.902 mm
+- Total routed power length: 7214.209 mm
 - Widened routed power length: 1208.486 mm
 - Width clamp: 0.20 mm to 1.00 mm
 
@@ -21,7 +21,7 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 
 | Net | Segments | Widened | Min width mm | Max width mm | Total length mm | Widened length mm | Layers |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| GND | 1261 | 108 | 0.200 | 1.000 | 2983.686 | 493.041 | B.Cu, F.Cu |
+| GND | 1330 | 108 | 0.200 | 1.000 | 3039.993 | 493.041 | B.Cu, F.Cu |
 | P5V | 938 | 150 | 0.200 | 1.000 | 2473.401 | 596.215 | B.Cu, F.Cu |
 | P12V | 388 | 10 | 0.200 | 1.000 | 1048.389 | 29.959 | B.Cu, F.Cu |
 | M12V | 61 | 10 | 0.200 | 1.000 | 564.841 | 68.298 | B.Cu, F.Cu |
@@ -31,7 +31,7 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 
 | Width mm | Segments |
 | ---: | ---: |
-| 0.2 | 2385 |
+| 0.2 | 2454 |
 | 0.3 | 1 |
 | 0.3235 | 1 |
 | 0.3692 | 1 |
@@ -78,4 +78,4 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 
 ## Disposition
 
-The routed power nets match the reviewed current-route widening envelope: 2669 power segments present, 284 widened where local clearance allowed, no power segment below the routed baseline, and no widened segment above the 1.00 mm clamp. KiCad DRC remains the clearance authority.
+The routed power nets match the reviewed current-route widening envelope: 2738 power segments present, 284 widened where local clearance allowed, no power segment below the routed baseline, and no widened segment above the 1.00 mm clamp. KiCad DRC remains the clearance authority.

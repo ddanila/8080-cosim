@@ -14,7 +14,7 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Summary
 
-- Board SHA256: `968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0`
+- Board SHA256: `6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e`
 - Total violations: `704`
 - Unconnected items: `499`
 - Short violations: `0`

@@ -78,6 +78,7 @@ jobs:
             kicad/check_d5_photo_placement.py \
             kicad/check_d37_photo_placement.py \
             kicad/check_d39_photo_placement.py \
+            kicad/check_d40_1mhz_route.py \
             kicad/check_d38_photo_placement.py \
             kicad/check_d92_photo_placement.py \
             kicad/check_d38_factory_wire_landings.py \

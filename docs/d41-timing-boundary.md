@@ -1,6 +1,6 @@
 # D41 timing boundary
 
-Status date: 2026-07-13.
+Status date: 2026-07-23.
 
 Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**
 
@@ -23,7 +23,7 @@ python3 scripts/report_d41_timing_boundary.py
 | D41 QB output is wired into the latch/preload chain | PASS | `LATCH_A`: D41.12 -> D37.1 |
 | D41 LD is source-traced onto timing-bundle rail 17 | PASS | `TIMING_TAG17`: D41.6 + D36.2 |
 | D41 CK is source-traced onto timing-bundle rail 8 | PASS | `SHIFT_G` / numbered rail 8: D41.9 + D42.8 + D43.8 |
-| Factory tag 7 closes the D40/D37/D54/D95 1 MHz clock net | PASS | sheet 2: tag 7 joins D40.11/D37.2 and tied D54 CLK0/1/2 pins 9/15/18; sheet 3 extends the same rail to D95.5/.6; adjacent `LATCH_PRE`/`LATCH_SIG` retained |
+| Factory tag 7 and owner continuity close the complete 1 MHz clock net | PASS | sheets 2/3 and owner continuity join D40.11/D37.2/D54.9/.15/.18/D59.5/D92.2/.3/D95.5/.6; adjacent `LATCH_PRE`/`LATCH_SIG` retained |
 | D41 proved straps, outputs, and timing boundaries are netted | PASS | D41.1, D41.12, D41.13, D41.2, D41.3, D41.4, D41.5, D41.6, D41.8, D41.9 |
 | D41 unused QC/QD outputs remain intentional no-connects | PASS | 10:QD, 11:QC |
 | D41 package landing is locally registered on both sides | PASS | validated notch-right component fit plus reflected solder fit in `docs/photo-registration/local-packages/report.json` |
@@ -54,6 +54,7 @@ python3 scripts/report_d41_timing_boundary.py
   stubs. LD joins numbered timing rail 17; CK joins numbered rail 8.
 - Sheet-2 conductor tag 7 closes D40 QD/pin11 and D37.2 to the tied
   D54 CLK0/CLK1/CLK2 pins 9/15/18 on the labeled 1 MHz rail; recovered
-  sheet 3 extends that same rail to D95 clock-mux pins 5 and 6.
+  sheet 3 and owner continuity extend it through D59.5/D92.2/.3 to
+  D95 clock-mux pins 5 and 6.
 - The complete D41 package pin disposition is now source-closed. The remote
   origin of rail 17 remains a wider timing-chain boundary at D36.2/D41.6.

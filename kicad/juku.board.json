@@ -7911,9 +7911,9 @@
    "wire_link": {"ref": "W14", "other_net": "PHI2_D35"}
   },
   "PHI2TTL": {
-   "src": "native .006 sheets 1-2 cross-reference closure: sheet-2 D35.13/R35/C29/R106 RC shaper is the Ф2TTL rail feeding D39.1, D92.2/.3, and D53.4 before export marked (1); sheet-1 matching arrival (2) Ф2 TTL lands directly on D30 CLK1/pin3",
+   "src": "exact .009 sheet-2 correction plus native sheets 1-2 cross-reference closure: D35.13/R35/C29/R106 RC shaper is the Ф2TTL rail feeding D39.1 and D53.4 before export marked (1); sheet-1 matching arrival (2) Ф2 TTL lands directly on D30 CLK1/pin3. Owner continuity moves tied D92.2/.3 to the separate D40.11 1 MHz slot rail",
    "source_risk": false,
-   "risk_disposition": "owner measurement retired: the full-resolution sheet-2 Ф2TTL (1) export and sheet-1 (2) Ф2 TTL arrival are a unique labeled cross-sheet pair, and every drawn endpoint is modeled",
+   "risk_disposition": "closed by exact-revision correction and the unique labeled cross-sheet pair; D92.2/.3 are explicitly excluded and every remaining drawn endpoint is modeled",
    "nodes": [
     [
      "D35",
@@ -7922,14 +7922,6 @@
     [
      "D39",
      "1"
-    ],
-    [
-     "D92",
-     "2"
-    ],
-    [
-     "D92",
-     "3"
     ],
     [
      "D53",
@@ -12217,7 +12209,7 @@
    "nodes": [["D26", "10"], ["D35", "3"]]
   },
   "LATCH_B": {
-   "src": "sheet-2 full-resolution source closure: D40 Q3/pin11 descends to conductor tag 7 and D37.2 plus D54 CLK0/CLK1/CLK2 join the labeled 1 MHz rail; recovered .009 Э3 sheet 3 ties that rail to D95 A0/A1 pins6/5",
+   "src": "exact .009 sheets 2/3 plus direct owner continuity 2026-07-22: D40.11 (Q3) is the single 1 MHz driver for conductor tag 7, D37.2, D54 CLK0/CLK1/CLK2, externally tied D95.5/.6, tied D92.2/.3, and D59.5/E14/D50/D51 video-mux enables",
    "nodes": [
     [
      "D40",
@@ -12246,6 +12238,34 @@
     [
      "D95",
      "6"
+    ],
+    [
+     "D92",
+     "2"
+    ],
+    [
+     "D92",
+     "3"
+    ],
+    [
+     "D59",
+     "5"
+    ],
+    [
+     "E14",
+     "3"
+    ],
+    [
+     "D50",
+     "15"
+    ],
+    [
+     "D51",
+     "15"
+    ],
+    [
+     "E14",
+     "1"
     ]
    ]
   },
@@ -13825,31 +13845,6 @@
     ]
    ]
   },
-  "VID_MUX_G": {
-   "src": "scan sheet-2 full-resolution: D59 inverter input pin5 descends to E14.1; the drawn E14 1-3 link continues to D50/D51 active-low G pins. E14.2=+5 V and E14.4=GND remain alternate service/test posts; no external dynamic driver is proved",
-   "nodes": [
-    [
-     "D59",
-     "5"
-    ],
-    [
-     "E14",
-     "3"
-    ],
-    [
-     "D50",
-     "15"
-    ],
-    [
-     "D51",
-     "15"
-    ],
-    [
-     "E14",
-     "1"
-    ]
-   ]
-  },
   "PST_CLK": {
    "src": "scan sheet-2 (D59.4 osc ring out \"PST CLK\" -> D44.UP)",
    "nodes": [
@@ -13868,7 +13863,7 @@
    ]
   },
   "CPU_MUX_G": {
-   "src": "scan sheet-2 full-resolution: D59 inverter output pin6 rises to E13.1; the drawn E13 1-3 link continues to D48/D49 active-low G pins. This makes CPU_MUX_G the complement of the still-undriven D59.5/VID_MUX_G source",
+   "src": "exact .009 sheet 2 plus direct owner continuity 2026-07-22: D59 inverter output pin6 rises to E13.1; the drawn E13 1-3 link continues to D48/D49 active-low G pins. CPU_MUX_G is the complement of the D40.11-driven 1 MHz LATCH_B input on D59.5",
    "nodes": [
     [
      "D59",

@@ -24,8 +24,9 @@ EXPECTED_DRILL_TOOLS = {
 EXPECTED_DRILL_HITS = {
     # The owner-corrected zero-open topology adds 52 fine route vias and two
     # through-hole pads for the separately preserved unidentified resistor;
-    # the measured D30 common-control merge adds 21 guarded route vias.
-    "1": 2893,
+    # the measured D30 common-control merge adds 21 guarded route vias. The
+    # D40 1 MHz slot merge and equivalent RAIL_H recovery add 47 more.
+    "1": 2940,
     "2": 2326,
     "3": 85,
     "4": 8,

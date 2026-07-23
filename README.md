@@ -16,15 +16,15 @@ with the machine-readable board model.
 - The C emulator also has an opt-in D11/8251 PTY transport for diagnostic-ROM
   development. Its data/status mirrors, ready transitions, TX, and RX/echo are
   guarded by `tests/cosim_usart_pty_test.py` via `sync/juk_disk_check.sh`.
-- `sync/check.sh` currently compares 117 mapped instances and 309 nets with no
+- `sync/check.sh` currently compares 117 mapped instances and 308 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
-  322-footprint/2,436-pad source and contains 30,495 copper items across 412
+  322-footprint/2,436-pad source and contains 30,904 copper items across 412
   nets. Stable KiCad 9.0.8 reports zero opens, zero electrical blockers, and
   zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or
   ordered. Current deterministic upload ZIP SHA256:
-  `cef15e3abd93398fa40030662db62feaca805ba7c86c7bf61c54bd982f39e16a`.
+  `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46`.
   Exact topology evidence is retained in
   `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
   `ref/routing/zero-open-fabrication-package.json`, and fabrication/release

@@ -6,6 +6,7 @@ cd "$ROOT"
 
 python3 kicad/report_replica_bringup_verification.py
 "$(scripts/find-kicad-python.sh)" kicad/check_d56_owner_timing_routes.py
+"$(scripts/find-kicad-python.sh)" kicad/check_d40_1mhz_route.py
 python3 kicad/report_main_board_erc_parity.py || {
   status=$?
   if [ "$status" -ne 3 ]; then

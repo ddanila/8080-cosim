@@ -93,9 +93,12 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   formerly missed D59 5->6 inverter is now wired locally: D59.5 reaches the
   E14/video /G link and D59.6 reaches the E13/CPU /G link. Owner continuity on
   2026-07-22 proves D59.5 is driven by the D40.11 1 MHz slot rail, shared with
-  D92.2/.3 and D95.5/.6. The runnable boundary still uses its old TTL-high
-  fallback until that net merge is applied atomically to JSON, HDL, and both
-  PCB representations; see `docs/d40-d59-d92-d95-1mhz-route.md`. D94's proved
+  D92.2/.3 and D95.5/.6. The runnable HDL, JSON, schematic, and both zero-open
+  PCB representations now preserve that single-driver net; see
+  `docs/d40-d59-d92-d95-1mhz-route.md`. Yosys/LVS applies its complementary
+  enables to D48-D51; runnable simulation keeps CPU MA selected while the
+  SIM-ONLY video port remains in use, because the D41/D53 slot schedule is
+  still an explicit timing boundary. D94's proved
   outputs belong to FDC control.
 - CPU DRAM transactions are functionally closed: RAS spans row through CAS,
   and the РУ5 model implements early/delayed asynchronous writes without a

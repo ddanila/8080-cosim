@@ -1,8 +1,8 @@
 # D40/D59/D92/D95 1 MHz route review
 
-Status date: 2026-07-22.
+Status date: 2026-07-23.
 
-Status: **OWNER-CONTINUITY CLOSED / SOURCE-MODEL CORRECTION REQUIRED**
+Status: **OWNER-CONTINUITY CLOSED / MODEL AND ZERO-OPEN ROUTE GUARDED**
 
 This note records the long timing trace measured on the target `.009` board
 and reconciles it with both recovered electrical-schematic revisions. It
@@ -66,22 +66,41 @@ input codes, just as its pins 3/4 duplicate the 2 MHz source.
 This is a coherent single-driver net: D40.11 is the output, while D59.5,
 D92.2/.3, and D95.5/.6 are inputs.
 
-## Required model correction
+## Implemented model correction
 
-The current source model still represents this physical conductor as three
-separate nets:
+The canonical JSON now represents the physical conductor as one `LATCH_B`
+net containing:
 
-- `LATCH_B`: D40.11, D37.2, D54.9/.15/.18, and D95.5/.6;
-- `VID_MUX_G`: D59.5, E14.1/.3, and D50.15/D51.15;
-- `PHI2TTL`: currently includes D92.2/.3.
+- D40.11, D37.2, D54.9/.15/.18, and D95.5/.6;
+- D59.5, E14.1/.3, and D50.15/D51.15;
+- tied D92.2/.3.
 
-The next atomic connectivity update must merge the first two groups, move
-D92.2/.3 onto that 1 MHz net, and re-audit the D35 2 MHz/`PHI2TTL` source-side
-pin attribution. HDL must then drive D59.5 from D40 Q3 instead of its temporary
-TTL-high fallback. Source, schematic, routed boards, reports, LVS, DRC, and the
-zero-open fabrication manifests must be regenerated together; this finding
-therefore reopens that part of the P0 connectivity/routing gate until the
-atomic update lands.
+`PHI2TTL` is now limited to D35.13, D39.1, D53.4, and its sheet-1 continuation
+D30.3. The HDL drives the D59 input and both D92 timing inputs from D40 Q3
+instead of the former fixed-high/D35 phase assumptions. The generated
+schematic round-trips at 117 mapped instances and 308 matched nets.
+The structural Yosys/LVS view applies D59's complementary outputs to D48-D51.
+Runnable simulation retains a CPU-only MA-bus scaffold while video uses its
+SIM-ONLY second DRAM port; it does not apply an unproved D41/D53 slot schedule
+to the behavioral RAS/CAS model.
+
+The PCB migration removes the two obsolete PHI2TTL branches into D92, retains
+the explicit D92.2/.3 bottom-copper tie, and merges all former video-enable
+copper into `LATCH_B`. The initial correction exposed three real opens. The
+two short gaps were repaired directly; the long LATCH_B transaction displaced
+29 removable items across nine nets. Restoring the affected routes left one
+RAIL_H channel at D78/D79 with no conservative path across all tested 0.125 mm
+and 0.10 mm grid offsets. The equivalent source-proved RAIL_H component was
+closed instead from D76.1 to D84.1, and four electrically redundant abandoned
+stubs were removed under
+`ref/routing/d40-1mhz-dangling-prune.json`.
+
+The promoted and candidate boards are byte-identical at this checkpoint:
+322 footprints, 2,436 pads, 30,904 copper items, zero connectivity opens,
+zero electrical DRC blockers, and zero dangling tracks or vias. The exact
+endpoint and direct-tie invariant is executable in
+`kicad/check_d40_1mhz_route.py`; the guarded one-shot migration is retained as
+`kicad/apply_d40_1mhz_route.py`.
 
 ## D96 exclusion
 

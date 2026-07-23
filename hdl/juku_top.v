@@ -123,11 +123,7 @@ module juku_top (
     // rail8/D42.OC/D43.OC. ИР16 pin 8 is active-high output control, not a clock gate.
     wire d41_qa, d41_qa_d41, d41_qb, d36_b2_tag17, shift_g, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
     wire cpu_mux_g_n;
-`ifdef YOSYS
-    wire vid_mux_g_n;                // pending atomic merge onto D40.Q3/1 MHz; see route review
-`else
-    tri1 vid_mux_g_n;                 // stale fallback until JSON/HDL/PCB 1 MHz merge lands atomically
-`endif
+    wire vid_mux_g_n = d40_q[3];      // D40.11 1 MHz -> D59.5/E14 -> D50/D51 /G
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld_sh(d36_b2_tag17), .oc(1'b1), .clk(shift_g),
                      .ser(1'b1), .qd(), .qa(d41_qa_d41), .qb(d41_qb), .qc());
     net_boundary U_W10 (.a(d41_qa), .b(d41_qa_d41));
@@ -145,15 +141,16 @@ module juku_top (
     wire clk2m = d40_q[2];
     wire clk4m = d40_q[1];
     wire clk8m = d40_q[0];
-    // D92 is the native sheet-2 RAM-access combiner.  Section 1 qualifies a
-    // read from ROE, PHI2TTL, and -MRD; section 2 qualifies
-    // a write from PHI2TTL, -MWR, and -RAM SEL.  Section 3 NORs those results
+    // D92 is the native sheet-2 RAM-access combiner. Exact .009 sheet 2 and
+    // owner continuity put tied pins 2/3 on the D40.11 1 MHz slot rail, not
+    // PHI2TTL. Section 1 qualifies a read from ROE, 1 MHz, and -MRD; section 2
+    // qualifies a write from 1 MHz, -MWR, and -RAM SEL. Section 3 NORs those results
     // (the write result is intentionally tied to two inputs) into D92.8, the
     // "no CPU RAM access" input of D39.5. Native sheet labels prove that
     // factory wire 11 extends the global -MRD conductor from D92.13 to D7.1.
     wire d92_rd_nor, d92_wr_nor, d92_noacc;
-    le4_nor3 U_D92 (.a1(roe_n), .b1(phi2ttl), .c1(memr_n), .y1(d92_rd_nor),
-                    .a2(phi2ttl), .b2(memw_n), .c2(ram_sel_n), .y2(d92_wr_nor),
+    le4_nor3 U_D92 (.a1(roe_n), .b1(clk1m), .c1(memr_n), .y1(d92_rd_nor),
+                    .a2(clk1m), .b2(memw_n), .c2(ram_sel_n), .y2(d92_wr_nor),
                     .a3(d92_wr_nor), .b3(d92_wr_nor), .c3(d92_rd_nor), .y3(d92_noacc));
     // D39 sections 3+4: NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4;
     // then NAND(out3, D92.8) -> out6 -> D52 B/A select.
@@ -452,22 +449,34 @@ module juku_top (
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
     // 4,7,9,12 order until the mux INPUT rails are read (a line-swap must be applied to both
     // sides at once or the video-va path desyncs). Queued in round-2 notes.
-    // D59.6 -> E13.1-3 -> D48/D49 /G. Owner continuity now proves D59.5 is
-    // D40.Q3/1 MHz; the still-split structural net is an explicit correction hold.
+    // D59.6 -> E13.1-3 -> D48/D49 /G. D59.5 is the measured D40.Q3/1 MHz
+    // slot rail, so the CPU and video mux banks alternate with exact complements.
+    // The structural/Yosys view uses those physical enables. The runnable DRAM
+    // scaffold still lacks the proved D41/D53 slot schedule and reads video over
+    // a SIM-ONLY second port, so simulation keeps CPU MA selected continuously;
+    // applying the raw slot phase to the untimed RAS/CAS scaffold can latch a
+    // video address during a CPU transaction. This is an arbitration-model
+    // boundary, not the retired fixed-high source on D59.5.
+`ifdef YOSYS
+    wire cpu_mux_runtime_g_n = cpu_mux_g_n;
+    wire vid_mux_runtime_g_n = vid_mux_g_n;
+`else
+    wire cpu_mux_runtime_g_n = 1'b0;
+    wire vid_mux_runtime_g_n = 1'b1;
+`endif
     kp14_mux U_D48 (.a({BA[1], BA[2], BA[3], BA[0]}), .b({BA[13], BA[11], BA[10], BA[9]}),
-                    .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
+                    .sel(phi1), .en_n(cpu_mux_runtime_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D49 (.a({BA[5], BA[6], BA[7], BA[4]}), .b({BA[14], BA[15], BA[8], BA[12]}),
-                    .sel(phi1), .en_n(cpu_mux_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
+                    .sel(phi1), .en_n(cpu_mux_runtime_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
     // D50/D51 = the VIDEO-address mux pair on the SAME tri-state MA bus (sheet-2: Q -> rails
     // 21-28). A/B ins <- video counters + S3 config. G is the D59.5 side of the
-    // complementary D59/E13/E14 enable pair. Its measured D40.Q3/1 MHz source is pending
-    // the atomic JSON/PCB net merge, so this stale fallback still keeps the CPU pair driving MA.
+    // complementary D59/E13/E14 enable pair driven by measured D40.Q3/1 MHz.
     // D59.5 -> E14.1-3 -> D50/D51 /G. The full-resolution sheet closes the
-    // local complementary topology; owner continuity closes the remote driver separately.
+    // local complementary topology; owner continuity closes the remote driver.
     kp14_mux U_D50 (.a({VA[1], VA[2], VA[3], VA[0]}), .b({VA[13], VA[11], VA[10], VA[9]}),
-                    .sel(d41_qa), .en_n(vid_mux_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
+                    .sel(d41_qa), .en_n(vid_mux_runtime_g_n), .y_n({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D51 (.a({VA[5], VA[6], VA[7], VA[4]}), .b({VA[14], VA[15], VA[8], VA[12]}),
-                    .sel(d41_qa), .en_n(vid_mux_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
+                    .sel(d41_qa), .en_n(vid_mux_runtime_g_n), .y_n({MA[5], MA[6], MA[7], MA[4]}));
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
     wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
     // D53 per sheet-2: A/B from the D52 КП14 mux via the E2/E3 config jumpers (2-3 position ties

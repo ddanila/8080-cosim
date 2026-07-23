@@ -436,7 +436,7 @@ def main() -> int:
             or package_evidence.get("board") != "kicad/juku_routed.kicad_pcb"
             or package_evidence.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
             or (package_routing.get("footprints"), package_routing.get("pads")) != (322, 2436)
-            or (package_routing.get("copper_items"), package_routing.get("nets")) != (30495, 412)
+            or (package_routing.get("copper_items"), package_routing.get("nets")) != (30904, 412)
             or any(
                 package_routing.get(name) != 0
                 for name in ("unconnected_items", "electrical_blockers", "dangling_tracks", "dangling_vias")

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source_board_sha256": "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb",
-  "superseded_by_source_board_sha256": "968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0",
+  "superseded_by_source_board_sha256": "6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e",
   "routed_snapshot_sha256": "f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315",
   "raw_candidate_sha256": "d8bcd775b74364e22f53681ab4223893be61ee1d5218f16aa7bc65fd7679534e",
   "output_board_sha256": "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2",

@@ -98,7 +98,7 @@ def main() -> int:
             "`SHIFT_G` / numbered rail 8: D41.9 + D42.8 + D43.8",
         ),
         (
-            "Factory tag 7 closes the D40/D37/D54/D95 1 MHz clock net",
+            "Factory tag 7 and owner continuity close the complete 1 MHz clock net",
             node_in(board, "LATCH_B", "D40", "11")
             and node_in(board, "LATCH_B", "D37", "2")
             and node_in(board, "LATCH_B", "D54", "9")
@@ -106,14 +106,17 @@ def main() -> int:
             and node_in(board, "LATCH_B", "D54", "18")
             and node_in(board, "LATCH_B", "D95", "5")
             and node_in(board, "LATCH_B", "D95", "6")
-            and "sheet-2 full-resolution source closure" in board["nets"]["LATCH_B"].get("src", "")
+            and node_in(board, "LATCH_B", "D59", "5")
+            and node_in(board, "LATCH_B", "D92", "2")
+            and node_in(board, "LATCH_B", "D92", "3")
+            and "direct owner continuity" in board["nets"]["LATCH_B"].get("src", "")
             and "tag 7" in board["nets"]["LATCH_B"].get("src", "")
             and "1 MHz" in board["nets"]["LATCH_B"].get("src", "")
             and node_in(board, "LATCH_PRE", "D37", "3")
             and node_in(board, "LATCH_PRE", "D33", "13")
             and node_in(board, "LATCH_SIG", "D33", "12")
             and node_in(board, "LATCH_SIG", "D39", "9"),
-            "sheet 2: tag 7 joins D40.11/D37.2 and tied D54 CLK0/1/2 pins 9/15/18; sheet 3 extends the same rail to D95.5/.6; adjacent `LATCH_PRE`/`LATCH_SIG` retained",
+            "sheets 2/3 and owner continuity join D40.11/D37.2/D54.9/.15/.18/D59.5/D92.2/.3/D95.5/.6; adjacent `LATCH_PRE`/`LATCH_SIG` retained",
         ),
         (
             "D41 proved straps, outputs, and timing boundaries are netted",
@@ -137,7 +140,7 @@ def main() -> int:
     lines = [
         "# D41 timing boundary",
         "",
-        "Status date: 2026-07-13.",
+        "Status date: 2026-07-23.",
         "",
         f"Status: **{status}**",
         "",
@@ -192,7 +195,8 @@ def main() -> int:
             "  stubs. LD joins numbered timing rail 17; CK joins numbered rail 8.",
             "- Sheet-2 conductor tag 7 closes D40 QD/pin11 and D37.2 to the tied",
             "  D54 CLK0/CLK1/CLK2 pins 9/15/18 on the labeled 1 MHz rail; recovered",
-            "  sheet 3 extends that same rail to D95 clock-mux pins 5 and 6.",
+            "  sheet 3 and owner continuity extend it through D59.5/D92.2/.3 to",
+            "  D95 clock-mux pins 5 and 6.",
             "- The complete D41 package pin disposition is now source-closed. The remote",
             "  origin of rail 17 remains a wider timing-chain boundary at D36.2/D41.6.",
             "",

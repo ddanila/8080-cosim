@@ -31,24 +31,24 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `968a3998ad4c6a21dbb8ec4f9d8d9fa151951d0839fa5a73b840fb8554124ff0` |
-| Routed-snapshot PCB SHA-256 | `7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a` |
+| Source PCB SHA-256 | `6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e` |
+| Routed-snapshot PCB SHA-256 | `3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266` |
 | Source footprints | 322 |
 | Routed-snapshot footprints | 322 |
 | Source-only footprints | 0 |
 | Routed-only footprints | 0 |
-| Routed copper nets classified by the refresh | 412 |
-| Nets with currently reusable routed copper | 412 |
+| Routed copper nets classified by the refresh | 411 |
+| Nets with currently reusable routed copper | 411 |
 | Routed nets currently quarantined | 0 |
-| Reusable non-duplicate track/via items | 30,492 |
+| Reusable non-duplicate track/via items | 30,901 |
 | Quarantined/duplicate track/via items | 3 |
 | Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
 
-The promoted board contains the same 321 footprints and 2,434 pads as the
+The promoted board contains the same 322 footprints and 2,436 pads as the
 source, with no source-only or routed-only footprints and no common-pad net
-mismatches. All 412 routed copper nets pass the refresh classifier; 47 route
-items are duplicate geometry rather than quarantined topology.
+mismatches. All 411 nets carrying routed copper pass the refresh classifier;
+three route items are duplicate geometry rather than quarantined topology.
 
 ### Historical live-source salvage baseline
 

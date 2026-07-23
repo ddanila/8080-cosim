@@ -119,7 +119,7 @@ def main() -> int:
         ),
         (
             "D59/E13/E14 complementary mux-enable topology is source-closed",
-            has_nodes(board, "VID_MUX_G", {("D59", "5"), ("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15")})
+            has_nodes(board, "LATCH_B", {("D40", "11"), ("D59", "5"), ("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15")})
             and has_nodes(board, "CPU_MUX_G", {("D59", "6"), ("E13", "1"), ("E13", "3"), ("D48", "15"), ("D49", "15")})
             and has_nodes(board, "P5V", {("E14", "2")})
             and has_nodes(board, "GND", {("E14", "4")})
@@ -184,7 +184,7 @@ def main() -> int:
         (
             "PHI2TTL timing gate fanout is cross-sheet source-closed",
             set(nodes(board, "PHI2TTL"))
-            == {("D35", "13"), ("D39", "1"), ("D92", "2"), ("D92", "3"), ("D53", "4"), ("D30", "3")}
+            == {("D35", "13"), ("D39", "1"), ("D53", "4"), ("D30", "3")}
             and board["nets"]["PHI2TTL"].get("source_risk") is False
             and "unique labeled cross-sheet pair" in board["nets"]["PHI2TTL"].get("risk_disposition", ""),
             "sheet-2 Ф2TTL (1) export -> sheet-1 (2) Ф2 TTL/D30.3",
@@ -198,7 +198,7 @@ def main() -> int:
             }
             and has_nodes(board, "ROE", {("D92", "1")})
             and board["nets"]["ROE"].get("source_risk") is False
-            and has_nodes(board, "PHI2TTL", {("D92", "2"), ("D92", "3")})
+            and has_nodes(board, "LATCH_B", {("D40", "11"), ("D92", "2"), ("D92", "3")})
             and has_nodes(board, "MEMR", {("D5", "24"), ("D33", "3"), ("D92", "13"), ("W11", "1")})
             and set(nodes(board, "MEMR_D7")) == {("D7", "1"), ("W11", "2")}
             and has_nodes(board, "D92_RD_NOR", {("D92", "12"), ("D92", "11")})

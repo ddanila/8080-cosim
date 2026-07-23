@@ -54,8 +54,8 @@ findings. Every status applies only to the boundary named by the report.
   transistor E-C-B package pinouts, and generated PCB pad/net guards),
   `master-oscillator-boundary.md`,
   `d40-d59-d92-d95-1mhz-route.md` (owner-continuity and exact-sheet closure of
-  the D40.11/D59.5/D92.2/.3/D95.5/.6 1 MHz slot-clock route, with the required
-  atomic source/HDL/PCB correction and rejected tentative D96.6 join),
+  the D40.11/D59.5/D92.2/.3/D95.5/.6 1 MHz slot-clock route, including the
+  guarded source/HDL/PCB correction and rejected tentative D96.6 join),
   `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
   `owner-measurement-shortlist.md`.
 - Programmable parts: `firmware-gap-ledger.md`,
@@ -92,8 +92,8 @@ findings. Every status applies only to the boundary named by the report.
   semantics for physical D41/D42/D43, while their board timing sources remain open),
   `kp14-readiness.md` (datasheet-exact inverting, three-state D48-D52 mux
   semantics with CPU-linear DRAM normalization; the adjacent D59.5/.6
-  complementary E14-video/E13-CPU enable topology is source-traced while its
-  external timing drive remains open),
+  complementary E14-video/E13-CPU enable topology is driven by the guarded
+  D40.11 1 MHz slot rail),
   `video-physical-probes.md` (executable controlled-stimulus probes for the
   source-proved D42/D43/D37 and D56/D34_SYNC contributors, with the shared-DRAM
   slot schedule and D34 signal input explicitly open),

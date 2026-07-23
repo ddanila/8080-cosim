@@ -19,7 +19,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `335`
-- Nets modeled: `476`
+- Nets modeled: `475`
 - Chip-level fidelity gaps: `55`
 - Net-level source-risk gaps: `43`
 - Explicitly dispositioned closed net risks: `14`
@@ -267,7 +267,7 @@ the active release-risk count.
 | `D25_T` | the native sheet closes the D7.6-to-D25.11 turnaround conductor; unread upstream inputs belong to MEMW and INHIB_STATUS_BOUNDARY, not this output net |
 | `D30_Q2N_D29_AIN7` | closed by direct owner continuity; the word boundary refers only to the superseded scan interpretation |
 | `FRAME_INT` | closed across native sheets 2 and 1; D35.8 and D10.23 share the named FRAME INT off-sheet conductor and R60 pull-up |
-| `PHI2TTL` | owner measurement retired: the full-resolution sheet-2 Ф2TTL (1) export and sheet-1 (2) Ф2 TTL arrival are a unique labeled cross-sheet pair, and every drawn endpoint is modeled |
+| `PHI2TTL` | closed by exact-revision correction and the unique labeled cross-sheet pair; D92.2/.3 are explicitly excluded and every remaining drawn endpoint is modeled |
 | `PIT_BAUD` | closed across the native sheets: sheet 2 proves D57.10 to the BAUD R. handoff, and sheet 1 draws one junctioned BAUD RATE conductor to both D11.9 TxC and D11.25 RxC |
 | `POF` | closed by the sheet-1 tag6 to sheet-2 named-POF conductor; MAME is independent corroboration, not the source |
 | `PROM_EN` | the native sheet closes D7.11/D7.13/R17.2 as one feedback-strobe conductor; the refuted D6.14 branch is tracked separately on D6_V_ENABLE |

@@ -142,7 +142,7 @@ def main() -> int:
         ),
         (
             "D59 complementary CPU/video mux-enable inverter is source-traced",
-            net_has(board, "VID_MUX_G", ("D59", "5"), ("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15"))
+            net_has(board, "LATCH_B", ("D40", "11"), ("D59", "5"), ("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15"))
             and net_has(board, "CPU_MUX_G", ("D59", "6"), ("E13", "1"), ("E13", "3"), ("D48", "15"), ("D49", "15"))
             and ["D59", "5"] not in board.get("no_connects", [])
             and ["D59", "6"] not in board.get("no_connects", []),
@@ -272,10 +272,15 @@ def main() -> int:
             "  only at its internal logical address index.",
             "- Full-resolution sheet review restores the previously missed D59 5->6",
             "  inverter: D59.5 reaches E14/video /G and D59.6 reaches E13/CPU /G.",
-            "  Owner continuity now closes D59.5 onto the D40.11 1 MHz slot rail shared",
-            "  with D92.2/.3 and D95.5/.6. The runnable TTL-high fallback remains only",
-            "  until the JSON, HDL, and PCB net merge is applied atomically; see",
+            "  Owner continuity closes D59.5 onto the D40.11 1 MHz slot rail shared",
+            "  with D92.2/.3 and D95.5/.6. JSON, HDL, schematic, and both PCB",
+            "  representations now carry that single-driver net; see",
             "  `docs/d40-d59-d92-d95-1mhz-route.md`.",
+            "- The Yosys/LVS structural view applies those complementary enables to",
+            "  D48-D51. Runnable simulation deliberately keeps CPU MA selected while",
+            "  video uses its SIM-ONLY second DRAM port: applying the raw phase to the",
+            "  untimed RAS/CAS scaffold would invent a slot schedule that is still",
+            "  awaiting D41/D53 timing closure.",
             "- D41's role is now narrowed: QA/QB, its fixed data/enable straps, and",
             "  intentional QC/QD no-connects are modeled; only the remote LD/CK",
             "  timing-bundle sources remain continuity boundaries.",

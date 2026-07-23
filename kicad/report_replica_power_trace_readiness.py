@@ -15,7 +15,7 @@ POWER_NETS = ["GND", "P5V", "P12V", "M12V", "M5V_DERIVED"]
 # topology with clearance-safe 0.20 mm paths and fine-via bridges.  Pin the
 # resulting power inventory so later routing changes cannot silently alter the
 # reviewed DFM envelope; KiCad DRC remains the clearance authority.
-EXPECTED_POWER_SEGMENTS = 2669
+EXPECTED_POWER_SEGMENTS = 2738
 EXPECTED_WIDENED_SEGMENTS = 284
 BASELINE_WIDTH_MM = 0.20
 MAX_WIDTH_MM = 1.00
