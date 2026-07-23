@@ -379,7 +379,12 @@ A Nano is sufficient for every stage except the optional bus-master stage
   Fixed vectors at `0A00/0A03/0A06/0A09` provide serial get, serial put,
   return-to-loader, and zero-terminated print. Exact-image cosim executes an
   uploaded program through put/print/return and forces the verify-failure path
-  with a D84 fault. Host file/chunk orchestration is not yet implemented.
+  with a D84 fault. **Host-upload checkpoint implemented:** `host.py --load`
+  waits for the advertised loader contract, refuses ranges outside both
+  `4000..D7FF` and the reported largest-good window, chunks the file at the
+  ROM's limit, requires every result, and optionally sends RUN. The real CLI
+  uploads a two-chunk image to version 9 in cosim and retains exact raw/JSON
+  evidence. Post-RUN heartbeat monitoring remains future work.
 - **Stage D3 (optional, likely never needed) — external bus master.**
   Mega-based probe via X1/`−INHIBIT`, or CPU-socket ICE. This is NOT the
   memory-upload path (that is D2, done in firmware); it exists solely for
@@ -394,8 +399,11 @@ The bench-facing command is:
 ```sh
 python3 spinoffs/jukuravi/host.py \
   --port /dev/ttyUSB0 \
-  --expect-rom-version 08 \
-  --expect-crc16 8D59 \
+  --expect-rom-version 09 \
+  --expect-crc16 DF64 \
+  --load test.bin \
+  --load-address 4000 \
+  --run-address 4000 \
   --log-dir sessions
 ```
 
@@ -421,6 +429,17 @@ lists, the selected largest good window, and whether DTR reset was requested
 and how many complete release/wait/assert/flush sequences succeeded. Its
 attempt list preserves each attempt's outcome, error, byte/frame counts, banner
 state, and DTR completion while the raw logs preserve the combined wire stream.
+
+With `--load`, the CLI continues beyond RAM_END and waits up to
+`--loader-timeout` seconds (default 60) for each loader response. The upload
+must fit `0x4000..0xD7FF`, must lie wholly inside the session's largest
+all-bits-good RAM window, and must contain the RUN entry. `--run-address`
+defaults to `--load-address`; use `--load-only` to stop after verified chunks.
+The ROM-advertised chunk limit is authoritative up to the protocol maximum of
+253 data bytes. JSON records the source path and SHA256, complete range, READY
+API contract, every chunk address/size/status, and RUN acknowledgment. Raw TX
+contains the exact banner ACK followed by every LOAD and RUN frame. Upload or
+RUN failures are post-survey evidence and are never reset-retried.
 
 ## The cosim-first loop
 
@@ -451,8 +470,8 @@ session CLI, Nano serial bridge, and isolated startup-reset sequencer are
 guarded, as is the host's DTR-commanded session restart. Automatic
 missing-banner recovery and the Nano's local D5 reset hold are also guarded.
 The first D2 loader ROM core is guarded in cosim. Host upload orchestration is
-the next software step; uploaded-test heartbeat recovery and liveness probes
-remain behind their physical measurement gates.
+also guarded through the real CLI. Uploaded-test heartbeat recovery is the next
+software step; liveness probes remain behind their physical measurement gates.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

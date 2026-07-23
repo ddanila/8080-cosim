@@ -138,6 +138,8 @@ def run_case(
         failures.append(f"{label}: raw RX log decodes to {len(decoded)} frames")
     if summary.get("status") != "ok" or summary.get("error") is not None:
         failures.append(f"{label}: summary status is not ok")
+    if summary.get("loader") is not None:
+        failures.append(f"{label}: diagnostic-only session has loader evidence")
     if summary.get("leading_training_bytes") != TRAIN_LENGTH:
         failures.append(f"{label}: training-byte count differs")
     if summary.get("transmitted_bytes") != len(bytes(metadata["ack"])):

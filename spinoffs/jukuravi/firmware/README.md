@@ -585,7 +585,9 @@ record. A separately corrupted loader extension reaches the ROM-fail halt and
 never announces READY.
 A second run injects a stuck-low D84 bit at `4000`, observes it in the survey,
 and proves LOAD returns status `05` rather than accepting a failed readback.
-Host-CLI file/chunk orchestration remains the next D2 checkpoint.
+The real host CLI now consumes this contract, uploads a 300-byte file as exact
+253+47-byte chunks, validates both results, and runs the uploaded entry while
+retaining the complete raw and JSON evidence set.
 
 The pixel comparison is explicitly the simulation-only framebuffer oracle. It
 does not close the unresolved physical shared-DRAM video-slot schedule, D34/X7
@@ -600,8 +602,9 @@ D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The planned D0
 firmware ladder and the first D2 loader core are now represented by exact
-simulation checkpoints. Host file/chunk orchestration is the next software
-step; D1 uploaded-test heartbeat recovery and liveness probes remain later
-measurement-dependent work. The host session CLI, DTR-commanded session
+simulation checkpoints. Host file/chunk orchestration is guarded; D1
+uploaded-test heartbeat recovery is the next software step, while liveness
+probes remain later measurement-dependent work. The host session CLI,
+DTR-commanded session
 restart, bounded missing-banner retry, Nano serial bridge, and isolated startup
 reset/hold are guarded separately in the parent directory.

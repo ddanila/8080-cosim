@@ -1694,8 +1694,15 @@ an active `/Q1` feedback output.
    serial-put, `0A06` return, and `0A09` print vectors make uploaded programs
    self-reporting. Exact-image cosim proves corrupt/short/range/unknown command
    rejection, successful upload and put/print/return execution, and injected
-   RAM readback failure. Host file/chunk orchestration remains the next D2
-   checkpoint.
+   RAM readback failure. The eighth checkpoint implements host file/chunk
+   orchestration: `--load` waits for and validates READY, requires the requested
+   range to fit both the ROM boundary and the survey's largest-good window,
+   follows the advertised chunk limit, requires every LOAD_RESULT, and sends
+   RUN unless `--load-only` was requested. Source SHA256, range, API contract,
+   per-chunk status, RUN acknowledgment, and exact raw frames are durable
+   session evidence. The actual CLI uploads 300 bytes in two chunks and runs an
+   uploaded HLT under cosim; any upload-stage failure aborts without reset
+   retry. Post-RUN heartbeat supervision remains the next D2/D1 recovery step.
 
 ## Physical bring-up sequence
 
@@ -1800,6 +1807,10 @@ Once a released board and programmed parts exist:
   its own extension, verifies framed chunks in `4000..D7FF`, runs uploaded code,
   and exposes fixed serial/print/return vectors; exact-image cosim covers both
   executable success and injected readback failure.
+- [x] Jukuravi D2 host upload orchestration validates READY and the surveyed
+  good window, chunks and verifies a named file, optionally runs its in-image
+  entry, and retains source hash, per-chunk results, RUN acknowledgment, and
+  exact RX/TX evidence without retrying post-survey failures.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

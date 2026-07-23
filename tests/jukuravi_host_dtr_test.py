@@ -147,6 +147,24 @@ def main() -> int:
     if pulse.call_count != 1 or post_banner_failure.begun != [1]:
         fail("post-banner session error was retried")
 
+    def fail_completion() -> None:
+        raise host.SessionError("upload failed")
+
+    completion_failure = FakeSession(True, [None])
+    with mock.patch.object(host, "pulse_nano_dtr") as pulse:
+        try:
+            host.run_session_with_retries(
+                completion_failure, 2, fail_completion
+            )  # type: ignore[arg-type]
+        except host.SessionError:
+            pass
+        else:
+            fail("loader completion error did not abort")
+    if pulse.call_count != 1 or completion_failure.begun != [1]:
+        fail("loader completion error was retried")
+    if completion_failure.finished != [("error", "upload failed")]:
+        fail("loader completion failure evidence differs")
+
     no_reset_session = FakeSession(
         False, [host.BannerTimeout("timeout before session banner")]
     )
