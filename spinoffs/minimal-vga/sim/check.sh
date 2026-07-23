@@ -39,6 +39,9 @@ spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 echo "== VJUGA spin-off: Rev A staged physical LVS (Z80 CPU + ROM core) =="
 spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 
+echo "== VJUGA spin-off: Rev A staged physical LVS (eight-chip DRAM bank) =="
+spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
+
 echo "== VJUGA spin-off: Rev A physical schematic target =="
 spinoffs/minimal-vga/kicad/check_rev_a_physical.sh
 

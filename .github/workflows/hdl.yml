@@ -127,6 +127,9 @@ jobs:
       - name: Run Rev A Z80 CPU and ROM physical LVS
         run: spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 
+      - name: Run Rev A DRAM-bank physical LVS
+        run: spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
+
   behavioral:
     runs-on: ubuntu-latest
     steps:

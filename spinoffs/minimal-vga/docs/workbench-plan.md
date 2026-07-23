@@ -91,10 +91,10 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    (e) power budget are **DONE**. Step (c) — the physical-board socket↔twin
    contract is enforced by `check_rev_a_physical`; the independently
    authored physical-LVS stages now close the POWER/CLOCK_RESET, complete
-   decode socket/glue, and complete Z80/ROM core groups with exact endpoint
-   projections, while whole-board chip-accurate yosys LVS remains staged (see
-   below). Step (f) routing/DRC is **DONE** on the current 119-ref board; fab
-   regeneration and review remain.
+   decode socket/glue, complete Z80/ROM core, and complete eight-chip DRAM bank
+   groups with exact endpoint projections, while whole-board chip-accurate
+   yosys LVS remains staged (see below). Step (f) routing/DRC is **DONE** on the
+   current 119-ref board; fab regeneration and review remain.
 
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets
@@ -137,14 +137,18 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
       `sync/rev_a_cpu_rom_lvs.sh` maps every U1 Z80 and U2 ROM pin plus C1/C2,
       and every endpoint on their 36 non-power nets (35 mapped refs / 38
       partitions / 2 NC pads); address-swap, missing-NC, and open-scope
-      mutations must fail. STAGED:
+      mutations must fail. STAGE 4 DONE:
+      `sync/rev_a_dram_bank_lvs.sh` maps every U10-U17/C6-C13 pad and every
+      endpoint on all 19 non-power bank nets (25 mapped refs / 21 partitions /
+      8 NC pads); data-pin, missing-NC, and open-scope mutations must fail.
+      STAGED:
       full chip-accurate yosys LVS of the *whole* board — mapping the tv80 core
       and the behavioral DRAM sequencer and replacing the old 8-instance logical
       model group-by-group — remains a larger effort. Exact coverage and the
       remaining groups are recorded in `docs/rev-a-lvs-coverage.md`.
       Whole-board LVS is a bare-board release gate unless the owner records a
       specific waiver backed by independent schematic, pinout, and copper
-      review; the three physical stages must not silently stand in for it.
+      review; the four physical stages must not silently stand in for it.
    d. Add the Mode-A (GAL-decode) path to the twin behind a parameter and prove
       **both modes boot byte-identical** to cosim, so each physical jumper
       setting has a simulated counterpart before fab.

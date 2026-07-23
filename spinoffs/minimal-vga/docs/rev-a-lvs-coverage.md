@@ -2,14 +2,15 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 3 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 4 PASS / WHOLE BOARD INCOMPLETE**.
 
-Three independently authored physical-board LVS slices are executable:
+Four independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
 ```
 
 They compare their structural HDL with `kicad/rev-a-physical.board.json`
@@ -82,12 +83,28 @@ U1.18 no-connect declaration, and adding an otherwise-unmapped U23.3 endpoint
 to A0. The last control proves that endpoint closure rejects a newly introduced
 consumer even when the mapped partition itself would otherwise be unchanged.
 
+## Closed in stage 4
+
+`rev_a_dram_bank_lvs.sh` makes U10-U17 and their C6-C13 decouplers complete
+owned instances. It maps every pad on all eight 4164-class packages, including
+both DIN and DOUT pads on each data bit and the eight explicit pin-1
+no-connects used by the selected 4164/РУ5-compatible population.
+
+The comparison maps 25 references: 16 complete bank parts and nine exact
+boundary projections. It matches 21 connectivity partitions, all eight NC
+pads, and proves all 19 non-power bank nets endpoint-closed: D0-D7,
+DRAM_A0-DRAM_A7, RAS_N, CAS_N, and DRAM_WE_N.
+
+Three temporary mutations must fail: moving U10.2 from D0 to D1, deleting the
+U10.1 no-connect declaration, and adding an otherwise-unmapped U23.3 endpoint
+to DRAM_A0.
+
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- DRAM bank, address multiplexing, refresh, arbitration, and U24 timing;
+- DRAM address multiplexing, refresh, arbitration, and U24 timing;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.
