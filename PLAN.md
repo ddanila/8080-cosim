@@ -1653,8 +1653,14 @@ an active `/Q1` feedback output.
    both corrupt-extension branches, and no-ACK predecessor. vm80a proves a
    bounded eight-row physical DRAM draw/readback, 2,560 abstract pixels, the
    framebuffer-fault halt, and both version-8 fallback outcomes. This completes
-   the planned D0 firmware ladder in simulation. Stage D1's Nano bridge and
-   host session CLI are the next bounded Jukuravi implementation.
+   the planned D0 firmware ladder in simulation. The first Stage D1 checkpoint
+   now runs the dependency-free host CLI as a separate process against that
+   exact ROM: it validates the identity banner, sends the matching ACK, decodes
+   all 192 page records, prints D84–D91 and largest-window verdicts, and retains
+   timestamped RX/TX/JSON evidence. Clean and injected D87+D89 page-`7A` cosim
+   sessions prove both human and machine-readable outputs. The Nano's
+   115200-USB-to-nominal-9600-Juku bridge, open-collector reset output, and
+   liveness probes are the next bounded Jukuravi implementation.
 
 ## Physical bring-up sequence
 
@@ -1728,6 +1734,10 @@ Once a released board and programmed parts exist:
   address-XOR framebuffer, suppresses the pattern for injected D84 failure,
   guards both executable extensions, and retains the no-ACK path in cosim and
   vm80a, including a bounded abstract-pixel comparison.
+- [x] Jukuravi D1 host checkpoint runs the real CLI against the exact final D0
+  ROM, validates and acknowledges its identity, decodes the complete clean and
+  injected-fault surveys into D84–D91/window verdicts, and preserves timestamped
+  raw RX, raw TX, and JSON session evidence.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

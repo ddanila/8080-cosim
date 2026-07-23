@@ -43,6 +43,8 @@ python3 tests/jukuravi_d0_pit_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-pit.bin
 python3 tests/jukuravi_d0_framebuffer_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-framebuffer.bin
+python3 tests/jukuravi_host_cli_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-framebuffer.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 iverilog -g2012 -s pit_8253_latch_tb -o "$tmp/pit_8253_latch_tb" \

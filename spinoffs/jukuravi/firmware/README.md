@@ -532,13 +532,14 @@ The pixel comparison is explicitly the simulation-only framebuffer oracle. It
 does not close the unresolved physical shared-DRAM video-slot schedule, D34/X7
 levels, analog monitor behavior, or authorize a bench burn.
 
-Broader row/column-shaped fault generators and the user-facing session CLI are
-Stage D1 host-tool work; rung 4's required serial and beep-only RAM paths are
-both represented by exact burn images.
+Broader row/column-shaped fault generators remain Stage D1 host-tool work; the
+user-facing session CLI is guarded in the parent directory, and rung 4's
+required serial and beep-only RAM paths are both represented by exact images.
 
 The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The planned D0
 firmware ladder is now represented by exact simulation checkpoints. The next
-Jukuravi implementation stage is D1's Nano bridge and host session CLI.
+Jukuravi implementation stage is D1's Nano bridge, reset output, and liveness
+probes; the host session CLI is now guarded separately in the parent directory.

@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D0 DIAGNOSTIC LADDER GUARDED THROUGH VIDEO RAM.**
+Status: **EXECUTION STARTED — D1 HOST SESSION CLI GUARDED; NANO BRIDGE NEXT.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -73,7 +73,12 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   same code, same protocol. Every session is logged verbatim (raw stream +
   decoded verdicts, timestamped), matching the repo's provenance culture: a
   verdict like "D87 bad rows 0x80–0xFF" is a citable artifact from a named
-  session, not a memory.
+  session, not a memory. **Implemented simulation checkpoint:** `host.py`
+  validates the banner identity, sends the exact framed ACK, decodes all 192
+  page records, prints per-chip and largest-good-window verdicts, and writes
+  timestamped RX, TX, and JSON logs. Its inherited-fd transport round-trips
+  against cosim; `--port` uses the same session engine for the future Nano USB
+  device.
 
 A Nano is sufficient for every stage except the optional bus-master stage
 (~30 GPIO needed for address+data+control — that is Mega 2560 territory).
@@ -253,8 +258,8 @@ A Nano is sufficient for every stage except the optional bus-master stage
      the complete 40×241 pattern, D84 fault suppression, corrupt extensions,
      and the no-ACK predecessor. vm80a proves a bounded eight-row draw,
      readback, abstract pixel stream, fault halt, and both physical fallback
-     outcomes. This closes the planned D0 firmware ladder in simulation; the
-     Nano bridge and host session CLI are the next Jukuravi stage.
+     outcomes. This closes the planned D0 firmware ladder in simulation. The
+     Stage D1 host CLI is now guarded below; the Nano bridge and probes are next.
 
   The beep vocabulary is a tiny fixed set (alive / cpu-bad / rom-bad /
   pic-bad / ppi-bad / pit-bad / framebuffer-ram-bad / usart-bad / serial-ok /
@@ -302,6 +307,14 @@ A Nano is sufficient for every stage except the optional bus-master stage
   (negative rails would need dividers — optional extras).
 - **Stage D1 — Nano + host software.** Nano firmware (bridge + liveness
   probes) and the Python CLI with human-readable verdicts.
+  **Host-session simulation checkpoint implemented:** the dependency-free CLI
+  accepts the final D0 banner only after protocol/optional ROM identity checks,
+  transmits its matching nine-byte ACK, validates the ordered full survey, and
+  names D84–D91 failures plus the largest all-bits-good window. Clean RAM and a
+  `7A5C:08:20` D87+D89 injection are exercised through the actual CLI process
+  and exact version-8 ROM. Both sessions retain timestamped raw RX/TX and JSON
+  evidence. The Nano's 115200-USB-to-approximately-9600-Juku bridge, reset
+  output, and liveness probes remain the next D1 checkpoint.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
   ROM: on a host command ("load at address, N bytes, payload, checksum") the
   ROM writes the received bytes into tested-good onboard RAM, verifies, and
@@ -320,6 +333,27 @@ A Nano is sufficient for every stage except the optional bus-master stage
   boards so dead the CPU cannot execute ROM code at all. The CPU-socket
   route is genuinely complex (КР580ВК38 expects the status byte during
   SYNC; the socket carries +12/−5 V rails).
+
+## Host session CLI
+
+The bench-facing command is:
+
+```sh
+python3 spinoffs/jukuravi/host.py \
+  --port /dev/ttyUSB0 \
+  --expect-rom-version 08 \
+  --expect-crc16 8D59 \
+  --log-dir sessions
+```
+
+The host-facing USB link defaults to 115200 baud; the planned Nano firmware
+will bridge that to the diagnostic ROM's nominal 9600-baud 8N1 link through a
+MAX3232-class level shifter. Until that firmware exists, `--port` is an
+interface contract, not a bench-ready claim. `--fd` is the inherited PTY-master
+transport used by the cosim regression. A successful session creates one
+timestamp-matched `.rx.bin`, `.tx.bin`, and `.json` set. The JSON contains the
+validated image identity, every decoded frame, page masks, D84–D91 bad-page
+lists, and the selected largest good window.
 
 ## The cosim-first loop
 
@@ -345,9 +379,9 @@ failure paths, while the D57 beeper path has its own waveform/connectivity
 guard. The 8253 register model and the cumulative diagnostic now compose:
 focused model tests cover latch/read formats, BCD conversion, and pending-latch
 ownership, while the ROM guard covers all physical counter selects with
-phase-tolerant live-count predicates. The planned D0 ladder is complete in
-simulation; the next Jukuravi implementation step is Stage D1's Nano bridge and
-host session CLI.
+phase-tolerant live-count predicates. The planned D0 ladder and Stage D1 host
+session CLI are complete in simulation; the Nano bridge, hardware reset output,
+and liveness probes are next.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
@@ -405,7 +439,8 @@ Before bench connection, at minimum:
 1. **DONE:** 8251 model merged in root `cosim/` with guarded PTY transport;
 2. diagnostic ROM passes in cosim **and** the HDL twin, including injected
    faults (each fault class produces the intended verdict);
-3. host tool round-trips the full protocol against cosim;
+3. **DONE:** host tool round-trips the full protocol against cosim with clean
+   and injected RAM failure, human-readable verdicts, and timestamped logs;
 4. X3 pinout and levels continuity-confirmed on the real board, and S1
    reset-switch contacts identified for the Nano reset line;
 5. upload-to-RAM (D2) demonstrated end-to-end in cosim before it is ever run
