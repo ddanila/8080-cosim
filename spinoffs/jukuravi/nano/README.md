@@ -67,7 +67,10 @@ and starting this sequence. The host logs a successfully sent DTR pulse without
 claiming that the physical reset was observed; its durable completion field is
 set only after the following transport flush also succeeds. Adapters with
 auto-reset disabled require `--no-nano-reset` plus a Nano reset-button press or
-power cycle before the session.
+power cycle before the session. A reset-enabled host session now retries only
+when no valid banner or other protocol frame arrives inside its bounded
+pre-banner deadline, performing a fresh DTR sequence for each of at most two
+extra attempts. It never retries decoded partial or invalid protocol evidence.
 
 This is a firmware and isolated-input checkpoint, not permission to attach the
 board side. S1 is SPDT: current evidence identifies S1.1 with `RES_RC` and
@@ -101,7 +104,7 @@ bootloader/upload protocol, not this sketch's compiled ATmega328P behavior.
 
 The reset driver cannot make a bench session safe or unattended until the real
 S1 contact pair is measured and the isolated harness is built. Session-start
-restart is now host-commanded through DTR; automatic retry after a missing
-heartbeat and reset-hold control remain later host/firmware work. Derived-clock
-and `-MRDC` probe pins will likewise be assigned only after continuity
-identifies accessible, voltage-safe testpoints.
+restart and missing-banner recovery are now host-commanded through DTR.
+Uploaded-test heartbeat recovery and reset-hold control remain later
+host/firmware work. Derived-clock and `-MRDC` probe pins will likewise be
+assigned only after continuity identifies accessible, voltage-safe testpoints.

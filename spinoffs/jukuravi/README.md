@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D1 HOST, BRIDGE, STARTUP RESET GUARDED; PROBES NEXT.**
+Status: **EXECUTION STARTED — D1 HOST RECOVERY, BRIDGE, RESET GUARDED; PROBES NEXT.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -78,12 +78,16 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   for 50 ms recovery. Boundary and `millis()`-rollover tests guard the portable
   sequencer, and the actual AVR sketch compiles. The board-side isolated
   contact remains forbidden until the SPDT S1 reset pair is measured;
-  automatic retry and reset-hold control are not yet implemented. **Implemented
-  host checkpoint:** before a real `--port` session, `host.py` explicitly
+  uploaded-test heartbeat recovery and reset-hold control are not yet
+  implemented. **Implemented host checkpoints:** before a real `--port`
+  session, `host.py` explicitly
   releases DTR for 50 ms and reasserts it, restarting the Nano and therefore
-  this startup pulse on standard classic-Nano hardware. The JSON log records
-  the request and successful DTR ioctl separately from any unobserved physical
-  reset.
+  this startup pulse on standard classic-Nano hardware. If no valid banner
+  arrives within 15 seconds and no protocol frame was decoded, it repeats that
+  sequence at most twice; decoded invalid banners, partial protocol evidence,
+  transport errors, and failures after a valid banner are never retried. The
+  JSON log records every attempt and successful DTR sequence separately from
+  any unobserved physical reset.
 - **Host tool** (Python CLI) drives the protocol and prints verdicts. It talks
   to cosim's pty during development and to the Nano's USB port on the bench —
   same code, same protocol. Every session is logged verbatim (raw stream +
@@ -340,11 +344,16 @@ A Nano is sufficient for every stage except the optional bus-master stage
   **Startup-reset checkpoint implemented:** D4 drives only an optocoupler LED,
   using a boot-state pull-down; the wrap-safe 250 ms assertion and 50 ms quiet
   recovery are boundary-tested before the bridge can run. The S1 contact side,
-  automatic retry/reset-hold, and liveness probes remain gated or future work.
+  reset-hold, and liveness probes remain gated or future work.
   **Host-controlled session-reset checkpoint implemented:** real `--port`
   sessions perform a release/wait/assert DTR sequence before reading, flush
   stale bytes, and log requested/completed state. Mocked modem-control ordering
   and failure are guarded; `--no-nano-reset` opts out and `--fd` remains raw.
+  **Missing-banner recovery checkpoint implemented:** reset-enabled `--port`
+  sessions use a 15-second pre-banner deadline and at most two extra attempts,
+  each beginning with a fresh DTR sequence. Any decoded protocol frame stops
+  retry permanently; bounded retry, partial/post-banner failure, and reset-off
+  behavior are guarded, and per-attempt byte/frame/reset evidence is retained.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
   ROM: on a host command ("load at address, N bytes, payload, checksum") the
   ROM writes the received bytes into tested-good onboard RAM, verifies, and
@@ -386,11 +395,18 @@ remain disconnected from S1 until that measurement closes. By default, a real
 waiting for the banner; use `--no-nano-reset` only when the adapter lacks or
 must not use the DTR auto-reset circuit. `--fd` is the inherited PTY-master
 transport used by the cosim regression and never receives modem-control
-operations. A successful session creates one
+operations. A reset-enabled `--port` session waits 15 seconds for a valid
+banner and, on an evidence-free timeout alone, makes up to two additional reset
+attempts. Use `--banner-timeout` and `--reset-retries` to change those bounds.
+Retry is disabled by `--no-nano-reset` and never occurs after any decoded
+protocol frame, so partial survey evidence cannot be erased by an automatic
+restart. A successful session creates one
 timestamp-matched `.rx.bin`, `.tx.bin`, and `.json` set. The JSON contains the
 validated image identity, every decoded frame, page masks, D84–D91 bad-page
 lists, the selected largest good window, and whether DTR reset was requested
-and its complete release/wait/assert/flush sequence succeeded.
+and how many complete release/wait/assert/flush sequences succeeded. Its
+attempt list preserves each attempt's outcome, error, byte/frame counts, banner
+state, and DTR completion while the raw logs preserve the combined wire stream.
 
 ## The cosim-first loop
 
@@ -418,8 +434,9 @@ focused model tests cover latch/read formats, BCD conversion, and pending-latch
 ownership, while the ROM guard covers all physical counter selects with
 phase-tolerant live-count predicates. The planned D0 ladder, Stage D1 host
 session CLI, Nano serial bridge, and isolated startup-reset sequencer are
-guarded, as is the host's DTR-commanded session restart. Automatic reset retry/
-hold and liveness probes are next, after their physical measurement gates
+guarded, as is the host's DTR-commanded session restart. Automatic
+missing-banner recovery is also guarded. Reset-hold, uploaded-test heartbeat
+recovery, and liveness probes are next, after their physical measurement gates
 close.
 Then:
 

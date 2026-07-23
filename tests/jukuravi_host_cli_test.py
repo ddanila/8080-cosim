@@ -145,8 +145,22 @@ def run_case(
     if summary.get("nano_control") != {
         "dtr_reset_requested": False,
         "dtr_sequence_completed": False,
+        "dtr_sequences_completed": 0,
     }:
         failures.append(f"{label}: fd transport unexpectedly requested Nano reset")
+    if summary.get("attempts") != [
+        {
+            "number": 1,
+            "outcome": "ok",
+            "error": None,
+            "received_bytes": len(raw_rx),
+            "transmitted_bytes": len(raw_tx),
+            "decoded_frames": 195,
+            "banner_seen": True,
+            "dtr_sequence_completed": False,
+        }
+    ]:
+        failures.append(f"{label}: single-attempt evidence differs")
     image_summary = summary.get("image", {})
     if image_summary != {
         "protocol_version": protocol.PROTOCOL_VERSION,

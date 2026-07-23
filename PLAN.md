@@ -1672,9 +1672,15 @@ an active `/Q1` feedback output.
    control releases DTR for 50 ms, reasserts it, flushes stale transport bytes,
    and records both the request and completed control sequence in JSON. Mocked
    ioctl ordering/failure plus the no-reset `--fd` cosim path are guarded, with
-   an explicit `--no-nano-reset` escape hatch. The SPDT S1 board-side contact pair,
-   automatic retry/reset-hold, and voltage-safe liveness probes remain gated on
-   continuity measurements of the real S1/X3/testpoint wiring.
+   an explicit `--no-nano-reset` escape hatch. The fifth checkpoint adds
+   conservative missing-banner recovery: reset-enabled `--port` sessions wait
+   15 seconds for a valid banner, then perform at most two fresh DTR/reset
+   attempts. Any decoded protocol frame, transport error, or failure after a
+   valid banner aborts without retry; JSON retains per-attempt byte, frame,
+   banner, error, and DTR evidence. The SPDT S1 board-side contact pair,
+   reset-hold, uploaded-test heartbeat recovery, and voltage-safe liveness
+   probes remain gated on continuity measurements of the real S1/X3/testpoint
+   wiring.
 
 ## Physical bring-up sequence
 
@@ -1767,6 +1773,10 @@ Once a released board and programmed parts exist:
   bytes, logs requested/completed state without claiming physical observation,
   preserves raw `--fd` cosim sessions, and has a guarded opt-out and failure
   path.
+- [x] Jukuravi D1 missing-banner recovery gives reset-enabled real-port
+  sessions a short banner deadline and at most two fresh-reset retries, never
+  retries decoded partial or post-banner evidence, and records each attempt
+  plus the exact count of completed DTR sequences in JSON.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

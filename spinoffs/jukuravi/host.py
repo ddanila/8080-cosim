@@ -21,11 +21,17 @@ import protocol
 
 DEFAULT_BAUD = 115200
 DEFAULT_TIMEOUT = 180.0
+DEFAULT_BANNER_TIMEOUT = 15.0
+DEFAULT_RESET_RETRIES = 2
 DTR_RELEASE_SECONDS = 0.05
 
 
 class SessionError(RuntimeError):
     """A complete, trustworthy Jukuravi session could not be obtained."""
+
+
+class BannerTimeout(SessionError):
+    """No valid session banner arrived inside the pre-banner deadline."""
 
 
 def parse_hex16(value: str) -> int:
@@ -41,6 +47,13 @@ def parse_hex8(value: str) -> int:
     parsed = parse_hex16(value)
     if parsed > 0xFF:
         raise argparse.ArgumentTypeError("value must fit eight bits")
+    return parsed
+
+
+def parse_nonnegative_int(value: str) -> int:
+    parsed = int(value)
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("value must be nonnegative")
     return parsed
 
 
@@ -201,6 +214,7 @@ class HostSession:
         fd: int,
         logs: SessionLogs,
         timeout: float,
+        banner_timeout: float,
         expect_rom_version: int | None,
         expect_crc16: int | None,
         nano_reset_requested: bool,
@@ -208,16 +222,51 @@ class HostSession:
         self.fd = fd
         self.logs = logs
         self.timeout = timeout
+        self.banner_timeout = banner_timeout
         self.expect_rom_version = expect_rom_version
         self.expect_crc16 = expect_crc16
         self.nano_reset_requested = nano_reset_requested
         self.nano_dtr_sequence_completed = False
+        self.nano_dtr_sequences_completed = 0
         self.decoder = protocol.StreamDecoder()
         self.raw_rx = bytearray()
         self.raw_tx = bytearray()
         self.frames: list[protocol.Frame] = []
         self.banner_payload: bytes | None = None
         self.survey: protocol.RamSurvey | None = None
+        self.attempts: list[dict[str, object]] = []
+        self._attempt_number: int | None = None
+        self._attempt_rx_start = 0
+        self._attempt_tx_start = 0
+        self._attempt_dtr_start = 0
+
+    def begin_attempt(self, number: int) -> None:
+        self.decoder = protocol.StreamDecoder()
+        self.frames = []
+        self.banner_payload = None
+        self.survey = None
+        self._attempt_number = number
+        self._attempt_rx_start = len(self.raw_rx)
+        self._attempt_tx_start = len(self.raw_tx)
+        self._attempt_dtr_start = self.nano_dtr_sequences_completed
+
+    def finish_attempt(self, outcome: str, error: str | None = None) -> None:
+        assert self._attempt_number is not None
+        self.attempts.append(
+            {
+                "number": self._attempt_number,
+                "outcome": outcome,
+                "error": error,
+                "received_bytes": len(self.raw_rx) - self._attempt_rx_start,
+                "transmitted_bytes": len(self.raw_tx) - self._attempt_tx_start,
+                "decoded_frames": len(self.frames),
+                "banner_seen": self.banner_payload is not None,
+                "dtr_sequence_completed": (
+                    self.nano_dtr_sequences_completed > self._attempt_dtr_start
+                ),
+            }
+        )
+        self._attempt_number = None
 
     def _accept_banner(self, frame: protocol.Frame, deadline: float) -> None:
         if len(frame.payload) != 4:
@@ -248,9 +297,19 @@ class HostSession:
 
     def run(self) -> None:
         deadline = time.monotonic() + self.timeout
+        banner_deadline = min(deadline, time.monotonic() + self.banner_timeout)
         while self.survey is None:
-            remaining = deadline - time.monotonic()
+            active_deadline = (
+                deadline if self.banner_payload is not None else banner_deadline
+            )
+            remaining = active_deadline - time.monotonic()
             if remaining <= 0:
+                if self.banner_payload is None:
+                    if self.frames:
+                        raise SessionError(
+                            "timeout after protocol frames but before session banner"
+                        )
+                    raise BannerTimeout("timeout before session banner")
                 raise SessionError("timeout before a complete RAM survey")
             if not select.select([self.fd], [], [], min(remaining, 0.25))[0]:
                 continue
@@ -295,7 +354,9 @@ class HostSession:
             "nano_control": {
                 "dtr_reset_requested": self.nano_reset_requested,
                 "dtr_sequence_completed": self.nano_dtr_sequence_completed,
+                "dtr_sequences_completed": self.nano_dtr_sequences_completed,
             },
+            "attempts": self.attempts,
             "image": image,
             "frames": [frame_json(frame) for frame in self.frames],
             "ram_survey": None if self.survey is None else survey_json(self.survey),
@@ -303,12 +364,39 @@ class HostSession:
         return result
 
 
+def run_session_with_retries(session: HostSession, reset_retries: int) -> None:
+    attempt_limit = 1 + reset_retries if session.nano_reset_requested else 1
+    for number in range(1, attempt_limit + 1):
+        session.begin_attempt(number)
+        try:
+            if session.nano_reset_requested:
+                pulse_nano_dtr(session.fd)
+                session.nano_dtr_sequences_completed += 1
+                session.nano_dtr_sequence_completed = True
+            session.run()
+        except BannerTimeout as error:
+            session.finish_attempt("banner_timeout", str(error))
+            if number < attempt_limit:
+                continue
+            raise
+        except (SessionError, OSError) as error:
+            session.finish_attempt("error", str(error))
+            raise
+        session.finish_attempt("ok")
+        return
+
+
 def print_verdict(session: HostSession, logs: SessionLogs) -> None:
     assert session.banner_payload is not None and session.survey is not None
     protocol_version, rom_version, crc_hi, crc_lo = session.banner_payload
     survey = session.survey
     if session.nano_dtr_sequence_completed:
-        print("JUKURAVI: nano-reset DTR sequence completed")
+        print(
+            "JUKURAVI: nano-reset DTR sequences completed "
+            f"{session.nano_dtr_sequences_completed}"
+        )
+    if len(session.attempts) > 1:
+        print(f"JUKURAVI: session attempts {len(session.attempts)}")
     print(
         f"JUKURAVI: protocol={protocol_version:02X} rom={rom_version:02X} "
         f"image_crc16={crc_hi:02X}{crc_lo:02X}"
@@ -345,6 +433,18 @@ def make_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--baud", type=int, default=DEFAULT_BAUD)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
+    parser.add_argument(
+        "--banner-timeout",
+        type=float,
+        default=DEFAULT_BANNER_TIMEOUT,
+        help="seconds to wait for a valid banner before a reset retry",
+    )
+    parser.add_argument(
+        "--reset-retries",
+        type=parse_nonnegative_int,
+        default=DEFAULT_RESET_RETRIES,
+        help="extra DTR resets after a missing banner (real --port sessions only)",
+    )
     parser.add_argument("--log-dir", type=Path, default=Path("jukuravi-logs"))
     parser.add_argument("--expect-rom-version", type=parse_hex8)
     parser.add_argument("--expect-crc16", type=parse_hex16)
@@ -361,6 +461,9 @@ def main() -> int:
     if args.timeout <= 0:
         print("JUKURAVI: timeout must be positive", file=sys.stderr)
         return 2
+    if args.banner_timeout <= 0:
+        print("JUKURAVI: banner timeout must be positive", file=sys.stderr)
+        return 2
     try:
         fd, transport = open_transport(args.port, args.fd, args.baud)
     except SessionError as error:
@@ -372,15 +475,13 @@ def main() -> int:
         fd,
         logs,
         args.timeout,
+        args.banner_timeout,
         args.expect_rom_version,
         args.expect_crc16,
         nano_reset_requested,
     )
     try:
-        if nano_reset_requested:
-            pulse_nano_dtr(fd)
-            session.nano_dtr_sequence_completed = True
-        session.run()
+        run_session_with_retries(session, args.reset_retries)
     except (SessionError, OSError) as error:
         logs.finish(session.summary("error", str(error)))
         print(f"JUKURAVI: ERROR {error}", file=sys.stderr)
