@@ -1858,6 +1858,7 @@ def main() -> int:
     vjuga_pcb_path = ROOT / "spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb"
     if vjuga_pcb_path.exists():
         vjuga_pcb = vjuga_pcb_path.read_text(encoding="utf-8", errors="replace")
+        vjuga_drc = read("spinoffs/minimal-vga/docs/rev-a-drc-readiness.md")
         vjuga_tracks = len(re.findall(r"(?m)^\s*\((?:segment|arc|via)\b", vjuga_pcb))
         vjuga_zones = len(re.findall(r"(?m)^\s*\(zone\b", vjuga_pcb))
         if f"{vjuga_tracks:,} tracks" not in read("PLAN.md"):
@@ -1869,6 +1870,16 @@ def main() -> int:
             )
         if vjuga_zones != 2 or "filled In1.Cu GND and In2.Cu VCC planes" not in readiness:
             failures.append("VJUGA readiness does not expose the two filled power planes")
+        if "Status: **CURRENT SOURCE DRC CLEAN**" not in vjuga_drc:
+            failures.append("VJUGA current-source DRC evidence is missing or failed")
+        if sha256(vjuga_pcb_path) not in vjuga_drc:
+            failures.append("VJUGA current-source DRC evidence is stale against the PCB")
+        for marker in (
+            "Error-level DRC violations: **0**",
+            "Unconnected items: **0**",
+        ):
+            if marker not in vjuga_drc:
+                failures.append(f"VJUGA current-source DRC evidence lost marker {marker!r}")
     vjuga_zip = ROOT / "fab" / "minimal-vga" / "upload" / "vjuga-rev-a-gerbers-drill.zip"
     if vjuga_zip.exists():
         vjuga_digest = sha256(vjuga_zip)

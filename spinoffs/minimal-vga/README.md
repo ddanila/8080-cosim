@@ -119,6 +119,8 @@ historical placement, and the original composite/RF chain.
 - `docs/rev-a-power-budget.md`: conservative planning estimate.
 - `docs/rev-a-sourcing-plan.md`: future sourcing/assembly policy; stock must be
   rechecked at order time.
+- `docs/rev-a-drc-readiness.md`: current KiCad 10.99 full-DRC result bound to
+  the exact post-D1 board SHA; the fabrication package remains separately stale.
 - `docs/rev-a-usb-c-candidate.md`: checksum- and geometry-guarded exact HRO
   TYPE-C-31-M-17/C283540 J3 candidate; order-time orientation/stock remains.
 - `docs/rev-a-ptc-candidate.md`: checksum-, electrical-, topology-, and

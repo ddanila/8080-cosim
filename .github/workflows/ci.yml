@@ -141,6 +141,7 @@ jobs:
             spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py \
             spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py \
             spinoffs/minimal-vga/kicad/report_rev_a_tvs_candidate.py \
+            spinoffs/minimal-vga/kicad/report_rev_a_drc_readiness.py \
             spinoffs/minimal-vga/kicad/report_rev_a_mechanical_fit.py \
             scripts/check_spinoff_commons.py \
             scripts/check_revb_boards.py \

@@ -2,7 +2,7 @@
 
 Status date: 2026-07-23.
 
-Status: **DESIGN HOLD / SOURCE UPDATED, DRC AND PACKAGE STALE**.
+Status: **DESIGN HOLD / CURRENT SOURCE DRC CLEAN, PACKAGE STALE**.
 
 The ignored fabrication directory currently contains an internally coherent
 bare-PCB package. Its upload archive is:
@@ -28,18 +28,22 @@ re-frozen on the canonical (Linux) toolchain before any DFM/upload.
 **CURRENT SOURCE ADDENDUM (2026-07-23):** exact D1 qualification corrected its
 DO-35 placeholder to a DO-41 footprint and replaced one nearby `VCC_RAW`
 segment with a five-segment clearance detour. The current source therefore has
-**2,877 tracks/vias**. Its dedicated static guard passes, but the last full
-KiCad DRC predates this bounded correction; rerun DRC with KiCad 10 before
-package regeneration.
+**2,877 tracks/vias**. KiCad 10.99 refilled and saved the inner planes after
+that correction; `rev-a-drc-readiness.md` binds 0 error-level violations, 0
+unconnected items to the exact current board SHA.
 
 ## Verified package facts
 
 - The source PCB is four-layer, 200x200 mm, and routed.
-- The last full KiCad checks reported zero DRC violations and zero unconnected
-  items; the subsequent bounded D1 correction passes its local static guard and
-  awaits the required full KiCad 10 DRC rerun.
+- Current KiCad 10.99 checks report zero error-level DRC violations, zero
+  unconnected items after refilling and saving both inner planes.
 - Gerber/drill membership, deterministic ZIP metadata, checksums, drill count,
   and external rendering have machine-generated checks (against the stale package).
+- The current source independently smoke-exports all ten Gerber/job files, one
+  Excellon drill file, and 119 position rows with KiCad 10.99. The integrated
+  package remains stale because this Linux install lacks matching KiCad-10
+  `pcbnew` bindings for its assembly/mechanical report stages; `export_fab.sh`
+  now rejects that mixed-version toolchain before partial export.
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
 - The routed board is 119 refs / 135 nets, filled In1.Cu GND and In2.Cu VCC
@@ -48,11 +52,11 @@ package regeneration.
   after the 200x200 reroute and bounded D1 clearance correction; the frozen
   Gerber ZIP above predates even the 285x285 board and must be re-exported (see
   the superseded note).
-- The behavioral aggregate previously passed both real-ROM CPU
+- The behavioral aggregate passes both real-ROM CPU
   implementations, dual decode modes, framebuffer readback, U24 timing, LVS,
-  physical-model, footprint, PCB, DRC, and DRAM guards. The D1-specific static
-  guard now also passes; repeat the KiCad-dependent PCB/DRC/package portions
-  after regenerating with the canonical toolchain.
+  physical-model, footprint, PCB, and DRAM guards. The current-source full DRC
+  and D1-specific static guard also pass; package generation remains stale and
+  separate.
 
 ## Release blockers
 
@@ -60,10 +64,10 @@ package regeneration.
   framebuffer at 6000 writes (`sim/boot_check.sh` and
   `sim/vjuga_boot_check.sh`); physical-board boot remains untested.
 - The current routed copper includes every Phase 3 socket/header and retains
-  filled GND/VCC inner planes. The pre-D1 source passed
-  zero-violation/zero-unconnected KiCad DRC; the current bounded correction
-  passes its static clearance/continuity guard but awaits full KiCad 10 DRC.
-  The saved Gerber package is older and does not match this route.
+  filled GND/VCC inner planes. The current post-D1 source passes full KiCad
+  10.99 DRC at zero violations/unconnected items as well as the
+  dedicated static clearance/continuity guard. The saved Gerber package is
+  older and does not match this route.
 - U24's Gray-coded DRAM timing contract passes CPU read/write, RAS-only refresh,
   CPU/refresh collision handling, video arbitration, and vendored MK4564-12
   timing guards at 4 MHz. The tv80 real-ROM path uses those controls and remains
@@ -90,9 +94,9 @@ fab but their pinouts freeze in copper, so decide them first.
    rerouted (freerouting fork, all 357 nets, 0 unrouted / 0 violations), then
    received the bounded D1 clearance detour, giving 2,877 F.Cu/B.Cu tracks
    (segments plus vias) with filled In1.Cu GND and In2.Cu VCC planes. The
-   pre-D1 route had zero KiCad DRC/unconnected items; rerun full KiCad 10 DRC
-   for the current source. The router runs on Linux and macOS (fork jar + JDK
-   25).
+   current saved fills pass full KiCad 10.99 DRC with zero error-level
+   violations or unconnected items. The router runs on Linux and macOS (fork
+   jar + JDK 25).
 2. **Footprint / pinout validation.** DONE for land-pattern correctness:
    `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
    and DIP pad counts match, across all 119 parts (it caught the USB-C shield
@@ -125,10 +129,11 @@ fab but their pinouts freeze in copper, so decide them first.
    regenerated Gerber/drill and power-return strategy.
 6. **Regenerate + freeze the fab package (README gate 7) — RE-FREEZE PENDING:**
    the 2026-07-16 review-fix reroute and 2026-07-23 D1 correction superseded
-   the previously frozen ZIP (see the notes at the top). Run full DRC, re-export
-   the Gerber/drill package on the canonical KiCad 10 toolchain, and record its
-   new SHA256 here. THEN: vendor DFM/preview plus live stock and
-   assembly-capability review at order time.
+   the previously frozen ZIP (see the notes at the top). Current-source DRC is
+   clean; re-export the Gerber/drill and assembly package on a KiCad 10
+   toolchain with matching `pcbnew` bindings and record its new SHA256 here.
+   THEN: vendor DFM/preview plus live stock and assembly-capability review at
+   order time.
 Before order, finish the staged full-board LVS (twin ↔ board, beyond the
 decode/observability contracts), or record a specific owner waiver backed by
 independent schematic, selected-part pinout, and copper review. This is exactly

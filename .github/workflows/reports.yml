@@ -33,6 +33,7 @@ on:
       - 'spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_tvs_candidate.py'
+      - 'spinoffs/minimal-vga/kicad/report_rev_a_drc_readiness.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_mechanical_fit.py'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb'
@@ -41,6 +42,7 @@ on:
       - 'spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md'
       - 'spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md'
       - 'spinoffs/minimal-vga/docs/rev-a-tvs-candidate.md'
+      - 'spinoffs/minimal-vga/docs/rev-a-drc-readiness.md'
       - '.github/workflows/reports.yml'
   pull_request:
     paths:
@@ -64,6 +66,7 @@ on:
       - 'spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_tvs_candidate.py'
+      - 'spinoffs/minimal-vga/kicad/report_rev_a_drc_readiness.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_mechanical_fit.py'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb'
@@ -72,6 +75,7 @@ on:
       - 'spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md'
       - 'spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md'
       - 'spinoffs/minimal-vga/docs/rev-a-tvs-candidate.md'
+      - 'spinoffs/minimal-vga/docs/rev-a-drc-readiness.md'
       - '.github/workflows/reports.yml'
 
 concurrency:

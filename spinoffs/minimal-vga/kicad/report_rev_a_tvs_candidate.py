@@ -89,6 +89,26 @@ def pair(block: str, name: str) -> tuple[float, float]:
     return float(match.group(1)), float(match.group(2))
 
 
+def footprint_pose(block: str) -> tuple[float, float, float]:
+    legacy = re.search(
+        r"\n\t\t\(at\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)"
+        r"(?:\s+(-?\d+(?:\.\d+)?))?",
+        block,
+    )
+    if legacy:
+        return (
+            float(legacy.group(1)),
+            float(legacy.group(2)),
+            float(legacy.group(3) or 0.0),
+        )
+    transform = next(iter(forms("\n\t" + block, "\n\t\t(transform")), "")
+    translate = pair(transform, "translate")
+    rotate = re.search(r"\(rotate\s+(-?\d+(?:\.\d+)?)", transform)
+    if not transform or not rotate:
+        raise ValueError("footprint pose missing")
+    return translate[0], translate[1], float(rotate.group(1))
+
+
 def parse_pads(block: str) -> dict[str, dict[str, Any]]:
     result: dict[str, dict[str, Any]] = {}
     for pad in forms("\n\t" + block, "\n\t\t(pad "):
@@ -278,10 +298,7 @@ def build() -> tuple[list[tuple[str, bool, str]], list[str]]:
     )
 
     name = re.match(r'\(footprint "([^"]+)"', block)
-    at = re.search(
-        r"\n\t\t\(at\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)",
-        block,
-    )
+    pose = footprint_pose(block)
     pads = parse_pads(block)
     expected_pads = {
         "1": {"at": (0.0, 0.0), "size": (2.2, 2.2), "drill": 1.1, "net": "VCC"},
@@ -291,7 +308,7 @@ def build() -> tuple[list[tuple[str, bool, str]], list[str]]:
         checks,
         "Committed PCB embeds the corrected DO-41 footprint and pad contract",
         bool(name and name.group(1) == FOOTPRINT_NAME)
-        and bool(at and tuple(map(float, at.groups())) == (40.64, 34.29, 90.0))
+        and pose == (40.64, 34.29, 90.0)
         and pads == expected_pads,
         "DO-41/SOD81 P7.62; 2.20 mm pads and 1.10 mm drills; pad centers unchanged",
     )

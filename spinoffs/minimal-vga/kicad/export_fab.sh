@@ -14,6 +14,36 @@ if [ ! -f "$BOARD" ]; then
   exit 2
 fi
 
+KCLI_VERSION=$("$KCLI" --version)
+PCBNEW_VERSION=$("$KICAD_PYTHON" - <<'PY'
+import pcbnew
+print(pcbnew.GetBuildVersion())
+PY
+)
+KCLI_MAJOR=${KCLI_VERSION%%.*}
+PCBNEW_MAJOR=${PCBNEW_VERSION%%.*}
+if [ "$KCLI_MAJOR" != "$PCBNEW_MAJOR" ]; then
+  echo "KiCad CLI/Python mismatch: CLI $KCLI_VERSION, pcbnew $PCBNEW_VERSION." >&2
+  echo "Use a Python pcbnew build matching the KiCad CLI that owns this board." >&2
+  exit 2
+fi
+if ! "$KICAD_PYTHON" - "$BOARD" <<'PY'
+import pcbnew
+import sys
+
+board = pcbnew.LoadBoard(sys.argv[1])
+if board is None:
+    raise SystemExit(1)
+print(
+    f"KiCad toolchain coherent: pcbnew {pcbnew.GetBuildVersion()}, "
+    f"{len(list(board.Footprints()))} footprints"
+)
+PY
+then
+  echo "Matching pcbnew could not load $BOARD; fabrication export is blocked." >&2
+  exit 2
+fi
+
 mkdir -p "$OUT"
 
 python3 spinoffs/minimal-vga/kicad/report_rev_a_source_model.py \

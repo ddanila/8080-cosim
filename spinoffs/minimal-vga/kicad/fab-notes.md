@@ -3,12 +3,12 @@
 Status: **PACKAGE BASELINE EXISTS / DESIGN HOLD**.
 
 The current Rev A board is a routed physical experiment generated from
-`rev-a-physical.board.json`. The last full KiCad DRC reported zero error-level
-violations and zero unconnected items; the subsequent bounded D1 footprint and
-clearance correction passes its dedicated static guard but still needs a full
-KiCad 10 DRC rerun. These checks establish file coherence for modeled nets;
-they do not prove the proposed computer will boot or that the design is safe
-to order.
+`rev-a-physical.board.json`. After the bounded D1 footprint/clearance
+correction, KiCad 10.99 refilled and saved both inner planes and reported zero
+error-level violations and zero unconnected items.
+`../docs/rev-a-drc-readiness.md` binds that result to the exact board SHA.
+These checks establish file coherence for modeled nets; they do not prove the
+proposed computer will boot or that the design is safe to order.
 
 ## Current physical baseline
 
@@ -38,6 +38,14 @@ GND/VCC plane zones are restored and filled after SES import.)
 - engineering BOM and draft assembly BOM/CPL;
 - manual-install and post-assembly-insertion lists; and
 - mechanical, ERC, DRC, package-integrity, and vendor-preview check reports.
+
+The exporter requires `kicad-cli` and Python `pcbnew` from the same KiCad major
+version and verifies that the Python API can load the board before writing any
+package output. The 2026-07-23 Linux environment has KiCad CLI 10.99 but only
+`pcbnew` 9.0.8, so integrated export is deliberately blocked there. Raw KiCad
+10.99 smoke exports of the current source produced all ten Gerber/job files,
+the Excellon drill, and 119 position rows; use a coherent KiCad-10 toolchain to
+run the complete guarded package pipeline.
 
 Per-report `READY` states describe the scope named by that report. They are not
 design-release or purchase authorization. The top-level status is tracked in
