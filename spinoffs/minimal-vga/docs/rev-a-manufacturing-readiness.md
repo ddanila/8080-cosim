@@ -136,7 +136,7 @@ fab but their pinouts freeze in copper, so decide them first.
    it. Regenerate the package, rerun every export/integrity/render gate, and
    record the new ZIP SHA-256. Then perform vendor DFM/preview plus live stock
    and assembly-capability review at order time.
-Six independently authored physical-LVS stages pass. Stage 1 covers all POWER
+Seven independently authored physical-LVS stages pass. Stage 1 covers all POWER
 and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power boundary (17
 refs / 9 partitions). Stage 2 closes all 22 decode socket/glue parts plus six
 exact non-power boundary projections (28 refs / 37 partitions / 5 NC pads).
@@ -148,12 +148,14 @@ U20/U21 and C14/C15, including both grounded active-low enables and every
 endpoint on 25 non-power address-mux nets (19 mapped refs / 27 partitions).
 Stage 6 closes every U22/C16 pin, including both grounded active-high resets
 and the low-to-high-half cascade, plus every endpoint on CLK and the eight
-refresh-row nets (11 mapped refs / 11 partitions). Every stage requires
-mutation controls; exact scope is
+refresh-row nets (11 mapped refs / 11 partitions). Stage 7 closes every U23/C17
+pin, all eight counter-output NC declarations, the grounded resets/second
+clock, and every endpoint on CLK (9 mapped refs / 3 partitions / 8 NC pads).
+Every stage requires mutation controls; exact scope is
 `rev-a-lvs-coverage.md`. Before order, finish the remaining staged full-board
 LVS groups (twin ↔ board), or record a specific owner waiver backed by
 independent schematic, selected-part pinout, and copper review. This is exactly
-the check that catches a mis-bound pin before it is etched; the six stages
+the check that catches a mis-bound pin before it is etched; the seven stages
 and narrower direct contracts do not make the remaining coverage optional.
 
 Regenerate the package after every source change. Only change this status to a

@@ -1455,10 +1455,12 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
    non-power address-mux nets (19 mapped refs / 27 partitions). Stage 6 closes
    every U22/C16 pin, both grounded active-high resets, the low-to-high-half
    cascade, and every endpoint on CLK plus all eight refresh-row nets (11
-   mapped refs / 11 partitions). All six stages require mutation controls. U23
-   is now explicitly an empty DNP spare socket because none of its counter
-   outputs feed the verified U40/U41 video path; its socket-level Stage 7,
-   remaining refresh arbitration/U24 timing, PPI/keyboard, video, and
+   mapped refs / 11 partitions). Stage 7 closes every U23/C17 pin, all eight
+   counter-output NC declarations, the grounded resets/second clock, and every
+   endpoint on CLK (9 mapped refs / 3 partitions / 8 NC pads). All seven stages
+   require mutation controls. U23 is explicitly an empty DNP spare socket
+   because none of its counter outputs feed the verified U40/U41 video path.
+   Remaining refresh arbitration/U24 timing, PPI/keyboard, video, and
    diagnostics still lack whole-board chip-accurate coverage. The unfinished
    LVS remains a bare-board release gate unless the owner records a specific
    waiver with independent schematic/pinout/copper review as compensating

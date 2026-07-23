@@ -1,0 +1,43 @@
+{
+  "_about": "Independent staged Rev A physical LVS map for the complete empty U23/C17 spare socket and every endpoint on its sole non-power net, CLK.",
+  "no_connects": [
+    ["U23", "3"], ["U23", "4"], ["U23", "5"], ["U23", "6"],
+    ["U23", "8"], ["U23", "9"], ["U23", "10"], ["U23", "11"]
+  ],
+  "complete_instances": ["U23", "C17"],
+  "close_nonpower_nets_of_complete_instances": true,
+  "closed_board_nets": ["CLK"],
+  "instances": {
+    "U23": "U_U23",
+    "C17": "U_C17",
+    "U1": "U_CPU_BOUNDARY",
+    "U22": "U_U22_BOUNDARY",
+    "U24": "U_U24_BOUNDARY",
+    "U50": "U_U50_BOUNDARY",
+    "R26": "U_R26_BOUNDARY",
+    "J90": "U_J90_BOUNDARY",
+    "J92": "U_J92_BOUNDARY"
+  },
+  "pinmaps": {
+    "kicad": {
+      "74HCT393_DIP14_VIDEO_LOW": {
+        "1": "P1", "2": "P2", "3": "P3", "4": "P4",
+        "5": "P5", "6": "P6", "7": "P7", "8": "P8",
+        "9": "P9", "10": "P10", "11": "P11", "12": "P12",
+        "13": "P13", "14": "P14"
+      },
+      "C_DECOUPLE_THT": {
+        "1": "P1", "2": "P2"
+      }
+    },
+    "kicad_instance": {
+      "U1": {"6": "P6"},
+      "U22": {"1": "P1"},
+      "U24": {"1": "P1"},
+      "U50": {"8": "P8"},
+      "R26": {"1": "P1"},
+      "J90": {"10": "P10"},
+      "J92": {"10": "P10"}
+    }
+  }
+}

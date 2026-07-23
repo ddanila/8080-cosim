@@ -2,9 +2,9 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 6 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 7 PASS / WHOLE BOARD INCOMPLETE**.
 
-Six independently authored physical-board LVS slices are executable:
+Seven independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
@@ -13,6 +13,7 @@ spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
 ```
 
 They compare their structural HDL with `kicad/rev-a-physical.board.json`
@@ -140,13 +141,31 @@ REFRESH_CLR island, falsely declaring U22.8 NC, and adding an otherwise-unmapped
 U23.3 endpoint to REFRESH_ROW0. Together they prove clock input, output order,
 cascade, corrected reset power, no-connect, and endpoint-closure sensitivity.
 
+## Closed in stage 7
+
+`rev_a_spare_socket_lvs.sh` makes the explicitly empty U23 DNP socket and its
+C17 decoupler complete owned instances. It maps every physical pad: U23.1
+remains on CLK for optional probing, pins 2/7/12/13 are grounded, pin 14 is on
+VCC, and all eight counter outputs are declared NC.
+
+The comparison maps nine references: two complete spare-socket parts and seven
+exact CLK boundary projections. It matches three connectivity partitions,
+matches eight NC pads, and proves that the sole non-power net touched by U23,
+CLK, is endpoint-closed.
+
+Six temporary mutations must fail: moving U23.1 from CLK to GND, moving the
+grounded U23.13 second clock to CLK, moving C17.1 from VCC to GND, deleting the
+U23.3 NC declaration, wiring U23.8 to CLK, and adding an otherwise-unmapped
+U31.15 endpoint to CLK. Together they prove the retained probe clock,
+grounded-inactive topology, decoupling rails, complete NC set, output
+isolation, and endpoint-closure sensitivity.
+
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- the explicitly empty U23 DNP spare socket (Stage 7), the remaining refresh
-  arbitration, and U24 timing;
+- the remaining refresh arbitration and U24 timing;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.

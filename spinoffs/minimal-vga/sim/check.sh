@@ -48,6 +48,9 @@ spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 echo "== VJUGA spin-off: Rev A staged physical LVS (refresh counter) =="
 spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
 
+echo "== VJUGA spin-off: Rev A staged physical LVS (empty spare socket) =="
+spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
+
 echo "== VJUGA spin-off: Rev A physical schematic target =="
 spinoffs/minimal-vga/kicad/check_rev_a_physical.sh
 
