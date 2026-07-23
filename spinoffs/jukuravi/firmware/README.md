@@ -587,7 +587,10 @@ A second run injects a stuck-low D84 bit at `4000`, observes it in the survey,
 and proves LOAD returns status `05` rather than accepting a failed readback.
 The real host CLI now consumes this contract, uploads a 300-byte file as exact
 253+47-byte chunks, validates both results, and runs the uploaded entry while
-retaining the complete raw and JSON evidence set.
+retaining the complete raw and JSON evidence set. Its uploaded fixture then
+emits three CRC-framed, versioned, consecutive heartbeat records through
+SERIAL_PUT. The host preserves their frame indices and sequences; a second
+spinning fixture proves the bounded post-RUN timeout path.
 
 The pixel comparison is explicitly the simulation-only framebuffer oracle. It
 does not close the unresolved physical shared-DRAM video-slot schedule, D34/X7
@@ -603,8 +606,9 @@ analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The planned D0
 firmware ladder and the first D2 loader core are now represented by exact
 simulation checkpoints. Host file/chunk orchestration is guarded; D1
-uploaded-test heartbeat recovery is the next software step, while liveness
-probes remain later measurement-dependent work. The host session CLI,
+uploaded-test heartbeat supervision is guarded as well. Automatic reset/reload
+recovery and liveness probes remain measurement-dependent work. The host
+session CLI,
 DTR-commanded session
 restart, bounded missing-banner retry, Nano serial bridge, and isolated startup
 reset/hold are guarded separately in the parent directory.

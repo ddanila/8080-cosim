@@ -79,6 +79,10 @@ def main() -> int:
         fail("default banner deadline differs")
     if normal.reset_retries != host.DEFAULT_RESET_RETRIES:
         fail("default reset retry count differs")
+    if normal.heartbeat_count != 0:
+        fail("heartbeat monitoring is not opt-in")
+    if normal.heartbeat_timeout != host.DEFAULT_HEARTBEAT_TIMEOUT:
+        fail("default heartbeat timeout differs")
     try:
         host.parse_nonnegative_int("-1")
     except argparse.ArgumentTypeError:

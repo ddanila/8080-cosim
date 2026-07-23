@@ -1702,7 +1702,15 @@ an active `/Q1` feedback output.
    per-chunk status, RUN acknowledgment, and exact raw frames are durable
    session evidence. The actual CLI uploads 300 bytes in two chunks and runs an
    uploaded HLT under cosim; any upload-stage failure aborts without reset
-   retry. Post-RUN heartbeat supervision remains the next D2/D1 recovery step.
+   retry. The ninth checkpoint adds opt-in post-RUN heartbeat supervision.
+   Uploaded programs send CRC-framed type-`0x30` records carrying heartbeat
+   version 1 and a rolling sequence byte; `--heartbeat-count` requires a
+   bounded consecutive run, including `FF -> 00` wrap, while
+   `--heartbeat-timeout` bounds every gap. JSON retains each sequence and
+   source frame index. The real CLI accepts three heartbeats from uploaded code
+   and separately fails a spinning program after RUN_ACK with exact timeout
+   evidence and no retry. Automatic reset/re-upload recovery remains gated on
+   the physical S1 contact measurement.
 
 ## Physical bring-up sequence
 
@@ -1811,6 +1819,10 @@ Once a released board and programmed parts exist:
   good window, chunks and verifies a named file, optionally runs its in-image
   entry, and retains source hash, per-chunk results, RUN acknowledgment, and
   exact RX/TX evidence without retrying post-survey failures.
+- [x] Jukuravi D1/D2 host heartbeat supervision validates CRC-framed versioned
+  and consecutive post-RUN liveness records under a per-record timeout,
+  retains exact frame/sequence evidence, and fails without retry; physical
+  reset/re-upload recovery remains S1-measurement-gated.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

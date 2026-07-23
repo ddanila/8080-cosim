@@ -50,6 +50,7 @@ python3 tests/jukuravi_d2_loader_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d2-loader.bin
 python3 tests/jukuravi_host_loader_cli_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d2-loader.bin
+python3 tests/jukuravi_host_heartbeat_test.py
 python3 tests/jukuravi_host_dtr_test.py
 ./sync/jukuravi_nano_check.sh
 

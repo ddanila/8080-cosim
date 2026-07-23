@@ -26,6 +26,7 @@ DEFAULT_TIMEOUT = 180.0
 DEFAULT_BANNER_TIMEOUT = 15.0
 DEFAULT_RESET_RETRIES = 2
 DEFAULT_LOADER_TIMEOUT = 60.0
+DEFAULT_HEARTBEAT_TIMEOUT = 5.0
 DTR_RELEASE_SECONDS = 0.05
 
 
@@ -411,6 +412,59 @@ class HostSession:
                 raise SessionError(f"timeout waiting for {description}")
             self._read_frames(deadline, f"while waiting for {description}")
 
+    def _monitor_heartbeats(
+        self,
+        cursor: int,
+        count: int,
+        timeout: float,
+        evidence: dict[str, object],
+    ) -> None:
+        events = evidence["events"]
+        assert isinstance(events, list)
+        previous_sequence: int | None = None
+        evidence["status"] = "waiting"
+        while len(events) < count:
+            deadline = time.monotonic() + timeout
+            while cursor >= len(self.frames):
+                if time.monotonic() >= deadline:
+                    raise SessionError(
+                        f"heartbeat timeout after {len(events)}/{count} records"
+                    )
+                self._read_frames(deadline, "while waiting for heartbeat")
+            frame_index = cursor
+            frame = self.frames[cursor]
+            cursor += 1
+            if frame.record_type != protocol.TYPE_HEARTBEAT:
+                raise SessionError(
+                    f"unexpected post-RUN frame 0x{frame.record_type:02X} "
+                    "while waiting for heartbeat"
+                )
+            if len(frame.payload) != 2:
+                raise SessionError("heartbeat payload length is not two")
+            version, sequence = frame.payload
+            if version != protocol.HEARTBEAT_VERSION:
+                raise SessionError(
+                    f"heartbeat version {version} != {protocol.HEARTBEAT_VERSION}"
+                )
+            if (
+                previous_sequence is not None
+                and sequence != ((previous_sequence + 1) & 0xFF)
+            ):
+                raise SessionError(
+                    f"heartbeat sequence {sequence:02X} does not follow "
+                    f"{previous_sequence:02X}"
+                )
+            events.append(
+                {
+                    "index": len(events),
+                    "frame_index": frame_index,
+                    "sequence": sequence,
+                }
+            )
+            evidence["received"] = len(events)
+            previous_sequence = sequence
+        evidence["status"] = "complete"
+
     def run_loader(
         self,
         data: bytes,
@@ -418,6 +472,8 @@ class HostSession:
         address: int,
         run_address: int | None,
         timeout: float,
+        heartbeat_count: int = 0,
+        heartbeat_timeout: float = DEFAULT_HEARTBEAT_TIMEOUT,
     ) -> None:
         if self.survey is None:
             raise SessionError("loader requested before a complete RAM survey")
@@ -438,6 +494,18 @@ class HostSession:
                 "address": None if run_address is None else f"0x{run_address:04X}",
                 "acknowledged": False,
             },
+            "heartbeat": (
+                None
+                if heartbeat_count == 0
+                else {
+                    "required": heartbeat_count,
+                    "received": 0,
+                    "timeout_seconds": heartbeat_timeout,
+                    "status": "pending_run",
+                    "error": None,
+                    "events": [],
+                }
+            ),
         }
         self.loader = loader
         try:
@@ -531,6 +599,20 @@ class HostSession:
                 assert isinstance(run, dict)
                 run["acknowledged"] = True
                 loader["status"] = "run_acknowledged"
+                heartbeat = loader["heartbeat"]
+                if isinstance(heartbeat, dict):
+                    try:
+                        self._monitor_heartbeats(
+                            cursor,
+                            heartbeat_count,
+                            heartbeat_timeout,
+                            heartbeat,
+                        )
+                    except (SessionError, OSError) as error:
+                        heartbeat["status"] = "error"
+                        heartbeat["error"] = str(error)
+                        raise
+                    loader["status"] = "heartbeat_complete"
         except (SessionError, OSError) as error:
             loader["status"] = "error"
             loader["error"] = str(error)
@@ -641,6 +723,16 @@ def print_verdict(session: HostSession, logs: SessionLogs) -> None:
         run = session.loader.get("run")
         if isinstance(run, dict) and run.get("acknowledged"):
             print(f"JUKURAVI: run acknowledged address={run['address']}")
+        heartbeat = session.loader.get("heartbeat")
+        if isinstance(heartbeat, dict):
+            events = heartbeat["events"]
+            assert isinstance(events, list)
+            last_sequence = events[-1]["sequence"] if events else None
+            print(
+                "JUKURAVI: heartbeat "
+                f"{heartbeat['received']}/{heartbeat['required']} "
+                f"last={last_sequence:02X} timeout={heartbeat['timeout_seconds']}s"
+            )
     print(f"JUKURAVI: logs {logs.json_path}")
 
 
@@ -694,6 +786,18 @@ def make_parser() -> argparse.ArgumentParser:
         help="seconds allowed for each loader response",
     )
     parser.add_argument(
+        "--heartbeat-count",
+        type=parse_nonnegative_int,
+        default=0,
+        help="consecutive post-RUN heartbeat records required (default: disabled)",
+    )
+    parser.add_argument(
+        "--heartbeat-timeout",
+        type=float,
+        default=DEFAULT_HEARTBEAT_TIMEOUT,
+        help="seconds allowed between required heartbeat records",
+    )
+    parser.add_argument(
         "--no-nano-reset",
         action="store_true",
         help="do not restart the Nano through DTR before a --port session",
@@ -712,11 +816,25 @@ def main() -> int:
     if args.loader_timeout <= 0:
         print("JUKURAVI: loader timeout must be positive", file=sys.stderr)
         return 2
-    if args.load is None and (args.run_address is not None or args.load_only):
-        print("JUKURAVI: --run-address/--load-only requires --load", file=sys.stderr)
+    if args.heartbeat_timeout <= 0:
+        print("JUKURAVI: heartbeat timeout must be positive", file=sys.stderr)
+        return 2
+    if args.load is None and (
+        args.run_address is not None or args.load_only or args.heartbeat_count
+    ):
+        print(
+            "JUKURAVI: --run-address/--load-only/--heartbeat-count requires --load",
+            file=sys.stderr,
+        )
         return 2
     if args.load_only and args.run_address is not None:
         print("JUKURAVI: --load-only conflicts with --run-address", file=sys.stderr)
+        return 2
+    if args.load_only and args.heartbeat_count:
+        print(
+            "JUKURAVI: --load-only conflicts with --heartbeat-count",
+            file=sys.stderr,
+        )
         return 2
     upload_data: bytes | None = None
     run_address: int | None = None
@@ -773,6 +891,8 @@ def main() -> int:
             args.load_address,
             run_address,
             args.loader_timeout,
+            args.heartbeat_count,
+            args.heartbeat_timeout,
         )
     try:
         run_session_with_retries(session, args.reset_retries, completion)

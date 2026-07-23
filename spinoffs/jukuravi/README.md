@@ -80,8 +80,9 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   can extend reset indefinitely or reassert it after startup; release still
   enforces the minimum pulse and quiet recovery while the byte bridge remains
   gated. The board-side isolated contact remains forbidden until the SPDT S1
-  reset pair is measured; uploaded-test heartbeat recovery is not yet
-  implemented. **Implemented host checkpoints:** before a real `--port`
+  reset pair is measured. Post-RUN heartbeat supervision is implemented;
+  automatic reset/re-upload recovery is not. **Implemented host checkpoints:**
+  before a real `--port`
   session, `host.py` explicitly
   releases DTR for 50 ms and reasserts it, restarting the Nano and therefore
   this startup pulse on standard classic-Nano hardware. If no valid banner
@@ -348,8 +349,8 @@ A Nano is sufficient for every stage except the optional bus-master stage
   recovery are boundary-tested before the bridge can run. Active-low D5 can
   hold or reassert that isolated drive without entering the serial stream; its
   release and reassertion boundaries are guarded. The S1 contact side and
-  liveness probes remain gated, and uploaded-test heartbeat recovery remains
-  future work.
+  liveness probes remain gated. Uploaded-test heartbeat supervision is guarded;
+  automatic reset/re-upload recovery remains future work.
   **Host-controlled session-reset checkpoint implemented:** real `--port`
   sessions perform a release/wait/assert DTR sequence before reading, flush
   stale bytes, and log requested/completed state. Mocked modem-control ordering
@@ -384,7 +385,10 @@ A Nano is sufficient for every stage except the optional bus-master stage
   `4000..D7FF` and the reported largest-good window, chunks the file at the
   ROM's limit, requires every result, and optionally sends RUN. The real CLI
   uploads a two-chunk image to version 9 in cosim and retains exact raw/JSON
-  evidence. Post-RUN heartbeat monitoring remains future work.
+  evidence. **Heartbeat checkpoint implemented:** uploaded programs may emit
+  type-`0x30` frames carrying version 1 and a rolling sequence byte. The host
+  requires an opt-in bounded consecutive run and records each accepted frame;
+  real-CLI cosim covers both three heartbeats and a post-RUN timeout.
 - **Stage D3 (optional, likely never needed) — external bus master.**
   Mega-based probe via X1/`−INHIBIT`, or CPU-socket ICE. This is NOT the
   memory-upload path (that is D2, done in firmware); it exists solely for
@@ -404,6 +408,8 @@ python3 spinoffs/jukuravi/host.py \
   --load test.bin \
   --load-address 4000 \
   --run-address 4000 \
+  --heartbeat-count 3 \
+  --heartbeat-timeout 5 \
   --log-dir sessions
 ```
 
@@ -441,6 +447,19 @@ API contract, every chunk address/size/status, and RUN acknowledgment. Raw TX
 contains the exact banner ACK followed by every LOAD and RUN frame. Upload or
 RUN failures are post-survey evidence and are never reset-retried.
 
+`--heartbeat-count N` additionally supervises the uploaded program after
+RUN_ACK; zero (the default) leaves monitoring disabled for existing binaries.
+Each heartbeat is a normal CRC-8 frame of type `0x30` with the two-byte payload
+`01 SEQUENCE`. The first sequence may be any value; every later value must be
+the next modulo-256 byte, so `FF -> 00` is valid but duplicate or skipped
+records fail closed. `--heartbeat-timeout` (default 5 seconds) bounds each
+required record. JSON stores the required/received counts, timeout, status,
+error, and exact frame index and sequence of every accepted heartbeat. A gap,
+bad version/length/sequence, or other framed response fails the session after
+RUN without invoking the missing-banner reset retry. Automatic DTR/reset and
+re-upload after such a failure remains disabled until the board-side S1 reset
+contact measurement closes.
+
 ## The cosim-first loop
 
 The first infrastructure gap is closed in root `cosim/trace.c`: opt-in
@@ -470,8 +489,9 @@ session CLI, Nano serial bridge, and isolated startup-reset sequencer are
 guarded, as is the host's DTR-commanded session restart. Automatic
 missing-banner recovery and the Nano's local D5 reset hold are also guarded.
 The first D2 loader ROM core is guarded in cosim. Host upload orchestration is
-also guarded through the real CLI. Uploaded-test heartbeat recovery is the next
-software step; liveness probes remain behind their physical measurement gates.
+also guarded through the real CLI, as is bounded post-RUN heartbeat
+supervision. Automatic reset/re-upload recovery and liveness probes remain
+behind their physical measurement gates.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

@@ -14,6 +14,7 @@ TYPE_RAM_BLOCK = 0x11
 TYPE_RAM_END = 0x12
 TYPE_LOAD = 0x20
 TYPE_RUN = 0x22
+TYPE_HEARTBEAT = 0x30
 TYPE_LOAD_RESULT = 0xA0
 TYPE_RUN_ACK = 0xA2
 TYPE_LOADER_READY = 0xA3
@@ -25,6 +26,7 @@ LOADER_API_BASE = 0x0A00
 LOADER_MAX_DATA = MAX_PAYLOAD - 2
 LOADER_LOAD_MIN = 0x4000
 LOADER_LOAD_END = 0xD800
+HEARTBEAT_VERSION = 1
 LOADER_STATUS_OK = 0
 LOADER_STATUS_BAD_CRC = 1
 LOADER_STATUS_BAD_COMMAND = 2
@@ -49,6 +51,13 @@ def encode_run_frame(address: int) -> bytes:
     if not 0 <= address <= 0xFFFF:
         raise ValueError("run address does not fit 16 bits")
     return encode_frame(TYPE_RUN, address.to_bytes(2, "big"))
+
+
+def encode_heartbeat_frame(sequence: int) -> bytes:
+    """Encode one uploaded-program liveness record."""
+    if not 0 <= sequence <= 0xFF:
+        raise ValueError("heartbeat sequence does not fit one byte")
+    return encode_frame(TYPE_HEARTBEAT, bytes((HEARTBEAT_VERSION, sequence)))
 
 
 def crc8_atm(data: bytes) -> int:
