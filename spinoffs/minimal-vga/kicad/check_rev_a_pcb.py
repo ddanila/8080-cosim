@@ -65,6 +65,13 @@ EXPECTED_DOWNSTAIRS_VALUE_REFS = {
 CHIP_BLOCK_LABEL_GAP_MM = 2.0
 SILK_BLOCK_LABEL_PADDING_MM = 2.0
 ALLOWED_SMD_REFS = {"J3"}
+ADDRMUX_ENABLE_ENDPOINTS = (("U20", "15"), ("U21", "15"))
+ADDRMUX_ENABLE_SEGMENTS_MM = {
+    ((64.7700, 90.1700), (70.4870, 90.1700)),
+    ((70.4870, 90.1700), (71.5982, 91.2812)),
+    ((71.5982, 91.2812), (78.8988, 91.2812)),
+    ((78.8988, 91.2812), (80.0100, 90.1700)),
+}
 
 
 def fail(message):
@@ -156,6 +163,49 @@ def main():
     if footprint_count < 80:
         fail(f"expected physical Rev A footprints, found only {footprint_count}")
     track_count = sum(1 for _ in board.GetTracks())
+    for ref, pin in ADDRMUX_ENABLE_ENDPOINTS:
+        footprint = board.FindFootprintByReference(ref)
+        endpoint = footprint.FindPadByNumber(pin) if footprint else None
+        if endpoint is None:
+            fail(f"missing address-mux enable endpoint {ref}.{pin}")
+        if endpoint.GetNetname() != "GND":
+            fail(
+                f"{ref}.{pin} active-low address-mux enable is "
+                f"{endpoint.GetNetname() or '<no net>'}, expected GND"
+            )
+    enable_segments = set()
+    for track in board.GetTracks():
+        if type(track).__name__ != "PCB_TRACK":
+            continue
+        start = (
+            round(pcbnew.ToMM(track.GetStart().x), 4),
+            round(pcbnew.ToMM(track.GetStart().y), 4),
+        )
+        end = (
+            round(pcbnew.ToMM(track.GetEnd().x), 4),
+            round(pcbnew.ToMM(track.GetEnd().y), 4),
+        )
+        segment = tuple(sorted((start, end)))
+        if segment in ADDRMUX_ENABLE_SEGMENTS_MM:
+            if track.GetNetname() != "GND":
+                fail(
+                    "retained address-mux enable segment "
+                    f"{segment} is {track.GetNetname() or '<no net>'}, expected GND"
+                )
+            enable_segments.add(segment)
+    missing_enable_segments = ADDRMUX_ENABLE_SEGMENTS_MM - enable_segments
+    if missing_enable_segments:
+        fail(
+            "missing retained GND address-mux enable segment(s): "
+            + ", ".join(str(segment) for segment in sorted(missing_enable_segments))
+        )
+    retired_mux_tracks = [
+        track for track in board.GetTracks() if track.GetNetname() == "ADDRMUX_OE_N"
+    ]
+    if retired_mux_tracks:
+        fail(
+            f"retired ADDRMUX_OE_N still owns {len(retired_mux_tracks)} track(s)"
+        )
     inner_signal_tracks = [
         track
         for track in board.GetTracks()
@@ -384,7 +434,7 @@ def main():
     print(
         "Rev A PCB check: PASS "
         f"({copper_count} copper layers: {', '.join(EXPECTED_COPPER_LAYERS)}, "
-        f"{footprint_count} footprints, {board.GetNetCount()} nets, "
+        f"{footprint_count} footprints, {board.GetNetCount() - 1} named nets, "
         f"{track_count} tracks, {len(zones)} power zones)"
     )
 

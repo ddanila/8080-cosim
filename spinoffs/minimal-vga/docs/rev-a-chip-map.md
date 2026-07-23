@@ -46,10 +46,15 @@ upper nibble input). PC2/PC3 are freed.
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
 | U10-U17 | 64K x 1 DRAM bits D0-D7 | KM4164B-10 | DIP-16 | Owner-ordered Samsung 4164-compatible 100 ns DRAM; factory mounts sockets only. |
-| U20-U21 | Row/column address mux | 74HCT157/257-class | DIP-16 | CPU/video/refresh address selection. |
+| U20-U21 | Row/column address mux | 74HCT157 | DIP-16 | CPU/video/refresh address selection; active-low enable pin 15 is tied to GND and guarded in source and route. |
 | U22 | Refresh/video counter low | 74HCT393/4040/161-class | DIP | Exact topology still open. |
 | U23 | Refresh/video counter high | 74HCT393/4040/161-class | DIP | Exact topology still open. |
 | U24 | RAS/CAS/WE sequencer | GAL22V10-class programmable logic | DIP-24 | GAL/PAL-style timing logic for first Rev A. |
+
+U20/U21 use the 74HCT157 DIP-16 pinout. The
+[Nexperia 74HC/HCT157 datasheet](https://assets.nexperia.com/documents/data-sheet/74HC_HCT157.pdf)
+identifies pin 15 as the active-low enable input; grounding it holds the mux
+outputs enabled.
 
 ## Keyboard
 

@@ -1375,14 +1375,14 @@ or explicitly override that check once with `CI_GATE=off`, never stack blindly.
 
 VJUGA (the +5 V Z80 bench fixture for the scarce Juku РУ5/РТ4/РЕ3 parts) is a
 separate experiment; details in `spinoffs/minimal-vga/docs/workbench-plan.md`
-and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
+and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
 
 - **Simulation + board model DONE.** The Verilog twin boots the real firmware on
   tv80 through the real К565РУ5 + D6 К556РТ4 + D8 К155РЕ3 models; **both decode
   modes** (real РТ4 vs GAL-internal baseline) are byte-identical to cosim
   (`sim/vjuga_boot_check.sh`). The corrected reader-3 D6 table is consumed with
   physical D0/pin12 as active-low `ROM_N` in both the Rev-A and modular twins;
-  the superseded provisional high-true interpretation is retired. Rev-A schematic is 119 refs / 135 nets with the
+  the superseded provisional high-true interpretation is retired. Rev-A schematic is 119 refs / 134 nets with the
   decode sockets, mode inverter, jumpers, and observability headers; the
   socket↔twin and observability contracts are enforced
   (`kicad/check_rev_a_physical.py`).
@@ -1396,12 +1396,13 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
   (silk/overlap), `kicad/check_rev_a_footprints.sh` (every modelled pin lands on
   a real pad), and `kicad/check_rev_a_pcb.sh` (5 mm edge keepout, block frames)
   all pass. GOST-font silk preview via `kicad/render_silk_preview.sh`.
-- **Routing DONE and current-source DRC clean.** The 200x200 119-ref/135-net
+- **Routing DONE and current-source DRC clean.** The 200x200 119-ref/134-net
   board contains 2,877 tracks/vias on F.Cu/B.Cu, with filled In1.Cu GND and
   In2.Cu VCC planes. The freerouting fork (v1.9) routed all 357 nets with 0
-  unrouted / 0 violations. After the exact D1 correction, stable KiCad 10.0.5
-  refilled and saved both planes; full error-level DRC now reports 0 violations, 0
-  unconnected items against the exact board SHA guarded in
+  unrouted / 0 violations. After the exact D1 correction and grounding the
+  formerly floating U20/U21 active-low enable island, stable KiCad 10.0.5
+  refilled and saved both planes; full error-level DRC now reports 0 violations
+  and 0 unconnected items against the exact board SHA guarded in
   `spinoffs/minimal-vga/docs/rev-a-drc-readiness.md`.
 - **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
   (`sim/vjuga_readback_check.sh`, validated vs twin + cosim) and the UNO
@@ -1427,14 +1428,14 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
    close physical pin-1 orientation of the socketed parts, F1 thermal/load
    qualification, D1 surge-environment qualification, or J3/F1/D1 order-time
    stock/process and first-article inspection.
-2. **Package regeneration/freeze DONE; vendor DFM/preview remains.** The
-   coherent stable KiCad 10.0.5 CLI/`pcbnew` pipeline completed against the
-   compact post-D1 board: behavioral/LVS, ERC, DRC, fabrication, drill,
-   package-integrity, and external-render gates all pass. The current
-   Gerber/drill ZIP SHA-256 is
-   `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
-   Perform vendor preview, live-stock, and assembly-capability review as
-   order-time human gates; this machine-verified package is still design-held.
+2. **Package regeneration/freeze REOPENED after the mux-enable correction.**
+   The stable KiCad 10.0.5 pipeline had completed against the compact post-D1
+   board, but grounding the formerly floating U20/U21 active-low enable island
+   changed the source and route. The previous Gerber/drill ZIP SHA-256
+   `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`
+   is superseded and must not be uploaded or ordered. Run the complete guarded
+   export/integrity/render pipeline and record a new checksum before vendor
+   preview, live-stock, and assembly-capability review.
 3. **Disposition full-board LVS explicitly — STAGE 4 DONE, remainder open.**
    Stage 1 closes all POWER/CLOCK_RESET placement refs, J93, and the U1
    clock/reset/power boundary (17 refs / 9 partitions). Stage 2 independently

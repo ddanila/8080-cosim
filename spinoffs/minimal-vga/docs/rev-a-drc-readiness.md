@@ -5,14 +5,15 @@ Status date: **2026-07-23**.
 Status: **CURRENT SOURCE DRC CLEAN**.
 
 This report binds a full KiCad error-level DRC result to the exact routed
-Rev-A PCB after the D1 DO-41 correction and inner-plane refill. It does
-not release fabrication; package integrity, vendor preview, sourcing, and
+Rev-A PCB after the D1 DO-41 correction, the U20/U21 active-low
+address-mux enable correction, and inner-plane refill. It does not
+release fabrication; package regeneration, vendor preview, sourcing, and
 human review remain separate gates.
 
 ## Result
 
 - Board: `spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb`
-- Board SHA-256: `a056d758c89801737bb285ce58f96e922cabff62d8d769d3e5c300267940b746`
+- Board SHA-256: `2bd284e6bab9082ae717cda16e625194839842bec184500148b65b69bbe35fe0`
 - KiCad CLI: `/home/ddanila/fun/8080-cosim/scripts/kicad-flatpak-cli.sh`
 - KiCad version: `10.0.5`
 - Board file version: `20260206`
@@ -22,12 +23,13 @@ human review remain separate gates.
 
 ## Refill disposition
 
-- For the 2026-07-23 D1 correction, `kicad-cli pcb diff` against
-  `95c40381` reports only the two filled-zone polygons; no board
-  metadata, footprint, track, or via semantic change.
-- A post-refill CLI smoke export emitted the complete 10-file
-  Gerber/job set, one Excellon drill file, and all 119 position rows.
-  Package freshness is bound separately by its manifest and checksum.
+- U20.15 and U21.15 are the active-low enables of the two 74HCT157
+  address multiplexers. The correction moves both pads and their four
+  retained F.Cu segments from the former floating `ADDRMUX_OE_N` island
+  to GND; filled In1.Cu then provides the return connection.
+- The saved post-correction board passes DRC after a stable-KiCad refill.
+  The prior fabrication package predates this source change and is stale;
+  package freshness requires a new guarded export and checksum.
 
 ## Command
 

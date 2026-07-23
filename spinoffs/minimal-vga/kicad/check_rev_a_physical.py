@@ -174,6 +174,14 @@ def main():
             if [ref, pin] not in nodes(nets[net]):
                 errors.append(f"{ref}: not connected to {net}")
 
+    # 74HCT157 pin 15 is the active-low output enable. Both address muxes must
+    # be held enabled, not left on the former two-pin floating island.
+    if "ADDRMUX_OE_N" in nets:
+        errors.append("ADDRMUX_OE_N: retired floating mux-enable net still present")
+    for ref in ("U20", "U21"):
+        if [ref, "15"] not in nodes(nets["GND"]):
+            errors.append(f"{ref}.15: active-low mux enable must be tied to GND")
+
     decouplers = [ref for ref in refs if ref.startswith("C") and ref != "C50"]
     if len(decouplers) < 25:
         errors.append(f"expected at least 25 decouplers, got {len(decouplers)}")

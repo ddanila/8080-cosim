@@ -104,7 +104,10 @@ to DRAM_A0.
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- DRAM address multiplexing, refresh, arbitration, and U24 timing;
+- DRAM address multiplexing, refresh, arbitration, and U24 timing. The stage-5
+  mux audit found and corrected U20/U21 active-low enable pins 15 on a floating
+  two-pin island; both are now grounded, but the independent mux LVS slice
+  remains to be added;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.

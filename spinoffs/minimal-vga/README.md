@@ -47,7 +47,7 @@ product.
   every endpoint on 19 non-power DRAM-bank nets included (25 mapped refs / 21
   partitions / 8 NC pads). All stages include mutation controls.
   Whole-board coverage remains incomplete; see `docs/rev-a-lvs-coverage.md`.
-- The Rev A physical source has 119 refs and 135 modeled nets, and now sockets
+- The Rev A physical source has 119 refs and 134 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
   jumper plus the Phase 4 observability headers (J96 clock-control, J97 high
   address + write strobe, J98 control bus); `check_rev_a_physical` enforces
@@ -62,11 +62,11 @@ product.
   observability headers and passes the repository's KiCad DRC and
   unconnected-item checks. Independent schematic/copper and power-return review
   still holds release.
-- The ignored `fab/minimal-vga/` package has been regenerated against the
-  compact post-D1 board with stable KiCad 10.0.5. Its Gerber/drill ZIP SHA-256
-  is `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`;
-  machine package, drill, integrity, and external-render gates pass. The result
-  remains design-held pending vendor preview and independent human review.
+- The last ignored `fab/minimal-vga/` package predates the U20/U21 address-mux
+  enable correction and is **stale; do not upload or order it**. Its superseded
+  Gerber/drill ZIP SHA-256 was
+  `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
+  A fresh guarded stable-KiCad export and checksum are required.
 
 ### CPU choice: real Z80 + a 3-byte-patched ROM
 
@@ -131,8 +131,8 @@ historical placement, and the original composite/RF chain.
 - `docs/rev-a-sourcing-plan.md`: future sourcing/assembly policy; stock must be
   rechecked at order time.
 - `docs/rev-a-drc-readiness.md`: current stable KiCad 10.0.5 full-DRC result
-  bound to the exact post-D1 board SHA; the matching fabrication package is
-  frozen separately by its recorded ZIP checksum.
+  bound to the exact source-board SHA; the former fabrication package is
+  explicitly stale after the mux-enable correction.
 - `docs/rev-a-lvs-coverage.md`: exact staged physical-LVS scope, negative
   control, and the groups still outside the whole-board comparison.
 - `docs/rev-a-usb-c-candidate.md`: checksum- and geometry-guarded exact HRO
