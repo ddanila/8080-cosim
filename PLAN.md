@@ -1399,7 +1399,7 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
 - **Routing DONE and current-source DRC clean.** The 200x200 119-ref/135-net
   board contains 2,877 tracks/vias on F.Cu/B.Cu, with filled In1.Cu GND and
   In2.Cu VCC planes. The freerouting fork (v1.9) routed all 357 nets with 0
-  unrouted / 0 violations. After the exact D1 correction, KiCad 10.99 refilled
+  unrouted / 0 violations. After the exact D1 correction, stable KiCad 10.0.5 refilled
   and saved both planes; full error-level DRC now reports 0 violations, 0
   unconnected items against the exact board SHA guarded in
   `spinoffs/minimal-vga/docs/rev-a-drc-readiness.md`.
@@ -1430,10 +1430,10 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
 2. **Regenerate, freeze, and run vendor DFM/preview.** The ignored fab package
    is explicitly stale; its frozen checksum predates the compact 200x200 route
    and the corrected D1 footprint, although current source DRC is now clean.
-   Re-export it with a KiCad 10 toolchain that includes matching `pcbnew` Python
-   bindings for the assembly/mechanical report stages, freeze the new
-   Gerber/drill ZIP SHA256, then perform vendor preview, live-stock, and
-   assembly-capability review as order-time human gates.
+   A coherent stable KiCad 10.0.5 CLI/`pcbnew` Flatpak toolchain is now
+   resolved through repository wrappers. Complete the integrated export,
+   freeze the new Gerber/drill ZIP SHA256, then perform vendor preview,
+   live-stock, and assembly-capability review as order-time human gates.
 3. **Disposition full-board LVS explicitly.** The decode/observability contract
    is guarded, but whole-board chip-accurate LVS remains incomplete. It is a
    bare-board release gate unless the owner records a specific waiver with an

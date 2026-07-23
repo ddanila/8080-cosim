@@ -4,7 +4,7 @@ Status: **PACKAGE BASELINE EXISTS / DESIGN HOLD**.
 
 The current Rev A board is a routed physical experiment generated from
 `rev-a-physical.board.json`. After the bounded D1 footprint/clearance
-correction, KiCad 10.99 refilled and saved both inner planes and reported zero
+correction, stable KiCad 10.0.5 refilled and saved both inner planes and reported zero
 error-level violations and zero unconnected items.
 `../docs/rev-a-drc-readiness.md` binds that result to the exact board SHA.
 These checks establish file coherence for modeled nets; they do not prove the
@@ -41,11 +41,13 @@ GND/VCC plane zones are restored and filled after SES import.)
 
 The exporter requires `kicad-cli` and Python `pcbnew` from the same KiCad major
 version and verifies that the Python API can load the board before writing any
-package output. The 2026-07-23 Linux environment has KiCad CLI 10.99 but only
-`pcbnew` 9.0.8, so integrated export is deliberately blocked there. Raw KiCad
-10.99 smoke exports of the current source produced all ten Gerber/job files,
-the Excellon drill, and 119 position rows; use a coherent KiCad-10 toolchain to
-run the complete guarded package pipeline.
+package output. On Linux, the repository locators prefer the coherent stable
+KiCad 10.0.5 Flatpak through `scripts/kicad-flatpak-cli.sh` and
+`scripts/kicad-flatpak-python.sh`; the Python wrapper also supplies the
+Flatpak footprint-library root and shares `/tmp` between CAD stages. This
+toolchain loads the routed board, regenerates placement checks, and reports
+zero DRC errors and zero unconnected items. Package freshness is still bound
+only by a completed guarded export and its recorded checksum.
 
 Per-report `READY` states describe the scope named by that report. They are not
 design-release or purchase authorization. The top-level status is tracked in
@@ -54,7 +56,7 @@ design-release or purchase authorization. The top-level status is tracked in
 ## Design blockers
 
 - T80 and tv80 spin-off tops boot the patched real Juku ROM framebuffer-identical
-  to cosim; this simulation result does not validate the stale routed copper.
+  to cosim; this simulation result does not validate the physical routed copper.
 - U5 decode behavior is simulated in both jumper modes. U24's corrected
   Gray-coded pin/timing contract meets vendored MK4564-12 limits at 4 MHz;
   neither GAL has been compiled, programmed, or bench-tested on the chosen device.

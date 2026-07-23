@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 set -eu
 
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
 if [ "${KICAD_CLI:-}" ]; then
   if [ -x "$KICAD_CLI" ] || command -v "$KICAD_CLI" >/dev/null 2>&1; then
     printf '%s\n' "$KICAD_CLI"
@@ -8,6 +10,12 @@ if [ "${KICAD_CLI:-}" ]; then
   fi
   printf 'KICAD_CLI is set but not executable/found: %s\n' "$KICAD_CLI" >&2
   exit 2
+fi
+
+FLATPAK_CLI="$SCRIPT_DIR/kicad-flatpak-cli.sh"
+if [ -x "$FLATPAK_CLI" ] && "$FLATPAK_CLI" --version >/dev/null 2>&1; then
+  printf '%s\n' "$FLATPAK_CLI"
+  exit 0
 fi
 
 if command -v kicad-cli-nightly >/dev/null 2>&1; then

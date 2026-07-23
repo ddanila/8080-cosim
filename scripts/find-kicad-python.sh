@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+
 try_python() {
   local candidate="$1"
   if [ -z "$candidate" ]; then
@@ -28,6 +30,7 @@ if [ -n "${KICAD_PYTHON:-}" ]; then
 fi
 
 for candidate in \
+  "$SCRIPT_DIR/kicad-flatpak-python.sh" \
   /usr/bin/python3 \
   python3 \
   /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 \

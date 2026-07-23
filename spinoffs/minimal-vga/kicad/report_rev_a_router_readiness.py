@@ -61,7 +61,15 @@ def build_report(out_dir):
     remote = run_git(["rev-parse", "origin/custom"], FREEROUTING) if submodule_present else None
     dirty = run_git(["status", "--short"], FREEROUTING) if submodule_present else None
 
-    checks.append(("Custom branch checked out", branch == "custom", f"Current branch: `{branch or 'unknown'}`."))
+    branch_ok = branch == "custom" or (not branch and bool(commit and remote and commit == remote))
+    checks.append((
+        "Custom branch or exact detached commit selected",
+        branch_ok,
+        (
+            f"Current branch: `{branch or 'detached HEAD'}`; "
+            f"HEAD: `{commit or 'unknown'}`; origin/custom: `{remote or 'unknown'}`."
+        ),
+    ))
     checks.append((
         "Custom branch pushed",
         bool(commit and remote and commit == remote),
@@ -134,7 +142,7 @@ def build_report(out_dir):
         "",
         "## Summary",
         "",
-        f"- Freerouting branch: `{branch or 'unknown'}`",
+        f"- Freerouting branch: `{branch or ('detached HEAD' if commit else 'unknown')}`",
         f"- Freerouting HEAD: `{commit or 'unknown'}`",
         f"- Built custom jar: {'yes' if jar.exists() else 'no'}",
         f"- Failed checks: {sum(1 for _, ok, _ in checks if not ok)}",

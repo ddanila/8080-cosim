@@ -42,6 +42,10 @@ jobs:
           sh -n sync/cosim_check.sh
           sh -n sync/boot_check.sh
           sh -n sync/d2_ready_path_check.sh
+          sh -n scripts/find-kicad-cli.sh
+          bash -n scripts/find-kicad-python.sh
+          bash -n scripts/kicad-flatpak-cli.sh
+          bash -n scripts/kicad-flatpak-python.sh
           bash -n scripts/regen_all.sh
           bash -n scripts/ci_gate.sh
           sh -n spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
