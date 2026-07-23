@@ -1824,10 +1824,46 @@ def main() -> int:
     vjuga_readiness = vjuga["spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md"]
     vjuga_readme = vjuga["spinoffs/minimal-vga/README.md"]
     vjuga_fab_notes = vjuga["spinoffs/minimal-vga/kicad/fab-notes.md"]
-    if "Status: **DESIGN HOLD / CURRENT PACKAGE VERIFIED**" not in vjuga_readiness:
-        failures.append("VJUGA readiness does not expose the current verified-package hold")
-    if "Status: **CURRENT PACKAGE VERIFIED / DESIGN HOLD**" not in vjuga_fab_notes:
-        failures.append("VJUGA fabrication notes do not expose the current verified-package hold")
+    vjuga_package_verified = (
+        "Status: **DESIGN HOLD / CURRENT PACKAGE VERIFIED**" in vjuga_readiness
+        and "Status: **CURRENT PACKAGE VERIFIED / DESIGN HOLD**" in vjuga_fab_notes
+    )
+    vjuga_package_stale = (
+        "Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**"
+        in vjuga_readiness
+        and "Status: **PACKAGE REGENERATION REQUIRED / DESIGN HOLD**"
+        in vjuga_fab_notes
+    )
+    if not (vjuga_package_verified or vjuga_package_stale):
+        failures.append(
+            "VJUGA readiness/fabrication notes do not expose one coherent "
+            "verified-or-regeneration-required package hold"
+        )
+    if vjuga_package_stale:
+        stale_package_markers = {
+            "spinoffs/minimal-vga/README.md": (
+                "stale; do not upload or order it",
+                "superseded",
+                "fresh guarded",
+            ),
+            "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": (
+                "stale; do not upload or",
+                "superseded sha256",
+                "new guarded export",
+            ),
+            "spinoffs/minimal-vga/kicad/fab-notes.md": (
+                "package is stale and must not be uploaded or ordered",
+                "superseded",
+                "fresh guarded",
+            ),
+        }
+        for path, markers in stale_package_markers.items():
+            text = read(path).lower()
+            for marker in markers:
+                if marker not in text:
+                    failures.append(
+                        f"{path} does not preserve stale-package marker {marker!r}"
+                    )
     for stale_claim in (
         "marks that frozen ZIP stale",
         "A fresh canonical export and review are required",
