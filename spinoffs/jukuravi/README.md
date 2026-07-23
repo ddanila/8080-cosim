@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D0 ROM/PIC/PPI/PIT/serial/RAM paths guarded.**
+Status: **EXECUTION STARTED — D0 DIAGNOSTIC LADDER GUARDED THROUGH VIDEO RAM.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -243,12 +243,23 @@ A Nano is sufficient for every stage except the optional bus-master stage
      Exact-image cosim proves every counter/control select, both stuck-bit
      polarities, and cumulative ACK/no-ACK paths. vm80a proves clean, forced
      D55 failure, corrupt-extension, and both shared fallback outcomes through
-     the three physical PITs. The RAM-backed framebuffer pattern remains next.
+     the three physical PITs.
+     **Framebuffer-pattern simulation checkpoint implemented:** the eleventh
+     exact 8 KiB image draws only after the acknowledged full RAM survey and a
+     final `55` verification of the 9,640 visible bytes at `D800..FDA7`. It
+     writes and reads back an address-XOR field, while a bad precondition or
+     readback selects a continuous nominal 3 kHz tone. Both executable
+     extensions are independently additive-guarded. Exact-image cosim proves
+     the complete 40×241 pattern, D84 fault suppression, corrupt extensions,
+     and the no-ACK predecessor. vm80a proves a bounded eight-row draw,
+     readback, abstract pixel stream, fault halt, and both physical fallback
+     outcomes. This closes the planned D0 firmware ladder in simulation; the
+     Nano bridge and host session CLI are the next Jukuravi stage.
 
   The beep vocabulary is a tiny fixed set (alive / cpu-bad / rom-bad /
-  pic-bad / ppi-bad / pit-bad / usart-bad / serial-ok / serial-dead /
-  chip-N-dead / windows-found), documented so a human with no Nano attached
-  can triage by ear.
+  pic-bad / ppi-bad / pit-bad / framebuffer-ram-bad / usart-bad / serial-ok /
+  serial-dead / chip-N-dead / windows-found), documented so a human with no
+  Nano attached can triage by ear.
 
   **ROM discipline:** interrupts stay disabled for the diag ROM's whole
   life (the 8080 resets with them off; never `EI` — the PIC IMR is now tested,
@@ -326,15 +337,17 @@ transitions; the HDL unit guard proves the same intermediate status around its
 8N1 shifter. The model is deliberately limited to the async slice needed by the
 harness; sync/parity and physical baud timing remain outside this step.
 
-The alive, CPU, ROM-convention, PIC, PPI, PIT, serial, and mode-0 RAM-survey
-diagnostic-ROM rungs now run under cosim and the vm80a-based HDL twin,
+The alive, CPU, ROM-convention, PIC, PPI, PIT, serial, mode-0 RAM-survey, and
+framebuffer-pattern diagnostic-ROM rungs now run under cosim and the
+vm80a-based HDL twin,
 including injected ROM, PIC, PPI, PIT, USART, protocol, and bit-sliced RAM
 failure paths, while the D57 beeper path has its own waveform/connectivity
 guard. The 8253 register model and the cumulative diagnostic now compose:
 focused model tests cover latch/read formats, BCD conversion, and pending-latch
 ownership, while the ROM guard covers all physical counter selects with
-phase-tolerant live-count predicates. The next D0 implementation step is the
-RAM-backed framebuffer test pattern.
+phase-tolerant live-count predicates. The planned D0 ladder is complete in
+simulation; the next Jukuravi implementation step is Stage D1's Nano bridge and
+host session CLI.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

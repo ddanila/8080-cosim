@@ -16,6 +16,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -40,6 +41,8 @@ python3 tests/jukuravi_d0_ppi_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-ppi.bin
 python3 tests/jukuravi_d0_pit_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-pit.bin
+python3 tests/jukuravi_d0_framebuffer_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-framebuffer.bin
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 iverilog -g2012 -s pit_8253_latch_tb -o "$tmp/pit_8253_latch_tb" \
@@ -556,6 +559,122 @@ for fixture in clean fault; do
         +no_windows="$pit_dead_pc" +checksum="$pit_checksum" \
         +banner_crc="$pit_banner_crc" +rom_version=07 +prefix_writes=56 \
         +prefix_pit_writes=24 +prefix_silences=1)
+  [[ $fixture == fault ]] && args+=(+inject_fault)
+  hdl_out=$(vvp "$tmp/jukuravi_d0_ram_fallback_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-RAM-FALLBACK-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-RAM-FALLBACK-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+python3 - "$tmp/framebuffer.hex" "$tmp/framebuffer-fallback.hex" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "spinoffs/jukuravi/firmware"))
+import build_d0_framebuffer
+import build_d0_ram_fallback
+
+image, metadata = build_d0_framebuffer.build()
+early = bytearray(image + bytes([0x76]) * 8192)
+for offset in (
+    metadata["alive_delay_offset"], metadata["serial_ok_delay_offset"],
+    metadata["retention_delay_offset"],
+):
+    early[offset] = 1
+    early[offset + 1] = 0
+for key in (
+    "start_page_offset", "end_page_offset",
+    "alias_start_page_offset", "alias_end_page_offset",
+):
+    early[metadata[key]] = 0xD8
+for offset in metadata["framebuffer_count_offsets"]:
+    early[offset] = 0x40
+    early[offset + 1] = 0x01  # 0140h: eight 40-byte raster rows
+early[metadata["framebuffer_extension_checksum_offset"]] = sum(
+    early[metadata["framebuffer_extension_start"]:metadata["framebuffer_extension_end"]]
+) & 0xFF
+early[metadata["pit_extension_checksum_offset"]] = sum(
+    early[metadata["pit_extension_start"]:metadata["pit_extension_end"]]
+) & 0xFF
+checksum_offset = int(metadata["rom_checksum_offset"])
+checksum_start = int(metadata["rom_checksum_start"])
+checksum_end = int(metadata["rom_checksum_end"])
+early[checksum_offset] = sum(early[checksum_start:checksum_end]) & 0xFF
+
+fallback = bytearray(image + bytes([0x76]) * 8192)
+alive = int(metadata["alive_delay_offset"])
+fallback[alive] = 1
+fallback[alive + 1] = 0
+for offset in (
+    metadata["ack_timeout_offsets"][0],
+    metadata["serial_dead_mark_delay_offset"],
+    *metadata["fallback_retention_offsets"],
+    *metadata["windows_pulse_offsets"],
+    *metadata["chip_pulse_offsets"],
+):
+    fallback[offset] = 1
+    fallback[offset + 1] = 0
+for offset in metadata["fallback_count_offsets"]:
+    fallback[offset] = 0
+    fallback[offset + 1] = 1
+for offset in metadata["fallback_rewind_offsets"]:
+    fallback[offset] = 1
+first_start = build_d0_ram_fallback.FALLBACK_WINDOWS[0][0]
+for offset in metadata["fallback_first_end_page_offsets"]:
+    fallback[offset] = (first_start + 0x100) >> 8
+fallback[checksum_offset] = sum(fallback[checksum_start:checksum_end]) & 0xFF
+
+for path, data in zip(map(Path, sys.argv[1:]), (early, fallback)):
+    path.write_text("\n".join(f"{byte:02x}" for byte in data) + "\n")
+PY
+read -r framebuffer_success_pc framebuffer_fail_pc framebuffer_found_pc framebuffer_dead_pc framebuffer_checksum framebuffer_banner_crc framebuffer_ack_crc framebuffer_clean_crc framebuffer_fault_crc < <(
+  PYTHONPATH=spinoffs/jukuravi/firmware:spinoffs/jukuravi python3 - <<'PY'
+import build_d0_framebuffer
+import protocol
+
+_, metadata = build_d0_framebuffer.build()
+clean_crc = protocol.encode_frame(protocol.TYPE_RAM_BLOCK, bytes((0xD8, 0x00)))[-1]
+fault_crc = protocol.encode_frame(protocol.TYPE_RAM_BLOCK, bytes((0xD8, 0x01)))[-1]
+print(
+    f"{metadata['framebuffer_success_halt']:04x} "
+    f"{metadata['framebuffer_fail_halt']:04x} "
+    f"{metadata['windows_found_halt']:04x} {metadata['no_windows_halt']:04x} "
+    f"{metadata['checksum']:04x} {metadata['banner'][-1]:02x} "
+    f"{metadata['ack'][-1]:02x} {clean_crc:02x} {fault_crc:02x}"
+)
+PY
+)
+iverilog -g2012 -o "$tmp/jukuravi_d0_framebuffer_tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
+  hdl/sim/jukuravi_d0_framebuffer_tb.v
+for fixture in clean fault; do
+  block_crc=$framebuffer_clean_crc
+  args=(+rom="$tmp/framebuffer.hex" +success="$framebuffer_success_pc" \
+        +failure="$framebuffer_fail_pc" +checksum="$framebuffer_checksum" \
+        +banner_crc="$framebuffer_banner_crc" +ack_crc="$framebuffer_ack_crc")
+  if [[ $fixture == fault ]]; then
+    block_crc=$framebuffer_fault_crc
+    args+=(+inject_fault)
+  fi
+  args+=(+block_crc="$block_crc")
+  hdl_out=$(vvp "$tmp/jukuravi_d0_framebuffer_tb" "${args[@]}")
+  printf '%s\n' "$hdl_out"
+  grep -q "JUKURAVI-D0-FRAMEBUFFER-HDL: PASS" <<<"$hdl_out"
+  if grep -q "JUKURAVI-D0-FRAMEBUFFER-HDL: FAIL" <<<"$hdl_out"; then
+    exit 1
+  fi
+done
+
+# Version 8 retains the version-7 no-ACK flow after validating both extensions.
+for fixture in clean fault; do
+  args=(+rom="$tmp/framebuffer-fallback.hex" \
+        +windows_found="$framebuffer_found_pc" +no_windows="$framebuffer_dead_pc" \
+        +checksum="$framebuffer_checksum" +banner_crc="$framebuffer_banner_crc" \
+        +rom_version=08 +prefix_writes=56 +prefix_pit_writes=24 \
+        +prefix_silences=1)
   [[ $fixture == fault ]] && args+=(+inject_fault)
   hdl_out=$(vvp "$tmp/jukuravi_d0_ram_fallback_tb" "${args[@]}")
   printf '%s\n' "$hdl_out"

@@ -1643,8 +1643,18 @@ an active `/Q1` feedback output.
    both restricted `JUKU_PIT_FAULT` mismatch polarities, the corrupt-extension
    branch, and cumulative ACK/no-ACK paths. vm80a proves clean, forced-D55,
    corrupt-extension, and both physical fallback outcomes across all three PIT
-   instances. The next bounded D0 checkpoint is the RAM-backed framebuffer
-   test pattern, consuming only a window already proven by rung 4.
+   instances. The final cumulative D0 image retains that ladder and, only on
+   the acknowledged full-survey path, verifies the visible `D800..FDA7` range,
+   writes all 9,640 bytes as an address-XOR field, and reads the field back.
+   A bad precondition or readback gives a distinct continuous nominal 3 kHz
+   tone with no completed pattern; the no-ACK fallback never assumes video RAM
+   works. Both post-table executable regions are independently additive-
+   guarded. Exact-image cosim proves the complete 40×241 draw, D84 fault path,
+   both corrupt-extension branches, and no-ACK predecessor. vm80a proves a
+   bounded eight-row physical DRAM draw/readback, 2,560 abstract pixels, the
+   framebuffer-fault halt, and both version-8 fallback outcomes. This completes
+   the planned D0 firmware ladder in simulation. Stage D1's Nano bridge and
+   host session CLI are the next bounded Jukuravi implementation.
 
 ## Physical bring-up sequence
 
@@ -1713,6 +1723,11 @@ Once a released board and programmed parts exist:
   with phase-tolerant complementary predicates, restores D57, and reaches the
   distinct PIT-bad halt for injected faults in cosim and vm80a, while both
   version-7 fallback outcomes retain exact physical PIT and DRAM traffic.
+- [x] Jukuravi D0 rung 5e has an exact-hash-guarded cumulative D15 image whose
+  acknowledged path verifies, draws, and reads back the complete 9,640-byte
+  address-XOR framebuffer, suppresses the pattern for injected D84 failure,
+  guards both executable extensions, and retains the no-ACK path in cosim and
+  vm80a, including a bounded abstract-pixel comparison.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

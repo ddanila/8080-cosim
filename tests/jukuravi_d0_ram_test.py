@@ -113,6 +113,8 @@ def verify_run(
     expected_window: protocol.RamWindow,
     *,
     pit_prefix_writes: list[tuple[int, int]] | None = None,
+    post_survey_page_writes: dict[int, int] | None = None,
+    expected_final_ram: bytes | bytearray | None = None,
 ) -> list[str]:
     proc, state, outbound, ram = result
     failures: list[str] = []
@@ -184,15 +186,24 @@ def verify_run(
         if (match := WPAGE_RE.match(line))
     }
     for page in range(firmware.SURVEY_START_PAGE, firmware.SURVEY_END_PAGE + 1):
-        if writes.get(page) != 1664:
-            failures.append(f"{label}: page {page:02X} writes={writes.get(page)} != 1664")
+        expected_writes = 1664 + (post_survey_page_writes or {}).get(page, 0)
+        if writes.get(page) != expected_writes:
+            failures.append(
+                f"{label}: page {page:02X} writes={writes.get(page)} "
+                f"!= {expected_writes}"
+            )
             break
-    expected_ram = bytearray((0x55,) * (0x10000 - 0x4000))
-    for page, mask in expected_masks.items():
-        if page == 0x7A and mask == 0x28:
-            expected_ram[0x7A5C - 0x4000] = 0x75
-    if label == "alias":
-        expected_ram[0x9000 - 0x4000 : 0x9100 - 0x4000] = bytes(0x100)
+    if expected_final_ram is None:
+        expected_ram = bytearray((0x55,) * (0x10000 - 0x4000))
+        for page, mask in expected_masks.items():
+            if page == 0x7A and mask == 0x28:
+                expected_ram[0x7A5C - 0x4000] = 0x75
+        if label == "alias":
+            expected_ram[0x9000 - 0x4000 : 0x9100 - 0x4000] = bytes(0x100)
+    else:
+        expected_ram = bytearray(expected_final_ram)
+        if len(expected_ram) != 0x10000 - 0x4000:
+            raise ValueError("expected_final_ram must cover 4000h..FFFFh")
     if ram[0x4000:] != expected_ram:
         mismatch = next(index for index, (actual, expected) in enumerate(
             zip(ram[0x4000:], expected_ram)) if actual != expected)

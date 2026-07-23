@@ -120,10 +120,11 @@ def emit_address_pass(asm: Assembler, *, stem: str, phase: str) -> None:
     asm.emit(0x25)
 
 
-def emit_page_alias_probe(asm: Assembler) -> int:
+def emit_page_alias_probe(asm: Assembler) -> tuple[int, int]:
     """Detect high-address aliasing at offset 00 without changing final 55 fill."""
     asm.emit(0x44)             # MOV B,H: page under test
     asm.emit(0x78, 0x77)       # MOV A,B / MOV M,A: unique current sentinel
+    start_offset = asm.pc + 1
     asm.emit(0x0E, SURVEY_START_PAGE)  # MVI C,first candidate page
     asm.label("page_alias_next")
     asm.emit(0x79, 0xB8)       # MOV A,C / CMP B
@@ -144,7 +145,7 @@ def emit_page_alias_probe(asm: Assembler) -> int:
     asm.label("page_alias_done")
     asm.emit(0x60, 0x2E, 0x00)  # MOV H,B / MVI L,0
     asm.emit(0x36, 0x55)       # restore current page offset 00
-    return end_offset
+    return start_offset, end_offset
 
 
 def emit_crc_fold(asm: Assembler, *, stem: str) -> None:
@@ -223,7 +224,7 @@ def emit_ram_survey(
     asm.emit(0x0B, 0x78, 0xB1)  # DCX B / MOV A,B / ORA C
     asm.jump(0xC2, "retention_delay")
     emit_memory_pass(asm, stem="test_55_retained", expected=0x55, replacement=None)
-    alias_end_page_offset = emit_page_alias_probe(asm)
+    alias_start_page_offset, alias_end_page_offset = emit_page_alias_probe(asm)
 
     page_frame_timeout_offsets = emit_page_frame(
         asm, failure_label=failure_label
@@ -239,6 +240,7 @@ def emit_ram_survey(
         "start_page_offset": start_page_offset,
         "end_page_offset": end_page_offset,
         "retention_delay_offset": retention_delay_offset,
+        "alias_start_page_offset": alias_start_page_offset,
         "alias_end_page_offset": alias_end_page_offset,
         "page_frame_timeout_offsets": page_frame_timeout_offsets,
     }

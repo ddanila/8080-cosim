@@ -83,6 +83,10 @@ PIT_CHIP_BASES = (0x10, 0x14, 0x18)
 PIT_HIGH_COUNT = 0xFF            # MSB-only FF00h, sign must remain set
 PIT_LOW_COUNT = 0x3F             # MSB-only 3F00h, sign must remain clear
 PIT_FAIL_DIVISOR = 1333          # nominal 1.5 kHz, continuous
+FRAMEBUFFER_BASE = 0xD800
+FRAMEBUFFER_BYTES = 40 * 241
+FRAMEBUFFER_END = FRAMEBUFFER_BASE + FRAMEBUFFER_BYTES
+FRAMEBUFFER_FAIL_DIVISOR = 667   # nominal 3 kHz, continuous
 
 
 def lxi_h(asm: Assembler, value: int) -> None:
@@ -376,12 +380,20 @@ def emit_ppi_register_check(asm: Assembler) -> dict[str, int | list[int]]:
     }
 
 
-def emit_pit_extension_guard(asm: Assembler) -> dict[str, int]:
-    """Checksum a sub-256-byte post-table extension, then jump into it."""
+def emit_pit_extension_guard(
+    asm: Assembler, *, full_page: bool = False
+) -> dict[str, int]:
+    """Checksum a short or exactly 256-byte extension, then jump into it."""
     asm.emit(0xAF)  # XRA A: additive accumulator
     lxi_h_label(asm, "pit_extension_start")
-    length_offset = asm.pc + 1
-    asm.emit(0x0E, 0x00)  # MVI C, extension length (patched after assembly)
+    length_offset = -1
+    if not full_page:
+        length_offset = asm.pc + 1
+        asm.emit(0x0E, 0x00)  # MVI C, extension length (patched after assembly)
+    # The chained profile deliberately guards exactly 256 bytes. Its preceding
+    # ROM checksum loop leaves BC=0000 and PIC/PPI do not change C, so the first
+    # DCR C wraps 00->FF and the loop executes one complete page without an
+    # immediate. This recovers the two historical-block bytes needed by rung 5e.
     asm.label("pit_extension_checksum_loop")
     asm.emit(0x86, 0x23, 0x0D)  # ADD M / INX H / DCR C
     asm.jump(0xC2, "pit_extension_checksum_loop")
@@ -460,11 +472,144 @@ def emit_pit_register_check(asm: Assembler) -> dict[str, int | list[int]]:
     }
 
 
+def emit_framebuffer_extension_guard(asm: Assembler) -> dict[str, int]:
+    """Checksum the framebuffer extension before any serial or RAM activity."""
+    asm.emit(0xAF)  # XRA A: additive accumulator
+    lxi_h_label(asm, "framebuffer_extension_start")
+    length_offset = asm.pc + 1
+    asm.emit(0x0E, 0x00)  # MVI C, extension length (patched after assembly)
+    asm.label("framebuffer_extension_checksum_loop")
+    asm.emit(0x86, 0x23, 0x0D)  # ADD M / INX H / DCR C
+    asm.jump(0xC2, "framebuffer_extension_checksum_loop")
+    checksum_offset = asm.pc + 1
+    asm.emit(0xFE, 0x00)  # CPI extension additive checksum (patched)
+    asm.jump(0xC2, "rom_fail")
+    asm.jump(0xC3, "after_pit")
+    return {
+        "framebuffer_extension_length_offset": length_offset,
+        "framebuffer_extension_checksum_offset": checksum_offset,
+        "framebuffer_extension_guard_pass": asm.pc,
+    }
+
+
+def emit_chained_pit_register_check(
+    asm: Assembler,
+) -> tuple[dict[str, int | list[int]], dict[str, int]]:
+    """Emit the same PIT traffic compactly, leaving room for a chained guard."""
+    high_read_offsets: list[int] = []
+    low_read_offsets: list[int] = []
+    tested_ports: list[int] = []
+
+    # B remains sign-set only if every high-range read has DB7 set and every
+    # complemented low-range read has DB7 set. Delaying the one conditional
+    # branch saves enough guarded bytes for the next extension's checksum loop.
+    asm.emit(0x06, 0xFF)  # MVI B,FF: combined predicate
+    for base in PIT_CHIP_BASES:
+        control_port = base + 3
+        for channel in range(3):
+            data_port = base + channel
+            tested_ports.append(data_port)
+            asm.mvi_a(0x20 | (channel << 6))
+            asm.out(control_port)
+            asm.mvi_a(PIT_HIGH_COUNT)
+            asm.out(data_port)
+            if channel == 0:
+                asm.emit(0xAF)
+            else:
+                asm.mvi_a(channel << 6)
+            asm.out(control_port)
+            high_read_offsets.append(asm.pc)
+            asm.emit(0xDB, data_port, 0xA0, 0x47)  # IN / ANA B / MOV B,A
+
+        asm.mvi_a(0x20)
+        asm.out(control_port)
+        asm.mvi_a(PIT_LOW_COUNT)
+        asm.out(base)
+        asm.emit(0xAF)
+        asm.out(control_port)
+        low_read_offsets.append(asm.pc)
+        asm.emit(0xDB, base, 0x2F, 0xA0, 0x47)  # IN / CMA / ANA B / MOV B,A
+
+    asm.emit(0x78, 0xB7)  # MOV A,B / ORA A
+    asm.jump(0xF2, "pit_fail_chained")  # JP: at least one predicate failed
+    asm.jump(0xC3, "pit_recover_chained")
+    asm.label("pit_fail_chained")
+    asm.emit(0x06, 0x00)  # MVI B,0: failure flag through shared recovery
+    asm.label("pit_recover_chained")
+
+    for control, port in ((0x50, 0x19), (0x90, 0x1A)):
+        asm.mvi_a(control)
+        asm.out(0x1B)
+        asm.mvi_a(0x01)
+        asm.out(port)
+
+    asm.emit(0x78, 0xB7)  # MOV A,B / ORA A
+    asm.jump(0xCA, "pit_fail_chained_tone")
+    framebuffer_guard = emit_framebuffer_extension_guard(asm)
+    asm.label("pit_fail_chained_tone")
+    emit_failure_tone(asm, PIT_FAIL_DIVISOR)
+    pit_fail_halt = asm.pc
+    asm.emit(0x76)
+    return ({
+        "pit_ports": tested_ports,
+        "pit_high_read_offsets": high_read_offsets,
+        "pit_low_read_offsets": low_read_offsets,
+        "pit_fail_halt": pit_fail_halt,
+        "pit_check_pass": asm.labels["after_pit"],
+    }, framebuffer_guard)
+
+
+def emit_framebuffer_pattern(asm: Assembler) -> dict[str, int | list[int]]:
+    """Verify the surveyed framebuffer, draw address-XOR, and read it back."""
+    lxi_h(asm, FRAMEBUFFER_BASE)
+    preverify_count_offset = asm.pc + 1
+    asm.lxi_b(FRAMEBUFFER_BYTES)
+    asm.label("framebuffer_preverify")
+    asm.emit(0x7E, 0xFE, 0x55)  # MOV A,M / CPI 55
+    asm.jump(0xC2, "framebuffer_fail")
+    asm.emit(0x23, 0x0B, 0x78, 0xB1)  # INX H / DCX B / MOV A,B / ORA C
+    asm.jump(0xC2, "framebuffer_preverify")
+
+    lxi_h(asm, FRAMEBUFFER_BASE)
+    draw_count_offset = asm.pc + 1
+    asm.lxi_b(FRAMEBUFFER_BYTES)
+    asm.label("framebuffer_draw")
+    asm.emit(0x7C, 0xAD, 0x77)  # MOV A,H / XRA L / MOV M,A
+    asm.emit(0x23, 0x0B, 0x78, 0xB1)
+    asm.jump(0xC2, "framebuffer_draw")
+
+    lxi_h(asm, FRAMEBUFFER_BASE)
+    readback_count_offset = asm.pc + 1
+    asm.lxi_b(FRAMEBUFFER_BYTES)
+    asm.label("framebuffer_readback")
+    asm.emit(0x7C, 0xAD, 0x57, 0x7E, 0xBA)  # expected H^L in D; CMP M
+    asm.jump(0xC2, "framebuffer_fail")
+    asm.emit(0x23, 0x0B, 0x78, 0xB1)
+    asm.jump(0xC2, "framebuffer_readback")
+    framebuffer_success_halt = asm.pc
+    asm.emit(0x76)
+
+    asm.label("framebuffer_fail")
+    emit_failure_tone(asm, FRAMEBUFFER_FAIL_DIVISOR)
+    framebuffer_fail_halt = asm.pc
+    asm.emit(0x76)
+    return {
+        "framebuffer_success_halt": framebuffer_success_halt,
+        "framebuffer_fail_halt": framebuffer_fail_halt,
+        "framebuffer_base": FRAMEBUFFER_BASE,
+        "framebuffer_end": FRAMEBUFFER_END,
+        "framebuffer_bytes": FRAMEBUFFER_BYTES,
+        "framebuffer_count_offsets": [
+            preverify_count_offset, draw_count_offset, readback_count_offset,
+        ],
+    }
+
+
 def build_variant(
     *, rom_version: int, identity: bytes, rom_convention: bool,
     entry_offset: int = 0x0010, pic_check: bool = False,
     compact_fallback: bool = False, ppi_check: bool = False,
-    pit_check: bool = False,
+    pit_check: bool = False, framebuffer_pattern: bool = False,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     if pic_check and not rom_convention:
         raise ValueError("PIC profile requires the cumulative ROM convention")
@@ -474,6 +619,8 @@ def build_variant(
         raise ValueError("PPI profile requires cumulative PIC and compact fallback")
     if pit_check and not ppi_check:
         raise ValueError("PIT profile requires the cumulative PPI profile")
+    if framebuffer_pattern and not pit_check:
+        raise ValueError("framebuffer profile requires the cumulative PIT profile")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -500,7 +647,10 @@ def build_variant(
     rom_metadata = emit_rom_convention_check(asm) if rom_convention else {}
     pic_metadata = emit_pic_register_check(asm) if pic_check else {}
     ppi_metadata = emit_ppi_register_check(asm) if ppi_check else {}
-    pit_guard_metadata = emit_pit_extension_guard(asm) if pit_check else {}
+    pit_guard_metadata = (
+        emit_pit_extension_guard(asm, full_page=framebuffer_pattern)
+        if pit_check else {}
+    )
     if pit_check:
         asm.label("after_pit")
     local_timeout_offsets = emit_local_usart_test(asm)
@@ -531,8 +681,12 @@ def build_variant(
     final_empty_timeout_offset = emit_status_wait(
         asm, stem="ram_end_empty", mask=0x04, failure_label="ram_fallback"
     )
-    success_halt = asm.pc
-    asm.emit(0x76)
+    if framebuffer_pattern:
+        asm.jump(0xC3, "framebuffer_extension_start")
+        success_halt = -1
+    else:
+        success_halt = asm.pc
+        asm.emit(0x76)
 
     asm.label("cpu_fail")
     emit_failure_tone(asm, CPU_FAIL_TONE_DIVISOR)
@@ -641,20 +795,58 @@ def build_variant(
     ack_offset = asm.pc
     asm.emit(*placeholder_ack)
     pit_metadata: dict[str, int | list[int]] = {}
+    framebuffer_guard_metadata: dict[str, int] = {}
+    framebuffer_metadata: dict[str, int | list[int]] = {}
     if pit_check:
         asm.label("pit_extension_start")
-        pit_metadata = emit_pit_register_check(asm)
+        if framebuffer_pattern:
+            pit_metadata, framebuffer_guard_metadata = (
+                emit_chained_pit_register_check(asm)
+            )
+        else:
+            pit_metadata = emit_pit_register_check(asm)
+        if framebuffer_pattern:
+            while asm.pc - asm.labels["pit_extension_start"] < 0x100:
+                asm.emit(0x76)
         asm.label("pit_extension_end")
+    if framebuffer_pattern:
+        asm.label("framebuffer_extension_start")
+        framebuffer_metadata = emit_framebuffer_pattern(asm)
+        asm.label("framebuffer_extension_end")
+        success_halt = framebuffer_metadata["framebuffer_success_halt"]
 
     code = bytearray(asm.resolve())
+    if framebuffer_pattern:
+        framebuffer_start = asm.labels["framebuffer_extension_start"]
+        framebuffer_end = asm.labels["framebuffer_extension_end"]
+        framebuffer_length = framebuffer_end - framebuffer_start
+        if framebuffer_length <= 0 or framebuffer_length > 0xFF:
+            raise ValueError("framebuffer extension must fit the 8-bit checksum loop")
+        framebuffer_checksum = sum(code[framebuffer_start:framebuffer_end]) & 0xFF
+        code[framebuffer_guard_metadata["framebuffer_extension_length_offset"]] = (
+            framebuffer_length
+        )
+        code[framebuffer_guard_metadata["framebuffer_extension_checksum_offset"]] = (
+            framebuffer_checksum
+        )
+        framebuffer_metadata.update({
+            "framebuffer_extension_start": framebuffer_start,
+            "framebuffer_extension_end": framebuffer_end,
+            "framebuffer_extension_length": framebuffer_length,
+            "framebuffer_extension_checksum": framebuffer_checksum,
+        })
     if pit_check:
         extension_start = asm.labels["pit_extension_start"]
         extension_end = asm.labels["pit_extension_end"]
         extension_length = extension_end - extension_start
-        if extension_length <= 0 or extension_length > 0xFF:
-            raise ValueError("PIT extension must fit the 8-bit checksum loop")
+        maximum_length = 0x100 if framebuffer_pattern else 0xFF
+        if extension_length <= 0 or extension_length > maximum_length:
+            raise ValueError("PIT extension escaped its 8-bit checksum loop")
+        if framebuffer_pattern and extension_length != 0x100:
+            raise ValueError("chained PIT extension must occupy one complete page")
         extension_checksum = sum(code[extension_start:extension_end]) & 0xFF
-        code[pit_guard_metadata["pit_extension_length_offset"]] = extension_length
+        if pit_guard_metadata["pit_extension_length_offset"] >= 0:
+            code[pit_guard_metadata["pit_extension_length_offset"]] = extension_length
         code[pit_guard_metadata["pit_extension_checksum_offset"]] = extension_checksum
         pit_metadata.update({
             "pit_extension_start": extension_start,
@@ -752,6 +944,8 @@ def build_variant(
         **ppi_metadata,
         **pit_guard_metadata,
         **pit_metadata,
+        **framebuffer_guard_metadata,
+        **framebuffer_metadata,
         **survey_metadata,
     }
     return bytes(image), metadata

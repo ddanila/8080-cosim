@@ -2,7 +2,7 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–5D SIMULATION CHECKPOINT — D54/D55/D57 PIT GUARDED**
+Status: **D0 RUNGS 1–5E SIMULATION CHECKPOINT — FRAMEBUFFER PATTERN GUARDED**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
@@ -13,8 +13,9 @@ D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake,
 `diag-d0-ram-fallback.bin` adds the beep-only fixed-window fallback,
 `diag-d0-romcheck.bin` adds the historical ROM block-1 convention self-test,
 `diag-d0-pic.bin` adds the D10/8259 interrupt-mask register test,
-`diag-d0-ppi.bin` adds the safe D27/8255 all-port register test, and
-`diag-d0-pit.bin` adds the guarded D54/D55/D57 all-counter register test.
+`diag-d0-ppi.bin` adds the safe D27/8255 all-port register test,
+`diag-d0-pit.bin` adds the guarded D54/D55/D57 all-counter register test, and
+`diag-d0-framebuffer.bin` adds the surveyed-RAM framebuffer pattern.
 
 SHA256:
 
@@ -29,6 +30,7 @@ d102a6320f9446e103ab34a07b73ddca72907163a9444c061efdccbd47841da5  diag-d0-romche
 65d84269bcd0d2859e31ca343e3640899c3179b0af6404e184a53a304b1b9496  diag-d0-pic.bin
 c75fc47b4966532c67794a317ab23b0e75c32977acb799d3e08a94d53baf2685  diag-d0-ppi.bin
 b7ab8c3c5d7b32c5402510787216e099b0adbd37d64fb2c4a01f5695eb5401cf  diag-d0-pit.bin
+d77c4a381440ed9166a24762b303c8ec0407e6d00c480a151a23c807234d7dd7  diag-d0-framebuffer.bin
 ```
 
 ## Build and guard
@@ -44,6 +46,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_romcheck.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
 sync/jukuravi_d0_check.sh
 ```
 
@@ -53,8 +56,9 @@ contains 382 bytes; the local-USART image contains 509; the serial image
 contains 684; the RAM-survey image contains 1,496; the fallback image contains
 1,967; the ROM-convention, PIC, and PPI builder spans are each 2,066 bytes. The
 PIT image spans 2,317 bytes because its guarded extension follows the framed
-tables. Their identities are stored at `0x1F00`, and unused space is fail-closed
-`HLT` fill.
+tables; the framebuffer image spans 2,392 bytes across two guarded extensions.
+Their identities are stored at `0x1F00`, and unused space is fail-closed `HLT`
+fill.
 
 The reset path is deliberately stack-free and RAM-free:
 
@@ -293,6 +297,7 @@ The audible vocabulary is now executable and unambiguous by cadence:
 | PIC mask-register bad | continuous nominal 4 kHz after the alive beep |
 | D27 PPI register bad | continuous nominal 750 Hz after the alive beep |
 | D54/D55/D57 PIT register bad | continuous nominal 1.5 kHz after the alive beep |
+| surveyed framebuffer RAM bad | continuous nominal 3 kHz after the full serial survey |
 | local USART bad | continuous nominal 500 Hz |
 | serial confirmed | one approximately 0.125 s nominal 2 kHz beep |
 | serial dead before fallback | one approximately 0.25 s nominal 125 Hz marker |
@@ -479,13 +484,61 @@ extension paths through all three physical PITs, then replays the cumulative
 version-7 fixed-window fallback for clean and forced-D87 outcomes with exact
 PIT-prefix traffic and cadence.
 
-Broader row/column-shaped fault generators and the user-facing session CLI
-remain later host-tool work; rung 4's required serial and beep-only RAM paths
-are now both represented by exact burn images.
+## Rung 5e: surveyed-RAM framebuffer pattern
+
+The final D0 image advertises ROM version `08`, historical block-1 sum `B3`,
+full-image self-checksum `8D59`, and these exact records:
+
+```text
+banner: A5 5A 01 04 01 08 8D 59 36
+ack:    A5 5A 81 04 01 08 8D 59 DA
+```
+
+The acknowledged path still completes and reports the full `4000..FFFF` RAM
+survey first. It then verifies that every visible framebuffer byte retains the
+survey's final `55` value before drawing anything. The exact visible range is
+`D800..FDA7`: 9,640 bytes, 40 bytes by 241 rows, MSB first. A mismatch selects
+a continuous nominal 3 kHz framebuffer-RAM-bad tone and halts without a pattern.
+The no-ACK path never assumes that range works and retains the version-7 fixed-
+window beep fallback unchanged.
+
+On a clean framebuffer the ROM writes `high(address) XOR low(address)` to every
+visible byte, reads all 9,640 values back against the same register-only oracle,
+and halts in mode 0. This address-XOR field toggles every data bit and turns
+address aliases or missing rows into a deterministic visual discontinuity. The
+600 bytes at `FDA8..FFFF` are outside the guarded 320×241 raster and retain the
+survey's `55` fill.
+
+Rung 5e preserves the historical table boundary while extending checked code.
+The first post-table extension is exactly 256 bytes at `0812..0911`, has sum
+`7A`, and includes the PIT test plus the next guard. The block-1 ROM loop leaves
+`C=00`; its first `DCR C` therefore covers the complete 256-byte page without a
+length immediate. That verified page checks the 70-byte framebuffer extension
+at `0912..0957`, whose sum is `0D`, before any USART or RAM access. Corruption in
+either extension reaches the existing ROM-bad halt; corruption in the second is
+caught after safe PIT recovery but before serial traffic.
+
+`tests/jukuravi_d0_framebuffer_test.py` proves the exact image's full survey,
+all 9,640 pattern writes and readbacks, a D84 fault at `D800` that reports page
+`D8`/mask `01` and suppresses the draw, both extension-corruption branches, and
+the no-ACK predecessor. The vm80a fixture runs the same opcodes with a one-page
+`D800` survey and three loop counts shortened to 320 bytes (eight raster rows).
+It proves clean draw/readback through bit-sliced D84–D91, the fault halt with
+zero pattern writes, and 2,560 matching pixels from the existing abstract
+serializer. Separate version-8 fallback runs retain both clean and dead-D87
+physical outcomes.
+
+The pixel comparison is explicitly the simulation-only framebuffer oracle. It
+does not close the unresolved physical shared-DRAM video-slot schedule, D34/X7
+levels, analog monitor behavior, or authorize a bench burn.
+
+Broader row/column-shaped fault generators and the user-facing session CLI are
+Stage D1 host-tool work; rung 4's required serial and beep-only RAM paths are
+both represented by exact burn images.
 
 The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
-guard models speaker voltage/current or authorizes a bench burn. The next D0
-firmware rung is the RAM-backed framebuffer test pattern; it must consume only
-a RAM window already proven by the serial survey or fixed-window fallback.
+guard models speaker voltage/current or authorizes a bench burn. The planned D0
+firmware ladder is now represented by exact simulation checkpoints. The next
+Jukuravi implementation stage is D1's Nano bridge and host session CLI.
