@@ -10,7 +10,7 @@ circuit-review,Q_KT27,,КТ972,modern E-C-B TO-126 transistor selected for the b
 circuit-review,UP2,,К170УП2,RS-232/line-receiver substitute required; verify +/-12 V interface,1,1,0,D104,D104,
 leave-empty,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,28,0,28,"C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+10)",,"Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part."
 leave-empty,EPROM8K,,К573РФ6,"2764 / 27C64 / M2764 EPROM, programmed per ROM split",1,0,1,D19,,Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.
-leave-empty,RU5,,К565РУ5Г / 565РУ5Г,"4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails",24,0,24,"D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+6)",,D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check.
+leave-empty,RU5,,К565РУ5Г / 565РУ5Г,Mostek MK4564-12 dual-in-line option; E4 2-3/+5 V required; bench-test received parts,24,0,24,"D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+6)",,D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. The guarded MK4564-12 static contract is package/electrically eligible only with E4 2-3/+5 V; receipt and board timing tests remain.
 mechanical-review,EXPANSION_CONN,,СНП59-96 Р-20-2-В,select exact substitute after circuit review,1,1,0,X1,X1,
 mechanical-review,JUMPER2,,wire/link,select exact substitute after circuit review,1,1,0,E5,E5,
 mechanical-review,JUMPER3,,wire/link,select exact substitute after circuit review,4,4,0,"E1, E2, E3, E4","E1, E2, E3, E4",
@@ -70,7 +70,7 @@ source-now,PIC8259,,КР580ВН59,8259A PIC,1,1,0,D10,D10,
 source-now,PIT8253,,КР580ВИ53,8253 or 8254 PIT,3,3,0,"D54, D55, D57","D54, D55, D57",
 source-now,PPI8255,,КР580ВВ55А,8255A / 82C55 PPI,2,2,0,"D26, D27","D26, D27",
 source-now,RASCAS_DEC,,КР531ИД7,74S138/74F138-class fast decoder; verify timing,1,1,0,D53,D53,
-source-now,RU5,,К565РУ5Г,"4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails",8,8,0,"D84, D85, D86, D87, D88, D89, D90, D91","D84, D85, D86, D87, D88, D89, D90, D91",D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check.
+source-now,RU5,,К565РУ5Г,Mostek MK4564-12 dual-in-line option; E4 2-3/+5 V required; bench-test received parts,8,8,0,"D84, D85, D86, D87, D88, D89, D90, D91","D84, D85, D86, D87, D88, D89, D90, D91",D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. The guarded MK4564-12 static contract is package/electrically eligible only with E4 2-3/+5 V; receipt and board timing tests remain.
 source-now,R_AXIAL,"1,2к","axial resistor 1,2к","modern axial resistor, matching value and power rating",1,1,0,R32,R32,
 source-now,R_AXIAL,"1,3к","axial resistor 1,3к","modern axial resistor, matching value and power rating",1,1,0,R92,R92,
 source-now,R_AXIAL,"1,5к","axial resistor 1,5к","modern axial resistor, matching value and power rating",1,1,0,R20,R20,
@@ -101,7 +101,7 @@ source-now,TL2,,К555ТЛ2,74LS14-class hex Schmitt inverter,1,1,0,D13,D13,
 source-now,TM2_DFF,,КМ555ТМ2,74LS74 dual D flip-flop,2,2,0,"D30, D96","D30, D96",
 source-now,USART8251,,КР580ВВ51А,8251A / 82C51-class USART,1,1,0,D11,D11,
 source-now,VABUS,,КР580ВА87,Intel 8287 / compatible bus transceiver,3,3,0,"D23, D24, D25","D23, D24, D25",
-source-now,VG93_FDC,,КР1818ВГ93,"WD1793 pin-compatible candidate; verify clock, rails, and interface timing",1,1,0,D93,D93,"A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit."
+source-now,VG93_FDC,,КР1818ВГ93,"Western Digital FD1793B-01 plastic DIP; bench-verify clocks, strobes, and drive interface",1,1,0,D93,D93,"The guarded FD1793B-01 static contract matches the D93 package, rails, pins, and 1 MHz mode; support-device closure and received-part board testing remain."
 source-now,WIRE_LINK,13.5 cm,factory insulated assembly wire 13.5 cm,insulated hookup wire cut and installed to the documented route length,1,1,0,W10,W10,Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper.
 source-now,WIRE_LINK,~11.5 cm (held),factory insulated assembly wire ~11.5 cm (held),insulated hookup wire cut and installed to the documented route length,1,1,0,W11,W11,Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper.
 source-now,WIRE_LINK,~19 cm,factory insulated assembly wire ~19 cm,insulated hookup wire cut and installed to the documented route length,1,1,0,W8,W8,Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper.

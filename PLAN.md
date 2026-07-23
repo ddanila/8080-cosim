@@ -1371,8 +1371,15 @@ Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
 - The 27 photo-proven bare DRAM-grid footprints remain fabricated but carry
   native KiCad DNP and position-file exclusion metadata; the schematic and
   generated populate-now BOM guard the same assembly disposition.
-- Verify candidate WD1793/4164-family parts for exact pinout, timing, voltage,
-  footprint, and seller stock before buying.
+- Candidate static compatibility is now guarded in
+  `docs/replica-candidate-parts-readiness.md`: Western Digital FD1793B-01
+  plastic DIP matches D93's complete pin contract, +5/+12 V rails, 1 MHz
+  mini-drive mode, and 0.600-inch footprint; Mostek MK4564-12 in its DIP option
+  matches the populated bank's JEDEC 64Kx1 pin classes, single +5 V supply,
+  128-cycle/2 ms refresh, 120 ns access, 220 ns cycle, and DIP-16 footprint.
+  Before buying or seating parts, verify live seller stock/authenticity, fit E4
+  2-3 and measure +5 V at DRAM pin 8, close the remaining FDC support gates,
+  and bench-test the received parts and board timing.
 - Buy/test long-lead parts early only when the choice cannot force a board
   change. Assemble sockets first and verify rails with no ICs installed.
 

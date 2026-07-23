@@ -432,9 +432,11 @@ jobs:
 
       - name: Check replica sourcing/BOM report freshness
         run: |
+          python3 scripts/report_replica_candidate_parts.py
           python3 kicad/report_dual_config_bom.py
           python3 kicad/report_replica_sourcing_readiness.py
           git diff --exit-code -- \
+            docs/replica-candidate-parts-readiness.md \
             docs/replica-dual-config-bom.csv \
             docs/replica-dual-config-bom.md \
             docs/replica-sourcing-readiness.md

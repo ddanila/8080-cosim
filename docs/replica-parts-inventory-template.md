@@ -9,6 +9,7 @@ Source gates:
 
 - `docs/replica-dual-config-bom.csv`
 - `docs/replica-sourcing-readiness.md`
+- `docs/replica-candidate-parts-readiness.md`
 - `docs/replica-bringup-verification-points.md`
 - `docs/prom-dump-procedure.md`
 - `docs/community-prom-media-request.md`
@@ -31,8 +32,8 @@ Source gates:
 | --- | --- | --- |
 | CPU and system controller | received CPU8080 + SYS8238-class parts, socket fit checked, pre-install test or known-good provenance |  |
 | Bus transceivers/latches | received BUF8286/BUF8287/VABUS/IR82 parts, orientation and pinout checked |  |
-| DRAM bank | at least 8 tested 4164/К565РУ5-compatible chips plus spares |  |
-| PIT/PPI/PIC/USART/FDC | received socketed peripheral ICs, FDC compatibility decision recorded |  |
+| DRAM bank | at least 8 tested К565РУ5Г or guarded MK4564-12 DIP candidates plus spares; E4 2-3/+5 V verified before seating |  |
+| PIT/PPI/PIC/USART/FDC | received socketed peripheral ICs; D93 is КР1818ВГ93 or guarded FD1793B-01 DIP and the support-logic gate is closed |  |
 | Clock/video glue | received fast counters, muxes, gates, oscillator/crystal, and serializer-related ICs |  |
 | Passives | received resistor/capacitor/diode/transistor values with circuit-review rows resolved |  |
 | Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X7/X8/X9/S1/S3/S4 |  |
@@ -65,9 +66,9 @@ Source gates:
 ## Acceptance Before Seating ICs
 
 - [ ] Received parts are inventoried against `docs/replica-dual-config-bom.csv`.
-- [ ] DRAM parts pass a 4164/К565РУ5-compatible tester, including at least one warm repeat.
+- [ ] DRAM parts are К565РУ5Г or the guarded MK4564-12 DIP option, pass a compatible tester including at least one warm repeat, and E4 2-3 gives +5 V at pin 8.
 - [ ] CPU/system-controller parts pass a known-good tester or minimal fetch jig.
-- [ ] FDC choice is recorded as КР1818ВГ93 or WD1793-compatible.
+- [ ] FDC choice is recorded as КР1818ВГ93 or guarded FD1793B-01 plastic DIP; D96/D99/D101 gates and socket clocks/strobes are verified before seating.
 - [ ] Mechanical connector rows are fit-checked against the fabricated board before soldering.
 - [ ] PROM/EPROM contents have provenance and readback checksums.
 - [ ] `docs/replica-bringup-verification-points.md` has been copied into the build record with owner/measured dispositions for source-risk nets touched by early bring-up.

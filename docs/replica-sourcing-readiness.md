@@ -40,11 +40,11 @@ review before being treated as build-ready.
 | PIC8259 | КР580ВН59 | 8259A PIC | 1 | D10 | Socket; verify frame interrupt vectoring before FDC IRQs. |
 | PIT8253 | КР580ВИ53 | 8253 or 8254 PIT | 3 | D54, D55, D57 | Socket; verify programmed divisors and video-sync outputs. |
 | PPI8255 | КР580ВВ55А | 8255A / 82C55 PPI | 2 | D26, D27 | Socket; verify keyboard/Port C mode bits against twin during bring-up. |
-| RU5 | К565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 8 | D84, D85, D86, D87, D88, D89, D90, D91 | Verify exact 4164/565RU5 pinout, refresh, speed, and rails; buy tested spares only after approval. |
+| RU5 | К565РУ5Г | Mostek MK4564-12 dual-in-line option; E4 2-3/+5 V required; bench-test received parts | 8 | D84, D85, D86, D87, D88, D89, D90, D91 | MK4564-12 static compatibility is guarded; require E4 2-3/+5 V and buy tested DIP spares only after approval. |
 | SYS8238 | КР580ВК38 | 8228/8238-class system controller; verify pinout | 1 | D5 | Verify pin-compatible 8228/8238 behavior; check MEMR/IO strobes in a socketed bring-up. |
 | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | D11 | Socket; loopback test after clock/reset are proven. |
 | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 3 | D23, D24, D25 | Continuity/orientation check on expansion bus transceivers. |
-| VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | D93 | Prefer a socket; verify the exact WD1793/VG93 candidate's pinout, clock, rails, and timing before approval. |
+| VG93_FDC | КР1818ВГ93 | Western Digital FD1793B-01 plastic DIP; bench-verify clocks, strobes, and drive interface | 1 | D93 | FD1793B-01 static compatibility is guarded; socket it and bench-verify clocks, strobes, support logic, and drive interface before approval. |
 | XTAL | РК-171 16 MHz crystal 16 МГц | 16 MHz HC-49/metal-can crystal matching footprint/load | 1 | Z1 | Verify 16 MHz oscillation and load-cap fit before debugging timing. |
 
 ## Programming / Dump Gate
@@ -105,6 +105,7 @@ against drawings/board photos before ordering final quantities.
 
 - `docs/replica-dual-config-bom.md` / `.csv`: source-of-truth BOM split.
 - `docs/replica-parts-inventory-template.md`: received-parts, acceptance-test, and PROM/EPROM programming evidence template.
+- `docs/replica-candidate-parts-readiness.md`: guarded MK4564-12 and FD1793B-01 static compatibility plus remaining physical gates.
 - `docs/replica-bringup-verification-points.md`: source-risk net checklist to carry into assembly and staged bring-up.
 - `docs/prom-dump-procedure.md`: PROM/EPROM dump and programming provenance.
 - `docs/community-prom-media-request.md`: owner/community request for PROMs and `JUKU-1` media.

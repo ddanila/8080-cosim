@@ -162,8 +162,8 @@ def build_report(rows):
         "BUF8287": "Continuity/orientation check; verify the recovered drive-output channels and shared control before attaching X4.",
         "VABUS": "Continuity/orientation check on expansion bus transceivers.",
         "IR82": "Verify latch polarity around DRAM write-data path.",
-        "VG93_FDC": "Prefer a socket; verify the exact WD1793/VG93 candidate's pinout, clock, rails, and timing before approval.",
-        "RU5": "Verify exact 4164/565RU5 pinout, refresh, speed, and rails; buy tested spares only after approval.",
+        "VG93_FDC": "FD1793B-01 static compatibility is guarded; socket it and bench-verify clocks, strobes, support logic, and drive interface before approval.",
+        "RU5": "MK4564-12 static compatibility is guarded; require E4 2-3/+5 V and buy tested DIP spares only after approval.",
         "XTAL": "Verify 16 MHz oscillation and load-cap fit before debugging timing.",
     }
     for row in sorted(buy_early, key=sort_key):
@@ -257,6 +257,7 @@ def build_report(rows):
             "",
             "- `docs/replica-dual-config-bom.md` / `.csv`: source-of-truth BOM split.",
             "- `docs/replica-parts-inventory-template.md`: received-parts, acceptance-test, and PROM/EPROM programming evidence template.",
+            "- `docs/replica-candidate-parts-readiness.md`: guarded MK4564-12 and FD1793B-01 static compatibility plus remaining physical gates.",
             "- `docs/replica-bringup-verification-points.md`: source-risk net checklist to carry into assembly and staged bring-up.",
             "- `docs/prom-dump-procedure.md`: PROM/EPROM dump and programming provenance.",
             "- `docs/community-prom-media-request.md`: owner/community request for PROMs and `JUKU-1` media.",

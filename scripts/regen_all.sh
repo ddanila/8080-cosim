@@ -86,6 +86,7 @@ run python3 scripts/report_8282_pinout_audit.py
 run python3 scripts/report_package_endpoint_coverage.py
 run python3 scripts/report_owner_measurement_shortlist.py
 run python3 kicad/report_replica_bringup_verification.py
+run python3 scripts/report_replica_candidate_parts.py
 run python3 kicad/report_dual_config_bom.py
 run python3 kicad/report_replica_sourcing_readiness.py
 run python3 scripts/report_automatic_completion_audit.py

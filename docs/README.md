@@ -77,7 +77,10 @@ findings. Every status applies only to the boundary named by the report.
   from two physical boards, reader wiring, and validated content truth).
 - Fabrication package: `replica-manufacturing-readiness.md`,
   `replica-package-geometry-readiness.md`,
-  `replica-fab-drc-disposition.md`, and `replica-power-trace-readiness.md`.
+  `replica-fab-drc-disposition.md`, `replica-power-trace-readiness.md`,
+  `replica-sourcing-readiness.md`, and
+  `replica-candidate-parts-readiness.md` (guarded MK4564-12/FD1793B-01
+  static compatibility with physical acceptance still held).
   Package readiness is not design release.
 - Routed-board refresh: `routed-refresh-audit.md` — reproducible history from
   the stale candidate through the promoted exact-source zero-open route.
