@@ -43,6 +43,7 @@ sync/fdc_check.sh
 sync/video_timing_check.sh
 sync/video_readout_check.sh
 sync/jukuravi_d0_check.sh
+sync/jukuravi_nano_check.sh
 sync/beeper_check.sh
 sync/serial_check.sh
 sync/ie7_check.sh
@@ -62,8 +63,10 @@ streaming one-byte DRQ/LOST-DATA service semantics, completion/status and all Ty
 one-revolution MFM Read Track plus index-gated, preloaded writable-track formatting
 and optional cross-run deleted-mark companion metadata,
 raster/serializer behavior,
-the Jukuravi stack-free D0 alive-beep, CPU-signature, and local-8251 ROMs
-(including injected CPU-bad and stuck-TX paths) plus beeper and USART slices,
+the Jukuravi stack-free D0 diagnostic ladder (including injected CPU-bad and
+stuck-TX paths), its host-session round trip, and the Nano bridge's
+byte-transparent bounded pump and optional exact AVR compile, plus beeper and
+USART slices,
 the full standard К555ИЕ7/74LS193 asynchronous
 load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
 К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced

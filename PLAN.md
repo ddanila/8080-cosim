@@ -1658,9 +1658,14 @@ an active `/Q1` feedback output.
    exact ROM: it validates the identity banner, sends the matching ACK, decodes
    all 192 page records, prints D84–D91 and largest-window verdicts, and retains
    timestamped RX/TX/JSON evidence. Clean and injected D87+D89 page-`7A` cosim
-   sessions prove both human and machine-readable outputs. The Nano's
-   115200-USB-to-nominal-9600-Juku bridge, open-collector reset output, and
-   liveness probes are the next bounded Jukuravi implementation.
+   sessions prove both human and machine-readable outputs. The second Stage D1
+   checkpoint supplies the classic Nano's byte-transparent 115200-USB-to-
+   nominal-9600-Juku bridge: a portable test covers all 256 byte values, the
+   exact ACK, both directions, counters, and bounded service, while the actual
+   `SoftwareSerial` sketch compiles for `arduino:avr:nano`. Its D10/MAX3232 CTS
+   contract has a boot-safe pull-down and a latched overflow indicator. The
+   open-collector reset output and voltage-safe liveness probes remain gated on
+   continuity measurements of the real S1/X3/testpoint wiring.
 
 ## Physical bring-up sequence
 
@@ -1738,6 +1743,11 @@ Once a released board and programmed parts exist:
   ROM, validates and acknowledges its identity, decodes the complete clean and
   injected-fault surveys into D84–D91/window verdicts, and preserves timestamped
   raw RX, raw TX, and JSON session evidence.
+- [x] Jukuravi D1 Nano bridge core preserves every byte in both directions
+  between the 115200 hardware USB UART and nominal-9600 software UART; the exact
+  ATmega328P sketch compiles, explicitly asserts CTS through a MAX3232 with a
+  boot-safe pull-down, and latches receive overflow without contaminating the
+  framed evidence stream.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

@@ -117,13 +117,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # iverilog runs the vm80a-based HDL sims; gcc builds the cosim oracle.
+      # Icarus runs the vm80a HDL sims; gcc builds the cosim oracle and g++
+      # builds the portable Jukuravi Nano bridge test.
       # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL
       # sim levels, bounded to 6000 video writes (~60s, never the slow full banner),
       # and asserts every level is byte-for-byte identical to cosim -- i.e. the merge
       # (the schematic structure executing the firmware) cannot silently regress.
       - name: Install Icarus Verilog
-        run: sudo apt-get update && sudo apt-get install -y gcc iverilog
+        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       - name: Initialize pinned tv80 core
         run: git submodule update --init spinoffs/minimal-vga/external/tv80

@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D1 HOST SESSION CLI GUARDED; NANO BRIDGE NEXT.**
+Status: **EXECUTION STARTED — D1 HOST AND NANO BRIDGE GUARDED; RESET/PROBES NEXT.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -55,7 +55,11 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   a 5 V Nano must not touch it directly) plus a few GPIO liveness probes for
   the failure class where the ROM never speaks: reset released? derived clock
   toggling? `−MRDC` pulsing? Candidate probe nets are already cataloged in
-  `docs/replica-bringup-verification-points.md`.
+  `docs/replica-bringup-verification-points.md`. **Implemented firmware
+  checkpoint:** the classic-Nano sketch keeps D0/D1 for 115200 USB, bridges D8/
+  D9 at nominal 9600 through the level shifter, and asserts CTS with D10. Its
+  shared core is binary-transparency tested and the exact sketch AVR-compiles;
+  see `nano/README.md`. Reset and probe pins remain measurement-gated.
 - **Nano-driven hardware reset (required for unattended runs).** The 8080
   has no NMI, so no firmware watchdog can reclaim a hung uploaded test that
   runs with interrupts masked — a hardware reset is the only reliable
@@ -259,7 +263,8 @@ A Nano is sufficient for every stage except the optional bus-master stage
      and the no-ACK predecessor. vm80a proves a bounded eight-row draw,
      readback, abstract pixel stream, fault halt, and both physical fallback
      outcomes. This closes the planned D0 firmware ladder in simulation. The
-     Stage D1 host CLI is now guarded below; the Nano bridge and probes are next.
+     Stage D1 host CLI and Nano bridge are guarded below; reset and probes are
+     next after their measurement gates close.
 
   The beep vocabulary is a tiny fixed set (alive / cpu-bad / rom-bad /
   pic-bad / ppi-bad / pit-bad / framebuffer-ram-bad / usart-bad / serial-ok /
@@ -313,8 +318,14 @@ A Nano is sufficient for every stage except the optional bus-master stage
   names D84–D91 failures plus the largest all-bits-good window. Clean RAM and a
   `7A5C:08:20` D87+D89 injection are exercised through the actual CLI process
   and exact version-8 ROM. Both sessions retain timestamped raw RX/TX and JSON
-  evidence. The Nano's 115200-USB-to-approximately-9600-Juku bridge, reset
-  output, and liveness probes remain the next D1 checkpoint.
+  evidence.
+  **Nano-bridge checkpoint implemented:** D0/D1 hardware serial remains the
+  115200 host side; D8/D9 `SoftwareSerial` is the nominal-9600 Juku side; and
+  D10 asserts CTS through the MAX3232's second driver with an external
+  boot-state pull-down. The bounded pump is checked with every byte value and
+  the exact ACK in both directions, while `arduino-cli` compiles the actual
+  ATmega328P sketch. Overflow latches D13 without changing the evidence stream.
+  Reset and liveness probes remain gated on physical continuity and levels.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
   ROM: on a host command ("load at address, N bytes, payload, checksum") the
   ROM writes the received bytes into tested-good onboard RAM, verifies, and
@@ -346,11 +357,13 @@ python3 spinoffs/jukuravi/host.py \
   --log-dir sessions
 ```
 
-The host-facing USB link defaults to 115200 baud; the planned Nano firmware
-will bridge that to the diagnostic ROM's nominal 9600-baud 8N1 link through a
-MAX3232-class level shifter. Until that firmware exists, `--port` is an
-interface contract, not a bench-ready claim. `--fd` is the inherited PTY-master
-transport used by the cosim regression. A successful session creates one
+The host-facing USB link defaults to 115200 baud. The Nano firmware in
+`nano/jukuravi_bridge/` bridges that to the diagnostic ROM's nominal 9600-baud
+8N1 link through a MAX3232-class level shifter. This is still not a bench-ready
+claim: X3 continuity/levels and S1 reset contacts must be measured, and until
+the reset output exists the Juku must be reset manually after the bridge is
+listening. `--fd` is the inherited PTY-master transport used by the cosim
+regression. A successful session creates one
 timestamp-matched `.rx.bin`, `.tx.bin`, and `.json` set. The JSON contains the
 validated image identity, every decoded frame, page masks, D84–D91 bad-page
 lists, and the selected largest good window.
@@ -379,9 +392,9 @@ failure paths, while the D57 beeper path has its own waveform/connectivity
 guard. The 8253 register model and the cumulative diagnostic now compose:
 focused model tests cover latch/read formats, BCD conversion, and pending-latch
 ownership, while the ROM guard covers all physical counter selects with
-phase-tolerant live-count predicates. The planned D0 ladder and Stage D1 host
-session CLI are complete in simulation; the Nano bridge, hardware reset output,
-and liveness probes are next.
+phase-tolerant live-count predicates. The planned D0 ladder, Stage D1 host
+session CLI, and Nano serial bridge are guarded; the hardware reset output and
+liveness probes are next, after their physical measurement gates close.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

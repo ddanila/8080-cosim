@@ -541,5 +541,6 @@ D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The planned D0
 firmware ladder is now represented by exact simulation checkpoints. The next
-Jukuravi implementation stage is D1's Nano bridge, reset output, and liveness
-probes; the host session CLI is now guarded separately in the parent directory.
+Jukuravi implementation stage is D1's reset output and liveness probes; the
+host session CLI and Nano serial bridge are now guarded separately in the
+parent directory.

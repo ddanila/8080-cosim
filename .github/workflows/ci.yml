@@ -33,6 +33,7 @@ jobs:
           sh -n sync/video_readout_check.sh
           sh -n sync/serial_check.sh
           bash -n sync/jukuravi_d0_check.sh
+          bash -n sync/jukuravi_nano_check.sh
           sh -n sync/ie7_check.sh
           sh -n sync/d96_check.sh
           sh -n sync/ie10_check.sh
