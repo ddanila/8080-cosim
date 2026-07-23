@@ -7,12 +7,15 @@ import pcbnew
 
 
 MM_PER_IU = 1_000_000.0
-EXPECTED_BOARD_MM = 285.0
-EXPECTED_HOLE_CENTERS_MM = ((8.0, 8.0), (277.0, 8.0), (8.0, 277.0), (277.0, 277.0))
+EXPECTED_BOARD_MM = 200.0
+EXPECTED_HOLE_CENTERS_MM = ((8.0, 8.0), (192.0, 8.0), (8.0, 192.0), (192.0, 192.0))
 EXPECTED_HOLE_DIAMETER_MM = 3.2
 HOLE_TOLERANCE_MM = 0.05
 MIN_EDGE_WEB_MM = 5.0
-MIN_FOOTPRINT_CLEARANCE_MM = 3.0
+# A standard M3 ISO 7089 / DIN 125 washer is 7 mm OD. Relative to the
+# 3.2 mm cutout, this target leaves 0.6 mm beyond the washer envelope.
+M3_WASHER_OD_MM = 7.0
+MIN_FOOTPRINT_CLEARANCE_MM = 2.5
 MIN_TRACK_CLEARANCE_MM = 1.0
 
 
@@ -242,6 +245,7 @@ def build_report(board_path):
         f"- Expected hole diameter: {fmt_mm(EXPECTED_HOLE_DIAMETER_MM)}",
         f"- Minimum edge web target: {fmt_mm(MIN_EDGE_WEB_MM)}",
         f"- Minimum footprint clearance target: {fmt_mm(MIN_FOOTPRINT_CLEARANCE_MM)}",
+        f"- Assumed standard M3 washer outside diameter: {fmt_mm(M3_WASHER_OD_MM)}",
         f"- Minimum routed-track clearance target: {fmt_mm(MIN_TRACK_CLEARANCE_MM)}",
         f"- Mounting-hole failures: {len(failures)}",
         "",

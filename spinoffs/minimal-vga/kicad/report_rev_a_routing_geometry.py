@@ -220,6 +220,7 @@ def main():
     out_dir = Path(sys.argv[2] if len(sys.argv) > 2 else "fab/minimal-vga")
     report, status = build_report(board_path)
     path = out_dir / "routing-geometry-readiness.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(report)
     print(report)
     print(f"Wrote {path}")

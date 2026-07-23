@@ -78,7 +78,7 @@ if [ "${MINIMAL_VGA_REUSE_BEHAVIORAL_REPORT:-0}" = "1" ]; then
   fi
   echo "Reusing current passing behavioral report: $BEHAVIORAL_REPORT"
   BEHAVIORAL_OK=1
-elif "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_behavioral_readiness.py "$OUT" >/dev/null; then
+elif python3 spinoffs/minimal-vga/kicad/report_rev_a_behavioral_readiness.py "$OUT" >/dev/null; then
   BEHAVIORAL_OK=1
 fi
 if [ "$BEHAVIORAL_OK" != "1" ]; then
