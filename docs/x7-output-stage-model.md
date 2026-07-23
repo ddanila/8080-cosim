@@ -1,14 +1,16 @@
 # X7 output-stage static model
 
-Status date: **2026-07-22**.
+Status date: **2026-07-23**.
 
-Status: **TOPOLOGY + DEVICE LIMITS GUARDED / D34 DRIVE CURVE AND HARDWARE CALIBRATION OPEN**.
+Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**.
 
-This generated report is the first evidence-bounded part of CVBS-plan WP4.
-It proves only the DC transfer of the traced X7 emitter-follower topology; it
-does not prove a physical D34 waveform, monitor timing, edge shape, or the
-installed KT315Б parameters. The published КТ315Б grade limits are guarded,
-but they do not measure the individual transistor.
+This generated report is the second evidence-bounded part of CVBS-plan WP4.
+It solves the traced X7 emitter-follower topology with the official TI
+SN74LS86A PSpice model's supply-dependent output resistances instead of fixed
+D34 pin voltages. TI describes that driver as data-sheet-generated typical
+25 C behavior. It is comparison evidence, not proof of exact К555ЛП5 I/V
+behavior, a physical D34 waveform, monitor timing, edge shape, or the installed
+КТ315Б parameters.
 
 ## Commands
 
@@ -37,13 +39,14 @@ rate, load, state schedule, model hash, and sample hash.
 | C94 is absent from the nominal model | PASS | unresolved population/value/endpoints retained as a boundary |
 | Preserved exact-device К555ЛП5 datasheet hash and limits match | PASS | К555ЛП5: VOH >=2.7 V, VOL <=0.5 V; fanout-derived 0.4 mA source/8 mA sink; no output I/V curve |
 | Preserved SN74LS86A current-comparison datasheet hash matches | PASS | TI SDLS124 page 4; current threshold only, not К555ЛП5 equivalence |
+| Official SN74LS86A comparison-driver model and coefficients match | PASS | TI SDLM061 rev 2.0; typical 25 C; supply-dependent ROH/ROL; comparison only |
 | Preserved КТ315Б datasheet hash, package, and model limits match | PASS | owner marking Б/8901; old KT-13 E-C-B; hFE 50..350; VCE(sat) <=0.4 V |
-| Nominal four-state transfer is ordered by the traced resistor weights | PASS | 00 < sync-only < signal-only < 11 |
+| Nominal base drive is ordered and emitter output is nondecreasing | PASS | base: 00 < sync-only < signal-only < 11; X7 may remain off below VBE |
 | A 75-ohm termination never raises the nominal emitter voltage | PASS | terminated output <= unterminated output for all four states |
-| Declared DC corners remain outside transistor saturation | PASS | 7776 terminated + 2592 unterminated parameter corners per logic state |
+| Declared DC corners remain outside transistor saturation | PASS | 1296 terminated + 432 unterminated parameter corners per logic state |
 | Declared DC corners remain inside published КТ315Б absolute limits | PASS | Ic <=100 mA, P <=150 mW at 25 C, VCE <=20 V |
 
-## D34 drive-current boundary
+## D34 comparison-driver boundary
 
 The preserved exact-device К555ЛП5 sheet guarantees VOH >=2.7 V,
 VOL <=0.5 V, and fanout 10, but omits output-current test conditions and
@@ -52,57 +55,67 @@ meaning imply 0.4 mA high-state source and 8 mA low-state sink
 full-fanout loads. The independent TI SN74LS86A sheet
 corroborates those values but does not supply К555ЛП5 curves.
 
+TI's official SDLM061 SN74LS86A PSpice package is data-sheet-generated
+typical 25 C behavior. Its push-pull output is VCC through 5,000–4,878 Ω
+when high and ground through 62.5–43.75 Ω when low across 4.5–5.5 V.
+This model now participates in the coupled KCL solve, so D34 pin voltage
+droops with load instead of remaining artificially fixed. It remains an
+explicit comparison driver, not К555ЛП5 equivalence evidence.
+
 | State | Pin | Mode | Relevant current (mA) | Fanout-derived limit (mA) | Result |
 | --- | --- | --- | ---: | ---: | --- |
 | sync=0,signal=0 | sync | sink | 0.000 | 8.000 | WITHIN |
 | sync=0,signal=0 | signal | sink | 0.000 | 8.000 | WITHIN |
-| sync=0,signal=1 | sync | sink | 0.856 | 8.000 | WITHIN |
-| sync=0,signal=1 | signal | source | 1.437 | 0.400 | EXCEEDS |
-| sync=1,signal=0 | sync | source | 1.144 | 0.400 | EXCEEDS |
-| sync=1,signal=0 | signal | sink | 0.862 | 8.000 | WITHIN |
-| sync=1,signal=1 | sync | source | 0.293 | 0.400 | WITHIN |
-| sync=1,signal=1 | signal | source | 0.586 | 0.400 | EXCEEDS |
+| sync=0,signal=1 | sync | sink | 0.460 | 8.000 | WITHIN |
+| sync=0,signal=1 | signal | source | 0.683 | 0.400 | EXCEEDS |
+| sync=1,signal=0 | sync | source | 0.640 | 0.400 | EXCEEDS |
+| sync=1,signal=0 | signal | sink | 0.531 | 8.000 | WITHIN |
+| sync=1,signal=1 | sync | source | 0.358 | 0.400 | WITHIN |
+| sync=1,signal=1 | signal | source | 0.418 | 0.400 | EXCEEDS |
 
-The fixed-pin-voltage approximation requests more high-state source current than the exact К555ЛП5 sheet's fanout-derived envelope. The independent SN74LS86A sheet corroborates the derived 0.4 mA/8 mA loads, but neither source supplies a nonlinear output curve; physical X7 voltages still require a better source or measurement.
+The supply-dependent TI SN74LS86A comparison driver self-consistently droops under the traced load, but still sources more current than the exact К555ЛП5 sheet's fanout-derived high-state envelope in at least one nominal state. TI labels the model typical 25 C behavior, not К555ЛП5 equivalence evidence; physical X7 voltages still require an exact-device curve or measurement.
 
 ## Nominal DC transfer
 
 Positive D34 pin current means current sourced out of that output; negative
-means that output is sinking current from the summing node.
+means that output is sinking current from the summing node. The reported D34
+pin voltages are solved between the TI comparison resistance and R62/R63.
 
-| Load | D34 sync | D34 signal | Region | Base (V) | X7 (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |
-| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| 75 Ω | 0 | 0 | off | 0.2211 | 0.0000 | 0.000 | 0.014 | 0.029 |
-| 75 Ω | 0 | 1 | active | 1.9629 | 1.2629 | 19.580 | -0.856 | 1.437 |
-| 75 Ω | 1 | 0 | active | 1.1120 | 0.4120 | 6.388 | 1.144 | -0.862 |
-| 75 Ω | 1 | 1 | active | 2.8137 | 2.1137 | 32.771 | 0.293 | 0.586 |
-| unterminated | 0 | 0 | off | 0.2211 | 0.0000 | 0.000 | 0.014 | 0.029 |
-| unterminated | 0 | 1 | active | 2.0599 | 1.3599 | 3.131 | -0.905 | 1.340 |
-| unterminated | 1 | 0 | active | 1.1437 | 0.4437 | 1.022 | 1.128 | -0.894 |
-| unterminated | 1 | 1 | active | 2.9760 | 2.2760 | 5.241 | 0.212 | 0.424 |
+| Load | D34 sync | D34 signal | Region | Sync pin (V) | Signal pin (V) | Base (V) | X7 (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 75 Ω | 0 | 0 | off | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.000 | 0.000 | 0.000 |
+| 75 Ω | 0 | 1 | active | 0.0244 | 1.6271 | 0.9442 | 0.2442 | 3.786 | -0.460 | 0.683 |
+| 75 Ω | 1 | 0 | off | 1.8388 | 0.0282 | 0.5587 | 0.0000 | 0.000 | 0.640 | -0.531 |
+| 75 Ω | 1 | 1 | active | 3.2334 | 2.9359 | 2.5180 | 1.8180 | 28.186 | 0.358 | 0.418 |
+| unterminated | 0 | 0 | off | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.000 | 0.000 | 0.000 |
+| unterminated | 0 | 1 | active | 0.0254 | 1.6578 | 0.9811 | 0.2811 | 0.647 | -0.478 | 0.677 |
+| unterminated | 1 | 0 | off | 1.8388 | 0.0282 | 0.5587 | 0.0000 | 0.000 | 0.640 | -0.531 |
+| unterminated | 1 | 1 | active | 3.5547 | 3.3114 | 2.9695 | 2.2695 | 5.226 | 0.293 | 0.342 |
 
 ## Declared corner sweep
 
-The terminated sweep evaluates **7,776**
+The terminated sweep evaluates **1,296**
 corners per logic state: all independent ±5% resistor corners crossed with
-the declared TTL pin levels, +5 V supply, 75 Ω load, beta, and VBE values.
-The unterminated diagnostic evaluates **2,592**
+the +5 V supply, TI comparison-driver resistance interpolation, 75 Ω load,
+beta, and VBE values.
+The unterminated diagnostic evaluates **432**
 corners per state with only fitted R65 loading the emitter.
 
 The two final columns count corners that exceed the exact sheet's
-fanout-derived loads. They warn that fixed pin voltages have crossed the
-stated same-family load envelope; they do not predict nonlinear droop.
+fanout-derived loads. The comparison driver now predicts its own resistive
+droop, but those warnings still mark operation outside the exact device's
+stated same-family load envelope.
 
 | Load | State | X7 range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| 75 Ω | sync=0,signal=0 | 0.0000–0.0000 | 0.2184–0.4471 | 0.000 | 0.032 | 0.063 | 4.350 | 0 | 0 |
-| 75 Ω | sync=0,signal=1 | 0.6354–1.6335 | 1.4382–2.1909 | 26.116 | 0.959 | 1.632 | 2.717 | 0 | 7776 |
-| 75 Ω | sync=1,signal=0 | 0.0361–0.7897 | 0.8400–1.3474 | 12.626 | 1.232 | 0.953 | 3.560 | 7776 | 0 |
-| 75 Ω | sync=1,signal=1 | 1.2655–2.4305 | 2.0671–2.9877 | 38.859 | 0.421 | 0.821 | 1.920 | 162 | 6480 |
-| unterminated | sync=0,signal=0 | 0.0000–0.0000 | 0.2184–0.4471 | 0.000 | 0.032 | 0.063 | 4.350 | 0 | 0 |
-| unterminated | sync=0,signal=1 | 0.7332–1.6688 | 1.5749–2.2199 | 4.072 | 0.972 | 1.433 | 2.681 | 0 | 2592 |
-| unterminated | sync=1,signal=0 | 0.0415–0.8073 | 0.8834–1.3585 | 1.970 | 1.193 | 0.959 | 3.543 | 2592 | 0 |
-| unterminated | sync=1,signal=1 | 1.4661–2.4815 | 2.3076–3.0326 | 6.055 | 0.255 | 0.495 | 1.868 | 0 | 1035 |
+| 75 Ω | sync=0,signal=0 | 0.0000–0.0000 | 0.0000–0.0000 | 0.000 | 0.000 | 0.000 | 4.350 | 0 | 0 |
+| 75 Ω | sync=0,signal=1 | 0.0320–0.5119 | 0.8031–1.0770 | 8.174 | 0.524 | 0.745 | 3.942 | 0 | 1296 |
+| 75 Ω | sync=1,signal=0 | 0.0000–0.0675 | 0.5014–0.6198 | 1.078 | 0.688 | 0.578 | 4.340 | 1296 | 0 |
+| 75 Ω | sync=1,signal=1 | 1.2357–2.5369 | 1.9718–3.1107 | 40.448 | 0.450 | 0.524 | 2.114 | 250 | 760 |
+| unterminated | sync=0,signal=0 | 0.0000–0.0000 | 0.0000–0.0000 | 0.000 | 0.000 | 0.000 | 4.350 | 0 | 0 |
+| unterminated | sync=0,signal=1 | 0.0411–0.5349 | 0.8757–1.0872 | 1.305 | 0.528 | 0.728 | 3.924 | 0 | 432 |
+| unterminated | sync=1,signal=0 | 0.0000–0.0695 | 0.5014–0.6198 | 0.170 | 0.688 | 0.578 | 4.340 | 432 | 0 |
+| unterminated | sync=1,signal=1 | 1.8224–2.7219 | 2.6467–3.2756 | 6.636 | 0.338 | 0.394 | 1.950 | 0 | 0 |
 
 ## Model boundary
 
@@ -110,13 +123,14 @@ The following are deliberately not inferred by this result:
 
 - C94, whose population, value, and endpoints are unresolved
 - frequency-dependent transistor behavior and cable/probe capacitance
-- D34 edge shape, output impedance, and propagation delay
+- exact К555ЛП5 nonlinear output behavior, edge shape, and propagation delay
 - physical D34 logic polarity and video timing
 - installed-part calibration
 
-The fixed TTL pin-voltage approximation exposes the D34 source/sink currents
-but is not yet a nonlinear К555ЛП5 output model. Beta and VBE are sensitivity
-bounds; only beta endpoints are exact-grade data, not installed-part measurements.
+The data-backed TI SN74LS86A comparison driver replaces the fixed TTL
+pin-voltage approximation, but it is not an exact nonlinear К555ЛП5 output
+model. Beta and VBE are sensitivity bounds; only beta endpoints are exact-grade
+data, not installed-part measurements.
 C94 remains absent. Consequently the
 stepped fixture has ideal discontinuities and must not be used as evidence of
 rise/fall time, bandwidth, actual composite polarity, or receiver lock.
@@ -124,7 +138,7 @@ rise/fall time, bandwidth, actual composite polarity, or receiver lock.
 ## Next evidence
 
 - Obtain a К555ЛП5 nonlinear output curve or measure D34 under the traced
-  load, then replace the fixed pin-voltage approximation.
+  load, then promote or replace the explicitly comparative TI driver.
 - Feed independently timed D34_SYNC/D34_SIG events into this transfer model only
   after the physical video-slot and D34 waveform boundaries close.
 - Inspect C94 and capture terminated X7 plus VT2 base on hardware before adding

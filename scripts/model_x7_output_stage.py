@@ -9,6 +9,7 @@ import json
 import math
 import struct
 import subprocess
+import zipfile
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -28,13 +29,30 @@ def parallel(a: float, b: float | None) -> float:
     return a if b is None else 1.0 / (1.0 / a + 1.0 / b)
 
 
+def interpolate_driver_resistance(
+    driver: dict[str, Any], logic_level: int, supply_v: float
+) -> float:
+    """Interpolate TI's supply-dependent output resistance table."""
+    level = "high" if logic_level else "low"
+    points = driver["output_resistance_ohm_by_supply_v"][level]
+    if not points[0][0] <= supply_v <= points[-1][0]:
+        raise ValueError(
+            f"D34 comparison driver supply {supply_v} V is outside "
+            f"{points[0][0]}..{points[-1][0]} V"
+        )
+    for (x0, y0), (x1, y1) in zip(points, points[1:]):
+        if x0 <= supply_v <= x1:
+            fraction = (supply_v - x0) / (x1 - x0)
+            return y0 + fraction * (y1 - y0)
+    raise AssertionError("unreachable D34 resistance interpolation")
+
+
 def solve_stage(
     sync: int,
     signal: int,
     *,
     resistors: dict[str, float],
-    low_v: float,
-    high_v: float,
+    d34_driver: dict[str, Any],
     supply_v: float,
     load_ohm: float | None,
     beta: float,
@@ -42,12 +60,16 @@ def solve_stage(
     vce_saturation_v: float,
 ) -> dict[str, float | str | bool]:
     """Solve the DC emitter follower using KCL at its base and emitter."""
-    sync_v = high_v if sync else low_v
-    signal_v = high_v if signal else low_v
+    sync_source_v = supply_v if sync else 0.0
+    signal_source_v = supply_v if signal else 0.0
+    sync_output_r = interpolate_driver_resistance(d34_driver, sync, supply_v)
+    signal_output_r = interpolate_driver_resistance(d34_driver, signal, supply_v)
     r62, r63, r64, r65 = (resistors[name] for name in ("R62", "R63", "R64", "R65"))
+    sync_path_r = r62 + sync_output_r
+    signal_path_r = r63 + signal_output_r
     emitter_resistance = parallel(r65, load_ohm)
-    conductance = 1.0 / r62 + 1.0 / r63 + 1.0 / r64
-    drive = sync_v / r62 + signal_v / r63
+    conductance = 1.0 / sync_path_r + 1.0 / signal_path_r + 1.0 / r64
+    drive = sync_source_v / sync_path_r + signal_source_v / signal_path_r
     open_base_v = drive / conductance
 
     if open_base_v <= vbe_v:
@@ -70,6 +92,11 @@ def solve_stage(
     if saturated:
         region = "saturation-outside-model"
 
+    sync_pin_current_a = (sync_source_v - base_v) / sync_path_r
+    signal_pin_current_a = (signal_source_v - base_v) / signal_path_r
+    sync_pin_v = sync_source_v - sync_pin_current_a * sync_output_r
+    signal_pin_v = signal_source_v - signal_pin_current_a * signal_output_r
+
     return {
         "region": region,
         "saturated": saturated,
@@ -83,8 +110,12 @@ def solve_stage(
         "emitter_current_ma": emitter_current_a * 1000.0,
         "external_load_current_ma": 0.0 if load_ohm is None else output_v / load_ohm * 1000.0,
         "r65_current_ma": output_v / r65 * 1000.0,
-        "d34_sync_pin_current_ma": (sync_v - base_v) / r62 * 1000.0,
-        "d34_signal_pin_current_ma": (signal_v - base_v) / r63 * 1000.0,
+        "d34_sync_pin_v": sync_pin_v,
+        "d34_signal_pin_v": signal_pin_v,
+        "d34_sync_output_resistance_ohm": sync_output_r,
+        "d34_signal_output_resistance_ohm": signal_output_r,
+        "d34_sync_pin_current_ma": sync_pin_current_a * 1000.0,
+        "d34_signal_pin_current_ma": signal_pin_current_a * 1000.0,
     }
 
 
@@ -204,6 +235,37 @@ def topology_checks(
         == comparison["datasheet_sha256"],
         "evidence": "TI SDLS124 page 4; current threshold only, not К555ЛП5 equivalence",
     })
+    comparison_driver = d34_reference["comparison_driver"]
+    comparison_driver_path = ROOT / comparison_driver["model"].split(",", 1)[0]
+    with zipfile.ZipFile(comparison_driver_path) as archive:
+        driver_source = archive.read(comparison_driver["model_member"]).decode(
+            "ascii", errors="replace"
+        )
+    driver_markers = (
+        "* Texas Instruments Incorporated.",
+        "* - Model generated from datasheet values",
+        "* - Performance is expected typical behavior at 25C",
+        "+(4.5,5000)",
+        "+(5.5,4878.0487804878)",
+        "+(4.5,62.5)",
+        "+(5.5,43.75)",
+    )
+    checks.append({
+        "name": "Official SN74LS86A comparison-driver model and coefficients match",
+        "pass": (
+            hashlib.sha256(comparison_driver_path.read_bytes()).hexdigest()
+            == comparison_driver["model_sha256"]
+            and all(marker in driver_source for marker in driver_markers)
+            and comparison_driver["comparison_only_not_equivalence_evidence"]
+            and comparison_driver["model_characterization"]
+            == "datasheet-generated typical behavior at 25 C"
+            and comparison_driver["output_resistance_ohm_by_supply_v"] == {
+                "low": [[4.5, 62.5], [5.5, 43.75]],
+                "high": [[4.5, 5000.0], [5.5, 4878.0487804878]],
+            }
+        ),
+        "evidence": "TI SDLM061 rev 2.0; typical 25 C; supply-dependent ROH/ROL; comparison only",
+    })
     vt2 = model["vt2_output_reference"]
     vt2_path = ROOT / vt2["datasheet"].split(",", 1)[0]
     checks.append({
@@ -233,12 +295,12 @@ def topology_checks(
 def nominal_results(model: dict[str, Any], load_ohm: float | None) -> dict[str, Any]:
     nominal = model["nominal"]
     transistor = nominal["transistor"]
+    d34_driver = model["d34_output_reference"]["comparison_driver"]
     return {
         state_name(state): rounded(solve_stage(
             *state,
             resistors=nominal["resistance_ohm"],
-            low_v=nominal["ttl_pin_voltage_v"]["low"],
-            high_v=nominal["ttl_pin_voltage_v"]["high"],
+            d34_driver=d34_driver,
             supply_v=nominal["supply_v"],
             load_ohm=load_ohm,
             beta=transistor["beta"],
@@ -269,8 +331,6 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
     )
     parameter_sets = itertools.product(
         resistor_sets,
-        sweep["ttl_low_v"],
-        sweep["ttl_high_v"],
         sweep["supply_v"],
         loads,
         sweep["beta"],
@@ -294,14 +354,14 @@ def sweep_results(model: dict[str, Any], terminated: bool) -> tuple[int, dict[st
         } for state in STATES
     }
     corner_count = 0
-    for resistors, low_v, high_v, supply_v, load_ohm, beta, vbe_v in parameter_sets:
+    d34_driver = model["d34_output_reference"]["comparison_driver"]
+    for resistors, supply_v, load_ohm, beta, vbe_v in parameter_sets:
         corner_count += 1
         for state in STATES:
             result = solve_stage(
                 *state,
                 resistors=resistors,
-                low_v=low_v,
-                high_v=high_v,
+                d34_driver=d34_driver,
                 supply_v=supply_v,
                 load_ohm=load_ohm,
                 beta=beta,
@@ -378,10 +438,14 @@ def build_summary(
     unloaded_count, unloaded_sweep = sweep_results(model, False)
 
     order_ok = (
-        loaded["sync=0,signal=0"]["output_v"]
-        < loaded["sync=1,signal=0"]["output_v"]
-        < loaded["sync=0,signal=1"]["output_v"]
-        < loaded["sync=1,signal=1"]["output_v"]
+        loaded["sync=0,signal=0"]["base_v"]
+        < loaded["sync=1,signal=0"]["base_v"]
+        < loaded["sync=0,signal=1"]["base_v"]
+        < loaded["sync=1,signal=1"]["base_v"]
+        and loaded["sync=0,signal=0"]["output_v"]
+        <= loaded["sync=1,signal=0"]["output_v"]
+        <= loaded["sync=0,signal=1"]["output_v"]
+        <= loaded["sync=1,signal=1"]["output_v"]
     )
     load_ok = all(
         loaded[state_name(state)]["output_v"] <= unloaded[state_name(state)]["output_v"] + 1e-12
@@ -403,9 +467,9 @@ def build_summary(
     )
     checks.extend([
         {
-            "name": "Nominal four-state transfer is ordered by the traced resistor weights",
+            "name": "Nominal base drive is ordered and emitter output is nondecreasing",
             "pass": order_ok,
-            "evidence": "00 < sync-only < signal-only < 11",
+            "evidence": "base: 00 < sync-only < signal-only < 11; X7 may remain off below VBE",
         },
         {
             "name": "A 75-ohm termination never raises the nominal emitter voltage",
@@ -435,13 +499,12 @@ def build_summary(
     )
     numerical_pass = all(item["pass"] for item in checks)
     status = (
-        "topology-and-device-limits-pass-d34-drive-open"
-        if numerical_pass and envelope_exceeded
-        else "pass" if numerical_pass
+        "topology-and-comparison-driver-pass-exact-d34-open"
+        if numerical_pass
         else "fail"
     )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "model_id": model["model_id"],
         "proof_layer": "analog-output static transfer only",
         "status": status,
@@ -460,17 +523,21 @@ def build_summary(
             "independent_current_corroboration_device": (
                 model["d34_output_reference"]["current_condition_comparison"]["device"]
             ),
+            "loaded_driver": model["d34_output_reference"]["comparison_driver"],
             "corroboration_not_equivalence_evidence": True,
             "nominal_75_ohm": nominal_envelope,
             "nominal_fanout_envelope_exceeded": envelope_exceeded,
             "interpretation": (
-                "The fixed-pin-voltage approximation requests more high-state source "
-                "current than the exact К555ЛП5 sheet's fanout-derived envelope. "
-                "The independent SN74LS86A sheet corroborates the derived 0.4 mA/8 mA "
-                "loads, but neither source supplies a nonlinear output curve; physical "
-                "X7 voltages still require a better source or measurement."
+                "The supply-dependent TI SN74LS86A comparison driver self-consistently "
+                "droops under the traced load, but still sources more current than the "
+                "exact К555ЛП5 sheet's fanout-derived high-state envelope in at least "
+                "one nominal state. TI labels the model typical 25 C behavior, not "
+                "К555ЛП5 equivalence evidence; physical X7 voltages still require an "
+                "exact-device curve or measurement."
                 if envelope_exceeded else
-                "Nominal pin currents stay within the exact-device fanout-derived envelope."
+                "The supply-dependent TI SN74LS86A comparison driver stays within the "
+                "exact-device fanout-derived envelope, but remains typical comparison "
+                "behavior rather than К555ЛП5 equivalence evidence."
             ),
         },
         "limitations": model["scope"]["excluded"],
@@ -486,15 +553,17 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
     lines = [
         "# X7 output-stage static model",
         "",
-        "Status date: **2026-07-22**.",
+        "Status date: **2026-07-23**.",
         "",
-        "Status: **TOPOLOGY + DEVICE LIMITS GUARDED / D34 DRIVE CURVE AND HARDWARE CALIBRATION OPEN**.",
+        "Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**.",
         "",
-        "This generated report is the first evidence-bounded part of CVBS-plan WP4.",
-        "It proves only the DC transfer of the traced X7 emitter-follower topology; it",
-        "does not prove a physical D34 waveform, monitor timing, edge shape, or the",
-        "installed KT315Б parameters. The published КТ315Б grade limits are guarded,",
-        "but they do not measure the individual transistor.",
+        "This generated report is the second evidence-bounded part of CVBS-plan WP4.",
+        "It solves the traced X7 emitter-follower topology with the official TI",
+        "SN74LS86A PSpice model's supply-dependent output resistances instead of fixed",
+        "D34 pin voltages. TI describes that driver as data-sheet-generated typical",
+        "25 C behavior. It is comparison evidence, not proof of exact К555ЛП5 I/V",
+        "behavior, a physical D34 waveform, monitor timing, edge shape, or the installed",
+        "КТ315Б parameters.",
         "",
         "## Commands",
         "",
@@ -515,7 +584,7 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
     lines.extend(markdown_table_row((item["name"], "PASS" if item["pass"] else "FAIL", item["evidence"])) for item in summary["checks"])
     lines.extend([
         "",
-        "## D34 drive-current boundary",
+        "## D34 comparison-driver boundary",
         "",
         "The preserved exact-device К555ЛП5 sheet guarantees VOH >=2.7 V,",
         "VOL <=0.5 V, and fanout 10, but omits output-current test conditions and",
@@ -523,6 +592,13 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "meaning imply 0.4 mA high-state source and 8 mA low-state sink",
         "full-fanout loads. The independent TI SN74LS86A sheet",
         "corroborates those values but does not supply К555ЛП5 curves.",
+        "",
+        "TI's official SDLM061 SN74LS86A PSpice package is data-sheet-generated",
+        "typical 25 C behavior. Its push-pull output is VCC through 5,000–4,878 Ω",
+        "when high and ground through 62.5–43.75 Ω when low across 4.5–5.5 V.",
+        "This model now participates in the coupled KCL solve, so D34 pin voltage",
+        "droops with load instead of remaining artificially fixed. It remains an",
+        "explicit comparison driver, not К555ЛП5 equivalence evidence.",
         "",
         "| State | Pin | Mode | Relevant current (mA) | Fanout-derived limit (mA) | Result |",
         "| --- | --- | --- | ---: | ---: | --- |",
@@ -544,16 +620,19 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "## Nominal DC transfer",
         "",
         "Positive D34 pin current means current sourced out of that output; negative",
-        "means that output is sinking current from the summing node.",
+        "means that output is sinking current from the summing node. The reported D34",
+        "pin voltages are solved between the TI comparison resistance and R62/R63.",
         "",
-        "| Load | D34 sync | D34 signal | Region | Base (V) | X7 (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |",
-        "| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: |",
+        "| Load | D34 sync | D34 signal | Region | Sync pin (V) | Signal pin (V) | Base (V) | X7 (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |",
+        "| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ])
     for load_name, table in (("75 Ω", nominal["terminated_75_ohm"]), ("unterminated", nominal["unterminated"])):
         for state in STATES:
             result = table[state_name(state)]
             lines.append(markdown_table_row((
                 load_name, state[0], state[1], result["region"],
+                f'{result["d34_sync_pin_v"]:.4f}',
+                f'{result["d34_signal_pin_v"]:.4f}',
                 f'{result["base_v"]:.4f}', f'{result["output_v"]:.4f}',
                 f'{result["collector_current_ma"]:.3f}',
                 f'{result["d34_sync_pin_current_ma"]:.3f}',
@@ -565,13 +644,15 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "",
         f"The terminated sweep evaluates **{summary['sweep']['terminated']['corner_count_per_state']:,}**",
         "corners per logic state: all independent ±5% resistor corners crossed with",
-        "the declared TTL pin levels, +5 V supply, 75 Ω load, beta, and VBE values.",
+        "the +5 V supply, TI comparison-driver resistance interpolation, 75 Ω load,",
+        "beta, and VBE values.",
         f"The unterminated diagnostic evaluates **{summary['sweep']['unterminated']['corner_count_per_state']:,}**",
         "corners per state with only fitted R65 loading the emitter.",
         "",
         "The two final columns count corners that exceed the exact sheet's",
-        "fanout-derived loads. They warn that fixed pin voltages have crossed the",
-        "stated same-family load envelope; they do not predict nonlinear droop.",
+        "fanout-derived loads. The comparison driver now predicts its own resistive",
+        "droop, but those warnings still mark operation outside the exact device's",
+        "stated same-family load envelope.",
         "",
         "| Load | State | X7 range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |",
         "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
@@ -601,9 +682,10 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
     lines.extend(f"- {item}" for item in model["scope"]["excluded"])
     lines.extend([
         "",
-        "The fixed TTL pin-voltage approximation exposes the D34 source/sink currents",
-        "but is not yet a nonlinear К555ЛП5 output model. Beta and VBE are sensitivity",
-        "bounds; only beta endpoints are exact-grade data, not installed-part measurements.",
+        "The data-backed TI SN74LS86A comparison driver replaces the fixed TTL",
+        "pin-voltage approximation, but it is not an exact nonlinear К555ЛП5 output",
+        "model. Beta and VBE are sensitivity bounds; only beta endpoints are exact-grade",
+        "data, not installed-part measurements.",
         "C94 remains absent. Consequently the",
         "stepped fixture has ideal discontinuities and must not be used as evidence of",
         "rise/fall time, bandwidth, actual composite polarity, or receiver lock.",
@@ -611,7 +693,7 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "## Next evidence",
         "",
         "- Obtain a К555ЛП5 nonlinear output curve or measure D34 under the traced",
-        "  load, then replace the fixed pin-voltage approximation.",
+        "  load, then promote or replace the explicitly comparative TI driver.",
         "- Feed independently timed D34_SYNC/D34_SIG events into this transfer model only",
         "  after the physical video-slot and D34 waveform boundaries close.",
         "- Inspect C94 and capture terminated X7 plus VT2 base on hardware before adding",

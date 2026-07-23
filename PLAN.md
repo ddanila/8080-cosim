@@ -1390,11 +1390,17 @@ guards the traced R62-R65/VT2/X7 DC topology, both 75-ohm and unterminated
 loads, and a declared tolerance sweep. That result is deliberately provisional:
 exact-device sheets now guard the К555ЛП5 voltage/fanout envelope and the
 old-package КТ315Б pinout, gain endpoints, saturation, current, voltage, and
-power limits. The fixed D34 pin-voltage approximation still exceeds an
-exact-device fanout-derived source-current envelope. The SN74LS86A sheet
-independently corroborates those full-fanout currents, but neither sheet has a
-К555ЛП5 output I/V curve. D34 loaded-drive behavior and physical calibration
-therefore remain open before the model can claim X7 levels. The separate
+power limits. The SN74LS86A sheet independently corroborates the exact
+К555ЛП5 sheet's fanout-derived currents, and the official TI SDLM061 PSpice
+package now supplies a machine-guarded, data-sheet-generated typical-25-C
+comparison driver: its supply-dependent 4.88–5.00 kΩ pull-up and
+43.75–62.5 Ω pull-down resistances participate in the coupled D34/R62-R64/VT2
+solve instead of fixed pin voltages. The nominal 75 Ω result is 0, 0, 0.244,
+and 1.818 V across the four input states, while high-state current still
+crosses the exact-device fanout-derived envelope. TI typical behavior is not
+К555ЛП5 equivalence evidence; the exact device sheet still has no nonlinear
+I/V curve. D34 loaded-drive behavior and physical calibration therefore remain
+open before the model can claim physical X7 levels. The separate
 decoder fork point is also clean-checkout reproduced on Linux: all three
 targets build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
 fork now records its upstream/fork authority and deterministic-fixture policy,

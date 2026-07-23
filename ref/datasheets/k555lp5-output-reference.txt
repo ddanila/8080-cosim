@@ -37,6 +37,20 @@ Across the recommended commercial operating range it gives VOH >= 2.7 V at
 IOH=-0.4 mA, VOL <= 0.4 V at IOL=4 mA, and VOL <= 0.5 V at IOL=8 mA. The
 recommended output-current conditions are IOH=-0.4 mA and IOL=8 mA.
 
+TI also publishes the official SN74LS86A behavioral PSpice package SDLM061,
+revision 2.0 dated 2019-11-13. Its header says that the model was generated
+from data-sheet values, represents expected typical behavior at 25 C, and uses
+TI's generic logic-gate behavioral model. The push-pull output subcircuit
+represents a high output as VCC through 5,000 ohms at 4.5 V and
+4,878.0487804878 ohms at 5.5 V; it represents a low output as ground through
+62.5 ohms at 4.5 V and 43.75 ohms at 5.5 V. The model interpolates those
+resistances with supply voltage.
+
+Those resistances provide a primary, data-backed loaded-driver comparison and
+are stronger than holding the D34 pins at fixed voltages. They remain typical
+SN74LS86A behavior, not К555ЛП5 equivalence evidence or an exact-device
+nonlinear I/V curve.
+
 Model boundary
 --------------
 
@@ -47,8 +61,10 @@ those loads flags that a fixed 3.4 V source is outside the exact device's stated
 same-family fanout envelope. It does not reveal how far the physical pin voltage
 droops or define a general К555ЛП5 acceptance curve.
 
-Neither sheet defines the installed D34 nonlinear output impedance. Physical
-X7 voltages still require a better К555ЛП5 curve source or hardware measurement.
+The coupled X7 static model may use the official TI resistance model as an
+explicitly labeled LS86 comparison. Neither sheet nor the TI model defines the
+installed D34 nonlinear output impedance. Physical X7 voltages still require a
+better К555ЛП5 curve source or hardware measurement.
 
 Sources
 -------
@@ -60,3 +76,7 @@ Retrieved 2026-07-22. SHA256:
 https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf
 Retrieved 2026-07-22. SHA256:
 0552f028f377ad641659bd44d671e420db08839bd45adbcf8c04de7bf11795ad
+
+https://www.ti.com/lit/zip/sdlm061
+Retrieved 2026-07-23 as ref/datasheets/sn74ls86a-ti-pspice.zip. SHA256:
+d31dcefea46b8b9da7c513efd784f9a87324ee7c30e58a68789f5e6fcf3cfecb

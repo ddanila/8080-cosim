@@ -111,10 +111,11 @@ Already guarded in `8080-cosim`:
 - X7 is the VIDEO_OUT/GND connector; and
 - `scripts/model_x7_output_stage.py` now guards the traced DC topology, solves
   all four D34 logic combinations with 75-ohm and unterminated loads, sweeps
-  7,776 terminated corners per state, and emits an optional metadata-complete
-  float32 stepped diagnostic. The model also hash-guards exact-device
-  К555ЛП5 voltage/fanout data and the old-package КТ315Б E-C-B and electrical
-  limits. This is a static transfer result, not video.
+  1,296 terminated corners per state, and emits an optional metadata-complete
+  float32 stepped diagnostic. The model hash-guards exact-device К555ЛП5
+  voltage/fanout data, the official TI LS86 comparison driver, and the
+  old-package КТ315Б E-C-B and electrical limits. This is a static transfer
+  result, not video.
 
 Not yet proved:
 
@@ -123,9 +124,9 @@ Not yet proved:
 - X7 voltage levels and edge shape under a 75-ohm monitor load;
 - a nonlinear output model or measured DC curves for exact-revision D34
   К555ЛП5; its preserved sheet's fanout and input-current limits imply 0.4 mA
-  source/8 mA sink full-fanout loads but give no I/V curves, while the
-  provisional fixed-pin-voltage model exceeds that exact-device derived
-  envelope in three nominal active combinations;
+  source/8 mA sink full-fanout loads but give no I/V curves, while the official
+  TI LS86 typical comparison driver still exceeds that exact-device-derived
+  envelope in three nominal combinations;
 - the installed КТ315Б device's actual gain and active-region VBE;
 - the function and endpoints of C94 beside VT2;
 - monitor lock against the actual Juku line/frame waveform; and
@@ -332,10 +333,17 @@ supply/load sweep, compact JSON summary, and on-demand float32 step fixture are
 implemented. The exact-device К555ЛП5 sheet guards its voltage/fanout envelope;
 fanout and input-current limits imply 0.4 mA source/8 mA sink full-fanout loads,
 independently corroborated by the SN74LS86A sheet, but neither source supplies
-a nonlinear К555ЛП5 I/V curve. C94 stays absent. The result deliberately does
-**not** pass the WP4 exit gate: the fixed-voltage source approximation requests
-more high-state current than that exact-device derived envelope. A nonlinear
-D34 source or hardware measurement remains necessary.
+a nonlinear К555ЛП5 I/V curve. The second checkpoint preserves TI's official
+SDLM061 SN74LS86A PSpice model and machine-guards its data-sheet-generated,
+typical-25-C, supply-dependent 4.88–5.00 kΩ pull-up and 43.75–62.5 Ω pull-down
+resistances. Those comparison resistances now participate in the coupled
+D34/R62-R64/VT2 solve instead of fixed D34 pin voltages. Under the nominal
+75 Ω load the four X7 levels are 0, 0, 0.244, and 1.818 V; high-state pin
+current still crosses the exact-device fanout-derived envelope. C94 stays
+absent. The result deliberately does **not** pass the WP4 exit gate: TI typical
+behavior is comparison evidence, not К555ЛП5 equivalence or installed-part
+calibration. An exact-device nonlinear source or hardware measurement remains
+necessary.
 
 - Model the two D34 logic sources and their real output characteristics.
 - Model R62/R63/R64, the KT315 emitter follower, R65, +5 V, and X7.
@@ -450,8 +458,9 @@ The task is complete only when all of the following hold:
 4. Keep the completed non-NTSC positive/negative lock suite green.
 5. In parallel with later decoder work, close the remaining Juku physical
    video-slot and D34 signal boundaries before calling any HDL waveform X7.
-6. Replace the provisional fixed-pin-voltage D34 sources with a data- or
-   measurement-backed К555ЛП5 driver, then connect the existing terminated VT2
-   transfer model's samples to the decoder.
+6. Use the now-guarded TI LS86 comparison driver for bounded receiver
+   development only; obtain an exact К555ЛП5 curve or loaded D34 measurement
+   before promoting its voltages, then connect independently timed terminated
+   VT2 samples to the decoder.
 7. Calibrate against physical scope captures before promoting the result from
    a nominal model to verified monitor behavior.

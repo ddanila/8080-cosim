@@ -1,20 +1,21 @@
 {
-  "schema_version": 2,
-  "model_id": "juku-x7-static-v2",
+  "schema_version": 3,
+  "model_id": "juku-x7-static-v3",
   "authority": {
     "topology": "kicad/juku.board.json",
     "component_values": "ref/schematics/native-resistor-value-registration.json",
     "device_identity": "ref/schematics/native-semiconductor-registration.json",
     "d34_exact_revision_identity": "ref/juku-official-009-ic-census.json",
     "d34_output_limits": "ref/datasheets/k555lp5-output-reference.txt",
+    "d34_comparison_driver": "ref/datasheets/sn74ls86a-ti-pspice.zip",
     "vt2_output_limits": "ref/datasheets/kt315b-output-reference.txt"
   },
   "scope": {
-    "included": "DC transfer from the two D34 TTL output-pin voltages through R62/R63/R64, VT2, R65, and an optional external load",
+    "included": "DC transfer from the two D34 logic states through a supply-dependent TI SN74LS86A comparison-driver resistance model, R62/R63/R64, VT2, R65, and an optional external load",
     "excluded": [
       "C94, whose population, value, and endpoints are unresolved",
       "frequency-dependent transistor behavior and cable/probe capacitance",
-      "D34 edge shape, output impedance, and propagation delay",
+      "exact К555ЛП5 nonlinear output behavior, edge shape, and propagation delay",
       "physical D34 logic polarity and video timing",
       "installed-part calibration"
     ]
@@ -26,10 +27,6 @@
       "R64": 5100.0,
       "R65": 430.0
     },
-    "ttl_pin_voltage_v": {
-      "low": 0.25,
-      "high": 3.4
-    },
     "supply_v": 5.0,
     "external_load_ohm": 75.0,
     "transistor": {
@@ -40,8 +37,6 @@
   },
   "sweep": {
     "resistor_tolerance_fraction": 0.05,
-    "ttl_low_v": [0.25, 0.4, 0.5],
-    "ttl_high_v": [2.7, 3.4],
     "supply_v": [4.75, 5.0, 5.25],
     "external_load_ohm": [73.5, 75.0, 76.5],
     "beta": [50.0, 100.0, 350.0],
@@ -75,6 +70,22 @@
       "voh_typical_v_at_high_source_current": 3.4,
       "voh_min_v_at_high_source_current": 2.7,
       "vol_max_v_at_low_sink_current": 0.5
+    },
+    "comparison_driver": {
+      "device": "Texas Instruments SN74LS86A",
+      "comparison_only_not_equivalence_evidence": true,
+      "model": "ref/datasheets/sn74ls86a-ti-pspice.zip, SN74LS86A.cir, revision 2.0",
+      "model_sha256": "d31dcefea46b8b9da7c513efd784f9a87324ee7c30e58a68789f5e6fcf3cfecb",
+      "model_member": "SN74LS86A.cir",
+      "model_characterization": "datasheet-generated typical behavior at 25 C",
+      "source_node": {
+        "low": "GND",
+        "high": "VCC"
+      },
+      "output_resistance_ohm_by_supply_v": {
+        "low": [[4.5, 62.5], [5.5, 43.75]],
+        "high": [[4.5, 5000.0], [5.5, 4878.0487804878]]
+      }
     }
   },
   "vt2_output_reference": {
@@ -101,6 +112,7 @@
   },
   "assumptions": [
     "D34 is the exact-revision К555ЛП5. Its preserved exact-device sheet states fanout 10 and 0.8 mA low/0.04 mA high input-current limits, implying 8 mA sink/0.4 mA source full-fanout loads; the output-current values are derived rather than explicit test conditions, and no nonlinear curves are supplied.",
+    "The coupled nominal driver uses TI's official SN74LS86A PSpice model's supply-dependent pull-up and pull-down resistances. TI labels that model datasheet-generated typical 25 C behavior; it is comparison evidence, not proof that the installed К555ЛП5 has identical I/V behavior.",
     "VT2 is a piecewise-linear NPN emitter follower: off below VBE, otherwise IE=(beta+1)*IB, with saturation checked but not needed by the declared corners.",
     "The 75-ohm termination is in parallel with the fitted R65 emitter resistor.",
     "The beta sweep uses the published КТ315Б 50..350 grade limits at its stated test point; VBE remains an engineering sensitivity bound and neither parameter is a measurement of the installed part."
