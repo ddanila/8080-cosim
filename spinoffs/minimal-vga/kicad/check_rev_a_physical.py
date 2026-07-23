@@ -182,6 +182,17 @@ def main():
         if [ref, "15"] not in nodes(nets["GND"]):
             errors.append(f"{ref}.15: active-low mux enable must be tied to GND")
 
+    # A 74HCT393 advances on each clock's falling edge and its reset inputs are
+    # active high. Cascade U22's low nibble Q3 into the high-nibble clock and
+    # hold both otherwise-unused reset inputs inactive at GND.
+    if "REFRESH_CLR" in nets:
+        errors.append("REFRESH_CLR: retired floating counter-reset net still present")
+    for pin in ("2", "12"):
+        if ["U22", pin] not in nodes(nets["GND"]):
+            errors.append(f"U22.{pin}: active-high counter reset must be tied to GND")
+    if ["U22", "13"] not in nodes(nets["REFRESH_ROW3"]):
+        errors.append("U22.13: high-nibble clock must cascade from REFRESH_ROW3")
+
     decouplers = [ref for ref in refs if ref.startswith("C") and ref != "C50"]
     if len(decouplers) < 25:
         errors.append(f"expected at least 25 decouplers, got {len(decouplers)}")

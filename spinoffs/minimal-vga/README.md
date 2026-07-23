@@ -49,7 +49,7 @@ product.
   grounded active-low enables and every endpoint on 25 non-power address-mux
   nets (19 mapped refs / 27 partitions). All stages include mutation controls.
   Whole-board coverage remains incomplete; see `docs/rev-a-lvs-coverage.md`.
-- The Rev A physical source has 119 refs and 134 modeled nets, and now sockets
+- The Rev A physical source has 119 refs and 133 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
   jumper plus the Phase 4 observability headers (J96 clock-control, J97 high
   address + write strobe, J98 control bus); `check_rev_a_physical` enforces
@@ -64,8 +64,9 @@ product.
   observability headers and passes the repository's KiCad DRC and
   unconnected-item checks. Independent schematic/copper and power-return review
   still holds release.
-- The last ignored `fab/minimal-vga/` package predates the U20/U21 address-mux
-  enable correction and is **stale; do not upload or order it**. Its superseded
+- The last ignored `fab/minimal-vga/` package predates both the U20/U21
+  address-mux enable correction and the U22 refresh-counter cascade correction,
+  and is **stale; do not upload or order it**. Its superseded
   Gerber/drill ZIP SHA-256 was
   `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
   A fresh guarded stable-KiCad export and checksum are required.
@@ -134,7 +135,7 @@ historical placement, and the original composite/RF chain.
   rechecked at order time.
 - `docs/rev-a-drc-readiness.md`: current stable KiCad 10.0.5 full-DRC result
   bound to the exact source-board SHA; the former fabrication package is
-  explicitly stale after the mux-enable correction.
+  explicitly stale after the mux-enable and refresh-counter corrections.
 - `docs/rev-a-lvs-coverage.md`: exact staged physical-LVS scope, negative
   control, and the groups still outside the whole-board comparison.
 - `docs/rev-a-usb-c-candidate.md`: checksum- and geometry-guarded exact HRO

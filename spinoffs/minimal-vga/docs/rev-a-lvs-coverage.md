@@ -105,7 +105,9 @@ to DRAM_A0.
 `rev_a_dram_mux_lvs.sh` makes both 74HCT157 address muxes U20/U21 and their
 C14/C15 decouplers complete owned instances. It maps every mux pad, including
 pin 15 on each device as a second GND endpoint so the corrected active-low
-enable cannot return to a floating island.
+enable cannot return to a floating island. Its endpoint-closed
+`REFRESH_ROW3` boundary includes both U22.6 and U22.13, guarding the corrected
+low-half-to-high-half refresh-counter cascade.
 
 The comparison maps 19 references: four complete mux parts and 15 exact
 boundary projections. It matches 27 connectivity partitions and proves all 25
@@ -123,7 +125,9 @@ endpoint-closure sensitivity.
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- DRAM refresh, arbitration, and U24 timing;
+- U22's static cascade/reset source and route are guarded, but its independent
+  complete-instance Stage 6 structural slice, the remaining refresh
+  arbitration, and U24 timing are still open;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.

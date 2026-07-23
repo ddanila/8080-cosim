@@ -6,8 +6,9 @@ Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**.
 
 The ignored fabrication directory contains the last 200x200 mm bare-PCB
 package generated with stable KiCad 10.0.5. It predates the U20/U21
-active-low address-mux enable correction and is **stale; do not upload or
-order it**. Its superseded upload archive was:
+active-low address-mux enable correction and the U22 refresh-counter cascade
+correction, and is **stale; do not upload or order it**. Its superseded upload
+archive was:
 
 `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`
 
@@ -16,7 +17,7 @@ Superseded SHA256:
 `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`
 
 The current source PCB SHA-256 is
-`2bd284e6bab9082ae717cda16e625194839842bec184500148b65b69bbe35fe0`.
+`1326703605818b168dff3fd9f0879d36f8494393e8f8567ca7894061c7419650`.
 The retained package's `order-readiness.md` and `SHA256SUMS.txt` only prove the
 identity and internal coherence of the superseded export. A new guarded export
 must replace them before vendor preview. No checksum is permission to upload
@@ -24,7 +25,8 @@ or order the board.
 
 The 2026-07-17 compact reroute and 2026-07-23 D1 correction superseded the
 earlier 285x285 package. The later U20/U21 enable correction in turn
-superseded that post-D1 package.
+superseded that post-D1 package, and the U22 refresh-counter correction
+superseded it again.
 
 ## Current source and superseded-package facts
 
@@ -40,15 +42,17 @@ superseded that post-D1 package.
   position rows.
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
-- The current routed board is 119 refs / 134 nets, filled In1.Cu GND and In2.Cu VCC
+- The current routed board is 119 refs / 133 nets, filled In1.Cu GND and In2.Cu VCC
   planes, 29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
-  post-assembly socket insertions. The committed copper has 2,877 tracks/vias
-  after the 200x200 reroute and bounded D1 clearance correction.
+  post-assembly socket insertions. The committed copper has 2,887 tracks/vias
+  after the 200x200 reroute, bounded D1 clearance correction, and bounded U22
+  cascade route.
 - The behavioral aggregate passes both real-ROM CPU
   implementations, dual decode modes, framebuffer readback, U24 timing, LVS,
   physical-model, footprint, PCB, and DRAM guards. The current-source full DRC
-  and D1-specific static guard also pass. The current mux-enable source/route
-  guard and full DRC pass; fabrication-package gates have not yet been rerun.
+  and D1-specific static guard also pass. The current mux-enable and U22
+  refresh-counter source/route guards and full DRC pass; fabrication-package
+  gates have not yet been rerun.
 
 ## Release blockers
 
@@ -59,8 +63,10 @@ superseded that post-D1 package.
   filled GND/VCC inner planes. The current post-D1 source passes full KiCad
   10.0.5 DRC at zero violations/unconnected items as well as the
   dedicated static clearance/continuity guard. U20/U21 enables are now tied to
-  GND instead of their former floating island. The retained Gerber package no
-  longer matches this route and must be regenerated before vendor preview;
+  GND instead of their former floating island. U22's active-high reset pins
+  are tied to GND and its low-half Q3 output is routed to the high-half clock,
+  forming the intended 8-bit refresh-row counter. The retained Gerber package
+  no longer matches this route and must be regenerated before vendor preview;
   independent human review remains open.
 - U24's Gray-coded DRAM timing contract passes CPU read/write, RAS-only refresh,
   CPU/refresh collision handling, video arbitration, and vendored MK4564-12
@@ -86,7 +92,8 @@ fab but their pinouts freeze in copper, so decide them first.
    aligned parts and block frames, caps at chip short sides, 5 mm edge keepout);
    every modeled pin lands on a real pad. The board was regenerated and fully
    rerouted (freerouting fork, all 357 nets, 0 unrouted / 0 violations), then
-   received the bounded D1 clearance detour, giving 2,877 F.Cu/B.Cu tracks
+   received the bounded D1 clearance detour and the bounded U22 refresh
+   cascade (eight segments and two vias), giving 2,887 F.Cu/B.Cu tracks
    (segments plus vias) with filled In1.Cu GND and In2.Cu VCC planes. The
    current saved fills pass full KiCad 10.0.5 DRC with zero error-level
    violations or unconnected items. The router runs on Linux and macOS (fork
@@ -123,10 +130,10 @@ fab but their pinouts freeze in copper, so decide them first.
    regenerated Gerber/drill and power-return strategy.
 6. **Regenerate + freeze the fab package (README gate 7) — REOPENED
    2026-07-23:** the last stable KiCad 10.0.5 export passed every machine gate,
-   but the later U20/U21 enable correction invalidated it. Regenerate the
-   package, rerun every export/integrity/render gate, and record the new ZIP
-   SHA-256. Then perform vendor DFM/preview plus live stock and
-   assembly-capability review at order time.
+   but the later U20/U21 enable and U22 refresh-counter corrections invalidated
+   it. Regenerate the package, rerun every export/integrity/render gate, and
+   record the new ZIP SHA-256. Then perform vendor DFM/preview plus live stock
+   and assembly-capability review at order time.
 Five independently authored physical-LVS stages pass. Stage 1 covers all POWER
 and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power boundary (17
 refs / 9 partitions). Stage 2 closes all 22 decode socket/glue parts plus six

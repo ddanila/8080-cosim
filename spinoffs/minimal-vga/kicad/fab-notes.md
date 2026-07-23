@@ -4,9 +4,10 @@ Status: **PACKAGE REGENERATION REQUIRED / DESIGN HOLD**.
 
 The current Rev A board is a routed physical experiment generated from
 `rev-a-physical.board.json`. After the bounded D1 footprint/clearance correction
-and the U20/U21 active-low address-mux enable correction, stable KiCad 10.0.5
-refilled and saved both inner planes and reported zero error-level violations
-and zero unconnected items.
+and the U20/U21 active-low address-mux enable correction, U22's two 74HCT393
+halves are now cascaded and both active-high resets are grounded. Stable KiCad
+10.0.5 refilled and saved both inner planes and reported zero error-level
+violations and zero unconnected items.
 `../docs/rev-a-drc-readiness.md` binds that result to the exact board SHA.
 These checks establish file coherence for modeled nets; they do not prove the
 proposed computer will boot or that the design is safe to order.
@@ -14,7 +15,7 @@ proposed computer will boot or that the design is safe to order.
 ## Current physical baseline
 
 - 200 x 200 mm, four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
-- 119 footprints, 134 PCB nets, and 2,877 tracks/vias in the current source.
+- 119 footprints, 133 PCB nets, and 2,887 tracks/vias in the current source.
 - Parts and functional-block borders are aligned to a 0.2" (5.08 mm) grid;
   decoupling caps sit at each chip's short side. In1.Cu is a filled GND plane and
   In2.Cu a filled VCC plane; the two board layers carry the signal routing.
@@ -41,7 +42,8 @@ GND/VCC plane zones are restored and filled after SES import.)
 - mechanical, ERC, DRC, package-integrity, and vendor-preview check reports.
 
 The last guarded export completed on 2026-07-23 before the address-mux enable
-correction. Its superseded bare-PCB Gerber/drill ZIP SHA-256 was
+and refresh-counter corrections. Its superseded bare-PCB Gerber/drill ZIP
+SHA-256 was
 `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
 That package is stale and must not be uploaded or ordered. A fresh guarded
 export and checksum are required; vendor upload preview, stock/capability

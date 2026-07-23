@@ -47,7 +47,7 @@ upper nibble input). PC2/PC3 are freed.
 |---|---|---|---|---|
 | U10-U17 | 64K x 1 DRAM bits D0-D7 | KM4164B-10 | DIP-16 | Owner-ordered Samsung 4164-compatible 100 ns DRAM; factory mounts sockets only. |
 | U20-U21 | Row/column address mux | 74HCT157 | DIP-16 | CPU/video/refresh address selection; active-low enable pin 15 is tied to GND and guarded in source and route. |
-| U22 | Refresh/video counter low | 74HCT393/4040/161-class | DIP | Exact topology still open. |
+| U22 | 8-bit refresh-row counter | 74HCT393 | DIP-14 | Low/high 4-bit halves are cascaded from pin 6 (1Q3) to pin 13 (2CP); active-high resets on pins 2/12 are grounded and source/route guarded. |
 | U23 | Refresh/video counter high | 74HCT393/4040/161-class | DIP | Exact topology still open. |
 | U24 | RAS/CAS/WE sequencer | GAL22V10-class programmable logic | DIP-24 | GAL/PAL-style timing logic for first Rev A. |
 
@@ -55,6 +55,12 @@ U20/U21 use the 74HCT157 DIP-16 pinout. The
 [Nexperia 74HC/HCT157 datasheet](https://assets.nexperia.com/documents/data-sheet/74HC_HCT157.pdf)
 identifies pin 15 as the active-low enable input; grounding it holds the mux
 outputs enabled.
+
+U22 uses the dual 4-bit ripple-counter pinout in the
+[Nexperia 74HC/HCT393 datasheet](https://assets.nexperia.com/documents/data-sheet/74HC_HCT393.pdf).
+Each half advances on its clock's HIGH-to-LOW transition and has an
+active-high master reset, so cascading 1Q3 to 2CP produces the intended 8-bit
+refresh-row count while grounding both reset inputs permits counting.
 
 ## Keyboard
 
@@ -101,7 +107,9 @@ outputs enabled.
   address/data/control nets. Stage 4 additionally closes every U10-U17/C6-C13
   pad and all 19 non-power DRAM-bank nets. Stage 5 closes every U20/U21/C14/C15
   pad, both grounded active-low enables, and all 25 non-power address-mux nets;
-  remaining devices are still staged.
+  its U22 boundary also includes the corrected pin-6-to-pin-13 cascade endpoint.
+  U22's independent complete-instance Stage 6 and the remaining devices are
+  still staged.
 - `../kicad/rev-a-physical.board.json` is the first generated physical
   schematic target using this decomposition.
 - `../kicad/rev-a-physical.kicad_sch` is generated from that target.

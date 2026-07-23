@@ -91,10 +91,12 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    (e) power budget are **DONE**. Step (c) — the physical-board socket↔twin
    contract is enforced by `check_rev_a_physical`; the independently
    authored physical-LVS stages now close the POWER/CLOCK_RESET, complete
-   decode socket/glue, complete Z80/ROM core, and complete eight-chip DRAM bank
-   groups with exact endpoint projections, while whole-board chip-accurate
-   yosys LVS remains staged (see below). Step (f) routing/DRC is **DONE** on the
-   current 119-ref board; fab regeneration and review remain.
+   decode socket/glue, complete Z80/ROM core, complete eight-chip DRAM bank,
+   and complete address-mux groups with exact endpoint projections. U22's
+   74HCT393 halves are now physically cascaded and its active-high resets are
+   grounded; complete-instance refresh-counter LVS remains staged (see below).
+   Step (f) routing/DRC is **DONE** on the current 119-ref board; fab
+   regeneration and review remain.
 
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets

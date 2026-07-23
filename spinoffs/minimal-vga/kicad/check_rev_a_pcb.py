@@ -9,6 +9,7 @@ import pcbnew
 # coordinates (which went stale when the board was re-laid-out to 200x200).
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gen_rev_a_pcb as gen
+import fix_rev_a_refresh_counter as refresh_fix
 
 
 MM_TOLERANCE = 0.05
@@ -206,6 +207,41 @@ def main():
         fail(
             f"retired ADDRMUX_OE_N still owns {len(retired_mux_tracks)} track(s)"
         )
+    u22 = board.FindFootprintByReference("U22")
+    if u22 is None:
+        fail("missing refresh counter U22")
+    for pin in ("2", "12"):
+        endpoint = u22.FindPadByNumber(pin)
+        if endpoint is None or endpoint.GetNetname() != "GND":
+            actual = endpoint.GetNetname() if endpoint else "<missing>"
+            fail(f"U22.{pin} active-high reset is {actual}, expected GND")
+    cascade_clock = u22.FindPadByNumber("13")
+    if (
+        cascade_clock is None
+        or cascade_clock.GetNetname() != refresh_fix.CASCADE_NET
+    ):
+        actual = cascade_clock.GetNetname() if cascade_clock else "<missing>"
+        fail(
+            f"U22.13 high-nibble clock is {actual}, "
+            f"expected {refresh_fix.CASCADE_NET}"
+        )
+    retired_refresh_tracks = [
+        track for track in board.GetTracks() if track.GetNetname() == "REFRESH_CLR"
+    ]
+    if retired_refresh_tracks:
+        fail(
+            f"retired REFRESH_CLR still owns {len(retired_refresh_tracks)} track(s)"
+        )
+    if (
+        refresh_fix.present_cascade_tracks(board)
+        != refresh_fix.expected_cascade_tracks()
+        or refresh_fix.present_cascade_vias(board) != set(refresh_fix.CASCADE_VIAS)
+        or refresh_fix.matching_cascade_track_count(board)
+        != len(refresh_fix.CASCADE_TRACKS)
+        or refresh_fix.matching_cascade_via_count(board)
+        != len(refresh_fix.CASCADE_VIAS)
+    ):
+        fail("U22.6-to-U22.13 refresh-counter cascade copper is incomplete")
     inner_signal_tracks = [
         track
         for track in board.GetTracks()

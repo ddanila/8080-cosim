@@ -37,7 +37,7 @@ module rev_a_mux_dram_boundary_lvs(
 endmodule
 
 module rev_a_mux_u22_boundary_lvs(
-    inout wire P3, P4, P5, P6, P8, P9, P10, P11
+    inout wire P3, P4, P5, P6, P8, P9, P10, P11, P13
 );
 endmodule
 
@@ -118,7 +118,7 @@ module rev_a_dram_mux_lvs_top;
 
     rev_a_mux_u22_boundary_lvs U_U22_BOUNDARY(
         .P3(REFRESH_ROW0), .P4(REFRESH_ROW1),
-        .P5(REFRESH_ROW2), .P6(REFRESH_ROW3),
+        .P5(REFRESH_ROW2), .P6(REFRESH_ROW3), .P13(REFRESH_ROW3),
         .P8(REFRESH_ROW7), .P9(REFRESH_ROW6),
         .P10(REFRESH_ROW5), .P11(REFRESH_ROW4));
     rev_a_mux_u24_boundary_lvs U_U24_BOUNDARY(
