@@ -34,8 +34,12 @@ Never upload the engineering BOM as a factory placement BOM.
   first-article orientation remain order-time checks. Also freeze the CC
   resistors. The fuse is statically closed to Bourns MF-RG300-0-14/C3761779 by
   `rev-a-ptc-candidate.md`; ambient/load margin, live stock, and first-article
-  insertion remain order-time checks. Also freeze the TVS, clock oscillator,
-  reset supervisor, debug headers, and cable-facing keyboard/VGA headers.
+  insertion remain order-time checks. The unidirectional TVS is statically
+  closed to Littelfuse P4KE6.8A-B/C1666224 by
+  `rev-a-tvs-candidate.md`; live stock, manual THT capability, lead forming,
+  and surge/first-article validation remain open. Also freeze the clock
+  oscillator, reset supervisor, debug headers, and cable-facing keyboard/VGA
+  headers.
 
 Recorded owner-supplied candidates are a `Z0840004PSC` 4 MHz DIP Z80 and
 `KM4164B-10` 100 ns DIP DRAM. Treat these as candidates until their actual
@@ -45,7 +49,8 @@ markings, pinout, electrical limits, and bench behavior are checked.
 
 The present draft classifies 23 placements as manual:
 
-- `D1` TVS;
+- `D1` exact P4KE6.8A-B TVS (manual because stock/process and first-article
+  qualification remain open);
 - `J30` keyboard header;
 - `J94-J98` decode, clock, framebuffer, and control bring-up headers;
 - `R6` and `R15` zero-ohm links;
@@ -54,7 +59,9 @@ The present draft classifies 23 placements as manual:
 - `U51` reset supervisor.
 
 The generated manual-row report checks that this set does not change silently.
-It does not prove the selected parts fit or function.
+It does not prove the selected parts fit or function; D1's separate exact-part
+guard closes its static contract while deliberately retaining first-article
+qualification.
 
 ## Release-time checks
 

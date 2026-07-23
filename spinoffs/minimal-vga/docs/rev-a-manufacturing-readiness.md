@@ -1,8 +1,8 @@
 # VJUGA Rev A manufacturing readiness
 
-Status date: 2026-07-17.
+Status date: 2026-07-23.
 
-Status: **DESIGN HOLD / SOURCE VERIFIED, PACKAGE STALE**.
+Status: **DESIGN HOLD / SOURCE UPDATED, DRC AND PACKAGE STALE**.
 
 The ignored fabrication directory currently contains an internally coherent
 bare-PCB package. Its upload archive is:
@@ -25,33 +25,45 @@ above predates the 285x285 board entirely and is now doubly stale. Because Gerbe
 SHAs are KiCad-version specific, the package must be regenerated and its SHA
 re-frozen on the canonical (Linux) toolchain before any DFM/upload.
 
+**CURRENT SOURCE ADDENDUM (2026-07-23):** exact D1 qualification corrected its
+DO-35 placeholder to a DO-41 footprint and replaced one nearby `VCC_RAW`
+segment with a five-segment clearance detour. The current source therefore has
+**2,877 tracks/vias**. Its dedicated static guard passes, but the last full
+KiCad DRC predates this bounded correction; rerun DRC with KiCad 10 before
+package regeneration.
+
 ## Verified package facts
 
 - The source PCB is four-layer, 200x200 mm, and routed.
-- Current KiCad checks report zero DRC violations and zero unconnected items.
+- The last full KiCad checks reported zero DRC violations and zero unconnected
+  items; the subsequent bounded D1 correction passes its local static guard and
+  awaits the required full KiCad 10 DRC rerun.
 - Gerber/drill membership, deterministic ZIP metadata, checksums, drill count,
   and external rendering have machine-generated checks (against the stale package).
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
 - The routed board is 119 refs / 135 nets, filled In1.Cu GND and In2.Cu VCC
   planes, 29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
-  post-assembly socket insertions. The committed copper has 2,873 tracks after
-  the 200x200 re-layout and reroute; the frozen Gerber ZIP above predates even
-  the 285x285 board and must be re-exported (see the superseded note).
-- The full behavioral aggregate passes both real-ROM CPU implementations,
-  dual decode modes, framebuffer readback, U24 timing, LVS, physical-model,
-  footprint, PCB, DRC, and DRAM guards. The order-readiness aggregate reports
-  `PACKAGE VERIFIED / DESIGN HOLD`.
+  post-assembly socket insertions. The committed copper has 2,877 tracks/vias
+  after the 200x200 reroute and bounded D1 clearance correction; the frozen
+  Gerber ZIP above predates even the 285x285 board and must be re-exported (see
+  the superseded note).
+- The behavioral aggregate previously passed both real-ROM CPU
+  implementations, dual decode modes, framebuffer readback, U24 timing, LVS,
+  physical-model, footprint, PCB, DRC, and DRAM guards. The D1-specific static
+  guard now also passes; repeat the KiCad-dependent PCB/DRC/package portions
+  after regenerating with the canonical toolchain.
 
 ## Release blockers
 
 - T80 and tv80 VJUGA tops boot the patched real Juku firmware and match cosim's
   framebuffer at 6000 writes (`sim/boot_check.sh` and
   `sim/vjuga_boot_check.sh`); physical-board boot remains untested.
-- The current routed copper includes every Phase 3 socket/header and passes
-  zero-violation/zero-unconnected KiCad DRC with filled GND/VCC inner planes.
-  The saved Gerber package matches this route, but human review still withholds
-  fabrication authorization.
+- The current routed copper includes every Phase 3 socket/header and retains
+  filled GND/VCC inner planes. The pre-D1 source passed
+  zero-violation/zero-unconnected KiCad DRC; the current bounded correction
+  passes its static clearance/continuity guard but awaits full KiCad 10 DRC.
+  The saved Gerber package is older and does not match this route.
 - U24's Gray-coded DRAM timing contract passes CPU read/write, RAS-only refresh,
   CPU/refresh collision handling, video arbitration, and vendored MK4564-12
   timing guards at 4 MHz. The tv80 real-ROM path uses those controls and remains
@@ -75,10 +87,12 @@ fab but their pinouts freeze in copper, so decide them first.
    All 119 refs are placed and collision-clean on the compact 200x200 board (grid-
    aligned parts and block frames, caps at chip short sides, 5 mm edge keepout);
    every modeled pin lands on a real pad. The board was regenerated and fully
-   rerouted (freerouting fork, all 357 nets, 0 unrouted / 0 violations), giving
-   2,873 F.Cu/B.Cu tracks with filled In1.Cu GND and In2.Cu VCC planes and zero
-   KiCad DRC/unconnected items. The route runs on both the Linux box and macOS
-   (fork jar + JDK 25).
+   rerouted (freerouting fork, all 357 nets, 0 unrouted / 0 violations), then
+   received the bounded D1 clearance detour, giving 2,877 F.Cu/B.Cu tracks
+   (segments plus vias) with filled In1.Cu GND and In2.Cu VCC planes. The
+   pre-D1 route had zero KiCad DRC/unconnected items; rerun full KiCad 10 DRC
+   for the current source. The router runs on Linux and macOS (fork jar + JDK
+   25).
 2. **Footprint / pinout validation.** DONE for land-pattern correctness:
    `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
    and DIP pad counts match, across all 119 parts (it caught the USB-C shield
@@ -87,10 +101,12 @@ fab but their pinouts freeze in copper, so decide them first.
    including all six contacts, four shell tabs, body outline, and power-only
    CC/VBUS/GND contract. The exact Bourns MF-RG300-0-14/C3761779 F1 candidate
    is likewise checksum-, electrical-, topology-, and static-fit-guarded by
-   `rev-a-ptc-candidate.md`. STILL A REVIEW ITEM: physical pin-1 orientation of
-   the socketed parts and the exact TVS variant; F1 still needs thermal/load
-   qualification, order-time stock, and first-article insertion inspection,
-   while J3 needs its order-time stock/orientation and first-article checks.
+   `rev-a-ptc-candidate.md`. The exact Littelfuse P4KE6.8A-B/C1666224 D1
+   candidate is checksum-, polarity-, topology-, geometry-, and local
+   routed-clearance-guarded by `rev-a-tvs-candidate.md`. STILL REVIEW ITEMS:
+   physical pin-1 orientation of the socketed parts; F1 thermal/load
+   qualification; D1 surge-environment qualification; and order-time stock,
+   process, orientation, and first-article checks for J3/F1/D1.
 
 **De-risking (freeze before copper, even though reprogrammable)**
 
@@ -108,10 +124,11 @@ fab but their pinouts freeze in copper, so decide them first.
 5. **Independent review (README gate 6):** current schematic/copper and the
    regenerated Gerber/drill and power-return strategy.
 6. **Regenerate + freeze the fab package (README gate 7) — RE-FREEZE PENDING:**
-   the 2026-07-16 review-fix reroute superseded the previously frozen ZIP (see
-   the superseded note at the top). Re-export the Gerber/drill package on the
-   canonical (Linux) toolchain and record its new SHA256 here. THEN: vendor
-   DFM/preview plus live stock and assembly-capability review at order time.
+   the 2026-07-16 review-fix reroute and 2026-07-23 D1 correction superseded
+   the previously frozen ZIP (see the notes at the top). Run full DRC, re-export
+   the Gerber/drill package on the canonical KiCad 10 toolchain, and record its
+   new SHA256 here. THEN: vendor DFM/preview plus live stock and
+   assembly-capability review at order time.
 Before order, finish the staged full-board LVS (twin ↔ board, beyond the
 decode/observability contracts), or record a specific owner waiver backed by
 independent schematic, selected-part pinout, and copper review. This is exactly

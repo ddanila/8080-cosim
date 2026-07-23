@@ -47,10 +47,10 @@ or owner authorization.
 | `docs/crt-cvbs-simulation-plan.md` | Replace the simulation-only framebuffer read port only after the | `framebuffer` | `docs/video-slot-timing-audit.md` (physical video-slot schedule pending); `docs/crt-cvbs-simulation-plan.md` (implementation explicitly evidence-gated) |
 | `docs/factory-drawing-exploitation-plan.md` | After Stage 1.2, decide what to share on juku3000 #25 (the MAME | `community` | `docs/factory-drawing-exploitation-plan.md` (external publication is owner-gated) |
 
-The 28 unchecked boxes in the order, order-evidence, and parts-inventory
-documents are operator templates. They deliberately remain blank until an
-authorized physical order/assembly record exists; they are not repository
-implementation backlog.
+The 42 unchecked boxes in the order, order-evidence, parts-inventory,
+and first-article documents are operator templates. They deliberately remain
+blank until an authorized physical order/assembly record exists; they are not
+repository implementation backlog.
 
 ## Automatically closed scope
 
@@ -66,7 +66,7 @@ implementation backlog.
 ## Guard
 
 This writer found active unchecked tasks in 3 tracked Markdown file(s).
-Any new unchecked task outside the three operator templates must have an exact
+Any new unchecked task outside the four operator templates must have an exact
 classification and all cited evidence markers must exist, otherwise generation
 fails closed. `scripts/check_documentation_consistency.py` runs this writer in
 `--check` mode, and `scripts/regen_all.sh` regenerates the committed report.

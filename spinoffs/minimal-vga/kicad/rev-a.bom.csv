@@ -27,7 +27,7 @@ J96,1,Clock selector,PinHeader_1x02_P2.54mm_Vertical,TH,Manual,Owner-supplied/ma
 J97,1,Framebuffer address header,PinHeader_1x10_P2.54mm_Vertical,TH,Manual,Owner-supplied/manual,,High-address and MEM_WR_N analyzer header; install manually after pin-1 review
 J98,1,Z80 control header,PinHeader_1x08_P2.54mm_Vertical,TH,Manual,Owner-supplied/manual,,Z80 control-bus analyzer header; install manually after pin-1 review
 F1,1,+5V resettable fuse,Bourns MF-RG300-0-14 radial PTC 3A hold,THT,Factory preferred,JLCPCB/LCSC,C3761779,J1/J3 feed VCC_RAW and then fused VCC through F1; exact candidate datasheet and committed fit are guarded; verify ambient/load margin first-article insertion and order-time stock
-D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Manual,Owner-supplied/manual,,Clamp fused VCC to GND near power entry; install manually or change footprint to DO-15/SMA before requiring factory TVS assembly
+D1,1,+5V transient suppressor,Littelfuse P4KE6.8A-B,DO-41/DO-204AL THT,Manual,LCSC/manual,C1666224,Unidirectional 400W pulse TVS; cathode band to pad 1/VCC after F1 and anode to pad 2/GND; not sustained wrong-supply protection; recheck stock and lead forming at first article
 R1-R3,3,VGA series resistor,CR1/4W-470R-5%-class,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C2896817,PIXEL to VGA RGB placeholder network; D2.7xL6.2mm candidate should be checked against DIN0207 footprint
 R4-R5,2,Pullup resistor,RN1/4W10KFT/BA1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410695,Oscillator enable and reset pullups
 R6,1,PWR_OK link,0 ohm axial jumper,DIN0207 axial,Manual,Owner-supplied/manual,,Ties PWR_OK indicator/debug net to fused VCC for simple 5V input; install jumper manually unless an axial 0R factory CPN is selected

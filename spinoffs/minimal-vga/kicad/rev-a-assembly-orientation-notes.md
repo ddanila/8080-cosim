@@ -20,7 +20,9 @@ before upload.
 Review `manual-assembly.csv` before ordering. Rev A currently expects manual
 installation or later CPN/footprint resolution for:
 
-- `D1` +5V TVS clamp.
+- `D1` exact Littelfuse P4KE6.8A-B/C1666224 +5V pulse TVS; its
+  datasheet, polarity, and corrected DO-41 geometry are guarded by
+  `../docs/rev-a-tvs-candidate.md`, while stock and first-article checks remain.
 - `J30` keyboard bring-up header.
 - `J94`, `J95`, `J96`, `J97`, and `J98` decode/clock/control bring-up
   headers and selector jumpers.
@@ -55,8 +57,10 @@ to factory assembly and assign/verify an orderable CPN before export.
 
 ## Polarized Parts
 
-- `D1` TVS polarity and footprint must be checked against the selected part
-  before ordering.
+- `D1` is unidirectional: install the cathode-band end at pad 1/`VCC` and the
+  anode at pad 2/`GND`. Inspect 7.62 mm lead forming, body seating, and nearby
+  clearance on the first article; the part is a pulse clamp, not sustained
+  wrong-supply protection.
 - `D2`-`D7` diagnostic LEDs must be installed with polarity matching the LED
   footprint.
 - `C50` bulk electrolytic polarity and lead pitch must be checked against the

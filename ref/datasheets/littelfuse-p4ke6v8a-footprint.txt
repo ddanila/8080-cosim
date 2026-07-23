@@ -1,0 +1,74 @@
+Littelfuse P4KE6.8A-B interpretation for VJUGA Rev-A D1
+========================================================
+
+Primary evidence
+----------------
+
+Manufacturer product page:
+https://www.littelfuse.com/products/overvoltage-protection/tvs-diodes/leaded/p4ke/p4ke6-8a
+Manufacturer series datasheet URL:
+https://www.littelfuse.com/~/media/electronics/datasheets/tvs_diodes/littelfuse_tvs_diode_p4ke_datasheet.pdf.pdf
+Preserved manufacturer PDF: littelfuse-p4ke.pdf
+Preserved via the distributor mirror for exact C1666224:
+https://datasheet.lcsc.com/datasheet/pdf/7d5478be044645b78cd45316d5959084.pdf?productCode=C1666224
+SHA-256: cab61a39ecf2d397cba37e06ec78765050ddfae63687ae4cf4dc3f83c1b7a845
+
+Exact orderable candidate
+-------------------------
+
+Part number: P4KE6.8A-B
+Manufacturer: Littelfuse
+Distributor identifier: C1666224
+P4KE = 400 W axial TVS family.
+6.8 = voltage code.
+A = unidirectional, 5 percent breakdown-voltage tolerance.
+-B = bulk packaging, 500 pieces per box in the series datasheet.
+
+P4KE6.8A electrical limits at 25 degrees C
+-------------------------------------------
+
+Reverse stand-off voltage: 5.80 V
+Breakdown voltage at 10 mA: 6.45 V minimum, 7.14 V maximum
+Maximum clamping voltage at 39 A: 10.5 V
+Maximum reverse leakage at 5.80 V: 1000 uA
+Peak pulse power, 10/1000 us waveform: 400 W
+Steady-state power on an infinite heatsink at TL = 75 C: 1.5 W
+Operating and storage junction range: -55 C to 175 C
+Polarity: unidirectional; the colored band marks the cathode
+
+DO-204AL / DO-41 physical limits
+--------------------------------
+
+Body length: 4.10 mm minimum, 5.20 mm maximum
+Body diameter: 2.00 mm minimum, 2.70 mm maximum
+Lead diameter: 0.71 mm minimum, 0.86 mm maximum
+Lead length: 25.40 mm minimum on each end
+
+Committed-footprint interpretation
+----------------------------------
+
+KiCad footprint: D_DO-41_SOD81_P7.62mm_Horizontal
+Pad 1: local (0.0, 0.0) mm, 2.20 mm copper, 1.10 mm drill, VCC
+Pad 2: local (7.62, 0.0) mm, 2.20 mm copper, 1.10 mm drill, GND
+F.Fab body: 5.20 mm by 2.70 mm
+F.CrtYd envelope: 10.32 mm by 3.20 mm
+
+The 7.62 mm pitch leaves 1.21 mm between each maximum-length body end and its
+hole center. The 1.10 mm finished-hole target exceeds the 0.86 mm maximum lead
+diameter by 0.24 mm. This is the standard KiCad DO-41/SOD81 7.62 mm horizontal
+fit, but lead forming close to the body and first-article seating still require
+physical inspection.
+
+Polarity and role
+-----------------
+
+D1 pad 1 is the cathode on fused VCC and pad 2 is the anode on GND. The device
+is therefore reverse-biased at normal positive rail voltage and avalanches on a
+positive transient. Its 5.80 V stand-off exceeds the nominal 5.0 V rail.
+
+The 10.5 V maximum clamp is specified only at the 39 A, 10/1000 us pulse point.
+This part is an EFT/ESD/transient-energy shunt after F1; it is not a precision
+5 V limiter and does not guarantee protection from a sustained wrong supply,
+USB-C source fault, or every logic-device absolute-maximum excursion. Define
+the accepted surge/ESD environment and verify rail waveforms on the first
+article before treating D1 as a released protection design.

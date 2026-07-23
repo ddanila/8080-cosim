@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "automatic-completion-audit.md"
 TEMPLATES = {
+    "docs/replica-first-article-record.md",
     "docs/replica-order-upload-runbook.md",
     "docs/replica-parts-inventory-template.md",
     "docs/replica-order-evidence-template.md",
@@ -185,9 +186,9 @@ def validate(
             failures.append(f"missing operator template: {path_name}")
             continue
         template_count += len(UNCHECKED_RE.findall(path.read_text(encoding="utf-8")))
-    if grouped and template_count != 28:
+    if grouped and template_count != 42:
         failures.append(
-            f"operator-template state changed ({template_count} unchecked, expected 28); "
+            f"operator-template state changed ({template_count} unchecked, expected 42); "
             "reclassify physical/order progress before claiming automatic exhaustion"
         )
 
@@ -251,10 +252,10 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
 
     lines += [
         "",
-        f"The {template_count} unchecked boxes in the order, order-evidence, and parts-inventory",
-        "documents are operator templates. They deliberately remain blank until an",
-        "authorized physical order/assembly record exists; they are not repository",
-        "implementation backlog.",
+        f"The {template_count} unchecked boxes in the order, order-evidence, parts-inventory,",
+        "and first-article documents are operator templates. They deliberately remain",
+        "blank until an authorized physical order/assembly record exists; they are not",
+        "repository implementation backlog.",
         "",
         "## Automatically closed scope",
         "",
@@ -270,7 +271,7 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "## Guard",
         "",
         f"This writer found active unchecked tasks in {len(task_counts)} tracked Markdown file(s).",
-        "Any new unchecked task outside the three operator templates must have an exact",
+        "Any new unchecked task outside the four operator templates must have an exact",
         "classification and all cited evidence markers must exist, otherwise generation",
         "fails closed. `scripts/check_documentation_consistency.py` runs this writer in",
         "`--check` mode, and `scripts/regen_all.sh` regenerates the committed report.",

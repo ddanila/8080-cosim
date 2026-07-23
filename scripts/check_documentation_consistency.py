@@ -570,7 +570,7 @@ def main() -> int:
     for marker in (
         "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**",
         "This generated audit answers a narrow question",
-        "Any new unchecked task outside the three operator templates",
+        "Any new unchecked task outside the four operator templates",
         "The practical next action is therefore the owner/bench shortlist",
     ):
         if marker not in completion_audit:

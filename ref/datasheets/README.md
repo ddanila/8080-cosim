@@ -30,6 +30,7 @@ Current artifacts:
 | D53 | КР531ИД7, with SN54S138 primary compatible-device timing comparison | `sn54s138-ti.pdf` | `kr531id7-timing-reference.txt` |
 | VJUGA Rev-A J3 | HRO TYPE-C-31-M-17 USB-C receptacle | `hro-type-c-31-m-17.pdf` | `hro-type-c-31-m-17-footprint.txt` |
 | VJUGA Rev-A F1 | Bourns MF-RG300-0-14 resettable PTC | `bourns-mf-rg.pdf` | `bourns-mf-rg300-footprint.txt` |
+| VJUGA Rev-A D1 | Littelfuse P4KE6.8A-B unidirectional TVS | `littelfuse-p4ke.pdf` | `littelfuse-p4ke6v8a-footprint.txt` |
 
 Checksums:
 
@@ -50,6 +51,7 @@ d162b65235d894394a5438eef01cc890b0a95b38d3cdd1931eb8c5ed532c697d  sn74ls74a-ti.p
 9c33e08a3bfb7ab3b685848eee0d80457774918ce0bd3224e17cd0c1970a20a9  sn54s138-ti.pdf
 e38df7ca56f6fa10a78f0c84ee40d26c90af25a1c6c3a692508e46bee2ee11d1  hro-type-c-31-m-17.pdf
 7c6cc82e2566fe7ba904d3783122320fa87f043bf7a720467cdfb637c7e803ef  bourns-mf-rg.pdf
+cab61a39ecf2d397cba37e06ec78765050ddfae63687ae4cf4dc3f83c1b7a845  littelfuse-p4ke.pdf
 ```
 
 Sources:
@@ -91,3 +93,8 @@ Sources:
   and static fit:
   `https://www.bourns.com/products/circuit-protection/resettable-fuses-multifuse-pptc-aec-q200-compliant/product/MF-RG` and
   `https://www.bourns.com/docs/product-datasheets/mfrg.pdf`
+- Littelfuse P4KE official product page and manufacturer series datasheet, used
+  to guard the VJUGA Rev-A D1 exact suffix, pulse limits, polarity, DO-41 body,
+  and lead dimensions:
+  `https://www.littelfuse.com/products/overvoltage-protection/tvs-diodes/leaded/p4ke/p4ke6-8a` and
+  `https://www.littelfuse.com/~/media/electronics/datasheets/tvs_diodes/littelfuse_tvs_diode_p4ke_datasheet.pdf.pdf`

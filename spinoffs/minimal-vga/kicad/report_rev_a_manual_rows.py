@@ -6,9 +6,9 @@ from pathlib import Path
 
 EXPECTED_ROWS = {
     "D1": {
-        "disposition": "REVIEW REQUIRED - footprint decision",
-        "evidence": "Current footprint is DO-35/SOD27 7.62 mm THT for a +5V TVS clamp.",
-        "next_action": "Install manually for Rev A or change to a verified DO-15/SMA/SMF footprint before factory assembly.",
+        "disposition": "REVIEW REQUIRED - exact manual TVS",
+        "evidence": "Littelfuse P4KE6.8A-B/C1666224 is guarded in the corrected DO-41 7.62 mm footprint.",
+        "next_action": "Recheck stock, form the leads, verify the cathode band, and qualify the transient waveform on the first article.",
     },
     "J30": {
         "disposition": "REVIEW REQUIRED - exact vertical 1x15 CPN",

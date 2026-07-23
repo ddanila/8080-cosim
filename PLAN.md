@@ -1396,12 +1396,15 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
   (silk/overlap), `kicad/check_rev_a_footprints.sh` (every modelled pin lands on
   a real pad), and `kicad/check_rev_a_pcb.sh` (5 mm edge keepout, block frames)
   all pass. GOST-font silk preview via `kicad/render_silk_preview.sh`.
-- **Routing DONE and DRC-clean.** The 200x200 119-ref/135-net board contains
-  2,873 tracks on F.Cu/B.Cu, with In1.Cu reserved/fill-checked as GND and In2.Cu
-  as VCC. The freerouting fork (v1.9) routes all 357 nets with 0 unrouted / 0
-  violations, and KiCad DRC reports zero violations and zero unconnected items.
-  The stale per-net seed routes (tuned for the old 285x285 placement) were
-  removed; only the recomputed J3 USB-C GND shield seed remains.
+- **Routing DONE; full DRC recheck pending after D1 correction.** The 200x200
+  119-ref/135-net board contains 2,877 tracks/vias on F.Cu/B.Cu, with In1.Cu
+  reserved/fill-checked as GND and In2.Cu as VCC. The freerouting fork (v1.9)
+  routed all 357 nets with 0 unrouted / 0 violations, and KiCad DRC reported
+  zero violations and zero unconnected items before the exact D1 footprint
+  correction. That correction replaces one `VCC_RAW` segment with a five-piece
+  local detour; `rev-a-tvs-candidate.md` guards continuity endpoints and at
+  least 0.20 mm local copper clearance. Rerun full DRC with KiCad 10 before
+  regenerating the package.
 - **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
   (`sim/vjuga_readback_check.sh`, validated vs twin + cosim) and the UNO
   single-step sketch + twin reference trace (`tools/vjuga_single_step/`).
@@ -1419,15 +1422,19 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
    contact pads, four shell tabs, body outline, and power-only CC/VBUS/GND
    contract. Exact Bourns MF-RG300-0-14/C3761779 PTC compatibility is now
    checksum-, electrical-, topology-, and static-fit-guarded in
-   `spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md`. Automation still cannot
-   close physical pin-1 orientation of the socketed parts, the exact TVS
-   variant, F1 thermal/load qualification and first-article insertion, or J3
-   order-time stock/orientation and first-article inspection.
-2. **Regenerate and review the fabrication package.** The routed source is
-   machine-verified, but `docs/rev-a-manufacturing-readiness.md` marks the
-   current frozen Gerber/drill ZIP stale against the compact 200x200 route.
-   Re-export it on the canonical Linux toolchain, freeze the new checksum, and
-   complete vendor preview, live-stock, and assembly-capability review.
+   `spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md`. Exact Littelfuse
+   P4KE6.8A-B/C1666224 TVS compatibility is now checksum-, polarity-,
+   topology-, geometry-, and routed-clearance-guarded in
+   `spinoffs/minimal-vga/docs/rev-a-tvs-candidate.md`. Automation still cannot
+   close physical pin-1 orientation of the socketed parts, F1 thermal/load
+   qualification, D1 surge-environment qualification, or J3/F1/D1 order-time
+   stock/process and first-article inspection.
+2. **Regenerate, freeze, and run vendor DFM/preview.** The ignored fab package
+   is explicitly stale; its frozen checksum predates the compact 200x200 route
+   and the corrected D1 footprint. Re-export it with the canonical KiCad
+   toolchain, freeze the new Gerber/drill ZIP SHA256, then perform vendor
+   preview, live-stock, and assembly-capability review as order-time human
+   gates.
 3. **Disposition full-board LVS explicitly.** The decode/observability contract
    is guarded, but whole-board chip-accurate LVS remains incomplete. It is a
    bare-board release gate unless the owner records a specific waiver with an

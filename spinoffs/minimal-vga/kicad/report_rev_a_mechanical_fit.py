@@ -135,6 +135,51 @@ def build_rows(board):
         rows.append(make_row("F1", None, "FAIL", "+5V PTC footprint", "missing", "Footprint not found."))
         failures.append("F1 footprint missing.")
 
+    d1 = fps.get("D1")
+    if d1:
+        pads = pad_rows(d1)
+        pitch = pitch_between(pads)
+        measured = "pads 1-2 unavailable"
+        if pitch:
+            dx, dy, dist = pitch
+            measured = (
+                f"pad spacing {fmt_mm(dist)} (dx {fmt_mm(dx)}, "
+                f"dy {fmt_mm(dy)}); drill {fmt_mm(pads[0]['drill'])}"
+            )
+        fp_name = footprint_name(d1)
+        d1_pitch_ok = bool(pitch and abs(pitch[2] - 7.62) <= 0.01)
+        d1_drill_ok = bool(pads and pads[0]["drill"] >= 1.10)
+        d1_footprint_ok = "D_DO-41_SOD81_P7.62mm_Horizontal" in fp_name
+        status = (
+            "PASS"
+            if d1_pitch_ok and d1_drill_ok and d1_footprint_ok
+            else "REVIEW"
+        )
+        rows.append(
+            make_row(
+                "D1",
+                d1,
+                status,
+                "Littelfuse P4KE6.8A-B / C1666224, DO-41 body, 0.86 mm maximum leads",
+                measured,
+                "The exact candidate is separately datasheet and copper-clearance guarded. Verify close lead forming, cathode orientation, body seating, surge waveform, and order-time stock.",
+            )
+        )
+        if status != "PASS":
+            reviews.append("D1: confirm exact DO-41 pitch and drill fit.")
+    else:
+        rows.append(
+            make_row(
+                "D1",
+                None,
+                "FAIL",
+                "+5V exact TVS footprint",
+                "missing",
+                "Footprint not found.",
+            )
+        )
+        failures.append("D1 footprint missing.")
+
     u51 = fps.get("U51")
     if u51:
         pads = pad_rows(u51)

@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 EXPECTED_MANUAL = {
-    "D1": "Manual-install +5V TVS clamp after selecting a part that matches the current DO-35/SOD27 footprint, or leave unpopulated for initial fused bench power if the bring-up checklist explicitly accepts that.",
+    "D1": "Manual-install exact Littelfuse P4KE6.8A-B/C1666224 in the corrected DO-41 footprint; cathode band to pad 1/VCC, then inspect lead forming and qualify the transient waveform.",
     "J30": "Manual-install the 1x15 keyboard bring-up header when keyboard wiring is needed; it is not required for first power/clock/ROM-fetch checks.",
     "R6": "Manual-install a 0R/jumper link for PWR_OK-to-VCC when using the simple Rev A power-good indication path.",
     "R15": "Manual-install a 0R/jumper link so the 74148 keyboard encoder enable is active by default.",

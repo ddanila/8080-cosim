@@ -3,15 +3,17 @@
 Status: **PACKAGE BASELINE EXISTS / DESIGN HOLD**.
 
 The current Rev A board is a routed physical experiment generated from
-`rev-a-physical.board.json`. KiCad reports zero error-level DRC violations and
-zero unconnected items. Those checks establish file coherence for modeled
-nets; they do not prove the proposed computer will boot or that the design is
-safe to order.
+`rev-a-physical.board.json`. The last full KiCad DRC reported zero error-level
+violations and zero unconnected items; the subsequent bounded D1 footprint and
+clearance correction passes its dedicated static guard but still needs a full
+KiCad 10 DRC rerun. These checks establish file coherence for modeled nets;
+they do not prove the proposed computer will boot or that the design is safe
+to order.
 
 ## Current physical baseline
 
 - 200 x 200 mm, four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
-- 119 footprints, 135 PCB nets, and 2,873 tracks in the current checked board.
+- 119 footprints, 135 PCB nets, and 2,877 tracks/vias in the current source.
 - Parts and functional-block borders are aligned to a 0.2" (5.08 mm) grid;
   decoupling caps sit at each chip's short side. In1.Cu is a filled GND plane and
   In2.Cu a filled VCC plane; the two board layers carry the signal routing.
@@ -50,10 +52,12 @@ design-release or purchase authorization. The top-level status is tracked in
   neither GAL has been compiled, programmed, or bench-tested on the chosen device.
 - VGA timing activity is proven, but no real-ROM prompt/banner is rendered from
   the shared DRAM path.
-- The exact HRO TYPE-C-31-M-17 USB-C candidate is drawing/footprint guarded.
-  Actual oscillator, reset supervisor, DRAM, ROM, GAL, socket, fuse, TVS,
-  remaining connector, and assembly-process choices still require their
-  applicable datasheet/footprint review.
+- The exact HRO TYPE-C-31-M-17 USB-C, Bourns MF-RG300-0-14 PTC, and
+  Littelfuse P4KE6.8A-B TVS candidates are datasheet/footprint guarded. J3/F1/D1
+  still require their documented order-time and first-article checks. Actual
+  oscillator, reset supervisor, DRAM, ROM, GAL, socket, remaining connector,
+  and assembly-process choices still require applicable datasheet/footprint
+  review.
 - The autorouted copper and power/return strategy need independent review.
 
 ## Regeneration commands

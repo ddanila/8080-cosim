@@ -42,7 +42,7 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py
 - The connector is eligible only for Rev-A's power-only 5 V sink role; do not infer USB data connectivity from the Type-C shell.
 - The connector's 5 A contact rating does not negotiate or guarantee source current. Keep the existing power-budget caveat and use one of J1/J3 at a time.
 - Recheck C283540 live stock, the vendor's current land pattern, and assembly orientation immediately before ordering; inspect a first article before any larger build.
-- This closes only J3. F1 has a separate exact-candidate guard, with thermal and first-article checks still open; the Rev-A TVS and socketed-part pin-1 review items remain separate.
+- This closes only J3. F1 and D1 have separate exact-candidate guards, with thermal/surge and first-article checks still open; socketed-part pin-1 review remains separate.
 
 ## Primary evidence
 

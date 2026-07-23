@@ -49,7 +49,7 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py
 - The 3.0 A rating is specified at 23 C. Confirm actual enclosure/board ambient and load margin; the data-sheet hold current falls to 2.6 A at 40 C and 2.1 A at 60 C.
 - Recheck C3761779 live stock, assembly availability, and the current manufacturer datasheet immediately before ordering.
 - Review source capability, J1/J3 and trace current/temperature rise, and nearby-part clearance. F1 is gross-fault protection, not a precise current limiter.
-- This closes the exact F1 variant contract only. The Rev-A TVS and socketed-part pin-1 reviews remain separate.
+- This closes the exact F1 variant contract only. D1 has a separate exact-candidate guard with surge and first-article checks still open; socketed-part pin-1 review also remains separate.
 
 ## Primary evidence
 

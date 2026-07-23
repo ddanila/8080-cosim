@@ -124,6 +124,9 @@ historical placement, and the original composite/RF chain.
 - `docs/rev-a-ptc-candidate.md`: checksum-, electrical-, topology-, and
   static-fit-guarded Bourns MF-RG300-0-14/C3761779 F1 candidate; thermal,
   stock, and first-article checks remain.
+- `docs/rev-a-tvs-candidate.md`: checksum-, polarity-, topology-, geometry-,
+  and routed-clearance-guarded Littelfuse P4KE6.8A-B/C1666224 D1 candidate;
+  surge, stock, and first-article checks remain.
 - `kicad/fab-notes.md`: routed/package facts and release blockers.
 - `docs/rev-a-manufacturing-readiness.md`: top-level package/design status.
 - `external/`: pinned-core and third-party design notes.
