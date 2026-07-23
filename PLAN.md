@@ -1667,9 +1667,14 @@ an active `/Q1` feedback output.
    third checkpoint adds D4's isolated startup-reset driver: a wrap-safe state
    machine asserts its optocoupler LED for 250 ms, enforces 50 ms of quiet
    recovery, and is boundary-tested across `millis()` rollover before the
-   bridge runs. The SPDT S1 board-side contact pair, commanded retry/hold, and
-   voltage-safe liveness probes remain gated on continuity measurements of the
-   real S1/X3/testpoint wiring.
+   bridge runs. The fourth checkpoint makes each real `--port` session
+   deliberately restart that Nano sequence: dependency-free POSIX modem
+   control releases DTR for 50 ms, reasserts it, flushes stale transport bytes,
+   and records both the request and completed control sequence in JSON. Mocked
+   ioctl ordering/failure plus the no-reset `--fd` cosim path are guarded, with
+   an explicit `--no-nano-reset` escape hatch. The SPDT S1 board-side contact pair,
+   automatic retry/reset-hold, and voltage-safe liveness probes remain gated on
+   continuity measurements of the real S1/X3/testpoint wiring.
 
 ## Physical bring-up sequence
 
@@ -1757,6 +1762,11 @@ Once a released board and programmed parts exist:
   before bridging, and passes exact boundary plus `millis()`-rollover tests in
   the compiled ATmega328P sketch; S1 board-side hookup remains measurement-
   gated.
+- [x] Jukuravi D1 host-controlled session reset sends an explicit DTR
+  release/wait/assert sequence before every real `--port` run, flushes stale
+  bytes, logs requested/completed state without claiming physical observation,
+  preserves raw `--fd` cosim sessions, and has a guarded opt-out and failure
+  path.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

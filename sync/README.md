@@ -64,9 +64,9 @@ one-revolution MFM Read Track plus index-gated, preloaded writable-track formatt
 and optional cross-run deleted-mark companion metadata,
 raster/serializer behavior,
 the Jukuravi stack-free D0 diagnostic ladder (including injected CPU-bad and
-stuck-TX paths), its host-session round trip, and the Nano bridge's
-byte-transparent bounded pump, rollover-safe isolated startup reset, and
-optional exact AVR compile, plus beeper and USART slices,
+stuck-TX paths), its host-session round trip and guarded DTR restart, and the
+Nano bridge's byte-transparent bounded pump, rollover-safe isolated startup
+reset, and optional exact AVR compile, plus beeper and USART slices,
 the full standard К555ИЕ7/74LS193 asynchronous
 load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
 К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced

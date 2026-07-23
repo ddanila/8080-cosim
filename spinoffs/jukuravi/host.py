@@ -6,9 +6,11 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import errno
+import fcntl
 import json
 import os
 import select
+import struct
 import sys
 import termios
 import time
@@ -19,6 +21,7 @@ import protocol
 
 DEFAULT_BAUD = 115200
 DEFAULT_TIMEOUT = 180.0
+DTR_RELEASE_SECONDS = 0.05
 
 
 class SessionError(RuntimeError):
@@ -56,6 +59,26 @@ def configure_serial(fd: int, baud: int) -> None:
     attrs[6][termios.VTIME] = 0
     termios.tcsetattr(fd, termios.TCSANOW, attrs)
     termios.tcflush(fd, termios.TCIOFLUSH)
+
+
+def pulse_nano_dtr(fd: int) -> None:
+    """Restart a classic Nano through its DTR-coupled reset capacitor."""
+    try:
+        clear_bits = termios.TIOCMBIC
+        set_bits = termios.TIOCMBIS
+        dtr = termios.TIOCM_DTR
+    except AttributeError as error:
+        raise SessionError("platform does not expose POSIX DTR controls") from error
+    mask = struct.pack("i", dtr)
+    try:
+        # Deassert first, then assert: the USB adapter's active-low DTR output
+        # creates the falling edge coupled into the classic Nano RESET input.
+        fcntl.ioctl(fd, clear_bits, mask)
+        time.sleep(DTR_RELEASE_SECONDS)
+        fcntl.ioctl(fd, set_bits, mask)
+        termios.tcflush(fd, termios.TCIOFLUSH)
+    except OSError as error:
+        raise SessionError(f"cannot restart Nano through DTR: {error}") from error
 
 
 def open_transport(port: str | None, inherited_fd: int | None, baud: int) -> tuple[int, str]:
@@ -180,12 +203,15 @@ class HostSession:
         timeout: float,
         expect_rom_version: int | None,
         expect_crc16: int | None,
+        nano_reset_requested: bool,
     ) -> None:
         self.fd = fd
         self.logs = logs
         self.timeout = timeout
         self.expect_rom_version = expect_rom_version
         self.expect_crc16 = expect_crc16
+        self.nano_reset_requested = nano_reset_requested
+        self.nano_dtr_sequence_completed = False
         self.decoder = protocol.StreamDecoder()
         self.raw_rx = bytearray()
         self.raw_tx = bytearray()
@@ -266,6 +292,10 @@ class HostSession:
             "received_bytes": len(self.raw_rx),
             "transmitted_bytes": len(self.raw_tx),
             "leading_training_bytes": leading_training_bytes(self.raw_rx),
+            "nano_control": {
+                "dtr_reset_requested": self.nano_reset_requested,
+                "dtr_sequence_completed": self.nano_dtr_sequence_completed,
+            },
             "image": image,
             "frames": [frame_json(frame) for frame in self.frames],
             "ram_survey": None if self.survey is None else survey_json(self.survey),
@@ -277,6 +307,8 @@ def print_verdict(session: HostSession, logs: SessionLogs) -> None:
     assert session.banner_payload is not None and session.survey is not None
     protocol_version, rom_version, crc_hi, crc_lo = session.banner_payload
     survey = session.survey
+    if session.nano_dtr_sequence_completed:
+        print("JUKURAVI: nano-reset DTR sequence completed")
     print(
         f"JUKURAVI: protocol={protocol_version:02X} rom={rom_version:02X} "
         f"image_crc16={crc_hi:02X}{crc_lo:02X}"
@@ -316,6 +348,11 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument("--log-dir", type=Path, default=Path("jukuravi-logs"))
     parser.add_argument("--expect-rom-version", type=parse_hex8)
     parser.add_argument("--expect-crc16", type=parse_hex16)
+    parser.add_argument(
+        "--no-nano-reset",
+        action="store_true",
+        help="do not restart the Nano through DTR before a --port session",
+    )
     return parser
 
 
@@ -330,10 +367,19 @@ def main() -> int:
         print(f"JUKURAVI: ERROR {error}", file=sys.stderr)
         return 1
     logs = SessionLogs(args.log_dir, transport)
+    nano_reset_requested = args.port is not None and not args.no_nano_reset
     session = HostSession(
-        fd, logs, args.timeout, args.expect_rom_version, args.expect_crc16
+        fd,
+        logs,
+        args.timeout,
+        args.expect_rom_version,
+        args.expect_crc16,
+        nano_reset_requested,
     )
     try:
+        if nano_reset_requested:
+            pulse_nano_dtr(fd)
+            session.nano_dtr_sequence_completed = True
         session.run()
     except (SessionError, OSError) as error:
         logs.finish(session.summary("error", str(error)))

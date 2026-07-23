@@ -59,10 +59,15 @@ requires RESET for at least three clock cycles; the switch-like 250 ms closure
 is deliberately conservative and easy to verify ([Intel MCS-80 Microcomputer
 Systems User's Manual](https://www.bitsavers.org/components/intel/MCS80/98-153B_Intel_8080_Microcomputer_Systems_Users_Manual_197509.pdf)).
 The portable sequencer uses unsigned elapsed time and is tested across the
-`millis()` rollover. A classic Nano's normal DTR-coupled USB auto-reset
-therefore starts this sequence when the host opens the port; adapters with
-auto-reset disabled require a Nano reset button press or power cycle before the
-session.
+`millis()` rollover. The host now deliberately releases DTR for 50 ms and
+reasserts it before each real `--port` session, exercising the classic Nano's
+DTR-coupled USB auto-reset circuit shown in the [official classic Nano
+schematic](https://docs.arduino.cc/resources/schematics/A000005-schematics.pdf)
+and starting this sequence. The host logs a successfully sent DTR pulse without
+claiming that the physical reset was observed; its durable completion field is
+set only after the following transport flush also succeeds. Adapters with
+auto-reset disabled require `--no-nano-reset` plus a Nano reset-button press or
+power cycle before the session.
 
 This is a firmware and isolated-input checkpoint, not permission to attach the
 board side. S1 is SPDT: current evidence identifies S1.1 with `RES_RC` and
@@ -95,8 +100,8 @@ bootloader/upload protocol, not this sketch's compiled ATmega328P behavior.
 ## Remaining D1 hardware work
 
 The reset driver cannot make a bench session safe or unattended until the real
-S1 contact pair is measured and the isolated harness is built. Commanded retry
-and reset-hold control also remain later host/firmware work; this checkpoint is
-the deterministic pulse on each Nano start. Derived-clock and `-MRDC` probe
-pins will likewise be assigned only after continuity identifies accessible,
-voltage-safe testpoints.
+S1 contact pair is measured and the isolated harness is built. Session-start
+restart is now host-commanded through DTR; automatic retry after a missing
+heartbeat and reset-hold control remain later host/firmware work. Derived-clock
+and `-MRDC` probe pins will likewise be assigned only after continuity
+identifies accessible, voltage-safe testpoints.

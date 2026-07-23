@@ -78,7 +78,12 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   for 50 ms recovery. Boundary and `millis()`-rollover tests guard the portable
   sequencer, and the actual AVR sketch compiles. The board-side isolated
   contact remains forbidden until the SPDT S1 reset pair is measured;
-  commanded retry/hold control is not yet implemented.
+  automatic retry and reset-hold control are not yet implemented. **Implemented
+  host checkpoint:** before a real `--port` session, `host.py` explicitly
+  releases DTR for 50 ms and reasserts it, restarting the Nano and therefore
+  this startup pulse on standard classic-Nano hardware. The JSON log records
+  the request and successful DTR ioctl separately from any unobserved physical
+  reset.
 - **Host tool** (Python CLI) drives the protocol and prints verdicts. It talks
   to cosim's pty during development and to the Nano's USB port on the bench —
   same code, same protocol. Every session is logged verbatim (raw stream +
@@ -88,8 +93,8 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   validates the banner identity, sends the exact framed ACK, decodes all 192
   page records, prints per-chip and largest-good-window verdicts, and writes
   timestamped RX, TX, and JSON logs. Its inherited-fd transport round-trips
-  against cosim; `--port` uses the same session engine for the future Nano USB
-  device.
+  against cosim; `--port` uses the same session engine plus the guarded DTR
+  restart for the Nano USB device.
 
 A Nano is sufficient for every stage except the optional bus-master stage
 (~30 GPIO needed for address+data+control — that is Mega 2560 territory).
@@ -335,7 +340,11 @@ A Nano is sufficient for every stage except the optional bus-master stage
   **Startup-reset checkpoint implemented:** D4 drives only an optocoupler LED,
   using a boot-state pull-down; the wrap-safe 250 ms assertion and 50 ms quiet
   recovery are boundary-tested before the bridge can run. The S1 contact side,
-  commanded retry/hold, and liveness probes remain gated or future work.
+  automatic retry/reset-hold, and liveness probes remain gated or future work.
+  **Host-controlled session-reset checkpoint implemented:** real `--port`
+  sessions perform a release/wait/assert DTR sequence before reading, flush
+  stale bytes, and log requested/completed state. Mocked modem-control ordering
+  and failure are guarded; `--no-nano-reset` opts out and `--fd` remains raw.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
   ROM: on a host command ("load at address, N bytes, payload, checksum") the
   ROM writes the received bytes into tested-good onboard RAM, verifies, and
@@ -372,12 +381,16 @@ The host-facing USB link defaults to 115200 baud. The Nano firmware in
 8N1 link through a MAX3232-class level shifter. This is still not a bench-ready
 claim: X3 continuity/levels and the SPDT S1 reset contact pair must be measured.
 The firmware pulses the isolated reset input on each Nano start, but it must
-remain disconnected from S1 until that measurement closes. `--fd` is the
-inherited PTY-master transport used by the cosim regression. A successful
-session creates one
+remain disconnected from S1 until that measurement closes. By default, a real
+`--port` session explicitly toggles DTR to restart the classic Nano before
+waiting for the banner; use `--no-nano-reset` only when the adapter lacks or
+must not use the DTR auto-reset circuit. `--fd` is the inherited PTY-master
+transport used by the cosim regression and never receives modem-control
+operations. A successful session creates one
 timestamp-matched `.rx.bin`, `.tx.bin`, and `.json` set. The JSON contains the
 validated image identity, every decoded frame, page masks, D84–D91 bad-page
-lists, and the selected largest good window.
+lists, the selected largest good window, and whether DTR reset was requested
+and its complete release/wait/assert/flush sequence succeeded.
 
 ## The cosim-first loop
 
@@ -405,8 +418,9 @@ focused model tests cover latch/read formats, BCD conversion, and pending-latch
 ownership, while the ROM guard covers all physical counter selects with
 phase-tolerant live-count predicates. The planned D0 ladder, Stage D1 host
 session CLI, Nano serial bridge, and isolated startup-reset sequencer are
-guarded. Commanded reset retry/hold and liveness probes are next, after their
-physical measurement gates close.
+guarded, as is the host's DTR-commanded session restart. Automatic reset retry/
+hold and liveness probes are next, after their physical measurement gates
+close.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

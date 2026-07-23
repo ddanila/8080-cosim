@@ -142,6 +142,11 @@ def run_case(
         failures.append(f"{label}: training-byte count differs")
     if summary.get("transmitted_bytes") != len(bytes(metadata["ack"])):
         failures.append(f"{label}: transmitted-byte count differs")
+    if summary.get("nano_control") != {
+        "dtr_reset_requested": False,
+        "dtr_sequence_completed": False,
+    }:
+        failures.append(f"{label}: fd transport unexpectedly requested Nano reset")
     image_summary = summary.get("image", {})
     if image_summary != {
         "protocol_version": protocol.PROTOCOL_VERSION,
