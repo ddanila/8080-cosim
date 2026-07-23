@@ -52,10 +52,11 @@ product.
   observability headers and passes the repository's KiCad DRC and
   unconnected-item checks. Independent schematic/copper and power-return review
   still holds release.
-- The ignored `fab/minimal-vga/` package can be regenerated and its current
-  Gerber/drill ZIP is internally checksummed, but
-  `docs/rev-a-manufacturing-readiness.md` marks that frozen ZIP stale against
-  the compact routed board. A fresh canonical export and review are required.
+- The ignored `fab/minimal-vga/` package has been regenerated against the
+  compact post-D1 board with stable KiCad 10.0.5. Its Gerber/drill ZIP SHA-256
+  is `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`;
+  machine package, drill, integrity, and external-render gates pass. The result
+  remains design-held pending vendor preview and independent human review.
 
 ### CPU choice: real Z80 + a 3-byte-patched ROM
 
@@ -119,8 +120,9 @@ historical placement, and the original composite/RF chain.
 - `docs/rev-a-power-budget.md`: conservative planning estimate.
 - `docs/rev-a-sourcing-plan.md`: future sourcing/assembly policy; stock must be
   rechecked at order time.
-- `docs/rev-a-drc-readiness.md`: current KiCad 10.99 full-DRC result bound to
-  the exact post-D1 board SHA; the fabrication package remains separately stale.
+- `docs/rev-a-drc-readiness.md`: current stable KiCad 10.0.5 full-DRC result
+  bound to the exact post-D1 board SHA; the matching fabrication package is
+  frozen separately by its recorded ZIP checksum.
 - `docs/rev-a-usb-c-candidate.md`: checksum- and geometry-guarded exact HRO
   TYPE-C-31-M-17/C283540 J3 candidate; order-time orientation/stock remains.
 - `docs/rev-a-ptc-candidate.md`: checksum-, electrical-, topology-, and

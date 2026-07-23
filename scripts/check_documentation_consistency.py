@@ -1822,6 +1822,43 @@ def main() -> int:
             if claim.lower() in text.lower():
                 failures.append(f"{path} retains stale VJUGA boot claim: {claim!r}")
     vjuga_readiness = vjuga["spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md"]
+    vjuga_readme = vjuga["spinoffs/minimal-vga/README.md"]
+    vjuga_fab_notes = vjuga["spinoffs/minimal-vga/kicad/fab-notes.md"]
+    if "Status: **DESIGN HOLD / CURRENT PACKAGE VERIFIED**" not in vjuga_readiness:
+        failures.append("VJUGA readiness does not expose the current verified-package hold")
+    if "Status: **CURRENT PACKAGE VERIFIED / DESIGN HOLD**" not in vjuga_fab_notes:
+        failures.append("VJUGA fabrication notes do not expose the current verified-package hold")
+    for stale_claim in (
+        "marks that frozen ZIP stale",
+        "A fresh canonical export and review are required",
+        "current KiCad 10.99",
+        "fabrication package remains separately stale",
+    ):
+        if stale_claim.lower() in vjuga_readme.lower():
+            failures.append(
+                f"spinoffs/minimal-vga/README.md retains stale package claim: {stale_claim!r}"
+            )
+    if "stable KiCad 10.0.5" not in vjuga_readme:
+        failures.append("VJUGA README does not expose the current stable KiCad toolchain")
+    vjuga_package_match = re.search(
+        r"SHA256:\s*\n\s*`([0-9a-f]{64})`",
+        vjuga_readiness,
+        re.IGNORECASE,
+    )
+    if not vjuga_package_match:
+        failures.append("VJUGA readiness does not expose a frozen package SHA256")
+    else:
+        vjuga_package_digest = vjuga_package_match.group(1).lower()
+        for path in (
+            "PLAN.md",
+            "spinoffs/minimal-vga/README.md",
+            "spinoffs/minimal-vga/kicad/fab-notes.md",
+        ):
+            if vjuga_package_digest not in read(path).lower():
+                failures.append(
+                    f"{path} does not contain frozen VJUGA package SHA256 "
+                    f"{vjuga_package_digest}"
+                )
     for marker in ("sim/boot_check.sh", "sim/vjuga_boot_check.sh", "6000 writes"):
         if marker not in vjuga_readiness:
             failures.append(f"VJUGA readiness omits real-ROM boot evidence {marker!r}")
