@@ -108,16 +108,29 @@ def build_rows(board):
         if pitch:
             dx, dy, dist = pitch
             measured = f"pad spacing {fmt_mm(dist)} (dx {fmt_mm(dx)}, dy {fmt_mm(dy)}); drill {fmt_mm(pads[0]['drill'])}"
+        fp_name = footprint_name(f1)
+        f1_span_ok = bool(pitch and abs(pitch[0] - 5.1) <= 0.01)
+        f1_drill_ok = bool(pads and pads[0]["drill"] >= 0.81)
+        f1_footprint_ok = "Fuse_Bourns_MF-RG300" in fp_name
+        status = (
+            "PASS"
+            if f1_span_ok and f1_drill_ok and f1_footprint_ok
+            else "REVIEW"
+        )
         rows.append(
             make_row(
                 "F1",
                 f1,
-                "PASS",
-                "Bourns MF-RG300-0-14 / C3761779, MF-RG300-class 5.08 mm lead spacing",
+                status,
+                "Bourns MF-RG300-0-14 / C3761779, 5.1 +/- 0.7 mm lead span and 0.81 mm nominal leads",
                 measured,
-                "The board uses KiCad's Bourns MF-RG300 footprint. Final current/load and order-time stock still require human review.",
+                "The exact candidate is separately data-sheet guarded. The stock footprint's 1.2 mm pad stagger is not manufacturer-dimensioned; verify insertion, thermal/load margin, and order-time stock.",
             )
         )
+        if status != "PASS":
+            reviews.append(
+                "F1: confirm exact MF-RG300 footprint span and drill fit."
+            )
     else:
         rows.append(make_row("F1", None, "FAIL", "+5V PTC footprint", "missing", "Footprint not found."))
         failures.append("F1 footprint missing.")

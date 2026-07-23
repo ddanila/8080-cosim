@@ -31,11 +31,13 @@ on:
       - 'kicad/check_factory_wire_links.py'
       - 'kicad/check_factory_wire_landing_registration.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py'
+      - 'spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb'
       - 'spinoffs/minimal-vga/kicad/rev-a.bom.csv'
       - 'spinoffs/minimal-vga/kicad/rev-a-jlcpcb-cpn-checklist.csv'
       - 'spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md'
+      - 'spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md'
       - '.github/workflows/reports.yml'
   pull_request:
     paths:
@@ -57,11 +59,13 @@ on:
       - 'kicad/check_factory_wire_links.py'
       - 'kicad/check_factory_wire_landing_registration.py'
       - 'spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py'
+      - 'spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb'
       - 'spinoffs/minimal-vga/kicad/rev-a.bom.csv'
       - 'spinoffs/minimal-vga/kicad/rev-a-jlcpcb-cpn-checklist.csv'
       - 'spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md'
+      - 'spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md'
       - '.github/workflows/reports.yml'
 
 concurrency:
@@ -458,3 +462,9 @@ jobs:
           python3 spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py
           git diff --exit-code -- \
             spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md
+
+      - name: Check Rev-A exact PTC candidate freshness
+        run: |
+          python3 spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py
+          git diff --exit-code -- \
+            spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md

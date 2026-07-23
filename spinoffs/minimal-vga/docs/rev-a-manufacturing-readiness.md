@@ -85,10 +85,12 @@ fab but their pinouts freeze in copper, so decide them first.
    S1/SH and RES_TH slips). The exact HRO TYPE-C-31-M-17/C283540 J3 candidate
    is now checksum- and geometry-guarded by `rev-a-usb-c-candidate.md`,
    including all six contacts, four shell tabs, body outline, and power-only
-   CC/VBUS/GND contract. STILL A REVIEW ITEM: physical pin-1 orientation of the
-   socketed parts and confirming the chosen real PTC and TVS variants against
-   their datasheets; J3 still needs an order-time stock/orientation check and
-   first-article inspection.
+   CC/VBUS/GND contract. The exact Bourns MF-RG300-0-14/C3761779 F1 candidate
+   is likewise checksum-, electrical-, topology-, and static-fit-guarded by
+   `rev-a-ptc-candidate.md`. STILL A REVIEW ITEM: physical pin-1 orientation of
+   the socketed parts and the exact TVS variant; F1 still needs thermal/load
+   qualification, order-time stock, and first-article insertion inspection,
+   while J3 needs its order-time stock/orientation and first-article checks.
 
 **De-risking (freeze before copper, even though reprogrammable)**
 

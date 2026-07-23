@@ -1,0 +1,84 @@
+Bourns MF-RG300-0-14 interpretation for VJUGA Rev-A F1
+=========================================================
+
+Primary evidence
+----------------
+
+Manufacturer series datasheet: bourns-mf-rg.pdf
+Source URL: https://www.bourns.com/docs/product-datasheets/mfrg.pdf
+SHA-256: 7c6cc82e2566fe7ba904d3783122320fa87f043bf7a720467cdfb637c7e803ef
+Product page: https://www.bourns.com/products/circuit-protection/resettable-fuses-multifuse-pptc-aec-q200-compliant/product/MF-RG
+
+Exact orderable candidate
+-------------------------
+
+Part number: MF-RG300-0-14
+MF-RG = smaller radial-leaded Multifuse family.
+300 = 3.0 A hold-current code.
+-0 = bulk packaging.
+-14 = kinked leads where straight leads are standard.
+
+MF-RG300 manufacturer limits at 23 degrees C
+---------------------------------------------
+
+Maximum voltage: 16 V
+Maximum interrupt current: 100 A
+Hold current: 3.0 A
+Trip current: 5.1 A
+Minimum initial resistance: 0.0380 ohm
+Maximum initial resistance: 0.0650 ohm
+Maximum post-trip resistance: 0.0975 ohm
+Maximum time to trip at 15 A: 1.0 s
+Typical power dissipated when tripped: 2.3 W
+
+Thermal derating, MF-RG300 hold current
+---------------------------------------
+
+-40 C: 4.4 A
+-20 C: 4.0 A
+  0 C: 3.6 A
+ 23 C: 3.0 A
+ 40 C: 2.6 A
+ 50 C: 2.4 A
+ 60 C: 2.1 A
+ 70 C: 1.9 A
+ 85 C: 1.4 A
+
+Style-1 physical limits
+-----------------------
+
+Body width A: 7.1 mm maximum
+Body height B: 11.0 mm maximum
+Lead span C: 5.1 mm nominal, plus or minus 0.7 mm
+Lead length D: 7.6 mm minimum
+Body depth E: 3.0 mm maximum
+Lead diameter F: 0.81 mm nominal
+Wire material: Sn/Cu
+
+Committed-footprint interpretation
+----------------------------------
+
+KiCad footprint: Fuse_Bourns_MF-RG300
+Pad 1: local (0.0, 0.0) mm, 2.01 mm copper, 1.01 mm drill, VCC_RAW
+Pad 2: local (5.1, 1.2) mm, 2.01 mm copper, 1.01 mm drill, VCC
+Pad-centre separation: 5.239 mm
+F.Fab body: 7.1 mm by 3.0 mm
+
+The stock KiCad footprint's 5.1 mm horizontal span matches dimension C, but it
+also staggers pad 2 by an undimensioned 1.2 mm. The resulting hole-centre
+separation is 5.239 mm. The 1.01 mm drill exceeds the 0.81 mm nominal lead
+diameter by 0.20 mm, and the kinked radial leads remain formable. This is a
+static fit disposition, not a claim that dimension C's tolerance authorizes an
+orthogonal stagger or that the footprint coordinates duplicate the drawing.
+Inspect insertion, body seating, solder fillets, and thermal clearance on the
+first assembled article.
+
+Electrical disposition
+----------------------
+
+Rev-A F1 is wired VCC_RAW -> F1 -> VCC. At the 23 C data-sheet point, 3.0 A
+hold current is 1.66 times the 1.81 A conservative planning load. It falls to
+2.6 A (1.44 times) at 40 C and 2.1 A (1.16 times) at 60 C. This makes the part
+eligible for gross short and wiring-fault protection, not precision current
+limiting. Final ambient rise, trace and connector heating, source capability,
+and first-article behavior remain order-time/bench checks.

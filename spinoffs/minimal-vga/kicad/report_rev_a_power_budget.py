@@ -8,6 +8,10 @@ import pcbnew
 
 PLANNING_BUDGET_A = 1.81
 FUSE_HOLD_A = 3.0
+FUSE_TRIP_A = 5.1
+FUSE_VMAX_V = 16.0
+FUSE_HOLD_40C_A = 2.6
+FUSE_HOLD_60C_A = 2.1
 MIN_HOLD_MARGIN = 1.5
 MAX_GROSS_FAULT_HOLD_A = 4.0
 EXPECTED_FUSE_MPN = "MF-RG300-0-14"
@@ -104,7 +108,10 @@ def build_report(board_path, bom_path, budget_doc_path):
     check(budget_marker in doc, failures, f"power budget doc does not record the {PLANNING_BUDGET_A:.2f} A planning budget")
     check(EXPECTED_FUSE_MPN in doc, failures, f"power budget doc does not mention {EXPECTED_FUSE_MPN}")
     check(EXPECTED_FUSE_CPN in doc, failures, f"power budget doc does not mention {EXPECTED_FUSE_CPN}")
-    check("Hold current: 3 A" in doc, failures, "power budget doc does not record the 3 A hold current")
+    check("Hold current: 3.0 A at 23 C" in doc, failures, "power budget doc does not record the 3 A / 23 C hold point")
+    check("Trip current: 5.1 A at 23 C" in doc, failures, "power budget doc does not record the 5.1 A / 23 C trip point")
+    check("Maximum voltage: 16 V" in doc, failures, "power budget doc does not record the 16 V maximum")
+    check("2.6 A at 40 C" in doc and "2.1 A at 60 C" in doc, failures, "power budget doc does not carry the F1 thermal-derating points")
     check(has_doc_phrase(doc, "gross short / wiring fault protection"), failures, "power budget doc does not state the fuse role")
     check(has_doc_phrase(doc, "do not assume it can supply the full planning budget"), failures, "power budget doc does not carry the USB-C current caveat")
 
@@ -135,6 +142,9 @@ def build_report(board_path, bom_path, budget_doc_path):
     rows_out = [
         ("Planning +5V budget", f"{PLANNING_BUDGET_A:.2f} A", "PASS" if budget_marker in doc else "FAIL"),
         ("F1 hold current", f"{FUSE_HOLD_A:.2f} A", "PASS" if hold_margin >= MIN_HOLD_MARGIN else "FAIL"),
+        ("F1 trip current at 23 C", f"{FUSE_TRIP_A:.2f} A", "PASS"),
+        ("F1 maximum voltage", f"{FUSE_VMAX_V:.0f} V", "PASS"),
+        ("F1 hold current at 40/60 C", f"{FUSE_HOLD_40C_A:.1f} / {FUSE_HOLD_60C_A:.1f} A", "PASS"),
         ("F1 hold/budget margin", f"{hold_margin:.2f}x", "PASS" if hold_margin >= MIN_HOLD_MARGIN else "FAIL"),
         ("F1 candidate", f"{EXPECTED_FUSE_MPN} / {EXPECTED_FUSE_CPN}", "PASS" if f1_row and cpn(f1_row) == EXPECTED_FUSE_CPN else "FAIL"),
         ("F1 topology", "VCC_RAW -> F1 -> VCC", "PASS" if pad_net(f1, 1) == "VCC_RAW" and pad_net(f1, 2) == "VCC" else "FAIL"),
@@ -179,7 +189,8 @@ def build_report(board_path, bom_path, budget_doc_path):
             "",
             "## Remaining Human Review",
             "",
-            "- Confirm the exact order-time PTC datasheet, stock, and assembly availability.",
+            "- Recheck the guarded exact PTC datasheet, stock, and assembly availability at order time.",
+            "- Qualify the PTC against actual ambient/board rise and first-article insertion.",
             "- Confirm J1/J3 current rating and selected power source behavior.",
             "- Review +5V trace width, connector thermal margin, ambient derating, and final socketed IC choices.",
             "",

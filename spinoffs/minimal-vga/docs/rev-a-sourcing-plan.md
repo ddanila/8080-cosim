@@ -32,8 +32,10 @@ Never upload the engineering BOM as a factory placement BOM.
 - +5 V input connector; the USB-C sink is statically closed to exact HRO
   TYPE-C-31-M-17/C283540 by `rev-a-usb-c-candidate.md`, while live stock and
   first-article orientation remain order-time checks. Also freeze the CC
-  resistors, fuse, TVS, clock oscillator, reset supervisor, debug headers, and
-  cable-facing keyboard/VGA headers.
+  resistors. The fuse is statically closed to Bourns MF-RG300-0-14/C3761779 by
+  `rev-a-ptc-candidate.md`; ambient/load margin, live stock, and first-article
+  insertion remain order-time checks. Also freeze the TVS, clock oscillator,
+  reset supervisor, debug headers, and cable-facing keyboard/VGA headers.
 
 Recorded owner-supplied candidates are a `Z0840004PSC` 4 MHz DIP Z80 and
 `KM4164B-10` 100 ns DIP DRAM. Treat these as candidates until their actual

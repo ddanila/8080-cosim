@@ -1353,9 +1353,12 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
    compatibility is now checksum- and geometry-guarded in
    `spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md`, including its six
    contact pads, four shell tabs, body outline, and power-only CC/VBUS/GND
-   contract. Automation still cannot close physical pin-1 orientation of the
-   socketed parts, the exact PTC/TVS variants, or J3 order-time
-   stock/orientation and first-article inspection.
+   contract. Exact Bourns MF-RG300-0-14/C3761779 PTC compatibility is now
+   checksum-, electrical-, topology-, and static-fit-guarded in
+   `spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md`. Automation still cannot
+   close physical pin-1 orientation of the socketed parts, the exact TVS
+   variant, F1 thermal/load qualification and first-article insertion, or J3
+   order-time stock/orientation and first-article inspection.
 2. **Run vendor DFM/preview.** The current fab package is regenerated and
    machine-verified; its Gerber/drill ZIP SHA256 is frozen in
    `docs/rev-a-manufacturing-readiness.md`. Vendor preview, live stock, and

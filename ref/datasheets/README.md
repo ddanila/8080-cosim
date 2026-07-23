@@ -29,6 +29,7 @@ Current artifacts:
 | VT2 | КТ315Б, old KT-13 package | `kt315-family-promelec.pdf` | `kt315b-output-reference.txt` |
 | D53 | КР531ИД7, with SN54S138 primary compatible-device timing comparison | `sn54s138-ti.pdf` | `kr531id7-timing-reference.txt` |
 | VJUGA Rev-A J3 | HRO TYPE-C-31-M-17 USB-C receptacle | `hro-type-c-31-m-17.pdf` | `hro-type-c-31-m-17-footprint.txt` |
+| VJUGA Rev-A F1 | Bourns MF-RG300-0-14 resettable PTC | `bourns-mf-rg.pdf` | `bourns-mf-rg300-footprint.txt` |
 
 Checksums:
 
@@ -48,6 +49,7 @@ d162b65235d894394a5438eef01cc890b0a95b38d3cdd1931eb8c5ed532c697d  sn74ls74a-ti.p
 22c783f99350b178b11a3f33269d24bb9f36c5634215ed39040fef0736500e99  kt315-family-promelec.pdf
 9c33e08a3bfb7ab3b685848eee0d80457774918ce0bd3224e17cd0c1970a20a9  sn54s138-ti.pdf
 e38df7ca56f6fa10a78f0c84ee40d26c90af25a1c6c3a692508e46bee2ee11d1  hro-type-c-31-m-17.pdf
+7c6cc82e2566fe7ba904d3783122320fa87f043bf7a720467cdfb637c7e803ef  bourns-mf-rg.pdf
 ```
 
 Sources:
@@ -84,3 +86,8 @@ Sources:
   guard the VJUGA Rev-A J3 six-contact power-only pin map and land pattern:
   `https://en.krhro.com/Product-Details/722.html` and
   `https://datasheet.lcsc.com/datasheet/pdf/26d9c5bff410f020782d77a1fd4062b2.pdf?productCode=C283540`
+- Bourns MF-RG official product page and manufacturer series datasheet, used to
+  guard the VJUGA Rev-A F1 exact suffix, electrical limits, thermal derating,
+  and static fit:
+  `https://www.bourns.com/products/circuit-protection/resettable-fuses-multifuse-pptc-aec-q200-compliant/product/MF-RG` and
+  `https://www.bourns.com/docs/product-datasheets/mfrg.pdf`

@@ -119,6 +119,9 @@ historical placement, and the original composite/RF chain.
   rechecked at order time.
 - `docs/rev-a-usb-c-candidate.md`: checksum- and geometry-guarded exact HRO
   TYPE-C-31-M-17/C283540 J3 candidate; order-time orientation/stock remains.
+- `docs/rev-a-ptc-candidate.md`: checksum-, electrical-, topology-, and
+  static-fit-guarded Bourns MF-RG300-0-14/C3761779 F1 candidate; thermal,
+  stock, and first-article checks remain.
 - `kicad/fab-notes.md`: routed/package facts and release blockers.
 - `docs/rev-a-manufacturing-readiness.md`: top-level package/design status.
 - `external/`: pinned-core and third-party design notes.

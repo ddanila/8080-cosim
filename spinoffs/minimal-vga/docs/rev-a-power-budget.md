@@ -46,19 +46,25 @@ frozen.
 
 Rev A currently uses `F1` as a resettable PTC fuse between `VCC_RAW` and `VCC`.
 The assigned candidate is Bourns `MF-RG300-0-14` / JLCPCB `C3761779`, matching
-the current Bourns MF-RG300 5.1 mm lead-spacing footprint.
+the current Bourns MF-RG300 footprint. Its preserved manufacturer datasheet and
+committed fit are guarded by `rev-a-ptc-candidate.md`.
 
-- Hold current: 3 A at 20 C.
-- Trip current: approximately 2x hold current per the MF-RG series datasheet.
+- Maximum voltage: 16 V.
+- Hold current: 3.0 A at 23 C.
+- Trip current: 5.1 A at 23 C.
+- Thermal derating: 2.6 A at 40 C and 2.1 A at 60 C.
 - Role on Rev A: gross short / wiring fault protection, not precise load
   limiting.
 
-This is comfortably above the 1.81 A planning budget (Mode B, with both bipolar
-PROMs inserted; the Mode-A baseline is ~1.55 A) and should avoid nuisance trips
-during bring-up. It is still low enough to be useful for gross faults, but trace
-width, connector rating, ambient temperature derating, and final IC choices must
-be checked before ordering. Note the bipolar РТ4/РЕ3 add real heat when socketed —
-verify local decoupling (C26/C27) and socket contact before a chip test.
+At the datasheet's 23 C point this is 1.66x the 1.81 A planning budget (Mode B,
+with both bipolar PROMs inserted; the Mode-A baseline is ~1.55 A). The margin
+falls to 1.44x at 40 C and 1.16x at 60 C, so ambient/board temperature is a real
+qualification gate rather than an implicit room-temperature assumption. The
+part should avoid nuisance trips during room-temperature bring-up and remains
+useful for gross faults, but trace width, connector rating, ambient temperature
+rise, and final IC choices must be checked before ordering. Note the bipolar
+РТ4/РЕ3 add real heat when socketed — verify local decoupling (C26/C27) and
+socket contact before a chip test.
 
 USB-C is kept as a convenience 5 V input. Without PD/current negotiation, do not
 assume it can supply the full planning budget from every host/charger. The screw
