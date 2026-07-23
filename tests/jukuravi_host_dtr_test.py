@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import errno
+import io
 import socket
 import struct
 import sys
@@ -83,6 +85,56 @@ def main() -> int:
         fail("heartbeat monitoring is not opt-in")
     if normal.heartbeat_timeout != host.DEFAULT_HEARTBEAT_TIMEOUT:
         fail("default heartbeat timeout differs")
+    if (
+        normal.heartbeat_reset_retries
+        != host.DEFAULT_HEARTBEAT_RESET_RETRIES
+    ):
+        fail("heartbeat reset retry is not default-off")
+
+    def invalid_cli(arguments: list[str], expected: str) -> None:
+        stderr = io.StringIO()
+        with (
+            mock.patch.object(sys, "argv", ["host.py", *arguments]),
+            contextlib.redirect_stderr(stderr),
+        ):
+            result = host.main()
+        if result != 2 or expected not in stderr.getvalue():
+            fail(
+                f"invalid CLI was not rejected: rc={result} "
+                f"stderr={stderr.getvalue()!r}"
+            )
+
+    invalid_cli(
+        ["--fd", "7", "--heartbeat-reset-retries", "1"],
+        "--heartbeat-reset-retries requires --heartbeat-count",
+    )
+    invalid_cli(
+        [
+            "--fd",
+            "7",
+            "--load",
+            "unused.bin",
+            "--heartbeat-count",
+            "1",
+            "--heartbeat-reset-retries",
+            "1",
+        ],
+        "--heartbeat-reset-retries requires reset-enabled --port",
+    )
+    invalid_cli(
+        [
+            "--port",
+            "/dev/null",
+            "--no-nano-reset",
+            "--load",
+            "unused.bin",
+            "--heartbeat-count",
+            "1",
+            "--heartbeat-reset-retries",
+            "1",
+        ],
+        "--heartbeat-reset-retries requires reset-enabled --port",
+    )
     try:
         host.parse_nonnegative_int("-1")
     except argparse.ArgumentTypeError:
@@ -169,6 +221,113 @@ def main() -> int:
     if completion_failure.finished != [("error", "upload failed")]:
         fail("loader completion failure evidence differs")
 
+    completion_results: list[Exception | None] = [
+        host.HeartbeatTimeout("heartbeat timeout after 1/2 records"),
+        None,
+    ]
+
+    def recover_completion() -> None:
+        result = completion_results.pop(0)
+        if result is not None:
+            raise result
+
+    recovered_session = FakeSession(True, [None, None])
+    with mock.patch.object(host, "pulse_nano_dtr") as pulse:
+        host.run_session_with_retries(
+            recovered_session,
+            2,
+            recover_completion,
+            1,
+        )  # type: ignore[arg-type]
+    if pulse.call_count != 2 or recovered_session.begun != [1, 2]:
+        fail("heartbeat recovery did not perform one fresh full attempt")
+    if recovered_session.finished != [
+        ("heartbeat_timeout", "heartbeat timeout after 1/2 records"),
+        ("ok", None),
+    ]:
+        fail(f"heartbeat recovery evidence differs: {recovered_session.finished!r}")
+    if (
+        recovered_session.heartbeat_reset_retries_requested != 1
+        or recovered_session.heartbeat_reset_retries_used != 1
+        or recovered_session.nano_dtr_sequences_completed != 2
+    ):
+        fail("heartbeat recovery counters differ")
+
+    mixed_completion_results: list[Exception | None] = [
+        host.HeartbeatTimeout("heartbeat timeout after 0/1 records"),
+        None,
+    ]
+
+    def mixed_completion() -> None:
+        result = mixed_completion_results.pop(0)
+        if result is not None:
+            raise result
+
+    mixed_session = FakeSession(
+        True,
+        [None, host.BannerTimeout("timeout before session banner"), None],
+    )
+    with mock.patch.object(host, "pulse_nano_dtr") as pulse:
+        host.run_session_with_retries(
+            mixed_session,
+            1,
+            mixed_completion,
+            1,
+        )  # type: ignore[arg-type]
+    if pulse.call_count != 3 or mixed_session.begun != [1, 2, 3]:
+        fail("missing-banner and heartbeat retry budgets were not independent")
+    if mixed_session.finished != [
+        ("heartbeat_timeout", "heartbeat timeout after 0/1 records"),
+        ("banner_timeout", "timeout before session banner"),
+        ("ok", None),
+    ]:
+        fail(f"mixed retry evidence differs: {mixed_session.finished!r}")
+
+    exhausted_results: list[Exception] = [
+        host.HeartbeatTimeout("heartbeat timeout after 0/1 records"),
+        host.HeartbeatTimeout("heartbeat timeout after 0/1 records"),
+    ]
+
+    def exhaust_completion() -> None:
+        raise exhausted_results.pop(0)
+
+    exhausted_heartbeat = FakeSession(True, [None, None])
+    with mock.patch.object(host, "pulse_nano_dtr") as pulse:
+        try:
+            host.run_session_with_retries(
+                exhausted_heartbeat,
+                2,
+                exhaust_completion,
+                1,
+            )  # type: ignore[arg-type]
+        except host.HeartbeatTimeout:
+            pass
+        else:
+            fail("exhausted heartbeat reset retry did not abort")
+    if pulse.call_count != 2 or exhausted_heartbeat.begun != [1, 2]:
+        fail("heartbeat reset retry exceeded or stopped short of its bound")
+    if exhausted_heartbeat.finished != [
+        ("heartbeat_timeout", "heartbeat timeout after 0/1 records"),
+        ("heartbeat_timeout", "heartbeat timeout after 0/1 records"),
+    ]:
+        fail("exhausted heartbeat evidence differs")
+
+    invalid_after_heartbeat = FakeSession(True, [None])
+    with mock.patch.object(host, "pulse_nano_dtr") as pulse:
+        try:
+            host.run_session_with_retries(
+                invalid_after_heartbeat,
+                2,
+                fail_completion,
+                2,
+            )  # type: ignore[arg-type]
+        except host.SessionError:
+            pass
+        else:
+            fail("non-heartbeat completion error did not abort")
+    if pulse.call_count != 1 or invalid_after_heartbeat.begun != [1]:
+        fail("non-heartbeat completion error consumed heartbeat retry budget")
+
     no_reset_session = FakeSession(
         False, [host.BannerTimeout("timeout before session banner")]
     )
@@ -229,7 +388,7 @@ def main() -> int:
 
     print(
         "JUKURAVI-HOST-DTR: PASS "
-        "(DTR order; bounded empty-banner retry; partial/post-banner/no-reset guards)"
+        "(DTR order; missing-banner and heartbeat reset budgets; non-retry guards)"
     )
     return 0
 

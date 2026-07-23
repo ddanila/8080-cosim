@@ -124,8 +124,8 @@ The reset driver cannot make a bench session safe or unattended until the real
 S1 contact pair is measured and the isolated harness is built. Session-start
 restart and missing-banner recovery are now host-commanded through DTR.
 Local reset hold is guarded through the active-low D5 service input.
-Host-side uploaded-test heartbeat supervision is now guarded. Automatic
-reset/re-upload recovery remains later work and cannot authorize the
+Host-side uploaded-test heartbeat supervision and default-off bounded
+DTR/re-upload recovery are now guarded. That software does not authorize the
 measurement-gated board-side S1 connection.
 Derived-clock and `-MRDC` probe pins will likewise be assigned only after
 continuity identifies accessible, voltage-safe testpoints.

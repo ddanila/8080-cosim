@@ -1675,11 +1675,13 @@ an active `/Q1` feedback output.
    an explicit `--no-nano-reset` escape hatch. The fifth checkpoint adds
    conservative missing-banner recovery: reset-enabled `--port` sessions wait
    15 seconds for a valid banner, then perform at most two fresh DTR/reset
-   attempts. Any decoded protocol frame, transport error, or failure after a
-   valid banner aborts without retry; JSON retains per-attempt byte, frame,
-   banner, error, and DTR evidence. The SPDT S1 board-side contact pair,
-   uploaded-test heartbeat recovery, and voltage-safe liveness probes remain
-   gated on continuity measurements of the real S1/X3/testpoint wiring. The
+   attempts. By default, any decoded protocol frame, transport error, or
+   failure after a valid banner aborts without retry; the later explicit
+   heartbeat-gap budget is the sole exception. JSON retains per-attempt byte,
+   frame, banner, error, and DTR evidence. The SPDT S1 board-side contact pair,
+   physical use of uploaded-test heartbeat recovery and voltage-safe liveness
+   probes remains gated on continuity measurements of the real
+   S1/X3/testpoint wiring. The
    sixth checkpoint implements the low-voltage side of reset hold:
    grounding the Nano's pull-up D5 service input extends D4 assertion
    indefinitely or reasserts it after startup, gates both bridge directions,
@@ -1709,8 +1711,17 @@ an active `/Q1` feedback output.
    `--heartbeat-timeout` bounds every gap. JSON retains each sequence and
    source frame index. The real CLI accepts three heartbeats from uploaded code
    and separately fails a spinning program after RUN_ACK with exact timeout
-   evidence and no retry. Automatic reset/re-upload recovery remains gated on
-   the physical S1 contact measurement.
+   evidence and no retry. The tenth checkpoint makes recovery software-ready
+   without relaxing that physical gate. Explicit
+   `--heartbeat-reset-retries N` is default-off and accepted only for a
+   reset-enabled real `--port`; each heartbeat gap consumes at most one bounded
+   budget entry and performs a completely fresh DTR/Nano reset, banner, survey,
+   upload, RUN, and heartbeat attempt. Every attempt snapshots its loader and
+   heartbeat evidence. Missing-banner retries retain their independent budget,
+   while malformed heartbeats, upload/protocol/transport errors, and every
+   other post-banner failure remain non-retryable. Mocked modem control proves
+   success, exhaustion, counter accuracy, and all non-retry boundaries. The
+   S1 board-side contact remains forbidden until directly measured.
 
 ## Physical bring-up sequence
 
@@ -1804,9 +1815,9 @@ Once a released board and programmed parts exist:
   preserves raw `--fd` cosim sessions, and has a guarded opt-out and failure
   path.
 - [x] Jukuravi D1 missing-banner recovery gives reset-enabled real-port
-  sessions a short banner deadline and at most two fresh-reset retries, never
-  retries decoded partial or post-banner evidence, and records each attempt
-  plus the exact count of completed DTR sequences in JSON.
+  sessions a short banner deadline and at most two fresh-reset retries; that
+  policy never retries decoded partial or post-banner evidence and records each
+  attempt plus the exact count of completed DTR sequences in JSON.
 - [x] Jukuravi D1 local reset hold uses an active-low, pull-up Nano D5 service
   input to extend or reassert only the isolated D4 optocoupler drive, keeps the
   serial bridge gated, and enforces minimum assertion plus fresh recovery on
@@ -1818,11 +1829,16 @@ Once a released board and programmed parts exist:
 - [x] Jukuravi D2 host upload orchestration validates READY and the surveyed
   good window, chunks and verifies a named file, optionally runs its in-image
   entry, and retains source hash, per-chunk results, RUN acknowledgment, and
-  exact RX/TX evidence without retrying post-survey failures.
+  exact RX/TX evidence; post-survey failures do not retry unless the separate
+  explicit heartbeat-gap recovery policy applies.
 - [x] Jukuravi D1/D2 host heartbeat supervision validates CRC-framed versioned
   and consecutive post-RUN liveness records under a per-record timeout,
   retains exact frame/sequence evidence, and fails without retry; physical
-  reset/re-upload recovery remains S1-measurement-gated.
+  reset use remains S1-measurement-gated.
+- [x] Jukuravi D1/D2 heartbeat recovery software is explicit, default-off,
+  real-port/reset-only, bounded independently from missing-banner retries, and
+  preserves each full loader/heartbeat attempt; only heartbeat gaps retry, and
+  the board-side S1 connection remains forbidden pending measurement.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

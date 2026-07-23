@@ -192,8 +192,9 @@ def run_heartbeat_timeout(
     attempts = summary.get("attempts", [])
     if (
         len(attempts) != 1
-        or attempts[0].get("outcome") != "error"
+        or attempts[0].get("outcome") != "heartbeat_timeout"
         or attempts[0].get("error") != error
+        or attempts[0].get("loader") != loader
     ):
         fail(
             "heartbeat timeout was retried or lost from attempt evidence: "
@@ -398,7 +399,11 @@ def main() -> int:
         if len(summary.get("frames", [])) != 202:
             fail("JSON frame evidence does not include loader responses")
         attempts = summary.get("attempts", [])
-        if len(attempts) != 1 or attempts[0].get("decoded_frames") != 202:
+        if (
+            len(attempts) != 1
+            or attempts[0].get("decoded_frames") != 202
+            or attempts[0].get("loader") != expected_loader
+        ):
             fail("attempt evidence does not cover the complete loader workflow")
         if summary.get("transmitted_bytes") != len(expected_tx):
             fail("JSON transmitted-byte count differs")

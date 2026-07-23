@@ -70,7 +70,9 @@ pump, rollover-safe isolated startup reset, active-low D5 hold/reassert gate,
 optional exact AVR compile, and the cumulative D2 loader's guarded chunk/write/
 readback/run API plus real host-CLI file orchestration through cosim, including
 exact upload logs, versioned/consecutive post-RUN heartbeat acceptance, and
-bounded heartbeat-timeout evidence, plus beeper and USART slices,
+bounded heartbeat-timeout evidence; its host-control unit separately proves
+default-off real-port recovery budgets and non-retry boundaries, plus beeper
+and USART slices,
 the full standard К555ИЕ7/74LS193 asynchronous
 load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
 К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced

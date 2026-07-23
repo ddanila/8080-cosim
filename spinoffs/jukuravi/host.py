@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
 import errno
 import fcntl
@@ -27,6 +28,7 @@ DEFAULT_BANNER_TIMEOUT = 15.0
 DEFAULT_RESET_RETRIES = 2
 DEFAULT_LOADER_TIMEOUT = 60.0
 DEFAULT_HEARTBEAT_TIMEOUT = 5.0
+DEFAULT_HEARTBEAT_RESET_RETRIES = 0
 DTR_RELEASE_SECONDS = 0.05
 
 
@@ -36,6 +38,10 @@ class SessionError(RuntimeError):
 
 class BannerTimeout(SessionError):
     """No valid session banner arrived inside the pre-banner deadline."""
+
+
+class HeartbeatTimeout(SessionError):
+    """An uploaded program stopped producing its required liveness records."""
 
 
 def parse_hex16(value: str) -> int:
@@ -245,6 +251,8 @@ class HostSession:
         self.nano_reset_requested = nano_reset_requested
         self.nano_dtr_sequence_completed = False
         self.nano_dtr_sequences_completed = 0
+        self.heartbeat_reset_retries_requested = 0
+        self.heartbeat_reset_retries_used = 0
         self.decoder = protocol.StreamDecoder()
         self.raw_rx = bytearray()
         self.raw_tx = bytearray()
@@ -283,6 +291,7 @@ class HostSession:
                 "dtr_sequence_completed": (
                     self.nano_dtr_sequences_completed > self._attempt_dtr_start
                 ),
+                "loader": copy.deepcopy(self.loader),
             }
         )
         self._attempt_number = None
@@ -427,7 +436,7 @@ class HostSession:
             deadline = time.monotonic() + timeout
             while cursor >= len(self.frames):
                 if time.monotonic() >= deadline:
-                    raise SessionError(
+                    raise HeartbeatTimeout(
                         f"heartbeat timeout after {len(events)}/{count} records"
                     )
                 self._read_frames(deadline, "while waiting for heartbeat")
@@ -636,6 +645,10 @@ class HostSession:
                 "dtr_reset_requested": self.nano_reset_requested,
                 "dtr_sequence_completed": self.nano_dtr_sequence_completed,
                 "dtr_sequences_completed": self.nano_dtr_sequences_completed,
+                "heartbeat_reset_retries_requested": (
+                    self.heartbeat_reset_retries_requested
+                ),
+                "heartbeat_reset_retries_used": self.heartbeat_reset_retries_used,
             },
             "attempts": self.attempts,
             "image": image,
@@ -650,9 +663,17 @@ def run_session_with_retries(
     session: HostSession,
     reset_retries: int,
     completion: Callable[[], None] | None = None,
+    heartbeat_reset_retries: int = 0,
 ) -> None:
-    attempt_limit = 1 + reset_retries if session.nano_reset_requested else 1
-    for number in range(1, attempt_limit + 1):
+    missing_banner_remaining = reset_retries if session.nano_reset_requested else 0
+    heartbeat_remaining = (
+        heartbeat_reset_retries if session.nano_reset_requested else 0
+    )
+    session.heartbeat_reset_retries_requested = heartbeat_reset_retries
+    session.heartbeat_reset_retries_used = 0
+    number = 0
+    while True:
+        number += 1
         session.begin_attempt(number)
         try:
             if session.nano_reset_requested:
@@ -664,7 +685,15 @@ def run_session_with_retries(
                 completion()
         except BannerTimeout as error:
             session.finish_attempt("banner_timeout", str(error))
-            if number < attempt_limit:
+            if missing_banner_remaining > 0:
+                missing_banner_remaining -= 1
+                continue
+            raise
+        except HeartbeatTimeout as error:
+            session.finish_attempt("heartbeat_timeout", str(error))
+            if heartbeat_remaining > 0:
+                heartbeat_remaining -= 1
+                session.heartbeat_reset_retries_used += 1
                 continue
             raise
         except (SessionError, OSError) as error:
@@ -685,6 +714,12 @@ def print_verdict(session: HostSession, logs: SessionLogs) -> None:
         )
     if len(session.attempts) > 1:
         print(f"JUKURAVI: session attempts {len(session.attempts)}")
+    if session.heartbeat_reset_retries_used:
+        print(
+            "JUKURAVI: heartbeat reset retries "
+            f"{session.heartbeat_reset_retries_used}/"
+            f"{session.heartbeat_reset_retries_requested}"
+        )
     print(
         f"JUKURAVI: protocol={protocol_version:02X} rom={rom_version:02X} "
         f"image_crc16={crc_hi:02X}{crc_lo:02X}"
@@ -798,6 +833,12 @@ def make_parser() -> argparse.ArgumentParser:
         help="seconds allowed between required heartbeat records",
     )
     parser.add_argument(
+        "--heartbeat-reset-retries",
+        type=parse_nonnegative_int,
+        default=DEFAULT_HEARTBEAT_RESET_RETRIES,
+        help="extra full DTR/reset/upload attempts after a heartbeat gap",
+    )
+    parser.add_argument(
         "--no-nano-reset",
         action="store_true",
         help="do not restart the Nano through DTR before a --port session",
@@ -833,6 +874,20 @@ def main() -> int:
     if args.load_only and args.heartbeat_count:
         print(
             "JUKURAVI: --load-only conflicts with --heartbeat-count",
+            file=sys.stderr,
+        )
+        return 2
+    if args.heartbeat_reset_retries and not args.heartbeat_count:
+        print(
+            "JUKURAVI: --heartbeat-reset-retries requires --heartbeat-count",
+            file=sys.stderr,
+        )
+        return 2
+    if args.heartbeat_reset_retries and (
+        args.port is None or args.no_nano_reset
+    ):
+        print(
+            "JUKURAVI: --heartbeat-reset-retries requires reset-enabled --port",
             file=sys.stderr,
         )
         return 2
@@ -895,7 +950,12 @@ def main() -> int:
             args.heartbeat_timeout,
         )
     try:
-        run_session_with_retries(session, args.reset_retries, completion)
+        run_session_with_retries(
+            session,
+            args.reset_retries,
+            completion,
+            args.heartbeat_reset_retries,
+        )
     except (SessionError, OSError) as error:
         logs.finish(session.summary("error", str(error)))
         print(f"JUKURAVI: ERROR {error}", file=sys.stderr)

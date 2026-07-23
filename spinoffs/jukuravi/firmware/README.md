@@ -606,9 +606,9 @@ analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The planned D0
 firmware ladder and the first D2 loader core are now represented by exact
 simulation checkpoints. Host file/chunk orchestration is guarded; D1
-uploaded-test heartbeat supervision is guarded as well. Automatic reset/reload
-recovery and liveness probes remain measurement-dependent work. The host
-session CLI,
+uploaded-test heartbeat supervision and its default-off bounded host recovery
+policy are guarded as well. Physical reset hookup and liveness probes remain
+measurement-dependent work. The host session CLI,
 DTR-commanded session
 restart, bounded missing-banner retry, Nano serial bridge, and isolated startup
 reset/hold are guarded separately in the parent directory.

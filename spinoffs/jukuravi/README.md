@@ -81,16 +81,19 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   enforces the minimum pulse and quiet recovery while the byte bridge remains
   gated. The board-side isolated contact remains forbidden until the SPDT S1
   reset pair is measured. Post-RUN heartbeat supervision is implemented;
-  automatic reset/re-upload recovery is not. **Implemented host checkpoints:**
+  bounded automatic reset/re-upload orchestration is implemented in the host
+  but default-off and forbidden for board use until that measurement.
+  **Implemented host checkpoints:**
   before a real `--port`
   session, `host.py` explicitly
   releases DTR for 50 ms and reasserts it, restarting the Nano and therefore
   this startup pulse on standard classic-Nano hardware. If no valid banner
   arrives within 15 seconds and no protocol frame was decoded, it repeats that
   sequence at most twice; decoded invalid banners, partial protocol evidence,
-  transport errors, and failures after a valid banner are never retried. The
-  JSON log records every attempt and successful DTR sequence separately from
-  any unobserved physical reset.
+  transport errors, and failures after a valid banner are not retried by that
+  policy. The explicit, default-off heartbeat-gap budget described below is
+  the sole post-banner exception. The JSON log records every attempt and
+  successful DTR sequence separately from any unobserved physical reset.
 - **Host tool** (Python CLI) drives the protocol and prints verdicts. It talks
   to cosim's pty during development and to the Nano's USB port on the bench —
   same code, same protocol. Every session is logged verbatim (raw stream +
@@ -349,8 +352,9 @@ A Nano is sufficient for every stage except the optional bus-master stage
   recovery are boundary-tested before the bridge can run. Active-low D5 can
   hold or reassert that isolated drive without entering the serial stream; its
   release and reassertion boundaries are guarded. The S1 contact side and
-  liveness probes remain gated. Uploaded-test heartbeat supervision is guarded;
-  automatic reset/re-upload recovery remains future work.
+  liveness probes remain gated. Uploaded-test heartbeat supervision and its
+  default-off bounded host recovery policy are guarded; the board-side reset
+  contact remains future measurement work.
   **Host-controlled session-reset checkpoint implemented:** real `--port`
   sessions perform a release/wait/assert DTR sequence before reading, flush
   stale bytes, and log requested/completed state. Mocked modem-control ordering
@@ -358,8 +362,10 @@ A Nano is sufficient for every stage except the optional bus-master stage
   **Missing-banner recovery checkpoint implemented:** reset-enabled `--port`
   sessions use a 15-second pre-banner deadline and at most two extra attempts,
   each beginning with a fresh DTR sequence. Any decoded protocol frame stops
-  retry permanently; bounded retry, partial/post-banner failure, and reset-off
-  behavior are guarded, and per-attempt byte/frame/reset evidence is retained.
+  that missing-banner retry policy; bounded retry, partial/post-banner failure,
+  and reset-off behavior are guarded, and per-attempt byte/frame/reset evidence
+  is retained. Only the separately enabled heartbeat-gap policy below may
+  recover after a completed RUN.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
   ROM: on a host command ("load at address, N bytes, payload, checksum") the
   ROM writes the received bytes into tested-good onboard RAM, verifies, and
@@ -426,9 +432,10 @@ transport used by the cosim regression and never receives modem-control
 operations. A reset-enabled `--port` session waits 15 seconds for a valid
 banner and, on an evidence-free timeout alone, makes up to two additional reset
 attempts. Use `--banner-timeout` and `--reset-retries` to change those bounds.
-Retry is disabled by `--no-nano-reset` and never occurs after any decoded
-protocol frame, so partial survey evidence cannot be erased by an automatic
-restart. A successful session creates one
+That policy is disabled by `--no-nano-reset` and never retries after any
+decoded protocol frame, so partial survey evidence cannot be erased by an
+automatic restart. The separately enabled heartbeat-gap policy acts only after
+a complete upload and RUN. A successful session creates one
 timestamp-matched `.rx.bin`, `.tx.bin`, and `.json` set. The JSON contains the
 validated image identity, every decoded frame, page masks, D84–D91 bad-page
 lists, the selected largest good window, and whether DTR reset was requested
@@ -456,9 +463,21 @@ records fail closed. `--heartbeat-timeout` (default 5 seconds) bounds each
 required record. JSON stores the required/received counts, timeout, status,
 error, and exact frame index and sequence of every accepted heartbeat. A gap,
 bad version/length/sequence, or other framed response fails the session after
-RUN without invoking the missing-banner reset retry. Automatic DTR/reset and
-re-upload after such a failure remains disabled until the board-side S1 reset
-contact measurement closes.
+RUN without invoking the missing-banner reset retry.
+
+For a reset-enabled real `--port` only, `--heartbeat-reset-retries N` opts into
+at most N complete recovery attempts after a heartbeat *gap*. It is default
+zero and rejected for `--fd`, `--no-nano-reset`, or sessions without heartbeat
+monitoring. A recovery deasserts/reasserts DTR to restart the Nano, then repeats
+the entire board-reset, banner, RAM survey, file upload, RUN, and heartbeat
+sequence. Missing-banner retries use their separate budget. Malformed or
+out-of-sequence heartbeat records, loader/protocol/transport errors, and all
+other post-banner failures still abort immediately. JSON snapshots the complete
+loader/heartbeat object inside every attempt and records requested/used
+heartbeat recovery counts alongside completed DTR sequences. This software
+readiness does not authorize connecting D4's isolated output to S1; the
+board-side reset contact remains forbidden until its continuity measurement
+closes.
 
 ## The cosim-first loop
 
@@ -490,8 +509,8 @@ guarded, as is the host's DTR-commanded session restart. Automatic
 missing-banner recovery and the Nano's local D5 reset hold are also guarded.
 The first D2 loader ROM core is guarded in cosim. Host upload orchestration is
 also guarded through the real CLI, as is bounded post-RUN heartbeat
-supervision. Automatic reset/re-upload recovery and liveness probes remain
-behind their physical measurement gates.
+supervision and the default-off host recovery policy. Physical reset hookup and
+liveness probes remain behind their measurement gates.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL
