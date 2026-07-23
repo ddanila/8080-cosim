@@ -29,8 +29,11 @@ Never upload the engineering BOM as a factory placement BOM.
 - DIP-14/16 logic sockets with the final HCT/TTL family decision.
 - 100 nF local decoupling, bulk capacitance, pullups, keyboard/video series
   resistors, diagnostic LEDs/resistors, and configuration links.
-- +5 V input connector/USB-C sink, CC resistors, fuse, TVS, clock oscillator,
-  reset supervisor, debug headers, and cable-facing keyboard/VGA headers.
+- +5 V input connector; the USB-C sink is statically closed to exact HRO
+  TYPE-C-31-M-17/C283540 by `rev-a-usb-c-candidate.md`, while live stock and
+  first-article orientation remain order-time checks. Also freeze the CC
+  resistors, fuse, TVS, clock oscillator, reset supervisor, debug headers, and
+  cable-facing keyboard/VGA headers.
 
 Recorded owner-supplied candidates are a `Z0840004PSC` 4 MHz DIP Z80 and
 `KM4164B-10` 100 ns DIP DRAM. Treat these as candidates until their actual

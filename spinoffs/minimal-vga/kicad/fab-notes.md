@@ -50,8 +50,10 @@ design-release or purchase authorization. The top-level status is tracked in
   neither GAL has been compiled, programmed, or bench-tested on the chosen device.
 - VGA timing activity is proven, but no real-ROM prompt/banner is rendered from
   the shared DRAM path.
-- Actual oscillator, reset supervisor, DRAM, ROM, GAL, socket, fuse, TVS,
-  connector, and assembly-process choices require datasheet/footprint review.
+- The exact HRO TYPE-C-31-M-17 USB-C candidate is drawing/footprint guarded.
+  Actual oscillator, reset supervisor, DRAM, ROM, GAL, socket, fuse, TVS,
+  remaining connector, and assembly-process choices still require their
+  applicable datasheet/footprint review.
 - The autorouted copper and power/return strategy need independent review.
 
 ## Regeneration commands

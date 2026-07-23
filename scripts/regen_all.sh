@@ -89,6 +89,7 @@ run python3 kicad/report_replica_bringup_verification.py
 run python3 scripts/report_replica_candidate_parts.py
 run python3 kicad/report_dual_config_bom.py
 run python3 kicad/report_replica_sourcing_readiness.py
+run python3 spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py
 run python3 scripts/report_automatic_completion_audit.py
 
 if ((deep)); then
@@ -130,10 +131,16 @@ if ((deep)); then
 fi
 
 if ((check)); then
-  git diff --exit-code -- docs/ ref/
-  echo "regen_all.sh: generated docs/ref artifacts are current"
+  git diff --exit-code -- \
+    docs/ \
+    ref/ \
+    spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md
+  echo "regen_all.sh: generated artifacts are current"
 else
-  drift=$(git status --short -- docs/ ref/)
+  drift=$(git status --short -- \
+    docs/ \
+    ref/ \
+    spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md)
   if [[ -n "$drift" ]]; then
     echo "regen_all.sh: generated artifact drift:"
     printf '%s\n' "$drift"

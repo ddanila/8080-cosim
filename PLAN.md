@@ -1349,9 +1349,13 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
 
 **Remaining before the first bare PCB:**
 
-1. **Footprint review items** automation cannot close: physical pin-1 orientation
-   of the socketed parts, and confirming the real part variants (USB-C
-   receptacle, PTC, TVS) against datasheets.
+1. **Footprint review items:** exact HRO TYPE-C-31-M-17/C283540 USB-C
+   compatibility is now checksum- and geometry-guarded in
+   `spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md`, including its six
+   contact pads, four shell tabs, body outline, and power-only CC/VBUS/GND
+   contract. Automation still cannot close physical pin-1 orientation of the
+   socketed parts, the exact PTC/TVS variants, or J3 order-time
+   stock/orientation and first-article inspection.
 2. **Run vendor DFM/preview.** The current fab package is regenerated and
    machine-verified; its Gerber/drill ZIP SHA256 is frozen in
    `docs/rev-a-manufacturing-readiness.md`. Vendor preview, live stock, and

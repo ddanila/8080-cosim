@@ -1,0 +1,63 @@
+HRO TYPE-C-31-M-17 USB-C receptacle — footprint interpretation
+================================================================
+
+Scope
+-----
+This is a compact transcription of the checksum-pinned HRO manufacturer
+drawing in `hro-type-c-31-m-17.pdf`.  It records only the facts used to accept
+Rev-A J3.  The drawing remains the authority.
+
+Exact part
+----------
+Manufacturer: HRO Electronics
+Part number: TYPE-C-31-M-17
+Construction: right-angle, surface-mount, six-contact USB Type-C receptacle
+Body: 8.94 mm wide x 6.80 mm deep x 3.16 mm high
+Rated load: DC 20 V, 5 A
+
+Contact assignment
+------------------
+A5   CC1
+A9   VBUS
+A12  GND
+B12  GND
+B9   VBUS
+B5   CC2
+
+Recommended component-side PCB layout
+-------------------------------------
+All dimensions below are millimetres, relative to the KiCad footprint origin.
+
+Contact  X      Y       copper size
+B12     -2.75  -3.18    0.90 x 1.60
+B9      -1.52  -3.18    0.80 x 1.60
+A5      -0.50  -3.18    0.70 x 1.60
+B5       0.50  -3.18    0.70 x 1.60
+A9       1.52  -3.18    0.80 x 1.60
+A12      2.75  -3.18    0.90 x 1.60
+
+The four shell-tab hole centres form an 8.64 x 3.80 mm rectangle:
+
+X       Y       plated copper     finished slot
+-4.32  -3.00   1.00 x 1.70      0.50 x 1.20
+-4.32   0.80   1.00 x 1.70      0.50 x 1.20
+ 4.32  -3.00   1.00 x 1.70      0.50 x 1.20
+ 4.32   0.80   1.00 x 1.70      0.50 x 1.20
+
+Rev-A use
+---------
+J3 is power-only.  A9/B9 feed VCC_RAW, A12/B12 and all shell tabs are GND,
+and A5/B5 each use a separate 5.1 kohm Rd pulldown to GND.  The six-contact
+part has no USB data contacts.  Its 5 A connector rating is not evidence that
+an attached USB-C source will offer the board's full planning current.
+
+Sources
+-------
+Official product page:
+https://en.krhro.com/Product-Details/722.html
+
+Manufacturer drawing mirror used for the preserved PDF:
+https://datasheet.lcsc.com/datasheet/pdf/26d9c5bff410f020782d77a1fd4062b2.pdf?productCode=C283540
+
+Preserved PDF SHA-256:
+e38df7ca56f6fa10a78f0c84ee40d26c90af25a1c6c3a692508e46bee2ee11d1

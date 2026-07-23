@@ -68,7 +68,10 @@ to factory assembly and assign/verify an orderable CPN before export.
   present.
 - `J1` is the 2-pin +5V/GND input before the fuse.
 - `J3` is an optional power-only USB-C input before the fuse. It is in parallel
-  with `J1`; use one input source at a time during bring-up.
+  with `J1`; use one input source at a time during bring-up. The exact HRO
+  TYPE-C-31-M-17 contact and shell-tab geometry is guarded by
+  `../docs/rev-a-usb-c-candidate.md`; still confirm the vendor preview and
+  first-article mouth/orientation before production.
 - `J40` is the Rev A VGA bring-up/debug output: RGB, HSYNC, VSYNC, GND, and
   BLANK_N.
 - `J40` and `J90`-`J93` have factory header candidates, but order-time review

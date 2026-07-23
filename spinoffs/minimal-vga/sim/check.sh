@@ -42,5 +42,8 @@ spinoffs/minimal-vga/kicad/check_rev_a_placement.sh
 echo "== VJUGA spin-off: Rev A footprint-vs-model check =="
 spinoffs/minimal-vga/kicad/check_rev_a_footprints.sh
 
+echo "== VJUGA spin-off: Rev A exact USB-C candidate =="
+python3 spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py
+
 echo "== VJUGA spin-off: Rev A fabrication readiness report =="
 spinoffs/minimal-vga/kicad/report_rev_a_fab_readiness.sh

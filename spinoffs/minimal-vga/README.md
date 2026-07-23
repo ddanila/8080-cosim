@@ -1,6 +1,6 @@
 # VJUGA minimal-VGA experiment
 
-Status date: 2026-07-10.
+Status date: 2026-07-23.
 
 Status: **EXPERIMENTAL / DESIGN HOLD**.
 
@@ -48,10 +48,10 @@ product.
   both the twin's own dump and cosim's `vram.bin` — so the banner is verifiable
   on the bench from analyzer captures with zero display electronics. A twin
   reference trace (`tools/vjuga_single_step/`) backs the UNO single-step rig.
-- The committed four-layer routed PCB passes the repository's KiCad DRC and
-  unconnected-item checks, **but is now stale versus the schematic**: the Phase 3
-  decode sockets exist in the schematic/connectivity (source of truth) and not
-  yet in the copper. Re-layout + DRC + fab regen is Phase 3 step (f).
+- The committed four-layer routed PCB includes the Phase 3 decode sockets and
+  observability headers and passes the repository's KiCad DRC and
+  unconnected-item checks. Independent schematic/copper and power-return review
+  still holds release.
 - The ignored `fab/minimal-vga/` package can be regenerated and its current
   Gerber/drill ZIP is internally checksummed.
 
@@ -117,6 +117,8 @@ historical placement, and the original composite/RF chain.
 - `docs/rev-a-power-budget.md`: conservative planning estimate.
 - `docs/rev-a-sourcing-plan.md`: future sourcing/assembly policy; stock must be
   rechecked at order time.
+- `docs/rev-a-usb-c-candidate.md`: checksum- and geometry-guarded exact HRO
+  TYPE-C-31-M-17/C283540 J3 candidate; order-time orientation/stock remains.
 - `kicad/fab-notes.md`: routed/package facts and release blockers.
 - `docs/rev-a-manufacturing-readiness.md`: top-level package/design status.
 - `external/`: pinned-core and third-party design notes.

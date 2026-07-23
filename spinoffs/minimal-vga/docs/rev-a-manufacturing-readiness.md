@@ -82,9 +82,13 @@ fab but their pinouts freeze in copper, so decide them first.
 2. **Footprint / pinout validation.** DONE for land-pattern correctness:
    `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
    and DIP pad counts match, across all 119 parts (it caught the USB-C shield
-   S1/SH and RES_TH slips). STILL A REVIEW ITEM: physical pin-1 orientation of
-   the socketed parts and confirming the chosen real part variants (USB-C
-   receptacle, PTC, TVS) against their datasheets.
+   S1/SH and RES_TH slips). The exact HRO TYPE-C-31-M-17/C283540 J3 candidate
+   is now checksum- and geometry-guarded by `rev-a-usb-c-candidate.md`,
+   including all six contacts, four shell tabs, body outline, and power-only
+   CC/VBUS/GND contract. STILL A REVIEW ITEM: physical pin-1 orientation of the
+   socketed parts and confirming the chosen real PTC and TVS variants against
+   their datasheets; J3 still needs an order-time stock/orientation check and
+   first-article inspection.
 
 **De-risking (freeze before copper, even though reprogrammable)**
 
