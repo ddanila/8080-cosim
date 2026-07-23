@@ -2,7 +2,7 @@
 
 Status date: 2026-07-23.
 
-Status: **D0 RUNGS 1–5E SIMULATION CHECKPOINT — FRAMEBUFFER PATTERN GUARDED**
+Status: **D0 RUNGS 1–5E + D2 LOADER CORE GUARDED IN COSIM**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
@@ -14,8 +14,9 @@ D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake,
 `diag-d0-romcheck.bin` adds the historical ROM block-1 convention self-test,
 `diag-d0-pic.bin` adds the D10/8259 interrupt-mask register test,
 `diag-d0-ppi.bin` adds the safe D27/8255 all-port register test,
-`diag-d0-pit.bin` adds the guarded D54/D55/D57 all-counter register test, and
-`diag-d0-framebuffer.bin` adds the surveyed-RAM framebuffer pattern.
+`diag-d0-pit.bin` adds the guarded D54/D55/D57 all-counter register test,
+`diag-d0-framebuffer.bin` adds the surveyed-RAM framebuffer pattern, and
+`diag-d2-loader.bin` continues from that clean path into the upload/run monitor.
 
 SHA256:
 
@@ -31,6 +32,7 @@ d102a6320f9446e103ab34a07b73ddca72907163a9444c061efdccbd47841da5  diag-d0-romche
 c75fc47b4966532c67794a317ab23b0e75c32977acb799d3e08a94d53baf2685  diag-d0-ppi.bin
 b7ab8c3c5d7b32c5402510787216e099b0adbd37d64fb2c4a01f5695eb5401cf  diag-d0-pit.bin
 d77c4a381440ed9166a24762b303c8ec0407e6d00c480a151a23c807234d7dd7  diag-d0-framebuffer.bin
+5396f33244bfac5eae25404958afdcc4c0aac8a06255f7b11e20d2f0bcb0bedf  diag-d2-loader.bin
 ```
 
 ## Build and guard
@@ -47,6 +49,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
+python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
 sync/jukuravi_d0_check.sh
 ```
 
@@ -56,9 +59,9 @@ contains 382 bytes; the local-USART image contains 509; the serial image
 contains 684; the RAM-survey image contains 1,496; the fallback image contains
 1,967; the ROM-convention, PIC, and PPI builder spans are each 2,066 bytes. The
 PIT image spans 2,317 bytes because its guarded extension follows the framed
-tables; the framebuffer image spans 2,392 bytes across two guarded extensions.
-Their identities are stored at `0x1F00`, and unused space is fail-closed `HLT`
-fill.
+tables; the framebuffer image spans 2,392 bytes across two guarded extensions;
+the loader image spans 3,012 bytes and adds a third guarded extension. Their
+identities are stored at `0x1F00`, and unused space is fail-closed `HLT` fill.
 
 The reset path is deliberately stack-free and RAM-free:
 
@@ -528,6 +531,62 @@ zero pattern writes, and 2,560 matching pixels from the existing abstract
 serializer. Separate version-8 fallback runs retain both clean and dead-D87
 physical outcomes.
 
+## Stage D2 checkpoint: chunked RAM loader
+
+`diag-d2-loader.bin` is the cumulative version-9 image. It preserves every D0
+test and the full clean framebuffer readback, then verifies a separate 452-byte
+loader extension before using it. The historical block-1 sum is `D0`, the PIT
+extension sum is `97`, the 99-byte framebuffer/loader-guard extension sum is
+`0D`, the loader extension at `0A00..0BC3` sums to `0C`, and the full-image
+self-checksum is `DF64`:
+
+```text
+banner: A5 5A 01 04 01 09 DF 64 C8
+ack:    A5 5A 81 04 01 09 DF 64 24
+ready:  A5 5A A3 04 01 FD 0A 00 4A
+```
+
+The READY payload is API version `01`, maximum chunk data `FD` (253 bytes), and
+fixed API base `0A00`. Commands use the common CRC-8/ATM frame envelope:
+
+| Direction | Type | Payload |
+|---|---:|---|
+| host → ROM | `20` LOAD | big-endian address, then 1–253 data bytes |
+| host → ROM | `22` RUN | big-endian entry address |
+| ROM → host | `A0` LOAD_RESULT | one status byte |
+| ROM → host | `A2` RUN_ACK | empty |
+| ROM → host | `A3` LOADER_READY | API version, max data, API base |
+| ROM → host | `AF` LOADER_ERROR | one status byte |
+
+Status `00` is success; `01..05` mean bad CRC, unknown command, bad length, bad
+range, and RAM readback failure. Each independently checksummed LOAD chunk must
+target `4000..D7FF`. The monitor buffers and validates the complete frame in the
+already verified framebuffer workspace, copies into the landing range, reads
+every byte back immediately, and acknowledges only an exact match. RUN accepts
+the same address range, sends and drains RUN_ACK, then jumps to the entry.
+
+The stack-free discipline remains intact through the complete RAM survey and
+framebuffer verification. Only then does the loader set SP to `FDA8`, growing
+down into the just-proven framebuffer tail. Four three-byte vectors are fixed:
+
+| Address | API | Convention |
+|---:|---|---|
+| `0A00` | SERIAL_GET | wait for a byte, return it in A |
+| `0A03` | SERIAL_PUT | transmit A and return |
+| `0A06` | RETURN | abandon the uploaded stack and re-enter the loader |
+| `0A09` | PRINT | transmit the zero-terminated string at HL |
+
+`tests/jukuravi_d2_loader_test.py` boots the exact image through the real cosim
+PTY, acknowledges the banner, checks the full clean survey and READY record,
+and exercises corrupt CRC, short LOAD, out-of-range LOAD/RUN, and unknown-type
+rejections. It loads an actual program at `4000`, executes GET, PUT, and PRINT
+through the fixed vectors, returns through `0A06`, and requires a second READY
+record. A separately corrupted loader extension reaches the ROM-fail halt and
+never announces READY.
+A second run injects a stuck-low D84 bit at `4000`, observes it in the survey,
+and proves LOAD returns status `05` rather than accepting a failed readback.
+Host-CLI file/chunk orchestration remains the next D2 checkpoint.
+
 The pixel comparison is explicitly the simulation-only framebuffer oracle. It
 does not close the unresolved physical shared-DRAM video-slot schedule, D34/X7
 levels, analog monitor behavior, or authorize a bench burn.
@@ -540,8 +599,9 @@ The same command runs `sync/beeper_check.sh`, whose HDL PIT model proves that
 D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The planned D0
-firmware ladder is now represented by exact simulation checkpoints. The next
-Jukuravi implementation stage is D1's uploaded-test heartbeat recovery and
-liveness probes. The host session CLI, DTR-commanded session restart, bounded
-missing-banner retry, Nano serial bridge, and isolated startup reset/hold are
-now guarded separately in the parent directory.
+firmware ladder and the first D2 loader core are now represented by exact
+simulation checkpoints. Host file/chunk orchestration is the next software
+step; D1 uploaded-test heartbeat recovery and liveness probes remain later
+measurement-dependent work. The host session CLI, DTR-commanded session
+restart, bounded missing-banner retry, Nano serial bridge, and isolated startup
+reset/hold are guarded separately in the parent directory.

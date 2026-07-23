@@ -17,6 +17,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
+python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -45,6 +46,8 @@ python3 tests/jukuravi_d0_framebuffer_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-framebuffer.bin
 python3 tests/jukuravi_host_cli_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-framebuffer.bin
+python3 tests/jukuravi_d2_loader_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d2-loader.bin
 python3 tests/jukuravi_host_dtr_test.py
 ./sync/jukuravi_nano_check.sh
 

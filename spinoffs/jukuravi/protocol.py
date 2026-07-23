@@ -12,7 +12,40 @@ TYPE_ACK = 0x81
 TYPE_RAM_BEGIN = 0x10
 TYPE_RAM_BLOCK = 0x11
 TYPE_RAM_END = 0x12
+TYPE_LOAD = 0x20
+TYPE_RUN = 0x22
+TYPE_LOAD_RESULT = 0xA0
+TYPE_RUN_ACK = 0xA2
+TYPE_LOADER_READY = 0xA3
+TYPE_LOADER_ERROR = 0xAF
 MAX_PAYLOAD = 255
+
+LOADER_API_VERSION = 1
+LOADER_MAX_DATA = MAX_PAYLOAD - 2
+LOADER_STATUS_OK = 0
+LOADER_STATUS_BAD_CRC = 1
+LOADER_STATUS_BAD_COMMAND = 2
+LOADER_STATUS_BAD_LENGTH = 3
+LOADER_STATUS_BAD_RANGE = 4
+LOADER_STATUS_VERIFY_FAILED = 5
+
+
+def encode_load_frame(address: int, data: bytes) -> bytes:
+    """Encode one independently checksummed loader chunk."""
+    if not 0 <= address <= 0xFFFF:
+        raise ValueError("load address does not fit 16 bits")
+    if not data:
+        raise ValueError("load chunk is empty")
+    if len(data) > LOADER_MAX_DATA:
+        raise ValueError(f"load chunk exceeds {LOADER_MAX_DATA} bytes")
+    payload = address.to_bytes(2, "big") + data
+    return encode_frame(TYPE_LOAD, payload)
+
+
+def encode_run_frame(address: int) -> bytes:
+    if not 0 <= address <= 0xFFFF:
+        raise ValueError("run address does not fit 16 bits")
+    return encode_frame(TYPE_RUN, address.to_bytes(2, "big"))
 
 
 def crc8_atm(data: bytes) -> int:

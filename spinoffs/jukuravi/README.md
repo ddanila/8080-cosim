@@ -371,6 +371,15 @@ A Nano is sufficient for every stage except the optional bus-master stage
   uploaded tests get reporting for free; in mode 0 the region
   0x4000–0xD7FF is a clean landing zone with no bank switching needed —
   specifically, the all-eight-bits-good window the D0 RAM survey adopted.
+  **Loader-core checkpoint implemented:** the cumulative version-9 image
+  reaches a separately runtime-checksummed monitor only after the D0 survey and
+  framebuffer readback. Standard CRC-8 frames load 1–253-byte chunks into
+  `4000..D7FF`, reject bad CRC/length/range, verify every RAM write by immediate
+  readback, and acknowledge before a separately framed RUN transfers control.
+  Fixed vectors at `0A00/0A03/0A06/0A09` provide serial get, serial put,
+  return-to-loader, and zero-terminated print. Exact-image cosim executes an
+  uploaded program through put/print/return and forces the verify-failure path
+  with a D84 fault. Host file/chunk orchestration is not yet implemented.
 - **Stage D3 (optional, likely never needed) — external bus master.**
   Mega-based probe via X1/`−INHIBIT`, or CPU-socket ICE. This is NOT the
   memory-upload path (that is D2, done in firmware); it exists solely for
@@ -441,8 +450,9 @@ phase-tolerant live-count predicates. The planned D0 ladder, Stage D1 host
 session CLI, Nano serial bridge, and isolated startup-reset sequencer are
 guarded, as is the host's DTR-commanded session restart. Automatic
 missing-banner recovery and the Nano's local D5 reset hold are also guarded.
-Uploaded-test heartbeat recovery and liveness probes are next, after their
-physical measurement gates close.
+The first D2 loader ROM core is guarded in cosim. Host upload orchestration is
+the next software step; uploaded-test heartbeat recovery and liveness probes
+remain behind their physical measurement gates.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

@@ -1686,7 +1686,16 @@ an active `/Q1` feedback output.
    and requires the same minimum pulse plus fresh quiet recovery on release.
    Pin polarity, long hold, release boundaries, post-ready reassertion, and
    rollover-safe timing are guarded in the compiled sketch; D5 never crosses
-   the isolation barrier and the S1 contact remains measurement-gated.
+   the isolation barrier and the S1 contact remains measurement-gated. The
+   seventh checkpoint starts Stage D2 with a cumulative version-9 ROM: after
+   the full D0 survey and framebuffer readback, a separately checksummed loader
+   accepts CRC-framed 1–253-byte chunks in `4000..D7FF`, immediately verifies
+   each RAM write, and runs an in-range entry. Fixed `0A00` serial-get, `0A03`
+   serial-put, `0A06` return, and `0A09` print vectors make uploaded programs
+   self-reporting. Exact-image cosim proves corrupt/short/range/unknown command
+   rejection, successful upload and put/print/return execution, and injected
+   RAM readback failure. Host file/chunk orchestration remains the next D2
+   checkpoint.
 
 ## Physical bring-up sequence
 
@@ -1787,6 +1796,10 @@ Once a released board and programmed parts exist:
   input to extend or reassert only the isolated D4 optocoupler drive, keeps the
   serial bridge gated, and enforces minimum assertion plus fresh recovery on
   every release; board-side S1 hookup remains measurement-gated.
+- [x] Jukuravi D2 loader ROM preserves the cumulative D0 ladder, runtime-checks
+  its own extension, verifies framed chunks in `4000..D7FF`, runs uploaded code,
+  and exposes fixed serial/print/return vectors; exact-image cosim covers both
+  executable success and injected readback failure.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

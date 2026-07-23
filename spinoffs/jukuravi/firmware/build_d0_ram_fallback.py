@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import sys
 from pathlib import Path
+from typing import Callable
 
 from build_d0_alive import (
     Assembler,
@@ -559,7 +560,9 @@ def emit_chained_pit_register_check(
     }, framebuffer_guard)
 
 
-def emit_framebuffer_pattern(asm: Assembler) -> dict[str, int | list[int]]:
+def emit_framebuffer_pattern(
+    asm: Assembler, *, success_label: str | None = None
+) -> dict[str, int | list[int]]:
     """Verify the surveyed framebuffer, draw address-XOR, and read it back."""
     lxi_h(asm, FRAMEBUFFER_BASE)
     preverify_count_offset = asm.pc + 1
@@ -586,8 +589,13 @@ def emit_framebuffer_pattern(asm: Assembler) -> dict[str, int | list[int]]:
     asm.jump(0xC2, "framebuffer_fail")
     asm.emit(0x23, 0x0B, 0x78, 0xB1)
     asm.jump(0xC2, "framebuffer_readback")
-    framebuffer_success_halt = asm.pc
-    asm.emit(0x76)
+    framebuffer_success_halt = -1
+    framebuffer_success_transfer = asm.pc
+    if success_label is None:
+        framebuffer_success_halt = asm.pc
+        asm.emit(0x76)
+    else:
+        asm.jump(0xC3, success_label)
 
     asm.label("framebuffer_fail")
     emit_failure_tone(asm, FRAMEBUFFER_FAIL_DIVISOR)
@@ -595,6 +603,7 @@ def emit_framebuffer_pattern(asm: Assembler) -> dict[str, int | list[int]]:
     asm.emit(0x76)
     return {
         "framebuffer_success_halt": framebuffer_success_halt,
+        "framebuffer_success_transfer": framebuffer_success_transfer,
         "framebuffer_fail_halt": framebuffer_fail_halt,
         "framebuffer_base": FRAMEBUFFER_BASE,
         "framebuffer_end": FRAMEBUFFER_END,
@@ -605,11 +614,35 @@ def emit_framebuffer_pattern(asm: Assembler) -> dict[str, int | list[int]]:
     }
 
 
+def emit_loader_extension_guard(asm: Assembler) -> dict[str, int]:
+    """Additively guard the post-D0 loader before transferring control to it."""
+    asm.emit(0x16, 0x00)  # MVI D,0 additive accumulator
+    lxi_h_label(asm, "loader_extension_start")
+    length_offset = asm.pc + 1
+    asm.lxi_b(0x0000)  # patched to the complete extension length
+    asm.label("loader_extension_checksum_loop")
+    asm.emit(0x7A, 0x86, 0x57)  # MOV A,D / ADD M / MOV D,A
+    asm.emit(0x23, 0x0B, 0x78, 0xB1)  # INX H / DCX B / MOV A,B / ORA C
+    asm.jump(0xC2, "loader_extension_checksum_loop")
+    asm.emit(0x7A)  # MOV A,D
+    checksum_offset = asm.pc + 1
+    asm.emit(0xFE, 0x00)  # CPI checksum (patched)
+    asm.jump(0xC2, "rom_fail")
+    asm.jump(0xC3, "loader_entry")
+    return {
+        "loader_extension_length_offset": length_offset,
+        "loader_extension_checksum_offset": checksum_offset,
+        "loader_extension_guard_pass": asm.pc,
+    }
+
+
 def build_variant(
     *, rom_version: int, identity: bytes, rom_convention: bool,
     entry_offset: int = 0x0010, pic_check: bool = False,
     compact_fallback: bool = False, ppi_check: bool = False,
     pit_check: bool = False, framebuffer_pattern: bool = False,
+    loader_emitter: Callable[[Assembler], dict[str, int | list[int] | bytes]]
+    | None = None,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     if pic_check and not rom_convention:
         raise ValueError("PIC profile requires the cumulative ROM convention")
@@ -621,6 +654,8 @@ def build_variant(
         raise ValueError("PIT profile requires the cumulative PPI profile")
     if framebuffer_pattern and not pit_check:
         raise ValueError("framebuffer profile requires the cumulative PIT profile")
+    if loader_emitter is not None and not framebuffer_pattern:
+        raise ValueError("loader profile requires the cumulative framebuffer profile")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -797,6 +832,7 @@ def build_variant(
     pit_metadata: dict[str, int | list[int]] = {}
     framebuffer_guard_metadata: dict[str, int] = {}
     framebuffer_metadata: dict[str, int | list[int]] = {}
+    loader_guard_metadata: dict[str, int] = {}
     if pit_check:
         asm.label("pit_extension_start")
         if framebuffer_pattern:
@@ -811,11 +847,49 @@ def build_variant(
         asm.label("pit_extension_end")
     if framebuffer_pattern:
         asm.label("framebuffer_extension_start")
-        framebuffer_metadata = emit_framebuffer_pattern(asm)
+        framebuffer_metadata = emit_framebuffer_pattern(
+            asm,
+            success_label="loader_guard" if loader_emitter is not None else None,
+        )
+        if loader_emitter is not None:
+            asm.label("loader_guard")
+            loader_guard_metadata = emit_loader_extension_guard(asm)
         asm.label("framebuffer_extension_end")
         success_halt = framebuffer_metadata["framebuffer_success_halt"]
 
+    loader_metadata: dict[str, int | list[int] | bytes] = {}
+    if loader_emitter is not None:
+        while asm.pc < 0x0A00:
+            asm.emit(0x76)
+        if asm.pc != 0x0A00:
+            raise ValueError("loader API vectors no longer fit at 0A00h")
+        asm.label("loader_extension_start")
+        loader_metadata = loader_emitter(asm)
+        asm.label("loader_extension_end")
+
     code = bytearray(asm.resolve())
+    if loader_emitter is not None:
+        loader_start = asm.labels["loader_extension_start"]
+        loader_end = asm.labels["loader_extension_end"]
+        loader_length = loader_end - loader_start
+        if loader_length <= 0 or loader_length > 0xFFFF:
+            raise ValueError("loader extension has invalid length")
+        loader_checksum = sum(code[loader_start:loader_end]) & 0xFF
+        code[loader_guard_metadata["loader_extension_length_offset"]] = (
+            loader_length & 0xFF
+        )
+        code[loader_guard_metadata["loader_extension_length_offset"] + 1] = (
+            loader_length >> 8
+        )
+        code[loader_guard_metadata["loader_extension_checksum_offset"]] = (
+            loader_checksum
+        )
+        loader_metadata.update({
+            "loader_extension_start": loader_start,
+            "loader_extension_end": loader_end,
+            "loader_extension_length": loader_length,
+            "loader_extension_checksum": loader_checksum,
+        })
     if framebuffer_pattern:
         framebuffer_start = asm.labels["framebuffer_extension_start"]
         framebuffer_end = asm.labels["framebuffer_extension_end"]
@@ -946,6 +1020,8 @@ def build_variant(
         **pit_metadata,
         **framebuffer_guard_metadata,
         **framebuffer_metadata,
+        **loader_guard_metadata,
+        **loader_metadata,
         **survey_metadata,
     }
     return bytes(image), metadata
