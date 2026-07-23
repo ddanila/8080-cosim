@@ -74,3 +74,14 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 - [ ] Vendor did not enable impedance control or change the 2-layer stackup.
 - [ ] Final quoted options match the locked options in `docs/replica-manufacturing-readiness.md`.
 - [ ] Upload ZIP SHA256 above is saved with the order.
+
+## Receipt and first-article handoff
+
+- [ ] Record received quantity, lot/order identity, visible damage, finish,
+      outline, drill, and connector-orientation inspection.
+- [ ] Assign a unit serial/label before assembly or rework.
+- [ ] Start a per-unit `docs/replica-first-article-record.md` copy and enter the
+      released commit, PCB/package/BOM hashes, programmed-image hashes, jumper
+      settings, and every approved deviation.
+- [ ] Do not copy the first unit's acceptance result to later units; each unit
+      receives its own manufacturing/workmanship acceptance record.

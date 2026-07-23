@@ -53,7 +53,9 @@ product.
   unconnected-item checks. Independent schematic/copper and power-return review
   still holds release.
 - The ignored `fab/minimal-vga/` package can be regenerated and its current
-  Gerber/drill ZIP is internally checksummed.
+  Gerber/drill ZIP is internally checksummed, but
+  `docs/rev-a-manufacturing-readiness.md` marks that frozen ZIP stale against
+  the compact routed board. A fresh canonical export and review are required.
 
 ### CPU choice: real Z80 + a 3-byte-patched ROM
 
@@ -161,14 +163,18 @@ Before this experiment can become an order candidate it must, at minimum:
    ~~and fold it into the Rev A physical top + GAL decode~~ **done** — the Rev A
    decode sockets the real РТ4/РЕ3 and both jumper modes boot byte-identical to
    cosim (`sim/vjuga_boot_check.sh`);
-3. render a deterministic real-ROM display result through the VGA path;
+3. ~~render a deterministic real-ROM display result through the VGA path~~
+   **waived for Rev A's bench-fixture scope** — the guarded framebuffer-capture
+   path is the physical boot oracle; VGA remains an experimental output and is
+   not required to test РУ5/РТ4/РЕ3 parts;
 4. **decode and U24 DRAM-timing equations are simulated** (item 2 and
    `sim/u24_dram_timing_check.sh`); still compile, program, and review them on
    the exact chosen GAL22V10 devices;
 5. validate DRAM, reset, clock, power, connector, and socket pinouts against
    selected parts;
 6. receive an independent schematic, copper, Gerber, drill, and power-return
-   review; and
+   review, plus full-board LVS or an explicit owner waiver that names this
+   independent review as compensating evidence; and
 7. regenerate all package artifacts after the design is frozen.
 
 Until then, work on VJUGA must not distract from the main replica's P0 closure

@@ -4,9 +4,9 @@ Status date: **2026-07-23**.
 
 Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The promoted zero-open
 main-board route and deterministic Gerber/drill ZIP pass the machine package
-gates, but this is not fabrication authorization. D2 timing and D94 shared-enable/D0 closure, remaining
-FDC-support pin closure, source-risk nets, and sourcing decisions
-still hold release.
+gates, but this is not fabrication authorization. Complete D2/D30 READY-cycle
+timing through `H`/`-BLOCK`, D94 shared-enable/D0 closure, remaining FDC-support
+pin closure, source-risk nets, and sourcing decisions still hold release.
 
 This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
 module. Owner photographs of the exact `ДГШ5.109.009 Э3` are the primary
@@ -29,6 +29,70 @@ Tape, classroom networking, mouse, and Multibus expansion are outside the
 current critical path. The VJUGA/minimal-VGA board is a separate experiment and
 is not a prerequisite for this replica, as is Jukuravi, the in-progress
 diagnostic harness for the real .009 board (`spinoffs/jukuravi/README.md`).
+
+### Physical acceptance contract
+
+The tier labels above are capability goals, not permission to improvise a pass
+on the bench. Before design release, freeze a verification row for every
+capability below with a requirement ID, test method, numeric limits where
+applicable, exact hardware/firmware configuration, evidence path, and explicit
+PASS/FAIL result:
+
+| ID | Capability | Minimum physical evidence |
+| --- | --- | --- |
+| `T1-PWR` | safe power | recorded no-IC and populated rail voltages/currents, current-limit settings, polarity, temperature observations, and discrepancy disposition |
+| `T1-BOOT` | repeatable boot | repeated cold-start/reset results from the released first article, with ROM hashes and jumper population recorded |
+| `T1-VIDEO` | usable video | stable readable Monitor output through the selected physical display/cable, with timing and level captures retained |
+| `T1-KBD` | keyboard input | every fitted key and modifier exercised through the physical keyboard and cable |
+| `T2-SW` | usable software | Monitor 3.3, BASIC, and EKDOS each reach their named physical acceptance point from a documented start state |
+| `T2-FDC` | storage | scratch-media read, write, reread, and data-compare through the selected drive/emulator and cable |
+| `T2-IO` | beeper and serial | audible beeper result plus physical serial loopback with byte/error counts |
+| `T2-PSU` | operating supply | a sustained Tier-2 session on the selected PSU with rails, current, and temperature recorded |
+| `T3-FID` | historical fidelity | as-built period-part/PROM inventory, original-style peripheral/enclosure disposition, and a like-for-like comparison record against a surviving Juku |
+
+Simulation, DRC, LVS, and package checks can satisfy analysis prerequisites,
+but they cannot close these physical rows. The first-article record must use
+`docs/replica-first-article-record.md`; later units need their own acceptance
+record rather than inheriting the first article's measurements.
+
+## Current execution dashboard
+
+Only this dashboard, **Release blockers**, and unchecked **Milestones** are the
+active project backlog. Long investigation narratives below are retained
+evidence and must not be counted as open work merely because they contain
+"remaining" or "next". New active work gets a stable ID and an explicit
+dependency/evidence link; checkbox counting alone is not a completeness audit.
+
+| ID | Workstream | State | Next gate / decision | Authority or evidence |
+| --- | --- | --- | --- | --- |
+| `MAIN-P0` | replica connectivity | BLOCKED ON OWNER EVIDENCE | execute the P0 subset of the owner measurement packet; update source and reroute only from accepted evidence | `docs/owner-measurement-shortlist.md` |
+| `MAIN-REL` | replica release | DESIGN HOLD | close `MAIN-P0`, sourcing and physical-acceptance definitions; regenerate and independently review the exact package | `docs/replica-manufacturing-readiness.md` |
+| `MAIN-BUILD` | first article | NOT AUTHORIZED | after `MAIN-REL`, order, receive, record as-built configuration, and run the staged acceptance ladder | `docs/replica-first-article-record.md` |
+| `JRV-HW` | Jukuravi harness | SOFTWARE/ROM GUARDED; HARDWARE BLOCKED | close X3/S1/testpoint measurements, freeze an exact isolated harness build, then run the first physical D0 session | `spinoffs/jukuravi/README.md` |
+| `VJ-A` | VJUGA Rev A fixture | DESIGN HOLD | resolve remaining part/orientation review, full-board LVS disposition, fresh package, and independent review | `spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md` |
+| `VJ-B` | VJUGA Rev B modular set | ORDER-SAFE CLAIM; OWNER DECISION | decide whether to buy one first-article set; do not begin B2 tape-out before B1 bench evidence | `spinoffs/minimal-vga/docs/rev-b-order-readiness.md` |
+| `CVBS` | physical video/CRT model | EVIDENCE-GATED | continue only where a named main-board bring-up question requires it | `docs/crt-cvbs-simulation-plan.md` |
+
+Priority rule: `MAIN-P0` and measurements that directly close it outrank all
+spin-off implementation. A spin-off order or scope expansion is a separate
+owner decision and never follows automatically from a green package.
+
+### Project risk and change controls
+
+Maintain these as explicit release considerations, not scattered prose:
+
+| Risk | Trigger | Required response |
+| --- | --- | --- |
+| wrong or counterfeit vintage parts | seller provenance is weak, markings disagree, or incoming test fails | quarantine the part; retain seller/lot evidence; test against a known-good fixture before seating |
+| undocumented physical configuration | board, programmed image, jumper, substitute, or rework differs from the released baseline | stop acceptance; record an as-built deviation and decide whether source, procedure, or unit must change |
+| power or connector damage | polarity/rail/continuity differs from the pre-power checklist | do not seat ICs or attach peripherals; resolve and repeat the no-IC gate |
+| measurement ambiguity | continuity or powered capture conflicts with drawing/model | retain raw evidence, open a discrepancy, and do not convert inference into copper |
+| vendor/package drift | vendor preview, capability, or regenerated output differs from the released package | reject the upload, regenerate/review, and record the new exact artifact |
+| spin-off resource diversion | a spin-off blocks or delays `MAIN-P0` work | pause the spin-off unless it directly supplies main-board evidence |
+
+The owner is the release and waiver authority. Every waiver must name the
+requirement, rationale, compensating evidence, affected configuration, and
+whether it expires after the first article.
 
 ## Verified repository state
 
@@ -1359,17 +1423,38 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
    close physical pin-1 orientation of the socketed parts, the exact TVS
    variant, F1 thermal/load qualification and first-article insertion, or J3
    order-time stock/orientation and first-article inspection.
-2. **Run vendor DFM/preview.** The current fab package is regenerated and
-   machine-verified; its Gerber/drill ZIP SHA256 is frozen in
-   `docs/rev-a-manufacturing-readiness.md`. Vendor preview, live stock, and
-   assembly-capability review remain order-time human gates.
+2. **Regenerate and review the fabrication package.** The routed source is
+   machine-verified, but `docs/rev-a-manufacturing-readiness.md` marks the
+   current frozen Gerber/drill ZIP stale against the compact 200x200 route.
+   Re-export it on the canonical Linux toolchain, freeze the new checksum, and
+   complete vendor preview, live-stock, and assembly-capability review.
+3. **Disposition full-board LVS explicitly.** The decode/observability contract
+   is guarded, but whole-board chip-accurate LVS remains incomplete. It is a
+   bare-board release gate unless the owner records a specific waiver with an
+   independent schematic/pinout/copper review as compensating evidence.
 
 Not blocking the bare board, but settle before populating: U24's corrected
 GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits
-at 4 MHz; device-specific compilation/programming remains. Also decide whether
-to formally waive the VGA release-gate item for the bench fixture. The formerly
+at 4 MHz; device-specific compilation/programming remains. The former
+real-ROM-through-VGA release item is formally out of Rev-A workbench scope:
+framebuffer capture is the physical boot oracle, while VGA remains an
+experimental output rather than a bare-board or chip-test gate. The formerly
 stale real-ROM boot wording and guard are synchronized with the passing proof.
 Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
+
+### VJUGA Rev B modular spin-off
+
+Rev B is a distinct four-board modular experiment and must not be hidden under
+the Rev-A workbench status. Its B1 CPU, memory, I/O, and backplane sources,
+mechanical mating checks, packages, and pinned backplane parts are recorded as
+order-safe in `spinoffs/minimal-vga/docs/rev-b-order-readiness.md`. Ordering one
+first-article set is therefore an explicit owner purchasing decision, not an
+automatic consequence of this plan.
+
+If ordered, B1 bench bring-up is the only next implementation phase. Record
+as-built parts and jumper settings, prove the bring-up serial/RAM result, check
+slot clearance and convention-only card orientation, and capture power and bus
+timing before authorizing duplicate boards or any B2 video-card tape-out.
 
 ### Parts and assembly preparation
 

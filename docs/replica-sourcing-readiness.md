@@ -93,18 +93,35 @@ against drawings/board photos before ordering final quantities.
 
 ## Minimum Acceptance Ladder
 
-1. Inventory received parts against `docs/replica-dual-config-bom.csv` by type and refdes group.
-2. Test DRAM and CPU-family spares before installation; reject intermittent or hot-running parts.
-3. Program or dump PROM/EPROM rows only after provenance is recorded; keep checksums with the programmer log.
-4. Install sockets first, then passives/connectors, then power-rail checks with no ICs seated.
-5. Carry `docs/replica-bringup-verification-points.md` into the private build record and close its source-risk nets as they are reached.
-6. Seat only the clock/reset/ROM-fetch minimum set first; compare bus behavior against `sync/boot_check.sh` and cosim traces.
-7. Add RAM, video, keyboard, and FDC in staged groups, never as one full-board power-on.
+1. Inventory received parts against `docs/replica-dual-config-bom.csv` by type
+   and refdes group, recording seller/lot, markings, quantity, and disposition
+   in the parts-inventory and first-article records.
+2. Keep static-sensitive parts in appropriate protective packaging and use a
+   grounded ESD-controlled work area for incoming test, programming, handling,
+   and installation.
+3. Test DRAM and CPU-family spares before installation; quarantine counterfeit,
+   intermittent, mismarked, or hot-running parts rather than silently moving
+   them into the build stock.
+4. Program or dump PROM/EPROM rows only after provenance is recorded; keep
+   checksums, device settings, adapter identity, and confidence/verify results
+   with the programmer log.
+5. Install sockets first, then passives/connectors, then power-rail checks with
+   no ICs seated. Independently review polarized parts, connectors, and pin-1
+   orientation before power.
+6. Carry `docs/replica-bringup-verification-points.md` into the per-unit
+   `docs/replica-first-article-record.md` and close its source-risk nets as they
+   are reached.
+7. Seat only the clock/reset/ROM-fetch minimum set first; compare bus behavior
+   against `sync/boot_check.sh` and cosim traces.
+8. Add RAM, video, keyboard, and FDC in staged groups, never as one full-board
+   power-on. Stop and record a discrepancy before changing a failed setup.
 
 ## Related Gates
 
 - `docs/replica-dual-config-bom.md` / `.csv`: source-of-truth BOM split.
 - `docs/replica-parts-inventory-template.md`: received-parts, acceptance-test, and PROM/EPROM programming evidence template.
+- `docs/replica-first-article-record.md`: per-unit released configuration,
+  instruments, physical acceptance, discrepancy, rework, and sign-off record.
 - `docs/replica-candidate-parts-readiness.md`: guarded MK4564-12 and FD1793B-01 static compatibility plus remaining physical gates.
 - `docs/replica-bringup-verification-points.md`: source-risk net checklist to carry into assembly and staged bring-up.
 - `docs/prom-dump-procedure.md`: PROM/EPROM dump and programming provenance.

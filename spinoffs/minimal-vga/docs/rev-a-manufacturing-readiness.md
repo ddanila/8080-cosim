@@ -112,9 +112,11 @@ fab but their pinouts freeze in copper, so decide them first.
    the superseded note at the top). Re-export the Gerber/drill package on the
    canonical (Linux) toolchain and record its new SHA256 here. THEN: vendor
    DFM/preview plus live stock and assembly-capability review at order time.
-Optional-but-recommended before order: finish the staged full-board LVS
-(twin ↔ board, beyond the decode/observability contracts) — it is exactly the
-check that catches a mis-bound pin before it is etched.
+Before order, finish the staged full-board LVS (twin ↔ board, beyond the
+decode/observability contracts), or record a specific owner waiver backed by
+independent schematic, selected-part pinout, and copper review. This is exactly
+the check that catches a mis-bound pin before it is etched; it is not silently
+optional merely because the narrower decode contract passes.
 
 Regenerate the package after every source change. Only change this status to a
 release state after the functional and review gates in `../README.md` are

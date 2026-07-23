@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D1 HOST, BRIDGE, RESET/HOLD GUARDED; PROBES NEXT.**
+Status: **D0/D1/D2 SOFTWARE GUARDED / PHYSICAL HARNESS MEASUREMENT-GATED.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -150,12 +150,15 @@ A Nano is sufficient for every stage except the optional bus-master stage
      byte?) so "serial dead" splits into *8251 dead* vs *8251 fine,
      path/cable/Nano side dead* — different beeps, different bench
      actions. Then the link proper: a train of `0x55` bytes (alternating
-     bits — a bit-width ruler) so the Nano auto-bauds and locks regardless
-     of the unresolved baud-clock divisor, then the banner (carrying ROM
-     version + self-checksum so the host knows exactly what it is talking
-     to), then await the Nano's ack with a register-loop timeout. Distinct
-     beeps for serial-confirmed vs serial-dead; if dead, all later results
-     fall back to beep codes.
+     bits — a bit-width ruler) so the physical bit width and framing can be
+     measured before trusting the link, then the banner (carrying ROM version
+     + self-checksum so the host knows exactly what it is talking to), then
+     await the Nano's ack with a register-loop timeout. The implemented Nano
+     bridge is deliberately fixed at nominal 9600 baud; it does **not**
+     auto-baud. If the measured Juku rate is outside the bridge tolerance,
+     change and re-guard the selected divisor/bridge rate before bench use.
+     Distinct beeps for serial-confirmed vs serial-dead; if dead, all later
+     results fall back to beep codes.
      **Local-test simulation checkpoint implemented:** the third exact 8 KiB
      image recovers and initializes D11, verifies the independent idle,
      holding-full, frame-active, and fully-empty transmit states around a `55`
@@ -547,12 +550,14 @@ Per the commons contract, the 8251 model lands in root `cosim/`, not here —
 this spin-off consumes it, and any bench finding it produces flows back to
 root first.
 
-## Open unknowns (measurement tasks, not blockers)
+## Physical execution blockers
 
 - Exact CPU Φ divisor from the 16 MHz master, and the PIT #2 input that
   clocks the 8251 baud (`docs/master-oscillator-boundary.md`,
-  `docs/video-pit-timing.md`). Mitigation: conservative baud + auto-baud on
-  the Nano side.
+  `docs/video-pit-timing.md`). Mitigation: measure the `0x55` training run and
+  confirm nominal 9600-baud tolerance; otherwise change and re-guard the
+  firmware divisor or fixed Nano bridge rate. No auto-baud implementation is
+  claimed.
 - X3 pinout must be continuity-confirmed before plugging anything in — check
   `docs/owner-measured-facts.md` first, as always. (The connector identity is
   already photo-closed: РГ1Н-1-4 12-contact panel socket, cable mate
@@ -566,10 +571,37 @@ root first.
   in cosim/HDL before trusting any bench RAM verdict. The rung-1 beep
   clock measurement also feeds back here (it pins the PIT input clock).
 
+These are not replica-fabrication blockers, but X3 levels/pinout, S1 contacts,
+probe loading/conditioning, and the early-refresh assumption are blockers for
+the Jukuravi physical session that depends on them. Do not call the harness
+bench-ready while any required row remains open.
+
+## Physical harness release packet
+
+Before connecting the owner board, freeze one exact bench configuration:
+
+1. exact Nano/USB adapter, MAX3232-family part and charge-pump capacitors,
+   connector/cable pinout, CTS drive, optocoupler or PhotoMOS part, LED resistor,
+   probe conditioners, power source, and grounding/isolation arrangement;
+2. a wiring/schematic drawing whose net names match the measured X3, S1, and
+   selected liveness testpoints;
+3. disconnected continuity, polarity, idle-voltage, isolation, and reset-contact
+   tests with expected limits written before connection;
+4. firmware/host/diagnostic-ROM hashes and compiler/tool versions;
+5. a first physical D0 procedure that begins with reset/liveness observation,
+   records the training-byte bit width, and stops on any unexpected level,
+   loading, current, protocol, or reset result.
+
+The first successful hardware milestone is a logged D0 banner and RAM verdict
+from the real board. Automatic reset/re-upload and liveness probes remain
+disabled until their individual board-side measurements and conditioners pass.
+
 ## Non-goals and guardrails
 
-- No hardware is designed or ordered in this spin-off; the only physical
-  artifacts are a burned EPROM, a Nano with a level shifter, and cables.
+- No custom PCB or production order is part of this spin-off. The physical
+  bench harness still needs the exact released parts, wiring, isolation,
+  conditioning, and preflight record above; "Nano with a level shifter and
+  cables" is not a sufficient build specification.
 - Work here must not distract from the main replica's P0 closure items in the
   repository-root `PLAN.md` (same rule as VJUGA).
 - This targets the owner's real board; nothing here relaxes the replica's
@@ -580,11 +612,13 @@ root first.
 Before bench connection, at minimum:
 
 1. **DONE:** 8251 model merged in root `cosim/` with guarded PTY transport;
-2. diagnostic ROM passes in cosim **and** the HDL twin, including injected
-   faults (each fault class produces the intended verdict);
+2. **DONE:** diagnostic ROM passes in cosim **and** the HDL twin, including
+   injected faults (each fault class produces the intended verdict);
 3. **DONE:** host tool round-trips the full protocol against cosim with clean
    and injected RAM failure, human-readable verdicts, and timestamped logs;
 4. X3 pinout and levels continuity-confirmed on the real board, and S1
    reset-switch contacts identified for the Nano reset line;
-5. upload-to-RAM (D2) demonstrated end-to-end in cosim before it is ever run
-   on hardware.
+5. **DONE:** upload-to-RAM (D2) demonstrated end-to-end in cosim before it is
+   ever run on hardware;
+6. exact physical harness release packet reviewed and its disconnected
+   preflight checks passed.

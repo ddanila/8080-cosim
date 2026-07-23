@@ -176,3 +176,12 @@ The Nano-side derived-clock/`-MRDC`/RESET inputs and report are guarded, but
 their board-side target nodes and conditioning may be assigned only after
 continuity identifies accessible points and voltage/polarity/loading are
 measured.
+
+Before physical connection, the root Jukuravi README's **Physical harness
+release packet** must name the exact MAX3232-family device/capacitors, isolated
+reset part and resistor, connectors/cable, probe conditioners, power/grounding
+arrangement, firmware hashes, and expected disconnected measurements. The
+implemented Juku-side `SoftwareSerial` rate is fixed at nominal 9600 baud; the
+`0x55` training bytes are a measurement/check pattern, not an auto-baud
+implementation. Any different measured rate requires a deliberate code change,
+rebuild, and repeat of the compiled-sketch guards.

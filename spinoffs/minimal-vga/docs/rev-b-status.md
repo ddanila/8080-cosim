@@ -3,7 +3,7 @@
 Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 `rev-b-modular-design.md` (concept), `rev-b-build-plan.md` (decisions + phases),
 `rev-b-execution-guide.md` (tasks + executor rules), `rev-b-bus-contract.md`
-(interface). Last updated 2026-07-17.
+(interface). Last updated 2026-07-23.
 
 ## Phase ledger
 
@@ -43,40 +43,16 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-**Stage C is done (2026-07-18): all four cards route DRC 0/0.** TF.1 closed cpu A8 by
-placement sweep (U1 x=41); TF.2 added multi-slot backplane placement; TF.3 routed the
-backplane via D1.29 (245 generator-emitted bus columns + freerouted power tail); TF.4
-verified the 4×0/0 exit gate.
+Stages C/D and the pre-order correction pass are complete. All four boards are
+recorded order-safe, including corrected package widths, through-hole USB-C,
+power LED polarity, reset pull-up, input conditioning, mating, and physical
+footprint contracts.
 
-**Stage D in progress (2026-07-18): TG.1 ✅, TG.2 ✅.** TG.1 built the mechanical
-mating contract (`mating.json` + `check_revb_mating.py`, now in the tier suite) that
-provably failed on the old geometry (cards disagreed 1 mm; the D1.30 two-bank backplane
-couldn't accept a card). TG.2 aligned every card's connectors to the contract and
-**all four boards now route DRC 0/0 at the unified 4 mm offset**; the backplane went to
-per-slot base/ext pairs (base cols F.Cu, ext cols B.Cu, tail in the top/bottom strips,
-pullups on their columns). Finding D1.33: the mate-forced 1.27 mm base/ext column
-interleave breaks the specctra DSN roundtrip, so the backplane trends deterministic;
-freerouting still closes it once the tail taps are short.
+**T1.10 is an explicit owner purchasing decision.** If approved, order one
+first-article B1 set and perform T1.11 bench bring-up. Record exact parts,
+programmed images, jumper/orientation state, power, serial/RAM result, bus
+timing, and the convention-only keying/16 mm slot-clearance observations.
+Do not authorize duplicate boards or B2 video-card tape-out until the B1 bench
+record passes and every discrepancy is dispositioned.
 
-**Stage D complete (2026-07-18): TG.1–TG.4 all done.** TG.3 — FreeCAD seated clearance
-4.16 mm at 16 mm pitch (PASS), reversed-card keying is convention-only (D1.32b, centred
-base is symmetric). TG.4 — Gerber+drill fab packages (`export_fab.sh`), power re-checked
-(~712 mA / 47 % of USB-C 1.5 A), `rev-b-order-readiness.md` written. **T1.10 is armed —
-a purchasing decision.**
-
-**Pre-order audit + backplane fix DONE (2026-07-18).** Audit caught the DIP-28 width
-bug (0.3″ footprints for 0.6″ chips — machine-checked now via `PKG_WIDTH`) and retired
-the backplane's locked columns (D1.34). Then **TH.1–TH.4 made the backplane order-safe**,
-fixing three more real defects found while pinning the BOM: **SMD USB-C** → THT GCT
-USB4085; **reversed power LED** (pad 1 = cathode); **missing RESET_N pull-up** (open-drain
-supervisor + button would have floated reset). Added input power conditioning (47 µF bulk
-+ 100 nF + a 1.1 A polyfuse in the USB branch only — D1.35), a non-DIP footprint
-physical-contract guard (`PKG_PHYS`: through-hole count / drill / pitch, negative-tested —
-D1.36), and made the reset supervisor a pinout-agnostic labelled header. **All four boards
-route DRC 0/0; mating + footprint guards in the tier suite; order-readiness lists no
-unverified footprint.**
-
-**All four boards are order-safe → T1.10** is a purchasing decision (user's call — see
-`rev-b-order-readiness.md`, incl. the 0.15 mm USB-C fab-clearance note). Then **T1.11**
-bench (hardware-blocked); **B2/B3/B4** plan at entry.
 Rule: `git pull --rebase` before every push — the remote moves mid-session.

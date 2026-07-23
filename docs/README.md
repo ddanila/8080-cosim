@@ -78,7 +78,10 @@ findings. Every status applies only to the boundary named by the report.
 - Fabrication package: `replica-manufacturing-readiness.md`,
   `replica-package-geometry-readiness.md`,
   `replica-fab-drc-disposition.md`, `replica-power-trace-readiness.md`,
-  `replica-sourcing-readiness.md`, and
+  `replica-sourcing-readiness.md`,
+  `replica-order-evidence-template.md` (vendor/order record), and
+  `replica-first-article-record.md` (per-unit as-built configuration,
+  instruments, acceptance, discrepancies, rework, and sign-off), plus
   `replica-candidate-parts-readiness.md` (guarded MK4564-12/FD1793B-01
   static compatibility with physical acceptance still held).
   Package readiness is not design release.

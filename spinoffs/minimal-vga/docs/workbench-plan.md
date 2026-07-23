@@ -1,6 +1,6 @@
 # VJUGA workbench plan
 
-Status: **PLAN / DIRECTION SET, BUILD PENDING CONFIRMATION**
+Status: **REV-A SOFTWARE/BOARD MODEL ACTIVE / HARDWARE AND RELEASE REVIEW PENDING**
 
 VJUGA is repurposed from "minimal VGA board" into a **bench fixture for the
 scarce original Juku parts**. The single-+5 V Z80 board is the simplest rig that
@@ -127,6 +127,9 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
       the behavioral DRAM sequencer to `rev-a-physical.board.json` and replacing
       the old 8-instance logical model group-by-group — is a larger effort to be
       done one group at a time keeping LVS green (existing chip-map policy).
+      Whole-board LVS is a bare-board release gate unless the owner records a
+      specific waiver backed by independent schematic, pinout, and copper
+      review; the decode-only contract must not silently stand in for it.
    d. Add the Mode-A (GAL-decode) path to the twin behind a parameter and prove
       **both modes boot byte-identical** to cosim, so each physical jumper
       setting has a simulated counterpart before fab.
@@ -174,7 +177,7 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
 | --- | --- | --- |
 | К565РУ5 DRAM | main RAM bank | boot RAM test passes; framebuffer matches cosim |
 | D8 К155РЕ3 `.039` | ROM-select pager | correct ROM bank selects; boot proceeds |
-| D6 К556РТ4 `.038` | memory-map decode | correct ROM/RAM overlay; boot proceeds (needs polarity resolution) |
+| D6 К556РТ4 `.038` | memory-map decode | corrected active-low D0/`ROM_N` level observed; correct ROM/RAM overlay and boot |
 | D2 К556РТ4 `.037` | WAIT/READY (optional) | correct wait-state timing on DRAM access |
 
 ## Done when
@@ -183,8 +186,9 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
   through the real РУ5 + D6 РТ4 + D8 РЕ3 models, byte-identical to cosim
   (`sim/vjuga_boot_check.sh`).
 - **Phase 3:** the Rev-A board sockets the scarce parts (dual-mode GAL decode),
-  the twin LVS-matches `rev-a-physical.board.json`, both decode modes boot
-  byte-identical in sim, and the fab package passes review (order candidate).
+  the twin LVS-matches `rev-a-physical.board.json` (or an explicit owner waiver
+  carries equivalent independent review), both decode modes boot byte-identical
+  in sim, and a fresh fab package passes review (order candidate).
 - **Phase 4:** the assembled baseline boots the banner in Mode A (verified by
   framebuffer readback); at least one РУ5, one РТ4, and one РЕ3 part PASS in
   Mode B; and the D6 level observation from the fixture promotes or corrects

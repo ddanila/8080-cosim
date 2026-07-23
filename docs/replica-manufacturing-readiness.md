@@ -66,6 +66,9 @@ kicad/check_replica_manufacturing_ready.sh
 ## External evidence to save after design release
 
 Use `docs/replica-order-evidence-template.md` for the private order record.
+Use `docs/replica-first-article-record.md` for each received and assembled
+physical unit; package verification and vendor evidence do not substitute for
+as-built identity or acceptance testing.
 
 - Vendor preview screenshots.
 - Quoted fabrication options and price.

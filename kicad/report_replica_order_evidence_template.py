@@ -66,6 +66,23 @@ REVIEW_CHECKS = [
     "Upload ZIP SHA256 above is saved with the order.",
 ]
 
+RECEIPT_CHECKS = [
+    (
+        "Record received quantity, lot/order identity, visible damage, finish, "
+        "outline, drill, and connector-orientation inspection."
+    ),
+    "Assign a unit serial/label before assembly or rework.",
+    (
+        "Start a per-unit `docs/replica-first-article-record.md` copy and enter "
+        "the released commit, PCB/package/BOM hashes, programmed-image hashes, "
+        "jumper settings, and every approved deviation."
+    ),
+    (
+        "Do not copy the first unit's acceptance result to later units; each "
+        "unit receives its own manufacturing/workmanship acceptance record."
+    ),
+]
+
 
 def repo_relative(path):
     try:
@@ -200,6 +217,9 @@ def build_report(fab_dir):
 
     lines.extend(["", "## Review Before Payment", ""])
     lines.extend(f"- [ ] {check}" for check in REVIEW_CHECKS)
+
+    lines.extend(["", "## Receipt and first-article handoff", ""])
+    lines.extend(f"- [ ] {check}" for check in RECEIPT_CHECKS)
 
     if failures:
         lines.extend(["", "## Failures", ""])
