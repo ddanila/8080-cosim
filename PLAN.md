@@ -1462,11 +1462,15 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
    feed the verified U40/U41 video path.
    Stage 8 closes every U24/C18 pin, its three state-feedback NC declarations,
    and every endpoint on all 19 refresh-arbitration/DRAM-timing nets (31 mapped
-   refs / 21 partitions / 3 NC pads). All eight stages require mutation
-   controls. PPI/keyboard, video, and diagnostics still lack whole-board
-   chip-accurate coverage. The unfinished LVS remains a bare-board release
-   gate unless the owner records a specific waiver with independent
-   schematic/pinout/copper review as compensating evidence.
+   refs / 21 partitions / 3 NC pads). Stage 9 closes every U30/C19 PPI pin, its
+   ten unused-port NC
+   declarations, and every endpoint on all 28 bus/decode/mode/keyboard-boundary
+   nets (32 mapped refs / 30 partitions / 10 NC pads). All nine stages require
+   mutation controls. The downstream U31/resistor/keyboard-connector network,
+   video, and diagnostics still lack whole-board chip-accurate coverage. The
+   unfinished LVS remains a bare-board release gate unless the owner records a
+   specific waiver with independent schematic/pinout/copper review as
+   compensating evidence.
 
 Not blocking the bare board, but settle before populating: U24's corrected
 GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits

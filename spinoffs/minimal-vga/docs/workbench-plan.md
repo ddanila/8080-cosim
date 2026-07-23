@@ -99,8 +99,9 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    the verified video path; its complete-instance/NC Stage 7 LVS now passes.
    U24/C18 refresh arbitration and DRAM timing now pass complete-instance Stage
    8 LVS alongside the independent behavioral timing guard. Step (f)
-   routing/DRC is **DONE** on the current 119-ref board; fab regeneration and
-   review remain.
+   U30/C19 now pass complete-instance Stage 9 LVS through the U31/R16-R23
+   keyboard boundaries. Routing/DRC is **DONE** on the current 119-ref board;
+   fab regeneration and review remain.
 
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets
@@ -162,14 +163,18 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
       state-feedback NC declarations, and every endpoint on all 19
       refresh-arbitration/DRAM-timing nets (31 mapped refs / 21 partitions /
       3 NC pads); eight representative input, output, power, NC, and open-scope
-      mutations must fail. STAGED:
+      mutations must fail. STAGE 9 DONE: `sync/rev_a_ppi_lvs.sh` maps every
+      U30/C19 pin, all ten unused-port NC declarations, and every endpoint on
+      all 28 bus/decode/mode/keyboard-boundary nets (32 mapped refs /
+      30 partitions / 10 NC pads); ten representative bus, control, keyboard,
+      mode, power, NC, and open-scope mutations must fail. STAGED:
       full chip-accurate yosys LVS of the *whole* board — mapping the tv80 core
       and the behavioral DRAM sequencer and replacing the old 8-instance logical
       model group-by-group — remains a larger effort. Exact coverage and the
       remaining groups are recorded in `docs/rev-a-lvs-coverage.md`.
       Whole-board LVS is a bare-board release gate unless the owner records a
       specific waiver backed by independent schematic, pinout, and copper
-      review; the eight physical stages must not silently stand in for it.
+      review; the nine physical stages must not silently stand in for it.
    d. Add the Mode-A (GAL-decode) path to the twin behind a parameter and prove
       **both modes boot byte-identical** to cosim, so each physical jumper
       setting has a simulated counterpart before fab.

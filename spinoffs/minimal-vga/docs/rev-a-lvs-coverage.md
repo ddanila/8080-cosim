@@ -2,9 +2,9 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 8 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 9 PASS / WHOLE BOARD INCOMPLETE**.
 
-Eight independently authored physical-board LVS slices are executable:
+Nine independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
@@ -15,6 +15,7 @@ spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_timing_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_ppi_lvs.sh
 ```
 
 They compare their structural HDL with `kicad/rev-a-physical.board.json`
@@ -186,12 +187,35 @@ declaration, falsely declaring U24.20 NC, and adding an otherwise-unmapped
 U30.18 endpoint to `WAIT_N`. Together they prove representative decode,
 refresh, input/output, power, no-connect, and endpoint-closure sensitivity.
 
+## Closed in stage 9
+
+`rev_a_ppi_lvs.sh` makes the U30 82C55 PPI and C19 decoupler complete owned
+instances. It maps all 40 U30 pads, including A0/A1, the eight-bit data bus,
+reset and I/O decode controls, four encoded-row inputs, eight column-driver
+outputs, the PC0/PC1 memory-mode outputs, and ten explicit unused-port
+no-connects.
+
+The comparison maps 32 references: two complete PPI parts and 30 exact boundary
+projections. It matches 30 connectivity partitions, matches ten NC pads, and
+proves all 28 non-power nets touched by U30 are endpoint-closed. The column
+drivers close at R16-R23 pin 1 and the encoded-row inputs close at U31, leaving
+the resistor-to-J40 and remaining encoder network for an independent keyboard
+stage.
+
+Ten temporary mutations must fail: moving U30.9 from A0 to A1, U30.34 from D0
+to D1, U30.5 from `IO_RD_N` to `IO_WR_N`, U30.13 from `KBD_ROW_A0_N` to
+`KBD_ROW_A1_N`, U30.4 from `KBD_COL0_DRV` to `KBD_COL1_DRV`, and U30.14 from
+PC0 to PC1; moving C19.1 from VCC to GND; deleting the U30.18 NC declaration;
+falsely declaring U30.10 NC; and adding an otherwise-unmapped U31.15 endpoint
+to `KBD_ROW_A0_N`. Together they prove representative bus, control, keyboard,
+mode, power, no-connect, and endpoint-closure sensitivity.
+
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- the remaining PPI pins, keyboard matrix, and keyboard connector;
+- the remaining U31 encoder, resistor-to-J40 keyboard matrix, and connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.
 

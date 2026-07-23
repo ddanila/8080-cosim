@@ -37,7 +37,7 @@ product.
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
-- Eight independently authored physical-board LVS stages pass. Stage 1 covers
+- Nine independently authored physical-board LVS stages pass. Stage 1 covers
   all POWER and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power
   boundary (17 refs / 9 partitions). Stage 2 closes all 22 decode
   socket/glue parts plus six exact boundary projections (28 refs / 37
@@ -53,10 +53,12 @@ product.
   11 partitions). Stage 7 closes every U23/C17 pin, all eight counter-output
   NC declarations, the grounded resets/second clock, and every endpoint on CLK
   (9 mapped refs / 3 partitions / 8 NC pads). Stage 8 closes every U24/C18 pin,
-  its three state-feedback NC
-  declarations, and every endpoint on all 19 refresh-arbitration/DRAM-timing
-  nets (31 mapped refs / 21 partitions / 3 NC pads). All stages include
-  mutation controls. Whole-board coverage remains incomplete; see
+  its three state-feedback NC declarations, and every endpoint on all 19
+  refresh-arbitration/DRAM-timing nets (31 mapped refs / 21 partitions /
+  3 NC pads). Stage 9 closes every U30/C19 PPI pin, ten unused-port NC pads,
+  and every endpoint on all 28 bus/decode/mode/keyboard-boundary nets (32
+  mapped refs / 30 partitions / 10 NC pads). All stages include mutation
+  controls. Whole-board coverage remains incomplete; see
   `docs/rev-a-lvs-coverage.md`.
 - U23 is retained only as an empty DNP spare socket. Its eight outputs have no
   consumers and the verified video timing/request handoff is U40/U41; generated
@@ -192,6 +194,7 @@ spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_timing_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_ppi_lvs.sh
 ```
 
 Regenerate fabrication review artifacts only after accepting that they remain
