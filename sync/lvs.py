@@ -10,6 +10,9 @@
 #   (HDL logical pins are derived automatically: A[0]->A0, ior_n->IOR_N, ...)
 #
 # Only instances present in `instances` are compared (lets us check a subset).
+# Board nets marked `"power": true` remain excluded by default for legacy HDL
+# models without supply pins. `--include-power` opts a physical-pin model into
+# those rails.
 #
 # Usage: lvs.py --hdl <yosys.json> --kicad <net.xml> --map <map.json>
 # Exit 0 = in sync, 1 = mismatch.
@@ -68,13 +71,16 @@ def main():
     ap.add_argument("--kicad", help="KiCad XML netlist (kicad-cli output)")
     ap.add_argument("--board", help="board spec JSON (KiCad-free; same connectivity)")
     ap.add_argument("--map", required=True)
+    ap.add_argument("--include-power", action="store_true",
+                    help="include board nets marked as power (physical-pin LVS)")
     a = ap.parse_args()
     if not (a.kicad or a.board):
         ap.error("need --kicad or --board")
     mp = json.load(open(a.map))
 
     _, hdl = netlist_from_yosys.load(a.hdl)
-    kic = netlist_from_kicad.load(a.kicad) if a.kicad else netlist_from_board.load(a.board)
+    kic = (netlist_from_kicad.load(a.kicad) if a.kicad
+           else netlist_from_board.load(a.board, include_power=a.include_power))
 
     # HDL: instance name maps to itself (canonical); pins auto-canonicalized.
     hdl_imap = {i: i for i in hdl if i in set(mp["instances"].values())}

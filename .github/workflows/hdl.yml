@@ -44,6 +44,9 @@ on:
       - 'spinoffs/minimal-vga/external/tv80'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
       - 'spinoffs/minimal-vga/kicad/check_rev_a_physical.py'
+      - 'spinoffs/minimal-vga/hdl/rev_a_*_lvs.v'
+      - 'spinoffs/minimal-vga/sync/rev_a_*_lvs.sh'
+      - 'spinoffs/minimal-vga/sync/rev_a_*_map.json'
       - '.github/workflows/hdl.yml'
   pull_request:
     paths:
@@ -81,6 +84,9 @@ on:
       - 'spinoffs/minimal-vga/external/tv80'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
       - 'spinoffs/minimal-vga/kicad/check_rev_a_physical.py'
+      - 'spinoffs/minimal-vga/hdl/rev_a_*_lvs.v'
+      - 'spinoffs/minimal-vga/sync/rev_a_*_lvs.sh'
+      - 'spinoffs/minimal-vga/sync/rev_a_*_map.json'
       - '.github/workflows/hdl.yml'
 
 concurrency:
@@ -111,6 +117,9 @@ jobs:
 
       - name: Run rev B io-card LVS
         run: spinoffs/minimal-vga/sync/revb_lvs.sh io
+
+      - name: Run Rev A power and clock/reset physical LVS
+        run: spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
 
   behavioral:
     runs-on: ubuntu-latest

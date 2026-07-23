@@ -50,6 +50,7 @@ jobs:
           bash -n scripts/ci_gate.sh
           sh -n spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
           bash -n spinoffs/minimal-vga/sync/revb_lvs.sh
+          bash -n spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
           python3 -m py_compile \
             kicad/apply_a7_factory_wire_split.py \
             kicad/apply_a7_factory_wire_schematic_split.py \

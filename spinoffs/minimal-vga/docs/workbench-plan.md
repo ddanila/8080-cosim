@@ -89,9 +89,11 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    **Progress:** steps (a) board model + socket contract, (b) dual-mode GAL
    equations + test vectors, (d) both decode modes boot byte-identical, and
    (e) power budget are **DONE**. Step (c) — the physical-board socket↔twin
-   contract is enforced by `check_rev_a_physical`; full chip-accurate yosys LVS
-   of the whole board is still staged (see below). Step (f) routing/DRC is
-   **DONE** on the current 119-ref board; fab regeneration and review remain.
+   contract is enforced by `check_rev_a_physical`; the first independently
+   authored physical-LVS stage now closes the POWER and CLOCK_RESET blocks,
+   J93, and the U1 power/clock/reset boundary, while whole-board chip-accurate
+   yosys LVS remains staged (see below). Step (f) routing/DRC is **DONE** on
+   the current 119-ref board; fab regeneration and review remain.
 
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets
@@ -122,11 +124,15 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    c. **LVS the twin against the board.** DONE for the new decode group: the
       РТ4/РЕ3 socket wiring (addressing, enables, outputs-into-GAL, Port C mode
       bits) is enforced against the twin's decode semantics by the
-      `DECODE_SOCKET_CONTRACT` in `check_rev_a_physical.py`. STAGED: full
-      chip-accurate yosys LVS of the *whole* board — mapping the tv80 core and
-      the behavioral DRAM sequencer to `rev-a-physical.board.json` and replacing
-      the old 8-instance logical model group-by-group — is a larger effort to be
-      done one group at a time keeping LVS green (existing chip-map policy).
+      `DECODE_SOCKET_CONTRACT` in `check_rev_a_physical.py`. STAGE 1 DONE:
+      `sync/rev_a_power_clock_reset_lvs.sh` independently compares all POWER
+      and CLOCK_RESET placement refs, J93, and the U1 power/clock/reset boundary
+      against `rev-a-physical.board.json` (17 refs / 9 partitions), including
+      power rails; moving J3.A9 to GND in a temporary model must fail. STAGED:
+      full chip-accurate yosys LVS of the *whole* board — mapping the tv80 core
+      and the behavioral DRAM sequencer and replacing the old 8-instance logical
+      model group-by-group — remains a larger effort. Exact coverage and the
+      remaining groups are recorded in `docs/rev-a-lvs-coverage.md`.
       Whole-board LVS is a bare-board release gate unless the owner records a
       specific waiver backed by independent schematic, pinout, and copper
       review; the decode-only contract must not silently stand in for it.

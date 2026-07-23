@@ -1435,10 +1435,16 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
    `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
    Perform vendor preview, live-stock, and assembly-capability review as
    order-time human gates; this machine-verified package is still design-held.
-3. **Disposition full-board LVS explicitly.** The decode/observability contract
-   is guarded, but whole-board chip-accurate LVS remains incomplete. It is a
-   bare-board release gate unless the owner records a specific waiver with an
-   independent schematic/pinout/copper review as compensating evidence.
+3. **Disposition full-board LVS explicitly — STAGE 1 DONE, remainder open.**
+   An independently authored physical netlist now closes all POWER and
+   CLOCK_RESET placement refs, J93, and the U1 clock/reset/power boundary
+   against the board model (17 refs / 9 partitions), including power nets and a
+   required J3.A9 miswire negative control
+   (`spinoffs/minimal-vga/docs/rev-a-lvs-coverage.md`). CPU/decode, DRAM/timing,
+   PPI/keyboard, video, and remaining diagnostics still lack whole-board
+   chip-accurate coverage. The unfinished LVS remains a bare-board release gate
+   unless the owner records a specific waiver with independent
+   schematic/pinout/copper review as compensating evidence.
 
 Not blocking the bare board, but settle before populating: U24's corrected
 GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits

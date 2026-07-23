@@ -8,13 +8,14 @@
 # Usage: netlist_from_board.py <board.json>
 import sys, json
 
-def load(path):
+def load(path, include_power=False):
     b = json.load(open(path))
     insts = {c["ref"]: {"type": c["type"], "pins": {}} for c in b["chips"]}
     for name, entry in b["nets"].items():
         # power-distribution nets ("power": true) are PCB-only: the HDL models have no
-        # power pins (Verilog), so they're excluded from the LVS connectivity compare.
-        if isinstance(entry, dict) and entry.get("power"):
+        # power pins (Verilog), so they're excluded from the usual logic LVS
+        # connectivity compare. Physical-block LVS models may opt in explicitly.
+        if isinstance(entry, dict) and entry.get("power") and not include_power:
             continue
         nodes = entry["nodes"] if isinstance(entry, dict) else entry
         for ref, pin in nodes:

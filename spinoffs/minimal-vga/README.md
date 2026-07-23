@@ -37,6 +37,11 @@ product.
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
+- The first independently authored physical-board LVS stage passes for all
+  POWER and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power
+  boundary (17 refs / 9 connectivity partitions), including power rails and a
+  required miswire negative control. Whole-board coverage remains incomplete;
+  see `docs/rev-a-lvs-coverage.md`.
 - The Rev A physical source has 119 refs and 135 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
   jumper plus the Phase 4 observability headers (J96 clock-control, J97 high
@@ -123,6 +128,8 @@ historical placement, and the original composite/RF chain.
 - `docs/rev-a-drc-readiness.md`: current stable KiCad 10.0.5 full-DRC result
   bound to the exact post-D1 board SHA; the matching fabrication package is
   frozen separately by its recorded ZIP checksum.
+- `docs/rev-a-lvs-coverage.md`: exact staged physical-LVS scope, negative
+  control, and the groups still outside the whole-board comparison.
 - `docs/rev-a-usb-c-candidate.md`: checksum- and geometry-guarded exact HRO
   TYPE-C-31-M-17/C283540 J3 candidate; order-time orientation/stock remains.
 - `docs/rev-a-ptc-candidate.md`: checksum-, electrical-, topology-, and
@@ -151,6 +158,12 @@ Run only the logical schematic/HDL comparison:
 
 ```sh
 spinoffs/minimal-vga/sync/check.sh
+```
+
+Run the completed first physical-board LVS stage:
+
+```sh
+spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
 ```
 
 Regenerate fabrication review artifacts only after accepting that they remain

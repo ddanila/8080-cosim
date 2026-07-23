@@ -1,0 +1,86 @@
+{
+  "_about": "Independent staged Rev A physical LVS map for the POWER and CLOCK_RESET placement blocks plus the U1 CPU boundary. Pin names are unique per physical pad so duplicated USB-C VBUS/GND contacts cannot collapse.",
+  "instances": {
+    "J1": "U_J1",
+    "J3": "U_J3",
+    "R30": "U_R30",
+    "R31": "U_R31",
+    "F1": "U_F1",
+    "D1": "U_D1",
+    "C50": "U_C50",
+    "R6": "U_R6",
+    "J93": "U_J93",
+    "U50": "U_U50",
+    "U51": "U_U51",
+    "R4": "U_R4",
+    "R5": "U_R5",
+    "J96": "U_J96",
+    "C24": "U_C24",
+    "C25": "U_C25",
+    "U1": "U_CPU_BOUNDARY"
+  },
+  "pinmaps": {
+    "kicad": {
+      "POWER_INPUT_TERMINAL": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "USB_C_POWER_HRO": {
+        "A5": "CC1_A5",
+        "B5": "CC2_B5",
+        "A9": "VBUS_A9",
+        "B9": "VBUS_B9",
+        "A12": "GND_A12",
+        "B12": "GND_B12",
+        "S1": "SHIELD_S1"
+      },
+      "R_THT": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "FUSE_THT": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "D_TVS_THT": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "C_BULK_THT": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "POWER_DEBUG_HEADER": {
+        "1": "VCC_P1",
+        "2": "GND_P2",
+        "3": "PWR_OK_P3",
+        "4": "VCC_RAW_P4"
+      },
+      "OSC_DIP14": {
+        "1": "OE_P1",
+        "7": "GND_P7",
+        "8": "CLK_P8",
+        "14": "VCC_P14"
+      },
+      "RESET_SUPERVISOR_TO92": {
+        "1": "GND_P1",
+        "2": "RESET_N_P2",
+        "3": "VCC_P3"
+      },
+      "JUMPER_1x2": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "C_DECOUPLE_THT": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "Z80_DIP40": {
+        "6": "CLK_P6",
+        "11": "VCC_P11",
+        "26": "RESET_N_P26",
+        "29": "GND_P29"
+      }
+    }
+  }
+}
