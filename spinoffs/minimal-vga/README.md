@@ -37,7 +37,7 @@ product.
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
-- Five independently authored physical-board LVS stages pass. Stage 1 covers
+- Six independently authored physical-board LVS stages pass. Stage 1 covers
   all POWER and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power
   boundary (17 refs / 9 partitions). Stage 2 closes all 22 decode
   socket/glue parts plus six exact boundary projections (28 refs / 37
@@ -47,8 +47,11 @@ product.
   every endpoint on 19 non-power DRAM-bank nets included (25 mapped refs / 21
   partitions / 8 NC pads). Stage 5 closes U20/U21 and C14/C15, including both
   grounded active-low enables and every endpoint on 25 non-power address-mux
-  nets (19 mapped refs / 27 partitions). All stages include mutation controls.
-  Whole-board coverage remains incomplete; see `docs/rev-a-lvs-coverage.md`.
+  nets (19 mapped refs / 27 partitions). Stage 6 closes every U22/C16 pin,
+  including both grounded active-high resets and the low-to-high-half cascade,
+  plus every endpoint on CLK and all eight refresh-row nets (11 mapped refs /
+  11 partitions). All stages include mutation controls. Whole-board coverage
+  remains incomplete; see `docs/rev-a-lvs-coverage.md`.
 - The Rev A physical source has 119 refs and 133 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
   jumper plus the Phase 4 observability headers (J96 clock-control, J97 high
@@ -176,6 +179,7 @@ spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
 ```
 
 Regenerate fabrication review artifacts only after accepting that they remain

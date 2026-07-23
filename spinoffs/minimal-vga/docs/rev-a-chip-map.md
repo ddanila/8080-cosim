@@ -108,8 +108,8 @@ refresh-row count while grounding both reset inputs permits counting.
   pad and all 19 non-power DRAM-bank nets. Stage 5 closes every U20/U21/C14/C15
   pad, both grounded active-low enables, and all 25 non-power address-mux nets;
   its U22 boundary also includes the corrected pin-6-to-pin-13 cascade endpoint.
-  U22's independent complete-instance Stage 6 and the remaining devices are
-  still staged.
+  Stage 6 closes every U22/C16 pin and all endpoints on CLK plus the eight
+  refresh-row nets. U23 and the remaining devices are still staged.
 - `../kicad/rev-a-physical.board.json` is the first generated physical
   schematic target using this decomposition.
 - `../kicad/rev-a-physical.kicad_sch` is generated from that target.

@@ -133,6 +133,9 @@ jobs:
       - name: Run Rev A DRAM address-mux physical LVS
         run: spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 
+      - name: Run Rev A refresh-counter physical LVS
+        run: spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
+
   behavioral:
     runs-on: ubuntu-latest
     steps:

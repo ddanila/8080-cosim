@@ -1440,7 +1440,7 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
    is superseded and must not be uploaded or ordered. Run the complete guarded
    export/integrity/render pipeline and record a new checksum before vendor
    preview, live-stock, and assembly-capability review.
-3. **Disposition full-board LVS explicitly — STAGE 5 DONE, remainder open.**
+3. **Disposition full-board LVS explicitly — STAGE 6 DONE, remainder open.**
    Stage 1 closes all POWER/CLOCK_RESET placement refs, J93, and the U1
    clock/reset/power boundary (17 refs / 9 partitions). Stage 2 independently
    closes all 22 decode socket/glue parts and every non-power external endpoint
@@ -1452,14 +1452,15 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
    U10-U17/C6-C13 pad and every endpoint on all 19 non-power DRAM-bank nets (25
    mapped refs / 21 partitions / 8 NC pads). Stage 5 closes every U20/U21/C14/C15
    pad, both grounded active-low enables, and every endpoint on all 25
-   non-power address-mux nets (19 mapped refs / 27 partitions). All five stages
-   require mutation controls. U22's static 8-bit cascade/reset topology is now
-   source- and route-guarded, while its independent Stage 6 structural LVS and
-   the remaining refresh/timing logic,
-   PPI/keyboard, video, and diagnostics still lack whole-board chip-accurate
-   coverage. The unfinished LVS remains a bare-board release gate unless the
-   owner records a specific waiver with independent schematic/pinout/copper
-   review as compensating evidence.
+   non-power address-mux nets (19 mapped refs / 27 partitions). Stage 6 closes
+   every U22/C16 pin, both grounded active-high resets, the low-to-high-half
+   cascade, and every endpoint on CLK plus all eight refresh-row nets (11
+   mapped refs / 11 partitions). All six stages require mutation controls. U23,
+   remaining refresh arbitration/U24 timing, PPI/keyboard, video, and
+   diagnostics still lack whole-board chip-accurate coverage. The unfinished
+   LVS remains a bare-board release gate unless the owner records a specific
+   waiver with independent schematic/pinout/copper review as compensating
+   evidence.
 
 Not blocking the bare board, but settle before populating: U24's corrected
 GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits

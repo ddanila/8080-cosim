@@ -1,0 +1,48 @@
+{
+  "_about": "Independent staged Rev A physical LVS map for complete U22/C16 ownership and every endpoint on CLK plus the eight non-power refresh-row nets.",
+  "no_connects": [],
+  "complete_instances": ["U22", "C16"],
+  "close_nonpower_nets_of_complete_instances": true,
+  "closed_board_nets": [
+    "CLK",
+    "REFRESH_ROW0", "REFRESH_ROW1", "REFRESH_ROW2", "REFRESH_ROW3",
+    "REFRESH_ROW4", "REFRESH_ROW5", "REFRESH_ROW6", "REFRESH_ROW7"
+  ],
+  "instances": {
+    "U22": "U_U22",
+    "C16": "U_C16",
+    "U1": "U_CPU_BOUNDARY",
+    "U20": "U_U20_BOUNDARY",
+    "U21": "U_U21_BOUNDARY",
+    "U23": "U_U23_BOUNDARY",
+    "U24": "U_U24_BOUNDARY",
+    "U50": "U_U50_BOUNDARY",
+    "R26": "U_R26_BOUNDARY",
+    "J90": "U_J90_BOUNDARY",
+    "J92": "U_J92_BOUNDARY"
+  },
+  "pinmaps": {
+    "kicad": {
+      "74HCT393_DIP14_REFRESH_LOW": {
+        "1": "P1", "2": "P2", "3": "P3", "4": "P4",
+        "5": "P5", "6": "P6", "7": "P7", "8": "P8",
+        "9": "P9", "10": "P10", "11": "P11", "12": "P12",
+        "13": "P13", "14": "P14"
+      },
+      "C_DECOUPLE_THT": {
+        "1": "P1", "2": "P2"
+      }
+    },
+    "kicad_instance": {
+      "U1": {"6": "P6"},
+      "U20": {"3": "P3", "6": "P6", "10": "P10", "13": "P13"},
+      "U21": {"3": "P3", "6": "P6", "10": "P10", "13": "P13"},
+      "U23": {"1": "P1"},
+      "U24": {"1": "P1", "8": "P8", "9": "P9", "10": "P10", "11": "P11"},
+      "U50": {"8": "P8"},
+      "R26": {"1": "P1"},
+      "J90": {"10": "P10"},
+      "J92": {"10": "P10"}
+    }
+  }
+}

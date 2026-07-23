@@ -2,9 +2,9 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 5 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 6 PASS / WHOLE BOARD INCOMPLETE**.
 
-Five independently authored physical-board LVS slices are executable:
+Six independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
@@ -12,6 +12,7 @@ spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
 ```
 
 They compare their structural HDL with `kicad/rev-a-physical.board.json`
@@ -120,14 +121,31 @@ ADDRMUX_OE_N island, and adding an otherwise-unmapped U23.3 endpoint to
 ADDRMUX_SEL. Together they prove input, output, corrected-enable power, and
 endpoint-closure sensitivity.
 
+## Closed in stage 6
+
+`rev_a_refresh_counter_lvs.sh` makes the cascaded 74HCT393 refresh counter U22
+and its C16 decoupler complete owned instances. It maps every physical pad,
+including both active-high reset inputs on GND and both U22.6 and U22.13 on
+`REFRESH_ROW3`, so the low-half Q3 output clocks the high half.
+
+The comparison maps 11 references: two complete refresh-counter parts and nine
+exact boundary projections. It matches 11 connectivity partitions and proves
+all nine non-power nets touched by U22 are endpoint-closed: CLK and
+REFRESH_ROW0-REFRESH_ROW7.
+
+Six temporary mutations must fail: moving U22.1 from CLK to REFRESH_TICK,
+moving U22.3 from REFRESH_ROW0 to REFRESH_ROW1, moving the U22.13 cascade clock
+from REFRESH_ROW3 to GND, restoring the former floating U22.2/U22.12
+REFRESH_CLR island, falsely declaring U22.8 NC, and adding an otherwise-unmapped
+U23.3 endpoint to REFRESH_ROW0. Together they prove clock input, output order,
+cascade, corrected reset power, no-connect, and endpoint-closure sensitivity.
+
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- U22's static cascade/reset source and route are guarded, but its independent
-  complete-instance Stage 6 structural slice, the remaining refresh
-  arbitration, and U24 timing are still open;
+- U23, the remaining refresh arbitration, and U24 timing;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.

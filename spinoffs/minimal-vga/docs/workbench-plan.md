@@ -146,14 +146,17 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
       STAGE 5 DONE: `sync/rev_a_dram_mux_lvs.sh` maps every U20/U21/C14/C15
       pad and every endpoint on all 25 non-power mux nets (19 mapped refs / 27
       partitions); input, output, grounded-enable, and open-scope mutations
-      must fail. STAGED:
+      must fail. STAGE 6 DONE: `sync/rev_a_refresh_counter_lvs.sh` maps every
+      U22/C16 pin and every endpoint on CLK plus all eight refresh-row nets (11
+      mapped refs / 11 partitions); clock, output, cascade, reset-island,
+      unexpected-NC, and open-scope mutations must fail. STAGED:
       full chip-accurate yosys LVS of the *whole* board — mapping the tv80 core
       and the behavioral DRAM sequencer and replacing the old 8-instance logical
       model group-by-group — remains a larger effort. Exact coverage and the
       remaining groups are recorded in `docs/rev-a-lvs-coverage.md`.
       Whole-board LVS is a bare-board release gate unless the owner records a
       specific waiver backed by independent schematic, pinout, and copper
-      review; the five physical stages must not silently stand in for it.
+      review; the six physical stages must not silently stand in for it.
    d. Add the Mode-A (GAL-decode) path to the twin behind a parameter and prove
       **both modes boot byte-identical** to cosim, so each physical jumper
       setting has a simulated counterpart before fab.
