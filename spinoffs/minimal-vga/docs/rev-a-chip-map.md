@@ -111,6 +111,8 @@ refresh-row count while grounding both reset inputs permits counting.
   Stage 6 closes every U22/C16 pin and all endpoints on CLK plus the eight
   refresh-row nets. Stage 7 closes every pin and NC declaration on the
   explicitly empty U23/C17 DNP spare socket plus every CLK endpoint. The
+  complete U24/C18 Stage 8 closes all 19 refresh-arbitration/DRAM-timing nets,
+  including the corrected pin-13 input and three state-feedback NC pads. The
   remaining devices are still staged.
 - `../kicad/rev-a-physical.board.json` is the first generated physical
   schematic target using this decomposition.

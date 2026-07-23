@@ -139,6 +139,9 @@ jobs:
       - name: Run Rev A empty spare-socket physical LVS
         run: spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
 
+      - name: Run Rev A DRAM-timing physical LVS
+        run: spinoffs/minimal-vga/sync/rev_a_dram_timing_lvs.sh
+
   behavioral:
     runs-on: ubuntu-latest
     steps:

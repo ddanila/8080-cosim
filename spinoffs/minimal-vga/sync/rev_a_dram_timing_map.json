@@ -1,0 +1,99 @@
+{
+  "_about": "Independent staged Rev A physical LVS map for complete U24/C18 ownership and every endpoint on all 19 non-power DRAM-timing/arbitration nets.",
+  "no_connects": [
+    ["U24", "21"], ["U24", "22"], ["U24", "23"]
+  ],
+  "complete_instances": ["U24", "C18"],
+  "close_nonpower_nets_of_complete_instances": true,
+  "closed_board_nets": [
+    "CLK", "RESET_N", "RAM_CE_N", "MEM_RD_N", "MEM_WR_N", "RFSH_N",
+    "VIDEO_REQ", "REFRESH_ROW0", "REFRESH_ROW1", "REFRESH_ROW2",
+    "REFRESH_ROW3", "DECODE_WAIT_N", "RAS_N", "CAS_N", "DRAM_WE_N",
+    "ADDRMUX_SEL", "WAIT_N", "VIDEO_ACK", "REFRESH_TICK"
+  ],
+  "instances": {
+    "U24": "U_U24",
+    "C18": "U_C18",
+    "U1": "U_CPU_BOUNDARY",
+    "U2": "U_ROM_BOUNDARY",
+    "U5": "U_U5_BOUNDARY",
+    "U10": "U_U10_BOUNDARY",
+    "U11": "U_U11_BOUNDARY",
+    "U12": "U_U12_BOUNDARY",
+    "U13": "U_U13_BOUNDARY",
+    "U14": "U_U14_BOUNDARY",
+    "U15": "U_U15_BOUNDARY",
+    "U16": "U_U16_BOUNDARY",
+    "U17": "U_U17_BOUNDARY",
+    "U20": "U_U20_BOUNDARY",
+    "U21": "U_U21_BOUNDARY",
+    "U22": "U_U22_BOUNDARY",
+    "U23": "U_U23_BOUNDARY",
+    "U30": "U_U30_BOUNDARY",
+    "U40": "U_U40_BOUNDARY",
+    "U41": "U_U41_BOUNDARY",
+    "U50": "U_U50_BOUNDARY",
+    "U51": "U_U51_BOUNDARY",
+    "D7": "U_D7_BOUNDARY",
+    "R5": "U_R5_BOUNDARY",
+    "R26": "U_R26_BOUNDARY",
+    "R27": "U_R27_BOUNDARY",
+    "J90": "U_J90_BOUNDARY",
+    "J91": "U_J91_BOUNDARY",
+    "J92": "U_J92_BOUNDARY",
+    "J97": "U_J97_BOUNDARY",
+    "J98": "U_J98_BOUNDARY"
+  },
+  "pinmaps": {
+    "kicad": {
+      "GAL22V10_DIP24_DRAMSEQ": {
+        "1": "P1", "2": "P2", "3": "P3", "4": "P4",
+        "5": "P5", "6": "P6", "7": "P7", "8": "P8",
+        "9": "P9", "10": "P10", "11": "P11", "12": "P12",
+        "13": "P13", "14": "P14", "15": "P15", "16": "P16",
+        "17": "P17", "18": "P18", "19": "P19", "20": "P20",
+        "21": "P21", "22": "P22", "23": "P23", "24": "P24"
+      },
+      "C_DECOUPLE_THT": {
+        "1": "P1", "2": "P2"
+      }
+    },
+    "kicad_instance": {
+      "U1": {"6": "P6", "24": "P24", "26": "P26", "28": "P28"},
+      "U2": {"22": "P22", "27": "P27"},
+      "U5": {"15": "P15", "17": "P17", "18": "P18", "22": "P22"},
+      "U10": {"3": "P3", "4": "P4", "15": "P15"},
+      "U11": {"3": "P3", "4": "P4", "15": "P15"},
+      "U12": {"3": "P3", "4": "P4", "15": "P15"},
+      "U13": {"3": "P3", "4": "P4", "15": "P15"},
+      "U14": {"3": "P3", "4": "P4", "15": "P15"},
+      "U15": {"3": "P3", "4": "P4", "15": "P15"},
+      "U16": {"3": "P3", "4": "P4", "15": "P15"},
+      "U17": {"3": "P3", "4": "P4", "15": "P15"},
+      "U20": {"1": "P1", "3": "P3", "6": "P6", "10": "P10", "13": "P13"},
+      "U21": {"1": "P1"},
+      "U22": {
+        "1": "P1", "3": "P3", "4": "P4",
+        "5": "P5", "6": "P6", "13": "P13"
+      },
+      "U23": {"1": "P1"},
+      "U30": {"35": "P35"},
+      "U40": {"2": "P2", "7": "P7", "8": "P8"},
+      "U41": {"9": "P9"},
+      "U50": {"8": "P8"},
+      "U51": {"2": "P2"},
+      "D7": {"1": "P1"},
+      "R5": {"2": "P2"},
+      "R26": {"1": "P1"},
+      "R27": {"1": "P1"},
+      "J90": {"10": "P10"},
+      "J91": {"10": "P10"},
+      "J92": {
+        "1": "P1", "2": "P2", "3": "P3", "4": "P4", "5": "P5",
+        "6": "P6", "7": "P7", "8": "P8", "10": "P10"
+      },
+      "J97": {"9": "P9"},
+      "J98": {"6": "P6", "7": "P7"}
+    }
+  }
+}

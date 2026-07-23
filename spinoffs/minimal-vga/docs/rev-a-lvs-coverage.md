@@ -2,9 +2,9 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 7 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 8 PASS / WHOLE BOARD INCOMPLETE**.
 
-Seven independently authored physical-board LVS slices are executable:
+Eight independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
@@ -14,6 +14,7 @@ spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_dram_timing_lvs.sh
 ```
 
 They compare their structural HDL with `kicad/rev-a-physical.board.json`
@@ -160,12 +161,36 @@ U31.15 endpoint to CLK. Together they prove the retained probe clock,
 grounded-inactive topology, decoupling rails, complete NC set, output
 isolation, and endpoint-closure sensitivity.
 
+## Closed in stage 8
+
+`rev_a_dram_timing_lvs.sh` makes the U24 GAL22V10 DRAM-timing/arbitration
+device and C18 decoupler complete owned instances. It maps all 24 U24 pads,
+including the corrected pin-13 `DECODE_WAIT_N` input, seven functional output
+macrocells on pins 14-20, and the three state-feedback macrocells on pins 21-23
+that are explicit PCB no-connects. Behavioral programming and timing remain
+independently guarded by `hdl/u24_dram_timing.v` and
+`sim/u24_dram_timing_check.sh`.
+
+The comparison maps 31 references: two complete timing parts and 29 exact
+boundary projections. It matches 21 connectivity partitions, matches three NC
+pads, and proves all 19 non-power nets touched by U24 are endpoint-closed.
+Those nets cover clock/reset, memory decode/read/write, observed refresh,
+video request/acknowledge, four refresh-row bits, decode/CPU wait, RAS/CAS/WE,
+address-mux select, and refresh tick.
+
+Eight temporary mutations must fail: moving U24.3 from `RAM_CE_N` to
+`MEM_RD_N`, moving U24.8 from `REFRESH_ROW0` to `REFRESH_ROW1`, moving the
+corrected U24.13 input from `DECODE_WAIT_N` to `RAS_N`, moving U24.14 from
+`RAS_N` to `CAS_N`, moving C18.1 from VCC to GND, deleting the U24.21 NC
+declaration, falsely declaring U24.20 NC, and adding an otherwise-unmapped
+U30.18 endpoint to `WAIT_N`. Together they prove representative decode,
+refresh, input/output, power, no-connect, and endpoint-closure sensitivity.
+
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- the remaining refresh arbitration and U24 timing;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.

@@ -1457,14 +1457,16 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
    cascade, and every endpoint on CLK plus all eight refresh-row nets (11
    mapped refs / 11 partitions). Stage 7 closes every U23/C17 pin, all eight
    counter-output NC declarations, the grounded resets/second clock, and every
-   endpoint on CLK (9 mapped refs / 3 partitions / 8 NC pads). All seven stages
-   require mutation controls. U23 is explicitly an empty DNP spare socket
-   because none of its counter outputs feed the verified U40/U41 video path.
-   Remaining refresh arbitration/U24 timing, PPI/keyboard, video, and
-   diagnostics still lack whole-board chip-accurate coverage. The unfinished
-   LVS remains a bare-board release gate unless the owner records a specific
-   waiver with independent schematic/pinout/copper review as compensating
-   evidence.
+   endpoint on CLK (9 mapped refs / 3 partitions / 8 NC pads). U23 is
+   explicitly an empty DNP spare socket because none of its counter outputs
+   feed the verified U40/U41 video path.
+   Stage 8 closes every U24/C18 pin, its three state-feedback NC declarations,
+   and every endpoint on all 19 refresh-arbitration/DRAM-timing nets (31 mapped
+   refs / 21 partitions / 3 NC pads). All eight stages require mutation
+   controls. PPI/keyboard, video, and diagnostics still lack whole-board
+   chip-accurate coverage. The unfinished LVS remains a bare-board release
+   gate unless the owner records a specific waiver with independent
+   schematic/pinout/copper review as compensating evidence.
 
 Not blocking the bare board, but settle before populating: U24's corrected
 GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits
