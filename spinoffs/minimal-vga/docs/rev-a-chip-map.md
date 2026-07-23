@@ -99,7 +99,9 @@ outputs enabled.
   complete decode socket/glue group, and complete U1 Z80/U2 ROM core. The core
   slice covers every U1/U2/C1/C2 pad and every endpoint on all 36 non-power
   address/data/control nets. Stage 4 additionally closes every U10-U17/C6-C13
-  pad and all 19 non-power DRAM-bank nets; remaining devices are still staged.
+  pad and all 19 non-power DRAM-bank nets. Stage 5 closes every U20/U21/C14/C15
+  pad, both grounded active-low enables, and all 25 non-power address-mux nets;
+  remaining devices are still staged.
 - `../kicad/rev-a-physical.board.json` is the first generated physical
   schematic target using this decomposition.
 - `../kicad/rev-a-physical.kicad_sch` is generated from that target.

@@ -130,6 +130,9 @@ jobs:
       - name: Run Rev A DRAM-bank physical LVS
         run: spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
 
+      - name: Run Rev A DRAM address-mux physical LVS
+        run: spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
+
   behavioral:
     runs-on: ubuntu-latest
     steps:

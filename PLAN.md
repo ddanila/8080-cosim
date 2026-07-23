@@ -1436,7 +1436,7 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
    is superseded and must not be uploaded or ordered. Run the complete guarded
    export/integrity/render pipeline and record a new checksum before vendor
    preview, live-stock, and assembly-capability review.
-3. **Disposition full-board LVS explicitly — STAGE 4 DONE, remainder open.**
+3. **Disposition full-board LVS explicitly — STAGE 5 DONE, remainder open.**
    Stage 1 closes all POWER/CLOCK_RESET placement refs, J93, and the U1
    clock/reset/power boundary (17 refs / 9 partitions). Stage 2 independently
    closes all 22 decode socket/glue parts and every non-power external endpoint
@@ -1446,8 +1446,10 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-23:
    / 2 NC pads), with address-swap, missing-NC, and open-scope controls
    (`spinoffs/minimal-vga/docs/rev-a-lvs-coverage.md`). Stage 4 closes every
    U10-U17/C6-C13 pad and every endpoint on all 19 non-power DRAM-bank nets (25
-   mapped refs / 21 partitions / 8 NC pads). All four stages require mutation
-   controls. DRAM mux/refresh/timing,
+   mapped refs / 21 partitions / 8 NC pads). Stage 5 closes every U20/U21/C14/C15
+   pad, both grounded active-low enables, and every endpoint on all 25
+   non-power address-mux nets (19 mapped refs / 27 partitions). All five stages
+   require mutation controls. Refresh/timing,
    PPI/keyboard, video, and diagnostics still lack whole-board chip-accurate
    coverage. The unfinished LVS remains a bare-board release gate unless the
    owner records a specific waiver with independent schematic/pinout/copper

@@ -54,6 +54,7 @@ jobs:
           bash -n spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
           bash -n spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
           bash -n spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
+          bash -n spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
           python3 -m py_compile \
             kicad/apply_a7_factory_wire_split.py \
             kicad/apply_a7_factory_wire_schematic_split.py \

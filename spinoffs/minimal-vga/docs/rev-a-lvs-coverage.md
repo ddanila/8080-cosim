@@ -2,15 +2,16 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 4 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 5 PASS / WHOLE BOARD INCOMPLETE**.
 
-Four independently authored physical-board LVS slices are executable:
+Five independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 ```
 
 They compare their structural HDL with `kicad/rev-a-physical.board.json`
@@ -99,15 +100,30 @@ Three temporary mutations must fail: moving U10.2 from D0 to D1, deleting the
 U10.1 no-connect declaration, and adding an otherwise-unmapped U23.3 endpoint
 to DRAM_A0.
 
+## Closed in stage 5
+
+`rev_a_dram_mux_lvs.sh` makes both 74HCT157 address muxes U20/U21 and their
+C14/C15 decouplers complete owned instances. It maps every mux pad, including
+pin 15 on each device as a second GND endpoint so the corrected active-low
+enable cannot return to a floating island.
+
+The comparison maps 19 references: four complete mux parts and 15 exact
+boundary projections. It matches 27 connectivity partitions and proves all 25
+non-power mux nets endpoint-closed: A0-A7, DRAM_A0-DRAM_A7, ADDRMUX_SEL, and
+REFRESH_ROW0-REFRESH_ROW7.
+
+Four temporary mutations must fail: moving U20.2 from A0 to A1, moving U21.4
+from DRAM_A4 to DRAM_A5, restoring the former floating U20.15/U21.15
+ADDRMUX_OE_N island, and adding an otherwise-unmapped U23.3 endpoint to
+ADDRMUX_SEL. Together they prove input, output, corrected-enable power, and
+endpoint-closure sensitivity.
+
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- DRAM address multiplexing, refresh, arbitration, and U24 timing. The stage-5
-  mux audit found and corrected U20/U21 active-low enable pins 15 on a floating
-  two-pin island; both are now grounded, but the independent mux LVS slice
-  remains to be added;
+- DRAM refresh, arbitration, and U24 timing;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.
