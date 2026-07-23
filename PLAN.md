@@ -1399,8 +1399,8 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
 - **Routing DONE and current-source DRC clean.** The 200x200 119-ref/135-net
   board contains 2,877 tracks/vias on F.Cu/B.Cu, with filled In1.Cu GND and
   In2.Cu VCC planes. The freerouting fork (v1.9) routed all 357 nets with 0
-  unrouted / 0 violations. After the exact D1 correction, stable KiCad 10.0.5 refilled
-  and saved both planes; full error-level DRC now reports 0 violations, 0
+  unrouted / 0 violations. After the exact D1 correction, stable KiCad 10.0.5
+  refilled and saved both planes; full error-level DRC now reports 0 violations, 0
   unconnected items against the exact board SHA guarded in
   `spinoffs/minimal-vga/docs/rev-a-drc-readiness.md`.
 - **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
@@ -1427,13 +1427,14 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
    close physical pin-1 orientation of the socketed parts, F1 thermal/load
    qualification, D1 surge-environment qualification, or J3/F1/D1 order-time
    stock/process and first-article inspection.
-2. **Regenerate, freeze, and run vendor DFM/preview.** The ignored fab package
-   is explicitly stale; its frozen checksum predates the compact 200x200 route
-   and the corrected D1 footprint, although current source DRC is now clean.
-   A coherent stable KiCad 10.0.5 CLI/`pcbnew` Flatpak toolchain is now
-   resolved through repository wrappers. Complete the integrated export,
-   freeze the new Gerber/drill ZIP SHA256, then perform vendor preview,
-   live-stock, and assembly-capability review as order-time human gates.
+2. **Package regeneration/freeze DONE; vendor DFM/preview remains.** The
+   coherent stable KiCad 10.0.5 CLI/`pcbnew` pipeline completed against the
+   compact post-D1 board: behavioral/LVS, ERC, DRC, fabrication, drill,
+   package-integrity, and external-render gates all pass. The current
+   Gerber/drill ZIP SHA-256 is
+   `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
+   Perform vendor preview, live-stock, and assembly-capability review as
+   order-time human gates; this machine-verified package is still design-held.
 3. **Disposition full-board LVS explicitly.** The decode/observability contract
    is guarded, but whole-board chip-accurate LVS remains incomplete. It is a
    bare-board release gate unless the owner records a specific waiver with an

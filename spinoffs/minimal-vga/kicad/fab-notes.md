@@ -1,6 +1,6 @@
 # VJUGA Rev A fabrication notes
 
-Status: **PACKAGE BASELINE EXISTS / DESIGN HOLD**.
+Status: **CURRENT PACKAGE VERIFIED / DESIGN HOLD**.
 
 The current Rev A board is a routed physical experiment generated from
 `rev-a-physical.board.json`. After the bounded D1 footprint/clearance
@@ -38,6 +38,12 @@ GND/VCC plane zones are restored and filled after SES import.)
 - engineering BOM and draft assembly BOM/CPL;
 - manual-install and post-assembly-insertion lists; and
 - mechanical, ERC, DRC, package-integrity, and vendor-preview check reports.
+
+The current guarded export completed on 2026-07-23. Its bare-PCB Gerber/drill
+ZIP is `upload/vjuga-rev-a-gerbers-drill.zip`, SHA-256
+`19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
+The package reports **PACKAGE VERIFIED / DESIGN HOLD**; vendor upload preview,
+stock/capability checks, and independent human review remain open.
 
 The exporter requires `kicad-cli` and Python `pcbnew` from the same KiCad major
 version and verifies that the Python API can load the board before writing any

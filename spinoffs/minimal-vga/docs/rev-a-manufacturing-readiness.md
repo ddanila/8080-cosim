@@ -2,35 +2,28 @@
 
 Status date: 2026-07-23.
 
-Status: **DESIGN HOLD / CURRENT SOURCE DRC CLEAN, PACKAGE STALE**.
+Status: **DESIGN HOLD / CURRENT PACKAGE VERIFIED**.
 
-The ignored fabrication directory currently contains an internally coherent
-bare-PCB package. Its upload archive is:
+The ignored fabrication directory contains the current internally coherent
+200x200 mm bare-PCB package, generated with stable KiCad 10.0.5 after the
+compact reroute, D1 DO-41 correction, and inner-plane refill. Its upload
+archive is:
 
 `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`
 
 SHA256:
 
-`75920e90151dd0f5ba54693c6b9e74bb5334d50b807a8379905a2cd48e3e180a`
+`19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`
 
-This checksum proves artifact identity only. It is not permission to upload or
-order the board.
+The source PCB SHA-256 is
+`a056d758c89801737bb285ce58f96e922cabff62d8d769d3e5c300267940b746`.
+`order-readiness.md` reports **PACKAGE VERIFIED / DESIGN HOLD**, and
+`SHA256SUMS.txt` verifies every retained upload/reference file. These checksums
+prove artifact identity only. They are not permission to upload or order the
+board.
 
-**SUPERSEDED (2026-07-17):** the board was re-laid-out from the sparse 285x285
-experiment to a compact **200x200 mm** floorplan, with parts and functional-block
-borders aligned to a 0.2" (5.08 mm) grid and decoupling caps at each chip's short
-side. It was re-placed (collision-clean, 5 mm edge keepout) and fully rerouted:
-DRC-clean at **2,873 tracks**, 0 violations, 0 unconnected. The Gerber package
-above predates the 285x285 board entirely and is now doubly stale. Because Gerber
-SHAs are KiCad-version specific, the package must be regenerated and its SHA
-re-frozen on the canonical (Linux) toolchain before any DFM/upload.
-
-**CURRENT SOURCE ADDENDUM (2026-07-23):** exact D1 qualification corrected its
-DO-35 placeholder to a DO-41 footprint and replaced one nearby `VCC_RAW`
-segment with a five-segment clearance detour. The current source therefore has
-**2,877 tracks/vias**. Stable KiCad 10.0.5 refilled and saved the inner planes after
-that correction; `rev-a-drc-readiness.md` binds 0 error-level violations, 0
-unconnected items to the exact current board SHA.
+The 2026-07-17 compact reroute and 2026-07-23 D1 correction superseded the
+earlier 285x285 package. This is the first frozen package after both changes.
 
 ## Verified package facts
 
@@ -38,25 +31,20 @@ unconnected items to the exact current board SHA.
 - Current stable KiCad 10.0.5 checks report zero error-level DRC violations, zero
   unconnected items after refilling and saving both inner planes.
 - Gerber/drill membership, deterministic ZIP metadata, checksums, drill count,
-  and external rendering have machine-generated checks (against the stale package).
-- The current source independently smoke-exports all ten Gerber/job files, one
-  Excellon drill file, and 119 position rows with stable KiCad 10.0.5. Matching
-  CLI and `pcbnew` bindings are now available through the repository's Flatpak
-  wrappers; the integrated package remains stale until the complete guarded
-  export finishes and its new checksum is recorded.
+  and external rendering pass against the current package. The ZIP has 11
+  deterministic-metadata members; Tracespace reports a 200000x200000 outline.
+- The integrated export contains all ten Gerber/job files, one Excellon drill
+  file with 887 matching PCB pad/via features, and all 119 position rows.
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
 - The routed board is 119 refs / 135 nets, filled In1.Cu GND and In2.Cu VCC
   planes, 29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
   post-assembly socket insertions. The committed copper has 2,877 tracks/vias
-  after the 200x200 reroute and bounded D1 clearance correction; the frozen
-  Gerber ZIP above predates even the 285x285 board and must be re-exported (see
-  the superseded note).
+  after the 200x200 reroute and bounded D1 clearance correction.
 - The behavioral aggregate passes both real-ROM CPU
   implementations, dual decode modes, framebuffer readback, U24 timing, LVS,
   physical-model, footprint, PCB, and DRAM guards. The current-source full DRC
-  and D1-specific static guard also pass; package generation remains stale and
-  separate.
+  and D1-specific static guard also pass.
 
 ## Release blockers
 
@@ -66,8 +54,8 @@ unconnected items to the exact current board SHA.
 - The current routed copper includes every Phase 3 socket/header and retains
   filled GND/VCC inner planes. The current post-D1 source passes full KiCad
   10.0.5 DRC at zero violations/unconnected items as well as the
-  dedicated static clearance/continuity guard. The saved Gerber package is
-  older and does not match this route.
+  dedicated static clearance/continuity guard. The frozen Gerber package now
+  matches this route; vendor preview and independent human review remain open.
 - U24's Gray-coded DRAM timing contract passes CPU read/write, RAS-only refresh,
   CPU/refresh collision handling, video arbitration, and vendored MK4564-12
   timing guards at 4 MHz. The tv80 real-ROM path uses those controls and remains
@@ -127,14 +115,11 @@ fab but their pinouts freeze in copper, so decide them first.
 
 5. **Independent review (README gate 6):** current schematic/copper and the
    regenerated Gerber/drill and power-return strategy.
-6. **Regenerate + freeze the fab package (README gate 7) — RE-FREEZE PENDING:**
-   the 2026-07-16 review-fix reroute and 2026-07-23 D1 correction superseded
-   the previously frozen ZIP (see the notes at the top). Current-source DRC is
-   clean and a matching stable KiCad 10.0.5 CLI/`pcbnew` toolchain is now
-   resolved; complete the Gerber/drill and assembly export and record its new
-   SHA256 here.
-   THEN: vendor DFM/preview plus live stock and assembly-capability review at
-   order time.
+6. **Regenerate + freeze the fab package (README gate 7) — DONE 2026-07-23:**
+   the matching stable KiCad 10.0.5 CLI/`pcbnew` pipeline completed with every
+   machine gate passing. The current ZIP SHA-256 is recorded above.
+   REMAINING: vendor DFM/preview plus live stock and assembly-capability review
+   at order time.
 Before order, finish the staged full-board LVS (twin ↔ board, beyond the
 decode/observability contracts), or record a specific owner waiver backed by
 independent schematic, selected-part pinout, and copper review. This is exactly

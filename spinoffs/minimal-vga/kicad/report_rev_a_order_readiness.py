@@ -245,8 +245,8 @@ def machine_gate_summary(out_dir):
         (
             "Excellon drill export",
             has_ready_line(drill, "READY")
-            and "- Excellon drill hits: 869" in drill
-            and "- PCB pad/via drill features: 869" in drill
+            and "- Excellon drill hits: 887" in drill
+            and "- PCB pad/via drill features: 887" in drill
             and "- Drill readiness failures: 0" in drill,
             "`drill-readiness.md` compares the exported Excellon drill file against PCB pad/via drill features and documents Edge.Cuts mounting cutouts.",
         ),
