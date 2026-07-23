@@ -869,7 +869,7 @@ Every ask below is queued with exact deliverables in
    and tied-D101 drafting (`ref/schematics/fdc-write-precomp-map.md`).
    D97, D102, and D101 are now included as structural-only HDL cells and in the
    LVS instance map. Together with structural D28/D98 coverage, this raises the
-   proved scope to 117 instances/310 nets and
+   proved scope to 117 instances/308 nets and
    checks the delay cascade, EARLY/LATE selection, Q0-to-D94 path, and Q1-to-D100
    output without guessing C16/C19 timing or resolving the four real D101
    singleton boundaries by simulation fiat.

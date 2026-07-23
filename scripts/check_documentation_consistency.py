@@ -390,6 +390,26 @@ def main() -> int:
             "LVS scope disagrees across public docs: "
             + ", ".join(f"{path}={scope[0]}/{scope[1]}" for path, scope in lvs_scope.items())
         )
+    elif lvs_scope:
+        # PLAN also records the cumulative structural-coverage checkpoint in
+        # the P0 narrative.  A net merge can leave that prose stale even when
+        # all three headline summaries were updated together, so compare every
+        # live "proved scope" claim with the public LVS scope.
+        public_lvs_scope = next(iter(lvs_scope.values()))
+        proved_scope_claims = re.findall(
+            r"proved scope to (\d+) instances/(\d+) nets",
+            core["PLAN.md"],
+        )
+        if not proved_scope_claims:
+            failures.append("PLAN has lost its cumulative proved-scope claim")
+        for instances, nets in proved_scope_claims:
+            claim = (int(instances), int(nets))
+            if claim != public_lvs_scope:
+                failures.append(
+                    "PLAN proved-scope narrative disagrees with public LVS scope: "
+                    f"{claim[0]}/{claim[1]} != "
+                    f"{public_lvs_scope[0]}/{public_lvs_scope[1]}"
+                )
 
     manufacturing = read("docs/replica-manufacturing-readiness.md")
     plan = core["PLAN.md"]
