@@ -124,6 +124,9 @@ jobs:
       - name: Run Rev A decode physical LVS
         run: spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 
+      - name: Run Rev A Z80 CPU and ROM physical LVS
+        run: spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
+
   behavioral:
     runs-on: ubuntu-latest
     steps:

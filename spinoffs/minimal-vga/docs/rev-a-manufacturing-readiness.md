@@ -120,16 +120,18 @@ fab but their pinouts freeze in copper, so decide them first.
    machine gate passing. The current ZIP SHA-256 is recorded above.
    REMAINING: vendor DFM/preview plus live stock and assembly-capability review
    at order time.
-Two independently authored physical-LVS stages pass. Stage 1 covers all POWER
+Three independently authored physical-LVS stages pass. Stage 1 covers all POWER
 and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power boundary (17
 refs / 9 partitions). Stage 2 closes all 22 decode socket/glue parts plus six
 exact non-power boundary projections (28 refs / 37 partitions / 5 NC pads).
-Both require mutation controls; exact scope is `rev-a-lvs-coverage.md`. Before
-order, finish the remaining staged full-board LVS groups (twin ↔ board), or
-record a specific owner waiver backed by independent schematic, selected-part
-pinout, and copper review. This is exactly the check that catches a mis-bound
-pin before it is etched; the two stages and narrower direct contracts do not
-make the remaining coverage optional.
+Stage 3 closes every U1 Z80 and U2 ROM pin plus C1/C2, with all endpoints on 36
+non-power core nets included (35 mapped refs / 38 partitions / 2 NC pads).
+Every stage requires mutation controls; exact scope is
+`rev-a-lvs-coverage.md`. Before order, finish the remaining staged full-board
+LVS groups (twin ↔ board), or record a specific owner waiver backed by
+independent schematic, selected-part pinout, and copper review. This is exactly
+the check that catches a mis-bound pin before it is etched; the three stages
+and narrower direct contracts do not make the remaining coverage optional.
 
 Regenerate the package after every source change. Only change this status to a
 release state after the functional and review gates in `../README.md` are

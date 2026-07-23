@@ -89,11 +89,12 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    **Progress:** steps (a) board model + socket contract, (b) dual-mode GAL
    equations + test vectors, (d) both decode modes boot byte-identical, and
    (e) power budget are **DONE**. Step (c) — the physical-board socket↔twin
-   contract is enforced by `check_rev_a_physical`; the first independently
-   authored physical-LVS stages now close the POWER/CLOCK_RESET and complete
-   decode socket/glue groups with exact boundary projections, while whole-board
-   chip-accurate yosys LVS remains staged (see below). Step (f) routing/DRC is
-   **DONE** on the current 119-ref board; fab regeneration and review remain.
+   contract is enforced by `check_rev_a_physical`; the independently
+   authored physical-LVS stages now close the POWER/CLOCK_RESET, complete
+   decode socket/glue, and complete Z80/ROM core groups with exact endpoint
+   projections, while whole-board chip-accurate yosys LVS remains staged (see
+   below). Step (f) routing/DRC is **DONE** on the current 119-ref board; fab
+   regeneration and review remain.
 
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets
@@ -132,14 +133,18 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
       DONE: `sync/rev_a_decode_lvs.sh` independently closes all 22 decode
       socket/glue parts and every non-power endpoint they touch (28 mapped refs /
       37 partitions / 5 NC pads); an RT4 output miswire and a missing inverter
-      NC declaration must both fail. STAGED:
+      NC declaration must both fail. STAGE 3 DONE:
+      `sync/rev_a_cpu_rom_lvs.sh` maps every U1 Z80 and U2 ROM pin plus C1/C2,
+      and every endpoint on their 36 non-power nets (35 mapped refs / 38
+      partitions / 2 NC pads); address-swap, missing-NC, and open-scope
+      mutations must fail. STAGED:
       full chip-accurate yosys LVS of the *whole* board — mapping the tv80 core
       and the behavioral DRAM sequencer and replacing the old 8-instance logical
       model group-by-group — remains a larger effort. Exact coverage and the
       remaining groups are recorded in `docs/rev-a-lvs-coverage.md`.
       Whole-board LVS is a bare-board release gate unless the owner records a
       specific waiver backed by independent schematic, pinout, and copper
-      review; the two physical stages must not silently stand in for it.
+      review; the three physical stages must not silently stand in for it.
    d. Add the Mode-A (GAL-decode) path to the twin behind a parameter and prove
       **both modes boot byte-identical** to cosim, so each physical jumper
       setting has a simulated counterpart before fab.

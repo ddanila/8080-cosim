@@ -1435,16 +1435,20 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-19:
    `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
    Perform vendor preview, live-stock, and assembly-capability review as
    order-time human gates; this machine-verified package is still design-held.
-3. **Disposition full-board LVS explicitly — STAGE 2 DONE, remainder open.**
+3. **Disposition full-board LVS explicitly — STAGE 3 DONE, remainder open.**
    Stage 1 closes all POWER/CLOCK_RESET placement refs, J93, and the U1
    clock/reset/power boundary (17 refs / 9 partitions). Stage 2 independently
    closes all 22 decode socket/glue parts and every non-power external endpoint
-   they touch (28 mapped refs / 37 partitions / 5 NC pads). Both require
-   mutation controls (`spinoffs/minimal-vga/docs/rev-a-lvs-coverage.md`).
-   Remaining CPU/ROM pins, DRAM/timing, PPI/keyboard, video, and diagnostics
-   still lack whole-board chip-accurate coverage. The unfinished LVS remains a
-   bare-board release gate unless the owner records a specific waiver with
-   independent schematic/pinout/copper review as compensating evidence.
+   they touch (28 mapped refs / 37 partitions / 5 NC pads). Stage 3 maps every
+   U1 Z80 and U2 ROM pin plus C1/C2 and
+   every endpoint on all 36 non-power core nets (35 mapped refs / 38 partitions
+   / 2 NC pads), with address-swap, missing-NC, and open-scope controls
+   (`spinoffs/minimal-vga/docs/rev-a-lvs-coverage.md`). All three stages require
+   mutation controls. DRAM/timing,
+   PPI/keyboard, video, and diagnostics still lack whole-board chip-accurate
+   coverage. The unfinished LVS remains a bare-board release gate unless the
+   owner records a specific waiver with independent schematic/pinout/copper
+   review as compensating evidence.
 
 Not blocking the bare board, but settle before populating: U24's corrected
 GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits

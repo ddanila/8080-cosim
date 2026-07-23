@@ -2,13 +2,14 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 2 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 3 PASS / WHOLE BOARD INCOMPLETE**.
 
-Two independently authored physical-board LVS slices are executable:
+Three independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 ```
 
 They compare their structural HDL with `kicad/rev-a-physical.board.json`
@@ -16,6 +17,8 @@ through independent maps. Unlike the older eight-instance logical comparison,
 these slices model individual physical pads, opt power rails into `sync/lvs.py`,
 compare declared no-connect pads, and identify complete (non-boundary)
 instances whose every physical pin must remain mapped and owned.
+Maps may also name endpoint-closed board nets; every physical endpoint on those
+nets must then be present in the projection.
 
 ## Closed in stage 1
 
@@ -56,18 +59,34 @@ six boundary projections. It matches 37 connectivity partitions plus all five
 intentional no-connect pads (U5.23 and U6.6/.8/.10/.12). The boundary
 projections do not claim full coverage of U1, U2, U24, U30, J97, or J98; they
 make the decode nets exact while those devices await their owning stages.
+All 35 non-power decode nets are endpoint-closed.
 
 Two temporary mutations are required to fail: moving U3.12 from DEC_ROM_N to
 DEC_RAM_N, and deleting the U6.6 no-connect declaration. These prove both
 routed-connectivity and intentional-NC sensitivity.
+
+## Closed in stage 3
+
+`rev_a_cpu_rom_lvs.sh` makes U1 Z80, U2 ROM, and their C1/C2 decouplers complete
+owned instances. It maps all 40 CPU pins and all 28 ROM pins, including the
+CPU's VCC-tied INT_N, NMI_N, and BUSRQ_N inputs and its explicit HALT_N/BUSACK_N
+no-connect pads.
+
+The comparison maps 35 references: four complete core parts and 31 exact
+boundary projections. It matches 38 connectivity partitions, both intentional
+CPU NC pads, and proves all 36 non-power core nets endpoint-closed: A0-A15,
+D0-D7, CPU controls, clock/reset/wait, and the three ROM control nets.
+
+Three temporary mutations must fail: moving U1.30 from A0 to A1, deleting the
+U1.18 no-connect declaration, and adding an otherwise-unmapped U23.3 endpoint
+to A0. The last control proves that endpoint closure rejects a newly introduced
+consumer even when the mapped partition itself would otherwise be unchanged.
 
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- the remaining CPU and ROM address/data/control pins beyond the stage-2
-  boundary projection;
 - DRAM bank, address multiplexing, refresh, arbitration, and U24 timing;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and

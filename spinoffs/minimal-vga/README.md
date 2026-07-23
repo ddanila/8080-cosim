@@ -37,11 +37,13 @@ product.
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
-- Two independently authored physical-board LVS stages pass. Stage 1 covers
+- Three independently authored physical-board LVS stages pass. Stage 1 covers
   all POWER and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power
   boundary (17 refs / 9 partitions). Stage 2 closes all 22 decode
   socket/glue parts plus six exact boundary projections (28 refs / 37
-  partitions / 5 NC pads). Both include required mutation controls.
+  partitions / 5 NC pads). Stage 3 closes every U1 Z80 and U2 ROM pin plus
+  C1/C2, with every endpoint on 36 non-power core nets included (35 mapped
+  refs / 38 partitions / 2 NC pads). All stages include mutation controls.
   Whole-board coverage remains incomplete; see `docs/rev-a-lvs-coverage.md`.
 - The Rev A physical source has 119 refs and 135 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
@@ -166,6 +168,7 @@ Run the completed physical-board LVS stages:
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
 spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 ```
 
 Regenerate fabrication review artifacts only after accepting that they remain

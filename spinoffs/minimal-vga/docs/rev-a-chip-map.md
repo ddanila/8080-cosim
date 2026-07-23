@@ -90,10 +90,10 @@ upper nibble input). PC2/PC3 are freed.
 
 - `minimal_vga_lvs.v` still uses logical blocks for adapter, DRAM bank,
   refresh, keyboard, VGA timing, and video fetch.
-- Staged physical LVS now independently closes the POWER/CLOCK_RESET group and
-  the complete decode socket/glue group. The decode slice covers all U3/U4/U5/U6
-  pads, passives, J94/J95, every non-power external endpoint those parts touch,
-  and five explicit no-connect pads; remaining devices are still staged.
+- Staged physical LVS now independently closes the POWER/CLOCK_RESET group,
+  complete decode socket/glue group, and complete U1 Z80/U2 ROM core. The core
+  slice covers every U1/U2/C1/C2 pad and every endpoint on all 36 non-power
+  address/data/control nets; remaining devices are still staged.
 - `../kicad/rev-a-physical.board.json` is the first generated physical
   schematic target using this decomposition.
 - `../kicad/rev-a-physical.kicad_sch` is generated from that target.

@@ -13,6 +13,17 @@
     "R39", "R40", "R41", "R42", "R43", "R44",
     "C26", "C27", "C28"
   ],
+  "close_nonpower_nets_of_complete_instances": true,
+  "closed_board_nets": [
+    "A11", "A12", "A13", "A14", "A15",
+    "MREQ_N", "IORQ_N", "RD_N", "WR_N",
+    "DECODE_WAIT_N", "ROM_CE_N", "MEM_RD_N", "MEM_WR_N",
+    "IO_RD_N", "IO_WR_N", "PPI_CS_N", "RAM_CE_N",
+    "DEC_ROM_N", "DEC_RAM_N", "DEC_REV", "DEC_ROE_N", "REV_OUT",
+    "RE3_D0", "RE3_D1", "RE3_D2", "RE3_D3",
+    "RE3_D4", "RE3_D5", "RE3_D6", "RE3_D7",
+    "PC0", "PC1", "PC0_N", "PC1_N", "MODE_B"
+  ],
   "instances": {
     "U5": "U_U5",
     "U3": "U_U3",

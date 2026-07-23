@@ -18,6 +18,10 @@
 # in the map, so intentional NC pads cannot silently become unowned or wired.
 # `complete_instances: [ref, ...]` additionally requires every physical pin on
 # each named (non-boundary) instance to be mapped and owned by a net or NC.
+# `closed_board_nets: [name, ...]` requires every physical endpoint of each
+# named board net to be inside the mapped projection.
+# `close_nonpower_nets_of_complete_instances: true` also requires that list to
+# include every non-power board net touched by a complete instance.
 #
 # Usage: lvs.py --hdl <yosys.json> --kicad <net.xml> --map <map.json>
 # Exit 0 = in sync, 1 = mismatch.
@@ -109,13 +113,20 @@ def main():
     unexpected_nc = set()
     complete_ok = True
     complete_errors = []
+    closed_ok = True
+    closed_errors = []
     board = None
     chip_by_ref = {}
     mapped_pins_by_ref = {}
 
-    if "no_connects" in mp or "complete_instances" in mp:
+    if (
+        "no_connects" in mp
+        or "complete_instances" in mp
+        or "closed_board_nets" in mp
+        or mp.get("close_nonpower_nets_of_complete_instances")
+    ):
         if not a.board:
-            ap.error("map no_connects/complete_instances requires --board")
+            ap.error("map no_connects/complete_instances/closed_board_nets requires --board")
         board = json.load(open(a.board))
         chip_by_ref = {chip["ref"]: chip for chip in board["chips"]}
         for ref in mp["instances"]:
@@ -173,6 +184,34 @@ def main():
                 complete_errors.append(f"{ref}.{pin}: neither connected nor declared NC")
         complete_ok = not complete_errors
 
+    closed_nets = set(mp.get("closed_board_nets", []))
+    if closed_nets:
+        mapped_pin_scope = {
+            (ref, pin) for ref, pins in mapped_pins_by_ref.items() for pin in pins
+        }
+        for net in sorted(closed_nets):
+            entry = board["nets"].get(net)
+            if entry is None:
+                closed_errors.append(f"{net}: absent from board")
+                continue
+            net_nodes = entry["nodes"] if isinstance(entry, dict) else entry
+            for ref, pin in sorted(
+                {tuple(item) for item in net_nodes} - mapped_pin_scope
+            ):
+                closed_errors.append(f"{net}: endpoint {ref}.{pin} is outside map")
+
+    if mp.get("close_nonpower_nets_of_complete_instances"):
+        touched_nonpower = set()
+        for net, entry in board["nets"].items():
+            if isinstance(entry, dict) and entry.get("power"):
+                continue
+            net_nodes = entry["nodes"] if isinstance(entry, dict) else entry
+            if any(ref in complete_refs for ref, _ in net_nodes):
+                touched_nonpower.add(net)
+        for net in sorted(touched_nonpower - closed_nets):
+            closed_errors.append(f"{net}: touches complete instance but is not declared closed")
+    closed_ok = not closed_errors
+
     print(f"LVS connectivity check ({len(mp['instances'])} mapped instances)")
     print(f"  matched nets    : {len(matched)}")
     print(f"  only in HDL     : {len(only_hdl)}")
@@ -186,10 +225,14 @@ def main():
         print(f"  complete refs   : {len(complete_refs) if complete_ok else 0}")
         for error in complete_errors:
             print(f"    [incomplete] {error}")
+    if "closed_board_nets" in mp:
+        print(f"  closed nets     : {len(closed_nets) if closed_ok else 0}")
+        for error in closed_errors:
+            print(f"    [open scope] {error}")
     for label, s in (("HDL-only", only_hdl), ("KiCad-only", only_kic)):
         for net in sorted(s, key=lambda x: sorted(x)):
             print(f"    [{label}] {{{', '.join(sorted(net))}}}")
-    ok = not only_hdl and not only_kic and nc_ok and complete_ok
+    ok = not only_hdl and not only_kic and nc_ok and complete_ok and closed_ok
     print("\n==> IN SYNC" if ok else "\n==> MISMATCH")
     return 0 if ok else 1
 
