@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D1 HOST RECOVERY, BRIDGE, RESET GUARDED; PROBES NEXT.**
+Status: **EXECUTION STARTED — D1 HOST, BRIDGE, RESET/HOLD GUARDED; PROBES NEXT.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -76,9 +76,11 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   **Implemented firmware checkpoint:** each Nano sketch start asserts D4 only
   into an optocoupler LED for 250 ms, releases it, and keeps the bridge quiet
   for 50 ms recovery. Boundary and `millis()`-rollover tests guard the portable
-  sequencer, and the actual AVR sketch compiles. The board-side isolated
-  contact remains forbidden until the SPDT S1 reset pair is measured;
-  uploaded-test heartbeat recovery and reset-hold control are not yet
+  sequencer, and the actual AVR sketch compiles. An active-low D5 service input
+  can extend reset indefinitely or reassert it after startup; release still
+  enforces the minimum pulse and quiet recovery while the byte bridge remains
+  gated. The board-side isolated contact remains forbidden until the SPDT S1
+  reset pair is measured; uploaded-test heartbeat recovery is not yet
   implemented. **Implemented host checkpoints:** before a real `--port`
   session, `host.py` explicitly
   releases DTR for 50 ms and reasserts it, restarting the Nano and therefore
@@ -343,8 +345,11 @@ A Nano is sufficient for every stage except the optional bus-master stage
   ATmega328P sketch. Overflow latches D13 without changing the evidence stream.
   **Startup-reset checkpoint implemented:** D4 drives only an optocoupler LED,
   using a boot-state pull-down; the wrap-safe 250 ms assertion and 50 ms quiet
-  recovery are boundary-tested before the bridge can run. The S1 contact side,
-  reset-hold, and liveness probes remain gated or future work.
+  recovery are boundary-tested before the bridge can run. Active-low D5 can
+  hold or reassert that isolated drive without entering the serial stream; its
+  release and reassertion boundaries are guarded. The S1 contact side and
+  liveness probes remain gated, and uploaded-test heartbeat recovery remains
+  future work.
   **Host-controlled session-reset checkpoint implemented:** real `--port`
   sessions perform a release/wait/assert DTR sequence before reading, flush
   stale bytes, and log requested/completed state. Mocked modem-control ordering
@@ -435,9 +440,9 @@ ownership, while the ROM guard covers all physical counter selects with
 phase-tolerant live-count predicates. The planned D0 ladder, Stage D1 host
 session CLI, Nano serial bridge, and isolated startup-reset sequencer are
 guarded, as is the host's DTR-commanded session restart. Automatic
-missing-banner recovery is also guarded. Reset-hold, uploaded-test heartbeat
-recovery, and liveness probes are next, after their physical measurement gates
-close.
+missing-banner recovery and the Nano's local D5 reset hold are also guarded.
+Uploaded-test heartbeat recovery and liveness probes are next, after their
+physical measurement gates close.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

@@ -10,6 +10,12 @@ namespace jukuravi {
 // reset network and CPU fetch path settle before any bytes become evidence.
 constexpr uint32_t kStartupResetPulseMs = 250;
 constexpr uint32_t kStartupResetRecoveryMs = 50;
+constexpr uint8_t kResetDrivePin = 4;
+constexpr uint8_t kResetHoldPin = 5;
+
+// D5 uses INPUT_PULLUP. A service jumper or maintained switch to Nano GND asks
+// for reset, while an open or disconnected control fails safe to AUTO mode.
+constexpr bool resetHoldRequested(bool input_high) { return !input_high; }
 
 struct StartupResetState {
   bool asserted;
@@ -19,21 +25,28 @@ struct StartupResetState {
 class StartupResetSequencer {
  public:
   void begin(uint32_t now_ms) {
-    started_ms_ = now_ms;
+    phase_started_ms_ = now_ms;
     phase_ = Phase::kAsserted;
   }
 
-  StartupResetState update(uint32_t now_ms) {
-    if (phase_ == Phase::kAsserted || phase_ == Phase::kRecovery) {
-      // Unsigned subtraction makes the one startup interval safe across a
-      // millis() rollover. Ready is latched so a complete 49.7-day timestamp
-      // cycle can never start a second, unintended pulse.
-      const uint32_t elapsed = now_ms - started_ms_;
-      if (elapsed >= kStartupResetPulseMs + kStartupResetRecoveryMs) {
-        phase_ = Phase::kReady;
-      } else if (elapsed >= kStartupResetPulseMs) {
-        phase_ = Phase::kRecovery;
-      }
+  StartupResetState update(uint32_t now_ms, bool hold_requested = false) {
+    if (phase_ == Phase::kUnstarted) return {false, false};
+
+    // A hold request always wins, including after startup. Starting a new
+    // assertion interval here guarantees a later release still gets the full
+    // minimum pulse and recovery gate.
+    if (hold_requested && phase_ != Phase::kAsserted) {
+      phase_started_ms_ = now_ms;
+      phase_ = Phase::kAsserted;
+    }
+
+    if (!hold_requested && phase_ == Phase::kAsserted &&
+        now_ms - phase_started_ms_ >= kStartupResetPulseMs) {
+      phase_started_ms_ = now_ms;
+      phase_ = Phase::kRecovery;
+    } else if (!hold_requested && phase_ == Phase::kRecovery &&
+               now_ms - phase_started_ms_ >= kStartupResetRecoveryMs) {
+      phase_ = Phase::kReady;
     }
     return {
         phase_ == Phase::kAsserted,
@@ -49,7 +62,9 @@ class StartupResetSequencer {
     kReady,
   };
 
-  uint32_t started_ms_ = 0;
+  // Unsigned subtraction keeps both intervals safe across millis() rollover.
+  // Ready remains latched unless the explicit hold input requests a new pulse.
+  uint32_t phase_started_ms_ = 0;
   Phase phase_ = Phase::kUnstarted;
 };
 

@@ -1,6 +1,6 @@
 # Jukuravi Nano firmware
 
-Status: the Stage D1 serial bridge and isolated startup-reset driver are
+Status: the Stage D1 serial bridge and isolated startup-reset/hold driver are
 implemented and guarded; liveness probes remain measurement-gated follow-up
 work.
 
@@ -72,6 +72,23 @@ when no valid banner or other protocol frame arrives inside its bounded
 pre-banner deadline, performing a fresh DTR sequence for each of at most two
 extra attempts. It never retries decoded partial or invalid protocol evidence.
 
+D5 is the low-voltage RESET HOLD input. Configure a maintained switch or
+service jumper from D5 to Nano GND; the sketch's `INPUT_PULLUP` makes grounded
+HOLD active and an open input AUTO. A 10 kOhm external pull-up from D5 to the
+Nano's +5 V is recommended for a service lead. D5 must not cross the isolation
+barrier or connect to any Juku net. HOLD keeps D4's optocoupler LED drive
+asserted indefinitely and keeps both bridge directions silent. Releasing HOLD
+deasserts D4 only after the 250 ms minimum assertion has already elapsed, then
+enforces a fresh 50 ms quiet recovery. Grounding D5 after the bridge is ready
+starts a new reset assertion with the same minimum pulse and recovery rules;
+switch bounce can only extend this safe sequence.
+
+D5 cannot drive D4 while the Nano bootloader owns the pins. To hold the board
+during hookup, power and start the Nano first, close HOLD, and verify the D4/
+optocoupler input state before connecting the isolated board-side contact. The
+existing D4 pull-down deliberately leaves that contact open during Nano reset
+or bootloader intervals.
+
 This is a firmware and isolated-input checkpoint, not permission to attach the
 board side. S1 is SPDT: current evidence identifies S1.1 with `RES_RC` and
 S1.2 with the D98/D97 read-data branch, while S1.3 remains unresolved. Measure
@@ -87,9 +104,10 @@ sync/jukuravi_nano_check.sh
 The always-available host test sends all 256 byte values plus the exact
 version-8 ACK through the shared bridge core in both directions, checks the
 per-direction work bound and counters, and proves reset assertion, release,
-recovery, and rollover boundaries. When `arduino-cli` and the `arduino:avr`
-core are installed, the same guard also compiles the actual Nano sketch. To
-upload manually after a successful build:
+recovery, rollover, long HOLD, HOLD release, and post-ready reassertion
+boundaries. It also pins D4/D5 and active-low input polarity. When `arduino-cli`
+and the `arduino:avr` core are installed, the same guard also compiles the
+actual Nano sketch. To upload manually after a successful build:
 
 ```sh
 arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328 \
@@ -105,6 +123,7 @@ bootloader/upload protocol, not this sketch's compiled ATmega328P behavior.
 The reset driver cannot make a bench session safe or unattended until the real
 S1 contact pair is measured and the isolated harness is built. Session-start
 restart and missing-banner recovery are now host-commanded through DTR.
-Uploaded-test heartbeat recovery and reset-hold control remain later
-host/firmware work. Derived-clock and `-MRDC` probe pins will likewise be
-assigned only after continuity identifies accessible, voltage-safe testpoints.
+Local reset hold is guarded through the active-low D5 service input.
+Uploaded-test heartbeat recovery remains later host/firmware work.
+Derived-clock and `-MRDC` probe pins will likewise be assigned only after
+continuity identifies accessible, voltage-safe testpoints.

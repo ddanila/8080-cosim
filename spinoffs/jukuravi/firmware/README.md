@@ -541,7 +541,7 @@ D57 OUT1 toggles and whose connectivity guard traces `D57.13/SOUND` through the
 analog handoff. Cosim does not yet synthesize the PIT waveform, and neither
 guard models speaker voltage/current or authorizes a bench burn. The planned D0
 firmware ladder is now represented by exact simulation checkpoints. The next
-Jukuravi implementation stage is D1's reset-hold, uploaded-test heartbeat
-recovery, and liveness probes. The host session CLI, DTR-commanded session
-restart, bounded missing-banner retry, Nano serial bridge, and isolated startup
-reset are now guarded separately in the parent directory.
+Jukuravi implementation stage is D1's uploaded-test heartbeat recovery and
+liveness probes. The host session CLI, DTR-commanded session restart, bounded
+missing-banner retry, Nano serial bridge, and isolated startup reset/hold are
+now guarded separately in the parent directory.

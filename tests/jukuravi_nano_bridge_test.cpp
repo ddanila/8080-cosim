@@ -56,8 +56,9 @@ std::vector<uint8_t> byteRange(size_t count, uint8_t first) {
 }
 
 void expectReset(jukuravi::StartupResetSequencer &reset, uint32_t now,
-                 bool asserted, bool bridge_ready, const char *message) {
-  const jukuravi::StartupResetState state = reset.update(now);
+                 bool asserted, bool bridge_ready, const char *message,
+                 bool hold_requested = false) {
+  const jukuravi::StartupResetState state = reset.update(now, hold_requested);
   expect(state.asserted == asserted && state.bridge_ready == bridge_ready,
          message);
 }
@@ -122,8 +123,57 @@ int main() {
 
   jukuravi::StartupResetSequencer lateReset;
   lateReset.begin(100);
-  expectReset(lateReset, 400, false, true,
-              "late first update did not advance directly to ready");
+  expectReset(lateReset, 400, false, false,
+              "late first update did not enter recovery");
+  expectReset(lateReset, 449, false, false,
+              "late first update shortened recovery");
+  expectReset(lateReset, 450, false, true,
+              "late first update recovery did not complete");
+
+  expect(jukuravi::kResetDrivePin == 4 && jukuravi::kResetHoldPin == 5,
+         "reset drive/hold pin contract differs");
+  expect(jukuravi::resetHoldRequested(false) &&
+             !jukuravi::resetHoldRequested(true),
+         "reset hold input is not active-low");
+
+  jukuravi::StartupResetSequencer heldReset;
+  heldReset.begin(1000);
+  expectReset(heldReset, 1250, true, false,
+              "hold did not extend the startup reset", true);
+  expectReset(heldReset, 5000, true, false,
+              "long hold released reset or enabled the bridge", true);
+  expectReset(heldReset, 5000, false, false,
+              "hold release did not enter quiet recovery");
+  expectReset(heldReset, 5049, false, false,
+              "hold release recovery ended one ms early");
+  expectReset(heldReset, 5050, false, true,
+              "hold release did not enable the bridge after recovery");
+
+  expectReset(heldReset, 6000, true, false,
+              "ready sequencer ignored a new hold request", true);
+  expectReset(heldReset, 6249, true, false,
+              "reasserted reset pulse ended early");
+  expectReset(heldReset, 6250, false, false,
+              "reasserted reset did not enter recovery");
+  expectReset(heldReset, 6300, false, true,
+              "reasserted reset did not complete recovery");
+
+  jukuravi::StartupResetSequencer wrapHold;
+  wrapHold.begin(0);
+  expectReset(wrapHold, 250, false, false,
+              "hold rollover setup did not enter recovery");
+  expectReset(wrapHold, 300, false, true,
+              "hold rollover setup did not become ready");
+  expectReset(wrapHold, wrapStart, true, false,
+              "rollover hold did not reassert reset", true);
+  expectReset(wrapHold, static_cast<uint32_t>(wrapStart + 249), true, false,
+              "rollover-held reset pulse ended early");
+  expectReset(wrapHold, static_cast<uint32_t>(wrapStart + 250), false, false,
+              "rollover-held reset did not enter recovery");
+  expectReset(wrapHold, static_cast<uint32_t>(wrapStart + 299), false, false,
+              "rollover hold recovery ended early");
+  expectReset(wrapHold, static_cast<uint32_t>(wrapStart + 300), false, true,
+              "rollover hold recovery did not complete");
 
   FakeStream gatedUsb({0x81});
   FakeStream gatedJuku({0x55});
@@ -144,6 +194,6 @@ int main() {
 
   std::cout
       << "JUKURAVI-NANO-BRIDGE: PASS (all 256 byte values; exact ACK; "
-         "bounded pump; 250+50 ms rollover-safe reset with quiet gate)\n";
+         "bounded pump; rollover-safe 250+50 ms reset with D5 hold)\n";
   return 0;
 }

@@ -1678,9 +1678,15 @@ an active `/Q1` feedback output.
    attempts. Any decoded protocol frame, transport error, or failure after a
    valid banner aborts without retry; JSON retains per-attempt byte, frame,
    banner, error, and DTR evidence. The SPDT S1 board-side contact pair,
-   reset-hold, uploaded-test heartbeat recovery, and voltage-safe liveness
-   probes remain gated on continuity measurements of the real S1/X3/testpoint
-   wiring.
+   uploaded-test heartbeat recovery, and voltage-safe liveness probes remain
+   gated on continuity measurements of the real S1/X3/testpoint wiring. The
+   sixth checkpoint implements the low-voltage side of reset hold:
+   grounding the Nano's pull-up D5 service input extends D4 assertion
+   indefinitely or reasserts it after startup, gates both bridge directions,
+   and requires the same minimum pulse plus fresh quiet recovery on release.
+   Pin polarity, long hold, release boundaries, post-ready reassertion, and
+   rollover-safe timing are guarded in the compiled sketch; D5 never crosses
+   the isolation barrier and the S1 contact remains measurement-gated.
 
 ## Physical bring-up sequence
 
@@ -1777,6 +1783,10 @@ Once a released board and programmed parts exist:
   sessions a short banner deadline and at most two fresh-reset retries, never
   retries decoded partial or post-banner evidence, and records each attempt
   plus the exact count of completed DTR sequences in JSON.
+- [x] Jukuravi D1 local reset hold uses an active-low, pull-up Nano D5 service
+  input to extend or reassert only the isolated D4 optocoupler drive, keeps the
+  serial bridge gated, and enforces minimum assertion plus fresh recovery on
+  every release; board-side S1 hookup remains measurement-gated.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

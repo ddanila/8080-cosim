@@ -66,8 +66,8 @@ raster/serializer behavior,
 the Jukuravi stack-free D0 diagnostic ladder (including injected CPU-bad and
 stuck-TX paths), its host-session round trip, guarded DTR restart, bounded
 pre-banner retry policy, and the Nano bridge's byte-transparent bounded
-pump, rollover-safe isolated startup reset, and optional exact AVR compile,
-plus beeper and USART slices,
+pump, rollover-safe isolated startup reset, active-low D5 hold/reassert gate,
+and optional exact AVR compile, plus beeper and USART slices,
 the full standard К555ИЕ7/74LS193 asynchronous
 load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
 К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced
