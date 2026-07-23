@@ -1,5 +1,10 @@
 {
   "_about": "Independent staged Rev A physical LVS map for the POWER and CLOCK_RESET placement blocks plus the U1 CPU boundary. Pin names are unique per physical pad so duplicated USB-C VBUS/GND contacts cannot collapse.",
+  "no_connects": [],
+  "complete_instances": [
+    "J1", "J3", "R30", "R31", "F1", "D1", "C50", "R6", "J93",
+    "U50", "U51", "R4", "R5", "J96", "C24", "C25"
+  ],
   "instances": {
     "J1": "U_J1",
     "J3": "U_J3",

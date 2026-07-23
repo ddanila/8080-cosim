@@ -13,6 +13,11 @@
 # Board nets marked `"power": true` remain excluded by default for legacy HDL
 # models without supply pins. `--include-power` opts a physical-pin model into
 # those rails.
+# A map may also contain `no_connects: [[ref, pin], ...]`. For board-direct
+# physical LVS, those declarations are compared over the pins actually present
+# in the map, so intentional NC pads cannot silently become unowned or wired.
+# `complete_instances: [ref, ...]` additionally requires every physical pin on
+# each named (non-boundary) instance to be mapped and owned by a net or NC.
 #
 # Usage: lvs.py --hdl <yosys.json> --kicad <net.xml> --map <map.json>
 # Exit 0 = in sync, 1 = mismatch.
@@ -98,15 +103,93 @@ def main():
     matched   = hdl_nets & kic_nets
     only_hdl  = hdl_nets - kic_nets
     only_kic  = kic_nets - hdl_nets
+    nc_ok = True
+    matched_nc = set()
+    missing_nc = set()
+    unexpected_nc = set()
+    complete_ok = True
+    complete_errors = []
+    board = None
+    chip_by_ref = {}
+    mapped_pins_by_ref = {}
+
+    if "no_connects" in mp or "complete_instances" in mp:
+        if not a.board:
+            ap.error("map no_connects/complete_instances requires --board")
+        board = json.load(open(a.board))
+        chip_by_ref = {chip["ref"]: chip for chip in board["chips"]}
+        for ref in mp["instances"]:
+            chip_type = chip_by_ref.get(ref, {}).get("type", "")
+            pinmap = kinst.get(ref, {}) or kpm.get(chip_type, {})
+            mapped_pins_by_ref[ref] = {str(pin) for pin in pinmap}
+
+    if "no_connects" in mp:
+        mapped_pins = {
+            (ref, pin) for ref, pins in mapped_pins_by_ref.items() for pin in pins
+        }
+        expected_nc = {tuple(item) for item in mp["no_connects"]}
+        invalid_expected = expected_nc - mapped_pins
+        if invalid_expected:
+            refs = ", ".join(f"{ref}.{pin}" for ref, pin in sorted(invalid_expected))
+            ap.error(f"map no_connects outside mapped pin scope: {refs}")
+
+        actual_nc = {
+            tuple(item) for item in board.get("no_connects", [])
+            if tuple(item) in mapped_pins
+        }
+        matched_nc = expected_nc & actual_nc
+        missing_nc = expected_nc - actual_nc
+        unexpected_nc = actual_nc - expected_nc
+        nc_ok = not missing_nc and not unexpected_nc
+
+    complete_refs = set(mp.get("complete_instances", []))
+    if complete_refs:
+        invalid_refs = complete_refs - set(mp["instances"])
+        if invalid_refs:
+            ap.error("complete_instances outside instance map: " + ", ".join(sorted(invalid_refs)))
+
+        endpoint_owner = {
+            (ref, str(pin))
+            for entry in board["nets"].values()
+            for ref, pin in (entry["nodes"] if isinstance(entry, dict) else entry)
+        }
+        actual_all_nc = {tuple(item) for item in board.get("no_connects", [])}
+        for ref in sorted(complete_refs):
+            chip = chip_by_ref.get(ref)
+            if chip is None:
+                complete_errors.append(f"{ref}: absent from board")
+                continue
+            physical_pins = {str(pin) for pin in chip["pins"]}
+            mapped_pins = mapped_pins_by_ref.get(ref, set())
+            for pin in sorted(physical_pins - mapped_pins):
+                complete_errors.append(f"{ref}.{pin}: physical pin is not mapped")
+            for pin in sorted(mapped_pins - physical_pins):
+                complete_errors.append(f"{ref}.{pin}: mapped pin is absent from board")
+            for pin in sorted(
+                physical_pins
+                - {p for r, p in endpoint_owner if r == ref}
+                - {p for r, p in actual_all_nc if r == ref}
+            ):
+                complete_errors.append(f"{ref}.{pin}: neither connected nor declared NC")
+        complete_ok = not complete_errors
 
     print(f"LVS connectivity check ({len(mp['instances'])} mapped instances)")
     print(f"  matched nets    : {len(matched)}")
     print(f"  only in HDL     : {len(only_hdl)}")
     print(f"  only in KiCad   : {len(only_kic)}")
+    if "no_connects" in mp:
+        print(f"  matched NC pads : {len(matched_nc)}")
+        for label, items in (("missing NC", missing_nc), ("unexpected NC", unexpected_nc)):
+            for ref, pin in sorted(items):
+                print(f"    [{label}] {ref}.{pin}")
+    if "complete_instances" in mp:
+        print(f"  complete refs   : {len(complete_refs) if complete_ok else 0}")
+        for error in complete_errors:
+            print(f"    [incomplete] {error}")
     for label, s in (("HDL-only", only_hdl), ("KiCad-only", only_kic)):
         for net in sorted(s, key=lambda x: sorted(x)):
             print(f"    [{label}] {{{', '.join(sorted(net))}}}")
-    ok = not only_hdl and not only_kic
+    ok = not only_hdl and not only_kic and nc_ok and complete_ok
     print("\n==> IN SYNC" if ok else "\n==> MISMATCH")
     return 0 if ok else 1
 

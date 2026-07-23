@@ -2,24 +2,25 @@
 
 Status date: 2026-07-23.
 
-Status: **STAGE 1 PASS / WHOLE BOARD INCOMPLETE**.
+Status: **STAGE 2 PASS / WHOLE BOARD INCOMPLETE**.
 
-The first independently authored physical-board LVS slice is now executable:
+Two independently authored physical-board LVS slices are executable:
 
 ```sh
 spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
+spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 ```
 
-It compares `hdl/rev_a_power_clock_reset_lvs.v` with
-`kicad/rev-a-physical.board.json` through
-`sync/rev_a_power_clock_reset_map.json`. Unlike the older eight-instance
-logical comparison, this slice models individual physical pads and opts power
-rails into `sync/lvs.py`.
+They compare their structural HDL with `kicad/rev-a-physical.board.json`
+through independent maps. Unlike the older eight-instance logical comparison,
+these slices model individual physical pads, opt power rails into `sync/lvs.py`,
+compare declared no-connect pads, and identify complete (non-boundary)
+instances whose every physical pin must remain mapped and owned.
 
 ## Closed in stage 1
 
-The comparison maps 17 physical references and matches nine connectivity
-partitions:
+The comparison maps 17 physical references, marks 16 of them complete, and
+matches nine connectivity partitions:
 
 - the complete PCB placement `POWER` block: J1, J3, F1, D1, C50, R6, R30,
   and R31;
@@ -40,14 +41,35 @@ VCC_RAW to GND, and requires LVS to fail. This mutation is the negative control
 for both physical-pad sensitivity and the opt-in power-net path. The committed
 board is never modified.
 
+## Closed in stage 2
+
+`rev_a_decode_lvs.sh` closes the complete decode PROM/socket/glue group:
+
+- U3 RT4 and U4 RE3 sockets, U5 decode GAL, and U6 mode-bit inverter;
+- J94 mode jumper and J95 decode observation header;
+- R32-R43 output pull-ups, R44 mode pull-down, and C26-C28 decoupling; and
+- every non-power external endpoint those parts touch on U1, U2, U24, U30,
+  J97, and J98.
+
+The comparison maps 28 references: 22 completeness-checked decode parts and
+six boundary projections. It matches 37 connectivity partitions plus all five
+intentional no-connect pads (U5.23 and U6.6/.8/.10/.12). The boundary
+projections do not claim full coverage of U1, U2, U24, U30, J97, or J98; they
+make the decode nets exact while those devices await their owning stages.
+
+Two temporary mutations are required to fail: moving U3.12 from DEC_ROM_N to
+DEC_RAM_N, and deleting the U6.6 no-connect declaration. These prove both
+routed-connectivity and intentional-NC sensitivity.
+
 ## Still open
 
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- CPU bus, ROM, GAL decode, and the full RT4/RE3 socket path;
+- the remaining CPU and ROM address/data/control pins beyond the stage-2
+  boundary projection;
 - DRAM bank, address multiplexing, refresh, arbitration, and U24 timing;
-- PPI, keyboard matrix, and I/O decode;
+- the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.
 
