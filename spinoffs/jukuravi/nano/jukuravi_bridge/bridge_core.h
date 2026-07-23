@@ -36,4 +36,12 @@ void pumpBridge(UsbPort &usb, JukuPort &juku, BridgeCounters &counters) {
   counters.usb_to_juku += forwardBytes(usb, juku);
 }
 
+template <typename UsbPort, typename JukuPort>
+bool pumpBridgeIfReady(bool ready, UsbPort &usb, JukuPort &juku,
+                       BridgeCounters &counters) {
+  if (!ready) return false;
+  pumpBridge(usb, juku, counters);
+  return true;
+}
+
 }  // namespace jukuravi

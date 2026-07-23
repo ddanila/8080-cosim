@@ -5,7 +5,7 @@ treats a sick board.
 
 Status date: 2026-07-23.
 
-Status: **EXECUTION STARTED — D1 HOST AND NANO BRIDGE GUARDED; RESET/PROBES NEXT.**
+Status: **EXECUTION STARTED — D1 HOST, BRIDGE, STARTUP RESET GUARDED; PROBES NEXT.**
 
 A diagnostics spin-off for the **real production board** (the owner's
 `ДГШ5.109.009` processor module #2), not the replica: a custom diagnostic ROM
@@ -59,7 +59,8 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   checkpoint:** the classic-Nano sketch keeps D0/D1 for 115200 USB, bridges D8/
   D9 at nominal 9600 through the level shifter, and asserts CTS with D10. Its
   shared core is binary-transparency tested and the exact sketch AVR-compiles;
-  see `nano/README.md`. Reset and probe pins remain measurement-gated.
+  see `nano/README.md`. D4 now drives the isolated startup-reset input; probe
+  pins and all board-side contacts remain measurement-gated.
 - **Nano-driven hardware reset (required for unattended runs).** The 8080
   has no NMI, so no firmware watchdog can reclaim a hung uploaded test that
   runs with interrupts masked — a hardware reset is the only reliable
@@ -72,6 +73,12 @@ FDC revision dropped the cassette circuit entirely; only a masked legacy
   re-announces over serial: upload → run → heartbeat timeout → reset pulse →
   banner → host retries, fully unattended. The Nano can also hold reset
   during hookup and pulse it before each session for deterministic runs.
+  **Implemented firmware checkpoint:** each Nano sketch start asserts D4 only
+  into an optocoupler LED for 250 ms, releases it, and keeps the bridge quiet
+  for 50 ms recovery. Boundary and `millis()`-rollover tests guard the portable
+  sequencer, and the actual AVR sketch compiles. The board-side isolated
+  contact remains forbidden until the SPDT S1 reset pair is measured;
+  commanded retry/hold control is not yet implemented.
 - **Host tool** (Python CLI) drives the protocol and prints verdicts. It talks
   to cosim's pty during development and to the Nano's USB port on the bench —
   same code, same protocol. Every session is logged verbatim (raw stream +
@@ -325,7 +332,10 @@ A Nano is sufficient for every stage except the optional bus-master stage
   boot-state pull-down. The bounded pump is checked with every byte value and
   the exact ACK in both directions, while `arduino-cli` compiles the actual
   ATmega328P sketch. Overflow latches D13 without changing the evidence stream.
-  Reset and liveness probes remain gated on physical continuity and levels.
+  **Startup-reset checkpoint implemented:** D4 drives only an optocoupler LED,
+  using a boot-state pull-down; the wrap-safe 250 ms assertion and 50 ms quiet
+  recovery are boundary-tested before the bridge can run. The S1 contact side,
+  commanded retry/hold, and liveness probes remain gated or future work.
 - **Stage D2 — upload-to-RAM (the payoff stage).** Serial loader in the same
   ROM: on a host command ("load at address, N bytes, payload, checksum") the
   ROM writes the received bytes into tested-good onboard RAM, verifies, and
@@ -360,10 +370,11 @@ python3 spinoffs/jukuravi/host.py \
 The host-facing USB link defaults to 115200 baud. The Nano firmware in
 `nano/jukuravi_bridge/` bridges that to the diagnostic ROM's nominal 9600-baud
 8N1 link through a MAX3232-class level shifter. This is still not a bench-ready
-claim: X3 continuity/levels and S1 reset contacts must be measured, and until
-the reset output exists the Juku must be reset manually after the bridge is
-listening. `--fd` is the inherited PTY-master transport used by the cosim
-regression. A successful session creates one
+claim: X3 continuity/levels and the SPDT S1 reset contact pair must be measured.
+The firmware pulses the isolated reset input on each Nano start, but it must
+remain disconnected from S1 until that measurement closes. `--fd` is the
+inherited PTY-master transport used by the cosim regression. A successful
+session creates one
 timestamp-matched `.rx.bin`, `.tx.bin`, and `.json` set. The JSON contains the
 validated image identity, every decoded frame, page masks, D84–D91 bad-page
 lists, and the selected largest good window.
@@ -393,8 +404,9 @@ guard. The 8253 register model and the cumulative diagnostic now compose:
 focused model tests cover latch/read formats, BCD conversion, and pending-latch
 ownership, while the ROM guard covers all physical counter selects with
 phase-tolerant live-count predicates. The planned D0 ladder, Stage D1 host
-session CLI, and Nano serial bridge are guarded; the hardware reset output and
-liveness probes are next, after their physical measurement gates close.
+session CLI, Nano serial bridge, and isolated startup-reset sequencer are
+guarded. Commanded reset retry/hold and liveness probes are next, after their
+physical measurement gates close.
 Then:
 
 - the ROM is developed entirely against cosim and cross-checked on the HDL

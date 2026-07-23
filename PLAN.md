@@ -1664,8 +1664,12 @@ an active `/Q1` feedback output.
    exact ACK, both directions, counters, and bounded service, while the actual
    `SoftwareSerial` sketch compiles for `arduino:avr:nano`. Its D10/MAX3232 CTS
    contract has a boot-safe pull-down and a latched overflow indicator. The
-   open-collector reset output and voltage-safe liveness probes remain gated on
-   continuity measurements of the real S1/X3/testpoint wiring.
+   third checkpoint adds D4's isolated startup-reset driver: a wrap-safe state
+   machine asserts its optocoupler LED for 250 ms, enforces 50 ms of quiet
+   recovery, and is boundary-tested across `millis()` rollover before the
+   bridge runs. The SPDT S1 board-side contact pair, commanded retry/hold, and
+   voltage-safe liveness probes remain gated on continuity measurements of the
+   real S1/X3/testpoint wiring.
 
 ## Physical bring-up sequence
 
@@ -1748,6 +1752,11 @@ Once a released board and programmed parts exist:
   ATmega328P sketch compiles, explicitly asserts CTS through a MAX3232 with a
   boot-safe pull-down, and latches receive overflow without contaminating the
   framed evidence stream.
+- [x] Jukuravi D1 Nano startup-reset core drives only an isolated D4 optocoupler
+  input, holds a conservative 250 ms switch closure, enforces 50 ms recovery
+  before bridging, and passes exact boundary plus `millis()`-rollover tests in
+  the compiled ATmega328P sketch; S1 board-side hookup remains measurement-
+  gated.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
   image, a device/pinout decision, and an explicit provenance boundary.

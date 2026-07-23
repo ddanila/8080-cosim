@@ -1,7 +1,8 @@
 # Jukuravi Nano firmware
 
-Status: the Stage D1 serial bridge is implemented and guarded in simulation;
-hardware reset and liveness probes remain measurement-gated follow-up work.
+Status: the Stage D1 serial bridge and isolated startup-reset driver are
+implemented and guarded; liveness probes remain measurement-gated follow-up
+work.
 
 ## Serial bridge checkpoint
 
@@ -42,6 +43,33 @@ The onboard D13 LED latches on if the Juku-side `SoftwareSerial` receive FIFO
 overflows. Nothing is injected into the USB stream because that would corrupt
 the host's framed evidence. Power-cycle or reset the Nano to clear the LED.
 
+## Isolated startup reset checkpoint
+
+Nano D4 is the low-voltage reset-drive output. Wire D4 through a 1 kOhm series
+resistor to the optocoupler LED anode, return its cathode to Nano GND, and fit a
+10 kOhm pull-down from D4 to Nano GND.
+The pull-down keeps the LED off while D4 is high impedance in the bootloader.
+The optocoupler transistor or a bidirectional PhotoMOS contact is the only part
+that may eventually cross the selected S1 contacts: D4 and Nano GND must never
+touch the Juku reset-RC network.
+
+On every sketch start, firmware asserts D4 for 250 ms, releases it, waits a
+further 50 ms, and only then enables the transparent bridge. The Intel 8080A
+requires RESET for at least three clock cycles; the switch-like 250 ms closure
+is deliberately conservative and easy to verify ([Intel MCS-80 Microcomputer
+Systems User's Manual](https://www.bitsavers.org/components/intel/MCS80/98-153B_Intel_8080_Microcomputer_Systems_Users_Manual_197509.pdf)).
+The portable sequencer uses unsigned elapsed time and is tested across the
+`millis()` rollover. A classic Nano's normal DTR-coupled USB auto-reset
+therefore starts this sequence when the host opens the port; adapters with
+auto-reset disabled require a Nano reset button press or power cycle before the
+session.
+
+This is a firmware and isolated-input checkpoint, not permission to attach the
+board side. S1 is SPDT: current evidence identifies S1.1 with `RES_RC` and
+S1.2 with the D98/D97 read-data branch, while S1.3 remains unresolved. Measure
+which pair closes in the reset position and its polarity/voltage before placing
+the isolated contact across any pair.
+
 Build and test with:
 
 ```sh
@@ -49,10 +77,11 @@ sync/jukuravi_nano_check.sh
 ```
 
 The always-available host test sends all 256 byte values plus the exact
-version-8 ACK through the shared bridge core in both directions and checks the
-per-direction work bound and counters. When `arduino-cli` and the
-`arduino:avr` core are installed, the same guard also compiles the actual Nano
-sketch. To upload manually after a successful build:
+version-8 ACK through the shared bridge core in both directions, checks the
+per-direction work bound and counters, and proves reset assertion, release,
+recovery, and rollover boundaries. When `arduino-cli` and the `arduino:avr`
+core are installed, the same guard also compiles the actual Nano sketch. To
+upload manually after a successful build:
 
 ```sh
 arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328 \
@@ -65,11 +94,9 @@ bootloader/upload protocol, not this sketch's compiled ATmega328P behavior.
 
 ## Remaining D1 hardware work
 
-The bridge does not yet make a bench session safe or unattended. Before adding
-the reset output, identify the real S1 contact pair and verify its asserted
-polarity. The future Nano output will drive only an optocoupler LED or
-open-collector transistor placed across those contacts; it must never drive the
-board reset-RC node push-pull. Likewise, derived-clock and `-MRDC` probe pins
-will be assigned only after continuity identifies accessible, voltage-safe
-testpoints. Until those measurements exist, open the USB port first and reset
-the Juku manually after the bridge is listening.
+The reset driver cannot make a bench session safe or unattended until the real
+S1 contact pair is measured and the isolated harness is built. Commanded retry
+and reset-hold control also remain later host/firmware work; this checkpoint is
+the deterministic pulse on each Nano start. Derived-clock and `-MRDC` probe
+pins will likewise be assigned only after continuity identifies accessible,
+voltage-safe testpoints.
