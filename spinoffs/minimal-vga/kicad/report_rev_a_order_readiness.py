@@ -369,7 +369,7 @@ def machine_gate_summary(out_dir):
             and "- Reference factory CPL placements retained: 96" in order_upload_runbook
             and "- Reference unique factory CPNs retained: 20" in order_upload_runbook
             and "- Manual-install rows retained for later assembly: 23" in order_upload_runbook
-            and "- Owner post-assembly socket insertions retained for later assembly: 22" in order_upload_runbook
+            and "- Owner post-assembly socket insertions retained for later assembly: 21" in order_upload_runbook
             and "- Expected ZIP members: 11" in order_upload_runbook
             and "- ZIP members found: 11" in order_upload_runbook
             and "file mode `0644`" in order_upload_runbook,

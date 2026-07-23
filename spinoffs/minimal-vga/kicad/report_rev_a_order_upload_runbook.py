@@ -113,14 +113,14 @@ def build_report(out_dir):
 
     for label, rel in UPLOAD_FILES:
         require(out_dir / rel, failures, label)
-    if len(bom) != 29:
-        failures.append(f"expected 29 factory BOM rows, got {len(bom)}")
+    if len(bom) != 30:
+        failures.append(f"expected 30 factory BOM rows, got {len(bom)}")
     if len(cpl) != 96:
         failures.append(f"expected 96 factory CPL placements, got {len(cpl)}")
     if len(manual) != 23:
         failures.append(f"expected 23 manual-install rows, got {len(manual)}")
-    if len(post) != 22:
-        failures.append(f"expected 22 post-assembly insertions, got {len(post)}")
+    if len(post) != 21:
+        failures.append(f"expected 21 post-assembly insertions, got {len(post)}")
 
     factory_cpns = sorted({bom_cpn(row) for row in bom if bom_cpn(row)})
     if len(factory_cpns) != 20:

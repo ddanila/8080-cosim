@@ -43,8 +43,10 @@ superseded it again.
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
 - The current routed board is 119 refs / 133 nets, filled In1.Cu GND and In2.Cu VCC
-  planes, 29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
-  post-assembly socket insertions. The committed copper has 2,887 tracks/vias
+  planes, 30 factory BOM rows, 96 CPL placements, 23 manual placements, and 21
+  post-assembly socket insertions. U23 remains a factory-mounted spare socket
+  but is explicitly DNP and absent from the owner IC-insertion list. The
+  committed copper has 2,887 tracks/vias
   after the 200x200 reroute, bounded D1 clearance correction, and bounded U22
   cascade route.
 - The behavioral aggregate passes both real-ROM CPU

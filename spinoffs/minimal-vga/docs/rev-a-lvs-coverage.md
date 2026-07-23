@@ -145,7 +145,8 @@ cascade, corrected reset power, no-connect, and endpoint-closure sensitivity.
 This is staged progress, not a full-board release disposition. The remaining
 physical groups still need independent structural HDL and pin maps:
 
-- U23, the remaining refresh arbitration, and U24 timing;
+- the explicitly empty U23 DNP spare socket (Stage 7), the remaining refresh
+  arbitration, and U24 timing;
 - the remaining PPI pins, keyboard matrix, and keyboard connector;
 - VGA timing, serializer, connector, and resistor path; and
 - diagnostic LEDs and the remaining observation headers/boundaries.

@@ -10,6 +10,10 @@ import pcbnew
 
 DESIGNATOR_RE = re.compile(r"^([A-Z]+)([0-9]+)$")
 MAX_REFS_PER_BOM_LINE = 200
+# U23 was an unwired video-counter placeholder: its outputs are all NC and the
+# verified Rev-A video handoff lives on U40/U41. Keep the routed socket as a
+# harmless spare, but never instruct the owner to insert an IC there.
+POST_ASSEMBLY_DNP_REFS = {"U23"}
 
 
 def natural_key(ref):
@@ -108,6 +112,11 @@ def assembly_notes(fp, source):
     ref = fp.GetReference().upper()
     notes = source.get("Notes", "")
     if ref.startswith("U") and is_socket_footprint(fp):
+        if ref in POST_ASSEMBLY_DNP_REFS:
+            return (
+                "Factory mounts socket only; leave this spare position empty "
+                f"(DNP). {notes}"
+            ).strip()
         device = source.get("Value") or fp.GetValue()
         return f"Factory mounts socket only; owner inserts {device} after assembly. {notes}".strip()
     return notes
@@ -193,7 +202,11 @@ def build_rows(board, engineering_bom):
             }
         )
 
-        if ref.startswith("U") and is_socket_footprint(fp):
+        if (
+            ref.startswith("U")
+            and is_socket_footprint(fp)
+            and ref not in POST_ASSEMBLY_DNP_REFS
+        ):
             post_assembly_rows.append(
                 {
                     "Designator": ref,

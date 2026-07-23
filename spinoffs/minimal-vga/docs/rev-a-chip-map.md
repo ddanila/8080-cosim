@@ -48,7 +48,7 @@ upper nibble input). PC2/PC3 are freed.
 | U10-U17 | 64K x 1 DRAM bits D0-D7 | KM4164B-10 | DIP-16 | Owner-ordered Samsung 4164-compatible 100 ns DRAM; factory mounts sockets only. |
 | U20-U21 | Row/column address mux | 74HCT157 | DIP-16 | CPU/video/refresh address selection; active-low enable pin 15 is tied to GND and guarded in source and route. |
 | U22 | 8-bit refresh-row counter | 74HCT393 | DIP-14 | Low/high 4-bit halves are cascaded from pin 6 (1Q3) to pin 13 (2CP); active-high resets on pins 2/12 are grounded and source/route guarded. |
-| U23 | Refresh/video counter high | 74HCT393/4040/161-class | DIP | Exact topology still open. |
+| U23 | Spare counter socket | DNP (optional 74HCT393 for probing only) | DIP-14 socket | Leave empty in Rev A: all eight outputs are NC and U40/U41 own the verified video timing/request path. |
 | U24 | RAS/CAS/WE sequencer | GAL22V10-class programmable logic | DIP-24 | GAL/PAL-style timing logic for first Rev A. |
 
 U20/U21 use the 74HCT157 DIP-16 pinout. The
@@ -109,7 +109,8 @@ refresh-row count while grounding both reset inputs permits counting.
   pad, both grounded active-low enables, and all 25 non-power address-mux nets;
   its U22 boundary also includes the corrected pin-6-to-pin-13 cascade endpoint.
   Stage 6 closes every U22/C16 pin and all endpoints on CLK plus the eight
-  refresh-row nets. U23 and the remaining devices are still staged.
+  refresh-row nets. U23 is now an explicitly empty DNP spare socket; its
+  footprint-level Stage 7 and the remaining devices are still staged.
 - `../kicad/rev-a-physical.board.json` is the first generated physical
   schematic target using this decomposition.
 - `../kicad/rev-a-physical.kicad_sch` is generated from that target.

@@ -6,7 +6,7 @@ U5,1,Address/control decode,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socke
 U6,1,Port C mode inverter,DIP-14 socket,DIP-14,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts DIP-14 W7.62mm socket only; owner inserts a reviewed 74HC04-compatible inverter after assembly
 U10-U17,8,64Kx1 DRAM,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm sockets only; owner inserts ordered Samsung KM4164B-10 DRAM after assembly
 U20-U21,2,Quad 2:1 mux,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm sockets only; install 74HCT157/257-class parts after assembly
-U22-U23,2,Counter,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts DIP-14 W7.62mm sockets only; install refresh/video counters after assembly
+U22-U23,2,Counter,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts both DIP-14 W7.62mm sockets; insert the U22 refresh counter after assembly and leave the unused U23 spare socket empty (DNP)
 U24,1,DRAM timing sequencer,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socket,C72120,Factory mounts DIP-24 W15.24mm socket only; owner inserts GAL22V10-class timing part after assembly
 U30,1,PPI,DIP-40 socket,DIP-40,Socketed,JLCPCB/LCSC socket,C2332,Factory mounts DIP-40 W15.24mm socket only; owner inserts 82C55/8255-compatible PPI after assembly
 U31,1,Priority encoder,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install 74HCT148 after assembly

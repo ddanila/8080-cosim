@@ -1,5 +1,5 @@
 Group,Designators,Factory action,Preferred CPN,Status,Notes
-DIP-14 sockets,U6 U22 U23,Mount sockets only,C2325,Verify at order,BOOMELE square-hole DIP-14 2.54mm 7.62mm socket; do not factory-populate ICs
+DIP-14 sockets,U6 U22 U23,Mount sockets only,C2325,Verify at order,BOOMELE square-hole DIP-14 2.54mm 7.62mm socket; do not factory-populate ICs and leave the U23 spare socket empty (DNP)
 DIP-16 sockets,U3 U4 U10-U17 U20 U21 U31 U41,Mount sockets only,C2326,Verify at order,BOOMELE square-hole DIP-16 2.54mm 7.62mm socket; do not factory-populate ICs
 DIP-24 wide sockets,U5 U24,Mount sockets only,C72120,Verify at order,CONNFLY square-hole DIP-24 2.54mm 15.24mm socket; do not factory-populate ICs
 DIP-28 wide socket,U2,Mount sockets only,C72121,Verify at order,CONNFLY square-hole DIP-28 2.54mm 15.24mm socket; do not factory-populate IC

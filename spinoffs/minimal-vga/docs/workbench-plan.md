@@ -93,10 +93,11 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    authored physical-LVS stages now close the POWER/CLOCK_RESET, complete
    decode socket/glue, complete Z80/ROM core, complete eight-chip DRAM bank,
    and complete address-mux groups with exact endpoint projections. U22's
-   74HCT393 halves are now physically cascaded and its active-high resets are
-   grounded; complete-instance refresh-counter LVS remains staged (see below).
-   Step (f) routing/DRC is **DONE** on the current 119-ref board; fab
-   regeneration and review remain.
+   74HCT393 halves are physically cascaded, its active-high resets are grounded,
+   and its complete-instance Stage 6 LVS passes. U23 is retained only as an
+   empty DNP spare socket because its outputs have no consumers and U40/U41 own
+   the verified video path. Step (f) routing/DRC is **DONE** on the current
+   119-ref board; fab regeneration and review remain.
 
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets

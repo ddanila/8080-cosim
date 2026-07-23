@@ -154,6 +154,10 @@ jobs:
             spinoffs/minimal-vga/kicad/report_rev_a_drc_readiness.py \
             spinoffs/minimal-vga/kicad/fix_rev_a_addrmux_enable.py \
             spinoffs/minimal-vga/kicad/fix_rev_a_refresh_counter.py \
+            spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
+            spinoffs/minimal-vga/kicad/report_rev_a_manual_install_disposition.py \
+            spinoffs/minimal-vga/kicad/report_rev_a_order_upload_runbook.py \
+            spinoffs/minimal-vga/kicad/report_rev_a_order_readiness.py \
             spinoffs/minimal-vga/kicad/report_rev_a_mechanical_fit.py \
             scripts/check_spinoff_commons.py \
             scripts/check_revb_boards.py \

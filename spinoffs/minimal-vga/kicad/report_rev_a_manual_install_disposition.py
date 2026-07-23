@@ -47,7 +47,6 @@ EXPECTED_POST_INSERTION = {
     "U20",
     "U21",
     "U22",
-    "U23",
     "U24",
     "U30",
     "U31",

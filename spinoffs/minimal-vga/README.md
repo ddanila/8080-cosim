@@ -52,6 +52,10 @@ product.
   plus every endpoint on CLK and all eight refresh-row nets (11 mapped refs /
   11 partitions). All stages include mutation controls. Whole-board coverage
   remains incomplete; see `docs/rev-a-lvs-coverage.md`.
+- U23 is retained only as an empty DNP spare socket. Its eight outputs have no
+  consumers and the verified video timing/request handoff is U40/U41; generated
+  assembly artifacts therefore omit U23 from owner IC insertion while still
+  mounting its routed socket.
 - The Rev A physical source has 119 refs and 133 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
   jumper plus the Phase 4 observability headers (J96 clock-control, J97 high
