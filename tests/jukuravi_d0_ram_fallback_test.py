@@ -49,6 +49,8 @@ def run_fallback(
     trace: Path, image: bytes, label: str, *, ram_fault: str | None = None,
     pic_fault: str | None = None, ppi_fault: str | None = None,
     pit_fault: str | None = None,
+    reply: bytes | None = None, reply_after: int = 0,
+    usart_fault: str | None = None,
 ) -> tuple[subprocess.CompletedProcess[str], dict[str, str], bytes, bytes]:
     with tempfile.TemporaryDirectory(prefix=f"juku-d0-fallback-{label}-") as tmp_name:
         tmp = Path(tmp_name)
@@ -75,6 +77,8 @@ def run_fallback(
             env["JUKU_PPI_FAULT"] = ppi_fault
         if pit_fault:
             env["JUKU_PIT_FAULT"] = pit_fault
+        if usart_fault:
+            env["JUKU_USART_FAULT"] = usart_fault
         with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
             process = subprocess.Popen(
                 [str(trace), str(rom), "100000000"], cwd=tmp, env=env,
@@ -82,6 +86,7 @@ def run_fallback(
             )
             os.close(slave)
             outbound = bytearray()
+            replied = False
             deadline = time.monotonic() + 30
             while process.poll() is None:
                 if time.monotonic() >= deadline:
@@ -89,6 +94,9 @@ def run_fallback(
                     raise TimeoutError(f"{label}: cosim did not terminate")
                 if select.select([master], [], [], 0.02)[0]:
                     read_master(master, outbound)
+                if reply is not None and not replied and len(outbound) >= reply_after:
+                    os.write(master, reply)
+                    replied = True
             while select.select([master], [], [], 0)[0]:
                 if not read_master(master, outbound):
                     break

@@ -615,6 +615,39 @@ python3 spinoffs/jukuravi/firmware/build_d0_d55_stress.py
 python3 spinoffs/jukuravi/firmware/build_d0_d55_stress.py --check
 ```
 
+`diag-d0-best-effort.bin` is the dependency-aware full diagnostic, version
+`0E`. Its SHA-256 is
+`a9bc32c22d41acda0d8bed4708f85ce70dabc353abc2a9697a33421545adc098`.
+CPU and the checksummed ROM block are the only hard gates. With interrupts
+disabled, PIC, PPI, D54, D55, and D57 faults accumulate in register E and do
+not stop execution. The ROM then tests and handshakes the polled USART without
+using a stack or RAM and transmits a `DIAG_STATUS` fault bitmap:
+
+| Bit | Set means |
+| ---: | --- |
+| 0 | PIC failed |
+| 1 | PPI failed |
+| 2 | D54 failed |
+| 3 | D55 failed |
+| 4 | D57 failed |
+
+Only after that frame is acknowledged and transmitted does the ROM destructively
+test the 4 KiB windows at `4000h` and `C000h`. A second `DIAG_STATUS` byte has
+bit 7 set, bit 0 for a good `4000h` window, and bit 1 for a good `C000h` window.
+The host prints these results directly. This ordering proves that completely
+bad RAM cannot prevent the first UART report.
+
+Audibly, six slow grouped 2 kHz pulses plus the continuous 125 Hz tail mean
+UART/local handshake failure; seven mean neither RAM window worked. Three long
+2 kHz pulses and silence mean the UART report completed and at least one RAM
+window passed. CPU and ROM retain their earlier distinct hard-failure tones.
+Build or verify with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_best_effort.py
+python3 spinoffs/jukuravi/firmware/build_d0_best_effort.py --check
+```
+
 ## Stage D2 checkpoint: chunked RAM loader
 
 `diag-d2-loader.bin` is the cumulative version-9 image. It preserves every D0

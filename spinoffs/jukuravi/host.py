@@ -220,6 +220,23 @@ def survey_json(survey: protocol.RamSurvey) -> dict[str, object]:
     }
 
 
+def diagnostic_status_json(values: list[int]) -> dict[str, object] | None:
+    if not values:
+        return None
+    peripheral = next((value for value in values if not value & 0x80), None)
+    ram = next((value for value in values if value & 0x80), None)
+    return {
+        "peripheral_fault_mask_hex": None if peripheral is None else f"{peripheral:02X}",
+        "pic": None if peripheral is None else not bool(peripheral & 0x01),
+        "ppi": None if peripheral is None else not bool(peripheral & 0x02),
+        "d54": None if peripheral is None else not bool(peripheral & 0x04),
+        "d55": None if peripheral is None else not bool(peripheral & 0x08),
+        "d57": None if peripheral is None else not bool(peripheral & 0x10),
+        "ram_4000": None if ram is None else bool(ram & 0x01),
+        "ram_c000": None if ram is None else bool(ram & 0x02),
+    }
+
+
 def loader_status_name(status: int) -> str:
     return {
         protocol.LOADER_STATUS_OK: "ok",
@@ -259,6 +276,7 @@ class HostSession:
         self.frames: list[protocol.Frame] = []
         self.banner_payload: bytes | None = None
         self.survey: protocol.RamSurvey | None = None
+        self.diagnostic_status: list[int] = []
         self.loader: dict[str, object] | None = None
         self.nano_liveness: dict[str, object] | None = None
         self.attempts: list[dict[str, object]] = []
@@ -272,6 +290,7 @@ class HostSession:
         self.frames = []
         self.banner_payload = None
         self.survey = None
+        self.diagnostic_status = []
         self.loader = None
         self.nano_liveness = None
         self._attempt_number = number
@@ -376,7 +395,9 @@ class HostSession:
     def run(self) -> None:
         deadline = time.monotonic() + self.timeout
         banner_deadline = min(deadline, time.monotonic() + self.banner_timeout)
-        while self.survey is None:
+        while self.survey is None and not any(
+            value & 0x80 for value in self.diagnostic_status
+        ):
             active_deadline = (
                 deadline if self.banner_payload is not None else banner_deadline
             )
@@ -398,6 +419,12 @@ class HostSession:
                     self._accept_nano_liveness(frame)
                 elif frame.record_type == protocol.TYPE_BANNER:
                     self._accept_banner(frame, deadline)
+                elif frame.record_type == protocol.TYPE_DIAG_STATUS:
+                    if self.banner_payload is None:
+                        raise SessionError("diagnostic status arrived without a banner")
+                    if len(frame.payload) != 1:
+                        raise SessionError("diagnostic status payload length is not one")
+                    self.diagnostic_status.append(frame.payload[0])
                 elif frame.record_type == protocol.TYPE_RAM_END:
                     if self.banner_payload is None:
                         raise SessionError("RAM_END arrived without a session banner")
@@ -691,6 +718,7 @@ class HostSession:
             "image": image,
             "frames": [frame_json(frame) for frame in self.frames],
             "ram_survey": None if self.survey is None else survey_json(self.survey),
+            "diagnostic_status": diagnostic_status_json(self.diagnostic_status),
             "loader": self.loader,
         }
         return result
@@ -741,9 +769,8 @@ def run_session_with_retries(
 
 
 def print_verdict(session: HostSession, logs: SessionLogs) -> None:
-    assert session.banner_payload is not None and session.survey is not None
+    assert session.banner_payload is not None
     protocol_version, rom_version, crc_hi, crc_lo = session.banner_payload
-    survey = session.survey
     if session.nano_dtr_sequence_completed:
         print(
             "JUKURAVI: nano-reset DTR sequences completed "
@@ -768,6 +795,17 @@ def print_verdict(session: HostSession, logs: SessionLogs) -> None:
         f"JUKURAVI: protocol={protocol_version:02X} rom={rom_version:02X} "
         f"image_crc16={crc_hi:02X}{crc_lo:02X}"
     )
+    if session.survey is None:
+        status = diagnostic_status_json(session.diagnostic_status)
+        assert status is not None
+        for name in ("pic", "ppi", "d54", "d55", "d57"):
+            print(f"JUKURAVI: {name.upper()} {'PASS' if status[name] else 'FAIL'}")
+        for name, address in (("ram_4000", "4000-4FFF"),
+                              ("ram_c000", "C000-CFFF")):
+            print(f"JUKURAVI: RAM {address} {'PASS' if status[name] else 'FAIL'}")
+        print(f"JUKURAVI: logs {logs.directory}")
+        return
+    survey = session.survey
     print(
         f"JUKURAVI: RAM {survey.start_page:02X}00-"
         f"{survey.end_page:02X}FF survey={survey.version:02X} "
