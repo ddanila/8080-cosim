@@ -50,5 +50,12 @@ and board-level channel-2 connections.
 | D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
 
+## Serial connector measurement
+
+Owner continuity on 2026-08-01 identifies `X3.7` as signal ground.  The
+CS00015 diagnostic cable can therefore use X3.9/SOUT, X3.4/SIN, X3.5/CTS,
+and X3.7/GND through an RS-232 level interface.  X3 must not be connected
+directly to TTL UART pins.
+
 This document records preservation and repair evidence only.  Neither finding
 changes the replica's adopted firmware or generic circuit model.

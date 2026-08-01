@@ -60,6 +60,7 @@ python3 scripts/report_serial_handoff.py
 | S_SIN reaches X3.4 | PASS | `S_SIN` |
 | S_CTS reaches X3.5 | PASS | `S_CTS` |
 | S_DSR reaches X3.6 | PASS | `S_DSR` |
+| X3.7 is signal ground on CS00015 | PASS | owner continuity, 2026-08-01 |
 | Factory wire W20 closes D3.10 to the S_TTL connector island | PASS | assembly wire W20; `S_TTL_D3` -> `S_TTL` |
 | HDL USART model separates TxRDY/TxEMPTY and guards Tx/Rx loopback | PASS | `hdl/devices.v`; `hdl/sim/usart_8251_tb.v`; `sync/serial_check.sh` |
 | HDL serial connector and drivers are instantiated | PASS | `hdl/juku_top.v` |
@@ -102,6 +103,10 @@ python3 scripts/report_serial_handoff.py
 - D11 serial-side pins are carried through the modeled D14/D32/D3/D12
   output drivers and D104 receiver to X3 signal pins. D3.10 reaches
   X3.3 through the explicit W20 assembly-wire closure.
+- Owner continuity on Arvutimuuseum machine `CS00015` identifies X3 pin 7 as
+  signal ground.  This closes the ground contact for the current diagnostic
+  cable; it does not silently rewrite the still-separate generic A27 harness
+  boundary in the reconstructed PCB without a corresponding board-side chase.
 - `sync/serial_check.sh` now proves a scoped USART behavior slice:
   mode/command writes, the `TxRDY=0,TxEMPTY=0` holding-full state,
   the `TxRDY=1,TxEMPTY=0` holding-to-shift transition, final

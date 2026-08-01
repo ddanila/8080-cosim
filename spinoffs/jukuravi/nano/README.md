@@ -22,14 +22,13 @@ TTL-side wiring:
 | D8 | input | R1OUT | receive Juku TX after RS-232 level conversion |
 | D9 | output | T1IN | send to Juku RX through the first line driver |
 | D10 | output | T2IN | assert Juku CTS through the second line driver |
-| GND | — | GND | common reference; bond to continuity-confirmed X3 signal ground |
+| GND | — | GND | common reference; connect to X3.7 signal ground |
 
 Never connect D8, D9, or D10 directly to X3: X3 is an RS-232-level connector.
-The X3 signal/contact assignment remains continuity-gated on the real board.
+Owner continuity on Arvutimuuseum machine `CS00015` identifies X3.7 as signal
+ground. The data/control assignments are X3.9 SOUT, X3.4 SIN, and X3.5 CTS.
 Use a MAX3232-class two-driver/two-receiver circuit with its datasheet charge
-pump capacitors. A MAX3232 is not an isolator: connect its ground to the X3
-signal-ground contact only after that contact and the three signals are
-continuity-confirmed.
+pump capacitors. A MAX3232 is not an isolator: connect its ground to X3.7.
 
 The MAX3232 driver inverts its input, so firmware holds D10/T2IN low to produce
 the positive RS-232 control voltage used for asserted CTS. Fit a 10 kOhm
