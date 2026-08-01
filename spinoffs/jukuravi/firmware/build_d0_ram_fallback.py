@@ -61,6 +61,10 @@ FALLBACK_WINDOWS = ((0x4000, 0x1000), (0xC000, 0x1000))
 SERIAL_DEAD_MARK_COUNT = 20834  # nominally about 0.25 seconds
 PULSE_COUNT = 8334              # nominally about 0.10 seconds
 PULSE_GAP_COUNT = 4167          # nominally about 0.05 seconds
+SLOW_PULSE_COUNT = 20834        # nominally about 0.25 seconds
+SLOW_PULSE_GAP_COUNT = 20834    # nominally about 0.25 seconds
+SLOW_GROUP_GAP_COUNT = 62501    # extra nominal 0.75 seconds after pulse five
+SLOW_REPORT_PAUSE_COUNT = 62501 # nominally about 0.75 second
 WINDOWS_FOUND_PULSES = 3
 WINDOWS_FOUND_DIVISOR = 1000    # nominal 2 kHz
 CHIP_ID_DIVISOR = 2000          # nominal 1 kHz
@@ -301,6 +305,35 @@ def emit_pulse_loop(
     asm.jump(0xC2, f"{stem}_pulse")
     asm.jump(0xC3, done_label)
     return pulse_offset, gap_offset
+
+
+def emit_slow_grouped_pulse_loop(
+    asm: Assembler, *, stem: str, divisor: int, done_label: str
+) -> tuple[int, int, int]:
+    """Emit D long pulses, with an extra separator after the fifth."""
+    asm.emit(0x26, 0x00)  # MVI H,0: number already emitted
+    asm.label(f"{stem}_pulse")
+    emit_failure_tone(asm, divisor)
+    pulse_offset = emit_register_delay(
+        asm, stem=f"{stem}_pulse_delay", count=SLOW_PULSE_COUNT
+    )
+    asm.mvi_a(0x50)
+    asm.out(0x1B)
+    asm.mvi_a(0x01)
+    asm.out(0x19)
+    gap_offset = emit_register_delay(
+        asm, stem=f"{stem}_gap_delay", count=SLOW_PULSE_GAP_COUNT
+    )
+    asm.emit(0x24, 0x7C, 0xFE, 0x05)  # INR H / MOV A,H / CPI 5
+    asm.jump(0xC2, f"{stem}_after_group_gap")
+    group_gap_offset = emit_register_delay(
+        asm, stem=f"{stem}_group_gap_delay", count=SLOW_GROUP_GAP_COUNT
+    )
+    asm.label(f"{stem}_after_group_gap")
+    asm.emit(0x15)  # DCR D
+    asm.jump(0xC2, f"{stem}_pulse")
+    asm.jump(0xC3, done_label)
+    return pulse_offset, gap_offset, group_gap_offset
 
 
 def emit_rom_convention_check(asm: Assembler) -> dict[str, int]:
@@ -699,6 +732,7 @@ def build_variant(
     pit_check: bool = False, framebuffer_pattern: bool = False,
     no_serial_fallback: bool = False,
     pit_debug: bool = False,
+    pit_debug_slow: bool = False,
     loader_emitter: Callable[[Assembler], dict[str, int | list[int] | bytes]]
     | None = None,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
@@ -718,6 +752,8 @@ def build_variant(
         raise ValueError("no-serial profile requires PIT fallback without framebuffer/loader")
     if pit_debug and not no_serial_fallback:
         raise ValueError("PIT debug profile requires the no-serial profile")
+    if pit_debug_slow and not pit_debug:
+        raise ValueError("slow PIT reporting requires the PIT-debug profile")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -757,10 +793,16 @@ def build_variant(
     if no_serial_fallback:
         if pit_debug:
             asm.emit(0x16, WINDOWS_FOUND_PULSES)  # three clean-success pulses
-            debug_success_offsets = emit_pulse_loop(
-                asm, stem="pit_debug_success", divisor=WINDOWS_FOUND_DIVISOR,
-                done_label="pit_debug_success_done",
-            )
+            if pit_debug_slow:
+                debug_success_offsets = emit_slow_grouped_pulse_loop(
+                    asm, stem="pit_debug_success", divisor=WINDOWS_FOUND_DIVISOR,
+                    done_label="pit_debug_success_done",
+                )
+            else:
+                debug_success_offsets = emit_pulse_loop(
+                    asm, stem="pit_debug_success", divisor=WINDOWS_FOUND_DIVISOR,
+                    done_label="pit_debug_success_done",
+                )
             asm.label("pit_debug_success_done")
             pit_debug_success_halt = asm.pc
             asm.emit(0x76)
@@ -847,10 +889,26 @@ def build_variant(
     if pit_debug:
         asm.label("pit_debug_fail")
         asm.emit(0x53)  # MOV D,E: pulse count is first failed checkpoint
-        debug_code_offsets = emit_pulse_loop(
-            asm, stem="pit_debug_code", divisor=CHIP_ID_DIVISOR,
-            done_label="pit_debug_continuous",
-        )
+        if pit_debug_slow:
+            emit_register_delay(
+                asm, stem="pit_debug_report_pause",
+                count=SLOW_REPORT_PAUSE_COUNT,
+            )
+            debug_code_offsets = emit_slow_grouped_pulse_loop(
+                asm, stem="pit_debug_code", divisor=WINDOWS_FOUND_DIVISOR,
+                done_label="pit_debug_tail_pause",
+            )
+            asm.label("pit_debug_tail_pause")
+            emit_register_delay(
+                asm, stem="pit_debug_tail_delay",
+                count=SLOW_REPORT_PAUSE_COUNT,
+            )
+            asm.jump(0xC3, "pit_debug_continuous")
+        else:
+            debug_code_offsets = emit_pulse_loop(
+                asm, stem="pit_debug_code", divisor=CHIP_ID_DIVISOR,
+                done_label="pit_debug_continuous",
+            )
         asm.label("pit_debug_continuous")
         emit_failure_tone(asm, SERIAL_DEAD_TONE_DIVISOR)
         pit_debug_fail_halt = asm.pc
@@ -1113,6 +1171,7 @@ def build_variant(
         "checksum": checksum,
         "no_serial_fallback": 1 if no_serial_fallback else 0,
         "pit_debug": 1 if pit_debug else 0,
+        "pit_debug_slow": 1 if pit_debug_slow else 0,
         "pit_debug_success_halt": pit_debug_success_halt,
         "pit_debug_fail_halt": pit_debug_fail_halt,
         "pit_debug_success_offsets": list(debug_success_offsets),

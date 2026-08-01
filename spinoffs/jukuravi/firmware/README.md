@@ -583,6 +583,22 @@ The cosim regression injects the appropriate DB7 polarity fault at every one
 of the twelve positions and checks the pulse count, first-stop behavior,
 cumulative safe state, and absence of USART/RAM traffic.
 
+`diag-d0-pit-debug-slow.bin` is the version `0C` field-readable form of that
+test.  Its SHA-256 is
+`34c110f209e7ccfffb3a261bea25b3b2e9d361eaaad57bcde638d744e8eed72a`.
+The initial alive indication remains approximately 0.5 seconds at 1 kHz.  A
+failure then has 0.75 seconds of silence, followed by 0.25-second 2 kHz count
+pulses separated by 0.25 seconds of silence.  After pulse five an additional
+0.75-second separator divides the count into groups of five.  A final
+0.75-second pause, in addition to the normal trailing 0.25-second gap, precedes
+the continuous nominal 125 Hz failure tone.  Clean success is three of the
+same long 2 kHz pulses followed by silence.  Build or verify it with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_pit_debug_slow.py
+python3 spinoffs/jukuravi/firmware/build_d0_pit_debug_slow.py --check
+```
+
 ## Stage D2 checkpoint: chunked RAM loader
 
 `diag-d2-loader.bin` is the cumulative version-9 image. It preserves every D0
