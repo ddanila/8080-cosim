@@ -17,6 +17,9 @@ D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake,
 `diag-d0-pit.bin` adds the guarded D54/D55/D57 all-counter register test,
 `diag-d0-framebuffer.bin` adds the surveyed-RAM framebuffer pattern, and
 `diag-d2-loader.bin` continues from that clean path into the upload/run monitor.
+`diag-d0-noserial.bin` is the cumulative bench variant that checks CPU, ROM,
+PIC, PPI, and all PIT channels, then jumps directly to the two-window audible
+RAM fallback without touching the 8251 or requiring CTS.
 
 SHA256:
 
@@ -33,6 +36,7 @@ c75fc47b4966532c67794a317ab23b0e75c32977acb799d3e08a94d53baf2685  diag-d0-ppi.bi
 b7ab8c3c5d7b32c5402510787216e099b0adbd37d64fb2c4a01f5695eb5401cf  diag-d0-pit.bin
 d77c4a381440ed9166a24762b303c8ec0407e6d00c480a151a23c807234d7dd7  diag-d0-framebuffer.bin
 5396f33244bfac5eae25404958afdcc4c0aac8a06255f7b11e20d2f0bcb0bedf  diag-d2-loader.bin
+df553334c23a4167b5372f1d9c69d91af0a160c67cdf13b1f4fafab9267a8922  diag-d0-noserial.bin
 ```
 
 ## Build and guard
@@ -49,6 +53,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_pic.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_noserial.py --check
 python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
 sync/jukuravi_d0_check.sh
 ```
@@ -530,6 +535,24 @@ It proves clean draw/readback through bit-sliced D84–D91, the fault halt with
 zero pattern writes, and 2,560 matching pixels from the existing abstract
 serializer. Separate version-8 fallback runs retain both clean and dead-D87
 physical outcomes.
+
+## Bench variant: cumulative no-serial audible path
+
+`diag-d0-noserial.bin` advertises ROM version `0A` and deliberately performs no
+8251 I/O.  It preserves the alive and CPU tests, historical block-1 checksum,
+D10 PIC, D27 PPI, and D54/D55/D57 all-counter tests.  Success then jumps
+directly to the existing two-window RAM fallback.  This makes it suitable when
+X3 CTS is inactive or the serial harness is absent.
+
+The expected clean cadence is the approximately 0.5-second nominal 1 kHz alive
+beep, an approximately 0.25-second nominal 125 Hz no-serial marker, both 4 KiB
+RAM window tests, and three short nominal 2 kHz success pulses followed by
+silence.  The existing CPU/ROM/PIC/PPI/PIT continuous failure tones remain
+unchanged.  If neither RAM window works, one to eight short nominal 1 kHz
+pulses identify the first failing D84-D91 bit, followed by continuous 125 Hz.
+The cosim guard requires zero reads or writes at USART ports `08h` and `09h`,
+zero transmitted/received bytes, the complete cumulative PIT sequence, and
+both clean-window and forced-dead-D87 terminal paths.
 
 ## Stage D2 checkpoint: chunked RAM loader
 

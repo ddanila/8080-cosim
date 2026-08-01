@@ -641,6 +641,7 @@ def build_variant(
     entry_offset: int = 0x0010, pic_check: bool = False,
     compact_fallback: bool = False, ppi_check: bool = False,
     pit_check: bool = False, framebuffer_pattern: bool = False,
+    no_serial_fallback: bool = False,
     loader_emitter: Callable[[Assembler], dict[str, int | list[int] | bytes]]
     | None = None,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
@@ -656,6 +657,8 @@ def build_variant(
         raise ValueError("framebuffer profile requires the cumulative PIT profile")
     if loader_emitter is not None and not framebuffer_pattern:
         raise ValueError("loader profile requires the cumulative framebuffer profile")
+    if no_serial_fallback and (not pit_check or framebuffer_pattern or loader_emitter):
+        raise ValueError("no-serial profile requires PIT fallback without framebuffer/loader")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -688,40 +691,54 @@ def build_variant(
     )
     if pit_check:
         asm.label("after_pit")
-    local_timeout_offsets = emit_local_usart_test(asm)
-    train_timeout_offset = emit_train(asm, failure_label="ram_fallback")
 
     placeholder_payload = bytes((protocol.PROTOCOL_VERSION, rom_version, 0, 0))
     placeholder_banner = protocol.encode_frame(protocol.TYPE_BANNER, placeholder_payload)
     placeholder_ack = protocol.encode_frame(protocol.TYPE_ACK, placeholder_payload)
-    banner_timeout_offsets = emit_table_tx(
-        asm, "banner", len(placeholder_banner), failure_label="ram_fallback"
-    )
-    banner_empty_timeout_offset = emit_status_wait(
-        asm, stem="banner_empty", mask=0x04, failure_label="ram_fallback"
-    )
-    ack_timeout_offsets = emit_ack_rx(
-        asm, len(placeholder_ack), failure_label="ram_fallback"
-    )
-
-    serial_ok_delay_offset = emit_serial_ok(asm, halt=False)
-    emit_video_pit_init(asm)
-    begin_timeout_offsets = emit_fixed_frame(
-        asm, begin_frame, stem="ram_begin", failure_label="ram_fallback"
-    )
-    survey_metadata = emit_ram_survey(asm, failure_label="ram_fallback")
-    end_timeout_offsets = emit_fixed_frame(
-        asm, end_frame, stem="ram_end", failure_label="ram_fallback"
-    )
-    final_empty_timeout_offset = emit_status_wait(
-        asm, stem="ram_end_empty", mask=0x04, failure_label="ram_fallback"
-    )
-    if framebuffer_pattern:
-        asm.jump(0xC3, "framebuffer_extension_start")
+    if no_serial_fallback:
+        asm.jump(0xC3, "ram_fallback")
+        local_timeout_offsets = []
+        train_timeout_offset = -1
+        banner_timeout_offsets = []
+        banner_empty_timeout_offset = -1
+        ack_timeout_offsets = []
+        serial_ok_delay_offset = -1
+        begin_timeout_offsets = []
+        end_timeout_offsets = []
+        final_empty_timeout_offset = -1
+        survey_metadata = {}
         success_halt = -1
     else:
-        success_halt = asm.pc
-        asm.emit(0x76)
+        local_timeout_offsets = emit_local_usart_test(asm)
+        train_timeout_offset = emit_train(asm, failure_label="ram_fallback")
+        banner_timeout_offsets = emit_table_tx(
+            asm, "banner", len(placeholder_banner), failure_label="ram_fallback"
+        )
+        banner_empty_timeout_offset = emit_status_wait(
+            asm, stem="banner_empty", mask=0x04, failure_label="ram_fallback"
+        )
+        ack_timeout_offsets = emit_ack_rx(
+            asm, len(placeholder_ack), failure_label="ram_fallback"
+        )
+
+        serial_ok_delay_offset = emit_serial_ok(asm, halt=False)
+        emit_video_pit_init(asm)
+        begin_timeout_offsets = emit_fixed_frame(
+            asm, begin_frame, stem="ram_begin", failure_label="ram_fallback"
+        )
+        survey_metadata = emit_ram_survey(asm, failure_label="ram_fallback")
+        end_timeout_offsets = emit_fixed_frame(
+            asm, end_frame, stem="ram_end", failure_label="ram_fallback"
+        )
+        final_empty_timeout_offset = emit_status_wait(
+            asm, stem="ram_end_empty", mask=0x04, failure_label="ram_fallback"
+        )
+        if framebuffer_pattern:
+            asm.jump(0xC3, "framebuffer_extension_start")
+            success_halt = -1
+        else:
+            success_halt = asm.pc
+            asm.emit(0x76)
 
     asm.label("cpu_fail")
     emit_failure_tone(asm, CPU_FAIL_TONE_DIVISOR)
@@ -752,10 +769,12 @@ def build_variant(
         emit_failure_tone(asm, PPI_CHECK_FAIL_DIVISOR)
         ppi_fail_halt = asm.pc
         asm.emit(0x76)
-    asm.label("usart_fail")
-    emit_failure_tone(asm, USART_FAIL_TONE_DIVISOR)
-    usart_fail_halt = asm.pc
-    asm.emit(0x76)
+    usart_fail_halt = -1
+    if not no_serial_fallback:
+        asm.label("usart_fail")
+        emit_failure_tone(asm, USART_FAIL_TONE_DIVISOR)
+        usart_fail_halt = asm.pc
+        asm.emit(0x76)
 
     asm.label("ram_fallback")
     serial_dead_mark_delay_offset = emit_tone_pulse(
@@ -1004,6 +1023,7 @@ def build_variant(
         "checksum_offsets": checksum_offsets,
         "checksum_zero_offsets": checksum_zero_offsets,
         "checksum": checksum,
+        "no_serial_fallback": 1 if no_serial_fallback else 0,
         "banner": banner,
         "ack": ack,
         "begin_frame": begin_frame,
