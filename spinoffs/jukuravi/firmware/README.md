@@ -20,6 +20,8 @@ D11/8251 test, `diag-d0-serial.bin` adds the external framed handshake,
 `diag-d0-noserial.bin` is the cumulative bench variant that checks CPU, ROM,
 PIC, PPI, and all PIT channels, then jumps directly to the two-window audible
 RAM fallback without touching the 8251 or requiring CTS.
+`diag-d0-pit-debug.bin` replaces the generic PIT-failure tone with an audible
+number for the first failed counter/readback checkpoint.
 
 SHA256:
 
@@ -37,6 +39,7 @@ b7ab8c3c5d7b32c5402510787216e099b0adbd37d64fb2c4a01f5695eb5401cf  diag-d0-pit.bi
 d77c4a381440ed9166a24762b303c8ec0407e6d00c480a151a23c807234d7dd7  diag-d0-framebuffer.bin
 5396f33244bfac5eae25404958afdcc4c0aac8a06255f7b11e20d2f0bcb0bedf  diag-d2-loader.bin
 df553334c23a4167b5372f1d9c69d91af0a160c67cdf13b1f4fafab9267a8922  diag-d0-noserial.bin
+ea52ef2cd3b56727d9c2d2d39cce2442e5faa247ccbb88fb51e91d10978ac22c  diag-d0-pit-debug.bin
 ```
 
 ## Build and guard
@@ -54,6 +57,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_noserial.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_pit_debug.py --check
 python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
 sync/jukuravi_d0_check.sh
 ```
@@ -553,6 +557,31 @@ pulses identify the first failing D84-D91 bit, followed by continuous 125 Hz.
 The cosim guard requires zero reads or writes at USART ports `08h` and `09h`,
 zero transmitted/received bytes, the complete cumulative PIT sequence, and
 both clean-window and forced-dead-D87 terminal paths.
+
+`diag-d0-pit-debug.bin` is the focused companion, advertised as version `0B`.
+It preserves the CPU/ROM/PIC/PPI gates and performs no USART or RAM access.
+A clean PIT run gives three short nominal 2 kHz pulses and silence.  On the
+first failed read it gives the following number of short nominal 1 kHz pulses,
+then a continuous nominal 125 Hz tail. Reset repeats the report:
+
+| Pulses | Checkpoint |
+| ---: | --- |
+| 1 | D54 channel 0, high (`FF`) DB7 readback |
+| 2 | D54 channel 1, high (`FF`) DB7 readback |
+| 3 | D54 channel 2, high (`FF`) DB7 readback |
+| 4 | D54 channel 0, low (`3F`) DB7 readback |
+| 5 | D55 channel 0, high (`FF`) DB7 readback |
+| 6 | D55 channel 1, high (`FF`) DB7 readback |
+| 7 | D55 channel 2, high (`FF`) DB7 readback |
+| 8 | D55 channel 0, low (`3F`) DB7 readback |
+| 9 | D57 channel 0, high (`FF`) DB7 readback |
+| 10 | D57 channel 1, high (`FF`) DB7 readback |
+| 11 | D57 channel 2, high (`FF`) DB7 readback |
+| 12 | D57 channel 0, low (`3F`) DB7 readback |
+
+The cosim regression injects the appropriate DB7 polarity fault at every one
+of the twelve positions and checks the pulse count, first-stop behavior,
+cumulative safe state, and absence of USART/RAM traffic.
 
 ## Stage D2 checkpoint: chunked RAM loader
 

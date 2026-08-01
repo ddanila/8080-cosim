@@ -473,6 +473,62 @@ def emit_pit_register_check(asm: Assembler) -> dict[str, int | list[int]]:
     }
 
 
+def emit_pit_debug_register_check(asm: Assembler) -> dict[str, int | list[int]]:
+    """Exercise all PIT checkpoints and retain the first failure number in E."""
+    high_read_offsets: list[int] = []
+    low_read_offsets: list[int] = []
+    tested_ports: list[int] = []
+    checkpoints: list[int] = []
+    asm.emit(0x1E, 0x00)  # MVI E,0; INR before each of twelve reads
+
+    for base in PIT_CHIP_BASES:
+        control_port = base + 3
+        for channel in range(3):
+            data_port = base + channel
+            tested_ports.append(data_port)
+            asm.mvi_a(0x20 | (channel << 6))
+            asm.out(control_port)
+            asm.mvi_a(PIT_HIGH_COUNT)
+            asm.out(data_port)
+            if channel == 0:
+                asm.emit(0xAF)
+            else:
+                asm.mvi_a(channel << 6)
+            asm.out(control_port)
+            asm.emit(0x1C)  # INR E: checkpoint number 1..12
+            checkpoints.append(len(checkpoints) + 1)
+            high_read_offsets.append(asm.pc)
+            asm.emit(0xDB, data_port, 0xB7)
+            asm.jump(0xF2, "pit_debug_fail")
+
+        asm.mvi_a(0x20)
+        asm.out(control_port)
+        asm.mvi_a(PIT_LOW_COUNT)
+        asm.out(base)
+        asm.emit(0xAF)
+        asm.out(control_port)
+        asm.emit(0x1C)
+        checkpoints.append(len(checkpoints) + 1)
+        low_read_offsets.append(asm.pc)
+        asm.emit(0xDB, base, 0xB7)
+        asm.jump(0xFA, "pit_debug_fail")
+
+    # Restore speaker and sync-B outputs before reporting clean success.
+    for control, port in ((0x50, 0x19), (0x90, 0x1A)):
+        asm.mvi_a(control)
+        asm.out(0x1B)
+        asm.mvi_a(0x01)
+        asm.out(port)
+    asm.jump(0xC3, "after_pit")
+    return {
+        "pit_ports": tested_ports,
+        "pit_high_read_offsets": high_read_offsets,
+        "pit_low_read_offsets": low_read_offsets,
+        "pit_debug_checkpoints": checkpoints,
+        "pit_check_pass": -1,
+    }
+
+
 def emit_framebuffer_extension_guard(asm: Assembler) -> dict[str, int]:
     """Checksum the framebuffer extension before any serial or RAM activity."""
     asm.emit(0xAF)  # XRA A: additive accumulator
@@ -642,6 +698,7 @@ def build_variant(
     compact_fallback: bool = False, ppi_check: bool = False,
     pit_check: bool = False, framebuffer_pattern: bool = False,
     no_serial_fallback: bool = False,
+    pit_debug: bool = False,
     loader_emitter: Callable[[Assembler], dict[str, int | list[int] | bytes]]
     | None = None,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
@@ -659,6 +716,8 @@ def build_variant(
         raise ValueError("loader profile requires the cumulative framebuffer profile")
     if no_serial_fallback and (not pit_check or framebuffer_pattern or loader_emitter):
         raise ValueError("no-serial profile requires PIT fallback without framebuffer/loader")
+    if pit_debug and not no_serial_fallback:
+        raise ValueError("PIT debug profile requires the no-serial profile")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -696,7 +755,19 @@ def build_variant(
     placeholder_banner = protocol.encode_frame(protocol.TYPE_BANNER, placeholder_payload)
     placeholder_ack = protocol.encode_frame(protocol.TYPE_ACK, placeholder_payload)
     if no_serial_fallback:
-        asm.jump(0xC3, "ram_fallback")
+        if pit_debug:
+            asm.emit(0x16, WINDOWS_FOUND_PULSES)  # three clean-success pulses
+            debug_success_offsets = emit_pulse_loop(
+                asm, stem="pit_debug_success", divisor=WINDOWS_FOUND_DIVISOR,
+                done_label="pit_debug_success_done",
+            )
+            asm.label("pit_debug_success_done")
+            pit_debug_success_halt = asm.pc
+            asm.emit(0x76)
+        else:
+            asm.jump(0xC3, "ram_fallback")
+            debug_success_offsets = []
+            pit_debug_success_halt = -1
         local_timeout_offsets = []
         train_timeout_offset = -1
         banner_timeout_offsets = []
@@ -709,6 +780,8 @@ def build_variant(
         survey_metadata = {}
         success_halt = -1
     else:
+        debug_success_offsets = []
+        pit_debug_success_halt = -1
         local_timeout_offsets = emit_local_usart_test(asm)
         train_timeout_offset = emit_train(asm, failure_label="ram_fallback")
         banner_timeout_offsets = emit_table_tx(
@@ -768,6 +841,19 @@ def build_variant(
             asm.out(port)
         emit_failure_tone(asm, PPI_CHECK_FAIL_DIVISOR)
         ppi_fail_halt = asm.pc
+        asm.emit(0x76)
+    pit_debug_fail_halt = -1
+    debug_code_offsets: tuple[int, int] | list[int] = []
+    if pit_debug:
+        asm.label("pit_debug_fail")
+        asm.emit(0x53)  # MOV D,E: pulse count is first failed checkpoint
+        debug_code_offsets = emit_pulse_loop(
+            asm, stem="pit_debug_code", divisor=CHIP_ID_DIVISOR,
+            done_label="pit_debug_continuous",
+        )
+        asm.label("pit_debug_continuous")
+        emit_failure_tone(asm, SERIAL_DEAD_TONE_DIVISOR)
+        pit_debug_fail_halt = asm.pc
         asm.emit(0x76)
     usart_fail_halt = -1
     if not no_serial_fallback:
@@ -854,7 +940,9 @@ def build_variant(
     loader_guard_metadata: dict[str, int] = {}
     if pit_check:
         asm.label("pit_extension_start")
-        if framebuffer_pattern:
+        if pit_debug:
+            pit_metadata = emit_pit_debug_register_check(asm)
+        elif framebuffer_pattern:
             pit_metadata, framebuffer_guard_metadata = (
                 emit_chained_pit_register_check(asm)
             )
@@ -1024,6 +1112,11 @@ def build_variant(
         "checksum_zero_offsets": checksum_zero_offsets,
         "checksum": checksum,
         "no_serial_fallback": 1 if no_serial_fallback else 0,
+        "pit_debug": 1 if pit_debug else 0,
+        "pit_debug_success_halt": pit_debug_success_halt,
+        "pit_debug_fail_halt": pit_debug_fail_halt,
+        "pit_debug_success_offsets": list(debug_success_offsets),
+        "pit_debug_code_offsets": list(debug_code_offsets),
         "banner": banner,
         "ack": ack,
         "begin_frame": begin_frame,

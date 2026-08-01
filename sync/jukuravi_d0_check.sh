@@ -18,6 +18,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_ppi.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_noserial.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_pit_debug.py --check
 python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
@@ -47,6 +48,8 @@ python3 tests/jukuravi_d0_framebuffer_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-framebuffer.bin
 python3 tests/jukuravi_d0_noserial_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-noserial.bin
+python3 tests/jukuravi_d0_pit_debug_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-pit-debug.bin
 python3 tests/jukuravi_host_cli_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-framebuffer.bin
 python3 tests/jukuravi_d2_loader_test.py \
