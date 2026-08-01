@@ -46,6 +46,8 @@ Most reports are outputs of scripts or checks; a few are consolidated durable
 findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
+  `cs00015-service-record.md` (Arvutimuuseum machine identity and the observed
+  D15/D55 machine-specific fault record),
   `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
   `native-resistor-values.md` (25 literal sheet/photo values; no axial holds),
   `native-capacitor-values.md` (C7/C8/C99 literal sheet values with nine

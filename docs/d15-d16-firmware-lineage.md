@@ -68,3 +68,6 @@ but cannot identify bytes, version, or factory program number.
 - Future physical EPROM reads or original `.087/.041` programming media
   should be preserved if found, but they are not replica, milestone, or
   release gates.
+- The Arvutimuuseum `CS00015` service work found three differing bytes in its
+  fitted D15.  This remains machine-specific evidence pending retention of the
+  raw captures and exact offset/value diff; see `docs/cs00015-service-record.md`.
