@@ -599,6 +599,22 @@ python3 spinoffs/jukuravi/firmware/build_d0_pit_debug_slow.py
 python3 spinoffs/jukuravi/firmware/build_d0_pit_debug_slow.py --check
 ```
 
+`diag-d0-d55-stress.bin` is version `0D` and isolates the unstable middle PIT.
+Its SHA-256 is
+`703514bd36ea3fb1c695b91259040571d601880f475f4562698c851ffbdfd0ce`.
+It repeats each D55 predicate 32 times, adding eight 8080 NOP cycles after
+each control write, count write, and latch command.  The slow T15 report format
+is retained, but only four failure codes exist: channel 0 high, channel 1 high,
+channel 2 high, and channel 0 low.  Three long 2 kHz pulses and silence mean all
+128 reads passed.  This provides a direct comparison against T15's back-to-back
+accesses without waiting long enough for the programmed counter value to decay.
+Build or verify it with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_d55_stress.py
+python3 spinoffs/jukuravi/firmware/build_d0_d55_stress.py --check
+```
+
 ## Stage D2 checkpoint: chunked RAM loader
 
 `diag-d2-loader.bin` is the cumulative version-9 image. It preserves every D0

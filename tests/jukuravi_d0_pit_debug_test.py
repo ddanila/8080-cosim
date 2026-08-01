@@ -40,7 +40,7 @@ def common_failures(label, result, metadata, *, checkpoint: int | None):
         ("pc", f"{expected_pc:04X}"), ("halted", "1"), ("sp", "0000"),
         ("iff", "0"), ("mode", "0"), ("mode_switches", "0"),
         ("usart_tx_bytes", "0"), ("usart_rx_bytes", "0"),
-        ("e", f"{12 if checkpoint is None else checkpoint:02X}"),
+        ("e", f"{metadata['pit_debug_checkpoints'][-1] if checkpoint is None else checkpoint:02X}"),
     ):
         if state.get(key) != expected:
             failures.append(f"{label}: {key}={state.get(key)} != {expected}")

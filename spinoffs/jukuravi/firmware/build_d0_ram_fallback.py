@@ -65,6 +65,8 @@ SLOW_PULSE_COUNT = 20834        # nominally about 0.25 seconds
 SLOW_PULSE_GAP_COUNT = 20834    # nominally about 0.25 seconds
 SLOW_GROUP_GAP_COUNT = 62501    # extra nominal 0.75 seconds after pulse five
 SLOW_REPORT_PAUSE_COUNT = 62501 # nominally about 0.75 second
+D55_STRESS_REPETITIONS = 32
+D55_RECOVERY_NOPS = 8
 WINDOWS_FOUND_PULSES = 3
 WINDOWS_FOUND_DIVISOR = 1000    # nominal 2 kHz
 CHIP_ID_DIVISOR = 2000          # nominal 1 kHz
@@ -562,6 +564,53 @@ def emit_pit_debug_register_check(asm: Assembler) -> dict[str, int | list[int]]:
     }
 
 
+def emit_d55_timing_stress_check(asm: Assembler) -> dict[str, int | list[int]]:
+    """Repeat D55's four predicates with explicit I/O recovery spacing."""
+    base = 0x14
+    control_port = base + 3
+    tested_ports: list[int] = []
+    read_offsets: list[int] = []
+    asm.emit(0x1E, 0x00)  # MVI E,0; checkpoint number
+
+    cases = ((0, PIT_HIGH_COUNT, True), (1, PIT_HIGH_COUNT, True),
+             (2, PIT_HIGH_COUNT, True), (0, PIT_LOW_COUNT, False))
+    for checkpoint, (channel, value, expect_high) in enumerate(cases, 1):
+        data_port = base + channel
+        tested_ports.append(data_port)
+        asm.emit(0x1C, 0x26, D55_STRESS_REPETITIONS)  # INR E / MVI H,32
+        asm.label(f"d55_stress_{checkpoint}")
+        asm.mvi_a(0x20 | (channel << 6))
+        asm.out(control_port)
+        asm.emit(*([0x00] * D55_RECOVERY_NOPS))
+        asm.mvi_a(value)
+        asm.out(data_port)
+        asm.emit(*([0x00] * D55_RECOVERY_NOPS))
+        asm.mvi_a(channel << 6)
+        asm.out(control_port)
+        asm.emit(*([0x00] * D55_RECOVERY_NOPS))
+        read_offsets.append(asm.pc)
+        asm.emit(0xDB, data_port, 0xB7)  # IN / ORA A
+        asm.jump(0xF2 if expect_high else 0xFA, "pit_debug_fail")
+        asm.emit(0x25)  # DCR H
+        asm.jump(0xC2, f"d55_stress_{checkpoint}")
+
+    for control, port in ((0x50, 0x19), (0x90, 0x1A)):
+        asm.mvi_a(control)
+        asm.out(0x1B)
+        asm.mvi_a(0x01)
+        asm.out(port)
+    asm.jump(0xC3, "after_pit")
+    return {
+        "pit_ports": tested_ports,
+        "pit_high_read_offsets": read_offsets[:3],
+        "pit_low_read_offsets": read_offsets[3:],
+        "pit_debug_checkpoints": list(range(1, 5)),
+        "pit_debug_repetitions": D55_STRESS_REPETITIONS,
+        "pit_debug_recovery_nops": D55_RECOVERY_NOPS,
+        "pit_check_pass": -1,
+    }
+
+
 def emit_framebuffer_extension_guard(asm: Assembler) -> dict[str, int]:
     """Checksum the framebuffer extension before any serial or RAM activity."""
     asm.emit(0xAF)  # XRA A: additive accumulator
@@ -733,6 +782,7 @@ def build_variant(
     no_serial_fallback: bool = False,
     pit_debug: bool = False,
     pit_debug_slow: bool = False,
+    pit_debug_d55_stress: bool = False,
     loader_emitter: Callable[[Assembler], dict[str, int | list[int] | bytes]]
     | None = None,
 ) -> tuple[bytes, dict[str, int | list[int] | bytes]]:
@@ -754,6 +804,8 @@ def build_variant(
         raise ValueError("PIT debug profile requires the no-serial profile")
     if pit_debug_slow and not pit_debug:
         raise ValueError("slow PIT reporting requires the PIT-debug profile")
+    if pit_debug_d55_stress and not (pit_debug and pit_debug_slow):
+        raise ValueError("D55 stress requires slow PIT-debug reporting")
     begin_payload = bytes((SURVEY_VERSION, SURVEY_START_PAGE,
                            SURVEY_END_PAGE, PATTERN_SET))
     end_payload = bytes((SURVEY_START_PAGE, SURVEY_END_PAGE))
@@ -998,7 +1050,9 @@ def build_variant(
     loader_guard_metadata: dict[str, int] = {}
     if pit_check:
         asm.label("pit_extension_start")
-        if pit_debug:
+        if pit_debug_d55_stress:
+            pit_metadata = emit_d55_timing_stress_check(asm)
+        elif pit_debug:
             pit_metadata = emit_pit_debug_register_check(asm)
         elif framebuffer_pattern:
             pit_metadata, framebuffer_guard_metadata = (
@@ -1172,6 +1226,7 @@ def build_variant(
         "no_serial_fallback": 1 if no_serial_fallback else 0,
         "pit_debug": 1 if pit_debug else 0,
         "pit_debug_slow": 1 if pit_debug_slow else 0,
+        "pit_debug_d55_stress": 1 if pit_debug_d55_stress else 0,
         "pit_debug_success_halt": pit_debug_success_halt,
         "pit_debug_fail_halt": pit_debug_fail_halt,
         "pit_debug_success_offsets": list(debug_success_offsets),
