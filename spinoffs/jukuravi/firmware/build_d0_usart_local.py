@@ -67,7 +67,8 @@ def emit_timeout_wait(
 
 
 def emit_local_usart_test(
-    asm: Assembler, *, failure_label: str = "usart_fail"
+    asm: Assembler, *, failure_label: str = "usart_fail",
+    baud_divisor: int = BAUD_DIVISOR,
 ) -> list[int]:
     # Recover a known mode-instruction state even if D11 did not see a clean
     # board reset: sync mode + two sync bytes + internal-reset command.
@@ -90,9 +91,11 @@ def emit_local_usart_test(
     # nominal 1.23 MHz input and the 8251 x16 mode this is approximately 9600.
     asm.mvi_a(0x34)
     asm.out(PIT_CONTROL)
-    asm.mvi_a(BAUD_DIVISOR)
+    if not 1 <= baud_divisor <= 0xFFFF:
+        raise ValueError("baud divisor does not fit the PIT counter")
+    asm.mvi_a(baud_divisor & 0xFF)
     asm.out(PIT_BAUD_COUNT)
-    asm.mvi_a(0x00)
+    asm.mvi_a(baud_divisor >> 8)
     asm.out(PIT_BAUD_COUNT)
 
     timeout_offsets = [emit_timeout_wait(

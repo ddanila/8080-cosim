@@ -17,7 +17,7 @@ from build_d0_ram_fallback import (
     lxi_h,
     lxi_h_label,
 )
-from build_d0_usart_local import USART_CONTROL, USART_DATA
+from build_d0_usart_local import USART_COMMAND, USART_CONTROL, USART_DATA
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
@@ -39,6 +39,9 @@ LOADER_BUFFER = 0xD800
 LOADER_STACK_TOP = FRAMEBUFFER_END
 LOAD_MIN_ADDRESS = protocol.LOADER_LOAD_MIN
 LOAD_END_ADDRESS = protocol.LOADER_LOAD_END
+LOADER_SYMBOL_REQUEST_0 = 0xC6
+LOADER_SYMBOL_REQUEST_1 = 0xC7
+LOADER_SYMBOL_SEQUENCE = LOADER_BUFFER + 0xFF
 
 
 def call(asm, label: str) -> None:
@@ -56,7 +59,13 @@ def emit_send_frame(asm, *, stem: str, table: str, length: int) -> None:
     asm.jump(0xC3, "loader_send_table")
 
 
-def emit_loader(asm) -> dict[str, int | list[int] | bytes]:
+def emit_loader(
+    asm, *, encoded_input: bool = False, symbol_repetitions: int = 1,
+    solicited_input: bool = False, filter_invalid_symbols: bool = False,
+    clear_invalid_errors: bool = False, verify_buffer_stores: bool = False,
+) -> dict[str, int | list[int] | bytes]:
+    if symbol_repetitions < 1 or symbol_repetitions > 15 or not symbol_repetitions & 1:
+        raise ValueError("symbol repetitions must be an odd value from 1 to 15")
     frames = {
         "ready": protocol.encode_frame(
             protocol.TYPE_LOADER_READY,
@@ -123,6 +132,10 @@ def emit_loader(asm) -> dict[str, int | list[int] | bytes]:
 
     asm.label("loader_entry")
     asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)  # LXI SP
+    if solicited_input:
+        asm.mvi_a(LOADER_SYMBOL_REQUEST_0)
+        asm.emit(0x32, LOADER_SYMBOL_SEQUENCE & 0xFF,
+                 LOADER_SYMBOL_SEQUENCE >> 8)  # STA sequence
     call(asm, "loader_send_ready")
 
     asm.label("loader_loop")
@@ -203,6 +216,14 @@ def emit_loader(asm) -> dict[str, int | list[int] | bytes]:
     call(asm, "loader_send_error_bad_range")
     asm.jump(0xC3, "loader_loop")
 
+    # A physical-symbol timeout can occur below several nested CALLs. Reset
+    # the stack, report a retryable CRC/transport error, and restart framing.
+    if encoded_input and symbol_repetitions > 1:
+        asm.label("loader_transport_timeout")
+        asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)
+        call(asm, "loader_send_error_bad_crc")
+        asm.jump(0xC3, "loader_loop")
+
     # Receive one standard A5 5A frame into the proven framebuffer workspace.
     # Return A=0 only when CRC-8/ATM covers type, length, and every payload byte.
     asm.label("loader_receive_frame")
@@ -216,17 +237,27 @@ def emit_loader(asm) -> dict[str, int | list[int] | bytes]:
     lxi_h(asm, LOADER_BUFFER)
     asm.emit(0x1E, 0x00)  # MVI E,0 CRC accumulator
     call(asm, "loader_serial_get")
-    asm.emit(0x77)  # MOV M,A: type
+    if verify_buffer_stores:
+        call(asm, "loader_buffer_store")
+    else:
+        asm.emit(0x77)  # MOV M,A: type
     call(asm, "loader_crc8_update")
     asm.emit(0x23)
     call(asm, "loader_serial_get")
-    asm.emit(0x77, 0x47)  # MOV M,A / MOV B,A: payload count
+    if verify_buffer_stores:
+        call(asm, "loader_buffer_store")
+    else:
+        asm.emit(0x77)  # MOV M,A
+    asm.emit(0x47)  # MOV B,A: payload count
     call(asm, "loader_crc8_update")
     asm.emit(0x23, 0x78, 0xB7)  # INX H / MOV A,B / ORA A
     asm.jump(0xCA, "loader_payload_done")
     asm.label("loader_payload_next")
     call(asm, "loader_serial_get")
-    asm.emit(0x77)
+    if verify_buffer_stores:
+        call(asm, "loader_buffer_store")
+    else:
+        asm.emit(0x77)
     call(asm, "loader_crc8_update")
     asm.emit(0x23, 0x05)  # INX H / DCR B
     asm.jump(0xC2, "loader_payload_next")
@@ -238,6 +269,24 @@ def emit_loader(asm) -> dict[str, int | list[int] | bytes]:
     asm.label("loader_frame_bad_crc")
     asm.mvi_a(protocol.LOADER_STATUS_BAD_CRC)
     asm.emit(0xC9)
+
+    if verify_buffer_stores:
+        # D800h is shared video RAM on real Juku hardware.  A bulk startup
+        # sweep proves the cells, but not that every CPU write wins at the
+        # exact serial receive phase.  Verify each parser-buffer byte before
+        # it becomes authoritative.  Preserve the received byte in A and the
+        # caller's payload counter in B; eight failed writes are treated as a
+        # recoverable transport failure by resetting the already-proven stack.
+        asm.label("loader_buffer_store")
+        asm.emit(0xC5, 0x06, 0x08)  # PUSH B / MVI B,8
+        asm.label("loader_buffer_store_try")
+        asm.emit(0x77, 0xBE)  # MOV M,A / CMP M
+        asm.jump(0xCA, "loader_buffer_store_ok")
+        asm.emit(0x05)  # DCR B
+        asm.jump(0xC2, "loader_buffer_store_try")
+        asm.jump(0xC3, "loader_transport_timeout")
+        asm.label("loader_buffer_store_ok")
+        asm.emit(0xC1, 0xC9)  # POP B / RET
 
     asm.label("loader_crc8_update")
     asm.emit(0xAB, 0x16, 0x08)  # XRA E / MVI D,8
@@ -251,10 +300,123 @@ def emit_loader(asm) -> dict[str, int | list[int] | bytes]:
     asm.emit(0x5F, 0xC9)  # MOV E,A / RET
 
     asm.label("loader_serial_get")
-    asm.label("loader_serial_get_poll")
-    asm.emit(0xDB, USART_CONTROL, 0xE6, 0x02)  # IN status / ANI RxRDY
-    asm.jump(0xCA, "loader_serial_get_poll")
-    asm.emit(0xDB, USART_DATA, 0xC9)  # IN data / RET
+    if encoded_input and symbol_repetitions > 1:
+        # Fixed-width repetition code. For every logical bit consume exactly
+        # N physical bytes, count exact 55 and AA symbols, and choose the
+        # larger count. Invalid byte values are neutral but still consumed, so
+        # corruption can never shift group alignment or deadlock the decoder.
+        asm.jump(0xC3, "loader_vote_entry")
+        asm.label("loader_vote_raw_get")
+        asm.emit(0xC5, 0xD5, 0xE5)  # preserve caller vote state
+        if solicited_input:
+            # Receiver-driven flow control: advertise capacity for exactly one
+            # physical symbol.  This prevents a real 8251A overrun from
+            # deleting a character and shifting all later repetition groups.
+            asm.label("loader_vote_request")
+            lda(asm, LOADER_SYMBOL_SEQUENCE)
+            call(asm, "loader_serial_put")
+        asm.lxi_b(0xFFFF)
+        asm.label("loader_vote_raw_poll")
+        asm.emit(0xDB, USART_CONTROL, 0xE6, 0x02)
+        asm.jump(0xC2, "loader_vote_raw_ready")
+        asm.emit(0x0B, 0x78, 0xB1)
+        asm.jump(0xC2, "loader_vote_raw_poll")
+        asm.jump(
+            0xC3,
+            "loader_vote_request" if solicited_input else "loader_transport_timeout",
+        )
+        asm.label("loader_vote_raw_ready")
+        asm.emit(0xDB, USART_DATA)
+        if solicited_input:
+            if filter_invalid_symbols:
+                # The real CP2102/MAX3232 harness can echo the request token
+                # back into Juku RX. Only 55/AA are legal host vote symbols:
+                # discard every other byte without advancing the sequence or
+                # vote slot, then wait for the outstanding response.
+                asm.emit(0xFE, 0x55)
+                asm.jump(0xCA, "loader_vote_raw_valid")
+                asm.emit(0xFE, 0xAA)
+                asm.jump(0xCA, "loader_vote_raw_valid")
+                # Clear PE/OE/FE immediately after every rejected echo/noise
+                # byte. Some 8251A-family implementations otherwise retain
+                # the error state while the outstanding response arrives.
+                if clear_invalid_errors:
+                    asm.mvi_a(USART_COMMAND)
+                    asm.out(USART_CONTROL)
+                asm.lxi_b(0xFFFF)
+                asm.jump(0xC3, "loader_vote_raw_poll")
+                asm.label("loader_vote_raw_valid")
+            # Preserve the received byte while alternating the next request
+            # token.  A repeated token therefore unambiguously asks the host
+            # to resend the same physical symbol.
+            asm.emit(0xF5)  # PUSH PSW
+            # Intel 8251A PE/OE/FE flags persist until command bit ER is
+            # written. Clear them after every physical character so a noisy
+            # or formerly overrun link always begins the next sample cleanly.
+            asm.mvi_a(USART_COMMAND)
+            asm.out(USART_CONTROL)
+            lda(asm, LOADER_SYMBOL_SEQUENCE)
+            asm.emit(0xEE, 0x01)  # XRI 1: C6 <-> C7
+            asm.emit(0x32, LOADER_SYMBOL_SEQUENCE & 0xFF,
+                     LOADER_SYMBOL_SEQUENCE >> 8)
+            asm.emit(0xF1)  # POP PSW
+        asm.emit(0xE1, 0xD1, 0xC1, 0xC9)
+        asm.label("loader_vote_entry")
+        asm.emit(0xC5, 0xD5, 0xE5)  # PUSH B / PUSH D / PUSH H
+        asm.emit(0x06, 0x00, 0x0E, 0x08)  # B=logical accumulator, C=8 bits
+        asm.label("loader_vote_bit")
+        asm.emit(0x16, 0x00, 0x26, 0x00, 0x1E, symbol_repetitions)
+        asm.label("loader_vote_sample")
+        call(asm, "loader_vote_raw_get")
+        asm.emit(0xFE, 0xAA)
+        asm.jump(0xC2, "loader_vote_not_one")
+        asm.emit(0x14)  # INR D: AA vote
+        asm.jump(0xC3, "loader_vote_count")
+        asm.label("loader_vote_not_one")
+        asm.emit(0xFE, 0x55)
+        asm.jump(0xC2, "loader_vote_count")
+        asm.emit(0x24)  # INR H: 55 vote
+        asm.label("loader_vote_count")
+        asm.emit(0x1D)
+        asm.jump(0xC2, "loader_vote_sample")
+        asm.emit(0x7C, 0xBA)  # MOV A,H / CMP D; carry means AA votes win
+        asm.jump(0xDA, "loader_vote_one")
+        asm.emit(0x78, 0x87, 0x47)  # B=B<<1
+        asm.jump(0xC3, "loader_vote_next_bit")
+        asm.label("loader_vote_one")
+        asm.emit(0x78, 0x87, 0x47, 0x04)  # B=(B<<1)+1
+        asm.label("loader_vote_next_bit")
+        asm.emit(0x0D)
+        asm.jump(0xC2, "loader_vote_bit")
+        asm.emit(0x78, 0xE1, 0xD1, 0xC1, 0xC9)
+    elif encoded_input:
+        # Robust host->Juku transport: one logical byte is eight physical
+        # symbols, MSB first.  55 means bit 0 and AA means bit 1; every other
+        # received value is discarded. Preserve all caller registers via the
+        # already-proven loader stack and return only the reconstructed A.
+        asm.emit(0xC5, 0xD5, 0xE5)  # PUSH B / PUSH D / PUSH H
+        asm.emit(0x06, 0x00, 0x0E, 0x08)  # MVI B,0 / MVI C,8
+        asm.label("loader_symbol_next")
+        asm.label("loader_symbol_poll")
+        asm.emit(0xDB, USART_CONTROL, 0xE6, 0x02)
+        asm.jump(0xCA, "loader_symbol_poll")
+        asm.emit(0xDB, USART_DATA, 0xFE, 0x55)
+        asm.jump(0xCA, "loader_symbol_zero")
+        asm.emit(0xFE, 0xAA)
+        asm.jump(0xC2, "loader_symbol_next")
+        asm.emit(0x78, 0x87, 0x47, 0x04)  # B=(B<<1)+1
+        asm.jump(0xC3, "loader_symbol_count")
+        asm.label("loader_symbol_zero")
+        asm.emit(0x78, 0x87, 0x47)        # B=B<<1
+        asm.label("loader_symbol_count")
+        asm.emit(0x0D)
+        asm.jump(0xC2, "loader_symbol_next")
+        asm.emit(0x78, 0xE1, 0xD1, 0xC1, 0xC9)  # A=B / POP H,D,B / RET
+    else:
+        asm.label("loader_serial_get_poll")
+        asm.emit(0xDB, USART_CONTROL, 0xE6, 0x02)  # IN status / ANI RxRDY
+        asm.jump(0xCA, "loader_serial_get_poll")
+        asm.emit(0xDB, USART_DATA, 0xC9)  # IN data / RET
 
     asm.label("loader_serial_put")
     asm.emit(0xF5)  # PUSH PSW

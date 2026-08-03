@@ -1,0 +1,23 @@
+T31HOST.BIN - JUKURAVI LOW-4K HOST MONITOR
+===========================================
+
+Image size: 8192 bytes
+ROM version: 1Ah
+Self CRC16: 72EF
+SHA256: a4fed9185616bbfbef22ab6f0b18202e6d79ad7dbe3b7c46a77a700d3af3676c
+
+Program T31HOST.BIN at offset 0000h into an AT28C64B and verify it. Install
+it in Juku D15 and leave D16 empty.
+
+The real T30 image repeatedly sent its exact banner, status 08, and status 83,
+then restarted when execution entered ROM address 100Ch. T31 keeps every
+executed monitor byte below that suspect boundary; the loader ends at 0FFFh.
+
+T31 enters the loader directly after compact RAM status 83. It bypasses the
+unreachable full-C000h-CFFFh workspace sweep and loader-ROM checksum tail, so
+the programmer's successful verify is the ROM-integrity evidence for this
+workaround. Bounded TxRDY recovery and T28 commands/CALL/RET remain available.
+
+Simulation reproduces T30's exact repeated reset cycle at 100Ch. Under the
+same forced boundary plus the known D55 fault, T31 reaches READY, uploads and
+verifies code, executes CALL/RET, and returns A plus a RAM result block.

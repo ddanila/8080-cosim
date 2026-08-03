@@ -648,6 +648,178 @@ python3 spinoffs/jukuravi/firmware/build_d0_best_effort.py
 python3 spinoffs/jukuravi/firmware/build_d0_best_effort.py --check
 ```
 
+## Robust full diagnostic and upload monitor
+
+`diag-d0-robust.bin` is version `0F`, SHA-256
+`fa4376b6cb094d13350f4dfb627eac4706c17ec97940feb9bffb01a9339ef658`,
+with full-image CRC16 `1786`.  It retains T17's RAM-independent CPU, ROM,
+PIC, PPI, PIT, local-USART, peripheral-status, and compact RAM diagnostics.
+PIC/PPI/D54/D55/D57 failures remain reportable and nonfatal.
+
+The serial entry is hardened from the hardware findings on CS00015: stale
+receive bytes are drained before transmitting the banner, the ROM scans a
+bounded byte stream for one exact ACK while resynchronizing on `A5`, and host
+version-0F sessions transmit four independently framed ACK copies.  Remaining
+copies are drained before the loader starts.
+
+After compact RAM reporting, the ROM destructively verifies the entire
+`D800..FDA7` loader buffer/stack workspace with uniform and address-XOR
+patterns, additively verifies the loader extension, and enters the persistent
+D2 command monitor at `0A0C`.  The existing fixed API and CRC-framed LOAD/RUN
+contract are preserved: programs load into `4000..D7FF`, each byte is read
+back before acknowledgement, RUN is acknowledged and drained before `PCHL`,
+and uploaded code can return with `JMP 0A06h`.
+
+Build or verify it with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_robust.py
+python3 spinoffs/jukuravi/firmware/build_d0_robust.py --check
+```
+
+`diag-d0-stopwait.bin` is the version-`10` stop-and-wait refinement, SHA-256
+`050e409878d7517b1d235eb3bb63d2580aa2fcaa229cce9f40f7d3783bc1bfab`,
+with full-image CRC16 `68B4`.  It preserves the complete version-0F diagnostic,
+workspace verification, loader, fixed API, LOAD verification, and RUN path.
+For the initial handshake, the ROM transmits each of the nine expected ACK
+bytes as an individual challenge and advances only after the host echoes that
+exact byte.  Each byte receives eight bounded attempts with a long receive
+window.  This is the full-ROM application of T19's hardware-proven reliable
+stop-and-wait behavior.
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_stopwait.py
+python3 spinoffs/jukuravi/firmware/build_d0_stopwait.py --check
+```
+
+`diag-d0-adaptive.bin` is version `11`, SHA-256
+`0a76064fc669762faf575474b8a43807d17be57f4a5786cec6d5b25d07511835`,
+with full-image CRC16 `39F9`.  It is the adaptable transport image intended to
+avoid further ROM changes when host-to-Juku raw byte values are unreliable.
+Negotiation uses only alternating `55`/`AA`; a receive mismatch transmits
+`F0,expected,received` telemetry before retrying.  Loader input then represents
+each logical byte as eight MSB-first symbols (`55`=0, `AA`=1) and discards all
+other physical values.  CRC framing and immediate RAM readback still validate
+the reconstructed logical data.  Juku-to-host frames stay in the efficient raw
+format.  The 8x upload expansion is deliberately exchanged for arbitrary-byte
+correctness on the measured harness.
+
+The real host CLI has been verified with both a RUN of an uploaded `HLT` at
+`4000h` and a load-only file containing all 256 possible byte values.
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_adaptive.py
+python3 spinoffs/jukuravi/firmware/build_d0_adaptive.py --check
+```
+
+`diag-d0-repetition.bin` is version `12`, SHA-256
+`d03d39055d3ac6f5d189ee65f39f6f681cf7de63365d4b18495fd8ec60c68bde`,
+with full-image CRC16 `3D2D`.  It retains adaptive negotiation and mismatch
+telemetry, then uses seven fixed physical symbols per logical bit.  The ROM
+always consumes all seven, counts exact `55` and `AA` votes, and selects the
+larger count; other values are neutral but retain alignment.  Encoded LOAD
+chunks are capped at 32 bytes, independently CRC-framed, and read back from RAM
+before acknowledgement.  An emulator run uploaded and verified a file
+containing all 256 byte values in eight chunks.
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_repetition.py
+python3 spinoffs/jukuravi/firmware/build_d0_repetition.py --check
+```
+
+`diag-d0-resilient.bin` is version `13`, SHA-256
+`a3182957b68d9c7e3d7c9127ca79c7131fd73bb385066e3065beb9e73b22d673`,
+with full-image CRC16 `A1C1`.  It lowers the physical link to approximately
+2400 baud while retaining seven-vote fixed-width symbols and 32-byte logical
+LOAD chunks.  The host launches each physical symbol at a conservative 6 ms
+cadence.  A bounded per-symbol ROM timeout resets the loader stack and parser,
+reports a retryable bad-CRC transport error, and returns to frame sync instead
+of hanging.  The host can retry each rejected LOAD chunk up to three times;
+logical CRC and immediate RAM readback remain authoritative.
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_resilient.py
+python3 spinoffs/jukuravi/firmware/build_d0_resilient.py --check
+```
+
+`diag-d0-solicited.bin` is version `14`, self-CRC16 `7AB9`, SHA-256
+`6d174c0164119eda9ae7fa4438c545661f8c315ebd9bf56f8002fc886c1c8c56`.
+It keeps T24's 2400-baud diagnostics, loader API, seven-vote bit encoding,
+CRC, and RAM readback, but eliminates dense host-to-Juku transmission. Before
+each physical symbol the ROM emits an alternating `C6`/`C7` capacity token and
+accepts exactly one response. A repeated token tells the host to resend the
+same symbol; a changed token proves acceptance and advances it. This preserves
+vote boundaries across deleted UART characters and prevents 8251A overruns.
+The ROM also writes the 8251A ER command after every received character to
+clear persistent parity, overrun, and framing flags.
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_solicited.py
+python3 spinoffs/jukuravi/firmware/build_d0_solicited.py --check
+```
+
+`diag-d0-echo-filtered.bin` is version `15`, self-CRC16 `368B`, SHA-256
+`4105eadcf2a3f9a310fee82ad5349982b7ad4a85f83cf82cf6b181330177002d`.
+It retains T25's receiver-driven transport but accepts only `55` and `AA` as
+physical vote responses. Every other received value—including the measured
+`C6`/`C7` request self-echo from the CP2102/MAX3232 harness—is discarded
+without changing the request sequence or consuming a vote slot.
+
+`diag-d0-buffer-verified.bin` is the T28 burn-once host monitor, ROM version
+`17`, self-CRC16 `A6A5`, SHA-256
+`e2a18fc2741cc0db10eea278bedede0787220d853ec88dc5dff7e785ba9a95ea`.
+It moves all parser state and its stack to the independently tested
+`C000..CFFF` window, verifies every parser and target store, protects commands
+with both wire CRC8 and a CRC16 recomputed from stored RAM, and exposes
+transactional PROBE, CONFIG, LOAD, READ, CRC, RUN, and RESYNC commands. CALL is
+the default RUN mode: an uploaded snippet completes with ordinary 8080 `RET`,
+returns A plus an optional RAM result block, and leaves the monitor active.
+RUN uses an independent 32-bit execution ID, so a repeated command replays its
+cached completion rather than executing a non-idempotent snippet twice. On RET
+the ROM restores DI, SP, the 8251, and the 2400-baud PIT channel before replying.
+Idle transport reset and host reattachment preserve uploaded RAM and avoid a
+board RESET. The complete stable contract and host examples are in
+[`../T28-PROTOCOL.md`](../T28-PROTOCOL.md).
+
+`diag-d0-host-recover.bin` is the T29 hardware-recovery refinement, ROM
+version `18`, self-CRC16 `AC40`, SHA-256
+`c92b9760633c4d73a92bd1d2f737dd9c0ac94061c7331eee487be5ce02b69536`.
+It retains the complete T28 host monitor and adds raw post-diagnostic progress
+bytes `E0`, `E1`, `E2`, and `E3`, respectively identifying monitor handoff,
+verified `C000..CFFF` workspace, verified loader ROM, and loader entry. All
+loader TxRDY and TxEMPTY waits are bounded. On the first timeout T29 resets and
+reprograms the 8251 and the 2400-baud PIT channel, retries once, and otherwise
+takes the existing audible UART-failure path instead of hanging silently. The
+emulator regression deliberately holds TxRDY low between frames and verifies
+that this recovery still reaches READY, uploads code, executes it by CALL/RET,
+and returns both A and a RAM result block.
+
+`diag-d0-txready.bin` is T30, ROM version `19`, self-CRC16 `6127`, SHA-256
+`804562b2a0e28f8380773b2e331587973b5a5928a646ac4f93ee99e355e51f2a`.
+Physical T29 output proved that the real CS00015 board transmitted its complete
+final diagnostic frame while 8251 status bit 2 nevertheless remained low.
+T30 therefore retains the initial TxEMPTY sanity check that worked on the
+board, but removes every later correctness dependency on TxEMPTY. The final
+diagnostic handoff proceeds directly, and the loader uses a conservative fixed
+drain delay before CALL instead of status bit 2. TxRDY waits remain bounded and
+recoverable. Regression runs force TxEMPTY permanently low after startup and
+also inject a separate one-shot TxRDY stall; READY, upload, CALL/RET, returned
+A, and returned RAM all remain operational.
+
+`diag-d0-low4k.bin` is T31, ROM version `1A`, self-CRC16 `72EF`, SHA-256
+`a4fed9185616bbfbef22ab6f0b18202e6d79ad7dbe3b7c46a77a700d3af3676c`.
+Repeated physical T30 captures proved an exact
+`banner 19/6127 -> status 08 -> status 83 -> restart` cycle with no `E0`; its
+first post-diagnostic instruction was at `100Ch`. T31 compacts the two-attempt
+TxRDY recovery so every executed monitor byte fits at or below `0FFFh` (loader
+end exactly `0FFFh`) and enters it directly after the compact `83` RAM gate.
+It bypasses the unreachable full-workspace and loader-checksum tail above the
+boundary. Cosim's `JUKU_ROM_EXEC_RESET_AT=0x1000` reproduces three exact T30
+cycles, while T31 still completes READY, upload, readback, CRC, CALL/RET,
+returned A, and returned RAM under the same boundary plus the CS00015 D55
+fault. Programmer verification is the loader-ROM integrity evidence for this
+workaround image.
+
 ## Stage D2 checkpoint: chunked RAM loader
 
 `diag-d2-loader.bin` is the cumulative version-9 image. It preserves every D0

@@ -1,0 +1,72 @@
+{
+  "attempts": [
+    {
+      "banner_seen": true,
+      "decoded_frames": 7,
+      "dtr_sequence_completed": false,
+      "error": "timeout before a complete RAM survey",
+      "loader": null,
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "error",
+      "received_bytes": 175,
+      "transmitted_bytes": 9
+    }
+  ],
+  "diagnostic_status": null,
+  "error": "timeout before a complete RAM survey",
+  "finished_utc": "2026-08-01T17:20:53.454132Z",
+  "frames": [
+    {
+      "payload_hex": "010ED81F",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "010ED81F",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "010ED81F",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "010ED81F",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "010ED81F",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "010ED81F",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "010ED81F",
+      "type": "0x01"
+    }
+  ],
+  "image": {
+    "crc16": "D81F",
+    "protocol_version": 1,
+    "rom_version": 14
+  },
+  "leading_training_bytes": 16,
+  "loader": null,
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 175,
+  "rx_log": "20260801T171953.453608Z.rx.bin",
+  "started_utc": "2026-08-01T17:19:53.453608Z",
+  "status": "error",
+  "transmitted_bytes": 9,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260801T171953.453608Z.tx.bin"
+}

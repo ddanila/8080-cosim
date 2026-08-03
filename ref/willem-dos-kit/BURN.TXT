@@ -1,0 +1,38 @@
+JUKURAVI WILLEM DOS BURN KIT
+============================
+
+HOST SOFTWARE
+-------------
+Run WILEP996.EXE under plain DOS.  Keep WILESET.DAT in the same directory.
+The saved port is LPT1 at 378h.  WILEP996.ZIP is the untouched source archive.
+
+Select the exact 28C64 entry matching the chip marking.  Do not select 2764:
+the read pinout is compatible, but the programming algorithm is different.
+
+For every chip:
+  1. Select the exact device and apply the displayed Willem switch settings.
+  2. Blank-check the chip.
+  3. Load the BIN file at offset 0000h.  Each BIN is exactly 8192 bytes.
+  4. Program and verify.
+  5. Remove/reinsert or power-cycle, read again, and compare with the BIN.
+  6. Label the chip with the DOS filename stem.
+
+DIAGNOSTIC CHIPS - INSTALL ONE AT A TIME IN D15; LEAVE D16 EMPTY
+----------------------------------------------------------------
+T01ALIVE.BIN  Minimal reset/fetch/PIT/beeper test.  Burn and run first.
+T02CPU.BIN    Adds CPU ALU, flag, rotate, DAA, and branch tests.
+T03USART.BIN  Adds the local 8251 and baud-clock test.
+T06RAMFB.BIN  Adds RAM survey and serial-dead beep fallback.
+T08PIC.BIN    Cumulative image through ROM convention and 8259 PIC.
+T09PPI.BIN    Cumulative image through the 8255 PPI.
+T10PIT.BIN    Cumulative image through all PIT channels.
+T12LOAD.BIN   Complete diagnostic ladder and upload/run monitor.
+
+NORMAL EKTA 3.7 BIOS - INSTALL BOTH
+-----------------------------------
+D15EK37.BIN   Low 8 KiB; install this programmed chip in D15.
+D16EK37.BIN   High 8 KiB; install this programmed chip in D16.
+
+Do not install a diagnostic chip together with D16EK37.  Diagnostic operation
+uses one diagnostic chip in D15 and an empty D16 socket.
+

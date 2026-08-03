@@ -1,0 +1,109 @@
+{
+  "attempts": [
+    {
+      "banner_seen": true,
+      "decoded_frames": 3,
+      "dtr_sequence_completed": false,
+      "error": "timeout waiting for LOADER_READY",
+      "loader": {
+        "address": "0x4000",
+        "bytes": 0,
+        "chunks": [],
+        "control_only": true,
+        "end_exclusive": "0x4000",
+        "error": "timeout waiting for LOADER_READY",
+        "heartbeat": null,
+        "ready": null,
+        "requested": true,
+        "run": {
+          "acknowledged": false,
+          "address": null,
+          "requested": false
+        },
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source": "<T28 control>",
+        "status": "error"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "error",
+      "received_bytes": 43,
+      "transmitted_bytes": 6
+    }
+  ],
+  "diagnostic_status": {
+    "d54": true,
+    "d55": false,
+    "d57": true,
+    "peripheral_fault_mask_hex": "08",
+    "pic": true,
+    "ppi": true,
+    "ram_4000": true,
+    "ram_c000": true
+  },
+  "error": "timeout waiting for LOADER_READY",
+  "finished_utc": "2026-08-02T22:04:05.371459Z",
+  "frames": [
+    {
+      "payload_hex": "0118AC40",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "08",
+      "type": "0x50"
+    },
+    {
+      "payload_hex": "83",
+      "type": "0x50"
+    }
+  ],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 20.0,
+    "symbol_repetitions": 7
+  },
+  "image": {
+    "crc16": "AC40",
+    "protocol_version": 1,
+    "rom_version": 24
+  },
+  "leading_training_bytes": 16,
+  "loader": {
+    "address": "0x4000",
+    "bytes": 0,
+    "chunks": [],
+    "control_only": true,
+    "end_exclusive": "0x4000",
+    "error": "timeout waiting for LOADER_READY",
+    "heartbeat": null,
+    "ready": null,
+    "requested": true,
+    "run": {
+      "acknowledged": false,
+      "address": null,
+      "requested": false
+    },
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "<T28 control>",
+    "status": "error"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 43,
+  "rx_log": "20260802T220252.314429Z.rx.bin",
+  "started_utc": "2026-08-02T22:02:52.314429Z",
+  "status": "error",
+  "transmitted_bytes": 6,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260802T220252.314429Z.tx.bin"
+}

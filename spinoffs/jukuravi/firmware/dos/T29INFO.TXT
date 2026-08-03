@@ -1,0 +1,25 @@
+T29HOST.BIN - JUKURAVI RECOVERABLE HOST MONITOR
+================================================
+
+Image size: 8192 bytes
+ROM version: 18h
+Self CRC16: AC40
+SHA256: c92b9760633c4d73a92bd1d2f737dd9c0ac94061c7331eee487be5ce02b69536
+
+Program T29HOST.BIN at offset 0000h into an AT28C64B and verify it. Install
+it in Juku D15 and leave D16 empty.
+
+T29 retains every T28 command and CALL/RET feature. It adds raw progress bytes:
+E0 = post-diagnostic entry
+E1 = C000h-CFFFh monitor workspace passed
+E2 = loader ROM checksum passed
+E3 = loader entry reached
+
+All loader TxRDY and TxEMPTY waits are bounded. On a first timeout T29 resets
+and restores the 8251 plus 2400-baud timer, then retries once. A persistent
+failure takes the audible UART-failure path instead of hanging silently.
+
+Normal host-controlled execution does NOT require RESET. Uploaded tasks end
+with ordinary 8080 RET and may return A plus a RAM result block. RESET remains
+the last recovery path only when arbitrary uploaded code does not return or
+damages the reserved C000h-CFFFh monitor workspace.

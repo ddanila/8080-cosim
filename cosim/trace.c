@@ -27,10 +27,15 @@
 // USART: JUKU_USART_PTY=auto prints a new slave path; a host-created PTY path
 //        may be supplied instead. JUKU_USART_TRANSFER_CYCLES controls the
 //        holding-to-shift delay; JUKU_USART_BYTE_CYCLES controls frame time.
-//        JUKU_USART_FAULT=tx_stuck holds the transmit input register full.
+//        JUKU_USART_FAULT=tx_stuck holds the transmit input register full;
+//        tx_stuck_once:BYTE jams one matching write until an 8251 reset;
+//        tx_not_ready_once_after:COUNT jams between completed output bytes;
+//        tx_empty_low_after:COUNT holds only status bit 2 low thereafter.
 // RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte
 //        (ADDR=* applies the stuck masks globally);
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
+// EXEC:  JUKU_ROM_EXEC_RESET_AT=ADDR resets the CPU whenever a ROM fetch
+//        reaches ADDR or above (used to model the physical D15 A12 boundary).
 // PIC:   JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH faults the 8259 IMR readback.
 // PPI:   JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D27 port readback.
 // PIT:   JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D54/D55/D57 count reads.
@@ -80,6 +85,10 @@ static uint16_t      ram_fault_addr = 0;
 static uint8_t       ram_fault_stuck_low = 0;
 static uint8_t       ram_fault_stuck_high = 0;
 static int           ram_fault_all = 0;
+static int           ram_drop_write_enabled = 0;
+static uint16_t      ram_drop_write_addr = 0;
+static uint8_t       ram_drop_write_value = 0;
+static unsigned      ram_drop_write_remaining = 0;
 static int           ram_alias_enabled = 0;
 static uint8_t       ram_alias_page_a = 0;
 static uint8_t       ram_alias_page_b = 0;
@@ -224,6 +233,15 @@ typedef struct {
   int tx_holding_full;
   int tx_busy;
   int fault_tx_stuck;
+  int fault_tx_stuck_permanent;
+  int fault_tx_stuck_once_enabled;
+  int fault_tx_stuck_once_fired;
+  uint8_t fault_tx_stuck_once_value;
+  int fault_tx_not_ready_once_after_enabled;
+  unsigned long fault_tx_not_ready_once_after;
+  int fault_tx_empty_low_after_enabled;
+  unsigned long fault_tx_empty_low_after;
+  unsigned long fault_tx_stuck_once_recoveries;
   unsigned long tx_transfer_cyc;
   unsigned long tx_complete_cyc;
   unsigned long transfer_cycles;
@@ -303,6 +321,11 @@ static int usart_open_transport(const char* setting) {
 }
 
 static void usart_reset(void) {
+  if (usart.fault_tx_stuck && !usart.fault_tx_stuck_permanent) {
+    usart.fault_tx_stuck_once_recoveries++;
+    fprintf(stderr, "[USART] one-shot TxRDY stall cleared by 8251 reset\n");
+  }
+  usart.fault_tx_stuck = usart.fault_tx_stuck_permanent;
   usart.expect_mode = 1;
   usart.mode_word = 0;
   usart.command = 0;
@@ -347,8 +370,21 @@ static void usart_poll(unsigned long cyc) {
 }
 
 static uint8_t usart_status(void) {
-  uint8_t tx_ready = usart.tx_holding_full ? 0 : 0x01;
-  uint8_t tx_empty = (!usart.tx_holding_full && !usart.tx_busy) ? 0x04 : 0;
+  if (usart.fault_tx_not_ready_once_after_enabled &&
+      !usart.fault_tx_stuck_once_fired &&
+      usart.tx_bytes >= usart.fault_tx_not_ready_once_after) {
+    usart.fault_tx_stuck = 1;
+    usart.fault_tx_stuck_once_fired = 1;
+    fprintf(stderr,
+            "[USART] injected one-shot TxRDY stall after byte=%lu\n",
+            usart.tx_bytes);
+  }
+  uint8_t tx_ready = (usart.fault_tx_stuck || usart.tx_holding_full) ? 0 : 0x01;
+  uint8_t tx_empty = (!usart.fault_tx_stuck && !usart.tx_holding_full &&
+                      !usart.tx_busy) ? 0x04 : 0;
+  if (usart.fault_tx_empty_low_after_enabled &&
+      usart.tx_bytes >= usart.fault_tx_empty_low_after)
+    tx_empty = 0;
   return (uint8_t)(tx_ready | tx_empty | (usart.rx_ready ? 0x02 : 0));
 }
 
@@ -375,6 +411,15 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
   } else if ((usart.command & 0x01) && !usart.tx_holding_full) {
     usart.tx_data = value;
     usart.tx_holding_full = 1;
+    if (usart.fault_tx_stuck_once_enabled &&
+        !usart.fault_tx_stuck_once_fired &&
+        value == usart.fault_tx_stuck_once_value) {
+      usart.fault_tx_stuck = 1;
+      usart.fault_tx_stuck_once_fired = 1;
+      fprintf(stderr,
+              "[USART] injected one-shot TxRDY stall on data=%02X at byte=%lu\n",
+              value, usart.tx_bytes);
+    }
     if (!usart.tx_busy)
       usart.tx_transfer_cyc = cyc + usart.transfer_cycles;
   }
@@ -516,6 +561,14 @@ static void wb(void* u, uint16_t a, uint8_t v) {
   // ROM. High-ROM and cartridge windows remain read-only overlays; allowing
   // those writes corrupts the independently guarded Monitor 3.3 framebuffer.
   if (ov && !(mode == 0 && a <= 0x3FFF)) return;
+  if (ram_drop_write_enabled && ram_drop_write_remaining &&
+      a == ram_drop_write_addr && v == ram_drop_write_value) {
+    ram_drop_write_remaining--;
+    fprintf(stderr,
+            "[RAM] dropped write address=0x%04X value=0x%02X remaining=%u\n",
+            a, v, ram_drop_write_remaining);
+    return;
+  }
   ram[map_ram_address(a)] = apply_ram_fault(a, v);
   wpage[a >> 8]++;
   if (a >= VRAM_BASE) {            // for CI: stop+dump after N video writes (match HDL)
@@ -743,6 +796,15 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "usart_tx_holding_full=%d\n", usart.tx_holding_full);
   fprintf(state_out, "usart_tx_shift_busy=%d\n", usart.tx_busy);
   fprintf(state_out, "usart_fault_tx_stuck=%d\n", usart.fault_tx_stuck);
+  fprintf(state_out, "usart_fault_tx_stuck_permanent=%d\n", usart.fault_tx_stuck_permanent);
+  fprintf(state_out, "usart_fault_tx_stuck_once_enabled=%d\n", usart.fault_tx_stuck_once_enabled);
+  fprintf(state_out, "usart_fault_tx_stuck_once_fired=%d\n", usart.fault_tx_stuck_once_fired);
+  fprintf(state_out, "usart_fault_tx_stuck_once_value=%02X\n", usart.fault_tx_stuck_once_value);
+  fprintf(state_out, "usart_fault_tx_not_ready_once_after_enabled=%d\n", usart.fault_tx_not_ready_once_after_enabled);
+  fprintf(state_out, "usart_fault_tx_not_ready_once_after=%lu\n", usart.fault_tx_not_ready_once_after);
+  fprintf(state_out, "usart_fault_tx_empty_low_after_enabled=%d\n", usart.fault_tx_empty_low_after_enabled);
+  fprintf(state_out, "usart_fault_tx_empty_low_after=%lu\n", usart.fault_tx_empty_low_after);
+  fprintf(state_out, "usart_fault_tx_stuck_once_recoveries=%lu\n", usart.fault_tx_stuck_once_recoveries);
   fprintf(state_out, "usart_tx_bytes=%lu\n", usart.tx_bytes);
   fprintf(state_out, "usart_rx_bytes=%lu\n", usart.rx_bytes);
   for (int p = 0; p < 256; p++) {
@@ -762,6 +824,19 @@ int main(int argc, char** argv) {
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
   const char* checkpoint_cyc_env = getenv("JUKU_CHECKPOINT_CYC");
   unsigned long checkpoint_cyc = (checkpoint_cyc_env && checkpoint_cyc_env[0]) ? strtoul(checkpoint_cyc_env, 0, 0) : 0UL;
+  const char* rom_exec_reset_env = getenv("JUKU_ROM_EXEC_RESET_AT");
+  unsigned long rom_exec_reset_at = 0;
+  unsigned long rom_exec_resets = 0;
+  if (rom_exec_reset_env && rom_exec_reset_env[0]) {
+    char* end = NULL;
+    rom_exec_reset_at = strtoul(rom_exec_reset_env, &end, 0);
+    if (!end || *end || rom_exec_reset_at == 0 || rom_exec_reset_at > 0x3FFF) {
+      fprintf(stderr,
+              "invalid JUKU_ROM_EXEC_RESET_AT=%s (expected 1..0x3FFF)\n",
+              rom_exec_reset_env);
+      return 2;
+    }
+  }
   const char* stop_keys_done_env = getenv("JUKU_STOP_KEYS_DONE");
   int stop_keys_done = stop_keys_done_env && stop_keys_done_env[0] &&
                        strcmp(stop_keys_done_env, "0") != 0;
@@ -798,6 +873,7 @@ int main(int argc, char** argv) {
   const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
+  const char* ram_drop_write = getenv("JUKU_RAM_DROP_WRITE");
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
   const char* pic_fault = getenv("JUKU_PIC_FAULT");
   const char* ppi_fault = getenv("JUKU_PPI_FAULT");
@@ -811,11 +887,48 @@ int main(int argc, char** argv) {
     if (!usart.byte_cycles) usart.byte_cycles = 1;
   }
   if (usart_fault && usart_fault[0]) {
-    if (strcmp(usart_fault, "tx_stuck") != 0) {
-      fprintf(stderr, "unknown JUKU_USART_FAULT=%s (expected tx_stuck)\n", usart_fault);
-      return 2;
+    if (strcmp(usart_fault, "tx_stuck") == 0) {
+      usart.fault_tx_stuck = 1;
+      usart.fault_tx_stuck_permanent = 1;
+    } else if (strncmp(usart_fault, "tx_stuck_once:", 14) == 0) {
+      unsigned value;
+      char trailing;
+      if (sscanf(usart_fault, "tx_stuck_once:%x%c", &value, &trailing) != 1 ||
+          value > 0xFF) {
+        fprintf(stderr,
+                "unknown JUKU_USART_FAULT=%s "
+                "(expected tx_stuck or tx_stuck_once:BYTE)\n",
+                usart_fault);
+        return 2;
+      }
+      usart.fault_tx_stuck_once_enabled = 1;
+      usart.fault_tx_stuck_once_value = (uint8_t)value;
+    } else if (strncmp(usart_fault, "tx_not_ready_once_after:", 24) == 0) {
+      unsigned long count;
+      char trailing;
+      if (sscanf(usart_fault, "tx_not_ready_once_after:%lu%c", &count, &trailing) != 1) {
+        fprintf(stderr,
+                "unknown JUKU_USART_FAULT=%s (expected tx_stuck, "
+                "tx_stuck_once:BYTE, or tx_not_ready_once_after:COUNT)\n",
+                usart_fault);
+        return 2;
+      }
+      usart.fault_tx_not_ready_once_after_enabled = 1;
+      usart.fault_tx_not_ready_once_after = count;
+    } else {
+      unsigned long count;
+      char trailing;
+      if (sscanf(usart_fault, "tx_empty_low_after:%lu%c", &count, &trailing) != 1) {
+        fprintf(stderr,
+                "unknown JUKU_USART_FAULT=%s (expected tx_stuck, "
+                "tx_stuck_once:BYTE, tx_not_ready_once_after:COUNT, or "
+                "tx_empty_low_after:COUNT)\n",
+                usart_fault);
+        return 2;
+      }
+      usart.fault_tx_empty_low_after_enabled = 1;
+      usart.fault_tx_empty_low_after = count;
     }
-    usart.fault_tx_stuck = 1;
   }
   if (pic_fault && pic_fault[0]) {
     unsigned stuck_low, stuck_high;
@@ -910,6 +1023,24 @@ int main(int argc, char** argv) {
               "[RAM] fault address=0x%04X stuck-low=0x%02X stuck-high=0x%02X\n",
               ram_fault_addr, ram_fault_stuck_low, ram_fault_stuck_high);
   }
+  if (ram_drop_write && ram_drop_write[0]) {
+    unsigned address, value, count;
+    char trailing;
+    if (sscanf(ram_drop_write, "%x:%x:%u%c", &address, &value, &count,
+               &trailing) != 3 || address > 0xFFFF || value > 0xFF || !count) {
+      fprintf(stderr,
+              "invalid JUKU_RAM_DROP_WRITE=%s (expected ADDR:VALUE:COUNT)\n",
+              ram_drop_write);
+      return 2;
+    }
+    ram_drop_write_enabled = 1;
+    ram_drop_write_addr = (uint16_t)address;
+    ram_drop_write_value = (uint8_t)value;
+    ram_drop_write_remaining = count;
+    fprintf(stderr,
+            "[RAM] will drop %u write(s) address=0x%04X value=0x%02X\n",
+            count, ram_drop_write_addr, ram_drop_write_value);
+  }
   if (ram_alias && ram_alias[0]) {
     unsigned page_a, page_b;
     char trailing;
@@ -996,6 +1127,18 @@ int main(int argc, char** argv) {
          !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc) &&
          !(stop_keys_done && kbd_str && !kbd_str[kbd_pos]) &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
+    if (rom_exec_reset_at && mode == 0 && cpu.pc >= rom_exec_reset_at &&
+        cpu.pc < 0x4000) {
+      rom_exec_resets++;
+      if (rom_exec_resets <= 32)
+        fprintf(stderr,
+                "[EXEC] reset #%lu at ROM pc=%04X boundary=%04lX cyc=%lu\n",
+                rom_exec_resets, cpu.pc, rom_exec_reset_at, cpu.cyc);
+      cpu.pc = 0;
+      cpu.iff = 0;
+      cpu.halted = 0;
+      set_mode(0);
+    }
     pchist[cpu.pc]++;
     if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
       fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",

@@ -1,0 +1,19 @@
+T28HOST.BIN - JUKURAVI BURN-ONCE HOST MONITOR
+================================================
+
+Image size: 8192 bytes
+ROM version: 17h
+Self CRC16: A6A5
+SHA256: e2a18fc2741cc0db10eea278bedede0787220d853ec88dc5dff7e785ba9a95ea
+
+Program T28HOST.BIN at offset 0000h into an AT28C64B and verify it. Install
+it in Juku D15 and leave D16 empty.
+
+Normal host-controlled execution does NOT require RESET. The host loads and
+verifies a task in 4000h-BFFFh, T28 calls it, and the task ends with ordinary
+8080 RET. A is returned directly; larger results are left at a host-agreed RAM
+address and read by the host after RET. T28 then remains active.
+
+The monitor reserves C000h-CFFFh for parser state and its stack. Uploaded code
+must not write there. RESET is only the last recovery path if a task loops,
+halts, crashes, loses its return address, or corrupts the reserved workspace.

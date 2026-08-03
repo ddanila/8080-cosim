@@ -23,6 +23,7 @@ python3 spinoffs/jukuravi/firmware/build_d0_pit_debug_slow.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_d55_stress.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_best_effort.py --check
 python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_solicited.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -65,6 +66,8 @@ python3 tests/jukuravi_d2_loader_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d2-loader.bin
 python3 tests/jukuravi_host_loader_cli_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d2-loader.bin
+python3 tests/jukuravi_d0_solicited_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-solicited.bin
 python3 tests/jukuravi_host_heartbeat_test.py
 python3 tests/jukuravi_host_liveness_test.py
 python3 tests/jukuravi_host_dtr_test.py

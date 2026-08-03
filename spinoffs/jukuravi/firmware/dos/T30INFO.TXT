@@ -1,0 +1,23 @@
+T30HOST.BIN - JUKURAVI TXREADY HOST MONITOR
+============================================
+
+Image size: 8192 bytes
+ROM version: 19h
+Self CRC16: 6127
+SHA256: 804562b2a0e28f8380773b2e331587973b5a5928a646ac4f93ee99e355e51f2a
+
+Program T30HOST.BIN at offset 0000h into an AT28C64B and verify it. Install
+it in Juku D15 and leave D16 empty.
+
+The real T29 run transmitted its complete final status frame but the 8251
+TxEMPTY status bit did not become set. T30 keeps the initial TxEMPTY sanity
+test, which passed, but never depends on TxEMPTY after that point. It uses
+TxRDY plus a conservative fixed drain delay before calling uploaded code.
+
+T30 retains T29's E0/E1/E2/E3 progress bytes, bounded TxRDY timeout, automatic
+8251 and 2400-baud timer restoration, full T28 commands, replay protection,
+host reattachment, and CALL/RET with returned A plus a RAM result block.
+
+Normal host-controlled execution does NOT require RESET. RESET remains the
+last recovery path only when arbitrary uploaded code does not return or damages
+the reserved C000h-CFFFh monitor workspace.

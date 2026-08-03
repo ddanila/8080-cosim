@@ -1,0 +1,135 @@
+JUKURAVI D15 DIAGNOSTIC ROMS - DOS 8.3 FILE SET
+
+All BIN files are exactly 8192 bytes.  Program at offset 0000 into one
+28C64 and install it in socket D15.  Leave D16 empty during diagnostics.
+
+Run the tests in numeric order.  Each image includes the preceding tests
+and then adds the function shown below.
+
+DOS NAME      ORIGINAL FILE                    ADDED FUNCTION
+------------  -------------------------------  --------------------------
+T01ALIVE.BIN  diag-d0-alive.bin                reset/fetch/PIT/beeper
+T02CPU.BIN    diag-d0-cpu.bin                  CPU ALU/flags/branches
+T03USART.BIN  diag-d0-usart-local.bin          local 8251 and baud clock
+T04SER.BIN    diag-d0-serial.bin               external serial handshake
+T05RAM.BIN    diag-d0-ram.bin                  serial RAM survey
+T06RAMFB.BIN  diag-d0-ram-fallback.bin         beep-only RAM fallback
+T07ROM.BIN    diag-d0-romcheck.bin             ROM convention/checksum
+T08PIC.BIN    diag-d0-pic.bin                  8259 PIC
+T09PPI.BIN    diag-d0-ppi.bin                  8255 PPI
+T10PIT.BIN    diag-d0-pit.bin                  all PIT channels
+T11VIDEO.BIN  diag-d0-framebuffer.bin          framebuffer pattern
+T12LOAD.BIN   diag-d2-loader.bin               upload/run monitor
+T13NOSER.BIN  diag-d0-noserial.bin             no-serial PIC/PPI/PIT/RAM
+T14PDBG.BIN   diag-d0-pit-debug.bin            PIT failure pulse code
+T15PSLOW.BIN  diag-d0-pit-debug-slow.bin       slow grouped PIT pulse code
+T16D55.BIN    diag-d0-d55-stress.bin           repeated recovery-spaced D55
+T17BEST.BIN   diag-d0-best-effort.bin           UART-first full diagnostic
+T18LOOP.BIN   diag-d0-loopback.bin              external X3 data loopback
+T19TOLER.BIN  diag-d0-tolerant-loopback.bin     retrying/noise-tolerant loop
+T20FULL.BIN   diag-d0-robust.bin                 robust full diag and loader
+T21FULL.BIN   diag-d0-stopwait.bin               stop/wait full diag + loader
+T22FULL.BIN   diag-d0-adaptive.bin               adaptive symbol full loader
+T23FULL.BIN   diag-d0-repetition.bin             majority-coded full loader
+T24FULL.BIN   diag-d0-resilient.bin              resilient 2400-baud loader
+T25FULL.BIN   diag-d0-solicited.bin              receiver-driven full loader
+T26FULL.BIN   diag-d0-echo-filtered.bin           self-echo-filtered loader
+T28HOST.BIN   diag-d0-buffer-verified.bin          burn-once host CALL/RET monitor
+T29HOST.BIN   diag-d0-host-recover.bin             bounded UART recovery + markers
+T30HOST.BIN   diag-d0-txready.bin                  ignores unreliable runtime TxEMPTY
+T31HOST.BIN   diag-d0-low4k.bin                    monitor execution ends at 0FFFh
+
+T18 requires the external adapter disconnected and these X3 jumpers fitted:
+X3.9-X3.4 (SOUT-SIN) and X3.10-X3.5 (RTS-CTS).  After the initial happy
+beep, four slow pulses and silence mean PASS.  One, two, or three slow pulses
+followed by a continuous low tone mean no receive byte, wrong receive byte,
+or transmitter/CTS not ready, respectively.
+
+T19 uses the external CP2102/MAX3232 echo path.  It drains startup bytes and
+retries each expected byte up to eight times.  Four slow pulses and silence
+mean a clean pass; five and silence mean PASS after recovery.  One slow pulse
+plus continuous tone means no correct echo after all retries; three plus the
+continuous tone means transmitter/CTS failure.
+
+T20 is version 0F.  It drains stale input before the banner, scans a bounded
+stream for one exact ACK, and works with four independently framed ACK copies
+from the updated host.  PIC/PPI/D54/D55/D57 faults are reported but do not
+block UART.  It reports compact 4000h/C000h RAM results, verifies the complete
+D800h-FDA7h loader buffer/stack workspace, checks the loader ROM extension,
+then accepts CRC-framed LOAD and RUN commands.  Uploads span 4000h-D7FFh in
+verified chunks of at most 253 data bytes.  Uploaded programs may call the
+fixed API at 0A00h and return to the monitor through JMP 0A06h.
+
+T21 is version 10 and retains T20's full diagnostics and loader.  Its initial
+ACK uses the link behavior proven by T19: the ROM sends each of the nine ACK
+bytes as a challenge and advances only after the host echoes that exact byte.
+Every byte has eight bounded attempts and a long receive window.  This avoids
+dense host-to-Juku ACK bursts on the measured CP2102/MAX3232 harness.
+
+T22 is version 11 and is designed to minimize future ROM reburns.  Its
+challenge uses only alternating 55/AA symbols.  A mismatch emits outbound
+telemetry F0,expected,received before retrying.  After negotiation, every
+host-to-Juku logical byte is encoded MSB-first as eight physical symbols:
+55=bit 0 and AA=bit 1.  The ROM ignores every other received value.  Existing
+CRC-framed LOAD/RUN semantics, readback verification, loader API, and raw
+Juku-to-host frames remain unchanged.  This costs 8x host upload bandwidth but
+allows arbitrary binary blobs without relying on unproven raw byte values.
+
+T23 is version 12.  It retains T22 negotiation/telemetry but replaces the
+unacknowledged one-symbol loader stream with fixed-width repetition coding.
+Every logical bit is seven physical symbols; the ROM always consumes all seven
+and chooses whichever of 55 or AA has more exact votes.  Other byte values are
+neutral votes but still consume their slot, so corruption cannot stall or
+shift alignment.  The host limits encoded LOAD chunks to 32 bytes; every chunk
+still has logical CRC-8 and immediate RAM readback verification.
+
+T24 is version 13 and runs the physical UART at approximately 2400 baud.  It
+retains seven-vote fixed-width coding, 32-byte chunks, CRC, readback, mismatch
+telemetry, and the full diagnostics/API.  Every loader symbol has a bounded
+receive timeout; timeout resets the loader stack/parser and emits a retryable
+bad-CRC transport response instead of hanging.  The host paces symbols by 6 ms
+and retries independently framed bad-CRC LOAD chunks up to three times.
+
+T25 is version 14 and replaces dense inbound streams with receiver-driven
+flow control.  Juku emits alternating C6/C7 request tokens and the host sends
+exactly one 55/AA symbol per request.  Repeated tokens retransmit the same
+symbol; changed tokens advance it.  This prevents 8251A overrun and preserves
+vote alignment when a serial character disappears.  Receiver error flags are
+cleared after every character.
+
+T26 is version 15. It additionally rejects every inbound physical byte except
+55 and AA before advancing a request or vote. This filters the measured C6/C7
+request self-echo from the real CP2102/MAX3232 harness.
+
+T28 is ROM version 17 and is the burn-once host monitor. Its parser and stack
+use C000h-CFFFh; uploads, reads, CRCs, and calls use 4000h-BFFFh. The normal
+uploaded task ends with an ordinary 8080 RET. T28 reports returned A, permits
+the host to read a result block from RAM, restores its stack/USART/2400-baud
+timer, and remains ready for another command. A repeated 32-bit execution ID
+replays a lost RUN result without running the task twice. A restarted host can
+reattach and use retained RAM without RESET. Use RESET only if arbitrary code
+never returns or corrupts the reserved monitor workspace.
+
+T29 is ROM version 18 and retains all T28 commands and host-side recovery.
+Raw E0/E1/E2/E3 progress bytes identify post-diagnostic entry, good C000h-CFFFh
+workspace, good loader checksum, and loader entry. Every loader transmit-ready
+and transmit-empty wait is bounded. On timeout it resets and reprograms the
+8251 and 2400-baud timer, retries once, then reports an audible UART failure
+instead of hanging forever. Use T29HOST.BIN for the next physical test.
+
+T30 is ROM version 19. The real T29 board transmitted its complete final
+status frame but never asserted 8251 TxEMPTY afterward. T30 retains the initial
+TxEMPTY hardware sanity test, which passes, but never depends on that bit again.
+It uses TxRDY plus a conservative fixed drain delay before running uploaded
+code. All T29 progress markers, bounded TxRDY recovery, commands, and CALL/RET
+behavior remain. Use T30HOST.BIN for the next physical test.
+
+T31 is ROM version 1A. Repeated T30 captures restarted exactly when execution
+entered ROM address 100Ch. T31 compacts the monitor so its final executed byte
+is 0FFFh and enters it directly after status 83. It bypasses the unreachable
+full-workspace/checksum tail; programmer verification supplies ROM-integrity
+evidence. Simulation reproduces T30's banner/08/83/reset loop at 100Ch, while
+T31 completes upload and CALL/RET under the same forced boundary and D55 fault.
+
+Suggested chip labels use the filename without .BIN, for example T01ALIVE.
+Blank-check, program, verify, remove/reinsert, and read/compare every chip.
