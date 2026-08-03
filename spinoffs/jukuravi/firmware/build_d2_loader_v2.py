@@ -32,15 +32,15 @@ LOADER_API_PRINT = LOADER_API_BASE + 9
 # T28 deliberately keeps its parser and stack in the independently tested
 # C000h fallback window, away from the contended D800h framebuffer. Uploaded
 # stage-two code lives below C000h and may reclaim this page after RUN.
-LOADER_BUFFER = protocol.T28_WORKSPACE_BASE
-LOADER_STACK_TOP = protocol.T28_WORKSPACE_END
-LOAD_MIN_ADDRESS = protocol.T28_LOAD_MIN
-LOAD_END_ADDRESS = protocol.T28_LOAD_END
-MAX_DATA = protocol.T28_MAX_DATA
-MAX_PROBE = protocol.T28_MAX_PROBE
+LOADER_BUFFER = protocol.LOADER_V2_WORKSPACE_BASE
+LOADER_STACK_TOP = protocol.LOADER_V2_WORKSPACE_END
+LOAD_MIN_ADDRESS = protocol.LOADER_V2_LOAD_MIN
+LOAD_END_ADDRESS = protocol.LOADER_V2_LOAD_END
+MAX_DATA = protocol.LOADER_V2_MAX_DATA
+MAX_PROBE = protocol.LOADER_V2_MAX_PROBE
 
 # Result-state bytes are contiguous so one common response routine can copy
-# them into a framed TYPE_T28_RESULT payload.
+# them into a framed TYPE_LOADER_V2_RESULT payload.
 STATE_TX = LOADER_BUFFER + 0x110
 STATE_STATUS = STATE_TX + 1
 STATE_COMMAND = STATE_TX + 2
@@ -107,7 +107,7 @@ def emit_loader(
     """Emit T28. Compatibility keyword arguments are validated, not ignored."""
     if not (
         encoded_input
-        and symbol_repetitions == protocol.T28_DEFAULT_VOTES
+        and symbol_repetitions == protocol.LOADER_V2_BOOT_VOTES
         and solicited_input
         and filter_invalid_symbols
         and clear_invalid_errors
@@ -119,17 +119,17 @@ def emit_loader(
 
     ready_payload = bytes(
         (
-            protocol.T28_LOADER_API_VERSION,
+            protocol.LOADER_V2_API_VERSION,
             MAX_DATA,
             LOADER_API_BASE >> 8,
             LOADER_API_BASE & 0xFF,
-            protocol.T28_CAPABILITIES >> 8,
-            protocol.T28_CAPABILITIES & 0xFF,
+            protocol.LOADER_V2_CAPABILITIES >> 8,
+            protocol.LOADER_V2_CAPABILITIES & 0xFF,
             LOAD_MIN_ADDRESS >> 8,
             LOAD_END_ADDRESS >> 8,
             LOADER_BUFFER >> 8,
             LOADER_STACK_TOP >> 8,
-            protocol.T28_DEFAULT_VOTES,
+            protocol.LOADER_V2_BOOT_VOTES,
         )
     )
     frames = {
@@ -161,7 +161,7 @@ def emit_loader(
     asm.label("loader_entry")
     asm.label("t28_entry")
     asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)  # LXI SP
-    store_immediate(asm, STATE_VOTES, protocol.T28_DEFAULT_VOTES)
+    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
     asm.emit(0xAF)
     sta(asm, STATE_IDLE_TIMEOUTS)
@@ -208,13 +208,13 @@ def emit_loader(
     asm.label("t28_dispatch")
     lda(asm, STATE_COMMAND)
     for record_type, label in (
-        (protocol.TYPE_T28_PROBE, "t28_probe"),
-        (protocol.TYPE_T28_CONFIG, "t28_config"),
-        (protocol.TYPE_T28_LOAD, "t28_load"),
-        (protocol.TYPE_T28_READ, "t28_read"),
-        (protocol.TYPE_T28_CRC, "t28_crc"),
-        (protocol.TYPE_T28_RUN, "t28_run"),
-        (protocol.TYPE_T28_RESYNC, "t28_resync"),
+        (protocol.TYPE_LOADER_V2_PROBE, "t28_probe"),
+        (protocol.TYPE_LOADER_V2_CONFIG, "t28_config"),
+        (protocol.TYPE_LOADER_V2_LOAD, "t28_load"),
+        (protocol.TYPE_LOADER_V2_READ, "t28_read"),
+        (protocol.TYPE_LOADER_V2_CRC, "t28_crc"),
+        (protocol.TYPE_LOADER_V2_RUN, "t28_run"),
+        (protocol.TYPE_LOADER_V2_RESYNC, "t28_resync"),
     ):
         asm.emit(0xFE, record_type)
         asm.jump(0xCA, label)
@@ -263,9 +263,9 @@ def emit_loader(
     asm.emit(0xFE, 0x04)
     asm.jump(0xC2, "t28_bad_length")
     lda(asm, LOADER_BUFFER + 3)
-    asm.emit(0xFE, protocol.T28_MIN_VOTES)
+    asm.emit(0xFE, protocol.LOADER_V2_MIN_VOTES)
     asm.jump(0xDA, "t28_bad_config")
-    asm.emit(0xFE, protocol.T28_MAX_VOTES + 1)
+    asm.emit(0xFE, protocol.LOADER_V2_MAX_VOTES + 1)
     asm.jump(0xD2, "t28_bad_config")
     asm.emit(0xE6, 0x01)
     asm.jump(0xCA, "t28_bad_config")
@@ -354,7 +354,7 @@ def emit_loader(
     lda(asm, LOADER_BUFFER + 4)
     sta(asm, STATE_ADDRESS_LO)
     lda(asm, LOADER_BUFFER + 5)
-    asm.emit(0xFE, protocol.T28_RUN_JUMP + 1)
+    asm.emit(0xFE, protocol.LOADER_V2_RUN_JUMP + 1)
     asm.jump(0xD2, "t28_bad_config")
     sta(asm, STATE_COUNT)  # execution mode is reported in the count field
     # Range validation needs a nonzero span even though RUN does not write.
@@ -442,9 +442,9 @@ def emit_loader(
     lda(asm, STATE_LENGTH)
     asm.emit(0xFE, 0x03)
     asm.jump(0xC2, "t28_bad_length")
-    store_immediate(asm, STATE_VOTES, protocol.T28_DEFAULT_VOTES)
+    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
-    store_immediate(asm, STATE_COUNT, protocol.T28_DEFAULT_VOTES)
+    store_immediate(asm, STATE_COUNT, protocol.LOADER_V2_BOOT_VOTES)
     call(asm, "t28_send_result")
     asm.jump(0xC3, "t28_loop")
 
@@ -736,7 +736,7 @@ def emit_loader(
 
     asm.label("t28_idle_transport_reset")
     asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)
-    store_immediate(asm, STATE_VOTES, protocol.T28_DEFAULT_VOTES)
+    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
     asm.emit(0xAF)
     sta(asm, STATE_IDLE_TIMEOUTS)
@@ -744,7 +744,7 @@ def emit_loader(
 
     asm.label("t28_transport_failure")
     asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)
-    store_immediate(asm, STATE_VOTES, protocol.T28_DEFAULT_VOTES)
+    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
     call(asm, "t28_send_bad_crc")
     asm.jump(0xC3, "t28_loop")
@@ -846,7 +846,7 @@ def emit_loader(
 
     # Build a common detailed result from the contiguous state record.
     asm.label("t28_send_result")
-    store_immediate(asm, LOADER_BUFFER, protocol.TYPE_T28_RESULT)
+    store_immediate(asm, LOADER_BUFFER, protocol.TYPE_LOADER_V2_RESULT)
     store_immediate(asm, LOADER_BUFFER + 1, RESULT_STATE_BYTES)
     lxi_h(asm, STATE_TX)
     asm.emit(0x11, (LOADER_BUFFER + 2) & 0xFF, (LOADER_BUFFER + 2) >> 8)
@@ -859,7 +859,7 @@ def emit_loader(
     # DATA payload header: txid,status,command,address-hi,address-lo,count.
     # Callers place count data bytes at BUFFER+8 before entering.
     asm.label("t28_send_data")
-    store_immediate(asm, LOADER_BUFFER, protocol.TYPE_T28_DATA)
+    store_immediate(asm, LOADER_BUFFER, protocol.TYPE_LOADER_V2_DATA)
     lda(asm, STATE_COUNT)
     asm.emit(0xC6, 0x06)
     sta(asm, LOADER_BUFFER + 1)
@@ -876,7 +876,7 @@ def emit_loader(
     asm.jump(0xC3, "t28_send_dynamic")
 
     asm.label("t28_send_return")
-    store_immediate(asm, LOADER_BUFFER, protocol.TYPE_T28_RETURN)
+    store_immediate(asm, LOADER_BUFFER, protocol.TYPE_LOADER_V2_RETURN)
     store_immediate(asm, LOADER_BUFFER + 1, 3)
     lda(asm, STATE_TX)
     sta(asm, LOADER_BUFFER + 2)
@@ -919,8 +919,8 @@ def emit_loader(
         "loader_stack_top": LOADER_STACK_TOP,
         "loader_load_min": LOAD_MIN_ADDRESS,
         "loader_load_end": LOAD_END_ADDRESS,
-        "loader_capabilities": protocol.T28_CAPABILITIES,
-        "loader_default_votes": protocol.T28_DEFAULT_VOTES,
+        "loader_capabilities": protocol.LOADER_V2_CAPABILITIES,
+        "loader_boot_votes": protocol.LOADER_V2_BOOT_VOTES,
         "loader_ready_frame": frames["ready"],
         "loader_bad_crc_frame": frames["bad_crc"],
     }

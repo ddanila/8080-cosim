@@ -86,27 +86,27 @@ def main() -> int:
             )
 
             command = bytearray(
-                protocol.encode_t28_command(protocol.TYPE_T28_PROBE, 0x42, b"X")
+                protocol.encode_loader_v2_command(protocol.TYPE_LOADER_V2_PROBE, 0x42, b"X")
             )
             command[5] ^= 0x01
             command[-1] = protocol.crc8_atm(bytes(command[2:-1]))
             session._send_loader_frame(bytes(command), 30, "inner-corrupt PROBE")
             response, cursor = session._wait_loader_frame(
-                protocol.TYPE_T28_RESULT,
+                protocol.TYPE_LOADER_V2_RESULT,
                 cursor,
                 30,
                 "strong-CRC rejection",
             )
-            detail = host.decode_t28_result(response)
+            detail = host.decode_loader_v2_result(response)
             if (
                 detail["transaction"] != 0x42
-                or detail["command"] != protocol.TYPE_T28_PROBE
+                or detail["command"] != protocol.TYPE_LOADER_V2_PROBE
                 or detail["status"] != protocol.LOADER_STATUS_STRONG_CRC
             ):
                 fail(f"detailed strong-CRC result differs: {detail!r}")
 
-            resync, cursor, _ = session._t28_result_command(
-                protocol.TYPE_T28_RESYNC,
+            resync, cursor, _ = session._loader_v2_result_command(
+                protocol.TYPE_LOADER_V2_RESYNC,
                 0x43,
                 b"",
                 cursor,

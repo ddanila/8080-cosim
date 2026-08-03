@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Jukuravi host session CLI for a Nano USB port or the cosim PTY harness."""
+"""Jukuravi host session CLI for a serial port or the cosim PTY harness."""
 
 from __future__ import annotations
 
@@ -23,16 +23,18 @@ from pathlib import Path
 import protocol
 
 
-DEFAULT_BAUD = 115200
+DEFAULT_BAUD = 2400
 DEFAULT_TIMEOUT = 180.0
 DEFAULT_BANNER_TIMEOUT = 15.0
 DEFAULT_RESET_RETRIES = 2
 DEFAULT_LOADER_TIMEOUT = 60.0
+DEFAULT_LOADER_RETRIES = 3
 DEFAULT_HEARTBEAT_TIMEOUT = 5.0
 DEFAULT_HEARTBEAT_RESET_RETRIES = 0
 DTR_RELEASE_SECONDS = 0.05
 LOADER_SYMBOL_REQUESTS = (0xC6, 0xC7)
-SOLICITED_RESPONSE_GUARD_SECONDS = 0.020
+DEFAULT_LOADER_VOTES = 1
+SOLICITED_RESPONSE_GUARD_SECONDS = 0.006
 
 
 class SessionError(RuntimeError):
@@ -324,9 +326,9 @@ def loader_status_name(status: int) -> str:
     }.get(status, f"unknown_{status:02X}")
 
 
-def decode_t28_result(frame: protocol.Frame) -> dict[str, int]:
-    if frame.record_type != protocol.TYPE_T28_RESULT or len(frame.payload) != 10:
-        raise SessionError("T28 RESULT must contain ten detail bytes")
+def decode_loader_v2_result(frame: protocol.Frame) -> dict[str, int]:
+    if frame.record_type != protocol.TYPE_LOADER_V2_RESULT or len(frame.payload) != 10:
+        raise SessionError("loader API v2 RESULT must contain ten detail bytes")
     (
         transaction, status, command, decoded_length, address_hi, address_lo,
         count, crc_hi, crc_lo, store_retries,
@@ -343,14 +345,14 @@ def decode_t28_result(frame: protocol.Frame) -> dict[str, int]:
     }
 
 
-def decode_t28_data(frame: protocol.Frame) -> tuple[dict[str, int], bytes]:
-    if frame.record_type != protocol.TYPE_T28_DATA or len(frame.payload) < 6:
-        raise SessionError("T28 DATA is shorter than its six-byte header")
+def decode_loader_v2_data(frame: protocol.Frame) -> tuple[dict[str, int], bytes]:
+    if frame.record_type != protocol.TYPE_LOADER_V2_DATA or len(frame.payload) < 6:
+        raise SessionError("loader API v2 DATA is shorter than its six-byte header")
     transaction, status, command, address_hi, address_lo, count = frame.payload[:6]
     data = frame.payload[6:]
     if len(data) != count:
         raise SessionError(
-            f"T28 DATA count {count} differs from payload bytes {len(data)}"
+            f"loader API v2 DATA count {count} differs from payload bytes {len(data)}"
         )
     return {
         "transaction": transaction,
@@ -374,7 +376,7 @@ class HostSession:
         loader_guard_seconds: float = SOLICITED_RESPONSE_GUARD_SECONDS,
         loader_chunk_size: int | None = None,
         loader_retries: int = 3,
-        loader_votes: int = protocol.T28_DEFAULT_VOTES,
+        loader_votes: int = DEFAULT_LOADER_VOTES,
         loader_resume: bool = False,
         loader_readback: bool = True,
         loader_run_mode: str = "call",
@@ -538,7 +540,7 @@ class HostSession:
                     previous = expected
                     break
             self.encoded_host_tx = True
-            self.host_symbol_repetitions = 7 if rom_version in (0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A) else 1
+            self.host_symbol_repetitions = 7 if 0x12 <= rom_version <= 0x1A else 1
             self.solicited_host_tx = rom_version >= 0x14
             return
         if rom_version == 0x10:
@@ -762,9 +764,9 @@ class HostSession:
             protocol.TYPE_RUN_ACK,
             protocol.TYPE_LOADER_READY,
             protocol.TYPE_LOADER_ERROR,
-            protocol.TYPE_T28_RESULT,
-            protocol.TYPE_T28_DATA,
-            protocol.TYPE_T28_RETURN,
+            protocol.TYPE_LOADER_V2_RESULT,
+            protocol.TYPE_LOADER_V2_DATA,
+            protocol.TYPE_LOADER_V2_RETURN,
         }
         while True:
             # The final physical symbol can disappear after _send_loader_frame
@@ -866,7 +868,7 @@ class HostSession:
             previous_sequence = sequence
         evidence["status"] = "complete"
 
-    def _t28_transact(
+    def _loader_v2_transact(
         self,
         command: bytes,
         transaction: int,
@@ -875,7 +877,7 @@ class HostSession:
         timeout: float,
         description: str,
     ) -> tuple[protocol.Frame, int, int]:
-        """Run one bounded, transaction-correlated T28 exchange."""
+        """Run one bounded, transaction-correlated loader API v2 exchange."""
         for attempt in range(1, self.loader_retries + 1):
             self._send_loader_frame(command, timeout, f"{description} attempt {attempt}")
             try:
@@ -889,8 +891,8 @@ class HostSession:
                     response_transaction = response.payload[0] if response.payload else None
                     if response_transaction == transaction:
                         break
-                if response.record_type == protocol.TYPE_T28_RESULT:
-                    detail = decode_t28_result(response)
+                if response.record_type == protocol.TYPE_LOADER_V2_RESULT:
+                    detail = decode_loader_v2_result(response)
                     if (
                         detail["status"]
                         in (protocol.LOADER_STATUS_BAD_CRC,
@@ -910,9 +912,9 @@ class HostSession:
                 cursor = error.cursor
                 if attempt >= self.loader_retries:
                     raise
-        raise AssertionError("bounded T28 transaction loop fell through")
+        raise AssertionError("bounded loader transaction loop fell through")
 
-    def _t28_result_command(
+    def _loader_v2_result_command(
         self,
         record_type: int,
         transaction: int,
@@ -921,24 +923,25 @@ class HostSession:
         timeout: float,
         description: str,
     ) -> tuple[dict[str, int], int, int]:
-        command = protocol.encode_t28_command(record_type, transaction, body)
-        response, cursor, attempts = self._t28_transact(
+        command = protocol.encode_loader_v2_command(record_type, transaction, body)
+        response, cursor, attempts = self._loader_v2_transact(
             command,
             transaction,
-            protocol.TYPE_T28_RESULT,
+            protocol.TYPE_LOADER_V2_RESULT,
             cursor,
             timeout,
             description,
         )
-        detail = decode_t28_result(response)
+        detail = decode_loader_v2_result(response)
         if detail["command"] != record_type:
             raise SessionError(
-                f"T28 {description} response command 0x{detail['command']:02X} "
+                f"loader API v2 {description} response command "
+                f"0x{detail['command']:02X} "
                 f"!= 0x{record_type:02X}"
             )
         return detail, cursor, attempts
 
-    def _t28_data_command(
+    def _loader_v2_data_command(
         self,
         record_type: int,
         transaction: int,
@@ -947,24 +950,25 @@ class HostSession:
         timeout: float,
         description: str,
     ) -> tuple[dict[str, int], bytes, int, int]:
-        command = protocol.encode_t28_command(record_type, transaction, body)
-        response, cursor, attempts = self._t28_transact(
+        command = protocol.encode_loader_v2_command(record_type, transaction, body)
+        response, cursor, attempts = self._loader_v2_transact(
             command,
             transaction,
-            protocol.TYPE_T28_DATA,
+            protocol.TYPE_LOADER_V2_DATA,
             cursor,
             timeout,
             description,
         )
-        detail, data = decode_t28_data(response)
+        detail, data = decode_loader_v2_data(response)
         if detail["command"] != record_type:
             raise SessionError(
-                f"T28 {description} DATA command 0x{detail['command']:02X} "
+                f"loader API v2 {description} DATA command "
+                f"0x{detail['command']:02X} "
                 f"!= 0x{record_type:02X}"
             )
         return detail, data, cursor, attempts
 
-    def _run_loader_t28(
+    def _run_loader_v2(
         self,
         data: bytes,
         address: int,
@@ -978,18 +982,18 @@ class HostSession:
     ) -> None:
         end = address + len(data)
         if data and (
-            address < protocol.T28_LOAD_MIN or end > protocol.T28_LOAD_END
+            address < protocol.LOADER_V2_LOAD_MIN or end > protocol.LOADER_V2_LOAD_END
         ):
             raise SessionError(
-                "T28 bootstrap upload must fit its 0x4000..0xBFFF window"
+                "loader API v2 upload must fit its 0x4000..0xBFFF window"
             )
         if run_address is not None:
             if data and not address <= run_address < end:
-                raise SessionError("run address is outside the T28 uploaded image")
+                raise SessionError("run address is outside the uploaded image")
             if not data and not (
-                protocol.T28_LOAD_MIN <= run_address < protocol.T28_LOAD_END
+                protocol.LOADER_V2_LOAD_MIN <= run_address < protocol.LOADER_V2_LOAD_END
             ):
-                raise SessionError("resident run address is outside T28 RAM")
+                raise SessionError("resident run address is outside loader API v2 RAM")
 
         transaction = 0
 
@@ -1001,8 +1005,8 @@ class HostSession:
 
         probe_cookie = b"T28\x00\x55\xAA\xC6\xC7"
         probe_tx = next_transaction()
-        probe, echoed, cursor, probe_attempts = self._t28_data_command(
-            protocol.TYPE_T28_PROBE,
+        probe, echoed, cursor, probe_attempts = self._loader_v2_data_command(
+            protocol.TYPE_LOADER_V2_PROBE,
             probe_tx,
             probe_cookie,
             cursor,
@@ -1011,7 +1015,7 @@ class HostSession:
         )
         if probe["status"] != protocol.LOADER_STATUS_OK or echoed != probe_cookie:
             raise SessionError(
-                "T28 PROBE did not echo the exact host cookie: "
+                "loader API v2 PROBE did not echo the exact host cookie: "
                 f"status={loader_status_name(probe['status'])} "
                 f"echo={echoed.hex().upper()}"
             )
@@ -1021,10 +1025,10 @@ class HostSession:
             "attempts": probe_attempts,
         }
 
-        if self.loader_votes != protocol.T28_DEFAULT_VOTES:
+        if self.loader_votes != protocol.LOADER_V2_BOOT_VOTES:
             config_tx = next_transaction()
-            config, cursor, config_attempts = self._t28_result_command(
-                protocol.TYPE_T28_CONFIG,
+            config, cursor, config_attempts = self._loader_v2_result_command(
+                protocol.TYPE_LOADER_V2_CONFIG,
                 config_tx,
                 bytes((self.loader_votes,)),
                 cursor,
@@ -1036,7 +1040,7 @@ class HostSession:
                 or config["count"] != self.loader_votes
             ):
                 raise SessionError(
-                    "T28 rejected vote configuration: "
+                    "loader API v2 rejected vote configuration: "
                     f"{loader_status_name(config['status'])}"
                 )
             self.host_symbol_repetitions = self.loader_votes
@@ -1048,21 +1052,21 @@ class HostSession:
         else:
             loader["config"] = {
                 "transaction": None,
-                "votes": protocol.T28_DEFAULT_VOTES,
+                "votes": protocol.LOADER_V2_BOOT_VOTES,
                 "attempts": 0,
             }
 
         if self.control_read_address is not None and self.control_read_length:
             read_data = bytearray()
             reads: list[dict[str, object]] = []
-            for offset in range(0, self.control_read_length, protocol.T28_MAX_DATA):
+            for offset in range(0, self.control_read_length, protocol.LOADER_V2_MAX_DATA):
                 count = min(
-                    protocol.T28_MAX_DATA, self.control_read_length - offset
+                    protocol.LOADER_V2_MAX_DATA, self.control_read_length - offset
                 )
                 read_address = self.control_read_address + offset
                 read_tx = next_transaction()
-                detail, part, cursor, attempts = self._t28_data_command(
-                    protocol.TYPE_T28_READ,
+                detail, part, cursor, attempts = self._loader_v2_data_command(
+                    protocol.TYPE_LOADER_V2_READ,
                     read_tx,
                     read_address.to_bytes(2, "big") + bytes((count,)),
                     cursor,
@@ -1071,7 +1075,8 @@ class HostSession:
                 )
                 if detail["status"] != protocol.LOADER_STATUS_OK:
                     raise SessionError(
-                        f"T28 control READ failed: {loader_status_name(detail['status'])}"
+                        "loader API v2 control READ failed: "
+                        f"{loader_status_name(detail['status'])}"
                     )
                 read_data.extend(part)
                 reads.append(
@@ -1097,7 +1102,8 @@ class HostSession:
         if self.loader_chunk_size is not None:
             if self.loader_chunk_size > max_data:
                 raise SessionError(
-                    f"requested T28 chunk size {self.loader_chunk_size} exceeds {max_data}"
+                    "requested loader API v2 chunk size "
+                    f"{self.loader_chunk_size} exceeds {max_data}"
                 )
             chunk_size = self.loader_chunk_size
         loader["ready"]["effective_chunk_bytes"] = chunk_size
@@ -1135,8 +1141,8 @@ class HostSession:
 
                 if self.loader_resume:
                     read_tx = next_transaction()
-                    read_detail, existing, cursor, read_attempts = self._t28_data_command(
-                        protocol.TYPE_T28_READ,
+                    read_detail, existing, cursor, read_attempts = self._loader_v2_data_command(
+                        protocol.TYPE_LOADER_V2_READ,
                         read_tx,
                         chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
                         cursor,
@@ -1145,7 +1151,7 @@ class HostSession:
                     )
                     if read_detail["status"] != protocol.LOADER_STATUS_OK:
                         raise SessionError(
-                            "T28 resume READ failed: "
+                            "loader API v2 resume READ failed: "
                             f"{loader_status_name(read_detail['status'])}"
                         )
                     evidence["resume_read_attempts"] = read_attempts
@@ -1158,16 +1164,16 @@ class HostSession:
                         continue
 
                 load_tx = next_transaction()
-                load_command = protocol.encode_t28_load(load_tx, chunk_address, chunk)
-                response, cursor, load_attempts = self._t28_transact(
+                load_command = protocol.encode_loader_v2_load(load_tx, chunk_address, chunk)
+                response, cursor, load_attempts = self._loader_v2_transact(
                     load_command,
                     load_tx,
-                    protocol.TYPE_T28_RESULT,
+                    protocol.TYPE_LOADER_V2_RESULT,
                     cursor,
                     timeout,
                     f"LOAD pass {pass_index + 1} chunk {index}",
                 )
-                result = decode_t28_result(response)
+                result = decode_loader_v2_result(response)
                 pass_load_attempts += load_attempts
                 evidence.update(
                     transaction=load_tx,
@@ -1179,7 +1185,8 @@ class HostSession:
                     evidence["seconds"] = round(time.monotonic() - chunk_started, 6)
                     chunks.append(evidence)
                     raise SessionError(
-                        f"T28 LOAD pass {pass_index + 1} chunk {index} failed: "
+                        f"loader API v2 LOAD pass {pass_index + 1} "
+                        f"chunk {index} failed: "
                         f"{loader_status_name(result['status'])}; "
                         f"decoded command=0x{result['command']:02X} "
                         f"length={result['decoded_length']} "
@@ -1187,7 +1194,7 @@ class HostSession:
                         f"buffer_retries={result['store_retries']}"
                     )
                 if (
-                    result["command"] != protocol.TYPE_T28_LOAD
+                    result["command"] != protocol.TYPE_LOADER_V2_LOAD
                     or result["address"] != chunk_address
                     or result["count"] != len(chunk)
                     or result["crc16"] != expected_crc
@@ -1195,14 +1202,14 @@ class HostSession:
                     evidence["seconds"] = round(time.monotonic() - chunk_started, 6)
                     chunks.append(evidence)
                     raise SessionError(
-                        f"T28 LOAD pass {pass_index + 1} chunk {index} "
+                        f"loader API v2 LOAD pass {pass_index + 1} chunk {index} "
                         "detailed result differs"
                     )
 
                 if self.loader_readback:
                     read_tx = next_transaction()
-                    read_detail, readback, cursor, read_attempts = self._t28_data_command(
-                        protocol.TYPE_T28_READ,
+                    read_detail, readback, cursor, read_attempts = self._loader_v2_data_command(
+                        protocol.TYPE_LOADER_V2_READ,
                         read_tx,
                         chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
                         cursor,
@@ -1220,7 +1227,7 @@ class HostSession:
                         )
                         chunks.append(evidence)
                         raise SessionError(
-                            "T28 READ verification differs for "
+                            "loader API v2 READ verification differs for "
                             f"pass {pass_index + 1} chunk {index}: "
                             f"status={loader_status_name(read_detail['status'])} "
                             f"received={readback.hex().upper()}"
@@ -1228,8 +1235,8 @@ class HostSession:
                     evidence["verified"] = True
                 else:
                     crc_tx = next_transaction()
-                    crc_detail, cursor, crc_attempts = self._t28_result_command(
-                        protocol.TYPE_T28_CRC,
+                    crc_detail, cursor, crc_attempts = self._loader_v2_result_command(
+                        protocol.TYPE_LOADER_V2_CRC,
                         crc_tx,
                         chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
                         cursor,
@@ -1249,7 +1256,7 @@ class HostSession:
                         )
                         chunks.append(evidence)
                         raise SessionError(
-                            "T28 CRC verification differs for "
+                            "loader API v2 CRC verification differs for "
                             f"pass {pass_index + 1} chunk {index}: "
                             f"status={loader_status_name(crc_detail['status'])} "
                             f"crc={crc_detail['crc16']:04X}"
@@ -1299,9 +1306,9 @@ class HostSession:
         loader["status"] = "loaded" if data else "resident_ready"
         if run_address is not None:
             run_mode = (
-                protocol.T28_RUN_CALL
+                protocol.LOADER_V2_RUN_CALL
                 if self.loader_run_mode == "call"
-                else protocol.T28_RUN_JUMP
+                else protocol.LOADER_V2_RUN_JUMP
             )
             run_tx = next_transaction()
             execution_id = secrets.randbits(32)
@@ -1310,8 +1317,8 @@ class HostSession:
                 + bytes((run_mode,))
                 + execution_id.to_bytes(4, "big")
             )
-            run, cursor, run_attempts = self._t28_result_command(
-                protocol.TYPE_T28_RUN,
+            run, cursor, run_attempts = self._loader_v2_result_command(
+                protocol.TYPE_LOADER_V2_RUN,
                 run_tx,
                 run_body,
                 cursor,
@@ -1324,7 +1331,7 @@ class HostSession:
                 or run["count"] != run_mode
             ):
                 raise SessionError(
-                    f"T28 RUN failed: {loader_status_name(run['status'])}"
+                    f"loader API v2 RUN failed: {loader_status_name(run['status'])}"
                 )
             run_evidence = loader["run"]
             assert isinstance(run_evidence, dict)
@@ -1338,13 +1345,13 @@ class HostSession:
                 returned=False,
             )
             loader["status"] = "run_acknowledged"
-            if run_mode == protocol.T28_RUN_CALL:
+            if run_mode == protocol.LOADER_V2_RUN_CALL:
                 return_replays = 0
                 while True:
                     try:
                         while True:
                             returned, cursor = self._wait_loader_frame(
-                                protocol.TYPE_T28_RETURN,
+                                protocol.TYPE_LOADER_V2_RETURN,
                                 cursor,
                                 timeout,
                                 "RETURN",
@@ -1357,8 +1364,8 @@ class HostSession:
                         if return_replays >= self.loader_retries - 1:
                             raise
                         return_replays += 1
-                        replay, cursor, replay_attempts = self._t28_result_command(
-                            protocol.TYPE_T28_RUN,
+                        replay, cursor, replay_attempts = self._loader_v2_result_command(
+                            protocol.TYPE_LOADER_V2_RUN,
                             run_tx,
                             run_body,
                             cursor,
@@ -1374,16 +1381,19 @@ class HostSession:
                             or replay["count"] != run_mode
                         ):
                             raise SessionError(
-                                "T28 replay-safe RUN failed: "
+                                "loader API v2 replay-safe RUN failed: "
                                 f"{loader_status_name(replay['status'])}"
                             )
                 run_evidence["return_replays"] = return_replays
                 if len(returned.payload) != 3:
-                    raise SessionError("T28 RETURN payload length is not three")
+                    raise SessionError(
+                        "loader API v2 RETURN payload length is not three"
+                    )
                 _, return_status, return_a = returned.payload
                 if return_status != protocol.LOADER_STATUS_OK:
                     raise SessionError(
-                        f"T28 returned status {loader_status_name(return_status)}"
+                        "loader API v2 returned status "
+                        f"{loader_status_name(return_status)}"
                     )
                 run_evidence.update(returned=True, return_a=f"0x{return_a:02X}")
                 loader["status"] = "returned"
@@ -1391,14 +1401,14 @@ class HostSession:
                 if self.result_address is not None and self.result_length:
                     result = bytearray()
                     result_reads: list[dict[str, object]] = []
-                    for offset in range(0, self.result_length, protocol.T28_MAX_DATA):
+                    for offset in range(0, self.result_length, protocol.LOADER_V2_MAX_DATA):
                         count = min(
-                            protocol.T28_MAX_DATA, self.result_length - offset
+                            protocol.LOADER_V2_MAX_DATA, self.result_length - offset
                         )
                         read_address = self.result_address + offset
                         read_tx = next_transaction()
-                        detail, part, cursor, read_attempts = self._t28_data_command(
-                            protocol.TYPE_T28_READ,
+                        detail, part, cursor, read_attempts = self._loader_v2_data_command(
+                            protocol.TYPE_LOADER_V2_READ,
                             read_tx,
                             read_address.to_bytes(2, "big") + bytes((count,)),
                             cursor,
@@ -1407,7 +1417,7 @@ class HostSession:
                         )
                         if detail["status"] != protocol.LOADER_STATUS_OK:
                             raise SessionError(
-                                "T28 returned-result READ failed: "
+                                "loader API v2 returned-result READ failed: "
                                 f"{loader_status_name(detail['status'])}"
                             )
                         result.extend(part)
@@ -1442,7 +1452,7 @@ class HostSession:
                     raise
                 loader["status"] = "heartbeat_complete"
 
-    def attach_t28_loader(
+    def attach_loader_v2(
         self,
         data: bytes,
         source: str,
@@ -1459,11 +1469,11 @@ class HostSession:
         """
         self.encoded_host_tx = True
         self.solicited_host_tx = True
-        self.host_symbol_repetitions = protocol.T28_DEFAULT_VOTES
+        self.host_symbol_repetitions = protocol.LOADER_V2_BOOT_VOTES
         self.symbol_requests.clear()
 
         # An earlier host may have configured any odd vote count. Remaining
-        # silent lets immutable T28 count raw receive timeouts and restore its
+        # silent lets the immutable loader count raw receive timeouts and restore its
         # documented seven-vote baseline. Require nine identical requests:
         # one initial request plus the eight bounded idle periods in the ROM.
         settle_deadline = time.monotonic() + timeout
@@ -1472,9 +1482,9 @@ class HostSession:
         while repeated < 9:
             if time.monotonic() >= settle_deadline:
                 raise SessionError(
-                    "timeout waiting for T28's idle transport reset during attach"
+                    "timeout waiting for loader API v2 idle reset during attach"
                 )
-            self._read_frames(settle_deadline, "while attaching to T28")
+            self._read_frames(settle_deadline, "while attaching to loader API v2")
             while self.symbol_requests and repeated < 9:
                 token = self.symbol_requests.pop(0)
                 if token == last_token:
@@ -1485,7 +1495,7 @@ class HostSession:
 
         # Every accumulated identical token names the same still-outstanding
         # physical symbol. Keep exactly the newest one; replaying the stale
-        # timeout history would inject unsolicited duplicates after T28 has
+        # timeout history would inject unsolicited duplicates after the ROM has
         # already accepted the first response and advanced.
         self.symbol_requests.clear()
         assert last_token is not None
@@ -1493,8 +1503,8 @@ class HostSession:
 
         cursor = len(self.frames)
         resync_tx = 0xFF
-        resync, cursor, attempts = self._t28_result_command(
-            protocol.TYPE_T28_RESYNC,
+        resync, cursor, attempts = self._loader_v2_result_command(
+            protocol.TYPE_LOADER_V2_RESYNC,
             resync_tx,
             b"",
             cursor,
@@ -1503,12 +1513,13 @@ class HostSession:
         )
         if (
             resync["status"] != protocol.LOADER_STATUS_OK
-            or resync["count"] != protocol.T28_DEFAULT_VOTES
+            or resync["count"] != protocol.LOADER_V2_BOOT_VOTES
         ):
             raise SessionError(
-                f"T28 attach RESYNC failed: {loader_status_name(resync['status'])}"
+                "loader API v2 attach RESYNC failed: "
+                f"{loader_status_name(resync['status'])}"
             )
-        self.host_symbol_repetitions = protocol.T28_DEFAULT_VOTES
+        self.host_symbol_repetitions = protocol.LOADER_V2_BOOT_VOTES
 
         loader: dict[str, object] = {
             "requested": True,
@@ -1522,15 +1533,15 @@ class HostSession:
             "end_exclusive": f"0x{address + len(data):04X}",
             "bytes": len(data),
             "ready": {
-                "api_version": protocol.T28_LOADER_API_VERSION,
-                "max_data_bytes": protocol.T28_MAX_DATA,
+                "api_version": protocol.LOADER_V2_API_VERSION,
+                "max_data_bytes": protocol.LOADER_V2_MAX_DATA,
                 "api_base": f"0x{protocol.LOADER_API_BASE:04X}",
-                "capabilities": f"0x{protocol.T28_CAPABILITIES:04X}",
-                "load_min": f"0x{protocol.T28_LOAD_MIN:04X}",
-                "load_end_exclusive": f"0x{protocol.T28_LOAD_END:04X}",
-                "workspace": f"0x{protocol.T28_WORKSPACE_BASE:04X}",
-                "stack_top": f"0x{protocol.T28_WORKSPACE_END:04X}",
-                "default_votes": protocol.T28_DEFAULT_VOTES,
+                "capabilities": f"0x{protocol.LOADER_V2_CAPABILITIES:04X}",
+                "load_min": f"0x{protocol.LOADER_V2_LOAD_MIN:04X}",
+                "load_end_exclusive": f"0x{protocol.LOADER_V2_LOAD_END:04X}",
+                "workspace": f"0x{protocol.LOADER_V2_WORKSPACE_BASE:04X}",
+                "stack_top": f"0x{protocol.LOADER_V2_WORKSPACE_END:04X}",
+                "default_votes": protocol.LOADER_V2_BOOT_VOTES,
                 "guard_ms": self.loader_guard_seconds * 1000.0,
                 "retry_limit": self.loader_retries,
                 "resume": self.loader_resume,
@@ -1563,7 +1574,7 @@ class HostSession:
         }
         self.loader = loader
         try:
-            self._run_loader_t28(
+            self._run_loader_v2(
                 data,
                 address,
                 run_address,
@@ -1572,7 +1583,7 @@ class HostSession:
                 heartbeat_count,
                 heartbeat_timeout,
                 loader,
-                protocol.T28_MAX_DATA,
+                protocol.LOADER_V2_MAX_DATA,
             )
         except (SessionError, OSError) as error:
             loader["status"] = "error"
@@ -1676,19 +1687,21 @@ class HostSession:
                 "LOADER_READY",
             )
             if len(ready.payload) not in (4, 11):
-                raise SessionError("LOADER_READY payload length is neither v1 nor T28")
+                raise SessionError(
+                    "LOADER_READY payload length is neither API v1 nor API v2"
+                )
             api_version, max_data, api_hi, api_lo = ready.payload[:4]
             api_base = (api_hi << 8) | api_lo
             if api_version not in (
                 protocol.LOADER_API_VERSION,
-                protocol.T28_LOADER_API_VERSION,
+                protocol.LOADER_V2_API_VERSION,
             ):
                 raise SessionError(
                     f"unsupported loader API version {api_version}"
                 )
             if not 1 <= max_data <= (
-                protocol.T28_MAX_DATA
-                if api_version == protocol.T28_LOADER_API_VERSION
+                protocol.LOADER_V2_MAX_DATA
+                if api_version == protocol.LOADER_V2_API_VERSION
                 else protocol.LOADER_MAX_DATA
             ):
                 raise SessionError(f"loader advertised invalid chunk size {max_data}")
@@ -1701,27 +1714,31 @@ class HostSession:
                 "max_data_bytes": max_data,
                 "api_base": f"0x{api_base:04X}",
             }
-            if api_version == protocol.T28_LOADER_API_VERSION:
+            if api_version == protocol.LOADER_V2_API_VERSION:
                 if len(ready.payload) != 11:
-                    raise SessionError("T28 LOADER_READY payload length is not eleven")
+                    raise SessionError(
+                        "loader API v2 READY payload length is not eleven"
+                    )
                 (
                     _, _, _, _, caps_hi, caps_lo, load_min_page,
                     load_end_page, workspace_page, stack_page, default_votes,
                 ) = ready.payload
                 capabilities = (caps_hi << 8) | caps_lo
-                if capabilities != protocol.T28_CAPABILITIES:
+                if capabilities != protocol.LOADER_V2_CAPABILITIES:
                     raise SessionError(
-                        f"T28 capabilities {capabilities:04X} != "
-                        f"{protocol.T28_CAPABILITIES:04X}"
+                        f"loader API v2 capabilities {capabilities:04X} != "
+                        f"{protocol.LOADER_V2_CAPABILITIES:04X}"
                     )
                 if (
-                    load_min_page << 8 != protocol.T28_LOAD_MIN
-                    or load_end_page << 8 != protocol.T28_LOAD_END
-                    or workspace_page << 8 != protocol.T28_WORKSPACE_BASE
-                    or stack_page << 8 != protocol.T28_WORKSPACE_END
-                    or default_votes != protocol.T28_DEFAULT_VOTES
+                    load_min_page << 8 != protocol.LOADER_V2_LOAD_MIN
+                    or load_end_page << 8 != protocol.LOADER_V2_LOAD_END
+                    or workspace_page << 8 != protocol.LOADER_V2_WORKSPACE_BASE
+                    or stack_page << 8 != protocol.LOADER_V2_WORKSPACE_END
+                    or default_votes != protocol.LOADER_V2_BOOT_VOTES
                 ):
-                    raise SessionError("T28 advertised memory/transport constants differ")
+                    raise SessionError(
+                        "loader API v2 advertised memory/transport constants differ"
+                    )
                 ready_evidence = loader["ready"]
                 assert isinstance(ready_evidence, dict)
                 ready_evidence.update(
@@ -1736,7 +1753,7 @@ class HostSession:
                     resume=self.loader_resume,
                     readback=self.loader_readback,
                 )
-                self._run_loader_t28(
+                self._run_loader_v2(
                     data,
                     address,
                     run_address,
@@ -1749,7 +1766,7 @@ class HostSession:
                 )
                 return
             if control_only:
-                raise SessionError("loader control-only mode requires T28 API v2")
+                raise SessionError("loader control-only mode requires loader API v2")
             if self.host_symbol_repetitions > 1:
                 # Bound retransmission cost and exposure per independently
                 # checksummed frame on the repetition-coded physical link.
@@ -1985,7 +2002,7 @@ def print_verdict(session: HostSession, logs: SessionLogs) -> None:
             f"{session.heartbeat_reset_retries_requested}"
         )
     if attached:
-        print("JUKURAVI: attached to running T28 loader without RESET")
+        print("JUKURAVI: attached to running loader API v2 without RESET")
     else:
         print(
             f"JUKURAVI: protocol={protocol_version:02X} rom={rom_version:02X} "
@@ -2038,7 +2055,7 @@ def print_verdict(session: HostSession, logs: SessionLogs) -> None:
                 f"base={ready['api_base']} max_chunk={ready['max_data_bytes']}"
             )
         if session.loader.get("control_only"):
-            print("JUKURAVI: T28 control probe complete; RAM unchanged")
+            print("JUKURAVI: loader API v2 control probe complete; RAM unchanged")
         else:
             print(
                 f"JUKURAVI: loaded {session.loader['source']} "
@@ -2075,11 +2092,16 @@ def make_parser() -> argparse.ArgumentParser:
         description="Run one framed Jukuravi diagnostic session"
     )
     transport = parser.add_mutually_exclusive_group(required=True)
-    transport.add_argument("--port", help="Nano USB serial device, e.g. /dev/ttyUSB0")
+    transport.add_argument("--port", help="serial device, e.g. /dev/ttyUSB0")
     transport.add_argument(
         "--fd", type=int, help="inherited PTY master descriptor for the cosim harness"
     )
-    parser.add_argument("--baud", type=int, default=DEFAULT_BAUD)
+    parser.add_argument(
+        "--baud",
+        type=int,
+        default=DEFAULT_BAUD,
+        help=f"serial baud rate (default: {DEFAULT_BAUD})",
+    )
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
     parser.add_argument(
         "--banner-timeout",
@@ -2100,17 +2122,17 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--attach-loader",
         action="store_true",
-        help="reattach to a running T28 loader without resetting Juku or RAM",
+        help="reattach to a running loader API v2 without resetting Juku or RAM",
     )
     parser.add_argument(
         "--probe-loader",
         action="store_true",
-        help="probe T28 capabilities and transport without writing or running code",
+        help="probe loader API v2 without writing or running code",
     )
     parser.add_argument(
         "--read-address",
         type=parse_hex16,
-        help="T28 RAM address to read in control-only mode",
+        help="loader API v2 RAM address to read in control-only mode",
     )
     parser.add_argument(
         "--read-length",
@@ -2132,12 +2154,12 @@ def make_parser() -> argparse.ArgumentParser:
         "--run-mode",
         choices=("call", "jump"),
         default="call",
-        help="T28 calls a RET-ending snippet by default; jump is non-returning",
+        help="API v2 calls a RET-ending snippet by default; jump is non-returning",
     )
     parser.add_argument(
         "--result-address",
         type=parse_hex16,
-        help="RAM result block to READ after a T28 call returns",
+        help="RAM result block to READ after a loader API v2 call returns",
     )
     parser.add_argument(
         "--result-length",
@@ -2159,7 +2181,10 @@ def make_parser() -> argparse.ArgumentParser:
         "--loader-guard-ms",
         type=parse_nonnegative_float,
         default=SOLICITED_RESPONSE_GUARD_SECONDS * 1000.0,
-        help="delay after each T25+ receive request before transmitting (default: 20)",
+        help=(
+            "delay after each receive request before transmitting "
+            f"(default: {SOLICITED_RESPONSE_GUARD_SECONDS * 1000:g} ms)"
+        ),
     )
     parser.add_argument(
         "--loader-chunk-size",
@@ -2169,8 +2194,11 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--loader-retries",
         type=parse_positive_int,
-        default=3,
-        help="bounded attempts per idempotent loader transaction (default: 3)",
+        default=DEFAULT_LOADER_RETRIES,
+        help=(
+            "bounded attempts per idempotent loader transaction "
+            f"(default: {DEFAULT_LOADER_RETRIES})"
+        ),
     )
     parser.add_argument(
         "--loader-benchmark-passes",
@@ -2181,18 +2209,21 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--loader-votes",
         type=parse_positive_int,
-        default=protocol.T28_DEFAULT_VOTES,
-        help="T28 physical symbols per logical bit; odd 1..15 (default: 7)",
+        default=DEFAULT_LOADER_VOTES,
+        help=(
+            "API v2 physical symbols per logical bit; odd 1..15 "
+            f"(default: {DEFAULT_LOADER_VOTES})"
+        ),
     )
     parser.add_argument(
         "--loader-resume",
         action="store_true",
-        help="read each T28 target chunk and skip exact bytes already present",
+        help="read each API v2 target chunk and skip exact bytes already present",
     )
     parser.add_argument(
         "--no-loader-readback",
         action="store_true",
-        help="use T28 CRC verification instead of default exact READ verification",
+        help="use API v2 CRC verification instead of exact READ verification",
     )
     parser.add_argument(
         "--heartbeat-count",
@@ -2232,8 +2263,8 @@ def main() -> int:
         print("JUKURAVI: loader timeout must be positive", file=sys.stderr)
         return 2
     if (
-        args.loader_votes < protocol.T28_MIN_VOTES
-        or args.loader_votes > protocol.T28_MAX_VOTES
+        args.loader_votes < protocol.LOADER_V2_MIN_VOTES
+        or args.loader_votes > protocol.LOADER_V2_MAX_VOTES
         or not args.loader_votes & 1
     ):
         print("JUKURAVI: --loader-votes must be odd and in 1..15", file=sys.stderr)
@@ -2272,8 +2303,8 @@ def main() -> int:
         print("JUKURAVI: control READ requires --probe-loader", file=sys.stderr)
         return 2
     if args.read_address is not None and (
-        args.read_address < protocol.T28_LOAD_MIN
-        or args.read_address + args.read_length > protocol.T28_LOAD_END
+        args.read_address < protocol.LOADER_V2_LOAD_MIN
+        or args.read_address + args.read_length > protocol.LOADER_V2_LOAD_END
     ):
         print("JUKURAVI: control READ must fit 0x4000..0xBFFF", file=sys.stderr)
         return 2
@@ -2318,7 +2349,7 @@ def main() -> int:
         args.load_only or args.run_mode != "call"
     ):
         print(
-            "JUKURAVI: returned result reads require T28 call mode",
+            "JUKURAVI: returned result reads require loader API v2 call mode",
             file=sys.stderr,
         )
         return 2
@@ -2331,8 +2362,8 @@ def main() -> int:
         )
         return 2
     if args.result_address is not None and (
-        args.result_address < protocol.T28_LOAD_MIN
-        or args.result_address + args.result_length > protocol.T28_LOAD_END
+        args.result_address < protocol.LOADER_V2_LOAD_MIN
+        or args.result_address + args.result_length > protocol.LOADER_V2_LOAD_END
     ):
         print("JUKURAVI: returned result READ must fit 0x4000..0xBFFF", file=sys.stderr)
         return 2
@@ -2368,8 +2399,8 @@ def main() -> int:
             print("JUKURAVI: upload file is empty", file=sys.stderr)
             return 2
         upload_end = args.load_address + len(upload_data)
-        load_min = protocol.T28_LOAD_MIN if args.attach_loader else protocol.LOADER_LOAD_MIN
-        load_end = protocol.T28_LOAD_END if args.attach_loader else protocol.LOADER_LOAD_END
+        load_min = protocol.LOADER_V2_LOAD_MIN if args.attach_loader else protocol.LOADER_LOAD_MIN
+        load_end = protocol.LOADER_V2_LOAD_END if args.attach_loader else protocol.LOADER_LOAD_END
         if args.load_address < load_min or upload_end > load_end:
             print(
                 "JUKURAVI: upload range must fit "
@@ -2433,8 +2464,8 @@ def main() -> int:
     elif args.probe_loader:
         completion = lambda: session.run_loader(
             b"",
-            "<T28 control>",
-            protocol.T28_LOAD_MIN,
+            "<loader API v2 control>",
+            protocol.LOADER_V2_LOAD_MIN,
             None,
             args.loader_timeout,
             0,
@@ -2444,9 +2475,13 @@ def main() -> int:
     try:
         if args.attach_loader:
             attach_data = b"" if upload_data is None else upload_data
-            attach_source = "<T28 resident control>" if args.load is None else str(args.load)
+            attach_source = (
+                "<loader API v2 resident control>"
+                if args.load is None
+                else str(args.load)
+            )
             session.begin_attempt(1)
-            session.attach_t28_loader(
+            session.attach_loader_v2(
                 attach_data,
                 attach_source,
                 args.load_address,

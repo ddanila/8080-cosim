@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pin the host-visible T28 bootstrap command format."""
+"""Pin loader API v2 against the exact T28 reference ROM contract."""
 
 from __future__ import annotations
 
@@ -29,37 +29,37 @@ def main() -> int:
     if protocol.crc16_ccitt_false(b"123456789") != 0x29B1:
         fail("CRC-16/CCITT-FALSE check vector differs")
 
-    load = protocol.encode_t28_load(0x42, 0x4000, b"\x76\x00")
+    load = protocol.encode_loader_v2_load(0x42, 0x4000, b"\x76\x00")
     frame = decode_one(load)
-    transaction, body = protocol.validate_t28_command(frame)
+    transaction, body = protocol.validate_loader_v2_command(frame)
     if (
-        frame.record_type != protocol.TYPE_T28_LOAD
+        frame.record_type != protocol.TYPE_LOADER_V2_LOAD
         or transaction != 0x42
         or body != b"\x40\x00\x76\x00"
     ):
         fail("LOAD transaction did not round-trip exactly")
 
-    for record_type in (protocol.TYPE_T28_READ, protocol.TYPE_T28_CRC):
-        command = protocol.encode_t28_range_command(
-            record_type, 0xA5, 0xBFE0, protocol.T28_MAX_DATA
+    for record_type in (protocol.TYPE_LOADER_V2_READ, protocol.TYPE_LOADER_V2_CRC):
+        command = protocol.encode_loader_v2_range_command(
+            record_type, 0xA5, 0xBFE0, protocol.LOADER_V2_MAX_DATA
         )
-        transaction, body = protocol.validate_t28_command(decode_one(command))
+        transaction, body = protocol.validate_loader_v2_command(decode_one(command))
         if transaction != 0xA5 or body != b"\xBF\xE0\x20":
             fail(f"range command 0x{record_type:02X} differs")
 
-    run = protocol.encode_t28_run(
-        0x17, 0x4567, protocol.T28_RUN_CALL, 0x89ABCDEF
+    run = protocol.encode_loader_v2_run(
+        0x17, 0x4567, protocol.LOADER_V2_RUN_CALL, 0x89ABCDEF
     )
-    transaction, body = protocol.validate_t28_command(decode_one(run))
+    transaction, body = protocol.validate_loader_v2_command(decode_one(run))
     if transaction != 0x17 or body != b"\x45\x67\x00\x89\xAB\xCD\xEF":
         fail("replay-safe RUN command differs")
     required_caps = (
-        protocol.T28_CAP_CALL_RETURN
-        | protocol.T28_CAP_RUN_REPLAY
-        | protocol.T28_CAP_UART_RESTORE
-        | protocol.T28_CAP_IDLE_RESYNC
+        protocol.LOADER_V2_CAP_CALL_RETURN
+        | protocol.LOADER_V2_CAP_RUN_REPLAY
+        | protocol.LOADER_V2_CAP_UART_RESTORE
+        | protocol.LOADER_V2_CAP_IDLE_RESYNC
     )
-    if protocol.T28_CAPABILITIES & required_caps != required_caps:
+    if protocol.LOADER_V2_CAPABILITIES & required_caps != required_caps:
         fail("recoverability capabilities are not advertised")
 
     # Change one protected byte, then repair only the outer CRC-8.  This is
@@ -70,7 +70,7 @@ def main() -> int:
     corrupt[-1] = protocol.crc8_atm(bytes(corrupt[2:-1]))
     damaged = decode_one(bytes(corrupt))
     try:
-        protocol.validate_t28_command(damaged)
+        protocol.validate_loader_v2_command(damaged)
     except ValueError as error:
         if "CRC-16" not in str(error):
             fail(f"inner corruption raised the wrong error: {error}")

@@ -779,7 +779,7 @@ cached completion rather than executing a non-idempotent snippet twice. On RET
 the ROM restores DI, SP, the 8251, and the 2400-baud PIT channel before replying.
 Idle transport reset and host reattachment preserve uploaded RAM and avoid a
 board RESET. The complete stable contract and host examples are in
-[`../T28-PROTOCOL.md`](../T28-PROTOCOL.md).
+[`../LOADER-API-V2.md`](../LOADER-API-V2.md).
 
 `diag-d0-host-recover.bin` is the T29 hardware-recovery refinement, ROM
 version `18`, self-CRC16 `AC40`, SHA-256
@@ -838,11 +838,13 @@ final G. Each completed note writes its remaining count to `4104h`.
 
 After all twelve notes, the snippet writes `SMOK` to `4100h..4103h`, leaves zero
 at `4104h`, returns `A=0Ch`, and executes an ordinary `RET`. T31 then restores
-its serial state and remains available. `tests/jukuravi_t28_smoke_test.py`
-uploads the committed binary through the real cosim PTY, requires five
-first-attempt CRC-verified chunks and the completion contract, checks all 60
+its serial state and remains available. `tests/jukuravi_t31_smoke_test.py`
+boots the exact T31 image and uploads the committed binary through the real
+cosim PTY. It requires five first-attempt CRC-verified chunks and the completion
+contract, checks all 60
 speaker-PIT writes, and bounds every simulated note-onset interval against the
-112-BPM grid. The assembly comparison is part of `sync/jukuravi_t28_check.sh`.
+112-BPM grid. The assembly comparison and demo run are part of
+`sync/jukuravi_t31_check.sh`.
 
 The timing reference is the published Deep Purple guitar TAB:
 <https://www.deeppurple50.com/sites/g/files/g2000016886/files/2024-01/Smoke%20on%20the%20Water%20-%20Guitar%20TAB%5B21%5D.pdf>.

@@ -88,39 +88,39 @@ def main() -> int:
                 (0x10, 0x4000, payload),
                 (0x11, 0x4100, b"\x00"),
             ):
-                response, cursor, _ = session._t28_transact(
-                    protocol.encode_t28_load(transaction, address, data),
+                response, cursor, _ = session._loader_v2_transact(
+                    protocol.encode_loader_v2_load(transaction, address, data),
                     transaction,
-                    protocol.TYPE_T28_RESULT,
+                    protocol.TYPE_LOADER_V2_RESULT,
                     cursor,
                     30,
                     "replay-test LOAD",
                 )
-                if host.decode_t28_result(response)["status"] != protocol.LOADER_STATUS_OK:
+                if host.decode_loader_v2_result(response)["status"] != protocol.LOADER_STATUS_OK:
                     fail("setup LOAD failed")
 
             def invoke(transaction: int, execution_id: int) -> int:
                 nonlocal cursor
-                command = protocol.encode_t28_run(
+                command = protocol.encode_loader_v2_run(
                     transaction,
                     0x4000,
-                    protocol.T28_RUN_CALL,
+                    protocol.LOADER_V2_RUN_CALL,
                     execution_id,
                 )
-                response, cursor, _ = session._t28_transact(
+                response, cursor, _ = session._loader_v2_transact(
                     command,
                     transaction,
-                    protocol.TYPE_T28_RESULT,
+                    protocol.TYPE_LOADER_V2_RESULT,
                     cursor,
                     30,
                     "replay-test RUN",
                 )
-                detail = host.decode_t28_result(response)
+                detail = host.decode_loader_v2_result(response)
                 if detail["status"] != protocol.LOADER_STATUS_OK:
                     fail(f"RUN failed: {detail!r}")
                 while True:
                     returned, cursor = session._wait_loader_frame(
-                        protocol.TYPE_T28_RETURN, cursor, 30, "replay-test RETURN"
+                        protocol.TYPE_LOADER_V2_RETURN, cursor, 30, "replay-test RETURN"
                     )
                     if returned.payload and returned.payload[0] == transaction:
                         break
@@ -133,8 +133,8 @@ def main() -> int:
             replayed = invoke(0x20, execution_id)
             second = invoke(0x21, execution_id + 1)
 
-            detail, counter, cursor, _ = session._t28_data_command(
-                protocol.TYPE_T28_READ,
+            detail, counter, cursor, _ = session._loader_v2_data_command(
+                protocol.TYPE_LOADER_V2_READ,
                 0x30,
                 bytes((0x41, 0x00, 0x01)),
                 cursor,

@@ -1,8 +1,8 @@
 ; Play the first twelve notes of the familiar "Smoke on the Water" riff on
 ; the Juku speaker, then return cooperatively to the T31 monitor.
 ;
-; Load at 4000h and invoke in T28/T31 CALL mode. D57 channel 1 is driven from
-; the source-proved nominal 2 MHz clock. Mode 3 divides that clock by each
+; Load at 4000h and invoke through loader API v2 CALL mode. D57 channel 1 is
+; driven from the source-proved nominal 2 MHz clock. Mode 3 divides it by each
 ; table value. The published intro is in 4/4 at quarter-note = 112. Tone and
 ; rest lengths below are expressed in eighth-note units; one unit is nominally
 ; 60 / 112 / 2 = 267.857 ms at the 2 MHz CPU clock.

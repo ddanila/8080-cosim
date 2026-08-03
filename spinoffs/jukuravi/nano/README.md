@@ -15,6 +15,10 @@ direction first in bounded chunks. This is sufficient for D0's half-duplex
 banner/ACK/survey protocol; it is not a claim of arbitrary simultaneous
 full-duplex operation.
 
+The main host CLI defaults to the current direct 2400-baud adapter. Use
+`--baud 115200` when deliberately running through this Nano bridge, and ensure
+the sketch's Juku-side `SoftwareSerial` rate matches the installed ROM.
+
 TTL-side wiring:
 
 | Nano | Direction | MAX3232-class pin role | Purpose |

@@ -27,7 +27,7 @@ zero mismatches, and reported:
 - RAM `4000h-4FFFh`: PASS
 - RAM `C000h-CFFFh`: PASS
 - loader API v2: READY at `0A00h`, maximum chunk 32 bytes
-- T28-compatible control PROBE: complete, RAM unchanged
+- loader API v2 control PROBE: complete, RAM unchanged
 
 Evidence: `jukuravi-logs-t31-real/20260803T150916.115911Z.json`.
 
@@ -79,32 +79,18 @@ so the simpler operational policy is to let the host resend the complete command
 when any layer rejects it or times out. Exact READ remains available for a final
 high-assurance comparison.
 
-The conservative 7-vote/20-ms defaults remain unchanged pending a larger and
-more varied sample. The current fast experimental setting is 1 vote / 6 ms;
-whole-command retry counts must remain visible in logs. Raw evidence:
+The host now defaults to the proven 1-vote / 6 ms setting. CRC-protected
+whole-command retries remain enabled, while `--loader-guard-ms` and
+`--loader-votes` can add margin for another physical link. Raw evidence:
 
 - `jukuravi-logs-speed-v5-g12/20260803T152950.248602Z.*`
 - `jukuravi-logs-speed-v3-g8/20260803T153445.958908Z.*`
 - `jukuravi-logs-speed-v1-g8/20260803T153744.281550Z.*`
 - `jukuravi-logs-speed-v1-g6/20260803T154002.040501Z.*`
 
-Two earlier `v5-g12` sessions at `15:21:25Z` and `15:28:08Z` are invalid speed
-samples: the direct CP2102 was accidentally opened at the host CLI's 115200-baud
-default instead of 2400. Their RX logs contain only `00`, they transmitted zero
-bytes, and they never reached RESYNC, CONFIG, or LOAD. They therefore say
-nothing about five-vote or 12-ms reliability and are retained as diagnostic
-evidence for always specifying `--baud 2400` on this direct adapter chain.
-
 ## Uploaded speaker demo
 
-T31's resident loader was also used for an audible application experiment,
-without RESET or another ROM burn. The first 118-byte iteration played the
-correct twelve pitches but compressed the rests into uniform 60 ms gaps. It
-uploaded in four first-attempt LOAD+CRC chunks, returned `A=0Ch`, left
-`SMOK\0` at `4100h`, and was audibly recognized on CS00015. Evidence:
-`jukuravi-logs-smoke-real/20260803T154837.479128Z.*`.
-
-The corrected 134-byte version follows the published four-bar intro at 112 BPM.
+The 134-byte speaker demo follows the published four-bar intro at 112 BPM.
 It expresses the phrase as exactly 32 eighth-note units (267.857 ms ideal),
 including the notated rests, direct D-flat-to-C transition, and sustained final
 G. Cosim measured the first twelve note onsets at nominal milliseconds:

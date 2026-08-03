@@ -14,7 +14,12 @@ python3 -m py_compile \
   spinoffs/jukuravi/firmware/build_d5_loader_v5.py \
   spinoffs/jukuravi/firmware/build_d0_low4k.py \
   tests/jukuravi_t30_boundary_repro_test.py \
-  tests/jukuravi_t31_low4k_test.py
+  tests/jukuravi_t31_low4k_test.py \
+  tests/jukuravi_t31_smoke_test.py
+
+nasm -f bin spinoffs/jukuravi/firmware/smoke-4000.asm \
+  -o "$tmp/smoke-4000.bin"
+cmp "$tmp/smoke-4000.bin" spinoffs/jukuravi/firmware/smoke-4000.bin
 
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
@@ -23,6 +28,8 @@ python3 -m py_compile \
 python3 tests/jukuravi_t30_boundary_repro_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-txready.bin
 python3 tests/jukuravi_t31_low4k_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-low4k.bin
+python3 tests/jukuravi_t31_smoke_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-low4k.bin
 
 echo "JUKURAVI-T31-CHECK: PASS"

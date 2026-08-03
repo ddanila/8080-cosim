@@ -81,6 +81,12 @@ def main() -> int:
         fail("default banner deadline differs")
     if normal.reset_retries != host.DEFAULT_RESET_RETRIES:
         fail("default reset retry count differs")
+    if normal.baud != 2400:
+        fail("direct serial baud is not the 2400-baud default")
+    if normal.loader_votes != 1:
+        fail("loader transport is not single-vote by default")
+    if normal.loader_guard_ms != 6.0:
+        fail("loader response guard is not 6 ms by default")
     if normal.heartbeat_count != 0:
         fail("heartbeat monitoring is not opt-in")
     if normal.heartbeat_timeout != host.DEFAULT_HEARTBEAT_TIMEOUT:

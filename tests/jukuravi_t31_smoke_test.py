@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prove the uploaded four-bar speaker demo's notes, timing, and return."""
+"""Prove the exact T31 ROM running the timed uploaded speaker demo."""
 
 from __future__ import annotations
 
@@ -19,11 +19,13 @@ HOST = ROOT / "spinoffs" / "jukuravi" / "host.py"
 FIRMWARE = ROOT / "spinoffs" / "jukuravi" / "firmware"
 PAYLOAD = FIRMWARE / "smoke-4000.bin"
 sys.path[:0] = [str(FIRMWARE), str(FIRMWARE.parent)]
-import build_d0_buffer_verified as firmware  # noqa: E402
+import build_d0_low4k as firmware  # noqa: E402
 
 
-DIVISORS = (5102, 4290, 3822, 5102, 4290, 3608,
-            3822, 5102, 4290, 3822, 4290, 5102)
+DIVISORS = (
+    5102, 4290, 3822, 5102, 4290, 3608,
+    3822, 5102, 4290, 3822, 4290, 5102,
+)
 TONE_UNITS = (1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 5)
 GAP_UNITS = (1, 1, 1, 1, 1, 0, 2, 1, 1, 1, 1, 2)
 EIGHTH_CYCLES = 2_000_000 * 60 / 112 / 2
@@ -35,21 +37,21 @@ IO_PATTERN = re.compile(
 
 
 def fail(message: str) -> None:
-    print(f"JUKURAVI-T28-SMOKE: FAIL: {message}", file=sys.stderr)
+    print(f"JUKURAVI-T31-SMOKE: FAIL: {message}", file=sys.stderr)
     raise SystemExit(1)
 
 
 def main() -> int:
     if len(sys.argv) != 3:
-        fail("usage: test.py /path/to/trace diag-d0-buffer-verified.bin")
+        fail("usage: test.py /path/to/trace diag-d0-low4k.bin")
     trace, rom_arg = (Path(value).resolve() for value in sys.argv[1:])
-    image, _metadata = firmware.build()
+    image, metadata = firmware.build()
     if not trace.is_file() or rom_arg.read_bytes() != image:
-        fail("trace or exact T28 image differs")
+        fail("trace or exact T31 image differs")
     if sum(TONE_UNITS) + sum(GAP_UNITS) != 32:
         fail("timing table is not four complete 4/4 bars")
 
-    with tempfile.TemporaryDirectory(prefix="jukuravi-t28-smoke-") as temp_name:
+    with tempfile.TemporaryDirectory(prefix="jukuravi-t31-smoke-") as temp_name:
         temp = Path(temp_name)
         logs = temp / "logs"
         master, slave = pty.openpty()
@@ -81,6 +83,8 @@ def main() -> int:
                     "--loader-timeout", "30",
                     "--loader-guard-ms", "0",
                     "--loader-votes", "1",
+                    "--expect-rom-version", f"{firmware.ROM_VERSION:02X}",
+                    "--expect-crc16", f"{int(metadata['checksum']):04X}",
                     "--load", str(PAYLOAD),
                     "--load-address", "4000",
                     "--run-address", "4000",
@@ -171,8 +175,8 @@ def main() -> int:
                 )
 
     print(
-        "JUKURAVI-T28-SMOKE: PASS "
-        "(12 notes; 4 bars; 112 BPM; exact PIT sequence; CRC upload; RET)"
+        "JUKURAVI-T31-SMOKE: PASS "
+        "(exact T31; 12 notes; 4 bars; 112 BPM; PIT sequence; CRC upload; RET)"
     )
     return 0
 

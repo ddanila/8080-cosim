@@ -14,13 +14,13 @@ TYPE_RAM_BLOCK = 0x11
 TYPE_RAM_END = 0x12
 TYPE_LOAD = 0x20
 TYPE_RUN = 0x22
-TYPE_T28_PROBE = 0x23
-TYPE_T28_CONFIG = 0x24
-TYPE_T28_LOAD = 0x25
-TYPE_T28_READ = 0x26
-TYPE_T28_CRC = 0x27
-TYPE_T28_RUN = 0x28
-TYPE_T28_RESYNC = 0x29
+TYPE_LOADER_V2_PROBE = 0x23
+TYPE_LOADER_V2_CONFIG = 0x24
+TYPE_LOADER_V2_LOAD = 0x25
+TYPE_LOADER_V2_READ = 0x26
+TYPE_LOADER_V2_CRC = 0x27
+TYPE_LOADER_V2_RUN = 0x28
+TYPE_LOADER_V2_RESYNC = 0x29
 TYPE_HEARTBEAT = 0x30
 TYPE_NANO_LIVENESS = 0x40
 TYPE_DIAG_STATUS = 0x50
@@ -28,13 +28,13 @@ TYPE_LOAD_RESULT = 0xA0
 TYPE_RUN_ACK = 0xA2
 TYPE_LOADER_READY = 0xA3
 TYPE_LOADER_ERROR = 0xAF
-TYPE_T28_RESULT = 0xB0
-TYPE_T28_DATA = 0xB1
-TYPE_T28_RETURN = 0xB2
+TYPE_LOADER_V2_RESULT = 0xB0
+TYPE_LOADER_V2_DATA = 0xB1
+TYPE_LOADER_V2_RETURN = 0xB2
 MAX_PAYLOAD = 255
 
 LOADER_API_VERSION = 1
-T28_LOADER_API_VERSION = 2
+LOADER_V2_API_VERSION = 2
 LOADER_API_BASE = 0x0A00
 LOADER_MAX_DATA = MAX_PAYLOAD - 2
 LOADER_LOAD_MIN = 0x4000
@@ -56,47 +56,47 @@ LOADER_STATUS_STRONG_CRC = 6
 LOADER_STATUS_BAD_CONFIG = 7
 LOADER_STATUS_WORKSPACE = 8
 
-T28_CAP_PROBE = 0x0001
-T28_CAP_CONFIG_VOTES = 0x0002
-T28_CAP_LOAD = 0x0004
-T28_CAP_READ = 0x0008
-T28_CAP_CRC = 0x0010
-T28_CAP_RUN = 0x0020
-T28_CAP_RESYNC = 0x0040
-T28_CAP_TRANSACTIONS = 0x0080
-T28_CAP_VERIFIED_BUFFER = 0x0100
-T28_CAP_STRONG_CRC = 0x0200
-T28_CAP_CALL_RETURN = 0x0400
-T28_CAP_RUN_REPLAY = 0x0800
-T28_CAP_UART_RESTORE = 0x1000
-T28_CAP_IDLE_RESYNC = 0x2000
-T28_CAPABILITIES = (
-    T28_CAP_PROBE
-    | T28_CAP_CONFIG_VOTES
-    | T28_CAP_LOAD
-    | T28_CAP_READ
-    | T28_CAP_CRC
-    | T28_CAP_RUN
-    | T28_CAP_RESYNC
-    | T28_CAP_TRANSACTIONS
-    | T28_CAP_VERIFIED_BUFFER
-    | T28_CAP_STRONG_CRC
-    | T28_CAP_CALL_RETURN
-    | T28_CAP_RUN_REPLAY
-    | T28_CAP_UART_RESTORE
-    | T28_CAP_IDLE_RESYNC
+LOADER_V2_CAP_PROBE = 0x0001
+LOADER_V2_CAP_CONFIG_VOTES = 0x0002
+LOADER_V2_CAP_LOAD = 0x0004
+LOADER_V2_CAP_READ = 0x0008
+LOADER_V2_CAP_CRC = 0x0010
+LOADER_V2_CAP_RUN = 0x0020
+LOADER_V2_CAP_RESYNC = 0x0040
+LOADER_V2_CAP_TRANSACTIONS = 0x0080
+LOADER_V2_CAP_VERIFIED_BUFFER = 0x0100
+LOADER_V2_CAP_STRONG_CRC = 0x0200
+LOADER_V2_CAP_CALL_RETURN = 0x0400
+LOADER_V2_CAP_RUN_REPLAY = 0x0800
+LOADER_V2_CAP_UART_RESTORE = 0x1000
+LOADER_V2_CAP_IDLE_RESYNC = 0x2000
+LOADER_V2_CAPABILITIES = (
+    LOADER_V2_CAP_PROBE
+    | LOADER_V2_CAP_CONFIG_VOTES
+    | LOADER_V2_CAP_LOAD
+    | LOADER_V2_CAP_READ
+    | LOADER_V2_CAP_CRC
+    | LOADER_V2_CAP_RUN
+    | LOADER_V2_CAP_RESYNC
+    | LOADER_V2_CAP_TRANSACTIONS
+    | LOADER_V2_CAP_VERIFIED_BUFFER
+    | LOADER_V2_CAP_STRONG_CRC
+    | LOADER_V2_CAP_CALL_RETURN
+    | LOADER_V2_CAP_RUN_REPLAY
+    | LOADER_V2_CAP_UART_RESTORE
+    | LOADER_V2_CAP_IDLE_RESYNC
 )
-T28_DEFAULT_VOTES = 7
-T28_MIN_VOTES = 1
-T28_MAX_VOTES = 15
-T28_MAX_DATA = 32
-T28_MAX_PROBE = 16
-T28_LOAD_MIN = 0x4000
-T28_LOAD_END = 0xC000
-T28_WORKSPACE_BASE = 0xC000
-T28_WORKSPACE_END = 0xD000
-T28_RUN_CALL = 0
-T28_RUN_JUMP = 1
+LOADER_V2_BOOT_VOTES = 7
+LOADER_V2_MIN_VOTES = 1
+LOADER_V2_MAX_VOTES = 15
+LOADER_V2_MAX_DATA = 32
+LOADER_V2_MAX_PROBE = 16
+LOADER_V2_LOAD_MIN = 0x4000
+LOADER_V2_LOAD_END = 0xC000
+LOADER_V2_WORKSPACE_BASE = 0xC000
+LOADER_V2_WORKSPACE_END = 0xD000
+LOADER_V2_RUN_CALL = 0
+LOADER_V2_RUN_JUMP = 1
 
 
 def encode_load_frame(address: int, data: bytes) -> bytes:
@@ -117,29 +117,29 @@ def encode_run_frame(address: int) -> bytes:
     return encode_frame(TYPE_RUN, address.to_bytes(2, "big"))
 
 
-def encode_t28_command(record_type: int, transaction: int, body: bytes = b"") -> bytes:
-    """Encode one T28 command with both outer CRC-8 and inner CRC-16.
+def encode_loader_v2_command(record_type: int, transaction: int, body: bytes = b"") -> bytes:
+    """Encode one loader API v2 command with outer CRC-8 and inner CRC-16.
 
     The inner checksum is calculated over type, final payload length, the
-    transaction byte, and the command body.  T28 recomputes it from its RAM
+    transaction byte, and the command body. The ROM recomputes it from its RAM
     parser buffer, so a correct UART CRC cannot conceal a failed RAM store.
     """
     if record_type not in (
-        TYPE_T28_PROBE,
-        TYPE_T28_CONFIG,
-        TYPE_T28_LOAD,
-        TYPE_T28_READ,
-        TYPE_T28_CRC,
-        TYPE_T28_RUN,
-        TYPE_T28_RESYNC,
+        TYPE_LOADER_V2_PROBE,
+        TYPE_LOADER_V2_CONFIG,
+        TYPE_LOADER_V2_LOAD,
+        TYPE_LOADER_V2_READ,
+        TYPE_LOADER_V2_CRC,
+        TYPE_LOADER_V2_RUN,
+        TYPE_LOADER_V2_RESYNC,
     ):
-        raise ValueError("record type is not a T28 command")
+        raise ValueError("record type is not a loader API v2 command")
     if not 0 <= transaction <= 0xFF:
         raise ValueError("transaction does not fit one byte")
     payload_without_crc = bytes((transaction,)) + body
     final_length = len(payload_without_crc) + 2
     if final_length > MAX_PAYLOAD:
-        raise ValueError("T28 command payload is too long")
+        raise ValueError("loader API v2 command payload is too long")
     protected = bytes((record_type, final_length)) + payload_without_crc
     strong_crc = crc16_ccitt_false(protected)
     return encode_frame(
@@ -148,71 +148,74 @@ def encode_t28_command(record_type: int, transaction: int, body: bytes = b"") ->
     )
 
 
-def validate_t28_command(frame: Frame) -> tuple[int, bytes]:
-    """Validate and split a decoded T28 command into transaction and body."""
+def validate_loader_v2_command(frame: Frame) -> tuple[int, bytes]:
+    """Validate and split a loader API v2 command into transaction and body."""
     if frame.record_type not in (
-        TYPE_T28_PROBE,
-        TYPE_T28_CONFIG,
-        TYPE_T28_LOAD,
-        TYPE_T28_READ,
-        TYPE_T28_CRC,
-        TYPE_T28_RUN,
-        TYPE_T28_RESYNC,
+        TYPE_LOADER_V2_PROBE,
+        TYPE_LOADER_V2_CONFIG,
+        TYPE_LOADER_V2_LOAD,
+        TYPE_LOADER_V2_READ,
+        TYPE_LOADER_V2_CRC,
+        TYPE_LOADER_V2_RUN,
+        TYPE_LOADER_V2_RESYNC,
     ):
-        raise ValueError("frame is not a T28 command")
+        raise ValueError("frame is not a loader API v2 command")
     if len(frame.payload) < 3:
-        raise ValueError("T28 command is shorter than transaction plus CRC-16")
+        raise ValueError(
+            "loader API v2 command is shorter than transaction plus CRC-16"
+        )
     payload_without_crc = frame.payload[:-2]
     received = int.from_bytes(frame.payload[-2:], "big")
     protected = bytes((frame.record_type, len(frame.payload))) + payload_without_crc
     if crc16_ccitt_false(protected) != received:
-        raise ValueError("T28 command inner CRC-16 differs")
+        raise ValueError("loader API v2 command inner CRC-16 differs")
     return payload_without_crc[0], payload_without_crc[1:]
 
 
-def encode_t28_load(transaction: int, address: int, data: bytes) -> bytes:
-    if not T28_LOAD_MIN <= address < T28_LOAD_END:
-        raise ValueError("T28 load address is outside bootstrap RAM")
-    if not data or len(data) > T28_MAX_DATA:
-        raise ValueError(f"T28 load data must contain 1..{T28_MAX_DATA} bytes")
-    if address + len(data) > T28_LOAD_END:
-        raise ValueError("T28 load crosses the bootstrap RAM boundary")
-    return encode_t28_command(
-        TYPE_T28_LOAD, transaction, address.to_bytes(2, "big") + data
+def encode_loader_v2_load(transaction: int, address: int, data: bytes) -> bytes:
+    if not LOADER_V2_LOAD_MIN <= address < LOADER_V2_LOAD_END:
+        raise ValueError("load address is outside loader RAM")
+    if not data or len(data) > LOADER_V2_MAX_DATA:
+        raise ValueError(f"load data must contain 1..{LOADER_V2_MAX_DATA} bytes")
+    if address + len(data) > LOADER_V2_LOAD_END:
+        raise ValueError("load crosses the loader RAM boundary")
+    return encode_loader_v2_command(
+        TYPE_LOADER_V2_LOAD, transaction, address.to_bytes(2, "big") + data
     )
 
 
-def encode_t28_range_command(
+def encode_loader_v2_range_command(
     record_type: int, transaction: int, address: int, count: int
 ) -> bytes:
-    if record_type not in (TYPE_T28_READ, TYPE_T28_CRC):
-        raise ValueError("T28 range command must be READ or CRC")
-    if not T28_LOAD_MIN <= address < T28_LOAD_END:
-        raise ValueError("T28 range address is outside bootstrap RAM")
-    if not 1 <= count <= T28_MAX_DATA or address + count > T28_LOAD_END:
-        raise ValueError(f"T28 range count must fit 1..{T28_MAX_DATA} bytes")
-    return encode_t28_command(
+    if record_type not in (TYPE_LOADER_V2_READ, TYPE_LOADER_V2_CRC):
+        raise ValueError("range command must be READ or CRC")
+    if not LOADER_V2_LOAD_MIN <= address < LOADER_V2_LOAD_END:
+        raise ValueError("range address is outside loader RAM")
+    if not 1 <= count <= LOADER_V2_MAX_DATA or address + count > LOADER_V2_LOAD_END:
+        raise ValueError(f"range count must fit 1..{LOADER_V2_MAX_DATA} bytes")
+    return encode_loader_v2_command(
         record_type, transaction, address.to_bytes(2, "big") + bytes((count,))
     )
 
 
-def encode_t28_run(
+def encode_loader_v2_run(
     transaction: int, address: int, mode: int, execution_id: int
 ) -> bytes:
-    """Encode a replay-safe T28 RUN command.
+    """Encode a replay-safe loader API v2 RUN command.
 
     ``execution_id`` is independent of the one-byte transport transaction.
-    T28 caches the most recently completed invocation and replays its ACK and
-    RETURN for an exact duplicate execution ID instead of executing it twice.
+    The ROM caches the most recently completed invocation and replays its ACK
+    and RETURN for an exact duplicate execution ID instead of executing it
+    twice.
     """
-    if not T28_LOAD_MIN <= address < T28_LOAD_END:
-        raise ValueError("T28 run address is outside bootstrap RAM")
-    if mode not in (T28_RUN_CALL, T28_RUN_JUMP):
-        raise ValueError("T28 run mode is invalid")
+    if not LOADER_V2_LOAD_MIN <= address < LOADER_V2_LOAD_END:
+        raise ValueError("run address is outside loader RAM")
+    if mode not in (LOADER_V2_RUN_CALL, LOADER_V2_RUN_JUMP):
+        raise ValueError("run mode is invalid")
     if not 0 <= execution_id <= 0xFFFFFFFF:
-        raise ValueError("T28 execution ID does not fit 32 bits")
-    return encode_t28_command(
-        TYPE_T28_RUN,
+        raise ValueError("execution ID does not fit 32 bits")
+    return encode_loader_v2_command(
+        TYPE_LOADER_V2_RUN,
         transaction,
         address.to_bytes(2, "big")
         + bytes((mode,))

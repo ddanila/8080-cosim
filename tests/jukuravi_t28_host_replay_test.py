@@ -89,7 +89,7 @@ def main() -> int:
                 frame, next_cursor = original_wait(
                     record_type, cursor, timeout, description
                 )
-                if record_type == protocol.TYPE_T28_RETURN and not dropped:
+                if record_type == protocol.TYPE_LOADER_V2_RETURN and not dropped:
                     dropped = True
                     raise host.LoaderResponseTimeout(
                         next_cursor, "injected lost first RETURN"
