@@ -78,6 +78,8 @@ def main() -> int:
                     "--loader-timeout", "30",
                     "--loader-guard-ms", "0",
                     "--loader-votes", "3",
+                    "--loader-benchmark-passes", "3",
+                    "--no-loader-readback",
                     "--expect-rom-version", f"{firmware.ROM_VERSION:02X}",
                     "--expect-crc16", f"{int(metadata['checksum']):04X}",
                     "--load", str(payload),
@@ -127,6 +129,28 @@ def main() -> int:
             os.close(master)
             os.close(slave)
 
+        first_summary = json.loads(next(first_logs.glob("*.json")).read_text())
+        benchmark = first_summary.get("loader", {}).get("benchmark")
+        if (
+            not isinstance(benchmark, dict)
+            or benchmark.get("requested_passes") != 3
+            or benchmark.get("completed_passes") != 3
+            or benchmark.get("verification") != "crc16"
+            or benchmark.get("load_retries") != 0
+            or benchmark.get("verify_retries") != 0
+            or benchmark.get("parser_store_retries") != 0
+            or benchmark.get("verified_payload_bytes") != 87
+            or benchmark.get("payload_bytes_per_second", 0) <= 0
+            or len(benchmark.get("passes", [])) != 3
+            or any(
+                item.get("load_attempts") != 1
+                or item.get("verify_attempts") != 1
+                or not isinstance(item.get("seconds"), (int, float))
+                for item in benchmark.get("passes", [])
+            )
+        ):
+            fail(f"repeated LOAD+CRC benchmark evidence differs: {benchmark!r}")
+
         summary = json.loads(next(attach_logs.glob("*.json")).read_text())
         loader = summary.get("loader")
         if not isinstance(loader, dict) or loader.get("attached") is not True:
@@ -166,7 +190,8 @@ def main() -> int:
 
     print(
         "JUKURAVI-T28-ATTACH: PASS "
-        "(idle default; RESYNC; exact resume; resident CALL/RET; no RESET)"
+        "(repeated LOAD+CRC timing; idle default; RESYNC; exact resume; "
+        "resident CALL/RET; no RESET)"
     )
     return 0
 

@@ -139,6 +139,31 @@ the measured working rate avoids a remotely selected rate that could strand
 the monitor. Experimental high-speed protocols belong in replaceable RAM code;
 a normal RET restores the bootstrap rate.
 
+The direct CP2102 -> MAX3232 -> X3 assembly used on CS00015 has no intermediate
+baud converter: invoke the host with explicit `--baud 2400`. The CLI's 115200
+default exists for the earlier Nano transport and decodes the 2400-baud request
+tokens as zero bytes on this direct assembly.
+
+T31 also permits transport benchmarking without a ROM rebuild. This example
+configures the resident monitor once, then repeats a 29-byte idempotent LOAD and
+an independent RAM CRC ten times. The default three bounded attempts remain
+available for each command, while the JSON exposes every attempt and retry:
+
+```sh
+python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 --baud 2400 \
+  --attach-loader --load spinoffs/jukuravi/firmware/return-4000.bin \
+  --load-address 4000 --load-only --loader-votes 1 --loader-guard-ms 6 \
+  --loader-benchmark-passes 10 --no-loader-readback \
+  --log-dir jukuravi-logs-speed-v1-g6
+```
+
+`--loader-benchmark-passes` requires `--load-only`, rejects `--loader-resume`,
+and does not execute the fixture. Each JSON pass records LOAD and verification
+attempts and elapsed time. The aggregate records retry counts, parser-buffer
+store retries, verified payload bytes, and effective LOAD-plus-CRC payload rate. Use
+`--loader-retries 1` when measuring strictly one command attempt; larger values
+measure the intended host-controlled whole-command recovery policy.
+
 ## Last-frontier RESET cases
 
 No ROM monitor can regain execution while the 8080 is stuck in arbitrary code.

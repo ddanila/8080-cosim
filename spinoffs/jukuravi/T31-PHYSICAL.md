@@ -50,3 +50,47 @@ This proves the required operating model on real hardware: a host can attach
 without reset, upload arbitrary 8080 bytes, execute a cooperative snippet by
 CALL, receive A and a RAM result block after ordinary RET, and keep the ROM
 monitor resident for subsequent work.
+
+## Host-controlled transport speed experiment
+
+The same T31 burn was benchmarked without RESET or a ROM change. The host
+configured the vote count once per session and repeatedly wrote the 29-byte
+`return-4000.bin` fixture to `4000h`. Every pass used an idempotent LOAD followed
+by a separate ROM CRC over the written RAM. Three bounded whole-command attempts
+were available, but none beyond the first was needed.
+
+| Votes | Guard | Passes | Result | Retries | Mean LOAD + RAM CRC | Effective payload |
+|---:|---:|---:|---:|---:|---:|---:|
+| 5 | 12 ms | 5 | 5/5 | 0 | 45.299 s | 0.640 B/s |
+| 3 | 8 ms | 5 | 5/5 | 0 | 22.465 s | 1.291 B/s |
+| 1 | 8 ms | 10 | 10/10 | 0 | 7.628 s | 3.802 B/s |
+| 1 | 6 ms | 10 | 10/10 | 0 | 6.847 s | 4.235 B/s |
+
+All 30 passes also had zero parser-buffer store retries and zero handshake
+mismatches. In particular, all 20 single-vote passes succeeded on their first
+LOAD and first CRC command. Single-vote/6-ms was 6.62 times faster than the
+first 5-vote/12-ms setting in this experiment.
+
+This is evidence that majority voting is unnecessary on the presently assembled
+CS00015 link under the tested conditions, not proof that it can never fail.
+CRC-8 framing, the command CRC-16 over the parser buffer, the LOAD result's data
+CRC, and an independent CRC over target RAM retain detection. LOAD is idempotent,
+so the simpler operational policy is to let the host resend the complete command
+when any layer rejects it or times out. Exact READ remains available for a final
+high-assurance comparison.
+
+The conservative 7-vote/20-ms defaults remain unchanged pending a larger and
+more varied sample. The current fast experimental setting is 1 vote / 6 ms;
+whole-command retry counts must remain visible in logs. Raw evidence:
+
+- `jukuravi-logs-speed-v5-g12/20260803T152950.248602Z.*`
+- `jukuravi-logs-speed-v3-g8/20260803T153445.958908Z.*`
+- `jukuravi-logs-speed-v1-g8/20260803T153744.281550Z.*`
+- `jukuravi-logs-speed-v1-g6/20260803T154002.040501Z.*`
+
+Two earlier `v5-g12` sessions at `15:21:25Z` and `15:28:08Z` are invalid speed
+samples: the direct CP2102 was accidentally opened at the host CLI's 115200-baud
+default instead of 2400. Their RX logs contain only `00`, they transmitted zero
+bytes, and they never reached RESYNC, CONFIG, or LOAD. They therefore say
+nothing about five-vote or 12-ms reliability and are retained as diagnostic
+evidence for always specifying `--baud 2400` on this direct adapter chain.

@@ -382,6 +382,7 @@ class HostSession:
         result_length: int = 0,
         control_read_address: int | None = None,
         control_read_length: int = 0,
+        loader_benchmark_passes: int = 1,
     ) -> None:
         self.fd = fd
         self.logs = logs
@@ -401,6 +402,7 @@ class HostSession:
         self.result_length = result_length
         self.control_read_address = control_read_address
         self.control_read_length = control_read_length
+        self.loader_benchmark_passes = loader_benchmark_passes
         self.nano_dtr_sequence_completed = False
         self.nano_dtr_sequences_completed = 0
         self.heartbeat_reset_retries_requested = 0
@@ -1103,121 +1105,196 @@ class HostSession:
         chunks = loader["chunks"]
         assert isinstance(chunks, list)
 
-        for index, offset in enumerate(range(0, len(data), chunk_size)):
-            chunk = data[offset : offset + chunk_size]
-            chunk_address = address + offset
-            expected_crc = protocol.crc16_ccitt_false(chunk)
-            evidence: dict[str, object] = {
-                "index": index,
-                "address": f"0x{chunk_address:04X}",
-                "bytes": len(chunk),
-                "crc16": f"{expected_crc:04X}",
-                "skipped": False,
-                "verified": False,
+        benchmark_passes: list[dict[str, object]] = []
+        if self.loader_benchmark_passes > 1:
+            loader["benchmark"] = {
+                "requested_passes": self.loader_benchmark_passes,
+                "completed_passes": 0,
+                "verification": "readback" if self.loader_readback else "crc16",
+                "passes": benchmark_passes,
             }
 
-            if self.loader_resume:
-                read_tx = next_transaction()
-                read_detail, existing, cursor, read_attempts = self._t28_data_command(
-                    protocol.TYPE_T28_READ,
-                    read_tx,
-                    chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
-                    cursor,
-                    timeout,
-                    f"READ resume chunk {index}",
-                )
-                if read_detail["status"] != protocol.LOADER_STATUS_OK:
-                    raise SessionError(
-                        f"T28 resume READ failed: {loader_status_name(read_detail['status'])}"
+        for pass_index in range(self.loader_benchmark_passes):
+            pass_started = time.monotonic()
+            pass_load_attempts = 0
+            pass_verify_attempts = 0
+            for index, offset in enumerate(range(0, len(data), chunk_size)):
+                chunk_started = time.monotonic()
+                chunk = data[offset : offset + chunk_size]
+                chunk_address = address + offset
+                expected_crc = protocol.crc16_ccitt_false(chunk)
+                evidence: dict[str, object] = {
+                    "index": index,
+                    "pass": pass_index + 1,
+                    "address": f"0x{chunk_address:04X}",
+                    "bytes": len(chunk),
+                    "crc16": f"{expected_crc:04X}",
+                    "skipped": False,
+                    "verified": False,
+                }
+
+                if self.loader_resume:
+                    read_tx = next_transaction()
+                    read_detail, existing, cursor, read_attempts = self._t28_data_command(
+                        protocol.TYPE_T28_READ,
+                        read_tx,
+                        chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
+                        cursor,
+                        timeout,
+                        f"READ resume pass {pass_index + 1} chunk {index}",
                     )
-                evidence["resume_read_attempts"] = read_attempts
-                if existing == chunk:
-                    evidence["skipped"] = True
-                    evidence["verified"] = True
-                    evidence["status"] = "already_present"
-                    chunks.append(evidence)
-                    continue
+                    if read_detail["status"] != protocol.LOADER_STATUS_OK:
+                        raise SessionError(
+                            "T28 resume READ failed: "
+                            f"{loader_status_name(read_detail['status'])}"
+                        )
+                    evidence["resume_read_attempts"] = read_attempts
+                    if existing == chunk:
+                        evidence["skipped"] = True
+                        evidence["verified"] = True
+                        evidence["status"] = "already_present"
+                        evidence["seconds"] = round(time.monotonic() - chunk_started, 6)
+                        chunks.append(evidence)
+                        continue
 
-            load_tx = next_transaction()
-            load_command = protocol.encode_t28_load(load_tx, chunk_address, chunk)
-            response, cursor, load_attempts = self._t28_transact(
-                load_command,
-                load_tx,
-                protocol.TYPE_T28_RESULT,
-                cursor,
-                timeout,
-                f"LOAD chunk {index}",
-            )
-            result = decode_t28_result(response)
-            evidence.update(
-                transaction=load_tx,
-                attempts=load_attempts,
-                status=loader_status_name(result["status"]),
-                store_retries=result["store_retries"],
-            )
-            if result["status"] != protocol.LOADER_STATUS_OK:
-                chunks.append(evidence)
-                raise SessionError(
-                    f"T28 LOAD chunk {index} failed: "
-                    f"{loader_status_name(result['status'])}; "
-                    f"decoded command=0x{result['command']:02X} "
-                    f"length={result['decoded_length']} "
-                    f"address=0x{result['address']:04X} count={result['count']} "
-                    f"buffer_retries={result['store_retries']}"
-                )
-            if (
-                result["command"] != protocol.TYPE_T28_LOAD
-                or result["address"] != chunk_address
-                or result["count"] != len(chunk)
-                or result["crc16"] != expected_crc
-            ):
-                chunks.append(evidence)
-                raise SessionError(f"T28 LOAD chunk {index} detailed result differs")
-
-            if self.loader_readback:
-                read_tx = next_transaction()
-                read_detail, readback, cursor, read_attempts = self._t28_data_command(
-                    protocol.TYPE_T28_READ,
-                    read_tx,
-                    chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
+                load_tx = next_transaction()
+                load_command = protocol.encode_t28_load(load_tx, chunk_address, chunk)
+                response, cursor, load_attempts = self._t28_transact(
+                    load_command,
+                    load_tx,
+                    protocol.TYPE_T28_RESULT,
                     cursor,
                     timeout,
-                    f"READ verify chunk {index}",
+                    f"LOAD pass {pass_index + 1} chunk {index}",
                 )
-                evidence["readback_attempts"] = read_attempts
-                if read_detail["status"] != protocol.LOADER_STATUS_OK or readback != chunk:
+                result = decode_t28_result(response)
+                pass_load_attempts += load_attempts
+                evidence.update(
+                    transaction=load_tx,
+                    attempts=load_attempts,
+                    status=loader_status_name(result["status"]),
+                    store_retries=result["store_retries"],
+                )
+                if result["status"] != protocol.LOADER_STATUS_OK:
+                    evidence["seconds"] = round(time.monotonic() - chunk_started, 6)
                     chunks.append(evidence)
                     raise SessionError(
-                        f"T28 READ verification differs for chunk {index}: "
-                        f"status={loader_status_name(read_detail['status'])} "
-                        f"received={readback.hex().upper()}"
+                        f"T28 LOAD pass {pass_index + 1} chunk {index} failed: "
+                        f"{loader_status_name(result['status'])}; "
+                        f"decoded command=0x{result['command']:02X} "
+                        f"length={result['decoded_length']} "
+                        f"address=0x{result['address']:04X} count={result['count']} "
+                        f"buffer_retries={result['store_retries']}"
                     )
-                evidence["verified"] = True
-            else:
-                crc_tx = next_transaction()
-                crc_detail, cursor, crc_attempts = self._t28_result_command(
-                    protocol.TYPE_T28_CRC,
-                    crc_tx,
-                    chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
-                    cursor,
-                    timeout,
-                    f"CRC verify chunk {index}",
-                )
-                evidence["crc_attempts"] = crc_attempts
                 if (
-                    crc_detail["status"] != protocol.LOADER_STATUS_OK
-                    or crc_detail["address"] != chunk_address
-                    or crc_detail["count"] != len(chunk)
-                    or crc_detail["crc16"] != expected_crc
+                    result["command"] != protocol.TYPE_T28_LOAD
+                    or result["address"] != chunk_address
+                    or result["count"] != len(chunk)
+                    or result["crc16"] != expected_crc
                 ):
+                    evidence["seconds"] = round(time.monotonic() - chunk_started, 6)
                     chunks.append(evidence)
                     raise SessionError(
-                        f"T28 CRC verification differs for chunk {index}: "
-                        f"status={loader_status_name(crc_detail['status'])} "
-                        f"crc={crc_detail['crc16']:04X}"
+                        f"T28 LOAD pass {pass_index + 1} chunk {index} "
+                        "detailed result differs"
                     )
-                evidence["verified"] = True
-            chunks.append(evidence)
+
+                if self.loader_readback:
+                    read_tx = next_transaction()
+                    read_detail, readback, cursor, read_attempts = self._t28_data_command(
+                        protocol.TYPE_T28_READ,
+                        read_tx,
+                        chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
+                        cursor,
+                        timeout,
+                        f"READ verify pass {pass_index + 1} chunk {index}",
+                    )
+                    pass_verify_attempts += read_attempts
+                    evidence["readback_attempts"] = read_attempts
+                    if (
+                        read_detail["status"] != protocol.LOADER_STATUS_OK
+                        or readback != chunk
+                    ):
+                        evidence["seconds"] = round(
+                            time.monotonic() - chunk_started, 6
+                        )
+                        chunks.append(evidence)
+                        raise SessionError(
+                            "T28 READ verification differs for "
+                            f"pass {pass_index + 1} chunk {index}: "
+                            f"status={loader_status_name(read_detail['status'])} "
+                            f"received={readback.hex().upper()}"
+                        )
+                    evidence["verified"] = True
+                else:
+                    crc_tx = next_transaction()
+                    crc_detail, cursor, crc_attempts = self._t28_result_command(
+                        protocol.TYPE_T28_CRC,
+                        crc_tx,
+                        chunk_address.to_bytes(2, "big") + bytes((len(chunk),)),
+                        cursor,
+                        timeout,
+                        f"CRC verify pass {pass_index + 1} chunk {index}",
+                    )
+                    pass_verify_attempts += crc_attempts
+                    evidence["crc_attempts"] = crc_attempts
+                    if (
+                        crc_detail["status"] != protocol.LOADER_STATUS_OK
+                        or crc_detail["address"] != chunk_address
+                        or crc_detail["count"] != len(chunk)
+                        or crc_detail["crc16"] != expected_crc
+                    ):
+                        evidence["seconds"] = round(
+                            time.monotonic() - chunk_started, 6
+                        )
+                        chunks.append(evidence)
+                        raise SessionError(
+                            "T28 CRC verification differs for "
+                            f"pass {pass_index + 1} chunk {index}: "
+                            f"status={loader_status_name(crc_detail['status'])} "
+                            f"crc={crc_detail['crc16']:04X}"
+                        )
+                    evidence["verified"] = True
+                evidence["seconds"] = round(time.monotonic() - chunk_started, 6)
+                chunks.append(evidence)
+
+            if self.loader_benchmark_passes > 1:
+                benchmark_passes.append(
+                    {
+                        "pass": pass_index + 1,
+                        "seconds": round(time.monotonic() - pass_started, 6),
+                        "load_attempts": pass_load_attempts,
+                        "verify_attempts": pass_verify_attempts,
+                    }
+                )
+                benchmark = loader["benchmark"]
+                assert isinstance(benchmark, dict)
+                benchmark["completed_passes"] = pass_index + 1
+
+        if self.loader_benchmark_passes > 1:
+            benchmark = loader["benchmark"]
+            assert isinstance(benchmark, dict)
+            elapsed = sum(float(item["seconds"]) for item in benchmark_passes)
+            load_attempts = sum(
+                int(item["load_attempts"]) for item in benchmark_passes
+            )
+            verify_attempts = sum(
+                int(item["verify_attempts"]) for item in benchmark_passes
+            )
+            store_retries = sum(int(item.get("store_retries", 0)) for item in chunks)
+            verified_bytes = len(data) * self.loader_benchmark_passes
+            benchmark.update(
+                total_seconds=round(elapsed, 6),
+                mean_seconds=round(elapsed / self.loader_benchmark_passes, 6),
+                payload_bytes_per_pass=len(data),
+                verified_payload_bytes=verified_bytes,
+                payload_bytes_per_second=round(verified_bytes / elapsed, 6),
+                load_attempts=load_attempts,
+                load_retries=load_attempts - len(chunks),
+                verify_attempts=verify_attempts,
+                verify_retries=verify_attempts - len(chunks),
+                parser_store_retries=store_retries,
+            )
 
         loader["status"] = "loaded" if data else "resident_ready"
         if run_address is not None:
@@ -2096,6 +2173,12 @@ def make_parser() -> argparse.ArgumentParser:
         help="bounded attempts per idempotent loader transaction (default: 3)",
     )
     parser.add_argument(
+        "--loader-benchmark-passes",
+        type=parse_positive_int,
+        default=1,
+        help="repeat LOAD and verification N times in one configured session",
+    )
+    parser.add_argument(
         "--loader-votes",
         type=parse_positive_int,
         default=protocol.T28_DEFAULT_VOTES,
@@ -2157,6 +2240,15 @@ def main() -> int:
         return 2
     if args.loader_resume and args.load is None:
         print("JUKURAVI: --loader-resume requires --load", file=sys.stderr)
+        return 2
+    if args.loader_benchmark_passes > 1 and (
+        args.load is None or not args.load_only or args.loader_resume
+    ):
+        print(
+            "JUKURAVI: --loader-benchmark-passes requires --load and --load-only "
+            "without --loader-resume",
+            file=sys.stderr,
+        )
         return 2
     if args.attach_loader and args.load is None and not (
         args.probe_loader or args.run_address is not None
@@ -2325,6 +2417,7 @@ def main() -> int:
         0 if args.result_length is None else args.result_length,
         args.read_address,
         0 if args.read_length is None else args.read_length,
+        args.loader_benchmark_passes,
     )
     completion = None
     if upload_data is not None:
