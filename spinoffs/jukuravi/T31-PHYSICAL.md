@@ -94,3 +94,35 @@ default instead of 2400. Their RX logs contain only `00`, they transmitted zero
 bytes, and they never reached RESYNC, CONFIG, or LOAD. They therefore say
 nothing about five-vote or 12-ms reliability and are retained as diagnostic
 evidence for always specifying `--baud 2400` on this direct adapter chain.
+
+## Uploaded speaker demo
+
+T31's resident loader was also used for an audible application experiment,
+without RESET or another ROM burn. The first 118-byte iteration played the
+correct twelve pitches but compressed the rests into uniform 60 ms gaps. It
+uploaded in four first-attempt LOAD+CRC chunks, returned `A=0Ch`, left
+`SMOK\0` at `4100h`, and was audibly recognized on CS00015. Evidence:
+`jukuravi-logs-smoke-real/20260803T154837.479128Z.*`.
+
+The corrected 134-byte version follows the published four-bar intro at 112 BPM.
+It expresses the phrase as exactly 32 eighth-note units (267.857 ms ideal),
+including the notated rests, direct D-flat-to-C transition, and sustained final
+G. Cosim measured the first twelve note onsets at nominal milliseconds:
+
+```text
+0.0  535.8  1071.6  1875.3  2411.1  2946.9
+3214.9  4286.4  4822.2  5358.1  6161.7  6697.6
+```
+
+On CS00015, the corrected image uploaded as four 32-byte chunks plus six bytes.
+Every LOAD and independent RAM CRC succeeded on its first attempt at one vote /
+6 ms guard, with zero parser-store retries and zero handshake mismatches. The
+five LOAD+CRC operations took 32.758 seconds. Execution returned `A=0Ch`, RAM
+contained `53 4D 4F 4B 00` (`SMOK\0`), and the T31 monitor remained active. The
+operator confirmed the revised timing sounded better. Evidence:
+`jukuravi-logs-smoke-rhythm-real/20260803T172545.786878Z.*`.
+
+Source and committed payload:
+
+- `spinoffs/jukuravi/firmware/smoke-4000.asm`
+- `spinoffs/jukuravi/firmware/smoke-4000.bin`

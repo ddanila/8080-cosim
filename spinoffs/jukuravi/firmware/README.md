@@ -820,6 +820,33 @@ returned A, and returned RAM under the same boundary plus the CS00015 D55
 fault. Programmer verification is the loader-ROM integrity evidence for this
 workaround image.
 
+### Uploaded speaker demo
+
+`smoke-4000.bin` is a deliberately playful but complete T31 application proof.
+Its reproducible NASM source is `smoke-4000.asm`; both are 134 bytes loaded at
+`4000h`. It programs D57 channel 1 for twelve successive square-wave pitches,
+leaving the independent channel-0 UART clock to the ROM's return restoration.
+The pitch sequence is G4, B-flat4, C5 / G4, B-flat4, D-flat5, C5 / G4,
+B-flat4, C5, B-flat4, G4.
+
+Timing follows the published intro notation: 4/4, quarter-note = 112, with the
+complete phrase represented as exactly 32 eighth-note units. A 22,321-iteration
+register-only delay is nominally 267.852 ms at the 2 MHz CPU clock, versus the
+ideal 267.857 ms eighth note. Per-note table entries independently select sound
+and silence units, including the direct D-flat-to-C transition and five-unit
+final G. Each completed note writes its remaining count to `4104h`.
+
+After all twelve notes, the snippet writes `SMOK` to `4100h..4103h`, leaves zero
+at `4104h`, returns `A=0Ch`, and executes an ordinary `RET`. T31 then restores
+its serial state and remains available. `tests/jukuravi_t28_smoke_test.py`
+uploads the committed binary through the real cosim PTY, requires five
+first-attempt CRC-verified chunks and the completion contract, checks all 60
+speaker-PIT writes, and bounds every simulated note-onset interval against the
+112-BPM grid. The assembly comparison is part of `sync/jukuravi_t28_check.sh`.
+
+The timing reference is the published Deep Purple guitar TAB:
+<https://www.deeppurple50.com/sites/g/files/g2000016886/files/2024-01/Smoke%20on%20the%20Water%20-%20Guitar%20TAB%5B21%5D.pdf>.
+
 ## Stage D2 checkpoint: chunked RAM loader
 
 `diag-d2-loader.bin` is the cumulative version-9 image. It preserves every D0
