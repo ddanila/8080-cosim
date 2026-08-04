@@ -67,6 +67,12 @@ def main() -> int:
         require(len(data) == 16384, f"{relative} is not 16 KiB")
         candidates.append((Path(relative).name, digest(data), mismatch_count(low, data[:8192]), mismatch_count(high, data[8192:]), data == archival))
     require(sum(exact for *_, exact in candidates) == 1, "archival pair lacks one unique candidate match")
+    service_record = (ROOT / "docs/cs00015-service-record.md").read_text()
+    require(
+        "Repeated reads established that three bytes in the fitted D15 EPROM differ"
+        in service_record,
+        "CS00015 D15 repeat-read finding is missing from the service record",
+    )
 
     lines = [
         "# D15/D16 firmware lineage", "",
@@ -118,7 +124,10 @@ def main() -> int:
         "  family; explaining those non-adopted variants is optional historical work.",
         "- Future physical EPROM reads or original `.087/.041` programming media",
         "  should be preserved if found, but they are not replica, milestone, or",
-        "  release gates.", "",
+        "  release gates.",
+        "- The Arvutimuuseum `CS00015` service work found three differing bytes in its",
+        "  fitted D15.  This remains machine-specific evidence pending retention of the",
+        "  raw captures and exact offset/value diff; see `docs/cs00015-service-record.md`.", "",
     ])
     REPORT.write_text("\n".join(lines))
     print(f"Wrote {REPORT.relative_to(ROOT)}")
