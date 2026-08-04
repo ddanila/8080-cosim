@@ -64,6 +64,12 @@ Exact image, controls, raw logs, and next
 discriminators are in
 [`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
 
+After this substitution test, CS00015 was deliberately left with the donor D6
+`.038` from the Danila Sukharev machine fitted; the original CS00015 D6 will
+not be reinserted because repeated extraction would add mechanical damage
+risk. Original CS00015 D8 `.039` was restored. This records component
+provenance only and must not be read as a diagnosis of the original D6.
+
 ## Current CS00015 fault summary
 
 | Location | Finding | Confidence / next discriminator |

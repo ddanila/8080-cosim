@@ -114,6 +114,13 @@ and D8 packages are therefore excluded as unique causes. This does not exclude
 their socket contacts, surrounding conductors, shared pull-ups, or the timing
 of the selection topology itself.
 
+Final fitted configuration: CS00015 retains the donor D6 `.038` from the
+Danila Sukharev processor board, while its original D8 `.039` is restored. The
+original CS00015 D6 is intentionally not reinserted because another extraction
+and insertion would add avoidable mechanical risk. Retaining the donor part is
+a preservation choice, not evidence that the original D6 was faulty: both
+packages produced the same exact boot and `01h` result.
+
 Evidence:
 
 - `sessions/t32-d8swap-boot/` and `sessions/t32-d8swap-5a00/`
