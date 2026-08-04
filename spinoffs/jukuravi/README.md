@@ -70,6 +70,23 @@ majority can then be selected with `--loader-votes 3`, `5`, or `7`. The host
 records timestamp-matched raw RX, raw TX, and decoded JSON for every session.
 Run `python3 spinoffs/jukuravi/host.py --help` for the complete parameter set.
 
+### Session logs
+
+Every run writes one `<timestamp>.json` plus matching `.rx.bin` and `.tx.bin`
+into a per-run directory under [`sessions/`](sessions). `--log-dir` names that
+directory; it defaults to `sessions/default`, resolved relative to `host.py`
+rather than the working directory, so runs launched from the repository root do
+not scatter log directories there. Use a descriptive name per experiment:
+
+```sh
+python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
+  --attach-loader --probe-loader \
+  --log-dir spinoffs/jukuravi/sessions/t32-probe
+```
+
+The runs cited as physical evidence in [`T31-PHYSICAL.md`](T31-PHYSICAL.md) are
+committed, so those directories must not be pruned.
+
 The optional Nano bridge has a 115200-baud USB side, so it requires explicit
 `--baud 115200`; its Juku-side `SoftwareSerial` rate must match the installed
 ROM. Its DTR/reset and liveness features are separate from the proven direct

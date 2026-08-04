@@ -151,7 +151,7 @@ python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
   --attach-loader --load spinoffs/jukuravi/firmware/return-4000.bin \
   --load-address 4000 --load-only \
   --loader-benchmark-passes 10 --no-loader-readback \
-  --log-dir jukuravi-logs-speed-v1-g6
+  --log-dir spinoffs/jukuravi/sessions/speed-v1-g6
 ```
 
 `--loader-benchmark-passes` requires `--load-only`, rejects `--loader-resume`,

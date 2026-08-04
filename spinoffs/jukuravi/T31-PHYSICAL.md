@@ -29,7 +29,7 @@ zero mismatches, and reported:
 - loader API v2: READY at `0A00h`, maximum chunk 32 bytes
 - loader API v2 control PROBE: complete, RAM unchanged
 
-Evidence: `jukuravi-logs-t31-real/20260803T150916.115911Z.json`.
+Evidence: `sessions/t31-real/20260803T150916.115911Z.json`.
 
 ## Resident attach, upload, and CALL/RET
 
@@ -44,7 +44,7 @@ one transaction, obtained exact readback, called it, and received:
 - result read attempts: 1
 - final host status: `ok`
 
-Evidence: `jukuravi-logs-t31-call/20260803T151046.564402Z.json`.
+Evidence: `sessions/t31-call/20260803T151046.564402Z.json`.
 
 This proves the required operating model on real hardware: a host can attach
 without reset, upload arbitrary 8080 bytes, execute a cooperative snippet by
@@ -100,18 +100,18 @@ in [`../../docs/phi2ttl-d29-clock-route.md`](../../docs/phi2ttl-d29-clock-route.
 
 Physical evidence:
 
-- `jukuravi-logs-a12-low-real/20260803T193022.823717Z.*`
-- `jukuravi-logs-a12-high-real/20260803T193145.403259Z.*`
-- `jukuravi-logs-a12-upper-real/20260803T200107.338948Z.*`
-- `jukuravi-logs-a12-exec-real/20260803T193450.936728Z.*`
-- `jukuravi-logs-a12-exec-repeat-real/20260803T200253.089207Z.*`
-- `jukuravi-logs-a12-reenter-real/20260803T202000.424068Z.*`
-- `jukuravi-logs-a12-reenter-attach-real/20260803T202045.927340Z.*`
-- `jukuravi-logs-a12-d2swap-exec-real/20260803T204013.876817Z.*`
-- `jukuravi-logs-a12-d2swap-exec-retry-real/20260803T204159.038041Z.*`
+- `sessions/a12-low-real/20260803T193022.823717Z.*`
+- `sessions/a12-high-real/20260803T193145.403259Z.*`
+- `sessions/a12-upper-real/20260803T200107.338948Z.*`
+- `sessions/a12-exec-real/20260803T193450.936728Z.*`
+- `sessions/a12-exec-repeat-real/20260803T200253.089207Z.*`
+- `sessions/a12-reenter-real/20260803T202000.424068Z.*`
+- `sessions/a12-reenter-attach-real/20260803T202045.927340Z.*`
+- `sessions/a12-d2swap-exec-real/20260803T204013.876817Z.*`
+- `sessions/a12-d2swap-exec-retry-real/20260803T204159.038041Z.*`
 
 The earlier aggregate attempt and failed attach/retry captures are retained as
-raw chronology under the other `jukuravi-logs-a12-*` directories. They are not
+raw chronology under the other `sessions/a12-*` directories. They are not
 used as positive evidence. Reproducible sources, exact payloads, and the cosim
 regression are `firmware/rom-a12-4000.*`, `firmware/rom-read-*`,
 `firmware/rom-exec-106f*`, `firmware/rom-reenter-4000.*`, and
@@ -149,10 +149,10 @@ The host now defaults to the proven 1-vote / 6 ms setting. CRC-protected
 whole-command retries remain enabled, while `--loader-guard-ms` and
 `--loader-votes` can add margin for another physical link. Raw evidence:
 
-- `jukuravi-logs-speed-v5-g12/20260803T152950.248602Z.*`
-- `jukuravi-logs-speed-v3-g8/20260803T153445.958908Z.*`
-- `jukuravi-logs-speed-v1-g8/20260803T153744.281550Z.*`
-- `jukuravi-logs-speed-v1-g6/20260803T154002.040501Z.*`
+- `sessions/speed-v5-g12/20260803T152950.248602Z.*`
+- `sessions/speed-v3-g8/20260803T153445.958908Z.*`
+- `sessions/speed-v1-g8/20260803T153744.281550Z.*`
+- `sessions/speed-v1-g6/20260803T154002.040501Z.*`
 
 ## Uploaded speaker demo
 
@@ -172,7 +172,7 @@ Every LOAD and independent RAM CRC succeeded on its first attempt at one vote /
 five LOAD+CRC operations took 32.758 seconds. Execution returned `A=0Ch`, RAM
 contained `53 4D 4F 4B 00` (`SMOK\0`), and the T31 monitor remained active. The
 operator confirmed the revised timing sounded better. Evidence:
-`jukuravi-logs-smoke-rhythm-real/20260803T172545.786878Z.*`.
+`sessions/smoke-rhythm-real/20260803T172545.786878Z.*`.
 
 Source and committed payload:
 

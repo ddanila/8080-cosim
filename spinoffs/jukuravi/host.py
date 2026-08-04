@@ -35,6 +35,9 @@ DTR_RELEASE_SECONDS = 0.05
 LOADER_SYMBOL_REQUESTS = (0xC6, 0xC7)
 DEFAULT_LOADER_VOTES = 1
 SOLICITED_RESPONSE_GUARD_SECONDS = 0.006
+# Anchored to this file, not the CWD: host.py is documented as being run from the
+# repository root, and a relative default scattered run logs there.
+DEFAULT_LOG_DIR = Path(__file__).resolve().parent / "sessions" / "default"
 
 
 class SessionError(RuntimeError):
@@ -2115,7 +2118,7 @@ def make_parser() -> argparse.ArgumentParser:
         default=DEFAULT_RESET_RETRIES,
         help="extra DTR resets after a missing banner (real --port sessions only)",
     )
-    parser.add_argument("--log-dir", type=Path, default=Path("jukuravi-logs"))
+    parser.add_argument("--log-dir", type=Path, default=DEFAULT_LOG_DIR)
     parser.add_argument("--expect-rom-version", type=parse_hex8)
     parser.add_argument("--expect-crc16", type=parse_hex16)
     parser.add_argument("--load", type=Path, help="binary file to upload after survey")
