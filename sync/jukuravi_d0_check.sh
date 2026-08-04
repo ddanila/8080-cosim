@@ -115,6 +115,11 @@ cosim_test() {
   python3 "tests/$1" "$tmp/trace" "spinoffs/jukuravi/firmware/$2"
 }
 
+# Takes the cosim oracle but no firmware image.
+trace_test() {
+  python3 "tests/$1" "$tmp/trace"
+}
+
 bare_test() {
   python3 "tests/$1"
 }
@@ -780,7 +785,7 @@ PY
 
 echo "jukuravi-d0: fanning out across $JOBS job(s)" >&2
 
-spawn cosim:pit-latch    bare_test cosim_pit_latch_test.py
+spawn cosim:pit-latch    trace_test cosim_pit_latch_test.py
 spawn cosim:alive        cosim_test jukuravi_d0_alive_test.py diag-d0-alive.bin
 spawn cosim:cpu          cosim_test jukuravi_d0_cpu_test.py diag-d0-cpu.bin
 spawn cosim:usart-local  cosim_test jukuravi_d0_usart_local_test.py diag-d0-usart-local.bin
