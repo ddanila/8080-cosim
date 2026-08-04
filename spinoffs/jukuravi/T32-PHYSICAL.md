@@ -127,11 +127,18 @@ The exact electrical boundary is D15 A12 pin 2 and its source path:
 is D5.24 `MEMR`. D6 and D8 package substitutions did not change the result.
 The remaining component-level alternatives are:
 
-1. the fitted AT28C64B or its D15 pin-2/socket contact behaves incorrectly
-   while `/CS` remains asserted;
-2. D4's A12 channel or the BA12 conductor falls during the burst;
-3. less likely, D1 supplies a transiently wrong A12 which D4 faithfully
-   buffers.
+1. D4's A12 channel, the BA12 conductor, or D15 socket pin 2 fails during the
+   burst;
+2. less likely, D1 supplies a transiently wrong A12 which D4 faithfully
+   buffers;
+3. the fitted T32 AT28C64B behaves incorrectly while `/CS` remains asserted.
+
+The owner confirms that T31 and T32 were burned into two different physical
+AT28C64B packages. Both show correct isolated upper-D15 data with broken
+upper-D15 execution on CS00015. The exact consecutive-pair alias was measured
+only with T32, so its individual device is not mathematically excluded, but a
+shared board-side A12 fault now has substantially stronger evidence than a bad
+EEPROM package.
 
 The [Microchip AT28C64B specification](https://ww1.microchip.com/downloads/en/DeviceDoc/doc0270.pdf)
 defines an ordinary asynchronous SRAM-like read:
@@ -196,13 +203,11 @@ The cheapest next discriminators are:
 1. place distinct pairs at RAM `4A00h` and `5A00h`, then execute `LHLD 5A00h`
    from low-A12 RAM: an upper pair proves the fault is D15-local, while a
    mixed upper/lower pair implicates D1/D4/BA12 globally;
-2. run T32 on CS00015 from a second known-good memory device, preferably a
-   genuine EPROM rather than another used-market AT28C64B;
-3. run the same verified T32 chip on the donor processor board;
-4. compare D15.2 A12, D15.20 `/CS`, D15.22 `/OE`, and READY for the
+2. run the same verified T32 chip on the donor processor board;
+3. compare D4.15 and D15.2 A12, D15.20 `/CS`, D15.22 `/OE`, and READY for the
    successful RAM-resident `MOV A,M` read and the failing `5A00h -> 1A00h`
    instruction transition with a scope or logic analyzer;
-5. substitute D1 only if cross-board or timing measurements still implicate
+4. substitute D1 only if cross-board or timing measurements still implicate
    the CPU-facing address cycle rather than D15 selection.
 
 Earlier no-delay marker runs and the full-half read attempted after an abnormal

@@ -55,12 +55,14 @@ uses the exact A12-low alias. Repeated examples include `1A00: 3E 43` where
 
 This is not a static A12 fault, corrupt ROM data, general data-bit fault, or
 failure isolated to one D2 wait class. The electrical boundary is D15 pin 2
-and `D1.37 -> D4.5 -> D4.15/BA12 -> D15.2`. The fitted AT28C64B or D15 socket
-is the leading replace-first suspect; D4 and then D1 remain live alternatives
-until a consecutive high-A12 RAM pair distinguishes a D15-local fault from a
-global address-path fault. One-at-a-time substitutions of donor D8 `.039` and
-donor D6 `.038` preserve the result, excluding the original D6 and D8 packages
-as unique causes.
+and `D1.37 -> D4.5 -> D4.15/BA12 -> D15.2`. T31 and T32 used two different
+physical AT28C64B packages; both show correct isolated upper data and broken
+upper execution on CS00015. Only T32 has the exact consecutive-pair capture,
+so its individual package is not completely excluded, but D4/BA12/D15 socket
+pin 2 is the leading common boundary and D1 is next. A consecutive high-A12
+RAM pair distinguishes a D15-local fault from this shared address path.
+One-at-a-time substitutions of donor D8 `.039` and donor D6 `.038` preserve
+the result, excluding the original D6 and D8 packages as unique causes.
 
 Cosim now reproduces the complete host-visible signature. Clearing ROM A12
 after the first uninterrupted D15 read loses the loader at `1100h`, `1200h`,
@@ -87,7 +89,7 @@ provenance only and must not be read as a diagnosis of the original D6.
 | --- | --- | --- |
 | D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
-| D15 access path | Second consecutive upper read uses exact A12-low alias | Try second known-good ROM, then compare D15.2 and D4.15 during pair reads |
+| D15 access path | Second consecutive upper read uses exact A12-low alias; T31/T32 used different EEPROM packages | Probe consecutive high-A12 RAM, then compare D4.15 and D15.2 |
 | `5A00h` execution | First fetched byte behaves as `00h`; explains CALL/JUMP markers `00/01` | Run distinct `4A00/5A00` RAM pair probe; inspect D1/D4/READY if global |
 
 ## Serial connector measurement
