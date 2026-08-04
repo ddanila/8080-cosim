@@ -59,6 +59,17 @@ def main() -> int:
         raise SystemExit("D2 low nibble is no longer strictly 0/F")
 
     pages = [(page << 8, wait_class(raw, page << 8)) for page in range(0x20)]
+
+    def merge(bases: list[int]) -> str:
+        """Collapse contiguous 256-byte pages into readable ranges."""
+        spans: list[list[int]] = []
+        for base in bases:
+            if spans and base == spans[-1][1] + 0x100:
+                spans[-1][1] = base
+            else:
+                spans.append([base, base])
+        return ", ".join(f"`{lo:04X}-{hi + 0xFF:04X}`" for lo, hi in spans)
+
     gated = [base for base, cls in pages if cls == "CAS-gated"]
     unwaited_upper = [base for base, cls in pages
                       if cls == "no wait" and (base >> 12) & 1]
@@ -75,6 +86,22 @@ def main() -> int:
             if target < 0x2000 and wait_class(raw, target) == "CAS-gated":
                 sites.setdefault(target, []).append(i)
     repeated = sorted((t, s) for t, s in sites.items() if len(s) > 1)
+
+    # Can the follow-up probes reuse the burned image? A probe needs an existing
+    # "JMP 0A0Ch" (loader entry) inside the wait class under test.
+    loader_jmp = bytes((0xC3, 0x0C, 0x0A))
+    tramp = [(i, wait_class(raw, i)) for i in range(len(probe_image) - 2)
+             if probe_image[i:i + 3] == loader_jmp]
+    tramp_classes = {cls for _, cls in tramp}
+    # The D8 pager also selects D15 at C000-DFFF (A12=0 -> low-4K contents), so
+    # each low offset additionally appears at C000+offset. Does any such alias
+    # reach a class the direct address does not?
+    alias_gain = []
+    for off, cls in tramp:
+        if off < 0x1000:
+            alias_cls = wait_class(raw, 0xC000 | off)
+            if alias_cls != cls:
+                alias_gain.append((off, cls, alias_cls))
 
     out: list[str] = []
     add = out.append
@@ -123,7 +150,7 @@ def main() -> int:
     add("- **always wait** - every `A10=1` memory access; D2 sinks `READY_D`.")
     add("- **CAS-gated** - D2 sinks `READY_D` only while `cas_n=1`, so the access is")
     add("  held until the shared CAS rail goes active. In the D15 window this is")
-    add("  exactly " + ", ".join(f"`{b:04X}-{b + 0xFF:04X}`" for b in gated) + ".")
+    add("  exactly " + merge(gated) + ".")
     add("")
     add("The governing term is `A9=0 and cas_n=A12 and A15!=A12`, so the effect is")
     add("keyed to `A15` differing from `A12`, not to \"the upper half\" as such. The")
@@ -263,9 +290,8 @@ def main() -> int:
     add("## Cheapest next discriminators")
     add("")
     add("1. **Upper-half unwaited trampoline.** Burn a `JMP` into a page that is")
-    add("    upper-half but *not* CAS-gated - "
-        + ", ".join(f"`{b:04X}-{b + 0xFF:04X}`" for b in unwaited_upper)
-        + " - and execute it the same way as `rom-exec-106f.bin`. Success there")
+    add("    upper-half but *not* CAS-gated - " + merge(unwaited_upper) + " -")
+    add("    and execute it the same way as `rom-exec-106f.bin`. Success there")
     add("    with continued failure at `106Fh` isolates the CAS-gated release path")
     add("    and clears A12 itself. Failure there too moves the fault onto A12")
     add("    delivery or the D15 socket's upper addressing, independent of waits.")
@@ -277,8 +303,50 @@ def main() -> int:
     add("4. **Cross-swap the burned EPROM into the donor board** and run the same")
     add("    probe, to separate our device and image from CS00015 entirely.")
     add("")
-    add("Probes 1 and 2 need only a new burned image and the existing loader; they")
-    add("require no board rework and no new instrumentation.")
+    add("Probes 1 and 2 need no board rework and no new instrumentation, but they")
+    add("do need one re-burned D15, because the currently burned image has no")
+    add("reusable entry point in the classes under test.")
+    add("")
+    add("### Trampoline availability in the burned image")
+    add("")
+    add("A probe re-enters the resident loader by executing a `JMP 0A0Ch`")
+    add("(`C3 0C 0A`) at the address under test. In")
+    add("`spinoffs/jukuravi/firmware/diag-d0-low4k.bin` that sequence occurs at:")
+    add("")
+    half = lambda a: "upper" if (a >> 12) & 1 else "lower"
+    add("| Offset | Half | Wait class |")
+    add("| --- | --- | --- |")
+    for off, cls in tramp:
+        add(f"| `{off:04X}h` | {half(off)} | {cls} |")
+    add("")
+    covered = {(half(off), cls) for off, cls in tramp}
+    wanted = [("upper", "no wait"), ("upper", "always wait")]
+    missing = [w for w in wanted if w not in covered]
+    add("The distinction that matters is class *and* half, since the lower half is")
+    add("already known to execute.")
+    add("")
+    for h, c in sorted(covered):
+        add(f"- covered: {h} {c}")
+    for h, c in missing:
+        add(f"- **missing: {h} {c}**")
+    add("")
+    add("The two missing combinations are precisely what probes 1 and 2 need, which")
+    add("is why they need the re-burn.")
+    add("")
+    add("The `C000-DFFF` alias does not avoid it. With `A12=0` there it presents")
+    add("low-4K contents, so each low offset also appears at `C000+offset`; but a")
+    add("CAS-gated alias needs address bits 10 and 9 both clear, and the two low")
+    add("candidates fail that (`065C` has A10=1, `0A06` has A9=1). Aliases reaching")
+    add("a class their direct address does not: "
+        + (str(len(alias_gain)) if alias_gain else "none") + ". Whether D6's")
+    add("`ROM_SEL` enables that window at all is mode-dependent and was not")
+    add("established here, but for this image the point is moot.")
+    add("")
+    add("One burn can cover everything: add a `JMP 0A0Ch` at `1200h` (unwaited")
+    add("upper) and at `1400h` (always-wait upper), keeping the existing `106Fh`")
+    add("(CAS-gated). Three RAM trampolines then discriminate all three classes")
+    add("against each other in a single bench session, with `rom-reenter-4000.bin`")
+    add("as the no-upper-fetch control.")
     add("")
 
     REPORT.write_text("\n".join(out), encoding="utf-8")

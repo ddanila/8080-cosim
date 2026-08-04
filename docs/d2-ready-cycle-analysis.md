@@ -69,7 +69,7 @@ Three classes exist, and only one depends on `CAS`:
 - **always wait** - every `A10=1` memory access; D2 sinks `READY_D`.
 - **CAS-gated** - D2 sinks `READY_D` only while `cas_n=1`, so the access is
   held until the shared CAS rail goes active. In the D15 window this is
-  exactly `1000-10FF`, `1100-11FF`, `1800-18FF`, `1900-19FF`.
+  exactly `1000-11FF`, `1800-19FF`.
 
 The governing term is `A9=0 and cas_n=A12 and A15!=A12`, so the effect is
 keyed to `A15` differing from `A12`, not to "the upper half" as such. The
@@ -212,7 +212,8 @@ Still open:
 ## Cheapest next discriminators
 
 1. **Upper-half unwaited trampoline.** Burn a `JMP` into a page that is
-    upper-half but *not* CAS-gated - `1200-12FF`, `1300-13FF`, `1A00-1AFF`, `1B00-1BFF` - and execute it the same way as `rom-exec-106f.bin`. Success there
+    upper-half but *not* CAS-gated - `1200-13FF`, `1A00-1BFF` -
+    and execute it the same way as `rom-exec-106f.bin`. Success there
     with continued failure at `106Fh` isolates the CAS-gated release path
     and clears A12 itself. Failure there too moves the fault onto A12
     delivery or the D15 socket's upper addressing, independent of waits.
@@ -224,5 +225,44 @@ Still open:
 4. **Cross-swap the burned EPROM into the donor board** and run the same
     probe, to separate our device and image from CS00015 entirely.
 
-Probes 1 and 2 need only a new burned image and the existing loader; they
-require no board rework and no new instrumentation.
+Probes 1 and 2 need no board rework and no new instrumentation, but they
+do need one re-burned D15, because the currently burned image has no
+reusable entry point in the classes under test.
+
+### Trampoline availability in the burned image
+
+A probe re-enters the resident loader by executing a `JMP 0A0Ch`
+(`C3 0C 0A`) at the address under test. In
+`spinoffs/jukuravi/firmware/diag-d0-low4k.bin` that sequence occurs at:
+
+| Offset | Half | Wait class |
+| --- | --- | --- |
+| `065Ch` | lower | always wait |
+| `0A06h` | lower | no wait |
+| `106Fh` | upper | CAS-gated |
+
+The distinction that matters is class *and* half, since the lower half is
+already known to execute.
+
+- covered: lower always wait
+- covered: lower no wait
+- covered: upper CAS-gated
+- **missing: upper no wait**
+- **missing: upper always wait**
+
+The two missing combinations are precisely what probes 1 and 2 need, which
+is why they need the re-burn.
+
+The `C000-DFFF` alias does not avoid it. With `A12=0` there it presents
+low-4K contents, so each low offset also appears at `C000+offset`; but a
+CAS-gated alias needs address bits 10 and 9 both clear, and the two low
+candidates fail that (`065C` has A10=1, `0A06` has A9=1). Aliases reaching
+a class their direct address does not: none. Whether D6's
+`ROM_SEL` enables that window at all is mode-dependent and was not
+established here, but for this image the point is moot.
+
+One burn can cover everything: add a `JMP 0A0Ch` at `1200h` (unwaited
+upper) and at `1400h` (always-wait upper), keeping the existing `106Fh`
+(CAS-gated). Three RAM trampolines then discriminate all three classes
+against each other in a single bench session, with `rom-reenter-4000.bin`
+as the no-upper-fetch control.
