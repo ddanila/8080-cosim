@@ -43,16 +43,7 @@ spinoffs/minimal-vga/sim/revb_boot_check.sh
 echo "== rev B: minimum-tier bring-up ROM TX stream == cosim (real 8251, no Video) =="
 spinoffs/minimal-vga/sim/revb_bringup_check.sh
 
-# The B2 TTL-video twin is by far the slowest gate in this suite (~7 min of the
-# ~11 min total). CI runs it as its own parallel job so it does not serialize
-# behind the B0/B1 gates; set REVB_TIER_SKIP_B2=1 there. Running this suite
-# without the flag -- the local default -- still covers every tier.
-if [ "${REVB_TIER_SKIP_B2:-0}" = 1 ]; then
-  echo "== rev B: B2 video card -- SKIPPED (REVB_TIER_SKIP_B2=1; own CI job) =="
-  echo "REVB-TIER-SUITE(B0+B1sim; B2video skipped): PASS"
-else
-  echo "== rev B: B2 video card (TTL twin: timing + crop + scanout + /WAIT) =="
-  spinoffs/minimal-vga/sim/revb_video_check.sh
+echo "== rev B: B2 video card (TTL twin: timing + crop + scanout + /WAIT) =="
+spinoffs/minimal-vga/sim/revb_video_check.sh
 
-  echo "REVB-TIER-SUITE(B0+B1sim+B2video): PASS"
-fi
+echo "REVB-TIER-SUITE(B0+B1sim+B2video): PASS"

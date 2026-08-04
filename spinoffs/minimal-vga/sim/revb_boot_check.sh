@@ -9,6 +9,19 @@
 # exact machine behavior that vjuga_juku_top.v established. No FDC, no interrupts.
 set -euo pipefail
 
+# The B2 TTL-card boot below costs ~7 min on its own -- two async clocks (CPU plus
+# the 25 MHz dot clock) make it far heavier than the single-clock mode boots, which
+# together take ~100s. CI runs the two phases as separate parallel jobs so the slow
+# one does not serialize the rest:
+#   REVB_BOOT_PHASE=modes  decode Mode A/B boots only
+#   REVB_BOOT_PHASE=ttl    the B2 chip-level TTL video-card boot only
+# The default, "all", runs both -- so a plain local invocation is unchanged.
+REVB_BOOT_PHASE=${REVB_BOOT_PHASE:-all}
+case "$REVB_BOOT_PHASE" in
+  all|modes|ttl) ;;
+  *) echo "REVB_BOOT_PHASE must be all, modes or ttl (got '$REVB_BOOT_PHASE')" >&2; exit 2 ;;
+esac
+
 WRITES=${WRITES:-6000}
 MV="$(cd "$(dirname "$0")/.." && pwd)"      # spinoffs/minimal-vga
 ROOT="$(cd "$MV/../.." && pwd)"             # repo root
@@ -25,13 +38,18 @@ TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 echo "== reuse recreation ROM: ekta37_z80.hex =="
 python3 -c "open('$TMP/ekta37_z80.hex','w').write(chr(10).join('%02x'%b for b in open('$MV/roms/ekta37_z80.bin','rb').read())+chr(10))"
 
-echo "== reuse recreation oracle: cosim framebuffer @ $WRITES video writes =="
+# Both phases drive the same cosim oracle binary, so always build it.
 $CC -O2 -I "$ROOT/cosim" -o "$TMP/trace" \
   "$ROOT/cosim/trace.c" "$ROOT/cosim/i8080.c" "$ROOT/cosim/juk_disk.c" "$ROOT/cosim/juku_fdc.c"
+
+fail=0
+if [ "$REVB_BOOT_PHASE" = ttl ]; then
+  echo "== decode Mode A/B boots -- SKIPPED (REVB_BOOT_PHASE=ttl) =="
+else
+echo "== reuse recreation oracle: cosim framebuffer @ $WRITES video writes =="
 ( cd "$ROOT/cosim" && "$TMP/trace" "$MV/roms/ekta37_z80.bin" 50000000 "$WRITES" >/dev/null 2>&1 )
 cp "$ROOT/cosim/vram.bin" "$TMP/ref.bin"
 
-fail=0
 for M in 0 1; do
   if [ "$M" = 0 ]; then MODE_NAME="B (real D6 РТ4 decode)"; else MODE_NAME="A (GAL-internal decode)"; fi
   echo "== build + boot rev B modular twin, decode Mode $MODE_NAME =="
@@ -63,7 +81,11 @@ for M in 0 1; do
     fail=1
   fi
 done
+fi
 
+if [ "$REVB_BOOT_PHASE" = modes ]; then
+  echo "== B2 TTL video-card boot -- SKIPPED (REVB_BOOT_PHASE=modes; own CI job) =="
+else
 # B2 (TI.3): integrated boot through the CHIP-LEVEL TTL video card, with the card's
 # open-drain /WAIT wired into the CPU (VIDEO_TTL=1). Proves ekta37 boots byte-identical
 # through the real framebuffer serving + cycle-steal contention (D2.9) with the actual T80,
@@ -98,11 +120,23 @@ elif cmp -s "$TMP/revb_ttl.bin" "$TMP/ref_ttl.bin"; then
 else
   echo "  FAIL  TTL-card framebuffer differs from cosim @ $TTL_WRITES writes (D2.9)"; fail=1
 fi
+fi
 
 if [ "$fail" = 0 ]; then
-  echo "        (rev B CPU/Memory/Video/I-O cards boot ekta37 byte-identical to cosim"
-  echo "         through both decode modes AND through the chip-level TTL video card)"
-  echo "REVB-MODULAR-BOOT-CHECK: PASS"
+  case "$REVB_BOOT_PHASE" in
+    all)
+      echo "        (rev B CPU/Memory/Video/I-O cards boot ekta37 byte-identical to cosim"
+      echo "         through both decode modes AND through the chip-level TTL video card)"
+      echo "REVB-MODULAR-BOOT-CHECK: PASS" ;;
+    modes)
+      echo "        (rev B cards boot ekta37 byte-identical to cosim through both"
+      echo "         decode modes; the TTL video-card boot runs as its own job)"
+      echo "REVB-MODULAR-BOOT-CHECK(modes): PASS" ;;
+    ttl)
+      echo "        (rev B cards boot ekta37 byte-identical to cosim through the"
+      echo "         chip-level TTL video card, real chips plus /WAIT contention)"
+      echo "REVB-MODULAR-BOOT-CHECK(ttl): PASS" ;;
+  esac
 else
-  echo "REVB-MODULAR-BOOT-CHECK: FAIL"; exit 1
+  echo "REVB-MODULAR-BOOT-CHECK($REVB_BOOT_PHASE): FAIL"; exit 1
 fi

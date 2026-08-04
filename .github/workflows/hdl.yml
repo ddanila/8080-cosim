@@ -327,10 +327,11 @@ jobs:
       - name: Initialize pinned tv80 core
         run: git submodule update --init spinoffs/minimal-vga/external/tv80
 
-      # B2 runs as its own job below, so this covers the B0/B1 tiers.
+      # The TTL video-card boot runs as its own job below; the tier suite's
+      # revb_boot_check.sh call therefore covers the decode-mode boots only.
       - name: Run VJUGA and rev B tier guards
         env:
-          REVB_TIER_SKIP_B2: '1'
+          REVB_BOOT_PHASE: modes
         run: |
           ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
           ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
@@ -340,9 +341,10 @@ jobs:
       - name: Check report freshness
         run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
 
-  # The single slowest gate in the suite (~426s: roughly 1s of wall clock per
-  # simulated video write). Its own job so it does not serialize the rest.
-  b2-video:
+  # The single slowest gate in the suite (~426s). Two async clocks -- the CPU plus
+  # the 25 MHz dot clock -- make this boot far heavier than the single-clock
+  # decode-mode boots, so it gets its own job instead of serializing them.
+  revb-ttl-boot:
     needs: changes
     if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'minimal-vga'
     runs-on: ubuntu-latest
@@ -355,8 +357,10 @@ jobs:
       - name: Initialize pinned tv80 core
         run: git submodule update --init spinoffs/minimal-vga/external/tv80
 
-      - name: Run rev B B2 video-card guard
-        run: ./spinoffs/minimal-vga/sim/revb_video_check.sh
+      - name: Run rev B B2 TTL video-card boot
+        env:
+          REVB_BOOT_PHASE: ttl
+        run: ./spinoffs/minimal-vga/sim/revb_boot_check.sh
 
   # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL sim
   # levels, bounded to 6000 video writes (~60s, never the slow full banner), and
