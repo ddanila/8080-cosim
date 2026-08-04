@@ -6,8 +6,9 @@ the onboard 8251, and remains resident while the host uploads and calls 8080
 snippets in RAM.
 
 The physical reference system is Arvutimuuseum board `CS00015`. Its validated
-T31 run, known D55 fault, transport benchmark, and uploaded speaker demo are
-recorded in [`T31-PHYSICAL.md`](T31-PHYSICAL.md).
+T31 run, known D55 fault, transport benchmark, upper-D15 data/fetch diagnostic,
+and uploaded speaker demo are recorded in
+[`T31-PHYSICAL.md`](T31-PHYSICAL.md).
 
 ## Current bench setup
 

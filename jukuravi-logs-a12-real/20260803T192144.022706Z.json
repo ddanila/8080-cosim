@@ -1,0 +1,292 @@
+{
+  "attempts": [],
+  "diagnostic_status": null,
+  "error": "timeout waiting for Juku symbol request during RUN replay 1 attempt 1",
+  "finished_utc": "2026-08-03T19:25:19.618499Z",
+  "frames": [
+    {
+      "payload_hex": "FF002903000007000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0000230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "01002404000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "02002525400020C27A00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "03002706400020C27A00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "04002525402020E43400",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "05002706402020E43400",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "06002525404020625000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "07002706404020625000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "08002525406020233100",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "09002706406020233100",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0A002525408020BF0F00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0B002706408020BF0F00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0C00252540A020630A00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0D00270640A020630A00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0E00252540C02009EB00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0F00270640C02009EB00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "1000250940E004BD3E00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "1100270640E004BD3E00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "1200280A400000000000",
+      "type": "0xB0"
+    }
+  ],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x4000",
+    "attach": {
+      "baseline_token": "0xC6",
+      "idle_requests": 9,
+      "resync_attempts": 1,
+      "resync_transaction": 255
+    },
+    "attached": true,
+    "bytes": 228,
+    "chunks": [
+      {
+        "address": "0x4000",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "C27A",
+        "crc_attempts": 1,
+        "index": 0,
+        "pass": 1,
+        "seconds": 7.251818,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      },
+      {
+        "address": "0x4020",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "E434",
+        "crc_attempts": 1,
+        "index": 1,
+        "pass": 1,
+        "seconds": 7.246829,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 4,
+        "verified": true
+      },
+      {
+        "address": "0x4040",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "6250",
+        "crc_attempts": 1,
+        "index": 2,
+        "pass": 1,
+        "seconds": 7.251825,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 6,
+        "verified": true
+      },
+      {
+        "address": "0x4060",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "2331",
+        "crc_attempts": 1,
+        "index": 3,
+        "pass": 1,
+        "seconds": 7.250867,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 8,
+        "verified": true
+      },
+      {
+        "address": "0x4080",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "BF0F",
+        "crc_attempts": 1,
+        "index": 4,
+        "pass": 1,
+        "seconds": 7.256222,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 10,
+        "verified": true
+      },
+      {
+        "address": "0x40A0",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "630A",
+        "crc_attempts": 1,
+        "index": 5,
+        "pass": 1,
+        "seconds": 7.254394,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 12,
+        "verified": true
+      },
+      {
+        "address": "0x40C0",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "09EB",
+        "crc_attempts": 1,
+        "index": 6,
+        "pass": 1,
+        "seconds": 7.25827,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 14,
+        "verified": true
+      },
+      {
+        "address": "0x40E0",
+        "attempts": 1,
+        "bytes": 4,
+        "crc16": "BD3E",
+        "crc_attempts": 1,
+        "index": 7,
+        "pass": 1,
+        "seconds": 3.475375,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 16,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 1,
+      "transaction": 1,
+      "votes": 1
+    },
+    "control_only": false,
+    "end_exclusive": "0x40E4",
+    "error": "timeout waiting for Juku symbol request during RUN replay 1 attempt 1",
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 0
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": false,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": true,
+      "address": "0x4000",
+      "attempts": 1,
+      "execution_id": "0x6C5C01BB",
+      "mode": "call",
+      "requested": true,
+      "return_replays": 0,
+      "returned": false,
+      "transaction": 18
+    },
+    "sha256": "0330eaa62868d145e0bc127853644809313c8409d77f93e40cd534f06b0eecb9",
+    "source": "spinoffs/jukuravi/firmware/rom-a12-4000.bin",
+    "status": "error"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 5448,
+  "rx_log": "20260803T192144.022706Z.rx.bin",
+  "started_utc": "2026-08-03T19:21:44.022706Z",
+  "status": "error",
+  "transmitted_bytes": 5136,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260803T192144.022706Z.tx.bin"
+}

@@ -1,0 +1,290 @@
+{
+  "attempts": [
+    {
+      "banner_seen": false,
+      "decoded_frames": 10,
+      "dtr_sequence_completed": false,
+      "error": null,
+      "loader": {
+        "address": "0x4000",
+        "attach": {
+          "baseline_token": "0xC6",
+          "idle_requests": 9,
+          "resync_attempts": 1,
+          "resync_transaction": 255
+        },
+        "attached": true,
+        "bytes": 51,
+        "chunks": [
+          {
+            "address": "0x4000",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "2730",
+            "crc_attempts": 1,
+            "index": 0,
+            "pass": 1,
+            "seconds": 7.254825,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 2,
+            "verified": true
+          },
+          {
+            "address": "0x4020",
+            "attempts": 1,
+            "bytes": 19,
+            "crc16": "08EC",
+            "crc_attempts": 1,
+            "index": 1,
+            "pass": 1,
+            "seconds": 5.496029,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 4,
+            "verified": true
+          }
+        ],
+        "config": {
+          "attempts": 1,
+          "transaction": 1,
+          "votes": 1
+        },
+        "control_only": false,
+        "end_exclusive": "0x4033",
+        "error": null,
+        "heartbeat": null,
+        "probe": {
+          "attempts": 1,
+          "cookie_hex": "5432380055AAC6C7",
+          "transaction": 0
+        },
+        "ready": {
+          "api_base": "0x0A00",
+          "api_version": 2,
+          "capabilities": "0x3FFF",
+          "default_votes": 7,
+          "effective_chunk_bytes": 32,
+          "guard_ms": 6.0,
+          "load_end_exclusive": "0xC000",
+          "load_min": "0x4000",
+          "max_data_bytes": 32,
+          "readback": false,
+          "resume": false,
+          "retry_limit": 3,
+          "stack_top": "0xD000",
+          "workspace": "0xC000"
+        },
+        "requested": true,
+        "run": {
+          "acknowledged": true,
+          "address": "0x4000",
+          "attempts": 1,
+          "execution_id": "0x7400F223",
+          "mode": "call",
+          "requested": true,
+          "result": {
+            "address": "0x4100",
+            "bytes": 25,
+            "hex": "413132531017FE10A5FEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFE",
+            "reads": [
+              {
+                "address": "0x4100",
+                "attempts": 1,
+                "bytes": 25,
+                "transaction": 7
+              }
+            ]
+          },
+          "return_a": "0x00",
+          "return_replays": 0,
+          "returned": true,
+          "transaction": 6
+        },
+        "sha256": "22143a1a9222971b67ffaeff217f659cb8e12280d09778e304dbc62ff35ec792",
+        "source": "spinoffs/jukuravi/firmware/rom-read-1017.bin",
+        "status": "returned"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "ok",
+      "received_bytes": 2976,
+      "transmitted_bytes": 2800
+    }
+  ],
+  "diagnostic_status": null,
+  "error": null,
+  "finished_utc": "2026-08-03T19:32:41.240469Z",
+  "frames": [
+    {
+      "payload_hex": "FF002903000007000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0000230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "01002404000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "02002525400020273000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "03002706400020273000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0400251840201308EC00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0500270640201308EC00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0600280A400000000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "060000",
+      "type": "0xB2"
+    },
+    {
+      "payload_hex": "070026410019413132531017FE10A5FEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFE",
+      "type": "0xB1"
+    }
+  ],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x4000",
+    "attach": {
+      "baseline_token": "0xC6",
+      "idle_requests": 9,
+      "resync_attempts": 1,
+      "resync_transaction": 255
+    },
+    "attached": true,
+    "bytes": 51,
+    "chunks": [
+      {
+        "address": "0x4000",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "2730",
+        "crc_attempts": 1,
+        "index": 0,
+        "pass": 1,
+        "seconds": 7.254825,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      },
+      {
+        "address": "0x4020",
+        "attempts": 1,
+        "bytes": 19,
+        "crc16": "08EC",
+        "crc_attempts": 1,
+        "index": 1,
+        "pass": 1,
+        "seconds": 5.496029,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 4,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 1,
+      "transaction": 1,
+      "votes": 1
+    },
+    "control_only": false,
+    "end_exclusive": "0x4033",
+    "error": null,
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 0
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": false,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": true,
+      "address": "0x4000",
+      "attempts": 1,
+      "execution_id": "0x7400F223",
+      "mode": "call",
+      "requested": true,
+      "result": {
+        "address": "0x4100",
+        "bytes": 25,
+        "hex": "413132531017FE10A5FEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFE",
+        "reads": [
+          {
+            "address": "0x4100",
+            "attempts": 1,
+            "bytes": 25,
+            "transaction": 7
+          }
+        ]
+      },
+      "return_a": "0x00",
+      "return_replays": 0,
+      "returned": true,
+      "transaction": 6
+    },
+    "sha256": "22143a1a9222971b67ffaeff217f659cb8e12280d09778e304dbc62ff35ec792",
+    "source": "spinoffs/jukuravi/firmware/rom-read-1017.bin",
+    "status": "returned"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 2976,
+  "rx_log": "20260803T193145.403259Z.rx.bin",
+  "started_utc": "2026-08-03T19:31:45.403259Z",
+  "status": "ok",
+  "transmitted_bytes": 2800,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260803T193145.403259Z.tx.bin"
+}

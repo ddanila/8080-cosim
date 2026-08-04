@@ -1,0 +1,483 @@
+{
+  "attempts": [
+    {
+      "banner_seen": true,
+      "decoded_frames": 23,
+      "dtr_sequence_completed": false,
+      "error": null,
+      "loader": {
+        "address": "0x4000",
+        "bytes": 165,
+        "chunks": [
+          {
+            "address": "0x4000",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "804A",
+            "index": 0,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.368265,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 2,
+            "verified": true
+          },
+          {
+            "address": "0x4020",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "43D9",
+            "index": 1,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.368404,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 4,
+            "verified": true
+          },
+          {
+            "address": "0x4040",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "6582",
+            "index": 2,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.364273,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 6,
+            "verified": true
+          },
+          {
+            "address": "0x4060",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "E7A2",
+            "index": 3,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.371851,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 8,
+            "verified": true
+          },
+          {
+            "address": "0x4080",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "5F93",
+            "index": 4,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.369424,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 10,
+            "verified": true
+          },
+          {
+            "address": "0x40A0",
+            "attempts": 1,
+            "bytes": 5,
+            "crc16": "394B",
+            "index": 5,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 3.613817,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 12,
+            "verified": true
+          }
+        ],
+        "config": {
+          "attempts": 1,
+          "transaction": 1,
+          "votes": 1
+        },
+        "end_exclusive": "0x40A5",
+        "error": null,
+        "heartbeat": null,
+        "probe": {
+          "attempts": 1,
+          "cookie_hex": "5432380055AAC6C7",
+          "transaction": 0
+        },
+        "ready": {
+          "api_base": "0x0A00",
+          "api_version": 2,
+          "capabilities": "0x3FFF",
+          "default_votes": 7,
+          "effective_chunk_bytes": 32,
+          "guard_ms": 6.0,
+          "load_end_exclusive": "0xC000",
+          "load_min": "0x4000",
+          "max_data_bytes": 32,
+          "readback": true,
+          "resume": false,
+          "retry_limit": 3,
+          "stack_top": "0xD000",
+          "workspace": "0xC000"
+        },
+        "requested": true,
+        "run": {
+          "acknowledged": true,
+          "address": "0x4000",
+          "attempts": 1,
+          "execution_id": "0x32BAA61E",
+          "mode": "call",
+          "requested": true,
+          "result": {
+            "address": "0x4200",
+            "bytes": 84,
+            "hex": "553132440410A500100CB1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1106FC3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C310700C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C10710A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A",
+            "reads": [
+              {
+                "address": "0x4200",
+                "attempts": 1,
+                "bytes": 32,
+                "transaction": 15
+              },
+              {
+                "address": "0x4220",
+                "attempts": 1,
+                "bytes": 32,
+                "transaction": 16
+              },
+              {
+                "address": "0x4240",
+                "attempts": 1,
+                "bytes": 20,
+                "transaction": 17
+              }
+            ]
+          },
+          "return_a": "0x00",
+          "return_replays": 0,
+          "returned": true,
+          "transaction": 14
+        },
+        "sha256": "1f0dead371f67e4d0d68cd5647988ec61cdd4f62a544cebe24a78736db7bc8b7",
+        "source": "spinoffs/jukuravi/firmware/rom-read-upper-4000.bin",
+        "status": "returned"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "ok",
+      "received_bytes": 4666,
+      "transmitted_bytes": 4118
+    }
+  ],
+  "diagnostic_status": {
+    "d54": true,
+    "d55": false,
+    "d57": true,
+    "peripheral_fault_mask_hex": "08",
+    "pic": true,
+    "ppi": true,
+    "ram_4000": true,
+    "ram_c000": true
+  },
+  "error": null,
+  "finished_utc": "2026-08-03T20:02:31.017445Z",
+  "frames": [
+    {
+      "payload_hex": "011A72EF",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "08",
+      "type": "0x50"
+    },
+    {
+      "payload_hex": "83",
+      "type": "0x50"
+    },
+    {
+      "payload_hex": "02200A003FFF40C0C0D007",
+      "type": "0xA3"
+    },
+    {
+      "payload_hex": "0000230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "01002404000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "02002525400020804A00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0300264000202100423655233631233632233644233604233610233600233600232108423610",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0400252540202043D900",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "05002640202023360C2336B123211B42361023366F2336C323212E42361023367023360C2321",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "06002525404020658200",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0700264040204142361023367123360A233E01320742210C10110B4206107E121305C258403E",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "08002525406020E7A200",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "09002640602002320742216F10111E4206107E121305C26C403E033207422170101131420610",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0A0025254080205F9300",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0B00264080207E121305C280403E0432074221711011444206107E121305C294403EA5320642",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0C00250A40A005394B00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0D002640A005AF320742C9",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0E00280A400000000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0E0000",
+      "type": "0xB2"
+    },
+    {
+      "payload_hex": "0F0026420020553132440410A500100CB1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1106FC3C3C3",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "100026422020C3C3C3C3C3C3C3C3C3C3C3C3C3C310700C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "1100264240140C10710A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A",
+      "type": "0xB1"
+    }
+  ],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": {
+    "crc16": "72EF",
+    "protocol_version": 1,
+    "rom_version": 26
+  },
+  "leading_training_bytes": 16,
+  "loader": {
+    "address": "0x4000",
+    "bytes": 165,
+    "chunks": [
+      {
+        "address": "0x4000",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "804A",
+        "index": 0,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.368265,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      },
+      {
+        "address": "0x4020",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "43D9",
+        "index": 1,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.368404,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 4,
+        "verified": true
+      },
+      {
+        "address": "0x4040",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "6582",
+        "index": 2,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.364273,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 6,
+        "verified": true
+      },
+      {
+        "address": "0x4060",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "E7A2",
+        "index": 3,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.371851,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 8,
+        "verified": true
+      },
+      {
+        "address": "0x4080",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "5F93",
+        "index": 4,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.369424,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 10,
+        "verified": true
+      },
+      {
+        "address": "0x40A0",
+        "attempts": 1,
+        "bytes": 5,
+        "crc16": "394B",
+        "index": 5,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 3.613817,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 12,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 1,
+      "transaction": 1,
+      "votes": 1
+    },
+    "end_exclusive": "0x40A5",
+    "error": null,
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 0
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": true,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": true,
+      "address": "0x4000",
+      "attempts": 1,
+      "execution_id": "0x32BAA61E",
+      "mode": "call",
+      "requested": true,
+      "result": {
+        "address": "0x4200",
+        "bytes": 84,
+        "hex": "553132440410A500100CB1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1106FC3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C310700C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C10710A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A",
+        "reads": [
+          {
+            "address": "0x4200",
+            "attempts": 1,
+            "bytes": 32,
+            "transaction": 15
+          },
+          {
+            "address": "0x4220",
+            "attempts": 1,
+            "bytes": 32,
+            "transaction": 16
+          },
+          {
+            "address": "0x4240",
+            "attempts": 1,
+            "bytes": 20,
+            "transaction": 17
+          }
+        ]
+      },
+      "return_a": "0x00",
+      "return_replays": 0,
+      "returned": true,
+      "transaction": 14
+    },
+    "sha256": "1f0dead371f67e4d0d68cd5647988ec61cdd4f62a544cebe24a78736db7bc8b7",
+    "source": "spinoffs/jukuravi/firmware/rom-read-upper-4000.bin",
+    "status": "returned"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 4666,
+  "rx_log": "20260803T200107.338948Z.rx.bin",
+  "started_utc": "2026-08-03T20:01:07.338948Z",
+  "status": "ok",
+  "transmitted_bytes": 4118,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260803T200107.338948Z.tx.bin"
+}

@@ -820,6 +820,23 @@ returned A, and returned RAM under the same boundary plus the CS00015 D55
 fault. Programmer verification is the loader-ROM integrity evidence for this
 workaround image.
 
+### Upper-D15 data/fetch diagnostic snippets
+
+The `rom-a12-4000.*`, `rom-read-*`, `rom-exec-106f*`, and
+`rom-reenter-4000.*` fixtures are non-destructive T31 probes loaded at `4000h`.
+The read probes execute wholly from RAM and return observed D15 bytes through
+RAM result blocks. `rom-reenter-4000.bin` jumps directly from RAM to the lower
+loader entry at `0A0Ch`; `rom-exec-106f.bin` instead jumps to the upper-ROM
+trampoline at `106Fh`, whose expected `C3 0C 0A` instruction returns to that
+same entry. The pair separates loader re-entry from upper-ROM instruction
+fetch.
+
+`tests/jukuravi_t31_a12_test.py` exercises the committed payloads against the
+exact T31 image, then aliases the upper ROM half to the lower half and requires
+the distinct `066Ch` HLT/250 Hz CPU-failure signature. Assembly comparison and
+the cosim regression are part of `sync/jukuravi_t31_check.sh`. CS00015 physical
+results and raw-log provenance are in `../T31-PHYSICAL.md`.
+
 ### Uploaded speaker demo
 
 `smoke-4000.bin` is a deliberately playful but complete T31 application proof.

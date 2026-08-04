@@ -51,6 +51,72 @@ without reset, upload arbitrary 8080 bytes, execute a cooperative snippet by
 CALL, receive A and a RAM result block after ordinary RET, and keep the ROM
 monitor resident for subsequent work.
 
+## Upper D15 data reads versus instruction fetch
+
+This investigation is a CS00015 physical result, not a general diagnosis of
+all `.009` boards.  It began as an A12-alias test, but the evidence does not
+show a simple stuck-low A12 address line:
+
+| RAM-resident probe | Physical result |
+| --- | --- |
+| read `0017h` 16 times | `01h` on all 16 reads |
+| read `1017h` 16 times | `FEh` on all 16 reads |
+| read `100Ch` 16 times | `B1h` on all 16 reads |
+| read `106Fh` 16 times | `C3h` on all 16 reads |
+| read `1070h` 16 times | `0Ch` on all 16 reads |
+| read `1071h` 16 times | `0Ah` on all 16 reads |
+
+The lower and upper values differ where expected, and the four bytes around
+the upper loader trampoline exactly match the burned T31 image.  Thus RAM code
+can read the upper `1000h..1FFFh` half of D15 correctly and repeatably.
+
+Execution distinguishes the failure:
+
+- `rom-reenter-4000.bin` is `JMP 0A0Ch` entirely from RAM. It restarted the
+  T31 loader, and a fresh host attached successfully. This proves the loader
+  entry and host reattachment path independently of upper-ROM execution.
+- `rom-exec-106f.bin` is `JMP 106Fh`. The bytes at `106Fh` are `C3 0C 0A`, so
+  one correct upper-ROM instruction fetch should execute `JMP 0A0Ch` and
+  restart the same loader. On CS00015 it did not return to the loader; repeated
+  runs produced the failure tone or a non-responsive monitor.
+- Replacing D2 with the donor D2 from the Danila Sukharev board did not make
+  the `106Fh` execution probe succeed. This rules out the original D2 IC as
+  the sole cause, but not the surrounding READY/decode/timing circuitry.
+
+Cosim boots the exact T31 image, passes the lower and upper data probes, passes
+RAM re-entry, and returns through the real `106Fh` trampoline. An intentionally
+A12-low image instead aliases the upper 4 KiB to the lower 4 KiB and reaches
+the expected `066Ch` HLT/250 Hz CPU-failure path. The regression therefore
+proves that the probe distinguishes correct upper instruction fetch from the
+simple A12-low case.
+
+The narrow conclusion is: **CS00015 has correct upper-D15 data reads but fails
+the tested upper-D15 instruction-fetch transition.** The failing component or
+edge has not been localized. D15 contents, an ordinary A12-low data alias, the
+original D2 package, the loader entry, and host reattachment are individually
+excluded by the tests above. The PHI2TTL/READY route remains relevant to the
+open timing investigation; its corrected schematic interpretation is recorded
+in [`../../docs/phi2ttl-d29-clock-route.md`](../../docs/phi2ttl-d29-clock-route.md).
+
+Physical evidence:
+
+- `jukuravi-logs-a12-low-real/20260803T193022.823717Z.*`
+- `jukuravi-logs-a12-high-real/20260803T193145.403259Z.*`
+- `jukuravi-logs-a12-upper-real/20260803T200107.338948Z.*`
+- `jukuravi-logs-a12-exec-real/20260803T193450.936728Z.*`
+- `jukuravi-logs-a12-exec-repeat-real/20260803T200253.089207Z.*`
+- `jukuravi-logs-a12-reenter-real/20260803T202000.424068Z.*`
+- `jukuravi-logs-a12-reenter-attach-real/20260803T202045.927340Z.*`
+- `jukuravi-logs-a12-d2swap-exec-real/20260803T204013.876817Z.*`
+- `jukuravi-logs-a12-d2swap-exec-retry-real/20260803T204159.038041Z.*`
+
+The earlier aggregate attempt and failed attach/retry captures are retained as
+raw chronology under the other `jukuravi-logs-a12-*` directories. They are not
+used as positive evidence. Reproducible sources, exact payloads, and the cosim
+regression are `firmware/rom-a12-4000.*`, `firmware/rom-read-*`,
+`firmware/rom-exec-106f*`, `firmware/rom-reenter-4000.*`, and
+`tests/jukuravi_t31_a12_test.py`.
+
 ## Host-controlled transport speed experiment
 
 The same T31 burn was benchmarked without RESET or a ROM change. The host
