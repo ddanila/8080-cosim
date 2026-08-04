@@ -234,6 +234,11 @@ jobs:
           python3 scripts/report_d2_physical_truth.py
           git diff --exit-code -- docs/d2-physical-truth.md
 
+      - name: Check D2 READY cycle analysis freshness
+        run: |
+          python3 scripts/report_d2_ready_cycle_analysis.py
+          git diff --exit-code -- docs/d2-ready-cycle-analysis.md
+
       - name: Check firmware gap ledger freshness
         run: |
           python3 scripts/export_eprom_pair.py

@@ -79,8 +79,10 @@ findings. Every status applies only to the boundary named by the report.
   `d2-physical-dump-and-continuity.md` (validated owner dump and synchronized
   connectivity adoption), `d2-physical-truth.md` (exact READY truth
   classification), `d2-ready-path-check.md` (executed open-collector D2-to-D30
-  polarity guard), and `re3-physical-dumps.md` (independent D8/D94 captures
-  from two physical boards, reader wiring, and validated content truth).
+  polarity guard), `d2-ready-cycle-analysis.md` (per-page wait classes and why
+  the CS00015 A12 fetch/read premise is not physically expressible), and
+  `re3-physical-dumps.md` (independent D8/D94 captures from two physical
+  boards, reader wiring, and validated content truth).
 - Fabrication package: `replica-manufacturing-readiness.md`,
   `replica-package-geometry-readiness.md`,
   `replica-fab-drc-disposition.md`, `replica-power-trace-readiness.md`,

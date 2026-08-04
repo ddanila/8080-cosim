@@ -39,6 +39,7 @@ run python3 scripts/report_d6_physical_decode.py
 run python3 scripts/report_d8_physical_decode.py
 run python3 scripts/report_d6_firmware_modes.py
 run python3 scripts/report_d2_physical_truth.py
+run python3 scripts/report_d2_ready_cycle_analysis.py
 run python3 scripts/export_eprom_pair.py
 run python3 scripts/report_firmware_gap_ledger.py
 run python3 scripts/report_board_fidelity_gap_ledger.py

@@ -98,6 +98,21 @@ excluded by the tests above. The PHI2TTL/READY route remains relevant to the
 open timing investigation; its corrected schematic interpretation is recorded
 in [`../../docs/phi2ttl-d29-clock-route.md`](../../docs/phi2ttl-d29-clock-route.md).
 
+**Framing correction (desk analysis).** The "data read versus instruction
+fetch" wording above is not a distinction this hardware can draw: `MEMR` is
+asserted for both cycle types, the 8238 decodes only `INP`/`OUT`/`INTA`, and no
+`M1`-derived net exists on the board, so no decode, chip select or wait input
+can be fetch-selective. Deriving the D2 `.037` wait class of every page instead
+shows that all five upper probes land inside `1000-10FF`, the single
+**CAS-gated** class, while the lower probe and the loader entry `0A0Ch` are in
+unwaited pages. The experiment therefore contrasted CAS-gated against unwaited
+access, not upper against lower and not fetch against read. That analysis, the
+per-page table, the refuted slow-EPROM hypothesis, the evidence that the
+factory firmware itself calls into the CAS-gated pages, and two cheap
+follow-up probes (an upper-half trampoline in the unwaited `1200-13FF` or
+`1A00-1BFF`, and one in the always-wait `1400-17FF`) are recorded in
+[`../../docs/d2-ready-cycle-analysis.md`](../../docs/d2-ready-cycle-analysis.md).
+
 Physical evidence:
 
 - `sessions/a12-low-real/20260803T193022.823717Z.*`
