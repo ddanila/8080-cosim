@@ -1,6 +1,6 @@
 # Arvutimuuseum CS00015 service record
 
-Status date: 2026-08-01
+Status date: 2026-08-04
 
 This record identifies the physical Juku under current diagnostic work as the
 Arvutimuuseum machine `CS00015`.  The identifier is the same physical-source
@@ -46,20 +46,31 @@ and board-level channel-2 connections.
 ### D15 upper-ROM execution timing
 
 T32 (`1B/D62B`) broadened the earlier T31 upper-ROM experiment across all
-three reconstructed D2 wait classes. RAM-resident code reads `1A00h` correctly
-as `3Eh` on all sixteen samples, and standalone CALL/RET programs execute
-correctly from high-A12 RAM at `5000h` and `5A00h`. Instruction entry into D15
-at `1A00h` nevertheless fails to write its burned `1Ah` marker; from matched
-RAM address `5A00h` it writes deterministic wrong value `01h` on repeated
-runs. CAS-gated `1100h`, unwaited `1200h`, and always-wait `1400h` entries all
-fail.
+three reconstructed D2 wait classes. RAM-resident isolated reads sample both
+`1A00h=3Eh` and `1A01h=1Ah` correctly sixteen times. Consecutive `LHLD` reads
+localize the actual failure: the first upper-D15 byte is correct and the second
+uses the exact A12-low alias. Repeated examples include `1A00: 3E 43` where
+`43` is `0A01`, `1A02: 32 C3` where `C3` is `0A03`, and `1A04: 41 0E` where
+`0E` is `0A05`; lower control `0A00: C3 43` passes.
 
-This is not a static A12 fault, corrupt ROM data, general CPU PC-A12 failure,
-or failure isolated to one D2 wait class. It is bounded to dynamic D15
-address/select/READY/data timing during instruction transition. No component
-has yet been localized. One-at-a-time substitutions of donor D8 `.039` and
-donor D6 `.038` both preserve the exact cold boot and deterministic wrong
-`01h` marker, excluding the original D6 and D8 packages as unique causes.
+This is not a static A12 fault, corrupt ROM data, general data-bit fault, or
+failure isolated to one D2 wait class. The electrical boundary is D15 pin 2
+and `D1.37 -> D4.5 -> D4.15/BA12 -> D15.2`. The fitted AT28C64B or D15 socket
+is the leading replace-first suspect; D4 and then D1 remain live alternatives
+until a consecutive high-A12 RAM pair distinguishes a D15-local fault from a
+global address-path fault. One-at-a-time substitutions of donor D8 `.039` and
+donor D6 `.038` preserve the result, excluding the original D6 and D8 packages
+as unique causes.
+
+Cosim now reproduces the complete host-visible signature. Clearing ROM A12
+after the first uninterrupted D15 read loses the loader at `1100h`, `1200h`,
+and `1400h`, while the lower-alias byte stream from `1A00h` accidentally jumps
+to loader entry `0A0Ch` without changing the RAM premarker. The separate
+`5A00h` CALL evidence (returned `A=5A` but marker remained `00`) proves its
+uploaded stream was also not executed normally. Replacing its first fetched
+`3Eh` with `00h` explains both CALL marker `00` and JUMP marker `01`, because
+loader API v2 enters those modes with `A=00/01` respectively. These models are
+guarded fault reproductions, not yet pin-voltage measurements.
 Exact image, controls, raw logs, and next
 discriminators are in
 [`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
@@ -76,7 +87,8 @@ provenance only and must not be read as a diagnosis of the original D6.
 | --- | --- | --- |
 | D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
-| D15 access path | Upper-ROM data reads pass, but execution fails across all D2 wait classes | Dynamic timing fault; cross-board T32 run, second ROM device, then scope D15/READY timing |
+| D15 access path | Second consecutive upper read uses exact A12-low alias | Try second known-good ROM, then compare D15.2 and D4.15 during pair reads |
+| `5A00h` execution | First fetched byte behaves as `00h`; explains CALL/JUMP markers `00/01` | Run distinct `4A00/5A00` RAM pair probe; inspect D1/D4/READY if global |
 
 ## Serial connector measurement
 

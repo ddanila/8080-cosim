@@ -34,7 +34,7 @@ def run_host(master: int, arguments: list[str]) -> subprocess.CompletedProcess[s
             sys.executable,
             str(HOST),
             "--fd", str(master),
-            "--loader-timeout", "30",
+            "--loader-timeout", os.environ.get("JUKU_T32_LOADER_TIMEOUT", "30"),
             "--loader-guard-ms", "0",
             "--loader-votes", "1",
             *arguments,
@@ -70,6 +70,37 @@ def main() -> int:
         if image[address:address + len(program)] != program:
             fail(f"trampoline bytes differ at {address:04X}h")
 
+    target_filter = os.environ.get("JUKU_T32_TARGET")
+    if target_filter:
+        try:
+            target = int(target_filter, 16)
+        except ValueError:
+            fail(f"invalid JUKU_T32_TARGET={target_filter!r}")
+        if target not in classes:
+            fail(f"JUKU_T32_TARGET={target:04X}h is not a T32 entry")
+        classes = {target: classes[target]}
+    jump_address_text = os.environ.get("JUKU_T32_JUMP_ADDRESS", "4000")
+    try:
+        jump_address = int(jump_address_text, 16)
+    except ValueError:
+        fail(f"invalid JUKU_T32_JUMP_ADDRESS={jump_address_text!r}")
+    if not 0x4000 <= jump_address <= 0xBFFD:
+        fail(f"JUKU_T32_JUMP_ADDRESS={jump_address:04X}h is outside RAM")
+    premarker_text = os.environ.get("JUKU_T32_PREMARKER")
+    premarker = None
+    if premarker_text:
+        try:
+            premarker = int(premarker_text, 16)
+        except ValueError:
+            fail(f"invalid JUKU_T32_PREMARKER={premarker_text!r}")
+        if not 0 <= premarker <= 0xFF:
+            fail(f"JUKU_T32_PREMARKER={premarker:02X}h is not one byte")
+    expect_loader_loss = os.environ.get("JUKU_T32_EXPECT_LOADER_LOSS") not in (
+        None, "", "0"
+    )
+    if expect_loader_loss and len(classes) != 1:
+        fail("JUKU_T32_EXPECT_LOADER_LOSS requires one JUKU_T32_TARGET")
+
     with tempfile.TemporaryDirectory(prefix="jukuravi-t32-waitclass-") as name:
         temp = Path(name)
         master, slave = pty.openpty()
@@ -95,7 +126,18 @@ def main() -> int:
         try:
             for index, (target, expected_class) in enumerate(classes.items()):
                 probe = temp / f"exec-{target:04x}.bin"
-                probe.write_bytes(bytes((0xC3, target & 0xFF, target >> 8)))
+                probe.write_bytes(
+                    bytes((0xC3, target & 0xFF, target >> 8))
+                    if premarker is None
+                    else bytes(
+                        (
+                            0x3E, premarker,
+                            0x32, firmware.RESULT_ADDRESS & 0xFF,
+                            firmware.RESULT_ADDRESS >> 8,
+                            0xC3, target & 0xFF, target >> 8,
+                        )
+                    )
+                )
                 logs = temp / f"exec-{target:04x}"
                 arguments = (
                     [
@@ -109,8 +151,8 @@ def main() -> int:
                 arguments.extend(
                     [
                         "--load", str(probe),
-                        "--load-address", "4000",
-                        "--run-address", "4000",
+                        "--load-address", f"{jump_address:04X}",
+                        "--run-address", f"{jump_address:04X}",
                         "--run-mode", "jump",
                         "--log-dir", str(logs),
                     ]
@@ -132,6 +174,12 @@ def main() -> int:
                     ],
                 )
                 if attached.returncode:
+                    if expect_loader_loss:
+                        print(
+                            "JUKURAVI-T32-WAITCLASS: PASS "
+                            f"({target:04X}h loader loss reproduced)"
+                        )
+                        continue
                     fail(
                         f"loader did not recover after {target:04X}h "
                         f"{expected_class}:\n{attached.stdout}{attached.stderr}"
@@ -142,7 +190,9 @@ def main() -> int:
                 attach_logs = temp / f"attach-{target:04x}"
                 attach_summary = json.loads(next(attach_logs.glob("*.json")).read_text())
                 observed = attach_summary.get("loader", {}).get("control_read", {}).get("hex")
-                expected = f"{target >> 8:02X}"
+                expected = os.environ.get(
+                    "JUKU_T32_EXPECT_MARKER", f"{target >> 8:02X}"
+                ).upper()
                 if observed != expected:
                     fail(
                         f"{target:04X}h marker differs: expected {expected}, "
@@ -159,11 +209,12 @@ def main() -> int:
             os.close(master)
             os.close(slave)
 
-    print(
-        "JUKURAVI-T32-WAITCLASS: PASS "
-        "(8 upper entries; CAS-gated=2; no-wait=2; always-wait=4; "
-        "loader recovered; unique markers verified)"
-    )
+    if not expect_loader_loss:
+        print(
+            "JUKURAVI-T32-WAITCLASS: PASS "
+            f"({len(classes)} upper entr{'y' if len(classes) == 1 else 'ies'}; "
+            "loader recovered; expected markers verified)"
+        )
     return 0
 
 

@@ -59,6 +59,37 @@ sample was `3Eh`, exactly the first byte burned at `1A00h`:
 Evidence:
 `sessions/t32-read-1a00-fresh/20260804T170625.113348Z.*`.
 
+The same isolated-read probe later sampled `1A01h` sixteen times. Every sample
+was the correct `1Ah`:
+
+```text
+41313253 1A01 1A 10 A5 1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A
+```
+
+Evidence:
+`sessions/t32-read-1a01-fresh/20260804T182712.307915Z.*`.
+
+## Consecutive-read localization
+
+A 57-byte RAM-resident probe used `LHLD target`, which makes two immediately
+consecutive memory reads while every instruction is fetched from RAM. Sixteen
+repetitions at each address were byte-identical:
+
+| Pair requested | Bytes in T32 | Physical result | Interpretation |
+| --- | --- | --- | --- |
+| `0A00/0A01` | `C3 43` | `C3 43` | lower-half control passes |
+| `1A00/1A01` | `3E 1A` | `3E 43` | second byte is `0A01` |
+| `1A01/1A02` | `1A 32` | `1A 0E` | second byte is `0A02` |
+| `1A02/1A03` | `32 00` | `32 C3` | second byte is `0A03` |
+| `1A04/1A05` | `41 C3` | `41 0E` | second byte is `0A05` |
+
+The first upper-D15 read is correct; the immediately following read sees the
+same low twelve address bits with A12 low. This is deterministic address
+aliasing, not random data corruption, a bad burned byte, or an opcode-versus-
+data distinction. The reusable probe is
+`firmware/rom-read-pair-4000.asm`; raw sessions are under
+`sessions/t32-read-pair-{0a00,1a00,1a01,1a02,1a04}-fresh/`.
+
 Instruction execution at the same address did not produce the required `1Ah`
 marker:
 
@@ -86,17 +117,51 @@ Positive evidence:
 
 ## Bounded conclusion
 
-On CS00015, upper-D15 ordinary data reads are correct while instruction
-execution at the same address is wrong. High-A12 instruction execution from
-RAM works, failure spans all three reconstructed D2 wait classes, keeping A12
-high before the ROM transition does not cure it, and matching all low 13
-address bits changes the wrong result but does not produce the burned marker.
+On CS00015, isolated upper-D15 reads are correct, but the second uninterrupted
+D15 read deterministically uses A12 low. Failure spans all three reconstructed
+D2 wait classes. This excludes corrupt ROM contents, a static A12 fault, a
+general data-bit fault, and a fault confined to one D2 wait class.
 
-This excludes a static A12-low fault, corrupt ROM contents, a general D1/CPU
-PC-A12 failure, and a fault confined to one D2 wait class. The board logic has
-no intentional M1-versus-data-read decode, so the remaining distinction must
-be dynamic: address/select/READY/data timing around D15 access. No individual
-IC is identified yet.
+The exact electrical boundary is D15 A12 pin 2 and its source path:
+`D1.37/A12 -> D4.5`, then `D4.15/BA12 -> D15.2`. D15 `/CS` is D8.4 and `/OE`
+is D5.24 `MEMR`. D6 and D8 package substitutions did not change the result.
+The remaining component-level alternatives are:
+
+1. the fitted AT28C64B or its D15 pin-2/socket contact behaves incorrectly
+   while `/CS` remains asserted;
+2. D4's A12 channel or the BA12 conductor falls during the burst;
+3. less likely, D1 supplies a transiently wrong A12 which D4 faithfully
+   buffers.
+
+The [Microchip AT28C64B specification](https://ww1.microchip.com/downloads/en/DeviceDoc/doc0270.pdf)
+defines an ordinary asynchronous SRAM-like read:
+with `/CE` and `/OE` low and `/WE` high, output is selected solely by the
+address pins. It does not define an A12-low second-read mode. The measured
+behavior is therefore a device/path fault, not expected EEPROM operation.
+
+### Exact cosim reproduction
+
+`JUKU_ROM_CONSECUTIVE_A12_LOW=1` models the measured D15 behavior: after the
+first read in an uninterrupted ROM burst, physical ROM A12 is cleared. It
+reproduces all of these physical outcomes:
+
+- `1100h`, `1200h`, and `1400h` lose the loader;
+- the consecutive-pair bytes above alias to their exact lower-half values;
+- entry at `1A00h` reads the physical stream
+  `3E 43 0E C3 FE 0E C3 0C 0A`, which executes `MVI A,43`, `MVI C,C3`,
+  `CPI 0E`, and `JMP 0A0C`; it returns to the loader without executing
+  `STA 4100`, preserving the RAM premarker `D5` from sources `4000h` and
+  `5000h`.
+
+The apparently special `5A00h -> 1A00h` marker `01` is independently explained
+by the earlier `5A00h` CALL control. Its exact eight-byte program
+`3E 5A 32 00 41 3E 5A C9` returned `A=5A` but left marker `00`, proving that
+the uploaded bytes were not executed normally. If its first `3E` fetch is
+`00`, CALL mode enters with `A=00` and stores `00`, while JUMP mode enters with
+`A=01` and stores `01`; both then continue at byte 1 and reach their intended
+transfer. `JUKU_EXEC_BYTE_FAULT=5A00:00` combined with the D15 burst fault
+reproduces the complete physical `01` result. This is a behavioral
+localization, not proof that RAM physically contains `00` at `5A00h`.
 
 ### One-at-a-time PROM substitutions
 
@@ -128,12 +193,16 @@ Evidence:
 
 The cheapest next discriminators are:
 
-1. run the same verified T32 chip on the donor processor board;
-2. run T32 on CS00015 from a second memory device with different output timing;
-3. compare D15 A12, chip select/output enable, READY, and data timing for the
+1. place distinct pairs at RAM `4A00h` and `5A00h`, then execute `LHLD 5A00h`
+   from low-A12 RAM: an upper pair proves the fault is D15-local, while a
+   mixed upper/lower pair implicates D1/D4/BA12 globally;
+2. run T32 on CS00015 from a second known-good memory device, preferably a
+   genuine EPROM rather than another used-market AT28C64B;
+3. run the same verified T32 chip on the donor processor board;
+4. compare D15.2 A12, D15.20 `/CS`, D15.22 `/OE`, and READY for the
    successful RAM-resident `MOV A,M` read and the failing `5A00h -> 1A00h`
    instruction transition with a scope or logic analyzer;
-4. substitute D1 only if cross-board or timing measurements still implicate
+5. substitute D1 only if cross-board or timing measurements still implicate
    the CPU-facing address cycle rather than D15 selection.
 
 Earlier no-delay marker runs and the full-half read attempted after an abnormal

@@ -831,15 +831,23 @@ the proven loader entry at `0A0Ch`. A host reattachment plus the unique marker
 proves the requested upper-ROM fetch actually ran; loader recovery alone is
 not accepted as evidence. `sync/jukuravi_t32_check.sh` first guards the normal
 low-4K monitor, then executes and identifies all eight entries in cosim with
-the CS00015 D55 fault injected. The DOS burn image and CRLF bench note are
-`dos/T32HOST.BIN` and `dos/T32INFO.TXT`.
+the CS00015 D55 fault injected. It also guards the measured CS00015 failure
+model: ROM A12 clears after the first uninterrupted D15 read, reproducing
+loader loss at `1100h/1200h/1400h` and the unchanged premarker at `1A00h`;
+the independently observed first-fetch `5A00h:3E->00` reproduces its exact
+JUMP marker `01`. The DOS burn image and CRLF bench note are `dos/T32HOST.BIN`
+and `dos/T32INFO.TXT`.
 
 ### Upper-D15 data/fetch diagnostic snippets
 
-The `rom-a12-4000.*`, `rom-read-*`, `rom-exec-106f*`, and
+The `rom-a12-4000.*`, `rom-read-*`, `rom-read-pair-4000.asm`,
+`rom-exec-106f*`, and
 `rom-reenter-4000.*` fixtures are non-destructive T31 probes loaded at `4000h`.
 The read probes execute wholly from RAM and return observed D15 bytes through
-RAM result blocks. `rom-reenter-4000.bin` jumps directly from RAM to the lower
+RAM result blocks. `rom-read-pair-4000.asm` uses `LHLD` to expose consecutive
+D15 cycles; this is what distinguished CS00015's correct isolated reads from
+its exact second-read A12-low aliases. `rom-reenter-4000.bin` jumps directly
+from RAM to the lower
 loader entry at `0A0Ch`; `rom-exec-106f.bin` instead jumps to the upper-ROM
 trampoline at `106Fh`, whose expected `C3 0C 0A` instruction returns to that
 same entry. The pair separates loader re-entry from upper-ROM instruction

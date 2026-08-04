@@ -45,6 +45,17 @@ identify the complete upper-ROM matrix without another RESET:
 python3 spinoffs/jukuravi/probe_waitclass.py --port /dev/ttyUSB0
 ```
 
+On CS00015, the wait-class matrix is superseded by an exact consecutive-read
+A12-low alias. After a clean T32 boot, distinguish the fitted D15/device socket
+from the shared CPU/address-buffer path without another ROM burn:
+
+```sh
+python3 spinoffs/jukuravi/probe_a12_path.py --port /dev/ttyUSB0
+```
+
+`D15-LOCAL` means all consecutive RAM pairs remained `AA BB`; `SHARED-A12`
+means their second bytes came from the lower alias as `AA 22`.
+
 ## Host use
 
 The CLI defaults match the direct CS00015 setup: 2400 baud, one physical symbol

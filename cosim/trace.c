@@ -37,6 +37,10 @@
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
 // EXEC:  JUKU_ROM_EXEC_RESET_AT=ADDR resets the CPU whenever a ROM fetch
 //        reaches ADDR or above (used to model the physical D15 A12 boundary).
+// ROM:   JUKU_ROM_CONSECUTIVE_A12_LOW=1 clears ROM A12 after the first read
+//        in an uninterrupted ROM-read burst (the measured CS00015 behavior).
+// EXEC:  JUKU_EXEC_BYTE_FAULT=ADDR:VALUE overrides an instruction-stream byte
+//        when the CPU PC has just advanced past ADDR; ordinary data reads pass.
 // PIC:   JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH faults the 8259 IMR readback.
 // PPI:   JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D27 port readback.
 // PIT:   JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D54/D55/D57 count reads.
@@ -70,6 +74,11 @@ static juku_fdc fdc;
 static int      fdc_enabled = 0;
 static int      fdc_bus_invert = 0;
 static int      cart_enabled = 0;
+static int      rom_consecutive_a12_low = 0;
+static unsigned rom_read_burst_count = 0;
+static int      exec_byte_fault_enabled = 0;
+static uint16_t exec_byte_fault_addr = 0;
+static uint8_t  exec_byte_fault_value = 0;
 
 // --- instrumentation -------------------------------------------------------
 static unsigned long out_count[256], in_count[256];
@@ -454,12 +463,26 @@ static FILE *rdtrace_fp = NULL;         // optional memory-read trace (JUKU_RDTR
 static unsigned long rdtrace_limit = 0; // stop tracing after N reads (JUKU_RDTRACE_LIMIT; 0 = unbounded)
 static unsigned long rdtrace_n = 0;
 static uint8_t rb(void* u, uint16_t a) {
-  (void)u; unsigned idx = 0;
+  i8080* cpu = (i8080*)u;
+  unsigned idx = 0;
   uint8_t v;
   int ov = overlay(a, &idx);
-  if (ov == 1) v = rom[idx];
-  else if (ov == 2) v = cart_enabled ? cart[a - 0x4000] : 0xFF;
-  else v = apply_ram_fault(a, ram[map_ram_address(a)]);
+  if (ov == 1) {
+    unsigned ordinal = ++rom_read_burst_count;
+    if (rom_consecutive_a12_low && ordinal >= 2) idx &= ~0x1000u;
+    v = rom[idx];
+  }
+  else if (ov == 2) {
+    rom_read_burst_count = 0;
+    v = cart_enabled ? cart[a - 0x4000] : 0xFF;
+  }
+  else {
+    rom_read_burst_count = 0;
+    v = apply_ram_fault(a, ram[map_ram_address(a)]);
+  }
+  if (exec_byte_fault_enabled && a == exec_byte_fault_addr && cpu &&
+      cpu->pc == (uint16_t)(a + 1))
+    v = exec_byte_fault_value;
   if (rdtrace_fp) {
     fprintf(rdtrace_fp, "%04x %02x\n", a, v);
     if (rdtrace_limit && ++rdtrace_n >= rdtrace_limit) { fclose(rdtrace_fp); rdtrace_fp = NULL; }
@@ -560,6 +583,7 @@ static uint8_t kbd_portb(void) {
   return pb;
 }
 static void wb(void* u, uint16_t a, uint8_t v) {
+  rom_read_burst_count = 0;
   unsigned idx = 0;
   int ov = overlay(a, &idx);
   // Monitor 3.7's low-ROM dispatcher writes its return frame behind page-zero
@@ -592,6 +616,7 @@ static void sync_fdc_time(i8080* cpu) {
 }
 
 static uint8_t pin(void* u, uint8_t p) {
+  rom_read_burst_count = 0;
   i8080* cpu = (i8080*)u;
   sync_fdc_time(cpu);
   if (!in_seen[p]) { in_seen[p] = 1; fprintf(stderr, "[IN ] first read  port 0x%02X\n", p); }
@@ -628,6 +653,7 @@ static uint8_t pin(void* u, uint8_t p) {
 }
 
 static void pout(void* u, uint8_t p, uint8_t v) {
+  rom_read_burst_count = 0;
   i8080* cpu = (i8080*)u;
   sync_fdc_time(cpu);
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
@@ -748,6 +774,12 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "mode=%d\n", mode);
   fprintf(state_out, "portc=%02X\n", portc);
   fprintf(state_out, "mode_switches=%lu\n", mode_switches);
+  fprintf(state_out, "rom_consecutive_a12_low=%d\n",
+          rom_consecutive_a12_low);
+  fprintf(state_out, "rom_read_burst_count=%u\n", rom_read_burst_count);
+  fprintf(state_out, "exec_byte_fault_enabled=%d\n", exec_byte_fault_enabled);
+  fprintf(state_out, "exec_byte_fault_addr=%04X\n", exec_byte_fault_addr);
+  fprintf(state_out, "exec_byte_fault_value=%02X\n", exec_byte_fault_value);
   fprintf(state_out, "ram_fault_enabled=%d\n", ram_fault_enabled);
   fprintf(state_out, "ram_fault_addr=%04X\n", ram_fault_addr);
   fprintf(state_out, "ram_fault_stuck_low=%02X\n", ram_fault_stuck_low);
@@ -878,11 +910,35 @@ int main(int argc, char** argv) {
   const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
+  const char* rom_consecutive_a12_low_env =
+      getenv("JUKU_ROM_CONSECUTIVE_A12_LOW");
+  const char* exec_byte_fault = getenv("JUKU_EXEC_BYTE_FAULT");
   const char* ram_drop_write = getenv("JUKU_RAM_DROP_WRITE");
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
   const char* pic_fault = getenv("JUKU_PIC_FAULT");
   const char* ppi_fault = getenv("JUKU_PPI_FAULT");
   const char* pit_fault = getenv("JUKU_PIT_FAULT");
+  if (exec_byte_fault && exec_byte_fault[0]) {
+    unsigned address, value;
+    char trailing;
+    if (sscanf(exec_byte_fault, "%x:%x%c", &address, &value, &trailing) != 2 ||
+        address > 0xFFFF || value > 0xFF) {
+      fprintf(stderr,
+              "invalid JUKU_EXEC_BYTE_FAULT=%s (expected ADDR:VALUE)\n",
+              exec_byte_fault);
+      return 2;
+    }
+    exec_byte_fault_enabled = 1;
+    exec_byte_fault_addr = (uint16_t)address;
+    exec_byte_fault_value = (uint8_t)value;
+    fprintf(stderr, "[EXEC] byte fault address=0x%04X value=0x%02X\n",
+            exec_byte_fault_addr, exec_byte_fault_value);
+  }
+  rom_consecutive_a12_low =
+      rom_consecutive_a12_low_env && rom_consecutive_a12_low_env[0] &&
+      strcmp(rom_consecutive_a12_low_env, "0") != 0;
+  if (rom_consecutive_a12_low)
+    fprintf(stderr, "[ROM] consecutive-read A12-low fault enabled\n");
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
     usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
     if (!usart.transfer_cycles) usart.transfer_cycles = 1;
