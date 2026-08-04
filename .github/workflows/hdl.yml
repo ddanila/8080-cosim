@@ -240,11 +240,22 @@ jobs:
           ./sync/fdc_check.sh
           ./sync/kp12_check.sh
 
-      # Any generated doc this job's guards rewrote must already be committed.
-      # Asserted as a tree diff rather than a hand-maintained file list, so a
-      # newly generated doc cannot be forgotten here.
+      # Every generated doc this job's writers rewrote must already be committed.
+      # Named explicitly, not as a tree diff: scripts/check_generated_report_coverage.py
+      # asserts each artifact appears in a `git diff --exit-code --` here, so generic
+      # CI catches list drift before this expensive job ever runs.
       - name: Check report freshness
-        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
+        run: |
+          git diff --exit-code -- \
+            docs/ekdos-fdc-probe.md \
+            docs/ekdos-jbasic-command-probe.md \
+            docs/ekdos-timing-reference.md \
+            sync/ekdos_timing_expected.json \
+            docs/ekdos-checkpoint-reference.md \
+            docs/ekdos-ioseq-reference.md \
+            docs/juku-top-checkpoint-load.md \
+            docs/juku-top-checkpoint-resume.md \
+            docs/fdc-readiness.md
 
   jukuravi-d0:
     needs: changes
@@ -259,9 +270,6 @@ jobs:
       # Fans its 31 vvp runs out across the runner's cores; see the script header.
       - name: Run Jukuravi D0 diagnostic guards
         run: ./sync/jukuravi_d0_check.sh
-
-      - name: Check report freshness
-        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
 
   subsystems:
     needs: changes
@@ -311,8 +319,31 @@ jobs:
           python3 scripts/report_video_pit_timing.py
           git diff --exit-code -- docs/video-pit-timing.md
 
+      # See the note in the fdc job: named explicitly so generic CI can verify
+      # the writer/artifact contract without running this job.
       - name: Check report freshness
-        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
+        run: |
+          git diff --exit-code -- \
+            docs/basic-cart-readiness.md \
+            docs/d2-ready-path-check.md \
+            docs/beeper-readiness.md \
+            docs/serial-handoff.md \
+            docs/ie7-counter-readiness.md \
+            docs/ie10-counter-readiness.md \
+            docs/ag3-oneshot-readiness.md \
+            docs/juku-top-periph-bus-check.md \
+            docs/juku-top-jbasic-verilator-probe.md \
+            docs/jmon33-hdl-probe.md \
+            docs/jmon33-interrupt-probe.md \
+            docs/jmon33-ready-probe.md \
+            docs/jmon33-command-probe.md \
+            docs/jmon33-idle-command-probe.md \
+            docs/ir16-readiness.md \
+            docs/kp14-readiness.md \
+            docs/video-timing-reference.md \
+            docs/video-readout-readiness.md \
+            docs/video-physical-probes.md \
+            docs/video-pit-timing.md
 
   minimal-vga:
     needs: changes
@@ -337,9 +368,6 @@ jobs:
           ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
           ./spinoffs/minimal-vga/sim/revb_tier_suite.sh
           python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
-
-      - name: Check report freshness
-        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
 
   # The single slowest gate in the suite (~426s). Two async clocks -- the CPU plus
   # the 25 MHz dot clock -- make this boot far heavier than the single-clock
@@ -376,8 +404,7 @@ jobs:
       - name: Install Icarus Verilog
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
+      # No generated-doc writers here, so no freshness assertion -- matching the
+      # pre-split workflow, where the freshness step ran before boot_check.sh.
       - name: Run boot regression check
         run: ./sync/boot_check.sh
-
-      - name: Check report freshness
-        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
