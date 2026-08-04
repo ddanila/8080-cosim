@@ -57,7 +57,10 @@ fail.
 This is not a static A12 fault, corrupt ROM data, general CPU PC-A12 failure,
 or failure isolated to one D2 wait class. It is bounded to dynamic D15
 address/select/READY/data timing during instruction transition. No component
-has yet been localized. Exact image, controls, raw logs, and next
+has yet been localized. One-at-a-time substitutions of donor D8 `.039` and
+donor D6 `.038` both preserve the exact cold boot and deterministic wrong
+`01h` marker, excluding the original D6 and D8 packages as unique causes.
+Exact image, controls, raw logs, and next
 discriminators are in
 [`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
 

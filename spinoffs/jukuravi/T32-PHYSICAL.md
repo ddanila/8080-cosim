@@ -98,6 +98,27 @@ no intentional M1-versus-data-read decode, so the remaining distinction must
 be dynamic: address/select/READY/data timing around D15 access. No individual
 IC is identified yet.
 
+### One-at-a-time PROM substitutions
+
+Two programmed selector/decoder PROMs were substituted individually from the
+donor processor board. Each donor produced the exact T32 cold boot before the
+settled `5A00h -> 1A00h` test:
+
+| Substitution | Other PROM | Cold boot | Marker |
+| --- | --- | --- | --- |
+| donor D8 `.039` | original D6 | exact `1B/D62B`, zero mismatches | `01h` |
+| donor D6 `.038` | original D8 restored | exact `1B/D62B`, zero mismatches | `01h` |
+
+The result is byte-for-byte unchanged from the original pair. The original D6
+and D8 packages are therefore excluded as unique causes. This does not exclude
+their socket contacts, surrounding conductors, shared pull-ups, or the timing
+of the selection topology itself.
+
+Evidence:
+
+- `sessions/t32-d8swap-boot/` and `sessions/t32-d8swap-5a00/`
+- `sessions/t32-d6swap-boot/` and `sessions/t32-d6swap-5a00/`
+
 The cheapest next discriminators are:
 
 1. run the same verified T32 chip on the donor processor board;
