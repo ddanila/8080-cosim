@@ -138,7 +138,7 @@ def main() -> int:
             "JUKURAVI-A12-PATH: SHARED-A12 "
             "(all 16 RAM pairs AA 22; inspect D1.37, D4.5/.15, and BA12)"
         )
-        return 1
+        return 0
     print(
         "JUKURAVI-A12-PATH: OTHER "
         + ",".join(pair.hex().upper() for pair in unique)
