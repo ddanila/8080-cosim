@@ -27,7 +27,8 @@
 // USART: JUKU_USART_PTY=auto prints a new slave path; a host-created PTY path
 //        may be supplied instead. JUKU_USART_TRANSFER_CYCLES controls the
 //        holding-to-shift delay; JUKU_USART_BYTE_CYCLES controls frame time.
-//        JUKU_USART_FAULT=tx_stuck holds the transmit input register full;
+//        JUKU_USART_FAULT=tx_stuck accepts each post-reset byte and then holds
+//        the transmit input register full until the next 8251 reset;
 //        tx_stuck_once:BYTE jams one matching write until an 8251 reset;
 //        tx_not_ready_once_after:COUNT jams between completed output bytes;
 //        tx_empty_low_after:COUNT holds only status bit 2 low thereafter.
@@ -325,7 +326,9 @@ static void usart_reset(void) {
     usart.fault_tx_stuck_once_recoveries++;
     fprintf(stderr, "[USART] one-shot TxRDY stall cleared by 8251 reset\n");
   }
-  usart.fault_tx_stuck = usart.fault_tx_stuck_permanent;
+  /* A reset empties the transmitter.  A configured permanent stall becomes
+     active only after the next data write fills the holding register. */
+  usart.fault_tx_stuck = 0;
   usart.expect_mode = 1;
   usart.mode_word = 0;
   usart.command = 0;
@@ -411,6 +414,8 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
   } else if ((usart.command & 0x01) && !usart.tx_holding_full) {
     usart.tx_data = value;
     usart.tx_holding_full = 1;
+    if (usart.fault_tx_stuck_permanent)
+      usart.fault_tx_stuck = 1;
     if (usart.fault_tx_stuck_once_enabled &&
         !usart.fault_tx_stuck_once_fired &&
         value == usart.fault_tx_stuck_once_value) {
@@ -888,7 +893,6 @@ int main(int argc, char** argv) {
   }
   if (usart_fault && usart_fault[0]) {
     if (strcmp(usart_fault, "tx_stuck") == 0) {
-      usart.fault_tx_stuck = 1;
       usart.fault_tx_stuck_permanent = 1;
     } else if (strncmp(usart_fault, "tx_stuck_once:", 14) == 0) {
       unsigned value;
