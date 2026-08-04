@@ -271,7 +271,7 @@ jobs:
       - name: Run Jukuravi D0 diagnostic guards
         run: ./sync/jukuravi_d0_check.sh
 
-  # The T28-T31 loader/recovery guards. These are documented in the Jukuravi
+  # The T28-T32 loader/recovery guards. These are documented in the Jukuravi
   # READMEs and were reachable only by hand -- no workflow and no git hook ran
   # them. They need no iverilog (cosim oracle, pty-driven host CLI, and nasm
   # reassembly of the committed .asm/.bin pairs), and they run in parallel well
@@ -299,6 +299,9 @@ jobs:
 
       - name: Run T31 low-4K and A12 guards
         run: ./sync/jukuravi_t31_check.sh
+
+      - name: Run T32 upper-ROM wait-class guards
+        run: ./sync/jukuravi_t32_check.sh
 
   subsystems:
     needs: changes

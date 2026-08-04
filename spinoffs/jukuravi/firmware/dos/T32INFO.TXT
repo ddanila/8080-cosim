@@ -1,0 +1,24 @@
+T32HOST.BIN - JUKURAVI WAIT-CLASS MONITOR
+
+ROM protocol version: 1Bh
+Self CRC16: D62Bh
+SHA256: 61832807cd7e52c02384844649776efa75bb3ef25795a8124d795230ed5b5ce2
+
+Program at offset 0000h into an AT28C64B and verify it.
+T32 retains the proven T31 low-4K monitor and loader API v2.
+Normal execution remains below 1000h.
+
+Upper-ROM diagnostic entries (marker at 4100h, then JMP 0A0Ch):
+  1100h  CAS-gated A11=0 A10=0 A9=0
+  1200h  no-wait A11=0 A10=0 A9=1
+  1400h  always-wait A11=0 A10=1 A9=0
+  1600h  always-wait A11=0 A10=1 A9=1
+  1800h  CAS-gated A11=1 A10=0 A9=0
+  1A00h  no-wait A11=1 A10=0 A9=1
+  1C00h  always-wait A11=1 A10=1 A9=0
+  1E00h  always-wait A11=1 A10=1 A9=1
+
+Run one entry at a time through a 3-byte RAM JMP trampoline, then
+reattach and read 4100h. Its byte must equal the entry high byte.
+A failed class will not return a READY banner or the right marker.
+Keep the existing 106Fh T31 result as the original CAS-gated evidence.

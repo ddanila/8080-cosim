@@ -29,6 +29,14 @@ T31 and every committed diagnostic image are generated artifacts with pinned
 checksums. Build and ROM-version details live in
 [`firmware/README.md`](firmware/README.md).
 
+The next physical diagnostic is T32 (`firmware/diag-d0-waitclass.bin`, DOS
+name `T32HOST.BIN`). It retains the complete T31 low-4K monitor and adds eight
+deliberate upper-D15 entry points covering the full `{A11,A10,A9}` wait-class
+matrix. Each entry stores a unique marker at `4100h` before returning to the
+loader, so the host can distinguish an exact successful fetch from a reset or
+an unrelated recovery. T32 is emulator-guarded but not yet physical evidence;
+T31 remains the proven bench reference until the new image is exercised.
+
 ## Host use
 
 The CLI defaults match the direct CS00015 setup: 2400 baud, one physical symbol
@@ -104,7 +112,7 @@ contract. Its important properties are:
 - host reattachment, partial-upload recovery, and RAM inspection without RESET;
 - CALL/RET execution with A and caller-selected RAM as the result interface.
 
-T28 introduced loader API v2; T29, T30, and T31 retain it. Revision names are
+T28 introduced loader API v2; T29 through T32 retain it. Revision names are
 kept only where an exact ROM image or its regression is being identified.
 
 ## Verification
@@ -114,12 +122,15 @@ Run the exact-image checks from the repository root:
 ```sh
 bash sync/jukuravi_t28_check.sh
 bash sync/jukuravi_t31_check.sh
+bash sync/jukuravi_t32_check.sh
 ```
 
 The T28 suite pins the reference implementation of loader API v2. The T31
 suite pins the currently burned image and executes the uploaded speaker demo
 through the real host/cosim PTY path. The same host code is used for cosim and
-the physical serial port.
+the physical serial port. The T32 suite additionally executes all eight
+upper-ROM entries, reattaches after each one, and verifies its unique RAM
+marker.
 
 The diagnostic ladder, fault injection coverage, image hashes, and older ROM
 revisions are documented in [`firmware/README.md`](firmware/README.md). That

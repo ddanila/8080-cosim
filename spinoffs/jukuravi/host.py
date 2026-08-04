@@ -500,7 +500,7 @@ class HostSession:
         else:
             self.banner_payload = frame.payload
         ack = protocol.encode_frame(protocol.TYPE_ACK, frame.payload)
-        if rom_version in (0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A):
+        if 0x11 <= rom_version <= 0x1B:
             challenge = bytes((0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA))
             previous: int | None = None
             for expected in challenge:
@@ -543,7 +543,7 @@ class HostSession:
                     previous = expected
                     break
             self.encoded_host_tx = True
-            self.host_symbol_repetitions = 7 if 0x12 <= rom_version <= 0x1A else 1
+            self.host_symbol_repetitions = 7 if 0x12 <= rom_version <= 0x1B else 1
             self.solicited_host_tx = rom_version >= 0x14
             return
         if rom_version == 0x10:

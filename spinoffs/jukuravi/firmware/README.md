@@ -820,6 +820,20 @@ returned A, and returned RAM under the same boundary plus the CS00015 D55
 fault. Programmer verification is the loader-ROM integrity evidence for this
 workaround image.
 
+`diag-d0-waitclass.bin` is T32, ROM version `1B`, self-CRC16 `D62B`, SHA-256
+`61832807cd7e52c02384844649776efa75bb3ef25795a8124d795230ed5b5ce2`.
+It preserves the exact T31 execution policy and loader end at `0FFFh`, then
+adds page-aligned diagnostic programs at `1100h`, `1200h`, `1400h`, `1600h`,
+`1800h`, `1A00h`, `1C00h`, and `1E00h`. These cover all eight `{A11,A10,A9}`
+combinations and therefore two CAS-gated, two no-wait, and four always-wait D2
+classes. Each program stores its high address byte at RAM `4100h` and jumps to
+the proven loader entry at `0A0Ch`. A host reattachment plus the unique marker
+proves the requested upper-ROM fetch actually ran; loader recovery alone is
+not accepted as evidence. `sync/jukuravi_t32_check.sh` first guards the normal
+low-4K monitor, then executes and identifies all eight entries in cosim with
+the CS00015 D55 fault injected. The DOS burn image and CRLF bench note are
+`dos/T32HOST.BIN` and `dos/T32INFO.TXT`.
+
 ### Upper-D15 data/fetch diagnostic snippets
 
 The `rom-a12-4000.*`, `rom-read-*`, `rom-exec-106f*`, and
