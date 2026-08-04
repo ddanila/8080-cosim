@@ -271,6 +271,35 @@ jobs:
       - name: Run Jukuravi D0 diagnostic guards
         run: ./sync/jukuravi_d0_check.sh
 
+  # The T28-T31 loader/recovery guards. These are documented in the Jukuravi
+  # READMEs and were reachable only by hand -- no workflow and no git hook ran
+  # them. They need no iverilog (cosim oracle, pty-driven host CLI, and nasm
+  # reassembly of the committed .asm/.bin pairs), and they run in parallel well
+  # inside the suite's critical path, so wiring them up costs no wall clock.
+  jukuravi-regression:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'jukuravi'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # nasm reassembles the committed loader snippets to prove the .bin files
+      # still match their sources; no HDL simulation here.
+      - name: Install toolchain
+        run: sudo apt-get update && sudo apt-get install -y gcc nasm
+
+      - name: Run T28 loader guards
+        run: ./sync/jukuravi_t28_check.sh
+
+      - name: Run T29 recovery guards
+        run: ./sync/jukuravi_t29_check.sh
+
+      - name: Run T30 TxEMPTY guards
+        run: ./sync/jukuravi_t30_check.sh
+
+      - name: Run T31 low-4K and A12 guards
+        run: ./sync/jukuravi_t31_check.sh
+
   subsystems:
     needs: changes
     if: needs.changes.outputs.scope == 'all'
