@@ -263,6 +263,17 @@ def check_rows(board: dict) -> list[list[object]]:
         )
     checks.append(
         (
+            "X3.7 is signal ground on CS00015",
+            marker(
+                "docs/owner-measured-facts.md",
+                "`X3.7` is signal ground on Arvutimuuseum machine `CS00015`.",
+                "owner continuity, 2026-08-01",
+            ),
+            "owner continuity, 2026-08-01",
+        )
+    )
+    checks.append(
+        (
             "Factory wire W20 closes D3.10 to the S_TTL connector island",
             has_node(board, "S_TTL_D3", "D3", "10")
             and has_node(board, "S_TTL_D3", "W20", "2")
@@ -390,6 +401,10 @@ def main() -> int:
             "- D11 serial-side pins are carried through the modeled D14/D32/D3/D12",
             "  output drivers and D104 receiver to X3 signal pins. D3.10 reaches",
             "  X3.3 through the explicit W20 assembly-wire closure.",
+            "- Owner continuity on Arvutimuuseum machine `CS00015` identifies X3 pin 7 as",
+            "  signal ground.  This closes the ground contact for the current diagnostic",
+            "  cable; it does not silently rewrite the still-separate generic A27 harness",
+            "  boundary in the reconstructed PCB without a corresponding board-side chase.",
             "- `sync/serial_check.sh` now proves a scoped USART behavior slice:",
             "  mode/command writes, the `TxRDY=0,TxEMPTY=0` holding-full state,",
             "  the `TxRDY=1,TxEMPTY=0` holding-to-shift transition, final",
