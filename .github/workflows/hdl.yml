@@ -5,6 +5,14 @@ name: CI (HDL — LVS + behavioral boot)
 # pushes (which never touch these paths) skip it entirely. The deep cosim value
 # guard (sync/cosim_check.sh) is intentionally NOT here -- it runs pre-push
 # instead (see .githooks/pre-push); this keeps the HDL CI to the boot regression.
+#
+# The behavioral guards are split across independent jobs that run in parallel.
+# Wall clock is the slowest job (b2-video, ~7 min) rather than the sum (~26 min).
+# The set of guards executed is unchanged; only their scheduling is.
+#
+# Jukuravi paths are listed individually rather than as spinoffs/jukuravi/**:
+# that glob also covered sessions/ (captured serial-log bytes) and the prose docs,
+# so committing run evidence used to trigger the whole HDL suite for nothing.
 
 on:
   workflow_dispatch:
@@ -13,7 +21,10 @@ on:
       - 'hdl/**'
       - 'cosim/**'
       - 'tests/**'
-      - 'spinoffs/jukuravi/**'
+      - 'spinoffs/jukuravi/firmware/**'
+      - 'spinoffs/jukuravi/host.py'
+      - 'spinoffs/jukuravi/protocol.py'
+      - 'spinoffs/jukuravi/nano/**'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -33,6 +44,7 @@ on:
       - 'spinoffs/minimal-vga/sim/revb_bus_assert_check.sh'
       - 'spinoffs/minimal-vga/sim/revb_tier_suite.sh'
       - 'spinoffs/minimal-vga/sim/revb_bringup_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_video_check.sh'
       - 'spinoffs/minimal-vga/roms/revb-bringup/**'
       - 'ref/juku-machine-facts.json'
       - 'scripts/check_spinoff_commons.py'
@@ -53,7 +65,10 @@ on:
       - 'hdl/**'
       - 'cosim/**'
       - 'tests/**'
-      - 'spinoffs/jukuravi/**'
+      - 'spinoffs/jukuravi/firmware/**'
+      - 'spinoffs/jukuravi/host.py'
+      - 'spinoffs/jukuravi/protocol.py'
+      - 'spinoffs/jukuravi/nano/**'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -73,6 +88,7 @@ on:
       - 'spinoffs/minimal-vga/sim/revb_bus_assert_check.sh'
       - 'spinoffs/minimal-vga/sim/revb_tier_suite.sh'
       - 'spinoffs/minimal-vga/sim/revb_bringup_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_video_check.sh'
       - 'spinoffs/minimal-vga/roms/revb-bringup/**'
       - 'ref/juku-machine-facts.json'
       - 'scripts/check_spinoff_commons.py'
@@ -94,6 +110,54 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Resolves how much of the suite this change can possibly affect. This is an
+  # allow list of *confined* scopes and it fails safe: unless every changed file
+  # sits inside one known-isolated area, scope is "all" and every job runs. A
+  # shared change (hdl/**, cosim/**, sync/**, ...) therefore always runs
+  # everything -- which matters, because the minimal-vga sims compile the shared
+  # hdl/devices.v, hdl/juku_top.v and hdl/vendor/ sources.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      scope: ${{ steps.scope.outputs.scope }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Resolve changed scope
+        id: scope
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -u
+          scope=all
+          files=""
+          case "$EVENT" in
+            pull_request)
+              git fetch --no-tags --depth=1 origin "$BASE_REF" >/dev/null 2>&1 || true
+              files=$(git diff --name-only "origin/$BASE_REF...HEAD" 2>/dev/null || true)
+              ;;
+            push)
+              case "$BEFORE" in
+                ''|0000000000000000000000000000000000000000) ;;
+                *) files=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" 2>/dev/null || true) ;;
+              esac
+              ;;
+          esac
+          if [ -n "$files" ]; then
+            if ! printf '%s\n' "$files" | grep -qvE '^(spinoffs/jukuravi/|tests/jukuravi)'; then
+              scope=jukuravi
+            elif ! printf '%s\n' "$files" | grep -qvE '^spinoffs/minimal-vga/'; then
+              scope=minimal-vga
+            fi
+          fi
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "resolved scope: $scope"
+          printf '%s\n' "$files" | sed 's/^/  changed: /'
+
   lvs:
     runs-on: ubuntu-latest
     steps:
@@ -145,22 +209,18 @@ jobs:
       - name: Run Rev A PPI physical LVS
         run: spinoffs/minimal-vga/sync/rev_a_ppi_lvs.sh
 
-  behavioral:
+  # Every behavioral job below installs the same toolchain: Icarus runs the vm80a
+  # HDL sims, gcc builds the cosim oracle, g++ builds the portable Jukuravi Nano
+  # bridge test.
+  fdc:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      # Icarus runs the vm80a HDL sims; gcc builds the cosim oracle and g++
-      # builds the portable Jukuravi Nano bridge test.
-      # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL
-      # sim levels, bounded to 6000 video writes (~60s, never the slow full banner),
-      # and asserts every level is byte-for-byte identical to cosim -- i.e. the merge
-      # (the schematic structure executing the firmware) cannot silently regress.
       - name: Install Icarus Verilog
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
-
-      - name: Initialize pinned tv80 core
-        run: git submodule update --init spinoffs/minimal-vga/external/tv80
 
       - name: Run FDC regression checks
         run: |
@@ -180,6 +240,39 @@ jobs:
           ./sync/fdc_check.sh
           ./sync/kp12_check.sh
 
+      # Any generated doc this job's guards rewrote must already be committed.
+      # Asserted as a tree diff rather than a hand-maintained file list, so a
+      # newly generated doc cannot be forgotten here.
+      - name: Check report freshness
+        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
+
+  jukuravi-d0:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'jukuravi'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
+
+      # Fans its 31 vvp runs out across the runner's cores; see the script header.
+      - name: Run Jukuravi D0 diagnostic guards
+        run: ./sync/jukuravi_d0_check.sh
+
+      - name: Check report freshness
+        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
+
+  subsystems:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
+
       - name: Run fast subsystem guards
         run: |
           ./sync/basic_cart_check.sh
@@ -189,7 +282,6 @@ jobs:
           git diff --exit-code -- docs/d6-runtime-path-diagnostic.md
           python3 scripts/validate_rt4_dump.py --self-test
           python3 scripts/validate_re3_dump.py --self-test
-          ./sync/jukuravi_d0_check.sh
           ./sync/beeper_check.sh
           ./sync/serial_check.sh
           ./sync/ie7_check.sh
@@ -199,10 +291,6 @@ jobs:
           ./sync/ag3_check.sh
           ./sync/juku_top_periph_bus_check.sh
           ./sync/jmon33_hdl_probe.sh
-          ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
-          ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
-          ./spinoffs/minimal-vga/sim/revb_tier_suite.sh
-          python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
 
       - name: Run Monitor and BASIC reference guards
         run: |
@@ -223,38 +311,69 @@ jobs:
           python3 scripts/report_video_pit_timing.py
           git diff --exit-code -- docs/video-pit-timing.md
 
-      - name: Check boot report freshness
+      - name: Check report freshness
+        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
+
+  minimal-vga:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'minimal-vga'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
+
+      - name: Initialize pinned tv80 core
+        run: git submodule update --init spinoffs/minimal-vga/external/tv80
+
+      # B2 runs as its own job below, so this covers the B0/B1 tiers.
+      - name: Run VJUGA and rev B tier guards
+        env:
+          REVB_TIER_SKIP_B2: '1'
         run: |
-          git diff --exit-code -- \
-            docs/ekdos-fdc-probe.md \
-            docs/ekdos-jbasic-command-probe.md \
-            docs/ekdos-timing-reference.md \
-            sync/ekdos_timing_expected.json \
-            docs/ekdos-checkpoint-reference.md \
-            docs/ekdos-ioseq-reference.md \
-            docs/juku-top-checkpoint-load.md \
-            docs/juku-top-checkpoint-resume.md \
-            docs/juku-top-periph-bus-check.md \
-            docs/juku-top-jbasic-verilator-probe.md \
-            docs/fdc-readiness.md \
-            docs/basic-cart-readiness.md \
-            docs/d2-ready-path-check.md \
-            docs/beeper-readiness.md \
-            docs/serial-handoff.md \
-            docs/ie7-counter-readiness.md \
-            docs/ie10-counter-readiness.md \
-            docs/ag3-oneshot-readiness.md \
-            docs/jmon33-hdl-probe.md \
-            docs/jmon33-interrupt-probe.md \
-            docs/jmon33-ready-probe.md \
-            docs/jmon33-command-probe.md \
-            docs/jmon33-idle-command-probe.md \
-            docs/ir16-readiness.md \
-            docs/kp14-readiness.md \
-            docs/video-timing-reference.md \
-            docs/video-readout-readiness.md \
-            docs/video-physical-probes.md \
-            docs/video-pit-timing.md
+          ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
+          ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
+          ./spinoffs/minimal-vga/sim/revb_tier_suite.sh
+          python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
+
+      - name: Check report freshness
+        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
+
+  # The single slowest gate in the suite (~426s: roughly 1s of wall clock per
+  # simulated video write). Its own job so it does not serialize the rest.
+  b2-video:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'minimal-vga'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
+
+      - name: Initialize pinned tv80 core
+        run: git submodule update --init spinoffs/minimal-vga/external/tv80
+
+      - name: Run rev B B2 video-card guard
+        run: ./spinoffs/minimal-vga/sim/revb_video_check.sh
+
+  # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL sim
+  # levels, bounded to 6000 video writes (~60s, never the slow full banner), and
+  # asserts every level is byte-for-byte identical to cosim -- i.e. the merge
+  # (the schematic structure executing the firmware) cannot silently regress.
+  boot:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       - name: Run boot regression check
         run: ./sync/boot_check.sh
+
+      - name: Check report freshness
+        run: git diff --exit-code -- docs sync/ekdos_timing_expected.json
