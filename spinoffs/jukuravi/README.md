@@ -29,13 +29,21 @@ T31 and every committed diagnostic image are generated artifacts with pinned
 checksums. Build and ROM-version details live in
 [`firmware/README.md`](firmware/README.md).
 
-The next physical diagnostic is T32 (`firmware/diag-d0-waitclass.bin`, DOS
+The current upper-ROM diagnostic is T32 (`firmware/diag-d0-waitclass.bin`, DOS
 name `T32HOST.BIN`). It retains the complete T31 low-4K monitor and adds eight
 deliberate upper-D15 entry points covering the full `{A11,A10,A9}` wait-class
 matrix. Each entry stores a unique marker at `4100h` before returning to the
 loader, so the host can distinguish an exact successful fetch from a reset or
-an unrelated recovery. T32 is emulator-guarded but not yet physical evidence;
-T31 remains the proven bench reference until the new image is exercised.
+an unrelated recovery. Its CS00015 cold boot and upper-ROM physical results are
+recorded in [`T32-PHYSICAL.md`](T32-PHYSICAL.md); T31 remains the stable loader
+and application reference.
+
+After a successful T32 boot leaves loader API v2 resident, exercise and
+identify the complete upper-ROM matrix without another RESET:
+
+```sh
+python3 spinoffs/jukuravi/probe_waitclass.py --port /dev/ttyUSB0
+```
 
 ## Host use
 

@@ -43,12 +43,31 @@ IC die alone is defective: replacement or substitution is required to
 distinguish the package from its local socket, solder joints, supply bypass,
 and board-level channel-2 connections.
 
+### D15 upper-ROM execution timing
+
+T32 (`1B/D62B`) broadened the earlier T31 upper-ROM experiment across all
+three reconstructed D2 wait classes. RAM-resident code reads `1A00h` correctly
+as `3Eh` on all sixteen samples, and standalone CALL/RET programs execute
+correctly from high-A12 RAM at `5000h` and `5A00h`. Instruction entry into D15
+at `1A00h` nevertheless fails to write its burned `1Ah` marker; from matched
+RAM address `5A00h` it writes deterministic wrong value `01h` on repeated
+runs. CAS-gated `1100h`, unwaited `1200h`, and always-wait `1400h` entries all
+fail.
+
+This is not a static A12 fault, corrupt ROM data, general CPU PC-A12 failure,
+or failure isolated to one D2 wait class. It is bounded to dynamic D15
+address/select/READY/data timing during instruction transition. No component
+has yet been localized. Exact image, controls, raw logs, and next
+discriminators are in
+[`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
+
 ## Current CS00015 fault summary
 
 | Location | Finding | Confidence / next discriminator |
 | --- | --- | --- |
 | D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
+| D15 access path | Upper-ROM data reads pass, but execution fails across all D2 wait classes | Dynamic timing fault; cross-board T32 run, second ROM device, then scope D15/READY timing |
 
 ## Serial connector measurement
 

@@ -9,6 +9,8 @@ trap 'rm -rf "$tmp"' EXIT
 python3 spinoffs/jukuravi/firmware/build_d0_waitclass.py --check
 python3 -m py_compile \
   spinoffs/jukuravi/firmware/build_d0_waitclass.py \
+  spinoffs/jukuravi/probe_pc_a12.py \
+  spinoffs/jukuravi/probe_waitclass.py \
   tests/jukuravi_t32_low4k_test.py \
   tests/jukuravi_t32_waitclass_test.py
 
