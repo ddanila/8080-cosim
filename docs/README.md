@@ -35,6 +35,10 @@ history.
   remaining D30 section-B conductors and the exact continuity closure required.
 - `8286-pinout-audit.md` — physical D4/D107/D23-D25/D29/D100 channel pinouts
   and routed high-address/command permutation guard.
+- `phi2ttl-d29-clock-route.md` — exact `.009` and owner-verified correction of
+  the PHI2TTL branch through D30.3/D29.1 and the post-R35 D35.13 node; this
+  supersedes the older reconstructed D29.1/MEMW attribution pending atomic
+  replica migration.
 - `8282-pinout-audit.md` — complete physical D58 DRAM read-latch pinout,
   power, and routed data-channel guard.
 - `package-endpoint-coverage.md` — repository-wide guard against undeclared
