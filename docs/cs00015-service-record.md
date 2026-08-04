@@ -54,15 +54,24 @@ uses the exact A12-low alias. Repeated examples include `1A00: 3E 43` where
 `0E` is `0A05`; lower control `0A00: C3 43` passes.
 
 This is not a static A12 fault, corrupt ROM data, general data-bit fault, or
-failure isolated to one D2 wait class. The electrical boundary is D15 pin 2
-and `D1.37 -> D4.5 -> D4.15/BA12 -> D15.2`. T31 and T32 used two different
-physical AT28C64B packages; both show correct isolated upper data and broken
-upper execution on CS00015. Only T32 has the exact consecutive-pair capture,
-so its individual package is not completely excluded, but D4/BA12/D15 socket
-pin 2 is the leading common boundary and D1 is next. A consecutive high-A12
-RAM pair distinguishes a D15-local fault from this shared address path.
-One-at-a-time substitutions of donor D8 `.039` and donor D6 `.038` preserve
-the result, excluding the original D6 and D8 packages as unique causes.
+failure isolated to one D2 wait class. T31 and T32 used two different physical
+AT28C64B packages; both show correct isolated upper data and broken upper
+execution on CS00015. One-at-a-time substitutions of donor D8 `.039` and donor
+D6 `.038` preserve the result, excluding the original D6 and D8 packages as
+unique causes.
+
+The later cross-memory probe changes the localization materially. In all-RAM
+mode, isolated reads return the deliberately written `66 C7` at both
+`1A00/1A01` and `DA00/DA01`, while consecutive `LHLD` reads return `66 FF` and
+`66 55`. Through the ROM mappings, the same classes return `3E 43` and
+`3E 55`. A separate `4A00/5A00` RAM pair passes sixteen times. The fault is
+therefore a region-dependent second-cycle failure on the shared address/timing
+path, not a D15/socket-pin-2 fault. Clearing physical BA12 before memory decode
+unifies the observations: `1A01 -> 0A01`, while `DA01 -> CA01` also leaves the
+mode-1 high-ROM overlay. The final deliberately seeded alias proof is prepared
+for the next successful loader boot. Owner tracing around D15 pin 2 found its
+local PCB conductor intact, consistent with moving the diagnosis away from a
+D15-local open trace.
 
 Cosim now reproduces the complete host-visible signature. Clearing ROM A12
 after the first uninterrupted D15 read loses the loader at `1100h`, `1200h`,
@@ -72,7 +81,9 @@ to loader entry `0A0Ch` without changing the RAM premarker. The separate
 uploaded stream was also not executed normally. Replacing its first fetched
 `3Eh` with `00h` explains both CALL marker `00` and JUMP marker `01`, because
 loader API v2 enters those modes with `A=00/01` respectively. These models are
-guarded fault reproductions, not yet pin-voltage measurements.
+guarded fault reproductions, not yet pin-voltage measurements. The newer
+`JUKU_CONSECUTIVE_A12_LOW_PAGES=1,D` injection applies A12 loss before ROM/RAM
+decoding and passes the clean/faulted pure-RAM alias matrix.
 Exact image, controls, raw logs, and next
 discriminators are in
 [`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
@@ -89,8 +100,8 @@ provenance only and must not be read as a diagnosis of the original D6.
 | --- | --- | --- |
 | D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
-| D15 access path | Second consecutive upper read uses exact A12-low alias; T31/T32 used different EEPROM packages | Probe consecutive high-A12 RAM, then compare D4.15 and D15.2 |
-| `5A00h` execution | First fetched byte behaves as `00h`; explains CALL/JUMP markers `00/01` | Run distinct `4A00/5A00` RAM pair probe; inspect D1/D4/READY if global |
+| Shared A12/timing path | Isolated ROM/RAM reads pass; consecutive `1Axx` and `DAxx` reads fail, while `5Axx` passes | Run seeded `0A/1A`, `4A/5A`, `8A/9A`, `CA/DA` alias matrix; compare D1.37, D4.15, and READY |
+| `5A00h` execution | First fetched byte behaves as `00h`; explains CALL/JUMP markers `00/01` | Treat as a separate RAM execution-cycle symptom until the four-class matrix closes it |
 
 ## Serial connector measurement
 

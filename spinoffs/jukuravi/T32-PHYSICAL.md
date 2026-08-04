@@ -90,6 +90,48 @@ data distinction. The reusable probe is
 `firmware/rom-read-pair-4000.asm`; raw sessions are under
 `sessions/t32-read-pair-{0a00,1a00,1a01,1a02,1a04}-fresh/`.
 
+## Cross-ROM/RAM A12 localization
+
+The first shared-path probe wrote `11 22` at RAM `4A00h` and `AA BB` at RAM
+`5A00h`. Sixteen `LHLD 5A00h` pairs all returned `AA BB`. That proves D1,
+D4, and BA12 can carry two consecutive high-A12 RAM reads in this address
+class; it does not prove that every address/timing class passes.
+
+Evidence: `sessions/t32-a12-path-boot/` and
+`sessions/t32-a12-path-physical/`.
+
+A later RAM-resident probe configured PPI #0 PC3..PC0 as outputs, exercised
+normal mode 0, high-ROM mode 1, and all-RAM mode 3, and restored the reset
+all-input configuration before returning. Port C readbacks `B1h` and `B3h`
+prove that modes 1 and 3 were physically selected. It first wrote `66 C7` to
+the underlying RAM pairs at `1A00h` and `DA00h`, then compared isolated and
+consecutive reads:
+
+| Mapping/read | Physical result | Repetitions |
+| --- | --- | ---: |
+| all-RAM isolated `1A00h`, then isolated `1A01h` | `66 C7` | one complete check |
+| all-RAM consecutive `LHLD 1A00h` | `66 FF` | before and after overlay reads |
+| mode-0 D15 consecutive `LHLD 1A00h` | `3E 43` | 8 |
+| all-RAM isolated `DA00h`, then isolated `DA01h` | `66 C7` | one complete check |
+| all-RAM consecutive `LHLD DA00h` | `66 55` | before and after overlay reads |
+| mode-1 D15 consecutive `LHLD DA00h` | `3E 55` | 8 |
+
+The sentinel writes therefore succeeded. A RAM instruction fetch between the
+two target reads makes both bytes correct; only the second uninterrupted read
+is corrupt. This excludes D15, its socket, and D15 pin 2 as the unique fault
+site. It also explains why the high-overlay second byte need not be another
+ROM byte: if physical BA12 falls, logical `DA01h` becomes `CA01h`, below the
+mode-1 ROM window, and the RAM path supplies the byte.
+
+The existing values at the proposed aliases were not deliberately seeded in
+that run, so `1A01h -> 0A01h` and `DA01h -> CA01h` remain a unified, exact
+hypothesis rather than the final alias proof. The next probe,
+`firmware/ram-a12-alias-regions-4000.asm`, writes distinct target and alias
+bytes in all four A15:A14 classes before sampling them. Its clean and
+page-selective fault results are guarded in cosim. Evidence for the physical
+cross-memory result is
+`sessions/t32-rom-overlay-source-isolated-physical/20260804T202216.721145Z.*`.
+
 Instruction execution at the same address did not produce the required `1Ah`
 marker:
 
@@ -117,28 +159,32 @@ Positive evidence:
 
 ## Bounded conclusion
 
-On CS00015, isolated upper-D15 reads are correct, but the second uninterrupted
-D15 read deterministically uses A12 low. Failure spans all three reconstructed
-D2 wait classes. This excludes corrupt ROM contents, a static A12 fault, a
-general data-bit fault, and a fault confined to one D2 wait class.
+On CS00015, isolated reads are correct, but the second uninterrupted read in
+at least the `1Axx` and `DAxx` classes behaves consistently with physical A12
+low. The same symptom occurs in ROM and all-RAM modes, while the `4Axx/5Axx`
+RAM control passes. The fault is therefore address/timing-class dependent,
+not D15-local. This excludes corrupt ROM contents, a static A12 fault, a
+general data-bit fault, D15/socket pin 2 as the unique cause, and a fault
+confined to one reconstructed D2 class.
 
-The exact electrical boundary is D15 A12 pin 2 and its source path:
-`D1.37/A12 -> D4.5`, then `D4.15/BA12 -> D15.2`. D15 `/CS` is D8.4 and `/OE`
-is D5.24 `MEMR`. D6 and D8 package substitutions did not change the result.
+The shared electrical path is `D1.37/A12 -> D4.5`, then
+`D4.15/BA12` to D15.2, D16.2, the RAM/address-decode consumers, and the rest of
+the buffered bus. D6 and D8 package substitutions did not change the result.
 The remaining component-level alternatives are:
 
-1. D4's A12 channel, the BA12 conductor, or D15 socket pin 2 fails during the
-   burst;
-2. less likely, D1 supplies a transiently wrong A12 which D4 faithfully
-   buffers;
-3. the fitted T32 AT28C64B behaves incorrectly while `/CS` remains asserted.
+1. D1 emits A12 incorrectly during the affected second cycle, or D4's A12
+   channel fails to preserve it dynamically;
+2. the D2/D30/R29 READY and memory-cycle timing path ends the affected cycle
+   while the CPU/buffered address is no longer valid; donor D2 produced the
+   same symptom, so the original D2 package is not the unique cause;
+3. a shared BA12 conductor/load or surrounding timing input is marginal in
+   only some high-address classes.
 
 The owner confirms that T31 and T32 were burned into two different physical
 AT28C64B packages. Both show correct isolated upper-D15 data with broken
 upper-D15 execution on CS00015. The exact consecutive-pair alias was measured
-only with T32, so its individual device is not mathematically excluded, but a
-shared board-side A12 fault now has substantially stronger evidence than a bad
-EEPROM package.
+only with T32, but the same second-cycle failure in all-RAM mode excludes
+either EEPROM package as the common explanation.
 
 The [Microchip AT28C64B specification](https://ww1.microchip.com/downloads/en/DeviceDoc/doc0270.pdf)
 defines an ordinary asynchronous SRAM-like read:
@@ -148,9 +194,15 @@ behavior is therefore a device/path fault, not expected EEPROM operation.
 
 ### Exact cosim reproduction
 
-`JUKU_ROM_CONSECUTIVE_A12_LOW=1` models the measured D15 behavior: after the
-first read in an uninterrupted ROM burst, physical ROM A12 is cleared. It
-reproduces all of these physical outcomes:
+`JUKU_CONSECUTIVE_A12_LOW_PAGES=1,D` applies the current cross-memory working
+model before overlay decoding: from the second uninterrupted read within a
+listed logical 4 KiB page, physical A12 is cleared. The pure-RAM alias matrix
+passes both clean and faulted simulation, including `1A01h -> 0A01h` and
+`DA01h -> CA01h`. The page list is explicit because physical `5Axx`
+consecutive RAM reads pass and `9Axx` is pending a fresh hardware run.
+
+The older `JUKU_ROM_CONSECUTIVE_A12_LOW=1` switch remains as a historical
+ROM-local regression. It reproduces these earlier physical outcomes:
 
 - `1100h`, `1200h`, and `1400h` lose the loader;
 - the consecutive-pair bytes above alias to their exact lower-half values;
@@ -200,15 +252,16 @@ Evidence:
 
 The cheapest next discriminators are:
 
-1. place distinct pairs at RAM `4A00h` and `5A00h`, then execute `LHLD 5A00h`
-   from low-A12 RAM: an upper pair proves the fault is D15-local, while a
-   mixed upper/lower pair implicates D1/D4/BA12 globally;
-2. run the same verified T32 chip on the donor processor board;
-3. compare D4.15 and D15.2 A12, D15.20 `/CS`, D15.22 `/OE`, and READY for the
-   successful RAM-resident `MOV A,M` read and the failing `5A00h -> 1A00h`
-   instruction transition with a scope or logic analyzer;
+1. on the next successful T32 loader boot, run
+   `firmware/ram-a12-alias-regions-4000.asm`; it distinguishes target bytes
+   from deliberately seeded A12-low aliases in the `1A`, `5A`, `9A`, and `DA`
+   classes;
+2. compare D1.37 and D4.15/BA12 with READY at the affected second read using a
+   scope or logic analyzer: disagreement localizes D4, while matching early
+   A12 loss moves upstream to D1/READY timing;
+3. run the same verified T32 chip on the donor processor board;
 4. substitute D1 only if cross-board or timing measurements still implicate
-   the CPU-facing address cycle rather than D15 selection.
+   the CPU-facing cycle.
 
 Earlier no-delay marker runs and the full-half read attempted after an abnormal
 upper jump were superseded and are intentionally not retained as evidence.

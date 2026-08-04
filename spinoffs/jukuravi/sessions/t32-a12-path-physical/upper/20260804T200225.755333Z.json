@@ -1,0 +1,200 @@
+{
+  "attempts": [
+    {
+      "banner_seen": false,
+      "decoded_frames": 5,
+      "dtr_sequence_completed": false,
+      "error": null,
+      "loader": {
+        "address": "0x5A00",
+        "attach": {
+          "baseline_token": "0xC6",
+          "idle_requests": 9,
+          "resync_attempts": 1,
+          "resync_transaction": 255
+        },
+        "attached": true,
+        "bytes": 2,
+        "chunks": [
+          {
+            "address": "0x5A00",
+            "attempts": 1,
+            "bytes": 2,
+            "crc16": "F90A",
+            "index": 0,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 3.197784,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 2,
+            "verified": true
+          }
+        ],
+        "config": {
+          "attempts": 1,
+          "transaction": 1,
+          "votes": 1
+        },
+        "control_only": false,
+        "end_exclusive": "0x5A02",
+        "error": null,
+        "heartbeat": null,
+        "probe": {
+          "attempts": 1,
+          "cookie_hex": "5432380055AAC6C7",
+          "transaction": 0
+        },
+        "ready": {
+          "api_base": "0x0A00",
+          "api_version": 2,
+          "capabilities": "0x3FFF",
+          "default_votes": 7,
+          "effective_chunk_bytes": 32,
+          "guard_ms": 6.0,
+          "load_end_exclusive": "0xC000",
+          "load_min": "0x4000",
+          "max_data_bytes": 32,
+          "readback": true,
+          "resume": false,
+          "retry_limit": 3,
+          "stack_top": "0xD000",
+          "workspace": "0xC000"
+        },
+        "requested": true,
+        "run": {
+          "acknowledged": false,
+          "address": null,
+          "requested": false
+        },
+        "sha256": "d798d1fac6bd4bb1c11f50312760351013379a0ab6f0a8c0af8a506b96b2525a",
+        "source": "/tmp/jukuravi-a12-path-v0xbw0bu/UPPER.BIN",
+        "status": "loaded"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "ok",
+      "received_bytes": 2117,
+      "transmitted_bytes": 2032
+    }
+  ],
+  "diagnostic_status": null,
+  "error": null,
+  "finished_utc": "2026-08-04T20:03:08.386978Z",
+  "frames": [
+    {
+      "payload_hex": "FF002903000007000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0000230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "01002404000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "020025075A0002F90A00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0300265A0002AABB",
+      "type": "0xB1"
+    }
+  ],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x5A00",
+    "attach": {
+      "baseline_token": "0xC6",
+      "idle_requests": 9,
+      "resync_attempts": 1,
+      "resync_transaction": 255
+    },
+    "attached": true,
+    "bytes": 2,
+    "chunks": [
+      {
+        "address": "0x5A00",
+        "attempts": 1,
+        "bytes": 2,
+        "crc16": "F90A",
+        "index": 0,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 3.197784,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 1,
+      "transaction": 1,
+      "votes": 1
+    },
+    "control_only": false,
+    "end_exclusive": "0x5A02",
+    "error": null,
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 0
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": true,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": false,
+      "address": null,
+      "requested": false
+    },
+    "sha256": "d798d1fac6bd4bb1c11f50312760351013379a0ab6f0a8c0af8a506b96b2525a",
+    "source": "/tmp/jukuravi-a12-path-v0xbw0bu/UPPER.BIN",
+    "status": "loaded"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 2117,
+  "rx_log": "20260804T200225.755333Z.rx.bin",
+  "started_utc": "2026-08-04T20:02:25.755333Z",
+  "status": "ok",
+  "transmitted_bytes": 2032,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260804T200225.755333Z.tx.bin"
+}

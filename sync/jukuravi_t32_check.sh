@@ -12,11 +12,16 @@ python3 -m py_compile \
   spinoffs/jukuravi/probe_a12_path.py \
   spinoffs/jukuravi/probe_pc_a12.py \
   spinoffs/jukuravi/probe_waitclass.py \
+  tests/jukuravi_ram_a12_alias_test.py \
   tests/jukuravi_t32_low4k_test.py \
   tests/jukuravi_t32_waitclass_test.py
 nasm -f bin -DTARGET=0x1A00 -DEXPECTED0=0x3E -DEXPECTED1=0x1A \
   -o "$tmp/rom-read-pair.bin" \
   spinoffs/jukuravi/firmware/rom-read-pair-4000.asm
+nasm -f bin -o "$tmp/rom-overlay-source.bin" \
+  spinoffs/jukuravi/firmware/rom-overlay-source-4000.asm
+nasm -f bin -o "$tmp/ram-a12-alias-regions.bin" \
+  spinoffs/jukuravi/firmware/ram-a12-alias-regions-4000.asm
 
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
@@ -26,6 +31,9 @@ python3 tests/jukuravi_t32_low4k_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-waitclass.bin
 python3 tests/jukuravi_t32_waitclass_test.py \
   "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-waitclass.bin
+python3 tests/jukuravi_ram_a12_alias_test.py \
+  "$tmp/trace" spinoffs/jukuravi/firmware/diag-d0-waitclass.bin \
+  "$tmp/ram-a12-alias-regions.bin"
 
 # Reproduce the complete CS00015 upper-ROM failure signature.  Once D15 has
 # supplied one byte, consecutive reads alias through A12=0.  That loses the
