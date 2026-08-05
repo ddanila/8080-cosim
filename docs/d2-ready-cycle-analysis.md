@@ -1,6 +1,18 @@
 # D2 READY wait classes and the A12 fetch/read premise
 
-Status: **DESK ANALYSIS / FETCH-SELECTIVE PREMISE NOT SUPPORTED**
+Status: **DESK ANALYSIS / FETCH-SELECTIVE PREMISE NOT SUPPORTED /
+CAS-GATED CONFINEMENT REFUTED BY T32**
+
+Supersession note. The T32 bench session
+([`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md))
+ran the wait-class execution matrix this report proposed: entries at
+`1100h` (CAS-gated), `1200h` (no wait) and `1400h` (always wait) all
+failed, so the failure is **not** confined to the CAS-gated class and this
+report's surviving-hypothesis section is refuted where it says otherwise.
+The wait-class derivation, the fetch/read argument, and the refutations of
+the slow-EPROM and code-placement hypotheses stand. The measured fault is
+a consecutive-read A12-low alias; the follow-up plan is
+[`../spinoffs/jukuravi/T33-PLAN.md`](../spinoffs/jukuravi/T33-PLAN.md).
 
 This generated report re-derives, from the validated D2 `.037` READY PROM,
 what wait treatment each page of the D15 window receives, and then asks
@@ -186,11 +198,14 @@ Refuted:
 - **A fetch-selective board fault.** No decode, select or wait input on
   this machine can distinguish an M1 fetch from a memory read.
 
-Still open:
+Still open (as amended by T32):
 
-- The real asymmetry is **CAS-gated versus unwaited**, not fetch versus
-  read, and not upper versus lower. A fault in the CAS-gated release path
-  fits every observation.
+- This report originally concluded that a fault in the CAS-gated release
+  path fits every observation. T32 refuted the confinement: execution fails
+  in all three wait classes, and the measured fault is a consecutive-read
+  A12-low alias present in ROM and all-RAM modes alike. Whether wait states
+  affect the *read-pair* form at all is untested and is probe 2 of
+  `T33-PLAN.md`.
 - `CAS` originates at D36.11 through R57, and its own input `D36_CAS_IN`
   (D36.12/.13) is an explicit unresolved continuity boundary -
   `docs/memory-timing-boundary.md` is headed "CAS SOURCE BOUNDARY
