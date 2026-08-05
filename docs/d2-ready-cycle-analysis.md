@@ -198,86 +198,21 @@ Refuted:
 - **A fetch-selective board fault.** No decode, select or wait input on
   this machine can distinguish an M1 fetch from a memory read.
 
-Still open (as amended by T32):
+T32 has now closed the component question that motivated this report. The
+failure is not confined to CAS-gated pages: execution fails in all three ROM
+classes, and correctly initialized all-RAM LHLD pairs alias in all four
+`{A10,A9}` classes. POP and SHLD writes do the same.
 
-- This report originally concluded that a fault in the CAS-gated release
-  path fits every observation. T32 refuted the confinement: execution fails
-  in all three wait classes, and the measured fault is a consecutive-read
-  A12-low alias present in ROM and all-RAM modes alike. Whether wait states
-  affect the *read-pair* form at all is untested and is probe 2 of
-  `T33-PLAN.md`.
-- `CAS` originates at D36.11 through R57, and its own input `D36_CAS_IN`
-  (D36.12/.13) is an explicit unresolved continuity boundary -
-  `docs/memory-timing-boundary.md` is headed "CAS SOURCE BOUNDARY
-  PENDING". The same rail carries a video-cycle branch. CS00015's one
-  confirmed fault (D55, per `docs/cs00015-service-record.md`) sits in the
-  adjacent D54/D55/D56 video-timing cluster. A shared root cause is
-  plausible but **not established**, and cannot be until the CAS source is
-  closed.
-- The five D2 address inputs (`A10`, `A14`, `A12`, `A15`, `A9` on pins
-  1/3/5/6/7) are assigned by "scan + July-2026 D2/D4 solder local fits",
-  not by traced continuity. The page geometry of the table above therefore
-  inherits that reconstruction risk. The measured asymmetry on CS00015 does
-  not - it is an observation, whatever the pin order turns out to be.
-- `docs/cs00015-service-record.md` records three bytes of the machine's
-  originally fitted D15 differing from the official image, with the offsets
-  explicitly not retained. Those offsets should be captured; if any fall in
-  a CAS-gated page it would sharpen this picture.
+More decisively, an `INX D` setup lost an already-high A12 in the retained DE
+register before a later STAX, despite intervening CALL/RET and unrelated bus
+cycles. Boundary probes show that carry into A12 still works. The fitted fault
+is therefore D1's 16-bit increment path, not D2's class selection.
 
-## Cheapest next discriminators
+The exact ROM read-pair matrix is now complete. CAS-gated `1000/1100`, no-wait
+`1200`, and always-wait `1400` all returned the exact A12-low second byte in
+all sixteen samples. No D2 class masks the D1 error. Raw evidence and expected
+bytes are in `spinoffs/jukuravi/T33-PLAN.md`.
 
-1. **Upper-half unwaited trampoline.** Burn a `JMP` into a page that is
-    upper-half but *not* CAS-gated - `1200-13FF`, `1A00-1BFF` -
-    and execute it the same way as `rom-exec-106f.bin`. Success there
-    with continued failure at `106Fh` isolates the CAS-gated release path
-    and clears A12 itself. Failure there too moves the fault onto A12
-    delivery or the D15 socket's upper addressing, independent of waits.
-2. **Always-wait upper trampoline** in `1400-17FF` separates "any wait in
-    the upper half" from "specifically the CAS-gated wait".
-3. **Re-run `rom-exec-106f.bin` after substituting D55**, which is already
-    the recommended action for the known D55 fault. If the CAS video-cycle
-    branch is involved, this may clear both symptoms at once.
-4. **Cross-swap the burned EPROM into the donor board** and run the same
-    probe, to separate our device and image from CS00015 entirely.
-
-Probes 1 and 2 need no board rework and no new instrumentation, but they
-do need one re-burned D15, because the currently burned image has no
-reusable entry point in the classes under test.
-
-### Trampoline availability in the burned image
-
-A probe re-enters the resident loader by executing a `JMP 0A0Ch`
-(`C3 0C 0A`) at the address under test. In
-`spinoffs/jukuravi/firmware/diag-d0-low4k.bin` that sequence occurs at:
-
-| Offset | Half | Wait class |
-| --- | --- | --- |
-| `065Ch` | lower | always wait |
-| `0A06h` | lower | no wait |
-| `106Fh` | upper | CAS-gated |
-
-The distinction that matters is class *and* half, since the lower half is
-already known to execute.
-
-- covered: lower always wait
-- covered: lower no wait
-- covered: upper CAS-gated
-- **missing: upper no wait**
-- **missing: upper always wait**
-
-The two missing combinations are precisely what probes 1 and 2 need, which
-is why they need the re-burn.
-
-The `C000-DFFF` alias does not avoid it. With `A12=0` there it presents
-low-4K contents, so each low offset also appears at `C000+offset`; but a
-CAS-gated alias needs address bits 10 and 9 both clear, and the two low
-candidates fail that (`065C` has A10=1, `0A06` has A9=1). Aliases reaching
-a class their direct address does not: none. Whether D6's
-`ROM_SEL` enables that window at all is mode-dependent and was not
-established here, but for this image the point is moot.
-
-One burn can cover everything: add a `JMP 0A0Ch` at `1200h` (unwaited
-upper) and at `1400h` (always-wait upper), keeping the existing `106Fh`
-(CAS-gated). Three RAM trampolines then discriminate all three classes
-against each other in a single bench session, with `rom-reenter-4000.bin`
-as the no-upper-fetch control.
+The D2 input pin-order reconstruction and the unresolved D36 CAS source remain
+generic schematic-model boundaries. They are no longer blockers for the
+CS00015 A12 diagnosis.

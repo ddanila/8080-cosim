@@ -45,16 +45,16 @@ identify the complete upper-ROM matrix without another RESET:
 python3 spinoffs/jukuravi/probe_waitclass.py --port /dev/ttyUSB0
 ```
 
-The next serial-only session is planned in [`T33-PLAN.md`](T33-PLAN.md): it
-runs against the burned T32 image with exact commands, pinned expected bytes,
-and a decision tree per probe, and needs no re-burn.
+The remaining serial-only work is tracked in [`T33-PLAN.md`](T33-PLAN.md).
+The decisive direct-INX probe and optional ROM WAIT confirmations run against
+the burned T32 image and need no re-burn.
 
-On CS00015, the wait-class matrix is superseded by an exact consecutive-read
-A12-low alias. After a clean T32 boot, distinguish the fitted D15/device socket
-from the shared CPU/address-buffer path without another ROM burn:
+On CS00015, the wait-class matrix is superseded by a D1 16-bit increment fault.
+After a clean T32 boot, read the affected register-pair results directly
+without another ROM burn:
 
 ```sh
-python3 spinoffs/jukuravi/probe_a12_path.py --port /dev/ttyUSB0
+python3 spinoffs/jukuravi/probe_a12_increment.py --port /dev/ttyUSB0
 ```
 
 `D15-LOCAL` means all consecutive RAM pairs remained `AA BB`; `SHARED-A12`

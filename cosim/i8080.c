@@ -79,31 +79,44 @@ static inline void i8080_wb(i8080* const c, uint16_t addr, uint8_t val) {
   c->write_byte(c->userdata, addr, val);
 }
 
+// The CS00015 diagnostic model uses this single increment path for PC, INX,
+// paired memory cycles, and stack pops. A carry into A12 still works; only an
+// A12 bit which was already high is lost while the low twelve bits advance.
+static inline uint16_t i8080_inc16(i8080* const c, uint16_t val) {
+  uint16_t result = (uint16_t)(val + 1);
+  if (c->fault_a12_increment_high_loss && (val & 0x1000) &&
+      (result & 0x1000))
+    result &= (uint16_t)~0x1000;
+  return result;
+}
+
 // reads a word from memory. Low byte first, then high byte, matching the real
 // 8080 bus order (consecutive T-states fetch addr then addr+1) so an external
 // read-stream trace lines up with hardware; the returned value is unchanged.
 static inline uint16_t i8080_rw(i8080* const c, uint16_t addr) {
   uint16_t lo = c->read_byte(c->userdata, addr);
-  uint16_t hi = c->read_byte(c->userdata, addr + 1);
+  uint16_t hi = c->read_byte(c->userdata, i8080_inc16(c, addr));
   return (hi << 8) | lo;
 }
 
 // writes a word to memory
 static inline void i8080_ww(i8080* const c, uint16_t addr, uint16_t val) {
   c->write_byte(c->userdata, addr, val & 0xFF);
-  c->write_byte(c->userdata, addr + 1, val >> 8);
+  c->write_byte(c->userdata, i8080_inc16(c, addr), val >> 8);
 }
 
 // returns the next byte in memory (and updates the program counter)
 static inline uint8_t i8080_next_byte(i8080* const c) {
-  return i8080_rb(c, c->pc++);
+  uint8_t result = i8080_rb(c, c->pc);
+  c->pc = i8080_inc16(c, c->pc);
+  return result;
 }
 
 // returns the next word in memory (and updates the program counter)
 static inline uint16_t i8080_next_word(i8080* const c) {
-  uint16_t result = i8080_rw(c, c->pc);
-  c->pc += 2;
-  return result;
+  uint16_t lo = i8080_next_byte(c);
+  uint16_t hi = i8080_next_byte(c);
+  return (hi << 8) | lo;
 }
 
 // paired registers helpers (setters and getters)
@@ -145,7 +158,7 @@ static inline void i8080_push_stack(i8080* const c, uint16_t val) {
 // pops a value from the stack and updates the stack pointer
 static inline uint16_t i8080_pop_stack(i8080* const c) {
   uint16_t val = i8080_rw(c, c->sp);
-  c->sp += 2;
+  c->sp = i8080_inc16(c, i8080_inc16(c, c->sp));
   return val;
 }
 
@@ -571,10 +584,10 @@ static inline void i8080_execute(i8080* const c, uint8_t opcode) {
     i8080_wb(c, i8080_get_hl(c), i8080_dcr(c, i8080_rb(c, i8080_get_hl(c))));
     break; // DCR M
 
-  case 0x03: i8080_set_bc(c, i8080_get_bc(c) + 1); break; // INX B
-  case 0x13: i8080_set_de(c, i8080_get_de(c) + 1); break; // INX D
-  case 0x23: i8080_set_hl(c, i8080_get_hl(c) + 1); break; // INX H
-  case 0x33: c->sp += 1; break; // INX SP
+  case 0x03: i8080_set_bc(c, i8080_inc16(c, i8080_get_bc(c))); break; // INX B
+  case 0x13: i8080_set_de(c, i8080_inc16(c, i8080_get_de(c))); break; // INX D
+  case 0x23: i8080_set_hl(c, i8080_inc16(c, i8080_get_hl(c))); break; // INX H
+  case 0x33: c->sp = i8080_inc16(c, c->sp); break; // INX SP
 
   case 0x0B: i8080_set_bc(c, i8080_get_bc(c) - 1); break; // DCX B
   case 0x1B: i8080_set_de(c, i8080_get_de(c) - 1); break; // DCX D
@@ -731,6 +744,7 @@ void i8080_init(i8080* const c) {
   c->iff = 0;
 
   c->halted = 0;
+  c->fault_a12_increment_high_loss = 0;
   c->interrupt_pending = 0;
   c->interrupt_vector = 0;
   c->interrupt_delay = 0;

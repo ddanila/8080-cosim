@@ -831,12 +831,13 @@ the proven loader entry at `0A0Ch`. A host reattachment plus the unique marker
 proves the requested upper-ROM fetch actually ran; loader recovery alone is
 not accepted as evidence. `sync/jukuravi_t32_check.sh` first guards the normal
 low-4K monitor, then executes and identifies all eight entries in cosim with
-the CS00015 D55 fault injected. It also guards the measured CS00015 failure
-model: ROM A12 clears after the first uninterrupted D15 read, reproducing
-loader loss at `1100h/1200h/1400h` and the unchanged premarker at `1A00h`;
-the independently observed first-fetch `5A00h:3E->00` reproduces its exact
-JUMP marker `01`. The DOS burn image and CRLF bench note are `dos/T32HOST.BIN`
-and `dos/T32INFO.TXT`.
+the CS00015 D55 fault injected. It also guards the measured CS00015 D1 model:
+a 16-bit increment cannot retain an already-high A12. That one rule reproduces
+PC loss at `1100h/1200h/1400h`, the lower-alias stream from `1A00h`, all-RAM
+LHLD/POP/SHLD read and write results, and successful carry across
+`0FFFh -> 1000h`. The independently observed first-fetch `5A00h:3E->00`
+remains a separate bounded historical regression. The DOS burn image and CRLF
+bench note are `dos/T32HOST.BIN` and `dos/T32INFO.TXT`.
 
 ### Upper-D15 data/fetch diagnostic snippets
 
@@ -852,6 +853,14 @@ loader entry at `0A0Ch`; `rom-exec-106f.bin` instead jumps to the upper-ROM
 trampoline at `106Fh`, whose expected `C3 0C 0A` instruction returns to that
 same entry. The pair separates loader re-entry from upper-ROM instruction
 fetch.
+
+The `ram-a12-{write-map,lhld-classes,instruction-classes,ready-classes,
+boundary,increment-registers}-4000.asm` sources are the later T32 all-RAM and
+direct-register probes. They use absolute stores for setup and low-A12 result
+blocks. `ram-a12-increment-registers-4000.asm` is the decisive compact probe:
+it returns INX results for BC/DE/HL/SP plus a DAD control without accessing
+high-address memory. `tests/jukuravi_cpu_a12_increment_test.py` guards all six
+probe classes in clean and faulted cosim.
 
 `tests/jukuravi_t31_a12_test.py` exercises the committed payloads against the
 exact T31 image, then aliases the upper ROM half to the lower half and requires

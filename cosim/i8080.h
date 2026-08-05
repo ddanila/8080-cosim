@@ -20,6 +20,8 @@ typedef struct i8080 {
   // flags: sign, zero, half-carry, parity, carry, interrupt flip-flop
   bool sf : 1, zf : 1, hf : 1, pf : 1, cf : 1, iff : 1;
   bool halted : 1;
+  // Fault injection: a 16-bit +1 operation cannot retain an already-high A12.
+  bool fault_a12_increment_high_loss : 1;
 
   bool interrupt_pending : 1;
   uint8_t interrupt_vector;

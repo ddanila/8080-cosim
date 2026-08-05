@@ -60,30 +60,35 @@ execution on CS00015. One-at-a-time substitutions of donor D8 `.039` and donor
 D6 `.038` preserve the result, excluding the original D6 and D8 packages as
 unique causes.
 
-The later cross-memory probe changes the localization materially. In all-RAM
-mode, isolated reads return the deliberately written `66 C7` at both
-`1A00/1A01` and `DA00/DA01`, while consecutive `LHLD` reads return `66 FF` and
-`66 55`. Through the ROM mappings, the same classes return `3E 43` and
-`3E 55`. A separate `4A00/5A00` RAM pair passes sixteen times. The fault is
-therefore a region-dependent second-cycle failure on the shared address/timing
-path, not a D15/socket-pin-2 fault. Clearing physical BA12 before memory decode
-unifies the observations: `1A01 -> 0A01`, while `DA01 -> CA01` also leaves the
-mode-1 high-ROM overlay. The final deliberately seeded alias proof is prepared
-for the next successful loader boot. Owner tracing around D15 pin 2 found its
-local PCB conductor intact, consistent with moving the diagnosis away from a
-D15-local open trace.
+The corrected all-RAM matrix changes the localization materially. Absolute
+STA initialization shows the same second-byte A12-low alias in all four
+A15:A14 regions, all four A10:A9 classes, LHLD, POP, and SHLD writes. Boundary
+reads `0FFF -> 1000` and `2FFF -> 3000` pass, proving that carry can assert A12.
 
-Cosim now reproduces the complete host-visible signature. Clearing ROM A12
-after the first uninterrupted D15 read loses the loader at `1100h`, `1200h`,
-and `1400h`, while the lower-alias byte stream from `1A00h` accidentally jumps
-to loader entry `0A0Ch` without changing the RAM premarker. The separate
-`5A00h` CALL evidence (returned `A=5A` but marker remained `00`) proves its
-uploaded stream was also not executed normally. Replacing its first fetched
-`3Eh` with `00h` explains both CALL marker `00` and JUMP marker `01`, because
-loader API v2 enters those modes with `A=00/01` respectively. These models are
-guarded fault reproductions, not yet pin-voltage measurements. The newer
-`JUKU_CONSECUTIVE_A12_LOW_PAGES=1,D` injection applies A12 loss before ROM/RAM
-decoding and passes the clean/faulted pure-RAM alias matrix.
+The earlier four-region setup used `INX D` to advance from each even to odd
+address. On the physical CPU that increment changed every high-A12 pointer to
+its low-A12 alias: the even byte reached `1A00/5A00/9A00/DA00`, while the odd
+byte reached `0A01/4A01/8A01/CA01`. The eventual STAX is separated from INX by
+CALL, stack, and instruction cycles. This architecturally visible register-pair
+error cannot be caused solely by D4, D15, or a transient external BA12 load.
+It localizes the common fault to D1's 16-bit increment path: carry into A12
+works, but an already-high A12 is not retained.
+
+A direct register-only probe then confirmed the diagnosis without any
+high-address memory access. It returned `1000,0A01,4A01,8A01,1A01` for INX BC
+from `0FFF`, INX DE/HL/SP from `1A00/5A00/9A00`, and DAD `1A00+1`. Thus carry
+and DAD work while INX loses retained A12. Exact ROM LHLD pairs in CAS-gated,
+no-wait, and always-wait classes all returned their A12-low second bytes 16/16.
+
+Cosim now injects that single CPU behavior with
+`JUKU_CPU_A12_INCREMENT_FAULT=1`. The model covers PC, INX, LHLD/SHLD, POP,
+and boundary behavior and reproduces the meaningful bytes from six physical
+probe classes in both clean and faulted regression runs.
+
+The die-derived vm80a HDL core also reproduces the exact direct result when
+only the shared incrementer's bit-12 retain-high/no-carry Boolean term is
+removed. See `cs00015-d1-increment-analysis.md` for the bounded internal
+diagnosis and the transistor/layout caveat.
 Exact image, controls, raw logs, and next
 discriminators are in
 [`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
@@ -100,8 +105,7 @@ provenance only and must not be read as a diagnosis of the original D6.
 | --- | --- | --- |
 | D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
-| Shared A12/timing path | Isolated ROM/RAM reads pass; consecutive `1Axx` and `DAxx` reads fail, while `5Axx` passes | Run seeded `0A/1A`, `4A/5A`, `8A/9A`, `CA/DA` alias matrix; compare D1.37, D4.15, and READY |
-| `5A00h` execution | First fetched byte behaves as `00h`; explains CALL/JUMP markers `00/01` | Treat as a separate RAM execution-cycle symptom until the four-class matrix closes it |
+| D1 16-bit increment path | Direct BC/DE/HL/SP results prove INX cannot retain an already-high A12; carry and DAD work | Confirmed functional diagnosis; replace/substitute D1 and rerun the direct probe |
 
 ## Serial connector measurement
 

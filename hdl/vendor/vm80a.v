@@ -9,6 +9,10 @@
 // phases serve as clock enable gates
 //
 module vm80a
+#(
+   // Diagnostic-only model of CS00015's shared 16-bit incrementer defect.
+   parameter integer FAULT_A12_INCREMENT_HIGH_LOSS = 0
+)
 (
    input          pin_clk,       // global module clock (no in original 8080)
    input          pin_f1,        // clock phase 1 (used as clock enable)
@@ -42,7 +46,9 @@ begin
    f2_core <= pin_f2;
 end
 
-vm80a_core core
+vm80a_core #(
+   .FAULT_A12_INCREMENT_HIGH_LOSS(FAULT_A12_INCREMENT_HIGH_LOSS)
+) core
 (
    .pin_clk    (pin_clk),
    .pin_f1     (f1_core),
@@ -66,6 +72,9 @@ vm80a_core core
 endmodule
 
 module vm80a_core
+#(
+   parameter integer FAULT_A12_INCREMENT_HIGH_LOSS = 0
+)
 (
    input          pin_clk,       // global module clock (no in original 8080)
    input          pin_f1,        // clock phase 1 (used as clock enable)
@@ -105,7 +114,7 @@ reg            wr_n, t1124, t1011, sync;
 wire           ready_int;
 
 reg   [15:0]   r16_pc, r16_hl, r16_de, r16_bc, r16_sp, r16_wz, mxo;
-wire  [15:0]   mxi;
+wire  [15:0]   mxi, mxi_clean;
 wire           mxr0, mxr1, mxr2, mxr3, mxr4, mxr5;
 wire           mxwh, mxwl, mxrh, mxrl, mxw16, mxwadr;
 wire           dec16, inc16, iad16;
@@ -341,9 +350,16 @@ assign pin_wait = twf1;
 //
 assign      t1467    = tree1 | (id04 & t4f1 & ~id_xthl);
 assign      t1519    = tree2 | (id00 & t4f1 & ~id_xthl);
-assign      mxi      = inc16 ? (a + 16'h0001)
-                     : dec16 ? (a - 16'h0001)
-                     : a;
+assign      mxi_clean = inc16 ? (a + 16'h0001)
+                      : dec16 ? (a - 16'h0001)
+                      : a;
+
+// Increment bit 12 is A12 XOR carry_from_bits_0_11. CS00015 proves the carry
+// term works (0FFF->1000) while the retain-high/no-carry term does not. Clear
+// only that term; decrement, direct loads, DAD, and carry into A12 stay clean.
+assign      mxi       = (FAULT_A12_INCREMENT_HIGH_LOSS && inc16 &&
+                         a[12] && ~(&a[11:0]))
+                      ? (mxi_clean & 16'hEFFF) : mxi_clean;
 
 assign      inc16    = iad16 & ~dec16;
 assign      dec16    = iad16 & id05 & (t4f1 | t5f1 | m4f1 | m5f1);

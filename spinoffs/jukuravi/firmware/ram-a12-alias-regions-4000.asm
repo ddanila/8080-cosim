@@ -1,4 +1,9 @@
-; Prove or reject transient A12-low aliasing across all A15:A14 classes.
+; Historical INX-D experiment across all A15:A14 classes.
+;
+; WARNING: this is not a valid seeded-memory alias matrix. INIT_PAIR advances
+; DE with INX D, which is itself affected on CS00015. The physical run became
+; evidence that the retained register-pair value loses A12. Use
+; ram-a12-lhld-classes-4000.asm for correctly initialized memory pairs.
 ;
 ; Load at 4000h and invoke through loader API v2 CALL mode.  In all-RAM mode,
 ; each high-A12 target xA00h/xA01h and its A12-low alias (x-1)A00h/(x-1)A01h

@@ -1,0 +1,594 @@
+{
+  "attempts": [
+    {
+      "banner_seen": false,
+      "decoded_frames": 26,
+      "dtr_sequence_completed": false,
+      "error": null,
+      "loader": {
+        "address": "0x4000",
+        "attach": {
+          "baseline_token": "0xC6",
+          "idle_requests": 9,
+          "resync_attempts": 1,
+          "resync_transaction": 255
+        },
+        "attached": true,
+        "bytes": 300,
+        "chunks": [
+          {
+            "address": "0x4000",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "028C",
+            "index": 0,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.377454,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 2,
+            "verified": true
+          },
+          {
+            "address": "0x4020",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "5348",
+            "index": 1,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.374831,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 4,
+            "verified": true
+          },
+          {
+            "address": "0x4040",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "B018",
+            "index": 2,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.381388,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 6,
+            "verified": true
+          },
+          {
+            "address": "0x4060",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "A22C",
+            "index": 3,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.38508,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 8,
+            "verified": true
+          },
+          {
+            "address": "0x4080",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "2168",
+            "index": 4,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.432077,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 10,
+            "verified": true
+          },
+          {
+            "address": "0x40A0",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "AA1A",
+            "index": 5,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.403829,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 12,
+            "verified": true
+          },
+          {
+            "address": "0x40C0",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "8E03",
+            "index": 6,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.373285,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 14,
+            "verified": true
+          },
+          {
+            "address": "0x40E0",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "92A8",
+            "index": 7,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.370861,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 16,
+            "verified": true
+          },
+          {
+            "address": "0x4100",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "F5D6",
+            "index": 8,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.372829,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 18,
+            "verified": true
+          },
+          {
+            "address": "0x4120",
+            "attempts": 1,
+            "bytes": 12,
+            "crc16": "974C",
+            "index": 9,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 4.582078,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 20,
+            "verified": true
+          }
+        ],
+        "config": {
+          "attempts": 1,
+          "transaction": 1,
+          "votes": 1
+        },
+        "control_only": false,
+        "end_exclusive": "0x412C",
+        "error": null,
+        "heartbeat": null,
+        "probe": {
+          "attempts": 1,
+          "cookie_hex": "5432380055AAC6C7",
+          "transaction": 0
+        },
+        "ready": {
+          "api_base": "0x0A00",
+          "api_version": 2,
+          "capabilities": "0x3FFF",
+          "default_votes": 7,
+          "effective_chunk_bytes": 32,
+          "guard_ms": 6.0,
+          "load_end_exclusive": "0xC000",
+          "load_min": "0x4000",
+          "max_data_bytes": 32,
+          "readback": true,
+          "resume": false,
+          "retry_limit": 3,
+          "stack_top": "0xD000",
+          "workspace": "0xC000"
+        },
+        "requested": true,
+        "run": {
+          "acknowledged": true,
+          "address": "0x4000",
+          "attempts": 1,
+          "execution_id": "0x3AF7D910",
+          "mode": "call",
+          "requested": true,
+          "result": {
+            "address": "0x4C00",
+            "bytes": 32,
+            "hex": "49313243A555555510112011303140315051606150BBAA615555555555555555",
+            "reads": [
+              {
+                "address": "0x4C00",
+                "attempts": 1,
+                "bytes": 32,
+                "transaction": 23
+              }
+            ]
+          },
+          "return_a": "0x00",
+          "return_replays": 0,
+          "returned": true,
+          "transaction": 22
+        },
+        "sha256": "371c558122577aa4090e1a2bc12f80833683e28227dd0a5923f44ca28d9a3aab",
+        "source": "/tmp/jukuravi-ram-a12-instruction-classes.bin",
+        "status": "returned"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "ok",
+      "received_bytes": 6819,
+      "transmitted_bytes": 6136
+    }
+  ],
+  "diagnostic_status": null,
+  "error": null,
+  "finished_utc": "2026-08-04T21:02:26.915336Z",
+  "frames": [
+    {
+      "payload_hex": "FF002903000007000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0000230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "01002404000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "02002525400020028C00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "03002640002021004C36492336312336322336432336003E9AD3073E03D30600002100003922",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "04002525402020534800",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "050026402020F04C3E1032000A32000A32000A32000A3E1132010A32010A32010A32010A3E20",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "06002525404020B01800",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "07002640402032001A32001A32001A32001A3E2132011A32011A32011A32011A3E3032004A32",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "08002525406020A22C00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "090026406020004A32004A32004A3E3132014A32014A32014A32014A3E4032005A32005A3200",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0A002525408020216800",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0B00264080205A32005A3E4132015A32015A32015A32015A3E5032008A32008A32008A32008A",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0C00252540A020AA1A00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0D002640A0203E5132018A32018A32018A32018A3E6032009A32009A32009A32009A3E613201",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0E00252540C0208E0300",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0F002640C0209A32019A32019A32019A2A000A22084C2A001A220A4C31004AE1220C4C31005A",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "1000252540E02092A800",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "11002640E020E1220E4C2AF04CF93A008A32104C3A018A32114C3A009A32124C3A019A32134C",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "12002525410020F5D600",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "13002641002021AABB22009A3A008A32144C3A018A32154C3A009A32164C3A019A32174CAFD3",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "1400251141200C974C00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "15002641200C063E9BD3073EA532044CAFC9",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "1600280A400000000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "160000",
+      "type": "0xB2"
+    },
+    {
+      "payload_hex": "1700264C002049313243A555555510112011303140315051606150BBAA615555555555555555",
+      "type": "0xB1"
+    }
+  ],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x4000",
+    "attach": {
+      "baseline_token": "0xC6",
+      "idle_requests": 9,
+      "resync_attempts": 1,
+      "resync_transaction": 255
+    },
+    "attached": true,
+    "bytes": 300,
+    "chunks": [
+      {
+        "address": "0x4000",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "028C",
+        "index": 0,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.377454,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      },
+      {
+        "address": "0x4020",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "5348",
+        "index": 1,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.374831,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 4,
+        "verified": true
+      },
+      {
+        "address": "0x4040",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "B018",
+        "index": 2,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.381388,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 6,
+        "verified": true
+      },
+      {
+        "address": "0x4060",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "A22C",
+        "index": 3,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.38508,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 8,
+        "verified": true
+      },
+      {
+        "address": "0x4080",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "2168",
+        "index": 4,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.432077,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 10,
+        "verified": true
+      },
+      {
+        "address": "0x40A0",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "AA1A",
+        "index": 5,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.403829,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 12,
+        "verified": true
+      },
+      {
+        "address": "0x40C0",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "8E03",
+        "index": 6,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.373285,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 14,
+        "verified": true
+      },
+      {
+        "address": "0x40E0",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "92A8",
+        "index": 7,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.370861,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 16,
+        "verified": true
+      },
+      {
+        "address": "0x4100",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "F5D6",
+        "index": 8,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.372829,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 18,
+        "verified": true
+      },
+      {
+        "address": "0x4120",
+        "attempts": 1,
+        "bytes": 12,
+        "crc16": "974C",
+        "index": 9,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 4.582078,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 20,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 1,
+      "transaction": 1,
+      "votes": 1
+    },
+    "control_only": false,
+    "end_exclusive": "0x412C",
+    "error": null,
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 0
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": true,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": true,
+      "address": "0x4000",
+      "attempts": 1,
+      "execution_id": "0x3AF7D910",
+      "mode": "call",
+      "requested": true,
+      "result": {
+        "address": "0x4C00",
+        "bytes": 32,
+        "hex": "49313243A555555510112011303140315051606150BBAA615555555555555555",
+        "reads": [
+          {
+            "address": "0x4C00",
+            "attempts": 1,
+            "bytes": 32,
+            "transaction": 23
+          }
+        ]
+      },
+      "return_a": "0x00",
+      "return_replays": 0,
+      "returned": true,
+      "transaction": 22
+    },
+    "sha256": "371c558122577aa4090e1a2bc12f80833683e28227dd0a5923f44ca28d9a3aab",
+    "source": "/tmp/jukuravi-ram-a12-instruction-classes.bin",
+    "status": "returned"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 6819,
+  "rx_log": "20260804T210033.141589Z.rx.bin",
+  "started_utc": "2026-08-04T21:00:33.141589Z",
+  "status": "ok",
+  "transmitted_bytes": 6136,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260804T210033.141589Z.tx.bin"
+}

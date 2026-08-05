@@ -37,9 +37,8 @@
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
 // EXEC:  JUKU_ROM_EXEC_RESET_AT=ADDR resets the CPU whenever a ROM fetch
 //        reaches ADDR or above (used to model the physical D15 A12 boundary).
-// READ:  JUKU_CONSECUTIVE_A12_LOW_PAGES=1,D clears physical A12 from the
-//        second uninterrupted read in each listed logical 4 KiB page. This
-//        models the cross-ROM/RAM CS00015 observation before memory decoding.
+// CPU:   JUKU_CPU_A12_INCREMENT_FAULT=1 makes D1's 16-bit +1 path lose an
+//        already-high A12. It covers PC, INX, LHLD/SHLD, POP, and boundaries.
 // ROM:   JUKU_ROM_CONSECUTIVE_A12_LOW=1 retains the older ROM-local model.
 // EXEC:  JUKU_EXEC_BYTE_FAULT=ADDR:VALUE overrides an instruction-stream byte
 //        when the CPU PC has just advanced past ADDR; ordinary data reads pass.
@@ -78,10 +77,7 @@ static int      fdc_bus_invert = 0;
 static int      cart_enabled = 0;
 static int      rom_consecutive_a12_low = 0;
 static unsigned rom_read_burst_count = 0;
-static uint16_t consecutive_a12_low_pages = 0;
-static int      consecutive_read_page_valid = 0;
-static uint8_t  consecutive_read_page = 0;
-static unsigned consecutive_read_page_count = 0;
+static int      cpu_a12_increment_fault = 0;
 static int      exec_byte_fault_enabled = 0;
 static uint16_t exec_byte_fault_addr = 0;
 static uint8_t  exec_byte_fault_value = 0;
@@ -468,24 +464,12 @@ static int overlay(uint16_t a, unsigned* idx) {
 static FILE *rdtrace_fp = NULL;         // optional memory-read trace (JUKU_RDTRACE=path)
 static unsigned long rdtrace_limit = 0; // stop tracing after N reads (JUKU_RDTRACE_LIMIT; 0 = unbounded)
 static unsigned long rdtrace_n = 0;
+
 static uint8_t rb(void* u, uint16_t a) {
   i8080* cpu = (i8080*)u;
   uint16_t physical_a = a;
   unsigned idx = 0;
   uint8_t v;
-  if (consecutive_a12_low_pages) {
-    uint8_t page = (uint8_t)(a >> 12);
-    if (consecutive_read_page_valid && page == consecutive_read_page)
-      consecutive_read_page_count++;
-    else {
-      consecutive_read_page_valid = 1;
-      consecutive_read_page = page;
-      consecutive_read_page_count = 1;
-    }
-    if (consecutive_read_page_count >= 2 &&
-        (consecutive_a12_low_pages & (uint16_t)(1u << page)))
-      physical_a &= (uint16_t)~0x1000u;
-  }
   int ov = overlay(physical_a, &idx);
   if (ov == 1) {
     unsigned ordinal = ++rom_read_burst_count;
@@ -501,7 +485,7 @@ static uint8_t rb(void* u, uint16_t a) {
     v = apply_ram_fault(physical_a, ram[map_ram_address(physical_a)]);
   }
   if (exec_byte_fault_enabled && a == exec_byte_fault_addr && cpu &&
-      cpu->pc == (uint16_t)(a + 1))
+      (cpu->pc == a || cpu->pc == (uint16_t)(a + 1)))
     v = exec_byte_fault_value;
   if (rdtrace_fp) {
     fprintf(rdtrace_fp, "%04x %02x\n", a, v);
@@ -604,8 +588,6 @@ static uint8_t kbd_portb(void) {
 }
 static void wb(void* u, uint16_t a, uint8_t v) {
   rom_read_burst_count = 0;
-  consecutive_read_page_valid = 0;
-  consecutive_read_page_count = 0;
   unsigned idx = 0;
   int ov = overlay(a, &idx);
   // Monitor 3.7's low-ROM dispatcher writes its return frame behind page-zero
@@ -625,7 +607,8 @@ static void wb(void* u, uint16_t a, uint8_t v) {
   if (a >= VRAM_BASE) {            // for CI: stop+dump after N video writes (match HDL)
     if (g_vw == 0) {
       unsigned long cyc = u ? ((i8080*)u)->cyc : 0;
-      fprintf(stderr, "[VRAM] first video write @0x%04X cyc=%lu\n", a, cyc);
+      fprintf(stderr, "[VRAM] first video write @0x%04X cyc=%lu\n",
+              a, cyc);
     }
     g_vw++;
   }
@@ -639,8 +622,6 @@ static void sync_fdc_time(i8080* cpu) {
 
 static uint8_t pin(void* u, uint8_t p) {
   rom_read_burst_count = 0;
-  consecutive_read_page_valid = 0;
-  consecutive_read_page_count = 0;
   i8080* cpu = (i8080*)u;
   sync_fdc_time(cpu);
   if (!in_seen[p]) { in_seen[p] = 1; fprintf(stderr, "[IN ] first read  port 0x%02X\n", p); }
@@ -678,8 +659,6 @@ static uint8_t pin(void* u, uint8_t p) {
 
 static void pout(void* u, uint8_t p, uint8_t v) {
   rom_read_burst_count = 0;
-  consecutive_read_page_valid = 0;
-  consecutive_read_page_count = 0;
   i8080* cpu = (i8080*)u;
   sync_fdc_time(cpu);
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
@@ -803,8 +782,8 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "rom_consecutive_a12_low=%d\n",
           rom_consecutive_a12_low);
   fprintf(state_out, "rom_read_burst_count=%u\n", rom_read_burst_count);
-  fprintf(state_out, "consecutive_a12_low_pages=%04X\n",
-          consecutive_a12_low_pages);
+  fprintf(state_out, "cpu_a12_increment_fault=%d\n",
+          cpu_a12_increment_fault);
   fprintf(state_out, "exec_byte_fault_enabled=%d\n", exec_byte_fault_enabled);
   fprintf(state_out, "exec_byte_fault_addr=%04X\n", exec_byte_fault_addr);
   fprintf(state_out, "exec_byte_fault_value=%02X\n", exec_byte_fault_value);
@@ -940,8 +919,8 @@ int main(int argc, char** argv) {
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
   const char* rom_consecutive_a12_low_env =
       getenv("JUKU_ROM_CONSECUTIVE_A12_LOW");
-  const char* consecutive_a12_low_pages_env =
-      getenv("JUKU_CONSECUTIVE_A12_LOW_PAGES");
+  const char* cpu_a12_increment_fault_env =
+      getenv("JUKU_CPU_A12_INCREMENT_FAULT");
   const char* exec_byte_fault = getenv("JUKU_EXEC_BYTE_FAULT");
   const char* ram_drop_write = getenv("JUKU_RAM_DROP_WRITE");
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
@@ -969,32 +948,11 @@ int main(int argc, char** argv) {
       strcmp(rom_consecutive_a12_low_env, "0") != 0;
   if (rom_consecutive_a12_low)
     fprintf(stderr, "[ROM] consecutive-read A12-low fault enabled\n");
-  if (consecutive_a12_low_pages_env && consecutive_a12_low_pages_env[0]) {
-    const char* cursor = consecutive_a12_low_pages_env;
-    while (*cursor) {
-      char* end = NULL;
-      unsigned long page = strtoul(cursor, &end, 16);
-      if (end == cursor || page > 0xF || (*end && *end != ',')) {
-        fprintf(stderr,
-                "invalid JUKU_CONSECUTIVE_A12_LOW_PAGES=%s "
-                "(expected comma-separated hex pages, e.g. 1,D)\n",
-                consecutive_a12_low_pages_env);
-        return 2;
-      }
-      consecutive_a12_low_pages |= (uint16_t)(1u << page);
-      if (!*end) break;
-      cursor = end + 1;
-      if (!*cursor) {
-        fprintf(stderr,
-                "invalid JUKU_CONSECUTIVE_A12_LOW_PAGES=%s "
-                "(trailing comma)\n",
-                consecutive_a12_low_pages_env);
-        return 2;
-      }
-    }
-    fprintf(stderr, "[READ] consecutive A12-low page mask=0x%04X\n",
-            consecutive_a12_low_pages);
-  }
+  cpu_a12_increment_fault =
+      cpu_a12_increment_fault_env && cpu_a12_increment_fault_env[0] &&
+      strcmp(cpu_a12_increment_fault_env, "0") != 0;
+  if (cpu_a12_increment_fault)
+    fprintf(stderr, "[CPU] A12 increment-retention fault enabled\n");
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
     usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
     if (!usart.transfer_cycles) usart.transfer_cycles = 1;
@@ -1229,6 +1187,7 @@ int main(int argc, char** argv) {
 
   i8080 cpu;
   i8080_init(&cpu);
+  cpu.fault_a12_increment_high_loss = cpu_a12_increment_fault;
   cpu.userdata = &cpu;
   cpu.read_byte = rb; cpu.write_byte = wb;
   cpu.port_in = pin;  cpu.port_out = pout;

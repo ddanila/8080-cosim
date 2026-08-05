@@ -1,0 +1,496 @@
+{
+  "attempts": [
+    {
+      "banner_seen": false,
+      "decoded_frames": 21,
+      "dtr_sequence_completed": false,
+      "error": null,
+      "loader": {
+        "address": "0x4000",
+        "attach": {
+          "baseline_token": "0xC6",
+          "idle_requests": 9,
+          "resync_attempts": 1,
+          "resync_transaction": 255
+        },
+        "attached": true,
+        "bytes": 215,
+        "chunks": [
+          {
+            "address": "0x4000",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "EBF9",
+            "index": 0,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.37426,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 2,
+            "verified": true
+          },
+          {
+            "address": "0x4020",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "B6C3",
+            "index": 1,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.38543,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 4,
+            "verified": true
+          },
+          {
+            "address": "0x4040",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "6C49",
+            "index": 2,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.38383,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 6,
+            "verified": true
+          },
+          {
+            "address": "0x4060",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "B6FB",
+            "index": 3,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.378258,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 8,
+            "verified": true
+          },
+          {
+            "address": "0x4080",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "DD58",
+            "index": 4,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.370863,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 10,
+            "verified": true
+          },
+          {
+            "address": "0x40A0",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "E917",
+            "index": 5,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.365415,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 12,
+            "verified": true
+          },
+          {
+            "address": "0x40C0",
+            "attempts": 1,
+            "bytes": 23,
+            "crc16": "8E88",
+            "index": 6,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 6.114693,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 14,
+            "verified": true
+          }
+        ],
+        "config": {
+          "attempts": 1,
+          "transaction": 1,
+          "votes": 1
+        },
+        "control_only": false,
+        "end_exclusive": "0x40D7",
+        "error": null,
+        "heartbeat": null,
+        "probe": {
+          "attempts": 1,
+          "cookie_hex": "5432380055AAC6C7",
+          "transaction": 0
+        },
+        "ready": {
+          "api_base": "0x0A00",
+          "api_version": 2,
+          "capabilities": "0x3FFF",
+          "default_votes": 7,
+          "effective_chunk_bytes": 32,
+          "guard_ms": 6.0,
+          "load_end_exclusive": "0xC000",
+          "load_min": "0x4000",
+          "max_data_bytes": 32,
+          "readback": true,
+          "resume": false,
+          "retry_limit": 3,
+          "stack_top": "0xD000",
+          "workspace": "0xC000"
+        },
+        "requested": true,
+        "run": {
+          "acknowledged": true,
+          "address": "0x4000",
+          "attempts": 1,
+          "execution_id": "0x2A69227F",
+          "mode": "call",
+          "requested": true,
+          "result": {
+            "address": "0x4100",
+            "bytes": 56,
+            "hex": "4F564C5908A5B1B33E1A66C76621668166C766C73E433E433E433E433E433E433E433E433E813E813E813E813E813E813E813E8166216681",
+            "reads": [
+              {
+                "address": "0x4100",
+                "attempts": 1,
+                "bytes": 32,
+                "transaction": 17
+              },
+              {
+                "address": "0x4120",
+                "attempts": 1,
+                "bytes": 24,
+                "transaction": 18
+              }
+            ]
+          },
+          "return_a": "0x00",
+          "return_replays": 0,
+          "returned": true,
+          "transaction": 16
+        },
+        "sha256": "c00dd501d98562ceacf66b90d0934cdd761a053c059aa6ed7642670b93fd8951",
+        "source": "/tmp/jukuravi-rom-overlay-source.bin",
+        "status": "returned"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "ok",
+      "received_bytes": 5595,
+      "transmitted_bytes": 5040
+    }
+  ],
+  "diagnostic_status": null,
+  "error": null,
+  "finished_utc": "2026-08-04T20:50:58.145639Z",
+  "frames": [
+    {
+      "payload_hex": "FF002903000007000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0000230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "01002404000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "02002525400020EBF900",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "030026400020210041364F23365623364C23365923360823360023360023360023363E23361A",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "04002525402020B6C300",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0500264020202336662336C73E9AD3073E03D30600003E6611001ACDCF401100DACDCF403EC7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "060025254040206C4900",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "07002640402011011ACDCF401101DACDCF403E03D30600002A001A220C412A00DA220E413A00",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "08002525406020B6FB00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0900264060201A3210413A011A3211413A00DA3212413A01DA321341AFD30600001114410608",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0A002525408020DD5800",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0B00264080202A001A7D12137C121305C280403E01D3060000DB0632064111244106082A00DA",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0C00252540A020E91700",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0D002640A0207D12137C121305C29D403E03D3060000DB063207412A001A2234412A00DA2236",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0E00251C40C0178E8800",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0F002640C01741AFD3063E9BD3073EA5320541AFC906081205C2D140C9",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "1000280A400000000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "100000",
+      "type": "0xB2"
+    },
+    {
+      "payload_hex": "1100264100204F564C5908A5B1B33E1A66C76621668166C766C73E433E433E433E433E433E43",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "1200264120183E433E433E813E813E813E813E813E813E813E8166216681",
+      "type": "0xB1"
+    }
+  ],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x4000",
+    "attach": {
+      "baseline_token": "0xC6",
+      "idle_requests": 9,
+      "resync_attempts": 1,
+      "resync_transaction": 255
+    },
+    "attached": true,
+    "bytes": 215,
+    "chunks": [
+      {
+        "address": "0x4000",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "EBF9",
+        "index": 0,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.37426,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      },
+      {
+        "address": "0x4020",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "B6C3",
+        "index": 1,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.38543,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 4,
+        "verified": true
+      },
+      {
+        "address": "0x4040",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "6C49",
+        "index": 2,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.38383,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 6,
+        "verified": true
+      },
+      {
+        "address": "0x4060",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "B6FB",
+        "index": 3,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.378258,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 8,
+        "verified": true
+      },
+      {
+        "address": "0x4080",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "DD58",
+        "index": 4,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.370863,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 10,
+        "verified": true
+      },
+      {
+        "address": "0x40A0",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "E917",
+        "index": 5,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.365415,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 12,
+        "verified": true
+      },
+      {
+        "address": "0x40C0",
+        "attempts": 1,
+        "bytes": 23,
+        "crc16": "8E88",
+        "index": 6,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 6.114693,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 14,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 1,
+      "transaction": 1,
+      "votes": 1
+    },
+    "control_only": false,
+    "end_exclusive": "0x40D7",
+    "error": null,
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 0
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": true,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": true,
+      "address": "0x4000",
+      "attempts": 1,
+      "execution_id": "0x2A69227F",
+      "mode": "call",
+      "requested": true,
+      "result": {
+        "address": "0x4100",
+        "bytes": 56,
+        "hex": "4F564C5908A5B1B33E1A66C76621668166C766C73E433E433E433E433E433E433E433E433E813E813E813E813E813E813E813E8166216681",
+        "reads": [
+          {
+            "address": "0x4100",
+            "attempts": 1,
+            "bytes": 32,
+            "transaction": 17
+          },
+          {
+            "address": "0x4120",
+            "attempts": 1,
+            "bytes": 24,
+            "transaction": 18
+          }
+        ]
+      },
+      "return_a": "0x00",
+      "return_replays": 0,
+      "returned": true,
+      "transaction": 16
+    },
+    "sha256": "c00dd501d98562ceacf66b90d0934cdd761a053c059aa6ed7642670b93fd8951",
+    "source": "/tmp/jukuravi-rom-overlay-source.bin",
+    "status": "returned"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 5595,
+  "rx_log": "20260804T204922.830881Z.rx.bin",
+  "started_utc": "2026-08-04T20:49:22.830881Z",
+  "status": "ok",
+  "transmitted_bytes": 5040,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260804T204922.830881Z.tx.bin"
+}

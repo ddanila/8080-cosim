@@ -90,137 +90,115 @@ data distinction. The reusable probe is
 `firmware/rom-read-pair-4000.asm`; raw sessions are under
 `sessions/t32-read-pair-{0a00,1a00,1a01,1a02,1a04}-fresh/`.
 
-## Cross-ROM/RAM A12 localization
+## Cross-memory and instruction-class localization
 
-The first shared-path probe wrote `11 22` at RAM `4A00h` and `AA BB` at RAM
-`5A00h`. Sixteen `LHLD 5A00h` pairs all returned `AA BB`. That proves D1,
-D4, and BA12 can carry two consecutive high-A12 RAM reads in this address
-class; it does not prove that every address/timing class passes.
+The overlay probe established the same failure in ROM and RAM. Isolated
+all-RAM reads returned the deliberately written `66 C7` at `1A00/1A01` and
+`DA00/DA01`; consecutive `LHLD` reads returned `66 FF` and `66 55`. Through
+the two ROM mappings, the same requests returned `3E 43` and `3E 55`.
+Two later repetitions returned stable all-RAM pairs `66 21` and `66 81` and
+stable isolated bytes `66 C7`, confirming that instruction fetches between
+the isolated reads reset the symptom. Evidence is under
+`sessions/t32-rom-overlay-source-*-physical/`.
 
-Evidence: `sessions/t32-a12-path-boot/` and
-`sessions/t32-a12-path-physical/`.
+The first four-region probe cannot be used as a seeded-memory test. Its setup
+used `INX D` between the even and odd stores. The physical result is itself
+more important: in all four high-A12 regions the even byte reached the target,
+while the odd byte reached the A12-low alias. Examples are target/alias
+`20 FF / 10 21` at `1A` and `40 FE / 30 41` at `5A`. Multiple instruction
+fetches, a CALL, stack writes, and a RET separate `INX D` from the eventual
+`STAX D`; this is not an adjacent external bus-cycle effect. The result says
+that D1's architecturally visible 16-bit increment lost an already-high A12.
+The raw result is retained under `sessions/t32-ram-a12-alias-regions-physical/`
+as an INX finding, not as alias-matrix evidence.
 
-A later RAM-resident probe configured PPI #0 PC3..PC0 as outputs, exercised
-normal mode 0, high-ROM mode 1, and all-RAM mode 3, and restored the reset
-all-input configuration before returning. Port C readbacks `B1h` and `B3h`
-prove that modes 1 and 3 were physically selected. It first wrote `66 C7` to
-the underlying RAM pairs at `1A00h` and `DA00h`, then compared isolated and
-consecutive reads:
+Corrected probes initialized every byte with absolute `STA` and produced the
+following deterministic results:
 
-| Mapping/read | Physical result | Repetitions |
-| --- | --- | ---: |
-| all-RAM isolated `1A00h`, then isolated `1A01h` | `66 C7` | one complete check |
-| all-RAM consecutive `LHLD 1A00h` | `66 FF` | before and after overlay reads |
-| mode-0 D15 consecutive `LHLD 1A00h` | `3E 43` | 8 |
-| all-RAM isolated `DA00h`, then isolated `DA01h` | `66 C7` | one complete check |
-| all-RAM consecutive `LHLD DA00h` | `66 55` | before and after overlay reads |
-| mode-1 D15 consecutive `LHLD DA00h` | `3E 55` | 8 |
+| Operation | Lower-A12 control | High-A12 request | Physical result |
+| --- | --- | --- | --- |
+| `LHLD` in A15:A14 classes `00/01/10/11` | `10 11`, `30 31`, `50 51`, `70 71` | `20 21`, `40 41`, `60 61`, `80 81` | `20 11`, `40 31`, `60 51`, `80 71` |
+| `POP H`, SP=`4A00/5A00` | `30 31` | `40 41` | `40 31` |
+| `SHLD 9A00`, HL=`BBAA` | lower `50 51` | upper `60 61` | lower `50 BB`, upper `AA 61` |
+| `LHLD 0FFF` and `LHLD 2FFF` | — | carry must assert A12 | correct `1F 20` and `2F 40` |
 
-The sentinel writes therefore succeeded. A RAM instruction fetch between the
-two target reads makes both bytes correct; only the second uninterrupted read
-is corrupt. This excludes D15, its socket, and D15 pin 2 as the unique fault
-site. It also explains why the high-overlay second byte need not be another
-ROM byte: if physical BA12 falls, logical `DA01h` becomes `CA01h`, below the
-mode-1 ROM window, and the RAM path supplies the byte.
+The same high-page alias occurred in all four `{A10,A9}` classes at
+`1000`, `1200`, `1400`, and `1600` in all-RAM mode. The first READY-class run
+stored its result at high-A12 `5000h` and corrupted its own result pointer; it
+is retained as an invalid setup. The corrected low-A12 result at `4F00h` is
+the evidence. Sessions and corresponding sources use the
+`t32-ram-a12-*-physical` and `firmware/ram-a12-*-4000.asm` names.
 
-The existing values at the proposed aliases were not deliberately seeded in
-that run, so `1A01h -> 0A01h` and `DA01h -> CA01h` remain a unified, exact
-hypothesis rather than the final alias proof. The next probe,
-`firmware/ram-a12-alias-regions-4000.asm`, writes distinct target and alias
-bytes in all four A15:A14 classes before sampling them. Its clean and
-page-selective fault results are guarded in cosim. Evidence for the physical
-cross-memory result is
-`sessions/t32-rom-overlay-source-isolated-physical/20260804T202216.721145Z.*`.
+### Direct D1 register confirmation
 
-Instruction execution at the same address did not produce the required `1Ah`
-marker:
+The final RAM-resident probe made no high-address memory access. It copied
+architecturally visible register results into low-A12 RAM `4D00h`:
 
-| RAM trampoline | Control | Marker after `JMP 1A00h` |
-| --- | --- | --- |
-| `4000h` | pre-marker `D5h` written | `D5h` |
-| `5000h` | standalone CALL returns `A=50h` | `D5h` |
-| `5A00h` | standalone CALL returns `A=5Ah` | `01h`, repeatably |
+| Operation | Physical result |
+| --- | --- |
+| `INX B` from `0FFFh` | `1000h` |
+| `INX D` from `1A00h` | `0A01h` |
+| `INX H` from `5A00h` | `4A01h` |
+| `INX SP` from `9A00h` | `8A01h` |
+| `DAD D`, `1A00h + 1` | `1A01h` |
 
-The `5A00h` source has the same low 13 address bits as `1A00h`; only the memory
-region changes. Both repeated runs wrote `01h`, not random values. The upper
-program therefore behaves deterministically but incorrectly for that source
-geometry. The lower two sources return to the loader without executing the
-upper marker store.
+The exact T32 `1B/D62B` boot had zero transport mismatches and the loader
+returned normally. This confirms that D1's retained register values are wrong;
+an external D4/BA12/D15 fault cannot produce them. Evidence:
+`sessions/t32-ram-a12-increment-registers-physical/20260805T154851.229201Z.*`.
 
-Positive evidence:
+### Exact ROM WAIT-class pairs
 
-- `sessions/t32-pc-a12-physical/`: distinct CALL/RET programs at RAM `4000h`
-  and `5000h`; CALL `5000h` returns `A=50h` and marker `50h`.
-- `sessions/t32-pc-5a00-control/`: CALL `5A00h` returns `A=5Ah`.
-- `sessions/t32-waitclass-settled/`: `4000h -> 1A00h`, marker `D5h`.
-- `sessions/t32-waitclass-settled-from-5000/`: `5000h -> 1A00h`, marker `D5h`.
-- `sessions/t32-waitclass-settled-from-5a00/` and `-repeat/`: marker `01h` in
-  both runs.
+Using the same successful boot, sixteen LHLD samples per target returned:
+
+| Target | Reconstructed class | Expected | Physical |
+| --- | --- | --- | --- |
+| `1000h` | CAS-gated | `00 C0` | `00 0B` |
+| `1100h` | CAS-gated | `3E 11` | `3E 17` |
+| `1200h` | no wait | `3E 12` | `3E 02` |
+| `1400h` | always wait | `3E 14` | `3E E6` |
+
+Every second byte is the exact A12-low ROM byte. No WAIT class rescues the
+fault. Evidence is under
+`sessions/t32-rom-read-pair-{1000,1100,1200,1400}-physical/`.
 
 ## Bounded conclusion
 
-On CS00015, isolated reads are correct, but the second uninterrupted read in
-at least the `1Axx` and `DAxx` classes behaves consistently with physical A12
-low. The same symptom occurs in ROM and all-RAM modes, while the `4Axx/5Axx`
-RAM control passes. The fault is therefore address/timing-class dependent,
-not D15-local. This excludes corrupt ROM contents, a static A12 fault, a
-general data-bit fault, D15/socket pin 2 as the unique cause, and a fault
-confined to one reconstructed D2 class.
+CS00015 loses an already-high A12 in D1's 16-bit increment path. A carry from
+bit 11 can assert A12 (`0FFF -> 1000`), but incrementing while A12 is already
+one clears it. This single rule explains INX register-pair state, PC/instruction
+streams, LHLD, POP, and SHLD reads and writes across every tested address and
+all-RAM timing class.
 
-The shared electrical path is `D1.37/A12 -> D4.5`, then
-`D4.15/BA12` to D15.2, D16.2, the RAM/address-decode consumers, and the rest of
-the buffered bus. D6 and D8 package substitutions did not change the result.
-The remaining component-level alternatives are:
+That confirms D1 as the hardware diagnosis. D4, D15, the BA12 conductor, and
+READY timing cannot by themselves alter the DE register value retained across
+the intervening CALL/RET sequence in the INX probe. A scope comparison of
+D1.37 and D4.15 remains useful electrical confirmation, but it is no longer
+the cheapest logical discriminator. A known-good D1 substitution is the
+direct confirmation if the package and socket can be handled safely.
 
-1. D1 emits A12 incorrectly during the affected second cycle, or D4's A12
-   channel fails to preserve it dynamically;
-2. the D2/D30/R29 READY and memory-cycle timing path ends the affected cycle
-   while the CPU/buffered address is no longer valid; donor D2 produced the
-   same symptom, so the original D2 package is not the unique cause;
-3. a shared BA12 conductor/load or surrounding timing input is marginal in
-   only some high-address classes.
-
-The owner confirms that T31 and T32 were burned into two different physical
-AT28C64B packages. Both show correct isolated upper-D15 data with broken
-upper-D15 execution on CS00015. The exact consecutive-pair alias was measured
-only with T32, but the same second-cycle failure in all-RAM mode excludes
-either EEPROM package as the common explanation.
-
-The [Microchip AT28C64B specification](https://ww1.microchip.com/downloads/en/DeviceDoc/doc0270.pdf)
-defines an ordinary asynchronous SRAM-like read:
-with `/CE` and `/OE` low and `/WE` high, output is selected solely by the
-address pins. It does not define an A12-low second-read mode. The measured
-behavior is therefore a device/path fault, not expected EEPROM operation.
+T31 and T32 were burned in different AT28C64B packages. D6, D8, and D2 donor
+substitutions did not change the symptom. Those devices and the EEPROMs are
+excluded as unique causes; D55 remains a separate known failure.
 
 ### Exact cosim reproduction
 
-`JUKU_CONSECUTIVE_A12_LOW_PAGES=1,D` applies the current cross-memory working
-model before overlay decoding: from the second uninterrupted read within a
-listed logical 4 KiB page, physical A12 is cleared. The pure-RAM alias matrix
-passes both clean and faulted simulation, including `1A01h -> 0A01h` and
-`DA01h -> CA01h`. The page list is explicit because physical `5Axx`
-consecutive RAM reads pass and `9Axx` is pending a fresh hardware run.
+`JUKU_CPU_A12_INCREMENT_FAULT=1` now models the fault at the 8080/D1 increment
+operation rather than as a page-selective external read trick. It affects PC,
+INX, paired reads/writes, and POP while allowing carry into A12. The integration
+regression replays clean and faulted versions of the write-map, four-region
+LHLD, POP/SHLD, four READY-address classes, and boundary probes. One mechanism
+matches every meaningful physical byte, including writes and the successful
+`0FFF -> 1000` boundary.
 
-The older `JUKU_ROM_CONSECUTIVE_A12_LOW=1` switch remains as a historical
-ROM-local regression. It reproduces these earlier physical outcomes:
+`JUKU_ROM_CONSECUTIVE_A12_LOW=1` remains only for the older ROM-local T31/T32
+regressions. It is not the current component model.
 
-- `1100h`, `1200h`, and `1400h` lose the loader;
-- the consecutive-pair bytes above alias to their exact lower-half values;
-- entry at `1A00h` reads the physical stream
-  `3E 43 0E C3 FE 0E C3 0C 0A`, which executes `MVI A,43`, `MVI C,C3`,
-  `CPI 0E`, and `JMP 0A0C`; it returns to the loader without executing
-  `STA 4100`, preserving the RAM premarker `D5` from sources `4000h` and
-  `5000h`.
-
-The apparently special `5A00h -> 1A00h` marker `01` is independently explained
-by the earlier `5A00h` CALL control. Its exact eight-byte program
-`3E 5A 32 00 41 3E 5A C9` returned `A=5A` but left marker `00`, proving that
-the uploaded bytes were not executed normally. If its first `3E` fetch is
-`00`, CALL mode enters with `A=00` and stores `00`, while JUMP mode enters with
-`A=01` and stores `01`; both then continue at byte 1 and reach their intended
-transfer. `JUKU_EXEC_BYTE_FAULT=5A00:00` combined with the D15 burst fault
-reproduces the complete physical `01` result. This is a behavioral
-localization, not proof that RAM physically contains `00` at `5A00h`.
+The die-derived `hdl/vendor/vm80a.v` model independently reproduces the exact
+direct-register words when only its shared incrementer's bit-12
+retain-high/no-carry term is removed. The Boolean-level localization and its
+remaining transistor/layout boundary are documented in
+`../../docs/cs00015-d1-increment-analysis.md`.
 
 ### One-at-a-time PROM substitutions
 
@@ -250,18 +228,13 @@ Evidence:
 - `sessions/t32-d8swap-boot/` and `sessions/t32-d8swap-5a00/`
 - `sessions/t32-d6swap-boot/` and `sessions/t32-d6swap-5a00/`
 
-The cheapest next discriminators are:
+The remaining confirmation choices are:
 
-1. on the next successful T32 loader boot, run
-   `firmware/ram-a12-alias-regions-4000.asm`; it distinguishes target bytes
-   from deliberately seeded A12-low aliases in the `1A`, `5A`, `9A`, and `DA`
-   classes;
-2. compare D1.37 and D4.15/BA12 with READY at the affected second read using a
-   scope or logic analyzer: disagreement localizes D4, while matching early
-   A12 loss moves upstream to D1/READY timing;
-3. run the same verified T32 chip on the donor processor board;
-4. substitute D1 only if cross-board or timing measurements still implicate
-   the CPU-facing cycle.
+1. substitute a known-good D1 in CS00015 and rerun the existing T32 probes;
+2. compare D1.37 and D4.15/BA12 dynamically, with READY as timing context;
+3. run the verified T32 chip on the donor processor board.
+
+No D4/D30 rework or diagnostic-ROM re-burn is justified before D1 is tested.
 
 Earlier no-delay marker runs and the full-half read attempted after an abnormal
 upper jump were superseded and are intentionally not retained as evidence.
