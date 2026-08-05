@@ -45,6 +45,10 @@ identify the complete upper-ROM matrix without another RESET:
 python3 spinoffs/jukuravi/probe_waitclass.py --port /dev/ttyUSB0
 ```
 
+The next serial-only session is planned in [`T33-PLAN.md`](T33-PLAN.md): it
+runs against the burned T32 image with exact commands, pinned expected bytes,
+and a decision tree per probe, and needs no re-burn.
+
 On CS00015, the wait-class matrix is superseded by an exact consecutive-read
 A12-low alias. After a clean T32 boot, distinguish the fitted D15/device socket
 from the shared CPU/address-buffer path without another ROM burn:
