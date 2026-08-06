@@ -10,6 +10,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+import host
+
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -21,7 +23,10 @@ RESULT_BYTES = 24
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", default="/dev/ttyUSB0")
+    parser.add_argument(
+        "--port",
+        help="serial device; defaults to the first detected USB adapter",
+    )
     parser.add_argument("--baud", type=int, default=2400)
     parser.add_argument("--loader-votes", type=int, default=1)
     parser.add_argument(
@@ -35,6 +40,12 @@ def main() -> int:
         default=HERE / "sessions" / "t32-ram-a12-increment-registers-physical",
     )
     args = parser.parse_args()
+    try:
+        args.port, autodetected = host.resolve_serial_port(args.port)
+    except host.SessionError as error:
+        raise SystemExit(f"JUKURAVI-A12-INCREMENT: {error}") from error
+    if autodetected:
+        print(f"JUKURAVI-A12-INCREMENT: using {args.port}")
     args.log_dir.mkdir(parents=True, exist_ok=True)
 
     with tempfile.TemporaryDirectory(prefix="jukuravi-a12-increment-") as name:

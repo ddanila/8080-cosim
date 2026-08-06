@@ -25,6 +25,26 @@ pump capacitors and common signal ground. The measured connector facts are in
 [`../../docs/serial-handoff.md`](../../docs/serial-handoff.md); the optional
 Nano bridge wiring is in [`nano/README.md`](nano/README.md).
 
+### Serial port naming
+
+The examples below use the Linux `/dev/ttyUSB0`. On macOS the same adapter
+appears as `/dev/cu.usbserial-*`, or `/dev/cu.SLAB_USBtoUART` if the vendor
+Silicon Labs driver is installed instead of the built-in one. Always use the
+`cu.*` node: opening `tty.*` blocks until carrier detect, which this link never
+asserts. Pass `--port` accordingly; `host.py` requires it explicitly, while
+`probe_waitclass.py` and `probe_a12_increment.py` default to the first adapter
+found by `host.discover_serial_ports()` and print which one they chose.
+
+macOS needs no driver or dependency install: the CP210x driver ships with the
+system, and `host.py` uses stdlib `termios` rather than pyserial. Do not install
+the vendor Silicon Labs kext alongside the built-in driver.
+
+On a cold boot, run a full session first. `--attach-loader` means "reattach to
+an already-resident loader without resetting"; it deliberately never answers the
+banner, so using it against a freshly reset board leaves the ROM's handshake
+unanswered until it gives up into a failure tone. Boot normally once, then
+attach as often as needed without another RESET.
+
 T31 and every committed diagnostic image are generated artifacts with pinned
 checksums. Build and ROM-version details live in
 [`firmware/README.md`](firmware/README.md).

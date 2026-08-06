@@ -8,6 +8,7 @@ import copy
 import datetime as dt
 import errno
 import fcntl
+import glob
 import hashlib
 import json
 import os
@@ -143,6 +144,42 @@ def parse_nonnegative_float(value: str) -> float:
     if parsed < 0:
         raise argparse.ArgumentTypeError("value must be nonnegative")
     return parsed
+
+
+# Ordered by preference, most specific first. macOS exposes both a `cu.*` and a
+# `tty.*` node per adapter; only `cu.*` is usable here, because opening `tty.*`
+# blocks until carrier detect, which the Juku link never asserts.
+SERIAL_PORT_GLOBS = (
+    "/dev/ttyUSB*",             # Linux, CP210x/FTDI/PL2303
+    "/dev/cu.usbserial-*",      # macOS, Apple's built-in CP210x/FTDI driver
+    "/dev/cu.SLAB_USBtoUART*",  # macOS, vendor Silicon Labs driver
+    "/dev/ttyACM*",             # Linux, CDC-ACM (Nano bridge clones)
+    "/dev/cu.usbmodem*",        # macOS, CDC-ACM
+)
+
+
+def discover_serial_ports() -> list[str]:
+    """Every plausible USB serial adapter, in preference order."""
+    found: list[str] = []
+    for pattern in SERIAL_PORT_GLOBS:
+        for path in sorted(glob.glob(pattern)):
+            if path not in found:
+                found.append(path)
+    return found
+
+
+def resolve_serial_port(explicit: str | None) -> tuple[str, bool]:
+    """Return (port, autodetected). An explicit choice is never second-guessed."""
+    if explicit is not None:
+        return explicit, False
+    candidates = discover_serial_ports()
+    if not candidates:
+        raise SessionError(
+            "no USB serial adapter found; pass --port explicitly (looked for "
+            + ", ".join(SERIAL_PORT_GLOBS)
+            + ")"
+        )
+    return candidates[0], True
 
 
 def configure_serial(fd: int, baud: int) -> None:
