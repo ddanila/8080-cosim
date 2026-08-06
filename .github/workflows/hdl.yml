@@ -273,8 +273,8 @@ jobs:
 
   # The T28-T32 loader/recovery guards. These are documented in the Jukuravi
   # READMEs and were reachable only by hand -- no workflow and no git hook ran
-  # them. They need no iverilog (cosim oracle, pty-driven host CLI, and nasm
-  # reassembly of the committed .asm/.bin pairs), and they run in parallel well
+  # them. They rest on the cosim oracle, the pty-driven host CLI, and nasm
+  # reassembly of the committed .asm/.bin pairs, and they run in parallel well
   # inside the suite's critical path, so wiring them up costs no wall clock.
   jukuravi-regression:
     needs: changes
@@ -284,9 +284,11 @@ jobs:
       - uses: actions/checkout@v7
 
       # nasm reassembles the committed loader snippets to prove the .bin files
-      # still match their sources; no HDL simulation here.
+      # still match their sources. iverilog is required because the T32 guard
+      # ends in sync/jukuravi_vm80a_a12_check.sh, which simulates the vm80a core
+      # against that same increment probe.
       - name: Install toolchain
-        run: sudo apt-get update && sudo apt-get install -y gcc nasm
+        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog nasm
 
       - name: Run T28 loader guards
         run: ./sync/jukuravi_t28_check.sh
