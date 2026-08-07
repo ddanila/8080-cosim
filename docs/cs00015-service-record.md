@@ -1,6 +1,6 @@
 # Arvutimuuseum CS00015 service record
 
-Status date: 2026-08-04
+Status date: 2026-08-07
 
 This record identifies the physical Juku under current diagnostic work as the
 Arvutimuuseum machine `CS00015`.  The identifier is the same physical-source
@@ -80,6 +80,14 @@ from `0FFF`, INX DE/HL/SP from `1A00/5A00/9A00`, and DAD `1A00+1`. Thus carry
 and DAD work while INX loses retained A12. Exact ROM LHLD pairs in CAS-gated,
 no-wait, and always-wait classes all returned their A12-low second bytes 16/16.
 
+Immediately before D1 replacement on 2026-08-06, a repeat of the unchanged
+probe reproduced the same five faulty words. Immediately after replacement it
+returned `1000,1A01,5A01,9A01,1A01`, the complete expected result. Both sessions
+completed cleanly against T32 `1B/D62B` with the same probe hash and no serial
+handshake mismatch. The retained before/after sessions therefore confirm that
+the diagnosed behavior belonged to the replaced D1 rather than D4, D15, BA12,
+READY timing, or the test transport.
+
 Cosim now injects that single CPU behavior with
 `JUKU_CPU_A12_INCREMENT_FAULT=1`. The model covers PC, INX, LHLD/SHLD, POP,
 and boundary behavior and reproduces the meaningful bytes from six physical
@@ -105,7 +113,7 @@ provenance only and must not be read as a diagnosis of the original D6.
 | --- | --- | --- |
 | D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
-| D1 16-bit increment path | Direct BC/DE/HL/SP results prove INX cannot retain an already-high A12; carry and DAD work | Confirmed functional diagnosis; replace/substitute D1 and rerun the direct probe |
+| D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
 
 ## Serial connector measurement
 

@@ -147,6 +147,17 @@ returned normally. This confirms that D1's retained register values are wrong;
 an external D4/BA12/D15 fault cannot produce them. Evidence:
 `sessions/t32-ram-a12-increment-registers-physical/20260805T154851.229201Z.*`.
 
+On 2026-08-06 the same probe was run once more immediately before replacing
+D1. It reproduced the exact faulty five-word result
+`1000,0A01,4A01,8A01,1A01`. After D1 was replaced, the unchanged 81-byte probe
+returned the fully clean result `1000,1A01,5A01,9A01,1A01`. Both runs used the
+same T32 `1B/D62B` image, completed normally, and recorded zero transport
+mismatches. This before/after substitution closes the diagnosis at D1 rather
+than its external address path. Evidence:
+`sessions/t32-ram-a12-increment-registers-repeat-physical/20260806T161050.050390Z.*`
+and
+`sessions/t32-ram-a12-increment-registers-cpu-replacement-physical/20260806T161621.106830Z.*`.
+
 ### Exact ROM WAIT-class pairs
 
 Using the same successful boot, sixteen LHLD samples per target returned:
@@ -172,10 +183,10 @@ all-RAM timing class.
 
 That confirms D1 as the hardware diagnosis. D4, D15, the BA12 conductor, and
 READY timing cannot by themselves alter the DE register value retained across
-the intervening CALL/RET sequence in the INX probe. A scope comparison of
-D1.37 and D4.15 remains useful electrical confirmation, but it is no longer
-the cheapest logical discriminator. A known-good D1 substitution is the
-direct confirmation if the package and socket can be handled safely.
+the intervening CALL/RET sequence in the INX probe. The clean result after D1
+replacement is the direct physical confirmation. A scope comparison of D1.37
+and D4.15 could further characterize the old package, but is not required to
+localize the repaired fault.
 
 T31 and T32 were burned in different AT28C64B packages. D6, D8, and D2 donor
 substitutions did not change the symptom. Those devices and the EEPROMs are

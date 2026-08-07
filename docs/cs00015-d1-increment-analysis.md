@@ -1,7 +1,7 @@
 # CS00015 D1 bit-12 increment diagnosis
 
-Status: functionally confirmed on hardware and reproduced in the die-derived
-vm80a HDL model.
+Status: confirmed by physical before/after D1 substitution and reproduced in
+the die-derived vm80a HDL model.
 
 ## Physical signature
 
@@ -59,6 +59,21 @@ fault: 1000 0A01 4A01 8A01 1A01
 
 The faulted result is exactly the physical CS00015 result.
 
+## Physical substitution confirmation
+
+The unchanged 81-byte probe was repeated immediately before D1 replacement on
+2026-08-06 and reproduced the fault result. Immediately after replacement it
+returned the exact clean result:
+
+```text
+before: 1000 0A01 4A01 8A01 1A01
+after:  1000 1A01 5A01 9A01 1A01
+```
+
+Both retained sessions used T32 `1B/D62B`, the same probe SHA-256, and had no
+transport mismatch. This excludes the external BA12 path and test transport as
+causes of the repaired behavior.
+
 ## Remaining physical boundary
 
 `vm80a.v` is die-derived but expresses this block as the arithmetic operation
@@ -68,6 +83,6 @@ also need not match the source die exactly. The evidence therefore identifies
 the shared incrementer function and missing Boolean term, not a transistor or
 bond wire.
 
-The practical repair is to substitute D1, then rerun
-`spinoffs/jukuravi/probe_a12_increment.py`. A clean five-word result confirms
-the replacement. D4, D30, and ROM rework are not justified by this fault.
+D1 replacement restored the clean five-word result from
+`spinoffs/jukuravi/probe_a12_increment.py`. D4, D30, and ROM rework are not
+justified by this repaired fault.

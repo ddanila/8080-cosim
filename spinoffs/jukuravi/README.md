@@ -135,8 +135,9 @@ python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
   --log-dir spinoffs/jukuravi/sessions/t32-probe
 ```
 
-The runs cited as physical evidence in [`T31-PHYSICAL.md`](T31-PHYSICAL.md) are
-committed, so those directories must not be pruned.
+The runs cited as physical evidence in [`T31-PHYSICAL.md`](T31-PHYSICAL.md) and
+[`T32-PHYSICAL.md`](T32-PHYSICAL.md) are committed, so those directories must
+not be pruned.
 
 The optional Nano bridge has a 115200-baud USB side, so it requires explicit
 `--baud 115200`; its Juku-side `SoftwareSerial` rate must match the installed

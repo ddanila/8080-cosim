@@ -33,6 +33,10 @@ EXPECTED = {
         "3E433E813E813E813E813E813E813E813E8166216681",
     "t32-ram-a12-increment-registers-physical":
         "58313243A55555550010010A014A018A011A555555555555",
+    "t32-ram-a12-increment-registers-repeat-physical":
+        "58313243A55555550010010A014A018A011A555555555555",
+    "t32-ram-a12-increment-registers-cpu-replacement-physical":
+        "58313243A55555550010011A015A019A011A555555555555",
     "t32-rom-read-pair-1000-physical":
         "50414952100000C010A5" + "000B" * 16,
     "t32-rom-read-pair-1100-physical":
@@ -46,7 +50,8 @@ EXPECTED = {
 
 def main() -> int:
     for name, expected in EXPECTED.items():
-        summaries = list((SESSIONS / name).glob("*.json"))
+        session_dir = SESSIONS / name
+        summaries = list(session_dir.glob("*.json"))
         if len(summaries) != 1:
             raise SystemExit(f"JUKURAVI-T32-PHYSICAL: {name} has {len(summaries)} summaries")
         summary = json.loads(summaries[0].read_text())
@@ -61,13 +66,33 @@ def main() -> int:
                 f"JUKURAVI-T32-PHYSICAL: {name} differs: "
                 f"expected {expected}, got {observed}"
             )
+        for log_key in ("rx_log", "tx_log"):
+            log_name = summary.get(log_key)
+            log_path = session_dir / log_name if isinstance(log_name, str) else None
+            if log_path is None or not log_path.is_file() or not log_path.stat().st_size:
+                raise SystemExit(
+                    f"JUKURAVI-T32-PHYSICAL: {name} lacks nonempty {log_key}"
+                )
 
-    direct = json.loads(next(
-        (SESSIONS / "t32-ram-a12-increment-registers-physical").glob("*.json")
-    ).read_text())
-    image = direct.get("image", {})
-    if image.get("rom_version") != 0x1B or image.get("crc16") != "D62B":
-        raise SystemExit("JUKURAVI-T32-PHYSICAL: direct probe identity differs")
+    increment_names = (
+        "t32-ram-a12-increment-registers-physical",
+        "t32-ram-a12-increment-registers-repeat-physical",
+        "t32-ram-a12-increment-registers-cpu-replacement-physical",
+    )
+    increment_summaries = [
+        json.loads(next((SESSIONS / name).glob("*.json")).read_text())
+        for name in increment_names
+    ]
+    for summary in increment_summaries:
+        image = summary.get("image", {})
+        if image.get("rom_version") != 0x1B or image.get("crc16") != "D62B":
+            raise SystemExit("JUKURAVI-T32-PHYSICAL: direct probe identity differs")
+    probe_hashes = {summary.get("loader", {}).get("sha256")
+                    for summary in increment_summaries}
+    if probe_hashes != {
+        "531aac5aa6678a31e62aef43dc36bb47a8be398a5adb9dd3d714d57f468418ea"
+    }:
+        raise SystemExit("JUKURAVI-T32-PHYSICAL: direct probe hash differs")
     print(f"JUKURAVI-T32-PHYSICAL: PASS ({len(EXPECTED)} curated sessions)")
     return 0
 
