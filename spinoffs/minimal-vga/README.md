@@ -13,8 +13,8 @@ bare-PCB set is a validated first-article order candidate.
 ## Rev B modular status
 
 The current Rev B state is summarized in `docs/rev-b-status.md`. Its B1 CPU, memory,
-I/O and 100×120 backplane boards have been freshly generated/routed, pass total DRC
-0/0, scoped LVS/footprint/mating gates, the full digital-twin suite and fabrication-ZIP
+I/O and five-slot 100×100 backplane boards have been freshly generated/routed, pass
+total DRC 0/0, scoped LVS/footprint/mating gates, the full digital-twin suite and fabrication-ZIP
 validation. `docs/rev-b-order-readiness.md` is the upload decision record, and
 `docs/rev-b-b1-bench-log.md` is ready for the vendor preview and first-article evidence.
 The B2 video desk model is complete through TI.3; B2 PCB layout/tape-out remains held

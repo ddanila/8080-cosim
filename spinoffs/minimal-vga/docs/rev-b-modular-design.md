@@ -1,10 +1,11 @@
 # VJUGA rev B — modular card + backplane design
 
 New parallel approach (rev A, the 200×200 4-layer board, is **not** scrapped). Goal:
-several **≤100×100 mm** cards on a **passive 100×120 mm backplane**, so iterative cards
-stay in the cheap 2-layer tier and you re-spin one small card instead of a big 4-layer
-board. The one-off backplane is deliberately taller to preserve six mate-compatible
-slots and a safe power tail.
+several **≤100×100 mm** cards on a **passive 100×100 mm backplane**, so every PCB stays
+in the cheap 2-layer tier and you re-spin one small card instead of a big 4-layer board.
+The five-slot backplane fits the complete CPU/Memory/I/O/Video/FDC system at the proven
+16 mm pitch; the former sixth spare slot was traded for a mechanically clear power tail
+and the lower fabrication price (D1.37).
 
 ## Bus: RC2014
 0.1" pin header/socket, Z80-native (A0–15, D0–7, real Z80 control, clock, power).
@@ -49,8 +50,8 @@ Three tiers:
 - **I/O** — 8251 UART (TTL serial console) plus the fully wired, initially-DNP 8255/PIC
   and Juku matrix-keyboard header.
 - **FDC** (optional) — WD1793/ВГ93 floppy controller.
-- **Backplane** — passive: connectors + power + bus traces. Six slots at 16 mm pitch on
-  a 100×120 mm board.
+- **Backplane** — passive: connectors + power + bus traces. Five slots at 16 mm pitch on
+  a 100×100 mm board; exactly enough for the Full Juku-like tier, with no spare slot.
 
 ## System rules (the bus contract must nail these)
 - **One driver per signal/cycle:** CPU owns address/control and write data; exactly one
@@ -74,6 +75,6 @@ Three tiers:
 
 ## Open questions
 All resolved in `rev-b-build-plan.md` (separate CPU/Memory cards; GAL22V10 decode;
-six slots @ 16 mm on the 100×120 backplane; tiered interrupts—polling in B1,
+five slots @ 16 mm on the 100×100 backplane; tiered interrupts—polling in B1,
 8259-class PIC populated at B3 with FRAME_TICK on USER1). The remaining choices are
 the owner’s B1 order decision and post-B1-bench release of B2 physical layout work.

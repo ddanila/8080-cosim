@@ -23,6 +23,7 @@ ROOT = HERE.parents[3]
 
 pinout = json.loads((HERE / "bus-pinout.json").read_text())
 cards = json.loads((HERE / "cards.json").read_text())
+mating = json.loads((HERE / "mating.json").read_text())
 
 # ---- accurate DIP pinouts (pin number -> net/function) ----
 # Z80 DIP-40: transcribed verbatim from spinoffs/minimal-vga/kicad/rev-a-physical.board.json U1
@@ -377,8 +378,8 @@ def nets_from_chips(chips):
 def build(card):
     chips = []
     if card == "backplane":
-        # 6 slots wired in parallel: same signal on pin N of every slot.
-        for s in range(1, 7):
+        # Contract-sized slot set wired in parallel: same signal on pin N of every slot.
+        for s in range(1, mating["n_slots"] + 1):
             chips.append(bus_connector(f"J_S{s}"))
         chips.extend(CARD_EXTRAS.get("backplane", []))
     else:

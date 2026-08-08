@@ -21,10 +21,10 @@ the vendor actually received.
 
 | Board | Nominal size | Expected SHA-256 | Uploaded hash / preview result |
 |---|---:|---|---|
-| mem | 100 × 60 mm | `7653b88b822e7d7a763a34e36ea2ef3c3f3128103af793af3a5ad2d07cdcbfcf` | pending |
-| io | 100 × 100 mm | `d731710de520421e933d3ff18f57423a47556c2497220da97b3063bf8b10860a` | pending |
-| cpu | 100 × 70 mm | `f1cbb2e46375c4c2136526bfe36317c157a64a6380d31f3c9ef0a2e4d9ffc578` | pending |
-| backplane | 100 × 120 mm | `85721dc7371150abff9d398861f870b47ef315d1210705387b216130b65bad94` | pending |
+| mem | 100 × 60 mm | `898308402f75ef4864ce598b2ef2177763199e8c972e8fd37b3c2dcb68bf7408` | pending |
+| io | 100 × 100 mm | `5cafb5b686e9904dbb7a86848c8618171f3a2fc02a5c79760bd3084c7e422de4` | pending |
+| cpu | 100 × 70 mm | `cc5f1d58906125625247d93cd7c686f0ca6afbb966e5b952aabc5f2b9a9ccc70` | pending |
+| backplane | 100 × 100 mm | `692ef44f186f987fa339644f528cf621435bd180f7a7f4ca01df6e27d9ca84a1` | pending |
 
 Vendor-preview checklist:
 
@@ -60,7 +60,7 @@ a card; keying is convention-only.
 | Step | Expected result | Observed result / evidence | Pass |
 |---|---|---|:---:|
 | 1. Bare-board inspection | Correct outline, drill registration, readable pin-1/orientation silk; no shorts/opens visible | pending | ⬜ |
-| 2. Bare mechanical fit | Each card seats in at least slots 1–3 in the marked orientation; no forced insertion; measure adjacent-card gap | pending | ⬜ |
+| 2. Bare mechanical fit | Each card seats in all five slots in the marked orientation; no forced insertion; measure adjacent-card gap | pending | ⬜ |
 | 3. Backplane only, current limited | +5 V and GND correct at every slot; RESET_N asserts low and releases high; idle current recorded | pending | ⬜ |
 | 4. CPU card, no memory/I/O | Clock reaches every slot; frequency and RESET_N timing recorded; no abnormal current/heat | pending | ⬜ |
 | 5. NOP free-run | With the documented NOP plug, A0–A15 count and control/refresh activity is plausible at the analyzer header | pending | ⬜ |

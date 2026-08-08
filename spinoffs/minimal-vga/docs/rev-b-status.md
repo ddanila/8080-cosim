@@ -38,6 +38,8 @@ timing/crop/scanout/`WAIT` gates.
 - **D1.21** CPU card unbuffered in B1 (RC2014 precedent); '245/'244 optional margin.
 - **D1.19** oracle-first: control equations pass the boot oracle before silicon.
 - **D1.20** pipeline-prove on the mem card, then replicate.
+- **D1.37** five slots at 16 mm on a 100×100 backplane; complete planned system,
+  no spare slot, service components retained top-side outside the card envelope.
 
 ## Tools
 
@@ -49,8 +51,8 @@ those tools.
 ## Next action
 
 Stages C/D and the pre-order correction pass are complete. All four boards are
-recorded order-safe, including corrected package widths, through-hole USB-C,
-power LED polarity, reset pull-up, input conditioning, mating, and physical
+recorded order-safe, including the five-slot 100×100 backplane, corrected package
+widths, through-hole USB-C, power LED polarity, reset pull-up, input conditioning, mating, and physical
 footprint contracts.
 
 **T1.10 is an explicit owner purchasing decision.** The four fabrication packages

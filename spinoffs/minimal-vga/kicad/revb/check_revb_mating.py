@@ -13,7 +13,7 @@ Checks:
   4. backplane slot k: J_S{k}_BUS == (base_row_x, slot0_y + (k-1)*slot_pitch)
                        J_S{k}_EXT == (ext_row_x,  that + ext_row_dy)
   5. base vs ext bus-column grids stay >= min_column_sep apart (2-layer routability)
-  6. six slots + ext row + margin fit inside backplane_board_h, tail strip above them
+  6. configured slots + ext row + margin fit inside backplane_board_h, tail strip above them
 
 Usage: check_revb_mating.py            # exit 0 = all match, 1 = any mismatch
 """

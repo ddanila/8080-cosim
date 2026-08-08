@@ -15,7 +15,7 @@ updated 2026-08-08.
 | cpu | 100 × 70 | 2 | 1 | Z80 + clock + diag; unbuffered (D1.21) |
 | mem | 100 × 60 | 2 | 1 | ROM + SRAM + GAL decode |
 | io | 100 × 100 | 2 | 1 | 8251 UART + GAL; B3 parts footprinted DNP (D1.26) |
-| backplane | 100 × 120 | 2 | 1 | 6 slots + power entry/reset/serial; grown past 100×100 per D1.31/D1.35 (one-off) |
+| backplane | 100 × 100 | 2 | 1 | 5 slots + power entry/reset/serial; cheap-tier layout per D1.37 |
 
 All four pass `check_revb_drc.py --total` at **0 violations / 0 unconnected**, obey the
 mechanical mating contract (`check_revb_mating.py`), and boot byte-identical to cosim in
@@ -36,7 +36,7 @@ count, drill, and pitch so a wrong/SMD footprint can't slip through again.
   0.1″ pitch, on the bottom (mating) edge — base row 4 mm from the edge, ext row 9 mm.
   (The 1×39/1×10 KiCad footprints are vertical, but a right-angle header has the identical
   hole pattern — the PCB is correct for either; buy right-angle.)
-- **Backplane slots:** 6× (female 1×39 + female 1×10) 0.1″ SIL sockets, base x=50 /
+- **Backplane slots:** 5× (female 1×39 + female 1×10) 0.1″ SIL sockets, base x=50 /
   ext x=14.45, 16 mm pitch.
 
 **Backplane discretes (all through-hole):**
@@ -83,10 +83,10 @@ hashes in this note and the order/bench record. Fresh package hashes from the
 
 | package | sha256 (snapshot) |
 |---|---|
-| mem.zip | 7653b88b822e7d7a763a34e36ea2ef3c3f3128103af793af3a5ad2d07cdcbfcf |
-| io.zip | d731710de520421e933d3ff18f57423a47556c2497220da97b3063bf8b10860a |
-| cpu.zip | f1cbb2e46375c4c2136526bfe36317c157a64a6380d31f3c9ef0a2e4d9ffc578 |
-| backplane.zip | 85721dc7371150abff9d398861f870b47ef315d1210705387b216130b65bad94 |
+| mem.zip | 898308402f75ef4864ce598b2ef2177763199e8c972e8fd37b3c2dcb68bf7408 |
+| io.zip | 5cafb5b686e9904dbb7a86848c8618171f3a2fc02a5c79760bd3084c7e422de4 |
+| cpu.zip | cc5f1d58906125625247d93cd7c686f0ca6afbb966e5b952aabc5f2b9a9ccc70 |
+| backplane.zip | 692ef44f186f987fa339644f528cf621435bd180f7a7f4ca01df6e27d9ca84a1 |
 
 > **Fab capability:** the USB-C connector (0.85 mm pitch) needs **0.15 mm (6 mil) min
 > clearance** at that footprint — standard for JLCPCB/PCBWay etc.; the rest of the board
@@ -112,9 +112,9 @@ inherent, not open geometry questions:
 - **Keying is convention-only (D1.32b):** a reversed card can seat (centred base is
   symmetric). Mitigation is silk/orientation marks + care, not a mechanical block. The
   blocking-post option (D1.32a) is held in reserve for after bench experience.
-- **Backplane is 100 × 120** — past the 100×100 cheap-tier cliff. Deliberate (D1.31:
-  grow the one-off backplane rather than drop slots or cramp the pitch). Cards stay
-  ≤100×100.
+- **Five slots, no spare:** D1.37 traded the unused sixth expansion slot for a
+  100×100 cheap-tier backplane. The complete planned CPU/Memory/I/O/Video/FDC system
+  fits, but another simultaneous card would require a second/revised backplane.
 - **Slot pitch 16 mm** is tighter than mainline RC2014 (~20 mm). FreeCAD clearance is a
   conservative 4.16 mm; confirm on the bench (T1.11) before committing to many boards.
 - **Routing is freerouting-stochastic** (D1.33/D1.34): the pipeline reliably *reaches*

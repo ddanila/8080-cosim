@@ -146,8 +146,9 @@ geometry from it. Distances in mm, footprint-centre.
 | `ext_row_dy` | 5.0 | backplane ext row = base row + this (per slot) |
 | `slot_pitch` | 16.0 | backplane slot-to-slot spacing |
 | `slot0_y` | 10.0 | backplane first (bottom) base row Y |
-| `n_slots` | 6 | backplane slots |
-| `backplane_board_h` | 120.0 | backplane outline height (grown per D1.31/D1.35) |
+| `n_slots` | 5 | backplane slots (CPU/Memory/I/O/Video/FDC; no spare) |
+| `backplane_board_h` | 100.0 | backplane outline height (cheap-tier decision D1.37) |
+| `tail_strip_y0` | 82.0 | clear top-side service strip starts above the final ext row |
 
 The base offset is **4.0 mm** (not mem's historical 5.0): io — the densest, most
 routing-constrained card — routes reliably only at 4 mm, and it is the binding
@@ -163,9 +164,10 @@ RC2014-compatible variant (the spec fixes the signal set, not the physical prese
 and it lets the base and ext bus **columns interleave** on the 2-layer backplane:
 `ext_row_x = 14.45` places the ext pin grid a **half pin-pitch (1.27 mm)** off the base
 grid, versus only 0.82 mm at the old 14.0 — the checker's `min_column_sep` gate enforces
-this. The backplane is grown to 100×112 (still a cheap 2-layer one-off) so six 16 mm-pitch
-slots plus the power/reset/serial tail strip fit; per D1.31 we grow the one-off backplane
-rather than drop slots.
+this. Five 16 mm-pitch slots occupy base-row Y=10…74 and ext-row Y=15…79; the service
+tail starts at Y=82 on the 100×100 board. D1.37 supersedes the earlier 100×120/six-slot
+variant: the complete planned five-card system still fits, while top-side power/reset/
+serial components stay outside the seated-card envelope.
 
 ## B1-population power budget (planning estimate)
 

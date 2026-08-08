@@ -20,7 +20,7 @@
     "owns_mem": [],
     "owns_io": [],
     "populated": [
-      "6x 39+10 slot connectors",
+      "5x 39+10 slot connectors",
       "USB-C 5V in",
       "reset supervisor",
       "FTDI 6-pin header",

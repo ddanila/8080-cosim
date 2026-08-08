@@ -17,7 +17,9 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 PKG = REPO / "fab" / "minimal-vga" / "revb" / "package"
 FAB = PKG.parent
-CARDS = {"mem": 60.0, "io": 100.0, "cpu": 70.0, "backplane": 120.0}
+MATING = json.loads((HERE / "mating.json").read_text())
+CARDS = {"mem": 60.0, "io": 100.0, "cpu": 70.0,
+         "backplane": float(MATING["backplane_board_h"])}
 SUFFIXES = (
     "F_Cu.gtl",
     "B_Cu.gbl",

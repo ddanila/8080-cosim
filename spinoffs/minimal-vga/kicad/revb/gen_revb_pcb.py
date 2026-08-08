@@ -15,6 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))   # spinoffs/minimal-vga/kicad
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 CARD = sys.argv[1] if len(sys.argv) > 1 else "mem"
 FPROOT = os.environ["KICAD_FOOTPRINTS"]
+MATING = json.load(open(os.path.join(HERE, "mating.json")))
 
 # Card outlines: BOARD_W + per-card BOARD_H come from revb_place (shared with the
 # mating checker). io is taller: more parts (D1.23).
@@ -74,7 +75,7 @@ def edge_keepout(board):
 
 
 def emit_bus_columns(board):
-    """D1.29 column-route: the six base (and six ext) connectors are stacked at the
+    """D1.29 column-route: the configured base/ext connectors are stacked at the
     same x-origin, so pad N of every slot shares an X and differs only in Y — a
     straight F.Cu segment between consecutive slots' pad N routes that whole bus net.
     We emit these deterministic vertical tracks here (locked, so freerouting keeps
@@ -114,19 +115,21 @@ def emit_bus_columns(board):
 
 def emit_power_rails(board):
     """Backplane deterministic power distribution (D1.33 fallback, minimally scoped).
-    The power columns end at slot 6 (y=90) while the power-hungry tail lives in the top
-    strip (y>98); freerouting reliably fails to bridge that gap (130+ attempts, best 1
-    unconnected — always power). Emit, per net: a locked riser from the slot-6 column
+    The power columns end at the final slot while the power-hungry tail lives in the top
+    strip. Emit, per net: a locked riser from the final-slot column
     pad, a horizontal strip rail, and straight drops to specific tail pads (so nothing
-    dangles). VCC5 on F.Cu at y=101.5, GND on B.Cu at y=100.5 — different layers so
+    dangles). VCC5 on F.Cu and GND on B.Cu — different layers so
     their drops may cross. freerouting keeps only short local taps onto the rails,
     which it has always managed. Drop targets are pads reachable by a straight vertical
     (chosen to avoid other parts' pad columns); the rest tap the rail via freerouting."""
+    last_bus = f"J_S{MATING['n_slots']}_BUS"
+    last_ext = f"J_S{MATING['n_slots']}_EXT"
+    tail_y = MATING["tail_strip_y0"]
     RAILS = {
-        "VCC5": {"layer": pcbnew.F_Cu, "y": 100.9,   # 101.5 grazed J_FTDI pad 2 (0.18 mm)
+        "VCC5": {"layer": pcbnew.F_Cu, "y": tail_y + 0.9,
                  "drops": {("J_PWR", "VCC5"), ("U_RST", "VCC5"), ("J_FTDI", "VCC5"),
                            ("R_LED", "VCC5")}},
-        "GND":  {"layer": pcbnew.B_Cu, "y": 100.5,
+        "GND":  {"layer": pcbnew.B_Cu, "y": tail_y + 0.5,
                  "drops": {("U_RST", "GND"), ("SW_RST", "GND")}},
     }
     pads_by_ref = {}
@@ -137,9 +140,9 @@ def emit_power_rails(board):
             nn = pad.GetNetname()
             if nn in RAILS:
                 pads_by_ref.setdefault((ref, nn), []).append(pad)
-                if ref == "J_S6_BUS":
+                if ref == last_bus:
                     riser[nn] = pad
-                elif ref == "J_S6_EXT":
+                elif ref == last_ext:
                     ext_pad[nn] = pad
 
     def track(net, layer, x1, y1, x2, y2, w=0.5):
@@ -157,7 +160,7 @@ def emit_power_rails(board):
             continue
         net, ly, ry = rp.GetNet(), spec["layer"], spec["y"]
         rx = pcbnew.ToMM(rp.GetPosition().x)
-        # riser: slot-6 pad straight up into the strip (THT pad joins both layers)
+        # riser: final-slot pad straight up into the strip (THT pad joins both layers)
         track(net, ly, rx, pcbnew.ToMM(rp.GetPosition().y), rx, ry); n += 1
         # drops to the allow-listed pads
         xs = [rx]
@@ -169,7 +172,7 @@ def emit_power_rails(board):
                 xs.append(px)
         # ext-bank power column join (D1.33): the ext connector carries VCC5/GND too,
         # and its B.Cu columns are otherwise isolated (the DSN drops the interleave-
-        # threading joins, so freerouting fails on exactly this). Rise from the slot-6
+        # threading joins, so freerouting fails on exactly this). Rise from the final-slot
         # ext pad to the rail; via across if the rail is on the other layer.
         ep = ext_pad.get(netname)
         if ep is not None:
@@ -251,8 +254,8 @@ def main():
             base_fp, ext_fp = fpmap[typ]
             base = {p: n for p, n in pins.items() if p.isdigit()}
             ext = {p[1:]: n for p, n in pins.items() if p.startswith("E")}  # E1->pad 1
-            # Single-card bus keeps the J_BUS/J_EXT names; the backplane's six slots
-            # (J_S1..J_S6) derive per-slot refs so each connector is uniquely named
+            # Single-card bus keeps the J_BUS/J_EXT names; the backplane slots derive
+            # per-slot refs so each connector is uniquely named
             # and its pins align in vertical columns (D1.29 column-route prerequisite).
             bref = "J_BUS" if ref == "J_BUS" else f"{ref}_BUS"
             eref = "J_EXT" if ref == "J_BUS" else f"{ref}_EXT"
@@ -288,9 +291,8 @@ def main():
         "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
         "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
         "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
-        # backplane: one short label in the thin clear band between the top ext row
-        # (y<=96.7) and the connector tail row (y>=99.5); strips are otherwise full.
-        "backplane": [("REVB BACKPLANE", 45.0, 98.0, 1.0)],
+        # backplane: short label in the clear band above the fifth connector pair.
+        "backplane": [("REVB BACKPLANE", 65.0, 80.0, 1.0)],
     }
     for text, sx, sy, ssz in SILK.get(CARD, SILK["mem"]):
         silk(board, text, sx, sy, size=ssz)

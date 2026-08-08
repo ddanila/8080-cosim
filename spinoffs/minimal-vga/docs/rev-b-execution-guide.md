@@ -152,15 +152,14 @@ conflict-clean with the framebuffer window unowned.
 `spinoffs/minimal-vga/kicad/revb/{backplane,cpu-card,mem-card,io-card}.board.json`
 + a shared generator/check pair cloned from the rev A flow
 (`kicad/minimal-vga.board.json`, `gen_rev_a_pcb.py`, `check_rev_a_physical.py`).
-Contents per the bus contract + chip map: backplane = 6 slots @ 16 mm, 39+10
+Contents per the bus contract + chip map: backplane = 5 slots @ 16 mm, 39+10
 connectors per D1.4, USB-C power, reset supervisor (sole RESET_N driver, S7),
 FTDI header + S5 jumper, MODE0/1 default pulls (S11), wired-OR pull-ups (S4);
 cpu-card = Z80 + socketed osc + '245/'244 buffers; mem-card = 27C256 + AS6C1008 +
 GAL22V10 + NOP-plug/J95-style headers (S9); io-card = 8251 + local baud osc +
 decode, with 8255/PIC/keyboard footprints marked DNP (D1.7).
 *Acceptance (each):* board.json validates; generated connectivity matches the bus
-contract pin table (checked, not eyeballed); cards ≤100×100, with the deliberate
-100×120 backplane exception from D1.31/D1.35.
+contract pin table (checked, not eyeballed); every board ≤100×100 per D1.37.
 
 **T1.7 — per-card LVS.**
 Yosys-netlist each `hdl/revb/revb_*_card.v` vs its board.json connectivity
@@ -171,8 +170,8 @@ uses for LVS-invisible adjuncts.
 copy fails (prove, restore); wired into CI paths.
 
 **T1.8 — manufacturing-readiness + silk checks.**
-`kicad/revb/check_revb_ready.sh`: DRC/fab rules (2-layer; cards ≤100×100, backplane
-100×120) + machine-checkable silk items (pin-1 marks, card name+rev, bus pin
+`kicad/revb/check_revb_ready.sh`: DRC/fab rules (2-layer; all boards ≤100×100) +
+machine-checkable silk items (pin-1 marks, card name+rev, bus pin
 labels, extension-key arrow, "NO HOT-PLUG", NOP/J95 header labels) per the
 coverage-matrix checklist.
 *Acceptance:* passes all four boards; removing a silk item from a board.json copy
@@ -187,7 +186,7 @@ clearance; residual reversed-insertion risk recorded.
 
 **T1.10 — order gate + order (hardware-blocked).**
 All of T1.0–T1.9 green + power budget re-check (bus-contract table) → order the
-three ≤100×100 cards plus the deliberate 100×120 backplane, all 2-layer. *Acceptance:*
+three B1 cards plus the five-slot 100×100 backplane, all 2-layer. *Acceptance:*
 order placed; fab package SHA256 recorded in
 the bench log doc skeleton.
 
@@ -254,7 +253,7 @@ kicad-cli schematic round-trip when available (pattern: `spinoffs/minimal-vga/sy
 
 **TC.5 — PCB generators (D1.13).**
 `kicad/revb/gen_revb_pcb.py` (parameterized clone of `gen_rev_a_pcb.py`): outlines
-(backplane 100×120, cards ≤100×100), 39+10 connectors per D1.4 geometry, 16 mm
+(all boards ≤100×100), 39+10 connectors per D1.4 geometry, 16 mm
 slot pitch on the backplane, generator-emitted silk (full checklist). Regeneration
 must be deterministic (same JSON in → byte-stable PCB out, rev A convention).
 *Acceptance:* four `.kicad_pcb` generated on this Mac; regen diff-clean; silk
@@ -494,7 +493,7 @@ were subsequently completed at DRC 0/0. Use `rev-b-status.md` for the live ledge
 - **TD.11 backplane ⬜** — needs a PCB-gen enhancement first: `gen_revb_pcb.py` splits
   a REVB_BUS_39_10 into hardcoded `J_BUS`/`J_EXT`, but the backplane has **six**
   (`J_S1..J_S6`) — the split must use per-slot ref names. Then a 22-part layout
-  (6 slots @ 19 mm + power/reset/pulls/FTDI/LED) and parallel-bus routing. No LVS.
+  (historical 6 slots @ 19 mm + power/reset/pulls/FTDI/LED) and parallel-bus routing. No LVS.
 
 Resume: cpu A8 + backplane are visual/gen work best done with KiCad open.
 
@@ -522,7 +521,7 @@ regenerated. `REVB_SWEEP_{REF,X,ROT}` env hook in the generator drives the searc
 **TF.2 — multi-slot connector support in the PCB generator (D1.29 prerequisite).**
 `gen_revb_pcb.py`: the `REVB_BUS_39_10` branch derives refs from the component ref
 (`J_S3` → `J_S3_BUS`/`J_S3_EXT`; a bare `J_BUS` keeps today's names, cards
-unaffected). Backplane PLACE: six slot pairs at the same x-origin, y = 19 mm pitch
+unaffected). Historical Backplane PLACE: six slot pairs at the same x-origin, y = 19 mm pitch
 (base rows at y ≈ 8, 27, 46, 65, 84, 103 → needs BOARD_H check vs 100 — if 6×19
 overflows, drop pitch to 18 mm, NOT the slot count; record the final pitch in the
 bus contract). Power/reset/FTDI/LED parts go in the inter-slot gaps and margins.
@@ -531,8 +530,8 @@ parts placed; `check_revb_pcb.py backplane` green (teach it the 12-connector
 expectation); placement-DRC 0.
 **DONE (2026-07-18):** 28 footprints placed, placement DRC 0/0. **Deviation → D1.30:**
 the 39-pin base spans nearly the full width, so co-located base+ext-per-slot pairs
-would put ext bodies on top of base bus columns. Instead the six base connectors form
-a column-aligned bank in the UPPER region and the six ext connectors a separate bank
+would put ext bodies on top of base bus columns. Instead the historical base connectors form
+a column-aligned bank in the UPPER region and the ext connectors a separate bank
 LOWER-LEFT (two independent bussed banks, each cleanly column-routable); power tail in
 the free lower-right quadrant. Footprint probe + `USB_C_PWR` logical-pin→pad map added.
 
@@ -601,9 +600,9 @@ known 1-mm and two-bank bugs), contract constants + citation in the bus contract
   can't pass in 100×100 with the tail squeezed in, grow `BOARD_H` per D1.31 (≤115).
 *Acceptance:* `check_revb_mating.py` green; 4× `check_revb_drc.py --total` 0/0 from
 fresh regenerate; STEP + previews regenerated.
-**DONE (2026-07-18):** contract refined to base_edge_offset **4.0** mm (io — densest
-card — is the binding constraint; only routes at 4 mm), initially growing the
-backplane to 100×115 and then to the current **100×120** for the TH.3 power additions.
+**DONE (2026-07-18; historical outline, superseded by D1.37):** contract refined to
+base_edge_offset **4.0** mm (io — densest card — is the binding constraint; only routes
+at 4 mm), initially growing the backplane to 100×115 and then 100×120 for TH.3.
 revb_place.py derives card connectors from mating.json; mating checker in the tier
 suite. All four route **0/0**. Backplane needed two fixes beyond placement: base cols
 F.Cu / ext cols B.Cu, and bottom-strip pullups moved onto their own bus columns
@@ -637,7 +636,7 @@ with generic headers the ext row can't be shown to bottom-out → **D1.32b conve
 - `export_fab.sh` (rev A pattern): `kicad-cli pcb export gerbers` + drill per board →
   4 zips in `fab/minimal-vga/revb/package/` (untracked) + SHA256s recorded.
 - `docs/rev-b-order-readiness.md`: per-board dims/layers/qty, connector BOM (female
-  sockets ×12 on backplane, right-angle male 1×39 + 1×10 per card), open risks.
+  sockets ×10 on backplane, right-angle male 1×39 + 1×10 per card), open risks.
 *Acceptance:* 4 package hashes committed; order-readiness note done; **T1.10 is now
 purely a purchasing decision**.
 **DONE (2026-07-18; freshly revalidated 2026-08-08):** `export_fab.sh` writes the exact
@@ -716,10 +715,29 @@ power LED** (KiCad LED_D5.0mm pad 1 = cathode — rev A's checker confirms — b
 anode there → swapped); **missing RESET_N pull-up** (open-drain supervisor + button would
 have floated reset → added R_RST + C_RST). The DS1813-5 datasheet closed the TO-92
 contract at pad 1=/RESET, pad 2=VCC, pad 3=GND. TH.3 added 47 µF bulk + 100 nF
-+ an MF-R110 polyfuse (USB branch only); backplane grew 115→120. TH.2's `PKG_PHYS` guard
++ an MF-R110 polyfuse (USB branch only); the then-current backplane grew 115→120
+(later superseded by D1.37). TH.2's `PKG_PHYS` guard
 (through-hole count / drill / pitch, negative-tested) + the footprint probe are now in the
 tier suite. Edge keepout ring enabled on the backplane too (D1.34 retired the conflicting
 columns) → routes 0/0 attempt 1. All four boards 0/0; hold lifted.
+
+### Cheap-tier backplane reduction (D1.37; 2026-08-08)
+
+The 100×120 six-slot backplane was electrically valid but crossed a large vendor price
+cliff. A six-slot 100×100 experiment also routed 0/0, but it put tall USB/reset/service
+parts between seated cards, outside the scope of the existing component-envelope gate.
+The accepted design therefore removes the unused spare slot and retains the 16 mm pitch.
+Five slots exactly cover CPU, Memory, I/O, Video and FDC; the freed top strip holds all
+service parts top-side and outside the seated-card envelope.
+
+Implementation: `mating.json` is authoritative at `n_slots=5`, board height 100 and tail
+Y=82; the board/connectivity generator consumes `n_slots` instead of hardcoding six;
+placement uses three staggered tail rows to keep two-layer routing channels open; package
+dimension checks expect 100×100. Fresh generation placed 31 footprints with placement
+DRC 0, routed 0 violations / 0 unconnected on freerouting attempt 1, passed the mating,
+footprint, connectivity and full tier suites, and produced four validated fabrication
+archives. The only product tradeoff is no spare sixth slot; expansion requires a later
+second or revised backplane.
 
 ### Phase B2 — video card to manufacturing-ready (TI.1–TI.8; D2.1–D2.5)
 
@@ -866,8 +884,8 @@ stackup; dot-clock run length recorded; STEP + previews rendered.
 **TD.10 — cpu card.** Same pipeline; smallest board (Z80 + osc + diag header).
 *Acceptance:* mem-equivalent gates.
 
-**TD.11 — backplane.** No LVS (passive; the connector==pinout check already
-covers all six slots). 100×120 outline, 6 slots at 16 mm pitch, USB-C/supervisor/
+**TD.11 — backplane.** No LVS (passive; the connector==pinout check covers every
+slot). Current D1.37 outline is 100×100 with 5 slots at 16 mm pitch, USB-C/supervisor/
 pulls/FTDI/jumper/LED placement; probe adds USB-C, SOT/TO-92 supervisor, switch,
 2×2 jumper footprints. Route (power + slot parallels) → total-zero DRC → STEP.
 *Acceptance:* mem-equivalent gates minus LVS.
