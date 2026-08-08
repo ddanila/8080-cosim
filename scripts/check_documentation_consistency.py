@@ -2,8 +2,9 @@
 """Guard public status in both a working tree and a clean Git checkout.
 
 The fabrication tree is intentionally ignored.  Tracked status/checksum records
-must therefore be internally consistent without it; byte-level package and
-order-report checks are added when the local fabrication tree is available.
+must therefore be internally consistent without it; byte-level main-board package
+and order-report checks are added when the local ``fab/gerbers`` tree is available.
+Other projects may keep independent artifacts elsewhere under ``fab``.
 """
 
 from __future__ import annotations
@@ -481,8 +482,9 @@ def main() -> int:
                 failures.append(f"{path} does not contain fabrication-package ZIP SHA256 {package_sha}")
 
     fab_root = ROOT / "fab"
-    upload_zip = fab_root / "gerbers/upload/juku-replica-gerbers-drill.zip"
-    if fab_root.exists() and not upload_zip.exists():
+    main_fab_root = fab_root / "gerbers"
+    upload_zip = main_fab_root / "upload/juku-replica-gerbers-drill.zip"
+    if main_fab_root.exists() and not upload_zip.exists():
         failures.append("local fabrication tree exists but main-board upload ZIP is missing")
     elif upload_zip.exists():
         digest = sha256(upload_zip)
@@ -518,7 +520,7 @@ def main() -> int:
                 "Status: **NOT READY**",
             )
         )
-        if fab_root.exists() and not order_held:
+        if main_fab_root.exists() and not order_held:
             failures.append("order-readiness report exposes neither design hold nor package blockers")
         for path, text in core.items():
             if "READY TO UPLOAD" in text or "ORDER READY" in text:
@@ -526,7 +528,7 @@ def main() -> int:
     else:
         if "Status: **RELEASED FOR UPLOAD**" not in manufacturing:
             failures.append("all release evidence passes but manufacturing report is not released")
-        if fab_root.exists() and "Status: **RELEASED FOR ORDER**" not in order:
+        if main_fab_root.exists() and "Status: **RELEASED FOR ORDER**" not in order:
             failures.append("all release evidence passes but order report is not released")
 
     removed_live_docs = [

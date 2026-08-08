@@ -1,25 +1,26 @@
 #!/usr/bin/env bash
-# TG.4 — fab package export for the four rev B boards. Per board: Gerbers + Excellon
-# drill into fab/minimal-vga/revb/package/<card>/, zipped, with a SHA256. The zips live
-# under the untracked fab/ tree (big binaries, D1.25); the SHA256 manifest is printed so
-# it can be recorded in docs/rev-b-order-readiness.md. Skips cleanly without kicad-cli.
+# TG.4 — fab package export for the four rev B B1 boards. Per board: the exact
+# two-layer production Gerbers + Excellon drill, zipped and content-validated. The
+# packages and detailed hash manifest live under the untracked fab/ tree (D1.25).
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/../../../.." && pwd)"
 cd "$REPO"
 . spinoffs/minimal-vga/kicad/revb/env.sh
 revb_have KICAD_CLI || { echo "  SKIP  export_fab: no kicad-cli"; exit 0; }
+revb_have KICAD_PYTHON || { echo "  SKIP  export_fab: no pcbnew Python"; exit 0; }
 
 PKG="fab/minimal-vga/revb/package"
 rm -rf "$PKG"; mkdir -p "$PKG"
-echo "# rev B fab package SHA256 manifest"
 for card in mem io cpu backplane; do
   pcb="fab/minimal-vga/revb/${card}.kicad_pcb"
-  [ -f "$pcb" ] || { echo "  SKIP $card: $pcb missing (route it first)"; continue; }
+  [ -f "$pcb" ] || { echo "  FAIL $card: $pcb missing (route it first)"; exit 1; }
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_pcb.py "$card" >/dev/null
+  python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py "$card" --total
   out="$PKG/$card"; mkdir -p "$out"
-  "$KICAD_CLI" pcb export gerbers --output "$out/" "$pcb" >/dev/null 2>&1
+  "$KICAD_CLI" pcb export gerbers \
+    --layers F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts \
+    --output "$out/" "$pcb" >/dev/null 2>&1
   "$KICAD_CLI" pcb export drill --output "$out/" "$pcb" >/dev/null 2>&1
-  ( cd "$PKG" && zip -qr "${card}.zip" "$card" )
-  sha=$(shasum -a 256 "$PKG/${card}.zip" | awk '{print $1}')
-  nfiles=$(ls "$out" | wc -l | tr -d ' ')
-  echo "  ${card}.zip  ${sha}  (${nfiles} files)"
+  ( cd "$PKG" && find "$card" -type f -print | LC_ALL=C sort | zip -q -X "${card}.zip" -@ )
 done
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_package.py

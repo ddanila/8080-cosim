@@ -13,8 +13,14 @@ except Exception:
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
+sys.path.insert(0, HERE)
+from revb_place import BOARD_H_BY_CARD  # noqa: E402
+
 CARD = sys.argv[1] if len(sys.argv) > 1 else "mem"
-BOARD_H = {"mem": 60.0, "io": 100.0, "cpu": 55.0, "backplane": 100.0}.get(CARD, 60.0)
+if CARD not in BOARD_H_BY_CARD:
+    print(f"PCB content check FAILED:\n- unsupported card {CARD!r}")
+    sys.exit(1)
+BOARD_H = BOARD_H_BY_CARD[CARD]
 BOARD_W, TOL = 100.0, 0.4
 PCB = os.path.join(REPO, "fab", "minimal-vga", "revb", f"{CARD}.kicad_pcb")
 
@@ -32,7 +38,13 @@ if abs(w - BOARD_W) > TOL or abs(h - BOARD_H) > TOL:
 spec = json.load(open(os.path.join(HERE, f"{CARD}.board.json")))
 expected = set()
 for c in spec["chips"]:
-    expected |= {"J_BUS", "J_EXT"} if c["type"] == "REVB_BUS_39_10" else {c["ref"]}
+    if c["type"] == "REVB_BUS_39_10":
+        if c["ref"] == "J_BUS":
+            expected |= {"J_BUS", "J_EXT"}
+        else:
+            expected |= {f"{c['ref']}_BUS", f"{c['ref']}_EXT"}
+    else:
+        expected.add(c["ref"])
 missing = expected - set(fps)
 if missing:
     fail.append(f"refs not placed: {sorted(missing)}")
@@ -43,7 +55,8 @@ if "J_BUS" in fps:
         fail.append(f"J_BUS at y={y:.1f} not on the bottom edge")
 
 txt = "".join(d.GetText() for d in b.GetDrawings() if d.GetClass() == "PCB_TEXT")
-for need in ("REVB", "NO HOT-PLUG"):
+silk_required = ("REVB",) if CARD == "backplane" else ("REVB", "NO HOT-PLUG")
+for need in silk_required:
     if need not in txt:
         fail.append(f"silk missing {need!r}")
 

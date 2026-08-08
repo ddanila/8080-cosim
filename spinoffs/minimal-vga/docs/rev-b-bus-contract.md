@@ -8,7 +8,7 @@ do not edit a value here without updating the facts file.
 
 ## 39-pin base connector
 
-0.1" single row, ~96.5 mm span (fits the ≤100×100 tier). Pins 1–39 are
+0.1" single row, ~96.5 mm span (fits the ≤100×100 card tier). Pins 1–39 are
 signal-identical to the RC2014 Standard bus except pin 40 (USER4) is dropped and
 USER1–3 are assigned below. All `_N` signals active-low.
 
@@ -37,8 +37,10 @@ USER1–3 are assigned below. All `_N` signals active-low.
 
 ## 10-pin extension connector
 
-Bussed across **all** slots (else /WAIT is useless); also the mechanical
-polarizing key (S8). All `_N` active-low.
+Bussed across **all** slots (else `/WAIT` is useless). Its offset makes the intended
+orientation conspicuous, but FreeCAD could not prove that it mechanically blocks a
+reversed card; orientation is convention-only under D1.32b. All `_N` signals
+are active-low.
 
 | Pin | Signal | Notes |
 |---|---|---|
@@ -56,10 +58,11 @@ polarizing key (S8). All `_N` active-low.
 CLK2 is intentionally **not** on the extension — any card needing a special clock
 generates it locally (video dot-clock, FDC crystal).
 
-**Physical placement (D1.4):** the 10-pin extension is a **second 0.1" row, 2.54 mm
-behind the base row, aligned to the pin-1 end** of the 39-pin connector. Inline on
-one edge is impossible (39+10 pins ≈ 124 mm > 100 mm). The end-aligned second row is
-the polarizing asymmetry that makes reversed/offset insertion physically fail (S8).
+**Physical placement (D1.4/D1.32b):** the 10-pin extension is a separate 0.1" row,
+5 mm behind the base row and offset toward the pin-1 end. Inline on one edge is
+impossible (39+10 pins ≈ 124 mm > 100 mm). A reversed card's centered base row can
+still seat while its extension pins hover without a matching socket, so silk arrows
+and operator discipline—not an unproved mechanical interlock—prevent reversal.
 
 ## Shared / open-drain lines and defaults
 
@@ -144,7 +147,7 @@ geometry from it. Distances in mm, footprint-centre.
 | `slot_pitch` | 16.0 | backplane slot-to-slot spacing |
 | `slot0_y` | 10.0 | backplane first (bottom) base row Y |
 | `n_slots` | 6 | backplane slots |
-| `backplane_board_h` | 115.0 | backplane outline height (grown per D1.31) |
+| `backplane_board_h` | 120.0 | backplane outline height (grown per D1.31/D1.35) |
 
 The base offset is **4.0 mm** (not mem's historical 5.0): io — the densest, most
 routing-constrained card — routes reliably only at 4 mm, and it is the binding

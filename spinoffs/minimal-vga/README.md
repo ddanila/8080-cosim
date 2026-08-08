@@ -1,15 +1,28 @@
 # VJUGA minimal-VGA experiment
 
-Status date: 2026-07-23.
+Status date: 2026-08-08.
 
-Status: **EXPERIMENTAL / DESIGN HOLD**.
+Status: **EXPERIMENTAL, WITH TWO PHYSICAL TRACKS**.
 
 VJUGA explores a smaller +5 V, Z80-based board with socketed ROM, one 64 KiB
 4164-style DRAM bank, keyboard I/O, and a VGA-oriented display path. It is an
 independent experiment, not the main Juku replica and not a released hardware
-product.
+product. The monolithic Rev A board remains on design hold; the modular Rev B B1
+bare-PCB set is a validated first-article order candidate.
 
-## What works
+## Rev B modular status
+
+The current Rev B state is summarized in `docs/rev-b-status.md`. Its B1 CPU, memory,
+I/O and 100×120 backplane boards have been freshly generated/routed, pass total DRC
+0/0, scoped LVS/footprint/mating gates, the full digital-twin suite and fabrication-ZIP
+validation. `docs/rev-b-order-readiness.md` is the upload decision record, and
+`docs/rev-b-b1-bench-log.md` is ready for the vendor preview and first-article evidence.
+The B2 video desk model is complete through TI.3; B2 PCB layout/tape-out remains held
+until the B1 bench pass.
+
+## Rev A monolithic status
+
+### What works
 
 - **The VJUGA top boots the real Juku firmware on a Z80.** `sim/boot_check.sh`
   runs the T80 core in **Z80 mode** against a 3-byte-patched ROM
@@ -79,9 +92,10 @@ product.
   observability headers and passes the repository's KiCad DRC and
   unconnected-item checks. Independent schematic/copper and power-return review
   still holds release.
-- The last ignored `fab/minimal-vga/` package predates both the U20/U21
+- Any Rev A fabrication package predates both the U20/U21
   address-mux enable correction and the U22 refresh-counter cascade correction,
-  and is **stale; do not upload or order it**. Its superseded
+  and is **stale; do not upload or order it**. Do not confuse it with the separately
+  validated Rev B packages under `fab/minimal-vga/revb/package/`. The superseded Rev A
   Gerber/drill ZIP SHA-256 was
   `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
   A fresh guarded stable-KiCad export and checksum are required.
@@ -105,7 +119,7 @@ draws the same framebuffer to 200M cycles). See `roms/README.md` and
 (The core can also run the *unpatched* ROM in 8080 mode, `Mode => 2` — a useful
 cross-check, but not the board's configuration.)
 
-## What does not work yet
+### What does not work yet
 
 - The current Rev A copper includes the Phase 3 decode sockets and observability
   headers and passes zero-violation/zero-unconnected KiCad DRC. Its two inner
@@ -120,7 +134,7 @@ cross-check, but not the board's configuration.)
 Therefore the fabrication outputs are useful engineering artifacts, but the
 board is **not authorized for vendor upload, order, or assembly**.
 
-## Current scope
+### Current scope
 
 Included in the experiment:
 

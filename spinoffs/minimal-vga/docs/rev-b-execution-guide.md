@@ -117,7 +117,7 @@ control/status 0x09 (A0=1), decoded window 0x08–0x0B; provenance
 `docs/serial-handoff.md` ("bus-visible at the decoded 0x08..0x0B USART window") +
 `hdl/juku_top.v` '138 row (`cs_sio0_n`). Add the row to the bus-contract I/O map
 and the 0x08/0x09 values to the guard's canonical list. Record D1.4's extension
-placement (second 0.1" row, 2.54 mm behind base, pin-1-end aligned) in the bus
+placement (separate 0.1" row, 5 mm behind base, pin-1-end aligned) in the bus
 contract's extension section.
 *Acceptance:* `scripts/check_spinoff_commons.py` green AND fails if the contract's
 0x08 row is deleted (prove, restore).
@@ -129,7 +129,8 @@ byte-emitter build script (no new assembler dependency; builder pattern:
 `revb_bringup.bin` (org 0x0000, 8080-subset opcodes only). Behavior: init 8251
 (mode, then command with **TxEN so bit0 doubles as cosim's "ready"** — D1.2,
 document in source); print banner; walking-1s + address-in-cell RAM test over
-**0x4000–0xD7FF** (D1.3); print `RAM PASS nnnn` / `RAM FAIL @addr`; ROM checksum
+**0x4000–0xD6FF** (D1.3; 0xD700–0xD7FF holds stack/variables); print
+`RAM PASS nnnn` / `RAM FAIL @addr`; ROM checksum
 print; then a dump/deposit/jump monitor loop on the UART. Every TX via a bounded
 TxRDY poll.
 *Acceptance:* cosim boots the image; the `[IOSEQ] OUT port=0x08` stream contains
@@ -151,14 +152,15 @@ conflict-clean with the framebuffer window unowned.
 `spinoffs/minimal-vga/kicad/revb/{backplane,cpu-card,mem-card,io-card}.board.json`
 + a shared generator/check pair cloned from the rev A flow
 (`kicad/minimal-vga.board.json`, `gen_rev_a_pcb.py`, `check_rev_a_physical.py`).
-Contents per the bus contract + chip map: backplane = 6 slots @ 19 mm, 39+10
+Contents per the bus contract + chip map: backplane = 6 slots @ 16 mm, 39+10
 connectors per D1.4, USB-C power, reset supervisor (sole RESET_N driver, S7),
 FTDI header + S5 jumper, MODE0/1 default pulls (S11), wired-OR pull-ups (S4);
 cpu-card = Z80 + socketed osc + '245/'244 buffers; mem-card = 27C256 + AS6C1008 +
 GAL22V10 + NOP-plug/J95-style headers (S9); io-card = 8251 + local baud osc +
 decode, with 8255/PIC/keyboard footprints marked DNP (D1.7).
 *Acceptance (each):* board.json validates; generated connectivity matches the bus
-contract pin table (checked, not eyeballed); ≤100×100 outline.
+contract pin table (checked, not eyeballed); cards ≤100×100, with the deliberate
+100×120 backplane exception from D1.31/D1.35.
 
 **T1.7 — per-card LVS.**
 Yosys-netlist each `hdl/revb/revb_*_card.v` vs its board.json connectivity
@@ -169,23 +171,24 @@ uses for LVS-invisible adjuncts.
 copy fails (prove, restore); wired into CI paths.
 
 **T1.8 — manufacturing-readiness + silk checks.**
-`kicad/revb/check_revb_ready.sh`: DRC/fab rules (2-layer, ≤100×100, cheap-tier
-constraints) + machine-checkable silk items (pin-1 marks, card name+rev, bus pin
+`kicad/revb/check_revb_ready.sh`: DRC/fab rules (2-layer; cards ≤100×100, backplane
+100×120) + machine-checkable silk items (pin-1 marks, card name+rev, bus pin
 labels, extension-key arrow, "NO HOT-PLUG", NOP/J95 header labels) per the
 coverage-matrix checklist.
 *Acceptance:* passes all four boards; removing a silk item from a board.json copy
 fails (prove, restore).
 
 **T1.9 — 3D/STEP mating check.**
-Export STEP per board, assemble in FreeCAD, verify connector mating, 19 mm pitch
-clearance (tallest part vs neighbor card), extension-row keying blocks reversed
-insertion geometrically.
-*Acceptance:* assembled screenshots committed to `docs/`; no clash; keying
-confirmed by attempting the reversed placement in CAD.
+Export STEP per board and use FreeCAD plus the numeric mating contract to verify
+16 mm pitch clearance (tallest part vs neighbor card). Evaluate reversed insertion;
+D1.32b records the result as convention-only keying, not a geometric block.
+*Acceptance:* component-envelope report committed to `docs/`; positive same-facing
+clearance; residual reversed-insertion risk recorded.
 
 **T1.10 — order gate + order (hardware-blocked).**
-All of T1.0–T1.9 green + power budget re-check (bus-contract table) → order at the
-≤100×100 2-layer tier. *Acceptance:* order placed; fab package SHA256 recorded in
+All of T1.0–T1.9 green + power budget re-check (bus-contract table) → order the
+three ≤100×100 cards plus the deliberate 100×120 backplane, all 2-layer. *Acceptance:*
+order placed; fab package SHA256 recorded in
 the bench log doc skeleton.
 
 **T1.11 — bench bring-up (hardware-blocked, D1.9).**
@@ -251,7 +254,7 @@ kicad-cli schematic round-trip when available (pattern: `spinoffs/minimal-vga/sy
 
 **TC.5 — PCB generators (D1.13).**
 `kicad/revb/gen_revb_pcb.py` (parameterized clone of `gen_rev_a_pcb.py`): outlines
-(backplane ≤100×100, cards ~100×~60), 39+10 connectors per D1.4 geometry, 19 mm
+(backplane 100×120, cards ≤100×100), 39+10 connectors per D1.4 geometry, 16 mm
 slot pitch on the backplane, generator-emitted silk (full checklist). Regeneration
 must be deterministic (same JSON in → byte-stable PCB out, rev A convention).
 *Acceptance:* four `.kicad_pcb` generated on this Mac; regen diff-clean; silk
@@ -266,11 +269,11 @@ overlapping-footprint temp copy fails.
 
 **TC.7 — STEP export + FreeCAD mating/keying (D1.15).**
 `kicad-cli pcb export step` ×4; `kicad/revb/mate_check.py` under `freecadcmd`:
-assemble at 19 mm pitch, boolean interference = zero; **reversed-card placement
-must collide** (keying proof). If headless FreeCAD proves unworkable, fall back to
-GUI assembly + committed screenshots/clearances and say so in the doc.
-*Acceptance:* interference report committed (`docs/rev-b-mating-report.md`):
-normal = no collision, reversed = collision.
+measure populated card envelopes and verify positive clearance at 16 mm pitch; use the
+numeric mating checker for connector placement. Reversed insertion is recorded as the
+D1.32b convention-only residual risk.
+*Acceptance:* `docs/rev-b-mating-report.md` records positive same-facing clearance and
+the keying limitation.
 
 **TC.8 — CAD exit review → order gate.**
 Re-run tier suite + TC.4/TC.6/TC.7; re-check the power budget table against final
@@ -281,9 +284,9 @@ purely a purchasing decision.
 
 ### B1-CAD execution status (2026-07-17)
 
-- **Tools installed + resolved:** KiCad 10.0.4 (was only off-PATH) + FreeCAD 1.1.1 (`~/Applications`), both via `env.sh`.
+- **Tools installed + resolved:** the original 2026-07-17 Mac run used KiCad 10.0.4 + FreeCAD 1.1.1; the 2026-08-08 Linux pre-order run used KiCad 9.0.8 + FreeCAD 1.1.3, both via `env.sh`.
 - **TC.1 DONE** — `kicad/revb/env.sh` resolves kicad-cli/python/footprints/freecadcmd; skip-not-fail; zsh-safe.
-- **TC.2 DONE** — `gen_revb_boards.py` deterministically emits four `<card>.board.json` (bus connectors from `bus-pinout.json` + IC DIP pinouts); `check_revb_boards.py` cross-checks connector==pinout and chip-bus-pins==roles. **Caught a real bug**: the mem GAL had inherited rev A's mem+I/O decode; rev B is memory-only.
+- **TC.2 DONE** — `gen_revb_boards.py` deterministically emits the four B1 `<card>.board.json` files plus the later B2 video spec (bus connectors from `bus-pinout.json` + IC DIP pinouts); `check_revb_boards.py` cross-checks connector==pinout and chip-bus-pins==roles. **Caught a real bug**: the mem GAL had inherited rev A's mem+I/O decode; rev B is memory-only.
 - **TC.3 PARTIAL** — board.json now carries the `nets` section (LVS-ready shape for `netlist_from_board.py`) + a nets-in-sync check. **Correction to D1.11:** its "structural model must boot" was the `juku_top` precedent; the applicable **rev A spinoff** precedent keeps the booting model (`revb_backplane_top`, already byte-identical) SEPARATE from an empty-bodied LVS netlist. So TC.3-full = author an *independent* structural netlist (rev A `minimal_vga_lvs.v` style), not make the behavioral model structural.
 
 ## B1-CAD REVAMPED breakdown (TD stages, planned 2026-07-17 — supersedes TC.3-full–TC.8)
@@ -476,7 +479,10 @@ doc (D1.25).
 `check_revb_mem.sh` gains the D1.27 post-route gate; status/ledger flipped to ✅;
 Stage C begins. *Acceptance:* one command green end-to-end, including DRC.
 
-### Stage C status (2026-07-18)
+### Stage C historical mid-stage snapshot (2026-07-18; superseded)
+
+This snapshot explains the later TF work. It is not current status; CPU and backplane
+were subsequently completed at DRC 0/0. Use `rev-b-status.md` for the live ledger.
 
 - **TD.9 io ✅ DONE** — full D1.26 B3 wiring (8255/8259/74148/keyboard, DNP; GAL adds
   INT_N/INTA_N/IO_RESET inversion), io LVS IN SYNC, **D1.26 wiring assertion** in the
@@ -596,7 +602,8 @@ known 1-mm and two-bank bugs), contract constants + citation in the bus contract
 *Acceptance:* `check_revb_mating.py` green; 4× `check_revb_drc.py --total` 0/0 from
 fresh regenerate; STEP + previews regenerated.
 **DONE (2026-07-18):** contract refined to base_edge_offset **4.0** mm (io — densest
-card — is the binding constraint; only routes at 4 mm), backplane grown to 100×115.
+card — is the binding constraint; only routes at 4 mm), initially growing the
+backplane to 100×115 and then to the current **100×120** for the TH.3 power additions.
 revb_place.py derives card connectors from mating.json; mating checker in the tier
 suite. All four route **0/0**. Backplane needed two fixes beyond placement: base cols
 F.Cu / ext cols B.Cu, and bottom-strip pullups moved onto their own bus columns
@@ -628,13 +635,14 @@ with generic headers the ext row can't be shown to bottom-out → **D1.32b conve
   Icc totals per card + backplane, vs USB-C 5 V budget; per-column current sanity
   (0.3 mm track). Record in the order-readiness note.
 - `export_fab.sh` (rev A pattern): `kicad-cli pcb export gerbers` + drill per board →
-  4 zips in `fab/minimal-vga/revb/package/` (untracked) + SHA256s committed.
+  4 zips in `fab/minimal-vga/revb/package/` (untracked) + SHA256s recorded.
 - `docs/rev-b-order-readiness.md`: per-board dims/layers/qty, connector BOM (female
   sockets ×12 on backplane, right-angle male 1×39 + 1×10 per card), open risks.
 *Acceptance:* 4 package hashes committed; order-readiness note done; **T1.10 is now
 purely a purchasing decision**.
-**DONE (2026-07-18):** `export_fab.sh` writes Gerbers + drill per board → 4 zips
-(untracked) + SHA256 manifest. Power re-checked: ~712 mA / ~47 % of 1.5 A USB-C
+**DONE (2026-07-18; freshly revalidated 2026-08-08):** `export_fab.sh` writes the exact
+production Gerbers + drill per board → 4 validated zips (untracked) + SHA256 manifest.
+Power re-checked: ~712 mA / ~47 % of 1.5 A USB-C
 (backplane discretes negligible), budget holds. `docs/rev-b-order-readiness.md` records
 boards/BOM/hashes/risks. **T1.10 armed** — Stage D complete.
 
@@ -649,15 +657,15 @@ zip is sent. One task = one commit; rebase before push.
 **TH.1 — pin the backplane BOM to exact MPNs (D1.36 first half).**
 For every backplane part, choose one orderable MPN and check its datasheet drawing
 against the named footprint — drill ≥ pin diagonal, pitch, pad pattern, body outline:
-- `J_USBC` → **exactly GCT USB4125-xx-x** (the footprint names it; A5/B5=CC, A9/B9=VBUS,
-  A12/B12=GND, SH — our pad→net map already matches the 6P power-only pattern).
+- `J_USBC` initial candidate GCT USB4125-xx-x was rejected because it is SMD; the
+  completed TH work uses the fully-through-hole **GCT USB4085** with its 16-pin map.
 - `SW_RST` → **exactly APEM MJTP1243** (footprint names it; 2 pins per board.json).
-- `U_RST` → pick a **DS1813-class 3-pin TO-92 supervisor** whose pinout is
-  1=GND, 2=/RESET, 3=VCC (the board.json mapping); if the chosen MPN differs, fix the
+- `U_RST` → **DS1813-5 3-pin TO-92 supervisor**, whose authoritative pinout is
+  1=/RESET, 2=VCC, 3=GND; if the chosen MPN differs, fix the
   pin map in `gen_revb_boards.py` — this mapping is electrical, not just mechanical.
   Note the 8251/GAL16V8 reset path expects the supervisor's open-drain active-low out
   on RESET_N with the existing pull-up (cross-check `rev-b-gal-equations.md` D1.16).
-- `D_PWR` → any 5 mm THT LED (verify pad1=anode on `LED_D5.0mm`); `R_*` → DIN0207
+- `D_PWR` → any 5 mm THT LED (verify pad 1=cathode on `LED_D5.0mm`); `R_*` → DIN0207
   axials; `JP_S5`/`J_FTDI`/`J_PWR` → standard 2.54 mm headers; slot sockets → 1×39 +
   1×10 **female** SIL sockets (square-pin, fits the 1.0 mm drills); card-side headers →
   **right-angle male** (PCB hole pattern identical to the vertical footprint used).
@@ -706,9 +714,8 @@ name-match risk: **SMD USB-C** (GCT USB4125 was surface-mount → switched to fu
 USB4085, full 16-pin power map, 0.1 mm local clearance for its 0.85 mm pitch); **reversed
 power LED** (KiCad LED_D5.0mm pad 1 = cathode — rev A's checker confirms — but we mapped
 anode there → swapped); **missing RESET_N pull-up** (open-drain supervisor + button would
-have floated reset → added R_RST + C_RST). The TO-92 supervisor pinout couldn't be
-verified authoritatively from the desk, so U_RST became a **net-labelled 3-pin header**
-(orient the part to silk) — reset works even with it empty. TH.3 added 47 µF bulk + 100 nF
+have floated reset → added R_RST + C_RST). The DS1813-5 datasheet closed the TO-92
+contract at pad 1=/RESET, pad 2=VCC, pad 3=GND. TH.3 added 47 µF bulk + 100 nF
 + an MF-R110 polyfuse (USB branch only); backplane grew 115→120. TH.2's `PKG_PHYS` guard
 (through-hole count / drill / pitch, negative-tested) + the footprint probe are now in the
 tier suite. Edge keepout ring enabled on the backplane too (D1.34 retired the conflicting
@@ -756,16 +763,16 @@ the adopted schematic; license provenance recorded.
   anchor (tolerance recorded — VGA 60 Hz vs the original tick is a firmware-visible
   fact; the oracle decides what is acceptable).
 *Acceptance:* tier suite green with the TTL card substituted; D2.4 resolved and frozen.
-**PARTIAL (2026-07-18):** delivered — the TTL twin (standalone), gates (b) scanout
+**COMPLETED (2026-07-19; revalidated 2026-08-08):** the TTL twin, gates (b) scanout
 (hsync 656/96, vsync 490/2, 1968 pixels exact), (c) /WAIT (24/24 held+landed, invariant
 every dot), (d) via the twin's mode logic, **plus the D2.7 address-generator gate**
-(accumulator == src_row×40+col, 10240 bytes, 0 errors) — 5 gates green in
-`revb_video_check.sh`, in the tier suite. **Deferred to TI.3 (honesty):** gate (a) the
-*integrated* boot (the boot check still runs the behavioural card; the TTL card has not
-yet been wired into `revb_backplane_top` with dot-clock + WAIT_N→CPU plumbing) and gate
-(e) FRAME_TICK-vs-facts analysis (the output pin exists; the 59.94 Hz vs 200000-cycle
-cadence comparison is unwritten). Sim-scale note: run /WAIT-class sims at SMALL timing
-params + bounded loops + watchdog — full-frame waits hang iverilog.
+(accumulator == src_row×40+col, 10240 bytes, 0 errors) are green in
+`revb_video_check.sh`. TI.3 subsequently closed gate (a): `revb_boot_check.sh` boots
+ekta37 through the TTL card with live `WAIT_N` plumbing and matches cosim byte-for-byte.
+It also records gate (e)'s FRAME_TICK ratio and selectable divider in
+`video-timing.json`; the final divider remains intentionally tied to the socketed S1
+CPU clock and T1.11 bench cadence. Sim-scale note: run /WAIT-class sims at SMALL timing
+params + bounded loops + watchdog—full-frame waits are too slow under Icarus.
 
 **TI.3 — netlist to schematic depth + LVS (+ the two deferred TI.2 gates).**
 - **Integrated boot gate (deferred TI.2-a):** parameterise `revb_backplane_top` to
@@ -785,6 +792,11 @@ params + bounded loops + watchdog — full-frame waits hang iverilog.
 - LVS: `revb_video_lvs.v` (GALs + SRAM instances) + map; `revb_lvs.sh video` IN SYNC.
 *Acceptance:* integrated boot byte-identical through the TTL card; FRAME_TICK ratio
 recorded; video.board.json generated; completeness green; LVS IN SYNC.
+
+**DONE (2026-07-19; revalidated 2026-08-08):** the integrated TTL-card boot,
+FRAME_TICK analysis, generated `video.board.json`, completeness guard, and scoped
+video-card LVS are all in the tier suite. TI.4 is the next desk-only B2 task; TI.5+
+remain held until T1.11.
 
 **TI.4 — footprints + package guards.**
 - Probe additions: DIP-14 TTLs (existing kind), `OSC_25M175` (existing OSC14 kind),
@@ -855,7 +867,7 @@ stackup; dot-clock run length recorded; STEP + previews rendered.
 *Acceptance:* mem-equivalent gates.
 
 **TD.11 — backplane.** No LVS (passive; the connector==pinout check already
-covers all six slots). 100×100 outline, 6 slots at 19 mm pitch, USB-C/supervisor/
+covers all six slots). 100×120 outline, 6 slots at 16 mm pitch, USB-C/supervisor/
 pulls/FTDI/jumper/LED placement; probe adds USB-C, SOT/TO-92 supervisor, switch,
 2×2 jumper footprints. Route (power + slot parallels) → total-zero DRC → STEP.
 *Acceptance:* mem-equivalent gates minus LVS.
@@ -863,11 +875,10 @@ pulls/FTDI/jumper/LED placement; probe adds USB-C, SOT/TO-92 supervisor, switch,
 ### Stage D — assembly + exit
 
 **TD.12 — FreeCAD mating/keying (D1.15).**
-`kicad/revb/mate_check.py` under `freecadcmd`: load the four STEPs, seat the three
-cards in slots at 19 mm pitch, boolean interference == 0; then a **deliberately
-reversed card must collide** (keying proof). Committed `docs/rev-b-mating-report.md`
-with measured clearances (card-to-card, tallest-part).
-*Acceptance:* normal = no collision, reversed = collision, numbers in the report.
+`kicad/revb/mate_check.py` under `freecadcmd`: load the card STEPs, measure component
+envelopes against the 16 mm pitch, and record the D1.32b reversed-insertion finding.
+Committed `docs/rev-b-mating-report.md` carries the conservative card-to-card clearance.
+*Acceptance:* positive same-facing clearance and convention-only keying risk in the report.
 
 **TD.13 — CAD exit review → order gate.**
 Tier suite + all TD/TE gates green; **power budget re-check** against the final

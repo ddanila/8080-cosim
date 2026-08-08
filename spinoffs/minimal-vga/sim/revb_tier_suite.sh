@@ -7,6 +7,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 cd "$ROOT"
+. spinoffs/minimal-vga/kicad/revb/env.sh
 
 echo "== rev B: shared-commons guard =="
 python3 scripts/check_spinoff_commons.py
@@ -21,6 +22,7 @@ echo "== rev B: footprint package guards (D1.36 phys + DIP width; skips w/o KiCa
 for _c in mem io cpu backplane; do
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py "$_c"
 done
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py backplane --self-test
 
 echo "== rev B: mem-card LVS (structural netlist vs board.json; skips w/o yosys) =="
 spinoffs/minimal-vga/sync/revb_lvs.sh mem

@@ -24,6 +24,7 @@ revb_have KICAD_PYTHON || { echo "  SKIP  route ($CARD): KICAD_PYTHON not found"
 JAVA_BIN="${JAVA_BIN:-}"
 if [ -z "$JAVA_BIN" ]; then
   for p in .tools/jre25/bin/java .tools/jre25/Contents/Home/bin/java \
+           .tools/jdk25/bin/java \
            "$HOME"/.jdks/*25*/bin/java "$HOME"/.jdks/*25*/Contents/Home/bin/java \
            "$HOME"/.gradle/jdks/eclipse_adoptium-25-*/bin/java; do
     [ -x "$p" ] || continue

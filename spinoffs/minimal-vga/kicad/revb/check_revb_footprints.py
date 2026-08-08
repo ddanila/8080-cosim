@@ -11,7 +11,8 @@ import json, os, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-CARD = sys.argv[1] if len(sys.argv) > 1 else "mem"
+SELF_TEST = "--self-test" in sys.argv
+CARD = next((arg for arg in sys.argv[1:] if not arg.startswith("--")), "mem")
 
 FPROOT = os.environ.get("KICAD_FOOTPRINTS", "")
 if not FPROOT or not Path(FPROOT).is_dir():
@@ -138,6 +139,11 @@ def phys_ok(typ, fpname):
     return fails
 
 
+def width_ok(typ, fpname):
+    """Return whether a DIP footprint has the datasheet-required row spacing."""
+    return typ not in PKG_WIDTH or PKG_WIDTH[typ] in fpname
+
+
 def exists(fp):
     lib, name = fp.split(":")
     return (Path(FPROOT) / f"{lib}.pretty" / f"{name}.kicad_mod").is_file()
@@ -159,7 +165,7 @@ def main():
             fps = [resolve_kind(k) for k in TYPE_KINDS[t]]
             if None in fps:
                 missing.append((t, TYPE_KINDS[t]))
-            elif t in PKG_WIDTH and PKG_WIDTH[t] not in fps[0]:
+            elif not width_ok(t, fps[0]):
                 missing.append((f"{t} [datasheet width {PKG_WIDTH[t]}]", fps))
             else:
                 for f in phys_ok(t, fps[0]):
@@ -183,5 +189,28 @@ def main():
     return 0
 
 
+def self_test():
+    """Prove the two high-consequence guards reject known-wrong library parts."""
+    wrong_dip = "Package_DIP:DIP-28_W7.62mm"
+    wrong_usb = "Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x_6P_TopMnt_Horizontal"
+    failures = []
+    if width_ok("EPROM_27C256", wrong_dip):
+        failures.append("DIP width guard accepted a 300 mil footprint for a 600 mil DIP-28")
+    if not exists(wrong_usb):
+        failures.append(f"negative-test fixture missing: {wrong_usb}")
+    elif not phys_ok("USB_C_PWR", wrong_usb):
+        failures.append("physical guard accepted the known-wrong SMD USB-C footprint")
+    if failures:
+        print("footprint guard negative self-test FAILED:")
+        for failure in failures:
+            print(f"- {failure}")
+        return 1
+    print("footprint guard negative self-test PASS: wrong DIP-28 width and SMD USB-C rejected")
+    return 0
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    result = main()
+    if result == 0 and SELF_TEST:
+        result = self_test()
+    sys.exit(result)

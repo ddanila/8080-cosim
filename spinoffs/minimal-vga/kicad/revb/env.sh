@@ -9,8 +9,15 @@
 #   . spinoffs/minimal-vga/kicad/revb/env.sh   # then revb_have / revb_tool_summary
 #   sh spinoffs/minimal-vga/kicad/revb/env.sh --print   # just report what resolved
 
+if [ -d "$PWD/.tools/bin" ]; then
+  PATH="$PWD/.tools/bin:$PATH"
+  export PATH
+fi
+
 : "${KICAD_CLI:=$(sh scripts/find-kicad-cli.sh 2>/dev/null || true)}"
 : "${KICAD_PYTHON:=$(sh scripts/find-kicad-python.sh 2>/dev/null || true)}"
+[ -n "${KICAD_CLI:-}" ] || [ ! -x "$PWD/.tools/bin/kicad-cli" ] || KICAD_CLI="$PWD/.tools/bin/kicad-cli"
+[ -n "${KICAD_PYTHON:-}" ] || [ ! -x "$PWD/.tools/bin/kicad-python" ] || KICAD_PYTHON="$PWD/.tools/bin/kicad-python"
 
 if [ -z "${KICAD_FOOTPRINTS:-}" ]; then
   # Derive from the resolved kicad-cli app bundle (glob-free, so this stays safe
@@ -22,6 +29,7 @@ if [ -z "${KICAD_FOOTPRINTS:-}" ]; then
   esac
   for _d in \
     "$_bundle_fp" \
+    "$PWD/.tools/apt-root/usr/share/kicad/footprints" \
     /usr/share/kicad/footprints \
     "$HOME/Applications/KiCad.app/Contents/SharedSupport/footprints" \
     /Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints
@@ -31,6 +39,7 @@ if [ -z "${KICAD_FOOTPRINTS:-}" ]; then
 fi
 
 : "${FREECADCMD:=$(command -v freecadcmd 2>/dev/null || true)}"
+[ -n "${FREECADCMD:-}" ] || [ ! -x "$PWD/.tools/bin/freecadcmd" ] || FREECADCMD="$PWD/.tools/bin/freecadcmd"
 if [ -z "${FREECADCMD:-}" ]; then
   for _f in \
     "$HOME/bin/freecadcmd" \

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the four rev B card board.json specs (TC.2) deterministically.
+"""Generate the five rev B card board.json specs (TC.2) deterministically.
 
 Same philosophy as the rev A flow (kicad/gen_rev_a_pcb.py): board connectivity is
 generated from a spec, never hand-maintained. Inputs:

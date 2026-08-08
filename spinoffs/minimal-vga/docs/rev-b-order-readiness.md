@@ -1,15 +1,16 @@
 # VJUGA rev B — order-readiness note (TG.4)
 
-State of the four rev B boards for fabrication. **All four boards are order-safe.**
+State of the four rev B B1 boards for bare-PCB fabrication. **All four boards are
+order candidates after the 2026-08-08 regeneration and validation described below.**
 TH.1–TH.4 closed the backplane hold: non-DIP footprints pinned to exact parts + a
 physical-contract guard (TH.1/TH.2, D1.36), input power conditioning added (TH.3,
 D1.35), and three real defects fixed along the way (SMD USB-C, reversed LED, missing
 reset pull-up). **T1.10 (placing the order) is now a purchasing decision.** Last
-updated 2026-07-18.
+updated 2026-08-08.
 
 ## Boards
 
-| board | size (mm) | layers | qty | notes |
+| board | size (mm) | layers | first-article build qty | notes |
 |---|---|---:|---:|---|
 | cpu | 100 × 70 | 2 | 1 | Z80 + clock + diag; unbuffered (D1.21) |
 | mem | 100 × 60 | 2 | 1 | ROM + SRAM + GAL decode |
@@ -20,7 +21,11 @@ All four pass `check_revb_drc.py --total` at **0 violations / 0 unconnected**, o
 mechanical mating contract (`check_revb_mating.py`), and boot byte-identical to cosim in
 the digital twin (`revb_tier_suite.sh`).
 
-## BOM — pinned to exact parts (TH.1 / D1.36)
+The table describes one assembled first-article set. A PCB vendor may impose a larger
+minimum panel/order quantity; leave surplus boards unpopulated and do not treat them as
+released duplicates until the first set passes T1.11.
+
+## Physical interface and backplane BOM — pinned parts (TH.1 / D1.36)
 
 Every backplane footprint checked against a real part's datasheet; the footprint
 physical-contract guard (`check_revb_footprints.py`, TH.2) enforces through-hole pad
@@ -66,29 +71,37 @@ bring-up input (no PD negotiation — don't assume the full 1.5 A from an arbitr
 
 ## Fab package
 
-`kicad/revb/export_fab.sh` writes Gerbers + Excellon drill per board to
-`fab/minimal-vga/revb/package/<card>/` (untracked, D1.25) and zips each. SHA256 of a
-representative export (regenerable — KiCad embeds timestamps, so re-exports differ; the
-board `.kicad_pcb` is the source of truth, content-checked):
+`kicad/revb/export_fab.sh` first requires PCB content checks and total DRC 0/0, then
+writes the exact seven production Gerbers (two copper, two mask, two silk, outline) plus
+Gerber job and Excellon drill per board to `fab/minimal-vga/revb/package/<card>/`
+(untracked, D1.25) and zips each. `check_revb_package.py` verifies the exact file set,
+safe archive paths, ZIP/export byte identity, two-layer job metadata and dimensions,
+Gerber X2 markers, Excellon tools/hits, and writes `manifest.json` + `SHA256SUMS`.
+The final `check_revb_package.py --require-recorded` gate also requires the current
+hashes in this note and the order/bench record. Fresh package hashes from the
+2026-08-08 pre-order run are:
 
 | package | sha256 (snapshot) |
 |---|---|
-| mem.zip | 87f7a2d124ec8ecdc76cb8df02d4a7a79d49fb7b3a920b30b3d06036201f98e3 |
-| io.zip | 9ea98eab72d5f0edb9f8b1a26266f4de70d1ac5b9b2b65a6c84bc0d21b0df78b |
-| cpu.zip | 180a8f88ad9cde1612df43b3eaffbc23ca14997a985121a0c294defe7fdba226 |
-| backplane.zip | 48dd20c3e423138cea605593d9a441a0d07f6ef5cf15e0f4116225a24884f74c |
+| mem.zip | 7653b88b822e7d7a763a34e36ea2ef3c3f3128103af793af3a5ad2d07cdcbfcf |
+| io.zip | d731710de520421e933d3ff18f57423a47556c2497220da97b3063bf8b10860a |
+| cpu.zip | f1cbb2e46375c4c2136526bfe36317c157a64a6380d31f3c9ef0a2e4d9ffc578 |
+| backplane.zip | 85721dc7371150abff9d398861f870b47ef315d1210705387b216130b65bad94 |
 
 > **Fab capability:** the USB-C connector (0.85 mm pitch) needs **0.15 mm (6 mil) min
 > clearance** at that footprint — standard for JLCPCB/PCBWay etc.; the rest of the board
-> is 0.2 mm. Re-exported 2026-07-18 after the pre-order audit fixed the DIP-28 width bug
-> and the backplane order-safety issues (TH.1–TH.4). Footprints are now machine-checked
-> for DIP row spacing (`PKG_WIDTH`) and non-DIP through-hole/drill/pitch (`PKG_PHYS`).
+> is 0.2 mm. Re-exported with KiCad 9.0.8 on 2026-08-08 after fresh generation/routing.
+> Footprints are machine-checked for DIP row spacing (`PKG_WIDTH`) and non-DIP
+> through-hole/drill/pitch (`PKG_PHYS`); the negative self-test proves that the known
+> wrong 300-mil DIP-28 and SMD USB-C alternatives are rejected.
 
 ## Open risks to weigh before ordering
 
-**Every backplane part is now datasheet-verified** (footprints cross-checked against the
-manufacturer drawings — DS1813, USB4085, MF-R110 fetched 2026-07-18); no name-matched-only
-parts remain on any board. Remaining items are inherent, not open questions:
+**Every backplane part is datasheet-verified** (footprints cross-checked against the
+manufacturer drawings — DS1813, USB4085, MF-R110 fetched 2026-07-18); no
+name-matched-only backplane part remains. The B1 logic ICs must be bought to the DIP
+width/class recorded in the board specs and footprint guard. Remaining items are
+inherent, not open geometry questions:
 
 - **USB-C fab clearance:** needs 0.15 mm at the connector (standard cheap-fab capability,
   noted above). Fine-pitch USB-C is also a bit fiddly to hand-solder (flux + fine iron);
@@ -99,7 +112,7 @@ parts remain on any board. Remaining items are inherent, not open questions:
 - **Keying is convention-only (D1.32b):** a reversed card can seat (centred base is
   symmetric). Mitigation is silk/orientation marks + care, not a mechanical block. The
   blocking-post option (D1.32a) is held in reserve for after bench experience.
-- **Backplane is 100 × 115** — past the 100×100 cheap-tier cliff. Deliberate (D1.31:
+- **Backplane is 100 × 120** — past the 100×100 cheap-tier cliff. Deliberate (D1.31:
   grow the one-off backplane rather than drop slots or cramp the pitch). Cards stay
   ≤100×100.
 - **Slot pitch 16 mm** is tighter than mainline RC2014 (~20 mm). FreeCAD clearance is a
@@ -116,3 +129,4 @@ parts remain on any board. Remaining items are inherent, not open questions:
 
 T1.11 bench bring-up (hardware-blocked): populate cpu/mem/io per the DNP staging,
 flash the bring-up ROM, and confirm the banner / RAM-PASS TX stream against the twin.
+Record the vendor preview and every staged result in `rev-b-b1-bench-log.md`.
