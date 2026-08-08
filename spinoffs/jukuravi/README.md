@@ -19,6 +19,12 @@ fitted in the machine. The donor D6 `.038` remains fitted, the original D8
 `.039` is restored, D1 is repaired, and the D55 discriminator remains open;
 see [`../../docs/cs00015-service-record.md`](../../docs/cs00015-service-record.md).
 
+On 2026-08-09 a separate AT28C64B diagnostic/service EEPROM was refreshed from
+T32 to the pinned T31 image and verified by a complete programmer verify plus
+one independent full read. It is prepared media, not currently fitted in
+CS00015. The identities and physical programming record are in
+[`T31-PHYSICAL.md`](T31-PHYSICAL.md#service-media-refresh-2026-08-09).
+
 The validated diagnostic setup was:
 
 - D15: `firmware/diag-d0-low4k.bin` / DOS name `T31HOST.BIN`

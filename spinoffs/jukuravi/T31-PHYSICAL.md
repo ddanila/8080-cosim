@@ -31,6 +31,52 @@ zero mismatches, and reported:
 
 Evidence: `sessions/t31-real/20260803T150916.115911Z.json`.
 
+## Service-media refresh, 2026-08-09
+
+A separate AT28C64B in the Willem programmer was prepared as reusable T31
+host-driven diagnostic media. It has not been installed in CS00015; the board
+remains fitted with the EK37/EktaSoft 3.7 D15/D16 pair recorded in the service
+record.
+
+Before writing, two independent reads after correcting the programmer's J2
+setting matched the pinned T32 image exactly:
+
+- size: 8,192 bytes
+- SHA-256: `61832807cd7e52c02384844649776efa75bb3ef25795a8124d795230ed5b5ce2`
+- CRC16-CCITT: `2A19`
+
+An earlier read made with J2 misplaced produced CRC16 `F886` and address/page
+aliasing. It is rejected setup evidence, not ROM content. Programmer power was
+removed before J2 was changed. The two corrected matching reads created the
+one-use `WRITE.OK` gate.
+
+Before the burn, `sync/jukuravi_t31_check.sh` rebuilt and checked the exact T31
+image and passed the T30 boundary reproduction, T31 low-4K, A12, and smoke
+regressions. The programmed image identity was:
+
+- DOS name: `T31HOST.BIN`
+- size: 8,192 bytes
+- ROM version/self-CRC16: `1Ah` / `72EF`
+- SHA-256: `a4fed9185616bbfbef22ab6f0b18202e6d79ad7dbe3b7c46a77a700d3af3676c`
+- image CRC32: `9DCC5558`
+
+The guarded Willem write changed 96 bytes and left 8,096 already-matching
+bytes. It reported zero retry bytes, retries, or late completions; local PIT
+times were 114,345 ms for programming and 111,980 ms for the complete verify.
+The gate was consumed and safe shutdown reported VCC off and VPP off.
+
+One fresh, ordinary 8,192-byte read after the writer's full verification
+matched the T31 SHA-256 above exactly and reported CRC16-CCITT `3D7F`. This
+single read is the standard post-write confirmation; the ten-read acceptance
+matrix remains appropriate for qualifying a timing profile, not for every
+already-verified EEPROM burn.
+
+The Pocket8086's accumulated `WILLEM.LOG` had grown to 35,319 bytes and did not
+receive the new run, exposing a 16-bit DOS append/position boundary. DOSRAVI's
+per-execution `STDOUT.TXT` retained the complete programming metric and safe
+shutdown proof. The host now prefers that current execution capture for write
+evidence, and Willem archives text logs at 24 KiB before starting a new one.
+
 ## Resident attach, upload, and CALL/RET
 
 After the first host exited, a new host process attached to the still-running
