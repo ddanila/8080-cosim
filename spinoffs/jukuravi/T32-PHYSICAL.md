@@ -248,3 +248,11 @@ diagnostic-ROM re-burn is justified by this repaired fault.
 
 Earlier no-delay marker runs and the full-half read attempted after an abnormal
 upper jump were superseded and are intentionally not retained as evidence.
+
+## Post-diagnostic restoration
+
+After these diagnostics, the owner restored CS00015 on 2026-08-08 with **EK37 /
+EktaSoft 3.7** (repository profile `ekta37`) in D15/D16. T32 is therefore no
+longer fitted; this document remains the evidence record for the completed
+diagnostic configuration and D1 repair. The donor-D6/original-D8 configuration
+recorded above is unchanged.

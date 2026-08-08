@@ -1,9 +1,9 @@
 # Arvutimuuseum CS00015 service record
 
-Status date: 2026-08-07
+Status date: 2026-08-08
 
-This record identifies the physical Juku under current diagnostic work as the
-Arvutimuuseum machine `CS00015`.  The identifier is the same physical-source
+This record identifies the physical Juku that underwent the diagnostic work as
+the Arvutimuuseum machine `CS00015`. The identifier is the same physical-source
 name already used by the retained PROM captures under `ref/physical-proms/`.
 It must not be conflated with Danila Sukharev's separate reference board.
 
@@ -108,11 +108,25 @@ not be reinserted because repeated extraction would add mechanical damage
 risk. Original CS00015 D8 `.039` was restored. This records component
 provenance only and must not be read as a diagnosis of the original D6.
 
+## Post-diagnostic restoration
+
+On 2026-08-08, after the diagnostic work was completed, the owner restored
+CS00015 to its normal firmware configuration with **EK37 / EktaSoft 3.7**
+(repository firmware profile `ekta37`) in the D15/D16 positions. The T31/T32
+diagnostic firmware is no longer the fitted machine configuration; its images,
+hashes, and physical results remain retained as diagnostic evidence.
+
+This update records the fitted firmware identity reported by the owner. It
+does not assert a new socket readback or byte-for-byte comparison, so the
+earlier machine-specific D15 read discrepancy remains part of the service
+history. The repaired-D1 finding, donor-D6/original-D8 provenance, and open D55
+discriminator are unchanged.
+
 ## Current CS00015 fault summary
 
 | Location | Finding | Confidence / next discriminator |
 | --- | --- | --- |
-| D15 | Three bytes differ from the adopted official EktaSoft 3.7 low image | Repeat-read observation; retain raw dumps and exact byte diff |
+| D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official EktaSoft 3.7 low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
 | D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
 

@@ -10,7 +10,16 @@ T31 run, known D55 fault, transport benchmark, upper-D15 data/fetch diagnostic,
 and uploaded speaker demo are recorded in
 [`T31-PHYSICAL.md`](T31-PHYSICAL.md).
 
-## Current bench setup
+## Current machine configuration
+
+After the diagnostic work, CS00015 was restored on 2026-08-08 with **EK37 /
+EktaSoft 3.7** (repository profile `ekta37`) in D15/D16. The T31/T32 diagnostic
+ROM configuration described below is retained evidence, not the firmware now
+fitted in the machine. The donor D6 `.038` remains fitted, the original D8
+`.039` is restored, D1 is repaired, and the D55 discriminator remains open;
+see [`../../docs/cs00015-service-record.md`](../../docs/cs00015-service-record.md).
+
+The validated diagnostic setup was:
 
 - D15: `firmware/diag-d0-low4k.bin` / DOS name `T31HOST.BIN`
 - D16: unpopulated
@@ -70,7 +79,8 @@ The completed serial-only T33 investigation is retained in
 confirmations ran against the burned T32 image without a re-burn; replacing D1
 then changed the exact faulty register signature to the fully clean result.
 
-The next controlled hardware action is D55 substitution. Use
+If the hardware investigation resumes, the next controlled action is D55
+substitution; refit and verify the pinned T15/T16 diagnostic media first. Use
 [`D55-REPLACEMENT.md`](D55-REPLACEMENT.md) for the exact T15/T16 media hashes,
 before/after repetition matrix, tone decoding, provenance/socket inspection,
 rollback criteria, and evidence record. Do not combine that discriminator with
