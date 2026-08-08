@@ -115,7 +115,7 @@ python3 scripts/report_memory_timing_boundary.py
 - The runnable CPU-memory scaffold now models a complete row/column transaction:
   RAS remains active from the row phase through the CAS column pulse, and the
   РУ5 model strobes DIN on the latter falling edge of CAS or WE for early and
-  delayed writes. The 130,000-read C-reference guard reaches `CTRACE-END` and
+  delayed writes. The 130,000-event C-reference guard reaches `BTRACE-END` and
   the dedicated DRAM unit guard covers coincident control edges. This is a
   functional timing closure; it does not infer the unresolved D36.12/.13
   conductor or the physical CPU/video slot schedule.

@@ -151,8 +151,13 @@ static inline uint16_t i8080_get_hl(i8080* const c) {
 
 // pushes a value into the stack and updates the stack pointer
 static inline void i8080_push_stack(i8080* const c, uint16_t val) {
-  c->sp -= 2;
-  i8080_ww(c, c->sp, val);
+  // The 8080 decrements SP and writes the high byte first, then decrements SP
+  // again and writes the low byte. The final memory image is the same as a
+  // little-endian word store, but CPU-visible bus order is not.
+  c->sp -= 1;
+  i8080_wb(c, c->sp, (uint8_t)(val >> 8));
+  c->sp -= 1;
+  i8080_wb(c, c->sp, (uint8_t)val);
 }
 
 // pops a value from the stack and updates the stack pointer

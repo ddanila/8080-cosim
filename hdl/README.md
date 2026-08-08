@@ -42,11 +42,12 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   with no simulation-only polarity correction.
   `decode_prom_functional` is retained only by the B37A diagnostic comparison.
 - D94's validated physical `.092` table is modeled with open-collector outputs,
-  and its first three outputs are wired to the accepted local FDC controls. Its
-  enable source, remaining far destinations, and complete D93 strobe branches
-  are unknown.
-- Six official FDC-support devices have package pins and power endpoints in
-  the board model but no functional signal closure or HDL instances;
+  and its first three outputs are wired to the accepted local FDC controls.
+  D4-D7 are proved no-connects; only the upstream enable source and D0's hidden
+  load beyond its measured pull-up remain open.
+- 3 official FDC-support devices have package pins and power endpoints in
+  the board model but retain untraced functional pins or explicit boundary
+  nets;
   `docs/unmodeled-footprint-inventory.md` owns that boundary.
 - The shared К555ИЕ7/74LS193 primitive used by video counters D44-D47 and
   representing FDC-area D106 now has its complete standard digital contract
@@ -115,7 +116,7 @@ the Juku-specific HDL clocks remain authoritative for count progression.
 ```sh
 sync/check.sh       # modeled KiCad/HDL connectivity
 sync/boot_check.sh  # C and HDL boot/framebuffer regression
-sync/cosim_check.sh # value-level read comparison vs the C emulator (cosim)
+sync/cosim_check.sh # typed CPU-bus event comparison vs the C emulator (cosim)
 sync/ie7_check.sh   # К555ИЕ7/74LS193 device behavior and cascade
 sync/ie10_check.sh  # К555ИЕ10/74LS161 behavior and traced D103 /13 loop
 ```

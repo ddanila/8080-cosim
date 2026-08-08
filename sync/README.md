@@ -37,6 +37,7 @@ Key files:
 
 ```sh
 sync/boot_check.sh
+sync/i8080_check.sh
 sync/cosim_check.sh
 sync/juk_disk_check.sh
 sync/fdc_check.sh
@@ -53,9 +54,12 @@ sync/basic_cart_check.sh
 sync/d2_ready_path_check.sh
 ```
 
-These cover the real-ROM boot/framebuffer path, per-read agreement between
-`juku_top` and the C emulator (`cosim_check.sh`, cosim-referenced),
-raw disk geometry, the bounded WD1793 subset including Type-I physical-head,
+These cover the real-ROM boot/framebuffer path, 4.48 million independent and
+mostly exhaustive 8080 ALU/flag/control assertions (`i8080_check.sh`), typed
+memory/I/O bus-event agreement between `juku_top` and the C emulator
+(`cosim_check.sh`, cosim-referenced), raw disk geometry, and a generated C/HDL
+FDC differential over deterministic command/event vectors. The bounded WD1793
+subset also includes Type-I physical-head,
 update/verify/status, D95-selected 3/6/10/15 or 6/12/20/30 ms step timing plus
 15/30 ms settle timing, and
 15-idle-index head-unload semantics plus the Type-II/III E-flag 15 ms delay and Type-II multi-record,

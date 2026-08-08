@@ -1,27 +1,32 @@
-# Deep cosim value guard — reference
+# Deep cosim CPU-bus guard — reference
 
 `sync/cosim_check.sh` is the deep VALUE-level guard. It runs `juku_top` (the LVS-checked
-structural model) and compares every CPU memory read, byte for byte, against the C emulator
-(`cosim`). `cosim` is the authoritative reference: a straightforward 8080 + flat-memory model,
-written independently and in a different language, whose framebuffer `boot_check` already
-validates. LVS checks connectivity, `boot_check` checks sampled memory; this checks the read
-datapath value-by-value.
+structural model) and compares its ordered CPU-bus activity against the C emulator (`cosim`).
+The shared event vocabulary is memory read/write (`MR`/`MW`), I/O read/write (`IR`/`IW`), and
+interrupt acknowledge (`IA`); address and data are checked for every event, with the acknowledge
+address treated as don't-care. `cosim` is the authoritative reference: a straightforward 8080 +
+flat-memory model, written independently and in a different language, whose framebuffer
+`boot_check` already validates. LVS checks connectivity and `boot_check` checks sampled memory;
+this checks the live transaction stream value-by-value.
 
 ## How it works
 
-1. `cosim` boots the real `ekta37` BIOS and dumps its memory-read stream as `addr data` hex lines
-   (`JUKU_RDTRACE`, bounded by `JUKU_RDTRACE_LIMIT`). Reads are emitted in real 8080 bus order —
-   low byte before high (`i8080_rw`) — so the stream lines up 1:1 with the hardware read order.
-2. `hdl/sim/cosim_ctrace_tb.v` runs `juku_top` and, on each CPU memory read (`negedge dbin` while
-   `memr_n` low), consumes the next trace entry and compares the read address and the CPU-captured
-   byte. The first mismatch is reported with full context.
+1. `cosim` boots the real `ekta37` BIOS and dumps `TYPE addr data` lines through
+   `JUKU_BUS_TRACE`, bounded by `JUKU_BUS_TRACE_LIMIT`. Paired reads retain real 8080 low-byte-first
+   order, while stack pushes retain the CPU's high-byte-first write order.
+2. `hdl/sim/cosim_ctrace_tb.v` runs `juku_top`, classifies DBIN and WR edges from the decoded bus
+   strobes, consumes the next expected event, and compares its type, address, and CPU-visible data.
+   Interrupt acknowledges compare the supplied opcode while ignoring the electrically undefined
+   address. The first mismatch is reported with full context.
 
 ```sh
 sync/cosim_check.sh
 ```
 
 Runtime is dominated by driving `juku_top` to ~20 ms of simulated boot (a few minutes), not by a
-multi-hour full-banner run. `WINDOW` (ns) and `TRACE_LIMIT` (reads) bound it.
+multi-hour full-banner run. `WINDOW` (ns) and `TRACE_LIMIT` (events) bound it. The default boot
+necessarily covers `MR`, `MW`, `IR`, and `IW`; separate interrupt guards exercise the interrupt
+path, while the trace format and checker also support `IA`.
 
 ## EktaSoft block-1 checksum convention
 
@@ -49,9 +54,16 @@ divergence is now a real `juku_top`-vs-reference difference, reproducible on any
 
 ## Current state
 
-The default 130,000-read run reaches `CTRACE-END`: `juku_top` matches `cosim` in address and data
-throughout the bounded trace, including the BIOS RAM test at `0xD300`. There is no accepted
-divergence baseline; any mismatch or missing verdict fails `sync/cosim_check.sh`.
+The default 130,000-event run reaches `BTRACE-END`: `juku_top` matches `cosim` in event type,
+address, and data throughout the bounded trace, including the BIOS RAM test at `0xD300`. There is
+no accepted divergence baseline; a malformed/short reference trace, absent default event class,
+mismatch, or missing verdict fails `sync/cosim_check.sh`.
+
+Promoting the guard from reads alone to the complete typed bus immediately found a previously
+invisible oracle defect: the C core produced the right final stack bytes but wrote the low byte
+before the high byte. The 8080 actually decrements SP and writes high first, then decrements and
+writes low. `i8080_push_stack` now follows that bus order, which is also pinned by the independent
+CPU conformance test.
 
 The previously reported read #115878 mismatch was real but its first diagnosis was incomplete.
 Signal-level instrumentation established that CAS did pulse on the failing read. Two zero-delay
@@ -88,7 +100,7 @@ address/data set-up contract (tASR/tASC = 0, hold > 0: the address is valid *at*
 latches the row at RAS and the column at CAS, and strobes DIN on the later of CAS/WE, capturing the
 **settled** address/data a sub-nanosecond delta after each strobe. That delta only outlasts the
 zero-delay settling and stays far inside the compressed phase; it is not the real 120–200 ns access.
-The result is simulator-independent — the 130,000-read guard now reaches `CTRACE-END` on both Icarus
+The result is simulator-independent — the 130,000-event guard now reaches `BTRACE-END` on both Icarus
 generations. See `hdl/devices.v` `dram_64kx1`.
 
 This closes the runnable CPU-memory timing defect, not the complete historical video-slot timing.

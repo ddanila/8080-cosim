@@ -65,9 +65,10 @@ identify the complete upper-ROM matrix without another RESET:
 python3 spinoffs/jukuravi/probe_waitclass.py --port /dev/ttyUSB0
 ```
 
-The remaining serial-only work is tracked in [`T33-PLAN.md`](T33-PLAN.md).
-The decisive direct-INX probe and optional ROM WAIT confirmations run against
-the burned T32 image and need no re-burn.
+The completed serial-only T33 investigation is retained in
+[`T33-PLAN.md`](T33-PLAN.md). The decisive direct-INX probe and ROM WAIT
+confirmations ran against the burned T32 image without a re-burn; replacing D1
+then changed the exact faulty register signature to the fully clean result.
 
 On CS00015, the wait-class matrix is superseded by a D1 16-bit increment fault.
 After a clean T32 boot, read the affected register-pair results directly

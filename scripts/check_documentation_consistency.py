@@ -584,6 +584,39 @@ def main() -> int:
         if marker not in read(path):
             failures.append(f"automatic-completion boundary lost marker {marker!r} in {path}")
 
+    # The August CS00015 session crossed a real status boundary: T31/T32 ran on
+    # hardware, the fitted D1 fault was reproduced before replacement, and the
+    # same probe returned the clean signature afterward. Keep the living plan
+    # and the Jukuravi handoff prose synchronized with that committed evidence.
+    jukuravi_readme = read("spinoffs/jukuravi/README.md")
+    t32_physical = read("spinoffs/jukuravi/T32-PHYSICAL.md")
+    t33_plan = read("spinoffs/jukuravi/T33-PLAN.md")
+    hdl_readme = read("hdl/README.md")
+    august_markers = (
+        (plan, "Status date: **2026-08-08**", "PLAN status date is older than the repaired CS00015 evidence"),
+        (plan, "PHYSICAL T31/T32 VALIDATED; D1 FAULT REPAIRED; D55 OPEN", "PLAN Jukuravi dashboard state is stale"),
+        (plan, "Until new `MAIN-P0` measurements are accepted", "PLAN lost the physical-fidelity edit hold"),
+        (jukuravi_readme, "completed serial-only T33 investigation", "Jukuravi README still presents T33 as future work"),
+        (t33_plan, "Status: **COMPLETED 2026-08-05; no re-burn was required**", "T33 completion marker is missing"),
+        (t33_plan, "Hardware repair confirmation — completed 2026-08-06", "T33 still presents the completed D1 repair as future work"),
+        (t32_physical, "The decisive confirmation is complete", "T32 physical report still lacks the completed D1 substitution disposition"),
+        (t32_physical, "returned the fully clean result", "T32 physical report lacks the clean post-replacement result"),
+    )
+    for text_value, marker, failure in august_markers:
+        if marker not in text_value:
+            failures.append(failure)
+    for stale in (
+        "The remaining serial-only work is tracked",
+        "The remaining confirmation choices are:",
+        "SOFTWARE/ROM GUARDED; HARDWARE BLOCKED",
+        "Preferred order:",
+    ):
+        if (stale in jukuravi_readme or stale in t32_physical or
+                stale in t33_plan or stale in plan):
+            failures.append(f"August Jukuravi status retains stale marker {stale!r}")
+    if "Six official FDC-support devices" in hdl_readme:
+        failures.append("HDL README retains the stale six-device FDC boundary")
+
     board = read("kicad/juku.board.json")
     try:
         board_model = json.loads(board)
@@ -665,6 +698,11 @@ def main() -> int:
             core["README.md"],
         ):
             failures.append("README does not expose the current untraced FDC-device count")
+        if unmodeled_count and not re.search(
+            rf"{unmodeled_count}\s+official\s+FDC-support\s+devices",
+            hdl_readme,
+        ):
+            failures.append("HDL README does not expose the current untraced FDC-device count")
     if unmodeled_count == len(expected_unmodeled):
         for ref in expected_unmodeled:
             if f"| `{ref}` |" not in unmodeled:

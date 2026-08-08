@@ -10,9 +10,11 @@ with the machine-readable board model.
 - The C emulator and the structural `juku_top` model boot the real Juku ROM,
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`. The deep value-level
-  guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
-  against the C emulator (`cosim`); the default 130,000-read trace now reaches
-  `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
+  guard `sync/cosim_check.sh` compares `juku_top`'s typed CPU-bus events against
+  the C emulator (`cosim`). The default trace covers memory and I/O reads and
+  writes; the format also supports interrupt acknowledges, whose decoded path
+  is guarded separately. The 130,000-event run reaches `BTRACE-END` with no
+  type, address, or data divergence, including the BIOS RAM test.
 - The C emulator also has an opt-in D11/8251 PTY transport for diagnostic-ROM
   development. Its data/status mirrors, ready transitions, TX, and RX/echo are
   guarded by `tests/cosim_usart_pty_test.py` via `sync/juk_disk_check.sh`.

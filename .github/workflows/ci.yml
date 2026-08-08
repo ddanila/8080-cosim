@@ -40,6 +40,7 @@ jobs:
           bash -n sync/kp12_check.sh
           sh -n sync/ag3_check.sh
           sh -n sync/cosim_check.sh
+          bash -n sync/i8080_check.sh
           sh -n sync/boot_check.sh
           sh -n sync/d2_ready_path_check.sh
           sh -n scripts/find-kicad-cli.sh
@@ -170,6 +171,7 @@ jobs:
             tests/jukuravi_d0_alive_test.py \
             tests/jukuravi_d0_cpu_test.py \
             tests/jukuravi_d0_usart_local_test.py \
+            tests/fdc_cross_model_test.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
             sync/ekdos_timing_reference.py \

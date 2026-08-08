@@ -5,6 +5,14 @@ command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
+echo "== C/HDL generated FDC state-machine differential =="
+${CC:-cc} -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
+  -o "$TMP/fdc_vector_runner" tests/fdc_vector_runner.c cosim/juku_fdc.c cosim/juk_disk.c
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_TYPE_II_III_TIMING \
+  -s fdc_cross_model_tb -o "$TMP/fdc_cross_model_tb" \
+  hdl/devices.v hdl/sim/fdc_cross_model_tb.v
+python3 tests/fdc_cross_model_test.py "$TMP/fdc_vector_runner" "$TMP/fdc_cross_model_tb"
+
 echo "== C disk/FDC and complete ekta37 RWFLOPPY deblocking/write check =="
 sync/juk_disk_check.sh
 
@@ -55,6 +63,15 @@ physical D93/D94 wiring.
 
 ## Passing scope
 
+- A generated, seed-reproducible C/HDL differential drives the same command,
+  register, tick, input, index, and transfer vectors through both FDC models.
+  Twelve deterministic scenarios currently match across 608 normalized public
+  state transitions, with independent expected-state properties for Type-I
+  completion, transferred data, missing-ID failure, and the Force Interrupt
+  lifecycle. The scenarios cover both controller clocks, randomized seek rates
+  and sectors, serviced and aborted reads, event acknowledgement, reassertion,
+  and disarm behavior. This is a cross-model functional guard, not a new
+  physical timing claim.
 - C/HDL-identical Type-I restore, seek, step, step-in, and step-out semantics.
   The physical head position is independent of the Track register: update-off
   steps move only the head, verify compares the next flat-image ID track to the

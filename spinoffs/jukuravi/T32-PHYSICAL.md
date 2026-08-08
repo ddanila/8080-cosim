@@ -239,13 +239,12 @@ Evidence:
 - `sessions/t32-d8swap-boot/` and `sessions/t32-d8swap-5a00/`
 - `sessions/t32-d6swap-boot/` and `sessions/t32-d6swap-5a00/`
 
-The remaining confirmation choices are:
-
-1. substitute a known-good D1 in CS00015 and rerun the existing T32 probes;
-2. compare D1.37 and D4.15/BA12 dynamically, with READY as timing context;
-3. run the verified T32 chip on the donor processor board.
-
-No D4/D30 rework or diagnostic-ROM re-burn is justified before D1 is tested.
+The decisive confirmation is complete: a known-good D1 substitution changed
+the existing probe from the exact fitted fault signature to the exact clean
+signature without a ROM or probe change. A D1.37/D4.15 capture or a donor-board
+run could characterize the removed package further, but neither is required
+for localization and neither is active Jukuravi work. No D4/D30 rework or
+diagnostic-ROM re-burn is justified by this repaired fault.
 
 Earlier no-delay marker runs and the full-half read attempted after an abnormal
 upper jump were superseded and are intentionally not retained as evidence.

@@ -83,12 +83,12 @@ All sixteen samples in every row returned the predicted alias:
 Evidence is under `sessions/t32-rom-read-pair-{1000,1100,1200,1400}-physical/`.
 No reconstructed wait class masks the CPU fault.
 
-## Hardware repair confirmation
+## Hardware repair confirmation — completed 2026-08-06
 
-Preferred order:
-
-1. substitute a known-good D1 if the socket can be handled safely;
-2. rerun `probe_a12_increment.py` and require the clean five-word result;
-3. use D1.37/D4.15 capture only if a known-good D1 does not clear it.
-
-No D4/D30 rework and no new diagnostic ROM are justified before D1 is tested.
+The unchanged probe first reproduced
+`1000,0A01,4A01,8A01,1A01`, then returned the required clean
+`1000,1A01,5A01,9A01,1A01` immediately after a known-good D1 was fitted.
+Both sessions used T32 `1B/D62B`, completed without transport mismatches, and
+are retained under `sessions/t32-ram-a12-increment-registers-{repeat,cpu-replacement}-physical/`.
+This closes the repair discriminator; D1.37/D4.15 capture, D4/D30 rework, and
+a new diagnostic-ROM burn are not active work for this fault.

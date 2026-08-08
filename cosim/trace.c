@@ -464,6 +464,18 @@ static int overlay(uint16_t a, unsigned* idx) {
 static FILE *rdtrace_fp = NULL;         // optional memory-read trace (JUKU_RDTRACE=path)
 static unsigned long rdtrace_limit = 0; // stop tracing after N reads (JUKU_RDTRACE_LIMIT; 0 = unbounded)
 static unsigned long rdtrace_n = 0;
+static FILE *bustrace_fp = NULL;         // CPU-visible bus events (JUKU_BUS_TRACE=path)
+static unsigned long bustrace_limit = 0; // stop after N events (JUKU_BUS_TRACE_LIMIT; 0 = unbounded)
+static unsigned long bustrace_n = 0;
+
+static void trace_bus_event(const char* kind, uint16_t address, uint8_t data) {
+  if (!bustrace_fp) return;
+  fprintf(bustrace_fp, "%s %04x %02x\n", kind, address, data);
+  if (bustrace_limit && ++bustrace_n >= bustrace_limit) {
+    fclose(bustrace_fp);
+    bustrace_fp = NULL;
+  }
+}
 
 static uint8_t rb(void* u, uint16_t a) {
   i8080* cpu = (i8080*)u;
@@ -491,6 +503,7 @@ static uint8_t rb(void* u, uint16_t a) {
     fprintf(rdtrace_fp, "%04x %02x\n", a, v);
     if (rdtrace_limit && ++rdtrace_n >= rdtrace_limit) { fclose(rdtrace_fp); rdtrace_fp = NULL; }
   }
+  trace_bus_event("MR", a, v);
   return v;
 }
 
@@ -588,6 +601,7 @@ static uint8_t kbd_portb(void) {
 }
 static void wb(void* u, uint16_t a, uint8_t v) {
   rom_read_burst_count = 0;
+  trace_bus_event("MW", a, v);
   unsigned idx = 0;
   int ov = overlay(a, &idx);
   // Monitor 3.7's low-ROM dispatcher writes its return frame behind page-zero
@@ -654,11 +668,13 @@ static uint8_t pin(void* u, uint8_t p) {
     fprintf(stderr, "[IOSEQ] IN  port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, value, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, in_count[p]);
   }
+  trace_bus_event("IR", p, value);
   return value;
 }
 
 static void pout(void* u, uint8_t p, uint8_t v) {
   rom_read_burst_count = 0;
+  trace_bus_event("IW", p, v);
   i8080* cpu = (i8080*)u;
   sync_fdc_time(cpu);
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
@@ -906,6 +922,17 @@ int main(int argc, char** argv) {
     if (!rdtrace_fp) fprintf(stderr, "JUKU_RDTRACE=%s could not be opened for writing\n", rdtrace_path);
     const char* rdtrace_limit_env = getenv("JUKU_RDTRACE_LIMIT");
     if (rdtrace_limit_env && rdtrace_limit_env[0]) rdtrace_limit = strtoul(rdtrace_limit_env, 0, 0);
+  }
+  const char* bustrace_path = getenv("JUKU_BUS_TRACE");
+  if (bustrace_path && bustrace_path[0]) {
+    bustrace_fp = fopen(bustrace_path, "w");
+    if (!bustrace_fp) {
+      fprintf(stderr, "JUKU_BUS_TRACE=%s could not be opened for writing\n", bustrace_path);
+      return 2;
+    }
+    const char* bustrace_limit_env = getenv("JUKU_BUS_TRACE_LIMIT");
+    if (bustrace_limit_env && bustrace_limit_env[0])
+      bustrace_limit = strtoul(bustrace_limit_env, NULL, 0);
   }
   const char* cart_path = getenv("JUKU_CART");
   timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
@@ -1233,6 +1260,13 @@ int main(int argc, char** argv) {
             irq_n, g_vw, cpu.cyc, cpu.pc, pic_icw1, pic_icw2, pic_mask,
             ((uint16_t)pic_icw2<<8)|(pic_icw1&0xE0)|(5u<<2));
         uint16_t vec = ((uint16_t)pic_icw2 << 8) | (pic_icw1 & 0xE0) | (5u << 2);
+        // The hardware 8259 supplies a three-byte MCS-80 CALL sequence over
+        // three INTA cycles. The functional cosim interrupt shortcut performs
+        // the resulting call directly, but preserves those CPU-visible bus
+        // events for the unified trace contract.
+        trace_bus_event("IA", 0, 0xCD);
+        trace_bus_event("IA", 0, (uint8_t)vec);
+        trace_bus_event("IA", 0, (uint8_t)(vec >> 8));
         if (cpu.halted) cpu.halted = 0;              // interrupt wakes a HLT
         wb(0, (uint16_t)(cpu.sp - 1), cpu.pc >> 8);  // CALL: push PC, jump to vector
         wb(0, (uint16_t)(cpu.sp - 2), cpu.pc & 0xFF);
@@ -1303,5 +1337,7 @@ int main(int argc, char** argv) {
                   VID_STRIDE * VID_LINES, VID_STRIDE * 8, VID_LINES, VRAM_BASE); }
   if (fdc_enabled) juk_disk_close(&disk);
   if (usart.fd >= 0) close(usart.fd);
+  if (rdtrace_fp) fclose(rdtrace_fp);
+  if (bustrace_fp) fclose(bustrace_fp);
   return 0;
 }

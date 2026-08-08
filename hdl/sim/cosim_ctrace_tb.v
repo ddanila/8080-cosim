@@ -1,7 +1,7 @@
-// Deep VALUE-level guard, cosim-referenced. Locksteps juku_top's memory-read stream against a
-// trace of the C emulator's (cosim) reads and flags the first read whose address or captured byte
-// disagrees. cosim is the AUTHORITATIVE reference (a straightforward 8080 + flat memory model);
-// juku_top must read what cosim reads.
+// Deep CPU-bus guard, cosim-referenced. Locksteps juku_top's memory reads,
+// memory writes, I/O reads, I/O writes, and interrupt-acknowledge bytes against
+// the independent C emulator. This is a functional event-order/value contract,
+// not a claim that cosim supplies physical sub-cycle timing.
 //
 // This supersedes the older juku_top-vs-juku_struct comparison (hdl/sim/cosim_diff_tb.v): comparing
 // two independently-timed Verilog models made the result depend on sub-cycle event ordering (it
@@ -9,10 +9,11 @@
 // against cosim removes the second model and pins each divergence to a real juku_top-vs-reference
 // difference. See docs/cosim-runtime-reference.md.
 //
-// The trace is "addr data" hex lines, one per CPU memory read, emitted by cosim with JUKU_RDTRACE.
-// The C read order is the real 8080 bus order (low byte before high) so the streams align 1:1.
+// The trace is "TYPE addr data", where TYPE is MR/MW/IR/IW/IA, emitted with
+// JUKU_BUS_TRACE. The C access order follows the real 8080 low-byte/high-byte
+// order, so multi-byte CPU transactions align with the physical bus sequence.
 //
-//   sync/cosim_ctrace_check.sh   builds cosim, generates the trace, and runs this guard.
+//   sync/cosim_check.sh   builds cosim, generates the trace, and runs this guard.
 `timescale 1ns/100ps
 `default_nettype none
 module cosim_ctrace_tb;
@@ -25,36 +26,66 @@ module cosim_ctrace_tb;
     phi1=0; phi2=1; force dtop.phi1=0; force dtop.phi2=1; osc=0; #10; osc=1; #10;
     phi2=0; force dtop.phi2=0;
   end
-  integer fd, nrd=0, timecap=1600000000, code, ea, ed;
+  integer fd, nevent=0, timecap=1600000000, code, ea, ed;
+  reg [15:0] ekind;
   reg [4095:0] tracefile;
   reg done=0;
   initial begin
     if (!$value$plusargs("timecap=%d", timecap)) ;
-    if (!$value$plusargs("trace=%s", tracefile)) tracefile="reads.txt";
+    if (!$value$plusargs("trace=%s", tracefile)) tracefile="bus-events.txt";
     fd = $fopen(tracefile, "r");
-    if (fd==0) begin $display("CTRACE: cannot open trace file"); $finish; end
+    if (fd==0) begin $display("BTRACE: cannot open trace file"); $finish; end
   end
-  // Each CPU memory read (negedge dbin while memr_n low) consumes the next trace entry.
-  always @(negedge dtop.dbin) if (~dtop.memr_n && !done) begin
-    nrd = nrd + 1;
-    code = $fscanf(fd, "%h %h\n", ea, ed);
-    if (code != 2) begin
-      $display("CTRACE-END: trace exhausted after %0d reads; juku_top matched cosim throughout", nrd);
-      done=1; #1 $finish;
-    end else if (dtop.BA !== ea[15:0]) begin
-      done=1;
-      $display("CTRACE-DIVERGE read=%0d addr: juku_top BA=%04h  cosim addr=%04h data=%02h (juku bus=%02h di=%02h)",
-               nrd, dtop.BA, ea[15:0], ed[7:0], dtop.D, dtop.U_CPU.u.core.di);
-      #100 $finish;
-    end else if (dtop.U_CPU.u.core.di !== ed[7:0]) begin
-      done=1;
-      $display("CTRACE-DIVERGE read=%0d data: BA=%04h  cosim data=%02h  juku_top di=%02h (bus=%02h)",
-               nrd, dtop.BA, ed[7:0], dtop.U_CPU.u.core.di, dtop.D);
-      #100 $finish;
+
+  task check_event(input [15:0] actual_kind, input [15:0] actual_addr,
+                   input [7:0] actual_data); begin
+    if (!done) begin
+      nevent = nevent + 1;
+      code = $fscanf(fd, "%s %h %h\n", ekind, ea, ed);
+      if (code != 3) begin
+        $display("BTRACE-END: trace exhausted after %0d events; juku_top matched cosim throughout", nevent-1);
+        done=1; #1 $finish;
+      end else if (actual_kind !== ekind) begin
+        done=1;
+        $display("BTRACE-DIVERGE event=%0d type: juku_top=%0s cosim=%0s addr=%04h data=%02h",
+                 nevent, actual_kind, ekind, actual_addr, actual_data);
+        #100 $finish;
+      end else if (actual_kind !== "IA" && actual_addr !== ea[15:0]) begin
+        done=1;
+        $display("BTRACE-DIVERGE event=%0d addr: type=%0s juku_top=%04h cosim=%04h data=%02h",
+                 nevent, actual_kind, actual_addr, ea[15:0], actual_data);
+        #100 $finish;
+      end else if (actual_data !== ed[7:0]) begin
+        done=1;
+        $display("BTRACE-DIVERGE event=%0d data: type=%0s addr=%04h juku_top=%02h cosim=%02h bus=%02h",
+                 nevent, actual_kind, actual_addr, actual_data, ed[7:0], dtop.DB);
+        #100 $finish;
+      end
     end
+  end endtask
+
+  // Read data is captured at the end of DBIN, after the vm80a core has sampled
+  // it. The active 8238 strobe classifies the transfer.
+  always @(negedge dtop.dbin) if (!done) begin
+    if (~dtop.memr_n)
+      check_event("MR", dtop.BA, dtop.U_CPU.u.core.di);
+    else if (~dtop.iord_n)
+      check_event("IR", {8'h00, dtop.BA[7:0]}, dtop.U_CPU.u.core.di);
+    else if (~dtop.inta_n)
+      check_event("IA", 16'h0000, dtop.U_CPU.u.core.di);
+  end
+
+  // WR_N is the CPU-side write envelope. A delta of settling lets the 8238
+  // status decode and DB transceiver reach their stable values before capture.
+  always @(negedge dtop.wr_n) if (!done && $time > 2000) begin
+    #0.1;
+    if (~dtop.memw_n)
+      check_event("MW", dtop.BA, dtop.DB);
+    else if (~dtop.iowr_raw_n)
+      check_event("IW", {8'h00, dtop.BA[7:0]}, dtop.DB);
   end
   initial begin #(timecap);
-    if (!done) $display("CTRACE-OK: %0d reads compared within window; juku_top == cosim", nrd);
+    if (!done) $display("BTRACE-OK: %0d events compared within window; juku_top == cosim", nevent);
     $finish;
   end
 endmodule
