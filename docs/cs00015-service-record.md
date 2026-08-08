@@ -99,8 +99,7 @@ The die-derived vm80a HDL core also reproduces the exact direct result when
 only the shared incrementer's bit-12 retain-high/no-carry Boolean term is
 removed. See `cs00015-d1-increment-analysis.md` for the bounded internal
 diagnosis and the transistor/layout caveat.
-Exact image, controls, raw logs, and next
-discriminators are in
+Exact image, controls, raw logs, and completed replacement evidence are in
 [`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
 
 After this substitution test, CS00015 was deliberately left with the donor D6

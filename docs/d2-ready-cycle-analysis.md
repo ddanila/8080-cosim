@@ -10,8 +10,8 @@ ran the wait-class execution matrix this report proposed: entries at
 failed, so the failure is **not** confined to the CAS-gated class and this
 report's surviving-hypothesis section is refuted where it says otherwise.
 The wait-class derivation, the fetch/read argument, and the refutations of
-the slow-EPROM and code-placement hypotheses stand. The measured fault is
-a consecutive-read A12-low alias; the follow-up plan is
+the slow-EPROM and code-placement hypotheses stand. The measured fault was
+a consecutive-read A12-low alias; the completed follow-up record is
 [`../spinoffs/jukuravi/T33-PLAN.md`](../spinoffs/jukuravi/T33-PLAN.md).
 
 This generated report re-derives, from the validated D2 `.037` READY PROM,
@@ -118,9 +118,10 @@ it compared **the CAS-gated class against an unwaited class**.
 
 T31's own loader entry `0A0Ch` is in a no-wait page, and the lower half
 also contains always-wait pages (`0400-07FF`, `0C00-0FFF`) that T31
-demonstrably executes on CS00015. Both the no-wait and always-wait
-mechanisms are therefore proven healthy on this board; the CAS-gated class
-is the only one whose execution is untested except by the failing probe.
+demonstrably executes on CS00015. At the end of T31, the CAS-gated class
+was therefore the only upper-half class tested. T32 subsequently tested
+all three upper-half wait classes and found the same failure in each,
+refuting wait-class confinement as stated in the supersession note.
 
 ## Why no board mechanism can be fetch-selective
 

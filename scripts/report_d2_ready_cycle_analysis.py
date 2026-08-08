@@ -71,9 +71,6 @@ def main() -> int:
         return ", ".join(f"`{lo:04X}-{hi + 0xFF:04X}`" for lo, hi in spans)
 
     gated = [base for base, cls in pages if cls == "CAS-gated"]
-    unwaited_upper = [base for base, cls in pages
-                      if cls == "no wait" and (base >> 12) & 1]
-
     factory = FACTORY.read_bytes()
     probe_image = PROBE_IMAGE.read_bytes()
 
@@ -86,22 +83,6 @@ def main() -> int:
             if target < 0x2000 and wait_class(raw, target) == "CAS-gated":
                 sites.setdefault(target, []).append(i)
     repeated = sorted((t, s) for t, s in sites.items() if len(s) > 1)
-
-    # Can the follow-up probes reuse the burned image? A probe needs an existing
-    # "JMP 0A0Ch" (loader entry) inside the wait class under test.
-    loader_jmp = bytes((0xC3, 0x0C, 0x0A))
-    tramp = [(i, wait_class(raw, i)) for i in range(len(probe_image) - 2)
-             if probe_image[i:i + 3] == loader_jmp]
-    tramp_classes = {cls for _, cls in tramp}
-    # The D8 pager also selects D15 at C000-DFFF (A12=0 -> low-4K contents), so
-    # each low offset additionally appears at C000+offset. Does any such alias
-    # reach a class the direct address does not?
-    alias_gain = []
-    for off, cls in tramp:
-        if off < 0x1000:
-            alias_cls = wait_class(raw, 0xC000 | off)
-            if alias_cls != cls:
-                alias_gain.append((off, cls, alias_cls))
 
     out: list[str] = []
     add = out.append
@@ -117,8 +98,8 @@ def main() -> int:
     add("failed, so the failure is **not** confined to the CAS-gated class and this")
     add("report's surviving-hypothesis section is refuted where it says otherwise.")
     add("The wait-class derivation, the fetch/read argument, and the refutations of")
-    add("the slow-EPROM and code-placement hypotheses stand. The measured fault is")
-    add("a consecutive-read A12-low alias; the follow-up plan is")
+    add("the slow-EPROM and code-placement hypotheses stand. The measured fault was")
+    add("a consecutive-read A12-low alias; the completed follow-up record is")
     add("[`../spinoffs/jukuravi/T33-PLAN.md`](../spinoffs/jukuravi/T33-PLAN.md).")
     add("")
     add("This generated report re-derives, from the validated D2 `.037` READY PROM,")
@@ -197,9 +178,10 @@ def main() -> int:
     add("")
     add("T31's own loader entry `0A0Ch` is in a no-wait page, and the lower half")
     add("also contains always-wait pages (`0400-07FF`, `0C00-0FFF`) that T31")
-    add("demonstrably executes on CS00015. Both the no-wait and always-wait")
-    add("mechanisms are therefore proven healthy on this board; the CAS-gated class")
-    add("is the only one whose execution is untested except by the failing probe.")
+    add("demonstrably executes on CS00015. At the end of T31, the CAS-gated class")
+    add("was therefore the only upper-half class tested. T32 subsequently tested")
+    add("all three upper-half wait classes and found the same failure in each,")
+    add("refuting wait-class confinement as stated in the supersession note.")
     add("")
     add("## Why no board mechanism can be fetch-selective")
     add("")
@@ -276,92 +258,24 @@ def main() -> int:
     add("- **A fetch-selective board fault.** No decode, select or wait input on")
     add("  this machine can distinguish an M1 fetch from a memory read.")
     add("")
-    add("Still open (as amended by T32):")
+    add("T32 has now closed the component question that motivated this report. The")
+    add("failure is not confined to CAS-gated pages: execution fails in all three ROM")
+    add("classes, and correctly initialized all-RAM LHLD pairs alias in all four")
+    add("`{A10,A9}` classes. POP and SHLD writes do the same.")
     add("")
-    add("- This report originally concluded that a fault in the CAS-gated release")
-    add("  path fits every observation. T32 refuted the confinement: execution fails")
-    add("  in all three wait classes, and the measured fault is a consecutive-read")
-    add("  A12-low alias present in ROM and all-RAM modes alike. Whether wait states")
-    add("  affect the *read-pair* form at all is untested and is probe 2 of")
-    add("  `T33-PLAN.md`.")
-    add("- `CAS` originates at D36.11 through R57, and its own input `D36_CAS_IN`")
-    add("  (D36.12/.13) is an explicit unresolved continuity boundary -")
-    add("  `docs/memory-timing-boundary.md` is headed \"CAS SOURCE BOUNDARY")
-    add("  PENDING\". The same rail carries a video-cycle branch. CS00015's one")
-    add("  confirmed fault (D55, per `docs/cs00015-service-record.md`) sits in the")
-    add("  adjacent D54/D55/D56 video-timing cluster. A shared root cause is")
-    add("  plausible but **not established**, and cannot be until the CAS source is")
-    add("  closed.")
-    add("- The five D2 address inputs (`A10`, `A14`, `A12`, `A15`, `A9` on pins")
-    add("  1/3/5/6/7) are assigned by \"scan + July-2026 D2/D4 solder local fits\",")
-    add("  not by traced continuity. The page geometry of the table above therefore")
-    add("  inherits that reconstruction risk. The measured asymmetry on CS00015 does")
-    add("  not - it is an observation, whatever the pin order turns out to be.")
-    add("- `docs/cs00015-service-record.md` records three bytes of the machine's")
-    add("  originally fitted D15 differing from the official image, with the offsets")
-    add("  explicitly not retained. Those offsets should be captured; if any fall in")
-    add("  a CAS-gated page it would sharpen this picture.")
+    add("More decisively, an `INX D` setup lost an already-high A12 in the retained DE")
+    add("register before a later STAX, despite intervening CALL/RET and unrelated bus")
+    add("cycles. Boundary probes show that carry into A12 still works. The fitted fault")
+    add("is therefore D1's 16-bit increment path, not D2's class selection.")
     add("")
-    add("## Cheapest next discriminators")
+    add("The exact ROM read-pair matrix is now complete. CAS-gated `1000/1100`, no-wait")
+    add("`1200`, and always-wait `1400` all returned the exact A12-low second byte in")
+    add("all sixteen samples. No D2 class masks the D1 error. Raw evidence and expected")
+    add("bytes are in `spinoffs/jukuravi/T33-PLAN.md`.")
     add("")
-    add("1. **Upper-half unwaited trampoline.** Burn a `JMP` into a page that is")
-    add("    upper-half but *not* CAS-gated - " + merge(unwaited_upper) + " -")
-    add("    and execute it the same way as `rom-exec-106f.bin`. Success there")
-    add("    with continued failure at `106Fh` isolates the CAS-gated release path")
-    add("    and clears A12 itself. Failure there too moves the fault onto A12")
-    add("    delivery or the D15 socket's upper addressing, independent of waits.")
-    add("2. **Always-wait upper trampoline** in `1400-17FF` separates \"any wait in")
-    add("    the upper half\" from \"specifically the CAS-gated wait\".")
-    add("3. **Re-run `rom-exec-106f.bin` after substituting D55**, which is already")
-    add("    the recommended action for the known D55 fault. If the CAS video-cycle")
-    add("    branch is involved, this may clear both symptoms at once.")
-    add("4. **Cross-swap the burned EPROM into the donor board** and run the same")
-    add("    probe, to separate our device and image from CS00015 entirely.")
-    add("")
-    add("Probes 1 and 2 need no board rework and no new instrumentation, but they")
-    add("do need one re-burned D15, because the currently burned image has no")
-    add("reusable entry point in the classes under test.")
-    add("")
-    add("### Trampoline availability in the burned image")
-    add("")
-    add("A probe re-enters the resident loader by executing a `JMP 0A0Ch`")
-    add("(`C3 0C 0A`) at the address under test. In")
-    add("`spinoffs/jukuravi/firmware/diag-d0-low4k.bin` that sequence occurs at:")
-    add("")
-    half = lambda a: "upper" if (a >> 12) & 1 else "lower"
-    add("| Offset | Half | Wait class |")
-    add("| --- | --- | --- |")
-    for off, cls in tramp:
-        add(f"| `{off:04X}h` | {half(off)} | {cls} |")
-    add("")
-    covered = {(half(off), cls) for off, cls in tramp}
-    wanted = [("upper", "no wait"), ("upper", "always wait")]
-    missing = [w for w in wanted if w not in covered]
-    add("The distinction that matters is class *and* half, since the lower half is")
-    add("already known to execute.")
-    add("")
-    for h, c in sorted(covered):
-        add(f"- covered: {h} {c}")
-    for h, c in missing:
-        add(f"- **missing: {h} {c}**")
-    add("")
-    add("The two missing combinations are precisely what probes 1 and 2 need, which")
-    add("is why they need the re-burn.")
-    add("")
-    add("The `C000-DFFF` alias does not avoid it. With `A12=0` there it presents")
-    add("low-4K contents, so each low offset also appears at `C000+offset`; but a")
-    add("CAS-gated alias needs address bits 10 and 9 both clear, and the two low")
-    add("candidates fail that (`065C` has A10=1, `0A06` has A9=1). Aliases reaching")
-    add("a class their direct address does not: "
-        + (str(len(alias_gain)) if alias_gain else "none") + ". Whether D6's")
-    add("`ROM_SEL` enables that window at all is mode-dependent and was not")
-    add("established here, but for this image the point is moot.")
-    add("")
-    add("One burn can cover everything: add a `JMP 0A0Ch` at `1200h` (unwaited")
-    add("upper) and at `1400h` (always-wait upper), keeping the existing `106Fh`")
-    add("(CAS-gated). Three RAM trampolines then discriminate all three classes")
-    add("against each other in a single bench session, with `rom-reenter-4000.bin`")
-    add("as the no-upper-fetch control.")
+    add("The D2 input pin-order reconstruction and the unresolved D36 CAS source remain")
+    add("generic schematic-model boundaries. They are no longer blockers for the")
+    add("CS00015 A12 diagnosis.")
     add("")
 
     REPORT.write_text("\n".join(out), encoding="utf-8")

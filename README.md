@@ -12,8 +12,10 @@ with the machine-readable board model.
   vendored disk images, and reach disk BASIC `READY`. The deep value-level
   guard `sync/cosim_check.sh` compares `juku_top`'s typed CPU-bus events against
   the C emulator (`cosim`). The default trace covers memory and I/O reads and
-  writes; the format also supports interrupt acknowledges, whose decoded path
-  is guarded separately. The 130,000-event run reaches `BTRACE-END` with no
+  writes; a focused interrupt-acknowledge differential separately verifies the
+  decoded `CD D4 FE` sequence. An instruction-level C/vm80a differential covers
+  8,192 isolated cases, while the generated C/HDL FDC differential covers
+  50,845 state transitions. The 130,000-event run reaches `BTRACE-END` with no
   type, address, or data divergence, including the BIOS RAM test.
 - The C emulator also has an opt-in D11/8251 PTY transport for diagnostic-ROM
   development. Its data/status mirrors, ready transitions, TX, and RX/echo are

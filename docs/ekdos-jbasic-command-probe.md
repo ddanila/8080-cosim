@@ -87,4 +87,4 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 - The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.
 - The final video/mode table records the MAME-mapped timing ports from the checkpoint, making the rendered text prompt auditable against the final control state.
 - The fixed-`0xD800` framebuffer now has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.
-- Next work is to port this disk-backed BASIC path into HDL coverage after the uninterrupted juku_top FDC/EKDOS path is strong enough.
+- The uninterrupted `juku_top` disk-BASIC guard now reaches the visible `READY` prompt in HDL; this report remains the faster C-model launch oracle and preserves the live-candidate provenance.
