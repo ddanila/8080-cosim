@@ -29,8 +29,8 @@ static void print_state(unsigned index, const juku_fdc* fdc) {
 }
 
 int main(int argc, char** argv) {
-  if (argc != 3) {
-    fprintf(stderr, "usage: %s VECTOR_FILE DISK_IMAGE\n", argv[0]);
+  if (argc != 4) {
+    fprintf(stderr, "usage: %s VECTOR_FILE DISK_IMAGE DELETED_MARKS\n", argv[0]);
     return 2;
   }
   FILE* vectors = fopen(argv[1], "r");
@@ -39,8 +39,14 @@ int main(int argc, char** argv) {
     return 2;
   }
   juk_disk disk;
-  if (juk_disk_open(&disk, argv[2]) != 0) {
+  if (juk_disk_open_writable(&disk, argv[2]) != 0) {
     fprintf(stderr, "could not open disk image %s\n", argv[2]);
+    fclose(vectors);
+    return 2;
+  }
+  if (juk_disk_attach_deleted_marks(&disk, argv[3]) != 0) {
+    fprintf(stderr, "could not open deleted-mark metadata %s\n", argv[3]);
+    juk_disk_close(&disk);
     fclose(vectors);
     return 2;
   }

@@ -42,6 +42,8 @@ channel-2 behavior under recovery-spaced access.  It is not yet proof that the
 IC die alone is defective: replacement or substitution is required to
 distinguish the package from its local socket, solder joints, supply bypass,
 and board-level channel-2 connections.
+The controlled before/substitute/after procedure and blank evidence record are
+[`../spinoffs/jukuravi/D55-REPLACEMENT.md`](../spinoffs/jukuravi/D55-REPLACEMENT.md).
 
 ### D15 upper-ROM execution timing
 

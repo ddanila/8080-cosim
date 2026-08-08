@@ -17,21 +17,23 @@
 `timescale 1ns/100ps
 `default_nettype none
 module cosim_ctrace_tb;
-  reg osc=0, phi1=0, phi2=0;
+  reg osc=0, phi1=0, phi2=0, frame_tick=0;
   juku_top dtop(.clk(1'b0), .reset_n(1'b1), .osc(osc),
-    .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kbd_kcol(4'b0), .kbd_kbit(3'b0), .frame_tick(1'b0));
+    .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kbd_kcol(4'b0), .kbd_kbit(3'b0), .frame_tick(frame_tick));
   initial begin force dtop.ready=1'b1; force dtop.reset_sys=1; #2000 force dtop.reset_sys=0; end
   initial forever begin
     phi1=1; phi2=0; force dtop.phi1=1; force dtop.phi2=0; osc=0; #10; osc=1; #10;
     phi1=0; phi2=1; force dtop.phi1=0; force dtop.phi2=1; osc=0; #10; osc=1; #10;
     phi2=0; force dtop.phi2=0;
   end
-  integer fd, nevent=0, timecap=1600000000, code, ea, ed;
+  integer fd, nevent=0, timecap=1600000000, code, ea, ed, irq_after=0;
   reg [15:0] ekind;
   reg [4095:0] tracefile;
   reg done=0;
+  reg irq_started=0;
   initial begin
     if (!$value$plusargs("timecap=%d", timecap)) ;
+    if (!$value$plusargs("irq_after=%d", irq_after)) ;
     if (!$value$plusargs("trace=%s", tracefile)) tracefile="bus-events.txt";
     fd = $fopen(tracefile, "r");
     if (fd==0) begin $display("BTRACE: cannot open trace file"); $finish; end
@@ -60,6 +62,14 @@ module cosim_ctrace_tb;
         $display("BTRACE-DIVERGE event=%0d data: type=%0s addr=%04h juku_top=%02h cosim=%02h bus=%02h",
                  nevent, actual_kind, actual_addr, actual_data, ed[7:0], dtop.DB);
         #100 $finish;
+      end else if (irq_after > 0 && nevent == irq_after && !irq_started) begin
+        // The focused guard asserts this one operand transfer before the
+        // reference instruction ends, allowing the sim-only frame synchronizer
+        // to settle while preserving that instruction's final bus read. The
+        // 8259 adjunct then supplies CD/low/high on real vm80a INTA cycles.
+        irq_started=1;
+        frame_tick=1;
+        fork begin #80 frame_tick=0; end join_none
       end
     end
   end endtask

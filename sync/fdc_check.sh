@@ -65,13 +65,17 @@ physical D93/D94 wiring.
 
 - A generated, seed-reproducible C/HDL differential drives the same command,
   register, tick, input, index, and transfer vectors through both FDC models.
-  Twelve deterministic scenarios currently match across 608 normalized public
-  state transitions, with independent expected-state properties for Type-I
-  completion, transferred data, missing-ID failure, and the Force Interrupt
-  lifecycle. The scenarios cover both controller clocks, randomized seek rates
-  and sectors, serviced and aborted reads, event acknowledgement, reassertion,
-  and disarm behavior. This is a cross-model functional guard, not a new
-  physical timing claim.
+  Twelve deterministic scenarios currently match across 50,845 normalized
+  public state transitions, with independent expected-state properties for
+  Type-I completion, transferred data, the exact 63/64-tick read and
+  1,407/1,408-tick write-preload boundaries, writable normal/deleted and
+  multiple-record persistence, Read Address, full Read/Write Track streams,
+  missing-ID failure, and the Force Interrupt lifecycle. The scenarios cover
+  both controller clocks, randomized seek rates and sectors, serviced and
+  aborted reads, event acknowledgement, reassertion, and disarm behavior. Each
+  model receives its own initially identical writable raw image and deleted-mark
+  companion. This is a cross-model functional guard, not a new physical timing
+  claim.
 - C/HDL-identical Type-I restore, seek, step, step-in, and step-out semantics.
   The physical head position is independent of the Track register: update-off
   steps move only the head, verify compares the next flat-image ID track to the

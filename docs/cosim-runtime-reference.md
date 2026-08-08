@@ -26,7 +26,20 @@ sync/cosim_check.sh
 Runtime is dominated by driving `juku_top` to ~20 ms of simulated boot (a few minutes), not by a
 multi-hour full-banner run. `WINDOW` (ns) and `TRACE_LIMIT` (events) bound it. The default boot
 necessarily covers `MR`, `MW`, `IR`, and `IW`; separate interrupt guards exercise the interrupt
-path, while the trace format and checker also support `IA`.
+path. `sync/inta_bus_check.sh` runs a focused synthetic PIC/EI loop through both
+CPUs and requires the typed `IA` sequence `CD D4 FE` end-to-end.
+
+`sync/i8080_vm80a_diff_check.sh` is the complementary instruction-boundary
+guard. It generates 8,192 isolated cases: all 256 opcode bytes crossed with all
+32 combinations of the architectural S/Z/AC/P/C flags, while register, memory,
+immediate, and I/O operands rotate through `00`, `01`, `0F`, `10`, `7F`, `80`,
+`FE`, and `FF`. Each case seeds the C core and vm80a at the same clean M1
+boundary, executes exactly one instruction, and compares A/BC/DE/HL/SP/PC,
+flags, interrupt enable, halt, final memory effects, and port output. Memory
+writes are compared by final address/value rather than physical order: for
+example, XTHL may write the same two final stack bytes in a different bus order,
+which is not an architectural-state difference. This guard is exhaustive over
+opcode and initial flag combinations, not over the full 8080 state space.
 
 ## EktaSoft block-1 checksum convention
 

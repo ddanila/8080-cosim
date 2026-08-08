@@ -70,6 +70,12 @@ The completed serial-only T33 investigation is retained in
 confirmations ran against the burned T32 image without a re-burn; replacing D1
 then changed the exact faulty register signature to the fully clean result.
 
+The next controlled hardware action is D55 substitution. Use
+[`D55-REPLACEMENT.md`](D55-REPLACEMENT.md) for the exact T15/T16 media hashes,
+before/after repetition matrix, tone decoding, provenance/socket inspection,
+rollback criteria, and evidence record. Do not combine that discriminator with
+other rework or optional Nano wiring.
+
 On CS00015, the wait-class matrix is superseded by a D1 16-bit increment fault.
 After a clean T32 boot, read the affected register-pair results directly
 without another ROM burn:

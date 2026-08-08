@@ -38,7 +38,9 @@ Key files:
 ```sh
 sync/boot_check.sh
 sync/i8080_check.sh
+sync/i8080_vm80a_diff_check.sh
 sync/cosim_check.sh
+sync/inta_bus_check.sh
 sync/juk_disk_check.sh
 sync/fdc_check.sh
 sync/video_timing_check.sh
@@ -55,10 +57,16 @@ sync/d2_ready_path_check.sh
 ```
 
 These cover the real-ROM boot/framebuffer path, 4.48 million independent and
-mostly exhaustive 8080 ALU/flag/control assertions (`i8080_check.sh`), typed
+mostly exhaustive 8080 ALU/flag/control assertions (`i8080_check.sh`), plus an
+8,192-case one-instruction C/vm80a differential over every opcode and all 32
+architectural flag combinations (`i8080_vm80a_diff_check.sh`), typed
 memory/I/O bus-event agreement between `juku_top` and the C emulator
-(`cosim_check.sh`, cosim-referenced), raw disk geometry, and a generated C/HDL
-FDC differential over deterministic command/event vectors. The bounded WD1793
+(`cosim_check.sh`, cosim-referenced), focused end-to-end `CD low high` interrupt
+acknowledge agreement (`inta_bus_check.sh`), raw disk geometry, and a generated C/HDL
+FDC differential over deterministic command/event vectors with isolated writable
+images. That differential includes exact read/write DRQ boundaries, normal/deleted
+single and multiple writes, Read Address, and complete Read/Write Track streams.
+The bounded WD1793
 subset also includes Type-I physical-head,
 update/verify/status, D95-selected 3/6/10/15 or 6/12/20/30 ms step timing plus
 15/30 ms settle timing, and
