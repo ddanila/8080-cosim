@@ -1,5 +1,12 @@
 # T31 physical validation on CS00015
 
+> **D55 supersession, 2026-08-09:** the T31 D55 predicate latched Mode-0
+> counts without first establishing the D54/D56 clocks required to transfer
+> them into a real 8253 counting element. Its `D55: FAIL` result is not valid
+> evidence of a D55 package or functional-path defect. Transport, RAM and
+> loader findings in this record are unaffected. See
+> [`../../docs/jukuravi-d55-diagnostic-audit.md`](../../docs/jukuravi-d55-diagnostic-audit.md).
+
 Date: 2026-08-03  
 Board: Arvutimuuseum Juku processor board `CS00015`  
 ROM socket: D15, AT28C64B; D16 unpopulated  
@@ -22,7 +29,8 @@ zero mismatches, and reported:
 - PIC: PASS
 - PPI: PASS
 - D54: PASS
-- D55: FAIL (the independently known CS00015 fault)
+- D55: FAIL (historical T31 bitmap; invalidated as D55 evidence by the
+  2026-08-09 clock audit)
 - D57: PASS
 - RAM `4000h-4FFFh`: PASS
 - RAM `C000h-CFFFh`: PASS

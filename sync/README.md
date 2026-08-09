@@ -127,6 +127,8 @@ nonzero exit when generated `docs/` or `ref/` output drifts.
 - `jmon33_checkpoint_deep_check.sh` — long checkpoint-resumed cursor/A/B/FDC-T
   checks, kept out of push CI because of runtime. Its superseded cursor
   intermediate is written to a temporary file.
+- `jukuravi_d55_clock_audit.sh` — slow full-ROM T31 negative control plus T34
+  clean, D55-data, D54-clock, D56-clock, and D9-select structural fault matrix.
 
 Checkpoint load/resume tools remain useful for narrowing regressions, but their
 old intermediate report files are not project milestones. The uninterrupted

@@ -586,10 +586,10 @@ def main() -> int:
         if marker not in read(path):
             failures.append(f"automatic-completion boundary lost marker {marker!r} in {path}")
 
-    # The August CS00015 session crossed a real status boundary: T31/T32 ran on
-    # hardware, the fitted D1 fault was reproduced before replacement, and the
-    # same probe returned the clean signature afterward. Keep the living plan
-    # and the Jukuravi handoff prose synchronized with that committed evidence.
+    # The August CS00015/CS00024 work crossed two real status boundaries: D1 was
+    # repaired, and the later desk audit invalidated the unclocked T15/T16/T31/
+    # T32 D55 predicate. Keep the living plan and Jukuravi handoff prose
+    # synchronized with both the retained history and the clock-safe T34 policy.
     jukuravi_readme = read("spinoffs/jukuravi/README.md")
     t32_physical = read("spinoffs/jukuravi/T32-PHYSICAL.md")
     t33_plan = read("spinoffs/jukuravi/T33-PLAN.md")
@@ -598,17 +598,17 @@ def main() -> int:
     fdc_readiness = read("docs/fdc-readiness.md")
     hdl_readme = read("hdl/README.md")
     august_markers = (
-        (plan, "Status date: **2026-08-08**", "PLAN status date is older than the repaired CS00015 evidence"),
-        (plan, "PHYSICAL T31/T32 VALIDATED; D1 FAULT REPAIRED; D55 OPEN", "PLAN Jukuravi dashboard state is stale"),
+        (plan, "Status date: **2026-08-09**", "PLAN status date is older than the D55 diagnostic audit"),
+        (plan, "OLD D55 PREDICATE INVALIDATED", "PLAN Jukuravi dashboard state is stale"),
         (plan, "Until new `MAIN-P0` measurements are accepted", "PLAN lost the physical-fidelity edit hold"),
         (jukuravi_readme, "completed serial-only T33 investigation", "Jukuravi README still presents T33 as future work"),
         (t33_plan, "Status: **COMPLETED 2026-08-05; no re-burn was required**", "T33 completion marker is missing"),
         (t33_plan, "Hardware repair confirmation — completed 2026-08-06", "T33 still presents the completed D1 repair as future work"),
         (t32_physical, "The decisive confirmation is complete", "T32 physical report still lacks the completed D1 substitution disposition"),
         (t32_physical, "returned the fully clean result", "T32 physical report lacks the clean post-replacement result"),
-        (d55_runbook, "34c110f209e7ccfffb3a261bea25b3b2e9d361eaaad57bcde638d744e8eed72a", "D55 runbook lost the exact T15 hash"),
-        (d55_runbook, "703514bd36ea3fb1c695b91259040571d601880f475f4562698c851ffbdfd0ce", "D55 runbook lost the exact T16 hash"),
-        (d55_runbook, "five cold-power T16 runs", "D55 runbook lost its post-substitution repetition requirement"),
+        (d55_runbook, "HOLD — RUN T34 BEFORE SUBSTITUTION", "D55 runbook lost its T34-first hold"),
+        (d55_runbook, "63f69281e632324083bd5e7040d19a7939936b98a4d5cb245e008ea491d45cb5", "D55 runbook lost the exact T34 hash"),
+        (d55_runbook, "five cold-power T34 runs", "D55 runbook lost its post-substitution repetition requirement"),
         (d55_runbook, "Decision and rollback criteria", "D55 runbook lost its rollback gate"),
         (d55_runbook, "Component and socket provenance", "D55 runbook lost its evidence template"),
         (cosim_runtime, "8,192 isolated cases", "instruction-level C/vm80a differential count drifted"),

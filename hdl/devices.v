@@ -794,7 +794,9 @@ module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end
 endmodule
 
-module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
+module pit_8253 #(
+    parameter integer CLOCKED_MODE0_LOAD = 0
+) (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
                  input wire clk0, gate0, clk1, gate1, clk2, gate2,
                  output wire out0, out1, out2);
 `ifndef YOSYS
@@ -806,7 +808,7 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg [15:0] output_latch [0:2];
     reg latch_valid [0:2];
     reg [2:0] mode [0:2];
-    reg bcd [0:2], running [0:2];
+    reg bcd [0:2], running [0:2], load_pending [0:2];
     reg [2:0] ch;
     reg [15:0] next_reload;
     reg [2:0] ctl_ch;
@@ -854,10 +856,22 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         input [15:0] raw;
         begin
             reload[channel] = normalized_count(raw, bcd[channel]);
-            count[channel] = normalized_count(raw, bcd[channel]);
+            // Mode 0 is the diagnostic's register-test mode.  The 8253 first
+            // transfers the programmed count from its count register to the
+            // counting element on a subsequent counter clock; an immediate
+            // latch/read must therefore still see the old counting element.
+            // Keep the video-used modes on the established model below while
+            // making that externally observable Mode-0 load cycle explicit.
+            load_pending[channel] = CLOCKED_MODE0_LOAD
+                                  && (mode[channel] == 3'd0);
+            if (!CLOCKED_MODE0_LOAD || mode[channel] != 3'd0)
+                count[channel] = normalized_count(raw, bcd[channel]);
             // Modes 1/2 are the exact Juku video modes. Mode 1 waits for its
             // hardware gate trigger; mode 2 starts high as a rate generator.
-            if (mode[channel] == 3'd1) begin
+            if (mode[channel] == 3'd0) begin
+                running[channel] = 1'b0;
+                out_r[channel] = 1'b0;
+            end else if (mode[channel] == 3'd1) begin
                 running[channel] = 1'b0;
                 out_r[channel] = 1'b1;
             end else begin
@@ -873,6 +887,7 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             access[i]=2'b11; phase[i]=0; read_phase[i]=0;
             reload[i]=0; count[i]=0; low_latch[i]=0; output_latch[i]=0;
             latch_valid[i]=0; mode[i]=0; bcd[i]=0; running[i]=0;
+            load_pending[i]=0;
         end
     end
 
@@ -902,6 +917,7 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         phase[ctl_ch] = 0;
                         read_phase[ctl_ch] = 0;
                         latch_valid[ctl_ch] = 0;
+                        load_pending[ctl_ch] = 0;
                         running[ctl_ch] = 0;
                         out_r[ctl_ch] = (ctl_mode == 3'd0) ? 1'b0 : 1'b1;
                     end
@@ -965,7 +981,11 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     // Keep the three edge processes explicit. This mirrors the independent PIT
     // clock pins and avoids simulator-dependent writes through task-indexed arrays.
     always @(posedge clk0) if (reload[0] != 0) begin
-        case (mode[0])
+        if (load_pending[0]) begin
+            // Mode-0 GATE inhibits counting, not the CR -> CE load cycle.
+            count[0] <= reload[0]; load_pending[0] <= 0;
+            running[0] <= 1; out_r[0] <= (mode[0] == 0) ? 0 : 1;
+        end else case (mode[0])
             3'd1: if (running[0]) begin
                 if (count[0] <= 1) begin count[0] <= 0; running[0] <= 0; out_r[0] <= 1; end
                 else count[0] <= count[0] - 1'b1;
@@ -983,7 +1003,11 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         endcase
     end
     always @(posedge clk1) if (reload[1] != 0) begin
-        case (mode[1])
+        if (load_pending[1]) begin
+            // Mode-0 GATE inhibits counting, not the CR -> CE load cycle.
+            count[1] <= reload[1]; load_pending[1] <= 0;
+            running[1] <= 1; out_r[1] <= (mode[1] == 0) ? 0 : 1;
+        end else case (mode[1])
             3'd1: if (running[1]) begin
                 if (count[1] <= 1) begin count[1] <= 0; running[1] <= 0; out_r[1] <= 1; end
                 else count[1] <= count[1] - 1'b1;
@@ -1001,7 +1025,11 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         endcase
     end
     always @(posedge clk2) if (reload[2] != 0) begin
-        case (mode[2])
+        if (load_pending[2]) begin
+            // Mode-0 GATE inhibits counting, not the CR -> CE load cycle.
+            count[2] <= reload[2]; load_pending[2] <= 0;
+            running[2] <= 1; out_r[2] <= (mode[2] == 0) ? 0 : 1;
+        end else case (mode[2])
             3'd1: if (running[2]) begin
                 if (count[2] <= 1) begin count[2] <= 0; running[2] <= 0; out_r[2] <= 1; end
                 else count[2] <= count[2] - 1'b1;

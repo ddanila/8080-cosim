@@ -1,5 +1,10 @@
 # T32 upper-ROM physical diagnostic on CS00015
 
+> **D55 supersession, 2026-08-09:** T32 inherits T31's unclocked D55
+> latch/read predicate. Its D55 bit is not valid D55 fault evidence. The
+> upper-ROM, CPU, transport and RAM findings below do not depend on that bit.
+> See [`../../docs/jukuravi-d55-diagnostic-audit.md`](../../docs/jukuravi-d55-diagnostic-audit.md).
+
 Date: 2026-08-04  
 Board: Arvutimuuseum Juku processor board `CS00015`  
 ROM socket: D15, AT28C64B; D16 unpopulated  
@@ -14,8 +19,9 @@ Serial: X3 through MAX3232 and CP2102, 2400 baud
 
 The programmer verified the burn. The first physical boot decoded the exact
 `1B/D62B` identity with zero transport mismatches. PIC, PPI, D54, D57, RAM
-`4000h-4FFFh`, and RAM `C000h-CFFFh` passed; the independently known D55 fault
-was reported; loader API v2 completed a non-destructive control probe.
+`4000h-4FFFh`, and RAM `C000h-CFFFh` passed; the historical D55 bit was
+reported but is now invalidated as D55 evidence; loader API v2 completed a
+non-destructive control probe.
 
 Evidence: `sessions/t32-first-boot/20260804T161841.367511Z.*`.
 
@@ -190,7 +196,8 @@ localize the repaired fault.
 
 T31 and T32 were burned in different AT28C64B packages. D6, D8, and D2 donor
 substitutions did not change the symptom. Those devices and the EEPROMs are
-excluded as unique causes; D55 remains a separate known failure.
+excluded as unique causes. The historical D55 bit is a separate, now-invalid
+predicate result and makes no D55 hardware claim.
 
 ### Exact cosim reproduction
 

@@ -6,9 +6,18 @@ the onboard 8251, and remains resident while the host uploads and calls 8080
 snippets in RAM.
 
 The physical reference system is Arvutimuuseum board `CS00015`. Its validated
-T31 run, known D55 fault, transport benchmark, upper-D15 data/fetch diagnostic,
-and uploaded speaker demo are recorded in
+T31 transport run, historical D55 bitmap, transport benchmark, upper-D15
+diagnostic, and uploaded speaker demo are recorded in
 [`T31-PHYSICAL.md`](T31-PHYSICAL.md).
+The separate CS00024 T31 session and its corrected D55 interpretation are in
+[`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md).
+
+The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
+ROMs did not establish the physical D55 clocks before latching their Mode-0
+counts. T34 is the first clock-safe D55 functional-path image. Neither
+CS00015 nor CS00024 currently has valid evidence that its D55 package is bad;
+see
+[`../../docs/jukuravi-d55-diagnostic-audit.md`](../../docs/jukuravi-d55-diagnostic-audit.md).
 
 ## Current machine configuration
 
@@ -16,7 +25,8 @@ After the diagnostic work, CS00015 was restored on 2026-08-08 with **EK37 /
 EktaSoft 3.7** (repository profile `ekta37`) in D15/D16. The T31/T32 diagnostic
 ROM configuration described below is retained evidence, not the firmware now
 fitted in the machine. The donor D6 `.038` remains fitted, the original D8
-`.039` is restored, D1 is repaired, and the D55 discriminator remains open;
+`.039` is restored, D1 is repaired, and D55 must be rerun with T34 before any
+package discriminator;
 see [`../../docs/cs00015-service-record.md`](../../docs/cs00015-service-record.md).
 
 On 2026-08-09 a separate AT28C64B diagnostic/service EEPROM was refreshed from
@@ -85,12 +95,13 @@ The completed serial-only T33 investigation is retained in
 confirmations ran against the burned T32 image without a re-burn; replacing D1
 then changed the exact faulty register signature to the fully clean result.
 
-If the hardware investigation resumes, the next controlled action is D55
-substitution; refit and verify the pinned T15/T16 diagnostic media first. Use
-[`D55-REPLACEMENT.md`](D55-REPLACEMENT.md) for the exact T15/T16 media hashes,
-before/after repetition matrix, tone decoding, provenance/socket inspection,
-rollback criteria, and evidence record. Do not combine that discriminator with
-other rework or optional Nano wiring.
+If the hardware investigation resumes, the next controlled D55 action is a
+T34 `1C/A637` cold boot, not substitution. A clean T34 result cancels the
+substitution plan; only a repeated T34 `08` opens the controlled discriminator.
+Use [`D55-REPLACEMENT.md`](D55-REPLACEMENT.md) for the exact T34 hash,
+before/after matrix, provenance/socket inspection, rollback criteria, and
+evidence record. Do not combine that discriminator with other rework or
+optional Nano wiring.
 
 On CS00015, the wait-class matrix is superseded by a D1 16-bit increment fault.
 After a clean T32 boot, read the affected register-pair results directly

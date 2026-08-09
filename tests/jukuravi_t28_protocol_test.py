@@ -86,9 +86,52 @@ def main() -> int:
     if requests != [0xC6, 0xC7]:
         fail(f"request demultiplexing leaked framed C6/C7: {requests!r}")
 
+    # A DATA-producing command returns RESULT when the ROM's parser-buffer
+    # CRC rejects a stored command. The host must pass that structured error
+    # to its transaction layer and retry the identical command, rather than
+    # rejecting RESULT as the wrong response type before retry policy runs.
+    strong_crc = protocol.Frame(
+        protocol.TYPE_LOADER_V2_RESULT,
+        bytes((0x42, protocol.LOADER_STATUS_STRONG_CRC, 0x37, 0x3F,
+               0, 0, 0, 0, 0, 0)),
+    )
+    wait_session = object.__new__(host.HostSession)
+    wait_session.solicited_host_tx = False
+    wait_session.symbol_requests = []
+    wait_session.frames = [strong_crc]
+    returned, cursor = wait_session._wait_loader_frame(
+        protocol.TYPE_LOADER_V2_DATA, 0, 0.1, "injected DATA failure"
+    )
+    if returned is not strong_crc or cursor != 1:
+        fail("DATA response filter did not surface structured RESULT failure")
+
+    data_ok = protocol.Frame(
+        protocol.TYPE_LOADER_V2_DATA,
+        bytes((0x42, protocol.LOADER_STATUS_OK, protocol.TYPE_LOADER_V2_PROBE,
+               0, 0, 1, 0x58)),
+    )
+    retry_session = object.__new__(host.HostSession)
+    retry_session.loader_retries = 3
+    sent: list[bytes] = []
+    replies = iter(((strong_crc, 1), (data_ok, 2)))
+    retry_session._send_loader_frame = (  # type: ignore[method-assign]
+        lambda command, timeout, description: sent.append(command)
+    )
+    retry_session._wait_loader_frame = (  # type: ignore[method-assign]
+        lambda expected, cursor, timeout, description: next(replies)
+    )
+    command = protocol.encode_loader_v2_command(
+        protocol.TYPE_LOADER_V2_PROBE, 0x42, b"X"
+    )
+    response, cursor, attempts = retry_session._loader_v2_transact(
+        command, 0x42, protocol.TYPE_LOADER_V2_DATA, 0, 0.1, "injected PROBE"
+    )
+    if response is not data_ok or cursor != 2 or attempts != 2 or sent != [command, command]:
+        fail("strong-CRC DATA retry was not identical and bounded")
+
     print(
         "JUKURAVI-T28-PROTOCOL: PASS "
-        "(strong CRC; bounded ranges; replay-safe RUN; recoverability caps; demux)"
+        "(strong CRC retry; bounded ranges; replay-safe RUN; recoverability caps; demux)"
     )
     return 0
 

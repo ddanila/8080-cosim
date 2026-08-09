@@ -457,6 +457,13 @@ harness after the register-only checkpoint.
 
 ## Rung 5d: D54/D55/D57 all-counter register test
 
+> **Superseded for D55, 2026-08-09.** Versions `07..1B` use this historical
+> predicate. It remains useful for directly clocked D54/D57 register paths,
+> but it does not establish the D54/D56 clocks needed to transfer a Mode-0
+> count into D55 before latching it. D55 results from these images are invalid
+> as D55 fault evidence. T34 is the corrected test; see
+> [`../../../docs/jukuravi-d55-diagnostic-audit.md`](../../../docs/jukuravi-d55-diagnostic-audit.md).
+
 The cumulative PIT image advertises ROM version `07`, historical block-1 sum
 `0E`, full-image self-checksum `1882`, and these exact records:
 
@@ -476,9 +483,10 @@ For every counter port `10..12`, `14..16`, and `18..1A`, the extension selects
 binary mode 0 with MSB-only access, writes `FF`, latches the count, reads it, and
 requires DB7 high. It then repeats channel 0 on each chip with `3F` and requires
 DB7 low. This exercises all nine counter selects, all three control selects, and
-both DB7 polarities without comparing an exact live count. The predicate remains
-valid across the source-proved 1 MHz, 2 MHz, 1.23 MHz, and cascaded inputs and
-does not invent a common cosim clock.
+both DB7 polarities without comparing an exact live count. The original model
+assumed the written value became immediately readable. That is acceptable for
+the historical C-model regression, but not for D55 hardware: its cascaded
+counting elements require source-clock transitions before latch/read.
 
 Both verdicts recover D57 channels 1 and 2 to silent mode-0 count 1. Success then
 continues into the existing local-USART setup, which immediately programs D57
@@ -602,12 +610,13 @@ python3 spinoffs/jukuravi/firmware/build_d0_pit_debug_slow.py --check
 `diag-d0-d55-stress.bin` is version `0D` and isolates the unstable middle PIT.
 Its SHA-256 is
 `703514bd36ea3fb1c695b91259040571d601880f475f4562698c851ffbdfd0ce`.
-It repeats each D55 predicate 32 times, adding eight 8080 NOP cycles after
+It repeats each historical D55 predicate 32 times, adding eight 8080 NOP cycles after
 each control write, count write, and latch command.  The slow T15 report format
 is retained, but only four failure codes exist: channel 0 high, channel 1 high,
 channel 2 high, and channel 0 low.  Three long 2 kHz pulses and silence mean all
-128 reads passed.  This provides a direct comparison against T15's back-to-back
-accesses without waiting long enough for the programmed counter value to decay.
+128 reads passed. This image is retained to reproduce historical observations,
+not for new D55 diagnosis: NOP spacing does not start the missing D54/D56
+clock sources, so its four codes are invalid as D55 package/path localization.
 Build or verify it with:
 
 ```sh
@@ -628,7 +637,7 @@ using a stack or RAM and transmits a `DIAG_STATUS` fault bitmap:
 | 0 | PIC failed |
 | 1 | PPI failed |
 | 2 | D54 failed |
-| 3 | D55 failed |
+| 3 | historical D55 predicate failed (versions through T32: not valid D55 evidence) |
 | 4 | D57 failed |
 
 Only after that frame is acknowledged and transmitted does the ROM destructively
@@ -816,8 +825,8 @@ end exactly `0FFFh`) and enters it directly after the compact `83` RAM gate.
 It bypasses the unreachable full-workspace and loader-checksum tail above the
 boundary. Cosim's `JUKU_ROM_EXEC_RESET_AT=0x1000` reproduces three exact T30
 cycles, while T31 still completes READY, upload, readback, CRC, CALL/RET,
-returned A, and returned RAM under the same boundary plus the CS00015 D55
-fault. Programmer verification is the loader-ROM integrity evidence for this
+returned A, and returned RAM under the same boundary plus a historical D55-bit
+fault injection. Programmer verification is the loader-ROM integrity evidence for this
 workaround image.
 
 `diag-d0-waitclass.bin` is T32, ROM version `1B`, self-CRC16 `D62B`, SHA-256
@@ -830,14 +839,38 @@ classes. Each program stores its high address byte at RAM `4100h` and jumps to
 the proven loader entry at `0A0Ch`. A host reattachment plus the unique marker
 proves the requested upper-ROM fetch actually ran; loader recovery alone is
 not accepted as evidence. `sync/jukuravi_t32_check.sh` first guards the normal
-low-4K monitor, then executes and identifies all eight entries in cosim with
-the CS00015 D55 fault injected. It also guards the measured CS00015 D1 model:
+low-4K monitor, then executes and identifies all eight entries in cosim with a
+historical D55-bit fault injection. It also guards the measured CS00015 D1 model:
 a 16-bit increment cannot retain an already-high A12. That one rule reproduces
 PC loss at `1100h/1200h/1400h`, the lower-alias stream from `1A00h`, all-RAM
 LHLD/POP/SHLD read and write results, and successful carry across
 `0FFFh -> 1000h`. The independently observed first-fetch `5A00h:3E->00`
 remains a separate bounded historical regression. The DOS burn image and CRLF
 bench note are `dos/T32HOST.BIN` and `dos/T32INFO.TXT`.
+
+`diag-d0-clocked-pit.bin` is T34, ROM version `1C`, self-CRC16 `A637`,
+SHA-256
+`63f69281e632324083bd5e7040d19a7939936b98a4d5cb245e008ea491d45cb5`.
+It preserves T31's below-`1000h` monitor policy and exact loader end at
+`0FFFh`, but supersedes the D55 diagnostic predicate. Before testing D55 it
+starts the source-proved EKTA D54 horizontal chain without preloading D55;
+after each high and low D55 count write it waits nominally 300 us, over four
+complete 64 us worst-phase source periods, before latching and reading. Both
+DB7 polarities are required on every D55 channel, so an unclocked stale count
+cannot pass by coincidence. The result bit
+means **D55 functional path failed**. It deliberately does not claim that the
+D55 package is bad: D9 select, local bus/strobes, socket/power, D54 outputs and
+D56 clocks remain within that path. T15/T16/T31/T32 used immediate D55
+latch/read sequences without establishing these clocks and must not be used as
+package evidence. The clock-faithful negative control and fault matrix are in
+[`../../../docs/jukuravi-d55-diagnostic-audit.md`](../../../docs/jukuravi-d55-diagnostic-audit.md),
+and the DOS burn image is `dos/T34HOST.BIN`.
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_d0_clocked_pit.py
+python3 spinoffs/jukuravi/firmware/build_d0_clocked_pit.py --check
+sync/jukuravi_d55_clock_audit.sh
+```
 
 ### Upper-D15 data/fetch diagnostic snippets
 

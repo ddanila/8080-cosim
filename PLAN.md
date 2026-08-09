@@ -1,6 +1,6 @@
 # PLAN — working physical Juku recreation
 
-Status date: **2026-08-08**.
+Status date: **2026-08-09**.
 
 Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The promoted zero-open
 main-board route and deterministic Gerber/drill ZIP pass the machine package
@@ -68,7 +68,7 @@ dependency/evidence link; checkbox counting alone is not a completeness audit.
 | `MAIN-P0` | replica connectivity | BLOCKED ON OWNER EVIDENCE | execute the P0 subset of the owner measurement packet; update source and reroute only from accepted evidence | `docs/owner-measurement-shortlist.md` |
 | `MAIN-REL` | replica release | DESIGN HOLD | close `MAIN-P0`, sourcing and physical-acceptance definitions; regenerate and independently review the exact package | `docs/replica-manufacturing-readiness.md` |
 | `MAIN-BUILD` | first article | NOT AUTHORIZED | after `MAIN-REL`, order, receive, record as-built configuration, and run the staged acceptance ladder | `docs/replica-first-article-record.md` |
-| `JRV-HW` | Jukuravi harness | CS00015 RESTORED TO EK37; PHYSICAL T31/T32 VALIDATED; D1 FAULT REPAIRED; D55 OPEN | if diagnostics resume, refit verified T15/T16 media and execute the controlled D55 before/substitute/after matrix; keep optional Nano reset/liveness wiring measurement-gated | `spinoffs/jukuravi/D55-REPLACEMENT.md`; `docs/cs00015-service-record.md` |
+| `JRV-HW` | Jukuravi harness | CS00015 RESTORED TO EK37; T31/T32 TRANSPORT VALIDATED; D1 FAULT REPAIRED; OLD D55 PREDICATE INVALIDATED | if diagnostics resume, burn/verify T34 and rerun the clock-safe D55 functional-path test before deciding whether substitution is warranted; keep optional Nano reset/liveness wiring measurement-gated | `docs/jukuravi-d55-diagnostic-audit.md`; `spinoffs/jukuravi/D55-REPLACEMENT.md`; `docs/cs00015-service-record.md` |
 | `VJ-A` | VJUGA Rev A fixture | DESIGN HOLD | resolve remaining part/orientation review, full-board LVS disposition, fresh package, and independent review | `spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md` |
 | `VJ-B` | VJUGA Rev B modular set | ORDER-SAFE CLAIM; OWNER DECISION | decide whether to buy one first-article set; do not begin B2 tape-out before B1 bench evidence | `spinoffs/minimal-vga/docs/rev-b-order-readiness.md` |
 | `CVBS` | physical video/CRT model | EVIDENCE-GATED | continue only where a named main-board bring-up question requires it | `docs/crt-cvbs-simulation-plan.md` |

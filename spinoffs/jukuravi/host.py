@@ -537,7 +537,7 @@ class HostSession:
         else:
             self.banner_payload = frame.payload
         ack = protocol.encode_frame(protocol.TYPE_ACK, frame.payload)
-        if 0x11 <= rom_version <= 0x1B:
+        if 0x11 <= rom_version <= 0x1C:
             challenge = bytes((0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA))
             previous: int | None = None
             for expected in challenge:
@@ -580,7 +580,7 @@ class HostSession:
                     previous = expected
                     break
             self.encoded_host_tx = True
-            self.host_symbol_repetitions = 7 if 0x12 <= rom_version <= 0x1B else 1
+            self.host_symbol_repetitions = 7 if 0x12 <= rom_version <= 0x1C else 1
             self.solicited_host_tx = rom_version >= 0x14
             return
         if rom_version == 0x10:
@@ -846,6 +846,15 @@ class HostSession:
                     raise LoaderFrameError(status, cursor, description)
                 if frame.record_type == expected_type:
                     return frame, cursor
+                if (
+                    frame.record_type == protocol.TYPE_LOADER_V2_RESULT
+                    and expected_type != protocol.TYPE_LOADER_V2_RESULT
+                ):
+                    # DATA commands report parser/validation failures through
+                    # RESULT. Let the transaction layer correlate and retry
+                    # BAD_CRC/STRONG_CRC instead of rejecting the response
+                    # before its bounded retry policy can run.
+                    return frame, cursor
                 if frame.record_type in response_types:
                     raise SessionError(
                         f"unexpected loader response 0x{frame.record_type:02X} "
@@ -940,6 +949,12 @@ class HostSession:
                         and attempt < self.loader_retries
                     ):
                         continue
+                    if expected_type != protocol.TYPE_LOADER_V2_RESULT:
+                        raise SessionError(
+                            f"loader API v2 {description} returned "
+                            f"{loader_status_name(detail['status'])} "
+                            f"after {attempt} attempt(s)"
+                        )
                 return response, cursor, attempt
             except LoaderFrameError as error:
                 cursor = error.cursor

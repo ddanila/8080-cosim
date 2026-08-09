@@ -23,7 +23,8 @@ reconstructed here.
 ### D55 timer
 
 D55 is the middle of the three КР580ВИ53/8253 PITs and supplies vertical video
-timing.  Audible ROM diagnostics produced the following repeatable evidence:
+timing. Audible ROM diagnostics produced the following repeatable historical
+behavior:
 
 - T15 (`diag-d0-pit-debug-slow.bin`, SHA-256
   `34c110f209e7ccfffb3a261bea25b3b2e9d361eaaad57bcde638d744e8eed72a`)
@@ -37,12 +38,20 @@ timing.  Audible ROM diagnostics produced the following repeatable evidence:
   it consistently emitted failure code 3: channel 0 and channel 1 completed,
   while D55 channel 2 high-value readback failed before the channel 0 low test.
 
-The bounded diagnosis is a bad or marginal D55, strongly localized to its
-channel-2 behavior under recovery-spaced access.  It is not yet proof that the
-IC die alone is defective: replacement or substitution is required to
-distinguish the package from its local socket, solder joints, supply bypass,
-and board-level channel-2 connections.
-The controlled before/substitute/after procedure and blank evidence record are
+**Superseded diagnosis, 2026-08-09.** The exact `.009` drawing and Intel 8253
+load timing show that T15, T16, T31 and T32 did not establish the D54/D56
+clocks required to transfer their newly written Mode-0 counts into D55 before
+latching them. T16's NOP spacing delayed bus accesses but did not start those
+clock sources. The codes above remain faithful observations, but they no
+longer support “bad or marginal D55” or channel-2 package localization.
+
+CS00015 is now **D55 functional path unverified**. Run T34 first. A T34 `08`
+would still cover D55, its socket/power, D9 select, local strobes/data, D54
+output paths and D56 clocks; controlled substitution is a later package
+discriminator, not the next assumed action. Full reasoning and structural
+negative controls are in
+[`jukuravi-d55-diagnostic-audit.md`](jukuravi-d55-diagnostic-audit.md). The
+revised substitution record is
 [`../spinoffs/jukuravi/D55-REPLACEMENT.md`](../spinoffs/jukuravi/D55-REPLACEMENT.md).
 
 ### D15 upper-ROM execution timing
@@ -127,7 +136,7 @@ discriminator are unchanged.
 | Location | Finding | Confidence / next discriminator |
 | --- | --- | --- |
 | D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official EktaSoft 3.7 low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
-| D55 | КР580ВИ53/8253 PIT fails consistently in channel-2 stress testing | Strong functional localization; replace/substitute D55 and rerun T15/T16 |
+| D55 functional path | Historical T15/T16/T31/T32 bits used an unclocked 8253 predicate and are invalidated as D55 evidence | Unverified; rerun clock-safe T34 before any substitution or package claim |
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
 
 ## Serial connector measurement

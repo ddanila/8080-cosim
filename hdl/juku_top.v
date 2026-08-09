@@ -6,7 +6,12 @@
 // target. The authoritative endpoint model is kicad/juku.board.json.
 `default_nettype none
 
-module juku_top (
+module juku_top #(
+    // Opt-in cycle-faithful 8253 Mode-0 count-register -> counting-element
+    // transfer.  Historical regressions retain the earlier immediate-load
+    // abstraction; D55 diagnostic validation enables this parameter.
+    parameter integer PIT_CLOCKED_MODE0_LOAD = 0
+) (
     input  wire clk,        // board oscillator (crystal Z1 -> D59), feeds the clock subsystem
     input  wire reset_n,
     input  wire osc,        // SIM-ONLY: vm80a die-replica sampling clock (not a real КР580ВМ80А
@@ -804,15 +809,18 @@ module juku_top (
     // Its upstream physical XTAL16M source merge remains a continuity boundary.
     wire clk123m;
     wire pit_hchain, pit_vchain, pit_baud, pit_sound, hor_rtr;
-    pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+    pit_8253 #(.CLOCKED_MODE0_LOAD(PIT_CLOCKED_MODE0_LOAD)) U_PIT0
+                     (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(clk1m), .gate0(1'b1), .clk1(clk1m), .gate1(pit_hchain),
                       .clk2(clk1m), .gate2(pit_hchain),
                       .out0(pit_hchain), .out1(hor_rtr), .out2(pit_hsync_dsl));
-    pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+    pit_8253 #(.CLOCKED_MODE0_LOAD(PIT_CLOCKED_MODE0_LOAD)) U_PIT1
+                     (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(pit_hchain), .gate0(1'b1), .clk1(d56_q2_n), .gate1(pit_vchain),
                       .clk2(d56_q2_n), .gate2(pit_vchain),
                       .out0(pit_vchain), .out1(vert_rtr), .out2(pit_vert_sync_dsl));
-    pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+    pit_8253 #(.CLOCKED_MODE0_LOAD(PIT_CLOCKED_MODE0_LOAD)) U_PIT2
+                     (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(d103_q[3]), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
                       .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK0+CLK2 share 1.23M = D103.QD
                       .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = separate SYNC B boundary
