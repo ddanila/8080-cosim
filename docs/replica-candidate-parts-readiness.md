@@ -21,7 +21,7 @@ python3 scripts/report_replica_candidate_parts.py
 | Target bank identity and population match | PASS | D84-D91 are eight populated К565РУ5Г devices |
 | All populated DRAM sockets retain the JEDEC 4164 pin classes | PASS | pins 2/3/4/14/15/16 = DIN/WE/RAS/DOUT/CAS/GND; pins 5-7,9-13 = MA0-MA7 |
 | DRAM option rails preserve the required conditional +5 V configuration | PASS | E4.1=+12 V, E4.2=DRAM pin-8 rail, E4.3=+5 V; 4164 requires E4 2-3 |
-| MK4564 primary artifact and interpreted eligibility facts are pinned | PASS | Mostek MK4564-12: JEDEC 64Kx1, single +5 V, 120 ns access, 220 ns cycle, 128/2 ms refresh |
+| MK4564 primary artifact and interpreted eligibility facts are pinned | PASS | Mostek MK4564-12: JEDEC 64Kx1, single +5 V, 120 ns access, 220 ns cycle, refresh on 128 A0-A6 combinations |
 | DRAM source and routed footprints accept the dual-in-line candidate | PASS | D84-D91 use 16-pin, 7.62 mm-row, 2.54 mm-pitch DIP footprints |
 | D93 carries the complete FD1793 pin contract | PASS | all 40 host, drive, separator, status, clock, and supply pins match |
 | FD179X primary artifact and interpreted supply/clock facts are pinned | PASS | FD1793: pin20 GND, pin21 +5 V, pin40 +12 V, 1 MHz mini-drive clock |

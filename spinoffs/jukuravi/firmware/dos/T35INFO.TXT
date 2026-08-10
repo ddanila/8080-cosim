@@ -1,0 +1,35 @@
+T35HOST.BIN - HISTORICAL ONE-ROW REFRESH CHECKPOINT
+===================================================
+
+Image size: 8192 bytes
+ROM version: 1Dh
+Self CRC16: 45C4h
+SHA256: ceb55556f11318dea5ef8c36b81f931813a139ce6ba6e07b607318571c6e1274
+
+Program T35HOST.BIN at offset 0000h into an AT28C64B and verify it. Install
+it in Juku D15 and leave D16 empty. T35 retains T34's clock-safe diagnostics
+and is retained byte-exactly as physical evidence. Do not use it as the
+CS00024 refresh repair; use T36HOST.BIN.
+
+Refresh control is enabled by default and fail-safe, but the low-ROM routine
+increments CPU H. Juku presents CPU A0..A6 during RAS, so T35 repeats physical
+row 00 rather than sweeping 128 refresh-relevant rows while waiting for receive-ready or transmit-ready
+and during transmit drain. The loader boots with one physical vote per bit,
+advertises API-v2 capabilities 7FFFh, and provides cooperative CALL 07A9h.
+That call preserves BC, DE, HL, and SP; it clobbers A and flags.
+
+At CS00024's measured effective RAM-loop rate, one call takes about 1.2339 ms,
+but repeating it cannot retain the other 127 physical rows. The number is not
+a direct CPU-clock measurement.
+
+Normal cold host operation uses --loader-refresh auto, which queries refresh
+state and repairs an unexpected disabled state. A later no-RESET attach must
+specify --loader-bootstrap-votes 1. Explicit query, enable, disable, and
+reset-counter operations are available through --loader-refresh. Disable is
+only for deliberate destructive retention experiments: only exact RAM bytes
+5A A5 3C disable, while reset, RESYNC, idle recovery, transport failure, torn
+writes, and every other value remain refresh-on.
+
+The exact T35 artifact was programmed and initially survived a long attach,
+but a six-second row-lane capture showed structured decay across all D84-D91
+lanes and eventually lost the loader. It is a negative-control artifact.

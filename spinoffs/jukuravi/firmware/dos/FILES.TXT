@@ -38,6 +38,10 @@ T28HOST.BIN   diag-d0-buffer-verified.bin          burn-once host CALL/RET monit
 T29HOST.BIN   diag-d0-host-recover.bin             bounded UART recovery + markers
 T30HOST.BIN   diag-d0-txready.bin                  ignores unreliable runtime TxEMPTY
 T31HOST.BIN   diag-d0-low4k.bin                    monitor execution ends at 0FFFh
+T32HOST.BIN   diag-d0-waitclass.bin                eight upper-ROM wait-class probes
+T34HOST.BIN   diag-d0-clocked-pit.bin              clock-safe D55 test
+T35HOST.BIN   diag-d0-refresh.bin                  historical one-row refresh attempt
+T36HOST.BIN   diag-d0-row-refresh.bin              physical MA0..MA6 refresh
 
 T18 requires the external adapter disconnected and these X3 jumpers fitted:
 X3.9-X3.4 (SOUT-SIN) and X3.10-X3.5 (RTS-CTS).  After the initial happy
@@ -130,6 +134,24 @@ is 0FFFh and enters it directly after status 83. It bypasses the unreachable
 full-workspace/checksum tail; programmer verification supplies ROM-integrity
 evidence. Simulation reproduces T30's banner/08/83/reset loop at 100Ch, while
 T31 completes upload and CALL/RET under the same forced boundary and D55 fault.
+
+T32 is ROM version 1B. It retains T31's normal low-4K path and adds eight
+deliberate upper-ROM wait-class entries for host-driven A12/READY isolation.
+Those entries are diagnostic probes, not part of the normal loader path. See
+T32INFO.TXT for their addresses and expected markers.
+
+T34 is ROM version 1C. It retains T31's low-4K loader and replaces the old D55
+assumption with the clock-safe PIT test proved against the drawings, standard
+Juku PIT programming, HDL, and fault simulation. T34 is the exact image used
+to characterize CS00024's idle RAM/refresh failure.
+
+T35 is ROM version 1D. It is retained as the exact physical checkpoint, but its
+INR H loop refreshes physical row 00 repeatedly, not all rows. Do not program
+it as the CS00024 refresh repair. See T35INFO.TXT.
+
+T36 is ROM version 1E. It retains T35's one-vote fail-safe loader and changes
+CALL 07A9h to read 4000h..407Fh, covering physical MA0..MA6 once per sweep.
+See T36INFO.TXT before programming or running uploaded code.
 
 Suggested chip labels use the filename without .BIN, for example T01ALIVE.
 Blank-check, program, verify, remove/reinsert, and read/compare every chip.

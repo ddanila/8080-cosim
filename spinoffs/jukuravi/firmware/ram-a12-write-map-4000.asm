@@ -85,6 +85,18 @@ start:
     db 0D3h, 006h           ; all RAM
     db 000h, 000h
 
+    ; Establish an explicit baseline. Untouched DRAM power-up contents are not
+    ; an oracle, especially after a board has already crossed its retention
+    ; interval. Absolute STA writes keep setup independent of STAX/INX.
+    WRITE4 00A00h, 000h
+    WRITE4 00A01h, 000h
+    WRITE4 01A00h, 000h
+    WRITE4 01A01h, 000h
+    WRITE4 0CA00h, 000h
+    WRITE4 0CA01h, 000h
+    WRITE4 0DA00h, 000h
+    WRITE4 0DA01h, 000h
+
     ; Group 0A/1A: lower page first, upper page second.
     READ_MAP 00A00h, 01A00h, 008h
     WRITE4 00A00h, 010h

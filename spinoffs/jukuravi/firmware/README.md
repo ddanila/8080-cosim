@@ -1,8 +1,8 @@
 # Jukuravi diagnostic firmware
 
-Status date: 2026-07-23.
+Status date: 2026-08-10.
 
-Status: **D0 RUNGS 1–5E + D2 LOADER CORE GUARDED IN COSIM**
+Status: **T36 PHYSICAL-ROW REFRESH PHYSICAL EVIDENCE + HISTORICAL D0/D2 LADDER**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
@@ -22,6 +22,10 @@ PIC, PPI, and all PIT channels, then jumps directly to the two-window audible
 RAM fallback without touching the 8251 or requiring CTS.
 `diag-d0-pit-debug.bin` replaces the generic PIT-failure tone with an audible
 number for the first failed counter/readback checkpoint.
+`diag-d0-row-refresh.bin` / DOS `T36HOST.BIN` is the CS00024 successor: it
+retains T34's clock-safe D55 test and corrects the fail-safe refresh sweep to
+the physical MA0..MA6 row inputs. T35 is retained byte-exactly as the
+physically falsified high-byte-sweep checkpoint.
 
 SHA256:
 
@@ -40,6 +44,8 @@ d77c4a381440ed9166a24762b303c8ec0407e6d00c480a151a23c807234d7dd7  diag-d0-frameb
 5396f33244bfac5eae25404958afdcc4c0aac8a06255f7b11e20d2f0bcb0bedf  diag-d2-loader.bin
 df553334c23a4167b5372f1d9c69d91af0a160c67cdf13b1f4fafab9267a8922  diag-d0-noserial.bin
 ea52ef2cd3b56727d9c2d2d39cce2442e5faa247ccbb88fb51e91d10978ac22c  diag-d0-pit-debug.bin
+ceb55556f11318dea5ef8c36b81f931813a139ce6ba6e07b607318571c6e1274  diag-d0-refresh.bin
+32264641836ce914a0fc706c916e2847d542d83b05d6737f1d6272b76d78dedb  diag-d0-row-refresh.bin
 ```
 
 ## Build and guard
@@ -59,7 +65,11 @@ python3 spinoffs/jukuravi/firmware/build_d0_framebuffer.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_noserial.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_pit_debug.py --check
 python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_refresh.py --check
+python3 spinoffs/jukuravi/firmware/build_d0_row_refresh.py --check
 sync/jukuravi_d0_check.sh
+sync/jukuravi_t35_check.sh
+sync/jukuravi_t36_check.sh
 ```
 
 The builders are the sources of truth and deterministically emit the committed
@@ -872,6 +882,23 @@ python3 spinoffs/jukuravi/firmware/build_d0_clocked_pit.py --check
 sync/jukuravi_d55_clock_audit.sh
 ```
 
+The T34 one-session host batch adds two RAM-resident measurements without
+changing the burned image. `cpu-host-timebase-4000.asm` provides matched short
+and long CALL entries separated by exactly 1,200,000 nominal 8080 T-states.
+The host subtracts their RUN-ack-to-RETURN intervals to obtain effective CPU
+MHz, including physical READY waits, without touching any peripheral.
+`d57-raw-4000.asm` returns eight high/low DB7 samples from each D57 channel and
+leaves channel-0 serial restoration to loader API v2's post-RET contract. It
+restores channels 1 and 2 itself. D57 sampling runs last: if a faulty D57 loses
+the serial clock while being reprogrammed, the non-invasive CPU/RAM and parser
+evidence is already durable. Both snippets execute from low-A12 loader RAM,
+return ordinarily on a clean board, and are assembled into a temporary
+directory by `spinoffs/jukuravi/batch.py`; no additional diagnostic ROM burn is
+required. `cpu-pit-ratio-4000.asm` remains an experimental direct CPU/PIT ratio
+probe, but is intentionally excluded from the physical batch because it can
+disrupt transport on a board that has already reported D57. The complete
+host/PTTY regression is `sync/jukuravi_t34_batch_check.sh`.
+
 ### Upper-D15 data/fetch diagnostic snippets
 
 The `rom-a12-4000.*`, `rom-read-*`, `rom-read-pair-4000.asm`,
@@ -1013,3 +1040,62 @@ session CLI,
 DTR-commanded session
 restart, bounded missing-banner retry, Nano serial bridge, and isolated startup
 reset/hold are guarded separately in the parent directory.
+
+## T35 finding and T36 physical-row correction
+
+T35 (`1D/45C4`, SHA256
+`ceb55556f11318dea5ef8c36b81f931813a139ce6ba6e07b607318571c6e1274`)
+is retained byte-exactly because it produced the decisive physical evidence.
+Its `MOV A,M / INR H` loop reads `4000h,4100h,...,BF00h`. The Juku drawings
+show D48/D49 presenting CPU A0..A7 during the populated-bank RAS phase, while
+the MK4564 contract refreshes MA0..MA6 and ignores MA7. T35 therefore refreshes
+physical row `00` 128 times; it does not refresh 128 rows.
+
+The six-second `4D00h` lane capture falsified the earlier T35 interpretation:
+offset zero survived, other low-address rows decayed in structured blocks, all
+eight D84..D91 lanes participated, and the loader eventually stopped. T35's
+earlier long idle reattach only proved that frequently accessed loader state
+could survive; it was not an all-row refresh proof.
+
+T36 is `diag-d0-row-refresh.bin` / `dos/T36HOST.BIN`, version `1E`, CRC16
+`C617`, SHA256
+`32264641836ce914a0fc706c916e2847d542d83b05d6737f1d6272b76d78dedb`.
+It changes the four increment opcodes to `INR L`, so the exact public entry
+`07A9h` reads `4000h..407Fh` and visits every physical MA0..MA6 row once.
+The routine remains 2,115 nominal T-states, preserves BC/DE/HL/SP, clobbers A
+and flags, and retains the fail-safe loader policy and one-vote bootstrap.
+
+Host command `2Ah`, the exact three-byte disable signature, RESYNC recovery,
+and the cooperative-call rule are unchanged. The approximately 1.7 MHz number
+is effective RAM-loop throughput including READY waits, not a direct CPU or
+crystal measurement. Using it conservatively, one T36 sweep is approximately
+1.234 ms and cooperative code should begin another `CALL 07A9h` within 2 ms;
+non-cooperative or crashed uploaded code remains unsafe.
+
+`tests/jukuravi_refresh_row_address_test.py` pins the drawing endpoints, local
+MK4564 requirement, exact T35 artifact, and T35-one-row/T36-128-row split.
+`tests/jukuravi_t36_refresh_test.py` runs T36 through the real host/PTTY path
+with the corrected low-seven-bit decay model, a 1,025-byte upload, idle
+reattach, all refresh controls, and torn-disable injection. Exact T35, armed at
+the same `07A9h` entry, is the negative control and decays without ever
+covering all 128 rows. The simulator can delay retention until that entry with
+`JUKU_DRAM_RETENTION_ARM_PC=07A9`; this explicitly excludes boot-video refresh
+traffic that the flat model does not implement.
+
+The physical 2026-08-10 T36 run passed the complete boot bitmap, verified
+CALL/RET, all uploaded CPU/address probes, and a 1.702797 MHz effective
+RAM-loop measurement. A wire-forensic zero fill completed all 1,024 32-byte
+LOAD/readback pairs over `4000h..BFFFh` with no store retry or duplicate
+result frame. Its delayed post-hold
+read was operator-stopped after 1,728 matching bytes (`4000h..46BFh`), already
+covering every MA0..MA6 row 13--14 times; it is positive partial evidence, not
+a claim that the unobserved suffix passed.
+
+`local_ram.py` replaces that many-hour transport pattern for routine work. It
+builds 792-byte probes at complementary `4000h` and `B000h` code homes, calls
+the unchanged T36 `07A9h` API every 128 tested bytes, and covers the union
+`4000h..BFFFh` with zero, one, checkerboard, and address-XOR patterns. The
+decay-enabled host/PTTY regression proves all four patterns and both locations;
+no ROM byte or public ABI changed. A second simulated run injects DB0 stuck low
+at `6000h` and the compact results identify only D84, in both overlapping
+stages and in exactly the patterns whose expected byte has DB0 set.

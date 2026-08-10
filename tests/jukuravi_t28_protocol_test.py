@@ -44,14 +44,14 @@ def main() -> int:
             record_type, 0xA5, 0xBFE0, protocol.LOADER_V2_MAX_DATA
         )
         transaction, body = protocol.validate_loader_v2_command(decode_one(command))
-        if transaction != 0xA5 or body != b"\xBF\xE0\x20":
+        if transaction != 0xA5 or body != b"\xbf\xe0\x20":
             fail(f"range command 0x{record_type:02X} differs")
 
     run = protocol.encode_loader_v2_run(
         0x17, 0x4567, protocol.LOADER_V2_RUN_CALL, 0x89ABCDEF
     )
     transaction, body = protocol.validate_loader_v2_command(decode_one(run))
-    if transaction != 0x17 or body != b"\x45\x67\x00\x89\xAB\xCD\xEF":
+    if transaction != 0x17 or body != b"\x45\x67\x00\x89\xab\xcd\xef":
         fail("replay-safe RUN command differs")
     required_caps = (
         protocol.LOADER_V2_CAP_CALL_RETURN
@@ -61,6 +61,23 @@ def main() -> int:
     )
     if protocol.LOADER_V2_CAPABILITIES & required_caps != required_caps:
         fail("recoverability capabilities are not advertised")
+    refresh_command = protocol.encode_loader_v2_command(
+        protocol.TYPE_LOADER_V2_REFRESH,
+        0x35,
+        bytes((protocol.LOADER_V2_REFRESH_QUERY,)),
+    )
+    refresh_frame = decode_one(refresh_command)
+    refresh_tx, refresh_body = protocol.validate_loader_v2_command(refresh_frame)
+    if (
+        refresh_tx != 0x35
+        or refresh_body != bytes((protocol.LOADER_V2_REFRESH_QUERY,))
+        or protocol.LOADER_V2_T35_CAPABILITIES
+        != protocol.LOADER_V2_CAPABILITIES | protocol.LOADER_V2_CAP_REFRESH
+        or protocol.LOADER_V2_T36_CAPABILITIES != protocol.LOADER_V2_T35_CAPABILITIES
+        or protocol.LOADER_V2_T36_BOOT_VOTES != 1
+        or protocol.LOADER_V2_T36_REFRESH_ROW_START != 0
+    ):
+        fail("T35/T36 refresh command/capability did not round-trip")
 
     # Change one protected byte, then repair only the outer CRC-8.  This is
     # the exact class of corruption T26 could accept when its parser-buffer
@@ -78,8 +95,8 @@ def main() -> int:
         fail("inner corruption survived repaired outer CRC-8")
 
     demux = host.LoaderRequestDemux()
-    framed_tokens = protocol.encode_frame(0xB1, b"\xC6\xC7\x55\xAA")
-    mixed = b"\xC6" + framed_tokens + b"\xC7"
+    framed_tokens = protocol.encode_frame(0xB1, b"\xc6\xc7\x55\xaa")
+    mixed = b"\xc6" + framed_tokens + b"\xc7"
     requests: list[int] = []
     for split in (mixed[:4], mixed[4:9], mixed[9:]):
         requests.extend(demux.feed(split))
@@ -92,8 +109,7 @@ def main() -> int:
     # rejecting RESULT as the wrong response type before retry policy runs.
     strong_crc = protocol.Frame(
         protocol.TYPE_LOADER_V2_RESULT,
-        bytes((0x42, protocol.LOADER_STATUS_STRONG_CRC, 0x37, 0x3F,
-               0, 0, 0, 0, 0, 0)),
+        bytes((0x42, protocol.LOADER_STATUS_STRONG_CRC, 0x37, 0x3F, 0, 0, 0, 0, 0, 0)),
     )
     wait_session = object.__new__(host.HostSession)
     wait_session.solicited_host_tx = False
@@ -107,8 +123,17 @@ def main() -> int:
 
     data_ok = protocol.Frame(
         protocol.TYPE_LOADER_V2_DATA,
-        bytes((0x42, protocol.LOADER_STATUS_OK, protocol.TYPE_LOADER_V2_PROBE,
-               0, 0, 1, 0x58)),
+        bytes(
+            (
+                0x42,
+                protocol.LOADER_STATUS_OK,
+                protocol.TYPE_LOADER_V2_PROBE,
+                0,
+                0,
+                1,
+                0x58,
+            )
+        ),
     )
     retry_session = object.__new__(host.HostSession)
     retry_session.loader_retries = 3
@@ -126,7 +151,12 @@ def main() -> int:
     response, cursor, attempts = retry_session._loader_v2_transact(
         command, 0x42, protocol.TYPE_LOADER_V2_DATA, 0, 0.1, "injected PROBE"
     )
-    if response is not data_ok or cursor != 2 or attempts != 2 or sent != [command, command]:
+    if (
+        response is not data_ok
+        or cursor != 2
+        or attempts != 2
+        or sent != [command, command]
+    ):
         fail("strong-CRC DATA retry was not identical and bounded")
 
     print(

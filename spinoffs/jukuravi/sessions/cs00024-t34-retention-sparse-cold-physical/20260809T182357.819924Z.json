@@ -1,0 +1,296 @@
+{
+  "attempts": [
+    {
+      "banner_seen": true,
+      "decoded_frames": 11,
+      "dtr_sequence_completed": false,
+      "error": "timeout waiting for CONFIG response attempt 3",
+      "loader": {
+        "address": "0x4D00",
+        "bytes": 32,
+        "chunks": [
+          {
+            "address": "0x4D00",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "B741",
+            "index": 0,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 7.368844,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 2,
+            "verified": true
+          }
+        ],
+        "config": {
+          "attempts": 1,
+          "order": "before_probe",
+          "transaction": 0,
+          "votes": 1
+        },
+        "end_exclusive": "0x4D20",
+        "error": null,
+        "heartbeat": null,
+        "probe": {
+          "attempts": 1,
+          "cookie_hex": "5432380055AAC6C7",
+          "transaction": 1
+        },
+        "ready": {
+          "api_base": "0x0A00",
+          "api_version": 2,
+          "capabilities": "0x3FFF",
+          "default_votes": 7,
+          "effective_chunk_bytes": 32,
+          "guard_ms": 6.0,
+          "load_end_exclusive": "0xC000",
+          "load_min": "0x4000",
+          "max_data_bytes": 32,
+          "readback": true,
+          "resume": false,
+          "retry_limit": 3,
+          "stack_top": "0xD000",
+          "workspace": "0xC000"
+        },
+        "requested": true,
+        "run": {
+          "acknowledged": false,
+          "address": null,
+          "requested": false
+        },
+        "sha256": "d437ccc81a9f57a8e3afc2b8dfe9fd9702e34c008da3f5b839e134b651d06b6c",
+        "source": "<retention-marker>",
+        "status": "loaded"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "error",
+      "received_bytes": 2087,
+      "transmitted_bytes": 1566
+    }
+  ],
+  "diagnostic_status": {
+    "d54": true,
+    "d55": true,
+    "d57": false,
+    "peripheral_fault_mask_hex": "10",
+    "pic": true,
+    "ppi": true,
+    "ram_4000": true,
+    "ram_c000": true
+  },
+  "error": "timeout waiting for CONFIG response attempt 3",
+  "finished_utc": "2026-08-09T18:31:17.303417Z",
+  "frames": [
+    {
+      "payload_hex": "011CA637",
+      "type": "0x01"
+    },
+    {
+      "payload_hex": "10",
+      "type": "0x50"
+    },
+    {
+      "payload_hex": "83",
+      "type": "0x50"
+    },
+    {
+      "payload_hex": "02200A003FFF40C0C0D007",
+      "type": "0xA3"
+    },
+    {
+      "payload_hex": "00002404000001000020",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0100230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "020025254D0020B74100",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0300264D002000FF55AA966969963CC3C33C0FF0F00F0123456789ABCDEFFEDCBA9876543210",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "00002404000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0100230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0200264D002000FF55AA966969963CC3C33C0FF0F00F0123456789ABCDEFFEDCBA9876543210",
+      "type": "0xB1"
+    }
+  ],
+  "host_transport": {
+    "config_first": true,
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": {
+    "crc16": "A637",
+    "protocol_version": 1,
+    "rom_version": 28
+  },
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x4D00",
+    "bytes": 32,
+    "chunks": [
+      {
+        "address": "0x4D00",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "B741",
+        "index": 0,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 7.368844,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 1,
+      "order": "before_probe",
+      "transaction": 0,
+      "votes": 1
+    },
+    "end_exclusive": "0x4D20",
+    "error": null,
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 1
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": true,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": false,
+      "address": null,
+      "requested": false
+    },
+    "sha256": "d437ccc81a9f57a8e3afc2b8dfe9fd9702e34c008da3f5b839e134b651d06b6c",
+    "source": "<retention-marker>",
+    "status": "loaded"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 2087,
+  "retention": {
+    "address": "0x4D00",
+    "marker_hex": "00FF55AA966969963CC3C33C0FF0F00F0123456789ABCDEFFEDCBA9876543210",
+    "samples": [
+      {
+        "differing_bytes": [],
+        "expected_hex": "00FF55AA966969963CC3C33C0FF0F00F0123456789ABCDEFFEDCBA9876543210",
+        "observed_age_seconds": 5.158179,
+        "observed_hex": "00FF55AA966969963CC3C33C0FF0F00F0123456789ABCDEFFEDCBA9876543210",
+        "operation": {
+          "address": "0x4000",
+          "bytes": 0,
+          "chunks": [],
+          "config": {
+            "attempts": 1,
+            "order": "before_probe",
+            "transaction": 0,
+            "votes": 1
+          },
+          "control_read": {
+            "address": "0x4D00",
+            "bytes": 32,
+            "hex": "00FF55AA966969963CC3C33C0FF0F00F0123456789ABCDEFFEDCBA9876543210",
+            "reads": [
+              {
+                "address": "0x4D00",
+                "attempts": 1,
+                "bytes": 32,
+                "transaction": 2
+              }
+            ]
+          },
+          "end_exclusive": "0x4000",
+          "error": null,
+          "heartbeat": null,
+          "probe": {
+            "attempts": 1,
+            "cookie_hex": "5432380055AAC6C7",
+            "transaction": 1
+          },
+          "ready": {
+            "api_base": "0x0A00",
+            "api_version": 2,
+            "capabilities": "0x3FFF",
+            "default_votes": 7,
+            "effective_chunk_bytes": 32,
+            "guard_ms": 6.0,
+            "load_end_exclusive": "0xC000",
+            "load_min": "0x4000",
+            "max_data_bytes": 32,
+            "readback": true,
+            "resume": false,
+            "retry_limit": 3,
+            "stack_top": "0xD000",
+            "workspace": "0xC000"
+          },
+          "requested": true,
+          "resident": true,
+          "run": {
+            "acknowledged": false,
+            "address": null,
+            "requested": false
+          },
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "source": "<retention-read:0s>",
+          "status": "control_complete"
+        },
+        "target_age_seconds": 0.0,
+        "verdict": "pass"
+      }
+    ]
+  },
+  "rx_log": "20260809T182357.819924Z.rx.bin",
+  "started_utc": "2026-08-09T18:23:57.819924Z",
+  "status": "error",
+  "transmitted_bytes": 1566,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260809T182357.819924Z.tx.bin"
+}

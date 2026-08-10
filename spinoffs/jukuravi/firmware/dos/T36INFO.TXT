@@ -1,0 +1,34 @@
+T36HOST.BIN - JUKURAVI PHYSICAL-ROW REFRESH HOST MONITOR
+======================================================
+
+Image size: 8192 bytes
+ROM version: 1Eh
+Self CRC16: C617h
+SHA256: 32264641836ce914a0fc706c916e2847d542d83b05d6737f1d6272b76d78dedb
+
+Program T36HOST.BIN at offset 0000h into an AT28C64B and verify it. Install
+it in Juku D15 and leave D16 empty. T36 retains T34's clock-safe diagnostics
+and T35's one-vote fail-safe loader policy.
+
+The public cooperative entry is CALL 07A9h. It preserves BC, DE, HL, and SP;
+A and flags are scratch. One enabled call reads CPU addresses 4000h..407Fh.
+The Juku drawings route CPU A0..A6 to physical DRAM MA0..MA6 during RAS, and
+MK4564-class 128-cycle refresh ignores MA7, so this visits all 128 rows.
+
+The routine is 2,115 nominal 8080 T-states. At CS00024's measured effective
+RAM-loop rate it is approximately 1.234 ms. That rate includes READY waits and
+is not a direct CPU-clock measurement. Cooperative uploaded code must begin
+consecutive CALL 07A9h sweeps within the 2 ms DRAM refresh interval.
+
+Normal cold host operation uses --loader-refresh auto. Query, enable, disable,
+and reset-counter remain available. Disable is only for destructive retention
+experiments; torn state, RESET, RESYNC, and recovery remain refresh-on.
+
+Before burning, verify SHA256.TXT and use the programmer's normal single
+program/verify cycle. T36 passes corrected low-seven-bit row-decay simulation,
+long verified upload, idle reattach, public-call ABI checks, all refresh
+controls, torn-disable injection, and exact-T35 one-row negative control.
+On CS00024 the exact image passed the complete boot bitmap, every uploaded
+CPU/address probe, a full 32 KiB zero LOAD/readback, and the captured 1,728-byte
+post-hold prefix spanning all physical rows. Use the host's local full-RAM
+sweep for the remaining four-pattern physical proof.

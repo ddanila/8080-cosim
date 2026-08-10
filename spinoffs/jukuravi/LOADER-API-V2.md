@@ -1,7 +1,9 @@
 # Jukuravi loader API v2
 
-The current T31 ROM implements this API. It was introduced by T28 and retained
-through T31; those names identify ROM revisions, not different loader APIs.
+T28 introduced this API; T31/T34 retain its original capability set, T35
+adds a compatible refresh command/capability, and T36 corrects its physical
+row sweep. These names identify ROM
+revisions, not different loader API versions.
 The normal cycle is:
 
 1. the host writes code and input data to RAM;
@@ -24,6 +26,7 @@ normal command execution.
 | `0A03` | `SERIAL_PUT`: transmit A, then return |
 | `0A06` | emergency loader re-entry; resets SP/transport and emits READY |
 | `0A09` | `PRINT`: transmit the zero-terminated string at HL |
+| `07A9` | T35/T36 `REFRESH`: preserve BC/DE/HL/SP; clobber A/flags |
 | `4000..BFFF` | host LOAD/READ/CRC/RUN window |
 | `C000..CFFF` | loader parser, state, scratch, and downward-growing stack |
 | `D000` | loader stack top (first push writes below this address) |
@@ -50,8 +53,9 @@ preserve returned A and is not the normal completion mechanism.
 The fixed Juku-side link is asynchronous 8N1 at approximately 2400 baud. The ROM
 solicits every physical host-to-ROM symbol with alternating `C6`/`C7` request
 tokens. A logical bit is represented by an odd, host-configurable number of
-`55`/`AA` votes (`55` = 0, `AA` = 1); the boot default is seven votes. Invalid
-physical values are discarded without consuming a vote.
+`55`/`AA` votes (`55` = 0, `AA` = 1). T28–T34 boot with seven votes; T35/T36 boot
+with one to minimize the elapsed-time/parser exposure found on CS00024.
+Invalid physical values are discarded without consuming a vote.
 
 All logical records use:
 
@@ -76,6 +80,7 @@ addresses, CRCs, and execution IDs are big-endian.
 | `27` CRC | address, count in `1..32` |
 | `28` RUN | address, mode, 32-bit execution ID |
 | `29` RESYNC | empty |
+| `2A` REFRESH | operation: `00` query, `01` enable, `02` disable, `03` reset counter |
 
 RUN mode `00` is CALL/RET. Mode `01` is a one-way `PCHL` for a resident monitor
 or operating program that is not expected to return to the loader.
@@ -96,7 +101,8 @@ workspace failure.
 
 ## Retry and reconnection rules
 
-PROBE, CONFIG, LOAD, READ, CRC, and RESYNC are idempotent. The host retries a
+PROBE, CONFIG, LOAD, READ, CRC, RESYNC, and all REFRESH operations are
+idempotent. The host retries a
 complete command with the same transaction and independently verifies written
 bytes. LOAD retries are safe because the same bytes target the same addresses.
 
@@ -107,8 +113,9 @@ damaged or lost acknowledgement/RETURN recoverable even for non-idempotent
 snippets. A genuinely new invocation must use a new execution ID.
 
 If the host disappears while the loader is receiving, eight bounded idle receive
-periods discard the partial parser, restore the seven-vote default, reset the
-stack, and return to frame sync. A new host process can then attach without
+periods discard the partial parser, restore that ROM's boot-vote default,
+reset the stack, and return to frame sync. T35/T36 also invalidate the exact
+disable signature, so recovery is refresh-on. A new host can attach without
 RESET, issue RESYNC, inspect retained RAM, resume an interrupted upload, or call
 already-resident code.
 
@@ -132,6 +139,10 @@ python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 --attach-loader \
 # Attach only to inspect retained RAM.
 python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 --attach-loader \
   --probe-loader --read-address 4100 --read-length 16
+
+# T35/T36 attach: their resident bootstrap width is one vote.
+python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 --attach-loader \
+  --loader-bootstrap-votes 1 --probe-loader --loader-refresh query
 ```
 
 The host defaults match the proven CS00015 path: a direct CP2102 -> MAX3232 ->
@@ -140,6 +151,22 @@ If another link is marginal, increase `--loader-guard-ms` first, then select an
 odd majority with `--loader-votes 3`, `5`, or `7`. CRC-protected whole-command
 retries remain enabled independently. A bridge whose USB side uses another
 rate must set `--baud` explicitly.
+
+That advice applies to an electrically marginal cable. It is the wrong
+direction for a proven destructive elapsed-time/RAM boundary: warm CS00024
+repeated CONFIG `strong_crc` at the 6 ms guard, while guard 0 completed the same
+bootstrap and exact marker read. Minimize guard and vote count when shortening
+the command is the experiment; do not describe that as improved signal
+integrity.
+
+`--loader-config-first` is the explicit T28–T34 CS00024 recovery policy. Those
+loaders start at seven votes either way; the option sends the shorter CONFIG
+frame first, switches both peers to the requested width, and only then sends
+the exact-cookie PROBE. Normal PROBE-first ordering remains the default. This
+policy is appropriate only when short seven-vote commands are proven but a
+longer bootstrap command crosses a parser-retention/timing boundary. CONFIG is
+idempotent, and the subsequent PROBE remains mandatory evidence rather than
+being skipped.
 
 T31 also permits transport benchmarking without a ROM rebuild. This example
 configures the resident monitor once, then repeats a 29-byte idempotent LOAD and
@@ -171,3 +198,37 @@ the reserved loader workspace, or otherwise never reaches the ROM. Those are
 explicit crash cases. Transport loss, a restarted host, a partial upload,
 corrupt commands, failed RAM stores, lost responses, and completed snippets do
 not normally require RESET.
+
+CS00024 adds one hardware-specific exception: an unrefreshed mutable loader
+workspace can decay while the ROM remains alive enough to emit transport
+requests. Reattach then cannot reconstruct corrupt `C000h` state. Its exact
+same-process retention evidence and refresh-capable successor-ROM requirement
+are in [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md).
+
+## T35/T36 refresh extension
+
+T35 and T36 advertise capability bit `4000h`, total capabilities `7FFFh`, boot votes
+`01`, and command `2Ah`. Its nine DATA bytes are: extension version, effective
+enabled flag, policy flags, row start, row count, public API high/low, and
+16-bit receive-poll refresh-call counter high/low. Version is `01`; policy flags are `07`; row
+geometry is start `40h`, count `80h` on historical T35 and start `00h`, count
+`80h` on T36; the public call is `07A9h`. Row start describes the CPU address
+sweep; it does not mean T35's high byte reached physical DRAM row inputs.
+
+The T36 enabled call reads all 128 MK4564/К565РУ5 physical refresh rows in
+2,115 nominal T-states (1.2339 ms at CS00024's measured 1.714065 MHz effective
+RAM-loop rate). T35 has the same timing but increments CPU H and therefore
+repeats physical row zero. T35/T36 invoke it in
+blocking RX/Tx waits and its Tx-drain delay. A long uploaded CALL-mode snippet
+must start consecutive `CALL 07A9h` sweeps no more than 2 ms apart. At the
+measured CS00024 rate this leaves about 0.7 ms of non-refresh work between the
+1.2339 ms calls. Arbitrary RUN code is not preempted and cannot be made safe by
+host configuration.
+
+Refresh is fail-safe. Only exact RAM signature `5A A5 3C` disables it; every
+other value enables it. RESYNC, idle reset, and transport recovery invalidate
+the signature. `--loader-refresh auto` (the host default) queries the refresh-capable ROM and
+repairs an unexpected disabled state. `disable` is intentionally available for
+retention experiments, may make the loader unrecoverable until hardware RESET,
+and must never be treated as a normal operating mode. The host verifies the
+reported transition and rejects a torn disable.

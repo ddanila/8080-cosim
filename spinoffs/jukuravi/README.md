@@ -1,9 +1,10 @@
 # Jukuravi diagnostic ROM and host
 
 Jukuravi is a diagnostic and recovery environment for the original Juku
-`.009` processor board. The T31 ROM tests the board, exposes loader API v2 over
-the onboard 8251, and remains resident while the host uploads and calls 8080
-snippets in RAM.
+`.009` processor board. T31 is the stable CS00015 service image; T36 is the
+physically booted physical-row refresh image for CS00024. Both expose loader API v2
+over the onboard 8251 and remain resident while the host uploads and calls
+8080 snippets.
 
 The physical reference system is Arvutimuuseum board `CS00015`. Its validated
 T31 transport run, historical D55 bitmap, transport benchmark, upper-D15
@@ -155,6 +156,146 @@ majority can then be selected with `--loader-votes 3`, `5`, or `7`. The host
 records timestamp-matched raw RX, raw TX, and decoded JSON for every session.
 Run `python3 spinoffs/jukuravi/host.py --help` for the complete parameter set.
 
+CS00024 exposed a different boundary: its short seven-vote CONFIG command
+passes, while its longer seven-vote bootstrap PROBE reproducibly crosses a
+strong-CRC boundary involving the `C000h` parser state. The explicit
+`--loader-config-first` policy sends CONFIG before PROBE and then uses the
+requested one-vote width. It is not the default and must not be used to hide a
+failed exact-cookie PROBE; the PROBE still runs immediately after CONFIG and
+must echo all eight bytes exactly.
+
+### One-session T34/T35/T36 batch
+
+[`batch.py`](batch.py) is the CS00024 full host-driven workflow. `--rom t34`
+pins exact T34 `1C/A637` and performs the short CONFIG-first transition to one
+vote. `--rom t35` pins historical T35 `1D/45C4`; `--rom t36` pins corrected
+T36 `1E/C617`. Both use a native one-vote bootstrap and refresh-aware targets.
+All profiles keep the same loader session and serial
+descriptor open for:
+
+- verified upload, exact readback, CALL/RET and returned-result control;
+- a paired host-timed CPU loop that measures effective CPU MHz without I/O;
+- clean-result oracles for write-map, LHLD, POP/SHLD, READY-class, boundary,
+  and direct INX/DAD probes;
+- independent `4000h`/`5000h` data retention and execution; and
+- a one-vote parser-aging sweep at 6/12/24/36 ms per physical symbol, with a
+  short CONFIG recovery after every point; and
+- as the deliberately final operation, eight raw high/low samples from every
+  D57 channel, with serial restoration.
+
+Start the runner before resetting the board:
+
+```sh
+python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 \
+  --rom t36 --local-full-ram-sweep --local-full-ram-hold-ms 6000 \
+  --log-dir spinoffs/jukuravi/sessions/cs00024-t36-local-full-physical
+```
+
+Wait for `press RESET once`, then press RESET exactly once. The run overwrites
+volatile diagnostic RAM. The local sweep uploads a 792-byte cooperative probe
+at `4000h` to test `5000h..BFFFh`, then relocates it to `B000h` to test
+`4000h..AFFFh`. Their union is all 32 KiB, including both code homes; each
+fill and verify calls T36 refresh every 128 bytes and returns compact mismatch,
+XOR-mask, first-address, and D84..D91 candidate evidence. It does not touch
+EEPROM or persistent media. Do not run it when unsaved RAM contents matter.
+T32-only upper-ROM wait-class entries are deliberately excluded because T34
+does not contain them. Use `--no-retention-sweep` only when the parser-aging
+characterization is not wanted.
+
+`--full-ram-sweep` retains the original wire-forensic method: every 32-byte
+LOAD receives an independent READ verification, followed by a second complete
+READ after the hold. At 2400 baud its bit-symbol transport takes on the order
+of 16 hours for four 32 KiB patterns on physical hardware. It is preserved for
+partial-range or wire-level investigations, not recommended as the routine
+full-board test. [`analyze_jukuravi_partial_full_ram.py`](../../scripts/analyze_jukuravi_partial_full_ram.py)
+recovers completed write/readback and delayed-prefix evidence when such a run
+is deliberately interrupted.
+
+The CPU value is an **effective execution frequency**: RAM instruction fetches
+and physical READY waits are included. T34's paired short and long CALLs differ
+by 1,200,000 nominal 8080 T-states; T35/T36's refresh-aware pair differs by
+1,078,000. Subtracting their host-observed RUN-to-RETURN intervals cancels the
+fixed loader and serial overhead. It is not presented as a direct crystal
+measurement. D57 sampling is last because a board whose boot bitmap already
+reports D57 may lose the loader link when that PIT is reprogrammed; all CPU/RAM
+and parser evidence is preserved first. Run the complete batch regression with:
+
+```sh
+sync/jukuravi_t34_batch_check.sh
+```
+
+On physical CS00024 the batch measured 1.714065 MHz, then proved that long
+uploads can lose their early RAM bytes before RUN. Use [`retention.py`](retention.py)
+for the narrower destructive-retention test. It writes one 32-byte marker and
+re-reads it at requested wall-clock ages in the same loader process:
+
+```sh
+python3 spinoffs/jukuravi/retention.py --cold --port /dev/ttyUSB0 \
+  --address 4D00 --ages 0,20 --loader-guard-ms 0 \
+  --log-dir spinoffs/jukuravi/sessions/cs00024-t34-retention
+```
+
+Start it before RESET. `--cold` pins T34 `1C/A637`; without `--cold` it attaches
+to an already-running API-v2 loader. The physical evidence is not a generic
+DRAM benchmark: loader commands themselves touch RAM and can refresh the tested
+rows. CS00024 passes when touched about every five seconds but loses mutable
+loader state after an untouched interval between roughly 5 and 17 seconds.
+See [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md) for exact captures and limits.
+
+### T35 physical finding and T36 successor
+
+T35 (`1D/45C4`) was programmed and produced valuable captures, but it is not
+an all-row refresh solution. The drawings establish CPU A0..A7 on the DRAM
+address mux during RAS; MK4564-class 128-cycle refresh consumes MA0..MA6 and
+ignores MA7. T35 increments H and therefore reads `4000h,4100h,...,BF00h`:
+the low seven address bits remain zero, so physical row `00` is refreshed 128
+times.
+
+The six-second `4D00h` physical lane capture confirmed that interpretation.
+Offset zero survived while other low-address rows decayed in structured
+blocks, every D84..D91 bit lane participated, and the loader later stopped.
+The earlier long T35 reattach proves survival of frequently touched loader
+state, not all-row retention.
+
+T36 is the programmed physical-test image:
+
+- artifact `firmware/diag-d0-row-refresh.bin` / `firmware/dos/T36HOST.BIN`;
+- ROM `1E`, CRC16 `C617`;
+- SHA256 `32264641836ce914a0fc706c916e2847d542d83b05d6737f1d6272b76d78dedb`;
+- public `CALL 07A9h`, now reading `4000h..407Fh` with `INR L`.
+
+T36 retains T34's clock-safe D55 test, T35's one-vote/fail-safe loader policy,
+and query/enable/disable/counter command. The approximately 1.7 MHz host result
+is effective RAM-loop throughput including READY waits, not a direct clock
+measurement. It gives a conservative 1.234 ms estimate per sweep against the
+2 ms datasheet interval.
+
+The routine post-burn run adds a destructive local 32 KiB RAM sweep with zero,
+one, checkerboard, and address-XOR patterns. Two small relocated programs cover
+the complete range after a six-second refresh-on hold and return compact
+D84..D91 failure attribution:
+
+```sh
+python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
+  --local-full-ram-sweep --local-full-ram-hold-ms 6000 \
+  --log-dir spinoffs/jukuravi/sessions/cs00024-t36-local-full-physical
+```
+
+Start the command first and press RESET once when requested. This overwrites
+all host-safe RAM at `4000h..BFFFh`; it does not alter EEPROM. Use
+`--only-ram-lanes` for the shorter 32-byte scratch discriminator. See
+[`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md) for the captures and
+[`LOADER-API-V2.md`](LOADER-API-V2.md) for the ABI.
+
+The first T36 physical session on 2026-08-10 passed the complete boot bitmap,
+verified upload/return, the 1.702797 MHz effective CPU measurement, and every
+A12/LHLD/READY/boundary/increment probe. Its intentionally interrupted
+wire-forensic zero pattern still proves a full 32,768-byte LOAD plus immediate
+readback with zero retries. After the six-second hold, the captured contiguous
+`4000h..46BFh` prefix contained 1,728 exact zeros and sampled all 128 physical
+rows 13--14 times. See the physical log for the exact limits; the remainder of
+that delayed read and the other three wire patterns were not completed.
+
 ### Session logs
 
 Every run writes one `<timestamp>.json` plus matching `.rx.bin` and `.tx.bin`
@@ -190,7 +331,9 @@ contract. Its important properties are:
 - host reattachment, partial-upload recovery, and RAM inspection without RESET;
 - CALL/RET execution with A and caller-selected RAM as the result interface.
 
-T28 introduced loader API v2; T29 through T32 retain it. Revision names are
+T28 introduced loader API v2; T29 through T34 retain it, T35 adds the
+compatible refresh command, and T36 corrects its physical row addressing.
+Revision names are
 kept only where an exact ROM image or its regression is being identified.
 
 ## Verification
@@ -201,6 +344,8 @@ Run the exact-image checks from the repository root:
 bash sync/jukuravi_t28_check.sh
 bash sync/jukuravi_t31_check.sh
 bash sync/jukuravi_t32_check.sh
+bash sync/jukuravi_t35_check.sh
+bash sync/jukuravi_t36_check.sh
 ```
 
 The T28 suite pins the reference implementation of loader API v2. The T31
@@ -208,7 +353,11 @@ suite pins the currently burned image and executes the uploaded speaker demo
 through the real host/cosim PTY path. The same host code is used for cosim and
 the physical serial port. The T32 suite additionally executes all eight
 upper-ROM entries, reattaches after each one, and verifies its unique RAM
-marker.
+marker. The T35 suite preserves the historical binary and physical captures.
+The T36 suite derives CPU A0..A6 from the drawings/datasheet, proves a complete
+128-row sweep, performs a 1,025-byte verified upload and idle reattach,
+exercises every refresh operation and torn-disable fallback, and requires exact
+T35 to decay as the one-row negative control while preserving T34 and T35.
 
 The diagnostic ladder, fault injection coverage, image hashes, and older ROM
 revisions are documented in [`firmware/README.md`](firmware/README.md). That

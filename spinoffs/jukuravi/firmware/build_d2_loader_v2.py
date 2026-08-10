@@ -103,11 +103,24 @@ def emit_loader(
     entry_progress_marker: int | None = None,
     avoid_tx_empty: bool = False,
     compact_bounded_serial_put: bool = False,
+    boot_votes: int | None = None,
+    capabilities: int | None = None,
+    refresh_label: str | None = None,
+    refresh_mode_address: int | None = None,
+    refresh_counter_address: int | None = None,
+    external_fixed_frames: bool = False,
+    extra_dispatch: tuple[tuple[int, str], ...] = (),
 ) -> dict[str, int | list[int] | bytes]:
     """Emit T28. Compatibility keyword arguments are validated, not ignored."""
+    effective_boot_votes = (
+        protocol.LOADER_V2_BOOT_VOTES if boot_votes is None else boot_votes
+    )
+    effective_capabilities = (
+        protocol.LOADER_V2_CAPABILITIES if capabilities is None else capabilities
+    )
     if not (
         encoded_input
-        and symbol_repetitions == protocol.LOADER_V2_BOOT_VOTES
+        and symbol_repetitions == effective_boot_votes
         and solicited_input
         and filter_invalid_symbols
         and clear_invalid_errors
@@ -116,6 +129,14 @@ def emit_loader(
         raise ValueError("T28 requires its verified solicited transport defaults")
     if entry_progress_marker is not None and not 0 <= entry_progress_marker <= 0xFF:
         raise ValueError("entry progress marker does not fit one byte")
+    if not (
+        protocol.LOADER_V2_MIN_VOTES <= effective_boot_votes
+        <= protocol.LOADER_V2_MAX_VOTES
+        and effective_boot_votes & 1
+    ):
+        raise ValueError("loader boot vote count must be odd and in 1..15")
+    if not 0 <= effective_capabilities <= 0xFFFF:
+        raise ValueError("loader capabilities do not fit 16 bits")
 
     ready_payload = bytes(
         (
@@ -123,13 +144,13 @@ def emit_loader(
             MAX_DATA,
             LOADER_API_BASE >> 8,
             LOADER_API_BASE & 0xFF,
-            protocol.LOADER_V2_CAPABILITIES >> 8,
-            protocol.LOADER_V2_CAPABILITIES & 0xFF,
+            effective_capabilities >> 8,
+            effective_capabilities & 0xFF,
             LOAD_MIN_ADDRESS >> 8,
             LOAD_END_ADDRESS >> 8,
             LOADER_BUFFER >> 8,
             LOADER_STACK_TOP >> 8,
-            protocol.LOADER_V2_BOOT_VOTES,
+            effective_boot_votes,
         )
     )
     frames = {
@@ -161,11 +182,16 @@ def emit_loader(
     asm.label("loader_entry")
     asm.label("t28_entry")
     asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)  # LXI SP
-    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
+    store_immediate(asm, STATE_VOTES, effective_boot_votes)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
     asm.emit(0xAF)
     sta(asm, STATE_IDLE_TIMEOUTS)
     sta(asm, STATE_RUN_VALID)
+    if refresh_mode_address is not None:
+        sta(asm, refresh_mode_address)
+    if refresh_counter_address is not None:
+        sta(asm, refresh_counter_address)
+        sta(asm, refresh_counter_address + 1)
     if entry_progress_marker is not None:
         asm.mvi_a(entry_progress_marker)
         call(asm, "t28_serial_put")
@@ -215,6 +241,7 @@ def emit_loader(
         (protocol.TYPE_LOADER_V2_CRC, "t28_crc"),
         (protocol.TYPE_LOADER_V2_RUN, "t28_run"),
         (protocol.TYPE_LOADER_V2_RESYNC, "t28_resync"),
+        *extra_dispatch,
     ):
         asm.emit(0xFE, record_type)
         asm.jump(0xCA, label)
@@ -442,9 +469,13 @@ def emit_loader(
     lda(asm, STATE_LENGTH)
     asm.emit(0xFE, 0x03)
     asm.jump(0xC2, "t28_bad_length")
-    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
+    store_immediate(asm, STATE_VOTES, effective_boot_votes)
+    if refresh_mode_address is not None:
+        # Any value other than T35's complete disable signature is refresh-on.
+        # Reusing the boot-vote A value makes RESYNC explicitly fail safe.
+        sta(asm, refresh_mode_address)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
-    store_immediate(asm, STATE_COUNT, protocol.LOADER_V2_BOOT_VOTES)
+    store_immediate(asm, STATE_COUNT, effective_boot_votes)
     call(asm, "t28_send_result")
     asm.jump(0xC3, "t28_loop")
 
@@ -669,8 +700,20 @@ def emit_loader(
     asm.label("t28_vote_request")
     lda(asm, STATE_SEQUENCE)
     call(asm, "t28_serial_put")
-    asm.lxi_b(0xFFFF)
+    asm.lxi_b(0x0100 if refresh_label is not None else 0xFFFF)
     asm.label("t28_vote_raw_poll")
+    if refresh_label is not None:
+        call(asm, refresh_label)
+        if refresh_counter_address is not None:
+            asm.emit(
+                0x2A,
+                refresh_counter_address & 0xFF,
+                refresh_counter_address >> 8,
+                0x23,
+                0x22,
+                refresh_counter_address & 0xFF,
+                refresh_counter_address >> 8,
+            )  # LHLD counter / INX H / SHLD counter
     asm.emit(0xDB, USART_CONTROL, 0xE6, 0x02)
     asm.jump(0xC2, "t28_vote_raw_ready")
     asm.emit(0x0B, 0x78, 0xB1)
@@ -691,7 +734,7 @@ def emit_loader(
     asm.jump(0xCA, "t28_vote_raw_valid")
     asm.mvi_a(USART_COMMAND)
     asm.out(USART_CONTROL)
-    asm.lxi_b(0xFFFF)
+    asm.lxi_b(0x0100 if refresh_label is not None else 0xFFFF)
     asm.jump(0xC3, "t28_vote_raw_poll")
     asm.label("t28_vote_raw_valid")
     asm.emit(0xF5)
@@ -736,7 +779,9 @@ def emit_loader(
 
     asm.label("t28_idle_transport_reset")
     asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)
-    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
+    store_immediate(asm, STATE_VOTES, effective_boot_votes)
+    if refresh_mode_address is not None:
+        sta(asm, refresh_mode_address)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
     asm.emit(0xAF)
     sta(asm, STATE_IDLE_TIMEOUTS)
@@ -744,7 +789,9 @@ def emit_loader(
 
     asm.label("t28_transport_failure")
     asm.emit(0x31, LOADER_STACK_TOP & 0xFF, LOADER_STACK_TOP >> 8)
-    store_immediate(asm, STATE_VOTES, protocol.LOADER_V2_BOOT_VOTES)
+    store_immediate(asm, STATE_VOTES, effective_boot_votes)
+    if refresh_mode_address is not None:
+        sta(asm, refresh_mode_address)
     store_immediate(asm, STATE_SEQUENCE, SYMBOL_REQUEST_0)
     call(asm, "t28_send_bad_crc")
     asm.jump(0xC3, "t28_loop")
@@ -758,8 +805,13 @@ def emit_loader(
         # the physical board's suspect 1000h execution boundary.
         asm.emit(0xC5, 0xD5, 0x16, 0x02)  # PUSH B / PUSH D / MVI D,2
         asm.label("t28_serial_put_compact_attempt")
-        asm.emit(0x01, 0xFF, 0xFF)  # LXI B,FFFFh
+        if refresh_label is not None:
+            asm.emit(0x01, 0x00, 0x01)  # LXI B,0100h
+        else:
+            asm.emit(0x01, 0xFF, 0xFF)  # LXI B,FFFFh
         asm.label("t28_serial_put_compact_poll")
+        if refresh_label is not None:
+            call(asm, refresh_label)
         asm.emit(0xDB, USART_CONTROL, 0xE6, 0x01)
         asm.jump(0xC2, "t28_serial_put_compact_ready")
         asm.emit(0x0B, 0x78, 0xB1)
@@ -778,6 +830,8 @@ def emit_loader(
         # if the recovered transmitter still cannot become ready.
         asm.emit(0xC5, 0x01, 0xFF, 0xFF)  # PUSH B / LXI B,FFFFh
         asm.label("t28_serial_put_poll")
+        if refresh_label is not None:
+            call(asm, refresh_label)
         asm.emit(0xDB, USART_CONTROL, 0xE6, 0x01)
         asm.jump(0xC2, "t28_serial_put_ready")
         asm.emit(0x0B, 0x78, 0xB1)
@@ -785,6 +839,8 @@ def emit_loader(
         call(asm, "t28_restore_serial")
         asm.emit(0x01, 0xFF, 0xFF)  # LXI B,FFFFh
         asm.label("t28_serial_put_recovered_poll")
+        if refresh_label is not None:
+            call(asm, refresh_label)
         asm.emit(0xDB, USART_CONTROL, 0xE6, 0x01)
         asm.jump(0xC2, "t28_serial_put_ready")
         asm.emit(0x0B, 0x78, 0xB1)
@@ -794,12 +850,25 @@ def emit_loader(
         asm.emit(0xC1)  # POP B
     else:
         asm.label("t28_serial_put_poll")
+        if refresh_label is not None:
+            call(asm, refresh_label)
         asm.emit(0xDB, USART_CONTROL, 0xE6, 0x01)
         asm.jump(0xCA, "t28_serial_put_poll")
     asm.emit(0xF1, 0xD3, USART_DATA, 0xC9)
 
     asm.label("t28_wait_tx_empty")
-    if avoid_tx_empty:
+    if refresh_label is not None:
+        # Sixteen complete 128-row sweeps exceed four 2400-baud character
+        # times even at the measured slow CS00024 CPU rate. The refresh
+        # routine preserves B, so it is also a reliable Tx-drain delay on
+        # 8251 variants whose TxEMPTY indication cannot be trusted.
+        asm.emit(0xC5, 0x06, 16)  # PUSH B / MVI B,16
+        asm.label("t28_tx_drain_refresh")
+        call(asm, refresh_label)
+        asm.emit(0x05)
+        asm.jump(0xC2, "t28_tx_drain_refresh")
+        asm.emit(0xC1)
+    elif avoid_tx_empty:
         # Some real 8251-compatible parts keep status bit 2 low even after the
         # byte has appeared on the wire. Preserve BC and wait longer than four
         # 2400-baud characters without consulting that unreliable indication.
@@ -905,11 +974,14 @@ def emit_loader(
     call(asm, "t28_serial_put")
     asm.emit(0xC9)
 
-    for stem, frame in frames.items():
-        emit_send_fixed(asm, stem=stem, table=f"t28_frame_{stem}", length=len(frame))
-    for stem, frame in frames.items():
-        asm.label(f"t28_frame_{stem}")
-        asm.emit(*frame)
+    if not external_fixed_frames:
+        for stem, frame in frames.items():
+            emit_send_fixed(
+                asm, stem=stem, table=f"t28_frame_{stem}", length=len(frame)
+            )
+        for stem, frame in frames.items():
+            asm.label(f"t28_frame_{stem}")
+            asm.emit(*frame)
 
     return {
         **api_addresses,
@@ -919,8 +991,13 @@ def emit_loader(
         "loader_stack_top": LOADER_STACK_TOP,
         "loader_load_min": LOAD_MIN_ADDRESS,
         "loader_load_end": LOAD_END_ADDRESS,
-        "loader_capabilities": protocol.LOADER_V2_CAPABILITIES,
-        "loader_boot_votes": protocol.LOADER_V2_BOOT_VOTES,
+        "loader_capabilities": effective_capabilities,
+        "loader_boot_votes": effective_boot_votes,
+        "loader_refresh_api": (
+            None if refresh_label is None else asm.labels[refresh_label]
+        ),
+        "loader_refresh_mode": refresh_mode_address,
+        "loader_refresh_counter": refresh_counter_address,
         "loader_ready_frame": frames["ready"],
         "loader_bad_crc_frame": frames["bad_crc"],
     }

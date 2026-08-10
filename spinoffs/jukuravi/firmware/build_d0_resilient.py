@@ -40,6 +40,9 @@ FILTER_INVALID_SYMBOLS = False
 CLEAR_INVALID_ERRORS = False
 VERIFY_BUFFER_STORES = False
 LOADER_EMITTER = emit_loader_v1
+LOADER_SYMBOL_REPETITIONS = protocol.LOADER_V2_BOOT_VOTES
+PRE_TABLE_EMITTER = None
+POST_LOADER_EMITTER = None
 LOADER_WORKSPACE_BASE = FRAMEBUFFER_BASE
 LOADER_WORKSPACE_BYTES = FRAMEBUFFER_BYTES
 POSTDIAG_PROGRESS_MARKERS: tuple[int, int, int] | None = None
@@ -287,6 +290,7 @@ def emit_loader_guard(
 
 def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
     asm = Assembler()
+    extension_metadata: dict[str, int | list[int] | bytes] = {}
     asm.jump(0xC3, "entry")
     while asm.pc < ROM_CHECKSUM_OFFSET:
         asm.emit(0x76)
@@ -367,6 +371,8 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
         asm, WORKSPACE_FAILURE_CODE, "best_workspace_fail"
     )
 
+    if PRE_TABLE_EMITTER is not None:
+        extension_metadata.update(PRE_TABLE_EMITTER(asm))
     if asm.pc > ROM_CHECKSUM_END:
         raise ValueError("best-effort executable overlaps 0800h tables")
     while asm.pc < ROM_CHECKSUM_END:
@@ -387,7 +393,8 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
         raise ValueError("robust loader API does not start at 0A00h")
     asm.label("loader_extension_start")
     loader_metadata = LOADER_EMITTER(
-        asm, encoded_input=True, symbol_repetitions=7,
+        asm, encoded_input=True,
+        symbol_repetitions=LOADER_SYMBOL_REPETITIONS,
         solicited_input=SOLICITED_INPUT,
         filter_invalid_symbols=FILTER_INVALID_SYMBOLS,
         clear_invalid_errors=CLEAR_INVALID_ERRORS,
@@ -420,6 +427,8 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
             else POSTDIAG_PROGRESS_MARKERS[2]
         ),
     )
+    if POST_LOADER_EMITTER is not None:
+        extension_metadata.update(POST_LOADER_EMITTER(asm))
 
     code = bytearray(asm.resolve())
     loader_start = asm.labels["loader_extension_start"]
@@ -461,6 +470,7 @@ def build() -> tuple[bytes, dict[str, int | list[int] | bytes]]:
         "loader_extension_end": loader_end,
         "loader_extension_length": loader_length,
         "loader_extension_checksum": loader_checksum,
+        **extension_metadata,
         **loader_metadata,
     }
 

@@ -1,0 +1,91 @@
+{
+  "attempts": [],
+  "diagnostic_status": null,
+  "error": "loader API v2 PROBE returned strong_crc after 3 attempt(s)",
+  "finished_utc": "2026-08-09T18:12:27.644313Z",
+  "frames": [
+    {
+      "payload_hex": "FF002903000007000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0006373F000000000034",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0006373F000000000034",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0006373F000000000034",
+      "type": "0xB0"
+    }
+  ],
+  "host_transport": {
+    "config_first": false,
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 7
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x4000",
+    "attach": {
+      "baseline_token": "0xC6",
+      "idle_requests": 9,
+      "resync_attempts": 1,
+      "resync_transaction": 255
+    },
+    "attached": true,
+    "bytes": 0,
+    "chunks": [],
+    "control_only": true,
+    "end_exclusive": "0x4000",
+    "error": "loader API v2 PROBE returned strong_crc after 3 attempt(s)",
+    "heartbeat": null,
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x3FFF",
+      "default_votes": 7,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": true,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": false,
+      "address": null,
+      "requested": false
+    },
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "<loader API v2 resident control>",
+    "status": "error"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 3204,
+  "rx_log": "20260809T181119.285320Z.rx.bin",
+  "started_utc": "2026-08-09T18:11:19.285320Z",
+  "status": "error",
+  "transmitted_bytes": 3136,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260809T181119.285320Z.tx.bin"
+}

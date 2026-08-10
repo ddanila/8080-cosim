@@ -35,6 +35,13 @@
 // RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte
 //        (ADDR=* applies the stuck masks globally);
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
+//        JUKU_DRAM_RETENTION_CYCLES=N deterministically inverts a complete
+//        4164 refresh row if it receives no RAM access for more than N cycles.
+//        Juku presents CPU A0..A6 to DRAM MA0..MA6 while /RAS is active;
+//        A7/MA7 is a column-only don't-care for 128-cycle refresh.
+//        JUKU_DRAM_RETENTION_ARM_PC=ADDR delays that model until the first
+//        instruction at ADDR (useful when omitted video refresh is out of
+//        scope and the ROM refresh service is the subject of the test).
 // EXEC:  JUKU_ROM_EXEC_RESET_AT=ADDR resets the CPU whenever a ROM fetch
 //        reaches ADDR or above (used to model the physical D15 A12 boundary).
 // CPU:   JUKU_CPU_A12_INCREMENT_FAULT=1 makes D1's 16-bit +1 path lose an
@@ -104,6 +111,16 @@ static unsigned      ram_drop_write_remaining = 0;
 static int           ram_alias_enabled = 0;
 static uint8_t       ram_alias_page_a = 0;
 static uint8_t       ram_alias_page_b = 0;
+static unsigned long dram_retention_cycles = 0;
+static unsigned long dram_last_refresh[128];
+static int           dram_retention_armed = 1;
+static int           dram_retention_arm_pc_enabled = 0;
+static uint16_t      dram_retention_arm_pc = 0;
+static unsigned long dram_decay_count = 0;
+static uint8_t dram_coverage_seen[128];
+static unsigned dram_coverage_count = 0;
+static unsigned long dram_coverage_start = 0;
+static int dram_full_coverage_reported = 0;
 static int           pic_fault_enabled = 0;
 static uint8_t       pic_fault_stuck_low = 0;
 static uint8_t       pic_fault_stuck_high = 0;
@@ -223,6 +240,49 @@ static uint16_t map_ram_address(uint16_t address) {
   if (ram_alias_enabled && (address >> 8) == ram_alias_page_b)
     return (uint16_t)(((uint16_t)ram_alias_page_a << 8) | (address & 0xFF));
   return address;
+}
+
+static uint8_t dram_row_from_address(uint16_t address) {
+  /*
+   * D48/D49 select CPU A0..A7 in the populated-bank /RAS phase and A8..A15
+   * for /CAS.  MK4564/2164-class 128-cycle refresh uses physical MA0..MA6;
+   * MA7 (pin 9) is irrelevant.  The inverting KP14 mux changes row polarity,
+   * but not which logical addresses share a row, so normalize it away here.
+   */
+  return (uint8_t)(address & 0x7F);
+}
+
+static void dram_touch(i8080* cpu, uint16_t physical_address) {
+  if (!dram_retention_cycles || !dram_retention_armed || !cpu) return;
+  uint8_t row = dram_row_from_address(physical_address);
+  if (!dram_coverage_count ||
+      cpu->cyc - dram_coverage_start > dram_retention_cycles) {
+    memset(dram_coverage_seen, 0, sizeof(dram_coverage_seen));
+    dram_coverage_count = 0;
+    dram_coverage_start = cpu->cyc;
+  }
+  if (!dram_coverage_seen[row]) {
+    dram_coverage_seen[row] = 1;
+    dram_coverage_count++;
+    if (dram_coverage_count == 128 && !dram_full_coverage_reported) {
+      dram_full_coverage_reported = 1;
+      fprintf(stderr,
+              "[DRAM] observed all 128 refresh rows in %lu cycles at cyc=%lu\n",
+              cpu->cyc - dram_coverage_start, cpu->cyc);
+    }
+  }
+  unsigned long age = cpu->cyc - dram_last_refresh[row];
+  if (age > dram_retention_cycles) {
+    for (unsigned address = 0; address < MEM_SIZE; address++)
+      if (dram_row_from_address((uint16_t)address) == row)
+        ram[address] ^= 0xFF;
+    dram_decay_count++;
+    if (dram_decay_count <= 32)
+      fprintf(stderr,
+              "[DRAM] decayed refresh row=%02X age=%lu cyc=%lu count=%lu\n",
+              row, age, cpu->cyc, dram_decay_count);
+  }
+  dram_last_refresh[row] = cpu->cyc;
 }
 
 // --- minimal 8251 USART + PTY transport (opt-in via JUKU_USART_PTY) -------
@@ -494,7 +554,9 @@ static uint8_t rb(void* u, uint16_t a) {
   }
   else {
     rom_read_burst_count = 0;
-    v = apply_ram_fault(physical_a, ram[map_ram_address(physical_a)]);
+    uint16_t mapped = map_ram_address(physical_a);
+    dram_touch(cpu, mapped);
+    v = apply_ram_fault(physical_a, ram[mapped]);
   }
   if (exec_byte_fault_enabled && a == exec_byte_fault_addr && cpu &&
       (cpu->pc == a || cpu->pc == (uint16_t)(a + 1)))
@@ -616,7 +678,9 @@ static void wb(void* u, uint16_t a, uint8_t v) {
             a, v, ram_drop_write_remaining);
     return;
   }
-  ram[map_ram_address(a)] = apply_ram_fault(a, v);
+  uint16_t mapped = map_ram_address(a);
+  dram_touch((i8080*)u, mapped);
+  ram[mapped] = apply_ram_fault(a, v);
   wpage[a >> 8]++;
   if (a >= VRAM_BASE) {            // for CI: stop+dump after N video writes (match HDL)
     if (g_vw == 0) {
@@ -811,6 +875,11 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "ram_alias_enabled=%d\n", ram_alias_enabled);
   fprintf(state_out, "ram_alias_page_a=%02X\n", ram_alias_page_a);
   fprintf(state_out, "ram_alias_page_b=%02X\n", ram_alias_page_b);
+  fprintf(state_out, "dram_retention_cycles=%lu\n", dram_retention_cycles);
+  fprintf(state_out, "dram_decay_count=%lu\n", dram_decay_count);
+  fprintf(state_out, "dram_coverage_count=%u\n", dram_coverage_count);
+  fprintf(state_out, "dram_full_coverage_reported=%d\n",
+          dram_full_coverage_reported);
   fprintf(state_out, "kbd_pos=%d\n", kbd_pos);
   fprintf(state_out, "kbd_phase=%d\n", kbd_phase);
   fprintf(state_out, "kbd_col=%02X\n", kbd_col);
@@ -951,6 +1020,9 @@ int main(int argc, char** argv) {
   const char* exec_byte_fault = getenv("JUKU_EXEC_BYTE_FAULT");
   const char* ram_drop_write = getenv("JUKU_RAM_DROP_WRITE");
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
+  const char* dram_retention = getenv("JUKU_DRAM_RETENTION_CYCLES");
+  const char* dram_retention_arm_pc_env =
+      getenv("JUKU_DRAM_RETENTION_ARM_PC");
   const char* pic_fault = getenv("JUKU_PIC_FAULT");
   const char* ppi_fault = getenv("JUKU_PPI_FAULT");
   const char* pit_fault = getenv("JUKU_PIT_FAULT");
@@ -1157,6 +1229,35 @@ int main(int argc, char** argv) {
     fprintf(stderr, "[RAM] alias logical page 0x%02X -> physical page 0x%02X\n",
             ram_alias_page_b, ram_alias_page_a);
   }
+  if (dram_retention && dram_retention[0]) {
+    char* end = NULL;
+    errno = 0;
+    dram_retention_cycles = strtoul(dram_retention, &end, 0);
+    if (errno || !end || *end || !dram_retention_cycles) {
+      fprintf(stderr,
+              "invalid JUKU_DRAM_RETENTION_CYCLES=%s (expected positive integer)\n",
+              dram_retention);
+      return 2;
+    }
+    fprintf(stderr, "[DRAM] retention limit=%lu cycles across 128 rows\n",
+            dram_retention_cycles);
+    if (dram_retention_arm_pc_env && dram_retention_arm_pc_env[0]) {
+      unsigned address;
+      char trailing;
+      if (sscanf(dram_retention_arm_pc_env, "%x%c", &address, &trailing) != 1 ||
+          address > 0xFFFF) {
+        fprintf(stderr,
+                "invalid JUKU_DRAM_RETENTION_ARM_PC=%s (expected address)\n",
+                dram_retention_arm_pc_env);
+        return 2;
+      }
+      dram_retention_arm_pc_enabled = 1;
+      dram_retention_arm_pc = (uint16_t)address;
+      dram_retention_armed = 0;
+      fprintf(stderr, "[DRAM] retention waits for pc=0x%04X\n",
+              dram_retention_arm_pc);
+    }
+  }
   if (env_enabled(usart_pty) && usart_open_transport(usart_pty) != 0) {
     fprintf(stderr, "JUKU_USART_PTY=%s could not be opened: %s\n", usart_pty, strerror(errno));
     return 2;
@@ -1229,6 +1330,18 @@ int main(int argc, char** argv) {
          !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc) &&
          !(stop_keys_done && kbd_str && !kbd_str[kbd_pos]) &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
+    if (dram_retention_arm_pc_enabled && !dram_retention_armed &&
+        cpu.pc == dram_retention_arm_pc) {
+      dram_retention_armed = 1;
+      for (unsigned row = 0; row < 128; row++)
+        dram_last_refresh[row] = cpu.cyc;
+      memset(dram_coverage_seen, 0, sizeof(dram_coverage_seen));
+      dram_coverage_count = 0;
+      dram_coverage_start = cpu.cyc;
+      dram_full_coverage_reported = 0;
+      fprintf(stderr, "[DRAM] retention armed at pc=0x%04X cyc=%lu\n",
+              cpu.pc, cpu.cyc);
+    }
     if (rom_exec_reset_at && mode == 0 && cpu.pc >= rom_exec_reset_at &&
         cpu.pc < 0x4000) {
       rom_exec_resets++;

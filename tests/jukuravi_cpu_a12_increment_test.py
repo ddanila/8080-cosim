@@ -13,7 +13,6 @@ import tty
 from dataclasses import dataclass
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 HOST = ROOT / "spinoffs" / "jukuravi" / "host.py"
 FIRMWARE = ROOT / "spinoffs" / "jukuravi" / "firmware"
@@ -56,9 +55,9 @@ def write_map(fault: bool) -> bytes:
     result.extend((0x10, 0x11, 0x20, 0x21))
     result.extend((0x10, 0x11) * 4)
     result.extend(((0x20, 0x11) if fault else (0x20, 0x21)) * 4)
-    # T32's cold-boot RAM survey leaves 55h in the CA pair.
-    result.extend((0x55, 0x55, 0, 0))
-    result.extend((0x55, 0x55, 0x80, 0x81))
+    # The probe now establishes an explicit zero baseline in both page pairs.
+    result.extend((0, 0, 0, 0))
+    result.extend((0, 0, 0x80, 0x81))
     result.extend((0x70, 0x71, 0x80, 0x81))
     result.extend((0x70, 0x71) * 4)
     result.extend(((0x80, 0x71) if fault else (0x80, 0x81)) * 4)

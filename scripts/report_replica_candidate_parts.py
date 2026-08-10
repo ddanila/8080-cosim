@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Guard data-sheet eligibility for the replica's WD1793 and 4164 candidates."""
+
 from __future__ import annotations
 
 import hashlib
@@ -122,11 +123,13 @@ def build() -> tuple[list[dict[str, str | bool]], list[str]]:
                 "8   VCC (+5 V)",
                 "16  VSS (GND)",
                 "128 cycles / 2 ms",
+                "128 combinations of A0-A6",
                 "MK4564-12 =",
                 "120 ns / 220 ns",
             )
         ),
-        "Mostek MK4564-12: JEDEC 64Kx1, single +5 V, 120 ns access, 220 ns cycle, 128/2 ms refresh",
+        "Mostek MK4564-12: JEDEC 64Kx1, single +5 V, 120 ns access, "
+        "220 ns cycle, refresh on 128 A0-A6 combinations",
     )
     add_check(
         checks,
@@ -141,16 +144,46 @@ def build() -> tuple[list[dict[str, str | bool]], list[str]]:
 
     d93 = chip(board, "D93")
     expected_d93 = {
-        "1": "NC_BACK_BIAS", "2": "WE_N", "3": "CS_N", "4": "RE_N",
-        "5": "A0", "6": "A1", "7": "DAL0", "8": "DAL1", "9": "DAL2",
-        "10": "DAL3", "11": "DAL4", "12": "DAL5", "13": "DAL6",
-        "14": "DAL7", "15": "STEP", "16": "DIRC", "17": "EARLY",
-        "18": "LATE", "19": "MR_N", "20": "VSS_GND", "21": "VCC_5V",
-        "22": "TEST", "23": "HLT", "24": "CLK", "25": "RG",
-        "26": "RCLK", "27": "RAW_READ", "28": "HLD", "29": "TG43",
-        "30": "WG", "31": "WDATA", "32": "READY", "33": "WF_VFOE",
-        "34": "TR00", "35": "INDEX", "36": "WPRT", "37": "DDEN",
-        "38": "DRQ", "39": "INTRQ", "40": "VDD_12V",
+        "1": "NC_BACK_BIAS",
+        "2": "WE_N",
+        "3": "CS_N",
+        "4": "RE_N",
+        "5": "A0",
+        "6": "A1",
+        "7": "DAL0",
+        "8": "DAL1",
+        "9": "DAL2",
+        "10": "DAL3",
+        "11": "DAL4",
+        "12": "DAL5",
+        "13": "DAL6",
+        "14": "DAL7",
+        "15": "STEP",
+        "16": "DIRC",
+        "17": "EARLY",
+        "18": "LATE",
+        "19": "MR_N",
+        "20": "VSS_GND",
+        "21": "VCC_5V",
+        "22": "TEST",
+        "23": "HLT",
+        "24": "CLK",
+        "25": "RG",
+        "26": "RCLK",
+        "27": "RAW_READ",
+        "28": "HLD",
+        "29": "TG43",
+        "30": "WG",
+        "31": "WDATA",
+        "32": "READY",
+        "33": "WF_VFOE",
+        "34": "TR00",
+        "35": "INDEX",
+        "36": "WPRT",
+        "37": "DDEN",
+        "38": "DRQ",
+        "39": "INTRQ",
+        "40": "VDD_12V",
     }
     add_check(
         checks,
@@ -230,41 +263,49 @@ def write_report(checks: list[dict[str, str | bool]], holds: list[str]) -> None:
         table_row([item["name"], "PASS" if item["pass"] else "FAIL", item["evidence"]])
         for item in checks
     )
-    lines.extend([
-        "",
-        "## Eligible functional-build candidates",
-        "",
-        "| Board role | Candidate | Static disposition |",
-        "| --- | --- | --- |",
-        table_row([
-            "D84-D91 К565РУ5Г bank",
-            "Mostek MK4564-12 in the manufacturer's 16-pin dual-in-line option",
-            "Pin/function, +5 V, 128-cycle/2 ms refresh, 120 ns access, 220 ns cycle, and footprint eligible; E4 must bridge 2-3",
-        ]),
-        table_row([
-            "D93 КР1818ВГ93",
-            "Western Digital FD1793B-01 plastic DIP",
-            "Complete pin contract, +5/+12 V rails, 1 MHz mini-drive mode, and 0.600-inch DIP footprint eligible",
-        ]),
-        "",
-        "The candidate names are deliberately exact enough to reject a wrong package",
-        "or voltage family. Other 4164/1793 manufacturers and grades remain unapproved",
-        "until added here with their own primary data.",
-        "",
-        "## Remaining acceptance gates",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Eligible functional-build candidates",
+            "",
+            "| Board role | Candidate | Static disposition |",
+            "| --- | --- | --- |",
+            table_row(
+                [
+                    "D84-D91 К565РУ5Г bank",
+                    "Mostek MK4564-12 in the manufacturer's 16-pin dual-in-line option",
+                    "Pin/function, +5 V, 128-cycle/2 ms refresh, 120 ns access, 220 ns cycle, and footprint eligible; E4 must bridge 2-3",
+                ]
+            ),
+            table_row(
+                [
+                    "D93 КР1818ВГ93",
+                    "Western Digital FD1793B-01 plastic DIP",
+                    "Complete pin contract, +5/+12 V rails, 1 MHz mini-drive mode, and 0.600-inch DIP footprint eligible",
+                ]
+            ),
+            "",
+            "The candidate names are deliberately exact enough to reject a wrong package",
+            "or voltage family. Other 4164/1793 manufacturers and grades remain unapproved",
+            "until added here with their own primary data.",
+            "",
+            "## Remaining acceptance gates",
+            "",
+        ]
+    )
     lines.extend(f"- {item}" for item in holds)
-    lines.extend([
-        "",
-        "## Primary evidence",
-        "",
-        f"- Mostek `MK4564(P/N/J/E)-12` data sheet SHA-256: `{DRAM_SHA256}`.",
-        f"- Western Digital `FD179X-01` data sheet SHA-256: `{FDC_SHA256}`.",
-        "- Board pin and rail authority: `kicad/juku.board.json`.",
-        "- Package authority: source and promoted routed KiCad PCBs.",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Primary evidence",
+            "",
+            f"- Mostek `MK4564(P/N/J/E)-12` data sheet SHA-256: `{DRAM_SHA256}`.",
+            f"- Western Digital `FD179X-01` data sheet SHA-256: `{FDC_SHA256}`.",
+            "- Board pin and rail authority: `kicad/juku.board.json`.",
+            "- Package authority: source and promoted routed KiCad PCBs.",
+            "",
+        ]
+    )
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
 
 

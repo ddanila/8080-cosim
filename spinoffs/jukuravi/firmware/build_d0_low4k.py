@@ -15,6 +15,8 @@ DOS_OUTPUT = base.HERE / "dos" / "T31HOST.BIN"
 README = base.HERE / "README.md"
 ROM_VERSION = 0x1A
 IDENTITY = b"JUKURAVI-D0-LOW4K-MONITOR-2400-1\0"
+LOADER_EMITTER = emit_loader_v5
+LOADER_SYMBOL_REPETITIONS = 7
 
 
 def build():
@@ -26,6 +28,7 @@ def build():
         base.CLEAR_INVALID_ERRORS,
         base.VERIFY_BUFFER_STORES,
         base.LOADER_EMITTER,
+        base.LOADER_SYMBOL_REPETITIONS,
         base.LOADER_WORKSPACE_BASE,
         base.LOADER_WORKSPACE_BYTES,
         base.POSTDIAG_PROGRESS_MARKERS,
@@ -40,7 +43,8 @@ def build():
         base.FILTER_INVALID_SYMBOLS = True
         base.CLEAR_INVALID_ERRORS = True
         base.VERIFY_BUFFER_STORES = True
-        base.LOADER_EMITTER = emit_loader_v5
+        base.LOADER_EMITTER = LOADER_EMITTER
+        base.LOADER_SYMBOL_REPETITIONS = LOADER_SYMBOL_REPETITIONS
         base.LOADER_WORKSPACE_BASE = 0xC000
         base.LOADER_WORKSPACE_BYTES = 0x1000
         base.POSTDIAG_PROGRESS_MARKERS = None
@@ -60,6 +64,7 @@ def build():
             base.CLEAR_INVALID_ERRORS,
             base.VERIFY_BUFFER_STORES,
             base.LOADER_EMITTER,
+            base.LOADER_SYMBOL_REPETITIONS,
             base.LOADER_WORKSPACE_BASE,
             base.LOADER_WORKSPACE_BYTES,
             base.POSTDIAG_PROGRESS_MARKERS,

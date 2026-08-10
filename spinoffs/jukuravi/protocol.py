@@ -21,6 +21,7 @@ TYPE_LOADER_V2_READ = 0x26
 TYPE_LOADER_V2_CRC = 0x27
 TYPE_LOADER_V2_RUN = 0x28
 TYPE_LOADER_V2_RESYNC = 0x29
+TYPE_LOADER_V2_REFRESH = 0x2A
 TYPE_HEARTBEAT = 0x30
 TYPE_NANO_LIVENESS = 0x40
 TYPE_DIAG_STATUS = 0x50
@@ -70,6 +71,7 @@ LOADER_V2_CAP_CALL_RETURN = 0x0400
 LOADER_V2_CAP_RUN_REPLAY = 0x0800
 LOADER_V2_CAP_UART_RESTORE = 0x1000
 LOADER_V2_CAP_IDLE_RESYNC = 0x2000
+LOADER_V2_CAP_REFRESH = 0x4000
 LOADER_V2_CAPABILITIES = (
     LOADER_V2_CAP_PROBE
     | LOADER_V2_CAP_CONFIG_VOTES
@@ -87,6 +89,8 @@ LOADER_V2_CAPABILITIES = (
     | LOADER_V2_CAP_IDLE_RESYNC
 )
 LOADER_V2_BOOT_VOTES = 7
+LOADER_V2_T35_BOOT_VOTES = 1
+LOADER_V2_T36_BOOT_VOTES = 1
 LOADER_V2_MIN_VOTES = 1
 LOADER_V2_MAX_VOTES = 15
 LOADER_V2_MAX_DATA = 32
@@ -97,6 +101,28 @@ LOADER_V2_WORKSPACE_BASE = 0xC000
 LOADER_V2_WORKSPACE_END = 0xD000
 LOADER_V2_RUN_CALL = 0
 LOADER_V2_RUN_JUMP = 1
+LOADER_V2_T35_CAPABILITIES = LOADER_V2_CAPABILITIES | LOADER_V2_CAP_REFRESH
+LOADER_V2_T36_CAPABILITIES = LOADER_V2_T35_CAPABILITIES
+LOADER_V2_REFRESH_API = 0x07A9
+LOADER_V2_REFRESH_VERSION = 1
+LOADER_V2_REFRESH_QUERY = 0
+LOADER_V2_REFRESH_ENABLE = 1
+LOADER_V2_REFRESH_DISABLE = 2
+LOADER_V2_REFRESH_RESET_COUNTER = 3
+LOADER_V2_REFRESH_ROW_START = 0x40
+LOADER_V2_T36_REFRESH_ROW_START = 0x00
+LOADER_V2_REFRESH_ROWS = 128
+
+LOADER_V2_COMMAND_TYPES = (
+    TYPE_LOADER_V2_PROBE,
+    TYPE_LOADER_V2_CONFIG,
+    TYPE_LOADER_V2_LOAD,
+    TYPE_LOADER_V2_READ,
+    TYPE_LOADER_V2_CRC,
+    TYPE_LOADER_V2_RUN,
+    TYPE_LOADER_V2_RESYNC,
+    TYPE_LOADER_V2_REFRESH,
+)
 
 
 def encode_load_frame(address: int, data: bytes) -> bytes:
@@ -117,22 +143,16 @@ def encode_run_frame(address: int) -> bytes:
     return encode_frame(TYPE_RUN, address.to_bytes(2, "big"))
 
 
-def encode_loader_v2_command(record_type: int, transaction: int, body: bytes = b"") -> bytes:
+def encode_loader_v2_command(
+    record_type: int, transaction: int, body: bytes = b""
+) -> bytes:
     """Encode one loader API v2 command with outer CRC-8 and inner CRC-16.
 
     The inner checksum is calculated over type, final payload length, the
     transaction byte, and the command body. The ROM recomputes it from its RAM
     parser buffer, so a correct UART CRC cannot conceal a failed RAM store.
     """
-    if record_type not in (
-        TYPE_LOADER_V2_PROBE,
-        TYPE_LOADER_V2_CONFIG,
-        TYPE_LOADER_V2_LOAD,
-        TYPE_LOADER_V2_READ,
-        TYPE_LOADER_V2_CRC,
-        TYPE_LOADER_V2_RUN,
-        TYPE_LOADER_V2_RESYNC,
-    ):
+    if record_type not in LOADER_V2_COMMAND_TYPES:
         raise ValueError("record type is not a loader API v2 command")
     if not 0 <= transaction <= 0xFF:
         raise ValueError("transaction does not fit one byte")
@@ -150,15 +170,7 @@ def encode_loader_v2_command(record_type: int, transaction: int, body: bytes = b
 
 def validate_loader_v2_command(frame: Frame) -> tuple[int, bytes]:
     """Validate and split a loader API v2 command into transaction and body."""
-    if frame.record_type not in (
-        TYPE_LOADER_V2_PROBE,
-        TYPE_LOADER_V2_CONFIG,
-        TYPE_LOADER_V2_LOAD,
-        TYPE_LOADER_V2_READ,
-        TYPE_LOADER_V2_CRC,
-        TYPE_LOADER_V2_RUN,
-        TYPE_LOADER_V2_RESYNC,
-    ):
+    if frame.record_type not in LOADER_V2_COMMAND_TYPES:
         raise ValueError("frame is not a loader API v2 command")
     if len(frame.payload) < 3:
         raise ValueError(
@@ -217,9 +229,7 @@ def encode_loader_v2_run(
     return encode_loader_v2_command(
         TYPE_LOADER_V2_RUN,
         transaction,
-        address.to_bytes(2, "big")
-        + bytes((mode,))
-        + execution_id.to_bytes(4, "big"),
+        address.to_bytes(2, "big") + bytes((mode,)) + execution_id.to_bytes(4, "big"),
     )
 
 
@@ -256,9 +266,7 @@ def crc16_ccitt_false(data: bytes) -> int:
         crc ^= byte << 8
         for _ in range(8):
             crc = (
-                ((crc << 1) ^ 0x1021) & 0xFFFF
-                if crc & 0x8000
-                else (crc << 1) & 0xFFFF
+                ((crc << 1) ^ 0x1021) & 0xFFFF if crc & 0x8000 else (crc << 1) & 0xFFFF
             )
     return crc
 
@@ -302,7 +310,11 @@ class RamSurvey:
 def decode_ram_survey(frames: list[Frame]) -> RamSurvey:
     """Validate one complete ordered RAM survey and derive its host verdict."""
     begin_index = next(
-        (index for index, frame in enumerate(frames) if frame.record_type == TYPE_RAM_BEGIN),
+        (
+            index
+            for index, frame in enumerate(frames)
+            if frame.record_type == TYPE_RAM_BEGIN
+        ),
         None,
     )
     if begin_index is None:
@@ -338,7 +350,9 @@ def decode_ram_survey(frames: list[Frame]) -> RamSurvey:
         raise ValueError("RAM_END does not match RAM_BEGIN range")
 
     bad_pages_by_bit = tuple(
-        tuple(start_page + index for index, mask in enumerate(masks) if mask & (1 << bit))
+        tuple(
+            start_page + index for index, mask in enumerate(masks) if mask & (1 << bit)
+        )
         for bit in range(8)
     )
     best_start: int | None = None
@@ -381,7 +395,9 @@ class StreamDecoder:
         while True:
             marker = self._buffer.find(SYNC)
             if marker < 0:
-                self._buffer[:] = self._buffer[-1:] if self._buffer.endswith(SYNC[:1]) else b""
+                self._buffer[:] = (
+                    self._buffer[-1:] if self._buffer.endswith(SYNC[:1]) else b""
+                )
                 break
             if marker:
                 del self._buffer[:marker]
