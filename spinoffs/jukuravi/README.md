@@ -11,7 +11,9 @@ T31 transport run, historical D55 bitmap, transport benchmark, upper-D15
 diagnostic, and uploaded speaker demo are recorded in
 [`T31-PHYSICAL.md`](T31-PHYSICAL.md).
 The separate CS00024 T31 session and its corrected D55 interpretation are in
-[`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md).
+[`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md). The completed T36 desk diagnosis
+and D57 channel-2 localization are in
+[`../../docs/cs00024-t36-diagnosis.md`](../../docs/cs00024-t36-diagnosis.md).
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0
@@ -270,10 +272,10 @@ is effective RAM-loop throughput including READY waits, not a direct clock
 measurement. It gives a conservative 1.234 ms estimate per sweep against the
 2 ms datasheet interval.
 
-The routine post-burn run adds a destructive local 32 KiB RAM sweep with zero,
-one, checkerboard, and address-XOR patterns. Two small relocated programs cover
-the complete range after a six-second refresh-on hold and return compact
-D84..D91 failure attribution:
+The completed post-burn run used the destructive local 32 KiB RAM sweep with
+zero, one, checkerboard, and address-XOR patterns. Two small relocated programs
+covered the complete range after a six-second refresh-on hold and returned
+compact D84..D91 failure attribution:
 
 ```sh
 python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
@@ -295,6 +297,24 @@ readback with zero retries. After the six-second hold, the captured contiguous
 `4000h..46BFh` prefix contained 1,728 exact zeros and sampled all 128 physical
 rows 13--14 times. See the physical log for the exact limits; the remainder of
 that delayed read and the other three wire patterns were not completed.
+
+The later local session completed the missing proof in 45 minutes. All eight
+stage/pattern combinations over the union `4000h..BFFFh` passed with zero
+mismatching bytes, XOR `00`, and no candidate D84--D91 package. The same run
+separately found D57 channel 2 fixed at `99/99` for high and low programming in
+all eight repetitions, while channels 0/1 worked. The boot D57 bit remained
+clean because that shorter predicate applies its low test only to channel 0.
+Use the focused follow-up without rerunning RAM:
+
+```sh
+python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
+  --only-d57 --log-dir spinoffs/jukuravi/sessions/cs00024-t36-d57-followup
+```
+
+This is a D57 channel-2 functional-path diagnosis, not yet a D57 package
+diagnosis. Compare D57.18/CLK2 with D57.9/CLK0 and verify D57.16/GATE2 before
+substitution. See the consolidated
+[`CS00024 T36 diagnosis`](../../docs/cs00024-t36-diagnosis.md).
 
 ### Session logs
 
@@ -357,7 +377,9 @@ marker. The T35 suite preserves the historical binary and physical captures.
 The T36 suite derives CPU A0..A6 from the drawings/datasheet, proves a complete
 128-row sweep, performs a 1,025-byte verified upload and idle reattach,
 exercises every refresh operation and torn-disable fallback, and requires exact
-T35 to decay as the one-row negative control while preserving T34 and T35.
+T35 to decay as the one-row negative control while preserving T34 and T35. It
+also pins both physical T36 sessions and reproduces the clean-boot/raw-fail
+D57 channel-2 signature in focused cosim.
 
 The diagnostic ladder, fault injection coverage, image hashes, and older ROM
 revisions are documented in [`firmware/README.md`](firmware/README.md). That

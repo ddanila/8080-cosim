@@ -465,3 +465,75 @@ compact mismatch/XOR/first-address evidence. The two ranges overlap, but their
 union is exactly the full 32 KiB and both code homes are tested by the opposite
 stage. Four-pattern decay-enabled simulation passes. This changes only the
 host tooling; the physically programmed T36 image remains exact.
+
+## T36 complete local RAM and D57 result, 2026-08-10/11
+
+The replacement run completed in 45 minutes. Its immutable capture is
+`sessions/cs00024-t36-local-full-physical/20260810T205728.130960Z.json`
+with the matching raw RX/TX files. Exact T36 `1E/C617` booted with a fully
+clean bitmap. Native one-vote PROBE, verified upload/CALL/RET, all six
+CPU/address probes, and `4000h`/`5000h` execution separation passed. The
+paired loop measured 1.701558 MHz effective RAM execution rate, stable against
+the first T36 run's 1.702797 MHz.
+
+The complete local RAM result passed all four patterns:
+
+| Pattern | Low-resident test | High-resident test | Union result |
+| --- | --- | --- | --- |
+| zero | `5000h..BFFFh`, 28,672 bytes, zero mismatch | `4000h..AFFFh`, 28,672 bytes, zero mismatch | pass |
+| one | same, zero mismatch | same, zero mismatch | pass |
+| checkerboard | same, zero mismatch | same, zero mismatch | pass |
+| address-XOR | same, zero mismatch | same, zero mismatch | pass |
+
+Every fill and verify refreshed after 128 tested bytes, and every verify
+followed a six-second refresh-on hold. Aggregate XOR was `00` for every stage
+and no D84--D91 package candidate remained. The test therefore proves the full
+32 KiB array and every data lane under T36 refresh; it is not a six-second
+unrefreshed-retention claim. It supersedes the first run's bounded 1,728-byte
+delayed prefix as the routine four-pattern physical result.
+
+The parser-aging sweep passed a 6 ms delay after every physical symbol,
+echoing the exact 16-byte cookie and recovering CONFIG in 1.298094 seconds.
+At 12 ms per symbol the ROM returned outer-frame `bad_crc`, then the short
+recovery CONFIG timed out; the complete point took 2.528204 seconds. T36
+refresh remained active throughout each receive wait. This is therefore not a
+12 ms RAM hold or positive DRAM-decay result. Later uploads and readbacks
+recovered and remained exact. Across 282 verified chunks in the session,
+sixteen LOADs and two readbacks needed a bounded retry, but all completed,
+there were zero store retries, and the maximum was three attempts. The
+remaining finding is a serial/parser timing margin.
+
+The final raw D57 operation uploaded and read back exactly, returned in
+0.127933 seconds, and then repeated one stable channel-specific result eight
+times:
+
+```text
+D57R A5 01 08 00
+FD 3D  FC 3C  99 99    ; repeated eight times
+```
+
+Only channel 2 failed the high/low discriminator. The clean boot D57 bit does
+not contradict this result: the boot predicate tests a high/sign value on all
+three channels but the low/sign transition only on channel 0. Exact-signature
+cosim now reproduces clean boot plus channel-2-only `99/99` failures.
+
+The drawing localizes the physical path. D57 CLK0/pin 9 and CLK2/pin 18 share
+the 1.23 MHz D103.11 source. Working channel 0 excludes a globally dead D103
+divider, but not the separate branch, socket contact, or package pin at
+D57.18. D57 GATE2/pin 16 should be high; OUT2/pin 17 is the separately traced
+`SYNC_B` boundary. The Intel 8253 contract requires rising and falling clock
+edges after a count write before the new count transfers, making a missing
+CLK2 contact a strong fit for invariant stale data. The path candidates, in
+order, are D57.18 clock branch/contact, D57 internal channel-2 path,
+D57.16 gate contact, then channel-select/local-bus effects. This is not yet a
+package condemnation.
+
+The exact EktaSoft 3.7 ROM does use the channel: offsets `01FCh..020Dh` write
+control `B0h`, followed by `FFh,FFh` to port `1Ah`. The immediate bench action
+is to compare D57 pin 18 against pin 9, verify pin 16 high, and observe pin 17
+while reprogramming. With power off, continuity D103.11 to D57.18 and the
+socket should be checked before a controlled PIT substitution.
+
+The consolidated evidence, primary-source research, simulator boundaries, and
+ranked diagnosis are in
+[`../../docs/cs00024-t36-diagnosis.md`](../../docs/cs00024-t36-diagnosis.md).

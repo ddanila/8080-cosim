@@ -75,7 +75,7 @@ def main() -> int:
                     "--loader-guard-ms",
                     "0",
                     "--retention-guards-ms",
-                    "0,0",
+                    "6,12",
                     "--full-ram-sweep",
                     "--full-ram-hold-ms",
                     "0",

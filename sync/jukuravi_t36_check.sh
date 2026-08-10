@@ -21,6 +21,7 @@ python3 -m py_compile \
   tests/jukuravi_local_full_ram_test.py \
   tests/jukuravi_t36_physical_sessions_test.py \
   tests/jukuravi_t36_refresh_test.py \
+  tests/jukuravi_t36_d57_repro_test.py \
   tests/jukuravi_t36_batch_test.py
 
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
@@ -36,6 +37,8 @@ python3 tests/jukuravi_t36_physical_sessions_test.py
 python3 tests/jukuravi_t36_refresh_test.py \
   "$check_tmp/trace" spinoffs/jukuravi/firmware/diag-d0-row-refresh.bin
 python3 tests/jukuravi_t36_batch_test.py \
+  "$check_tmp/trace" spinoffs/jukuravi/firmware/diag-d0-row-refresh.bin
+python3 tests/jukuravi_t36_d57_repro_test.py \
   "$check_tmp/trace" spinoffs/jukuravi/firmware/diag-d0-row-refresh.bin
 python3 tests/jukuravi_local_full_ram_test.py \
   "$check_tmp/trace" spinoffs/jukuravi/firmware/diag-d0-row-refresh.bin

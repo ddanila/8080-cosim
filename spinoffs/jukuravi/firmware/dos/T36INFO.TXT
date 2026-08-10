@@ -29,6 +29,7 @@ program/verify cycle. T36 passes corrected low-seven-bit row-decay simulation,
 long verified upload, idle reattach, public-call ABI checks, all refresh
 controls, torn-disable injection, and exact-T35 one-row negative control.
 On CS00024 the exact image passed the complete boot bitmap, every uploaded
-CPU/address probe, a full 32 KiB zero LOAD/readback, and the captured 1,728-byte
-post-hold prefix spanning all physical rows. Use the host's local full-RAM
-sweep for the remaining four-pattern physical proof.
+CPU/address probe, and the complete local 32 KiB four-pattern test after a
+six-second refresh-on hold. Every byte and data lane passed with zero mismatch.
+The same session found a separate D57 channel-2 high/low read fault (99/99 on
+all eight repetitions); use batch.py --only-d57 for focused electrical work.

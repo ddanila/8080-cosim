@@ -1,8 +1,8 @@
 # Jukuravi diagnostic firmware
 
-Status date: 2026-08-10.
+Status date: 2026-08-11.
 
-Status: **T36 PHYSICAL-ROW REFRESH PHYSICAL EVIDENCE + HISTORICAL D0/D2 LADDER**
+Status: **T36 COMPLETE PHYSICAL RAM EVIDENCE + HISTORICAL D0/D2 LADDER**
 
 All images below are directly burnable Jukuravi images for the D15 2764
 socket. Each is exactly 8,192 bytes and maps to CPU `0x0000..0x1FFF`; D16 is
@@ -1099,3 +1099,20 @@ decay-enabled host/PTTY regression proves all four patterns and both locations;
 no ROM byte or public ABI changed. A second simulated run injects DB0 stuck low
 at `6000h` and the compact results identify only D84, in both overlapping
 stages and in exactly the patterns whose expected byte has DB0 set.
+
+The physical local sweep subsequently completed on CS00024. Zero, one,
+checkerboard, and address-XOR all passed over the complete `4000h..BFFFh`
+union after six-second refresh-on holds: eight stage results, zero mismatching
+bytes, XOR `00`, and no D84--D91 candidate. This proves the RAM array under
+T36 refresh and supersedes the first session's delayed-prefix limit; it does
+not claim six-second raw retention or validate the normal-ROM refresh schedule.
+
+The same session isolated a separate D57 channel-2 path result. The raw test
+returned `99/99` for high/low programming in all eight repetitions while
+channels 0 and 1 responded. The boot D57 predicate remained clean because its
+low transition covers only channel 0. Focused cosim reproduces that exact
+clean-boot/raw-fail signature, and `batch.py --only-d57` avoids repeating RAM
+work during electrical follow-up. The drawing ranks D57.18/CLK2 branch/socket
+and the internal channel-2 path ahead of shared D103 because working channel 0
+uses the same 1.23 MHz source. See
+[`../../../docs/cs00024-t36-diagnosis.md`](../../../docs/cs00024-t36-diagnosis.md).

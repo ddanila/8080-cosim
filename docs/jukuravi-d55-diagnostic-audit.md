@@ -137,13 +137,16 @@ Two cold T31 boots repeated bitmap `18` (D55 plus D57), while PIC, PPI, D54 and
 the two compact RAM windows passed. Exact T31's D55 bit is explained by the
 diagnostic clocking defect on a clean structural board. Four later exact T34
 `1C/A637` cold boots all cleared corrected D55. CS00024 is therefore classified
-as **D55 functional path clean in four T34 boots and the first T36 boot; no
+as **D55 functional path clean in four T34 boots and both T36 sessions; no
 D55 package-fault evidence**. The T36 `1E/C617` capture also cleared D57 and
 both compact RAM predicates before every uploaded CPU/address probe passed.
 
 D57 was not stable across the T34 boots: the first bitmap was `00`, and the
-next three were `10`; the later T36 bitmap was `00`. Long seven-vote loader
-PROBE commands also repeated a
+next three were `10`; both later T36 boot bitmaps were `00`. The expanded T36
+raw test nevertheless returned channel 2 as `99/99` after both high and low
+programming in eight repetitions. The boot predicate's low test covers only
+channel 0, so this is a separate D57 coverage/path finding and does not weaken
+the corrected D55 result. Long seven-vote loader PROBE commands also repeated a
 strong-CRC parser-buffer result, while a short seven-vote CONFIG followed by
 the same PROBE at one vote passed exactly. Later same-process marker tests
 proved an idle RAM/refresh failure: regular roughly five-second accesses kept

@@ -611,8 +611,7 @@ def evaluate_local_full_ram_sweep(
         for stage in local_ram.STAGES:
             payload = local_ram.build_probe(stage, pattern_id)
             print(
-                f"JUKURAVI-BATCH: local-full-ram {pattern_name} "
-                f"{stage.name} fill",
+                f"JUKURAVI-BATCH: local-full-ram {pattern_name} {stage.name} fill",
                 flush=True,
             )
             fill = session.run_resident_loader_v2(
@@ -631,8 +630,7 @@ def evaluate_local_full_ram_sweep(
             if hold_ms:
                 time.sleep(hold_ms / 1000.0)
             print(
-                f"JUKURAVI-BATCH: local-full-ram {pattern_name} "
-                f"{stage.name} verify",
+                f"JUKURAVI-BATCH: local-full-ram {pattern_name} {stage.name} verify",
                 flush=True,
             )
             verify = session.run_resident_loader_v2(
@@ -645,9 +643,7 @@ def evaluate_local_full_ram_sweep(
                 result_length=local_ram.RESULT_SIZE,
                 run_mode="call",
             )
-            decoded = local_ram.decode_result(
-                result_bytes(verify), stage, pattern_id
-            )
+            decoded = local_ram.decode_result(result_bytes(verify), stage, pattern_id)
             decoded["fill_operation"] = fill
             decoded["verify_operation"] = verify
             print(
@@ -670,9 +666,7 @@ def evaluate_local_full_ram_sweep(
                 "mismatching_bytes": mismatches,
                 "xor_or": f"0x{xor_or:02X}",
                 "candidate_packages": [
-                    DRAM_LANE_PACKAGES[bit]
-                    for bit in range(8)
-                    if xor_or & (1 << bit)
+                    DRAM_LANE_PACKAGES[bit] for bit in range(8) if xor_or & (1 << bit)
                 ],
                 "stages": stage_results,
             }
@@ -995,6 +989,14 @@ def make_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--only-d57",
+        action="store_true",
+        help=(
+            "after verified return and CPU timing, run only the raw D57 "
+            "channel discriminator; intended for isolated electrical follow-up"
+        ),
+    )
+    parser.add_argument(
         "--ram-lane-address",
         type=parse_hex_address,
         default=DEFAULT_RAM_LANE_ADDRESS,
@@ -1077,16 +1079,19 @@ def make_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = make_parser().parse_args()
-    if args.only_probe is not None and args.only_ram_lanes:
+    focused_modes = sum(
+        (args.only_probe is not None, args.only_ram_lanes, args.only_d57)
+    )
+    if focused_modes > 1:
         print(
-            "JUKURAVI-BATCH: --only-probe and --only-ram-lanes are exclusive",
+            "JUKURAVI-BATCH: --only-probe, --only-ram-lanes, and --only-d57 "
+            "are exclusive",
             file=sys.stderr,
         )
         return 2
     if args.full_ram_sweep and args.local_full_ram_sweep:
         print(
-            "JUKURAVI-BATCH: --full-ram-sweep and --local-full-ram-sweep "
-            "are exclusive",
+            "JUKURAVI-BATCH: --full-ram-sweep and --local-full-ram-sweep are exclusive",
             file=sys.stderr,
         )
         return 2
@@ -1126,7 +1131,7 @@ def main() -> int:
         skipped_probes.update(
             probe.name for probe in PROBES if probe.name != args.only_probe
         )
-    if args.only_ram_lanes:
+    if args.only_ram_lanes or args.only_d57:
         skipped_probes.update(probe.name for probe in PROBES)
     log_dir = (
         HERE / "sessions" / f"cs00024-{profile.name}-batch"
@@ -1262,7 +1267,9 @@ def main() -> int:
                         args.local_full_ram_hold_ms,
                     )
                 )
-            isolated = args.only_probe is not None or args.only_ram_lanes
+            isolated = (
+                args.only_probe is not None or args.only_ram_lanes or args.only_d57
+            )
             if not isolated:
                 results.append(evaluate_address_execution(session, args.loader_timeout))
             if not isolated and not args.no_retention_sweep:
@@ -1272,7 +1279,7 @@ def main() -> int:
                     args.loader_guard_ms,
                     args.loader_timeout,
                 )
-            if not isolated:
+            if not (args.only_probe is not None or args.only_ram_lanes):
                 results.append(
                     evaluate_d57(
                         session,
@@ -1324,6 +1331,7 @@ def main() -> int:
         "skipped": sorted(skipped_probes),
         "direct_probes": sorted(direct_probes),
         "ram_lane_test": args.only_ram_lanes,
+        "d57_only": args.only_d57,
         "full_ram_sweep": args.full_ram_sweep,
         "local_full_ram_sweep": args.local_full_ram_sweep,
     }

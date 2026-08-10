@@ -54,6 +54,9 @@ findings. Every status applies only to the boundary named by the report.
   repaired D1, corrected D55 status, and post-diagnostic EK37 restoration),
   `jukuravi-d55-diagnostic-audit.md` (exact-sheet/8253 review, invalidation of
   the unclocked T15/T16/T31/T32 predicate, and clock-safe T34 fault matrix),
+  `cs00024-t36-diagnosis.md` (complete T36 four-pattern 32 KiB physical proof,
+  refresh interpretation, parser-margin separation, and D57 channel-2
+  localization),
   `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
   `native-resistor-values.md` (25 literal sheet/photo values; no axial holds),
   `native-capacitor-values.md` (C7/C8/C99 literal sheet values with nine
