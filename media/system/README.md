@@ -24,6 +24,32 @@ Verify with:
 (cd media/system && sha256sum -c SHA256SUMS)
 ```
 
+## Serial network boot
+
+These 10 KiB files are SYSGEN/system-track images, not binaries that can be
+jumped to at `0100h`. Bytes `0000h..01FFh` are four unused `E5`-filled sectors;
+the runnable 52-sector system at `0200h..1BFFh` belongs at the source-defined
+`CCP=B400h`, with cold BIOS entry `CA00h`. The remaining allocation tail is not
+part of the runnable system (the isolated `FFh` in `EKDOSVSW.BIN` is likewise
+outside the 52 sectors).
+
+`tools/janet_netboot.py` recognizes this format and creates an in-memory 128-byte
+8080 staging record. The stock NetBios loads the resulting 6,784-byte executable
+at `0100h`; it copies the exact 6,656 system bytes to `B400h` and jumps `CA00h`.
+No source image is modified.
+
+```sh
+# Physical Juku: start this, then type TN0201 (no Enter) at the ROM prompt.
+tools/janet_netboot.py /dev/ttyUSB0 media/system/EKDOS230.BIN
+
+# Simulator proof for all five images.
+sync/janet_netboot_check.sh
+```
+
+The proven stock setting is nominal 9600 baud, 8O1. The regression exercises
+the real PTY serial/PIC/NetBios path and requires a byte-exact `B400h` image plus
+the `CA00h` handoff; it does not inject RAM.
+
 ## PROM blocker status
 
 The public archive pass that found `JUKUSYS.ZIP` also checked the museum software

@@ -12,7 +12,8 @@
 //        mode 3:         all RAM
 //   - video reads DRAM at 0xD800, stride = WIDTH/8 = 40 bytes/line (320x241 mono)
 //
-// IN ports return the 8255 output latch (no key). Interrupts not modelled.
+// IN ports return the 8255 output latch when no device owns the read.  The
+// functional PIC path covers frame, 8251 RxRDY, and 8251 TxRDY interrupts.
 // Optional expansion cartridge: set JUKU_CART=/path/to/image.{bin,hex}.
 //
 // STATUS: boots the real BIOS and draws the banner to VRAM. The long-standing
@@ -27,6 +28,8 @@
 // USART: JUKU_USART_PTY=auto prints a new slave path; a host-created PTY path
 //        may be supplied instead. JUKU_USART_TRANSFER_CYCLES controls the
 //        holding-to-shift delay; JUKU_USART_BYTE_CYCLES controls frame time.
+//        JUKU_STOP_PC=ADDR stops before executing ADDR after at least
+//        JUKU_STOP_PC_AFTER_USART_RX bytes (useful for network-load proofs).
 //        JUKU_USART_FAULT=tx_stuck accepts each post-reset byte and then holds
 //        the transmit input register full until the next 8251 reset;
 //        tx_stuck_once:BYTE jams one matching write until an 8251 reset;
@@ -316,6 +319,7 @@ typedef struct {
   unsigned long fault_tx_stuck_once_recoveries;
   unsigned long tx_transfer_cyc;
   unsigned long tx_complete_cyc;
+  unsigned long rx_next_cyc;
   unsigned long transfer_cycles;
   unsigned long byte_cycles;
   unsigned long tx_bytes;
@@ -328,6 +332,20 @@ static juku_usart usart = {
   .transfer_cycles = 16,
   .byte_cycles = 256,
 };
+static int usart_tx_irq_armed = 0;
+static int usart_tx_irq_level = 0, usart_rx_irq_level = 0;
+static int usart_tx_irq_pending = 0, usart_rx_irq_pending = 0;
+
+static void usart_update_irq_edges(void) {
+  int tx_level = usart.enabled && usart_tx_irq_armed &&
+                 (usart.command & 0x01) && !usart.fault_tx_stuck &&
+                 !usart.tx_holding_full;
+  int rx_level = usart.enabled && (usart.command & 0x04) && usart.rx_ready;
+  if (tx_level && !usart_tx_irq_level) usart_tx_irq_pending = 1;
+  if (rx_level && !usart_rx_irq_level) usart_rx_irq_pending = 1;
+  usart_tx_irq_level = tx_level;
+  usart_rx_irq_level = rx_level;
+}
 
 static int env_enabled(const char* value) {
   return value && value[0] && strcmp(value, "0") != 0;
@@ -406,6 +424,9 @@ static void usart_reset(void) {
   usart.rx_ready = 0;
   usart.tx_holding_full = 0;
   usart.tx_busy = 0;
+  usart_tx_irq_armed = 0;
+  usart_tx_irq_level = usart_rx_irq_level = 0;
+  usart_tx_irq_pending = usart_rx_irq_pending = 0;
 }
 
 static void usart_poll(unsigned long cyc) {
@@ -429,18 +450,20 @@ static void usart_poll(unsigned long cyc) {
     usart.tx_busy = 1;
     usart.tx_complete_cyc = cyc + usart.byte_cycles;
   }
-  if ((usart.command & 0x04) && !usart.rx_ready) {
+  if ((usart.command & 0x04) && !usart.rx_ready && cyc >= usart.rx_next_cyc) {
     uint8_t value;
     ssize_t received = read(usart.fd, &value, 1);
     if (received == 1) {
       usart.rx_data = value;
       usart.rx_ready = 1;
       usart.rx_bytes++;
+      usart.rx_next_cyc = cyc + usart.byte_cycles;
     } else if (received < 0 && errno != EAGAIN && errno != EWOULDBLOCK && errno != EIO) {
       perror("JUKU USART PTY read");
       exit(2);
     }
   }
+  usart_update_irq_edges();
 }
 
 static uint8_t usart_status(void) {
@@ -467,6 +490,7 @@ static uint8_t usart_read(int control, unsigned long cyc) {
   if (control) return usart_status();
   uint8_t value = usart.rx_data;
   usart.rx_ready = 0;
+  usart_update_irq_edges();
   return value;
 }
 
@@ -479,7 +503,15 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
     } else if (value & 0x40) {
       usart_reset();
     } else {
+      uint8_t old_command = usart.command;
       usart.command = value;
+      if ((old_command & 0x01) && !(value & 0x01)) {
+        // NetBios deliberately drops and raises TxEN when a complete frame is
+        // queued.  Treat that as the interrupt arm/ack boundary; the initial
+        // 8251 enable occurs before its transmit descriptor is initialized.
+        usart_tx_irq_armed = 1;
+        usart_tx_irq_pending = 0;
+      }
       if (value & 0x10) usart.rx_ready = 0;
     }
   } else if ((usart.command & 0x01) && !usart.tx_holding_full) {
@@ -499,6 +531,7 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
     if (!usart.tx_busy)
       usart.tx_transfer_cyc = cyc + usart.transfer_cycles;
   }
+  usart_update_irq_edges();
 }
 
 static void set_mode(int m) {
@@ -642,18 +675,24 @@ static int ekdos_prompt_visible(void) {
 // Port B (0x05) value the BIOS reads: 74148-encode the pressed key in the selected column.
 // Port B value: SHIFT bits 6/7 (active-LOW: 1=released) are GLOBAL (reflect the held key's
 // shift regardless of column); the 74148 code (b1-3) + GS (b0, active-low) are per-column.
-#define KBD_NONE 0xCF              // no key: code=7, GS released (b0=1), SHIFT released (b6/7=1)
-static uint8_t kbd_portb(void) {
-  if (g_vw < kbd_start_vram) return KBD_NONE;          // default waits until the ekta37 banner is drawn
+#define KBD_NONE 0xCF              // no key: encoder + -FK released, SHIFT/CTRL released
+static uint8_t kbd_portb(const i8080* cpu) {
+  // ROM 1209h..123Bh selects eight configuration positions and samples PB5.
+  // Model the source-closed, unstrapped/onboard-serial setting as released
+  // high only in that scan; ordinary keyboard-idle remains the established
+  // drawing-derived 0xCF value.
+  int config_scan = cpu && cpu->pc >= 0x1209 && cpu->pc <= 0x123B;
+  uint8_t idle = (uint8_t)(KBD_NONE | (config_scan ? 0x20 : 0));
+  if (g_vw < kbd_start_vram) return idle;              // default waits until the ekta37 banner is drawn
   char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < kbd_hold_frames) ? kbd_str[kbd_pos] : 0;
-  if (c == '|') return KBD_NONE;                       // prompt wait marker, not a typed key
+  if (c == '|') return idle;                           // prompt wait marker, not a typed key
   int shift = 0, col = -1, bit = -1;
   if (c) {
     char lc = c; if (c >= 'A' && c <= 'Z') { lc = (char)(c + 32); shift = 1; }
     for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
       if (KMAP[i].c == lc) { col = KMAP[i].col; bit = KMAP[i].bit; shift |= KMAP[i].shift; break; }
   }
-  uint8_t pb = 0xC0;                                   // SHIFT bits released (active-low high)
+  uint8_t pb = (uint8_t)(0xC0 | (config_scan ? 0x20 : 0));
   if (shift) pb &= (uint8_t)~0x40;                     // SHIFT1 held = bit6 low (active-low)
   if (c && col == kbd_col)
     pb |= (uint8_t)(((~bit) & 7) << 1);                // 74148 code in b1-3, GS active (b0=0)
@@ -692,6 +731,33 @@ static void wb(void* u, uint16_t a, uint8_t v) {
   }
 }
 
+static int take_pic_irq(i8080* cpu, unsigned irq, const char* source,
+                        unsigned long* log_count) {
+  if (!cpu || irq > 7 || !cpu->iff || (pic_mask & (1u << irq))) return 0;
+
+  uint16_t vec = ((uint16_t)pic_icw2 << 8) | (pic_icw1 & 0xE0) | (irq << 2);
+  if ((*log_count)++ < 3)
+    fprintf(stderr,
+            "[IRQ] %s #%lu g_vw=%lu cyc=%lu pc=%04X irq=%u "
+            "icw1=%02X icw2=%02X mask=%02X vec=%04X\n",
+            source, *log_count, g_vw, cpu->cyc, cpu->pc, irq,
+            pic_icw1, pic_icw2, pic_mask, vec);
+
+  // The 8259 supplies an MCS-80 CALL over three INTA cycles.  The functional
+  // cosim performs the resulting call directly while retaining those bus
+  // events for the unified trace contract.
+  trace_bus_event("IA", 0, 0xCD);
+  trace_bus_event("IA", 0, (uint8_t)vec);
+  trace_bus_event("IA", 0, (uint8_t)(vec >> 8));
+  if (cpu->halted) cpu->halted = 0;
+  wb(0, (uint16_t)(cpu->sp - 1), cpu->pc >> 8);
+  wb(0, (uint16_t)(cpu->sp - 2), cpu->pc & 0xFF);
+  cpu->sp -= 2;
+  cpu->iff = 0;
+  cpu->pc = vec;
+  return 1;
+}
+
 static void sync_fdc_time(i8080* cpu) {
   if (!fdc_enabled || !cpu || cpu->cyc <= fdc_last_cyc) return;
   juku_fdc_tick(&fdc, (unsigned)(cpu->cyc - fdc_last_cyc));
@@ -709,7 +775,7 @@ static uint8_t pin(void* u, uint8_t p) {
   }
   in_count[p]++;
   uint8_t value;
-  if (p == 0x05 && kbd_enabled) value = kbd_portb();             // 8255 Port B = keyboard 74148
+  if (p == 0x05 && kbd_enabled) value = kbd_portb(cpu);          // 8255 Port B = keyboard 74148/config scan
   else if (usart.enabled && p >= 0x08 && p <= 0x0B)
     value = usart_read(p & 1, cpu ? cpu->cyc : 0);
   else if (fdc_enabled && p >= 0x1C && p <= 0x1F) {
@@ -718,6 +784,11 @@ static uint8_t pin(void* u, uint8_t p) {
     if (p == 0x1F) fdc_data_reads++;
   }
   else if (is_pit_data_port(p)) value = pit_read(p);
+  // Optional expansion hardware occupies F0h-F3h in some software paths.
+  // With no card installed the Multibus data lines float high; returning the
+  // generic zero-valued output latch here traps NetBios forever in its F1h
+  // ready poll before it can initialize the onboard 8251 serial link.
+  else if (p >= 0xF0 && p <= 0xF3) value = 0xFF;
   else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
   if (p == 0x01 && pic_fault_enabled)
     value = (uint8_t)((value & (uint8_t)~pic_fault_stuck_low) |
@@ -936,6 +1007,10 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "usart_fault_tx_stuck_once_recoveries=%lu\n", usart.fault_tx_stuck_once_recoveries);
   fprintf(state_out, "usart_tx_bytes=%lu\n", usart.tx_bytes);
   fprintf(state_out, "usart_rx_bytes=%lu\n", usart.rx_bytes);
+  fprintf(state_out, "usart_rx_next_cyc=%lu\n", usart.rx_next_cyc);
+  fprintf(state_out, "usart_tx_irq_armed=%d\n", usart_tx_irq_armed);
+  fprintf(state_out, "usart_tx_irq_pending=%d\n", usart_tx_irq_pending);
+  fprintf(state_out, "usart_rx_irq_pending=%d\n", usart_rx_irq_pending);
   for (int p = 0; p < 256; p++) {
     if (out_count[p] || in_count[p] || out_last[p])
       fprintf(state_out, "port_%02X=last:%02X,out:%lu,in:%lu\n",
@@ -953,6 +1028,31 @@ int main(int argc, char** argv) {
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
   const char* checkpoint_cyc_env = getenv("JUKU_CHECKPOINT_CYC");
   unsigned long checkpoint_cyc = (checkpoint_cyc_env && checkpoint_cyc_env[0]) ? strtoul(checkpoint_cyc_env, 0, 0) : 0UL;
+  const char* stop_pc_env = getenv("JUKU_STOP_PC");
+  const char* stop_pc_rx_env = getenv("JUKU_STOP_PC_AFTER_USART_RX");
+  int stop_pc_enabled = 0;
+  unsigned long stop_pc = 0, stop_pc_after_usart_rx = 0;
+  if (stop_pc_env && stop_pc_env[0]) {
+    char* end = NULL;
+    stop_pc = strtoul(stop_pc_env, &end, 0);
+    if (!end || *end || stop_pc > 0xFFFF) {
+      fprintf(stderr, "invalid JUKU_STOP_PC=%s (expected 0..0xFFFF)\n",
+              stop_pc_env);
+      return 2;
+    }
+    stop_pc_enabled = 1;
+    if (stop_pc_rx_env && stop_pc_rx_env[0]) {
+      end = NULL;
+      stop_pc_after_usart_rx = strtoul(stop_pc_rx_env, &end, 0);
+      if (!end || *end) {
+        fprintf(stderr,
+                "invalid JUKU_STOP_PC_AFTER_USART_RX=%s "
+                "(expected byte count)\n",
+                stop_pc_rx_env);
+        return 2;
+      }
+    }
+  }
   const char* rom_exec_reset_env = getenv("JUKU_ROM_EXEC_RESET_AT");
   unsigned long rom_exec_reset_at = 0;
   unsigned long rom_exec_resets = 0;
@@ -1322,12 +1422,16 @@ int main(int argc, char** argv) {
   cpu.pc = 0x0000;
 
   unsigned long last_write_total = 0, writes_total, idle_cyc = 0;
+  unsigned long usart_rx_irq_count = 0, usart_tx_irq_count = 0;
+  unsigned long frame_irq_count = 0;
   static uint32_t pchist[MEM_SIZE];
 
   int chk_logs = 0;
   while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) &&
          !(g_vw_limit && g_vw >= g_vw_limit) &&
          !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc) &&
+         !(stop_pc_enabled && usart.rx_bytes >= stop_pc_after_usart_rx &&
+           cpu.pc == stop_pc) &&
          !(stop_keys_done && kbd_str && !kbd_str[kbd_pos]) &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
     if (dram_retention_arm_pc_enabled && !dram_retention_armed &&
@@ -1364,27 +1468,19 @@ int main(int argc, char** argv) {
     i8080_step(&cpu);
     sync_fdc_time(&cpu);
     usart_poll(cpu.cyc);
+    // D11 RxRDY and TxRDY directly drive D10/PIC IR2 and IR3.  NetBios is
+    // interrupt-driven, so status-register emulation alone cannot put its
+    // queued request onto the wire.
+    if (usart_rx_irq_pending &&
+        take_pic_irq(&cpu, 2, "USART RxRDY", &usart_rx_irq_count))
+      usart_rx_irq_pending = 0;
+    if (usart_tx_irq_pending &&
+        take_pic_irq(&cpu, 3, "USART TxRDY", &usart_tx_irq_count))
+      usart_tx_irq_pending = 0;
     // --- frame interrupt: 8253 VER-RTR -> 8259 IR5 -> CPU (MCS-80 CALL to the ICW vector) ---
     if (frame_cyc && cpu.cyc >= next_frame) {
       next_frame += frame_cyc;
-      if (cpu.iff && !(pic_mask & 0x20)) {           // IFF set + IR5 unmasked
-        static int irq_n = 0;
-        if (irq_n++ < 3) fprintf(stderr, "[IRQ] taken #%d g_vw=%lu cyc=%lu pc=%04X icw1=%02X icw2=%02X mask=%02X vec=%04X\n",
-            irq_n, g_vw, cpu.cyc, cpu.pc, pic_icw1, pic_icw2, pic_mask,
-            ((uint16_t)pic_icw2<<8)|(pic_icw1&0xE0)|(5u<<2));
-        uint16_t vec = ((uint16_t)pic_icw2 << 8) | (pic_icw1 & 0xE0) | (5u << 2);
-        // The hardware 8259 supplies a three-byte MCS-80 CALL sequence over
-        // three INTA cycles. The functional cosim interrupt shortcut performs
-        // the resulting call directly, but preserves those CPU-visible bus
-        // events for the unified trace contract.
-        trace_bus_event("IA", 0, 0xCD);
-        trace_bus_event("IA", 0, (uint8_t)vec);
-        trace_bus_event("IA", 0, (uint8_t)(vec >> 8));
-        if (cpu.halted) cpu.halted = 0;              // interrupt wakes a HLT
-        wb(0, (uint16_t)(cpu.sp - 1), cpu.pc >> 8);  // CALL: push PC, jump to vector
-        wb(0, (uint16_t)(cpu.sp - 2), cpu.pc & 0xFF);
-        cpu.sp -= 2; cpu.iff = 0; cpu.pc = vec;
-      }
+      take_pic_irq(&cpu, 5, "frame", &frame_irq_count);
       // advance the typed-keystroke state once per frame (HOLD pressed, GAP released)
       if (kbd_str && kbd_str[kbd_pos] && g_vw >= kbd_start_vram) {
         if (kbd_str[kbd_pos] == '|') {
@@ -1421,6 +1517,11 @@ int main(int argc, char** argv) {
   if (stop_keys_done && kbd_str && !kbd_str[kbd_pos])
     fprintf(stderr, "[KBD] stopped after completing scripted input at cyc=%lu pc=%04X g_vw=%lu\n",
             cpu.cyc, cpu.pc, g_vw);
+  if (stop_pc_enabled && usart.rx_bytes >= stop_pc_after_usart_rx &&
+      cpu.pc == stop_pc)
+    fprintf(stderr,
+            "[EXEC] stopped before pc=%04lX after %lu USART receive bytes\n",
+            stop_pc, usart.rx_bytes);
 
   dump_checkpoint(getenv("JUKU_CHECKPOINT_PREFIX"), &cpu);
 

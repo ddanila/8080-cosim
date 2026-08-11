@@ -20,6 +20,9 @@ with the machine-readable board model.
 - The C emulator also has an opt-in D11/8251 PTY transport for diagnostic-ROM
   development. Its data/status mirrors, ready transitions, TX, and RX/echo are
   guarded by `tests/cosim_usart_pty_test.py` via `sync/juk_disk_check.sh`.
+  The same transport now boots all five vendored CP/M/EKDOS system images
+  through the stock interrupt-driven NetBios/Janet protocol; the parallel
+  `sync/janet_netboot_check.sh` guard reaches each byte-exact `CA00h` handoff.
 - `sync/check.sh` currently compares 117 mapped instances and 308 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
