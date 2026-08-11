@@ -49,9 +49,10 @@ uses (see [`serial-handoff.md`](serial-handoff.md) and
 - `34B7h..34D5h`: a two-command configuration parser: `'S'` stores two
   fetched bytes (`D5A8h`/`D5E0h`, `D5ABh`); `'J'` stores one (`D4E9h`).
 
-The `34xxh` ROM region executes relocated to high RAM (the code's absolute
-references target `EFxxh..FFxxh`), so the offsets above are ROM file
-positions, not runtime addresses.
+The `34xxh` ROM region executes at `F4xxh` (the code's absolute references
+target `EFxxh..FFxxh`) through memory-mode banking: modes 1/2 hardware-map
+ROM `1800h-3FFFh` at `D800h-FFFFh` for reads. The offsets above are ROM
+file positions, not runtime addresses.
 
 ## Interpretation (labeled)
 

@@ -10,8 +10,12 @@ font identified by rendering its bytes as glyphs. Labels live in
 
 Two boundaries organize the image. The **physical split** at `2000h` is the
 D15/D16 chip edge. The **execution split** at `1800h` ends the in-place
-code: everything above is copied to RAM at `+C000h` during boot and runs at
-`D800h..FFFFh`.
+code: everything above executes at `D800h..FFFFh` through memory-mode
+banking, not a copy — MAME's driver shows modes 1/2 hardware-map ROM
+`1800h-3FFFh` at `D800h-FFFFh` for reads while writes fall through to the
+RAM underneath, which is the framebuffer (`D800h..FDA7h` for the 40x24
+screen). The console code executes from mapped ROM at the very addresses
+whose underlying RAM it paints.
 
 | ROM range | Size | Share | Region |
 | --- | ---: | ---: | --- |

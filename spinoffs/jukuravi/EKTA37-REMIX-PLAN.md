@@ -1,8 +1,8 @@
 # EktaSoft remix plan: ekta37 + Jukuravi service module
 
-Status: **PLANNED, NOT STARTED.** Planned 2026-08-11; no image has been
-built. Every measurement below is byte-verified against the pinned
-`roms/ekta37.bin` and the exact T36 build.
+Status: **PHASE 0 COMPLETE, 2026-08-11.** No image has been built. Every
+measurement below is byte-verified against the pinned `roms/ekta37.bin`
+and the exact T36 build. Phase 0 results are at the end.
 
 ## Goal
 
@@ -91,3 +91,36 @@ prompt reduces to Net, vectors get error stubs, disk region reclaimed.
 - The new image gets its own identity (banner serial/name) and its own
   pinned SHA; it must never be confused with the archival #0037 pair, which
   remains the replica content truth.
+
+## Phase 0 results (2026-08-11)
+
+1. **Port size is now a hard number.** Transitive call-graph closure of the
+   T36 loader engine (entries: the four public API vectors, loader entry,
+   loader loop, refresh API, refresh command handler): **1,836 code bytes**,
+   of which only **96 B** are low-ROM helpers — the engine is essentially
+   self-contained. Plus the 256 B CRC table (computed access, outside the
+   closure) and ~100 B of fixed protocol frames: **~2,192 B full-fidelity,
+   ~1,960 B with the refresh extension dropped.**
+2. **Strip decision: strip the floppy subsystem.** Even the trimmed core
+   plus the `H` command (~2,400-2,500 B) exceeds the 1,722 B of free space,
+   and the expansion-driver alternative (+768 B) is razor-thin and hedged.
+   The floppy strip yields a ~3.5 KiB budget and matches the Net/service
+   concept. Phase 3 therefore folds into Phase 2.
+3. **Memory-model correction (affects the mechanism, not the budget).**
+   The `+C000h` execution of ROM `1800h-3FFFh` is memory-mode **banking**,
+   not a boot-time copy: MAME's driver maps modes 1/2 as ROM reads at
+   `D800h-FFFFh` with writes falling through to the RAM underneath — which
+   is the framebuffer (`D800h..FDA7h`). Consequences for the module:
+   it executes from mapped ROM at `F9xxh` (zero RAM cost confirmed, by
+   mapping rather than copy); it must be strictly non-self-modifying (the
+   T36 engine already is — workspace-based by design); and a stray write
+   into its own address range would silently paint the framebuffer, so
+   Phase 2 adds a cosim guard asserting no `D800h+` writes from the engine.
+   `J` must also leave the memory mode at 1.
+4. **Workspace verdict.** `C000h-CFFFh` is plain RAM in mode 1. EktaSoft/
+   EKDOS do use parts of `C0xxh-CDxxh` (37 operand references), so the
+   `J` command is one-way service mode until RESET — the documented
+   contract — and keeping the loader workspace at its native `C000h`
+   preserves bit-exact compatibility with every existing host tool. The
+   loader's workspace and stack stay below `D800h`, so the screen contents
+   remain intact during service mode: `J` can leave a visible banner.
