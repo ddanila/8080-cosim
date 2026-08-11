@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Build ektaravi: the EktaSoft #0037 remix (EKTA37-REMIX-PLAN.md).
+"""Build ekta4401: the EktaSoft #0037 remix (EKTA37-REMIX-PLAN.md).
 
 Phase 1 content: a deterministic patch set over the pinned `roms/ekta37.bin`
-producing `ektaravi.bin`:
+producing `ekta4401.bin`:
 
 1. banner identity line — same-length replacement, honest non-factory
-   identity: `'EktaRavi '26  Danila #0001`;
+   identity: `'EktaSoft&D.Sukharev '26#01` — serial 44 (one past the
+   highest known factory serial #0043), build 01; not a factory number;
 2. the monitor command dispatch table relocated from ROM `1977h` (runtime
    `D977h`) into the free gap at ROM `3900h` (runtime `F900h`, mode-1
    mapped), extended with the new `H` command;
@@ -29,11 +30,11 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent.parent
 SOURCE = ROOT / "roms" / "ekta37.bin"
 SOURCE_SHA256 = "fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27"
-OUTPUT = HERE / "ektaravi.bin"
+OUTPUT = HERE / "ekta4401.bin"
 
 BANNER_OFFSET = 0x00DF
 BANNER_OLD = b"'EktaSoft '88  Serial #0037"
-BANNER_NEW = b"'EktaRavi '26  Danila #0001"
+BANNER_NEW = b"'EktaSoft&D.Sukharev '26#01"
 
 TABLE_OFFSET = 0x1977            # stock dispatch table (runtime D977h)
 TABLE_POINTER_OFFSET = 0x1924    # operand of the single LXI H,D977h at 1923h
@@ -137,9 +138,9 @@ def main() -> int:
     if args.check:
         committed = OUTPUT.read_bytes()
         if committed != image:
-            print("EKTARAVI: committed image differs from rebuild", file=sys.stderr)
+            print("EKTA4401: committed image differs from rebuild", file=sys.stderr)
             return 1
-        print(f"EKTARAVI-CHECK: PASS {metadata['image_sha256']}")
+        print(f"EKTA4401-CHECK: PASS {metadata['image_sha256']}")
         return 0
     OUTPUT.write_bytes(image)
     print(json.dumps(metadata, indent=2))

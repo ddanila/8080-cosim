@@ -312,12 +312,12 @@ jobs:
         run: ./sync/jukuravi_t32_check.sh
 
       # T33-T36 checks remain hand-run (they were never wired). The remix
-      # guard is wired from the start: it rebuilds ektaravi.bin from pinned
+      # guard is wired from the start: it rebuilds ekta4401.bin from pinned
       # ekta37, checks the bounded patch set and all eight ROM chunk
       # checksums, and boots it in cosim to prove the relocated command
       # table and the H command execute.
-      - name: Run ektaravi remix guards
-        run: ./sync/ektaravi_check.sh
+      - name: Run ekta4401 remix guards
+        run: ./sync/ekta4401_check.sh
 
   subsystems:
     needs: changes

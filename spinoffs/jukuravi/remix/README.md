@@ -1,20 +1,23 @@
-# ektaravi — the EktaSoft #0037 remix ROM
+# ekta4401 — the EktaSoft #0037 remix ROM
 
 Phase 1 complete, 2026-08-11. A derived 16 KiB image built deterministically
 from the pinned `roms/ekta37.bin`. Plan and phase results:
 [`../EKTA37-REMIX-PLAN.md`](../EKTA37-REMIX-PLAN.md).
 
-- Image: [`ektaravi.bin`](ektaravi.bin), SHA256
-  `56ed022016f10408d7094af565acc67ef9cb0e13e8587a7a64e323eb4f94a97e`
-- Builder: [`build_ektaravi.py`](build_ektaravi.py) (`--check` verifies the
+- Image: [`ekta4401.bin`](ekta4401.bin), SHA256
+  `df067d1c452866ad590e548a1d753375b77c39e83e4cd91599c18aba44e3cbfa`
+- Builder: [`build_ekta4401.py`](build_ekta4401.py) (`--check` verifies the
   committed image rebuilds identically)
-- Guard: `sync/ektaravi_check.sh`, test
-  [`../../../tests/ektaravi_remix_test.py`](../../../tests/ektaravi_remix_test.py)
+- Guard: `sync/ekta4401_check.sh`, test
+  [`../../../tests/ekta4401_remix_test.py`](../../../tests/ekta4401_remix_test.py)
 
 **This is not a factory image.** Its banner says so: the stock identity line
 `'EktaSoft '88  Serial #0037` is replaced, same length, by
-`'EktaRavi '26  Danila #0001`. No byte of the archival #0037 pair is
-affected; that image remains the replica content truth.
+`'EktaSoft&D.Sukharev '26#01` — the co-author is named in the banner and the
+year is '26. The file name encodes serial **44** (one past #0043, the highest
+known factory serial) and build **01**; 44 is this project's convention, not
+a factory-assigned number. No byte of the archival #0037 pair is affected;
+that image remains the replica content truth.
 
 ## Phase 1 content
 

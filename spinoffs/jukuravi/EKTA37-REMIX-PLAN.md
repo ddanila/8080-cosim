@@ -1,6 +1,6 @@
 # EktaSoft remix plan: ekta37 + Jukuravi service module
 
-Status: **PHASE 1 COMPLETE, 2026-08-11** — a booting `ektaravi.bin` with the
+Status: **PHASE 1 COMPLETE, 2026-08-11** — a booting `ekta4401.bin` with the
 banner identity and the `H` command exists and is guarded
 ([`remix/README.md`](remix/README.md)). Phase 2 (Jukuravi module + `J`,
 with the floppy strip) is not started. Measurements below are byte-verified

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the ektaravi remix image (spinoffs/jukuravi/EKTA37-REMIX-PLAN.md).
+"""Guard the ekta4401 remix image (spinoffs/jukuravi/EKTA37-REMIX-PLAN.md).
 
 Static: the committed image rebuilds byte-identically from pinned ekta37,
 differs from the source only in the intended places, and satisfies the
@@ -22,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REMIX = ROOT / "spinoffs" / "jukuravi" / "remix"
 sys.path.insert(0, str(REMIX))
-import build_ektaravi as remix  # noqa: E402
+import build_ekta4401 as remix  # noqa: E402
 
 SOURCE = ROOT / "roms" / "ekta37.bin"
 CHUNKS_LOW = ((0x000B, 0x0800), (0x0800, 0x1000), (0x1000, 0x1800))
@@ -34,14 +34,14 @@ HELP_END = 0xF9CB
 
 
 def fail(message: str) -> None:
-    print(f"EKTARAVI-TEST: FAIL: {message}", file=sys.stderr)
+    print(f"EKTA4401-TEST: FAIL: {message}", file=sys.stderr)
     raise SystemExit(1)
 
 
 def check_static(image: bytes, metadata: dict[str, object]) -> None:
-    committed = (REMIX / "ektaravi.bin").read_bytes()
+    committed = (REMIX / "ekta4401.bin").read_bytes()
     if committed != image:
-        fail("committed ektaravi.bin differs from the rebuild")
+        fail("committed ekta4401.bin differs from the rebuild")
     if len(image) != 16384:
         fail("image is not 16 KiB")
 
@@ -72,8 +72,8 @@ def check_static(image: bytes, metadata: dict[str, object]) -> None:
 
     if image[0x00DF:0x00DF + 27] != remix.BANNER_NEW:
         fail("banner line is not the remix identity")
-    if b"EktaSoft" in image:
-        fail("stock EktaSoft identity survives in the image")
+    if b"'EktaSoft '88" in image:
+        fail("stock factory identity line survives in the image")
     if metadata["commands"] != "FDSXGMCEKTBRWPAH":
         fail(f"command set differs: {metadata['commands']}")
 
@@ -91,13 +91,13 @@ def check_static(image: bytes, metadata: dict[str, object]) -> None:
             fail(f"command {letter} no longer dispatches to {target:04X}h")
     if new_table.get("H") != HANDLER_RUNTIME:
         fail("H does not dispatch to the new handler")
-    print("EKTARAVI-TEST: static checks passed", flush=True)
+    print("EKTA4401-TEST: static checks passed", flush=True)
 
 
 def check_boot(trace: Path, image: bytes) -> None:
-    with tempfile.TemporaryDirectory(prefix="ektaravi-") as name:
+    with tempfile.TemporaryDirectory(prefix="ekta4401-") as name:
         temp = Path(name)
-        rom = temp / "ektaravi.bin"
+        rom = temp / "ekta4401.bin"
         rom.write_bytes(image)
         bus = temp / "bus.trace"
         environment = os.environ.copy()
@@ -142,7 +142,7 @@ def check_boot(trace: Path, image: bytes) -> None:
         if sum(1 for byte in framebuffer if byte) < 500:
             fail("boot produced no banner screen")
         print(
-            f"EKTARAVI-TEST: boot ok — table {table} reads, handler {handler}, "
+            f"EKTA4401-TEST: boot ok — table {table} reads, handler {handler}, "
             f"help text {text}",
             flush=True,
         )
@@ -155,7 +155,7 @@ def main() -> int:
         check_boot(Path(sys.argv[1]).resolve(), image)
     elif len(sys.argv) != 1:
         fail("usage: test.py [/path/to/trace]")
-    print(f"EKTARAVI-TEST: PASS {hashlib.sha256(image).hexdigest()}", flush=True)
+    print(f"EKTA4401-TEST: PASS {hashlib.sha256(image).hexdigest()}", flush=True)
     return 0
 
 
