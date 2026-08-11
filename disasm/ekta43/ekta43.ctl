@@ -70,6 +70,8 @@ b $120F
 t $14AF AT keyboard layout table: row-ordered shifted/unshifted char pairs
 b $14DD
 c $1848
+@ $185B label=MON_SERVICE
+c $185B Monitor service dispatcher (command code in A; R/W use 12h/21h)
 b $1892
 t $1894
 b $18A1
@@ -78,29 +80,52 @@ b $18AE
 c $18B3
 b $18B8
 c $18CF
-b $1954
+@ $1954 label=CMD_T
+b $1954 Monitor T: load system -- prints the boot-source prompt; keys: 'D' -> FF50h, 'T' -> EC2Dh
 c $196C
-b $197E
+b $197E Monitor command dispatch table: FDSXGMCEKTBRWPA
+b $19AC
 t $19B0
 b $19CD
+b $19CE T-command key dispatch: 'D' -> FF50h, 'T' -> EC2Dh
 c $19D5
 b $1A5C
 c $1A69
-b $1ABF
+@ $1ABF label=CMD_D
+b $1ABF Monitor D: hex-dump memory range (8 bytes per line)
 c $1AC2
-b $1AF7
+@ $1AF7 label=CMD_M
+b $1AF7 Monitor M: move/copy memory block
 c $1AFA
 b $1B04
+@ $1B22 label=CMD_E
+b $1B22 Monitor E: console echo until Ctrl-C
+@ $1B2E label=CMD_C
+b $1B2E Monitor C: compare memory blocks, listing differences
 c $1B31
-b $1B5F
+@ $1B5F label=CMD_F
+b $1B5F Monitor F: fill memory range with a byte
 c $1B6B
-b $1B75
+@ $1B75 label=CMD_X
+b $1B75 Monitor X: examine/modify saved registers
+@ $1BAD label=CMD_S
+b $1BAD Monitor S: substitute/examine memory interactively
+@ $1BD3 label=CMD_G
+b $1BD3 Monitor G: go/execute (restores saved registers; optional address)
 c $1C0C
 b $1C11
+@ $1C22 label=CMD_R
+b $1C22 Monitor R: read block -- parses address range, invokes monitor service 12h
+@ $1C2A label=CMD_W
+b $1C2A Monitor W: write block -- parses address range, invokes monitor service 21h
+@ $1C58 label=CMD_P
+b $1C58 Monitor P: select console/output device (mode byte; banner lists Parallel printer)
 c $1C69
-b $1C6F
+@ $1C6F label=CMD_A
+b $1C6F Monitor A: switches device mode and operates on the 4000h region (plausibly application/cartridge start; unverified)
 c $1C8A
-b $1C92
+@ $1C92 label=CMD_K
+b $1C92 Monitor K: search memory range for a byte value
 c $1C9E
 b $1CAE
 c $1CD9
@@ -123,6 +148,8 @@ c $3F56
 c $3F59
 b $3F5F
 c $3F68
+@ $3F9B label=CMD_B
+c $3F9B Monitor B: vector-region stub in this build (BASIC extension slot; semantics unverified)
 b $3FA5
 c $3FA7
 b $3FB4

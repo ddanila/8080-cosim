@@ -184,6 +184,8 @@ c $19AF
 b $1A28
 c $1B69
 b $1B7F
+@ $2000 label=CMD_T
+b $2000 Monitor T: load system -- enters the Bootstrap v3.3 block
 t $20A5 Bootstrap v3.3 banner: FDC 1791 on main board
 b $20CA
 t $20CD
@@ -194,6 +196,8 @@ t $2112
 b $2138
 t $213B
 b $2155
+@ $2E29 label=CMD_B
+b $2E29 Monitor B handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $2E2F
 b $2E5E
 c $2E87
@@ -223,25 +227,45 @@ b $3BBF
 t $3BC5 MONITOR 3.3 version banner
 b $3BD0
 c $3BD1
-b $3C55
+b $3C55 Monitor command dispatch table: FDSXGMCEKTBRWPA (same command set as the EktaSoft monitor)
 c $3C83
 b $3D0A
 c $3D17
-b $3D6D
+@ $3D6D label=CMD_D
+b $3D6D Monitor D handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3D70
-b $3DA5
+@ $3DA5 label=CMD_M
+b $3DA5 Monitor M handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3DA8
 b $3DB2
+@ $3DD0 label=CMD_E
+b $3DD0 Monitor E handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
+@ $3DDC label=CMD_C
+b $3DDC Monitor C handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3DDF
-b $3E0D
+@ $3E0D label=CMD_F
+b $3E0D Monitor F handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3E19
-b $3E23
+@ $3E23 label=CMD_X
+b $3E23 Monitor X handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
+@ $3E5B label=CMD_S
+b $3E5B Monitor S handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
+@ $3E81 label=CMD_G
+b $3E81 Monitor G handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3EBA
 b $3EBF
+@ $3ED0 label=CMD_R
+b $3ED0 Monitor R handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
+@ $3ED8 label=CMD_W
+b $3ED8 Monitor W handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
+@ $3EEB label=CMD_P
+b $3EEB Monitor P handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3EFB
-b $3F01
+@ $3F01 label=CMD_A
+b $3F01 Monitor A handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3F1C
-b $3F24
+@ $3F24 label=CMD_K
+b $3F24 Monitor K handler (command letter shared with the EktaSoft monitor; semantics not independently decoded here)
 c $3F30
 c $3F40 High vector region, copied to FF40h-FFFFh at boot (+C000h); healthy reference for jmon22 block-7 repair
 b $3F6B

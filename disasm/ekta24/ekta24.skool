@@ -979,7 +979,10 @@ c$1841 EI            ;
  $184B CALL $DCCF    ;
  $184E CALL $D793    ;
  $1851 JP $D797      ;
- $1854 LD ($D465),HL ;
+
+; Monitor service dispatcher (command code in A; R/W use 12h/21h)
+@label=MON_SERVICE
+c$1854 LD ($D465),HL ;
  $1857 LD HL,$FF86   ;
  $185A PUSH HL       ;
  $185B POP HL        ;
@@ -1096,7 +1099,9 @@ c$18C7 EX (SP),HL    ;
  $1946 LD DE,$0000   ;
  $1949 JP $FF86      ;
 
-; Data block at 194C
+; Monitor T: load system -- prints the boot-source prompt; keys: 'D' -> FF50h,
+; 'N' -> EA93h
+@label=CMD_T
 b$194C DEFB $3A,$C4,$D9,$B7,$CA,$00,$00,$01
  $1954 DEFB $A4,$D9,$CD,$6A,$DA,$21,$C4,$D9
  $195C DEFB $CD,$64,$D9,$CA,$9D,$D8,$EB,$E9
@@ -1117,20 +1122,25 @@ c$1964 CALL $DA0E    ;
  $1974 OR A          ;
  $1975 RET           ;
 
-; Data block at 1976
+; Monitor command dispatch table: FDSXGMCEKTBRWPA
 b$1976 DEFB $46,$55,$DB,$44,$B5,$DA,$53,$A3
  $197E DEFB $DB,$58,$6B,$DB,$47,$C9,$DB,$4D
  $1986 DEFB $ED,$DA,$43,$24,$DB,$45,$18,$DB
  $198E DEFB $4B,$88,$DC,$54,$4C,$D9,$42,$9B
  $1996 DEFB $FF,$52,$18,$DC,$57,$20,$DC,$50
- $199E DEFB $4E,$DC,$41,$65,$DC,$00,$1B,$4C
- $19A6 DEFB $0A,$0A
+ $199E DEFB $4E,$DC,$41,$65,$DC,$00
+
+; Data block at 19A4
+b$19A4 DEFB $1B,$4C,$0A,$0A
 
 ; Message at 19A8
 t$19A8 DEFM "System from <D>isk, <N>et ?"
 
 ; Data block at 19C3
-b$19C3 DEFB $00,$44,$50,$FF,$4E,$93,$EA,$00
+b$19C3 DEFB $00
+
+; T-command key dispatch: 'D' -> FF50h, 'N' -> EA93h
+b$19C4 DEFB $44,$50,$FF,$4E,$93,$EA,$00
 
 ; Routine at 19CB
 c$19CB PUSH HL       ;
@@ -1265,7 +1275,8 @@ c$1A5F CALL $DA3D    ;
  $1AB3 POP AF        ;
  $1AB4 RET           ;
 
-; Data block at 1AB5
+; Monitor D: hex-dump memory range (8 bytes per line)
+@label=CMD_D
 b$1AB5 DEFB $CD,$0A,$DB
 
 ; Routine at 1AB8
@@ -1299,7 +1310,8 @@ c$1AB8 LD A,C        ;
  $1AEB SCF           ;
  $1AEC RET           ;
 
-; Data block at 1AED
+; Monitor M: move/copy memory block
+@label=CMD_M
 b$1AED DEFB $CD,$FA,$DA
 
 ; Routine at 1AF0
@@ -1314,9 +1326,16 @@ c$1AF0 LD A,(BC)     ;
 b$1AFA DEFB $CD,$0A,$DB,$3E,$3E,$CD,$E2,$D9
  $1B02 DEFB $C5,$CD,$52,$DA,$C5,$D1,$C1,$C9
  $1B0A DEFB $CD,$52,$DA,$C5,$CD,$A6,$D8,$CD
- $1B12 DEFB $52,$DA,$C5,$E1,$C1,$C9,$CD,$D8
- $1B1A DEFB $D9,$FE,$03,$C8,$CD,$E2,$D9,$C3
- $1B22 DEFB $18,$DB,$CD,$FA,$DA
+ $1B12 DEFB $52,$DA,$C5,$E1,$C1,$C9
+
+; Monitor E: console echo until Ctrl-C
+@label=CMD_E
+b$1B18 DEFB $CD,$D8,$D9,$FE,$03,$C8,$CD,$E2
+ $1B20 DEFB $D9,$C3,$18,$DB
+
+; Monitor C: compare memory blocks, listing differences
+@label=CMD_C
+b$1B24 DEFB $CD,$FA,$DA
 
 ; Routine at 1B27
 c$1B27 LD A,(BC)     ;
@@ -1343,7 +1362,8 @@ c$1B27 LD A,(BC)     ;
  $1B4F CALL $D9CB    ;
  $1B52 JP $D8AB      ;
 
-; Data block at 1B55
+; Monitor F: fill memory range with a byte
+@label=CMD_F
 b$1B55 DEFB $CD,$0A,$DB,$CD,$AB,$D8,$CD,$3D
  $1B5D DEFB $DA,$DA,$9D,$D8
 
@@ -1355,7 +1375,8 @@ c$1B61 LD E,A        ;
  $1B67 JP C,$DB62    ;
  $1B6A RET           ;
 
-; Data block at 1B6B
+; Monitor X: examine/modify saved registers
+@label=CMD_X
 b$1B6B DEFB $CD,$0E,$DA,$21,$00,$00,$39,$11
  $1B73 DEFB $9C,$DB,$EB,$0E,$07,$0D,$CA,$9D
  $1B7B DEFB $D8,$23,$13,$13,$BE,$C2,$78,$DB
@@ -1363,18 +1384,25 @@ b$1B6B DEFB $CD,$0E,$DA,$21,$00,$00,$39,$11
  $1B8B DEFB $D4,$4E,$23,$46,$CD,$AA,$DA,$CD
  $1B93 DEFB $AB,$D8,$CD,$5F,$DA,$D8,$70,$2B
  $1B9B DEFB $71,$C9,$41,$42,$44,$48,$50,$53
- $1BA3 DEFB $CD,$52,$DA,$C3,$AB,$DB,$02,$03
+
+; Monitor S: substitute/examine memory interactively
+@label=CMD_S
+b$1BA3 DEFB $CD,$52,$DA,$C3,$AB,$DB,$02,$03
  $1BAB DEFB $CD,$83,$DA,$CD,$AA,$DA,$3E,$3A
  $1BB3 DEFB $CD,$E2,$D9,$0A,$CD,$90,$DA,$CD
  $1BBB DEFB $AB,$D8,$CD,$3D,$DA,$D2,$A9,$DB
- $1BC3 DEFB $FE,$20,$CA,$AA,$DB,$C9,$CD,$17
- $1BCB DEFB $DA,$DA,$DF,$DB,$CD,$59,$DA,$DA
- $1BD3 DEFB $9D,$D8,$2A,$50,$D4,$2B,$70,$2B
- $1BDB DEFB $71,$CD,$DF,$D9,$FE,$2C,$CA,$EF
- $1BE3 DEFB $DB,$FE,$0D,$C2,$9D,$D8,$21,$B4
- $1BEB DEFB $D8,$C3,$FB,$DB,$CD,$52,$DA,$0A
- $1BF3 DEFB $32,$E0,$D4,$3E,$F7,$02,$69,$60
- $1BFB DEFB $22,$52,$D4,$CD,$83,$DA,$E1
+ $1BC3 DEFB $FE,$20,$CA,$AA,$DB,$C9
+
+; Monitor G: go/execute (restores saved registers; optional address)
+@label=CMD_G
+b$1BC9 DEFB $CD,$17,$DA,$DA,$DF,$DB,$CD,$59
+ $1BD1 DEFB $DA,$DA,$9D,$D8,$2A,$50,$D4,$2B
+ $1BD9 DEFB $70,$2B,$71,$CD,$DF,$D9,$FE,$2C
+ $1BE1 DEFB $CA,$EF,$DB,$FE,$0D,$C2,$9D,$D8
+ $1BE9 DEFB $21,$B4,$D8,$C3,$FB,$DB,$CD,$52
+ $1BF1 DEFB $DA,$0A,$32,$E0,$D4,$3E,$F7,$02
+ $1BF9 DEFB $69,$60,$22,$52,$D4,$CD,$83,$DA
+ $1C01 DEFB $E1
 
 ; Routine at 1C02
 c$1C02 POP AF        ;
@@ -1386,21 +1414,35 @@ c$1C02 POP AF        ;
 ; Data block at 1C07
 b$1C07 DEFB $CD,$FA,$DA,$C5,$79,$2F,$4F,$78
  $1C0F DEFB $2F,$47,$03,$09,$23,$C1,$C3,$AB
- $1C17 DEFB $D8,$CD,$07,$DC,$3E,$12,$C3,$54
- $1C1F DEFB $D8,$CD,$07,$DC,$3E,$21,$C3,$54
- $1C27 DEFB $D8,$D6,$52,$FE,$02,$D2,$9D,$D8
- $1C2F DEFB $3C,$CD,$5F,$DC,$3D,$C0,$3E,$FE
- $1C37 DEFB $FE,$FE,$D2,$42,$DC,$32,$E1,$D4
- $1C3F DEFB $D3,$FF,$C9,$C2,$4A,$DC,$3C,$32
- $1C47 DEFB $E1,$D4,$C9,$3A,$E1,$D4,$C9,$CD
- $1C4F DEFB $17,$DA,$DA,$28,$DC,$CD,$40,$DA
- $1C57 DEFB $DA,$9D,$D8,$CD,$37,$DC,$3E,$02
+ $1C17 DEFB $D8
+
+; Monitor R: read block -- parses address range, invokes monitor service 12h
+@label=CMD_R
+b$1C18 DEFB $CD,$07,$DC,$3E,$12,$C3,$54,$D8
+
+; Monitor W: write block -- parses address range, invokes monitor service 21h
+@label=CMD_W
+b$1C20 DEFB $CD,$07,$DC,$3E,$21,$C3,$54,$D8
+ $1C28 DEFB $D6,$52,$FE,$02,$D2,$9D,$D8,$3C
+ $1C30 DEFB $CD,$5F,$DC,$3D,$C0,$3E,$FE,$FE
+ $1C38 DEFB $FE,$D2,$42,$DC,$32,$E1,$D4,$D3
+ $1C40 DEFB $FF,$C9,$C2,$4A,$DC,$3C,$32,$E1
+ $1C48 DEFB $D4,$C9,$3A,$E1,$D4,$C9
+
+; Monitor P: select console/output device (mode byte; banner lists Parallel
+; printer)
+@label=CMD_P
+b$1C4E DEFB $CD,$17,$DA,$DA,$28,$DC,$CD,$40
+ $1C56 DEFB $DA,$DA,$9D,$D8,$CD,$37,$DC,$3E
+ $1C5E DEFB $02
 
 ; Routine at 1C5F
 c$1C5F LD ($D7E5),A  ;
  $1C62 JP $D7E6      ;
 
-; Data block at 1C65
+; Monitor A: switches device mode and operates on the 4000h region (plausibly
+; application/cartridge start; unverified)
+@label=CMD_A
 b$1C65 DEFB $3E,$02,$CD,$E6,$D7,$2A,$05,$40
  $1C6D DEFB $EB,$CD,$E4,$D7,$EB,$11,$00,$01
  $1C75 DEFB $01,$00,$40,$3E,$12,$CD,$54,$D8
@@ -1414,7 +1456,8 @@ c$1C80 LD HL,$D895   ;
  $1C86 LD E,(HL)     ;
  $1C87 RET           ;
 
-; Data block at 1C88
+; Monitor K: search memory range for a byte value
+@label=CMD_K
 b$1C88 DEFB $CD,$0A,$DB,$CD,$AB,$D8,$CD,$3D
  $1C90 DEFB $DA,$DA,$9D,$D8
 
@@ -3283,7 +3326,11 @@ c$3F68 CALL $D85B    ;
  $3F92 CALL $D85B    ;
  $3F95 CALL $D85B    ;
  $3F98 CALL $D85B    ;
- $3F9B CALL $D85B    ;
+
+; Monitor B: vector-region stub in this build (BASIC extension slot; semantics
+; unverified)
+@label=CMD_B
+c$3F9B CALL $D85B    ;
  $3F9E CALL $D85B    ;
  $3FA1 CALL $D85B    ;
  $3FA4 RET           ;

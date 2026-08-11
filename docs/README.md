@@ -79,6 +79,9 @@ findings. Every status applies only to the boundary named by the report.
   the adopted image: configurable D57-clocked 8251 line, odd-parity framing,
   TxEN-gated transmit; a round-trip-guarded annotated disassembly of the same
   image is maintained in `../disasm/`),
+  `juku-rom-monitor-commands.md` (the decoded 15-command ROM monitor shared
+  by every EktaSoft image and Monitor 3.3, the T/D/N-or-T boot dispatch
+  tables, and the universal FF50h bootstrap vector),
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `d101-reconstruction-constraints.md` (datasheet-exact first-half select cases,
   D02 ladder, conditional D0-to-`/OE0` test, and four measured-pin boundaries),

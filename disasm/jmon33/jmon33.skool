@@ -3198,27 +3198,31 @@ b$1B7F DEFB $23,$78,$BE,$C0,$2B,$79,$BE,$C0
  $1FE7 DEFB $3E,$2C,$32,$17,$20,$C3,$D8,$07
  $1FEF DEFB $AF,$32,$09,$20,$C3,$83,$06,$00
  $1FF7 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $1FFF DEFB $00,$C3,$0F,$E0,$C3,$3E,$E2,$C3
- $2007 DEFB $62,$E1,$C3,$D6,$E4,$C3,$7D,$E6
- $200F DEFB $31,$00,$D6,$21,$1A,$D6,$06,$16
- $2017 DEFB $36,$00,$23,$05,$C2,$17,$E0,$3E
- $201F DEFB $01,$32,$1D,$D6,$32,$21,$D6,$2A
- $2027 DEFB $62,$FF,$11,$6B,$E7,$73,$23,$72
- $202F DEFB $01,$A4,$E0,$CD,$CD,$FF,$01,$38
- $2037 DEFB $E1,$CD,$CD,$FF,$CD,$D3,$FF,$F6
- $203F DEFB $20,$06,$02,$21,$03,$03,$FE,$38
- $2047 DEFB $CA,$5B,$E0,$05,$21,$03,$03,$FE
- $204F DEFB $73,$CA,$59,$E0,$05,$21,$02,$02
- $2057 DEFB $3E,$44,$E6,$DF,$5F,$78,$32,$00
- $205F DEFB $D6,$32,$0A,$D6,$32,$0B,$D6,$22
- $2067 DEFB $0E,$D6,$7D,$32,$11,$D6,$3E,$50
- $206F DEFB $32,$10,$D6,$21,$50,$50,$22,$0C
- $2077 DEFB $D6,$AF,$32,$14,$D6,$7B,$CD,$D9
- $207F DEFB $FF,$01,$CA,$E0,$CD,$CD,$FF,$3E
- $2087 DEFB $14,$CD,$3E,$E2,$CD,$57,$E1,$B7
- $208F DEFB $C2,$95,$E0,$C3,$00,$CE,$CD,$DC
- $2097 DEFB $FF,$01,$E1,$E0,$CD,$CD,$FF,$CD
- $209F DEFB $D3,$FF,$C3,$35,$E0,$1B
+ $1FFF DEFB $00
+
+; Monitor T: load system -- enters the Bootstrap v3.3 block
+@label=CMD_T
+b$2000 DEFB $C3,$0F,$E0,$C3,$3E,$E2,$C3,$62
+ $2008 DEFB $E1,$C3,$D6,$E4,$C3,$7D,$E6,$31
+ $2010 DEFB $00,$D6,$21,$1A,$D6,$06,$16,$36
+ $2018 DEFB $00,$23,$05,$C2,$17,$E0,$3E,$01
+ $2020 DEFB $32,$1D,$D6,$32,$21,$D6,$2A,$62
+ $2028 DEFB $FF,$11,$6B,$E7,$73,$23,$72,$01
+ $2030 DEFB $A4,$E0,$CD,$CD,$FF,$01,$38,$E1
+ $2038 DEFB $CD,$CD,$FF,$CD,$D3,$FF,$F6,$20
+ $2040 DEFB $06,$02,$21,$03,$03,$FE,$38,$CA
+ $2048 DEFB $5B,$E0,$05,$21,$03,$03,$FE,$73
+ $2050 DEFB $CA,$59,$E0,$05,$21,$02,$02,$3E
+ $2058 DEFB $44,$E6,$DF,$5F,$78,$32,$00,$D6
+ $2060 DEFB $32,$0A,$D6,$32,$0B,$D6,$22,$0E
+ $2068 DEFB $D6,$7D,$32,$11,$D6,$3E,$50,$32
+ $2070 DEFB $10,$D6,$21,$50,$50,$22,$0C,$D6
+ $2078 DEFB $AF,$32,$14,$D6,$7B,$CD,$D9,$FF
+ $2080 DEFB $01,$CA,$E0,$CD,$CD,$FF,$3E,$14
+ $2088 DEFB $CD,$3E,$E2,$CD,$57,$E1,$B7,$C2
+ $2090 DEFB $95,$E0,$C3,$00,$CE,$CD,$DC,$FF
+ $2098 DEFB $01,$E1,$E0,$CD,$CD,$FF,$CD,$D3
+ $20A0 DEFB $FF,$C3,$35,$E0,$1B
 
 ; Bootstrap v3.3 banner: FDC 1791 on main board
 t$20A5 DEFM "LBOOTSTRAP v3.3 - 1791 on Main board$"
@@ -3658,8 +3662,12 @@ b$2155 DEFB $08,$24,$3A,$00,$D6,$B7,$3E,$34
  $2E0D DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
  $2E15 DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
  $2E1D DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
- $2E25 DEFB $FF,$FF,$FF,$FF,$21,$C4,$FF,$22
- $2E2D DEFB $01,$00
+ $2E25 DEFB $FF,$FF,$FF,$FF
+
+; Monitor B handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_B
+b$2E29 DEFB $21,$C4,$FF,$22,$01,$00
 
 ; Routine at 2E2F
 c$2E2F LD A,$10      ;
@@ -5018,7 +5026,8 @@ c$3BD1 LD SP,$0100   ;
  $3C53 EX DE,HL      ;
  $3C54 JP (HL)       ;
 
-; Data block at 3C55
+; Monitor command dispatch table: FDSXGMCEKTBRWPA (same command set as the
+; EktaSoft monitor)
 b$3C55 DEFB $46,$0D,$FE,$44,$6D,$FD,$53,$5B
  $3C5D DEFB $FE,$58,$23,$FE,$47,$81,$FE,$4D
  $3C65 DEFB $A5,$FD,$43,$DC,$FD,$45,$D0,$FD
@@ -5159,7 +5168,9 @@ c$3D17 CALL $FCF5    ;
  $3D6B POP AF        ;
  $3D6C RET           ;
 
-; Data block at 3D6D
+; Monitor D handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_D
 b$3D6D DEFB $CD,$C2,$FD
 
 ; Routine at 3D70
@@ -5193,7 +5204,9 @@ c$3D70 LD A,C        ;
  $3DA3 SCF           ;
  $3DA4 RET           ;
 
-; Data block at 3DA5
+; Monitor M handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_M
 b$3DA5 DEFB $CD,$B2,$FD
 
 ; Routine at 3DA8
@@ -5208,9 +5221,18 @@ c$3DA8 LD A,(BC)     ;
 b$3DB2 DEFB $CD,$C2,$FD,$3E,$3E,$CD,$9A,$FC
  $3DBA DEFB $C5,$CD,$0A,$FD,$C5,$D1,$C1,$C9
  $3DC2 DEFB $CD,$0A,$FD,$C5,$CD,$B5,$FB,$CD
- $3DCA DEFB $0A,$FD,$C5,$E1,$C1,$C9,$CD,$90
- $3DD2 DEFB $FC,$FE,$03,$C8,$CD,$9A,$FC,$C3
- $3DDA DEFB $D0,$FD,$CD,$B2,$FD
+ $3DCA DEFB $0A,$FD,$C5,$E1,$C1,$C9
+
+; Monitor E handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_E
+b$3DD0 DEFB $CD,$90,$FC,$FE,$03,$C8,$CD,$9A
+ $3DD8 DEFB $FC,$C3,$D0,$FD
+
+; Monitor C handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_C
+b$3DDC DEFB $CD,$B2,$FD
 
 ; Routine at 3DDF
 c$3DDF LD A,(BC)     ;
@@ -5237,7 +5259,9 @@ c$3DDF LD A,(BC)     ;
  $3E07 CALL $FC83    ;
  $3E0A JP $FBBA      ;
 
-; Data block at 3E0D
+; Monitor F handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_F
 b$3E0D DEFB $CD,$C2,$FD,$CD,$BA,$FB,$CD,$F5
  $3E15 DEFB $FC,$DA,$AC,$FB
 
@@ -5249,7 +5273,9 @@ c$3E19 LD E,A        ;
  $3E1F JP C,$FE1A    ;
  $3E22 RET           ;
 
-; Data block at 3E23
+; Monitor X handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_X
 b$3E23 DEFB $CD,$C6,$FC,$21,$00,$00,$39,$11
  $3E2B DEFB $54,$FE,$EB,$0E,$07,$0D,$CA,$AC
  $3E33 DEFB $FB,$23,$13,$13,$BE,$C2,$30,$FE
@@ -5257,18 +5283,27 @@ b$3E23 DEFB $CD,$C6,$FC,$21,$00,$00,$39,$11
  $3E43 DEFB $D6,$4E,$23,$46,$CD,$62,$FD,$CD
  $3E4B DEFB $BA,$FB,$CD,$17,$FD,$D8,$70,$2B
  $3E53 DEFB $71,$C9,$41,$42,$44,$48,$50,$53
- $3E5B DEFB $CD,$0A,$FD,$C3,$63,$FE,$02,$03
+
+; Monitor S handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_S
+b$3E5B DEFB $CD,$0A,$FD,$C3,$63,$FE,$02,$03
  $3E63 DEFB $CD,$3B,$FD,$CD,$62,$FD,$3E,$3A
  $3E6B DEFB $CD,$9A,$FC,$0A,$CD,$48,$FD,$CD
  $3E73 DEFB $BA,$FB,$CD,$F5,$FC,$D2,$61,$FE
- $3E7B DEFB $FE,$20,$CA,$62,$FE,$C9,$CD,$CF
- $3E83 DEFB $FC,$DA,$97,$FE,$CD,$11,$FD,$DA
- $3E8B DEFB $AC,$FB,$2A,$FC,$D6,$2B,$70,$2B
- $3E93 DEFB $71,$CD,$97,$FC,$FE,$2C,$CA,$A7
- $3E9B DEFB $FE,$FE,$0D,$C2,$AC,$FB,$21,$D1
- $3EA3 DEFB $FB,$C3,$B3,$FE,$CD,$0A,$FD,$0A
- $3EAB DEFB $32,$1E,$D7,$3E,$F7,$02,$69,$60
- $3EB3 DEFB $22,$FE,$D6,$CD,$3B,$FD,$E1
+ $3E7B DEFB $FE,$20,$CA,$62,$FE,$C9
+
+; Monitor G handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_G
+b$3E81 DEFB $CD,$CF,$FC,$DA,$97,$FE,$CD,$11
+ $3E89 DEFB $FD,$DA,$AC,$FB,$2A,$FC,$D6,$2B
+ $3E91 DEFB $70,$2B,$71,$CD,$97,$FC,$FE,$2C
+ $3E99 DEFB $CA,$A7,$FE,$FE,$0D,$C2,$AC,$FB
+ $3EA1 DEFB $21,$D1,$FB,$C3,$B3,$FE,$CD,$0A
+ $3EA9 DEFB $FD,$0A,$32,$1E,$D7,$3E,$F7,$02
+ $3EB1 DEFB $69,$60,$22,$FE,$D6,$CD,$3B,$FD
+ $3EB9 DEFB $E1
 
 ; Routine at 3EBA
 c$3EBA POP AF        ;
@@ -5280,18 +5315,33 @@ c$3EBA POP AF        ;
 ; Data block at 3EBF
 b$3EBF DEFB $CD,$B2,$FD,$C5,$79,$2F,$4F,$78
  $3EC7 DEFB $2F,$47,$03,$09,$23,$C1,$C3,$BA
- $3ECF DEFB $FB,$CD,$BF,$FE,$3E,$12,$C3,$43
- $3ED7 DEFB $EE,$CD,$BF,$FE,$3E,$21,$C3,$43
- $3EDF DEFB $EE,$D6,$52,$FE,$02,$D2,$AC,$FB
- $3EE7 DEFB $3C,$C3,$FB,$FE,$CD,$CF,$FC,$DA
- $3EEF DEFB $E0,$FE,$CD,$F8,$FC,$DA,$AC,$FB
- $3EF7 DEFB $D3,$FF,$3E,$02
+ $3ECF DEFB $FB
+
+; Monitor R handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_R
+b$3ED0 DEFB $CD,$BF,$FE,$3E,$12,$C3,$43,$EE
+
+; Monitor W handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_W
+b$3ED8 DEFB $CD,$BF,$FE,$3E,$21,$C3,$43,$EE
+ $3EE0 DEFB $D6,$52,$FE,$02,$D2,$AC,$FB,$3C
+ $3EE8 DEFB $C3,$FB,$FE
+
+; Monitor P handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_P
+b$3EEB DEFB $CD,$CF,$FC,$DA,$E0,$FE,$CD,$F8
+ $3EF3 DEFB $FC,$DA,$AC,$FB,$D3,$FF,$3E,$02
 
 ; Routine at 3EFB
 c$3EFB LD ($D7E6),A  ;
  $3EFE JP $D7E7      ;
 
-; Data block at 3F01
+; Monitor A handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_A
 b$3F01 DEFB $3E,$02,$CD,$E7,$D7,$2A,$05,$40
  $3F09 DEFB $EB,$CD,$E5,$D7,$EB,$11,$00,$01
  $3F11 DEFB $01,$00,$40,$3E,$12,$CD,$43,$EE
@@ -5305,7 +5355,9 @@ c$3F1C LD HL,$FBCD   ;
  $3F22 LD E,(HL)     ;
  $3F23 RET           ;
 
-; Data block at 3F24
+; Monitor K handler (command letter shared with the EktaSoft monitor; semantics
+; not independently decoded here)
+@label=CMD_K
 b$3F24 DEFB $CD,$C2,$FD,$CD,$BA,$FB,$CD,$F5
  $3F2C DEFB $FC,$DA,$AC,$FB
 

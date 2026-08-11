@@ -49,6 +49,8 @@ b $0F5A
 c $0FA8
 b $0FB3
 c $1841
+@ $1854 label=MON_SERVICE
+c $1854 Monitor service dispatcher (command code in A; R/W use 12h/21h)
 b $188B
 t $188D
 b $1899
@@ -57,29 +59,52 @@ b $18A6
 c $18AB
 b $18B0
 c $18C7
-b $194C
+@ $194C label=CMD_T
+b $194C Monitor T: load system -- prints the boot-source prompt; keys: 'D' -> FF50h, 'N' -> EAA1h
 c $1964
-b $1976
+b $1976 Monitor command dispatch table: FDSXGMCEKTBRWPA
+b $19A4
 t $19A8
 b $19C3
+b $19C4 T-command key dispatch: 'D' -> FF50h, 'N' -> EAA1h
 c $19CB
 b $1A52
 c $1A5F
-b $1AB5
+@ $1AB5 label=CMD_D
+b $1AB5 Monitor D: hex-dump memory range (8 bytes per line)
 c $1AB8
-b $1AED
+@ $1AED label=CMD_M
+b $1AED Monitor M: move/copy memory block
 c $1AF0
 b $1AFA
+@ $1B18 label=CMD_E
+b $1B18 Monitor E: console echo until Ctrl-C
+@ $1B24 label=CMD_C
+b $1B24 Monitor C: compare memory blocks, listing differences
 c $1B27
-b $1B55
+@ $1B55 label=CMD_F
+b $1B55 Monitor F: fill memory range with a byte
 c $1B61
-b $1B6B
+@ $1B6B label=CMD_X
+b $1B6B Monitor X: examine/modify saved registers
+@ $1BA3 label=CMD_S
+b $1BA3 Monitor S: substitute/examine memory interactively
+@ $1BC9 label=CMD_G
+b $1BC9 Monitor G: go/execute (restores saved registers; optional address)
 c $1C02
 b $1C07
+@ $1C18 label=CMD_R
+b $1C18 Monitor R: read block -- parses address range, invokes monitor service 12h
+@ $1C20 label=CMD_W
+b $1C20 Monitor W: write block -- parses address range, invokes monitor service 21h
+@ $1C4E label=CMD_P
+b $1C4E Monitor P: select console/output device (mode byte; banner lists Parallel printer)
 c $1C5F
-b $1C65
+@ $1C65 label=CMD_A
+b $1C65 Monitor A: switches device mode and operates on the 4000h region (plausibly application/cartridge start; unverified)
 c $1C80
-b $1C88
+@ $1C88 label=CMD_K
+b $1C88 Monitor K: search memory range for a byte value
 c $1C94
 b $1CA4
 c $1CCF
@@ -102,6 +127,8 @@ c $3F56
 c $3F59
 b $3F5F
 c $3F68
+@ $3F9B label=CMD_B
+c $3F9B Monitor B: vector-region stub in this build (BASIC extension slot; semantics unverified)
 b $3FA5
 c $3FA7
 b $3FB4

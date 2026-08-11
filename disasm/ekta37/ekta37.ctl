@@ -47,35 +47,60 @@ b $1076
 c $11E6
 b $123F
 c $1841
+@ $1854 label=MON_SERVICE
+c $1854 Monitor service dispatcher (command code in A; R/W use 12h/21h)
 b $188B
 c $189E
 b $18A7
 c $18AC
 b $18B1
 c $18C8
-b $194D
+@ $194D label=CMD_T
+b $194D Monitor T: load system -- prints the boot-source prompt; keys: 'D' -> FF50h, 'N' -> EAA2h
 c $1965
-b $1977
+b $1977 Monitor command dispatch table: FDSXGMCEKTBRWPA
+b $19A5
 t $19A9
 b $19C4
+b $19C5 T-command key dispatch: 'D' -> FF50h, 'N' -> EAA2h
 c $19CC
 b $1A53
 c $1A60
-b $1AB6
+@ $1AB6 label=CMD_D
+b $1AB6 Monitor D: hex-dump memory range (8 bytes per line)
 c $1AB9
-b $1AEE
+@ $1AEE label=CMD_M
+b $1AEE Monitor M: move/copy memory block
 c $1AF1
 b $1AFB
+@ $1B19 label=CMD_E
+b $1B19 Monitor E: console echo until Ctrl-C
+@ $1B25 label=CMD_C
+b $1B25 Monitor C: compare memory blocks, listing differences
 c $1B28
-b $1B56
+@ $1B56 label=CMD_F
+b $1B56 Monitor F: fill memory range with a byte
 c $1B62
-b $1B6C
+@ $1B6C label=CMD_X
+b $1B6C Monitor X: examine/modify saved registers
+@ $1BA4 label=CMD_S
+b $1BA4 Monitor S: substitute/examine memory interactively
+@ $1BCA label=CMD_G
+b $1BCA Monitor G: go/execute (restores saved registers; optional address)
 c $1C03
 b $1C08
+@ $1C19 label=CMD_R
+b $1C19 Monitor R: read block -- parses address range, invokes monitor service 12h
+@ $1C21 label=CMD_W
+b $1C21 Monitor W: write block -- parses address range, invokes monitor service 21h
+@ $1C4F label=CMD_P
+b $1C4F Monitor P: select console/output device (mode byte; banner lists Parallel printer)
 c $1C60
-b $1C66
+@ $1C66 label=CMD_A
+b $1C66 Monitor A: switches device mode and operates on the 4000h region (plausibly application/cartridge start; unverified)
 c $1C81
-b $1C89
+@ $1C89 label=CMD_K
+b $1C89 Monitor K: search memory range for a byte value
 c $1C95
 b $1CA5
 c $1CD0
@@ -129,6 +154,8 @@ c $3F56
 c $3F59
 b $3F5F
 c $3F68
+@ $3F9B label=CMD_B
+c $3F9B Monitor B: vector-region stub in this build (BASIC extension slot; semantics unverified)
 b $3FA5
 c $3FA7
 b $3FB4
