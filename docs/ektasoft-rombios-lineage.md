@@ -35,19 +35,29 @@ chronologically the newest banner year.
 
 ## Banner-declared configurations
 
-| | #0037 (3.43m, adopted) | #0032 (2.43) | #0043 (2.43m, homebrew) |
-| --- | --- | --- | --- |
-| Screen | b/w 40x24/+wnd | b/w 53x24/+wnd | b/w 53x24/+wnd |
-| Keyboard | Juku' Qwerty/sw kbd | Juku' Qwerty keyboard/sw | **IBM AT keyboard** |
-| Disk | DiskBios (Fdc 1793 **on MBoard**) | DiskBios (Fdc 1793 on Card) | DiskBios (Fdc 1793 on Card) |
-| Second BIOS | **NetBios** | TapeBios (Rc on MBoard) | TapeBios (Rc on MBoard) |
+| Serial | RomBios | Screen | Keyboard | Disk | Second BIOS |
+| --- | --- | --- | --- | --- | --- |
+| #0024 | 3.42 | 53x24/+wnd | Juss' Qwerty | Fdc **1791/2** on MBoard | NetBios |
+| #0031 | 3.43 | 40x24/+wnd | Juku' Qwerty | Fdc 1793 on MBoard | NetBios |
+| #0032 | 2.43 | 53x24/+wnd | Juku' Qwerty | Fdc 1793 on Card | TapeBios |
+| #0035 | 3.43 | 53x24/+wnd | Juss' Qwerty | Fdc 1793 on MBoard | NetBios |
+| #0037 | 3.43m | 40x24/+wnd | Juku' Qwerty | Fdc 1793 on MBoard | NetBios |
+| #0043 | 2.43m | 53x24/+wnd | **IBM AT** | Fdc 1793 on Card | TapeBios |
+
+Every configuration axis varies independently — screen width, keyboard
+family (Juku matrix, the E5103 "Juss" variant, IBM AT), FDC chip and
+location, network versus tape BIOS — so no image is a feature superset of
+another and "best" is only defined relative to a target machine. The
+53-column screen is not a 2.43-line trait (#0035 pairs it with 3.43 and
+NetBios), and #0024 even targets a different FDC chip.
 
 The only banner-visible difference between #0043 and official #0032 is the
 IBM AT keyboard. The 53x24 screen, TapeBios, and card-mounted FDC are the
 2.43-line configuration, not homebrew additions. #0043 therefore offers our
 `.009` board nothing over the adopted 3.43m image: the board's FDC is on
 the motherboard, its keyboard is the original matrix, and the network BIOS
-exists only in the 3.4x line.
+exists only in the 3.4x line. #0037 matches the `.009` hardware on every
+axis, which independently validates its adoption.
 
 ## Content kinship
 
