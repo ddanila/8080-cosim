@@ -23,6 +23,22 @@ and the monitor vector table, translating control-flow targets in
 Regions not yet proven code remain `b` (data) blocks; refine them in the ctl
 as understanding grows, never by editing the skool.
 
+## ekta43 (EktaSoft '90 Serial #0043, RomBios 2.43m, homebrew AT-keyboard mod)
+
+- [`ekta43/ekta43.ctl`](ekta43/ekta43.ctl) — hand-maintained knowledge.
+- [`ekta43/ekta43.skool`](ekta43/ekta43.skool) — generated disassembly.
+
+Same memory model as ekta37 (verified: same `JMP 0017h` entry, same monitor
+vector table shape at ROM `3F50h`, same `+C000h` relocation of `1800-3FFF`).
+Seeded landmarks include the boot PIT programming at `01DCh`, the shared
+alternative/restore D54/D55 parameter routines (`0F03h`/`0F2Fh`), and the
+AT keyboard layout table at `14AFh` — resident low ROM, consistent with an
+interrupt-served keyboard. The round trip preserves the image's stale
+block-1 checksum byte exactly (`F2h` at `000Ah`; see
+[`../docs/ektasoft-rombios-lineage.md`](../docs/ektasoft-rombios-lineage.md)).
+The open research question for this image — how the AT keyboard physically
+connects — lives in the ctl workflow: trace the PIC setup, label the ISR.
+
 ## Workflow
 
 ```sh

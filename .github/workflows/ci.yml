@@ -286,5 +286,8 @@ jobs:
       - name: Check ekta37 disassembly round-trip
         run: ./sync/ekta37_disasm_check.sh
 
+      - name: Check ekta43 disassembly round-trip
+        run: ./sync/ekta43_disasm_check.sh
+
       - name: Check rev B board connectivity + netlist completeness
         run: python3 scripts/check_revb_boards.py --completeness
