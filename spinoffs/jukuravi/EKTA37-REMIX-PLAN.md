@@ -1,0 +1,93 @@
+# EktaSoft remix plan: ekta37 + Jukuravi service module
+
+Status: **PLANNED, NOT STARTED.** Planned 2026-08-11; no image has been
+built. Every measurement below is byte-verified against the pinned
+`roms/ekta37.bin` and the exact T36 build.
+
+## Goal
+
+A new EktaSoft-derived 16 KiB ROM based on Serial #0037 (RomBios 3.43m):
+
+1. keep the stock machine personality (banner, console, monitor, NetBios);
+2. add the Jukuravi loader API v2 as a resident service, entered by a new
+   monitor command `J` (DI, take the 8251, one-way service mode until
+   RESET — the same contract as NetBios entry);
+3. add a new monitor command `H` printing the command list with short
+   comments;
+4. a personalized identity line in the boot banner, with an honest identity:
+   its own serial/name so it can never masquerade as a factory image;
+5. optionally strip the floppy subsystem (Net-only boot) — only if space
+   demands it;
+6. regenerate the block-1 checksum at `000Ah` properly.
+
+## Measured facts the plan stands on
+
+- Command set `FDSXGMCEKTBRWPA`: **`H` and `J` are free.** The parser
+  references its dispatch table via a single `LXI H,D977h` at ROM `1923h`,
+  so the table relocates into free space with a one-word patch
+  ([`../../docs/juku-rom-monitor-commands.md`](../../docs/juku-rom-monitor-commands.md)).
+- Free space ([`../../docs/ekta37-rom-map.md`](../../docs/ekta37-rom-map.md)):
+  `1700h-17FFh` (256 B, in-place half) + `3900h-3EB9h` (1,466 B, relocated
+  half, zero RAM cost) = **1,722 B** without removing anything.
+- Reclaimable: disk subsystem `2325h-29FFh` = **1,755 B** (minus small
+  FLOPPY/START/RWFLOPPY error stubs to keep the `FF50h+` vector contract
+  shaped); the hedged expansion/RamDisk driver `3600h-38FFh` = **768 B**.
+- Jukuravi cost (from the exact T36 build metadata): loader API v2 engine
+  `0A00h-0FFDh` = **1,533 B**, CRC table 256 B, protocol frames ~350 B,
+  refresh extension ~256 B, plus low-ROM serial helpers the engine calls
+  (~200-500 B, exact inventory is Phase 0). Estimate: **~2.3-2.6 KiB
+  full-fidelity, ~1.6-2.0 KiB trimmed** (refresh extension droppable here:
+  EktaSoft arms the raster at boot, and if
+  [`RASTER-REFRESH-EXPERIMENT.md`](RASTER-REFRESH-EXPERIMENT.md) proves
+  video-slot refresh, software refresh is redundant in this ROM).
+- `H` command: ~60 B code + ~300-450 B help strings.
+- Banner line: same-length in-place string edit is free; an extra printed
+  line costs ~40 B of hook.
+- ekta37 console is polled, not interrupt-driven — favorable for the
+  loader's blocking serial protocol. The 8251 clock (D57 counter 0) is
+  already the loader's 2400 baud.
+- RAM map: Jukuravi's workspace convention is `C000h-CFFFh`; EktaSoft's
+  variables observed in this work live at `D4xxh-D7xxh`. Coexistence is
+  plausible but is a Phase 0 verification item, not an assumption.
+
+Space verdict: full-fidelity Jukuravi plus `H` does not fit in 1,722 B;
+either trim the core or strip one subsystem. Preference order if space is
+needed: (1) trim (drop refresh extension first), (2) strip floppy — which
+also matches the Net/service-machine concept, (3) the expansion driver only
+if its boundaries are confirmed un-hedged in Phase 0.
+
+## Phases (each independently shippable)
+
+**Phase 0 — desk inventory, no ROM changes.** Trace the loader engine's
+exact call graph into T36's low ROM (from the builder's label graph) for a
+hard port-size number; verify the EktaSoft-vs-Jukuravi RAM map overlap;
+confirm the expansion-driver boundaries. Output: exact byte budget and the
+trim/strip decision.
+
+**Phase 1 — build pipeline + minimal remix.** Deterministic patch-based
+builder (pinned ekta37 in, structured patches, checksum regen, pinned
+output image); relocated command table; `H` command; the banner identity
+line. Guard: cosim boot test (banner renders, `H` lists, all 15 stock
+commands still dispatch) plus a disasm ctl and round-trip entry in
+`sync/disasm_check.sh`. Already a burnable ROM.
+
+**Phase 2 — `J` command + Jukuravi core.** Port the loader into the
+`3900h` gap (runtime `F9xxh`). Validation reuses the existing `host.py`/PTY
+harness: PROBE/CONFIG/LOAD/READ/RUN against the new image in cosim — the
+entire Jukuravi regression fleet applies. Physical smoke on CS00015 after.
+
+**Phase 3 (conditional) — floppy strip.** Net-only boot variant: `T`
+prompt reduces to Net, vectors get error stubs, disk region reclaimed.
+
+## Risks / notes
+
+- Relocated-half additions must be assembled for fixed `F9xxh` runtime
+  addresses; the in-place/relocated split (`1800h`) and the chip split
+  (`2000h`) both matter for burn planning (table+banner edits land in D15,
+  the module in D16 — both chips re-burn).
+- `J` must DI and own the 8251 exclusively; NetBios and Jukuravi are
+  mutually exclusive resident modes, which is the stock machine's own
+  pattern.
+- The new image gets its own identity (banner serial/name) and its own
+  pinned SHA; it must never be confused with the archival #0037 pair, which
+  remains the replica content truth.
