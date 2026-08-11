@@ -72,6 +72,9 @@ findings. Every status applies only to the boundary named by the report.
 - Programmable parts: `firmware-gap-ledger.md`,
   `d15-d16-firmware-lineage.md` (factory designations, exact archival EktaSoft
   3.7 pair identity, and the still-open physical-content boundary),
+  `ektasoft-rombios-lineage.md` (serial-vs-RomBios-version identity of the
+  vendored EktaSoft images, the two RomBios lines, and the homebrew #0043
+  kinship/checksum analysis),
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `d101-reconstruction-constraints.md` (datasheet-exact first-half select cases,
   D02 ladder, conditional D0-to-`/OE0` test, and four measured-pin boundaries),
