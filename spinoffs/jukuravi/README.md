@@ -14,6 +14,11 @@ The separate CS00024 T31 session and its corrected D55 interpretation are in
 [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md). The completed T36 desk diagnosis
 and D57 channel-2 localization are in
 [`../../docs/cs00024-t36-diagnosis.md`](../../docs/cs00024-t36-diagnosis.md).
+The prepared, not yet executed video-slot refresh experiment — arming the
+exact EktaSoft D54/D55 raster from the T36 loader and holding RAM
+unrefreshed — is specified in
+[`RASTER-REFRESH-EXPERIMENT.md`](RASTER-REFRESH-EXPERIMENT.md) with its
+runner [`raster_retention.py`](raster_retention.py).
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0

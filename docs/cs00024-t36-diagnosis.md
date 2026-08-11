@@ -178,6 +178,16 @@ evidence alone. The next bench action is pin-level D57 channel-2 clock/gate
 measurement; RAM work should resume only if a normal-ROM or environmental
 failure supplies new evidence outside T36's proven boundary.
 
+A prepared, not yet executed host-driven experiment can additionally decide
+whether the board's normal video-slot refresh works at all: it replays the
+exact EktaSoft D54/D55 raster programming from the T36 loader and holds RAM
+unrefreshed past the proven decay boundary. Its protocol, mechanism, and
+pre-registered interpretation are in
+[`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md).
+Because it needs no scope and no ROM burn, it is a sensible companion to the
+D57 pin checks on the same bench visit; its `raster-syncb` stage also
+physically probes whether `SYNC_B` participates in refresh gating.
+
 ## Reproduction
 
 ```sh
