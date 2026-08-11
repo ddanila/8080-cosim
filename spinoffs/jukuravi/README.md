@@ -65,7 +65,9 @@ found by `host.discover_serial_ports()` and print which one they chose.
 
 macOS needs no driver or dependency install: the CP210x driver ships with the
 system, and `host.py` uses stdlib `termios` rather than pyserial. Do not install
-the vendor Silicon Labs kext alongside the built-in driver.
+the vendor Silicon Labs kext alongside the built-in driver. The verified macOS
+first-contact sessions against CS00015, including the two instructive failed
+attaches, are recorded in [`MACOS-BENCH.md`](MACOS-BENCH.md).
 
 On a cold boot, run a full session first. `--attach-loader` means "reattach to
 an already-resident loader without resetting"; it deliberately never answers the

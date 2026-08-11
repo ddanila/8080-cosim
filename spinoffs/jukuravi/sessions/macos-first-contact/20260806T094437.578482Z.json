@@ -1,0 +1,34 @@
+{
+  "attempts": [],
+  "diagnostic_status": null,
+  "error": "timeout waiting for loader API v2 idle reset during attach",
+  "finished_utc": "2026-08-06T09:45:37.584253Z",
+  "frames": [],
+  "host_transport": {
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 7
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": null,
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 0,
+  "rx_log": "20260806T094437.578482Z.rx.bin",
+  "started_utc": "2026-08-06T09:44:37.578482Z",
+  "status": "error",
+  "transmitted_bytes": 0,
+  "transport": "/dev/cu.usbserial-0001",
+  "tx_log": "20260806T094437.578482Z.tx.bin"
+}
