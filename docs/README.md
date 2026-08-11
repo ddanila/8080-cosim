@@ -82,6 +82,8 @@ findings. Every status applies only to the boundary named by the report.
   `juku-rom-monitor-commands.md` (the decoded 15-command ROM monitor shared
   by every EktaSoft image and Monitor 3.3, the T/D/N-or-T boot dispatch
   tables, and the universal FF50h bootstrap vector),
+  `ekta37-rom-map.md` (functional layout of the adopted 16 KiB image with
+  sizes: console core 29%, NetBios 19%, disk 11%, font 10%, 1.7 KiB free),
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `d101-reconstruction-constraints.md` (datasheet-exact first-half select cases,
   D02 ladder, conditional D0-to-`/OE0` test, and four measured-pin boundaries),
