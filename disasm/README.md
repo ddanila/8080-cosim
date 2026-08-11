@@ -39,6 +39,25 @@ block-1 checksum byte exactly (`F2h` at `000Ah`; see
 The open research question for this image — how the AT keyboard physically
 connects — lives in the ctl workflow: trace the PIC setup, label the ISR.
 
+## jmon22 (Juku Monitor v2.2, public museum image with corrupt blocks)
+
+- [`jmon22/jmon22.ctl`](jmon22/jmon22.ctl) — hand-maintained knowledge.
+- [`jmon22/jmon22.skool`](jmon22/jmon22.skool) — generated disassembly.
+
+This disassembly exists to support the block-repair project in
+[`../docs/jmon22-reconstruction.md`](../docs/jmon22-reconstruction.md). The
+image is preserved exactly as dumped, including its proven-wrong byte
+(`1EFCh` reads `9Ah`, evidence-proven `DAh`) — the round-trip guard pins the
+*dumped* bytes. Blocks 6-7 (`3000h-3FFFh`) came from unstable physical
+reads; the ctl marks them untrusted data and excludes them from code
+discovery. The Monitor family boots differently from EktaSoft: only ~200
+bytes of boot code run in place (checksum verifier over the stored table at
+`0003h-000Ah`, PIT init, PPI init), then `3F40h-3FFFh` is copied to
+`FF40h-FFFFh` and everything dispatches through that relocated vector table
+and interrupts — so static seeding is deliberately minimal here, and the
+shared BASIC body (`03C8h..` byte-identical to jmon33) is documented by
+title rather than decoded.
+
 ## Workflow
 
 ```sh
