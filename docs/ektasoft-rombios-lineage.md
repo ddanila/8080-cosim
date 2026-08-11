@@ -71,36 +71,70 @@ lines, with #0043 closest to the 2.43 line — consistent with
 [`fdc-bus-polarity.md`](fdc-bus-polarity.md), which already grouped serials
 #0032/#0043 by their shared port-`1Ch/1Dh` bit-stream storage routine.
 
-## Boot PIT programming across the lines
+## Boot PIT programming across the lines and families
 
-All three decoded boot sequences program **byte-identical D54/D55 raster
-values** — the same 14 writes (64 us lines, 313-line frames, identical
-porches) that [`video-pit-timing.md`](video-pit-timing.md) proves drive the
-autonomous raster, and that the CS00024 experiment replays
-([`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md)).
-Two independent RomBios lines agreeing on those bytes corroborates the
-arm-snippet values.
+All six EktaSoft images boot with the **same decoded PIT write sequence**
+(exact offsets: #0024 `01C3h`, #0031/#0035/#0037 `01D4h`, #0032 `01E2h`,
+#0043 `01DCh`): the byte-identical D54/D55 raster values (64 us lines,
+313-line frames, identical porches) that
+[`video-pit-timing.md`](video-pit-timing.md) proves drive the autonomous
+raster and that the CS00024 experiment replays
+([`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md)),
+plus the 2400-baud D57 counter-0 divisor (`1Fh`, BCD 32) in every image.
 
-The boot runs differ only at D57 channel 2 (`SYNC_B`):
+The Monitor family programs the same timing chain with equivalent values
+and different encodings (jmon22 offset `0051h` inline; jmon33 offsets
+`0026h`/`004Fh` split, with the blank/porch counts `24h/08h/72h/25h`
+deferred to a later routine at `2E89h..2E98h`):
 
-- **3.43m** (#0037, offset `01D4h`): control `B0h`, count `FFFFh` —
-  binary mode 0, a one-shot whose OUT2 rises after ~53 ms;
-- **2.43 line** (#0032 offset `01E2h`, #0043 offset `01DCh`,
-  byte-identical runs): control `9Fh`, count BCD 32 — **mode 3 square
-  wave, 1.23 MHz / 32 = 38.4 kHz** on OUT2.
+- D54 horizontal: same controls `15h/53h/93h`, same 64 us line;
+- D55 vertical: control `35h` (BCD) count `0312` = **312 lines**, where
+  EktaSoft uses control `34h` (binary) count `0139h` = **313** — a one-line
+  frame-height/encoding difference between the families;
+- D57 counter 0: same `1Fh` + BCD 32 = 2400 baud in all eight images.
 
-So the two lines drive `SYNC_B` in qualitatively different ways, and both
-are period-legitimate consumers of the exact channel that is faulty on
-CS00024 (see [`cs00024-t36-diagnosis.md`](cs00024-t36-diagnosis.md)). The
-remote consumer of `SYNC_B` remains an unresolved drawing boundary.
+The one qualitative split is D57 channel 2 (`SYNC_B`), and it tracks the
+**firmware generation across both families**, not the family:
 
-All three images also carry the same pair of later D54/D55 parameter
-routines (near `0F03h..0F39h`): one alternative set
-(`16h→11h, 04h→12h, 0112h→15h, 45h→16h`) and one restoring the boot set.
-They appear in the 40-column and 53-column configurations alike, so they
-are shared runtime code, not the wide-screen mode. #0043's alternative set
-differs from both official images by a single byte (D54 channel 2 `02h`
-instead of `04h`); no interpretation is attached here.
+- **2.x generation** — Monitor 2.2 (jmon22), RomBios 2.43/2.43m
+  (#0032/#0043): control `9Fh`, count BCD 32 — **mode 3 square wave,
+  1.23 MHz / 32 = 38.4 kHz** on OUT2;
+- **3.x generation** — RomBios 3.42 (#0024), 3.43/3.43m
+  (#0031/#0035/#0037), Monitor 3.3 (jmon33): control `B0h`, count `FFFFh`
+  — binary mode 0, a one-shot whose OUT2 rises after ~53 ms.
+
+Every firmware generation is therefore a period-legitimate consumer of the
+exact channel that is faulty on CS00024 (see
+[`cs00024-t36-diagnosis.md`](cs00024-t36-diagnosis.md)). The remote
+consumer of `SYNC_B` remains an unresolved drawing boundary.
+
+All six EktaSoft images also carry the same pair of later D54/D55
+parameter routines (near `0EFCh..0F39h`): one alternative set
+(`16h→11h`, `02h` or `04h`→`12h`, `0112h→15h`, `45h→16h`) and one
+restoring the boot set. They appear in the 40-column and 53-column
+configurations alike, so they are shared runtime code, not the wide-screen
+mode. The alternative set's D54 channel-2 byte is `02h` in #0024 and
+#0043 and `04h` in #0031/#0032/#0035/#0037; no version pattern or
+interpretation is attached.
+
+Related bootstrap identity strings (each `ESC L`-prefixed): #0037 carries
+`BOOTSTRAP v4.1 - 1793 on Main board` (ROM `23C4h`), jmon33 carries
+`BOOTSTRAP v3.3 - 1791 on Main board` (ROM `20A4h`), and jmon22 contains
+no bootstrap banner as dumped.
+
+## Monitor family notes
+
+The Monitor images share a per-block checksum convention distinct from
+EktaSoft's single block-1 sum: eight stored bytes at `0003h..000Ah`, block
+0 covering `0004h..07FFh` and blocks 1-7 covering their full 2 KiB. This
+is the convention that diagnoses jmon22's corrupt blocks
+([`jmon22-reconstruction.md`](jmon22-reconstruction.md)); jmon33 passes
+all eight (byte-verified), independently validating it against a healthy
+image. Monitor boot is a short in-place sequence (checksum verification,
+PIT and PPI init) followed by copying ROM `3F40h..3FFFh` to
+`FF40h..FFFFh` and dispatching through that vector region. Maintained
+annotated disassemblies of both Monitor images live in
+[`../disasm/`](../disasm/README.md).
 
 ## Checksum status
 

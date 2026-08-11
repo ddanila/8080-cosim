@@ -50,9 +50,10 @@ All 128 rows are accounted for; 107 carry unrefreshed evidence.
 
 The arm snippet replays the **exact** EktaSoft D54/D55 write sequence — the
 14 `MVI A/OUT` pairs to ports `10h..17h` in ROM order (64 µs lines, 313-line
-frames, both blank one-shots). Both vendored RomBios lines (3.43m and the
-2.43 family) boot with these byte-identical raster values, independently
-corroborating them; see
+frames, both blank one-shots). All six vendored EktaSoft images boot with
+these byte-identical raster values, and the Monitor family programs the
+same timing chain with equivalent values (312-line BCD frame count instead
+of 313 binary), independently corroborating them; see
 [`../../docs/ektasoft-rombios-lineage.md`](../../docs/ektasoft-rombios-lineage.md). The D57 writes in the same ROM window are
 deliberately excluded: channel 0 clocks the diagnostic USART and channel 1
 drives the speaker, so replaying them could kill the live link. The optional
