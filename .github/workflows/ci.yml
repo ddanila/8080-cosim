@@ -292,5 +292,8 @@ jobs:
       - name: Check jmon22 disassembly round-trip
         run: ./sync/jmon22_disasm_check.sh
 
+      - name: Check jmon33 disassembly round-trip
+        run: ./sync/jmon33_disasm_check.sh
+
       - name: Check rev B board connectivity + netlist completeness
         run: python3 scripts/check_revb_boards.py --completeness

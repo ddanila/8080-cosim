@@ -58,6 +58,23 @@ and interrupts — so static seeding is deliberately minimal here, and the
 shared BASIC body (`03C8h..` byte-identical to jmon33) is documented by
 title rather than decoded.
 
+## jmon33 (Juku Monitor v3.3, MAME default BIOS — healthy repair reference)
+
+- [`jmon33/jmon33.ctl`](jmon33/jmon33.ctl) — hand-maintained knowledge.
+- [`jmon33/jmon33.skool`](jmon33/jmon33.skool) — generated disassembly.
+
+All eight block checksums pass under the same convention as jmon22
+(byte-verified: stored table at `0003h-000Ah`, block 0 covering
+`0004h-07FFh`). Same Monitor memory model: short in-place boot, then the
+`3F40h-3FFFh` vector region is copied to `FF40h-FFFFh` and everything
+dispatches through it. Because every byte is trusted, descent covers the
+vector slots too, making this the best-covered seed. Its primary purpose is
+structural: the healthy reference for aligning jmon22's untrusted blocks 6-7
+(`3F40h-3FFFh` is 55% positionally identical to jmon22's; block 6 is ~1%
+and will need routine-level alignment). Notable anchors: the ENSV TA Kub.I /
+AT EKB credit, the Bootstrap v3.3 / FDC 1791 banner, and the
+checksum-failure UI that reports the failing EPROM number.
+
 ## Workflow
 
 ```sh
