@@ -1,9 +1,10 @@
 # EktaSoft remix plan: ekta37 + Jukuravi service module
 
-Status: **PHASE 1 COMPLETE, 2026-08-11** — a booting `ekta4401.bin` with the
-banner identity and the `H` command exists and is guarded
-([`remix/README.md`](remix/README.md)). Phase 2 (Jukuravi module + `J`,
-with the floppy strip) is not started. Measurements below are byte-verified
+Status: **PHASES 1 AND 2 COMPLETE, 2026-08-11** — `ekta4401.bin` boots with
+the banner identity, the `H` command, the floppy subsystem stripped, and a
+`J` command that starts the Jukuravi loader from RAM; all guarded
+([`remix/README.md`](remix/README.md)). Open: a full `host.py` handshake
+against `J` inside cosim, and any physical burn. Measurements below are byte-verified
 against the pinned `roms/ekta37.bin` and the exact T36 build; phase results
 are at the end.
 
@@ -74,13 +75,14 @@ line. Guard: cosim boot test (banner renders, `H` lists, all 15 stock
 commands still dispatch) plus a disasm ctl and round-trip entry in
 `sync/disasm_check.sh`. Already a burnable ROM.
 
-**Phase 2 — `J` command + Jukuravi core.** Port the loader into the
-`3900h` gap (runtime `F9xxh`). Validation reuses the existing `host.py`/PTY
-harness: PROBE/CONFIG/LOAD/READ/RUN against the new image in cosim — the
-entire Jukuravi regression fleet applies. Physical smoke on CS00015 after.
+**Phase 2 — `J` command + Jukuravi core.** DONE, but not by relocation:
+the loader is stored verbatim and copied at `J` time into the RAM addresses
+it was assembled for, exploiting memory mode 1 (ROM only at `D800h+`, low
+half RAM). See the Phase 2 results below.
 
-**Phase 3 (conditional) — floppy strip.** Net-only boot variant: `T`
-prompt reduces to Net, vectors get error stubs, disk region reclaimed.
+**Phase 3 — floppy strip.** DONE as part of Phase 2: the disk region is
+reclaimed for the loader segments and the `FF50h+` vectors point at a
+`NO DISK - NET ONLY` stub.
 
 ## Risks / notes
 
@@ -134,3 +136,23 @@ prompt reduces to Net, vectors get error stubs, disk region reclaimed.
    preserves bit-exact compatibility with every existing host tool. The
    loader's workspace and stack stay below `D800h`, so the screen contents
    remain intact during service mode: `J` can leave a visible banner.
+
+## Phase 2 results (2026-08-11)
+
+1. **No relocation was needed.** In memory mode 1 the ROM is mapped only at
+   `D800h-FFFFh`, so the entire low half is RAM. `J` forces mode 1, copies
+   the five T36 segments from mapped ROM into the exact addresses they were
+   assembled for, and enters the loader — the engine runs byte-identical to
+   the diagnostic ROM, keeping all of its guarantees.
+2. **The engine self-initializes the link.** T36 `0CE0h` programs the 8251
+   (mode `4Eh`, command `37h`) and its 2400-baud D57 counter 0, so `J` hands
+   over nothing but the machine. Confirmed: the first byte out of port 08h
+   after `J` is `A5h`, the loader's frame sync.
+3. **Two harness facts invalidated the earlier Phase 1 evidence.** The
+   cosim frame interrupt (`argv[4]`) must be on or the keyboard is never
+   scanned and *no* command dispatches; and absolute bus-trace read counts
+   in the `D800h+` window are framebuffer traffic, identical with or without
+   a keypress. The Phase 1 guard passed for that wrong reason and has been
+   replaced with control-differenced counts. Any future guard in this ROM
+   must difference against a keyless control run.
+4. **Space after both phases:** 719 B still free in the `F900h` gap.
