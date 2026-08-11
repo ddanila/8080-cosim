@@ -1,0 +1,523 @@
+{
+  "attempts": [
+    {
+      "banner_seen": false,
+      "decoded_frames": 21,
+      "dtr_sequence_completed": false,
+      "error": null,
+      "loader": {
+        "address": "0x4000",
+        "attach": {
+          "baseline_token": "0xC6",
+          "idle_requests": 9,
+          "resync_attempts": 1,
+          "resync_transaction": 255
+        },
+        "attached": true,
+        "bytes": 208,
+        "chunks": [
+          {
+            "address": "0x4000",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "7A11",
+            "index": 0,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 8.132946,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 2,
+            "verified": true
+          },
+          {
+            "address": "0x4020",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "6E83",
+            "index": 1,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 8.135934,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 4,
+            "verified": true
+          },
+          {
+            "address": "0x4040",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "3B71",
+            "index": 2,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 8.135332,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 6,
+            "verified": true
+          },
+          {
+            "address": "0x4060",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "34CF",
+            "index": 3,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 8.134947,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 8,
+            "verified": true
+          },
+          {
+            "address": "0x4080",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "861E",
+            "index": 4,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 8.134941,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 10,
+            "verified": true
+          },
+          {
+            "address": "0x40A0",
+            "attempts": 1,
+            "bytes": 32,
+            "crc16": "88BE",
+            "index": 5,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 8.133519,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 12,
+            "verified": true
+          },
+          {
+            "address": "0x40C0",
+            "attempts": 1,
+            "bytes": 16,
+            "crc16": "880F",
+            "index": 6,
+            "pass": 1,
+            "readback_attempts": 1,
+            "seconds": 5.677649,
+            "skipped": false,
+            "status": "ok",
+            "store_retries": 0,
+            "transaction": 14,
+            "verified": true
+          }
+        ],
+        "config": {
+          "attempts": 0,
+          "order": "unchanged",
+          "transaction": null,
+          "votes": 1
+        },
+        "control_only": false,
+        "end_exclusive": "0x40D0",
+        "error": null,
+        "heartbeat": null,
+        "probe": {
+          "attempts": 1,
+          "cookie_hex": "5432380055AAC6C7",
+          "transaction": 0
+        },
+        "ready": {
+          "api_base": "0x0A00",
+          "api_version": 2,
+          "capabilities": "0x7FFF",
+          "default_votes": 1,
+          "effective_chunk_bytes": 32,
+          "guard_ms": 6.0,
+          "load_end_exclusive": "0xC000",
+          "load_min": "0x4000",
+          "max_data_bytes": 32,
+          "readback": true,
+          "resume": false,
+          "retry_limit": 3,
+          "stack_top": "0xD000",
+          "workspace": "0xC000"
+        },
+        "refresh": {
+          "api": "0x07A9",
+          "attempts": 1,
+          "enabled": true,
+          "operation": "query",
+          "policy_flags": "0x07",
+          "row_start": "0x00",
+          "rows": 128,
+          "rx_refresh_calls": 63707,
+          "transaction": 1
+        },
+        "requested": true,
+        "run": {
+          "acknowledged": true,
+          "address": "0x4000",
+          "attempts": 1,
+          "execution_id": "0xBCBC5326",
+          "mode": "call",
+          "requested": true,
+          "result": {
+            "address": "0x4580",
+            "bytes": 56,
+            "hex": "44353752A5010800FD3DFC3CD3D3FD3DFC3CD3D3FD3DFC3CD3D3FD3DFC3CD33FFD3DFC3C3F3FFD3DFC3C3F3FFD3DFC3C3F3FFD3DFC3C3F3F",
+            "reads": [
+              {
+                "address": "0x4580",
+                "attempts": 1,
+                "bytes": 32,
+                "transaction": 17
+              },
+              {
+                "address": "0x45A0",
+                "attempts": 1,
+                "bytes": 24,
+                "transaction": 18
+              }
+            ]
+          },
+          "return_a": "0x00",
+          "return_replays": 0,
+          "return_seconds": 0.127405,
+          "returned": true,
+          "transaction": 16
+        },
+        "sha256": "feb82eddf3e8fdd39a8a5a3dc93f030b9b4d8cdbd37d1236d258a31cb26a990a",
+        "source": "spinoffs/jukuravi/sessions/cs00015-ekta4401-d57-control-physical/d57-raw-refresh-4000.bin",
+        "status": "returned"
+      },
+      "nano_liveness": null,
+      "number": 1,
+      "outcome": "ok",
+      "received_bytes": 3953,
+      "transmitted_bytes": 3400
+    }
+  ],
+  "diagnostic_status": null,
+  "error": null,
+  "finished_utc": "2026-08-11T19:51:26.802689Z",
+  "frames": [
+    {
+      "payload_hex": "FF002903000001000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0000230000085432380055AAC6C7",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "01002A000009010107008007A9F8DB",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "020025254000207A1100",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "03002640002021804536442336352336372336522336002336012336082336001188450E08CD",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "040025254020206E8300",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "050026402020A9073E20D31B3EFFD318062805C22C403E00D31BDB181213CDA9073E20D31B3E",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "060025254040203B7100",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0700264040203FD318062805C245403E00D31BDB181213CDA9073E60D31B3EFFD319062805C2",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0800252540602034CF00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0900264060205E403E40D31BDB191213CDA9073E60D31B3E3FD319062805C277403E40D31BDB",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0A002525408020861E00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0B0026408020191213CDA9073EA0D31B3EFFD31A062805C290403E80D31BDB1A1213CDA9073E",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0C00252540A02088BE00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0D002640A020A0D31B3E3FD31A062805C2A9403E80D31BDB1A12130DC21F403E50D31B3E01D3",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "0E00251540C010880F00",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "0F002640C010193E90D31B3E01D31A3EA5328445AFC9",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "1000280A400000000000",
+      "type": "0xB0"
+    },
+    {
+      "payload_hex": "100000",
+      "type": "0xB2"
+    },
+    {
+      "payload_hex": "11002645802044353752A5010800FD3DFC3CD3D3FD3DFC3CD3D3FD3DFC3CD3D3FD3DFC3CD33F",
+      "type": "0xB1"
+    },
+    {
+      "payload_hex": "12002645A018FD3DFC3C3F3FFD3DFC3C3F3FFD3DFC3C3F3FFD3DFC3C3F3F",
+      "type": "0xB1"
+    }
+  ],
+  "host_transport": {
+    "config_first": false,
+    "encoded_symbols": true,
+    "handshake_mismatches": [],
+    "loader_retry_limit": 3,
+    "requested_chunk_size": null,
+    "solicited_guard_ms": 6.0,
+    "symbol_repetitions": 1
+  },
+  "image": null,
+  "leading_training_bytes": 0,
+  "loader": {
+    "address": "0x4000",
+    "attach": {
+      "baseline_token": "0xC6",
+      "idle_requests": 9,
+      "resync_attempts": 1,
+      "resync_transaction": 255
+    },
+    "attached": true,
+    "bytes": 208,
+    "chunks": [
+      {
+        "address": "0x4000",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "7A11",
+        "index": 0,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 8.132946,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 2,
+        "verified": true
+      },
+      {
+        "address": "0x4020",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "6E83",
+        "index": 1,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 8.135934,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 4,
+        "verified": true
+      },
+      {
+        "address": "0x4040",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "3B71",
+        "index": 2,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 8.135332,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 6,
+        "verified": true
+      },
+      {
+        "address": "0x4060",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "34CF",
+        "index": 3,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 8.134947,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 8,
+        "verified": true
+      },
+      {
+        "address": "0x4080",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "861E",
+        "index": 4,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 8.134941,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 10,
+        "verified": true
+      },
+      {
+        "address": "0x40A0",
+        "attempts": 1,
+        "bytes": 32,
+        "crc16": "88BE",
+        "index": 5,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 8.133519,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 12,
+        "verified": true
+      },
+      {
+        "address": "0x40C0",
+        "attempts": 1,
+        "bytes": 16,
+        "crc16": "880F",
+        "index": 6,
+        "pass": 1,
+        "readback_attempts": 1,
+        "seconds": 5.677649,
+        "skipped": false,
+        "status": "ok",
+        "store_retries": 0,
+        "transaction": 14,
+        "verified": true
+      }
+    ],
+    "config": {
+      "attempts": 0,
+      "order": "unchanged",
+      "transaction": null,
+      "votes": 1
+    },
+    "control_only": false,
+    "end_exclusive": "0x40D0",
+    "error": null,
+    "heartbeat": null,
+    "probe": {
+      "attempts": 1,
+      "cookie_hex": "5432380055AAC6C7",
+      "transaction": 0
+    },
+    "ready": {
+      "api_base": "0x0A00",
+      "api_version": 2,
+      "capabilities": "0x7FFF",
+      "default_votes": 1,
+      "effective_chunk_bytes": 32,
+      "guard_ms": 6.0,
+      "load_end_exclusive": "0xC000",
+      "load_min": "0x4000",
+      "max_data_bytes": 32,
+      "readback": true,
+      "resume": false,
+      "retry_limit": 3,
+      "stack_top": "0xD000",
+      "workspace": "0xC000"
+    },
+    "refresh": {
+      "api": "0x07A9",
+      "attempts": 1,
+      "enabled": true,
+      "operation": "query",
+      "policy_flags": "0x07",
+      "row_start": "0x00",
+      "rows": 128,
+      "rx_refresh_calls": 63707,
+      "transaction": 1
+    },
+    "requested": true,
+    "run": {
+      "acknowledged": true,
+      "address": "0x4000",
+      "attempts": 1,
+      "execution_id": "0xBCBC5326",
+      "mode": "call",
+      "requested": true,
+      "result": {
+        "address": "0x4580",
+        "bytes": 56,
+        "hex": "44353752A5010800FD3DFC3CD3D3FD3DFC3CD3D3FD3DFC3CD3D3FD3DFC3CD33FFD3DFC3C3F3FFD3DFC3C3F3FFD3DFC3C3F3FFD3DFC3C3F3F",
+        "reads": [
+          {
+            "address": "0x4580",
+            "attempts": 1,
+            "bytes": 32,
+            "transaction": 17
+          },
+          {
+            "address": "0x45A0",
+            "attempts": 1,
+            "bytes": 24,
+            "transaction": 18
+          }
+        ]
+      },
+      "return_a": "0x00",
+      "return_replays": 0,
+      "return_seconds": 0.127405,
+      "returned": true,
+      "transaction": 16
+    },
+    "sha256": "feb82eddf3e8fdd39a8a5a3dc93f030b9b4d8cdbd37d1236d258a31cb26a990a",
+    "source": "spinoffs/jukuravi/sessions/cs00015-ekta4401-d57-control-physical/d57-raw-refresh-4000.bin",
+    "status": "returned"
+  },
+  "nano_control": {
+    "dtr_reset_requested": false,
+    "dtr_sequence_completed": false,
+    "dtr_sequences_completed": 0,
+    "heartbeat_reset_retries_requested": 0,
+    "heartbeat_reset_retries_used": 0,
+    "liveness": null
+  },
+  "ram_survey": null,
+  "received_bytes": 3953,
+  "rx_log": "20260811T195018.477043Z.rx.bin",
+  "started_utc": "2026-08-11T19:50:18.477043Z",
+  "status": "ok",
+  "transmitted_bytes": 3400,
+  "transport": "/dev/ttyUSB0",
+  "tx_log": "20260811T195018.477043Z.tx.bin"
+}

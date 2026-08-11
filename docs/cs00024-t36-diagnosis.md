@@ -2,8 +2,8 @@
 
 Status date: 2026-08-11.
 
-Status: **COMPLETE 32 KIB RAM PROOF UNDER T36 REFRESH; D57 CHANNEL-2 PATH
-FAULT LOCALIZED; 12 MS LINK MARGIN REMAINS SEPARATE**.
+Status: **COMPLETE 32 KIB RAM PROOF UNDER T36 REFRESH; LEGACY D57 CHANNEL-2
+CAPTURE NEEDS THE CORRECTED `/VER RTR` RERUN; 12 MS LINK MARGIN IS SEPARATE**.
 
 This note consolidates the completed T36 physical capture, the Juku drawings,
 the exact EktaSoft 3.7 ROM, deterministic simulation, and contemporary
@@ -23,9 +23,12 @@ looked related during live work but are not supported as one fault.
    deterministic decay model. This does not prove the normal EktaSoft/video
    refresh schedule; it proves the RAM array and Juku RAM-cycle path work when
    all rows are serviced correctly.
-3. D57 has a real, repeatable **channel-2 functional-path fault**. Eight
-   independent high/low samples returned `99/99` only on channel 2. This is not
-   a DRAM or D55 result and is not yet proof that the D57 package itself is bad.
+3. The recorded D57 `99/99` channel-2 bytes are repeatable raw evidence but
+   **not a valid fault discriminator**. The old probe waited only microseconds,
+   while the exact E3 drawing shows CLK2 is `/VER RTR` at about 49.92 Hz and
+   T36 had not armed the raster. A corrected probe arms the raster and waits
+   about 79 ms; it passes 8/8 on CS00015. CS00024 needs that same rerun before
+   any D57 path or package conclusion.
 4. The 12 ms parser-aging point is a separate serial/parser margin finding.
    It is not a 12 ms unrefreshed RAM hold: T36 refresh remained enabled while
    the host delayed every physical symbol, stretching one 16-byte cookie to
@@ -50,7 +53,7 @@ The exact ROM identity was T36 `1E/C617`.
 | Execution separation | `4000h`/`5000h` pass, marker `50` returned | Both independently stored programs remained distinct and executable |
 | Parser-aging, 6 ms/symbol | exact 16-byte echo and recovery in 1.298094 s | The long-cookie path still works at this margin point |
 | Parser-aging, 12 ms/symbol | ROM `bad_crc`; recovery CONFIG timeout in 2.528204 s | A length/timing-dependent transport/parser boundary remains |
-| Raw D57 | ch0 `FD/3D`, ch1 `FC/3C`, ch2 `99/99`, repeated eight times | Only D57 channel 2 failed the programmed high-to-low discriminator |
+| Legacy raw D57 | ch0 `FD/3D`, ch1 `FC/3C`, ch2 `99/99`, repeated eight times | Channels 0/1 passed; channel-2 bytes were sampled before a guaranteed `/VER RTR` edge and do not diagnose a fault |
 
 The local test used a 792-byte low-resident program to test
 `5000h..BFFFh` and the same program relocated to `B000h` to test
@@ -108,11 +111,11 @@ reason to replace all eight RAMs now. Primary background:
 [National Semiconductor AN-305, in the 1986 Memory Support handbook](https://www.bitsavers.org/components/national/_dataBooks/1986_National_APPS_Handbook_Vol_2_Memory_Support.pdf)
 and the [Hitachi 1987 IC Memories data book](https://www.bitsavers.org/components/hitachi/_dataBooks/1987_M11_Hitachi_IC_Memories_Data_Book.pdf).
 
-## D57 channel-2 localization
+## D57 channel-2 timing correction
 
-The expanded test selects MSB-only Mode 0, writes `FFh`, waits, latches and
-reads; then repeats with `3Fh`. It calls T36 refresh before every sample. The
-physical result was:
+The legacy expanded test selected MSB-only Mode 0, wrote `FFh`, waited a few
+hundred microseconds, latched and read, then repeated with `3Fh`. It called T36
+refresh before each sample. The CS00024 physical result was:
 
 ```text
 D57R A5 01 08 00
@@ -121,32 +124,46 @@ FD 3D  FC 3C  99 99
 ... the same six bytes for all eight repetitions
 ```
 
-Channel 2 accepted neither programmed transition as observable count data.
-The boot bitmap can still be clean because its PIT routine tests the high/sign
-state on all three channels but performs the low/sign transition only on
-channel 0. Cosim with `JUKU_PIT_FAULT=1A:66:99` reproduces that exact logical
-shape: clean boot D57, followed by eight channel-2-only `99/99` failures.
-[`jukuravi_t36_d57_repro_test.py`](../tests/jukuravi_t36_d57_repro_test.py)
-guards this as a **signature model**, not a physical cause model.
+The exact E3 drawing and the board photograph correct the topology used in the
+first analysis:
 
-The drawing gives a better physical ranking:
+- D57 pin 9/CLK0 receives `1,23M` tag 13 from D103.11.
+- D57 pin 15/CLK1 receives `2M` tag 8.
+- D57 pin 18/CLK2 receives active-low `/VER RTR` tag 2 from D55 pin 13/OUT1,
+  approximately 49.92 Hz under the Ekta raster settings.
+- D57 pin 17/OUT2 is the separately traced `SYNC_B` boundary.
 
-- D57 pin 9/CLK0 and pin 18/CLK2 share `CLK_123M` from D103 pin 11/QD.
-  Channel 0 worked and continued clocking the USART, so D103's divider is not
-  globally absent. The branch, socket contact, or package pin at D57.18 can
-  still be open.
-- D57 pin 16/GATE2 is tied high. A bad contact there can stop counting.
-- D57 pin 17/OUT2 is the separately traced `SYNC_B` boundary. Its remote use
-  remains unresolved; it is not the D55 vertical-video chain.
-- A shared data-bus, select, RD, or WR failure is less likely because channels
-  0/1, the loader, and the exact structured result all worked, but a
-  channel/address-dependent socket or internal decode fault is not impossible.
+Intel's 8253 contract says a newly written count is not transferred until the
+write is followed by a rising and falling clock edge; a read before that edge
+may be invalid. The legacy delay was far shorter than one `/VER RTR` period,
+and T36 did not program D54/D55 into the normal Ekta raster. Consequently the
+channel-2 `99/99` bytes do not establish whether D57 accepted either count.
+They remain preserved because the capture itself is valid; its interpretation
+was wrong.
 
-Intel specifies three independent counters and states that a newly written
-count is not transferred until the write is followed by a rising and falling
-clock edge; a read before that falling edge may be invalid. This makes a
-missing CLK2 branch/contact a particularly good fit for stale, invariant data.
-Primary source: [Intel 1979 Peripheral Design Handbook, 8253 section](https://www.bitsavers.org/components/intel/_dataBooks/1979_Intel_Peripheral_Design_Handbook.pdf).
+The corrected `D57S` v2 probe replays the exact 14-write Ekta D54/D55 raster
+sequence and waits 64 T36 refresh sweeps, about 79 ms or roughly four vertical
+retrace periods, after each channel-2 count write. On CS00015 it returned this
+record in all eight repetitions:
+
+```text
+D57S A5 02 08 40
+FD 3D  FC 3C  FE 3E
+```
+
+The complete API-v2 upload/readback/RUN session had no transport mismatch.
+This is a physical positive control for D57 channel 2 and the D55.13 →
+D57.18 `/VER RTR` path. The simulator and `batch.py` now validate channel 2
+only for `D57S` v2; they retain but do not score legacy `D57R` v1 channel-2
+bytes. The exact-signature fault injection remains useful for testing the
+software discriminator after valid timing, not as proof that CS00024 has that
+fault. Primary source: [Intel 1979 Peripheral Design Handbook, 8253 section](https://www.bitsavers.org/components/intel/_dataBooks/1979_Intel_Peripheral_Design_Handbook.pdf).
+
+The correction is already present in the authoritative board JSON and HDL.
+It deliberately reopens one replica-layout gate: the current source and routed
+KiCad PCBs still assign D57.18 to `CLK_123M`. Their copper must be rerouted and
+reviewed against `/VER RTR` before fabrication; the generated bring-up report
+lists the mismatch rather than hiding it behind a pad-only edit.
 
 The exact `ekta37.bin` also uses this channel. At ROM offsets `01FCh..020Dh`
 it writes D57 control `B0h`, then sends `FFh,FFh` to port `1Ah`. An executed
@@ -156,27 +173,28 @@ Therefore the fault is relevant to the stock initialization even though
 
 ## Ranked diagnosis and next physical checks
 
-1. **D57 channel-2 clock/load/read path fault — high confidence as a path,
-   component not yet identified.** Compare D57 pin 18/CLK2 directly with pin
-   9/CLK0. Both should show the same approximately 1.23 MHz source. Then verify
-   pin 16/GATE2 is high and observe pin 17/OUT2 while programming channel 2.
-2. **D57 pin/socket/branch continuity — most economical first cause.** With
-   power off and normal safety precautions, inspect/reseat the socketed package
-   and check continuity D103.11 to D57.18. Only after those checks should a
-   known-good 8253/КР580ВИ53 substitution be used to distinguish package from
-   board path.
+1. **Corrected D57 rerun — required before electrical localization.** Run the
+   current `batch.py --only-d57` on CS00024. A pass clears the old `99/99`
+   interpretation. A repeatable corrected failure would justify comparing
+   D57.18 `/VER RTR` with D55.13, checking D57.16/GATE2, observing D57.17
+   `SYNC_B`, and only then distinguishing socket/path from package.
+2. **Normal-raster DRAM refresh — still open.** Run the pre-registered
+   `none`, `raster`, and if needed `raster-syncb` retention stages, with
+   CS00015 as the cross-board control. This is independent of the completed
+   RAM-array proof under T36 software refresh.
 3. **Serial/parser timing margin — real but secondary.** The 12 ms/symbol
    rejection and sporadic bounded retries merit protocol timing work, but do
-   not explain the stable D57 channel-2 data or the old T35 row pattern.
+   not explain the old T35 row pattern.
 4. **DRAM common timing/power issue — currently low priority.** If normal-ROM
    or hot/cold failures recur, scope populated-bank `/RAS` at D53.15 through
    R49, shared `/CAS` from D36.11, MA0--MA6, and supply/ground at D84--D91.
    Preserve simultaneous traces before replacing RAM packages.
 
 There is no justified instruction to replace D84--D91, D55, or D57 from desk
-evidence alone. The next bench action is pin-level D57 channel-2 clock/gate
-measurement; RAM work should resume only if a normal-ROM or environmental
-failure supplies new evidence outside T36's proven boundary.
+evidence alone. In particular, do not compare D57 pins 18 and 9 as though they
+were the same clock: they are `/VER RTR` and 1.23 MHz respectively. The next
+bench action is the corrected D57 software rerun; pin-level work follows only
+if that valid discriminator fails.
 
 A prepared, not yet executed host-driven experiment can additionally decide
 whether the board's normal video-slot refresh works at all: it replays the

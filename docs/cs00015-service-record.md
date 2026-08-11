@@ -1,6 +1,6 @@
 # Arvutimuuseum CS00015 service record
 
-Status date: 2026-08-08
+Status date: 2026-08-11
 
 This record identifies the physical Juku that underwent the diagnostic work as
 the Arvutimuuseum machine `CS00015`. The identifier is the same physical-source
@@ -117,7 +117,7 @@ not be reinserted because repeated extraction would add mechanical damage
 risk. Original CS00015 D8 `.039` was restored. This records component
 provenance only and must not be read as a diagnosis of the original D6.
 
-## Post-diagnostic restoration
+## Post-diagnostic restoration and Ekta4401 service ROM
 
 On 2026-08-08, after the diagnostic work was completed, the owner restored
 CS00015 to its normal firmware configuration with **EK37 / EktaSoft 3.7**
@@ -131,13 +131,33 @@ earlier machine-specific D15 read discrepancy remains part of the service
 history. The repaired-D1 finding, donor-D6/original-D8 provenance, and open D55
 discriminator are unchanged.
 
+On 2026-08-11 the owner temporarily replaced that normal pair with the
+project's Ekta4401 service-ROM pair. Both AT28C64 programming images were
+verified in Willem's built-in post-write read: D15 CRC32 `5E306759`, 8,167
+changed and 25 unchanged bytes; D16 CRC32 `3B734DEC`, 8,173 changed and 19
+unchanged bytes. Both operations verified 8,192/8,192 bytes with zero retries
+and ended with VCC/VPP off. The fitted pair booted and accepted `J` without an
+Enter key. The host attached to API v2 with no transport mismatch, passed the
+RAM-preserving PROBE, and observed the 128-row `07A9h` refresh service enabled.
+
+A first legacy D57 probe retained useful raw data but waited only microseconds
+after channel-2 programming. The exact E3 drawing establishes that D57.18
+(CLK2) is driven by active-low `/VER RTR` from D55.13, about 49.92 Hz, rather
+than the 1.23 MHz D57.9 clock. After arming the exact Ekta raster and waiting
+64 T36 refresh sweeps (about 79 ms) per channel-2 sample, all eight repetitions
+returned `FD/3D`, `FC/3C`, `FE/3E` for channels 0, 1, and 2. This physically
+validates D57 channel 2 and the `/VER RTR` clock path on CS00015. Captures are
+retained under
+[`../spinoffs/jukuravi/sessions/cs00015-ekta4401-d57-verrtr-control-physical/`](../spinoffs/jukuravi/sessions/cs00015-ekta4401-d57-verrtr-control-physical/).
+
 ## Current CS00015 fault summary
 
 | Location | Finding | Confidence / next discriminator |
 | --- | --- | --- |
 | D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official EktaSoft 3.7 low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
-| D55 functional path | Historical T15/T16/T31/T32 bits used an unclocked 8253 predicate and are invalidated as D55 evidence | Unverified; rerun clock-safe T34 before any substitution or package claim |
+| D55/D57 vertical timing path | Historical T15/T16/T31/T32 D55 bits used an unclocked predicate; corrected Ekta raster plus D57 channel-2 sampling passed 8/8 | D57 channel 2 and D55.13 `/VER RTR` output path are physically validated; this does not independently exercise every D55 counter predicate |
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
+| Currently fitted firmware | Ekta4401 D15/D16 service-ROM pair | Physically booted; `J` API-v2 attach, PROBE, LOAD, READ and RUN demonstrated |
 
 ## Serial connector measurement
 

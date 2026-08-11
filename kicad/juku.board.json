@@ -12641,10 +12641,10 @@
    ]
   },
   "VERT_RTR": {
-   "src": "native sheet-2 draws D55 OUT1/pin13 as VER RTR with boundary tag2, which continues into D35 К155ЛН5 input pin9 before inversion to FRAME INT",
+   "src": "exact-revision .009 E3 sheet 2 draws D55 OUT1/pin13 as active-low VER RTR with boundary tag2; that conductor continues into D35 К155ЛН5 input pin9 before inversion to FRAME INT and separately clocks D57 channel 2 at pin18",
    "source_risk": false,
-   "risk_disposition": "closed on native sheet 2 by the matching VER RTR/tag2 conductor between D55.13 and D35.9",
-   "nodes": [["D55", "13"], ["D35", "9"]]
+   "risk_disposition": "closed on exact-revision .009 E3 sheet 2 by the matching VER RTR/tag2 conductor joining D55.13, D35.9, and D57.18",
+   "nodes": [["D55", "13"], ["D35", "9"], ["D57", "18"]]
   },
   "PIT_BAUD": {
    "src": "native sheet-2 D57.OUT0/pin10 -> BAUD R. handoff to sheet 1; native full-resolution sheet 1 visibly forks the BAUD RATE conductor to D11 TxC/pin9 and RxC/pin25. Rail \"A\" = +5V (power corner)",
@@ -15591,15 +15591,11 @@
    ]
   },
   "CLK_123M": {
-   "src": "traced sheet-2: D103.QD (pin 11) -> rail labeled 1,23MHz -> tag 13 -> D57.CLK0/CLK2 and D34 gate-4 input pin 12",
+   "src": "exact-revision .009 E3 sheet 2: D103.QD (pin 11) -> rail labeled 1,23MHz -> tag 13 -> D57.CLK0/pin9 and D34 gate-4 input pin12; D57.CLK2/pin18 is separately on active-low VER RTR/tag2",
    "nodes": [
     [
      "D103",
      "11"
-    ],
-    [
-     "D57",
-     "18"
     ],
     [
      "D57",

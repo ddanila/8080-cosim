@@ -1107,12 +1107,17 @@ bytes, XOR `00`, and no D84--D91 candidate. This proves the RAM array under
 T36 refresh and supersedes the first session's delayed-prefix limit; it does
 not claim six-second raw retention or validate the normal-ROM refresh schedule.
 
-The same session isolated a separate D57 channel-2 path result. The raw test
-returned `99/99` for high/low programming in all eight repetitions while
-channels 0 and 1 responded. The boot D57 predicate remained clean because its
-low transition covers only channel 0. Focused cosim reproduces that exact
-clean-boot/raw-fail signature, and `batch.py --only-d57` avoids repeating RAM
-work during electrical follow-up. The drawing ranks D57.18/CLK2 branch/socket
-and the internal channel-2 path ahead of shared D103 because working channel 0
-uses the same 1.23 MHz source. See
+The same session retained a legacy D57 channel-2 result. The raw test returned
+`99/99` for high/low programming in all eight repetitions while channels 0 and
+1 responded. Its original fault interpretation is superseded: exact E3
+tracing puts D57.18/CLK2 on active-low D55.13 `/VER RTR` at about 49.92 Hz,
+not D57.9/CLK0's 1.23 MHz source. The old probe neither armed the raster nor
+waited long enough for a guaranteed channel-2 edge.
+
+The current `d57-raw-refresh-4000.asm` emits `D57S` v2, arms the exact Ekta
+D54/D55 raster, and waits 64 T36 refresh sweeps after every channel-2 write.
+A physical CS00015 control passed all eight repetitions with
+`FD/3D FC/3C FE/3E`. `batch.py --only-d57` now scores channel 2 only in this
+corrected format; legacy `D57R` bytes are retained but not treated as a
+discriminator. CS00024 needs this rerun before electrical follow-up. See
 [`../../../docs/cs00024-t36-diagnosis.md`](../../../docs/cs00024-t36-diagnosis.md).

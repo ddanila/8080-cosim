@@ -4,8 +4,10 @@ Status: **PHASES 1 AND 2 + VISUAL EASTER EGG COMPLETE, 2026-08-11** —
 `ekta4401.bin` boots with the banner identity, `H` help, a guarded `V`
 diamond-tunnel demo carrying the `JUKU 2026` mark, the floppy subsystem stripped,
 and a `J` command that starts the Jukuravi loader from RAM; all guarded
-([`remix/README.md`](remix/README.md)). Open: a full `host.py` handshake
-against `J` inside cosim, and any physical burn. Measurements below are byte-verified
+([`remix/README.md`](remix/README.md)). The D15/D16 pair was physically
+programmed, booted in CS00015, and exercised through API-v2 PROBE, verified
+LOAD/READ, and RUN. Open: the pre-registered normal-raster retention control,
+not the service-loader handshake. Measurements below are byte-verified
 against the pinned `roms/ekta37.bin` and the exact T36 build; phase results
 are at the end.
 

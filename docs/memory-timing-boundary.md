@@ -44,7 +44,7 @@ python3 scripts/report_memory_timing_boundary.py
 | D42/D43 serializer packages retain their source-proved unused parallel outputs | PASS | sheet-2 draws only QD pin10; QA/QB/QC pins13/12/11 are explicit NCs on both packages |
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
 | D56 trigger, clock, and active-output topology is owner-closed | PASS | exact .009 E3 plus owner continuity 2026-07-21: D54.17->D56.10, D55.17->D56.2, D56.12->D55.15/.18, D56.5/.4->D34.9/.10; D57.17 remains separate |
-| D35 frame-interrupt inverter path is source-closed | PASS | native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2 |
+| D35 frame-interrupt inverter path is source-closed | PASS | exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; D35.3/.4 remains POF/VID_MIX2 |
 | D30 common asynchronous-control conductor uses the native D38-side status strobe | PASS | exact .009 sheets plus owner continuity: D38.8 STB -> D30.1/.4/.10/.12 and R5 pull-up; W8 still separates the D5-side island |
 
 ## Compatible D53 Decoder Timing Envelope
@@ -89,7 +89,7 @@ python3 scripts/report_memory_timing_boundary.py
 | `D39Y` | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); formerly provisional, now traced |
 | `D59_O10_TAG10` | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled numeral-10 use is D57.13 SOUND in a distinct bundle domain; no continuous conductor joins them, and merging would short two active TTL outputs. Automatic tag-number chase exhausted, so D59.10 remains a deliberate continuity boundary |
 | `POF` | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter input pin3; the pinned MAME PPI0 Port-C contract independently identifies bit7 as POF |
-| `VERT_RTR` | `D55.13, D35.9` | native sheet-2 draws D55 OUT1/pin13 as VER RTR with boundary tag2, which continues into D35 К155ЛН5 input pin9 before inversion to FRAME INT |
+| `VERT_RTR` | `D55.13, D35.9, D57.18` | exact-revision .009 E3 sheet 2 draws D55 OUT1/pin13 as active-low VER RTR with boundary tag2; that conductor continues into D35 К155ЛН5 input pin9 before inversion to FRAME INT and separately clocks D57 channel 2 at pin18 |
 | `FRAME_INT` | `D35.8, D10.23, R60.1` | native sheet-2 draws D35 К155ЛН5 output pin8 as FRAME INT with R60 5.1k pull-up; native sheet-1 draws FRAME INT(2) directly into D10 IR5/pin23 |
 | `D56_CLR` | `R61.2, D56.3, D56.11` | traced sheet-2 (crops s2_d56/s2_d56_pin2): R61 12k pullup (from +5V) -> D56 section-1 CLR_N pin 3; the section-2 CLR_N pin 11 vertical joins the same row [join read at low zoom -- probable, marked] |
 | `D56_RC1` | `D56.15, R59.1, C8.1` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: RC pin 15 = R59 33k + C8 15nF |

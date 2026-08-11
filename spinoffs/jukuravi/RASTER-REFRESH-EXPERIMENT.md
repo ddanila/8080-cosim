@@ -60,8 +60,11 @@ drives the speaker, so replaying them could kill the live link. The optional
 `raster-syncb` variant adds only EktaSoft's channel-2 write (`B0h` control,
 `FFFFh` count, preserving the bare-OUT reuse): D57 `OUT2` is the traced
 `SYNC_B` boundary with an unresolved consumer, and CS00024's one confirmed
-fault is that channel. If `SYNC_B` participates in slot gating, the dead
-channel 2 and a broken normal-mode refresh could be one fault.
+legacy capture was on that channel. That `99/99` result is no longer a
+confirmed fault: the old probe did not arm the raster or wait for D57 CLK2's
+approximately 49.92 Hz `/VER RTR` source. If corrected testing later finds a
+real `SYNC_B` fault, it and broken normal-mode refresh could still be one
+fault.
 
 Snippet construction, exact-byte extraction, and the row accounting live in
 [`raster.py`](raster.py) and are guarded by
@@ -104,7 +107,7 @@ default 1.702).
 | --- | --- | --- |
 | `none` (control) | CS00024: contradicts the recorded T34 boundary — investigate before trusting the run. CS00015: consistent with its long recorded idles; still ambiguous between retention luck and always-on slot refresh | CS00024: expected; confirms sensitivity. CS00015: natural retention is shorter than its recorded idle survivals suggest — favors an active refresh source on CS00015 |
 | `raster` | Video-slot refresh works once the raster is armed: the board's refresh hardware is healthy and the diagnostic ROMs simply never armed it. Also closes the slot-schedule question with physical evidence: slots strobe `/RAS` when the raster runs | The armed raster does not refresh this board: a real hardware refresh-path fault upstream of the DRAMs (slot gating, mux enables, or their timing sources) |
-| `raster-syncb` | (given `raster` decayed) `SYNC_B` participates in refresh gating — but note CS00024's broken channel 2 may prevent `OUT2` from ever asserting, so a *decay* here does not clear `SYNC_B` | Consistent with either a `SYNC_B` role blocked by the dead channel 2, or `SYNC_B` irrelevance; distinguish on CS00015, whose channel 2 works |
+| `raster-syncb` | (given `raster` decayed) `SYNC_B` participates in refresh gating. If the corrected D57S probe first fails on CS00024, a decay here does not clear `SYNC_B` | Consistent with either a `SYNC_B` role blocked by a separately proven channel-2 fault, or `SYNC_B` irrelevance; distinguish on CS00015, whose corrected channel-2 control passes |
 
 A `pass` verdict requires RETURN with `A=52h` plus byte-exact marker and
 hold-image readbacks. Partial decay (some rows failed) is reported with the

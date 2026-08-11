@@ -127,16 +127,35 @@ plaque and the exact logo. This was added after MAME and C-cosim both exposed
 the first address-hash implementation as a screen of repeated glyph-like
 tiles; byte diversity alone had incorrectly accepted that version.
 
-## Not yet done
+## Physical validation
 
-A complete `host.py` session against the `J` service inside cosim (PROBE →
-CONFIG → LOAD → RUN) has **not** been demonstrated yet: the loader is
-proven alive and transmitting, but the PTY orchestration in the harness
-still needs work (the host must attach only after `J` has been typed, and
-the detector must not consume the frames the host needs). Until that lands,
-treat the loader path as *starts and speaks*, not *fully handshakes*.
+Both halves were programmed into AT28C64 devices on 2026-08-11 with the
+DOSRAVI/Willem controlled-write path. D15 changed 8,167 bytes and D16 changed
+8,173; Willem's built-in post-write read verified all 8,192 bytes of each
+image with zero retries and left VCC/VPP off. The verified CRC32 values were
+`5E306759` and `3B734DEC`, matching the committed programming images above.
+The first D15 operation took about 393 seconds, outlasting the host's former
+300-second EXEC wait; its persistent execution ID allowed the completed result
+to be retrieved without programming twice. D16 used a 900-second bound.
 
-No physical burn has happened; the image is desk-validated only. Burning
-touches both chips: D15 carries the banner and table pointer, D16 the
-segments, the H/J/V code and the stubs. Program the named D15/D16 files; do
-not load the combined 16 KiB image into either 8 KiB device.
+The pair then booted physically in CS00015. With no display attached, typing
+`J` alone (no Enter) entered the resident service loader. The retained session
+[`../sessions/cs00015-ekta4401-first-j-physical/`](../sessions/cs00015-ekta4401-first-j-physical/)
+attached to API v2, passed PROBE without changing RAM, and reported 128-row
+refresh enabled at `07A9h`, with no transport mismatch. Subsequent retained
+sessions uploaded, read back, and executed D57 probes successfully, proving
+the complete LOAD → READ → RUN → result path rather than only the READY frame.
+
+The image therefore has both deterministic desk validation and physical
+service-loader validation. Burning always touches both chips: D15 carries the
+banner and table pointer, while D16 carries the copied loader segments and the
+H/J/V code. Program the named D15/D16 files; never load the combined 16 KiB
+image into either 8 KiB device.
+
+## Still open
+
+The prepared normal-raster retention experiment has not been run on either
+CS00015 or CS00024. It remains the next cross-board control for deciding
+whether the normal display slot path preserves DRAM when T36 software refresh
+is suspended; see
+[`../RASTER-REFRESH-EXPERIMENT.md`](../RASTER-REFRESH-EXPERIMENT.md).

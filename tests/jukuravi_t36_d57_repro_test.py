@@ -126,8 +126,13 @@ def main() -> int:
             fail(f"focused result set differs: {sorted(by_name)}")
         raw = by_name["d57-raw"]
         expected_record = "FF3FFF3F9999"
-        expected = "44353752A5010800" + expected_record * 8
-        if raw.get("observed_hex") != expected or raw.get("verdict") != "fail":
+        expected = "44353753A5020840" + expected_record * 8
+        if (
+            raw.get("observed_hex") != expected
+            or raw.get("verdict") != "fail"
+            or raw.get("format") != "D57S-v2-verrtr"
+            or raw.get("channel2_timing_valid") is not True
+        ):
             fail(f"D57 signature differs: {raw!r}")
         failures = raw.get("bad_samples")
         if (

@@ -503,7 +503,7 @@ sixteen LOADs and two readbacks needed a bounded retry, but all completed,
 there were zero store retries, and the maximum was three attempts. The
 remaining finding is a serial/parser timing margin.
 
-The final raw D57 operation uploaded and read back exactly, returned in
+The final legacy raw D57 operation uploaded and read back exactly, returned in
 0.127933 seconds, and then repeated one stable channel-specific result eight
 times:
 
@@ -512,27 +512,24 @@ D57R A5 01 08 00
 FD 3D  FC 3C  99 99    ; repeated eight times
 ```
 
-Only channel 2 failed the high/low discriminator. The clean boot D57 bit does
-not contradict this result: the boot predicate tests a high/sign value on all
-three channels but the low/sign transition only on channel 0. Exact-signature
-cosim now reproduces clean boot plus channel-2-only `99/99` failures.
+Channels 0 and 1 passed their fast discriminator. The original channel-2
+failure interpretation is superseded: the exact E3 drawing shows D57.18/CLK2
+is active-low `/VER RTR` from D55.13 at about 49.92 Hz, while D57.9/CLK0 alone
+uses D103.11's 1.23 MHz source. The legacy probe waited only microseconds and
+T36 did not arm the raster, so its `99/99` reads occurred before a guaranteed
+CLK2 edge. They are retained raw evidence, not proof of a D57 fault.
 
-The drawing localizes the physical path. D57 CLK0/pin 9 and CLK2/pin 18 share
-the 1.23 MHz D103.11 source. Working channel 0 excludes a globally dead D103
-divider, but not the separate branch, socket contact, or package pin at
-D57.18. D57 GATE2/pin 16 should be high; OUT2/pin 17 is the separately traced
-`SYNC_B` boundary. The Intel 8253 contract requires rising and falling clock
-edges after a count write before the new count transfers, making a missing
-CLK2 contact a strong fit for invariant stale data. The path candidates, in
-order, are D57.18 clock branch/contact, D57 internal channel-2 path,
-D57.16 gate contact, then channel-select/local-bus effects. This is not yet a
-package condemnation.
+The corrected `D57S` probe arms the exact Ekta raster and waits 64 refresh
+sweeps (about 79 ms) after each channel-2 write. Its CS00015 positive control
+passed all eight repetitions with `FD/3D FC/3C FE/3E`, validating both D57
+channel 2 and the D55.13 → D57.18 `/VER RTR` path there. CS00024 must run this
+corrected probe before any socket, board-path, or package localization.
 
 The exact EktaSoft 3.7 ROM does use the channel: offsets `01FCh..020Dh` write
 control `B0h`, followed by `FFh,FFh` to port `1Ah`. The immediate bench action
-is to compare D57 pin 18 against pin 9, verify pin 16 high, and observe pin 17
-while reprogramming. With power off, continuity D103.11 to D57.18 and the
-socket should be checked before a controlled PIT substitution.
+is `batch.py --only-d57` with the corrected source. Only a corrected failure
+justifies tracing D55.13 to D57.18, verifying pin 16 high, observing pin 17
+while reprogramming, and then considering a controlled PIT substitution.
 
 The consolidated evidence, primary-source research, simulator boundaries, and
 ranked diagnosis are in

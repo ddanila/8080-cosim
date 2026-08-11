@@ -27,7 +27,7 @@ python3 scripts/report_video_slot_timing_audit.py
 | D59 complementary CPU/video mux-enable inverter is source-traced | PASS | sheet-2 D59.5->E14/video /G; inverted D59.6->E13/CPU /G |
 | Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
 | D53 bank/RAS ladder outputs are present in the board JSON | PASS | `kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52 |
-| PIT video/baud timing endpoints are source-complete | PASS | sheet-2 D54 HOR RTR, D55 VERT SYNC, and D57 CLK0/GATE0 labels |
+| PIT video/baud timing endpoints are source-complete | PASS | exact .009 E3 D54 HOR RTR, D55 VERT SYNC, D57 CLK0/GATE0, and D57 CLK2=/VER RTR labels |
 | D42/D43 serializer control/serial nets are present in the board JSON | PASS | `kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q |
 | D41 package timing connectivity is source-closed | PASS | `docs/d41-timing-boundary.md` |
 | Runnable video still uses the abstract raster/read port | PASS | `hdl/juku_top.v` runnable adjunct |

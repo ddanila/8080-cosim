@@ -298,11 +298,13 @@ def main() -> int:
             all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
             and has_nodes(board, "POF", {("D26", "10"), ("D35", "3")})
             and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
-            and set(nodes(board, "VERT_RTR")) == {("D55", "13"), ("D35", "9")}
+            and set(nodes(board, "VERT_RTR")) == {
+                ("D55", "13"), ("D35", "9"), ("D57", "18")
+            }
             and set(nodes(board, "FRAME_INT")) == {("D35", "8"), ("D10", "23"), ("R60", "1")}
             and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6"))
             and all(["D35", pin] not in board.get("no_connects", []) for pin in ("8", "9")),
-            "native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2",
+            "exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; D35.3/.4 remains POF/VID_MIX2",
         ),
         (
             "D30 common asynchronous-control conductor uses the native D38-side status strobe",

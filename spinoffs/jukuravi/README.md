@@ -311,19 +311,24 @@ that delayed read and the other three wire patterns were not completed.
 The later local session completed the missing proof in 45 minutes. All eight
 stage/pattern combinations over the union `4000h..BFFFh` passed with zero
 mismatching bytes, XOR `00`, and no candidate D84--D91 package. The same run
-separately found D57 channel 2 fixed at `99/99` for high and low programming in
-all eight repetitions, while channels 0/1 worked. The boot D57 bit remained
-clean because that shorter predicate applies its low test only to channel 0.
-Use the focused follow-up without rerunning RAM:
+also retained a legacy `D57R` capture: channel 2 read `99/99` in all eight
+repetitions while channels 0/1 worked. That raw result remains useful evidence,
+but its original fault interpretation is superseded. Exact E3 tracing shows
+D57 CLK2 is active-low `/VER RTR` from D55.13 at about 49.92 Hz, not D57
+CLK0's 1.23 MHz clock, and the legacy probe waited only microseconds without
+arming the raster. Its channel-2 reads therefore preceded a guaranteed CLK2
+edge. Use the corrected focused follow-up without rerunning RAM:
 
 ```sh
 python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
   --only-d57 --log-dir spinoffs/jukuravi/sessions/cs00024-t36-d57-followup
 ```
 
-This is a D57 channel-2 functional-path diagnosis, not yet a D57 package
-diagnosis. Compare D57.18/CLK2 with D57.9/CLK0 and verify D57.16/GATE2 before
-substitution. See the consolidated
+The corrected `D57S` probe arms the exact Ekta raster and waits 64 refresh
+sweeps after each channel-2 write. CS00015 returned `FD/3D`, `FC/3C`, `FE/3E`
+in all eight repetitions, physically validating its D57 channel 2 and
+`/VER RTR` path. CS00024 still needs this corrected rerun before any D57
+path, socket, or package diagnosis. See the consolidated
 [`CS00024 T36 diagnosis`](../../docs/cs00024-t36-diagnosis.md).
 
 ### Session logs

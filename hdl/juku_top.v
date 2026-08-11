@@ -522,7 +522,7 @@ module juku_top #(
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
     ag3_oneshot U_D56  (.a_n(1'b0), .b(pit_vert_sync_dsl), .clr_n(d56_clr_w), .a2_n(1'b0), .b2(pit_hsync_dsl), .clr2_n(d56_clr_w),
                         .q(), .q_n(d56_qn), .q2(d56_q2), .q2_n(d56_q2_n));
-    ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0011), .q(d103_q), .co(d103_co));   // D0/D1 high, D2/D3 low: traced /13 preset; QD (pin 11) = 1.23MHz -> D57.CLK2
+    ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0011), .q(d103_q), .co(d103_co));   // D0/D1 high, D2/D3 low: traced /13 preset; QD (pin 11) = 1.23MHz -> D57.CLK0
 
     // ---- runnable abstract video oracle: raster-scan framebuffer -> ИР16 serialize -> ЛП5 pass-through
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
@@ -822,7 +822,7 @@ module juku_top #(
     pit_8253 #(.CLOCKED_MODE0_LOAD(PIT_CLOCKED_MODE0_LOAD)) U_PIT2
                      (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(d103_q[3]), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
-                      .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK0+CLK2 share 1.23M = D103.QD
+                      .clk2(vert_rtr), .gate2(1'b1),   // exact .009 E3: CLK2 = active-low D55.OUT1 / VER RTR (~49.92 Hz)
                       .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = separate SYNC B boundary
     wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n, ser_syndet, ser_rxrdy, ser_txrdy;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(d13_o4),

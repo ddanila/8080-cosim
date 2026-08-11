@@ -1,11 +1,11 @@
-; D57 raw discriminator with exact raster arming and T36-safe refresh.
+; D57 raw discriminator with a channel-2 wait sized for /VER RTR.
 ;
-; Exact-revision .009 E3 establishes three different D57 clocks:
-; CLK0=1.23 MHz, CLK1=2 MHz, and CLK2=active-low D55.OUT1 / VER RTR at the
-; approximately 49.92 Hz frame rate.  The old common 40-iteration settle was
-; therefore valid only for channels 0/1.  This version replays EktaSoft's exact
-; D54/D55 raster programming and waits 64 complete refresh sweeps (~79 ms,
-; about four /VER RTR edges) after every channel-2 count write.
+; D57 CLK0 is 1.23 MHz, CLK1 is 2 MHz, but CLK2 is the active-low vertical
+; retrace output from D55 channel 1 (about 49.92 Hz under the EktaSoft raster).
+; The historical 40-iteration settle loop is retained for channels 0/1.  For
+; channel 2, 64 complete T36 refresh sweeps follow every count write.  At the
+; measured 1.2 ms per sweep this spans roughly 79 ms / four frame-clock edges
+; without putting DRAM retention at risk.
 ;
 ; Result at 4580h, 56 bytes:
 ;   00..03 "D57S"; 04=A5 complete; 05=version 2; 06=repetitions;
@@ -20,11 +20,6 @@ PIT_CONTROL  equ 01Bh
 SETTLE       equ 40
 SLOW_SWEEPS  equ 64
 REPETITIONS  equ 8
-
-%macro PIT_WRITE 2
-    db 03Eh, %2
-    db 0D3h, %1
-%endmacro
 
 %macro SAMPLE_FAST 2
     db 0CDh
@@ -67,23 +62,6 @@ REPETITIONS  equ 8
 %endmacro
 
 start:
-    ; Exact EktaSoft D54/D55 subset from ROM 01D4h..0221h.  D57 channel 0
-    ; remains under loader control; channel 2 is programmed only by samples.
-    PIT_WRITE 013h, 015h
-    PIT_WRITE 013h, 053h
-    PIT_WRITE 013h, 093h
-    PIT_WRITE 017h, 073h
-    PIT_WRITE 017h, 093h
-    PIT_WRITE 017h, 034h
-    PIT_WRITE 014h, 039h
-    PIT_WRITE 014h, 001h
-    PIT_WRITE 010h, 064h
-    PIT_WRITE 011h, 024h
-    PIT_WRITE 012h, 008h
-    PIT_WRITE 015h, 072h
-    PIT_WRITE 015h, 000h
-    PIT_WRITE 016h, 025h
-
     db 021h
     dw RESULT
     db 036h, 'D'
@@ -115,7 +93,7 @@ sample_repetition:
     db 03Eh, 001h
     db 0D3h, 019h
 
-    ; Restore exact EktaSoft D57 channel-2 / SYNC_B programming.
+    ; Restore the exact EktaSoft D57 channel-2 / SYNC_B programming.
     db 03Eh, 0B0h
     db 0D3h, PIT_CONTROL
     db 03Eh, 0FFh

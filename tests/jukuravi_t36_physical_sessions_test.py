@@ -236,7 +236,7 @@ def main() -> int:
     print(
         "JUKURAVI-T36-PHYSICAL: PASS "
         "(wire zero prefix plus complete local four-pattern 32 KiB proof; "
-        "parser boundary; D57 channel-2 signature)"
+        "parser boundary; legacy D57 channel-2 timing capture retained)"
     )
     return 0
 

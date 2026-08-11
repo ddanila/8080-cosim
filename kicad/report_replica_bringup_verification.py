@@ -229,7 +229,7 @@ def main() -> int:
     pcb_ok = not pcb_missing and not pcb_mismatched
     full_pcb_ok = bool(source_coverage["ok"] and routed_coverage["ok"])
     if not pcb_ok or not full_pcb_ok:
-        status = "ENDPOINT COVERAGE FAILED"
+        status = "ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED"
     elif rows:
         status = "EVIDENCE INDEX READY / RISKS UNRESOLVED"
     else:

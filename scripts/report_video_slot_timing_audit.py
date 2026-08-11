@@ -162,9 +162,10 @@ def main() -> int:
             "PIT video/baud timing endpoints are source-complete",
             net_has(board, "HOR_RTR", ("D54", "13"))
             and net_has(board, "VERT_SYNC", ("D55", "17"))
-            and net_has(board, "CLK_123M", ("D103", "11"), ("D57", "18"), ("D57", "9"))
+            and net_has(board, "CLK_123M", ("D103", "11"), ("D57", "9"))
+            and net_has(board, "VERT_RTR", ("D55", "13"), ("D57", "18"))
             and net_has(board, "P5V", ("D57", "11")),
-            "sheet-2 D54 HOR RTR, D55 VERT SYNC, and D57 CLK0/GATE0 labels",
+            "exact .009 E3 D54 HOR RTR, D55 VERT SYNC, D57 CLK0/GATE0, and D57 CLK2=/VER RTR labels",
         ),
         (
             "D42/D43 serializer control/serial nets are present in the board JSON",

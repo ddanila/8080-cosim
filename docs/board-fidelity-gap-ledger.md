@@ -276,7 +276,7 @@ the active release-risk count.
 | `USART_RXRDY_IRQ` | closed by the native sheet-1 D11.14-to-D10.20 trace; the separately drawn off-sheet interface is explicitly excluded |
 | `USART_TXRDY_IRQ` | closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded |
 | `V3_RC` | the native sheet closes R17.1/C99.1/D9.6 as one RC node; uncertainty on the opposite C99 plate is isolated on C99_FAR |
-| `VERT_RTR` | closed on native sheet 2 by the matching VER RTR/tag2 conductor between D55.13 and D35.9 |
+| `VERT_RTR` | closed on exact-revision .009 E3 sheet 2 by the matching VER RTR/tag2 conductor joining D55.13, D35.9, and D57.18 |
 | `W_RAIL16` | the native sheet closes both D36 write-NAND inputs and its complete output fanout: MEMW->D36.9, D36.3->D33.11/.10->D36.10, and D36.8->all DRAM W pins; only the simulation timing abstraction remains |
 
 ## Automatic Closure Rule

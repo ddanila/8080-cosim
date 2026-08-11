@@ -749,12 +749,19 @@ def evaluate_d57(
 ) -> dict[str, object]:
     operation = run_payload(session, payload, "d57-raw", timeout, 0x4580, 56)
     observed = result_bytes(operation)
-    valid = len(observed) == 56 and observed[:8] == b"D57R\xa5\x01\x08\0"
+    corrected = len(observed) == 56 and observed[:8] == b"D57S\xa5\x02\x08\x40"
+    legacy = len(observed) == 56 and observed[:8] == b"D57R\xa5\x01\x08\0"
+    valid = corrected or legacy
     failures: list[dict[str, object]] = []
     if valid:
         for repetition in range(8):
             record = observed[8 + repetition * 6 : 14 + repetition * 6]
-            for channel in range(3):
+            # D57 CLK2 is the ~49.92 Hz active-low /VER RTR signal, not the
+            # 1.23 MHz channel-0 clock.  Legacy D57R waited only a few hundred
+            # microseconds, so its channel-2 bytes are evidence to retain but
+            # not a valid programmed high/low discriminator.  D57S arms the
+            # exact raster and waits 64 refresh sweeps before each CLK2 read.
+            for channel in range(3 if corrected else 2):
                 high, low = record[channel * 2 : channel * 2 + 2]
                 if not high & 0x80 or low & 0x80:
                     failures.append(
@@ -774,6 +781,8 @@ def evaluate_d57(
     return {
         "name": "d57-raw",
         "verdict": "pass" if passed else "fail",
+        "format": "D57S-v2-verrtr" if corrected else "D57R-v1-fast",
+        "channel2_timing_valid": corrected,
         "observed_hex": observed.hex().upper(),
         "bad_samples": failures,
         "operation": operation,

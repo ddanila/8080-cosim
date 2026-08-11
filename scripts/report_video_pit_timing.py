@@ -90,7 +90,8 @@ def main() -> int:
         and nodes(board, "VERT_SYNC") == {("D55", "17"), ("D56", "2")}
         and nodes(board, "D56_Q2N_TAG16") == {("D56", "12"), ("D55", "15"), ("D55", "18")}
         and nodes(board, "HOR_RTR") == {("D54", "13")}
-        and nodes(board, "VERT_RTR") == {("D55", "13"), ("D35", "9")}
+        and nodes(board, "VERT_RTR")
+        == {("D55", "13"), ("D35", "9"), ("D57", "18")}
     )
     mame_ok = (
         (width, height, hfront, hback, hperiod, vfront, vback, vperiod)
