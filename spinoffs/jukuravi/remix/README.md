@@ -1,15 +1,15 @@
 # ekta4401 — the EktaSoft #0037 remix ROM
 
-Phases 1 + 2 and the visual easter egg are complete, 2026-08-11. A derived 16 KiB image built deterministically
+Phases 1 + 2 and the visual easter egg are complete, 2026-08-12. A derived 16 KiB image built deterministically
 from the pinned `roms/ekta37.bin`. Plan and phase results:
 [`../EKTA37-REMIX-PLAN.md`](../EKTA37-REMIX-PLAN.md).
 
 - Image: [`ekta4401.bin`](ekta4401.bin), SHA256
-  `20a9c25bc7da91eae98d9220e5916d89888ba88036b7e4bf885a384e8000e659`
+  `452ecd09406f944162fa2a3e03d52035d86c28e3fc89e77e9abd740644131b18`
 - D15 programming image: [`ekta4401-d15.bin`](ekta4401-d15.bin), low 8 KiB,
-  SHA256 `3782a58da5b923c20a58b8c15941ea80d4d8dd1c9fc5d6b740ad948708cf0dff`
+  SHA256 `f9e92e2032ead817e5d0dc6d42e1ffa8a4c8a71f41e39f36ed58173134be079c`
 - D16 programming image: [`ekta4401-d16.bin`](ekta4401-d16.bin), high 8 KiB,
-  SHA256 `de8eae95c0800853ab53eb7854656e6f558cafe4d947613be0d8674dcb3a0779`
+  SHA256 `bf3fca487b20c937c4b2e04c8f89a6ee1b46c49a52f2ea0ed9d56d713c92478b`
 - Builder: [`build_ekta4401.py`](build_ekta4401.py) (`--check` verifies the
   committed image rebuilds identically)
 - MAME launcher: [`run_mame.sh`](run_mame.sh) (run without arguments, then
@@ -46,13 +46,13 @@ the five segments to the exact addresses T36 assembled them for, and jumps
 to the loader entry (`0A0Ch`). Mode 1 is the trick that makes this work
 with no relocation: it maps ROM only at `D800h-FFFFh`, so the whole low
 half is RAM the engine can be copied into and executed from, while the
-segments remain readable in mapped ROM during the copy. The engine brings
-up the 8251 and its 2400-baud D57 counter 0 itself (T36 `0CE0h`), so `J`
-hands over nothing but the machine. Service mode is one-way until RESET —
+segments remain readable in mapped ROM during the copy. `J` calls the copied
+T36 restore routine at `0CE1h` to program the 8251 and its 2400-baud D57
+counter 0 before entering the loader. Service mode is one-way until RESET —
 the same contract NetBios has.
 
 Total Phase 2 footprint: 1,732 B in the reclaimed floppy region and 532 B
-in the `F900h` gap. Together with Phase 1 and `V`, the image still has 398 B
+in the `F900h` gap. Together with Phase 1 and `V`, the image still has 395 B
 free there.
 
 ## Phase 1 content
@@ -112,8 +112,8 @@ begins once the banner has been painted.
 Current signals: `H` reads the help text region **+161 bytes** over control;
 `V` adds **3,213** mapped-ROM reads, **1,988,036** copied-body reads and
 **127,494 accepted framebuffer writes**;
-`J` reads its handler region **+21,587** and produces
-**21,932 USART events** where the control run produces exactly zero. The
+`J` reads its handler region **+21,590** and produces
+**22,178 USART events** where the control run produces exactly zero. The
 transmitted bytes are the loader's own READY frame
 (`A5 5A A3 0B 02 20 0A 00 7F FF ...` — API v2, capabilities, workspace,
 one-vote bootstrap), and a PTY-attached run stops with the PC inside the
@@ -129,11 +129,15 @@ tiles; byte diversity alone had incorrectly accepted that version.
 
 ## Physical validation
 
-Both halves were programmed into AT28C64 devices on 2026-08-11 with the
-DOSRAVI/Willem controlled-write path. D15 changed 8,167 bytes and D16 changed
+The immediately preceding image (`20a9c25b...`) was programmed into both
+AT28C64 devices on 2026-08-11 with the DOSRAVI/Willem controlled-write path.
+D15 changed 8,167 bytes and D16 changed
 8,173; Willem's built-in post-write read verified all 8,192 bytes of each
 image with zero retries and left VCC/VPP off. The verified CRC32 values were
-`5E306759` and `3B734DEC`, matching the committed programming images above.
+`5E306759` and `3B734DEC`, matching that image's D15/D16 halves. The current
+image adds the deterministic `CALL 0CE1h` serial/PIT restore before loader
+entry and therefore has not yet been programmed physically; both current
+halves must be burned because the upper-ROM checksum byte also changes D15.
 The first D15 operation took about 393 seconds, outlasting the host's former
 300-second EXEC wait; its persistent execution ID allowed the completed result
 to be retrieved without programming twice. D16 used a 900-second bound.
@@ -146,8 +150,9 @@ refresh enabled at `07A9h`, with no transport mismatch. Subsequent retained
 sessions uploaded, read back, and executed D57 probes successfully, proving
 the complete LOAD → READ → RUN → result path rather than only the READY frame.
 
-The image therefore has both deterministic desk validation and physical
-service-loader validation. Burning always touches both chips: D15 carries the
+The service design therefore has both deterministic desk validation and
+physical validation of its preceding byte image. Burning always touches both
+chips: D15 carries the
 banner and table pointer, while D16 carries the copied loader segments and the
 H/J/V code. Program the named D15/D16 files; never load the combined 16 KiB
 image into either 8 KiB device.

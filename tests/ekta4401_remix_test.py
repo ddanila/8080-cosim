@@ -36,8 +36,8 @@ HELP_END = HELP_START + HELP_LENGTH
 DEMO_RUNTIME = 0xF9DF
 DEMO_REGION_END = 0xFB18
 J_RUNTIME = 0xFCBB
-J_REGION_END = 0xFD0E
-GAP_USED_TO = 0x3D2C
+J_REGION_END = 0xFD11
+GAP_USED_TO = 0x3D2F
 DISK_REGION = remix.DISK_REGION
 DISK_VECTORS = remix.DISK_VECTORS
 
@@ -119,6 +119,19 @@ def check_static(image: bytes, metadata: dict[str, object]) -> None:
         fail("H does not dispatch to the new handler")
     if new_table.get("J") != J_RUNTIME:
         fail("J does not dispatch to the service handler")
+    serial_handoff = bytes(
+        (
+            0xCD,
+            remix.LOADER_RESTORE_SERIAL & 0xFF,
+            remix.LOADER_RESTORE_SERIAL >> 8,
+            0xC3,
+            remix.LOADER_ENTRY & 0xFF,
+            remix.LOADER_ENTRY >> 8,
+        )
+    )
+    j_region = image[J_RUNTIME - 0xC000 : J_REGION_END - 0xC000]
+    if j_region.count(serial_handoff) != 1:
+        fail("J does not restore the exact T36 serial/PIT state before entry")
     if new_table.get("V") != DEMO_RUNTIME:
         fail("V does not dispatch to the visual demo")
     demo = metadata["visual_demo"]

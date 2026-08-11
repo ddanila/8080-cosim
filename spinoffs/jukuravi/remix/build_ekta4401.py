@@ -63,8 +63,8 @@ HELP_TEXT = (
 # to the exact RAM addresses it was assembled for. In memory mode 1 the ROM is
 # mapped only at D800h-FFFFh, so the low half is RAM: the engine can be copied
 # there from ROM and executed unchanged, preserving every byte-level guarantee
-# it carries. The engine initializes the 8251 and its 2400 baud D57 counter 0
-# itself (T36 `0CE0h`), so `J` only has to hand it the machine.
+# it carries. Before entering it, `J` calls the engine's own restore routine to
+# deterministically initialize the 8251 and its 2400-baud D57 counter 0.
 #
 # Segments are the transitive call-graph closure of the loader entry, the four
 # public API vectors, the refresh primitive and the refresh command handler,
@@ -77,6 +77,7 @@ T36_SEGMENTS = (
     ("refresh-handler", 0x1070, 0x1113),
 )
 LOADER_ENTRY = 0x0A0C
+LOADER_RESTORE_SERIAL = 0x0CE1
 DISK_REGION = (0x2325, 0x2A00)   # floppy subsystem, reclaimed for segments
 MODE_PORT = 0x06                 # PPI0 port C, low two bits select memory mode
 DISK_VECTORS = (0x3F50, 0x3F53, 0x3F56, 0x3F59)
@@ -286,7 +287,11 @@ def t36_image() -> bytes:
     import build_d0_row_refresh as t36  # noqa: PLC0415
 
     image, metadata = t36.build()
-    if metadata["checksum"] != 0xC617 or len(image) != 8192:
+    if (
+        metadata["checksum"] != 0xC617
+        or metadata["loader_restore_serial"] != LOADER_RESTORE_SERIAL
+        or len(image) != 8192
+    ):
         raise SystemExit("T36 build identity differs")
     return image
 
@@ -378,18 +383,28 @@ def build() -> tuple[bytes, dict[str, object]]:
         cursor += length
 
     # J handler: DI, force memory mode 1 (ROM at D800h+, low half RAM),
-    # copy each segment to its native address, then enter the loader.
+    # copy each segment to its native address, restore the exact T36 serial/PIT
+    # state, then enter the loader.
     j_runtime = cursor + 0xC000
     code = bytearray((0xF3,))                                  # DI
     code += bytes((0xDB, MODE_PORT, 0xE6, 0xFC, 0xF6, 0x01,
                    0xD3, MODE_PORT))                           # IN/ANI/ORI/OUT
-    copy_runtime = j_runtime + 1 + 8 + 12 * len(placements) + 3
+    copy_runtime = j_runtime + 1 + 8 + 12 * len(placements) + 6
     for _, _, source_runtime, dst, length in placements:
         code += bytes((0x21, source_runtime & 0xFF, source_runtime >> 8))
         code += bytes((0x11, dst & 0xFF, dst >> 8))
         code += bytes((0x01, length & 0xFF, length >> 8))
         code += bytes((0xCD, copy_runtime & 0xFF, copy_runtime >> 8))
-    code += bytes((0xC3, LOADER_ENTRY & 0xFF, LOADER_ENTRY >> 8))
+    code += bytes(
+        (
+            0xCD,
+            LOADER_RESTORE_SERIAL & 0xFF,
+            LOADER_RESTORE_SERIAL >> 8,
+            0xC3,
+            LOADER_ENTRY & 0xFF,
+            LOADER_ENTRY >> 8,
+        )
+    )
     copier = bytes((0x7E, 0x12, 0x23, 0x13, 0x0B, 0x78, 0xB1,
                     0xC2, copy_runtime & 0xFF, copy_runtime >> 8, 0xC9))
     if j_runtime + len(code) != copy_runtime:

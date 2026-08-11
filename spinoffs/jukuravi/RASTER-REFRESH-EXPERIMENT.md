@@ -76,9 +76,13 @@ simulation deliberately cannot pass the armed long hold; only hardware can.
 
 ## Stages
 
-One invocation = one cold T36 boot = one stage. Hardware RESET between
-stages. A stage that decays may leave the loader unrecoverable until RESET —
-that outcome *is* the measurement, recorded in the JSON capture.
+One invocation = one cold loader entry = one stage. Hardware RESET between
+stages. CS00024 keeps T36 and uses the default cold-diagnostic entry. CS00015
+keeps Ekta4401, starts from its monitor, and uses `--attach-loader`; type `J`
+once without Enter when the runner asks. The marker, arm snippet, hold code,
+readback, and verdict are identical after entry. A stage that decays may leave
+the loader unrecoverable until RESET — that outcome *is* the measurement,
+recorded in the JSON capture.
 
 ```sh
 # Control: no raster. CS00024 prediction: decay (validates sensitivity).
@@ -92,6 +96,23 @@ python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
 # Raster + SYNC_B armed: only if the armed stage still decays.
 python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
   --arm raster-syncb --log-dir spinoffs/jukuravi/sessions/cs00024-raster-syncb
+```
+
+Healthy CS00015 cross-board control with Ekta4401 (RESET and `J` between
+invocations):
+
+```sh
+python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
+  --attach-loader --arm none \
+  --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-control
+
+python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
+  --attach-loader --arm raster \
+  --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-armed
+
+python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
+  --attach-loader --arm raster-syncb \
+  --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-syncb
 ```
 
 On the macOS bench use `--port /dev/cu.usbserial-0001`

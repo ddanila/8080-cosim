@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the CS00024 video-slot refresh experiment snippets and runner.
+"""Guard both entry paths for the Juku video-slot refresh experiment.
 
 Static section (no cosim): the arm snippets must replay the exact EktaSoft
 D54/D55 boot programming bytes, exclude every D57 write that could disturb
@@ -30,6 +30,7 @@ ROOT = Path(__file__).resolve().parents[1]
 JUKURAVI = ROOT / "spinoffs" / "jukuravi"
 RUNNER = JUKURAVI / "raster_retention.py"
 FIRMWARE = JUKURAVI / "firmware"
+EKTA4401 = JUKURAVI / "remix" / "ekta4401.bin"
 sys.path[:0] = [str(FIRMWARE), str(JUKURAVI)]
 import build_d0_row_refresh as t36  # noqa: E402
 import raster  # noqa: E402
@@ -149,7 +150,11 @@ def check_static() -> None:
 
 
 def start_cosim(
-    trace: Path, rom: Path, temp: Path, retention_cycles: int
+    trace: Path,
+    rom: Path,
+    temp: Path,
+    retention_cycles: int,
+    keys: str | None = None,
 ) -> tuple[subprocess.Popen[bytes], int, int]:
     master, slave = pty.openpty()
     tty.setraw(slave)
@@ -161,11 +166,17 @@ def start_cosim(
         JUKU_DRAM_RETENTION_CYCLES=str(retention_cycles),
         JUKU_DRAM_RETENTION_ARM_PC="07A9",
     )
+    if keys is not None:
+        environment.update(
+            JUKU_KEYS=keys,
+            JUKU_KEY_HOLD_FRAMES="6",
+            JUKU_KEY_GAP_FRAMES="8",
+        )
     with (temp / "cosim.stdout").open("wb") as stdout, (
         temp / "cosim.stderr"
     ).open("wb") as stderr:
         cosim = subprocess.Popen(
-            [str(trace), str(rom), "5000000000"],
+            [str(trace), str(rom), "5000000000", "0", "200000"],
             cwd=temp,
             env=environment,
             stdout=stdout,
@@ -193,29 +204,36 @@ def run_stage(
     retention_cycles: int,
     arm: str,
     run_timeout: float,
+    attach_loader: bool = False,
+    keys: str | None = None,
 ) -> tuple[int, dict[str, object]]:
     temp = temp_root / name
     logs = temp / "logs"
     temp.mkdir()
-    cosim, master, slave = start_cosim(trace, rom, temp, retention_cycles)
+    cosim, master, slave = start_cosim(
+        trace, rom, temp, retention_cycles, keys=keys
+    )
     try:
+        command = [
+            sys.executable,
+            str(RUNNER),
+            "--fd",
+            str(master),
+            "--arm",
+            arm,
+            "--hold-seconds",
+            "0.5",
+            "--loader-guard-ms",
+            "0",
+            "--run-timeout",
+            str(run_timeout),
+            "--log-dir",
+            str(logs),
+        ]
+        if attach_loader:
+            command.append("--attach-loader")
         completed = subprocess.run(
-            [
-                sys.executable,
-                str(RUNNER),
-                "--fd",
-                str(master),
-                "--arm",
-                arm,
-                "--hold-seconds",
-                "0.5",
-                "--loader-guard-ms",
-                "0",
-                "--run-timeout",
-                str(run_timeout),
-                "--log-dir",
-                str(logs),
-            ],
+            command,
             cwd=ROOT,
             pass_fds=(master,),
             text=True,
@@ -234,6 +252,19 @@ def run_stage(
     experiment = summary.get("raster_experiment")
     if not isinstance(experiment, dict):
         fail(f"{name}: capture has no raster_experiment record")
+    if completed.returncode != 0 and experiment.get("verdict") == "incomplete":
+        print(completed.stdout, file=sys.stderr)
+        print(completed.stderr, file=sys.stderr)
+        rx_files = sorted(logs.glob("*.rx.bin"))
+        if rx_files:
+            received = rx_files[0].read_bytes()
+            print(
+                f"{name}: received {len(received)} bytes: "
+                f"{received[:128].hex(' ')}",
+                file=sys.stderr,
+            )
+        cosim_stderr = (temp / "cosim.stderr").read_text(errors="replace")
+        print(f"{name}: cosim stderr tail:\n{cosim_stderr[-4000:]}", file=sys.stderr)
     print(
         f"JUKURAVI-RASTER-TEST: {name} exit={completed.returncode} "
         f"verdict={experiment.get('verdict')}",
@@ -277,6 +308,25 @@ def main() -> int:
             fail("short-hold marker readback differs")
         if experiment["hold_image_readback"]["differing_bytes"] != 0:
             fail("short-hold image readback differs")
+
+        # The same operation must work through Ekta4401's monitor-entered J
+        # service. This exercises the resident-loader attach path while keeping
+        # the cold-T36 path above unchanged for CS00024.
+        code, experiment = run_stage(
+            trace,
+            EKTA4401,
+            temp_root,
+            "ekta4401-j-attached-short-hold",
+            retention_cycles=50_000_000,
+            arm="raster",
+            run_timeout=120.0,
+            attach_loader=True,
+            keys="J",
+        )
+        if code != 0 or experiment["verdict"] != "pass":
+            fail("Ekta4401 J-attached short hold did not pass")
+        if experiment["entry"] != "resident-loader-attach":
+            fail("Ekta4401 run did not record resident-loader attach entry")
 
         # Same hold across a short decay deadline: the runner must classify
         # the decayed board (no RETURN, or decayed readback) — the negative

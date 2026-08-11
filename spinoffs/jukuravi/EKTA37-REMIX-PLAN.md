@@ -159,8 +159,9 @@ and returns. `H` advertises it only as `V ?`.
    the five T36 segments from mapped ROM into the exact addresses they were
    assembled for, and enters the loader — the engine runs byte-identical to
    the diagnostic ROM, keeping all of its guarantees.
-2. **The engine self-initializes the link.** T36 `0CE0h` programs the 8251
-   (mode `4Eh`, command `37h`) and its 2400-baud D57 counter 0, so `J` hands
+2. **`J` initializes the link through the engine.** The handler calls T36
+   `0CE1h`, which programs the 8251 (mode `4Eh`, command `37h`) and its
+   2400-baud D57 counter 0, so `J` hands
    over nothing but the machine. Confirmed: the first byte out of port 08h
    after `J` is `A5h`, the loader's frame sync.
 3. **Two harness facts invalidated the earlier Phase 1 evidence.** The
@@ -180,5 +181,5 @@ and returns. `H` advertises it only as `V ?`.
    black/white-balance, plaque and logo invariants. This guard replaced the
    original byte-diversity check after MAME and C-cosim showed that an address
    hash could be byte-diverse yet look like one glyph tiled over the screen.
-5. **Space after both phases and the demo:** 398 B still free in the `F900h`
+5. **Space after both phases and the demo:** 395 B still free in the `F900h`
    gap.

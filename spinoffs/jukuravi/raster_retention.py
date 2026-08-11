@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Run one stage of the CS00024 video-slot refresh experiment.
+"""Run one stage of the Juku video-slot refresh experiment.
 
-One invocation is one cold T36 boot and one unrefreshed hold:
+The default entry is one cold T36 boot. ``--attach-loader`` instead attaches
+to an already running API-v2 loader, including Ekta4401 after its ``J`` command.
+Both entry paths then perform the same unrefreshed hold:
 
 1. wait for a fresh exact T36 boot and upload the 64-byte marker at `4D00h`;
 2. optionally upload and CALL the exact-EktaSoft raster-arm snippet
@@ -41,6 +43,12 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument("--port")
     parser.add_argument("--fd", type=int)
     parser.add_argument("--baud", type=int, default=host.DEFAULT_BAUD)
+    parser.add_argument(
+        "--attach-loader",
+        action="store_true",
+        help="attach to an already running API-v2 loader (for Ekta4401 J); "
+        "default is a fresh T36 diagnostic boot",
+    )
     parser.add_argument(
         "--arm",
         required=True,
@@ -116,9 +124,13 @@ def main() -> int:
         T36_CRC16,
         False,
         loader_guard_seconds=args.loader_guard_ms / 1000.0,
+        # Both the cold image and Ekta4401's verbatim resident engine are T36,
+        # whose bootstrap transport is one vote rather than T28-T34's seven.
+        loader_bootstrap_votes=host.protocol.LOADER_V2_T35_BOOT_VOTES,
     )
 
     experiment: dict[str, object] = {
+        "entry": "resident-loader-attach" if args.attach_loader else "cold-t36",
         "arm": args.arm,
         "arm_writes": (
             None
@@ -145,19 +157,34 @@ def main() -> int:
     interrupted = False
     try:
         session.begin_attempt(1)
-        print(
-            f"JUKURAVI-RASTER: stage arm={args.arm} hold~{estimated:.1f}s on "
-            f"{transport}; press RESET once",
-            flush=True,
-        )
-        session.run()
-        session.run_loader(
-            raster.MARKER,
-            "<raster-marker>",
-            raster.MARKER_ADDRESS,
-            None,
-            args.loader_timeout,
-        )
+        if args.attach_loader:
+            print(
+                f"JUKURAVI-RASTER: stage arm={args.arm} hold~{estimated:.1f}s "
+                f"on {transport}; enter J once (no Enter) if Ekta4401 is at "
+                "the monitor",
+                flush=True,
+            )
+            session.attach_loader_v2(
+                raster.MARKER,
+                "<raster-marker>",
+                raster.MARKER_ADDRESS,
+                None,
+                args.loader_timeout,
+            )
+        else:
+            print(
+                f"JUKURAVI-RASTER: stage arm={args.arm} hold~{estimated:.1f}s "
+                f"on {transport}; press RESET once",
+                flush=True,
+            )
+            session.run()
+            session.run_loader(
+                raster.MARKER,
+                "<raster-marker>",
+                raster.MARKER_ADDRESS,
+                None,
+                args.loader_timeout,
+            )
         print("JUKURAVI-RASTER: marker verified", flush=True)
 
         if arm_snippet is not None:

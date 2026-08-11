@@ -987,6 +987,7 @@ def emit_loader(
         **api_addresses,
         "loader_entry": asm.labels["t28_entry"],
         "loader_loop": asm.labels["t28_loop"],
+        "loader_restore_serial": asm.labels["t28_restore_serial"],
         "loader_buffer": LOADER_BUFFER,
         "loader_stack_top": LOADER_STACK_TOP,
         "loader_load_min": LOAD_MIN_ADDRESS,

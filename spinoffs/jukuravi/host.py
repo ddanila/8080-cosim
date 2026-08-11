@@ -1816,15 +1816,19 @@ class HostSession:
         # one initial request plus the eight bounded idle periods in the ROM.
         settle_deadline = time.monotonic() + timeout
         repeated = 0
+        observed = 0
         last_token: int | None = None
         while repeated < 9:
             if time.monotonic() >= settle_deadline:
                 raise SessionError(
-                    "timeout waiting for loader API v2 idle reset during attach"
+                    "timeout waiting for loader API v2 idle reset during attach "
+                    f"(observed {observed} request tokens, longest final run "
+                    f"{repeated}/9)"
                 )
             self._read_frames(settle_deadline, "while attaching to loader API v2")
             while self.symbol_requests and repeated < 9:
                 token = self.symbol_requests.pop(0)
+                observed += 1
                 if token == last_token:
                     repeated += 1
                 else:
