@@ -57,7 +57,8 @@ IBM AT keyboard. The 53x24 screen, TapeBios, and card-mounted FDC are the
 `.009` board nothing over the adopted 3.43m image: the board's FDC is on
 the motherboard, its keyboard is the original matrix, and the network BIOS
 exists only in the 3.4x line. #0037 matches the `.009` hardware on every
-axis, which independently validates its adoption.
+axis, which independently validates its adoption. The NetBios boot path
+itself is analyzed in [`ekta37-netbios-notes.md`](ekta37-netbios-notes.md).
 
 ## Content kinship
 

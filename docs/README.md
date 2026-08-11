@@ -75,6 +75,9 @@ findings. Every status applies only to the boundary named by the report.
   `ektasoft-rombios-lineage.md` (serial-vs-RomBios-version identity of the
   vendored EktaSoft images, the two RomBios lines, and the homebrew #0043
   kinship/checksum analysis),
+  `ekta37-netbios-notes.md` (byte-verified NetBios/Janet network-boot path in
+  the adopted image: configurable D57-clocked 8251 line, odd-parity framing,
+  TxEN-gated transmit),
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `d101-reconstruction-constraints.md` (datasheet-exact first-half select cases,
   D02 ladder, conditional D0-to-`/OE0` test, and four measured-pin boundaries),
