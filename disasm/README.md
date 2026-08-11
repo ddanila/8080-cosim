@@ -1,10 +1,21 @@
 # Annotated ROM disassemblies
 
-SkoolKit-based, round-trip-guarded disassemblies of the vendored Juku ROMs.
-The maintained artifact is the **control file** (`.ctl`): labels, comments,
-and code/data boundaries accumulate there. The `.skool` file is generated
-from it and vendored for browsing; it must always regenerate identically and
-reassemble to the exact pinned ROM bytes.
+SkoolKit-based, round-trip-guarded disassemblies of the vendored Juku ROMs —
+all nine CPU images are covered. The maintained artifact is the **control
+file** (`.ctl`): labels, comments, and code/data boundaries accumulate
+there. The `.skool` file is generated from it and vendored for browsing; it
+must always regenerate identically and reassemble to the exact pinned ROM
+bytes. One guard covers every image: `sync/disasm_check.sh` (a generic-CI
+step).
+
+**Ctl-editing hazard**: SkoolKit decodes Z80, and the 8080-undocumented
+bytes `08/10/18/20/28/30/38/CB/D9/DD/ED/FD` have *different lengths* on
+Z80 (JR family, prefixes). A `c` block whose tail reaches one of these
+makes the Z80 decoder consume bytes past the block boundary, producing
+overlapping entries — the round-trip guard then fails with a shifted,
+longer binary. Real 8080 code never executes these bytes; if one shows up
+as an opcode, the region is data or the block is misaligned. The seed
+generators stop code discovery at these bytes for exactly this reason.
 
 ## ekta37 (EktaSoft '88 Serial #0037, RomBios 3.43m)
 
@@ -74,6 +85,36 @@ structural: the healthy reference for aligning jmon22's untrusted blocks 6-7
 and will need routine-level alignment). Notable anchors: the ENSV TA Kub.I /
 AT EKB credit, the Bootstrap v3.3 / FDC 1791 banner, and the
 checksum-failure UI that reports the failing EPROM number.
+
+## Covered-line variants (ekta24, ekta31, ekta32, ekta35)
+
+- [`ekta24/`](ekta24/ekta24.ctl) — Serial #0024, RomBios 3.42, Juss keyboard,
+  FDC 1791/2; the oldest serial.
+- [`ekta31/`](ekta31/ekta31.ctl) — Serial #0031, RomBios 3.43, 40x24.
+- [`ekta32/`](ekta32/ekta32.ctl) — Serial #0032, RomBios 2.43; the stock
+  sibling of the homebrew #0043 and the reference for isolating its
+  AT-keyboard modification.
+- [`ekta35/`](ekta35/ekta35.ctl) — Serial #0035, RomBios 3.43, 53x24, Juss
+  keyboard.
+
+All four share the ekta37 memory model (verified: `JMP 0017h` entries,
+`3F50h` vector tables, `+C000h` relocation) and are seeded the same way.
+See [`../docs/ektasoft-rombios-lineage.md`](../docs/ektasoft-rombios-lineage.md)
+for their identity and configuration matrix.
+
+## jbasic11 (Juku BASIC 1.1 cartridge, 8 KiB — data-only seed)
+
+- [`jbasic11/jbasic11.ctl`](jbasic11/jbasic11.ctl) /
+  [`jbasic11/jbasic11.skool`](jbasic11/jbasic11.skool)
+
+The cartridge's physical runtime mapping is an explicitly open boundary
+(PLAN.md, "cartridge BASIC loading"): under an org-0 reading its apparent
+entry jump targets data (ASCII), so **this seed asserts no code at all** —
+addresses are file offsets, everything is data blocks with titled
+landmarks. The BASIC body at offset `0100h` is byte-identical to the
+Monitor images at `+2C8h` (mapping-independent, content-level fact) and
+served as a donor in the jmon22 block-3 proof. Code discovery starts when
+the mapping boundary closes.
 
 ## Workflow
 

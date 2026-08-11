@@ -283,17 +283,8 @@ jobs:
       - name: Check spin-off shared commons
         run: python3 scripts/check_spinoff_commons.py
 
-      - name: Check ekta37 disassembly round-trip
-        run: ./sync/ekta37_disasm_check.sh
-
-      - name: Check ekta43 disassembly round-trip
-        run: ./sync/ekta43_disasm_check.sh
-
-      - name: Check jmon22 disassembly round-trip
-        run: ./sync/jmon22_disasm_check.sh
-
-      - name: Check jmon33 disassembly round-trip
-        run: ./sync/jmon33_disasm_check.sh
+      - name: Check ROM disassembly round-trips
+        run: ./sync/disasm_check.sh
 
       - name: Check rev B board connectivity + netlist completeness
         run: python3 scripts/check_revb_boards.py --completeness
