@@ -5,9 +5,9 @@ Static: the committed image rebuilds byte-identically from pinned ekta37,
 differs from the source only in the intended places, and satisfies the
 ROM's own eight chunk checksums.
 
-Behavioral (cosim): the image boots and paints its banner; pressing `H`
-reaches the relocated dispatch table, executes the new handler, and walks
-the help text -- proven from the CPU bus trace, not from pixels.
+Behavioral (cosim): the image boots and paints its banner; `H` walks the help
+text, `V` executes the write-only framebuffer demo, and `J` starts the copied
+loader -- proven from CPU bus activity rather than a guessed final screenshot.
 """
 
 from __future__ import annotations
@@ -29,13 +29,15 @@ CHUNKS_LOW = ((0x000B, 0x0800), (0x0800, 0x1000), (0x1000, 0x1800))
 CHUNKS_HIGH = ((0x180B, 0x2000), (0x2000, 0x2800), (0x2800, 0x3000),
                (0x3000, 0x3800), (0x3800, 0x4000))
 TABLE_RUNTIME = 0xF900
-HANDLER_RUNTIME = 0xF934
-HELP_START = 0xF934 + 7
+HANDLER_RUNTIME = 0xF937
+HELP_START = HANDLER_RUNTIME + 7
 HELP_LENGTH = len(remix.HELP_TEXT)
 HELP_END = HELP_START + HELP_LENGTH
-J_RUNTIME = 0xFB7A
-J_REGION_END = 0xFBCD
-GAP_USED_TO = 0x3BEB
+DEMO_RUNTIME = 0xF9DF
+DEMO_REGION_END = 0xFB18
+J_RUNTIME = 0xFCBB
+J_REGION_END = 0xFD0E
+GAP_USED_TO = 0x3D2C
 DISK_REGION = remix.DISK_REGION
 DISK_VECTORS = remix.DISK_VECTORS
 
@@ -52,6 +54,18 @@ def check_static(image: bytes, metadata: dict[str, object]) -> None:
         fail("committed ekta4401.bin differs from the rebuild")
     if len(image) != 16384:
         fail("image is not 16 KiB")
+    d15 = (REMIX / "ekta4401-d15.bin").read_bytes()
+    d16 = (REMIX / "ekta4401-d16.bin").read_bytes()
+    if len(d15) != 8192 or d15 != image[:0x2000]:
+        fail("D15 programming image is not the exact low 8 KiB")
+    if len(d16) != 8192 or d16 != image[0x2000:]:
+        fail("D16 programming image is not the exact high 8 KiB")
+    if d15 + d16 != image:
+        fail("D15+D16 programming images do not reproduce ekta4401.bin")
+    if hashlib.sha256(d15).hexdigest() != metadata["d15_sha256"]:
+        fail("D15 programming-image identity differs")
+    if hashlib.sha256(d16).hexdigest() != metadata["d16_sha256"]:
+        fail("D16 programming-image identity differs")
 
     source = SOURCE.read_bytes()
     changed = {i for i in range(16384) if source[i] != image[i]}
@@ -86,7 +100,7 @@ def check_static(image: bytes, metadata: dict[str, object]) -> None:
         fail("banner line is not the remix identity")
     if b"'EktaSoft '88" in image:
         fail("stock factory identity line survives in the image")
-    if metadata["commands"] != "FDSXGMCEKTBRWPAHJ":
+    if metadata["commands"] != "FDSXGMCEKTBRWPAHJV":
         fail(f"command set differs: {metadata['commands']}")
 
     # every stock command must still dispatch to its stock handler
@@ -105,6 +119,15 @@ def check_static(image: bytes, metadata: dict[str, object]) -> None:
         fail("H does not dispatch to the new handler")
     if new_table.get("J") != J_RUNTIME:
         fail("J does not dispatch to the service handler")
+    if new_table.get("V") != DEMO_RUNTIME:
+        fail("V does not dispatch to the visual demo")
+    demo = metadata["visual_demo"]
+    if demo["runtime"] != f"0x{DEMO_RUNTIME:04X}" or demo["logo"] != "JUKU 2026":
+        fail("visual demo identity/layout differs")
+    if demo["frames"] != 12 or demo["framebuffer_bytes_per_frame"] != 40 * 241:
+        fail("visual demo frame contract differs")
+    if demo["pattern"] != "symmetric-diamond-tunnel":
+        fail("visual demo pattern identity differs")
     if len(metadata["loader_segments"]) != 5:
         fail("loader segment set is incomplete")
     for segment in metadata["loader_segments"]:
@@ -119,7 +142,7 @@ def check_static(image: bytes, metadata: dict[str, object]) -> None:
     print("EKTA4401-TEST: static checks passed", flush=True)
 
 
-def run_cosim(trace: Path, image: bytes, temp: Path, keys: str | None) -> dict[str, int]:
+def run_cosim(trace: Path, image: bytes, temp: Path, keys: str | None) -> dict[str, object]:
     """Boot the image once and count bus activity that identifies our code.
 
     The console renders through the same D800h+ address window the relocated
@@ -150,7 +173,18 @@ def run_cosim(trace: Path, image: bytes, temp: Path, keys: str | None) -> dict[s
     )
     if completed.returncode != 0:
         fail(f"cosim exited {completed.returncode}: {completed.stderr[-400:]}")
-    counts = {"help": 0, "service": 0, "usart": 0}
+    counts = {
+        "help": 0,
+        "demo": 0,
+        "demo_ram": 0,
+        "service": 0,
+        "usart": 0,
+        "video_writes": 0,
+        "video_value_mask": 0,
+    }
+    demo_active = False
+    demo_frame_starts = 0
+    demo_frame = bytearray(remix.FRAMEBUFFER_BYTES)
     with bus.open() as stream:
         for line in stream:
             parts = line.split()
@@ -160,13 +194,99 @@ def run_cosim(trace: Path, image: bytes, temp: Path, keys: str | None) -> dict[s
                 address = int(parts[1], 16)
                 if HELP_START <= address < HELP_END:
                     counts["help"] += 1
+                elif DEMO_RUNTIME <= address < DEMO_REGION_END:
+                    counts["demo"] += 1
+                elif remix.DEMO_RAM_RUNTIME <= address < (
+                    remix.DEMO_RAM_RUNTIME + 0x0200
+                ):
+                    counts["demo_ram"] += 1
                 elif J_RUNTIME <= address < J_REGION_END:
                     counts["service"] += 1
-            elif parts[0] == "IW" and int(parts[1], 16) in (0x08, 0x09):
-                counts["usart"] += 1
+            elif parts[0] == "MW":
+                address = int(parts[1], 16)
+                if remix.FRAMEBUFFER_BASE <= address < (
+                    remix.FRAMEBUFFER_BASE + remix.FRAMEBUFFER_BYTES
+                ):
+                    offset = address - remix.FRAMEBUFFER_BASE
+                    value = int(parts[2], 16)
+                    if demo_active:
+                        if offset == 0:
+                            demo_frame_starts += 1
+                            if demo_frame_starts == 2:
+                                # The second frame's first write means the
+                                # complete first frame, plaque and logo are
+                                # available as a deterministic visual oracle.
+                                counts["visual_frame"] = bytes(demo_frame)
+                        demo_frame[offset] = value
+                    counts["video_writes"] += 1
+                    counts["video_value_mask"] |= 1 << value
+            elif parts[0] == "IW":
+                port = int(parts[1], 16)
+                value = int(parts[2], 16)
+                if port == remix.MODE_PORT and value & 0x03 == 0x03:
+                    demo_active = True
+                if port in (0x08, 0x09):
+                    counts["usart"] += 1
     framebuffer = (temp / f"cp-{label}.ram").read_bytes()[0xD800:0xD800 + 40 * 241]
     counts["screen"] = sum(1 for byte in framebuffer if byte)
+    state = {}
+    for line in (temp / f"cp-{label}.state").read_text().splitlines():
+        if "=" in line:
+            key, value = line.split("=", 1)
+            state[key] = value
+    counts["accepted_video_writes"] = int(state["vram_writes"])
+    counts["final_mode"] = int(state["mode"])
     return counts
+
+
+def check_visual_frame(frame: object) -> None:
+    """Reject the old address-hash texture as well as byte-level regressions."""
+    if not isinstance(frame, bytes) or len(frame) != remix.FRAMEBUFFER_BYTES:
+        fail("V did not expose a complete first animation frame")
+
+    x_distance = tuple(range(19, -1, -1)) + tuple(range(20))
+    expected = bytearray(
+        0xFF if ((x_distance[x] + abs(y - 120) // 8) & 0x02) == 0 else 0x00
+        for y in range(241)
+        for x in range(40)
+    )
+    for y in range(remix.LOGO_ROW - 1, remix.LOGO_ROW + 9):
+        start = y * 40 + remix.LOGO_COLUMN - 1
+        expected[start : start + len(remix.LOGO_TEXT) + 2] = bytes(
+            len(remix.LOGO_TEXT) + 2
+        )
+    logo = remix.logo_bytes()
+    for row in range(8):
+        start = (remix.LOGO_ROW + row) * 40 + remix.LOGO_COLUMN
+        expected[start : start + len(remix.LOGO_TEXT)] = logo[
+            row * len(remix.LOGO_TEXT) : (row + 1) * len(remix.LOGO_TEXT)
+        ]
+    if frame != bytes(expected):
+        first = next(
+            i for i, pair in enumerate(zip(frame, expected)) if pair[0] != pair[1]
+        )
+        fail(f"V first-frame visual oracle differs at framebuffer byte {first}")
+
+    binary_ratio = sum(value in (0x00, 0xFF) for value in frame) / len(frame)
+    mirror_ratio = sum(
+        frame[y * 40 + x] == frame[y * 40 + 39 - x]
+        for y in range(241)
+        for x in range(20)
+    ) / (241 * 20)
+    neighbor_ratio = sum(
+        frame[y * 40 + x] == frame[y * 40 + x + 1]
+        for y in range(241)
+        for x in range(39)
+    ) / (241 * 39)
+    white_ratio = frame.count(0xFF) / len(frame)
+    if binary_ratio < 0.98 or mirror_ratio < 0.98 or neighbor_ratio < 0.40:
+        fail(
+            "V lacks tunnel structure "
+            f"(binary={binary_ratio:.3f}, mirror={mirror_ratio:.3f}, "
+            f"neighbor={neighbor_ratio:.3f})"
+        )
+    if not 0.30 < white_ratio < 0.70:
+        fail(f"V tunnel has unbalanced black/white coverage ({white_ratio:.3f})")
 
 
 def check_boot(trace: Path, image: bytes) -> None:
@@ -186,6 +306,29 @@ def check_boot(trace: Path, image: bytes) -> None:
                 f"expected at least {HELP_LENGTH})"
             )
 
+        pressed_v = run_cosim(trace, image, temp, "V")
+        demo_delta = pressed_v["demo"] - control["demo"]
+        demo_ram_delta = pressed_v["demo_ram"] - control["demo_ram"]
+        writes_delta = pressed_v["video_writes"] - control["video_writes"]
+        accepted_delta = (
+            pressed_v["accepted_video_writes"] - control["accepted_video_writes"]
+        )
+        if demo_delta < 150:
+            fail(f"V did not copy its mapped-ROM body (read delta {demo_delta})")
+        if demo_ram_delta < 1_000_000:
+            fail(f"V copied body did not sustain execution (delta {demo_ram_delta})")
+        if writes_delta < 120_000:
+            fail(f"V demo did not paint full frames (write delta {writes_delta})")
+        if accepted_delta < 120_000:
+            fail(f"V framebuffer writes were not accepted (delta {accepted_delta})")
+        if not pressed_v["video_value_mask"] & 1 or not (
+            pressed_v["video_value_mask"] & (1 << 0xFF)
+        ):
+            fail("V demo did not generate both black and white tunnel bands")
+        check_visual_frame(pressed_v.get("visual_frame"))
+        if pressed_v["final_mode"] != 1:
+            fail(f"V did not restore memory mode 1 (mode {pressed_v['final_mode']})")
+
         pressed_j = run_cosim(trace, image, temp, "J")
         service_delta = pressed_j["service"] - control["service"]
         if service_delta < 1000:
@@ -197,6 +340,8 @@ def check_boot(trace: Path, image: bytes) -> None:
             )
         print(
             f"EKTA4401-TEST: boot ok — H help delta +{help_delta}, "
+            f"V ROM/RAM reads +{demo_delta}/+{demo_ram_delta}, "
+            f"video writes +{writes_delta} accepted +{accepted_delta}, "
             f"J service delta +{service_delta}, loader USART "
             f"{pressed_j['usart']} events",
             flush=True,

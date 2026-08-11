@@ -1,13 +1,20 @@
 # ekta4401 — the EktaSoft #0037 remix ROM
 
-Phase 1 + 2 complete, 2026-08-11. A derived 16 KiB image built deterministically
+Phases 1 + 2 and the visual easter egg are complete, 2026-08-11. A derived 16 KiB image built deterministically
 from the pinned `roms/ekta37.bin`. Plan and phase results:
 [`../EKTA37-REMIX-PLAN.md`](../EKTA37-REMIX-PLAN.md).
 
 - Image: [`ekta4401.bin`](ekta4401.bin), SHA256
-  `1b6f5c752c438c0b9bafbe78c4db7b789468e46036ec5b7ea77b86d8190f70b5`
+  `20a9c25bc7da91eae98d9220e5916d89888ba88036b7e4bf885a384e8000e659`
+- D15 programming image: [`ekta4401-d15.bin`](ekta4401-d15.bin), low 8 KiB,
+  SHA256 `3782a58da5b923c20a58b8c15941ea80d4d8dd1c9fc5d6b740ad948708cf0dff`
+- D16 programming image: [`ekta4401-d16.bin`](ekta4401-d16.bin), high 8 KiB,
+  SHA256 `de8eae95c0800853ab53eb7854656e6f558cafe4d947613be0d8674dcb3a0779`
 - Builder: [`build_ekta4401.py`](build_ekta4401.py) (`--check` verifies the
   committed image rebuilds identically)
+- MAME launcher: [`run_mame.sh`](run_mame.sh) (run without arguments, then
+  enter `V` at the monitor prompt; MAME's custom-ROM checksum warning is
+  expected)
 - Guard: `sync/ekta4401_check.sh`, test
   [`../../../tests/ekta4401_remix_test.py`](../../../tests/ekta4401_remix_test.py)
 
@@ -31,10 +38,10 @@ loader engine verbatim** — never relocated, never re-assembled:
 | engine | `0A00-0FFD` | ROM `2325h` | `0A00h` | 1533 |
 | halt helpers | `06E8-0748` | ROM `2922h` | `06E8h` | 96 |
 | refresh + frames | `07A9-0810` | ROM `2982h` | `07A9h` | 103 |
-| CRC table | `0900-0A00` | ROM `39D7h` | `0900h` | 256 |
-| refresh handler | `1070-1113` | ROM `3AD7h` | `1070h` | 163 |
+| CRC table | `0900-0A00` | ROM `3B18h` | `0900h` | 256 |
+| refresh handler | `1070-1113` | ROM `3C18h` | `1070h` | 163 |
 
-`J` (runtime `FB7Ah`) disables interrupts, forces **memory mode 1**, copies
+`J` (runtime `FCBBh`) disables interrupts, forces **memory mode 1**, copies
 the five segments to the exact addresses T36 assembled them for, and jumps
 to the loader entry (`0A0Ch`). Mode 1 is the trick that makes this work
 with no relocation: it maps ROM only at `D800h-FFFFh`, so the whole low
@@ -44,23 +51,30 @@ up the 8251 and its 2400-baud D57 counter 0 itself (T36 `0CE0h`), so `J`
 hands over nothing but the machine. Service mode is one-way until RESET —
 the same contract NetBios has.
 
-Total Phase 2 footprint: 1,732 B in the reclaimed floppy region and 500 B
-in the `F900h` gap, which still leaves 719 B free.
+Total Phase 2 footprint: 1,732 B in the reclaimed floppy region and 532 B
+in the `F900h` gap. Together with Phase 1 and `V`, the image still has 398 B
+free there.
 
 ## Phase 1 content
 
 | Change | ROM bytes |
 | --- | --- |
 | Banner identity line | `00DF-00F9` (in place, same length) |
-| Command dispatch table relocated + `H` added | `3900-3937` (runtime `F900h`) |
-| `H` handler (`LXI B,text` / `CALL DA6Bh` / `RET`) | `3931-3937` |
-| Help text | `3938-39CB` |
+| Command dispatch table relocated + `H`, `J`, `V` added | `3900-3937` (runtime `F900h`) |
+| `H` handler (`LXI B,text` / `CALL DA6Bh` / `RET`) | `3937-393E` |
+| Help text, including `V ?` | `393E-39DF` |
+| `V` diamond-tunnel demo + `JUKU 2026` mark | `39DF-3B18` |
 | Table pointer repointed (`LXI H,F900h`) | `1924-1925` |
 | Eight chunk checksums regenerated | `0008-000A`, `1806-180A` |
 
-Everything else is byte-identical to ekta37. Total footprint of the new
-code and data: 203 bytes in the `3900h` free gap, leaving 1,263 bytes of it
-for the Phase 2 Jukuravi module.
+The table, help and visual block occupies 536 bytes of the `3900h` free gap.
+The 313-byte high-ROM `V` block copies its 291-byte body to hidden low RAM at
+`1200h`, disables interrupts, selects all-RAM mode 3, and paints twelve
+generated 40x241 write-only frames. Explicit symmetric X distance and scaled
+Y distance form moving concentric diamond rings; a dark plaque keeps the
+centered `JUKU 2026` mark legible. The demo then clears, restores mode 1,
+re-enables interrupts and returns to the monitor. This avoids the mode-1 ROM
+overlay, whose high-window writes do not reach the framebuffer.
 
 ## Checksum convention (recovered here)
 
@@ -81,9 +95,11 @@ own verifier and never reaches the command prompt — observed during Phase 1.
 
 Static: rebuild identity, a bounded patch set (any byte changed outside the
 listed ranges fails), all eight chunk checksums, the banner identity, and
-**every stock command still dispatching to its original handler**.
+**every stock command still dispatching to its original handler**. The two
+8 KiB programming images are guarded as the exact low/high split and their
+concatenation must reproduce the 16 KiB image byte-for-byte.
 
-Behavioral (cosim): three boots — a keyless control, `H`, and `J` — with
+Behavioral (cosim): four boots — a keyless control, `H`, `V`, and `J` — with
 every count taken as a **difference from the control**. This matters: the
 console renders through the same `D800h+` window the relocated code
 occupies, so absolute read counts there are dominated by framebuffer
@@ -93,13 +109,23 @@ load-bearing: the frame interrupt must be enabled (cosim `argv[4]`) or the
 keyboard is never scanned and no command dispatches at all, and typing only
 begins once the banner has been painted.
 
-Current signals: `H` reads the help text region **+156 bytes** over control
-(its length is 148), `J` reads its handler region **+21,587** and produces
+Current signals: `H` reads the help text region **+161 bytes** over control;
+`V` adds **3,213** mapped-ROM reads, **1,988,036** copied-body reads and
+**127,494 accepted framebuffer writes**;
+`J` reads its handler region **+21,587** and produces
 **21,932 USART events** where the control run produces exactly zero. The
 transmitted bytes are the loader's own READY frame
 (`A5 5A A3 0B 02 20 0A 00 7F FF ...` — API v2, capabilities, workspace,
 one-vote bootstrap), and a PTY-attached run stops with the PC inside the
 copied loader in memory mode 1.
+
+The visual guard captures the first completed frame directly from C-cosim
+bus writes after the demo selects mode 3. It compares every framebuffer byte
+with the coordinate-based tunnel oracle and independently requires bilateral
+symmetry, connected horizontal runs, balanced black/white coverage, the dark
+plaque and the exact logo. This was added after MAME and C-cosim both exposed
+the first address-hash implementation as a screen of repeated glyph-like
+tiles; byte diversity alone had incorrectly accepted that version.
 
 ## Not yet done
 
@@ -112,4 +138,5 @@ treat the loader path as *starts and speaks*, not *fully handshakes*.
 
 No physical burn has happened; the image is desk-validated only. Burning
 touches both chips: D15 carries the banner and table pointer, D16 the
-segments, the H/J code and the stubs.
+segments, the H/J/V code and the stubs. Program the named D15/D16 files; do
+not load the combined 16 KiB image into either 8 KiB device.

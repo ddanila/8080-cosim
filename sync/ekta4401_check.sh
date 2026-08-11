@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Guard the ekta4401 remix ROM: deterministic rebuild from pinned ekta37,
 # bounded patch set, the ROM's own eight chunk checksums, and a cosim boot
-# proving the relocated command table and the new H command execute.
+# proving the relocated command table, H help, V visual demo, and J loader
+# startup execute.
 # See spinoffs/jukuravi/EKTA37-REMIX-PLAN.md.
 set -euo pipefail
 cd "$(dirname "$0")/.."

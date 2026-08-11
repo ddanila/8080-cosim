@@ -1,8 +1,9 @@
 # EktaSoft remix plan: ekta37 + Jukuravi service module
 
-Status: **PHASES 1 AND 2 COMPLETE, 2026-08-11** — `ekta4401.bin` boots with
-the banner identity, the `H` command, the floppy subsystem stripped, and a
-`J` command that starts the Jukuravi loader from RAM; all guarded
+Status: **PHASES 1 AND 2 + VISUAL EASTER EGG COMPLETE, 2026-08-11** —
+`ekta4401.bin` boots with the banner identity, `H` help, a guarded `V`
+diamond-tunnel demo carrying the `JUKU 2026` mark, the floppy subsystem stripped,
+and a `J` command that starts the Jukuravi loader from RAM; all guarded
 ([`remix/README.md`](remix/README.md)). Open: a full `host.py` handshake
 against `J` inside cosim, and any physical burn. Measurements below are byte-verified
 against the pinned `roms/ekta37.bin` and the exact T36 build; phase results
@@ -18,15 +19,16 @@ A new EktaSoft-derived 16 KiB ROM based on Serial #0037 (RomBios 3.43m):
    RESET — the same contract as NetBios entry);
 3. add a new monitor command `H` printing the command list with short
    comments;
-4. a personalized identity line in the boot banner, with an honest identity:
+4. add a compact visual easter egg (`V ?`) which exercises the framebuffer;
+5. a personalized identity line in the boot banner, with an honest identity:
    its own serial/name so it can never masquerade as a factory image;
-5. optionally strip the floppy subsystem (Net-only boot) — only if space
+6. optionally strip the floppy subsystem (Net-only boot) — only if space
    demands it;
-6. regenerate the block-1 checksum at `000Ah` properly.
+7. regenerate the block-1 checksum at `000Ah` properly.
 
 ## Measured facts the plan stands on
 
-- Command set `FDSXGMCEKTBRWPA`: **`H` and `J` are free.** The parser
+- Command set `FDSXGMCEKTBRWPA`: **`H`, `J`, and `V` are free.** The parser
   references its dispatch table via a single `LXI H,D977h` at ROM `1923h`,
   so the table relocates into free space with a one-word patch
   ([`../../docs/juku-rom-monitor-commands.md`](../../docs/juku-rom-monitor-commands.md)).
@@ -84,15 +86,26 @@ half RAM). See the Phase 2 results below.
 reclaimed for the loader segments and the `FF50h+` vectors point at a
 `NO DISK - NET ONLY` stub.
 
+**Visual easter egg.** DONE: `V` copies its linked body to hidden low RAM,
+disables interrupts, selects all-RAM mode 3, generates twelve full-screen
+write-only moving diamond-tunnel frames, overlays `JUKU 2026`, clears, restores mode 1
+and returns. `H` advertises it only as `V ?`.
+
 ## Risks / notes
 
 - Relocated-half additions must be assembled for fixed `F9xxh` runtime
   addresses; the in-place/relocated split (`1800h`) and the chip split
   (`2000h`) both matter for burn planning (table+banner edits land in D15,
-  the module in D16 — both chips re-burn).
+  the module in D16 — both chips re-burn). The builder emits guarded named
+  low/high 8 KiB programming images so the combined image is never loaded
+  accidentally into one device.
 - `J` must DI and own the 8251 exclusively; NetBios and Jukuravi are
   mutually exclusive resident modes, which is the stock machine's own
   pattern.
+- `V` must keep interrupts disabled while mode 3 hides the high-ROM interrupt
+  handler, restore mode 1 before returning, and stay write-only. A direct
+  mode-1 framebuffer write is discarded, while a read-modify-write algorithm
+  would read mapped ROM rather than framebuffer RAM.
 - The new image gets its own identity (banner serial/name) and its own
   pinned SHA; it must never be confused with the archival #0037 pair, which
   remains the replica content truth.
@@ -155,4 +168,15 @@ reclaimed for the loader segments and the `FF50h+` vectors point at a
    a keypress. The Phase 1 guard passed for that wrong reason and has been
    replaced with control-differenced counts. Any future guard in this ROM
    must difference against a keyless control run.
-4. **Space after both phases:** 719 B still free in the `F900h` gap.
+4. **Visual demo guard.** A control-differenced `V` cosim run records 3,213
+   mapped-ROM reads, 1,988,036 reads from the copied low-RAM body, and 127,494
+   framebuffer writes accepted while mode 3 is active. It also proves mode 1
+   is restored after twelve 40x241 frames, repeated `JUKU 2026` overlays and
+   the final clear/return path. The first completed frame is reconstructed
+   directly from C-cosim bus writes and checked byte-for-byte against the
+   coordinate-based tunnel, plus independent symmetry, connected-run,
+   black/white-balance, plaque and logo invariants. This guard replaced the
+   original byte-diversity check after MAME and C-cosim showed that an address
+   hash could be byte-diverse yet look like one glyph tiled over the screen.
+5. **Space after both phases and the demo:** 398 B still free in the `F900h`
+   gap.
