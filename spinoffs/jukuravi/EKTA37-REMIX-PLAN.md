@@ -1,8 +1,11 @@
 # EktaSoft remix plan: ekta37 + Jukuravi service module
 
-Status: **PHASE 0 COMPLETE, 2026-08-11.** No image has been built. Every
-measurement below is byte-verified against the pinned `roms/ekta37.bin`
-and the exact T36 build. Phase 0 results are at the end.
+Status: **PHASE 1 COMPLETE, 2026-08-11** — a booting `ektaravi.bin` with the
+banner identity and the `H` command exists and is guarded
+([`remix/README.md`](remix/README.md)). Phase 2 (Jukuravi module + `J`,
+with the floppy strip) is not started. Measurements below are byte-verified
+against the pinned `roms/ekta37.bin` and the exact T36 build; phase results
+are at the end.
 
 ## Goal
 
@@ -117,7 +120,14 @@ prompt reduces to Net, vectors get error stubs, disk region reclaimed.
    into its own address range would silently paint the framebuffer, so
    Phase 2 adds a cosim guard asserting no `D800h+` writes from the engine.
    `J` must also leave the memory mode at 1.
-4. **Workspace verdict.** `C000h-CFFFh` is plain RAM in mode 1. EktaSoft/
+4. **Checksum convention correction (blocking, found in Phase 1).** The boot
+   verifier checks **eight 2 KiB chunks across two regions**, stored
+   descending from `000Ah` (low: 3 chunks) and `180Ah` (upper: 5 chunks) —
+   not the single block-1 sum of the Jukuravi-era convention. All eight
+   verify against stock ekta37. An image that regenerates only the block-1
+   byte fails the ROM's own verifier and never reaches the command prompt
+   (observed). The builder regenerates all eight.
+5. **Workspace verdict.** `C000h-CFFFh` is plain RAM in mode 1. EktaSoft/
    EKDOS do use parts of `C0xxh-CDxxh` (37 operand references), so the
    `J` command is one-way service mode until RESET — the documented
    contract — and keeping the loader workspace at its native `C000h`

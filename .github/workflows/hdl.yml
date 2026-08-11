@@ -26,6 +26,7 @@ on:
       - 'spinoffs/jukuravi/protocol.py'
       - 'spinoffs/jukuravi/raster.py'
       - 'spinoffs/jukuravi/raster_retention.py'
+      - 'spinoffs/jukuravi/remix/**'
       - 'spinoffs/jukuravi/nano/**'
       - 'roms/**'
       - 'sync/**'
@@ -72,6 +73,7 @@ on:
       - 'spinoffs/jukuravi/protocol.py'
       - 'spinoffs/jukuravi/raster.py'
       - 'spinoffs/jukuravi/raster_retention.py'
+      - 'spinoffs/jukuravi/remix/**'
       - 'spinoffs/jukuravi/nano/**'
       - 'roms/**'
       - 'sync/**'
@@ -308,6 +310,14 @@ jobs:
 
       - name: Run T32 upper-ROM wait-class guards
         run: ./sync/jukuravi_t32_check.sh
+
+      # T33-T36 checks remain hand-run (they were never wired). The remix
+      # guard is wired from the start: it rebuilds ektaravi.bin from pinned
+      # ekta37, checks the bounded patch set and all eight ROM chunk
+      # checksums, and boots it in cosim to prove the relocated command
+      # table and the H command execute.
+      - name: Run ektaravi remix guards
+        run: ./sync/ektaravi_check.sh
 
   subsystems:
     needs: changes
