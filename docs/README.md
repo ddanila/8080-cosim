@@ -77,7 +77,8 @@ findings. Every status applies only to the boundary named by the report.
   kinship/checksum analysis),
   `ekta37-netbios-notes.md` (byte-verified NetBios/Janet network-boot path in
   the adopted image: configurable D57-clocked 8251 line, odd-parity framing,
-  TxEN-gated transmit),
+  TxEN-gated transmit; a round-trip-guarded annotated disassembly of the same
+  image is maintained in `../disasm/`),
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `d101-reconstruction-constraints.md` (datasheet-exact first-half select cases,
   D02 ladder, conditional D0-to-`/OE0` test, and four measured-pin boundaries),
