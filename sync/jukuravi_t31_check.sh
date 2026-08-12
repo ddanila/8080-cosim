@@ -7,6 +7,7 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
 python3 spinoffs/jukuravi/firmware/build_d0_low4k.py --check
+python3 spinoffs/jukuravi/firmware/build_smoke.py --check
 python3 -m py_compile \
   spinoffs/jukuravi/host.py \
   spinoffs/jukuravi/firmware/build_d0_resilient.py \
@@ -47,10 +48,6 @@ nasm -f bin spinoffs/jukuravi/firmware/rom-read-upper-4000.asm \
   -o "$tmp/rom-read-upper-4000.bin"
 cmp "$tmp/rom-read-upper-4000.bin" \
   spinoffs/jukuravi/firmware/rom-read-upper-4000.bin
-nasm -f bin spinoffs/jukuravi/firmware/smoke-4000.asm \
-  -o "$tmp/smoke-4000.bin"
-cmp "$tmp/smoke-4000.bin" spinoffs/jukuravi/firmware/smoke-4000.bin
-
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c

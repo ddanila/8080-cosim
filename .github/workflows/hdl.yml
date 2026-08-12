@@ -294,7 +294,7 @@ jobs:
       # ends in sync/jukuravi_vm80a_a12_check.sh, which simulates the vm80a core
       # against that same increment probe.
       - name: Install toolchain
-        run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog nasm
+        run: sudo apt-get update && sudo apt-get install -y bison gcc g++ iverilog nasm
 
       - name: Run T28 loader guards
         run: ./sync/jukuravi_t28_check.sh

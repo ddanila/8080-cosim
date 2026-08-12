@@ -11,3 +11,6 @@
 [submodule "third_party/juku-common"]
 	path = third_party/juku-common
 	url = https://github.com/ddanila/juku-common.git
+[submodule "third_party/zmac"]
+	path = third_party/zmac
+	url = https://github.com/gp48k/zmac.git

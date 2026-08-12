@@ -117,10 +117,12 @@ def main() -> int:
         if not isinstance(loader, dict):
             fail("loader evidence is absent")
         chunks = loader.get("chunks")
+        payload_size = len(PAYLOAD.read_bytes())
+        expected_chunks = (payload_size + 31) // 32
         if (
-            loader.get("bytes") != len(PAYLOAD.read_bytes())
+            loader.get("bytes") != payload_size
             or not isinstance(chunks, list)
-            or len(chunks) != 5
+            or len(chunks) != expected_chunks
             or any(
                 chunk.get("attempts") != 1
                 or chunk.get("crc_attempts") != 1

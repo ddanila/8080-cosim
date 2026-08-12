@@ -7,19 +7,23 @@
 instructions are written as assembler mnemonics. It tests and restores
 `5000h..50FFh`, writes the accumulated mismatch mask to `4E00h`, and returns.
 
-Initialize the shared source and build with zmac in Intel 8080 mode:
+Initialize the shared sources. The build compiles the pinned zmac submodule and
+uses its Intel 8080 mode; no separately installed assembler is required:
 
 ```sh
 git submodule update --init --recursive
 python3 spinoffs/jukuravi/firmware/build_shared_memory.py
 python3 spinoffs/jukuravi/firmware/build_shared_memory.py --check
+python3 spinoffs/jukuravi/firmware/build_smoke.py
+python3 spinoffs/jukuravi/firmware/build_smoke.py --check
 cc -O2 -Wall -Wextra -o /tmp/jukuravi-shared-memory-test \
   tests/jukuravi_shared_memory_test.c cosim/i8080.c
 /tmp/jukuravi-shared-memory-test \
   spinoffs/jukuravi/firmware/shared-memory-4000.bin
 ```
 
-Set `ZMAC` to the zmac executable when it is not installed in `PATH`.
+The host prerequisites for zmac are `make`, `bison`, and a C/C++ compiler. Set
+`ZMAC` only to deliberately override the pinned assembler.
 
 Status date: 2026-08-11.
 
@@ -952,9 +956,11 @@ results and raw-log provenance are in `../T31-PHYSICAL.md`.
 ### Uploaded speaker demo
 
 `smoke-4000.bin` is a deliberately playful but complete T31 application proof.
-Its reproducible NASM source is `smoke-4000.asm`; both are 134 bytes loaded at
-`4000h`. It programs D57 channel 1 for twelve successive square-wave pitches,
-leaving the independent channel-0 UART clock to the ROM's return restoration.
+Its readable Intel 8080 source is `smoke-4000.asm`; the player and note/rhythm
+table are shared with CP/M through `third_party/juku-common/music/` and built
+with pinned zmac. The 137-byte payload is loaded at `4000h` and programs D57
+channel 1 for twelve successive square-wave pitches, leaving the independent
+channel-0 UART clock to the ROM's return restoration.
 The pitch sequence is G4, B-flat4, C5 / G4, B-flat4, D-flat5, C5 / G4,
 B-flat4, C5, B-flat4, G4.
 
@@ -963,13 +969,14 @@ complete phrase represented as exactly 32 eighth-note units. A 22,321-iteration
 register-only delay is nominally 267.852 ms at the 2 MHz CPU clock, versus the
 ideal 267.857 ms eighth note. Per-note table entries independently select sound
 and silence units, including the direct D-flat-to-C transition and five-unit
-final G. Each completed note writes its remaining count to `4104h`.
+final G.
 
-After all twelve notes, the snippet writes `SMOK` to `4100h..4103h`, leaves zero
+After all twelve notes, the wrapper writes `SMOK` to `4100h..4103h`, leaves zero
 at `4104h`, returns `A=0Ch`, and executes an ordinary `RET`. T31 then restores
 its serial state and remains available. `tests/jukuravi_t31_smoke_test.py`
 boots the exact T31 image and uploads the committed binary through the real
-cosim PTY. It requires five first-attempt CRC-verified chunks and the completion
+cosim PTY. It requires every 32-byte chunk to pass CRC verification on its
+first attempt and checks the completion
 contract, checks all 60
 speaker-PIT writes, and bounds every simulated note-onset interval against the
 112-BPM grid. The assembly comparison and demo run are part of
