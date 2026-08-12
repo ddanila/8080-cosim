@@ -8,3 +8,6 @@
 [submodule "spinoffs/minimal-vga/external/tv80"]
 	path = spinoffs/minimal-vga/external/tv80
 	url = https://github.com/hutch31/tv80
+[submodule "third_party/juku-common"]
+	path = third_party/juku-common
+	url = https://github.com/ddanila/juku-common.git

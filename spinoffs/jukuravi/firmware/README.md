@@ -1,5 +1,26 @@
 # Jukuravi diagnostic firmware
 
+## Shared mnemonic diagnostic
+
+`shared-memory-4000.asm` is a loader-callable wrapper around the pinned
+`juku-common/diag/memory.asm` source. Unlike the older NASM probes, its 8080
+instructions are written as assembler mnemonics. It tests and restores
+`5000h..50FFh`, writes the accumulated mismatch mask to `4E00h`, and returns.
+
+Initialize the shared source and build with zmac in Intel 8080 mode:
+
+```sh
+git submodule update --init --recursive
+python3 spinoffs/jukuravi/firmware/build_shared_memory.py
+python3 spinoffs/jukuravi/firmware/build_shared_memory.py --check
+cc -O2 -Wall -Wextra -o /tmp/jukuravi-shared-memory-test \
+  tests/jukuravi_shared_memory_test.c cosim/i8080.c
+/tmp/jukuravi-shared-memory-test \
+  spinoffs/jukuravi/firmware/shared-memory-4000.bin
+```
+
+Set `ZMAC` to the zmac executable when it is not installed in `PATH`.
+
 Status date: 2026-08-11.
 
 Status: **T36 COMPLETE PHYSICAL RAM EVIDENCE + HISTORICAL D0/D2 LADDER**
