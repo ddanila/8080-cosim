@@ -27,7 +27,10 @@ with the machine-readable board model.
   `tools/janet_disk_server.py` can then keep a diskless CP/Mish Juku attached
   to a host-backed A: volume. The physically proven default is nominal 9,600
   baud; a separate recoverable burst/pacing BAUDTEST exercises nominal 19,200
-  with wire-rate one-byte overrun semantics and measured-CS00015 timing.
+  with wire-rate one-byte overrun semantics and measured-CS00015 timing. On
+  physical CS00015 and CS00014, 19,200 currently fails only in the receive
+  direction after short clean prefixes; the next discriminator is a scope
+  capture across X3.4, D104.13, and D11 RxC rather than a software rate change.
 - `sync/check.sh` currently compares 117 mapped instances and 308 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live

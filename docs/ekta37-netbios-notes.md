@@ -328,6 +328,10 @@ Together these examples support retaining 9600 as the proven default while
 testing 19,200 as an optional resident protocol with explicit framing,
 timeouts, retries, and measured receive behavior.
 
+The consolidated electrical analysis, expected 9600/19,200 waveforms, ranked
+diagnosis, and scope-first next-session decision tree are in
+`juku-serial-19200-investigation.md`.
+
 ## Physical host use
 
 Connect the Juku serial interface through the appropriate electrical-level
