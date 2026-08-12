@@ -823,8 +823,16 @@ static void pout(void* u, uint8_t p, uint8_t v) {
     fprintf(stderr, "[IOSEQ] OUT port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, v, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, out_count[p]);
   }
-  if (fdc_enabled && p >= 0x1C && p <= 0x1F)
+  if (fdc_enabled && p >= 0x1C && p <= 0x1F) {
     juku_fdc_write(&fdc, p & 3, fdc_bus_invert ? (uint8_t)~v : v);
+    /* The instruction-granular cosim has no model of the Juku's I/O wait
+     * states.  As in rombios_fdc_write_test, start the 512-byte firmware
+     * stream immediately; the controller-level test retains and checks the
+     * exact WD1793 write lead-in timing. */
+    const uint8_t fdc_value = fdc_bus_invert ? (uint8_t)~v : v;
+    if (p == 0x1C && (fdc_value & 0xE0) == 0xA0)
+      fdc.write_sector_lead_pending = 0;
+  }
   if (usart.enabled && p >= 0x08 && p <= 0x0B)
     usart_write(p & 1, v, cpu ? cpu->cyc : 0);
   if (p >= 0x10 && p <= 0x1B) pit_write(p, v);
