@@ -22,6 +22,9 @@ with the machine-readable board model.
   guarded by `tests/cosim_usart_pty_test.py` via `sync/juk_disk_check.sh`.
   The same transport now boots all five vendored CP/M/EKDOS system images,
   plus an optional external image such as the CP/Mish Juku build,
+  and `tools/janet_disk_server.py` can keep a diskless CP/Mish Juku attached to
+  a host-backed A: volume after boot, switching the resident phase to nominal
+  19,200 baud.
   through the stock interrupt-driven NetBios/Janet protocol; the parallel
   `sync/janet_netboot_check.sh` guard reaches each byte-exact `CA00h` handoff.
 - `sync/check.sh` currently compares 117 mapped instances and 308 nets with no

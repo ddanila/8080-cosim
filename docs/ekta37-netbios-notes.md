@@ -130,13 +130,32 @@ branch, first build its system and add it as the sixth case:
 JUKU_NETBOOT_SYSTEM=../cpmish/juku-system.bin sync/janet_netboot_check.sh
 ```
 
-On 2026-08-12 that six-system run passed byte-exactly. This proves only the
-stock NetBios bootstrap transport and `CA00h` handoff. The planned diskless
-CP/Mish mode is a second phase: after loading, its resident BIOS will take over
-the 8251, select D57 counter-0 divisor 4 (nominal 19,200 baud), and exchange
-checksummed 128-byte CP/M disk records with a host-backed A: image. Keeping the
-stock 9600/8O1 bootstrap phase avoids modifying the ROM protocol while allowing
-the filesystem phase to be faster and independently retried.
+On 2026-08-12 that six-system run passed byte-exactly. This proves the stock
+NetBios bootstrap transport and `CA00h` handoff. The CP/Mish diskless mode then
+takes over the 8251, selects D57 counter-0 divisor 4 (nominal 19,200 baud), and
+exchanges checksummed 128-byte CP/M disk records with a host-backed A: image.
+Keeping the stock 9600/8O1 bootstrap phase avoids modifying the ROM protocol
+while allowing the filesystem phase to be faster and independently retried.
+
+`tools/janet_disk_server.py` implements both phases. After `serve()` completes,
+it reconfigures the physical serial device from 9600 to 19,200 and repeatedly
+sends the `NR` synchronization marker until the resident BIOS sends a valid
+request. Requests contain `JD`, operation, sequence, drive, 16-bit track,
+logical sector, an optional 128-byte write payload, and XOR checksum. Replies
+contain `DJ`, echoed sequence, status, optional read payload, and checksum.
+The server recognizes duplicate sequence/request pairs and returns the previous
+reply, making a retried write idempotent.
+
+The cross-repository `make juku-net-cosim-check` proof runs with no local disk
+attached to the simulator. DIR completed with 34 remote reads; SAVE completed
+with 38 reads and four writes. Both had zero retries, reached the visible `A>`
+prompt, and the resulting flat host volume reopened through cpmtools with an
+extractable 256-byte `TEST.COM`. Cosim observed divisor 8 / 2,300 byte cycles
+for bootstrap and divisor 4 / 1,150 byte cycles for the resident phase.
+
+The 19,200 result is currently simulator evidence, not yet a physical-machine
+claim. A silent/disconnected server also remains a robustness boundary: the
+first BIOS waits in a polled receive loop, while malformed replies are retried.
 
 ## Physical host use
 

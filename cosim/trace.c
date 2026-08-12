@@ -102,6 +102,7 @@ static unsigned long fdc_data_reads, stop_fdc_data_reads;
 static unsigned long fdc_last_cyc;
 static int           timing_log = 0;
 static int           io_trace = 0;
+static int           bank_trace = 1;
 static int           ram_fault_enabled = 0;
 static uint16_t      ram_fault_addr = 0;
 static uint8_t       ram_fault_stuck_low = 0;
@@ -332,6 +333,7 @@ static juku_usart usart = {
   .transfer_cycles = 16,
   .byte_cycles = 256,
 };
+static int usart_pit_clock = 0;
 static int usart_tx_irq_armed = 0;
 static int usart_tx_irq_level = 0, usart_rx_irq_level = 0;
 static int usart_tx_irq_pending = 0, usart_rx_irq_pending = 0;
@@ -536,7 +538,8 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
 
 static void set_mode(int m) {
   if (m != mode) {
-    fprintf(stderr, "[BANK] mode %d -> %d  (portC=0x%02X)\n", mode, m, portc);
+    if (bank_trace)
+      fprintf(stderr, "[BANK] mode %d -> %d  (portC=0x%02X)\n", mode, m, portc);
     mode = m;
     mode_switches++;
   }
@@ -835,7 +838,14 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   }
   if (usart.enabled && p >= 0x08 && p <= 0x0B)
     usart_write(p & 1, v, cpu ? cpu->cyc : 0);
-  if (p >= 0x10 && p <= 0x1B) pit_write(p, v);
+  if (p >= 0x10 && p <= 0x1B) {
+    pit_write(p, v);
+    if (usart_pit_clock && p == 0x18 && v) {
+      usart.byte_cycles = ((unsigned long)v * 575UL) / 2UL;
+      fprintf(stderr, "[USART] D57 divisor=%u -> byte_cycles=%lu\n",
+              v, usart.byte_cycles);
+    }
+  }
 
   if (p == 0x04) kbd_col = v & 0x0F;   // 8255 Port A low nibble = keyboard column select
 
@@ -1077,6 +1087,12 @@ int main(int argc, char** argv) {
   const char* stop_keys_done_env = getenv("JUKU_STOP_KEYS_DONE");
   int stop_keys_done = stop_keys_done_env && stop_keys_done_env[0] &&
                        strcmp(stop_keys_done_env, "0") != 0;
+  const char* disable_settle_env = getenv("JUKU_DISABLE_SETTLE");
+  int disable_settle = env_enabled(disable_settle_env);
+  const char* stop_prompt_rx_env = getenv("JUKU_STOP_PROMPT_AFTER_USART_RX");
+  unsigned long stop_prompt_after_rx = stop_prompt_rx_env && stop_prompt_rx_env[0]
+      ? strtoul(stop_prompt_rx_env, NULL, 0) : 0;
+  int stop_prompt_hit = 0;
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
   const char* kbd_enabled_env = getenv("JUKU_KEYBOARD_ENABLE");
@@ -1115,11 +1131,15 @@ int main(int argc, char** argv) {
   timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
   io_trace = getenv("JUKU_TRACE_IO") && getenv("JUKU_TRACE_IO")[0] &&
-             strcmp(getenv("JUKU_TRACE_IO"), "0") != 0;
+               strcmp(getenv("JUKU_TRACE_IO"), "0") != 0;
+  const char* bank_trace_env = getenv("JUKU_TRACE_BANK");
+  if (bank_trace_env && bank_trace_env[0])
+    bank_trace = strcmp(bank_trace_env, "0") != 0;
   const char* usart_pty = getenv("JUKU_USART_PTY");
   const char* usart_fault = getenv("JUKU_USART_FAULT");
   const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
+  const char* usart_pit_clock_env = getenv("JUKU_USART_PIT_CLOCK");
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
   const char* rom_consecutive_a12_low_env =
       getenv("JUKU_ROM_CONSECUTIVE_A12_LOW");
@@ -1168,6 +1188,7 @@ int main(int argc, char** argv) {
     usart.byte_cycles = strtoul(usart_byte_cycles, 0, 0);
     if (!usart.byte_cycles) usart.byte_cycles = 1;
   }
+  usart_pit_clock = env_enabled(usart_pit_clock_env);
   if (usart_fault && usart_fault[0]) {
     if (strcmp(usart_fault, "tx_stuck") == 0) {
       usart.fault_tx_stuck_permanent = 1;
@@ -1441,6 +1462,7 @@ int main(int argc, char** argv) {
          !(stop_pc_enabled && usart.rx_bytes >= stop_pc_after_usart_rx &&
            cpu.pc == stop_pc) &&
          !(stop_keys_done && kbd_str && !kbd_str[kbd_pos]) &&
+         !stop_prompt_hit &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
     if (dram_retention_arm_pc_enabled && !dram_retention_armed &&
         cpu.pc == dram_retention_arm_pc) {
@@ -1489,6 +1511,9 @@ int main(int argc, char** argv) {
     if (frame_cyc && cpu.cyc >= next_frame) {
       next_frame += frame_cyc;
       take_pic_irq(&cpu, 5, "frame", &frame_irq_count);
+      if (stop_prompt_after_rx && usart.rx_bytes >= stop_prompt_after_rx &&
+          ekdos_prompt_visible())
+        stop_prompt_hit = 1;
       // advance the typed-keystroke state once per frame (HOLD pressed, GAP released)
       if (kbd_str && kbd_str[kbd_pos] && g_vw >= kbd_start_vram) {
         if (kbd_str[kbd_pos] == '|') {
@@ -1504,7 +1529,7 @@ int main(int argc, char** argv) {
         }
       }
     }
-    if ((cpu.cyc & 0xFFFFF) == 0) {
+    if (!disable_settle && (cpu.cyc & 0xFFFFF) == 0) {
       writes_total = 0;
       for (int i = 0; i < 256; i++) writes_total += wpage[i];
       if (writes_total == last_write_total) {
@@ -1530,6 +1555,9 @@ int main(int argc, char** argv) {
     fprintf(stderr,
             "[EXEC] stopped before pc=%04lX after %lu USART receive bytes\n",
             stop_pc, usart.rx_bytes);
+  if (stop_prompt_hit)
+    fprintf(stderr, "[EXEC] stopped at A> prompt after %lu USART receive bytes\n",
+            usart.rx_bytes);
 
   dump_checkpoint(getenv("JUKU_CHECKPOINT_PREFIX"), &cpu);
 
