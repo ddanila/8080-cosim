@@ -149,6 +149,8 @@ typedef struct {
   uint8_t write_phase;
   uint8_t read_phase;
   uint8_t latch_valid;
+  uint8_t bcd;
+  uint8_t mode;
 } pit_counter;
 
 static pit_counter pit_counters[3][3];
@@ -181,6 +183,9 @@ static void pit_write(uint8_t port, uint8_t value) {
       }
     } else {
       counter->access = (uint8_t)access;
+      counter->bcd = value & 1;
+      counter->mode = (value >> 1) & 7;
+      if (counter->mode > 5) counter->mode &= 3;
       counter->write_phase = 0;
       counter->read_phase = 0;
       counter->latch_valid = 0;
@@ -303,6 +308,7 @@ typedef struct {
   uint8_t mode_word;
   uint8_t command;
   uint8_t rx_data;
+  uint8_t rx_errors;
   uint8_t tx_data;
   uint8_t tx_shift_data;
   int rx_ready;
@@ -334,9 +340,65 @@ static juku_usart usart = {
   .byte_cycles = 256,
 };
 static int usart_pit_clock = 0;
+static unsigned long usart_pit_cpu_hz = 0;
+static unsigned long usart_pit_divisor = 0;
+static int usart_pit_clock_valid = 1;
 static int usart_tx_irq_armed = 0;
 static int usart_tx_irq_level = 0, usart_rx_irq_level = 0;
 static int usart_tx_irq_pending = 0, usart_rx_irq_pending = 0;
+
+static unsigned long pit_effective_divisor(const pit_counter* counter) {
+  unsigned long raw = counter->count_register;
+  if (!counter->bcd) return raw ? raw : 65536UL;
+  unsigned long divisor = 0, place = 1;
+  for (unsigned shift = 0; shift < 16; shift += 4) {
+    divisor += ((raw >> shift) & 0x0F) * place;
+    place *= 10;
+  }
+  return divisor ? divisor : 10000UL;
+}
+
+static void usart_update_pit_timing(void) {
+  if (!usart_pit_clock || !usart_pit_divisor) return;
+  pit_counter* baud_counter = &pit_counters[2][0];
+  if ((baud_counter->mode == 2 || baud_counter->mode == 3) &&
+      usart_pit_divisor < 2) {
+    usart_pit_clock_valid = 0;
+    fprintf(stderr,
+            "[USART] invalid D57 mode=%u divisor=%lu; no periodic baud clock\n",
+            baud_counter->mode, usart_pit_divisor);
+    return;
+  }
+  unsigned factor;
+  switch (usart.mode_word & 3) {
+    case 1: factor = 1; break;
+    case 2: factor = 16; break;
+    case 3: factor = 64; break;
+    default: return;  /* synchronous mode */
+  }
+  unsigned data_bits = 5 + ((usart.mode_word >> 2) & 3);
+  unsigned wire_bits_x2 = 2 * (1 + data_bits);
+  if (usart.mode_word & 0x10) wire_bits_x2 += 2;  /* parity */
+  switch ((usart.mode_word >> 6) & 3) {
+    case 1: wire_bits_x2 += 2; break;  /* one stop bit */
+    case 2: wire_bits_x2 += 3; break;  /* 1.5 stop bits */
+    case 3: wire_bits_x2 += 4; break;  /* two stop bits */
+    default: return;
+  }
+  if (usart_pit_cpu_hz)
+    usart.byte_cycles =
+        (usart_pit_cpu_hz * wire_bits_x2 * factor * usart_pit_divisor * 13UL) /
+        (2UL * 16000000UL);
+  else
+    usart.byte_cycles =
+        (2000000UL * wire_bits_x2 * factor * usart_pit_divisor * 13UL) /
+        (2UL * 16000000UL);
+  if (!usart.byte_cycles) usart.byte_cycles = 1;
+  usart_pit_clock_valid = 1;
+  fprintf(stderr,
+          "[USART] D57 divisor=%lu -> byte_cycles=%lu x%u mode=%02X\n",
+          usart_pit_divisor, usart.byte_cycles, factor, usart.mode_word);
+}
 
 static void usart_update_irq_edges(void) {
   int tx_level = usart.enabled && usart_tx_irq_armed &&
@@ -424,6 +486,7 @@ static void usart_reset(void) {
   usart.mode_word = 0;
   usart.command = 0;
   usart.rx_ready = 0;
+  usart.rx_errors = 0;
   usart.tx_holding_full = 0;
   usart.tx_busy = 0;
   usart_tx_irq_armed = 0;
@@ -433,6 +496,7 @@ static void usart_reset(void) {
 
 static void usart_poll(unsigned long cyc) {
   if (!usart.enabled) return;
+  if (usart_pit_clock && !usart_pit_clock_valid) return;
   if (usart.tx_busy && cyc >= usart.tx_complete_cyc) {
     ssize_t written = write(usart.fd, &usart.tx_shift_data, 1);
     if (written == 1) {
@@ -452,12 +516,20 @@ static void usart_poll(unsigned long cyc) {
     usart.tx_busy = 1;
     usart.tx_complete_cyc = cyc + usart.byte_cycles;
   }
-  if ((usart.command & 0x04) && !usart.rx_ready && cyc >= usart.rx_next_cyc) {
+  /* The serial line keeps shifting while the receive data register is full.
+     Do not let the host PTY become an impossible extra FIFO: at each complete
+     character time, consume the next wire byte.  If firmware has not read the
+     previous byte, latch OE and discard the newcomer. */
+  if ((usart.command & 0x04) && cyc >= usart.rx_next_cyc) {
     uint8_t value;
     ssize_t received = read(usart.fd, &value, 1);
     if (received == 1) {
-      usart.rx_data = value;
-      usart.rx_ready = 1;
+      if (usart.rx_ready) {
+        usart.rx_errors |= 0x10;
+      } else {
+        usart.rx_data = value;
+        usart.rx_ready = 1;
+      }
       usart.rx_bytes++;
       usart.rx_next_cyc = cyc + usart.byte_cycles;
     } else if (received < 0 && errno != EAGAIN && errno != EWOULDBLOCK && errno != EIO) {
@@ -484,7 +556,8 @@ static uint8_t usart_status(void) {
   if (usart.fault_tx_empty_low_after_enabled &&
       usart.tx_bytes >= usart.fault_tx_empty_low_after)
     tx_empty = 0;
-  return (uint8_t)(tx_ready | tx_empty | (usart.rx_ready ? 0x02 : 0));
+  return (uint8_t)(tx_ready | tx_empty | (usart.rx_ready ? 0x02 : 0) |
+                   usart.rx_errors);
 }
 
 static uint8_t usart_read(int control, unsigned long cyc) {
@@ -502,6 +575,7 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
     if (usart.expect_mode) {
       usart.mode_word = value;
       usart.expect_mode = 0;
+      usart_update_pit_timing();
     } else if (value & 0x40) {
       usart_reset();
     } else {
@@ -514,7 +588,10 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
         usart_tx_irq_armed = 1;
         usart_tx_irq_pending = 0;
       }
-      if (value & 0x10) usart.rx_ready = 0;
+      /* ER (bit 4) resets PE/OE/FE error latches; it does not consume the
+         receive data register or clear RxRDY.  Preserving an unread byte is
+         essential across half-duplex TxEN turnarounds. */
+      if (value & 0x10) usart.rx_errors = 0;
     }
   } else if ((usart.command & 0x01) && !usart.tx_holding_full) {
     usart.tx_data = value;
@@ -841,9 +918,11 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   if (p >= 0x10 && p <= 0x1B) {
     pit_write(p, v);
     if (usart_pit_clock && p == 0x18 && v) {
-      usart.byte_cycles = ((unsigned long)v * 575UL) / 2UL;
-      fprintf(stderr, "[USART] D57 divisor=%u -> byte_cycles=%lu\n",
-              v, usart.byte_cycles);
+      /* D57 CLK0 is 16 MHz / 13.  Preserve the PIT's BCD interpretation and
+         recompute after either the count or the 8251 x1/x16/x64 mode changes. */
+      usart_pit_divisor =
+          pit_effective_divisor(&pit_counters[2][0]);
+      usart_update_pit_timing();
     }
   }
 
@@ -1140,6 +1219,7 @@ int main(int argc, char** argv) {
   const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
   const char* usart_pit_clock_env = getenv("JUKU_USART_PIT_CLOCK");
+  const char* usart_pit_cpu_hz_env = getenv("JUKU_USART_PIT_CPU_HZ");
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
   const char* rom_consecutive_a12_low_env =
       getenv("JUKU_ROM_CONSECUTIVE_A12_LOW");
@@ -1189,6 +1269,16 @@ int main(int argc, char** argv) {
     if (!usart.byte_cycles) usart.byte_cycles = 1;
   }
   usart_pit_clock = env_enabled(usart_pit_clock_env);
+  if (usart_pit_cpu_hz_env && usart_pit_cpu_hz_env[0]) {
+    char* end = NULL;
+    errno = 0;
+    usart_pit_cpu_hz = strtoul(usart_pit_cpu_hz_env, &end, 0);
+    if (errno || !end || *end || !usart_pit_cpu_hz) {
+      fprintf(stderr, "invalid JUKU_USART_PIT_CPU_HZ=%s\n",
+              usart_pit_cpu_hz_env);
+      return 2;
+    }
+  }
   if (usart_fault && usart_fault[0]) {
     if (strcmp(usart_fault, "tx_stuck") == 0) {
       usart.fault_tx_stuck_permanent = 1;

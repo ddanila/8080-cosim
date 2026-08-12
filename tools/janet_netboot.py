@@ -179,11 +179,14 @@ def boot_frames(image: bytes, *, load_address: int = LOAD_ADDRESS,
     return messages
 
 
-def configure_serial(fd: int, baud: int = DEFAULT_BAUD) -> None:
+def configure_serial(
+    fd: int, baud: int = DEFAULT_BAUD, *, parity: str = "odd",
+) -> None:
     speeds = {
         2400: termios.B2400,
         4800: termios.B4800,
         9600: termios.B9600,
+        14400: termios.B14400,
         19200: termios.B19200,
         38400: termios.B38400,
     }
@@ -191,13 +194,17 @@ def configure_serial(fd: int, baud: int = DEFAULT_BAUD) -> None:
         speed = speeds[baud]
     except KeyError as exc:
         raise ValueError(f"unsupported baud rate: {baud}") from exc
+    if parity not in ("none", "odd"):
+        raise ValueError(f"unsupported parity: {parity}")
     attrs = termios.tcgetattr(fd)
     attrs[0] = termios.IGNPAR
     attrs[1] = 0
-    attrs[2] &= ~(termios.CSIZE | termios.CSTOPB |
+    attrs[2] &= ~(termios.CSIZE | termios.CSTOPB | termios.PARENB |
+                  termios.PARODD |
                   getattr(termios, "CRTSCTS", 0))
     attrs[2] |= termios.CS8 | termios.CLOCAL | termios.CREAD
-    attrs[2] |= termios.PARENB | termios.PARODD
+    if parity == "odd":
+        attrs[2] |= termios.PARENB | termios.PARODD
     attrs[3] = 0
     attrs[4] = speed
     attrs[5] = speed
@@ -205,6 +212,21 @@ def configure_serial(fd: int, baud: int = DEFAULT_BAUD) -> None:
     attrs[6][termios.VTIME] = 1
     termios.tcsetattr(fd, termios.TCSANOW, attrs)
     termios.tcflush(fd, termios.TCIOFLUSH)
+    applied = termios.tcgetattr(fd)
+    required = termios.CS8 | termios.CLOCAL | termios.CREAD
+    if parity == "odd":
+        required |= termios.PARENB | termios.PARODD
+    forbidden = termios.CSTOPB | getattr(termios, "CRTSCTS", 0)
+    if parity == "none":
+        forbidden |= termios.PARENB | termios.PARODD
+    if (applied[4] != speed or applied[5] != speed or
+            applied[2] & required != required or applied[2] & forbidden):
+        raise RuntimeError(
+            f"serial driver did not apply {baud} baud "
+            f"8{'O' if parity == 'odd' else 'N'}1 "
+            f"(cflag=0x{applied[2]:x}, ispeed={applied[4]}, "
+            f"ospeed={applied[5]})"
+        )
 
 
 def write_all(fd: int, data: bytes) -> None:

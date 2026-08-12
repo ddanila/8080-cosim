@@ -41,6 +41,10 @@ def record_offset(track: int, sector: int) -> int | None:
 
 def serve_disk(fd: int, volume: bytearray, *, writable: bool = False,
                timeout: float = 120.0, idle_timeout: float | None = None,
+               reply_guard: float = 0.002,
+               tx_byte_delay: float = 0.0,
+               stop_marker: bytes | None = None,
+               resume: bool = False,
                verbose: bool = True,
                stats: dict[str, int] | None = None) -> dict[str, int]:
     """Serve the compact CP/M record protocol on an already configured fd."""
@@ -54,14 +58,16 @@ def serve_disk(fd: int, volume: bytearray, *, writable: bool = False,
     last_sequence: int | None = None
     last_request = b""
     last_reply = b""
+    marker_buffer = bytearray()
     deadline = time.monotonic() + timeout
     last_activity = time.monotonic()
     # The client changes D57/8251 rate after stock NetBios exits. It waits for
     # this marker before sending the first disk request, preventing bootstrap
     # parser read-ahead from consuming bytes belonging to the resident phase.
-    write_all(fd, b"NR")
+    if not resume:
+        write_all(fd, b"NR")
     next_ready = time.monotonic() + 0.02
-    synchronized = False
+    synchronized = resume
 
     while time.monotonic() < deadline:
         wait = min(0.1, max(0.0, deadline - time.monotonic()))
@@ -84,6 +90,16 @@ def serve_disk(fd: int, volume: bytearray, *, writable: bool = False,
             continue
         buffer.extend(incoming)
         last_activity = time.monotonic()
+        if stop_marker:
+            marker_buffer.extend(incoming)
+            if stop_marker in marker_buffer:
+                if verbose:
+                    print(f"disk session marker {stop_marker!r} received", flush=True)
+                stats["marker"] = 1
+                return stats
+            keep = max(0, len(stop_marker) - 1)
+            if len(marker_buffer) > keep:
+                del marker_buffer[:-keep]
 
         while True:
             start = buffer.find(SYNC)
@@ -140,7 +156,14 @@ def serve_disk(fd: int, volume: bytearray, *, writable: bool = False,
             last_sequence = sequence
             last_request = request
             last_reply = reply
-            write_all(fd, reply)
+            if reply_guard:
+                time.sleep(reply_guard)
+            if tx_byte_delay:
+                for value in reply:
+                    write_all(fd, bytes((value,)))
+                    time.sleep(tx_byte_delay)
+            else:
+                write_all(fd, reply)
 
     if verbose:
         print(f"Janet disk session: reads={reads}, writes={writes}, retries={retries}",
@@ -154,8 +177,20 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("system", type=Path, help="juku-net-system.bin")
     result.add_argument("volume", type=Path, help="flat 400 KiB CP/M volume")
     result.add_argument("--boot-baud", type=int, default=9600)
-    result.add_argument("--disk-baud", type=int, default=19200)
+    result.add_argument("--disk-baud", type=int, default=9600)
+    result.add_argument("--client", type=lambda value: int(value, 0), default=1,
+                        help="NetBios client station (default: 1)")
+    result.add_argument("--server", type=lambda value: int(value, 0), default=2,
+                        help="host bootstrap station (default: 2)")
     result.add_argument("--writable", action="store_true")
+    result.add_argument(
+        "--disk-reply-guard-ms", type=float, default=2.0,
+        help="request-to-reply half-duplex guard (default: 2 ms)",
+    )
+    result.add_argument(
+        "--disk-tx-byte-delay-ms", type=float, default=0.0,
+        help="host-to-Juku delay between disk-reply bytes (default: 0)",
+    )
     result.add_argument("--timeout", type=float, default=120.0)
     return result
 
@@ -167,12 +202,24 @@ def main(argv: Iterable[str] | None = None) -> int:
     fd = os.open(args.serial, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     try:
         configure_serial(fd, args.boot_baud)
-        print(f"Booting {args.system} at {args.boot_baud} baud, 8O1", flush=True)
-        serve_boot(fd, system, timeout=args.timeout)
+        print(
+            f"Booting {args.system} at {args.boot_baud} baud, 8O1, "
+            f"station {args.server:02X} -> {args.client:02X}",
+            flush=True,
+        )
+        serve_boot(fd, system, client=args.client, server=args.server,
+                   timeout=args.timeout)
         configure_serial(fd, args.disk_baud)
         print(f"Serving A: from {args.volume} at {args.disk_baud} baud, 8O1",
               flush=True)
-        serve_disk(fd, volume, writable=args.writable, timeout=args.timeout)
+        serve_disk(
+            fd,
+            volume,
+            writable=args.writable,
+            timeout=args.timeout,
+            reply_guard=args.disk_reply_guard_ms / 1000.0,
+            tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
+        )
         if args.writable:
             args.volume.write_bytes(volume)
     finally:

@@ -23,13 +23,13 @@ ROM = bytes(
         0xDB, 0x09,       # initial TxRDY+TxEMPTY
         0xE6, 0x05,
         0xFE, 0x05,
-        0xC2, 0x43, 0x00,
+        0xC2, 0x47, 0x00,
         0x3E, 0x55,
         0xD3, 0x08,       # transmit 55
         0xDB, 0x09,       # holding register full: TxRDY=TxEMPTY=0
         0xE6, 0x05,
         0xFE, 0x00,
-        0xC2, 0x43, 0x00,
+        0xC2, 0x47, 0x00,
         0xDB, 0x09,       # 001E: wait for TxRDY
         0xE6, 0x01,
         0xCA, 0x1E, 0x00,
@@ -41,16 +41,18 @@ ROM = bytes(
         0xDB, 0x09,       # 0030: wait for RxRDY
         0xE6, 0x02,
         0xCA, 0x30, 0x00,
+        0x3E, 0x37,       # error reset must preserve unread data and RxRDY
+        0xD3, 0x09,
         0xDB, 0x08,       # consume received byte; RxRDY must clear
         0xD3, 0x08,       # echo it
-        0xDB, 0x09,       # 003B: wait for final TxEMPTY, not merely TxRDY
+        0xDB, 0x09,       # 003F: wait for final TxEMPTY, not merely TxRDY
         0xE6, 0x04,
-        0xCA, 0x3B, 0x00,
+        0xCA, 0x3F, 0x00,
         0x76,             # HLT success
         0x76,             # HLT failure
     ]
 )
-assert len(ROM) == 0x44
+assert len(ROM) == 0x48
 
 IO_RE = re.compile(
     r"^\[IOSEQ\] (IN |OUT) port=0x([0-9A-Fa-f]{2}) "
@@ -197,7 +199,8 @@ def main() -> int:
         return 1
     print(
         "COSIM-USART-PTY: PASS (attached+automatic PTY, TX 55a5, "
-        "RX/echo 3c, distinct TxRDY/TxEMPTY transitions, RxRDY polled)"
+        "RX/echo 3c survives ER command, distinct TxRDY/TxEMPTY transitions, "
+        "RxRDY polled)"
     )
     return 0
 
