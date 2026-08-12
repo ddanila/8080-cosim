@@ -110,7 +110,8 @@ setting. Ordinary keyboard-idle reads remain the drawing-derived `CFh`; merging
 those two contexts had previously made all configuration switches look closed
 and selected the absent `F0h..F3h` expansion interface.
 
-The regression runs five clients in parallel and stops before the first
+The regression runs the five vendored clients plus an optional external system
+in parallel and stops before the first
 `CA00h` instruction. Every destination byte must match its source image:
 
 | Image | 0100h staging | B400h system | handoff |
@@ -120,8 +121,22 @@ The regression runs five clients in parallel and stops before the first
 | `EKDOS229.BIN` | 6,784 exact bytes | 6,656 exact bytes | `CA00h` |
 | `EKDOS230.BIN` | 6,784 exact bytes | 6,656 exact bytes | `CA00h` |
 | `EKDOSVSW.BIN` | 6,784 exact bytes | 6,656 exact bytes | `CA00h` |
+| optional `JUKU_NETBOOT_SYSTEM` | 6,784 exact bytes | 6,656 exact bytes | `CA00h` |
 
-Run the complete proof with `sync/janet_netboot_check.sh`.
+Run the vendored proof with `sync/janet_netboot_check.sh`. For the CP/Mish Juku
+branch, first build its system and add it as the sixth case:
+
+```sh
+JUKU_NETBOOT_SYSTEM=../cpmish/juku-system.bin sync/janet_netboot_check.sh
+```
+
+On 2026-08-12 that six-system run passed byte-exactly. This proves only the
+stock NetBios bootstrap transport and `CA00h` handoff. The planned diskless
+CP/Mish mode is a second phase: after loading, its resident BIOS will take over
+the 8251, select D57 counter-0 divisor 4 (nominal 19,200 baud), and exchange
+checksummed 128-byte CP/M disk records with a host-backed A: image. Keeping the
+stock 9600/8O1 bootstrap phase avoids modifying the ROM protocol while allowing
+the filesystem phase to be faster and independently retried.
 
 ## Physical host use
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Boot every vendored Juku system image through stock NetBios/Janet."""
+"""Boot vendored and optional external Juku systems through NetBios/Janet."""
 
 from __future__ import annotations
 
@@ -24,7 +24,13 @@ from tools.janet_netboot import (  # noqa: E402
     serve,
 )
 
-SYSTEMS = tuple(sorted((ROOT / "media" / "system").glob("*.BIN")))
+
+def system_images() -> tuple[Path, ...]:
+    images = list(sorted((ROOT / "media" / "system").glob("*.BIN")))
+    external = os.environ.get("JUKU_NETBOOT_SYSTEM")
+    if external:
+        images.append(Path(external).resolve())
+    return tuple(images)
 
 
 def parse_state(path: Path) -> dict[str, str]:
@@ -129,14 +135,15 @@ def main() -> int:
               file=sys.stderr)
         return 2
     trace = Path(sys.argv[1]).resolve()
-    if not trace.is_file() or len(SYSTEMS) != 5:
-        print("missing cosim executable or five system images", file=sys.stderr)
+    systems = system_images()
+    if not trace.is_file() or len(systems) < 5 or any(not path.is_file() for path in systems):
+        print("missing cosim executable or system image", file=sys.stderr)
         return 2
-    jobs = max(1, min(len(SYSTEMS), int(os.environ.get("JUKU_NETBOOT_JOBS", "5"))))
+    jobs = max(1, min(len(systems), int(os.environ.get("JUKU_NETBOOT_JOBS", "5"))))
     with tempfile.TemporaryDirectory(prefix="juku-netboot.") as temp_name:
         temp = Path(temp_name)
         with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as pool:
-            futures = [pool.submit(run_one, trace, image, temp) for image in SYSTEMS]
+            futures = [pool.submit(run_one, trace, image, temp) for image in systems]
             results = [future.result() for future in futures]
 
     failures = []
@@ -154,7 +161,7 @@ def main() -> int:
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
         return 1
-    print("JANET-NETBOOT-TEST: PASS (all five systems reached CA00h byte-exactly)")
+    print(f"JANET-NETBOOT-TEST: PASS (all {len(systems)} systems reached CA00h byte-exactly)")
     return 0
 
 
