@@ -237,6 +237,69 @@ turns. The resident disk protocol is roughly sixteen times faster in useful
 payload. Optimizing boot framing is a separate opportunity and does not limit
 the already-running network disk.
 
+## Future network-boot work
+
+Keep two distinct and permanently testable boot paths.
+
+### 1. Fastest possible server for the stock ROM protocol
+
+Stock EktaSoft NetBios compatibility is a preservation requirement, not a
+temporary stepping stone. `tools/janet_netboot.py` must remain able to boot all
+five archived system images through an unmodified ROM. Optimize only the host
+implementation and timing that the existing client permits: profile every
+poll/frame/ACK turn, remove avoidable host-side waits, batch writes where the
+ROM accepts them, and tune retry/poll scheduling from captures rather than
+changing protocol semantics.
+
+The acceptance gates are:
+
+- all five archived images still reach `CA00h` byte-exactly in
+  `sync/janet_netboot_check.sh`;
+- physical stock-ROM boot remains reliable on CS00014 and CS00015;
+- no increase in rejects, retries, or sensitivity to USB-UART scheduling;
+- report request-to-entry time, loaded-image B/s, frame/ACK/reject counts, and
+  the exact server settings for every benchmark.
+
+The physical CS00014 baseline is 6,784 bytes in approximately 81 seconds after
+request acceptance, 334 transmitted frames, 161 positive acknowledgements,
+and zero rejects. This track may improve that substantially, but remains bound
+by the ROM's many acknowledged turns.
+
+### 2. New bulk netboot protocol where both ends are controlled
+
+The preferred first design does **not** require replacing the stock ROM. Let
+stock Janet load only a compact stage-1 executable at 9600; stage 1 then changes
+D57 channel 0 to mode 2/count 4, reinitializes D11 for 19,200/8O1, and receives
+the remaining system through a new bulk protocol. A custom ROM can enter the
+same stage directly, but the stock-ROM route must remain available alongside
+it.
+
+The bulk protocol should use blocks substantially larger than 128 bytes,
+length/address/sequence fields, CRC rather than the current XOR-only integrity
+check, bounded retry and stream resynchronization, a final whole-image digest
+or checksum, and an explicit load-address/entry handoff. Benchmark ACK-per-block
+against a small window of outstanding blocks; choose the simpler scheme unless
+windowing produces a material physical gain. Compression is optional only if a
+small 8080 decoder demonstrably reduces total boot time.
+
+Start at the already proven **19,200/8O1, x16, PIT mode 2/count 4**. At that
+wire rate the raw 6,784-byte lower bound is about 3.9 seconds, so a practical
+4–6 second bulk load is a reasonable initial goal. Later test mode 2/count 2
+for nominal 38,400 only as a separately recoverable bench experiment; do not
+make it a default until the D11/D57 limits and more than one physical board are
+proven. Every high-speed failure must fall back cleanly to the stock 9600 path.
+
+Keep protocol/version negotiation explicit so the same host can serve:
+
+1. original stock Janet at 9600;
+2. stock Janet loading the high-speed stage 1;
+3. a future custom-ROM direct bulk bootstrap.
+
+Cosim must inject loss, corruption, duplication, delayed replies, and reset at
+block boundaries before physical adoption. Physical benchmarks should include
+CS00014 and CS00015, cold and warm runs, at least ten consecutive boots, exact
+RAM comparison before entry, and recorded UART/kernel error counters.
+
 Machine-readable evidence is
 [`cs00014-mode2-soak-20260813.json`](evidence/juku-serial/cs00014-mode2-soak-20260813.json).
 The [184-line timestamped bench log](evidence/juku-serial/cs00014-mode2-soak-20260813.log)
