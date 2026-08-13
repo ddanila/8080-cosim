@@ -105,6 +105,9 @@ def main() -> int:
                         help="run flat out instead of at the 2 MHz machine clock")
     parser.add_argument("--keys", help="type this string automatically")
     parser.add_argument("--trace", type=Path, help="prebuilt cosim binary")
+    parser.add_argument("--keep-logs", action="store_true",
+                        help="keep the run directory and cosim's verbose "
+                             "bank-switch logging (writes GBs on long runs)")
     arguments = parser.parse_args()
 
     if arguments.netboot and arguments.disk:
@@ -135,6 +138,12 @@ def main() -> int:
 
     environment = os.environ.copy()
     environment["JUKU_CONSOLE_PTY"] = "auto"
+    # cosim logs every memory-bank switch, and the Juku switches banks
+    # constantly: an interactive session left running writes gigabytes of
+    # stderr (one session here reached 52 GB and filled the disk). Keep it
+    # off unless the logs are explicitly wanted.
+    if not arguments.keep_logs:
+        environment["JUKU_TRACE_BANK"] = "0"
     # cosim runs in its own working directory, so every path it receives
     # must be absolute -- a relative JUKU_DISK would silently fail to open.
     if disk is not None:
@@ -198,6 +207,10 @@ def main() -> int:
         print("type T then N to boot from the network; ctrl-c here stops everything")
     print(f"logs: {log}")
 
+    def stop(signum, frame):                      # noqa: ARG001
+        raise KeyboardInterrupt
+    signal.signal(signal.SIGTERM, stop)
+
     try:
         if arguments.attach:
             bridge(console)
@@ -214,6 +227,12 @@ def main() -> int:
                     process.wait(timeout=5)
                 except subprocess.TimeoutExpired:
                     process.kill()
+        # cosim logs every bank switch, so a long session leaves hundreds of
+        # megabytes behind; a run directory per invocation adds up fast.
+        if arguments.keep_logs:
+            print(f"logs kept: {work}")
+        else:
+            shutil.rmtree(work, ignore_errors=True)
     return 0
 
 
