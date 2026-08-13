@@ -25,6 +25,7 @@ trap 'rm -rf "$tmp"' EXIT
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
 python3 tests/cosim_usart_pty_test.py "$tmp/trace"
 python3 tests/cosim_usart_overrun_test.py "$tmp/trace"
+python3 tests/cosim_realtime_test.py "$tmp/trace"
 python3 tests/janet_baud_test2_counter_test.py
 root=$PWD
 (

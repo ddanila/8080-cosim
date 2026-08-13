@@ -55,6 +55,10 @@
 // PIC:   JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH faults the 8259 IMR readback.
 // PPI:   JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D27 port readback.
 // PIT:   JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D54/D55/D57 count reads.
+// SPEED: JUKU_REALTIME_HZ=N paces execution to N simulated cycles per real
+//        second, so wall-clock time equals machine time (use 2000000 for the
+//        nominal Juku clock; "1" is accepted as shorthand for it). Unset means
+//        run as fast as possible, which is the right default for tests.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,6 +67,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <termios.h>
+#include <time.h>
 #include <unistd.h>
 #include "i8080.h"
 #include "juk_disk.h"
@@ -1545,6 +1550,30 @@ int main(int argc, char** argv) {
   unsigned long frame_irq_count = 0;
   static uint32_t pchist[MEM_SIZE];
 
+  // Optional real-time pacing (JUKU_REALTIME_HZ). Sleeps whenever simulated
+  // time has run ahead of wall-clock time, so a session takes as long as it
+  // would on the machine. Checked on a coarse cycle interval and only slept
+  // when the lead exceeds one slice, which keeps the syscall rate low; the
+  // pacer never speeds a slow host up, so it cannot mask a lagging model.
+  const char* realtime_env = getenv("JUKU_REALTIME_HZ");
+  unsigned long realtime_hz = 0;
+  if (realtime_env && realtime_env[0]) {
+    char* endptr = NULL;
+    realtime_hz = strtoul(realtime_env, &endptr, 0);
+    if (endptr == realtime_env || (endptr && *endptr) || realtime_hz == 0) {
+      fprintf(stderr,
+              "invalid JUKU_REALTIME_HZ=%s (expected a positive cycle rate)\n",
+              realtime_env);
+      return 2;
+    }
+    if (realtime_hz == 1) realtime_hz = 2000000UL;   // nominal Juku clock
+    fprintf(stderr, "[SPEED] pacing to %lu cycles/second\n", realtime_hz);
+  }
+  const unsigned long realtime_slice = 2000;   // ~1 ms of machine time at 2 MHz
+  unsigned long realtime_next = realtime_slice;
+  struct timespec realtime_start;
+  if (realtime_hz) clock_gettime(CLOCK_MONOTONIC, &realtime_start);
+
   int chk_logs = 0;
   while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) &&
          !(g_vw_limit && g_vw >= g_vw_limit) &&
@@ -1585,6 +1614,21 @@ int main(int argc, char** argv) {
     if (cpu.pc == 0x03E6 && chk_logs++ < 12)           // compare: A=stored, B=computed
       fprintf(stderr, "[CHK] cmp computed=%02X stored=%02X %s\n",
               cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
+    if (realtime_hz && cpu.cyc >= realtime_next) {
+      realtime_next = cpu.cyc + realtime_slice;
+      struct timespec now;
+      clock_gettime(CLOCK_MONOTONIC, &now);
+      double elapsed = (double)(now.tv_sec - realtime_start.tv_sec) +
+                       (double)(now.tv_nsec - realtime_start.tv_nsec) / 1e9;
+      double due = (double)cpu.cyc / (double)realtime_hz;
+      double lead = due - elapsed;
+      if (lead > 0.0005) {                     // only sleep a worthwhile lead
+        struct timespec nap;
+        nap.tv_sec = (time_t)lead;
+        nap.tv_nsec = (long)((lead - (double)nap.tv_sec) * 1e9);
+        nanosleep(&nap, NULL);
+      }
+    }
     i8080_step(&cpu);
     sync_fdc_time(&cpu);
     usart_poll(cpu.cyc);

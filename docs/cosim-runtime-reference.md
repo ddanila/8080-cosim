@@ -122,3 +122,34 @@ DOUT turn-off point remain evidence boundaries. Until those conductors are trace
 functional model keeps the sampled bit available through the access window and the runnable video
 path retains its simulation-only second port. Those limitations are tracked separately in
 `docs/memory-timing-boundary.md` and `docs/video-slot-timing-audit.md`.
+
+## Real-time pacing (`JUKU_REALTIME_HZ`)
+
+By default `cosim` runs as fast as the host allows — roughly 270x a real Juku
+on an M4 Pro — which is what the test suite wants. Set `JUKU_REALTIME_HZ` to a
+cycle rate (or the shorthand `1`, meaning the nominal 2 MHz clock from
+`ref/juku-machine-facts.json`) and the run is paced so that **wall-clock time
+equals machine time**. The pacer sleeps only when simulated time has run ahead
+of real time, on a ~1 ms slice; it never speeds a slow host up, so it cannot
+hide a model that is lagging. `tests/cosim_realtime_test.py` guards the
+default, both spellings of the rate, proportionality at 10x, and rejection of
+a malformed value.
+
+Two distinct uses:
+
+- **Measuring machine time without waiting for it.** Run unpaced and divide
+  the reported `cyc=` at the stop point by the clock. A native Janet netboot
+  of `EKDOS230.BIN` stops at `CA00h` after 187,686,174 cycles, i.e. **93.8 s of
+  machine time**, produced in 5.5 s of wall clock.
+- **Reproducing host/machine interaction faithfully.** Unpaced, every
+  real-world latency on the host side (Python scheduling, `select` granularity,
+  USB-UART turnaround) is charged against a machine running ~270x too fast, so
+  a 10 ms host hiccup costs seconds of simulated time and trips protocol
+  timeouts that hardware never sees. Pacing removes that distortion. The same
+  netboot paced: 92.0 s wall against 92.4 s modeled, with rejects falling from
+  45 to 28 and transmitted frames from 420 to 386 — closer to the physical
+  CS00014 baseline of 334 frames and zero rejects.
+
+Pacing is therefore the honest way to compare a simulated session against a
+stopwatch on the bench, and the right mode for any experiment whose result
+depends on host and machine agreeing about time.
