@@ -95,6 +95,8 @@ def main() -> int:
                         help="serve one Janet network boot of SYSTEM")
     parser.add_argument("--disk", nargs=2, metavar=("SYSTEM", "VOLUME"),
                         help="netboot SYSTEM then serve VOLUME as drive A:")
+    parser.add_argument("--disk-image", type=Path, metavar="IMG",
+                        help="attach a raw floppy image as the local drive")
     parser.add_argument("--writable", action="store_true",
                         help="allow the served volume to be written")
     parser.add_argument("--attach", action="store_true",
@@ -120,12 +122,25 @@ def main() -> int:
             if not Path(item).is_file():
                 parser.error(f"not found: {item}")
 
+    disk = arguments.disk_image or (
+        Path(os.environ["JUKU_DISK"]) if os.environ.get("JUKU_DISK") else None)
+    if disk is not None:
+        disk = disk.resolve()
+        if not disk.is_file():
+            parser.error(f"disk image not found: {disk}")
+
     work = Path(os.environ.get("TMPDIR", "/tmp")) / f"juku-run-{os.getpid()}"
     work.mkdir(parents=True, exist_ok=True)
     trace = arguments.trace or build_trace(work / "trace")
 
     environment = os.environ.copy()
     environment["JUKU_CONSOLE_PTY"] = "auto"
+    # cosim runs in its own working directory, so every path it receives
+    # must be absolute -- a relative JUKU_DISK would silently fail to open.
+    if disk is not None:
+        environment["JUKU_DISK"] = str(disk)
+    else:
+        environment.pop("JUKU_DISK", None)
     if not arguments.max_speed:
         environment["JUKU_REALTIME_HZ"] = str(NOMINAL_HZ)
     if arguments.netboot or arguments.disk:
@@ -148,7 +163,10 @@ def main() -> int:
     console = wait_for(r"\[TERM\] PTY slave=(\S+)", log, 10)
     if not console:
         cosim.kill()
-        print(f"cosim did not report a console PTY; see {log}", file=sys.stderr)
+        detail = log.read_text(errors="replace").strip().splitlines()
+        for line in detail[-3:]:
+            print(f"cosim: {line}", file=sys.stderr)
+        print(f"no console PTY appeared; full log: {log}", file=sys.stderr)
         return 1
 
     server = None
@@ -171,6 +189,8 @@ def main() -> int:
         print(f"janet server: {' '.join(Path(c).name for c in command[1:3])} "
               f"on {serial}")
 
+    if disk is not None:
+        print(f"disk: {disk}  (boot it with T D D)")
     print(f"console: {console}")
     if not arguments.attach:
         viewer = "screen" if shutil.which("screen") else "cu -l"

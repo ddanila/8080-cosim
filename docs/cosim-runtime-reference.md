@@ -174,7 +174,17 @@ before a human can type. `JUKU_KEYS` still wins if set: a scripted run keeps
 its keystrokes and the console becomes output-only.
 
 `tools/juku_run.py` wraps this into one command: it builds cosim, starts it
-paced with a console PTY, optionally brings up the Janet netboot or disk
-server on a second PTY, and prints the device to attach to (or bridges the
-current terminal with `--attach`). Guarded by `tests/cosim_console_test.py`,
+paced with a console PTY, optionally attaches a floppy image
+(`--disk-image`, or an inherited `JUKU_DISK`) or brings up the Janet netboot
+or disk server on a second PTY, and prints the device to attach to (or
+bridges the current terminal with `--attach`). Every path it hands to cosim
+is resolved first, because cosim runs in its own working directory.
+
+Type boot keys **one at a time with a beat between them**: the emulated
+matrix consumes a keystroke every few frames, and anything typed before its
+prompt exists is discarded, which looks exactly like the machine ignoring
+you. `JUKU_DISK=... tools/juku_run.py` then `T`, `D`, `D` reaches a CP/M
+`A>` from the vendored floppy; a bare `--netboot` of a *disk* system such as
+`EKDOS230.BIN` will instead hit `Disk Read error` after handoff, because
+that system expects a drive. Guarded by `tests/cosim_console_test.py`,
 which reads the boot banner out of the terminal and types a command back in.
