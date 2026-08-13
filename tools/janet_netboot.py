@@ -181,6 +181,7 @@ def boot_frames(image: bytes, *, load_address: int = LOAD_ADDRESS,
 
 def configure_serial(
     fd: int, baud: int = DEFAULT_BAUD, *, parity: str = "odd",
+    stop_bits: int = 1,
 ) -> None:
     speeds = {
         2400: termios.B2400,
@@ -196,6 +197,8 @@ def configure_serial(
         raise ValueError(f"unsupported baud rate: {baud}") from exc
     if parity not in ("none", "odd"):
         raise ValueError(f"unsupported parity: {parity}")
+    if stop_bits not in (1, 2):
+        raise ValueError(f"unsupported stop-bit count: {stop_bits}")
     attrs = termios.tcgetattr(fd)
     attrs[0] = termios.IGNPAR
     attrs[1] = 0
@@ -205,6 +208,8 @@ def configure_serial(
     attrs[2] |= termios.CS8 | termios.CLOCAL | termios.CREAD
     if parity == "odd":
         attrs[2] |= termios.PARENB | termios.PARODD
+    if stop_bits == 2:
+        attrs[2] |= termios.CSTOPB
     attrs[3] = 0
     attrs[4] = speed
     attrs[5] = speed
@@ -216,14 +221,22 @@ def configure_serial(
     required = termios.CS8 | termios.CLOCAL | termios.CREAD
     if parity == "odd":
         required |= termios.PARENB | termios.PARODD
-    forbidden = termios.CSTOPB | getattr(termios, "CRTSCTS", 0)
+    forbidden = getattr(termios, "CRTSCTS", 0)
+    if stop_bits == 1:
+        forbidden |= termios.CSTOPB
+    elif not applied[2] & termios.CSTOPB:
+        raise RuntimeError(
+            f"serial driver did not apply {baud} baud 8"
+            f"{'O' if parity == 'odd' else 'N'}{stop_bits} "
+            f"(cflag=0x{applied[2]:x})"
+        )
     if parity == "none":
         forbidden |= termios.PARENB | termios.PARODD
     if (applied[4] != speed or applied[5] != speed or
             applied[2] & required != required or applied[2] & forbidden):
         raise RuntimeError(
             f"serial driver did not apply {baud} baud "
-            f"8{'O' if parity == 'odd' else 'N'}1 "
+            f"8{'O' if parity == 'odd' else 'N'}{stop_bits} "
             f"(cflag=0x{applied[2]:x}, ispeed={applied[4]}, "
             f"ospeed={applied[5]})"
         )

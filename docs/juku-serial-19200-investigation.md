@@ -162,6 +162,33 @@ Do not spend another bench session on parity, host byte pacing, per-byte ER,
 cable replacement, x1 mode, or the invalid count-one x64 image: today’s
 controls already resolved those questions.
 
+## Automatically loaded BAUDTEST2
+
+CP/Mish now builds a finite, monitorless `BAUDTST2.COM` matrix that is loaded
+over the proven 9600 network path. It adds the useful software discriminators
+that do not require a scope: exact lengths 1 through 20, nine data patterns,
+repeated identical PRBS frames, idle and preamble variants, chunking, one byte
+per 100 ms, a host two-stop-bit control, valid x64/9600, and mode-2/19,200.
+Its bare receive path starts under `DI`.
+
+The protocol is designed for the observed failure rather than assuming a
+reliable stream. Each case resets D11 and has its own timeout; target frames
+are checksummed and repeated; input searches for a sync byte; no ACK can block
+progress; results include the first mismatch triple and final D11 status; JSON
+is saved incrementally. Even with the host removed, the target advances through
+bounded timeouts and restores stock mode-3/count-8/x16 9600 before returning.
+Cosim proves all 68 ideal cases and separately truncates one case to prove the
+rest of the matrix and final restoration survive.
+
+This reflects standard vendor debugging guidance: verify both endpoints'
+framing, use known/reference patterns and error counters, compare each signal
+stage, distinguish hardware overrun from framing/parity errors, and start the
+receiver before the transmitter. BAUDTEST2 additionally records Linux serial
+driver frame/parity/overrun counters through `TIOCGICOUNT` when supported.
+See the [TI UART diagnostic guidance](https://software-dl.ti.com/processor-sdk-linux/esd/AM57X/08_02_01_00/exports/docs/linux/Foundational_Components/Kernel/Kernel_Drivers/UART.html),
+[TI interface-debug checklist](https://software-dl.ti.com/simplelink/esd/simplelink_lowpower_f3_sdk/8.10.01.02/exports/docs/proprietary-rf/proprietary-rf-users-guide/proprietary-rf/debugging-cc23xx/debugging/debugging-index-cc23xx.html),
+and [Silicon Labs AN197](https://www.silabs.com/documents/public/application-notes/an197-serial-communications-guide-cp210x.pdf).
+
 ## Sources
 
 - Exact board drawing: `../ref/photos/dgsh5-109-009-e3/`, sheet 1 detail
@@ -174,4 +201,3 @@ controls already resolved those questions.
 - [Silicon Labs AN205, classic CP2102/3 baud aliases](https://www.freecalypso.org/pub/GSM/Pirelli/chips/silabs_an205.pdf).
 - [Linux cp210x driver, AN205 quantization table](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/serial/cp210x.c).
 - [Korvet technical documentation](https://emu80.org/docs/korvet_techinfo).
-

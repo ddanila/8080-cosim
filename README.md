@@ -30,7 +30,10 @@ with the machine-readable board model.
   with wire-rate one-byte overrun semantics and measured-CS00015 timing. On
   physical CS00015 and CS00014, 19,200 currently fails only in the receive
   direction after short clean prefixes; the next discriminator is a scope
-  capture across X3.4, D104.13, and D11 RxC rather than a software rate change.
+  capture across X3.4, D104.13, and D11 RxC. A finite automatically loaded
+  BAUDTEST2 supplements it with a 68-case pattern/history/clock-shape matrix
+  whose repeated checksummed reports, per-case timeouts, and unconditional
+  final 9600 restoration survive individual receive or host failures.
 - `sync/check.sh` currently compares 117 mapped instances and 308 nets with no
   KiCad/HDL mismatch.
 - The promoted routed main-board artifact exactly matches the live
