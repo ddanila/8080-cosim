@@ -258,13 +258,19 @@ def write_all(fd: int, data: bytes) -> None:
 
 
 def serve(fd: int, image: bytes, *, load_address: int | None = None,
-          entry: int | None = None, client: int = 1, server: int = 2,
+          entry: int | None = None, client: int | None = None,
+          server: int | None = None,
           timeout: float = 30.0, verbose: bool = True) -> dict[str, int]:
-    """Serve one client through the captured bootstrap execute service."""
+    """Serve the first matching client through the bootstrap execute service.
+
+    A ``None`` identity is learned from the first checksum-valid bootstrap
+    request. Supplying either value retains strict matching for diagnostics.
+    """
     parser = FrameParser()
     prepared = prepare_image(image, load_address=load_address, entry=entry)
-    transfer = boot_frames(prepared.data, load_address=prepared.load_address,
-                           entry=prepared.entry, client=client, server=server)
+    active_client: int | None = None
+    active_server: int | None = None
+    transfer: list[bytes] = []
     next_message = 0
     awaiting_ack = False
     request_seen = False
@@ -296,14 +302,20 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
             received_frames += 1
             destination, source, control = packet[2:5]
             payload = packet[6:-1] if control & 0x0C == 0x04 else b""
+            identity_allowed = (
+                source != 0 and destination != 0 and
+                (client is None or source == client) and
+                (server is None or destination == server)
+            )
 
-            if (destination == server and source == client and
+            if (not request_seen and identity_allowed and
                     control == POLL_CONTROL and not request_seen):
-                write_all(fd, frame(client, server, POLL_CONTROL))
+                write_all(fd, frame(source, destination, POLL_CONTROL))
                 sent_frames += 1
                 continue
 
-            if (destination == server and source == client and
+            if (request_seen and destination == active_server and
+                    source == active_client and
                     control == POLL_CONTROL and start_pending):
                 # The request ACK and first data frame must occupy separate
                 # Janet turns.  Back-to-back bytes race the client's receive
@@ -314,16 +326,20 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                 awaiting_ack = True
                 start_pending = False
                 if verbose:
-                    print("Janet bootstrap request accepted", flush=True)
+                    print(
+                        "Janet bootstrap request accepted: station "
+                        f"{active_server:02X} -> {active_client:02X}",
+                        flush=True,
+                    )
                 continue
 
             ready_turn = (
-                source == client and
+                source == active_client and
                 ((destination == 0 and control == 0x00) or
-                 (destination == server and control == POLL_CONTROL))
+                 (destination == active_server and control == POLL_CONTROL))
             )
             if request_seen and ready_turn and completion_pending:
-                write_all(fd, frame(0, server, 0x00))
+                write_all(fd, frame(0, active_server, 0x00))
                 sent_frames += 1
                 if verbose:
                     print(
@@ -339,10 +355,12 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                     "received_frames": received_frames,
                     "ack_08": ack_08,
                     "ack_09": ack_09,
+                    "client": active_client,
+                    "server": active_server,
                 }
 
             if request_seen and ready_turn and advance_pending:
-                write_all(fd, frame(0, server, 0x00))
+                write_all(fd, frame(0, active_server, 0x00))
                 write_all(fd, transfer[next_message])
                 next_message += 1
                 sent_frames += 2
@@ -350,17 +368,25 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                 advance_pending = False
                 continue
 
-            if (destination == server and source == client and
+            if (not request_seen and identity_allowed and
                     control & 0x0C == 0x04 and payload[:2] == b"\x03\x04"):
+                active_client = source
+                active_server = destination
+                transfer = boot_frames(
+                    prepared.data, load_address=prepared.load_address,
+                    entry=prepared.entry, client=active_client,
+                    server=active_server,
+                )
                 request_seen = True
-                write_all(fd, frame(client, server, ACK_CONTROL))
+                write_all(fd, frame(active_client, active_server, ACK_CONTROL))
                 sent_frames += 1
                 if not awaiting_ack and next_message == 0:
                     start_pending = True
                 continue
 
-            if (request_seen and awaiting_ack and destination == server and
-                    source == client and control == ACK_CONTROL):
+            if (request_seen and awaiting_ack and
+                    destination == active_server and
+                    source == active_client and control == ACK_CONTROL):
                 awaiting_ack = False
                 ack_08 += 1
                 if next_message == len(transfer):
@@ -371,11 +397,11 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                     # NETD therefore emits its three fragments with explicit
                     # destination-0 line turns, without per-fragment ACKs.
                     while next_message < len(transfer):
-                        write_all(fd, frame(0, server, 0x00))
+                        write_all(fd, frame(0, active_server, 0x00))
                         write_all(fd, transfer[next_message])
                         next_message += 1
                         sent_frames += 2
-                    write_all(fd, frame(0, server, 0x00))
+                    write_all(fd, frame(0, active_server, 0x00))
                     sent_frames += 1
                     if verbose:
                         print(
@@ -391,13 +417,15 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                         "received_frames": received_frames,
                         "ack_08": ack_08,
                         "ack_09": ack_09,
+                        "client": active_client,
+                        "server": active_server,
                     }
                 else:
                     last_payload_marker = transfer[next_message - 1][6]
                     if last_payload_marker == 0x09:
                         # An acknowledged payload marker 09h closes a logical
                         # record; no extra client poll follows it.
-                        write_all(fd, frame(0, server, 0x00))
+                        write_all(fd, frame(0, active_server, 0x00))
                         write_all(fd, transfer[next_message])
                         next_message += 1
                         sent_frames += 2
@@ -406,12 +434,14 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                         advance_pending = True
                 continue
 
-            if (request_seen and awaiting_ack and destination == server and
-                    source == client and control == (ACK_CONTROL | 1)):
+            if (request_seen and awaiting_ack and
+                    destination == active_server and
+                    source == active_client and
+                    control == (ACK_CONTROL | 1)):
                 # 09h is REJ.  It also hands the line back, so NETD can emit
                 # the release marker and retry without waiting for a poll.
                 ack_09 += 1
-                write_all(fd, frame(0, server, 0x00))
+                write_all(fd, frame(0, active_server, 0x00))
                 write_all(fd, transfer[next_message - 1])
                 sent_frames += 2
                 continue
@@ -430,8 +460,14 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("image", type=Path, help="system .BIN image")
     result.add_argument("--baud", type=int, default=DEFAULT_BAUD,
                         help="line rate (default: 9600, the stock divisor-8 rate)")
-    result.add_argument("--client", type=lambda value: int(value, 0), default=1)
-    result.add_argument("--server", type=lambda value: int(value, 0), default=2)
+    result.add_argument(
+        "--client", type=lambda value: int(value, 0),
+        help="require this client station (default: learn from request)",
+    )
+    result.add_argument(
+        "--server", type=lambda value: int(value, 0),
+        help="require this destination station (default: learn from request)",
+    )
     result.add_argument("--load-address", type=lambda value: int(value, 0),
                         help="override automatic image-format load address")
     result.add_argument("--entry", type=lambda value: int(value, 0),
@@ -452,8 +488,10 @@ def main(argv: Iterable[str] | None = None) -> int:
             f"Serving {args.image} ({len(prepared.data)}/{len(image)} bytes, "
             f"{prepared.format}, load {prepared.load_address:04X}h, entry "
             f"{prepared.entry:04X}h) on {args.serial}: "
-            f"{args.baud} baud, 8O1, station {args.server:02X} -> "
-            f"{args.client:02X}",
+            f"{args.baud} baud, 8O1, "
+            + ("accepting the first valid station pair"
+               if args.client is None and args.server is None
+               else f"station {args.server!r} -> {args.client!r}"),
             flush=True,
         )
         serve(fd, image, load_address=args.load_address, entry=args.entry,

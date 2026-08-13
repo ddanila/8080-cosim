@@ -130,6 +130,8 @@ def serve_disk(fd: int, volume: bytearray, *, writable: bool = False,
             if request[2] not in (READ, WRITE) or checksum(request):
                 retries += 1
                 stats["retries"] = retries
+                if verbose:
+                    print(f"disk invalid request: {request.hex(' ')}", flush=True)
                 continue
             synchronized = True
 
@@ -187,10 +189,14 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("volume", type=Path, help="flat 400 KiB CP/M volume")
     result.add_argument("--boot-baud", type=int, default=9600)
     result.add_argument("--disk-baud", type=int, default=9600)
-    result.add_argument("--client", type=lambda value: int(value, 0), default=1,
-                        help="NetBios client station (default: 1)")
-    result.add_argument("--server", type=lambda value: int(value, 0), default=2,
-                        help="host bootstrap station (default: 2)")
+    result.add_argument(
+        "--client", type=lambda value: int(value, 0),
+        help="require this NetBios client (default: learn from request)",
+    )
+    result.add_argument(
+        "--server", type=lambda value: int(value, 0),
+        help="require this destination station (default: learn from request)",
+    )
     result.add_argument("--writable", action="store_true")
     result.add_argument(
         "--disk-reply-guard-ms", type=float, default=2.0,
@@ -213,11 +219,20 @@ def main(argv: Iterable[str] | None = None) -> int:
         configure_serial(fd, args.boot_baud)
         print(
             f"Booting {args.system} at {args.boot_baud} baud, 8O1, "
-            f"station {args.server:02X} -> {args.client:02X}",
+            + ("accepting the first valid station pair"
+               if args.client is None and args.server is None
+               else f"station {args.server!r} -> {args.client!r}"),
             flush=True,
         )
-        serve_boot(fd, system, client=args.client, server=args.server,
-                   timeout=args.timeout)
+        boot = serve_boot(
+            fd, system, client=args.client, server=args.server,
+            timeout=args.timeout,
+        )
+        print(
+            f"Serving learned station {boot['server']:02X} -> "
+            f"{boot['client']:02X}",
+            flush=True,
+        )
         configure_serial(fd, args.disk_baud)
         print(f"Serving A: from {args.volume} at {args.disk_baud} baud, 8O1",
               flush=True)
@@ -229,9 +244,10 @@ def main(argv: Iterable[str] | None = None) -> int:
             reply_guard=args.disk_reply_guard_ms / 1000.0,
             tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
         )
+    finally:
         if args.writable:
             args.volume.write_bytes(volume)
-    finally:
+            print(f"Saved writable A: to {args.volume}", flush=True)
         os.close(fd)
     return 0
 
@@ -239,6 +255,9 @@ def main(argv: Iterable[str] | None = None) -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
+    except KeyboardInterrupt:
+        print("janet-disk-server: stopped by operator", file=sys.stderr)
+        raise SystemExit(130)
     except (OSError, TimeoutError, ValueError) as error:
         print(f"janet-disk-server: {error}", file=sys.stderr)
         raise SystemExit(1)

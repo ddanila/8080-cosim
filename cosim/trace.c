@@ -74,10 +74,18 @@
 #include <stdint.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
 #include "i8080.h"
+
+static volatile sig_atomic_t terminate_requested;
+
+static void request_termination(int signal_number) {
+  (void)signal_number;
+  terminate_requested = 1;
+}
 #include "juk_disk.h"
 #include "juku_fdc.h"
 
@@ -745,6 +753,7 @@ static uint8_t kbd_col = 0;         // last column selected (8255 Port A write)
 static unsigned long kbd_start_vram = 42000;
 static int kbd_hold_frames = 3;
 static int kbd_gap_frames = 3;
+static int kbd_trace = 0;
 #define KBD_HOLD 3
 #define KBD_GAP  3
 
@@ -840,6 +849,11 @@ static uint8_t kbd_portb(const i8080* cpu) {
     pb |= (uint8_t)(((~bit) & 7) << 1);                // 74148 code in b1-3, GS active (b0=0)
   else
     pb |= 0x0F;                                        // no key here: code=7 + GS released (b0=1)
+  if (kbd_trace && c && col == kbd_col)
+    fprintf(stderr,
+            "[KBD] scan char=%02X pos=%d phase=%d col=%d pb=%02X pc=%04X cyc=%lu\n",
+            (unsigned char)c, kbd_pos, kbd_phase, col, pb,
+            cpu ? cpu->pc : 0, cpu ? cpu->cyc : 0);
   return pb;
 }
 static void wb(void* u, uint16_t a, uint8_t v) {
@@ -1180,6 +1194,8 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
 }
 
 int main(int argc, char** argv) {
+  signal(SIGTERM, request_termination);
+  signal(SIGINT, request_termination);
   pit_init();
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
@@ -1245,6 +1261,8 @@ int main(int argc, char** argv) {
   if (kbd_hold_env && kbd_hold_env[0]) kbd_hold_frames = atoi(kbd_hold_env);
   const char* kbd_gap_env = getenv("JUKU_KEY_GAP_FRAMES");
   if (kbd_gap_env && kbd_gap_env[0]) kbd_gap_frames = atoi(kbd_gap_env);
+  kbd_trace = getenv("JUKU_TRACE_KBD") && getenv("JUKU_TRACE_KBD")[0] &&
+              strcmp(getenv("JUKU_TRACE_KBD"), "0") != 0;
   if (kbd_hold_frames < 1) kbd_hold_frames = KBD_HOLD;
   if (kbd_gap_frames < 1) kbd_gap_frames = KBD_GAP;
   const char* stop_fdc_data_reads_env = getenv("JUKU_STOP_FDC_DATA_READS");
@@ -1672,6 +1690,7 @@ int main(int argc, char** argv) {
            cpu.pc == stop_pc) &&
          !(stop_keys_done && kbd_str && !kbd_str[kbd_pos]) &&
          !stop_prompt_hit &&
+         !terminate_requested &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
     if (dram_retention_arm_pc_enabled && !dram_retention_armed &&
         cpu.pc == dram_retention_arm_pc) {
@@ -1748,11 +1767,20 @@ int main(int argc, char** argv) {
     // --- frame interrupt: 8253 VER-RTR -> 8259 IR5 -> CPU (MCS-80 CALL to the ICW vector) ---
     if (frame_cyc && cpu.cyc >= next_frame) {
       next_frame += frame_cyc;
-      take_pic_irq(&cpu, 5, "frame", &frame_irq_count);
+      int frame_taken = take_pic_irq(&cpu, 5, "frame", &frame_irq_count);
+      if (kbd_trace && kbd_str && kbd_str[kbd_pos])
+        fprintf(stderr,
+                "[KBD] frame char=%02X pos=%d phase=%d irq=%s iff=%d mask=%02X "
+                "pc=%04X cyc=%lu g_vw=%lu\n",
+                (unsigned char)kbd_str[kbd_pos], kbd_pos, kbd_phase,
+                frame_taken ? "taken" : "blocked", cpu.iff, pic_mask,
+                cpu.pc, cpu.cyc, g_vw);
       if (stop_prompt_after_rx && usart.rx_bytes >= stop_prompt_after_rx &&
           ekdos_prompt_visible())
         stop_prompt_hit = 1;
-      // advance the typed-keystroke state once per frame (HOLD pressed, GAP released)
+      // Scripted key contacts follow physical frame time. They may be sampled
+      // either by the monitor's frame ISR or by a RAM-resident polling BIOS;
+      // PIC masking must not freeze a real key contact in time.
       if (kbd_str && kbd_str[kbd_pos] && g_vw >= kbd_start_vram) {
         if (kbd_str[kbd_pos] == '|') {
           if (ekdos_prompt_visible()) {

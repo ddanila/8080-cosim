@@ -346,9 +346,29 @@ prompt (no Enter). Use `TN0201` only if the ROM asks for `N=` and `S=`:
 tools/janet_netboot.py /dev/ttyUSB0 media/system/EKDOS230.BIN
 ```
 
-Defaults are station 02 serving station 01 at 9600 baud, 8 data bits, odd
-parity, one stop bit. `--load-address` and `--entry` are available for a raw
-non-JUKUSYS executable; ordinary 0100h executables are auto-detected.
+The host learns the destination and client station numbers from the first
+checksum-valid bootstrap request by default, so the same command accepts any
+configured Juku. `--client` and `--server` retain strict matching when needed
+for diagnostics. The line defaults to 9600 baud, 8 data bits, odd parity, and
+one stop bit. `--load-address` and `--entry` are available for a raw non-JUKUSYS
+executable; ordinary 0100h executables are auto-detected.
+
+The CP/Mish `NETROM1` integration also established an important handoff rule.
+NetBios registers RomBios service slots 2, 3, and 9 at `D773h`, `D777h`, and
+`D78Fh`; service 9 can run from the ordinary frame path even after USART PIC
+requests are masked. A downloaded system must enter under `DI`, restore those
+slots to their pre-NetBios `RET` entries, preserve the generic interrupt
+dispatcher at `D79Fh`, and update the hardware PIC mask together with its
+RomBios shadow at `D454h`. Console I/O should continue through the public
+RomBios entry points used by EKDOS rather than installing a replacement frame
+handler.
+
+This was confirmed on physical CS00014 on 2026-08-13. The corrected CP/Mish
+image booted through the stock 9600-baud loader, ran its Janet A: disk at
+19200/8O1 using D57 mode 2/count 4, accepted `DIR`, displayed all of
+`README.TXT`, and survived `Ctrl-C` warm boot followed by another `DIR`.
+Requests through sequence `90` completed with status zero and the prior
+vertical-line display corruption did not recur.
 
 ## Relevance to current work
 

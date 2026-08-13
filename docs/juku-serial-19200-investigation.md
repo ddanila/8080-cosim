@@ -237,6 +237,24 @@ turns. The resident disk protocol is roughly sixteen times faster in useful
 payload. Optimizing boot framing is a separate opportunity and does not limit
 the already-running network disk.
 
+### Physical interactive CP/M baseline
+
+A later 2026-08-13 CS00014 run validated the corrected CP/Mish `NETROM1`
+handoff and interactive path. The bootstrap server learned the physical
+station pair `01 -> 09`, loaded 6,784 bytes through the stock 9600/8O1
+protocol, and then served A: at 19200/8O1 in mode 2/count 4. The physical
+keyboard accepted `DIR`; `TYPE README.TXT` completed sustained sequential disk
+reads and console output; and `Ctrl-C` warm boot followed by another `DIR`
+worked. All server requests through sequence `90` returned status zero. The
+screen remained clean, unlike the earlier BIOS-owned interrupt-handler attempt
+which had bypassed the RomBios dispatcher and produced vertical-line garbage.
+
+The native character generator displayed a printable Estonian glyph while a
+control-key combination was entered. Treat selectable native/English glyphs or
+caret notation as future console work; first establish the original RomBios
+control-character convention. It is not a blocker for the validated network
+disk baseline.
+
 ## Future network-boot work
 
 Keep two distinct and permanently testable boot paths.

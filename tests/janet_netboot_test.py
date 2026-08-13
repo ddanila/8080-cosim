@@ -38,12 +38,13 @@ def parse_state(path: Path) -> dict[str, str]:
                 if "=" in line)
 
 
-def run_one(trace: Path, image_path: Path, root: Path) -> dict[str, object]:
+def run_one(trace: Path, image_path: Path, root: Path, *,
+            auto_identity: bool = False) -> dict[str, object]:
     started = time.monotonic()
     source = image_path.read_bytes()
     prepared = prepare_image(source)
     expected_system = source[SYSTEM_PREFIX:SYSTEM_PREFIX + SYSTEM_BYTES]
-    case = root / image_path.stem.lower()
+    case = root / (image_path.stem.lower() + ("-auto" if auto_identity else ""))
     case.mkdir()
     prefix = case / "checkpoint"
     master, slave = pty.openpty()
@@ -53,7 +54,11 @@ def run_one(trace: Path, image_path: Path, root: Path) -> dict[str, object]:
         JUKU_USART_PTY=os.ttyname(slave),
         JUKU_USART_TRANSFER_CYCLES="64",
         JUKU_USART_BYTE_CYCLES="2300",
-        JUKU_KEYS="TN0201",
+        # Exercise identity discovery with a non-default station. With N=09
+        # and S=07 the stock client addresses the next station in its scan;
+        # the host must learn both values from the request rather than assume
+        # the usual 02 -> 01 pair.
+        JUKU_KEYS="TN0907" if auto_identity else "TN0201",
         JUKU_KEY_HOLD_FRAMES="6",
         JUKU_KEY_GAP_FRAMES="8",
         JUKU_STOP_PC="0xCA00",
@@ -73,7 +78,11 @@ def run_one(trace: Path, image_path: Path, root: Path) -> dict[str, object]:
         )
         os.close(slave)
         try:
-            protocol = serve(master, source, timeout=120, verbose=False)
+            protocol = serve(
+                master, source, timeout=120, verbose=False,
+                client=None if auto_identity else 1,
+                server=None if auto_identity else 2,
+            )
             process.wait(timeout=20)
         finally:
             if process.poll() is None:
@@ -92,6 +101,12 @@ def run_one(trace: Path, image_path: Path, root: Path) -> dict[str, object]:
         failures.append("protocol byte count differs from staging image")
     if protocol["ack_08"] != 1 + (len(prepared.data) // 128) * 3 + 1:
         failures.append(f"positive ACK count is {protocol['ack_08']}")
+    expected_client = 7 if auto_identity else 1
+    if protocol["client"] != expected_client or not protocol["server"]:
+        failures.append(
+            "learned station pair is "
+            f"{protocol['server']}->{protocol['client']}"
+        )
 
     state_path = prefix.with_suffix(".state")
     ram_path = prefix.with_suffix(".ram")
@@ -120,7 +135,7 @@ def run_one(trace: Path, image_path: Path, root: Path) -> dict[str, object]:
             failures.append("installed B400h system payload differs")
 
     return {
-        "name": image_path.name,
+        "name": image_path.name + (" [auto identity]" if auto_identity else ""),
         "failures": failures,
         "seconds": time.monotonic() - started,
         "sent": protocol["sent_frames"],
@@ -145,6 +160,7 @@ def main() -> int:
         with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as pool:
             futures = [pool.submit(run_one, trace, image, temp) for image in systems]
             results = [future.result() for future in futures]
+        results.append(run_one(trace, systems[0], temp, auto_identity=True))
 
     failures = []
     for result in results:
@@ -161,7 +177,10 @@ def main() -> int:
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
         return 1
-    print(f"JANET-NETBOOT-TEST: PASS (all {len(systems)} systems reached CA00h byte-exactly)")
+    print(
+        f"JANET-NETBOOT-TEST: PASS (all {len(systems)} systems reached CA00h "
+        "byte-exactly; automatic station identity learned)"
+    )
     return 0
 
 
