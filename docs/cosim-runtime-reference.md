@@ -186,6 +186,16 @@ or disk server on a second PTY, and prints the device to attach to (or
 bridges the current terminal with `--attach`). Every path it hands to cosim
 is resolved first, because cosim runs in its own working directory.
 
+For a CP/Mish dual-network-drive session, `--drive-b` accepts a physical
+800 KiB `.JUK` image. A: remains the 386 KiB host volume and may be made
+writable; B: preserves the original two-sided 160-track, 4 KiB-block Juku
+geometry and is read-only:
+
+```sh
+tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \
+    ../cpmish/juku-net-mode2.img --drive-b J3KGAME2.JUK --writable --attach
+```
+
 It also turns cosim's bank-switch logging off and deletes its run directory
 on exit. The Juku switches memory banks constantly -- hundreds of thousands
 of times a minute -- so an interactive session left running writes gigabytes

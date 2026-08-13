@@ -25,7 +25,8 @@ with the machine-readable board model.
   through the stock interrupt-driven NetBios/Janet protocol. The parallel
   `sync/janet_netboot_check.sh` guard reaches each byte-exact `CA00h` handoff.
   `tools/janet_disk_server.py` can then keep a diskless CP/Mish Juku attached
-  to a host-backed A: volume. The physically proven default is nominal 9,600
+  to a host-backed A: volume and optionally expose an unchanged native 800 KiB
+  Juku image as read-only B:. The physically proven default is nominal 9,600
   baud; a separate recoverable burst/pacing BAUDTEST exercises nominal 19,200
   with wire-rate one-byte overrun semantics and measured-CS00015 timing. On
   physical CS00015 and CS00014, 19,200 currently fails only in the receive

@@ -370,6 +370,15 @@ image booted through the stock 9600-baud loader, ran its Janet A: disk at
 Requests through sequence `90` completed with status zero and the prior
 vertical-line display corruption did not recur.
 
+The resident record format already carries a drive byte. CP/Mish `NETROM2`
+uses drive 0 for its writable 386 KiB A: volume and drive 1 for a read-only
+native Juku B: volume. The latter keeps the period 160-track, 40-record/track,
+4 KiB-block DPB; the host converts an unchanged physical 800 KiB `.JUK` image
+from cylinder/head interleaving to logical side-then-track order in memory.
+The dual-drive guard reads B:'s final track, rejects B: writes, and preserves A:
+writes. A complete cosim run with the published `J3KGAME2.JUK` selects B:,
+lists it, and loads `TETRIS.COM` through 71 B: reads.
+
 ## Relevance to current work
 
 Period NetBios ran on exactly the components the Jukuravi diagnostics

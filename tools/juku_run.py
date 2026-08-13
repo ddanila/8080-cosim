@@ -8,6 +8,9 @@ and optionally brings up the Janet side as well:
     tools/juku_run.py --netboot media/system/EKDOS230.BIN
     tools/juku_run.py --disk ../cpmish/juku-net-system.bin \\
                       ../cpmish/juku-flat.img --writable
+    tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \\
+                      ../cpmish/juku-net-mode2.img \\
+                      --drive-b J3KGAME2.JUK --writable
 
 It prints the console device to attach to, for example:
 
@@ -95,10 +98,12 @@ def main() -> int:
                         help="serve one Janet network boot of SYSTEM")
     parser.add_argument("--disk", nargs=2, metavar=("SYSTEM", "VOLUME"),
                         help="netboot SYSTEM then serve VOLUME as drive A:")
+    parser.add_argument("--drive-b", type=Path, metavar="GAME.JUK",
+                        help="serve a native 800 KiB Juku image as B:")
     parser.add_argument("--disk-image", type=Path, metavar="IMG",
                         help="attach a raw floppy image as the local drive")
     parser.add_argument("--writable", action="store_true",
-                        help="allow the served volume to be written")
+                        help="allow the served A: volume to be written")
     parser.add_argument("--attach", action="store_true",
                         help="bridge this terminal instead of printing a device")
     parser.add_argument("--max-speed", action="store_true",
@@ -112,6 +117,8 @@ def main() -> int:
 
     if arguments.netboot and arguments.disk:
         parser.error("--netboot and --disk are alternatives")
+    if arguments.drive_b and not arguments.disk:
+        parser.error("--drive-b requires --disk")
     arguments.rom = arguments.rom.resolve()
     if not arguments.rom.is_file():
         parser.error(f"ROM not found: {arguments.rom}")
@@ -124,6 +131,10 @@ def main() -> int:
         for item in arguments.disk:
             if not Path(item).is_file():
                 parser.error(f"not found: {item}")
+    if arguments.drive_b:
+        arguments.drive_b = arguments.drive_b.resolve()
+        if not arguments.drive_b.is_file():
+            parser.error(f"game image not found: {arguments.drive_b}")
 
     disk = arguments.disk_image or (
         Path(os.environ["JUKU_DISK"]) if os.environ.get("JUKU_DISK") else None)
@@ -192,6 +203,8 @@ def main() -> int:
             system, volume = arguments.disk
             command = [sys.executable, str(ROOT / "tools" / "janet_disk_server.py"),
                        serial, system, volume]
+            if arguments.drive_b:
+                command.extend(("--drive-b", str(arguments.drive_b)))
             if arguments.writable:
                 command.append("--writable")
         server = subprocess.Popen(command, cwd=ROOT)
