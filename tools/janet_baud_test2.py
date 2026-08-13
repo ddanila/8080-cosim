@@ -6,11 +6,14 @@ from __future__ import annotations
 import argparse
 import array
 import fcntl
+import io
 import json
 import os
 import select
+import sys
 import termios
 import time
+import traceback
 from pathlib import Path
 
 from janet_disk_server import checksum, serve_disk
@@ -31,6 +34,46 @@ PATTERNS = ("increment", "00", "ff", "55", "aa", "decrement",
 IDLE_SECONDS = (0.0, 0.000050, 0.000250, 0.001, 0.005, 0.020)
 PREAMBLES = (b"", b"\xFF" * 16, b"\x00" * 16,
              b"\x55" * 16, b"\xAA" * 16)
+STAGE_NAMES = {
+    0: "19,200/x16, PIT mode 3 count 4",
+    1: "9,600/x64, PIT mode 3 count 2",
+    2: "19,200/x16, PIT mode 2 count 4",
+}
+
+
+class TimestampedTee(io.TextIOBase):
+    """Line-buffered timestamped output duplicated to console and run log."""
+
+    def __init__(self, console: io.TextIOBase, logfile: io.TextIOBase,
+                 level: str) -> None:
+        self.console = console
+        self.logfile = logfile
+        self.level = level
+        self.at_line_start = True
+
+    def writable(self) -> bool:
+        return True
+
+    def write(self, text: str) -> int:
+        if not text:
+            return 0
+        rendered: list[str] = []
+        for part in text.splitlines(keepends=True):
+            if self.at_line_start:
+                stamp = time.strftime("%Y-%m-%d %H:%M:%S")
+                rendered.append(f"[{stamp}] [{self.level}] ")
+            rendered.append(part)
+            self.at_line_start = part.endswith(("\n", "\r"))
+        output = "".join(rendered)
+        self.console.write(output)
+        self.logfile.write(output)
+        if "\n" in output or "\r" in output:
+            self.flush()
+        return len(text)
+
+    def flush(self) -> None:
+        self.console.flush()
+        self.logfile.flush()
 
 
 class FrameParser:
@@ -105,10 +148,17 @@ def next_frame(fd: int, parser: FrameParser, pending: list[bytes],
 
 def serial_counters(fd: int) -> dict[str, int] | None:
     """Return Linux UART error counters when this driver supports them."""
-    values = array.array("i", [0] * 19)
+    # linux/serial.h serial_icounter_struct contains eleven public counters
+    # followed by reserved[9]: twenty native ints in total.  Supplying a
+    # shorter mutable buffer lets the kernel overrun it on drivers that
+    # implement TIOCGICOUNT (Python reports that as SystemError).
+    values = array.array("i", [0] * 20)
     try:
         fcntl.ioctl(fd, TIOCGICOUNT, values, True)
-    except OSError:
+    except (OSError, SystemError):
+        # These counters are observability only. PTYs and several USB-serial
+        # drivers either reject the ioctl or return an incompatible payload;
+        # neither condition may abort the finite target-side diagnostic.
         return None
     names = ("cts", "dsr", "rng", "dcd", "rx", "tx", "frame", "overrun",
              "parity", "break", "buffer_overrun")
@@ -195,7 +245,7 @@ def parse_report(frame: bytes) -> dict[str, int | bool]:
     return row
 
 
-def main() -> int:
+def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("serial")
     parser.add_argument("system", type=Path)
@@ -203,9 +253,16 @@ def main() -> int:
     parser.add_argument("--client", type=lambda value: int(value, 0), default=1)
     parser.add_argument("--server", type=lambda value: int(value, 0), default=2)
     parser.add_argument("--result", type=Path, required=True)
+    parser.add_argument(
+        "--log", type=Path,
+        help="session log path (default: RESULT with a .log suffix)",
+    )
     parser.add_argument("--no-termios", action="store_true",
                         help=argparse.SUPPRESS)
-    args = parser.parse_args()
+    return parser
+
+
+def run(args: argparse.Namespace) -> int:
 
     volume = bytearray(args.volume.read_bytes())
     if args.serial.startswith("fd:"):
@@ -229,6 +286,12 @@ def main() -> int:
                    reply_guard=0.010, tx_byte_delay=0.001)
         if not args.no_termios:
             configure_serial(fd, 19200)
+        print(
+            "BAUDTEST2 target loaded; disk phase stopped at B2S!; "
+            "host switched to 19,200/8O1",
+            flush=True,
+        )
+        print(f"Stage 0 start: {STAGE_NAMES[0]}", flush=True)
 
         frame_parser = FrameParser()
         pending: list[bytes] = []
@@ -238,6 +301,11 @@ def main() -> int:
         current: dict[str, int] | None = None
         descriptor_copies = 0
         counters_before = serial_counters(fd)
+        print(
+            "Host UART kernel counters: "
+            + ("available" if counters_before is not None else "unavailable (optional)"),
+            flush=True,
+        )
         while True:
             frame = next_frame(fd, frame_parser, pending, 20)
             kind = frame[2]
@@ -257,8 +325,15 @@ def main() -> int:
                     if descriptor["pattern"] >= len(PATTERNS):
                         raise ValueError(f"unknown target pattern {descriptor}")
                     print(
+                        f"[{len(reports) + 1}/{EXPECTED_REPORTS}] "
                         f"stage {current_stage} case {descriptor['case']}: "
-                        f"{descriptor['length']} bytes {PATTERNS[descriptor['pattern']]}",
+                        f"length={descriptor['length']} "
+                        f"pattern={PATTERNS[descriptor['pattern']]} "
+                        f"idle={IDLE_SECONDS[descriptor['idle_code']] * 1000:g}ms "
+                        f"preamble={descriptor['preamble_code']} "
+                        f"chunk={descriptor['chunk'] or 'wire-rate'} "
+                        f"gap={descriptor['gap_ms']}ms "
+                        f"stop={2 if descriptor['repeat'] & 0x80 else 1}",
                         flush=True,
                     )
                     stop_bits = 2 if descriptor["repeat"] & 0x80 else 1
@@ -272,6 +347,10 @@ def main() -> int:
                             "case", "length", "pattern", "idle_code",
                             "preamble_code", "chunk", "gap_ms")
                     }, stop_bits=stop_bits)
+                    print(
+                        "  payload sent; waiting for target timeout/report",
+                        flush=True,
+                    )
             elif kind == ord("R"):
                 report = parse_report(frame)
                 key = (report["stage"], report["case"])
@@ -303,11 +382,15 @@ def main() -> int:
                 )
                 write_result(args.result, result)
                 print(
-                    f"  {'PASS' if merged['pass'] else 'FAIL'} "
+                    f"  report {len(reports)}/{EXPECTED_REPORTS}: "
+                    f"{'PASS' if merged['pass'] else 'FAIL'} "
                     f"count={report['received']}/{report['length']} "
                     f"mismatch={report['mismatches']} "
                     f"errors=0x{int(report['usart_errors']):02X} "
-                    f"status=0x{int(report['usart_status']):02X}", flush=True,
+                    f"status=0x{int(report['usart_status']):02X} "
+                    f"protocol={report['protocol']} checksum={report['checksum_ok']} "
+                    f"(saved {args.result})",
+                    flush=True,
                 )
             else:
                 old_stage, next_stage = frame[3], frame[4]
@@ -322,10 +405,21 @@ def main() -> int:
                 result["transition_copies"] = transition_copies
                 if transition_copies < 5:
                     continue
+                print(
+                    f"Stage transition {old_stage}->{next_stage}: "
+                    "all 5 copies validated",
+                    flush=True,
+                )
                 if next_stage == 0xFF:
+                    print(
+                        "Final transition received; host switching to 9600 "
+                        "and waiting for B2D! restoration marker",
+                        flush=True,
+                    )
                     if not args.no_termios:
                         configure_serial(fd, 9600)
                     read_raw_until(fd, b"B2D!", 20)
+                    print("B2D! received: target confirmed at stock 9600", flush=True)
                     break
                 current_stage = next_stage
                 current = None
@@ -333,6 +427,11 @@ def main() -> int:
                 config = STAGE_CONFIG[current_stage]
                 if not args.no_termios:
                     configure_serial(fd, int(config["baud"]))
+                print(
+                    f"Stage {current_stage} start: {STAGE_NAMES[current_stage]}; "
+                    f"host configured {config['baud']}/8O1",
+                    flush=True,
+                )
                 # Discard duplicate E frames buffered at the previous rate.
                 pending.clear()
                 frame_parser.buffer.clear()
@@ -368,6 +467,29 @@ def main() -> int:
             except OSError:
                 pass
         os.close(fd)
+
+
+def main() -> int:
+    args = make_parser().parse_args()
+    log_path = args.log or args.result.with_suffix(".log")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    with log_path.open("w", buffering=1) as logfile:
+        sys.stdout = TimestampedTee(original_stdout, logfile, "INFO")
+        sys.stderr = TimestampedTee(original_stderr, logfile, "ERROR")
+        try:
+            print(f"BAUDTEST2 session log: {log_path}", flush=True)
+            print(f"Incremental result JSON: {args.result}", flush=True)
+            return run(args)
+        except BaseException:  # retain the complete traceback in both outputs
+            traceback.print_exc()
+            return 1
+        finally:
+            sys.stdout.flush()
+            sys.stderr.flush()
+            sys.stdout = original_stdout
+            sys.stderr = original_stderr
 
 
 if __name__ == "__main__":
