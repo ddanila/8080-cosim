@@ -379,6 +379,12 @@ The dual-drive guard reads B:'s final track, rejects B: writes, and preserves A:
 writes. A complete cosim run with the published `J3KGAME2.JUK` selects B:,
 lists it, and loads `TETRIS.COM` through 71 B: reads.
 
+Physical CS00014 then passed the same `NETROM2` dual-drive configuration on
+2026-08-13: the existing network A: remained available and the machine selected
+and used the native `J3KGAME2.JUK` B:. This validates the drive-1 record path,
+160-track CP/M DPB, and in-memory physical-image conversion on real hardware;
+B: remains read-only by design.
+
 ## Relevance to current work
 
 Period NetBios ran on exactly the components the Jukuravi diagnostics
