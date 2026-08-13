@@ -25,7 +25,9 @@ IOT_RE = re.compile(
     r"^\[IOT\] first (IN |OUT) port 0x([0-9A-Fa-f]{2})(?: val=0x([0-9A-Fa-f]{2}))? "
     r"cyc=([0-9]+) pc=([0-9A-Fa-f]{4}) g_vw=([0-9]+)"
 )
-IRQ_RE = re.compile(r"^\[IRQ\] taken #([0-9]+) g_vw=([0-9]+) cyc=([0-9]+) pc=([0-9A-Fa-f]{4}).*vec=([0-9A-Fa-f]{4})")
+# cosim labels each interrupt source since the USART IR2/IR3 work ("frame",
+# "USART RxRDY", ...); this reference measures the frame IRQ only.
+IRQ_RE = re.compile(r"^\[IRQ\] frame #([0-9]+) g_vw=([0-9]+) cyc=([0-9]+) pc=([0-9A-Fa-f]{4}).*vec=([0-9A-Fa-f]{4})")
 
 
 def load_expectations() -> tuple[dict[tuple[str, int], dict[str, str]], list[dict[str, str]]]:

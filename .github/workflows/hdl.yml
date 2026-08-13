@@ -296,6 +296,12 @@ jobs:
       - name: Install toolchain
         run: sudo apt-get update && sudo apt-get install -y bison gcc g++ iverilog nasm
 
+      # The T31 smoke fixture is assembled from shared mnemonic sources: zmac
+      # builds it and juku-common supplies the included music. Without both
+      # submodules build_smoke.py --check aborts and the job fails.
+      - name: Fetch assembler and shared sources
+        run: git submodule update --init third_party/zmac third_party/juku-common
+
       - name: Run T28 loader guards
         run: ./sync/jukuravi_t28_check.sh
 

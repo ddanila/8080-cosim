@@ -56,7 +56,7 @@ def main() -> int:
         "rom_loaded": "loaded 16384 bytes of ROM" in log,
         "pic_programmed": "[OUT] first write port 0x00 = 0x56" in log
         and "[OUT] first write port 0x01 = 0xFF" in log,
-        "frame_irq_taken": "[IRQ] taken #1" in log and "vec=FF54" in log,
+        "frame_irq_taken": "[IRQ] frame #1" in log and "vec=FF54" in log,
         "keyboard_scan": "[IN ] first read  port 0x04" in log
         and "[IN ] first read  port 0x05" in log,
         "vram_written": bool(re.search(r"0xD[B-C]00\s+:\s+[1-9]", log)),

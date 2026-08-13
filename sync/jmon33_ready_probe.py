@@ -132,7 +132,7 @@ def main() -> int:
         "rom_loaded": "loaded 16384 bytes of ROM" in proc.stderr,
         "pic_programmed": "[OUT] first write port 0x00 = 0x56" in proc.stderr
         and "[OUT] first write port 0x01 = 0xFF" in proc.stderr,
-        "frame_irq_taken": "[IRQ] taken #1" in proc.stderr and "vec=FF54" in proc.stderr,
+        "frame_irq_taken": "[IRQ] frame #1" in proc.stderr and "vec=FF54" in proc.stderr,
         "keyboard_scan": "[IN ] first read  port 0x04" in proc.stderr
         and "[IN ] first read  port 0x05" in proc.stderr,
         "vram_size": len(vram) == VRAM_STRIDE * VRAM_LINES,

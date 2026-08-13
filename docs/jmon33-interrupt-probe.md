@@ -30,9 +30,9 @@ Environment overrides:
 ## Trace Highlights
 
 ```text
-[IRQ] taken #1 g_vw=196 cyc=600003 pc=2ECD icw1=56 icw2=FF mask=DF vec=FF54
-[IRQ] taken #2 g_vw=196 cyc=800001 pc=2ECD icw1=56 icw2=FF mask=DF vec=FF54
-[IRQ] taken #3 g_vw=200 cyc=1400004 pc=FC90 icw1=56 icw2=FF mask=DF vec=FF54
+[IRQ] frame #1 g_vw=196 cyc=600003 pc=2ECD irq=5 icw1=56 icw2=FF mask=DF vec=FF54
+[IRQ] frame #2 g_vw=196 cyc=800001 pc=2ECD irq=5 icw1=56 icw2=FF mask=DF vec=FF54
+[IRQ] frame #3 g_vw=200 cyc=1400004 pc=FC90 irq=5 icw1=56 icw2=FF mask=DF vec=FF54
 stopped pc=0xFF54 cyc=5000001 halted=0 iff=0 mode=1 switches=31
 ```
 
