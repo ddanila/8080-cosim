@@ -161,6 +161,10 @@ attaches an existing one. Characters the firmware passes to the ROM's console
 routine are mirrored to it, and bytes typed into it are queued for the emulated
 key matrix, so `screen /dev/ttysNNN` drives the machine from a terminal.
 
+Characters are passed through verbatim in both directions. The firmware
+emits its own `CR`/`LF` pairs, so the console must not synthesise newlines --
+doing so doubles every line break on the attached terminal.
+
 This is a **simulator affordance, not a machine feature**: a real Juku's console
 is its bitmap screen and key matrix, and nothing here changes the ROM or the
 firmware. The hook is the console character-output routine (`D9E3h` in the

@@ -1706,17 +1706,14 @@ int main(int argc, char** argv) {
               cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
     if (console_fd >= 0) {
       // The firmware's console character is in A when it enters the ROM's
-      // WRCHR vector; mirror it to the terminal. CR gets a companion LF so a
-      // *nix terminal advances the line the way the Juku's screen does.
-      // The same routine runs at its banked address in modes 1/2 and at its
-      // ROM-file address in mode 0, so accept either.
+      // WRCHR vector; mirror it to the terminal verbatim. The firmware sends
+      // its own CR/LF pairs, so synthesising a newline here would double every
+      // line break. The same routine runs at its banked address in modes 1/2
+      // and at its ROM-file address in mode 0, so accept either.
       if (cpu.pc == console_out_pc ||
           (console_out_pc >= 0xC000 && cpu.pc == (uint16_t)(console_out_pc - 0xC000))) {
-        char out[2];
-        int n = 0;
-        out[n++] = (char)cpu.a;
-        if (cpu.a == '\r') out[n++] = '\n';
-        ssize_t ignored = write(console_fd, out, (size_t)n);
+        char out = (char)cpu.a;
+        ssize_t ignored = write(console_fd, &out, 1);
         (void)ignored;
       }
       if ((cpu.cyc & 0x3FF) == 0) console_poll();
