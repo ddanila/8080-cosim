@@ -160,7 +160,10 @@ def main() -> int:
         ("PIC ICW1", first_pic, "02B9", 30520, 0xD6),
         ("PIC ICW2", pic_icw2, "02BC", 30520, 0xFE),
         ("PIC unmask", pic_unmask, "02D6", 30524, 0xDF),
-        ("first keyboard read", first_kbd_read, "1213", 30520, 0xCF),
+        # 1213h is inside the ROM's 1209h..123Bh hardware-configuration scan,
+        # where cosim models the unstrapped/onboard-D11 setting by sampling
+        # PB5 high (0xCF | 0x20). Ordinary keyboard-idle reads stay 0xCF.
+        ("first keyboard read", first_kbd_read, "1213", 30520, 0xEF),
         ("shifted T keyboard read", first_t_read, "1463", 42543, 0x88),
         ("FDC motor on", first_motor_on, "D7EF", 63085, 0x04),
         ("first FDC command", first_fdc, "E5DE", 63085, 0x02),

@@ -27,7 +27,7 @@ sync/ekdos_ioseq_reference.py
 | PIC ICW1 | OUT 0x00 | 0xD6 | 3061541 | 02B9 | 30520 |
 | PIC ICW2 | OUT 0x01 | 0xFE | 3061556 | 02BC | 30520 |
 | PIC unmask IR5 | OUT 0x01 | 0xDF | 3064051 | 02D6 | 30524 |
-| First keyboard read | IN 0x05 | 0xCF | 3062006 | 1213 | 30520 |
+| First keyboard read | IN 0x05 | 0xEF | 3062006 | 1213 | 30520 |
 | Shifted T keyboard read | IN 0x05 | 0x88 | 4201870 | 1463 | 42543 |
 | FDC motor on | OUT 0x06 | 0x04 | 6668323 | D7EF | 63085 |
 | First FDC command | OUT 0x1C | 0x02 | 6666400 | E5DE | 63085 |
