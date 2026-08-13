@@ -730,7 +730,6 @@ static const struct { char c; uint8_t col, bit, shift; } KMAP[] = {
 // terminal and a scripted JUKU_KEYS string drive the matrix the same way.
 #define CONSOLE_QUEUE 4096
 static int console_fd = -1;
-static int console_fd_input_disabled = 0;   // scripted JUKU_KEYS owns the matrix
 static char console_queue[CONSOLE_QUEUE];
 static int console_len = 0;
 // Default to the routine the WRCHR vector (FFD9h) jumps to rather than the
@@ -752,7 +751,7 @@ static int kbd_gap_frames = 3;
 // Drain anything the operator typed into the console PTY onto the key queue.
 // Newlines become carriage returns because the ROM's key matrix speaks CR.
 static void console_poll(void) {
-  if (console_fd < 0 || console_fd_input_disabled) return;
+  if (console_fd < 0) return;
   char buffer[256];
   ssize_t got = read(console_fd, buffer, sizeof(buffer));
   if (got <= 0) return;
@@ -1622,16 +1621,21 @@ int main(int argc, char** argv) {
     if (in_pc && in_pc[0]) console_in_pc = (uint16_t)strtoul(in_pc, NULL, 0);
     (void)console_in_pc;
     kbd_enabled = 1;
-    // Interactive input replaces a scripted JUKU_KEYS string; leave a scripted
-    // run alone so the console can be attached purely to watch its output.
-    if (!kbd_str || !kbd_str[0]) {
-      kbd_start_vram = 0;            // an operator types when they choose
-      console_queue[0] = 0;
-      kbd_str = console_queue;
-      kbd_pos = 0;
+    // Scripted JUKU_KEYS and an operator's typing share one queue: the script
+    // plays first, then whatever is typed is appended behind it. A run with no
+    // script drops the "wait for the banner" gate, since an operator chooses
+    // when to type.
+    console_queue[0] = 0;
+    console_len = 0;
+    if (kbd_str && kbd_str[0]) {
+      for (const char* c = kbd_str; *c && console_len + 1 < CONSOLE_QUEUE; c++)
+        console_queue[console_len++] = *c;
+      console_queue[console_len] = 0;
     } else {
-      console_fd_input_disabled = 1;
+      kbd_start_vram = 0;
     }
+    kbd_str = console_queue;
+    kbd_pos = 0;
     fprintf(stderr, "[TERM] console attached; WRCHR hook=%04X\n",
             console_out_pc);
   }

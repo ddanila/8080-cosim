@@ -169,9 +169,11 @@ EktaSoft family, which the monitor's `WRCHR` vector at `FFD9h` jumps to);
 and its mode-0 ROM alias are matched, because the same routine runs at either
 depending on the memory mode.
 
-Pair it with `JUKU_REALTIME_HZ` — at full simulation speed a session ends
-before a human can type. `JUKU_KEYS` still wins if set: a scripted run keeps
-its keystrokes and the console becomes output-only.
+Pair it with `JUKU_REALTIME_HZ` for hands-on use — at full simulation speed
+a session runs faster than a human can type into it. `JUKU_KEYS` and the
+console share one key queue: the scripted string plays first and anything
+typed afterwards queues behind it, so `--max-speed --keys TDD` reaches a
+CP/M `A>` in seconds and still accepts commands.
 
 `tools/juku_run.py` wraps this into one command: it builds cosim, starts it
 paced with a console PTY, optionally attaches a floppy image
