@@ -55,6 +55,14 @@
 // PIC:   JUKU_PIC_FAULT=STUCK_LOW:STUCK_HIGH faults the 8259 IMR readback.
 // PPI:   JUKU_PPI_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D27 port readback.
 // PIT:   JUKU_PIT_FAULT=PORT:STUCK_LOW:STUCK_HIGH faults D54/D55/D57 count reads.
+// TERM:  JUKU_CONSOLE_PTY=auto|/dev/ttyN attaches an interactive terminal.
+//        Characters the firmware writes through the ROM's WRCHR vector are
+//        echoed to it, and bytes typed into it are queued as keystrokes for
+//        the emulated key matrix, so `screen /dev/ttysNNN` drives the machine.
+//        JUKU_CONSOLE_OUT_PC / JUKU_CONSOLE_IN_PC override the hooked ROM
+//        vectors (defaults FFD9h/FFD3h, the EktaSoft monitor entries that
+//        cpmish's BIOS CONOUT/CONIN call). This is a simulator affordance:
+//        the real machine's console is its bitmap screen and key matrix.
 // SPEED: JUKU_REALTIME_HZ=N paces execution to N simulated cycles per real
 //        second, so wall-clock time equals machine time (use 2000000 for the
 //        nominal Juku clock; "1" is accepted as shorthand for it). Unset means
@@ -439,9 +447,10 @@ static int set_nonblocking(int fd) {
   return flags < 0 ? -1 : fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 }
 
-static int usart_open_transport(const char* setting) {
-  if (!setting || !setting[0]) return 0;
-
+// Open a PTY ("auto": create one and print its slave path) or an existing
+// device, returning the fd. Callers own it: the USART binds it to the 8251
+// model, the interactive console keeps it as a terminal.
+static int open_serial_endpoint(const char* setting, const char* tag) {
   int fd;
   if (strcmp(setting, "auto") == 0) {
     fd = posix_openpt(O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -461,19 +470,26 @@ static int usart_open_transport(const char* setting) {
       return -1;
     }
     close(slave);
-    fprintf(stderr, "[USART] PTY slave=%s\n", slave_name);
+    fprintf(stderr, "[%s] PTY slave=%s\n", tag, slave_name);
   } else {
     fd = open(setting, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (fd < 0 || set_raw_tty(fd) != 0) {
       if (fd >= 0) close(fd);
       return -1;
     }
-    fprintf(stderr, "[USART] attached PTY=%s\n", setting);
+    fprintf(stderr, "[%s] attached PTY=%s\n", tag, setting);
   }
   if (set_nonblocking(fd) != 0) {
     close(fd);
     return -1;
   }
+  return fd;
+}
+
+static int usart_open_transport(const char* setting) {
+  if (!setting || !setting[0]) return 0;
+  int fd = open_serial_endpoint(setting, "USART");
+  if (fd < 0) return -1;
   usart.fd = fd;
   usart.enabled = 1;
   return 0;
@@ -709,6 +725,20 @@ static const struct { char c; uint8_t col, bit, shift; } KMAP[] = {
   {';',11,1,0},{'+',11,1,1},{'-',11,4,0},{'=',11,4,1},{':',10,5,0},{'*',10,5,1},
   {'[',9,3,0},{']',8,3,0},{'\\',11,3,0},{'^',11,3,1},
 };
+// Interactive console (JUKU_CONSOLE_PTY): typed bytes are appended to this
+// queue and consumed by the ordinary keystroke machinery, so an operator at a
+// terminal and a scripted JUKU_KEYS string drive the matrix the same way.
+#define CONSOLE_QUEUE 4096
+static int console_fd = -1;
+static int console_fd_input_disabled = 0;   // scripted JUKU_KEYS owns the matrix
+static char console_queue[CONSOLE_QUEUE];
+static int console_len = 0;
+// Default to the routine the WRCHR vector (FFD9h) jumps to rather than the
+// vector itself: the ROM's own printing calls it directly, so hooking the
+// target shows the boot banner and monitor output as well as CP/M's.
+static uint16_t console_out_pc = 0xD9E3;   // EktaSoft console char-out, A = char
+static uint16_t console_in_pc = 0xFFD3;    // ROM RDCHR: entered when reading
+
 static const char* kbd_str = 0;     // keystrokes to "type" (0/empty = keyboard off)
 static int   kbd_pos = 0, kbd_phase = 0;
 static int   kbd_enabled = 0;
@@ -718,6 +748,34 @@ static int kbd_hold_frames = 3;
 static int kbd_gap_frames = 3;
 #define KBD_HOLD 3
 #define KBD_GAP  3
+
+// Drain anything the operator typed into the console PTY onto the key queue.
+// Newlines become carriage returns because the ROM's key matrix speaks CR.
+static void console_poll(void) {
+  if (console_fd < 0 || console_fd_input_disabled) return;
+  char buffer[256];
+  ssize_t got = read(console_fd, buffer, sizeof(buffer));
+  if (got <= 0) return;
+  for (ssize_t i = 0; i < got; i++) {
+    char c = buffer[i] == '\n' ? '\r' : buffer[i];
+    if (c == 0x7F) c = '\b';                       // terminal DEL -> backspace
+    if (console_len + 2 >= CONSOLE_QUEUE) {
+      // Compact: drop what the matrix has already consumed.
+      if (kbd_pos > 0 && kbd_pos <= console_len) {
+        memmove(console_queue, console_queue + kbd_pos,
+                (size_t)(console_len - kbd_pos));
+        console_len -= kbd_pos;
+        kbd_pos = 0;
+      } else {
+        return;                                    // full and nothing consumed
+      }
+    }
+    console_queue[console_len++] = c;
+    console_queue[console_len] = 0;
+  }
+  kbd_str = console_queue;
+  kbd_enabled = 1;
+}
 
 static int vram_pixel(int x, int y) {
   if (x < 0 || x >= VID_STRIDE * 8 || y < 0 || y >= VID_LINES) return 0;
@@ -1550,6 +1608,34 @@ int main(int argc, char** argv) {
   unsigned long frame_irq_count = 0;
   static uint32_t pchist[MEM_SIZE];
 
+  // Optional interactive console (JUKU_CONSOLE_PTY).
+  const char* console_env = getenv("JUKU_CONSOLE_PTY");
+  if (console_env && console_env[0]) {
+    console_fd = open_serial_endpoint(console_env, "TERM");
+    if (console_fd < 0) {
+      fprintf(stderr, "JUKU_CONSOLE_PTY=%s could not be opened\n", console_env);
+      return 2;
+    }
+    const char* out_pc = getenv("JUKU_CONSOLE_OUT_PC");
+    const char* in_pc = getenv("JUKU_CONSOLE_IN_PC");
+    if (out_pc && out_pc[0]) console_out_pc = (uint16_t)strtoul(out_pc, NULL, 0);
+    if (in_pc && in_pc[0]) console_in_pc = (uint16_t)strtoul(in_pc, NULL, 0);
+    (void)console_in_pc;
+    kbd_enabled = 1;
+    // Interactive input replaces a scripted JUKU_KEYS string; leave a scripted
+    // run alone so the console can be attached purely to watch its output.
+    if (!kbd_str || !kbd_str[0]) {
+      kbd_start_vram = 0;            // an operator types when they choose
+      console_queue[0] = 0;
+      kbd_str = console_queue;
+      kbd_pos = 0;
+    } else {
+      console_fd_input_disabled = 1;
+    }
+    fprintf(stderr, "[TERM] console attached; WRCHR hook=%04X\n",
+            console_out_pc);
+  }
+
   // Optional real-time pacing (JUKU_REALTIME_HZ). Sleeps whenever simulated
   // time has run ahead of wall-clock time, so a session takes as long as it
   // would on the machine. Checked on a coarse cycle interval and only slept
@@ -1614,6 +1700,23 @@ int main(int argc, char** argv) {
     if (cpu.pc == 0x03E6 && chk_logs++ < 12)           // compare: A=stored, B=computed
       fprintf(stderr, "[CHK] cmp computed=%02X stored=%02X %s\n",
               cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
+    if (console_fd >= 0) {
+      // The firmware's console character is in A when it enters the ROM's
+      // WRCHR vector; mirror it to the terminal. CR gets a companion LF so a
+      // *nix terminal advances the line the way the Juku's screen does.
+      // The same routine runs at its banked address in modes 1/2 and at its
+      // ROM-file address in mode 0, so accept either.
+      if (cpu.pc == console_out_pc ||
+          (console_out_pc >= 0xC000 && cpu.pc == (uint16_t)(console_out_pc - 0xC000))) {
+        char out[2];
+        int n = 0;
+        out[n++] = (char)cpu.a;
+        if (cpu.a == '\r') out[n++] = '\n';
+        ssize_t ignored = write(console_fd, out, (size_t)n);
+        (void)ignored;
+      }
+      if ((cpu.cyc & 0x3FF) == 0) console_poll();
+    }
     if (realtime_hz && cpu.cyc >= realtime_next) {
       realtime_next = cpu.cyc + realtime_slice;
       struct timespec now;

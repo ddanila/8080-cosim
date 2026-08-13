@@ -22,5 +22,8 @@ python3 spinoffs/jukuravi/remix/build_ekta4401.py --check
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
 
 python3 tests/ekta4401_remix_test.py "$check_tmp/trace"
+# The interactive console guard drives this same image through the ROM
+# console path, so it belongs with the remix rather than the FDC suite.
+python3 tests/cosim_console_test.py "$check_tmp/trace"
 
 echo "EKTA4401-CHECK: PASS"

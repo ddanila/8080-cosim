@@ -153,3 +153,28 @@ Two distinct uses:
 Pacing is therefore the honest way to compare a simulated session against a
 stopwatch on the bench, and the right mode for any experiment whose result
 depends on host and machine agreeing about time.
+
+## Interactive console (`JUKU_CONSOLE_PTY`)
+
+`JUKU_CONSOLE_PTY=auto` creates a PTY and prints its slave path; a device path
+attaches an existing one. Characters the firmware passes to the ROM's console
+routine are mirrored to it, and bytes typed into it are queued for the emulated
+key matrix, so `screen /dev/ttysNNN` drives the machine from a terminal.
+
+This is a **simulator affordance, not a machine feature**: a real Juku's console
+is its bitmap screen and key matrix, and nothing here changes the ROM or the
+firmware. The hook is the console character-output routine (`D9E3h` in the
+EktaSoft family, which the monitor's `WRCHR` vector at `FFD9h` jumps to);
+`JUKU_CONSOLE_OUT_PC` overrides it for other firmware. Both the banked address
+and its mode-0 ROM alias are matched, because the same routine runs at either
+depending on the memory mode.
+
+Pair it with `JUKU_REALTIME_HZ` — at full simulation speed a session ends
+before a human can type. `JUKU_KEYS` still wins if set: a scripted run keeps
+its keystrokes and the console becomes output-only.
+
+`tools/juku_run.py` wraps this into one command: it builds cosim, starts it
+paced with a console PTY, optionally brings up the Janet netboot or disk
+server on a second PTY, and prints the device to attach to (or bridges the
+current terminal with `--attach`). Guarded by `tests/cosim_console_test.py`,
+which reads the boot banner out of the terminal and types a command back in.
