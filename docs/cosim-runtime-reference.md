@@ -186,6 +186,12 @@ or disk server on a second PTY, and prints the device to attach to (or
 bridges the current terminal with `--attach`). Every path it hands to cosim
 is resolved first, because cosim runs in its own working directory.
 
+It also turns cosim's bank-switch logging off and deletes its run directory
+on exit. The Juku switches memory banks constantly -- hundreds of thousands
+of times a minute -- so an interactive session left running writes gigabytes
+of stderr; one session here reached 52 GB and filled the disk. `--keep-logs`
+retains both the logging and the directory when that detail is wanted.
+
 Type boot keys **one at a time with a beat between them**: the emulated
 matrix consumes a keystroke every few frames, and anything typed before its
 prompt exists is discarded, which looks exactly like the machine ignoring
