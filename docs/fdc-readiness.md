@@ -337,14 +337,6 @@ physical D93/D94 wiring.
   deblocking/cache wrapper and its nested `FLOPPY` handler from the vendored ROM
   in an authentic boot-initialized RAM environment instead of duplicating them
   as test-side port writes or patching the ROM epilogue.
-- The instruction-granular full-machine trace applies the same immediate-stream
-  compatibility treatment as that ROMBIOS guard when firmware issues a write
-  command. The trace does not model the physical Juku I/O wait-state circuit;
-  leaving the model's exact WD1793 lead-in active there makes the ROM's tight
-  512-byte output loop alias the 64-tick DRQ boundary and report LOST DATA.
-  `juku_fdc_test` remains the authority for the exact lead-in timing, while the
-  CP/Mish `make juku-cosim-check` integration guard proves the complete `SAVE`
-  path and persistent media result.
 - The firmware path intentionally stops at its proved single-sector contract.
   The independent command guard additionally covers multiple-record Type-II
   continuation, Read Address, reconstructed Read Track, and representable Juku
