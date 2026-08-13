@@ -150,6 +150,15 @@ validates D57 channel 2 and the `/VER RTR` clock path on CS00015. Captures are
 retained under
 [`../spinoffs/jukuravi/sessions/cs00015-ekta4401-d57-verrtr-control-physical/`](../spinoffs/jukuravi/sessions/cs00015-ekta4401-d57-verrtr-control-physical/).
 
+## CP/Mish dual-network-drive validation
+
+On 2026-08-13 CS00015 independently passed the CP/Mish `NETROM2` interactive
+network path. It reached the CP/M prompt, completed `DIR` on the 386 KiB A:
+volume, selected B:, completed `DIR` on the native 160-track
+`J3KGAME2.JUK` volume, and started `TETRIS.COM` successfully. B: was served
+read-only. CS00014 had already passed the same setup, so the native game-drive
+path is now physically validated on both available reference boards.
+
 ## Current CS00015 fault summary
 
 | Location | Finding | Confidence / next discriminator |

@@ -385,6 +385,12 @@ and used the native `J3KGAME2.JUK` B:. This validates the drive-1 record path,
 160-track CP/M DPB, and in-memory physical-image conversion on real hardware;
 B: remains read-only by design.
 
+Physical CS00015 independently passed the complete interactive path on
+2026-08-13: it reached the CP/Mish prompt, completed `DIR` on A:, selected B:,
+completed `DIR` on the native game disk, and started `TETRIS.COM`. The same
+dual-drive implementation is therefore physically validated on both CS00014
+and CS00015.
+
 ## Relevance to current work
 
 Period NetBios ran on exactly the components the Jukuravi diagnostics
