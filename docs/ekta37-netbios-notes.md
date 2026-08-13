@@ -30,8 +30,9 @@ uses (see [`serial-handoff.md`](serial-handoff.md) and
 - `34D6h..3505h`: the NetBios USART initialization:
   - `LDA D5B2h / OUT 18h` — the D57 counter-0 count (the USART clock
     divisor) is written **from a RAM variable**: the network baud is
-    software-configured, not an immediate operand. The runnable `TN0201`
-    path writes `08h`. D57 pin 9 is on the drawing's `1,23M` rail, generated
+    software-configured, not an immediate operand. The configured physical
+    `TN` path and the zero-configuration `TN0201` fallback both write `08h`
+    in the proven setup. D57 pin 9 is on the drawing's `1,23M` rail, generated
     by the source-closed 16 MHz /13 divider. With the 8251's x16 mode this is
     nominally **9600 baud** (`16 MHz / 13 / 8 / 16 = 9615.4`). A divisor of
     four, not the observed eight, would be required for 19200;
@@ -84,8 +85,11 @@ injection or replay.
 
 The byte capture establishes the host implementation's boundaries:
 
-- client keys are `TN0201`, with two hexadecimal digits for maximum station
-  (`N=02`) and own station (`S=01`); there is no Enter;
+- a configured physical client needs only `TN`, with no Enter. Its keyboard
+  S21 switch bank supplies the interface, maximum-station range, and own
+  station number. Only a zero configuration invokes the `N=`/`S=` fallback;
+  `TN0201` supplies maximum station `02` and own station `01` there, and is
+  used by the simulator because its configuration switches are open;
 - physical frames start `E4 E4`, carry destination/source/control, and finish
   with an XOR byte that makes the complete-frame XOR zero;
 - `0Ch` is the directed poll, `08h` is positive acknowledgement, `09h` is
@@ -335,7 +339,8 @@ diagnosis, and scope-first next-session decision tree are in
 ## Physical host use
 
 Connect the Juku serial interface through the appropriate electrical-level
-adapter, start the server, then type `TN0201` at the Juku ROM prompt:
+adapter, start the server, then type `TN` at a configured physical Juku ROM
+prompt (no Enter). Use `TN0201` only if the ROM asks for `N=` and `S=`:
 
 ```sh
 tools/janet_netboot.py /dev/ttyUSB0 media/system/EKDOS230.BIN

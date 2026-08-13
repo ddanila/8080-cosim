@@ -39,7 +39,8 @@ at `0100h`; it copies the exact 6,656 system bytes to `B400h` and jumps `CA00h`.
 No source image is modified.
 
 ```sh
-# Physical Juku: start this, then type TN0201 (no Enter) at the ROM prompt.
+# Configured physical Juku: start this, then type TN (no Enter).
+# Use TN0201 only if NetBios prompts for maximum/own station numbers.
 tools/janet_netboot.py /dev/ttyUSB0 media/system/EKDOS230.BIN
 
 # Simulator proof for all five images.

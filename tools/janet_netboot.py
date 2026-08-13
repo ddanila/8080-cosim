@@ -2,8 +2,10 @@
 """Serve a Juku system image through the native Janet 1.2 serial protocol.
 
 The stock EktaSoft NetBios client is selected with ``T``/``N`` at the ROM
-prompt.  For the default two-station setup type ``TN0201``: maximum station
-02, this Juku is station 01.  This program acts as station 02.
+prompt.  A physical Juku whose keyboard S21 configuration switches define its
+station needs only ``TN``.  ``TN0201`` is the fallback when that configuration
+byte is zero (and is what the simulator uses): maximum station 02, this Juku
+station 01.  This program acts as station 02 by default.
 """
 
 from __future__ import annotations

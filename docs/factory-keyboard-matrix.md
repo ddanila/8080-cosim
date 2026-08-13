@@ -46,12 +46,30 @@ Shifted punctuation is shown after `/`.  Paired national legends separated by
 | 6 | `+5V` | supply |
 | 7 | `SHIFT` | dedicated modifier return |
 | 8 | `CTRL` | dedicated modifier return |
-| 9 | `CONTRDAT` | contrast-option common |
+| 9 | `CONTRDAT` | serialized S21 configuration-switch return |
 | 10 | — | no connection shown |
 | 11 | `SC0` | scan-address bit |
 | 12 | `SC1` | scan-address bit |
 | 13 | `SC2` | scan-address bit |
 | 14 | `SC3` | scan-address bit |
+
+## Configuration switches S21
+
+The keyboard drawing contains an eight-position `S21` bank labelled
+`НАСТРОЙКА` (configuration).  During scan positions 8–15 its selected switch
+returns serially on `CONTRDAT` to mainboard D26 PB5.  EktaSoft 3.7 decodes the
+result as follows:
+
+| switch | configuration bit | NetBios meaning |
+| ---: | ---: | --- |
+| S21.1 | 7 | interface: onboard D11 or expansion interface |
+| S21.2–S21.3 | 6–5 | maximum station number: 3, 7, 15, or 31 |
+| S21.4–S21.8 | 4–0 | this station's number |
+
+Consequently a configured physical machine accepts `TN` with no Enter and
+takes its network identity from S21.  Only a zero configuration falls through
+to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately models that
+open-switch fallback and therefore injects `TN0201`.
 
 ## Model comparison
 

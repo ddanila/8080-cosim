@@ -44,6 +44,7 @@ def serve_disk(fd: int, volume: bytearray, *, writable: bool = False,
                reply_guard: float = 0.002,
                tx_byte_delay: float = 0.0,
                stop_marker: bytes | None = None,
+               failure_marker: bytes | None = None,
                resume: bool = False,
                verbose: bool = True,
                stats: dict[str, int] | None = None) -> dict[str, int]:
@@ -90,14 +91,22 @@ def serve_disk(fd: int, volume: bytearray, *, writable: bool = False,
             continue
         buffer.extend(incoming)
         last_activity = time.monotonic()
-        if stop_marker:
+        if stop_marker or failure_marker:
             marker_buffer.extend(incoming)
-            if stop_marker in marker_buffer:
+            if failure_marker and failure_marker in marker_buffer:
+                if verbose:
+                    print(f"disk failure marker {failure_marker!r} received",
+                          flush=True)
+                stats["failure_marker"] = 1
+                return stats
+            if stop_marker and stop_marker in marker_buffer:
                 if verbose:
                     print(f"disk session marker {stop_marker!r} received", flush=True)
                 stats["marker"] = 1
                 return stats
-            keep = max(0, len(stop_marker) - 1)
+            keep = max(
+                len(stop_marker or b""), len(failure_marker or b""),
+            ) - 1
             if len(marker_buffer) > keep:
                 del marker_buffer[:-keep]
 

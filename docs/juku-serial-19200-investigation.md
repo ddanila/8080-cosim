@@ -1,6 +1,6 @@
 # Juku 19,200 receive investigation
 
-Status: **9600 PROVEN / 19,200 RECEIVE BOUNDARY LOCALIZED / SCOPE CAPTURE NEXT**
+Status: **9600 PROVEN / CS00014 19,200 MODE-2 DISK PROVEN / SCOPE CAPTURE NEXT**
 
 This is the decision record and next-bench plan for the direction-specific
 19,200-bit/s failure reproduced on CS00015 and CS00014. The complete run log
@@ -28,9 +28,15 @@ the diagnosis.
 - Cosim passes the full x16 suite at 9600 and 19,200, including a deliberately
   slow 1.5 MHz CPU and wire-rate one-byte overrun behavior. Software polling
   throughput and test recovery are therefore covered; analog behavior is not.
+- Physical CS00014 passes all six 19,200/x16 mode-2/count-4 BAUDTEST2 cases and
+  the sustained network-disk soak described below. The latter completed 108
+  reads and 67 writes with zero protocol retries, wrote and byte-verified an
+  8 KiB file after close/reopen, deleted it, and emitted `M2PASS!`.
 
-The stable resident network-disk setting remains **9600/8O1**. There is no
-evidence yet that 19,200 is safe for filesystem traffic.
+The conservative cross-board resident network-disk setting remains
+**9600/8O1**. **19,200/8O1 with PIT mode 2/count 4 is now physically proven for
+sustained filesystem traffic on CS00014**, but has not yet been repeated on
+CS00015 or adopted as the general default.
 
 ## Drawing and device reconciliation
 
@@ -53,10 +59,11 @@ With the observed `16 MHz / 13` source, D57 mode-3 count 8 produces a
 153.846 kHz clock and nominal 9615.4 bit/s. Count 4 produces 307.692 kHz and
 nominal 19230.8 bit/s. The expected clock periods and half-periods are:
 
-| BAUDTEST setting | D57 clock period | mode-3 high/low |
+| setting | D57 clock period | high / low |
 | --- | ---: | ---: |
-| 9600/x16, count 8 | 6.500 us | 3.250 us / 3.250 us |
-| 19,200/x16, count 4 | 3.250 us | 1.625 us / 1.625 us |
+| 9600/x16, mode 3 count 8 | 6.500 us | 3.250 us / 3.250 us |
+| 19,200/x16, mode 3 count 4 | 3.250 us | 1.625 us / 1.625 us |
+| 19,200/x16, mode 2 count 4 | 3.250 us | 2.438 us / 0.813 us |
 
 Intel specifies asynchronous 8251A operation through 19.2 kbit/s and x1, x16,
 or x64 clocks. The documented Soviet Korvet implementation also operates a
@@ -74,26 +81,29 @@ loading, or a marginal part remain open. The exact drawing and current board
 model do not yet close the physical disposition of those four threshold pins
 or D104's local +12 V quality.
 
-## Current diagnosis
+## Current diagnosis after the mode-2 disk pass
 
-The strongest clue is not merely that long packets fail. Reception usually
-ends after a correct prefix with no D11 error flag, while the target remains
-able to transmit. That is consistent with D11 ceasing to recognize start bits
-because its RxD input remains at the idle level or because its receive clock is
-unusable. It is less consistent with ordinary CPU overrun or occasional data
-corruption, which the revised test would report as OE, PE, FE, or mismatches.
+The decisive clue is now the controlled mode comparison. At the same nominal
+19,200 rate, framing, serial data waveform, CPU loop, and D11 setup, mode 3
+usually stops after a correct prefix while mode 2 passes both 133-byte probes
+and sustained filesystem traffic. Only the D57 output duty/edge waveform was
+intentionally changed. This rejects serial-line bandwidth, D104 data-path
+bandwidth, host pacing, parity, and CPU service latency as explanations for
+the mode-3 failure.
 
 The ranked boundaries are:
 
-1. **D104 input/output electrical margin**: voltage or loading at X3.4,
-   D104 supplies/threshold network, or the D104.4->13 receiver channel.
-2. **D11 receive-clock waveform at pin 25**: correct average frequency but
-   marginal level, duty cycle, ringing, or loading at the USART pin.
-3. **D104.13-to-D11.3 connection/load**: a board-level receive-only node that
-   the external loopbacks do not exercise.
-4. **D11 receive half**: possible only after RxD and RxC are shown valid at the
-   pins during a failed frame. Reproduction on two boards makes two unrelated
-   rare internal failures less attractive than a shared electrical boundary.
+1. **D11 receive-clock waveform at pin 25**: correct average frequency but a
+   mode-3 edge, level, ringing, duty, or recovery-time problem at the pin.
+2. **D57 channel-0 output/loading**: the mode-2 low pulse and subsequent rising
+   edge are accepted where the symmetric mode-3 waveform is not. This can be
+   D57 itself or board loading; the software result alone cannot distinguish
+   them.
+3. **D11 receive-clock input sensitivity**: a marginal threshold/input stage
+   can produce the same mode dependence even with a serviceable D57.
+4. **RxD/D104 data path**, now a lower-ranked control: it remains worth
+   capturing, but unchanged 19,200 data passing under mode 2 argues strongly
+   against it as the cause of the observed mode-3 boundary.
 
 The DOSRAVI 57,600/8N1 loopback lowers suspicion on the gross bandwidth of the
 external CP2102/MAX chain, but it does not duplicate the Juku D104 input load,
@@ -153,10 +163,10 @@ or a signal stuck at idle.
   x64 reception rather than the 19,200 boundary and has lower diagnostic
   value. There is no valid periodic count-one mode-2/3 route to x64/19,200
   from the existing D57 clock.
-- A 19,200 mode-2/count-4 clock can change duty cycle without changing the
-  nominal rate. Try it only after measuring the current symmetric mode-3
-  waveform; an unexplained pass would point to clock-edge sensitivity, while
-  a failure would add little.
+- A 19,200 mode-2/count-4 clock changes duty cycle without changing the
+  nominal rate. This discriminator has now passed on CS00014; the sustained
+  disk-soak experiment below is the next software test, while direct clock
+  capture remains the decisive electrical follow-up.
 
 Do not spend another bench session on parity, host byte pacing, per-byte ER,
 cable replacement, x1 mode, or the invalid count-one x64 image: today’s
@@ -179,6 +189,61 @@ is saved incrementally. Even with the host removed, the target advances through
 bounded timeouts and restores stock mode-3/count-8/x16 9600 before returning.
 Cosim proves all 68 ideal cases and separately truncates one case to prove the
 rest of the matrix and final restoration survive.
+
+The corrected 2026-08-13 physical CS00014 run completed the entire matrix and
+restored 9600. Stock 19,200/x16 mode 3/count 4 passed four of 59 cases and
+otherwise stopped after short correct prefixes with no PE/OE/FE. The 9600/x64
+stage failed its three cases. Crucially, 19,200/x16 mode 2/count 4 passed all
+six cases, including unpaced 64-byte alternating/PRBS and 133-byte
+incrementing/PRBS frames. Because the serial line, framing, baud rate, CPU
+loop, and D11 are unchanged, this is strong evidence of receive-clock
+edge/duty sensitivity in the D57.10-to-D11.25 path. It is not yet proof that
+D57 itself is faulty: loading, threshold margin, or the D11 clock input can
+produce the same mode-dependent result.
+
+The new `juku-net-mode2-soak-system.bin` therefore keeps the stock ROM
+bootstrap at 9600, then runs the resident network BIOS at 19,200/x16 mode 2.
+Its automatic transient writes 8 KiB to remote A:, closes/reopens it, reads
+and verifies every byte, deletes the file, and emits `M2PASS!` before the
+monitorless smoke tune. This tests sustained bidirectional Janet disk traffic,
+not merely isolated payload frames. The host writes only an in-memory copy of
+the volume and records timestamped console/log output plus incremental JSON.
+
+### Physical CS00014 disk result and throughput
+
+On 2026-08-13 CS00014 (station 09) accepted the stock Janet request, loaded the
+6,784-byte bootstrap at 9600/8O1, then changed to 19,200/8O1 with D57 mode 2,
+count 4. The disk phase completed 108 reads and 67 writes—175 successful
+128-byte record transactions and 22,400 bytes of aggregate record payload—with
+zero retries. The test file contributed 64 writes plus 64 reads; the remainder
+was CP/M directory/open/close/delete traffic. `M2PASS!` proved the close,
+reopen, full byte comparison, and delete all completed. Linux UART counters
+reported zero frame, parity, overrun, buffer-overrun, and break deltas.
+
+The timestamped disk phase took approximately 16–17 seconds, or roughly
+**1.3–1.4 kB/s aggregate useful record payload**. The 19,200/8O1 wire carries
+1,745 characters/s. One 128-byte record transaction consumes 142 wire bytes
+(request plus response) and the host currently adds a 2 ms reply guard, giving
+a theoretical protocol ceiling of about **1.54 kB/s**. The measured disk phase
+is therefore approximately **86–91% of that ceiling**. A standalone 8 KiB
+sequential read or write should take around six seconds before CP/M directory
+overhead; this is suitable for interactive CP/M but far slower than a local
+floppy's burst transfer.
+
+The stock bootstrap is the conspicuously slow part: its 6,784 bytes took about
+81 seconds after the request was accepted, only about **84 B/s of loaded image**,
+because the preserved Janet loader performs many small framed/acknowledged
+turns. The resident disk protocol is roughly sixteen times faster in useful
+payload. Optimizing boot framing is a separate opportunity and does not limit
+the already-running network disk.
+
+Machine-readable evidence is
+[`cs00014-mode2-soak-20260813.json`](evidence/juku-serial/cs00014-mode2-soak-20260813.json).
+The [184-line timestamped bench log](evidence/juku-serial/cs00014-mode2-soak-20260813.log)
+has SHA-256
+`d19f7f76af697a9662283b621ac8107fc9c6e408cbf76bd72bf99f87972aa555`.
+The complete preceding 68-case discriminator is preserved as
+[`cs00014-baudtest2-20260813.json`](evidence/juku-serial/cs00014-baudtest2-20260813.json).
 
 This reflects standard vendor debugging guidance: verify both endpoints'
 framing, use known/reference patterns and error counters, compare each signal

@@ -1,0 +1,53 @@
+{
+  "status": "complete",
+  "protocol": "JUKU-MODE2-SOAK-v1",
+  "machine": "CS00014",
+  "date": "2026-08-13",
+  "client": 9,
+  "server": 2,
+  "boot_baud": 9600,
+  "disk_baud": 19200,
+  "pit_mode": 2,
+  "pit_divisor": 4,
+  "planned_records": 64,
+  "planned_bytes_each_direction": 8192,
+  "source_volume_sha256": "8087d5623d153ab3d2f6f05ded9b27b92e2b8b7c5a7eb974877db3f30934b4f2",
+  "bootstrap": {
+    "image_bytes": 6784,
+    "sent_frames": 334,
+    "received_frames": 960,
+    "ack_08": 161,
+    "ack_09": 0
+  },
+  "records_written_and_verified": 64,
+  "bytes_written_and_verified": 8192,
+  "disk": {
+    "reads": 108,
+    "writes": 67,
+    "retries": 0,
+    "marker": 1
+  },
+  "elapsed_seconds": 116.023,
+  "working_volume_sha256": "d0cb1281f81e4e84909d6877eebfc77ea40ddd581884bd25b74386d661d12e8d",
+  "host_uart_counter_delta": {
+    "cts": 0,
+    "dsr": 0,
+    "rng": 0,
+    "dcd": 0,
+    "rx": 0,
+    "tx": 0,
+    "frame": 0,
+    "overrun": 0,
+    "parity": 0,
+    "break": 0,
+    "buffer_overrun": 0
+  },
+  "pass": true,
+  "capture_log_sha256": "d19f7f76af697a9662283b621ac8107fc9c6e408cbf76bd72bf99f87972aa555",
+  "timing_from_log": {
+    "bootstrap_request_accepted": "2026-08-13T10:04:37+03:00",
+    "bootstrap_complete": "2026-08-13T10:05:58+03:00",
+    "pass_marker_received": "2026-08-13T10:06:15+03:00",
+    "disk_phase_resolution_note": "timestamps have one-second resolution; disk phase was approximately 16-17 seconds"
+  }
+}
