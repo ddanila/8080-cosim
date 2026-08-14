@@ -9,4 +9,5 @@ trap 'rm -rf "$TMP"' EXIT
 $CC -O2 -I cosim -o "$TMP/trace" \
   cosim/trace.c cosim/i8080.c cosim/juk_disk.c cosim/juku_fdc.c
 python3 tests/janet_disk_server_test.py
+python3 tests/janet_fastboot_protocol_test.py
 python3 tests/janet_netboot_test.py "$TMP/trace"

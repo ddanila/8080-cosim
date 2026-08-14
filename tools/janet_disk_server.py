@@ -13,6 +13,7 @@ from collections.abc import Iterable
 from pathlib import Path
 
 from janet_netboot import configure_serial, serve as serve_boot, write_all
+from janet_fastboot import FAST_BAUD, serve_fast
 
 
 SYNC = b"JD"
@@ -228,6 +229,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--boot-baud", type=int, default=9600)
     result.add_argument("--disk-baud", type=int, default=9600)
     result.add_argument(
+        "--fast-stage1", type=Path,
+        help="stock-load this stage at 9600, then bulk-load the system at 19200",
+    )
+    result.add_argument(
         "--client", type=lambda value: int(value, 0),
         help="require this NetBios client (default: learn from request)",
     )
@@ -272,13 +277,29 @@ def main(argv: Iterable[str] | None = None) -> int:
                else f"station {args.server!r} -> {args.client!r}"),
             flush=True,
         )
-        boot = serve_boot(
-            fd, system, client=args.client, server=args.server,
-            timeout=args.timeout,
-        )
+        if args.fast_stage1:
+            if args.boot_baud != 9600 or args.disk_baud != FAST_BAUD:
+                raise ValueError(
+                    "--fast-stage1 requires --boot-baud 9600 and "
+                    f"--disk-baud {FAST_BAUD}"
+                )
+            boot = serve_fast(
+                fd, args.fast_stage1.read_bytes(), system,
+                client=args.client, server=args.server,
+                stock_timeout=args.timeout,
+            )
+            station_server = int(boot["stock_server"])
+            station_client = int(boot["stock_client"])
+        else:
+            boot = serve_boot(
+                fd, system, client=args.client, server=args.server,
+                timeout=args.timeout,
+            )
+            station_server = int(boot["server"])
+            station_client = int(boot["client"])
         print(
-            f"Serving learned station {boot['server']:02X} -> "
-            f"{boot['client']:02X}",
+            f"Serving learned station {station_server:02X} -> "
+            f"{station_client:02X}",
             flush=True,
         )
         configure_serial(fd, args.disk_baud)

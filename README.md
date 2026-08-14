@@ -25,15 +25,14 @@ with the machine-readable board model.
   `sync/janet_netboot_check.sh` guard reaches each byte-exact `CA00h` handoff.
   `tools/janet_disk_server.py` can then keep a diskless CP/Mish Juku attached
   to a host-backed A: volume and optionally expose an unchanged native 800 KiB
-  Juku image as read-only B:. The physically proven default is nominal 9,600
-  baud; a separate recoverable burst/pacing BAUDTEST exercises nominal 19,200
-  with wire-rate one-byte overrun semantics and measured-CS00015 timing. On
-  physical CS00015 and CS00014, 19,200 currently fails only in the receive
-  direction after short clean prefixes; the next discriminator is a scope
-  capture across X3.4, D104.13, and D11 RxC. A finite automatically loaded
-  BAUDTEST2 supplements it with a 68-case pattern/history/clock-shape matrix
-  whose repeated checksummed reports, per-case timeouts, and unconditional
-  final 9600 restoration survive individual receive or host failures.
+  Juku image as read-only B:. The archival stock bootstrap remains at nominal
+  9,600 baud. BAUDTEST2 found that the original 19,200 mode-3 clock shape fails
+  in the receive direction, then proved D57 mode 2/count 4 at 19,200/8O1;
+  sustained network-disk traffic subsequently passed on physical CS00014 and
+  CS00015. The optional `tools/janet_fastboot.py` path now lets an unmodified
+  stock ROM load a compact stage at 9,600 before that proven setting transfers
+  the resident image in thirteen retryable CRC16-protected blocks. The
+  original stock Janet path is unchanged and remains the fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.

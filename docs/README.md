@@ -84,6 +84,8 @@ findings. Every status applies only to the boundary named by the report.
   image is maintained in `../disasm/`),
   `juku-serial-19200-investigation.md` (two-board receive-only 19,200 failure,
   exact D104/D11/D57 boundary analysis, and the ranked scope-first bench plan),
+  `janet-fastboot.md` (stock-ROM-compatible 9600 stage plus retryable
+  19200/8O1 bulk CP/M bootstrap, cosim evidence, command, and benchmark plan),
   `juku-rom-monitor-commands.md` (the decoded 15-command ROM monitor shared
   by every EktaSoft image and Monitor 3.3, the T/D/N-or-T boot dispatch
   tables, and the universal FF50h bootstrap vector),

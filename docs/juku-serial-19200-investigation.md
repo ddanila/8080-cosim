@@ -285,20 +285,23 @@ by the ROM's many acknowledged turns.
 
 ### 2. New bulk netboot protocol where both ends are controlled
 
-The preferred first design does **not** require replacing the stock ROM. Let
-stock Janet load only a compact stage-1 executable at 9600; stage 1 then changes
-D57 channel 0 to mode 2/count 4, reinitializes D11 for 19,200/8O1, and receives
-the remaining system through a new bulk protocol. A custom ROM can enter the
-same stage directly, but the stock-ROM route must remain available alongside
-it.
+The preferred first design is now implemented in cosim and does **not** require
+replacing the stock ROM. Stock Janet loads the 558-byte
+`juku-fastboot-stage1.bin` executable at 9600; stage 1 changes D57 channel 0 to
+mode 2/count 4, reinitializes D11 for 19,200/8O1, and receives the fixed CP/Mish
+resident system as thirteen 512-byte blocks. See `janet-fastboot.md` for the
+wire contract, command, regression evidence, and physical benchmark plan. A
+custom ROM can enter the same stage directly later, while the stock-ROM route
+and the original all-stock server remain available alongside it.
 
-The bulk protocol should use blocks substantially larger than 128 bytes,
-length/address/sequence fields, CRC rather than the current XOR-only integrity
-check, bounded retry and stream resynchronization, a final whole-image digest
-or checksum, and an explicit load-address/entry handoff. Benchmark ACK-per-block
-against a small window of outstanding blocks; choose the simpler scheme unless
-windowing produces a material physical gain. Compression is optional only if a
-small 8080 decoder demonstrably reduces total boot time.
+The implemented single-client baseline fixes the only supported layout at
+B400h-CDFFh with entry CA00h, avoiding general address/length fields in the
+stock-loaded stage. Each block carries its sequence and CRC16-CCITT; bounded
+timeouts, retry, stream resynchronization, duplicate ACK, and a final
+whole-image CRC are implemented. Stop-and-wait is the baseline. Benchmark a
+small window only if it produces a material physical gain without weakening
+recovery. Compression remains optional only if a small 8080 decoder
+demonstrably reduces total boot time.
 
 Start at the already proven **19,200/8O1, x16, PIT mode 2/count 4**. At that
 wire rate the raw 6,784-byte lower bound is about 3.9 seconds, so a practical
@@ -313,8 +316,10 @@ Keep protocol/version negotiation explicit so the same host can serve:
 2. stock Janet loading the high-speed stage 1;
 3. a future custom-ROM direct bulk bootstrap.
 
-Cosim must inject loss, corruption, duplication, delayed replies, and reset at
-block boundaries before physical adoption. Physical benchmarks should include
+Cosim now injects complete-block loss, payload corruption, duplication, and a
+lost target ACK against the assembled 8080 stage, and verifies the exact RAM
+image before CA00h. Automated delayed-reply and power-reset/re-discovery remain before
+full bench qualification. Physical benchmarks should include
 CS00014 and CS00015, cold and warm runs, at least ten consecutive boots, exact
 RAM comparison before entry, and recorded UART/kernel error counters.
 
