@@ -181,6 +181,18 @@ def boot_frames(image: bytes, *, load_address: int = LOAD_ADDRESS,
     return messages
 
 
+def format_boot_progress(completed_records: int, total_records: int) -> str:
+    """Format concise logical-record progress for a bootstrap transfer."""
+    if total_records <= 0 or not 0 <= completed_records <= total_records:
+        raise ValueError("invalid Janet bootstrap record progress")
+    percent = completed_records * 100 // total_records
+    remaining = total_records - completed_records
+    return (
+        f"Janet bootstrap: {percent:3d}% "
+        f"({completed_records}/{total_records} records, {remaining} remaining)"
+    )
+
+
 def configure_serial(
     fd: int, baud: int = DEFAULT_BAUD, *, parity: str = "odd",
     stop_bits: int = 1,
@@ -281,7 +293,18 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
     sent_frames = 0
     ack_08 = 0
     ack_09 = 0
+    total_records = len(prepared.data) // RECORD_SIZE
+    last_progress_bucket = -1
     deadline = time.monotonic() + timeout
+
+    if verbose:
+        print(
+            f"Janet boot image: {prepared.format}, {len(prepared.data)} bytes "
+            f"in {total_records} records, load {prepared.load_address:04X}h, "
+            f"entry {prepared.entry:04X}h",
+            flush=True,
+        )
+        print("Waiting for a checksum-valid Juku bootstrap request...", flush=True)
 
     while time.monotonic() < deadline:
         ready, _, _ = select.select([fd], [], [], min(0.1, timeout))
@@ -331,6 +354,8 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                         f"{active_server:02X} -> {active_client:02X}",
                         flush=True,
                     )
+                    print(format_boot_progress(0, total_records), flush=True)
+                    last_progress_bucket = 0
                 continue
 
             ready_turn = (
@@ -389,6 +414,17 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                     source == active_client and control == ACK_CONTROL):
                 awaiting_ack = False
                 ack_08 += 1
+                acknowledged = transfer[next_message - 1]
+                if acknowledged[6] == 0x09 and \
+                        next_message <= 1 + total_records * 3:
+                    completed_records = (next_message - 1) // 3
+                    progress_bucket = completed_records * 10 // total_records
+                    if verbose and progress_bucket > last_progress_bucket:
+                        print(
+                            format_boot_progress(completed_records, total_records),
+                            flush=True,
+                        )
+                        last_progress_bucket = progress_bucket
                 if next_message == len(transfer):
                     completion_pending = True
                 elif next_message == len(transfer) - 3:

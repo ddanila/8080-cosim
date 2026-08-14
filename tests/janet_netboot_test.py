@@ -20,6 +20,7 @@ from tools.janet_netboot import (  # noqa: E402
     SYSTEM_BYTES,
     SYSTEM_LOAD_ADDRESS,
     SYSTEM_PREFIX,
+    format_boot_progress,
     prepare_image,
     serve,
 )
@@ -150,6 +151,14 @@ def main() -> int:
               file=sys.stderr)
         return 2
     trace = Path(sys.argv[1]).resolve()
+    if format_boot_progress(0, 53) != \
+            "Janet bootstrap:   0% (0/53 records, 53 remaining)":
+        print("invalid zero bootstrap progress", file=sys.stderr)
+        return 1
+    if format_boot_progress(53, 53) != \
+            "Janet bootstrap: 100% (53/53 records, 0 remaining)":
+        print("invalid complete bootstrap progress", file=sys.stderr)
+        return 1
     systems = system_images()
     if not trace.is_file() or len(systems) < 5 or any(not path.is_file() for path in systems):
         print("missing cosim executable or system image", file=sys.stderr)
