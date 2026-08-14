@@ -270,11 +270,11 @@ Further worthwhile measurements are, in order:
    matters;
 4. compare stop-and-wait with a two-block window only after fault recovery is
    equally deterministic;
-5. evaluate compression only end-to-end. The current image shrinks from 6656
-   to about 4840 bytes with desktop DEFLATE, but simple PackBits reaches only
-   6195 bytes, so decoder size and 8080 time can easily consume the wire saving;
-6. keep nominal 38400 mode-2/count-2 as a separately recoverable experiment,
-   never a default before multi-board physical proof.
+5. integrate ZX0 compression only as a separately named variant and compare it
+   physically with v3/v5; the cycle benchmark below predicts a modest gain;
+6. keep production fastboot at 19,200. Revisit a higher rate only with new
+   electrical evidence, because the in-spec x1 experiment already failed and
+   count-2/x16 would exceed the USART clock limit by about two times.
 
 ## Post-v2 optimization study
 
@@ -322,20 +322,36 @@ Compression is secondary and must be cycle-benchmarked end to end. Against the
 exact 6656-byte 2026-08-14 CP/Mish resident image, local current-tool results
 are:
 
-| Encoding | Bytes | 19200/8O1 wire saving before decode |
-| --- | ---: | ---: |
-| none | 6656 | 0 s |
-| simple repeated-byte RLE estimate | 6155 | 0.287 s |
-| LZSA1 raw | 5498 | 0.663 s |
-| LZSA2 raw | 5129 | 0.875 s |
-| ZX0 classic | 4826 | 1.049 s |
+| Encoding | Bytes | Wire saving | 8080 decode | Gross net saving |
+| --- | ---: | ---: | ---: | ---: |
+| none | 6656 | 0 s | 0 s | 0 s |
+| simple repeated-byte RLE estimate | 6155 | 0.287 s | not measured | unknown |
+| LZSA1 raw | 5498 | 0.663 s | no native 8080 decoder | unknown |
+| LZSA2 raw | 5129 | 0.875 s | no native 8080 decoder | unknown |
+| ZX0 classic | 4826 | 1.049 s | 993,353 cycles / 0.584 s | **0.464 s** |
+| ZX1 | 5063 | 0.913 s | 752,990 cycles / 0.443 s | **0.470 s** |
 
-ZX0 has a compact 92-byte 8080 decoder, but it only wins if decompression takes
-less than 1.05 seconds at the measured CS00015 CPU rate; LZSA can trade a lower
-ratio for faster decode. First freeze uncompressed v3, then run each real
-decoder in the cycle model. Likewise, 8N1 removes one of eleven wire bits per
-byte and can save about 0.35 seconds at 19200, but belongs after the 8O1 v3
-baseline so framing and protocol changes remain separable.
+The decode measurements execute the real forward Intel 8080 routines against
+the exact resident image in the project's instruction/cycle model, verify all
+6656 output bytes at B400h-CDFFh, and convert cycles using CS00015's measured
+1.70 MHz CPU rate. The [ZX0 compressor](https://github.com/einar-saukas/ZX0)
+used classic `-c` format with Ivan Gorodetsky's 92-byte v7 8080 decoder; the
+[preserved source](https://emuverse.ru/wiki/%D0%92%D0%B5%D0%BA%D1%82%D0%BE%D1%80-06%D0%A6/%D0%A1%D0%B6%D0%B0%D1%82%D0%B8%D0%B5_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85)
+is attributed to Gorodetsky and Einar Saukas. The
+[ZX1 compressor](https://github.com/einar-saukas/ZX1) used its 128-byte v5
+8080 decoder. Both round-trip checks passed byte-exactly.
+
+ZX1's computed advantage is only about 6 ms, far below physical timing noise,
+while its decoder is 36 bytes larger. Both decoders would move v3's extension
+from two to three padded 128-byte records, adding about 0.073 s at 19,200/8O1.
+That leaves an end-to-end prediction near **0.39 s faster than v3** for either
+format. Prefer ZX0 for the first compression variant because its smaller
+decoder leaves more extension space and has effectively the same total time.
+Compression is therefore worthwhile but secondary: first physically qualify
+v5, then implement ZX0 as a separately named, recoverable variant and measure
+it rather than replacing v3. Likewise, 8N1 removes one of eleven wire bits per
+byte and can save about 0.35 seconds at 19,200, but remains separate from the
+8O1 v3 baseline so framing and protocol changes remain attributable.
 
 The current cosim does not yet automate power-reset/restart during a block.
 Reset recovery is structurally safe because the stock ROM regains control, but
