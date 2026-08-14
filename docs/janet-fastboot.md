@@ -404,40 +404,62 @@ fastboot therefore remains at the proven 19,200 mode-2/count-4 x16 setting;
 higher baud requires new electrical evidence rather than another default
 software variant.
 
-Compression was cycle-benchmarked end to end before integration. Against the
-exact 6656-byte 2026-08-14 CP/Mish resident image, local current-tool results
-are:
+Compression was cycle-benchmarked end to end before integration and audited
+again after v7 fixed the 8N1 layout. Against the exact 6656-byte 2026-08-14
+CP/Mish resident image, the comparison is:
 
-| Encoding | Bytes | Wire saving | 8080 decode | Gross net saving |
-| --- | ---: | ---: | ---: | ---: |
-| none | 6656 | 0 s | 0 s | 0 s |
-| simple repeated-byte RLE estimate | 6155 | 0.287 s | not measured | unknown |
-| LZSA1 raw | 5498 | 0.663 s | no native 8080 decoder | unknown |
-| LZSA2 raw | 5129 | 0.875 s | no native 8080 decoder | unknown |
-| ZX0 classic | 4826 | 1.049 s | 993,353 cycles / 0.584 s | **0.464 s** |
-| ZX1 | 5063 | 0.913 s | 752,990 cycles / 0.443 s | **0.470 s** |
+| Encoding | Stream | Decoder | 8080 cycles | 8N1 stream + decode | Deployed delta from v7 ZX0 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| none | 6656 | 0 | 0 | 3.467 s | +0.369 s |
+| LZ4 raw, HC | 5821 | 94 | 424,565 | 3.282 s | +0.184 s |
+| LZSA2 raw, ratio | 5129 | 277 benchmark | 795,228 | 3.139 s | +0.175 s |
+| LZSA2 raw, speed | 5296 | 277 benchmark | 670,161 | 3.153 s | +0.188 s |
+| ZX2 `-x` | 5054 | 74 | 950,249 | 3.191 s | +0.093 s |
+| ZX1 | 5063 | 128 | 752,990 | 3.080 s | +0.049 s |
+| **ZX0 classic** | **4826** | **92** | **993,353** | **3.098 s** | **baseline** |
+| Exomizer P47T4 | 4756 | 285 | 2,511,481 | 3.954 s | +0.990 s |
+| Exomizer P43 | 4756 | 258 | 3,347,152 | 4.446 s | +1.481 s |
 
-The decode measurements execute the real forward Intel 8080 routines against
-the exact resident image in the project's instruction/cycle model, verify all
-6656 output bytes at B400h-CDFFh, and convert cycles using CS00015's measured
-1.70 MHz CPU rate. The [ZX0 compressor](https://github.com/einar-saukas/ZX0)
-used classic `-c` format with Ivan Gorodetsky's 92-byte v7 8080 decoder; the
+Every measured decoder ran in the project's Intel 8080 instruction/cycle
+model, produced all 6656 bytes at B400h-CDFFh byte-exactly, and uses
+CS00015's measured 1.70 MHz CPU rate. Wire time uses v7's actual 19,200/8N1
+ten-bit frames. The deployed delta also includes 128-byte extension padding:
+v7 has 162 non-decoder bytes, so ZX1 needs one extra record and the benchmark
+LZSA2 and Exomizer decoders need two. This corrects the earlier pre-v5 estimate
+that used 8O1's eleven-bit framing and did not account for v7's nearly full
+256-byte extension.
+
+The [ZX0 compressor](https://github.com/einar-saukas/ZX0) uses classic `-c`
+format with Ivan Gorodetsky's 92-byte v7 8080 decoder; the
 [preserved source](https://emuverse.ru/wiki/%D0%92%D0%B5%D0%BA%D1%82%D0%BE%D1%80-06%D0%A6/%D0%A1%D0%B6%D0%B0%D1%82%D0%B8%D0%B5_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85)
-is attributed to Gorodetsky and Einar Saukas. The
-[ZX1 compressor](https://github.com/einar-saukas/ZX1) used its 128-byte v5
-8080 decoder. Both round-trip checks passed byte-exactly.
+is attributed to Gorodetsky and Einar Saukas. ZX1 uses the corresponding
+128-byte v5 decoder. ZX2 uses Einar Saukas's
+[official compressor](https://github.com/einar-saukas/ZX2) and the surviving
+[8080 v5 source mirror](https://github.com/parallelno/Vector06c/blob/master/Vector06c_Dev/_Projects/zx2/zx2.asm).
+The [LZ4 decoder](https://github.com/michaelcmartin/bumbershoot/blob/master/asm/lz4core/lz4u_8080.asm)
+is Michael C. Martin's 94-byte 8080 routine.
+[Exomizer 3.1.2](https://bitbucket.org/magli143/exomizer/wiki/downloads/)
+uses its official P43/P47T4 8080 decoders. LZSA2 uses the
+[official 1.4.1 compressor and format](https://github.com/emmanuel-marty/lzsa);
+its former external 8080 source repository is no longer available, so the
+table explicitly labels a conservative format-derived benchmark decoder and
+does not treat it as vendorable production code.
 
-ZX1's computed advantage is only about 6 ms, far below physical timing noise,
-while its decoder is 36 bytes larger. Both decoders would move v3's extension
-from two to three padded 128-byte records, adding about 0.073 s at 19,200/8O1.
-That predicted an end-to-end result near **0.39 s faster than v3** for either
-format. ZX0 was selected because its smaller decoder leaves more extension
-space and has effectively the same computed total time. The separately named
-v6 implementation then measured 0.701 seconds faster than v3 and 0.337 seconds
-faster than v5 on CS00015, with prompt and `DIR` proven. The larger-than-simple
-prediction is consistent with the measured phase including less wire and
-turnaround time than the conservative estimate. V3 and v5 remain unchanged so
-the compression and framing effects stay attributable.
+Even ignoring its larger decoder, ratio-mode LZSA2 loses 41 ms and speed mode
+loses 55 ms to ZX0. A recovered or newly optimized LZSA2 decoder that still
+costs one extra 128-byte record would have to finish below about **612,000
+cycles** merely to tie v7; the conservative byte-exact implementation needs
+795,228. ZX2's real decoder is 43,104 cycles faster than ZX0, but its 228 extra
+wire bytes cost about 119 ms, leaving it 93 ms slower. LZ4's fast decoder
+cannot repay 995 extra bytes. Exomizer compresses 70 bytes better but decodes
+far too slowly. ZX1 wins about 18 ms before layout, then loses about 49 ms once
+its extra extension record is transmitted. ZX0 therefore remains the fastest
+measured and layout-valid choice, not merely the smallest-stream choice.
+
+The separately named v6 implementation measured 0.701 seconds faster than v3
+and 0.337 seconds faster than v5 on CS00015, with prompt and `DIR` proven. V7
+keeps its codec while removing one extension record. V3 and v5 remain unchanged
+so the compression and framing effects stay attributable.
 
 The current cosim does not yet automate power-reset/restart during a block.
 Reset recovery is structurally safe because the stock ROM regains control, but
