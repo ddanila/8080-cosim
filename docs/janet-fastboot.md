@@ -1,6 +1,7 @@
 # Stock-ROM fast bootstrap
 
-Status: **V6 FASTEST PHYSICALLY PROVEN; V4 RATE FAILED; 19,200 FROZEN**
+Status: **V6 FASTEST PHYSICALLY PROVEN; V7 SIMULATION-QUALIFIED CANDIDATE;
+V4 RATE FAILED; 19,200 FROZEN**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -248,6 +249,47 @@ and the first A: request at **6.214 seconds**. The visible prompt and network
 `DIR` both worked. V6 saves 0.337 seconds (5.1%) over v5, 0.701 seconds (10.1%)
 over v3, and 67.659 seconds (91.6%, 11.89x) over Original stock 9600.
 
+## Fast stage v7: fixed authenticated stream metadata
+
+V7 keeps v6's physically proven one-record stock core, 19,200/8N1 clock and
+framing, ZX0 payload, and authenticate-before-decode rule. It moves the fixed
+compressed length and expected compressed CRC into the Fletcher-protected
+extension, reuses the core's RX routine at 016Eh, and lets CP/M's immediate
+`NETINIT` perform the normal 8O1 setup at CA00h. These changes fit the
+extension in **256 rather than 384 bytes**. The wire stream is simply `J Z`
+followed by the fixed 4826-byte payload; four redundant length/CRC bytes also
+disappear.
+
+`juku-fastboot-v7.bin` is a 5218-byte self-describing host artifact: 128-byte
+core, 256-byte extension, eight-byte `Z7` descriptor, and 4826-byte compressed
+system. The descriptor binds the artifact to the uncompressed system CRC,
+compressed length, and compressed CRC; the host validates all three before
+sending anything. Its simulation-qualified SHA-256 is
+`bc3897d6d79cfaafd4b747aecc60410b9b1eec6c9296565176c23f38c9677b88`.
+
+Clean and injected-fault cosim runs reject a corrupt extension and compressed
+stream, recover from total stream loss and a lost success reply, reproduce all
+6656 bytes at B400h-CDFFh, and preserve the frozen v3/v5/v6 hashes. A separate
+end-to-end run continues beyond CA00h: the real CP/M BIOS changes D11 from v7's
+mode `4Eh` to resident mode `5Eh`, reaches `A>`, and completes network `DIR`
+with 34 reads and zero retries. V7 also reduces the host's post-success handoff
+guard from 80 to 20 ms because its short drain plus BIOS-owned reinitialisation
+replace v6's longer extension drain. One fewer 128-byte extension record, four
+fewer stream bytes, and the 60 ms guard reduction predict about **0.129 s**
+below v6, or roughly **6.09 s** to the first A: request on CS00015. Treat that
+as a prediction until a physical run is recorded; v6 remains the fastest
+physically proven default.
+
+Run the candidate without changing the ROM:
+
+```sh
+cd ~/fun/cpmish && make juku-fastboot-v7.bin
+../8080-cosim/tools/janet_disk_server.py \
+    --fast-stage1 juku-fastboot-v7.bin --disk-baud 19200 \
+    --writable --timeout 86400 /dev/ttyUSB0 \
+    juku-net-mode2-system.bin cs00015-fastboot.img
+```
+
 Freeze the 2026-08-14/15 CS00015 comparison as six named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
 starts at the first checksum-valid Janet request and ends at the first valid
@@ -312,8 +354,8 @@ Further worthwhile measurements are, in order:
    matters;
 4. compare stop-and-wait with a two-block window only after fault recovery is
    equally deterministic;
-5. retain the now-proven v6 ZX0 path as a separately named variant and gather
-   repeated cold/warm timing distributions before tightening more guards;
+5. physically benchmark the separately named v7 fixed-metadata path, then
+   gather repeated cold/warm v6/v7 distributions before tightening more guards;
 6. keep production fastboot at 19,200. Revisit a higher rate only with new
    electrical evidence, because the in-spec x1 experiment already failed and
    count-2/x16 would exceed the USART clock limit by about two times.

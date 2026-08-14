@@ -112,6 +112,34 @@ def main() -> int:
     assert int.from_bytes(compressed_wire[-2:], "big") == \
         crc16_ibm(compressed)
 
+    core_v7 = b"\xC3\x09\x01JFV7\x01\x02".ljust(128, b"\0")
+    extension_v7 = bytes(range(256))
+    compressed_crc = crc16_ibm(compressed)
+    bundle_v7 = (
+        core_v7 + extension_v7 + b"Z7"
+        + crc16_ibm(expected).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v7)
+    assert bundle_core == core_v7
+    assert bundle_extension == extension_v7
+    assert bundle_payload == compressed
+    compressed_wire_v7 = compressed_stream_packet(compressed, fixed=True)
+    assert compressed_wire_v7 == b"JZ" + compressed
+    for broken in (
+        bundle_v7[:-1],
+        bundle_v7[:-1] + bytes((bundle_v7[-1] ^ 1,)),
+    ):
+        try:
+            split_stage_artifact(broken)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("malformed v7 artifact was accepted")
+
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.
     with mock.patch.object(
