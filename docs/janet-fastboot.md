@@ -162,8 +162,10 @@ the acknowledged 19,200 fallback. V1-v3 hashes remain unchanged. The raw
 6656-byte stream floor falls from 3.813 s at 19,200 to 2.542 s at 28,800.
 Accounting for the 128-byte larger extension and negotiation guards predicts a
 CS00015 first-disk request near **5.8 seconds**, roughly another 1.1 seconds
-below v3. Physical qualification and an exact-rate readback on the attached
-CP2102 remain before calling v4 proven.
+below v3. The attached Silicon Labs CP2102 (`10c4:ea60`) subsequently passed
+exact 28,800/8O1 `termios2` readback and restored 19,200/8O1 without sending
+target bytes. Only the physical Juku negotiation and boot remain before calling
+v4 proven.
 
 Freeze the 2026-08-14 CS00015 comparison as four named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
