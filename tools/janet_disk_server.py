@@ -59,7 +59,8 @@ def juku_image_to_volume(image: bytes) -> bytearray:
 
 def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                writable: bool = False,
-               timeout: float = 120.0, idle_timeout: float | None = None,
+               timeout: float | None = None,
+               idle_timeout: float | None = None,
                reply_guard: float = 0.002,
                tx_byte_delay: float = 0.0,
                stop_marker: bytes | None = None,
@@ -84,7 +85,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
     last_request = b""
     last_reply = b""
     marker_buffer = bytearray()
-    deadline = time.monotonic() + timeout
+    deadline = time.monotonic() + timeout if timeout is not None else None
     last_activity = time.monotonic()
     # The client changes D57/8251 rate after stock NetBios exits. It waits for
     # this marker before sending the first disk request, preventing bootstrap
@@ -94,8 +95,10 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
     next_ready = time.monotonic() + 0.02
     synchronized = resume
 
-    while time.monotonic() < deadline:
-        wait = min(0.1, max(0.0, deadline - time.monotonic()))
+    while deadline is None or time.monotonic() < deadline:
+        wait = 0.1 if deadline is None else min(
+            0.1, max(0.0, deadline - time.monotonic()),
+        )
         ready, _, _ = select.select([fd], [], [], wait)
         if not ready:
             if not synchronized and time.monotonic() >= next_ready:
@@ -242,7 +245,14 @@ def parser() -> argparse.ArgumentParser:
         "--disk-tx-byte-delay-ms", type=float, default=0.0,
         help="host-to-Juku delay between disk-reply bytes (default: 0)",
     )
-    result.add_argument("--timeout", type=float, default=120.0)
+    result.add_argument(
+        "--timeout", type=float, default=120.0,
+        help="bootstrap timeout in seconds (default: 120)",
+    )
+    result.add_argument(
+        "--disk-timeout", type=float,
+        help="optional total disk-session lifetime in seconds",
+    )
     return result
 
 
@@ -281,7 +291,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             volume,
             drive_b=drive_b,
             writable=args.writable,
-            timeout=args.timeout,
+            timeout=args.disk_timeout,
             reply_guard=args.disk_reply_guard_ms / 1000.0,
             tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
         )
