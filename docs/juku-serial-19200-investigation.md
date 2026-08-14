@@ -304,21 +304,23 @@ recovery. Compression remains optional only if a small 8080 decoder
 demonstrably reduces total boot time.
 
 Physical CS00015 passed the complete path on 2026-08-14. Preserve the
-same-machine results as **Fast stage v1** (17.508 s, 42 stock frames) and
-**Original stock 9600** (73.873 s, 330 stock frames), measured from the first
-valid Janet request to the first valid A: request. Both reached the visible
-CP/M prompt. Fast stage v1 recovered one block-0 timeout automatically and was
-4.22x faster. Later optimization results must be added as separate variants;
-see `janet-fastboot.md` for the frozen table and evidence JSON.
+same-machine results as **Fast stage v2** (12.999 s, 42 stock frames, zero
+retries), **Fast stage v1** (17.508 s, 42 stock frames), and **Original stock
+9600** (73.873 s, 330 stock frames), measured from the first valid Janet request
+to the first valid A: request. All reached the visible CP/M prompt. V2 is 1.35x
+faster than v1 and 5.68x faster than stock. Later optimization results must be
+added as separate variants; see `janet-fastboot.md` for the frozen table and
+evidence JSON.
 
-The separate **Fast stage v2** candidate retains the 512-byte stop-and-wait
+The separate **Fast stage v2** retains the 512-byte stop-and-wait
 shape but makes each block CRC the cumulative image CRC checkpoint. This
 preserves block retry, duplicate handling, and final whole-image verification
 while removing v1's 4,297,085-cycle final RAM scan (about 2.53 s on CS00015).
 The host also waits for all repeated header ACKs to release the half-duplex
 line, addressing v1's observed block-0 timeout. Both v1 and v2 pass the clean
-and injected-fault cosim matrix; the projected CS00015 request-to-first-disk
-time is about 12.8 s pending a separately named physical v2 run.
+and injected-fault cosim matrix. Its projected CS00015 request-to-first-disk
+time was about 12.8 s; the physical run measured 12.999 s, with an 8.00 s stock
+stage, 4.39 s bulk phase, zero retries, and a visible CP/M prompt.
 
 Start at the already proven **19,200/8O1, x16, PIT mode 2/count 4**. At that
 wire rate the raw 6,784-byte lower bound is about 3.9 seconds, so a practical

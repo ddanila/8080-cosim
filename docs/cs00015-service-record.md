@@ -169,14 +169,19 @@ installed B400h-CDFFh, and the machine reached the visible CP/M prompt.
 
 Freeze this same-machine comparison before further optimization:
 
+- **Fast stage v2:** 12.999 s from first valid bootstrap request to first valid
+  A: request; 42 stock frames; stage 8.00 s; bulk 4.39 s; zero retries; visible
+  prompt reached.
 - **Fast stage v1:** 17.508 s from first valid bootstrap request to first valid
   A: request; 42 stock frames; stage 7.99 s; bulk 8.90 s; one automatically
   recovered block-0 timeout; visible prompt reached.
 - **Original stock 9600:** 73.873 s over the original 6784-byte/53-record
   wrapper; 330 stock frames; visible prompt reached.
 
-The measured improvement is 4.22x, saving 56.365 s (76.3%). Both runs used the
-same system, volume, cable, host, and CS00015. See `janet-fastboot.md` and
+Fast stage v2 is 1.35x faster than v1, saving 4.509 s (25.8%), and 5.68x faster
+than Original stock 9600, saving 60.874 s (82.4%). The v1 result remains frozen
+at 4.22x/56.365 s/76.3%. All three runs used the same system, volume, cable,
+host, and CS00015. See `janet-fastboot.md` and
 `evidence/juku-serial/cs00015-fastboot-20260814.json`.
 
 ## Current deployment

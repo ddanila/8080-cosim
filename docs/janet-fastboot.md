@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **CS00015 PHYSICALLY PROVEN / CS00014 BENCHMARK PENDING**
+Status: **V1 AND V2 PHYSICALLY PROVEN ON CS00015 / CS00014 BENCHMARK PENDING**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -83,25 +83,28 @@ handoff with exactly the three necessary host retries; duplicates are
 idempotent. The host-side framing and
 CRC vector are also pinned by `tests/janet_fastboot_protocol_test.py`.
 
-Freeze the 2026-08-14 CS00015 comparison as two named physical baselines. Both
+Freeze the 2026-08-14 CS00015 comparison as three named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
 starts at the first checksum-valid Janet request and ends at the first valid
 network A: request, so operator delay is excluded:
 
 | CS00015 baseline | First disk request | Stock frames | Detail |
 | --- | ---: | ---: | --- |
+| **Fast stage v2** | **12.999 s** | 42 | stage 8.00 s; bulk 4.39 s; zero retries |
 | **Fast stage v1** | **17.508 s** | 42 | stage 7.99 s; bulk 8.90 s; one recovered block-0 timeout |
 | **Original stock 9600** | **73.873 s** | 330 | 6784 bytes / 53 records |
 
-Both runs reached the visible CP/M prompt. Fast stage v1 saved 56.365 seconds,
-a **4.22x speedup** or **76.3% reduction**. These values are retained as
-baselines; later stage, guard, window, compression, or clock experiments must
-be recorded as separate variants rather than replacing them. The raw
+All three runs reached the visible CP/M prompt. Fast stage v2 saved 4.509
+seconds over v1 (**1.35x**, 25.8%) and 60.874 seconds over Original stock 9600
+(**5.68x**, 82.4%). Fast stage v1 remains frozen at its 4.22x/76.3% improvement
+over stock. These values are retained as baselines; later stage, guard, window,
+compression, or clock experiments must be recorded as separate variants rather
+than replacing them. The raw
 19200/8O1 wire floor for 6656 data bytes remains about 3.8 seconds. The
 machine-readable record is
 `evidence/juku-serial/cs00015-fastboot-20260814.json`.
 
-## Fast stage v2 candidate
+## Fast stage v2
 
 V1's physical block-0 timeout has a deterministic software explanation. The
 target repeats the critical header ACK three times, but the host treated the
@@ -119,11 +122,13 @@ v1 binary remains byte-exact at 558 bytes and SHA-256
 v2 is a separate 560-byte/five-record artifact.
 
 Clean and corruption/loss/duplication/lost-ACK cosim runs pass for both
-versions. V2 therefore projects approximately **12.8 s** from first Janet
-request to first A: request on CS00015, derived from the frozen v1 timing by
-removing its two-second timeout, one 517-byte retransmission, and 2.53-second
-scan, then adding the one-time guard. This is a prediction, not a physical
-baseline; record the first hardware run separately as **Fast stage v2**.
+versions. The model projected approximately **12.8 s** from first Janet request
+to first A: request on CS00015, derived from the frozen v1 timing by removing
+its two-second timeout, one 517-byte retransmission, and 2.53-second scan, then
+adding the one-time guard. The first physical run measured **12.999 s**, reached
+the visible CP/M prompt, and completed all thirteen blocks with zero retries:
+8.00 s for the stock stage and 4.39 s for the high-speed bulk phase. This close
+agreement also validates the cycle-level explanation of v1's excess time.
 
 Further worthwhile measurements are, in order:
 

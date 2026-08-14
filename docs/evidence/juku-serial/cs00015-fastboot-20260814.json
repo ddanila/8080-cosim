@@ -2,7 +2,7 @@
   "date": "2026-08-14",
   "machine": "CS00015",
   "measurement_boundary": "first checksum-valid Janet bootstrap request to first valid network A: request",
-  "baseline_policy": "Retain both variants unchanged; record later optimizations separately.",
+  "baseline_policy": "Retain all named variants unchanged; record later optimizations separately.",
   "shared_setup": {
     "system": "cpmish/juku-net-mode2-system.bin",
     "volume": "cpmish/cs00015-fastboot.img",
@@ -10,6 +10,19 @@
     "resident_framing": "8O1",
     "pit_mode": 2,
     "pit_count": 4
+  },
+  "fast_stage_v2": {
+    "stage_binary_bytes": 560,
+    "stock_transfer_bytes": 640,
+    "stock_records": 5,
+    "stock_frames_sent": 42,
+    "stage_seconds": 8.00,
+    "bulk_bytes": 6656,
+    "bulk_blocks": 13,
+    "bulk_seconds": 4.39,
+    "host_retries": 0,
+    "first_disk_request_seconds": 12.999,
+    "visible_cpm_prompt": true
   },
   "fast_stage_v1": {
     "stage_binary_bytes": 558,
@@ -33,9 +46,21 @@
     "visible_cpm_prompt": true
   },
   "comparison": {
-    "seconds_saved": 56.365,
-    "speedup": 4.219,
-    "time_reduction_percent": 76.3
+    "v1_vs_original": {
+      "seconds_saved": 56.365,
+      "speedup": 4.219,
+      "time_reduction_percent": 76.3
+    },
+    "v2_vs_v1": {
+      "seconds_saved": 4.509,
+      "speedup": 1.347,
+      "time_reduction_percent": 25.8
+    },
+    "v2_vs_original": {
+      "seconds_saved": 60.874,
+      "speedup": 5.683,
+      "time_reduction_percent": 82.4
+    }
   },
-  "operator_observation": "Both runs reached the visible CP/M prompt."
+  "operator_observation": "All three runs reached the visible CP/M prompt."
 }
