@@ -2,6 +2,8 @@
 """Pin the stock-ROM fast-bootstrap framing and CRC contract."""
 
 from pathlib import Path
+import os
+import pty
 import sys
 from unittest import mock
 
@@ -24,7 +26,11 @@ from tools.janet_fastboot import (  # noqa: E402
     split_stage_artifact,
     stream_packet,
 )
-from tools.janet_netboot import SYSTEM_BYTES, SYSTEM_PREFIX  # noqa: E402
+from tools.janet_netboot import (  # noqa: E402
+    SYSTEM_BYTES,
+    SYSTEM_PREFIX,
+    configure_serial,
+)
 from tools import janet_netboot  # noqa: E402
 
 
@@ -67,6 +73,16 @@ def main() -> int:
     assert stream_wire[:2] == b"JS"
     assert int.from_bytes(stream_wire[-2:], "big") == crc16_ibm(expected)
 
+    core_v4 = b"\xC3\x09\x01JFV4\x01\x03".ljust(128, b"\0")
+    extension_v4 = bytes(range(256)) + bytes(range(128))
+    bundle_core, bundle_extension = split_stage_artifact(
+        core_v4 + extension_v4,
+    )
+    assert bundle_core == core_v4
+    assert bundle_extension == extension_v4
+    extension_wire = extension_packet(extension_v4)
+    assert extension_wire[-2:] == bytes(fletcher16(extension_v4))
+
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.
     with mock.patch.object(
@@ -77,17 +93,28 @@ def main() -> int:
         janet_netboot.write_all(7, b"abc", stall_timeout=10.0)
     assert serial_select.call_args.args[3] == 10.0
 
+    if sys.platform.startswith("linux"):
+        master, slave = pty.openpty()
+        try:
+            # PTYs do not retain parity, so this pins only the exact custom
+            # termios2 rate path; physical CP2102 readback pins 8O1 later.
+            configure_serial(master, 28800, parity="none")
+        finally:
+            os.close(master)
+            os.close(slave)
+
     parser = TargetFrameParser()
     ready = checked_frame(READY, bytes((1, BLOCK_COUNT)))
+    probe = checked_frame(ord("Q"), bytes((4, 1)))
     reply = checked_frame(ord("A"), b"\x07\x00")
     assert parser.feed(b"garbage" + ready[:3]) == []
-    assert parser.feed(ready[3:] + reply) == [
-        (READY, 1, BLOCK_COUNT), (ord("A"), 7, 0),
+    assert parser.feed(ready[3:] + probe + reply) == [
+        (READY, 1, BLOCK_COUNT), (ord("Q"), 4, 1), (ord("A"), 7, 0),
     ]
     # Parsed frames remain queued so an early predicate match cannot discard
     # a coalesced final reply on a USB-UART read.
     assert list(parser.pending) == [
-        (READY, 1, BLOCK_COUNT), (ord("A"), 7, 0),
+        (READY, 1, BLOCK_COUNT), (ord("Q"), 4, 1), (ord("A"), 7, 0),
     ]
     print(
         "JANET-FASTBOOT-PROTOCOL-TEST: PASS "

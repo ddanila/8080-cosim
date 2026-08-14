@@ -12,6 +12,7 @@ import argparse
 import os
 import select
 import sys
+import termios
 import time
 from collections import deque
 from collections.abc import Callable, Iterable
@@ -35,16 +36,19 @@ except ModuleNotFoundError:  # Imported as tools.janet_fastboot by tests.
     )
 
 FAST_BAUD = 19200
+NEGOTIATED_BAUD = 28800
 BLOCK_SIZE = 512
 BLOCK_COUNT = SYSTEM_BYTES // BLOCK_SIZE
 VERSION = 1
-SUPPORTED_VERSIONS = (1, 2, 3)
+SUPPORTED_VERSIONS = (1, 2, 3, 4)
 BLOCK_PROTOCOL_VERSIONS = (1, 2)
 READY = ord("R")
 REPLY = ord("A")
+PROBE = ord("Q")
 HEADER_SEQUENCE = 0xFF
 FINAL_SEQUENCE = BLOCK_COUNT
 V3_BUNDLE_MAGIC = b"JFV3"
+V4_BUNDLE_MAGIC = b"JFV4"
 V3_EXTENSION_MAGIC = b"\xA5\x3A"
 V3_STREAM_MAGIC = b"JS"
 V3_WRITE_STALL_TIMEOUT = 10.0
@@ -84,20 +88,23 @@ def fletcher16(data: bytes) -> tuple[int, int]:
 
 
 def split_stage_artifact(stage: bytes) -> tuple[bytes, bytes | None]:
-    """Split a self-describing v3 bundle or retain a legacy raw stage."""
-    if len(stage) >= 9 and stage[3:7] == V3_BUNDLE_MAGIC:
+    """Split a self-describing streaming bundle or retain a legacy stage."""
+    if len(stage) >= 9 and stage[3:7] in (
+        V3_BUNDLE_MAGIC, V4_BUNDLE_MAGIC,
+    ):
         core_size = stage[7] * 128
         extension_size = stage[8] * 128
-        if core_size != 128 or extension_size != 256 or \
+        expected_extension = 256 if stage[3:7] == V3_BUNDLE_MAGIC else 384
+        if core_size != 128 or extension_size != expected_extension or \
                 len(stage) != core_size + extension_size:
-            raise ValueError("malformed fast-bootstrap v3 bundle")
+            raise ValueError("malformed streaming fast-bootstrap bundle")
         return stage[:core_size], stage[core_size:]
     return stage, None
 
 
 def extension_packet(extension: bytes) -> bytes:
-    if len(extension) != 256:
-        raise ValueError("fast-bootstrap v3 extension must be 256 bytes")
+    if len(extension) not in (256, 384):
+        raise ValueError("fast-bootstrap extension must be 256 or 384 bytes")
     sum1, sum2 = fletcher16(extension)
     return V3_EXTENSION_MAGIC + extension + bytes((sum1, sum2))
 
@@ -177,7 +184,7 @@ class TargetFrameParser:
             if len(self.buffer) < 5:
                 break
             candidate = bytes(self.buffer[:5])
-            if candidate[1] not in (READY, REPLY) or \
+            if candidate[1] not in (READY, REPLY, PROBE) or \
                     candidate[0] ^ candidate[1] ^ candidate[2] ^ \
                     candidate[3] ^ candidate[4]:
                 del self.buffer[0]
@@ -231,6 +238,7 @@ def serve_fast(
     block_filter: Callable[[int, int, bytes], bytes] | None = None,
     reply_filter: Callable[[int, int, tuple[int, int, int]], bool] | None = None,
     extension_filter: Callable[[int, bytes], bytes] | None = None,
+    rate_probe_filter: Callable[[int, bytes], bytes] | None = None,
     configure_rate: bool = True,
 ) -> dict[str, int | float]:
     """Load stage 1 through stock Janet, then send the resident image fast."""
@@ -239,6 +247,7 @@ def serve_fast(
     if retries < 1:
         raise ValueError("retry count must be positive")
     stock_stage, extension = split_stage_artifact(stage1)
+    bundle_version = 4 if stock_stage[3:7] == V4_BUNDLE_MAGIC else 3
     system = extract_system(image)
     stock = serve_stock(
         fd, stock_stage, load_address=0x0100, entry=0x0100,
@@ -258,8 +267,15 @@ def serve_fast(
     parser = TargetFrameParser()
 
     extension_retries = 0
+    transfer_baud = FAST_BAUD
+    rate_fallback = 0
+    rate_setup_error = ""
+    rate_flag = 1
     if extension is not None:
         packet = extension_packet(extension)
+        extension_ready = (
+            READY, bundle_version, 2 if bundle_version == 4 else 1,
+        )
         ready = None
         for attempt in range(retries):
             time.sleep(turnaround_guard)
@@ -268,7 +284,7 @@ def serve_fast(
             write_all(fd, outgoing)
             ready = wait_frame(
                 fd, parser,
-                lambda item: item == (READY, 3, 1),
+                lambda item: item == extension_ready,
                 reply_timeout,
             )
             if ready is not None:
@@ -276,12 +292,14 @@ def serve_fast(
             extension_retries += 1
             if verbose:
                 print(
-                    "Fast v3 extension: no ready marker; "
+                    f"Fast v{bundle_version} extension: no ready marker; "
                     f"retry {attempt + 1}/{retries - 1}",
                     flush=True,
                 )
         if ready is None:
-            raise TimeoutError("fast-bootstrap v3 extension did not start")
+            raise TimeoutError(
+                f"fast-bootstrap v{bundle_version} extension did not start"
+            )
     else:
         ready = wait_frame(
             fd, parser,
@@ -295,6 +313,73 @@ def serve_fast(
     if ready is None:
         raise TimeoutError("fast-bootstrap stage did not announce readiness")
     protocol_version = ready[1]
+
+    if protocol_version == 4:
+        # Ask for the faster in-spec x1 clock while both ends are still at the
+        # physically proven 19200 setting. The target falls back by repeatedly
+        # probing at 19200 if this bidirectional 28800 handshake fails.
+        write_all(fd, checked_frame(ord("F"), bytes((4, 1))))
+        if configure_rate:
+            # Unlike write_all(), tcdrain waits for the five command bytes to
+            # leave the USB-UART. The target's fixed drain then provides the
+            # safe window in which to change the host clock.
+            try:
+                termios.tcdrain(fd)
+                configure_serial(fd, NEGOTIATED_BAUD)
+            except (OSError, RuntimeError, ValueError) as error:
+                rate_setup_error = str(error)
+                configure_serial(fd, FAST_BAUD)
+        fast_probe = None if rate_setup_error else wait_frame(
+            fd, parser, lambda item: item == (PROBE, 4, 1), 0.5,
+        )
+        fast_ready = None
+        if fast_probe is not None:
+            fast_ack = checked_frame(ord("K"), bytes((4, 1)))
+            outgoing = rate_probe_filter(1, fast_ack) \
+                if rate_probe_filter is not None else fast_ack
+            write_all(fd, outgoing)
+            fast_ready = wait_frame(
+                fd, parser, lambda item: item == (READY, 4, 1),
+                0.5,
+            )
+        if fast_ready is not None:
+            ready = fast_ready
+            transfer_baud = NEGOTIATED_BAUD
+        else:
+            rate_fallback = 1
+            rate_flag = 0
+            if configure_rate:
+                configure_serial(fd, FAST_BAUD)
+            # A real termios rate change flushes unread garbage. Mirror that
+            # boundary in cosim and wait for the target's repeated slow probe.
+            parser = TargetFrameParser()
+            for _attempt in range(retries):
+                slow_probe = wait_frame(
+                    fd, parser, lambda item: item == (PROBE, 4, 0),
+                    reply_timeout,
+                )
+                if slow_probe is None:
+                    continue
+                slow_ack = checked_frame(ord("K"), bytes((4, 0)))
+                outgoing = rate_probe_filter(0, slow_ack) \
+                    if rate_probe_filter is not None else slow_ack
+                write_all(fd, outgoing)
+                ready = wait_frame(
+                    fd, parser, lambda item: item == (READY, 4, 0),
+                    reply_timeout,
+                )
+                if ready is not None:
+                    break
+            else:
+                raise TimeoutError("fast-bootstrap v4 fallback probe failed")
+
+        if rate_setup_error and verbose:
+            print(
+                f"Fast v4: 28800 host setup failed ({rate_setup_error}); "
+                "recovered through the 19200 target fallback",
+                flush=True,
+            )
+
     if verbose:
         extension_detail = "" if extension is None else \
             f"; {len(extension)}-byte extension at high speed"
@@ -302,7 +387,8 @@ def serve_fast(
             f"Fast stage ready: {len(stock_stage)} bytes via stock Janet"
             f"{extension_detail}; "
             f"protocol v{protocol_version}; switching bulk load to "
-            f"{FAST_BAUD} baud, 8O1",
+            f"{transfer_baud} baud, 8O1"
+            + (" (19200 fallback)" if rate_fallback else ""),
             flush=True,
         )
 
@@ -337,8 +423,10 @@ def serve_fast(
                 )
         raise TimeoutError(f"fast-bootstrap exchange {sequence:02X} failed")
 
-    if protocol_version == 3:
+    if protocol_version in (3, 4):
         packet = stream_packet(system)
+        stream_ready = (READY, protocol_version, rate_flag)
+        success_sequence = 4 if protocol_version == 4 else 0
         for attempt in range(retries):
             time.sleep(turnaround_guard)
             outgoing = block_filter(0, attempt, packet) \
@@ -346,12 +434,12 @@ def serve_fast(
             write_all(fd, outgoing, stall_timeout=V3_WRITE_STALL_TIMEOUT)
 
             def matching_stream_reply(item: tuple[int, int, int]) -> bool:
-                if item == (READY, 3, 1):
+                if item == stream_ready:
                     return True
-                if item[0] != REPLY or item[1] != 0:
+                if item[0] != REPLY or item[1] != success_sequence:
                     return False
                 return reply_filter is None or reply_filter(
-                    0, attempt, item,
+                    success_sequence, attempt, item,
                 )
 
             response = wait_frame(
@@ -366,12 +454,21 @@ def serve_fast(
                 reason = "timeout" if response is None else \
                     "target restarted stream"
                 print(
-                    f"Fast v3 stream: {reason}; "
+                    f"Fast v{protocol_version} stream: {reason}; "
                     f"retry {attempt + 1}/{retries - 1}",
                     flush=True,
                 )
         else:
-            raise TimeoutError("fast-bootstrap v3 stream failed")
+            raise TimeoutError(
+                f"fast-bootstrap v{protocol_version} stream failed"
+            )
+        if protocol_version == 4:
+            # The target emits three success copies, drains them, restores
+            # 19200/8O1, and only then enters NETROM2. Avoid changing the host
+            # rate in the middle of those repeated frames.
+            time.sleep(0.080)
+            if configure_rate:
+                configure_serial(fd, FAST_BAUD)
         finished = time.monotonic()
         if verbose:
             print(
@@ -392,6 +489,9 @@ def serve_fast(
             "blocks": 1,
             "protocol_version": protocol_version,
             "extension_retries": extension_retries,
+            "transfer_baud": transfer_baud,
+            "rate_fallback": rate_fallback,
+            "rate_setup_error": rate_setup_error,
             "retries": retries_used,
             "crc16": crc16_ibm(system),
             "request_started_at": request_started_at,

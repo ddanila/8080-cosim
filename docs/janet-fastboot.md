@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V1/V2/V3 PHYSICALLY PROVEN ON CS00015**
+Status: **V1/V2/V3 PHYSICALLY PROVEN ON CS00015; NEGOTIATED V4 COSIM-READY**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -130,6 +130,40 @@ frames retain the one-second guard. The reset/retry then passed with 18 stock
 frames, zero extension/stream retries, a 2.21-second stock stage, 4.13-second
 high-speed phase, and the first valid A: request at 6.915 seconds. The operator
 confirmed the visible CP/M prompt.
+
+## Fast stage v4: negotiated 28,800
+
+The first post-v3 rate candidate is **28,800**, not 25,600. The classic CP2102
+uses the discrete AN205 rate table; the current Linux
+[`cp210x` driver](https://github.com/torvalds/linux/blob/master/drivers/usb/serial/cp210x.c)
+lists 19,200 followed by 28,800 and quantizes requests through those table
+boundaries. A nominal 25,600 request therefore does not produce 25,600 on this
+adapter. The Juku can produce about 28,622.5 baud from 16 MHz / 13 / 43 with
+D57 mode 2/count 43 and D11 x1. Its -0.62% mismatch against 28,800 is modest,
+the 28.6 kHz x1 input is below the КР580ВВ51А's documented 64 kHz x1 ceiling,
+and the external CP2102/RS-232 chain is already proven well above this rate.
+
+V4 remains a one-stock-record design. Its 123-byte core loads a 381-byte
+extension padded to 384 bytes at proven 19,200. The extension announces
+`J R 04 02 xor`; the host requests the experiment at 19,200, drains those bytes,
+and switches to exact 28,800 through Linux `termios2/BOTHER`. The target sends
+`J Q 04 01 xor` at the candidate rate, requires the matching `J K 04 01 xor`
+from the host, and only then announces stream readiness. If either direction
+fails, the target restores 19,200 and repeatedly exchanges the acknowledged
+`J Q/K/R 04 00` fallback sequence. A missing or quantized host custom rate is
+also caught by exact readback and enters this same fallback. After the stream,
+both ends restore 19,200 before NETROM2 requests its `NR` marker.
+
+The separate `juku-fastboot-v4.bin` artifact is 512 bytes and has SHA-256
+`15c016492e7a3ec8f8e1666b387ec1f1a74b7f932b087b1bd21a22bd9be0ab9e`.
+Clean 28,800, corruption/loss/lost-reply, and forced high-rate failure paths
+all reach CA00h with B400h-CDFFh byte-exact in cosim; the forced failure uses
+the acknowledged 19,200 fallback. V1-v3 hashes remain unchanged. The raw
+6656-byte stream floor falls from 3.813 s at 19,200 to 2.542 s at 28,800.
+Accounting for the 128-byte larger extension and negotiation guards predicts a
+CS00015 first-disk request near **5.8 seconds**, roughly another 1.1 seconds
+below v3. Physical qualification and an exact-rate readback on the attached
+CP2102 remain before calling v4 proven.
 
 Freeze the 2026-08-14 CS00015 comparison as four named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing

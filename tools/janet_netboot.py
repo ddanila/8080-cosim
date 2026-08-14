@@ -11,6 +11,7 @@ station 01.  This program acts as station 02 by default.
 from __future__ import annotations
 
 import argparse
+import ctypes
 import errno
 import os
 import select
@@ -33,6 +34,50 @@ SYSTEM_BYTES = 0x1A00
 SYSTEM_STAGING_ADDRESS = 0x0180
 RECORD_SIZE = 128
 DEFAULT_BAUD = 9600
+
+
+class _Termios2(ctypes.Structure):
+    _fields_ = [
+        ("c_iflag", ctypes.c_uint),
+        ("c_oflag", ctypes.c_uint),
+        ("c_cflag", ctypes.c_uint),
+        ("c_lflag", ctypes.c_uint),
+        ("c_line", ctypes.c_ubyte),
+        ("c_cc", ctypes.c_ubyte * 19),
+        ("c_ispeed", ctypes.c_uint),
+        ("c_ospeed", ctypes.c_uint),
+    ]
+
+
+_TCGETS2 = 0x802C542A
+_TCSETS2 = 0x402C542B
+_CBAUD = 0x100F
+_BOTHER = 0x1000
+
+
+def _configure_arbitrary_baud(fd: int, baud: int) -> None:
+    """Select and verify an exact Linux termios2/BOTHER baud rate."""
+    settings = _Termios2()
+    libc = ctypes.CDLL(None, use_errno=True)
+    if libc.ioctl(fd, _TCGETS2, ctypes.byref(settings)) < 0:
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error))
+    settings.c_cflag = (settings.c_cflag & ~_CBAUD) | _BOTHER
+    settings.c_ispeed = baud
+    settings.c_ospeed = baud
+    if libc.ioctl(fd, _TCSETS2, ctypes.byref(settings)) < 0:
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error))
+    check = _Termios2()
+    if libc.ioctl(fd, _TCGETS2, ctypes.byref(check)) < 0:
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error))
+    if check.c_ispeed != baud or check.c_ospeed != baud:
+        raise RuntimeError(
+            f"serial driver applied {check.c_ispeed}/{check.c_ospeed}, "
+            f"expected exact {baud} baud"
+        )
+    termios.tcflush(fd, termios.TCIOFLUSH)
 
 
 def xor_bytes(data: bytes) -> int:
@@ -209,14 +254,21 @@ def configure_serial(
         )
         if hasattr(termios, constant)
     }
-    try:
-        speed = speeds[baud]
-    except KeyError as exc:
-        raise ValueError(f"unsupported baud rate: {baud}") from exc
     if parity not in ("none", "odd"):
         raise ValueError(f"unsupported parity: {parity}")
     if stop_bits not in (1, 2):
         raise ValueError(f"unsupported stop-bit count: {stop_bits}")
+    speed = speeds.get(baud)
+    if speed is None:
+        if not 50 <= baud <= 4_000_000:
+            raise ValueError(f"unsupported baud rate: {baud}")
+        # Establish framing through ordinary termios, then replace only the
+        # speed. Readback catches adapters which quantize custom requests.
+        configure_serial(
+            fd, DEFAULT_BAUD, parity=parity, stop_bits=stop_bits,
+        )
+        _configure_arbitrary_baud(fd, baud)
+        return
     attrs = termios.tcgetattr(fd)
     attrs[0] = termios.IGNPAR
     attrs[1] = 0
