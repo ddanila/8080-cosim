@@ -38,6 +38,7 @@ FAST_BAUD = 19200
 BLOCK_SIZE = 512
 BLOCK_COUNT = SYSTEM_BYTES // BLOCK_SIZE
 VERSION = 1
+SUPPORTED_VERSIONS = (1, 2)
 READY = ord("R")
 REPLY = ord("A")
 HEADER_SEQUENCE = 0xFF
@@ -63,20 +64,34 @@ def checked_frame(kind: int, payload: bytes) -> bytes:
     return body + bytes((checksum,))
 
 
-def header(system: bytes) -> bytes:
+def header(system: bytes, version: int = VERSION) -> bytes:
     if len(system) != SYSTEM_BYTES:
         raise ValueError(f"fast system must contain exactly {SYSTEM_BYTES} bytes")
     crc = crc16_ccitt(system)
+    if version not in SUPPORTED_VERSIONS:
+        raise ValueError(f"unsupported fast-bootstrap version: {version}")
     return checked_frame(
-        ord("H"), bytes((VERSION, BLOCK_COUNT, crc >> 8, crc & 0xFF)),
+        ord("H"), bytes((version, BLOCK_COUNT, crc >> 8, crc & 0xFF)),
     )
 
 
-def data_block(sequence: int, payload: bytes) -> bytes:
+def data_block(
+    sequence: int,
+    payload: bytes,
+    *,
+    version: int = VERSION,
+    cumulative_crc: int | None = None,
+) -> bytes:
     if not 0 <= sequence < BLOCK_COUNT or len(payload) != BLOCK_SIZE:
         raise ValueError("invalid fast-bootstrap block")
     protected = bytes((sequence,)) + payload
-    crc = crc16_ccitt(protected)
+    if version == 1 and cumulative_crc is None:
+        crc = crc16_ccitt(protected)
+    elif version == 2 and cumulative_crc is not None and \
+            0 <= cumulative_crc <= 0xFFFF:
+        crc = cumulative_crc
+    else:
+        raise ValueError("invalid CRC mode for fast-bootstrap block")
     return b"JB" + protected + bytes((crc >> 8, crc & 0xFF))
 
 
@@ -184,15 +199,20 @@ def serve_fast(
     parser = TargetFrameParser()
     ready = wait_frame(
         fd, parser,
-        lambda item: item == (READY, VERSION, BLOCK_COUNT),
+        lambda item: (
+            item[0] == READY and item[1] in SUPPORTED_VERSIONS and
+            item[2] == BLOCK_COUNT
+        ),
         reply_timeout * retries,
     )
     if ready is None:
         raise TimeoutError("fast-bootstrap stage did not announce readiness")
+    protocol_version = ready[1]
     if verbose:
         print(
             f"Fast stage ready: {len(stage1)} bytes via stock Janet; "
-            f"switching bulk load to {FAST_BAUD} baud, 8O1",
+            f"protocol v{protocol_version}; switching bulk load to "
+            f"{FAST_BAUD} baud, 8O1",
             flush=True,
         )
 
@@ -227,10 +247,25 @@ def serve_fast(
                 )
         raise TimeoutError(f"fast-bootstrap exchange {sequence:02X} failed")
 
-    exchange(header(system), HEADER_SEQUENCE)
+    exchange(header(system, protocol_version), HEADER_SEQUENCE)
+    # The target repeats this critical ACK three times. Hearing the first copy
+    # does not yet mean it has released the half-duplex line; v1's first
+    # physical run exposed this race as an otherwise unnecessary block-0
+    # timeout. Allow all copies and the fixed target drain to finish.
+    if protocol_version == 2:
+        time.sleep(0.080)
+    running_crc = 0xFFFF
     for sequence in range(BLOCK_COUNT):
         offset = sequence * BLOCK_SIZE
-        exchange(data_block(sequence, system[offset:offset + BLOCK_SIZE]), sequence)
+        payload = system[offset:offset + BLOCK_SIZE]
+        if protocol_version == 2:
+            running_crc = crc16_ccitt(payload, running_crc)
+            packet = data_block(
+                sequence, payload, version=2, cumulative_crc=running_crc,
+            )
+        else:
+            packet = data_block(sequence, payload)
+        exchange(packet, sequence)
         if verbose:
             print(
                 f"Fast bootstrap: {(sequence + 1) * 100 // BLOCK_COUNT:3d}% "
@@ -263,6 +298,7 @@ def serve_fast(
         "stage_bytes": len(stage1),
         "system_bytes": len(system),
         "blocks": BLOCK_COUNT,
+        "protocol_version": protocol_version,
         "retries": retries_used,
         "crc16": crc16_ccitt(system),
         "request_started_at": request_started_at,

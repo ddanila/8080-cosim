@@ -311,6 +311,15 @@ CP/M prompt. Fast stage v1 recovered one block-0 timeout automatically and was
 4.22x faster. Later optimization results must be added as separate variants;
 see `janet-fastboot.md` for the frozen table and evidence JSON.
 
+The separate **Fast stage v2** candidate retains the 512-byte stop-and-wait
+shape but makes each block CRC the cumulative image CRC checkpoint. This
+preserves block retry, duplicate handling, and final whole-image verification
+while removing v1's 4,297,085-cycle final RAM scan (about 2.53 s on CS00015).
+The host also waits for all repeated header ACKs to release the half-duplex
+line, addressing v1's observed block-0 timeout. Both v1 and v2 pass the clean
+and injected-fault cosim matrix; the projected CS00015 request-to-first-disk
+time is about 12.8 s pending a separately named physical v2 run.
+
 Start at the already proven **19,200/8O1, x16, PIT mode 2/count 4**. At that
 wire rate the raw 6,784-byte lower bound is about 3.9 seconds, so a practical
 4–6 second bulk load is a reasonable initial goal. Later test mode 2/count 2

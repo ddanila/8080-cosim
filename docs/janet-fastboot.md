@@ -35,6 +35,15 @@ is safe. The host retries a block up to five times by default. A reset always
 returns to the stock ROM, allowing the operator to retry either the fast path
 or the untouched all-stock path.
 
+Protocol v2 retains the same frames and fixed layout. Its block CRC field is
+the cumulative CRC16 of all image data through that block rather than an
+independent CRC of `sequence + data`. The target checkpoints the cumulative
+CRC after every accepted block and retains the preceding checkpoint for a
+duplicate. Corruption or loss therefore retries safely, while the thirteenth
+accepted block already proves the header's whole-image CRC; no second B400h-
+CDFFh scan is required. The ready/header version byte distinguishes v1 and v2,
+and the host negotiates either from the stage marker.
+
 ## Use
 
 Build the stage and network system in the CP/Mish checkout, then serve the
@@ -53,6 +62,16 @@ cp juku-net-mode2.img cs00015-fastboot.img
 Power/reset the stock-ROM machine and type `TN` without Enter, as for the
 ordinary Janet boot. The host learns the one active station pair from that
 request. Do not use `--fast-stage1` with a disk baud other than 19200.
+
+The frozen physical baseline command above uses `juku-fastboot-stage1.bin`
+(protocol v1). The next distinct candidate is **Fast stage v2**:
+
+```sh
+../8080-cosim/tools/janet_disk_server.py \
+    --fast-stage1 juku-fastboot-v2.bin --disk-baud 19200 \
+    --writable --timeout 86400 /dev/ttyUSB0 \
+    juku-net-mode2-system.bin cs00015-fastboot.img
+```
 
 ## Verification and expected speed
 
@@ -81,6 +100,30 @@ be recorded as separate variants rather than replacing them. The raw
 19200/8O1 wire floor for 6656 data bytes remains about 3.8 seconds. The
 machine-readable record is
 `evidence/juku-serial/cs00015-fastboot-20260814.json`.
+
+## Fast stage v2 candidate
+
+V1's physical block-0 timeout has a deterministic software explanation. The
+target repeats the critical header ACK three times, but the host treated the
+first copy as line release and began block 0 while the target could still be
+transmitting/draining the remaining copies. V2 waits 80 ms after header
+acceptance before the ordinary 20 ms per-block guard. This costs 80 ms once and
+removes the two-second reply timeout plus a 517-byte retransmission.
+
+V2 also replaces the final bitwise CRC scan with cumulative per-block CRC
+checkpoints. Exact instruction/data accounting for the frozen CP/Mish image
+puts the removed scan at 4,297,085 8080 cycles: approximately 2.53 s at
+CS00015's measured ~1.70 MHz (2.86 s at the conservative 1.5 MHz model). The
+v1 binary remains byte-exact at 558 bytes and SHA-256
+`b600758acf2bc10a068b003caf29d8799be6fa35489af6e23b8277360d334646`;
+v2 is a separate 560-byte/five-record artifact.
+
+Clean and corruption/loss/duplication/lost-ACK cosim runs pass for both
+versions. V2 therefore projects approximately **12.8 s** from first Janet
+request to first A: request on CS00015, derived from the frozen v1 timing by
+removing its two-second timeout, one 517-byte retransmission, and 2.53-second
+scan, then adding the one-time guard. This is a prediction, not a physical
+baseline; record the first hardware run separately as **Fast stage v2**.
 
 Further worthwhile measurements are, in order:
 

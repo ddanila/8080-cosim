@@ -37,6 +37,12 @@ def main() -> int:
     block = data_block(0, expected[:BLOCK_SIZE])
     assert len(block) == 2 + 1 + BLOCK_SIZE + 2
     assert crc16_ccitt(block[2:-2]) == int.from_bytes(block[-2:], "big")
+    cumulative = crc16_ccitt(expected[:BLOCK_SIZE])
+    block_v2 = data_block(
+        0, expected[:BLOCK_SIZE], version=2, cumulative_crc=cumulative,
+    )
+    assert int.from_bytes(block_v2[-2:], "big") == cumulative
+    assert header(image[SYSTEM_PREFIX:SYSTEM_PREFIX + SYSTEM_BYTES], 2)[2] == 2
     assert BLOCK_COUNT * BLOCK_SIZE == SYSTEM_BYTES
 
     parser = TargetFrameParser()
