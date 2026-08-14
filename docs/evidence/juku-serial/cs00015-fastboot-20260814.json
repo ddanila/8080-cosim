@@ -11,6 +11,28 @@
     "pit_mode": 2,
     "pit_count": 4
   },
+  "fast_stage_v5": {
+    "artifact_bytes": 384,
+    "artifact_sha256": "8fa63db50daaf64f8da9025b443cbe0cb3802d985a4ba5c74630435953d628a4",
+    "core_code_bytes": 117,
+    "stock_transfer_bytes": 128,
+    "stock_records": 1,
+    "stock_frames_sent": 18,
+    "stage_seconds": 2.23,
+    "extension_transfer_bytes": 256,
+    "extension_retries": 0,
+    "bulk_bytes": 6656,
+    "bulk_framing": "8N1",
+    "bulk_streams": 1,
+    "bulk_seconds": 3.84,
+    "stream_retries": 0,
+    "crc16_ibm": "5313",
+    "first_disk_request_seconds": 6.551,
+    "resident_framing_restored": "8O1",
+    "visible_cpm_prompt": true,
+    "physical_dir": true,
+    "qualification": "fastest physically proven variant"
+  },
   "fast_stage_v3": {
     "artifact_bytes": 384,
     "artifact_sha256": "bf5104c3d7af271a52defa54acf7773daf032461ff303cc04f0fe4e5ba49b22a",
@@ -91,6 +113,16 @@
     "visible_cpm_prompt": true
   },
   "comparison": {
+    "v5_vs_v3": {
+      "seconds_saved": 0.364,
+      "speedup": 1.056,
+      "time_reduction_percent": 5.3
+    },
+    "v5_vs_original": {
+      "seconds_saved": 67.322,
+      "speedup": 11.276,
+      "time_reduction_percent": 91.1
+    },
     "v1_vs_original": {
       "seconds_saved": 56.365,
       "speedup": 4.219,
@@ -124,8 +156,8 @@
     "v4_fallback_vs_v3": {
       "seconds_slower": 2.284,
       "time_increase_percent": 33.0,
-      "verdict": "not an optimization; retain fast_stage_v3 as the default"
+      "verdict": "not an optimization; fast_stage_v5 is the fastest default and fast_stage_v3 remains the 8O1 fallback"
     }
   },
-  "operator_observation": "All four named baselines reached the visible CP/M prompt."
+  "operator_observation": "All five named speed baselines reached the visible CP/M prompt. Fast stage v5 also completed DIR from physical network A:."
 }

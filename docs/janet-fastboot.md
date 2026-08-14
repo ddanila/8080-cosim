@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V3 FASTEST PROVEN; V4 RATE FAILED; 19,200/8N1 V5 COSIM-READY**
+Status: **V5 FASTEST PHYSICALLY MEASURED; V4 RATE FAILED; 19,200 FROZEN**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -206,25 +206,36 @@ bytes of extension padded to 256. Its SHA-256 is
 Clean and corruption/loss/lost-reply cosim paths exercise mode `4E`, install
 B400h-CDFFh byte-exact, restore mode `5E`, and enter CA00h. V1-v4 hashes remain
 unchanged. Removing the parity bit lowers the 6656-byte wire floor from 3.813
-to 3.467 seconds and should put the first CS00015 A: request near **6.55
+to 3.467 seconds and predicted the first CS00015 A: request near **6.55
 seconds**, only about 0.35 seconds below v3. Earlier mode-3 BAUDTEST evidence
-did not sustain long 19,200/8N1 receives, so physical qualification remains
-necessary; reset plus v3 is the fallback.
+had not sustained long 19,200/8N1 receives, making physical qualification the
+decisive gate; reset plus v3 remained the fallback.
 
-Freeze the 2026-08-14 CS00015 comparison as four named physical baselines. All
+The physical CS00015 run then matched that prediction: one 128-byte stock
+record and the 256-byte extension completed with zero retries, the CRC-valid
+6656-byte stream completed with zero retries, and the first A: request arrived
+at **6.551 seconds**. The split was 2.23 seconds through the stock stage and
+3.84 seconds through the extension plus 8N1 stream. This saves 0.364 seconds
+(5.3%) over physical v3 and makes v5 the fastest measured variant while
+retaining v3 byte-for-byte as the proven 8O1 fallback.
+
+Freeze the 2026-08-14 CS00015 comparison as five named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
 starts at the first checksum-valid Janet request and ends at the first valid
 network A: request, so operator delay is excluded:
 
 | CS00015 baseline | First disk request | Stock frames | Detail |
 | --- | ---: | ---: | --- |
+| **Fast stage v5** | **6.551 s** | 18 | stage 2.23 s; bulk 3.84 s; zero retries; 8N1 bootstrap |
 | **Fast stage v3** | **6.915 s** | 18 | stage 2.21 s; bulk 4.13 s; zero retries |
 | **Fast stage v2** | **12.999 s** | 42 | stage 8.00 s; bulk 4.39 s; zero retries |
 | **Fast stage v1** | **17.508 s** | 42 | stage 7.99 s; bulk 8.90 s; one recovered block-0 timeout |
 | **Original stock 9600** | **73.873 s** | 330 | 6784 bytes / 53 records |
 
-All four runs reached the visible CP/M prompt. Fast stage v3 saved 6.084
-seconds over v2 (**1.88x**, 46.8%) and 66.958 seconds over Original stock 9600
+All five runs reached the visible CP/M prompt. V5 also completed a physical
+`DIR` from network A:. V5 saved 0.364 seconds over v3 (**1.06x**, 5.3%)
+and 67.322 seconds over Original stock 9600 (**11.28x**, 91.1%). Fast stage
+v3 saved 6.084 seconds over v2 (**1.88x**, 46.8%) and 66.958 seconds over Original stock 9600
 (**10.68x**, 90.6%). Fast stage v2 saved 4.509
 seconds over v1 (**1.35x**, 25.8%) and 60.874 seconds over Original stock 9600
 (**5.68x**, 82.4%). Fast stage v1 remains frozen at its 4.22x/76.3% improvement
