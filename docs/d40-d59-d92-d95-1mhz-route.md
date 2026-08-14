@@ -78,7 +78,7 @@ net containing:
 `PHI2TTL` is now limited to D35.13, D39.1, D53.4, and its sheet-1 continuation
 D30.3. The HDL drives the D59 input and both D92 timing inputs from D40 Q3
 instead of the former fixed-high/D35 phase assumptions. The generated
-schematic round-trips at 117 mapped instances and 308 matched nets.
+schematic passes the mapped LVS check.
 The structural Yosys/LVS view applies D59's complementary outputs to D48-D51.
 Runnable simulation retains a CPU-only MA-bus scaffold while video uses its
 SIM-ONLY second DRAM port; it does not apply an unproved D41/D53 slot schedule
@@ -95,9 +95,8 @@ closed instead from D76.1 to D84.1, and four electrically redundant abandoned
 stubs were removed under
 `ref/routing/d40-1mhz-dangling-prune.json`.
 
-The promoted and candidate boards are byte-identical at this checkpoint:
-322 footprints, 2,436 pads, 30,904 copper items, zero connectivity opens,
-zero electrical DRC blockers, and zero dangling tracks or vias. The exact
+The promoted and candidate boards are byte-identical at this checkpoint and
+pass the connectivity, electrical DRC, and dangling-item checks. The exact
 endpoint and direct-tie invariant is executable in
 `kicad/check_d40_1mhz_route.py`; the guarded one-shot migration is retained as
 `kicad/apply_d40_1mhz_route.py`.

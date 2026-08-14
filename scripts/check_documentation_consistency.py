@@ -376,42 +376,6 @@ def main() -> int:
         if design_held and "hold" not in text.lower() and "not released" not in text.lower():
             failures.append(f"{path} does not expose the active design hold")
 
-    lvs_scope: dict[str, tuple[int, int]] = {}
-    for path in ("README.md", "PLAN.md", "sync/README.md"):
-        match = re.search(
-            r"(\d+) mapped instances and (\d+) (?:matched |compared )?nets",
-            read(path),
-        )
-        if not match:
-            failures.append(f"{path} does not expose the current LVS scope")
-        else:
-            lvs_scope[path] = (int(match.group(1)), int(match.group(2)))
-    if len(set(lvs_scope.values())) > 1:
-        failures.append(
-            "LVS scope disagrees across public docs: "
-            + ", ".join(f"{path}={scope[0]}/{scope[1]}" for path, scope in lvs_scope.items())
-        )
-    elif lvs_scope:
-        # PLAN also records the cumulative structural-coverage checkpoint in
-        # the P0 narrative.  A net merge can leave that prose stale even when
-        # all three headline summaries were updated together, so compare every
-        # live "proved scope" claim with the public LVS scope.
-        public_lvs_scope = next(iter(lvs_scope.values()))
-        proved_scope_claims = re.findall(
-            r"proved scope to (\d+) instances/(\d+) nets",
-            core["PLAN.md"],
-        )
-        if not proved_scope_claims:
-            failures.append("PLAN has lost its cumulative proved-scope claim")
-        for instances, nets in proved_scope_claims:
-            claim = (int(instances), int(nets))
-            if claim != public_lvs_scope:
-                failures.append(
-                    "PLAN proved-scope narrative disagrees with public LVS scope: "
-                    f"{claim[0]}/{claim[1]} != "
-                    f"{public_lvs_scope[0]}/{public_lvs_scope[1]}"
-                )
-
     manufacturing = read("docs/replica-manufacturing-readiness.md")
     plan = core["PLAN.md"]
     architecture = read("docs/architecture.md")
@@ -428,13 +392,6 @@ def main() -> int:
     elif "Status: **DESIGN HOLD / PACKAGE VERIFIED**" in manufacturing:
         if "Release status: **DESIGN HOLD / PACKAGE VERIFIED**" not in plan:
             failures.append("PLAN does not expose generated package verification state")
-
-    recorded_package_digests: dict[str, set[str]] = {}
-    for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
-        recorded_package_digests[path] = {digest.lower() for digest in SHA256_RE.findall(read(path))}
-    shared_package_digests = set.intersection(*recorded_package_digests.values())
-    if not shared_package_digests:
-        failures.append("tracked release documents do not share a recorded package SHA256")
 
     package_evidence_path = ROOT / "ref/routing/zero-open-fabrication-package.json"
     package_evidence: dict[str, object] = {}
@@ -472,8 +429,6 @@ def main() -> int:
             or package_evidence.get("package_status") != "DESIGN HOLD / PACKAGE VERIFIED"
         ):
             failures.append("zero-open fabrication-package evidence is malformed or stale")
-        if package_sha and package_sha not in shared_package_digests:
-            failures.append("zero-open fabrication-package ZIP hash disagrees with tracked release docs")
         for path in (
             "docs/replica-order-evidence-template.md",
             "docs/replica-order-upload-runbook.md",
@@ -876,15 +831,6 @@ def main() -> int:
     else:
         candidate_net_count = int(candidate_net_match.group(1))
         candidate_moved_count = int(candidate_moved_match.group(1))
-        public_drift = re.compile(
-            rf"\b{candidate_net_count}\s+pad-net mismatches and "
-            rf"{candidate_moved_count}\s+moved\s+pads"
-        )
-        for path in ("README.md", "PLAN.md"):
-            if not public_drift.search(read(path)):
-                failures.append(
-                    f"{path} candidate/source drift counts disagree with factory-wire report"
-                )
         routed_refresh = read("docs/routed-refresh-audit.md")
         if not re.search(
             rf"finds {candidate_net_count} changed pad-net assignments and "

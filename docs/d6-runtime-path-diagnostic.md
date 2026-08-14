@@ -35,7 +35,6 @@ D6-RUNTIME-ALL-MODES ba=b37a mode=111 word=f d6_9=1 d13_2=0 d58_9=1
 D6-RUNTIME-DISABLED ba=b37a word=f d6_9=1 d13_2=0 d58_9=1
 D6-RUNTIME-QUALIFIER mode=011 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=1 ram_d8=ff
 D6-RUNTIME-PATH: CORRECTED TABLE MATCHES MEASURED MODE PATH
-hdl/sim/d6_runtime_path_tb.v:182: $finish called at 13000 (1ps)
 ```
 
 At low-ROM address `0484`, measured mode `011` emits word `8`: D6.12 sinks

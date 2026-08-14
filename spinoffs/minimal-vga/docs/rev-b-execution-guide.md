@@ -35,9 +35,9 @@ section for the T0.4 rewrite-vs-move resolution.
 Create the machine-facts file. Sections: `memory_map` (ROM/RAM/overlay modes from
 `spinoffs/minimal-vga/docs/rev-a-gal-equations.md`), `framebuffer` (base 0xD800,
 bytes 9640, geometry 40×241 — `docs/phase4-bench-bringup.md`), `io_ports` (PIC
-0x00/0x01, 8255 0x04–0x07 — read them out of `cosim/trace.c`, cite line numbers in
-a `provenance` field per entry), `pic_wiring` (ir0..ir7 from `hdl/juku_top.v`
-~line 709), `timing` (frame-IRQ period 200000 from `docs/jmon33-hdl-probe.md`,
+0x00/0x01, 8255 0x04–0x07 — read them from `cosim/trace.c` and cite the owning
+symbols in a `provenance` field per entry), `pic_wiring` (ir0..ir7 from the PIC
+instance in `hdl/juku_top.v`), `timing` (frame-IRQ period from `docs/jmon33-hdl-probe.md`,
 FDC 2 MHz-equivalent constants from `cosim/juku_fdc.c`).
 *Acceptance:* every entry has `value` + `provenance`; values match the cited
 sources when re-checked.

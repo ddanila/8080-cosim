@@ -15,9 +15,9 @@ elaborates `hdl/juku_top.v` with Yosys, and compares mapped endpoint
 partitions. It uses a real KiCad netlist when compatible `kicad-cli` is
 available and the board JSON directly otherwise.
 
-Current scope: 117 mapped instances and 308 compared nets. Placement-only
-footprints, unnetted pins, analog passives, and explicit simulation-only ports
-are outside this result.
+Placement-only footprints, unnetted pins, analog passives, and explicit
+simulation-only ports are outside this result. Run the check for the current
+mapped-instance and net totals.
 
 Physical supply ports such as the 8080's GND, -5 V, +5 V, and +12 V pins are
 also excluded from logic LVS by an explicit `POWER_ONLY` list. Their package
@@ -56,10 +56,10 @@ sync/basic_cart_check.sh
 sync/d2_ready_path_check.sh
 ```
 
-These cover the real-ROM boot/framebuffer path, 4.48 million independent and
-mostly exhaustive 8080 ALU/flag/control assertions (`i8080_check.sh`), plus an
-8,192-case one-instruction C/vm80a differential over every opcode and all 32
-architectural flag combinations (`i8080_vm80a_diff_check.sh`), typed
+These cover the real-ROM boot/framebuffer path, an independent and mostly
+exhaustive 8080 ALU/flag/control guard (`i8080_check.sh`), a one-instruction
+C/vm80a differential over every opcode and architectural flag combination
+(`i8080_vm80a_diff_check.sh`), typed
 memory/I/O bus-event agreement between `juku_top` and the C emulator
 (`cosim_check.sh`, cosim-referenced), focused end-to-end `CD low high` interrupt
 acknowledge agreement (`inta_bus_check.sh`), raw disk geometry, and a generated C/HDL

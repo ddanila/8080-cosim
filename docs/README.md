@@ -118,7 +118,7 @@ findings. Every status applies only to the boundary named by the report.
   explicit wire/island splits from the three promoted-route copper substitutions
   still held on A9/A12/A13, and separately guards landing registration/fitting.
 - Twin: `cosim-runtime-reference.md` (typed bus, focused interrupt-acknowledge,
-  8,192-case instruction, and uninterrupted top-level runtime guards),
+  instruction-level, and uninterrupted top-level runtime guards),
   `juku-top-jbasic-verilator-probe.md` (uninterrupted HDL disk-BASIC `READY`),
   `fdc-readiness.md`, `d96-read-clock-readiness.md` (source-closed
   D96 wiring, undefined section-1 restart phase, and the exact section-2
@@ -151,6 +151,10 @@ findings. Every status applies only to the boundary named by the report.
 The producing scripts live under `scripts/`, `kicad/`, or `sync/`. CI reruns
 the reports that guard active boundaries and fails if their committed output
 changes.
+
+Human-written summaries should describe outcomes and point to the command or
+owning symbol. Keep generated totals, hashes, and source locations in their
+machine-readable evidence instead of copying them into prose.
 
 ## Reference-area READMEs
 

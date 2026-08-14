@@ -13,10 +13,9 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s typed CPU-bus events against
   the C emulator (`cosim`). The default trace covers memory and I/O reads and
   writes; a focused interrupt-acknowledge differential separately verifies the
-  decoded `CD D4 FE` sequence. An instruction-level C/vm80a differential covers
-  8,192 isolated cases, while the generated C/HDL FDC differential covers
-  50,845 state transitions. The 130,000-event run reaches `BTRACE-END` with no
-  type, address, or data divergence, including the BIOS RAM test.
+  decoded `CD D4 FE` sequence. Instruction-level CPU and generated C/HDL FDC
+  differentials cover their declared input spaces. The deep run reaches
+  `BTRACE-END` without a type, address, or data divergence.
 - The C emulator also has an opt-in D11/8251 PTY transport for diagnostic-ROM
   development. Its data/status mirrors, ready transitions, TX, and RX/echo are
   guarded by `tests/cosim_usart_pty_test.py` via `sync/juk_disk_check.sh`.
@@ -35,21 +34,17 @@ with the machine-readable board model.
   BAUDTEST2 supplements it with a 68-case pattern/history/clock-shape matrix
   whose repeated checksummed reports, per-case timeouts, and unconditional
   final 9600 restoration survive individual receive or host failures.
-- `sync/check.sh` currently compares 117 mapped instances and 308 nets with no
-  KiCad/HDL mismatch.
-- The promoted routed main-board artifact exactly matches the live
-  322-footprint/2,436-pad source and contains 30,904 copper items across 412
-  nets. Stable KiCad 9.0.8 reports zero opens, zero electrical blockers, and
-  zero dangling tracks or vias. Its Gerber/drill package is machine-verified,
+- `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
+  scope.
+- The promoted routed main-board artifact exactly matches the live source.
+  Stable KiCad reports no opens, electrical blockers, or dangling tracks or
+  vias. Its Gerber/drill package is machine-verified,
   but remains under the functional design hold and must not be uploaded or
-  ordered. Current deterministic upload ZIP SHA256:
-  `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46`.
-  Exact topology evidence is retained in
+  ordered. Exact topology evidence is retained in
   `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
   `ref/routing/zero-open-fabrication-package.json`, and fabrication/release
   gates are summarized in `docs/replica-manufacturing-readiness.md`.
-  The separately preserved historical candidate still has 265 pad-net mismatches and 224 moved
-  pads against the source; it is audit history, not the promoted board.
+  The separately preserved candidate is audit history, not the promoted board.
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
   repeated reads across two `.009` boards; the measured D2/D30/D105 and

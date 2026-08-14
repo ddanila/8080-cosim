@@ -83,6 +83,7 @@ def main() -> int:
         print(output)
         raise SystemExit("D6 RUNTIME PATH DIAGNOSTIC: FAIL")
 
+    result_lines = [line for line in output.splitlines() if line.startswith("D6-")]
     lines = [
         "# D6 runnable-path diagnostic", "",
         "Status: **CORRECTED TABLE MATCHES MEASURED MODE PATH**", "",
@@ -97,7 +98,7 @@ def main() -> int:
         "A6/A5=`/PC1,/PC0` mapping makes Port C `80` supply suffix `11`. Owner",
         "continuity closes A7 as D7.8 `IO_CYCLE_H`; it is low during these memory",
         "cycles, so the runnable row is `011`.", "",
-        "## Result", "", "```text", *output.strip().splitlines(), "```", "",
+        "## Result", "", "```text", *result_lines, "```", "",
         "At low-ROM address `0484`, measured mode `011` emits word `8`: D6.12 sinks",
         "and enables the D8 pager. At RAM target `B37A`, the same mode emits word `1`:",
         "ROM releases, RAM and ROE sink, D13 output rises, and D37 enables D58. This",
