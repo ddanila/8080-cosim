@@ -11,6 +11,28 @@
     "pit_mode": 2,
     "pit_count": 4
   },
+  "fast_stage_v7": {
+    "date": "2026-08-15",
+    "artifact_bytes": 5218,
+    "artifact_sha256": "bc3897d6d79cfaafd4b747aecc60410b9b1eec6c9296565176c23f38c9677b88",
+    "core_code_bytes": 120,
+    "stock_transfer_bytes": 128,
+    "stock_records": 1,
+    "stock_frames_sent": 18,
+    "extension_code_bytes": 254,
+    "extension_transfer_bytes": 256,
+    "uncompressed_bytes": 6656,
+    "compressed_bytes": 4826,
+    "compression": "ZX0 classic",
+    "bulk_framing": "8N1",
+    "crc16_ibm": "5313",
+    "resident_framing_restored": "8O1 by CP/M BIOS NETINIT",
+    "visible_cpm_prompt": true,
+    "physical_dir": true,
+    "first_disk_request_seconds": null,
+    "timing_note": "The physical run qualified the complete path, but its exact first-disk timestamp was not retained. Repeat with a saved host log before comparing timing with v6.",
+    "qualification": "physically functional; timed benchmark pending"
+  },
   "fast_stage_v6": {
     "date": "2026-08-15",
     "artifact_bytes": 5342,
@@ -200,5 +222,5 @@
       "verdict": "not an optimization; fast_stage_v6 is the fastest default, fast_stage_v5 is the uncompressed control, and fast_stage_v3 remains the 8O1 fallback"
     }
   },
-  "operator_observation": "All six named speed baselines reached the visible CP/M prompt. Fast stages v5 and v6 also completed DIR from physical network A:."
+  "operator_observation": "All seven named speed baselines reached the visible CP/M prompt. Fast stages v5, v6, and v7 also completed DIR from physical network A:."
 }

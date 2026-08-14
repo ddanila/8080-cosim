@@ -276,9 +276,12 @@ with 34 reads and zero retries. V7 also reduces the host's post-success handoff
 guard from 80 to 20 ms because its short drain plus BIOS-owned reinitialisation
 replace v6's longer extension drain. One fewer 128-byte extension record, four
 fewer stream bytes, and the 60 ms guard reduction predict about **0.129 s**
-below v6, or roughly **6.09 s** to the first A: request on CS00015. Treat that
-as a prediction until a physical run is recorded; v6 remains the fastest
-physically proven default.
+below v6, or roughly **6.09 s** to the first A: request on CS00015. A physical
+CS00015 run on 2026-08-15 passed the stock-ROM bootstrap, 19,200 handoff,
+visible prompt, and network `DIR`, qualifying v7's complete functional path and
+short handoff guard. Its exact first-disk timestamp was not retained, so this
+value remains a prediction and v6 remains the fastest *timed* physical
+baseline pending a separately logged v7 repeat.
 
 Run the candidate without changing the ROM:
 
@@ -297,6 +300,7 @@ network A: request, so operator delay is excluded:
 
 | CS00015 baseline | First disk request | Stock frames | Detail |
 | --- | ---: | ---: | --- |
+| **Fast stage v7** | timing not retained | 18 | prompt and `DIR` passed; 8N1 + ZX0; short handoff qualified |
 | **Fast stage v6** | **6.214 s** | 18 | stage 2.21 s; bulk 3.53 s; zero retries; 8N1 + ZX0 |
 | **Fast stage v5** | **6.551 s** | 18 | stage 2.23 s; bulk 3.84 s; zero retries; 8N1 bootstrap |
 | **Fast stage v3** | **6.915 s** | 18 | stage 2.21 s; bulk 4.13 s; zero retries |
@@ -304,7 +308,7 @@ network A: request, so operator delay is excluded:
 | **Fast stage v1** | **17.508 s** | 42 | stage 7.99 s; bulk 8.90 s; one recovered block-0 timeout |
 | **Original stock 9600** | **73.873 s** | 330 | 6784 bytes / 53 records |
 
-All six runs reached the visible CP/M prompt. V5 and v6 also completed a
+All seven runs reached the visible CP/M prompt. V5, v6, and v7 also completed a
 physical `DIR` from network A:. V6 saved 0.337 seconds over v5 (**1.05x**,
 5.1%) and 67.659 seconds over Original stock 9600 (**11.89x**, 91.6%). V5 saved 0.364 seconds over v3 (**1.06x**, 5.3%)
 and 67.322 seconds over Original stock 9600 (**11.28x**, 91.1%). Fast stage
@@ -354,8 +358,8 @@ Further worthwhile measurements are, in order:
    matters;
 4. compare stop-and-wait with a two-block window only after fault recovery is
    equally deterministic;
-5. physically benchmark the separately named v7 fixed-metadata path, then
-   gather repeated cold/warm v6/v7 distributions before tightening more guards;
+5. repeat v7 with its exact host log retained, then gather repeated cold/warm
+   v6/v7 distributions before tightening more guards;
 6. keep production fastboot at 19,200. Revisit a higher rate only with new
    electrical evidence, because the in-spec x1 experiment already failed and
    count-2/x16 would exceed the USART clock limit by about two times.
