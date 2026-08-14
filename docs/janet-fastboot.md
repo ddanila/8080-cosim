@@ -145,6 +145,67 @@ Further worthwhile measurements are, in order:
 6. keep nominal 38400 mode-2/count-2 as a separately recoverable experiment,
    never a default before multi-board physical proof.
 
+## Post-v2 optimization study
+
+The physical v2 split is dominated by the stock-loaded program, not the bulk
+wire. Five stock records took 8.00 seconds while all 6656 high-speed bytes took
+4.39 seconds. The v1/v2 and original-stock measurements imply approximately
+1.37 seconds per additional 128-byte stock record and about 1.13 seconds of
+fixed stock transaction cost. A one-record first stage therefore projects near
+2.50 seconds and can save roughly 5.5 seconds before changing the bulk rate.
+
+Fast stage v3 should consequently use a conventional two-stage shape: stock
+Janet loads one 128-byte core at 9600; that core switches to the proven
+19200/mode-2 clock and validates a compact extension loaded into low RAM; the
+extension receives one continuous fixed-size system stream with a strong CRC.
+An error retries the complete 6656-byte stream. This trades rare clean-cable
+retransmission cost for eliminating twelve ordinary block turnarounds. It is a
+separate experimental artifact; v1 and v2 remain byte-exact recovery choices.
+Long packets and streaming are the established way to remove stop-and-wait
+latency on a clean link, while shorter packets remain useful on noisy links;
+the [Kermit protocol manual](https://www.kermitproject.org/protocol/kproto.pdf)
+describes that exact tradeoff.
+
+Do not weaken v3 to an additive checksum merely to keep its receiver fast. A
+1983 [byte-wise CRC study](https://www.bitsavers.org/components/fairchild/_appNotes/Byte-wise_CRC_Jun83.pdf)
+includes a 43-byte, table-free 8080 routine measured nearly four times faster
+than its bit-at-a-time version. This is fast enough for the planned 25600
+experiment and small enough for the high-speed extension. The one-record core
+may use a compact Fletcher guard solely to authenticate that extension; the
+resident system retains a polynomial CRC before execution.
+
+The КР580ВВ51А limits rule out `mode 2 / count 3 / x16` as the preferred
+intermediate rate: its roughly 410 kHz USART clock exceeds the specified
+310 kHz x16 maximum. The standards-respecting intermediate experiment is D57
+mode 2/count 48 with D11 x1, producing about 25641 baud against a 25600 host
+(about +0.16%). The Soviet reference gives x1 a 64 kHz clock ceiling, x16 a
+310 kHz ceiling, and x64 a 615 kHz ceiling; see the
+[КР580ВВ51А reference tables](https://djvu.online/file/3bWMXUu35Lsw2).
+Because CS00014 previously rejected x1 with the mode-3 clock, v3 must negotiate
+this rate at proven 19200 and automatically retain/fall back to 19200 on any
+failed bidirectional probe. A later x1/mode-2/count-32 38400 experiment is
+electrically more credible than count-2/x16, but follows 25600 rather than
+becoming a default.
+
+Compression is secondary and must be cycle-benchmarked end to end. Against the
+exact 6656-byte 2026-08-14 CP/Mish resident image, local current-tool results
+are:
+
+| Encoding | Bytes | 19200/8O1 wire saving before decode |
+| --- | ---: | ---: |
+| none | 6656 | 0 s |
+| simple repeated-byte RLE estimate | 6155 | 0.287 s |
+| LZSA1 raw | 5498 | 0.663 s |
+| LZSA2 raw | 5129 | 0.875 s |
+| ZX0 classic | 4826 | 1.049 s |
+
+ZX0 has a compact 92-byte 8080 decoder, but it only wins if decompression takes
+less than 1.05 seconds at the measured CS00015 CPU rate; LZSA can trade a lower
+ratio for faster decode. First freeze uncompressed v3, then run each real
+decoder in the cycle model. Likewise, 8N1 removes one of eleven wire bits per
+byte and can save about 0.35 seconds at 19200, but belongs after the 8O1 v3
+baseline so framing and protocol changes remain separable.
+
 The current cosim does not yet automate power-reset/restart during a block.
 Reset recovery is structurally safe because the stock ROM regains control, but
 an automated host re-discovery test remains before declaring the path fully
