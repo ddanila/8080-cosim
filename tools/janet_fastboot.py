@@ -40,7 +40,7 @@ NEGOTIATED_BAUD = 28800
 BLOCK_SIZE = 512
 BLOCK_COUNT = SYSTEM_BYTES // BLOCK_SIZE
 VERSION = 1
-SUPPORTED_VERSIONS = (1, 2, 3, 4)
+SUPPORTED_VERSIONS = (1, 2, 3, 4, 5)
 BLOCK_PROTOCOL_VERSIONS = (1, 2)
 READY = ord("R")
 REPLY = ord("A")
@@ -49,6 +49,7 @@ HEADER_SEQUENCE = 0xFF
 FINAL_SEQUENCE = BLOCK_COUNT
 V3_BUNDLE_MAGIC = b"JFV3"
 V4_BUNDLE_MAGIC = b"JFV4"
+V5_BUNDLE_MAGIC = b"JFV5"
 V3_EXTENSION_MAGIC = b"\xA5\x3A"
 V3_STREAM_MAGIC = b"JS"
 V3_WRITE_STALL_TIMEOUT = 10.0
@@ -90,11 +91,11 @@ def fletcher16(data: bytes) -> tuple[int, int]:
 def split_stage_artifact(stage: bytes) -> tuple[bytes, bytes | None]:
     """Split a self-describing streaming bundle or retain a legacy stage."""
     if len(stage) >= 9 and stage[3:7] in (
-        V3_BUNDLE_MAGIC, V4_BUNDLE_MAGIC,
+        V3_BUNDLE_MAGIC, V4_BUNDLE_MAGIC, V5_BUNDLE_MAGIC,
     ):
         core_size = stage[7] * 128
         extension_size = stage[8] * 128
-        expected_extension = 256 if stage[3:7] == V3_BUNDLE_MAGIC else 384
+        expected_extension = 384 if stage[3:7] == V4_BUNDLE_MAGIC else 256
         if core_size != 128 or extension_size != expected_extension or \
                 len(stage) != core_size + extension_size:
             raise ValueError("malformed streaming fast-bootstrap bundle")
@@ -247,7 +248,11 @@ def serve_fast(
     if retries < 1:
         raise ValueError("retry count must be positive")
     stock_stage, extension = split_stage_artifact(stage1)
-    bundle_version = 4 if stock_stage[3:7] == V4_BUNDLE_MAGIC else 3
+    bundle_version = {
+        V3_BUNDLE_MAGIC: 3,
+        V4_BUNDLE_MAGIC: 4,
+        V5_BUNDLE_MAGIC: 5,
+    }.get(stock_stage[3:7], 3)
     system = extract_system(image)
     stock = serve_stock(
         fd, stock_stage, load_address=0x0100, entry=0x0100,
@@ -263,7 +268,10 @@ def serve_fast(
         # time to leave the USB-UART before tcflush changes the line rate.
         time.sleep(0.050)
     if configure_rate:
-        configure_serial(fd, FAST_BAUD)
+        configure_serial(
+            fd, FAST_BAUD,
+            parity="none" if bundle_version == 5 else "odd",
+        )
     parser = TargetFrameParser()
 
     extension_retries = 0
@@ -399,6 +407,7 @@ def serve_fast(
                 flush=True,
             )
 
+    transfer_framing = "8N1" if protocol_version == 5 else "8O1"
     if verbose:
         extension_detail = "" if extension is None else \
             f"; {len(extension)}-byte extension at high speed"
@@ -406,7 +415,7 @@ def serve_fast(
             f"Fast stage ready: {len(stock_stage)} bytes via stock Janet"
             f"{extension_detail}; "
             f"protocol v{protocol_version}; switching bulk load to "
-            f"{transfer_baud} baud, 8O1"
+            f"{transfer_baud} baud, {transfer_framing}"
             + (" (19200 fallback)" if rate_fallback else ""),
             flush=True,
         )
@@ -442,7 +451,7 @@ def serve_fast(
                 )
         raise TimeoutError(f"fast-bootstrap exchange {sequence:02X} failed")
 
-    if protocol_version in (3, 4):
+    if protocol_version in (3, 4, 5):
         packet = stream_packet(system)
         stream_ready = (READY, protocol_version, rate_flag)
         success_sequence = 4 if protocol_version == 4 else 0
@@ -481,7 +490,7 @@ def serve_fast(
             raise TimeoutError(
                 f"fast-bootstrap v{protocol_version} stream failed"
             )
-        if protocol_version == 4:
+        if protocol_version in (4, 5):
             # The target emits three success copies, drains them, restores
             # 19200/8O1, and only then enters NETROM2. Avoid changing the host
             # rate in the middle of those repeated frames.
@@ -512,6 +521,7 @@ def serve_fast(
             "rate_fallback": rate_fallback,
             "rate_setup_error": rate_setup_error,
             "rate_failure_stage": rate_failure_stage,
+            "transfer_framing": transfer_framing,
             "retries": retries_used,
             "crc16": crc16_ibm(system),
             "request_started_at": request_started_at,

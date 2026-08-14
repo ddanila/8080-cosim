@@ -83,6 +83,11 @@ def main() -> int:
     extension_wire = extension_packet(extension_v4)
     assert extension_wire[-2:] == bytes(fletcher16(extension_v4))
 
+    core_v5 = b"\xC3\x09\x01JFV5\x01\x02".ljust(128, b"\0")
+    bundle_core, bundle_extension = split_stage_artifact(core_v5 + extension)
+    assert bundle_core == core_v5
+    assert bundle_extension == extension
+
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.
     with mock.patch.object(

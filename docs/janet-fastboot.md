@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V3 IS THE FASTEST PROVEN DEFAULT; V4 FALLBACK PROVEN, 28,800 FAILED**
+Status: **V3 FASTEST PROVEN; V4 RATE FAILED; 19,200/8N1 V5 COSIM-READY**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -190,6 +190,26 @@ failed here; 38,400/count-2 x16 would drive about 615 kHz, roughly two times
 over specification. A v4 repeat is useful only to locate the failed direction,
 not as a likely optimization. Subsequent speed variants retain 19,200 and test
 8N1, compression with measured 8080 decode cycles, or stock-Janet latency.
+
+## Fast stage v5: 19,200/8N1
+
+V5 isolates framing while retaining v3's proven D57 mode-2/count-4 x16 clock,
+one-record core, Fletcher-protected 256-byte extension, CRC-16/IBM stream, and
+full-stream retry behavior. The core selects D11 mode `4Eh` (8N1), the host
+switches only the bootstrap extension/stream to 8N1, and the extension drains
+its three success replies before restoring mode `5Eh` (8O1). NETROM2 and its
+host disk remain unchanged at 19,200/8O1.
+
+`juku-fastboot-v5.bin` is 384 bytes: 117 bytes of core padded to 128 and 197
+bytes of extension padded to 256. Its SHA-256 is
+`8fa63db50daaf64f8da9025b443cbe0cb3802d985a4ba5c74630435953d628a4`.
+Clean and corruption/loss/lost-reply cosim paths exercise mode `4E`, install
+B400h-CDFFh byte-exact, restore mode `5E`, and enter CA00h. V1-v4 hashes remain
+unchanged. Removing the parity bit lowers the 6656-byte wire floor from 3.813
+to 3.467 seconds and should put the first CS00015 A: request near **6.55
+seconds**, only about 0.35 seconds below v3. Earlier mode-3 BAUDTEST evidence
+did not sustain long 19,200/8N1 receives, so physical qualification remains
+necessary; reset plus v3 is the fallback.
 
 Freeze the 2026-08-14 CS00015 comparison as four named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
