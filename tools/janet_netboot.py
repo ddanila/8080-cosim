@@ -198,12 +198,16 @@ def configure_serial(
     stop_bits: int = 1,
 ) -> None:
     speeds = {
-        2400: termios.B2400,
-        4800: termios.B4800,
-        9600: termios.B9600,
-        14400: termios.B14400,
-        19200: termios.B19200,
-        38400: termios.B38400,
+        baud_rate: getattr(termios, constant)
+        for baud_rate, constant in (
+            (2400, "B2400"),
+            (4800, "B4800"),
+            (9600, "B9600"),
+            (14400, "B14400"),
+            (19200, "B19200"),
+            (38400, "B38400"),
+        )
+        if hasattr(termios, constant)
     }
     try:
         speed = speeds[baud]
