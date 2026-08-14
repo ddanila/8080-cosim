@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import sys
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -24,6 +25,7 @@ from tools.janet_fastboot import (  # noqa: E402
     stream_packet,
 )
 from tools.janet_netboot import SYSTEM_BYTES, SYSTEM_PREFIX  # noqa: E402
+from tools import janet_netboot  # noqa: E402
 
 
 def main() -> int:
@@ -64,6 +66,16 @@ def main() -> int:
     stream_wire = stream_packet(expected)
     assert stream_wire[:2] == b"JS"
     assert int.from_bytes(stream_wire[-2:], "big") == crc16_ibm(expected)
+
+    # A USB serial driver may not advertise new write room until its several-
+    # kilobyte URB drains. V3 grants that one long stream its real wire time.
+    with mock.patch.object(
+        janet_netboot.os, "write", side_effect=(1, BlockingIOError(), 2),
+    ), mock.patch.object(
+        janet_netboot.select, "select", return_value=([], [7], []),
+    ) as serial_select:
+        janet_netboot.write_all(7, b"abc", stall_timeout=10.0)
+    assert serial_select.call_args.args[3] == 10.0
 
     parser = TargetFrameParser()
     ready = checked_frame(READY, bytes((1, BLOCK_COUNT)))

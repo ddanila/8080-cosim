@@ -260,13 +260,16 @@ def configure_serial(
         )
 
 
-def write_all(fd: int, data: bytes) -> None:
+def write_all(fd: int, data: bytes, *, stall_timeout: float = 1.0) -> None:
+    """Queue all bytes, allowing callers to size the serial-driver stall."""
+    if stall_timeout <= 0:
+        raise ValueError("serial output stall timeout must be positive")
     view = memoryview(data)
     while view:
         try:
             written = os.write(fd, view)
         except BlockingIOError:
-            _, writable, _ = select.select([], [fd], [], 1.0)
+            _, writable, _ = select.select([], [fd], [], stall_timeout)
             if not writable:
                 raise TimeoutError("serial output remained blocked")
             continue

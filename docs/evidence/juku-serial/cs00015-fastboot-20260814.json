@@ -11,6 +11,26 @@
     "pit_mode": 2,
     "pit_count": 4
   },
+  "fast_stage_v3": {
+    "artifact_bytes": 384,
+    "artifact_sha256": "bf5104c3d7af271a52defa54acf7773daf032461ff303cc04f0fe4e5ba49b22a",
+    "core_code_bytes": 117,
+    "stock_transfer_bytes": 128,
+    "stock_records": 1,
+    "stock_frames_sent": 18,
+    "stage_seconds": 2.21,
+    "extension_transfer_bytes": 256,
+    "extension_retries": 0,
+    "bulk_bytes": 6656,
+    "bulk_streams": 1,
+    "bulk_seconds": 4.13,
+    "stream_retries": 0,
+    "crc16_ibm": "5313",
+    "first_disk_request_seconds": 6.915,
+    "visible_cpm_prompt": true,
+    "qualification_attempt": 2,
+    "first_attempt_detail": "The target loaded and authenticated the extension, but the host's one-second serial write-room timeout expired while queuing the 6660-byte stream. The long-stream allowance was raised to ten seconds without adding an intentional transfer delay; attempt 2 passed."
+  },
   "fast_stage_v2": {
     "stage_binary_bytes": 560,
     "stock_transfer_bytes": 640,
@@ -60,7 +80,22 @@
       "seconds_saved": 60.874,
       "speedup": 5.683,
       "time_reduction_percent": 82.4
+    },
+    "v3_vs_v2": {
+      "seconds_saved": 6.084,
+      "speedup": 1.880,
+      "time_reduction_percent": 46.8
+    },
+    "v3_vs_v1": {
+      "seconds_saved": 10.593,
+      "speedup": 2.532,
+      "time_reduction_percent": 60.5
+    },
+    "v3_vs_original": {
+      "seconds_saved": 66.958,
+      "speedup": 10.683,
+      "time_reduction_percent": 90.6
     }
   },
-  "operator_observation": "All three runs reached the visible CP/M prompt."
+  "operator_observation": "All four named baselines reached the visible CP/M prompt."
 }

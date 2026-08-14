@@ -47,6 +47,7 @@ FINAL_SEQUENCE = BLOCK_COUNT
 V3_BUNDLE_MAGIC = b"JFV3"
 V3_EXTENSION_MAGIC = b"\xA5\x3A"
 V3_STREAM_MAGIC = b"JS"
+V3_WRITE_STALL_TIMEOUT = 10.0
 
 
 def crc16_ccitt(data: bytes, initial: int = 0xFFFF) -> int:
@@ -342,7 +343,7 @@ def serve_fast(
             time.sleep(turnaround_guard)
             outgoing = block_filter(0, attempt, packet) \
                 if block_filter is not None else packet
-            write_all(fd, outgoing)
+            write_all(fd, outgoing, stall_timeout=V3_WRITE_STALL_TIMEOUT)
 
             def matching_stream_reply(item: tuple[int, int, int]) -> bool:
                 if item == (READY, 3, 1):

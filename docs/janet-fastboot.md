@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V1/V2 PHYSICALLY PROVEN ON CS00015; V3 COSIM-PROVEN AND READY FOR BENCH**
+Status: **V1/V2/V3 PHYSICALLY PROVEN ON CS00015**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -89,7 +89,7 @@ The frozen physical baseline command above uses `juku-fastboot-stage1.bin`
     juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
-The **Fast stage v3** bench candidate uses the identical command with the new
+The physically proven **Fast stage v3** uses the identical command with the new
 bundle; it does not require a ROM burn:
 
 ```sh
@@ -100,7 +100,7 @@ cd ~/fun/cpmish && make juku-fastboot-v3.bin
     juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
-The candidate artifact is 384 bytes (117-byte core padded to 128 plus a
+The physically proven artifact is 384 bytes (117-byte core padded to 128 plus a
 172-byte extension padded to 256), SHA-256
 `bf5104c3d7af271a52defa54acf7773daf032461ff303cc04f0fe4e5ba49b22a`.
 
@@ -121,18 +121,31 @@ system stream, recovers after a completely lost stream, and accepts the second
 of three success frames when the first is hidden from the host. It reaches the
 same byte-exact entry with one extension retry and two stream retries.
 
-Freeze the 2026-08-14 CS00015 comparison as three named physical baselines. All
+The first CS00015 attempt authenticated the extension but exposed a Linux host
+queue assumption: after accepting several kilobytes, the USB serial driver did
+not advertise more write room within the generic one-second limit. The target
+correctly remained in its stream receiver. V3 now grants only its long stream
+a ten-second *stall allowance* (not a ten-second delay); short Janet and disk
+frames retain the one-second guard. The reset/retry then passed with 18 stock
+frames, zero extension/stream retries, a 2.21-second stock stage, 4.13-second
+high-speed phase, and the first valid A: request at 6.915 seconds. The operator
+confirmed the visible CP/M prompt.
+
+Freeze the 2026-08-14 CS00015 comparison as four named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
 starts at the first checksum-valid Janet request and ends at the first valid
 network A: request, so operator delay is excluded:
 
 | CS00015 baseline | First disk request | Stock frames | Detail |
 | --- | ---: | ---: | --- |
+| **Fast stage v3** | **6.915 s** | 18 | stage 2.21 s; bulk 4.13 s; zero retries |
 | **Fast stage v2** | **12.999 s** | 42 | stage 8.00 s; bulk 4.39 s; zero retries |
 | **Fast stage v1** | **17.508 s** | 42 | stage 7.99 s; bulk 8.90 s; one recovered block-0 timeout |
 | **Original stock 9600** | **73.873 s** | 330 | 6784 bytes / 53 records |
 
-All three runs reached the visible CP/M prompt. Fast stage v2 saved 4.509
+All four runs reached the visible CP/M prompt. Fast stage v3 saved 6.084
+seconds over v2 (**1.88x**, 46.8%) and 66.958 seconds over Original stock 9600
+(**10.68x**, 90.6%). Fast stage v2 saved 4.509
 seconds over v1 (**1.35x**, 25.8%) and 60.874 seconds over Original stock 9600
 (**5.68x**, 82.4%). Fast stage v1 remains frozen at its 4.22x/76.3% improvement
 over stock. These values are retained as baselines; later stage, guard, window,
@@ -140,7 +153,7 @@ compression, or clock experiments must be recorded as separate variants rather
 than replacing them. The raw
 19200/8O1 wire floor for 6656 data bytes remains about 3.8 seconds. The
 machine-readable record is
-`evidence/juku-serial/cs00015-fastboot-20260814.json`.
+`docs/evidence/juku-serial/cs00015-fastboot-20260814.json`.
 
 ## Fast stage v2
 
