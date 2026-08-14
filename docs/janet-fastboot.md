@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **IMPLEMENTED IN COSIM / PHYSICAL BENCHMARK PENDING**
+Status: **CS00015 PHYSICALLY PROVEN / CS00014 BENCHMARK PENDING**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -64,14 +64,23 @@ handoff with exactly the three necessary host retries; duplicates are
 idempotent. The host-side framing and
 CRC vector are also pinned by `tests/janet_fastboot_protocol_test.py`.
 
-The stock stage uses roughly one sixth of the former Janet traffic: five
-logical records and about 54 host frames in cosim, versus 53 records and the
-physical CS00014 baseline of 334 frames for the 6784-byte wrapper. Scaling the
-81-second physical baseline by frame count predicts roughly 13 seconds for the
-stock phase. The 19200/8O1 wire time for 6656 data bytes is about 3.8 seconds;
-headers, thirteen half-duplex turns, retries, and final CRC scanning make a
-rough **17–20 second first physical target**, about four times faster than the
-81-second baseline. This estimate is not a bench result.
+Freeze the 2026-08-14 CS00015 comparison as two named physical baselines. Both
+used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
+starts at the first checksum-valid Janet request and ends at the first valid
+network A: request, so operator delay is excluded:
+
+| CS00015 baseline | First disk request | Stock frames | Detail |
+| --- | ---: | ---: | --- |
+| **Fast stage v1** | **17.508 s** | 42 | stage 7.99 s; bulk 8.90 s; one recovered block-0 timeout |
+| **Original stock 9600** | **73.873 s** | 330 | 6784 bytes / 53 records |
+
+Both runs reached the visible CP/M prompt. Fast stage v1 saved 56.365 seconds,
+a **4.22x speedup** or **76.3% reduction**. These values are retained as
+baselines; later stage, guard, window, compression, or clock experiments must
+be recorded as separate variants rather than replacing them. The raw
+19200/8O1 wire floor for 6656 data bytes remains about 3.8 seconds. The
+machine-readable record is
+`evidence/juku-serial/cs00015-fastboot-20260814.json`.
 
 Further worthwhile measurements are, in order:
 

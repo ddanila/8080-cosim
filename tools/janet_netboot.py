@@ -276,7 +276,8 @@ def write_all(fd: int, data: bytes) -> None:
 def serve(fd: int, image: bytes, *, load_address: int | None = None,
           entry: int | None = None, client: int | None = None,
           server: int | None = None,
-          timeout: float = 30.0, verbose: bool = True) -> dict[str, int]:
+          timeout: float = 30.0,
+          verbose: bool = True) -> dict[str, int | float]:
     """Serve the first matching client through the bootstrap execute service.
 
     A ``None`` identity is learned from the first checksum-valid bootstrap
@@ -300,6 +301,22 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
     total_records = len(prepared.data) // RECORD_SIZE
     last_progress_bucket = -1
     deadline = time.monotonic() + timeout
+    request_started_at: float | None = None
+
+    def boot_stats() -> dict[str, int | float]:
+        if request_started_at is None:
+            raise RuntimeError("bootstrap completed without a request timestamp")
+        return {
+            "image_bytes": len(prepared.data),
+            "sent_frames": sent_frames,
+            "received_frames": received_frames,
+            "ack_08": ack_08,
+            "ack_09": ack_09,
+            "client": int(active_client),
+            "server": int(active_server),
+            "request_started_at": request_started_at,
+            "transfer_seconds": time.monotonic() - request_started_at,
+        }
 
     if verbose:
         print(
@@ -378,15 +395,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                         f"{sent_frames} frames sent",
                         flush=True,
                     )
-                return {
-                    "image_bytes": len(prepared.data),
-                    "sent_frames": sent_frames,
-                    "received_frames": received_frames,
-                    "ack_08": ack_08,
-                    "ack_09": ack_09,
-                    "client": active_client,
-                    "server": active_server,
-                }
+                return boot_stats()
 
             if request_seen and ready_turn and advance_pending:
                 write_all(fd, frame(0, active_server, 0x00))
@@ -401,6 +410,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                     control & 0x0C == 0x04 and payload[:2] == b"\x03\x04"):
                 active_client = source
                 active_server = destination
+                request_started_at = time.monotonic()
                 transfer = boot_frames(
                     prepared.data, load_address=prepared.load_address,
                     entry=prepared.entry, client=active_client,
@@ -451,15 +461,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                             f"{sent_frames} frames sent",
                             flush=True,
                         )
-                    return {
-                        "image_bytes": len(prepared.data),
-                        "sent_frames": sent_frames,
-                        "received_frames": received_frames,
-                        "ack_08": ack_08,
-                        "ack_09": ack_09,
-                        "client": active_client,
-                        "server": active_server,
-                    }
+                    return boot_stats()
                 else:
                     last_payload_marker = transfer[next_message - 1][6]
                     if last_payload_marker == 0x09:

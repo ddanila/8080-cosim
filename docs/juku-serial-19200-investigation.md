@@ -303,6 +303,14 @@ small window only if it produces a material physical gain without weakening
 recovery. Compression remains optional only if a small 8080 decoder
 demonstrably reduces total boot time.
 
+Physical CS00015 passed the complete path on 2026-08-14. Preserve the
+same-machine results as **Fast stage v1** (17.508 s, 42 stock frames) and
+**Original stock 9600** (73.873 s, 330 stock frames), measured from the first
+valid Janet request to the first valid A: request. Both reached the visible
+CP/M prompt. Fast stage v1 recovered one block-0 timeout automatically and was
+4.22x faster. Later optimization results must be added as separate variants;
+see `janet-fastboot.md` for the frozen table and evidence JSON.
+
 Start at the already proven **19,200/8O1, x16, PIT mode 2/count 4**. At that
 wire rate the raw 6,784-byte lower bound is about 3.9 seconds, so a practical
 4–6 second bulk load is a reasonable initial goal. Later test mode 2/count 2

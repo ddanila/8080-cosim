@@ -159,6 +159,26 @@ volume, selected B:, completed `DIR` on the native 160-track
 read-only. CS00014 had already passed the same setup, so the native game-drive
 path is now physically validated on both available reference boards.
 
+## Fast-bootstrap physical baseline
+
+On 2026-08-14 CS00015 physically validated the stock-ROM-compatible fast
+bootstrap. Its fitted service ROM retained the ordinary Janet entry: stock
+Janet loaded the 558-byte stage at 9600/8O1, the stage selected D57 channel 0
+mode 2/count 4 and D11 19200/8O1, thirteen CRC16-protected 512-byte blocks
+installed B400h-CDFFh, and the machine reached the visible CP/M prompt.
+
+Freeze this same-machine comparison before further optimization:
+
+- **Fast stage v1:** 17.508 s from first valid bootstrap request to first valid
+  A: request; 42 stock frames; stage 7.99 s; bulk 8.90 s; one automatically
+  recovered block-0 timeout; visible prompt reached.
+- **Original stock 9600:** 73.873 s over the original 6784-byte/53-record
+  wrapper; 330 stock frames; visible prompt reached.
+
+The measured improvement is 4.22x, saving 56.365 s (76.3%). Both runs used the
+same system, volume, cable, host, and CS00015. See `janet-fastboot.md` and
+`evidence/juku-serial/cs00015-fastboot-20260814.json`.
+
 ## Current deployment
 
 Following the Arvutimuuseum demonstration, CS00015 is in the home lab with the

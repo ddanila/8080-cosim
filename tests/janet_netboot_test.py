@@ -100,6 +100,9 @@ def run_one(trace: Path, image_path: Path, root: Path, *,
         failures.append(f"staging executable is {len(prepared.data)} bytes")
     if protocol["image_bytes"] != len(prepared.data):
         failures.append("protocol byte count differs from staging image")
+    if protocol["transfer_seconds"] <= 0 or \
+            protocol["request_started_at"] <= 0:
+        failures.append("request-to-completion timing was not recorded")
     if protocol["ack_08"] != 1 + (len(prepared.data) // 128) * 3 + 1:
         failures.append(f"positive ACK count is {protocol['ack_08']}")
     expected_client = 7 if auto_identity else 1

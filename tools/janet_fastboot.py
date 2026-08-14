@@ -170,12 +170,13 @@ def serve_fast(
     if retries < 1:
         raise ValueError("retry count must be positive")
     system = extract_system(image)
-    started = time.monotonic()
     stock = serve_stock(
         fd, stage1, load_address=0x0100, entry=0x0100,
         client=client, server=server, timeout=stock_timeout, verbose=verbose,
     )
     stock_finished = time.monotonic()
+    request_started_at = float(stock["request_started_at"])
+    stage_seconds = float(stock["transfer_seconds"])
     # PTY cosim models the target clock from D57 and has no physical line
     # rate; production callers retain the real termios transition.
     if configure_rate:
@@ -253,7 +254,7 @@ def serve_fast(
         print(
             f"Fast bootstrap complete: {SYSTEM_BYTES} bytes, "
             f"CRC16={crc16_ccitt(system):04X}, retries={retries_used}, "
-            f"stage={stock_finished - started:.2f}s, "
+            f"stage={stage_seconds:.2f}s, "
             f"bulk={finished - stock_finished:.2f}s",
             flush=True,
         )
@@ -264,9 +265,10 @@ def serve_fast(
         "blocks": BLOCK_COUNT,
         "retries": retries_used,
         "crc16": crc16_ccitt(system),
-        "stage_seconds": stock_finished - started,
+        "request_started_at": request_started_at,
+        "stage_seconds": stage_seconds,
         "bulk_seconds": finished - stock_finished,
-        "total_seconds": finished - started,
+        "total_seconds": finished - request_started_at,
     }
 
 

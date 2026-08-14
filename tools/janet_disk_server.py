@@ -68,7 +68,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                failure_marker: bytes | None = None,
                resume: bool = False,
                verbose: bool = True,
-               stats: dict[str, int] | None = None) -> dict[str, int]:
+               stats: dict[str, int] | None = None,
+               boot_started_at: float | None = None) -> dict[str, int]:
     """Serve the compact CP/M record protocol on an already configured fd."""
     if len(volume) != VOLUME_SIZE:
         raise ValueError(f"network volume is {len(volume)} bytes; expected {VOLUME_SIZE}")
@@ -179,10 +180,12 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             reply = body + bytes((checksum(body),))
 
             if verbose:
+                elapsed = "" if boot_started_at is None else \
+                    f" boot+{time.monotonic() - boot_started_at:.3f}s"
                 print(
                     f"disk request op={operation:02X} seq={sequence:02X} "
                     f"drive={drive} track={track} sector={sector} "
-                    f"status={status}",
+                    f"status={status}{elapsed}",
                     flush=True,
                 )
 
@@ -315,6 +318,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             timeout=args.disk_timeout,
             reply_guard=args.disk_reply_guard_ms / 1000.0,
             tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
+            boot_started_at=float(boot["request_started_at"]),
         )
     finally:
         if args.writable:
