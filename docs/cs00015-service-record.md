@@ -1,6 +1,6 @@
 # Arvutimuuseum CS00015 service record
 
-Status date: 2026-08-11
+Status date: 2026-08-14
 
 This record identifies the physical Juku that underwent the diagnostic work as
 the Arvutimuuseum machine `CS00015`. The identifier is the same physical-source
@@ -158,6 +158,14 @@ volume, selected B:, completed `DIR` on the native 160-track
 `J3KGAME2.JUK` volume, and started `TETRIS.COM` successfully. B: was served
 read-only. CS00014 had already passed the same setup, so the native game-drive
 path is now physically validated on both available reference boards.
+
+## Current deployment
+
+Following the Arvutimuuseum demonstration, CS00015 is in the home lab with the
+Ekta4401 D15/D16 service-ROM pair still fitted. This is the current
+Jukuravi-enabled reference machine. CS00014 is in the museum's main exhibition
+with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
+`machine-deployment-status.md` for the cross-machine ledger.
 
 ## Current CS00015 fault summary
 

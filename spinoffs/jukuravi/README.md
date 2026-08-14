@@ -32,12 +32,12 @@ see
 
 ## Current machine configuration
 
-After the diagnostic work, CS00015 was restored on 2026-08-08 with **EK37 /
-EktaSoft 3.7** (repository profile `ekta37`) in D15/D16. The T31/T32 diagnostic
-ROM configuration described below is retained evidence, not the firmware now
-fitted in the machine. The donor D6 `.038` remains fitted, the original D8
-`.039` is restored, D1 is repaired, and D55 must be rerun with T34 before any
-package discriminator;
+CS00015 was restored on 2026-08-08 with **EK37 / EktaSoft 3.7**, then received
+the project's Ekta4401 D15/D16 service-ROM pair on 2026-08-11. Ekta4401 remains
+fitted in the home-lab machine and provides the Jukuravi API-v2 entry. The
+T31/T32 configurations below and the intervening EK37 restoration remain
+historical evidence, not the current firmware. The donor D6 `.038` remains
+fitted, the original D8 `.039` is restored, and D1 is repaired;
 see [`../../docs/cs00015-service-record.md`](../../docs/cs00015-service-record.md).
 
 On 2026-08-09 a separate AT28C64B diagnostic/service EEPROM was refreshed from

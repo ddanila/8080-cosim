@@ -50,8 +50,11 @@ Most reports are outputs of scripts or checks; a few are consolidated durable
 findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
+  `machine-deployment-status.md` (current CS00014/CS00015/CS00000 locations,
+  fitted-state summary, and provisional CS00000 USART investigation),
   `cs00015-service-record.md` (Arvutimuuseum machine identity, D15 history,
-  repaired D1, corrected D55 status, and post-diagnostic EK37 restoration),
+  repaired D1, corrected D55 status, current Ekta4401/Jukuravi service ROM,
+  and physical dual-network-drive validation),
   `jukuravi-d55-diagnostic-audit.md` (exact-sheet/8253 review, invalidation of
   the unclocked T15/T16/T31/T32 predicate, and clock-safe T34 fault matrix),
   `cs00024-t36-diagnosis.md` (complete T36 four-pattern 32 KiB physical proof,
