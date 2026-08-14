@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V1/V2/V3 PHYSICALLY PROVEN ON CS00015; NEGOTIATED V4 COSIM-READY**
+Status: **V3 IS THE FASTEST PROVEN DEFAULT; V4 FALLBACK PROVEN, 28,800 FAILED**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -164,8 +164,32 @@ Accounting for the 128-byte larger extension and negotiation guards predicts a
 CS00015 first-disk request near **5.8 seconds**, roughly another 1.1 seconds
 below v3. The attached Silicon Labs CP2102 (`10c4:ea60`) subsequently passed
 exact 28,800/8O1 `termios2` readback and restored 19,200/8O1 without sending
-target bytes. Only the physical Juku negotiation and boot remain before calling
-v4 proven.
+target bytes.
+
+The first physical CS00015 v4 run did **not** complete the 28,800 negotiation.
+Its acknowledged fallback worked exactly as designed: the target and host
+returned to 19,200, the 6656-byte CRC was `5313`, extension and stream retries
+were both zero, the first A: request arrived at 9.199 seconds, and the operator
+confirmed the prompt. The split was 3.77 seconds through the stock stage and
+4.95 seconds through extension, negotiation/fallback, and stream. This is
+2.284 seconds (33.0%) slower than v3, so v3 remains the default and v4 remains
+diagnostic evidence rather than a speed improvement on CS00015.
+
+This result also reinforces the prior x1 evidence: exact host 28,800 was
+verified, target mode-2/count-43 is in spec and differs by only -0.62%, yet the
+bidirectional x1 exchange did not complete. The original run logged only the
+eventual fallback, so it cannot identify which direction failed. The host now
+logs whether the target-to-host probe arrived and, if it did, whether the
+host-to-target ACK/final-ready exchange completed. No rate conclusion should
+be made more specific than “x1 negotiation failed” until that leg is captured.
+
+Decision: freeze **19,200 mode-2/count-4 x16** as the stock-hardware fastboot
+clock. Its approximately 307.7 kHz D11 input is already near the documented
+310 kHz x16 ceiling. The only in-spec route materially above it uses x1 and
+failed here; 38,400/count-2 x16 would drive about 615 kHz, roughly two times
+over specification. A v4 repeat is useful only to locate the failed direction,
+not as a likely optimization. Subsequent speed variants retain 19,200 and test
+8N1, compression with measured 8080 decode cycles, or stock-Janet latency.
 
 Freeze the 2026-08-14 CS00015 comparison as four named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing

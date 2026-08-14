@@ -270,6 +270,7 @@ def serve_fast(
     transfer_baud = FAST_BAUD
     rate_fallback = 0
     rate_setup_error = ""
+    rate_failure_stage = ""
     rate_flag = 1
     if extension is not None:
         packet = extension_packet(extension)
@@ -332,6 +333,16 @@ def serve_fast(
         fast_probe = None if rate_setup_error else wait_frame(
             fd, parser, lambda item: item == (PROBE, 4, 1), 0.5,
         )
+        if rate_setup_error:
+            rate_failure_stage = "host-rate-setup"
+        elif fast_probe is None:
+            rate_failure_stage = "target-probe-not-received"
+        elif verbose:
+            print(
+                "Fast v4: target-to-host 28800 probe received; "
+                "sending host-to-target ACK",
+                flush=True,
+            )
         fast_ready = None
         if fast_probe is not None:
             fast_ack = checked_frame(ord("K"), bytes((4, 1)))
@@ -342,6 +353,8 @@ def serve_fast(
                 fd, parser, lambda item: item == (READY, 4, 1),
                 0.5,
             )
+            if fast_ready is None:
+                rate_failure_stage = "probe-ack-or-final-ready-not-received"
         if fast_ready is not None:
             ready = fast_ready
             transfer_baud = NEGOTIATED_BAUD
@@ -377,6 +390,12 @@ def serve_fast(
             print(
                 f"Fast v4: 28800 host setup failed ({rate_setup_error}); "
                 "recovered through the 19200 target fallback",
+                flush=True,
+            )
+        elif rate_fallback and verbose:
+            print(
+                f"Fast v4: 28800 negotiation failed at "
+                f"{rate_failure_stage}; recovered at 19200",
                 flush=True,
             )
 
@@ -492,6 +511,7 @@ def serve_fast(
             "transfer_baud": transfer_baud,
             "rate_fallback": rate_fallback,
             "rate_setup_error": rate_setup_error,
+            "rate_failure_stage": rate_failure_stage,
             "retries": retries_used,
             "crc16": crc16_ibm(system),
             "request_started_at": request_started_at,
