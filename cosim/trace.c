@@ -1846,7 +1846,6 @@ int main(int argc, char** argv) {
   for (int pg = 0; pg < 256; pg++)
     if (wpage[pg]) printf("  0x%02X00 : %8lu\n", pg, wpage[pg]);
 
-  // dump the video framebuffer (DRAM @ 0xD800) regardless of CPU bank
   FILE* o = fopen("vram.bin", "wb");
   if (o) { fwrite(&ram[VRAM_BASE], 1, (size_t)VID_STRIDE * VID_LINES, o); fclose(o);
            printf("\nwrote vram.bin (%d bytes, %dx%d @ 0x%04X)\n",

@@ -62,7 +62,7 @@ def main() -> int:
     canon: list[tuple[str, str]] = [
         ("framebuffer base", fb.get("base_addr_hex", "")),
         ("framebuffer bytes", str(fb.get("bytes", ""))),
-        ("framebuffer geometry", f"{fb.get('cols')}×{fb.get('rows')}"),  # 40×241
+        ("framebuffer geometry", f"{fb.get('cols')}×{fb.get('rows')}"),
         ("frame IRQ period", str(facts.get("timing", {}).get("frame_irq_period_cycles", ""))),
         ("PIC A0=0 port", ports.get("pic_a0_0", {}).get("port_hex", "")),
         ("PIC A0=1 port", ports.get("pic_a0_1", {}).get("port_hex", "")),
