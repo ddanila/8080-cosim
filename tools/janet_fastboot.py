@@ -2,8 +2,8 @@
 """Boot a Juku with its stock ROM, then load CP/M at 19200 baud.
 
 The stock Janet 1.2 client transfers a compact stage-1 program at 9600/8O1.
-Stage 1 switches D57/D11 to the physically proven mode-2/count-4 setting and
-receives the 52K resident system as thirteen CRC-protected 512-byte blocks.
+V1/v2 receive thirteen CRC-protected 512-byte blocks; v3 uses a one-record
+core, a high-speed low-RAM extension, and one strong-CRC system stream.
 """
 
 from __future__ import annotations
@@ -38,11 +38,15 @@ FAST_BAUD = 19200
 BLOCK_SIZE = 512
 BLOCK_COUNT = SYSTEM_BYTES // BLOCK_SIZE
 VERSION = 1
-SUPPORTED_VERSIONS = (1, 2)
+SUPPORTED_VERSIONS = (1, 2, 3)
+BLOCK_PROTOCOL_VERSIONS = (1, 2)
 READY = ord("R")
 REPLY = ord("A")
 HEADER_SEQUENCE = 0xFF
 FINAL_SEQUENCE = BLOCK_COUNT
+V3_BUNDLE_MAGIC = b"JFV3"
+V3_EXTENSION_MAGIC = b"\xA5\x3A"
+V3_STREAM_MAGIC = b"JS"
 
 
 def crc16_ccitt(data: bytes, initial: int = 0xFFFF) -> int:
@@ -54,6 +58,54 @@ def crc16_ccitt(data: bytes, initial: int = 0xFFFF) -> int:
             crc = ((crc << 1) ^ 0x1021) & 0xFFFF \
                 if crc & 0x8000 else (crc << 1) & 0xFFFF
     return crc
+
+
+def crc16_ibm(data: bytes, initial: int = 0) -> int:
+    """Return reflected CRC-16/IBM (poly A001h) used by Fast stage v3."""
+    crc = initial
+    for value in data:
+        crc ^= value
+        for _ in range(8):
+            crc = (crc >> 1) ^ 0xA001 if crc & 1 else crc >> 1
+    return crc
+
+
+def fletcher16(data: bytes) -> tuple[int, int]:
+    """Return the one's-complement Fletcher guard as (sum1, sum2)."""
+    sum1 = 0
+    sum2 = 0
+    for value in data:
+        total = sum1 + value
+        sum1 = (total & 0xFF) + (total >> 8)
+        total = sum2 + sum1
+        sum2 = (total & 0xFF) + (total >> 8)
+    return sum1, sum2
+
+
+def split_stage_artifact(stage: bytes) -> tuple[bytes, bytes | None]:
+    """Split a self-describing v3 bundle or retain a legacy raw stage."""
+    if len(stage) >= 9 and stage[3:7] == V3_BUNDLE_MAGIC:
+        core_size = stage[7] * 128
+        extension_size = stage[8] * 128
+        if core_size != 128 or extension_size != 256 or \
+                len(stage) != core_size + extension_size:
+            raise ValueError("malformed fast-bootstrap v3 bundle")
+        return stage[:core_size], stage[core_size:]
+    return stage, None
+
+
+def extension_packet(extension: bytes) -> bytes:
+    if len(extension) != 256:
+        raise ValueError("fast-bootstrap v3 extension must be 256 bytes")
+    sum1, sum2 = fletcher16(extension)
+    return V3_EXTENSION_MAGIC + extension + bytes((sum1, sum2))
+
+
+def stream_packet(system: bytes) -> bytes:
+    if len(system) != SYSTEM_BYTES:
+        raise ValueError(f"fast system must contain exactly {SYSTEM_BYTES} bytes")
+    crc = crc16_ibm(system)
+    return V3_STREAM_MAGIC + system + bytes((crc >> 8, crc & 0xFF))
 
 
 def checked_frame(kind: int, payload: bytes) -> bytes:
@@ -68,7 +120,7 @@ def header(system: bytes, version: int = VERSION) -> bytes:
     if len(system) != SYSTEM_BYTES:
         raise ValueError(f"fast system must contain exactly {SYSTEM_BYTES} bytes")
     crc = crc16_ccitt(system)
-    if version not in SUPPORTED_VERSIONS:
+    if version not in BLOCK_PROTOCOL_VERSIONS:
         raise ValueError(f"unsupported fast-bootstrap version: {version}")
     return checked_frame(
         ord("H"), bytes((version, BLOCK_COUNT, crc >> 8, crc & 0xFF)),
@@ -177,6 +229,7 @@ def serve_fast(
     verbose: bool = True,
     block_filter: Callable[[int, int, bytes], bytes] | None = None,
     reply_filter: Callable[[int, int, tuple[int, int, int]], bool] | None = None,
+    extension_filter: Callable[[int, bytes], bytes] | None = None,
     configure_rate: bool = True,
 ) -> dict[str, int | float]:
     """Load stage 1 through stock Janet, then send the resident image fast."""
@@ -184,9 +237,10 @@ def serve_fast(
         raise ValueError("stage 1 has an implausible size")
     if retries < 1:
         raise ValueError("retry count must be positive")
+    stock_stage, extension = split_stage_artifact(stage1)
     system = extract_system(image)
     stock = serve_stock(
-        fd, stage1, load_address=0x0100, entry=0x0100,
+        fd, stock_stage, load_address=0x0100, entry=0x0100,
         client=client, server=server, timeout=stock_timeout, verbose=verbose,
     )
     stock_finished = time.monotonic()
@@ -194,23 +248,58 @@ def serve_fast(
     stage_seconds = float(stock["transfer_seconds"])
     # PTY cosim models the target clock from D57 and has no physical line
     # rate; production callers retain the real termios transition.
+    if extension is not None:
+        # The stock execute service is unacknowledged. Give its final bytes
+        # time to leave the USB-UART before tcflush changes the line rate.
+        time.sleep(0.050)
     if configure_rate:
         configure_serial(fd, FAST_BAUD)
     parser = TargetFrameParser()
-    ready = wait_frame(
-        fd, parser,
-        lambda item: (
-            item[0] == READY and item[1] in SUPPORTED_VERSIONS and
-            item[2] == BLOCK_COUNT
-        ),
-        reply_timeout * retries,
-    )
+
+    extension_retries = 0
+    if extension is not None:
+        packet = extension_packet(extension)
+        ready = None
+        for attempt in range(retries):
+            time.sleep(turnaround_guard)
+            outgoing = extension_filter(attempt, packet) \
+                if extension_filter is not None else packet
+            write_all(fd, outgoing)
+            ready = wait_frame(
+                fd, parser,
+                lambda item: item == (READY, 3, 1),
+                reply_timeout,
+            )
+            if ready is not None:
+                break
+            extension_retries += 1
+            if verbose:
+                print(
+                    "Fast v3 extension: no ready marker; "
+                    f"retry {attempt + 1}/{retries - 1}",
+                    flush=True,
+                )
+        if ready is None:
+            raise TimeoutError("fast-bootstrap v3 extension did not start")
+    else:
+        ready = wait_frame(
+            fd, parser,
+            lambda item: (
+                item[0] == READY and
+                item[1] in BLOCK_PROTOCOL_VERSIONS and
+                item[2] == BLOCK_COUNT
+            ),
+            reply_timeout * retries,
+        )
     if ready is None:
         raise TimeoutError("fast-bootstrap stage did not announce readiness")
     protocol_version = ready[1]
     if verbose:
+        extension_detail = "" if extension is None else \
+            f"; {len(extension)}-byte extension at high speed"
         print(
-            f"Fast stage ready: {len(stage1)} bytes via stock Janet; "
+            f"Fast stage ready: {len(stock_stage)} bytes via stock Janet"
+            f"{extension_detail}; "
             f"protocol v{protocol_version}; switching bulk load to "
             f"{FAST_BAUD} baud, 8O1",
             flush=True,
@@ -246,6 +335,69 @@ def serve_fast(
                     flush=True,
                 )
         raise TimeoutError(f"fast-bootstrap exchange {sequence:02X} failed")
+
+    if protocol_version == 3:
+        packet = stream_packet(system)
+        for attempt in range(retries):
+            time.sleep(turnaround_guard)
+            outgoing = block_filter(0, attempt, packet) \
+                if block_filter is not None else packet
+            write_all(fd, outgoing)
+
+            def matching_stream_reply(item: tuple[int, int, int]) -> bool:
+                if item == (READY, 3, 1):
+                    return True
+                if item[0] != REPLY or item[1] != 0:
+                    return False
+                return reply_filter is None or reply_filter(
+                    0, attempt, item,
+                )
+
+            response = wait_frame(
+                fd, parser, matching_stream_reply,
+                reply_timeout,
+            )
+            if response is not None and response[0] == REPLY and \
+                    response[2] == 0:
+                break
+            retries_used += 1
+            if verbose:
+                reason = "timeout" if response is None else \
+                    "target restarted stream"
+                print(
+                    f"Fast v3 stream: {reason}; "
+                    f"retry {attempt + 1}/{retries - 1}",
+                    flush=True,
+                )
+        else:
+            raise TimeoutError("fast-bootstrap v3 stream failed")
+        finished = time.monotonic()
+        if verbose:
+            print(
+                f"Fast bootstrap complete: {SYSTEM_BYTES} bytes, "
+                f"CRC16/IBM={crc16_ibm(system):04X}, "
+                f"extension-retries={extension_retries}, "
+                f"stream-retries={retries_used}, "
+                f"stage={stage_seconds:.2f}s, "
+                f"bulk={finished - stock_finished:.2f}s",
+                flush=True,
+            )
+        return {
+            **{f"stock_{key}": value for key, value in stock.items()},
+            "stage_bytes": len(stock_stage),
+            "artifact_bytes": len(stage1),
+            "extension_bytes": len(extension),
+            "system_bytes": len(system),
+            "blocks": 1,
+            "protocol_version": protocol_version,
+            "extension_retries": extension_retries,
+            "retries": retries_used,
+            "crc16": crc16_ibm(system),
+            "request_started_at": request_started_at,
+            "stage_seconds": stage_seconds,
+            "bulk_seconds": finished - stock_finished,
+            "total_seconds": finished - request_started_at,
+        }
 
     exchange(header(system, protocol_version), HEADER_SEQUENCE)
     # The target repeats this critical ACK three times. Hearing the first copy

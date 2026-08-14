@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V1 AND V2 PHYSICALLY PROVEN ON CS00015 / CS00014 BENCHMARK PENDING**
+Status: **V1/V2 PHYSICALLY PROVEN ON CS00015; V3 COSIM-PROVEN AND READY FOR BENCH**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -44,6 +44,22 @@ accepted block already proves the header's whole-image CRC; no second B400h-
 CDFFh scan is required. The ready/header version byte distinguishes v1 and v2,
 and the host negotiates either from the stage marker.
 
+Protocol v3 is a deliberately separate streaming path. Its 384-byte build
+artifact contains a one-record core followed by a padded extension:
+
+| Direction | Frame | Meaning |
+| --- | --- | --- |
+| host to target | `A5 3A 256-extension sum1 sum2` | high-speed extension protected by end-around-carry Fletcher sums |
+| target to host | `J R 03 01 xor` | extension ready for one system stream |
+| host to target | `J S 6656-system crc-hi crc-lo` | fixed resident image and CRC-16/IBM (A001h, initial 0000h) |
+| target to host | `J A 00 00 xor` three times | verified image accepted; target will enter CA00h |
+
+Only the 128-byte core is sent through stock Janet at 9600. It selects the
+already proven 19200/8O1 clock and authenticates the 256-byte extension in low
+RAM. The extension then receives the whole fixed image without per-block
+turnarounds. A bad extension or system stream is ignored and the host retries
+it in full; v1/v2 remain the finer-grained recovery alternatives.
+
 ## Use
 
 Build the stage and network system in the CP/Mish checkout, then serve the
@@ -73,6 +89,21 @@ The frozen physical baseline command above uses `juku-fastboot-stage1.bin`
     juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
+The **Fast stage v3** bench candidate uses the identical command with the new
+bundle; it does not require a ROM burn:
+
+```sh
+cd ~/fun/cpmish && make juku-fastboot-v3.bin
+../8080-cosim/tools/janet_disk_server.py \
+    --fast-stage1 juku-fastboot-v3.bin --disk-baud 19200 \
+    --writable --timeout 86400 /dev/ttyUSB0 \
+    juku-net-mode2-system.bin cs00015-fastboot.img
+```
+
+The candidate artifact is 384 bytes (117-byte core padded to 128 plus a
+172-byte extension padded to 256), SHA-256
+`bf5104c3d7af271a52defa54acf7773daf032461ff303cc04f0fe4e5ba49b22a`.
+
 ## Verification and expected speed
 
 `make juku-fastboot-cosim-check` in CP/Mish executes the assembled 8080 stage,
@@ -82,6 +113,13 @@ another, and discards one valid target ACK. It reaches the same byte-exact
 handoff with exactly the three necessary host retries; duplicates are
 idempotent. The host-side framing and
 CRC vector are also pinned by `tests/janet_fastboot_protocol_test.py`.
+
+V3 adds its own clean and injected-fault cases. The clean run uses only one
+stock data record, installs B400h-CDFFh byte-exact, and reaches
+CA00h. The fault run rejects a corrupted extension, rejects a corrupted full
+system stream, recovers after a completely lost stream, and accepts the second
+of three success frames when the first is hidden from the host. It reaches the
+same byte-exact entry with one extension retry and two stream retries.
 
 Freeze the 2026-08-14 CS00015 comparison as three named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
@@ -154,11 +192,11 @@ wire. Five stock records took 8.00 seconds while all 6656 high-speed bytes took
 fixed stock transaction cost. A one-record first stage therefore projects near
 2.50 seconds and can save roughly 5.5 seconds before changing the bulk rate.
 
-Fast stage v3 should consequently use a conventional two-stage shape: stock
-Janet loads one 128-byte core at 9600; that core switches to the proven
-19200/mode-2 clock and validates a compact extension loaded into low RAM; the
-extension receives one continuous fixed-size system stream with a strong CRC.
-An error retries the complete 6656-byte stream. This trades rare clean-cable
+Fast stage v3 consequently uses a conventional two-stage shape: stock Janet
+loads one 128-byte core at 9600; that core switches to the proven 19200/mode-2
+clock and validates a compact extension loaded into low RAM; the extension
+receives one continuous fixed-size system stream with a strong CRC. An error
+retries the complete 6656-byte stream. This trades rare clean-cable
 retransmission cost for eliminating twelve ordinary block turnarounds. It is a
 separate experimental artifact; v1 and v2 remain byte-exact recovery choices.
 Long packets and streaming are the established way to remove stop-and-wait
