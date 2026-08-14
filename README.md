@@ -30,9 +30,11 @@ with the machine-readable board model.
   in the receive direction, then proved D57 mode 2/count 4 at 19,200/8O1;
   sustained network-disk traffic subsequently passed on physical CS00014 and
   CS00015. The optional `tools/janet_fastboot.py` path now lets an unmodified
-  stock ROM load a compact stage at 9,600 before that proven setting transfers
-  the resident image in thirteen retryable CRC16-protected blocks. The
-  original stock Janet path is unchanged and remains the fallback.
+  stock ROM load one compact record at 9,600 before that proven setting sends
+  a fixed CRC-protected ZX0 stream. Its separately named v8 desk candidate
+  overlaps D11 interrupt-fed reception and decompression and is modeled about
+  273 ms faster than physically qualified v7; physical v8 timing remains
+  pending. The original stock Janet path is unchanged and remains the fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.

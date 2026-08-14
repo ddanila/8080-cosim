@@ -1,7 +1,7 @@
 # Stock-ROM fast bootstrap
 
-Status: **V6 FASTEST PHYSICALLY PROVEN; V7 SIMULATION-QUALIFIED CANDIDATE;
-V4 RATE FAILED; 19,200 FROZEN**
+Status: **V6 FASTEST EXACT PHYSICAL TIMING; V7 PHYSICALLY QUALIFIED; V8
+SIMULATION-QUALIFIED OVERLAP CANDIDATE; V4 RATE FAILED; 19,200 FROZEN**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -283,7 +283,61 @@ short handoff guard. Its exact first-disk timestamp was not retained, so this
 value remains a prediction and v6 remains the fastest *timed* physical
 baseline pending a separately logged v7 repeat.
 
-Run the candidate without changing the ROM:
+## Fast stage v8: interrupt-fed receive/decode overlap
+
+V8 retains v7's one stock record, fixed 4826-byte ZX0 stream, CRC-16/IBM,
+19,200/8N1 framing, bounded output, and complete-stream retry policy. Its
+separate 640-byte extension overlaps reception and decoding instead of waiting
+for all compressed bytes before starting ZX0.
+
+D11 RxRDY reaches PIC IR2. Entering a downloaded stage without returning from
+stock Janet makes the ordinary RomBios dispatcher both stateful and too slow
+for one interrupt per 884 modeled CPU cycles, so v8 saves the first three
+writable bytes at `D79Fh` and temporarily replaces them with a jump to a
+minimal single-source trampoline. That trampoline preserves the interrupted
+register set, reads D11, issues 8259 EOI, and returns directly to the decoder.
+The original `D79Fh` bytes are restored verbatim before CP/M starts.
+
+The ISR appends the fixed stream at 4000h, maintains the compressed CRC, and
+records D11 errors. The host sends `JZ`, waits 2 ms for the atomic handoff, and
+then sends the payload. ZX0 starts once 256 bytes are buffered and consumes the
+same linear area while the ISR fills its tail. Execution remains gated by all
+of the following:
+
+- exact 4826-byte receive completion and CRC `7A91h`;
+- no USART error;
+- exact final compressed pointer `52DAh`;
+- exact decompressed output boundary `CE00h` with every write fenced below it;
+- restoration of the saved RomBios dispatcher before the success reply.
+
+A malformed decoder can abandon nested calls through a saved session stack,
+drains the fixed remainder, and returns to `JZ` search. Clean and injected
+fault cases reject a damaged extension and compressed stream, recover from a
+wholly lost stream and lost first success reply, and install B400h-CDFFh
+byte-exactly. The full continuation restores D11 from mode `4Eh` to BIOS mode
+`5Eh`, reaches `A>`, performs network `DIR` with 34 reads and zero retries, and
+asserts the original `D79Fh` bytes.
+
+`juku-fastboot-v8.bin` is 5602 bytes: 128-byte core, 640-byte extension,
+eight-byte `Z8` descriptor, and the unchanged 4826-byte payload. SHA-256 is
+`ae89fef7dcce9d6ffd329e0862af9be16710c4b703ff9c0a3c444aa184c34c78`.
+The pinned 1.70 MHz cosim measures 1,010,204 cycles (0.594 s) from v7's final
+compressed byte to CA00h and 203,037 cycles (0.119 s) for v8. Charging v8 for
+three extra 128-byte extension records (0.200 s at 884 cycles/byte) and its
+2 ms marker gap leaves a deterministic **273 ms projected gain**. This is a
+desk result, not a physical timing claim; v8 needs a logged CS00015 run.
+
+Run it without changing the ROM:
+
+```sh
+cd ~/fun/cpmish && make juku-fastboot-v8.bin
+../8080-cosim/tools/janet_disk_server.py \
+    --fast-stage1 juku-fastboot-v8.bin --disk-baud 19200 \
+    --writable --timeout 86400 /dev/ttyUSB0 \
+    juku-net-mode2-system.bin cs00015-fastboot.img
+```
+
+Run the physically qualified v7 path without changing the ROM:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v7.bin
@@ -358,8 +412,9 @@ Further worthwhile measurements are, in order:
    matters;
 4. compare stop-and-wait with a two-block window only after fault recovery is
    equally deterministic;
-5. repeat v7 with its exact host log retained, then gather repeated cold/warm
-   v6/v7 distributions before tightening more guards;
+5. repeat v7 with its exact host log retained, then benchmark v8 on the same
+   CS00015 setup and gather repeated cold/warm v6/v7/v8 distributions before
+   tightening more guards;
 6. keep production fastboot at 19,200. Revisit a higher rate only with new
    electrical evidence, because the in-spec x1 experiment already failed and
    count-2/x16 would exceed the USART clock limit by about two times.
@@ -458,8 +513,10 @@ measured and layout-valid choice, not merely the smallest-stream choice.
 
 The separately named v6 implementation measured 0.701 seconds faster than v3
 and 0.337 seconds faster than v5 on CS00015, with prompt and `DIR` proven. V7
-keeps its codec while removing one extension record. V3 and v5 remain unchanged
-so the compression and framing effects stay attributable.
+keeps its codec while removing one extension record. V8 keeps the codec and
+overlaps its receive/decode phases; its full modeled accounting is 273 ms
+below v7 and awaits physical timing. V3 and v5 remain unchanged so the
+compression and framing effects stay attributable.
 
 The current cosim does not yet automate power-reset/restart during a block.
 Reset recovery is structurally safe because the stock ROM regains control, but
