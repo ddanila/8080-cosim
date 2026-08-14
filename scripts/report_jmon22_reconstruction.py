@@ -134,7 +134,7 @@ def main() -> int:
     body22 = original[0x03C8:0x2000]
     body33 = inputs["roms/jmon33.bin"][0x03C8:0x2000]
     cart_body = inputs["roms/jbasic11.bin"][0x0100:0x1D38]
-    mismatches = [index for index, pair in enumerate(zip(body22, body33, strict=True)) if pair[0] != pair[1]]
+    mismatches = [index for index, pair in enumerate(zip(body22, body33)) if pair[0] != pair[1]]
     require(body33 == cart_body, "jmon33 and cartridge BASIC bodies no longer agree")
     require(mismatches == [PATCH_OFFSET - 0x03C8], "jmon22 BASIC body no longer has the expected sole mismatch")
 
@@ -160,10 +160,10 @@ def main() -> int:
         block_start = block * 0x800
         block_end = (block + 1) * 0x800
         one_bit_candidates = sum(
-            (
+            bin(
                 original[offset]
                 ^ ((original[offset] + checksum_delta) & 0xFF)
-            ).bit_count()
+            ).count("1")
             == 1
             for offset in range(block_start, block_end)
         )
@@ -312,7 +312,7 @@ def main() -> int:
             "| ---: | --- | ---: | ---: | ---: | --- |",
         ]
     )
-    for old, new in zip(before, after, strict=True):
+    for old, new in zip(before, after):
         disposition = "PASS"
         if not new["passes"]:
             needed = (int(new["stored"]) - int(new["computed"])) & 0xFF

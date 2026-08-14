@@ -630,6 +630,16 @@ def main() -> int:
     if "Six official FDC-support devices" in hdl_readme:
         failures.append("HDL README retains the stale six-device FDC boundary")
 
+    sync_readme = read("sync/README.md")
+    if "9 FDC-support ICs" in sync_readme:
+        failures.append("sync README retains the stale nine-device FDC boundary")
+    system_media_readme = read("media/system/README.md")
+    if "Those bytes still need" in system_media_readme:
+        failures.append("system-media README still describes the dumped PROMs as missing")
+    for marker in ("Validated physical dumps for all", "ref/physical-proms/"):
+        if marker not in system_media_readme:
+            failures.append(f"system-media README omits current PROM status: {marker!r}")
+
     board = read("kicad/juku.board.json")
     try:
         board_model = json.loads(board)
@@ -2034,11 +2044,9 @@ def main() -> int:
             body = cartridge_bytes[0x0100:0x1D38]
             if body != monitor33[0x03C8:0x2000]:
                 failures.append("jbasic11/Monitor 3.3 exact BASIC-body lineage changed")
-            mismatch_count = sum(
-                left != right
-                for left, right in zip(body, monitor22[0x03C8:0x2000], strict=True)
-            )
-            if mismatch_count != 1:
+            monitor22_body = monitor22[0x03C8:0x2000]
+            mismatch_count = sum(left != right for left, right in zip(body, monitor22_body))
+            if len(monitor22_body) != len(body) or mismatch_count != 1:
                 failures.append(
                     "jbasic11/Monitor 2.2 BASIC-body lineage no longer has one mismatch"
                 )

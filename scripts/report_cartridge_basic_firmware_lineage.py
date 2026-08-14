@@ -57,7 +57,7 @@ def main() -> int:
         body = data[MONITOR_BODY_START:MONITOR_BODY_END]
         mismatches = [
             (offset, left, right)
-            for offset, (left, right) in enumerate(zip(cart_body, body, strict=True))
+            for offset, (left, right) in enumerate(zip(cart_body, body))
             if left != right
         ]
         monitor_results.append((label, path, data, body, mismatches, checksum_rows(data)))

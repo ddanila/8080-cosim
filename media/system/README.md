@@ -51,11 +51,9 @@ The proven stock setting is nominal 9600 baud, 8O1. The regression exercises
 the real PTY serial/PIC/NetBios path and requires a byte-exact `B400h` image plus
 the `CA00h` handoff; it does not inject RAM.
 
-## PROM blocker status
+## PROM search result
 
-The public archive pass that found `JUKUSYS.ZIP` also checked the museum software
-ZIP listings for obvious Baltijets programming-disk payloads. It did not reveal
-files corresponding to the small-PROM programs `ДГШ5.106.037`,
-`ДГШ5.106.038`, `ДГШ5.106.039`, or `ДГШ5.106.092`. Those bytes still need the
-referenced programming disk, physical PROM dumps, or an explicitly accepted
-reconstruction.
+The archive containing these system binaries has no obvious programming files
+for PROMs `.037`, `.038`, `.039`, or `.092`. Validated physical dumps for all
+four PROMs are now stored under `ref/physical-proms/`; the programming-disk
+search remains useful only for provenance.
