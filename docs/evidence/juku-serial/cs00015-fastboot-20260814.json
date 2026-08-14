@@ -11,6 +11,32 @@
     "pit_mode": 2,
     "pit_count": 4
   },
+  "fast_stage_v6": {
+    "date": "2026-08-15",
+    "artifact_bytes": 5342,
+    "artifact_sha256": "74826eeb5e95feb6b9f1bed7d7b5957447166a7f3ac2722633e4cff7768babf0",
+    "core_code_bytes": 120,
+    "stock_transfer_bytes": 128,
+    "stock_records": 1,
+    "stock_frames_sent": 18,
+    "stage_seconds": 2.21,
+    "extension_code_bytes": 313,
+    "extension_transfer_bytes": 384,
+    "extension_retries": 0,
+    "uncompressed_bytes": 6656,
+    "compressed_bytes": 4826,
+    "compression": "ZX0 classic",
+    "bulk_framing": "8N1",
+    "bulk_streams": 1,
+    "bulk_seconds": 3.53,
+    "stream_retries": 0,
+    "crc16_ibm": "5313",
+    "first_disk_request_seconds": 6.214,
+    "resident_framing_restored": "8O1",
+    "visible_cpm_prompt": true,
+    "physical_dir": true,
+    "qualification": "fastest physically proven variant"
+  },
   "fast_stage_v5": {
     "artifact_bytes": 384,
     "artifact_sha256": "8fa63db50daaf64f8da9025b443cbe0cb3802d985a4ba5c74630435953d628a4",
@@ -31,7 +57,7 @@
     "resident_framing_restored": "8O1",
     "visible_cpm_prompt": true,
     "physical_dir": true,
-    "qualification": "fastest physically proven variant"
+    "qualification": "physically proven uncompressed 8N1 baseline"
   },
   "fast_stage_v3": {
     "artifact_bytes": 384,
@@ -113,6 +139,21 @@
     "visible_cpm_prompt": true
   },
   "comparison": {
+    "v6_vs_v5": {
+      "seconds_saved": 0.337,
+      "speedup": 1.054,
+      "time_reduction_percent": 5.1
+    },
+    "v6_vs_v3": {
+      "seconds_saved": 0.701,
+      "speedup": 1.113,
+      "time_reduction_percent": 10.1
+    },
+    "v6_vs_original": {
+      "seconds_saved": 67.659,
+      "speedup": 11.888,
+      "time_reduction_percent": 91.6
+    },
     "v5_vs_v3": {
       "seconds_saved": 0.364,
       "speedup": 1.056,
@@ -156,8 +197,8 @@
     "v4_fallback_vs_v3": {
       "seconds_slower": 2.284,
       "time_increase_percent": 33.0,
-      "verdict": "not an optimization; fast_stage_v5 is the fastest default and fast_stage_v3 remains the 8O1 fallback"
+      "verdict": "not an optimization; fast_stage_v6 is the fastest default, fast_stage_v5 is the uncompressed control, and fast_stage_v3 remains the 8O1 fallback"
     }
   },
-  "operator_observation": "All five named speed baselines reached the visible CP/M prompt. Fast stage v5 also completed DIR from physical network A:."
+  "operator_observation": "All six named speed baselines reached the visible CP/M prompt. Fast stages v5 and v6 also completed DIR from physical network A:."
 }

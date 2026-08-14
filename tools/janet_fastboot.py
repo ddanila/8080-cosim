@@ -2,8 +2,9 @@
 """Boot a Juku with its stock ROM, then load CP/M at 19200 baud.
 
 The stock Janet 1.2 client transfers a compact stage-1 program at 9600/8O1.
-V1/v2 receive thirteen CRC-protected 512-byte blocks; v3 uses a one-record
-core, a high-speed low-RAM extension, and one strong-CRC system stream.
+V1/v2 receive thirteen CRC-protected 512-byte blocks; v3-v5 use a one-record
+core, a high-speed low-RAM extension, and one strong-CRC system stream. V6
+retains 19,200/8N1 and sends a ZX0-classic compressed stream.
 """
 
 from __future__ import annotations
@@ -40,7 +41,7 @@ NEGOTIATED_BAUD = 28800
 BLOCK_SIZE = 512
 BLOCK_COUNT = SYSTEM_BYTES // BLOCK_SIZE
 VERSION = 1
-SUPPORTED_VERSIONS = (1, 2, 3, 4, 5)
+SUPPORTED_VERSIONS = (1, 2, 3, 4, 5, 6)
 BLOCK_PROTOCOL_VERSIONS = (1, 2)
 READY = ord("R")
 REPLY = ord("A")
@@ -50,8 +51,12 @@ FINAL_SEQUENCE = BLOCK_COUNT
 V3_BUNDLE_MAGIC = b"JFV3"
 V4_BUNDLE_MAGIC = b"JFV4"
 V5_BUNDLE_MAGIC = b"JFV5"
+V6_BUNDLE_MAGIC = b"JFV6"
 V3_EXTENSION_MAGIC = b"\xA5\x3A"
 V3_STREAM_MAGIC = b"JS"
+V6_PAYLOAD_MAGIC = b"Z0"
+V6_STREAM_MAGIC = b"JZ"
+V6_COMPRESSED_LIMIT = 0x1800
 V3_WRITE_STALL_TIMEOUT = 10.0
 
 
@@ -88,19 +93,38 @@ def fletcher16(data: bytes) -> tuple[int, int]:
     return sum1, sum2
 
 
-def split_stage_artifact(stage: bytes) -> tuple[bytes, bytes | None]:
+def split_stage_artifact(
+    stage: bytes,
+) -> tuple[bytes, bytes | None, bytes | None]:
     """Split a self-describing streaming bundle or retain a legacy stage."""
     if len(stage) >= 9 and stage[3:7] in (
-        V3_BUNDLE_MAGIC, V4_BUNDLE_MAGIC, V5_BUNDLE_MAGIC,
+        V3_BUNDLE_MAGIC, V4_BUNDLE_MAGIC, V5_BUNDLE_MAGIC, V6_BUNDLE_MAGIC,
     ):
         core_size = stage[7] * 128
         extension_size = stage[8] * 128
-        expected_extension = 384 if stage[3:7] == V4_BUNDLE_MAGIC else 256
-        if core_size != 128 or extension_size != expected_extension or \
-                len(stage) != core_size + extension_size:
+        expected_extension = 384 if stage[3:7] in (
+            V4_BUNDLE_MAGIC, V6_BUNDLE_MAGIC,
+        ) else 256
+        payload_offset = core_size + extension_size
+        if core_size != 128 or extension_size != expected_extension:
             raise ValueError("malformed streaming fast-bootstrap bundle")
-        return stage[:core_size], stage[core_size:]
-    return stage, None
+        if stage[3:7] == V6_BUNDLE_MAGIC:
+            if len(stage) <= payload_offset + 4 or \
+                    stage[payload_offset:payload_offset + 2] != \
+                    V6_PAYLOAD_MAGIC:
+                raise ValueError("malformed v6 compressed payload")
+            compressed = stage[payload_offset + 4:]
+            if len(compressed) >= V6_COMPRESSED_LIMIT:
+                raise ValueError("v6 compressed payload exceeds target limit")
+            return (
+                stage[:core_size],
+                stage[core_size:payload_offset],
+                compressed,
+            )
+        if len(stage) != payload_offset:
+            raise ValueError("malformed streaming fast-bootstrap bundle")
+        return stage[:core_size], stage[core_size:], None
+    return stage, None, None
 
 
 def extension_packet(extension: bytes) -> bytes:
@@ -115,6 +139,18 @@ def stream_packet(system: bytes) -> bytes:
         raise ValueError(f"fast system must contain exactly {SYSTEM_BYTES} bytes")
     crc = crc16_ibm(system)
     return V3_STREAM_MAGIC + system + bytes((crc >> 8, crc & 0xFF))
+
+
+def compressed_stream_packet(compressed: bytes) -> bytes:
+    if not compressed or len(compressed) >= V6_COMPRESSED_LIMIT:
+        raise ValueError("invalid v6 compressed payload length")
+    crc = crc16_ibm(compressed)
+    return (
+        V6_STREAM_MAGIC
+        + len(compressed).to_bytes(2, "big")
+        + compressed
+        + bytes((crc >> 8, crc & 0xFF))
+    )
 
 
 def checked_frame(kind: int, payload: bytes) -> bytes:
@@ -243,17 +279,29 @@ def serve_fast(
     configure_rate: bool = True,
 ) -> dict[str, int | float]:
     """Load stage 1 through stock Janet, then send the resident image fast."""
-    if not stage1 or len(stage1) > 0x1000:
-        raise ValueError("stage 1 has an implausible size")
+    if not stage1:
+        raise ValueError("stage 1 is empty")
     if retries < 1:
         raise ValueError("retry count must be positive")
-    stock_stage, extension = split_stage_artifact(stage1)
+    stock_stage, extension, compressed = split_stage_artifact(stage1)
+    if len(stock_stage) > 0x1000:
+        raise ValueError("stage 1 has an implausible stock-loaded size")
     bundle_version = {
         V3_BUNDLE_MAGIC: 3,
         V4_BUNDLE_MAGIC: 4,
         V5_BUNDLE_MAGIC: 5,
+        V6_BUNDLE_MAGIC: 6,
     }.get(stock_stage[3:7], 3)
     system = extract_system(image)
+    if bundle_version == 6:
+        payload_offset = 128 + 384
+        expected_crc = int.from_bytes(
+            stage1[payload_offset + 2:payload_offset + 4], "big",
+        )
+        if expected_crc != crc16_ibm(system):
+            raise ValueError(
+                "fastboot v6 compressed payload does not match system image"
+            )
     stock = serve_stock(
         fd, stock_stage, load_address=0x0100, entry=0x0100,
         client=client, server=server, timeout=stock_timeout, verbose=verbose,
@@ -270,7 +318,7 @@ def serve_fast(
     if configure_rate:
         configure_serial(
             fd, FAST_BAUD,
-            parity="none" if bundle_version == 5 else "odd",
+            parity="none" if bundle_version in (5, 6) else "odd",
         )
     parser = TargetFrameParser()
 
@@ -407,7 +455,7 @@ def serve_fast(
                 flush=True,
             )
 
-    transfer_framing = "8N1" if protocol_version == 5 else "8O1"
+    transfer_framing = "8N1" if protocol_version in (5, 6) else "8O1"
     if verbose:
         extension_detail = "" if extension is None else \
             f"; {len(extension)}-byte extension at high speed"
@@ -451,8 +499,10 @@ def serve_fast(
                 )
         raise TimeoutError(f"fast-bootstrap exchange {sequence:02X} failed")
 
-    if protocol_version in (3, 4, 5):
-        packet = stream_packet(system)
+    if protocol_version in (3, 4, 5, 6):
+        packet = compressed_stream_packet(compressed) \
+            if protocol_version == 6 and compressed is not None \
+            else stream_packet(system)
         stream_ready = (READY, protocol_version, rate_flag)
         success_sequence = 4 if protocol_version == 4 else 0
         for attempt in range(retries):
@@ -490,7 +540,7 @@ def serve_fast(
             raise TimeoutError(
                 f"fast-bootstrap v{protocol_version} stream failed"
             )
-        if protocol_version in (4, 5):
+        if protocol_version in (4, 5, 6):
             # The target emits three success copies, drains them, restores
             # 19200/8O1, and only then enters NETROM2. Avoid changing the host
             # rate in the middle of those repeated frames.
@@ -499,8 +549,11 @@ def serve_fast(
                 configure_serial(fd, FAST_BAUD)
         finished = time.monotonic()
         if verbose:
+            compression_detail = \
+                f"ZX0={len(compressed)} bytes, " if compressed else ""
             print(
                 f"Fast bootstrap complete: {SYSTEM_BYTES} bytes, "
+                f"{compression_detail}"
                 f"CRC16/IBM={crc16_ibm(system):04X}, "
                 f"extension-retries={extension_retries}, "
                 f"stream-retries={retries_used}, "
@@ -514,6 +567,7 @@ def serve_fast(
             "artifact_bytes": len(stage1),
             "extension_bytes": len(extension),
             "system_bytes": len(system),
+            "stream_bytes": len(compressed) if compressed else len(system),
             "blocks": 1,
             "protocol_version": protocol_version,
             "extension_retries": extension_retries,

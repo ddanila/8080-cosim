@@ -16,6 +16,7 @@ from tools.janet_fastboot import (  # noqa: E402
     READY,
     TargetFrameParser,
     checked_frame,
+    compressed_stream_packet,
     crc16_ccitt,
     crc16_ibm,
     data_block,
@@ -63,9 +64,11 @@ def main() -> int:
 
     core = b"\xC3\x09\x01JFV3\x01\x02".ljust(128, b"\0")
     extension = bytes(range(256))
-    bundle_core, bundle_extension = split_stage_artifact(core + extension)
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(core + extension)
     assert bundle_core == core
     assert bundle_extension == extension
+    assert bundle_payload is None
     extension_wire = extension_packet(extension)
     assert extension_wire[:2] == b"\xA5\x3A"
     assert extension_wire[-2:] == bytes(fletcher16(extension))
@@ -75,18 +78,39 @@ def main() -> int:
 
     core_v4 = b"\xC3\x09\x01JFV4\x01\x03".ljust(128, b"\0")
     extension_v4 = bytes(range(256)) + bytes(range(128))
-    bundle_core, bundle_extension = split_stage_artifact(
+    bundle_core, bundle_extension, bundle_payload = split_stage_artifact(
         core_v4 + extension_v4,
     )
     assert bundle_core == core_v4
     assert bundle_extension == extension_v4
+    assert bundle_payload is None
     extension_wire = extension_packet(extension_v4)
     assert extension_wire[-2:] == bytes(fletcher16(extension_v4))
 
     core_v5 = b"\xC3\x09\x01JFV5\x01\x02".ljust(128, b"\0")
-    bundle_core, bundle_extension = split_stage_artifact(core_v5 + extension)
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(core_v5 + extension)
     assert bundle_core == core_v5
     assert bundle_extension == extension
+    assert bundle_payload is None
+
+    core_v6 = b"\xC3\x09\x01JFV6\x01\x03".ljust(128, b"\0")
+    extension_v6 = bytes(range(256)) + bytes(range(128))
+    compressed = bytes((index * 29 + 7) & 0xFF for index in range(1024))
+    bundle_v6 = (
+        core_v6 + extension_v6 + b"Z0"
+        + crc16_ibm(expected).to_bytes(2, "big") + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v6)
+    assert bundle_core == core_v6
+    assert bundle_extension == extension_v6
+    assert bundle_payload == compressed
+    compressed_wire = compressed_stream_packet(compressed)
+    assert compressed_wire[:2] == b"JZ"
+    assert int.from_bytes(compressed_wire[2:4], "big") == len(compressed)
+    assert int.from_bytes(compressed_wire[-2:], "big") == \
+        crc16_ibm(compressed)
 
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.

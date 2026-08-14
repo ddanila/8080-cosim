@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V5 FASTEST PHYSICALLY MEASURED; V4 RATE FAILED; 19,200 FROZEN**
+Status: **V6 FASTEST PHYSICALLY PROVEN; V4 RATE FAILED; 19,200 FROZEN**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -172,8 +172,8 @@ returned to 19,200, the 6656-byte CRC was `5313`, extension and stream retries
 were both zero, the first A: request arrived at 9.199 seconds, and the operator
 confirmed the prompt. The split was 3.77 seconds through the stock stage and
 4.95 seconds through extension, negotiation/fallback, and stream. This is
-2.284 seconds (33.0%) slower than v3, so v3 remains the default and v4 remains
-diagnostic evidence rather than a speed improvement on CS00015.
+2.284 seconds (33.0%) slower than v3, so v4 was rejected as a default and
+remains diagnostic evidence rather than a speed improvement on CS00015.
 
 This result also reinforces the prior x1 evidence: exact host 28,800 was
 verified, target mode-2/count-43 is in spec and differs by only -0.62%, yet the
@@ -216,24 +216,55 @@ record and the 256-byte extension completed with zero retries, the CRC-valid
 6656-byte stream completed with zero retries, and the first A: request arrived
 at **6.551 seconds**. The split was 2.23 seconds through the stock stage and
 3.84 seconds through the extension plus 8N1 stream. This saves 0.364 seconds
-(5.3%) over physical v3 and makes v5 the fastest measured variant while
+(5.3%) over physical v3 and made v5 the fastest uncompressed variant while
 retaining v3 byte-for-byte as the proven 8O1 fallback.
 
-Freeze the 2026-08-14 CS00015 comparison as five named physical baselines. All
+## Fast stage v6: 19,200/8N1 plus ZX0
+
+V6 combines the physically proven v5 clock/framing path with ZX0 classic
+compression. Its stock-loaded core remains one 128-byte record. The core
+authenticates a 384-byte high-speed extension containing Ivan Gorodetsky's
+92-byte Intel 8080 ZX0 decoder; the host then sends a length-bounded 4826-byte
+compressed stream protected by CRC-16/IBM. The target authenticates the
+compressed representation before decoding it to B400h-CDFFh, restores 8O1,
+and enters CA00h. A corrupt stream is never decoded.
+
+`juku-fastboot-v6.bin` is a self-contained 5342-byte host artifact: a 120-byte
+core padded to 128, a 313-byte extension padded to 384, a four-byte payload
+descriptor, and the 4826-byte compressed system. Only the core, extension, and
+compressed packet travel; the artifact embeds the original system CRC so the
+host refuses to pair it with a different resident image. Its SHA-256 is
+`74826eeb5e95feb6b9f1bed7d7b5957447166a7f3ac2722633e4cff7768babf0`.
+The build vendors the BSD-3-Clause ZX0 v2.2 compressor and deterministically
+regenerates the payload. V3 and v5 remain byte-identical at their frozen
+hashes.
+
+Clean and injected-fault cosim paths verify all 6656 decompressed bytes,
+reject a corrupt extension and compressed stream, recover from a completely
+lost stream, tolerate a lost success reply, restore D11 mode `5Eh`, and enter
+CA00h. Physical CS00015 then passed with zero retries: 2.21 seconds through the
+stock stage, 3.53 seconds through the extension, compressed stream, and decode,
+and the first A: request at **6.214 seconds**. The visible prompt and network
+`DIR` both worked. V6 saves 0.337 seconds (5.1%) over v5, 0.701 seconds (10.1%)
+over v3, and 67.659 seconds (91.6%, 11.89x) over Original stock 9600.
+
+Freeze the 2026-08-14/15 CS00015 comparison as six named physical baselines. All
 used the same CP/Mish mode-2 system, host volume, cable, and machine. Timing
 starts at the first checksum-valid Janet request and ends at the first valid
 network A: request, so operator delay is excluded:
 
 | CS00015 baseline | First disk request | Stock frames | Detail |
 | --- | ---: | ---: | --- |
+| **Fast stage v6** | **6.214 s** | 18 | stage 2.21 s; bulk 3.53 s; zero retries; 8N1 + ZX0 |
 | **Fast stage v5** | **6.551 s** | 18 | stage 2.23 s; bulk 3.84 s; zero retries; 8N1 bootstrap |
 | **Fast stage v3** | **6.915 s** | 18 | stage 2.21 s; bulk 4.13 s; zero retries |
 | **Fast stage v2** | **12.999 s** | 42 | stage 8.00 s; bulk 4.39 s; zero retries |
 | **Fast stage v1** | **17.508 s** | 42 | stage 7.99 s; bulk 8.90 s; one recovered block-0 timeout |
 | **Original stock 9600** | **73.873 s** | 330 | 6784 bytes / 53 records |
 
-All five runs reached the visible CP/M prompt. V5 also completed a physical
-`DIR` from network A:. V5 saved 0.364 seconds over v3 (**1.06x**, 5.3%)
+All six runs reached the visible CP/M prompt. V5 and v6 also completed a
+physical `DIR` from network A:. V6 saved 0.337 seconds over v5 (**1.05x**,
+5.1%) and 67.659 seconds over Original stock 9600 (**11.89x**, 91.6%). V5 saved 0.364 seconds over v3 (**1.06x**, 5.3%)
 and 67.322 seconds over Original stock 9600 (**11.28x**, 91.1%). Fast stage
 v3 saved 6.084 seconds over v2 (**1.88x**, 46.8%) and 66.958 seconds over Original stock 9600
 (**10.68x**, 90.6%). Fast stage v2 saved 4.509
@@ -281,8 +312,8 @@ Further worthwhile measurements are, in order:
    matters;
 4. compare stop-and-wait with a two-block window only after fault recovery is
    equally deterministic;
-5. integrate ZX0 compression only as a separately named variant and compare it
-   physically with v3/v5; the cycle benchmark below predicts a modest gain;
+5. retain the now-proven v6 ZX0 path as a separately named variant and gather
+   repeated cold/warm timing distributions before tightening more guards;
 6. keep production fastboot at 19,200. Revisit a higher rate only with new
    electrical evidence, because the in-spec x1 experiment already failed and
    count-2/x16 would exceed the USART clock limit by about two times.
@@ -311,25 +342,23 @@ describes that exact tradeoff.
 Do not weaken v3 to an additive checksum merely to keep its receiver fast. A
 1983 [byte-wise CRC study](https://www.bitsavers.org/components/fairchild/_appNotes/Byte-wise_CRC_Jun83.pdf)
 includes a 43-byte, table-free 8080 routine measured nearly four times faster
-than its bit-at-a-time version. This is fast enough for the planned 25600
-experiment and small enough for the high-speed extension. The one-record core
+than its bit-at-a-time version. This is fast enough for the retained 19,200
+stream and small enough for the high-speed extension. The one-record core
 may use a compact Fletcher guard solely to authenticate that extension; the
 resident system retains a polynomial CRC before execution.
 
-The КР580ВВ51А limits rule out `mode 2 / count 3 / x16` as the preferred
-intermediate rate: its roughly 410 kHz USART clock exceeds the specified
-310 kHz x16 maximum. The standards-respecting intermediate experiment is D57
-mode 2/count 48 with D11 x1, producing about 25641 baud against a 25600 host
-(about +0.16%). The Soviet reference gives x1 a 64 kHz clock ceiling, x16 a
-310 kHz ceiling, and x64 a 615 kHz ceiling; see the
+The КР580ВВ51А limits rule out `mode 2 / count 3 / x16`: its roughly 410 kHz
+USART clock exceeds the specified 310 kHz x16 maximum. The Soviet reference
+gives x1 a 64 kHz clock ceiling, x16 a 310 kHz ceiling, and x64 a 615 kHz
+ceiling; see the
 [КР580ВВ51А reference tables](https://djvu.online/file/3bWMXUu35Lsw2).
-Because CS00014 previously rejected x1 with the mode-3 clock, v3 must negotiate
-this rate at proven 19200 and automatically retain/fall back to 19200 on any
-failed bidirectional probe. A later x1/mode-2/count-32 38400 experiment is
-electrically more credible than count-2/x16, but follows 25600 rather than
-becoming a default.
+The standards-respecting x1 path was subsequently tested by v4 at about
+28,622.5 baud and failed its physical bidirectional negotiation. Production
+fastboot therefore remains at the proven 19,200 mode-2/count-4 x16 setting;
+higher baud requires new electrical evidence rather than another default
+software variant.
 
-Compression is secondary and must be cycle-benchmarked end to end. Against the
+Compression was cycle-benchmarked end to end before integration. Against the
 exact 6656-byte 2026-08-14 CP/Mish resident image, local current-tool results
 are:
 
@@ -355,14 +384,14 @@ is attributed to Gorodetsky and Einar Saukas. The
 ZX1's computed advantage is only about 6 ms, far below physical timing noise,
 while its decoder is 36 bytes larger. Both decoders would move v3's extension
 from two to three padded 128-byte records, adding about 0.073 s at 19,200/8O1.
-That leaves an end-to-end prediction near **0.39 s faster than v3** for either
-format. Prefer ZX0 for the first compression variant because its smaller
-decoder leaves more extension space and has effectively the same total time.
-Compression is therefore worthwhile but secondary: first physically qualify
-v5, then implement ZX0 as a separately named, recoverable variant and measure
-it rather than replacing v3. Likewise, 8N1 removes one of eleven wire bits per
-byte and can save about 0.35 seconds at 19,200, but remains separate from the
-8O1 v3 baseline so framing and protocol changes remain attributable.
+That predicted an end-to-end result near **0.39 s faster than v3** for either
+format. ZX0 was selected because its smaller decoder leaves more extension
+space and has effectively the same computed total time. The separately named
+v6 implementation then measured 0.701 seconds faster than v3 and 0.337 seconds
+faster than v5 on CS00015, with prompt and `DIR` proven. The larger-than-simple
+prediction is consistent with the measured phase including less wire and
+turnaround time than the conservative estimate. V3 and v5 remain unchanged so
+the compression and framing effects stay attributable.
 
 The current cosim does not yet automate power-reset/restart during a block.
 Reset recovery is structurally safe because the stock ROM regains control, but
