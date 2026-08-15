@@ -237,32 +237,53 @@ turns. The resident disk protocol is roughly sixteen times faster in useful
 payload. Optimizing boot framing is a separate opportunity and does not limit
 the already-running network disk.
 
-### Next optimization target: NetDisk v2
+### NetDisk v2 compact records
 
-With fastboot v14 frozen, network-disk latency is the next controlled software
-boundary. The legacy 128-byte transaction remains the compatibility baseline:
-physical service is about 1.3-1.4 KiB/s, already 86-91% of its stop-and-wait
-ceiling. Removing a few header bytes therefore has limited value.
+With fastboot v14 frozen, network-disk latency became the next controlled
+software boundary. The first cache design was rejected during implementation:
+the fixed B400h-CDFFh resident layout leaves only CF00h-CFFFh as an audited
+spare page before firmware-owned memory at D000h. A four-record/512-byte cache
+would therefore depend on undocumented monitor RAM or reduce the TPA. Neither
+is acceptable for the working baseline.
 
-NetDisk v2 should keep CP/M's geometry and 128-byte BIOS sector API unchanged
-while changing only the resident BIOS/host wire contract:
+The implemented NetDisk v2 instead preserves CP/M's geometry, 128-byte BIOS
+API, 19,200/8O1 framing, request shape, synchronous writes, sequence/retry
+behavior, and XOR check. The host advertises support by appending `N2` to the
+existing `NR` handoff marker. A v2 BIOS uses read opcode 13h; without `N2` it
+automatically retains legacy opcode 11h. Old BIOS images ignore the extra
+marker bytes and continue to work with the new host.
 
-- request and return multiple records per transaction, with a small BIOS-side
-  read-ahead cache so sequential program loads amortize turnaround;
-- start with reads; retain synchronous single-record writes until explicit
-  flush, retry, duplicate, and power-loss semantics are proven;
-- use an overlap-safe sync word, explicit ready/ACK state, fixed bounds, strong
-  CRC, and whole-window retransmission, following the v14 fastboot lessons;
-- evaluate 19,200/8N1 for the new controlled protocol while preserving legacy
-  19,200/8O1 NetBios as fallback;
-- benchmark `DIR`, sequential `TYPE`, program startup, cache hit rate, useful
-  KiB/s, retries, and cold/warm behavior on CS00014 and CS00015.
+For opcode 13h, reply status zero carries the ordinary 128 raw bytes exactly as
+v1. Status two carries one byte which the BIOS expands to a uniform record.
+Status three carries no data and expands to an `E5` record. The host uses the
+latter only in the fixed track-2 directory region and only when all four CP/M
+entries are deleted; discarded bytes in deleted entries are therefore never
+interpreted as file metadata. Error status one remains unchanged. No cache,
+unbounded decoder, or undocumented RAM is involved.
 
-At the same baud, 8N1 and lower framing overhead can improve raw sequential
-throughput only by roughly 25-35%. The larger user-visible gain must come from
-fewer turnarounds and useful read-ahead. Compression is not a first-line disk
-optimization: it complicates bounded retries and spends 8080 time for a gain
-that depends strongly on file contents.
+The repeatable cosim benchmark uses the same volume and V14 bootstrap for both
+variants. It runs `DIR`, full `TYPE README.TXT`, and `RDBENCH`, a 195-byte
+no-console program that opens and sequentially reads the same file. Modeled
+8O1 wire time includes the 2 ms half-duplex reply guard:
+
+| Operation | Legacy v1 | Compact v2 | Result |
+| --- | ---: | ---: | ---: |
+| initial 32-record directory scan | 2.667 s / 4544 B | 0.483 s / 731 B | 81.9% less wire time |
+| `DIR` | 0.250 s / 426 B | 0.177 s / 298 B | 29.3% less wire time |
+| `TYPE README.TXT` | 5.918 s / 10082 B | 5.918 s / 10082 B | unchanged; console dominates |
+| `RDBENCH` | 6.252 s / 10650 B | 6.179 s / 10523 B | 1.2% less wire time |
+
+The full `TYPE` transcript is byte-complete in both runs (9185 console bytes),
+which guards against prompt-like text inside the file ending a benchmark early.
+The v2 boot scan compacted 30 records and omitted 3813 wire bytes. Raw records
+have exactly v1's wire size, so incompressible sequential files do not regress.
+The separately named 5273-byte V14/NetDisk-v2 bundle has SHA-256
+`23fe0e156541717885d9fa76e9bd288724bdb633dfbcd8cf597e634d30a070a6`;
+the frozen V14 baseline retains its original SHA-256.
+
+Future work can add a strong CRC and bounded prefix/run encoding as a separately
+versioned protocol. Multi-record read-ahead remains attractive only after a
+documented safe cache location or an explicitly reduced-TPA build exists.
 
 ### Physical interactive CP/M baseline
 

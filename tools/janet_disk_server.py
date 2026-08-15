@@ -23,12 +23,17 @@ SYNC = b"JD"
 REPLY_SYNC = b"DJ"
 READ = 0x11
 WRITE = 0x12
+READ_COMPACT = 0x13
 RECORD_SIZE = 128
 TRACK_SIZE = 40 * RECORD_SIZE
 TRACKS = 80
 VOLUME_SIZE = TRACKS * TRACK_SIZE
 NATIVE_TRACKS = 160
 NATIVE_VOLUME_SIZE = NATIVE_TRACKS * TRACK_SIZE
+DIRECTORY_SECTORS = frozenset((
+    1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 19, 20, 25, 26, 27, 28,
+    33, 34, 35, 36, 5, 6, 7, 8, 13, 14, 15, 16, 21, 22, 23, 24,
+))
 
 
 def checksum(data: bytes) -> int:
@@ -70,6 +75,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                stop_marker: bytes | None = None,
                failure_marker: bytes | None = None,
                resume: bool = False,
+               protocol_version: int = 2,
                verbose: bool = True,
                stats: dict[str, int] | None = None,
                boot_started_at: float | None = None,
@@ -84,11 +90,15 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             f"network B: is {len(drive_b)} bytes; expected {NATIVE_VOLUME_SIZE}"
         )
     buffer = bytearray()
-    reads = writes = retries = 0
+    if protocol_version not in (1, 2):
+        raise ValueError("protocol_version must be 1 or 2")
+    reads = read_records = writes = retries = 0
     if stats is None:
         stats = {}
-    stats.update(reads=0, writes=0, retries=0,
-                 reads_a=0, reads_b=0, writes_a=0, writes_b=0)
+    stats.update(reads=0, read_records=0, writes=0, retries=0,
+                 reads_a=0, reads_b=0, writes_a=0, writes_b=0,
+                 request_wire_bytes=0, reply_wire_bytes=0,
+                 compact_records=0, compact_bytes_saved=0)
     last_sequence: int | None = None
     last_request = b""
     last_reply = b""
@@ -99,7 +109,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
     # this marker before sending the first disk request, preventing bootstrap
     # parser read-ahead from consuming bytes belonging to the resident phase.
     if not resume:
-        write_all(fd, b"NR")
+        write_all(fd, b"NRN2" if protocol_version == 2 else b"NR")
     next_ready = time.monotonic() + 0.02
     synchronized = resume
     first_request_seen = False
@@ -111,7 +121,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
         ready, _, _ = select.select([fd], [], [], wait)
         if not ready:
             if not synchronized and time.monotonic() >= next_ready:
-                write_all(fd, b"NR")
+                write_all(
+                    fd, b"NRN2" if protocol_version == 2 else b"NR",
+                )
                 next_ready = time.monotonic() + 0.02
             if reads + writes and idle_timeout is not None and \
                     time.monotonic() - last_activity >= idle_timeout:
@@ -163,7 +175,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 break
             request = bytes(buffer[:size])
             del buffer[:size]
-            if request[2] not in (READ, WRITE) or checksum(request):
+            if request[2] not in (READ, WRITE, READ_COMPACT) or checksum(request):
                 retries += 1
                 stats["retries"] = retries
                 if verbose:
@@ -179,12 +191,38 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             offset = record_offset(track, sector, tracks) \
                 if selected is not None else None
             can_write = writable and drive == 0
-            status = 0 if offset is not None and \
-                (operation == READ or can_write) else 1
+            records = 1
+            valid_read = operation in (READ, READ_COMPACT) and \
+                (operation != READ_COMPACT or protocol_version == 2) and \
+                offset is not None
+            status = 0 if valid_read or \
+                (operation == WRITE and offset is not None and can_write) else 1
+            encoding = ""
             payload = bytes(selected[offset:offset + RECORD_SIZE]) \
-                if operation == READ and status == 0 else b""
+                if valid_read and status == 0 else b""
+            if operation == READ_COMPACT and status == 0:
+                if payload and payload.count(payload[:1]) == RECORD_SIZE:
+                    status = 2
+                    encoding = "fill"
+                    encoded = payload[:1]
+                elif track == 2 and sector in DIRECTORY_SECTORS and all(
+                    payload[index] == 0xE5 for index in range(0, RECORD_SIZE, 32)
+                ):
+                    status = 3
+                    encoding = "deleted-directory"
+                    encoded = b""
+                else:
+                    encoding = "raw"
+                    encoded = payload
+                saved = max(0, RECORD_SIZE - len(encoded))
+                if saved:
+                    stats["compact_records"] += 1
+                    stats["compact_bytes_saved"] += saved
+                payload = encoded
             body = REPLY_SYNC + bytes((sequence, status)) + payload
             reply = body + bytes((checksum(body),))
+            stats["request_wire_bytes"] += len(request)
+            stats["reply_wire_bytes"] += len(reply)
 
             request_at = time.monotonic()
             if not first_request_seen:
@@ -200,16 +238,18 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                         "drive": drive,
                         "track": track,
                         "sector": sector,
-                        "status": status,
+                        "status": 0 if status in (2, 3) else status,
                     })
 
             if verbose:
                 elapsed = "" if boot_started_at is None else \
                     f" boot+{request_at - boot_started_at:.3f}s"
+                display_status = 0 if status in (2, 3) else status
+                encoding_detail = f" encoding={encoding}" if encoding else ""
                 print(
                     f"disk request op={operation:02X} seq={sequence:02X} "
                     f"drive={drive} track={track} sector={sector} "
-                    f"status={status}{elapsed}",
+                    f"status={display_status}{encoding_detail}{elapsed}",
                     flush=True,
                 )
 
@@ -222,9 +262,11 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 writes += 1
                 stats["writes"] = writes
                 stats["writes_a" if drive == 0 else "writes_b"] += 1
-            elif status == 0:
+            elif status in (0, 2, 3):
                 reads += 1
+                read_records += records
                 stats["reads"] = reads
+                stats["read_records"] = read_records
                 stats["reads_a" if drive == 0 else "reads_b"] += 1
             last_sequence = sequence
             last_request = request
@@ -239,8 +281,11 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 write_all(fd, reply)
 
     if verbose:
-        print(f"Janet disk session: reads={reads}, writes={writes}, retries={retries}",
-              flush=True)
+        print(
+            f"Janet disk session: read requests={reads}, "
+            f"records={read_records}, writes={writes}, retries={retries}",
+            flush=True,
+        )
     return stats
 
 
@@ -302,6 +347,11 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument(
         "--disk-tx-byte-delay-ms", type=float, default=0.0,
         help="host-to-Juku delay between disk-reply bytes (default: 0)",
+    )
+    result.add_argument(
+        "--disk-protocol", type=int, choices=(1, 2), default=2,
+        help="serve legacy or compact records (default: 2; legacy clients "
+             "ignore the v2 advertisement)",
     )
     result.add_argument(
         "--timeout", type=float, default=120.0,
@@ -376,8 +426,11 @@ def main(argv: Iterable[str] | None = None) -> int:
             flush=True,
         )
         configure_serial(fd, args.disk_baud)
-        print(f"Serving A: from {args.volume} at {args.disk_baud} baud, 8O1",
-              flush=True)
+        print(
+            f"Serving A: from {args.volume} at {args.disk_baud} baud, 8O1, "
+            f"NetDisk v{args.disk_protocol}",
+            flush=True,
+        )
         if args.drive_b:
             print(f"Serving read-only native B: from {args.drive_b}", flush=True)
 
@@ -421,6 +474,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             timeout=args.disk_timeout,
             reply_guard=args.disk_reply_guard_ms / 1000.0,
             tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
+            protocol_version=args.disk_protocol,
             boot_started_at=float(boot["request_started_at"]),
             first_request_hook=record_first_request,
         )

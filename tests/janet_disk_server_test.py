@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from tools.janet_disk_server import (  # noqa: E402
     NATIVE_VOLUME_SIZE,
     READ,
+    READ_COMPACT,
     RECORD_SIZE,
     REPLY_SYNC,
     TRACK_SIZE,
@@ -63,6 +64,14 @@ def main() -> int:
     high_offset = record_offset(159, 40, 160)
     assert high_offset is not None
     drive_b[high_offset:high_offset + RECORD_SIZE] = bytes(range(RECORD_SIZE))
+    compact_offset = record_offset(2, 1)
+    assert compact_offset is not None
+    drive_a[compact_offset:compact_offset + RECORD_SIZE] = b"\xE5" * RECORD_SIZE
+    deleted_offset = record_offset(2, 2)
+    assert deleted_offset is not None
+    deleted = bytearray(range(RECORD_SIZE))
+    deleted[0::32] = b"\xE5" * 4
+    drive_a[deleted_offset:deleted_offset + RECORD_SIZE] = deleted
     host, client = socket.socketpair()
     stats: dict[str, int] = {}
     first_requests: list[dict[str, int | float]] = []
@@ -82,7 +91,7 @@ def main() -> int:
 
     thread = threading.Thread(target=worker)
     thread.start()
-    if receive_exact(client, 2) != b"NR":
+    if receive_exact(client, 4) != b"NRN2":
         raise AssertionError("resident-ready marker differs")
 
     client.sendall(request(READ, 1, 1, 159, 40))
@@ -91,17 +100,28 @@ def main() -> int:
             reply[4:-1] != bytes(range(RECORD_SIZE)):
         raise AssertionError("native B: high-track read differs")
 
-    attempted = bytes((0xA5,)) * RECORD_SIZE
-    client.sendall(request(WRITE, 2, 1, 159, 40, attempted))
+    client.sendall(request(READ_COMPACT, 2, 0, 2, 1))
+    reply = receive_exact(client, 6)
+    if reply[:4] != REPLY_SYNC + b"\x02\x02" or checksum(reply) or \
+            reply[4:-1] != b"\xE5":
+        raise AssertionError("compact A: read differs")
+
+    client.sendall(request(READ_COMPACT, 3, 0, 2, 2))
     reply = receive_exact(client, 5)
-    if reply[:4] != REPLY_SYNC + b"\x02\x01" or checksum(reply):
+    if reply[:4] != REPLY_SYNC + b"\x03\x03" or checksum(reply):
+        raise AssertionError("deleted-directory A: read differs")
+
+    attempted = bytes((0xA5,)) * RECORD_SIZE
+    client.sendall(request(WRITE, 4, 1, 159, 40, attempted))
+    reply = receive_exact(client, 5)
+    if reply[:4] != REPLY_SYNC + b"\x04\x01" or checksum(reply):
         raise AssertionError("read-only B: write was not rejected")
     if drive_b[high_offset:high_offset + RECORD_SIZE] == attempted:
         raise AssertionError("rejected B: write changed the native volume")
 
-    client.sendall(request(WRITE, 3, 0, 2, 1, attempted))
+    client.sendall(request(WRITE, 5, 0, 2, 1, attempted))
     reply = receive_exact(client, 5)
-    if reply[:4] != REPLY_SYNC + b"\x03\x00" or checksum(reply):
+    if reply[:4] != REPLY_SYNC + b"\x05\x00" or checksum(reply):
         raise AssertionError("writable A: record was rejected")
 
     thread.join(timeout=2)
@@ -110,8 +130,10 @@ def main() -> int:
     if thread.is_alive() or errors:
         raise AssertionError(f"disk server did not finish cleanly: {errors!r}")
     expected_stats = {
-        "reads": 1, "writes": 1, "retries": 0,
-        "reads_a": 0, "reads_b": 1, "writes_a": 1, "writes_b": 0,
+        "reads": 3, "read_records": 3, "writes": 1, "retries": 0,
+        "reads_a": 2, "reads_b": 1, "writes_a": 1, "writes_b": 0,
+        "request_wire_bytes": 301, "reply_wire_bytes": 154,
+        "compact_records": 2, "compact_bytes_saved": 255,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
