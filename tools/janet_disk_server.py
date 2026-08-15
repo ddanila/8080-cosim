@@ -241,6 +241,10 @@ def parser() -> argparse.ArgumentParser:
              "the ROM-proven one-fragment form",
     )
     result.add_argument(
+        "--fast-low-latency-guards", action="store_true",
+        help="with compact stock execute, use TX drain plus 5/10 ms guards",
+    )
+    result.add_argument(
         "--client", type=lambda value: int(value, 0),
         help="require this NetBios client (default: learn from request)",
     )
@@ -273,6 +277,10 @@ def main(argv: Iterable[str] | None = None) -> int:
     args = parser().parse_args(argv)
     if args.compact_stock_execute and not args.fast_stage1:
         raise ValueError("--compact-stock-execute requires --fast-stage1")
+    if args.fast_low_latency_guards and not args.compact_stock_execute:
+        raise ValueError(
+            "--fast-low-latency-guards requires --compact-stock-execute"
+        )
     system = args.system.read_bytes()
     volume = bytearray(args.volume.read_bytes())
     drive_b = juku_image_to_volume(args.drive_b.read_bytes()) \
@@ -286,7 +294,9 @@ def main(argv: Iterable[str] | None = None) -> int:
                if args.client is None and args.server is None
                else f"station {args.server!r} -> {args.client!r}")
             + (", compact stock execute"
-               if args.compact_stock_execute else ""),
+               if args.compact_stock_execute else "")
+            + (", low-latency guards"
+               if args.fast_low_latency_guards else ""),
             flush=True,
         )
         if args.fast_stage1:
@@ -300,6 +310,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 client=args.client, server=args.server,
                 stock_timeout=args.timeout,
                 compact_stock_execute=args.compact_stock_execute,
+                low_latency_guards=args.fast_low_latency_guards,
             )
             station_server = int(boot["stock_server"])
             station_client = int(boot["stock_client"])

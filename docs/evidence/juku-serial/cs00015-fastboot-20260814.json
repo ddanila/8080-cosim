@@ -96,6 +96,28 @@
     "physical_test": false,
     "qualification": "simulation-qualified fastest candidate; logged CS00015 timing pending"
   },
+  "fast_stage_v9_low_latency_host_policy": {
+    "date": "2026-08-15",
+    "artifact": "same byte-exact juku-fastboot-v9.bin",
+    "required_host_policies": [
+      "--compact-stock-execute",
+      "--fast-low-latency-guards"
+    ],
+    "stock_handoff": "POSIX tcdrain instead of blind 50 ms guard",
+    "turnaround_guard_ms": 5,
+    "turnaround_guard_occurrences": 2,
+    "success_guard_ms": 10,
+    "fixed_wait_seconds_saved": 0.040,
+    "maximum_compact_stock_wait_seconds_saved": 0.026,
+    "maximum_modeled_seconds_saved": 0.066,
+    "projected_first_disk_request_seconds": 5.45,
+    "repeated_clean_cosim_runs": 3,
+    "clean_retries": 0,
+    "fault_retry_cosim": true,
+    "network_dir_cosim_reads": 34,
+    "physical_test": false,
+    "qualification": "simulation-qualified host timing policy; logged CS00015 timing pending"
+  },
   "fast_stage_v7": {
     "date": "2026-08-15",
     "artifact_bytes": 5218,

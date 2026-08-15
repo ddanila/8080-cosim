@@ -348,6 +348,7 @@ def serve_fast(
     rate_probe_filter: Callable[[int, bytes], bytes] | None = None,
     configure_rate: bool = True,
     compact_stock_execute: bool = False,
+    low_latency_guards: bool = False,
 ) -> dict[str, int | float]:
     """Load stage 1 through stock Janet, then send the resident image fast."""
     if not stage1:
@@ -366,6 +367,16 @@ def serve_fast(
         V8_BUNDLE_MAGIC: 8,
         V9_BUNDLE_MAGIC: 9,
     }.get(stock_stage[3:7], 3)
+    if low_latency_guards and not compact_stock_execute:
+        raise ValueError(
+            "low-latency guards require compact stock execute"
+        )
+    if low_latency_guards and bundle_version not in (7, 8, 9):
+        raise ValueError(
+            "low-latency guards require fastboot v7, v8, or v9"
+        )
+    effective_turnaround_guard = \
+        0.005 if low_latency_guards else turnaround_guard
     system = extract_system(image)
     if bundle_version in (6, 7, 8, 9):
         if extension is None:
@@ -392,7 +403,10 @@ def serve_fast(
     if extension is not None:
         # The stock execute service is unacknowledged. Give its final bytes
         # time to leave the USB-UART before tcflush changes the line rate.
-        time.sleep(0.050)
+        if low_latency_guards:
+            termios.tcdrain(fd)
+        else:
+            time.sleep(0.050)
     if configure_rate:
         configure_serial(
             fd, FAST_BAUD,
@@ -413,7 +427,7 @@ def serve_fast(
         )
         ready = None
         for attempt in range(retries):
-            time.sleep(turnaround_guard)
+            time.sleep(effective_turnaround_guard)
             outgoing = extension_filter(attempt, packet) \
                 if extension_filter is not None else packet
             write_all(fd, outgoing)
@@ -552,7 +566,7 @@ def serve_fast(
     def exchange(packet: bytes, sequence: int) -> int:
         nonlocal retries_used
         for attempt in range(retries):
-            time.sleep(turnaround_guard)
+            time.sleep(effective_turnaround_guard)
             outgoing = block_filter(sequence, attempt, packet) \
                 if block_filter is not None else packet
             write_all(fd, outgoing)
@@ -639,7 +653,9 @@ def serve_fast(
             # entering NETROM2. V4-v6 restore 8O1; v7-v9 rely
             # on NETROM2's immediate NETINIT. Avoid changing the host framing
             # in the middle of the repeated success frames.
-            time.sleep(0.020 if protocol_version in (7, 8, 9) else 0.080)
+            success_guard = 0.010 if low_latency_guards else \
+                (0.020 if protocol_version in (7, 8, 9) else 0.080)
+            time.sleep(success_guard)
             if configure_rate:
                 configure_serial(fd, FAST_BAUD)
         finished = time.monotonic()
@@ -677,6 +693,12 @@ def serve_fast(
             "stage_seconds": stage_seconds,
             "bulk_seconds": finished - stock_finished,
             "total_seconds": finished - request_started_at,
+            "low_latency_guards": int(low_latency_guards),
+            "turnaround_guard_ms": effective_turnaround_guard * 1000,
+            "stock_handoff": (
+                "tcdrain" if low_latency_guards else "50ms guard"
+            ),
+            "success_guard_ms": 10 if low_latency_guards else 20,
         }
 
     exchange(header(system, protocol_version), HEADER_SEQUENCE)
@@ -737,6 +759,13 @@ def serve_fast(
         "stage_seconds": stage_seconds,
         "bulk_seconds": finished - stock_finished,
         "total_seconds": finished - request_started_at,
+        "low_latency_guards": int(low_latency_guards),
+        "turnaround_guard_ms": effective_turnaround_guard * 1000,
+        "stock_handoff": "tcdrain" if low_latency_guards else "50ms guard",
+        "success_guard_ms": (
+            10 if low_latency_guards
+            else (20 if protocol_version in (7, 8, 9) else 80)
+        ),
     }
 
 
@@ -754,6 +783,11 @@ def parser() -> argparse.ArgumentParser:
         "--compact-stock-execute", action="store_true",
         help="use the ROM-proven one-fragment 0Fh execute service",
     )
+    result.add_argument(
+        "--low-latency-guards", action="store_true",
+        help="with compact execute, drain stock TX and use qualified 5/10 ms "
+             "fast-path guards",
+    )
     return result
 
 
@@ -768,6 +802,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             stock_timeout=args.timeout, reply_timeout=args.reply_timeout,
             retries=args.retries,
             compact_stock_execute=args.compact_stock_execute,
+            low_latency_guards=args.low_latency_guards,
         )
     finally:
         os.close(fd)

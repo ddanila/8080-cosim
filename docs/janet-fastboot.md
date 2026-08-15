@@ -384,13 +384,33 @@ modeled **390 ms over v7** and **117 ms over v8**. Adding the compact stock
 execute wire floor to the prior v7 estimate projects about **5.52 seconds** to
 the first A: request. This remains a desk prediction until logged on CS00015.
 
+### Low-latency host guards
+
+The separate `--fast-low-latency-guards` policy requires compact stock
+execute and does not change the v9 artifact. It replaces the blind 50 ms
+stock-to-fast wait with POSIX `tcdrain()`, so the baud change occurs only after
+the adapter reports its transmit queue empty. The two fast-path turnaround
+guards fall from 20 to 5 ms, and the post-success guard falls from 20 to 10 ms.
+The latter still exceeds the roughly 7.8 ms wire time of all three 5-byte
+success frames; measured target drain then completes before the host changes
+back to resident 8O1.
+
+The fixed waits are reduced by 40 ms. For compact execute, its final
+turn/execute/turn sequence has a roughly 24 ms wire floor, so replacing the
+50 ms blind wait can save up to another 26 ms: **about 66 ms maximum**. Three
+repeated clean v9 runs, the corruption/loss run, and the complete CP/M `DIR`
+continuation pass in cosim with zero clean retries. Adding the full modeled
+saving to v9's earlier estimate projects roughly **5.45 seconds**, but USB
+queue overlap makes physical timing—not subtraction—the qualification gate.
+
 Run the fastest current candidate without changing the ROM:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v9.bin
 ../8080-cosim/tools/janet_disk_server.py \
     --fast-stage1 juku-fastboot-v9.bin --compact-stock-execute \
-    --disk-baud 19200 --writable --timeout 86400 /dev/ttyUSB0 \
+    --fast-low-latency-guards --disk-baud 19200 \
+    --writable --timeout 86400 /dev/ttyUSB0 \
     juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
