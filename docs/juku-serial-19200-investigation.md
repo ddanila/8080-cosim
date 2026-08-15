@@ -285,6 +285,22 @@ Future work can add a strong CRC and bounded prefix/run encoding as a separately
 versioned protocol. Multi-record read-ahead remains attractive only after a
 documented safe cache location or an explicitly reduced-TPA build exists.
 
+Physical CS00015 then qualified NetDisk v2 on 2026-08-15. Three boots reached
+the first opcode-13h request at 6.116354, 6.116790, and 6.115778 seconds, a
+1.0 ms spread; every extension and stream was retry-free. The 32-record startup
+directory scan used 30 compact replies and spanned 0.771-0.785 seconds between
+first and last request timestamps. Visible `DIR` passed. `RDBENCH` performed 75
+requests with no error; its complete span was 6.426 seconds and the 70-record
+`README.TXT` data phase spanned 6.13 seconds, about 1.4 KiB/s useful payload.
+
+B: was deliberately absent during this run. Selecting it returned status one,
+but the stock Digital Research `BDOS ERR ON B: SELECT` path ignored Ctrl-C and
+required RESET. CS00015's Space key also failed to register; `=` cannot replace
+the required intrinsic-command separator, so the physical whole-file proof
+used `RDBENCH` while cosim retained the byte-complete `TYPE README.TXT` proof.
+The three raw boot JSON files and a derived qualification JSON are committed in
+the CP/Mish `juku` branch.
+
 ### Physical interactive CP/M baseline
 
 A later 2026-08-13 CS00014 run validated the corrected CP/Mish `NETROM1`
