@@ -765,10 +765,14 @@ overlaps its receive/decode phases; its full modeled accounting is 273 ms
 below v7 and awaits physical timing. V3 and v5 remain unchanged so the
 compression and framing effects stay attributable.
 
-The current cosim does not yet automate power-reset/restart during a block.
-Reset recovery is structurally safe because the stock ROM regains control, but
-an automated host re-discovery test remains before declaring the path fully
-bench-qualified.
+Power-reset/restart during a long stream is now automated. The trace harness's
+one-shot reset fault fires after byte 900 of V15, resets the CPU/USART and
+memory view on the same PTY, and replays `TN`. The first host exchange times
+out, returns the serial port to stock settings, accepts the ROM's new Janet
+request, and completes a second byte-exact handoff. The disk-server CLI allows
+three complete bootstrap rediscoveries by default (`--boot-restarts` changes
+the bounded budget). This proves software recovery; physical reset behavior
+still belongs in bench qualification.
 
 A direct stock transfer to B400h was also tested as a possible zero-stage
 shortcut. The stock client reached the requested CA00h execute address but did

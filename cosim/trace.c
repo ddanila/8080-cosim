@@ -37,6 +37,9 @@
 //        tx_empty_low_after:COUNT holds only status bit 2 low thereafter;
 //        rx_irq_delay_once_after:COUNT:CYCLES delays one RxRDY interrupt long
 //        enough to model a phase-sensitive ISR/overrun boundary.
+// RESET: JUKU_RESET_AFTER_USART_RX=COUNT performs one board-style CPU/USART
+//        reset after COUNT received bytes and replays scripted keys. This
+//        exercises host bootstrap rediscovery without restarting the PTY.
 // RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte
 //        (ADDR=* applies the stuck masks globally);
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
@@ -1223,6 +1226,19 @@ int main(int argc, char** argv) {
   const char* stop_pc_rx_env = getenv("JUKU_STOP_PC_AFTER_USART_RX");
   int stop_pc_enabled = 0;
   unsigned long stop_pc = 0, stop_pc_after_usart_rx = 0;
+  const char* reset_after_rx_env = getenv("JUKU_RESET_AFTER_USART_RX");
+  unsigned long reset_after_rx = 0;
+  int reset_after_rx_fired = 0;
+  if (reset_after_rx_env && reset_after_rx_env[0]) {
+    char* end = NULL;
+    reset_after_rx = strtoul(reset_after_rx_env, &end, 0);
+    if (!end || *end || !reset_after_rx) {
+      fprintf(stderr,
+              "invalid JUKU_RESET_AFTER_USART_RX=%s (expected positive count)\n",
+              reset_after_rx_env);
+      return 2;
+    }
+  }
   if (stop_pc_env && stop_pc_env[0]) {
     char* end = NULL;
     stop_pc = strtoul(stop_pc_env, &end, 0);
@@ -1733,6 +1749,20 @@ int main(int argc, char** argv) {
          !stop_prompt_hit &&
          !terminate_requested &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
+    if (reset_after_rx && !reset_after_rx_fired &&
+        usart.rx_bytes >= reset_after_rx) {
+      reset_after_rx_fired = 1;
+      fprintf(stderr,
+              "[RESET] one-shot board reset after USART byte=%lu cyc=%lu\n",
+              usart.rx_bytes, cpu.cyc);
+      cpu.pc = 0;
+      cpu.iff = 0;
+      cpu.halted = 0;
+      set_mode(0);
+      usart_reset();
+      kbd_pos = 0;
+      kbd_phase = 0;
+    }
     if (dram_retention_arm_pc_enabled && !dram_retention_armed &&
         cpu.pc == dram_retention_arm_pc) {
       dram_retention_armed = 1;

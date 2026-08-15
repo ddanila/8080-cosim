@@ -36,6 +36,7 @@ from tools.janet_netboot import (  # noqa: E402
     xor_bytes,
 )
 from tools import janet_netboot  # noqa: E402
+from tools.janet_disk_server import boot_with_recovery  # noqa: E402
 
 
 def main() -> int:
@@ -351,6 +352,27 @@ def main() -> int:
     assert bundle_extension == extension_v14
     assert bundle_payload == compressed
     assert extract_system(ram_image) == ram_system
+
+    attempts = 0
+    preparations = 0
+
+    def reset_attempt() -> dict[str, object]:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            raise TimeoutError("simulated target reset")
+        return {"result": "second boot"}
+
+    def prepare_retry() -> None:
+        nonlocal preparations
+        preparations += 1
+
+    recovered = boot_with_recovery(
+        reset_attempt, prepare_retry=prepare_retry,
+        max_restarts=1, verbose=False,
+    )
+    assert recovered == {"result": "second boot", "boot_restarts": 1}
+    assert attempts == 2 and preparations == 1
 
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.

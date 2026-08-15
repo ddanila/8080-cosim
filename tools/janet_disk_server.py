@@ -15,8 +15,19 @@ from collections.abc import Callable, Iterable
 from datetime import datetime, timezone
 from pathlib import Path
 
-from janet_netboot import configure_serial, serve as serve_boot, write_all
-from janet_fastboot import FAST_BAUD, serve_fast
+try:
+    from janet_netboot import configure_serial, serve as serve_boot, write_all
+    from janet_fastboot import FAST_BAUD, serve_fast
+except ModuleNotFoundError:  # Imported as tools.janet_disk_server by tests.
+    from tools.janet_netboot import (  # type: ignore[no-redef]
+        configure_serial,
+        serve as serve_boot,
+        write_all,
+    )
+    from tools.janet_fastboot import (  # type: ignore[no-redef]
+        FAST_BAUD,
+        serve_fast,
+    )
 
 
 SYNC = b"JD"
@@ -34,6 +45,35 @@ DIRECTORY_SECTORS = frozenset((
     1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 19, 20, 25, 26, 27, 28,
     33, 34, 35, 36, 5, 6, 7, 8, 13, 14, 15, 16, 21, 22, 23, 24,
 ))
+
+
+def boot_with_recovery(
+    attempt: Callable[[], dict[str, object]], *,
+    prepare_retry: Callable[[], None] | None = None,
+    max_restarts: int = 3,
+    verbose: bool = True,
+) -> dict[str, object]:
+    """Retry a complete bootstrap after a reset or abandoned exchange."""
+    if max_restarts < 0:
+        raise ValueError("max_restarts must not be negative")
+    restarts = 0
+    while True:
+        try:
+            result = attempt()
+            result["boot_restarts"] = restarts
+            return result
+        except TimeoutError:
+            if restarts >= max_restarts:
+                raise
+            restarts += 1
+            if verbose:
+                print(
+                    "Bootstrap exchange disappeared; returning to stock "
+                    f"request discovery ({restarts}/{max_restarts})",
+                    flush=True,
+                )
+            if prepare_retry is not None:
+                prepare_retry()
 
 
 def checksum(data: bytes) -> int:
@@ -358,6 +398,10 @@ def parser() -> argparse.ArgumentParser:
         help="bootstrap timeout in seconds (default: 120)",
     )
     result.add_argument(
+        "--boot-restarts", type=int, default=3,
+        help="complete bootstrap rediscoveries after timeout/reset (default: 3)",
+    )
+    result.add_argument(
         "--disk-timeout", type=float,
         help="optional total disk-session lifetime in seconds",
     )
@@ -401,22 +445,33 @@ def main(argv: Iterable[str] | None = None) -> int:
                     "--fast-stage1 requires --boot-baud 9600 and "
                     f"--disk-baud {FAST_BAUD}"
                 )
-            boot = serve_fast(
-                fd, fast_stage, system,
-                client=args.client, server=args.server,
-                stock_timeout=args.timeout,
-                compact_stock_execute=args.compact_stock_execute,
-                low_latency_guards=args.fast_low_latency_guards,
-                extension_guard=args.fast_extension_guard_ms / 1000.0,
-                stock_handoff_guard=
-                args.fast_stock_handoff_guard_ms / 1000.0,
+            def boot_attempt() -> dict[str, object]:
+                return serve_fast(
+                    fd, fast_stage, system,
+                    client=args.client, server=args.server,
+                    stock_timeout=args.timeout,
+                    compact_stock_execute=args.compact_stock_execute,
+                    low_latency_guards=args.fast_low_latency_guards,
+                    extension_guard=args.fast_extension_guard_ms / 1000.0,
+                    stock_handoff_guard=
+                    args.fast_stock_handoff_guard_ms / 1000.0,
+                )
+
+            boot = boot_with_recovery(
+                boot_attempt,
+                prepare_retry=lambda: configure_serial(fd, args.boot_baud),
+                max_restarts=args.boot_restarts,
             )
             station_server = int(boot["stock_server"])
             station_client = int(boot["stock_client"])
         else:
-            boot = serve_boot(
-                fd, system, client=args.client, server=args.server,
-                timeout=args.timeout,
+            boot = boot_with_recovery(
+                lambda: serve_boot(
+                    fd, system, client=args.client, server=args.server,
+                    timeout=args.timeout,
+                ),
+                prepare_retry=lambda: configure_serial(fd, args.boot_baud),
+                max_restarts=args.boot_restarts,
             )
             station_server = int(boot["server"])
             station_client = int(boot["client"])

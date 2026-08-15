@@ -401,8 +401,9 @@ Keep protocol/version negotiation explicit so the same host can serve:
 
 Cosim now injects complete-block loss, payload corruption, duplication, and a
 lost target ACK against the assembled 8080 stage, and verifies the exact RAM
-image before CA00h. Automated delayed-reply and power-reset/re-discovery remain before
-full bench qualification. Physical benchmarks should include
+image before CA00h. Delayed-Rx recovery and a mid-stream power reset followed
+by complete stock-request rediscovery are automated as well. Physical
+benchmarks should include
 CS00014 and CS00015, cold and warm runs, at least ten consecutive boots, exact
 RAM comparison before entry, and recorded UART/kernel error counters.
 
