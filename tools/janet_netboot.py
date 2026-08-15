@@ -35,6 +35,7 @@ SYSTEM_PREFIX = 0x0200
 SYSTEM_BYTES = 0x1A00
 RAM51_SYSTEM_BYTES = 0x1E00
 RAM51_MAGIC = b"JUKU51\x1a\x00"
+RAM_SYSTEM_MAGIC = b"JUKURM1\x1a"
 SYSTEM_STAGING_ADDRESS = 0x0180
 RECORD_SIZE = 128
 DEFAULT_BAUD = 9600
@@ -144,21 +145,27 @@ class BootImage:
 
 
 def system_bootstrap(system: bytes, *, load_address: int = SYSTEM_LOAD_ADDRESS,
-                     entry: int = SYSTEM_ENTRY) -> bytes:
+                     entry: int = SYSTEM_ENTRY,
+                     disable_interrupts: bool = False) -> bytes:
     """Build the 0100h staging executable which relocates a resident image."""
     if not system or len(system) % RECORD_SIZE:
         raise ValueError("system payload must contain complete 128-byte sectors")
     if load_address + len(system) > 0x10000:
         raise ValueError("system payload crosses the 16-bit address space")
-    # LXI H,0180 / LXI D,target / LXI B,length; copy BC bytes; JMP entry.
-    stub = bytes((
+    # Optional DI, then LXI H,0180 / LXI D,target / LXI B,length; copy BC
+    # bytes; JMP entry. The self-contained RAM BIOS uses DI before reclaiming
+    # any former firmware workspace; legacy RomBios images remain byte-exact.
+    loop_address = LOAD_ADDRESS + (10 if disable_interrupts else 9)
+    stub = (b"\xF3" if disable_interrupts else b"") + bytes((
         0x21, SYSTEM_STAGING_ADDRESS & 0xFF, SYSTEM_STAGING_ADDRESS >> 8,
         0x11, load_address & 0xFF, load_address >> 8,
         0x01, len(system) & 0xFF, len(system) >> 8,
         0x7E, 0x12, 0x23, 0x13, 0x0B, 0x78, 0xB1, 0xC2, 0x09, 0x01,
         0xC3, entry & 0xFF, entry >> 8,
     ))
-    return stub.ljust(RECORD_SIZE, b"\x00") + system
+    stub = bytearray(stub)
+    stub[-5:-3] = loop_address.to_bytes(2, "little")
+    return bytes(stub).ljust(RECORD_SIZE, b"\x00") + system
 
 
 def pad_records(image: bytes) -> bytes:
@@ -166,13 +173,46 @@ def pad_records(image: bytes) -> bytes:
     return image.ljust(size, b"\x00")
 
 
+def crc16_ibm(data: bytes) -> int:
+    """Return the reflected CRC-16/IBM used by the RAM-system container."""
+    crc = 0
+    for value in data:
+        crc ^= value
+        for _ in range(8):
+            crc = (crc >> 1) ^ (0xA001 if crc & 1 else 0)
+    return crc
+
+
 def prepare_image(image: bytes, *, load_address: int | None = None,
                   entry: int | None = None) -> BootImage:
-    """Recognize JUKUSYS SYSGEN images or retain a plain executable."""
+    """Recognize Juku resident containers or retain a plain executable."""
     if (load_address is None) != (entry is None):
         raise ValueError("load address and entry must be supplied together")
     if load_address is not None and entry is not None:
         return BootImage(pad_records(image), load_address, entry, "explicit")
+    if image.startswith(RAM_SYSTEM_MAGIC):
+        if len(image) < SYSTEM_PREFIX:
+            raise ValueError("JUKURM1 image is shorter than its header")
+        resident_load = int.from_bytes(image[8:10], "little")
+        resident_entry = int.from_bytes(image[10:12], "little")
+        resident_size = int.from_bytes(image[12:14], "little")
+        resident_crc = int.from_bytes(image[14:16], "little")
+        end = SYSTEM_PREFIX + resident_size
+        if (not resident_size or resident_size % RECORD_SIZE or
+                end != len(image)):
+            raise ValueError("JUKURM1 resident length is inconsistent")
+        system = image[SYSTEM_PREFIX:end]
+        if crc16_ibm(system) != resident_crc:
+            raise ValueError("JUKURM1 resident CRC-16/IBM mismatch")
+        return BootImage(
+            system_bootstrap(
+                system, load_address=resident_load, entry=resident_entry,
+                disable_interrupts=True,
+            ),
+            LOAD_ADDRESS,
+            LOAD_ADDRESS,
+            "JUKURM1 self-describing RAM system via staging bootstrap",
+        )
     if len(image) == 10240 and image.startswith(RAM51_MAGIC):
         system = image[
             SYSTEM_PREFIX:SYSTEM_PREFIX + RAM51_SYSTEM_BYTES

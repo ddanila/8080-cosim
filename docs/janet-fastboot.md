@@ -432,7 +432,7 @@ The exact run is preserved in
 Use `--fast-extension-guard-ms` only for named threshold experiments; the
 default is 20 ms.
 
-## Fast stages v10-v14: bounded decode, explicit readiness, buffered control
+## Fast stages v10-v15: bounded decode, explicit readiness, buffered control
 
 The later variants preserve v9 as immutable evidence and address two physical
 races found by repeated CS00015 runs:
@@ -511,6 +511,31 @@ repeatable physical baseline.
 Decision: freeze V14 as the production fastboot baseline. Further variants
 must address functionality, observability, or a reproduced reliability defect;
 best-case millisecond savings alone do not justify reopening the timing path.
+
+**V15** is such a functional variant, not another timing candidate. It keeps
+V14's fully buffered, polling receive path and both explicit handshakes, but
+loads CP/Mish's separately named 51K RAM BIOS at `B000h` and enters it at
+`C600h`. The host recognizes the `JUKURM1` system container, validates its
+declared length and CRC16/IBM, and extracts the exact resident bytes. The
+6,249-byte artifact consists of a 125/128-byte core, 267-byte extension,
+eight-byte `ZF` descriptor, and a 5,846-byte ZX0 stream expanding to 8,320
+bytes. SHA-256 is
+`3afd3f473bc9a18c6e0c8d4fa23c6ecdb015d21c5dd7c4fcb97c4d36492e2fb8`.
+
+The first integrated simulation exposed a loader-stack collision: V14's
+`B3F0h` stack lies inside V15's larger output range. The decompressor replaced
+its own return addresses and escaped into `D85Dh`. V15 now keeps the loader
+stack at `3FF0h`, immediately below the compressed input buffer. The focused
+regression proves clean transfer, corruption and complete-stream-loss recovery,
+the one-shot delayed-Rx case, byte-exact installation, cold prompt, RAM-matrix
+`DIR`, 35 NetDisk-v2 reads, and a framebuffer independently rendered from the
+captured transcript. Its final state is all-RAM mode 3 with PIC mask `FFh` and
+no firmware service vectors installed. This is a simulator-qualified RAM-BIOS
+experiment; V14 remains the hardware-qualified RomBios production baseline.
+The stock-loader staging stub executes `DI` before copying this format: the
+resident tail deliberately uses `CF00h..D07Fh`, including 128 bytes reclaimed
+from the otherwise inactive RomBios workspace. Its builder rejects growth past
+`D080h`; V15 is already interrupt-disabled and observes the same boundary.
 
 Frame-level stock instrumentation also explains the 2.21/3.75-second stage
 spread. A normal one-record request has 36 client frames after the request:

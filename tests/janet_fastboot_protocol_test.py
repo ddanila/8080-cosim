@@ -32,6 +32,7 @@ from tools.janet_netboot import (  # noqa: E402
     SYSTEM_PREFIX,
     boot_frames,
     configure_serial,
+    prepare_image,
     xor_bytes,
 )
 from tools import janet_netboot  # noqa: E402
@@ -312,6 +313,44 @@ def main() -> int:
     assert bundle_core == core_v14
     assert bundle_extension == extension_v14
     assert bundle_payload == compressed
+
+    ram_system = bytes((index * 17 + 3) & 0xFF for index in range(0x2080))
+    ram_header = (
+        b"JUKURM1\x1a" + b"\x00\xb0\x00\xc6"
+        + len(ram_system).to_bytes(2, "little")
+        + crc16_ibm(ram_system).to_bytes(2, "little")
+    ).ljust(SYSTEM_PREFIX, b"\x00")
+    ram_image = ram_header + ram_system
+    prepared_ram = prepare_image(ram_image)
+    assert prepared_ram.load_address == 0x0100
+    assert prepared_ram.entry == 0x0100
+    assert prepared_ram.data[128:] == ram_system
+    assert len(prepared_ram.data) == 128 + len(ram_system)
+    assert prepared_ram.data[:4] == b"\xf3\x21\x80\x01"
+    assert prepared_ram.data[4:7] == b"\x11\x00\xb0"
+    assert prepared_ram.data[18:20] == b"\x0a\x01"
+    assert prepared_ram.data[20:23] == b"\xc3\x00\xc6"
+    try:
+        prepare_image(ram_image[:-1] + bytes((ram_image[-1] ^ 1,)))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("corrupt JUKURM1 resident was accepted")
+
+    core_v15 = core_v14[:3] + b"JF15" + core_v14[7:]
+    bundle_v15 = (
+        core_v15 + extension_v14 + b"ZF"
+        + crc16_ibm(ram_system).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v15)
+    assert bundle_core == core_v15
+    assert bundle_extension == extension_v14
+    assert bundle_payload == compressed
+    assert extract_system(ram_image) == ram_system
 
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.

@@ -43,8 +43,13 @@ with the machine-readable board model.
   V14 retry-free. Three physical CS00015 runs then completed at 6.069-6.115 s
   with zero retries, including two runs that needed a second extension-header
   probe. V14 is now the frozen production fastboot baseline; marginal timing
-  gains alone do not justify another variant. The original stock Janet path is
-  unchanged as fallback.
+  gains alone do not justify another variant. The experimental V15 reuses that
+  deterministic transport for CP/Mish's 51K all-RAM BIOS: the host validates a
+  self-describing `JUKURM1` container, the simulator boots its 8,320-byte
+  resident image at `B000h`, types `DIR` through the RAM matrix scanner, and
+  verifies framebuffer output, 35 NetDisk-v2 reads, mode 3, and a fully masked
+  PIC. V15 is simulator-proven, not yet a physical replacement for V14. The
+  original stock Janet path is unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.

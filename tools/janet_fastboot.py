@@ -16,6 +16,7 @@ V11 adds an explicit high-speed core acknowledgement before the extension.
 V12 makes that handshake overlap-safe; v13 adds the same protection and an
 explicit ready acknowledgement for the compressed stream. V14 retains both
 handshakes but receives and authenticates the whole stream before decoding it.
+V15 applies that path to the self-describing 51K RAM BIOS.
 """
 
 from __future__ import annotations
@@ -52,7 +53,7 @@ NEGOTIATED_BAUD = 28800
 BLOCK_SIZE = 512
 BLOCK_COUNT = SYSTEM_BYTES // BLOCK_SIZE
 VERSION = 1
-SUPPORTED_VERSIONS = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
+SUPPORTED_VERSIONS = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
 BLOCK_PROTOCOL_VERSIONS = (1, 2)
 READY = ord("R")
 REPLY = ord("A")
@@ -71,6 +72,7 @@ V11_BUNDLE_MAGIC = b"JF11"
 V12_BUNDLE_MAGIC = b"JF12"
 V13_BUNDLE_MAGIC = b"JF13"
 V14_BUNDLE_MAGIC = b"JF14"
+V15_BUNDLE_MAGIC = b"JF15"
 V3_EXTENSION_MAGIC = b"\xA5\x3A"
 V3_STREAM_MAGIC = b"JS"
 V6_PAYLOAD_MAGIC = b"Z0"
@@ -82,6 +84,7 @@ V11_PAYLOAD_MAGIC = b"ZB"
 V12_PAYLOAD_MAGIC = b"ZC"
 V13_PAYLOAD_MAGIC = b"ZD"
 V14_PAYLOAD_MAGIC = b"ZE"
+V15_PAYLOAD_MAGIC = b"ZF"
 EXTENSION_HEADER_ACK = 0xC5
 STREAM_HEADER_ACK = 0xC6
 V6_STREAM_MAGIC = b"JZ"
@@ -130,14 +133,14 @@ def split_stage_artifact(
         V3_BUNDLE_MAGIC, V4_BUNDLE_MAGIC, V5_BUNDLE_MAGIC, V6_BUNDLE_MAGIC,
         V7_BUNDLE_MAGIC, V8_BUNDLE_MAGIC, V9_BUNDLE_MAGIC,
         V10_BUNDLE_MAGIC, V11_BUNDLE_MAGIC, V12_BUNDLE_MAGIC,
-        V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC,
+        V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC, V15_BUNDLE_MAGIC,
     ):
         magic = stage[3:7]
         core_size = stage[7] * 128
         if magic in (
             V9_BUNDLE_MAGIC, V10_BUNDLE_MAGIC, V11_BUNDLE_MAGIC,
             V12_BUNDLE_MAGIC,
-            V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC,
+            V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC, V15_BUNDLE_MAGIC,
         ):
             if len(stage) < 11 or stage[8] != 0:
                 raise ValueError("malformed exact-length fastboot metadata")
@@ -153,7 +156,8 @@ def split_stage_artifact(
         extension_valid = 256 <= extension_size <= 640 \
             if magic in (V9_BUNDLE_MAGIC, V10_BUNDLE_MAGIC,
                          V11_BUNDLE_MAGIC, V12_BUNDLE_MAGIC,
-                         V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC) \
+                         V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC,
+                         V15_BUNDLE_MAGIC) \
             else extension_size == expected_extension
         if core_size != 128 or not extension_valid:
             raise ValueError("malformed streaming fast-bootstrap bundle")
@@ -173,7 +177,7 @@ def split_stage_artifact(
         if magic in (
             V7_BUNDLE_MAGIC, V8_BUNDLE_MAGIC, V9_BUNDLE_MAGIC,
             V10_BUNDLE_MAGIC, V11_BUNDLE_MAGIC, V12_BUNDLE_MAGIC,
-            V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC,
+            V13_BUNDLE_MAGIC, V14_BUNDLE_MAGIC, V15_BUNDLE_MAGIC,
         ):
             descriptor_size = 8
             version = {
@@ -185,6 +189,7 @@ def split_stage_artifact(
                 V12_BUNDLE_MAGIC: 12,
                 V13_BUNDLE_MAGIC: 13,
                 V14_BUNDLE_MAGIC: 14,
+                V15_BUNDLE_MAGIC: 15,
             }[magic]
             payload_magic = {
                 7: V7_PAYLOAD_MAGIC,
@@ -195,6 +200,7 @@ def split_stage_artifact(
                 12: V12_PAYLOAD_MAGIC,
                 13: V13_PAYLOAD_MAGIC,
                 14: V14_PAYLOAD_MAGIC,
+                15: V15_PAYLOAD_MAGIC,
             }[version]
             if len(stage) <= payload_offset + descriptor_size or \
                     stage[payload_offset:payload_offset + 2] != \
@@ -210,7 +216,7 @@ def split_stage_artifact(
                 raise ValueError(
                     f"v{version} compressed payload length mismatch"
                 )
-            if version in (8, 9, 10, 11, 12, 13, 14) and \
+            if version in (8, 9, 10, 11, 12, 13, 14, 15) and \
                     len(compressed) < 256:
                 raise ValueError(
                     f"v{version} compressed payload is shorter than its lead"
@@ -304,7 +310,16 @@ def data_block(
 
 
 def extract_system(image: bytes) -> bytes:
-    """Extract the resident B400h-CDFFh bytes from a JUKUSYS image."""
+    """Extract a resident payload from a supported Juku system container."""
+    if image.startswith(b"JUKURM1\x1a"):
+        size = int.from_bytes(image[12:14], "little")
+        expected_crc = int.from_bytes(image[14:16], "little")
+        if not size or size % 128 or len(image) != SYSTEM_PREFIX + size:
+            raise ValueError("JUKURM1 fastboot image length is inconsistent")
+        system = image[SYSTEM_PREFIX:]
+        if crc16_ibm(system) != expected_crc:
+            raise ValueError("JUKURM1 fastboot image CRC mismatch")
+        return system
     if (len(image) != 10240 or
             image[:SYSTEM_PREFIX] != bytes((0xE5,)) * SYSTEM_PREFIX or
             image[SYSTEM_PREFIX] != 0xC3):
@@ -433,21 +448,22 @@ def serve_fast(
         V12_BUNDLE_MAGIC: 12,
         V13_BUNDLE_MAGIC: 13,
         V14_BUNDLE_MAGIC: 14,
+        V15_BUNDLE_MAGIC: 15,
     }.get(stock_stage[3:7], 3)
     if low_latency_guards and not compact_stock_execute:
         raise ValueError(
             "low-latency guards require compact stock execute"
         )
     if low_latency_guards and bundle_version not in (
-        7, 8, 9, 10, 11, 12, 13, 14,
+        7, 8, 9, 10, 11, 12, 13, 14, 15,
     ):
         raise ValueError(
-            "low-latency guards require fastboot v7 through v14"
+            "low-latency guards require fastboot v7 through v15"
         )
     effective_extension_guard = turnaround_guard \
         if extension_guard is None else extension_guard
     system = extract_system(image)
-    if bundle_version in (6, 7, 8, 9, 10, 11, 12, 13, 14):
+    if bundle_version in (6, 7, 8, 9, 10, 11, 12, 13, 14, 15):
         if extension is None:
             raise ValueError(f"fastboot v{bundle_version} extension is missing")
         payload_offset = len(stock_stage) + len(extension)
@@ -482,7 +498,7 @@ def serve_fast(
             fd, FAST_BAUD,
             parity="none"
             if bundle_version in (
-                5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+                5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
             ) else "odd",
         )
     parser = TargetFrameParser()
@@ -503,12 +519,12 @@ def serve_fast(
         ready = None
         for attempt in range(retries):
             time.sleep(
-                0 if bundle_version in (11, 12, 13, 14)
+                0 if bundle_version in (11, 12, 13, 14, 15)
                 else effective_extension_guard
             )
             outgoing = extension_filter(attempt, packet) \
                 if extension_filter is not None else packet
-            if bundle_version in (12, 13, 14) and len(outgoing) >= 2:
+            if bundle_version in (12, 13, 14, 15) and len(outgoing) >= 2:
                 header_acknowledged = False
                 for probe in range(32):
                     # A zero before every repeated A5/3A pair releases an
@@ -555,7 +571,7 @@ def serve_fast(
                 fd, parser,
                 lambda item: item == extension_ready,
                 min(reply_timeout, 0.750)
-                if bundle_version in (11, 12, 13, 14) else reply_timeout,
+                if bundle_version in (11, 12, 13, 14, 15) else reply_timeout,
             )
             if ready is not None:
                 break
@@ -670,7 +686,7 @@ def serve_fast(
 
     transfer_framing = \
         "8N1" if protocol_version in (
-            5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+            5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
         ) else "8O1"
     if verbose:
         extension_detail = "" if extension is None else \
@@ -718,14 +734,14 @@ def serve_fast(
         raise TimeoutError(f"fast-bootstrap exchange {sequence:02X} failed")
 
     if protocol_version in (
-        3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ):
         packet = compressed_stream_packet(
             compressed, fixed=protocol_version in (
-                7, 8, 9, 10, 11, 12, 13, 14,
+                7, 8, 9, 10, 11, 12, 13, 14, 15,
             ),
         ) \
-            if protocol_version in (6, 7, 8, 9, 10, 11, 12, 13, 14) \
+            if protocol_version in (6, 7, 8, 9, 10, 11, 12, 13, 14, 15) \
             and compressed is not None \
             else stream_packet(system)
         stream_ready = (READY, protocol_version, rate_flag)
@@ -734,7 +750,7 @@ def serve_fast(
             time.sleep(turnaround_guard)
             outgoing = block_filter(0, attempt, packet) \
                 if block_filter is not None else packet
-            if protocol_version in (13, 14) and len(outgoing) >= 2:
+            if protocol_version in (13, 14, 15) and len(outgoing) >= 2:
                 stream_acknowledged = False
                 for probe in range(32):
                     probe_packet = (b"\0" if probe else b"") + outgoing[:2]
@@ -808,15 +824,15 @@ def serve_fast(
                 f"fast-bootstrap v{protocol_version} stream failed"
             )
         if protocol_version in (
-            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
         ):
             # The target emits three success copies and drains them before
-            # entering NETROM2. V4-v6 restore 8O1; v7-v14 rely
+            # entering the resident BIOS. V4-v6 restore 8O1; v7-v15 rely
             # on NETROM2's immediate NETINIT. Avoid changing the host framing
             # in the middle of the repeated success frames.
             success_guard = 0.010 if low_latency_guards else \
                 (0.020 if protocol_version in (
-                    7, 8, 9, 10, 11, 12, 13, 14,
+                    7, 8, 9, 10, 11, 12, 13, 14, 15,
                 ) else 0.080)
             time.sleep(success_guard)
             if configure_rate:
@@ -826,7 +842,7 @@ def serve_fast(
             compression_detail = \
                 f"ZX0={len(compressed)} bytes, " if compressed else ""
             print(
-                f"Fast bootstrap complete: {SYSTEM_BYTES} bytes, "
+                f"Fast bootstrap complete: {len(system)} bytes, "
                 f"{compression_detail}"
                 f"CRC16/IBM={crc16_ibm(system):04X}, "
                 f"extension-retries={extension_retries}, "
@@ -913,7 +929,7 @@ def serve_fast(
     finished = time.monotonic()
     if verbose:
         print(
-            f"Fast bootstrap complete: {SYSTEM_BYTES} bytes, "
+            f"Fast bootstrap complete: {len(system)} bytes, "
             f"CRC16={crc16_ccitt(system):04X}, retries={retries_used}, "
             f"stage={stage_seconds:.2f}s, "
             f"bulk={finished - stock_finished:.2f}s",
@@ -942,7 +958,7 @@ def serve_fast(
         "success_guard_ms": (
             10 if low_latency_guards
             else (20 if protocol_version in (
-                7, 8, 9, 10, 11, 12, 13, 14,
+                7, 8, 9, 10, 11, 12, 13, 14, 15,
             ) else 80)
         ),
     }
