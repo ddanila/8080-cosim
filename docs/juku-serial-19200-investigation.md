@@ -281,9 +281,22 @@ The separately named 5273-byte V14/NetDisk-v2 bundle has SHA-256
 `23fe0e156541717885d9fa76e9bd288724bdb633dfbcd8cf597e634d30a070a6`;
 the frozen V14 baseline retains its original SHA-256.
 
-Future work can add a strong CRC and bounded prefix/run encoding as a separately
-versioned protocol. Multi-record read-ahead remains attractive only after a
-documented safe cache location or an explicitly reduced-TPA build exists.
+That future work is now implemented for the separately named independent 51K
+RAM BIOS as NetDisk v3. It does not alter the frozen V14/RomBios baseline.
+Permanent all-RAM mode and a fully masked PIC make `D080h..D3FFh` an explicit
+RAM-BIOS-owned region; it holds a three-record cache and client. Opcode 14h
+returns up to three translated records with bounded raw, fill,
+deleted-directory, or prefix-plus-tail encoding, protected by CRC16/IBM over
+the complete response body. The target retries malformed or corrupt replies.
+
+Cycle-accurate integration found that descriptor streaming itself needs flow
+control: expanding a compressed fill record can take the 8080 longer than one
+19,200-baud character. A 4 ms host guard between descriptors prevents D11's
+single-byte receiver from overrunning. Clean and corrupt-first-CRC runs both
+complete `DIR`; the latter makes exactly one retry. Read-ahead cuts the test's
+35 record requests to 12. The same client negotiates `N2`/opcode 13h or legacy
+`NR`/opcode 11h and completes `DIR` in both fallback modes. This v3 image is
+simulator-qualified and awaits physical testing.
 
 Physical CS00015 then qualified NetDisk v2 on 2026-08-15. Three boots reached
 the first opcode-13h request at 6.116354, 6.116790, and 6.115778 seconds, a

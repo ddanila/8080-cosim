@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from tools.janet_disk_server import (  # noqa: E402
     NATIVE_VOLUME_SIZE,
     READ,
+    READ_AHEAD,
     READ_COMPACT,
     RECORD_SIZE,
     REPLY_SYNC,
@@ -23,6 +24,8 @@ from tools.janet_disk_server import (  # noqa: E402
     VOLUME_SIZE,
     WRITE,
     checksum,
+    crc16_ibm,
+    encode_v3_record,
     juku_image_to_volume,
     record_offset,
     serve_disk,
@@ -48,6 +51,22 @@ def receive_exact(sock: socket.socket, length: int) -> bytes:
 
 
 def main() -> int:
+    if encode_v3_record(b"\xA5" * RECORD_SIZE,
+                        deleted_directory=False) != b"\x01\xA5":
+        raise AssertionError("v3 uniform-fill encoding differs")
+    deleted_encoding = bytearray(range(RECORD_SIZE))
+    deleted_encoding[0::32] = b"\xE5" * 4
+    if encode_v3_record(bytes(deleted_encoding),
+                        deleted_directory=True) != b"\x02":
+        raise AssertionError("v3 deleted-directory encoding differs")
+    prefixed = bytes(range(10)) + b"\xE5" * (RECORD_SIZE - 10)
+    if encode_v3_record(prefixed, deleted_directory=False) != \
+            b"\x03\x0A" + bytes(range(10)) + b"\xE5":
+        raise AssertionError("v3 prefix/fill encoding differs")
+    raw = bytes(range(RECORD_SIZE))
+    if encode_v3_record(raw, deleted_directory=False) != b"\x00" + raw:
+        raise AssertionError("v3 raw encoding differs")
+
     # Each physical cylinder stores side 0 followed by side 1. The logical
     # volume stores all side-0 tracks before all side-1 tracks.
     image = bytearray(NATIVE_VOLUME_SIZE)
@@ -134,6 +153,8 @@ def main() -> int:
         "reads_a": 2, "reads_b": 1, "writes_a": 1, "writes_b": 0,
         "request_wire_bytes": 301, "reply_wire_bytes": 154,
         "compact_records": 2, "compact_bytes_saved": 255,
+        "read_ahead_records": 0,
+        "v3_raw": 0, "v3_fill": 0, "v3_deleted": 0, "v3_prefix": 0,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
@@ -144,6 +165,49 @@ def main() -> int:
             first_requests[0]["status"] != 0 or \
             float(first_requests[0]["elapsed_seconds"]) <= 0:
         raise AssertionError(f"first disk request evidence differs: {first_requests}")
+
+    v3_host, v3_client = socket.socketpair()
+    v3_stats: dict[str, int] = {}
+    v3_errors: list[BaseException] = []
+
+    def v3_worker() -> None:
+        try:
+            serve_disk(
+                v3_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
+                reply_guard=0, protocol_version=3, verbose=False,
+                stats=v3_stats,
+            )
+        except BaseException as error:
+            v3_errors.append(error)
+
+    v3_thread = threading.Thread(target=v3_worker)
+    v3_thread.start()
+    if receive_exact(v3_client, 4) != b"NRN3":
+        raise AssertionError("v3 resident-ready marker differs")
+    v3_client.sendall(request(READ_AHEAD, 6, 0, 2, 1))
+    expected_body = (
+        b"DJ\x06\x00\x03"
+        + b"\x02\x00\x01\x01\xA5"
+        + b"\x02\x00\x02\x02"
+        + b"\x02\x00\x03\x01\x00"
+    )
+    expected_reply = expected_body + crc16_ibm(expected_body).to_bytes(
+        2, "big",
+    )
+    reply = receive_exact(v3_client, len(expected_reply))
+    if reply != expected_reply:
+        raise AssertionError(f"v3 read-ahead reply differs: {reply.hex()}")
+    v3_client.sendall(request(READ_AHEAD, 6, 0, 2, 1))
+    if receive_exact(v3_client, len(expected_reply)) != expected_reply:
+        raise AssertionError("v3 duplicate request did not replay exactly")
+    v3_thread.join(timeout=2)
+    v3_client.close()
+    v3_host.close()
+    if v3_thread.is_alive() or v3_errors:
+        raise AssertionError(f"v3 disk server did not finish: {v3_errors!r}")
+    if v3_stats["reads"] != 1 or v3_stats["read_records"] != 3 or \
+            v3_stats["retries"] != 1:
+        raise AssertionError(f"v3 counters differ: {v3_stats}")
 
     result = ROOT / ".obj" / "janet-disk-server-result-test.json"
     result.parent.mkdir(exist_ok=True)

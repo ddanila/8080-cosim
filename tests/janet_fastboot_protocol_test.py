@@ -353,6 +353,29 @@ def main() -> int:
     assert bundle_payload == compressed
     assert extract_system(ram_image) == ram_system
 
+    large_payload = bytes((index * 29 + 7) & 0xFF for index in range(0x1800))
+    large_bundle_v15 = (
+        core_v15 + extension_v14 + b"ZF"
+        + crc16_ibm(ram_system).to_bytes(2, "big")
+        + len(large_payload).to_bytes(2, "big")
+        + crc16_ibm(large_payload).to_bytes(2, "big")
+        + large_payload
+    )
+    assert split_stage_artifact(large_bundle_v15)[2] == large_payload
+    large_bundle_v14 = (
+        core_v14 + extension_v14 + b"ZE"
+        + crc16_ibm(ram_system).to_bytes(2, "big")
+        + len(large_payload).to_bytes(2, "big")
+        + crc16_ibm(large_payload).to_bytes(2, "big")
+        + large_payload
+    )
+    try:
+        split_stage_artifact(large_bundle_v14)
+    except ValueError as error:
+        assert "exceeds target limit" in str(error)
+    else:
+        raise AssertionError("v14 accepted a payload above its RAM limit")
+
     attempts = 0
     preparations = 0
 

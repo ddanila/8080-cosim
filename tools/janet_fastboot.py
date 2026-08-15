@@ -89,6 +89,7 @@ EXTENSION_HEADER_ACK = 0xC5
 STREAM_HEADER_ACK = 0xC6
 V6_STREAM_MAGIC = b"JZ"
 V6_COMPRESSED_LIMIT = 0x1800
+V15_COMPRESSED_LIMIT = 0x2000
 V3_WRITE_STALL_TIMEOUT = 10.0
 
 
@@ -221,7 +222,9 @@ def split_stage_artifact(
                 raise ValueError(
                     f"v{version} compressed payload is shorter than its lead"
                 )
-            if len(compressed) >= V6_COMPRESSED_LIMIT:
+            compressed_limit = V15_COMPRESSED_LIMIT \
+                if version == 15 else V6_COMPRESSED_LIMIT
+            if len(compressed) >= compressed_limit:
                 raise ValueError(
                     f"v{version} compressed payload exceeds target limit"
                 )
@@ -256,8 +259,11 @@ def stream_packet(system: bytes) -> bytes:
     return V3_STREAM_MAGIC + system + bytes((crc >> 8, crc & 0xFF))
 
 
-def compressed_stream_packet(compressed: bytes, *, fixed: bool = False) -> bytes:
-    if not compressed or len(compressed) >= V6_COMPRESSED_LIMIT:
+def compressed_stream_packet(
+    compressed: bytes, *, fixed: bool = False,
+    compressed_limit: int = V6_COMPRESSED_LIMIT,
+) -> bytes:
+    if not compressed or len(compressed) >= compressed_limit:
         raise ValueError("invalid compressed fastboot payload length")
     if fixed:
         return V6_STREAM_MAGIC + compressed
@@ -739,6 +745,10 @@ def serve_fast(
         packet = compressed_stream_packet(
             compressed, fixed=protocol_version in (
                 7, 8, 9, 10, 11, 12, 13, 14, 15,
+            ),
+            compressed_limit=(
+                V15_COMPRESSED_LIMIT
+                if protocol_version == 15 else V6_COMPRESSED_LIMIT
             ),
         ) \
             if protocol_version in (6, 7, 8, 9, 10, 11, 12, 13, 14, 15) \

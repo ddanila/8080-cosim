@@ -17,7 +17,7 @@ from pathlib import Path
 
 try:
     from janet_netboot import configure_serial, serve as serve_boot, write_all
-    from janet_fastboot import FAST_BAUD, serve_fast
+    from janet_fastboot import FAST_BAUD, crc16_ibm, serve_fast
 except ModuleNotFoundError:  # Imported as tools.janet_disk_server by tests.
     from tools.janet_netboot import (  # type: ignore[no-redef]
         configure_serial,
@@ -25,7 +25,7 @@ except ModuleNotFoundError:  # Imported as tools.janet_disk_server by tests.
         write_all,
     )
     from tools.janet_fastboot import (  # type: ignore[no-redef]
-        FAST_BAUD,
+        FAST_BAUD, crc16_ibm,
         serve_fast,
     )
 
@@ -35,16 +35,40 @@ REPLY_SYNC = b"DJ"
 READ = 0x11
 WRITE = 0x12
 READ_COMPACT = 0x13
+READ_AHEAD = 0x14
 RECORD_SIZE = 128
 TRACK_SIZE = 40 * RECORD_SIZE
 TRACKS = 80
 VOLUME_SIZE = TRACKS * TRACK_SIZE
 NATIVE_TRACKS = 160
 NATIVE_VOLUME_SIZE = NATIVE_TRACKS * TRACK_SIZE
-DIRECTORY_SECTORS = frozenset((
+SECTOR_ORDER = (
     1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 19, 20, 25, 26, 27, 28,
     33, 34, 35, 36, 5, 6, 7, 8, 13, 14, 15, 16, 21, 22, 23, 24,
-))
+    29, 30, 31, 32, 37, 38, 39, 40,
+)
+DIRECTORY_SECTORS = frozenset(SECTOR_ORDER[:32])
+READ_AHEAD_RECORDS = 3
+V3_RECORD_GUARD = 0.004
+
+
+def encode_v3_record(payload: bytes, *, deleted_directory: bool) -> bytes:
+    """Encode one record with a bounded decoder and no expansion risk."""
+    if len(payload) != RECORD_SIZE:
+        raise ValueError("v3 record must be exactly 128 bytes")
+    if payload.count(payload[:1]) == RECORD_SIZE:
+        return b"\x01" + payload[:1]
+    if deleted_directory and all(
+        payload[index] == 0xE5 for index in range(0, RECORD_SIZE, 32)
+    ):
+        return b"\x02"
+    fill = payload[-1]
+    prefix = RECORD_SIZE - 1
+    while prefix and payload[prefix - 1] == fill:
+        prefix -= 1
+    if prefix + 3 < RECORD_SIZE + 1:
+        return b"\x03" + bytes((prefix,)) + payload[:prefix] + bytes((fill,))
+    return b"\x00" + payload
 
 
 def boot_with_recovery(
@@ -121,7 +145,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                boot_started_at: float | None = None,
                first_request_hook: Callable[
                    [dict[str, int | float]], None
-               ] | None = None) -> dict[str, int]:
+               ] | None = None,
+               reply_filter: Callable[[int, bytes], bytes] | None = None,
+               ) -> dict[str, int]:
     """Serve the compact CP/M record protocol on an already configured fd."""
     if len(volume) != VOLUME_SIZE:
         raise ValueError(f"network volume is {len(volume)} bytes; expected {VOLUME_SIZE}")
@@ -130,18 +156,21 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             f"network B: is {len(drive_b)} bytes; expected {NATIVE_VOLUME_SIZE}"
         )
     buffer = bytearray()
-    if protocol_version not in (1, 2):
-        raise ValueError("protocol_version must be 1 or 2")
+    if protocol_version not in (1, 2, 3):
+        raise ValueError("protocol_version must be 1, 2, or 3")
     reads = read_records = writes = retries = 0
     if stats is None:
         stats = {}
     stats.update(reads=0, read_records=0, writes=0, retries=0,
                  reads_a=0, reads_b=0, writes_a=0, writes_b=0,
                  request_wire_bytes=0, reply_wire_bytes=0,
-                 compact_records=0, compact_bytes_saved=0)
+                 compact_records=0, compact_bytes_saved=0,
+                 read_ahead_records=0, v3_raw=0, v3_fill=0,
+                 v3_deleted=0, v3_prefix=0)
     last_sequence: int | None = None
     last_request = b""
     last_reply = b""
+    last_reply_chunks: tuple[bytes, ...] = ()
     marker_buffer = bytearray()
     deadline = time.monotonic() + timeout if timeout is not None else None
     last_activity = time.monotonic()
@@ -149,10 +178,12 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
     # this marker before sending the first disk request, preventing bootstrap
     # parser read-ahead from consuming bytes belonging to the resident phase.
     if not resume:
-        write_all(fd, b"NRN2" if protocol_version == 2 else b"NR")
+        write_all(fd, b"NRN3" if protocol_version == 3 else
+                  b"NRN2" if protocol_version == 2 else b"NR")
     next_ready = time.monotonic() + 0.02
     synchronized = resume
     first_request_seen = False
+    reply_attempts = 0
 
     while deadline is None or time.monotonic() < deadline:
         wait = 0.1 if deadline is None else min(
@@ -162,7 +193,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
         if not ready:
             if not synchronized and time.monotonic() >= next_ready:
                 write_all(
-                    fd, b"NRN2" if protocol_version == 2 else b"NR",
+                    fd, b"NRN3" if protocol_version == 3 else
+                    b"NRN2" if protocol_version == 2 else b"NR",
                 )
                 next_ready = time.monotonic() + 0.02
             if reads + writes and idle_timeout is not None and \
@@ -215,7 +247,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 break
             request = bytes(buffer[:size])
             del buffer[:size]
-            if request[2] not in (READ, WRITE, READ_COMPACT) or checksum(request):
+            if request[2] not in (READ, WRITE, READ_COMPACT, READ_AHEAD) or \
+                    checksum(request):
                 retries += 1
                 stats["retries"] = retries
                 if verbose:
@@ -232,12 +265,14 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 if selected is not None else None
             can_write = writable and drive == 0
             records = 1
-            valid_read = operation in (READ, READ_COMPACT) and \
-                (operation != READ_COMPACT or protocol_version == 2) and \
+            valid_read = operation in (READ, READ_COMPACT, READ_AHEAD) and \
+                (operation != READ_COMPACT or protocol_version >= 2) and \
+                (operation != READ_AHEAD or protocol_version == 3) and \
                 offset is not None
             status = 0 if valid_read or \
                 (operation == WRITE and offset is not None and can_write) else 1
             encoding = ""
+            reply_chunks: tuple[bytes, ...] = ()
             payload = bytes(selected[offset:offset + RECORD_SIZE]) \
                 if valid_read and status == 0 else b""
             if operation == READ_COMPACT and status == 0:
@@ -259,8 +294,57 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     stats["compact_records"] += 1
                     stats["compact_bytes_saved"] += saved
                 payload = encoded
-            body = REPLY_SYNC + bytes((sequence, status)) + payload
-            reply = body + bytes((checksum(body),))
+            if operation == READ_AHEAD:
+                descriptors = bytearray()
+                descriptor_chunks: list[bytes] = []
+                records = 0
+                if status == 0:
+                    order_index = SECTOR_ORDER.index(sector)
+                    next_track = track
+                    next_index = order_index
+                    while records < READ_AHEAD_RECORDS and next_track < tracks:
+                        next_sector = SECTOR_ORDER[next_index]
+                        next_offset = record_offset(
+                            next_track, next_sector, tracks,
+                        )
+                        assert next_offset is not None and selected is not None
+                        record = bytes(
+                            selected[next_offset:next_offset + RECORD_SIZE],
+                        )
+                        encoded = encode_v3_record(
+                            record,
+                            deleted_directory=(
+                                next_track == 2 and
+                                next_sector in DIRECTORY_SECTORS
+                            ),
+                        )
+                        descriptors.extend((
+                            next_track & 0xFF, next_track >> 8, next_sector,
+                        ))
+                        descriptors.extend(encoded)
+                        descriptor_chunks.append(
+                            bytes((next_track & 0xFF, next_track >> 8,
+                                   next_sector)) + encoded,
+                        )
+                        stats[("v3_raw", "v3_fill", "v3_deleted",
+                               "v3_prefix")[encoded[0]]] += 1
+                        records += 1
+                        next_index += 1
+                        if next_index == len(SECTOR_ORDER):
+                            next_index = 0
+                            next_track += 1
+                body = REPLY_SYNC + bytes((sequence, status, records)) + \
+                    bytes(descriptors)
+                reply = body + crc16_ibm(body).to_bytes(2, "big")
+                reply_chunks = (
+                    body[:5], *descriptor_chunks, reply[-2:],
+                )
+                payload = bytes(descriptors)
+                encoding = f"v3-ahead-{records}"
+                stats["read_ahead_records"] += records
+            else:
+                body = REPLY_SYNC + bytes((sequence, status)) + payload
+                reply = body + bytes((checksum(body),))
             stats["request_wire_bytes"] += len(request)
             stats["reply_wire_bytes"] += len(reply)
 
@@ -297,6 +381,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 retries += 1
                 stats["retries"] = retries
                 reply = last_reply
+                reply_chunks = last_reply_chunks
             elif status == 0 and operation == WRITE:
                 selected[offset:offset + RECORD_SIZE] = request[8:8 + RECORD_SIZE]
                 writes += 1
@@ -311,9 +396,31 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             last_sequence = sequence
             last_request = request
             last_reply = reply
+            last_reply_chunks = reply_chunks
             if reply_guard:
                 time.sleep(reply_guard)
-            if tx_byte_delay:
+            reply_attempts += 1
+            outgoing = reply_filter(reply_attempts, reply) \
+                if reply_filter is not None else reply
+            if len(outgoing) != len(reply):
+                raise ValueError("disk reply filter must preserve length")
+            if reply_chunks and outgoing != reply:
+                lengths = tuple(map(len, reply_chunks))
+                rebuilt = []
+                position = 0
+                for length in lengths:
+                    rebuilt.append(outgoing[position:position + length])
+                    position += length
+                reply_chunks = tuple(rebuilt)
+            elif not reply_chunks:
+                reply = outgoing
+            if reply_chunks:
+                write_all(fd, reply_chunks[0])
+                for chunk in reply_chunks[1:-1]:
+                    write_all(fd, chunk)
+                    time.sleep(V3_RECORD_GUARD)
+                write_all(fd, reply_chunks[-1])
+            elif tx_byte_delay:
                 for value in reply:
                     write_all(fd, bytes((value,)))
                     time.sleep(tx_byte_delay)
@@ -389,9 +496,9 @@ def parser() -> argparse.ArgumentParser:
         help="host-to-Juku delay between disk-reply bytes (default: 0)",
     )
     result.add_argument(
-        "--disk-protocol", type=int, choices=(1, 2), default=2,
-        help="serve legacy or compact records (default: 2; legacy clients "
-             "ignore the v2 advertisement)",
+        "--disk-protocol", type=int, choices=(1, 2, 3), default=2,
+        help="serve legacy, compact, or CRC/read-ahead records (default: 2; "
+             "new clients negotiate down and old clients ignore additions)",
     )
     result.add_argument(
         "--timeout", type=float, default=120.0,

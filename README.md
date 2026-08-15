@@ -48,7 +48,11 @@ with the machine-readable board model.
   self-describing `JUKURM1` container, the simulator boots its 8,320-byte
   resident image at `B000h`, types `DIR` through the RAM matrix scanner, and
   verifies framebuffer output, 35 NetDisk-v2 reads, mode 3, and a fully masked
-  PIC. V15 is simulator-proven, not yet a physical replacement for V14. The
+  PIC. The separately named RAM-BIOS/NetDisk-v3 payload adds CRC-protected
+  three-record read-ahead with bounded raw/fill/deleted/prefix encodings. Its
+  full stock-Janet-to-`DIR` path takes 12 disk exchanges instead of 35; cosim
+  also proves one corrupted-response retry and negotiated v2/v1 fallback.
+  V15 is simulator-proven, not yet a physical replacement for V14. The
   original stock Janet path is unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.

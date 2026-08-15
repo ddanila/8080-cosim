@@ -537,6 +537,26 @@ resident tail deliberately uses `CF00h..D07Fh`, including 128 bytes reclaimed
 from the otherwise inactive RomBios workspace. Its builder rejects growth past
 `D080h`; V15 is already interrupt-disabled and observes the same boundary.
 
+The separately named CP/Mish `juku-fastboot-v15-netdisk-v3.bin` extends the
+same RAM-owned design through `D3FFh`. Its 9,216-byte resident uses the former
+RomBios workspace for a three-record cache and bounded NetDisk-v3 decoder;
+V14 and the original V15/RAM-BIOS artifacts remain unchanged. Its 6,585-byte
+bundle contains a 6,182-byte ZX0 stream. Accordingly, only V15 accepts a
+compressed payload below 8 KiB; V6-V14 retain the original below-6-KiB
+validator. A protocol regression explicitly accepts the larger V15 bundle and
+rejects the same size when labeled V14.
+
+The end-to-end simulator path stock-loads the V15 core, installs the v3 image
+byte-exact, stays in mode 3 with every IRQ masked, reaches CP/M, and completes
+`DIR` in 12 host exchanges for at least 35 records. The matching server sends
+up to three translated records per CRC16/IBM-protected response. It places a
+4 ms guard between record descriptors because the 8080 may still be expanding
+a fill record when the next wire byte would otherwise reach D11. With no guard,
+the cycle-accurate USART reproduces a one-byte-buffer overrun and a stalled
+client. A corrupt-first-CRC injection produces exactly one duplicate request
+and then the same framebuffer. Separate negotiation cases prove fallback to
+v2 compact and v1 raw replies, both with 35 requests.
+
 Frame-level stock instrumentation also explains the 2.21/3.75-second stage
 spread. A normal one-record request has 36 client frames after the request:
 one request, 26 polls of other stations, one start poll, five ACKs, and three
