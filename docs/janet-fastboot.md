@@ -430,9 +430,18 @@ cd ~/fun/cpmish && make juku-fastboot-v9.bin
 ../8080-cosim/tools/janet_disk_server.py \
     --fast-stage1 juku-fastboot-v9.bin --compact-stock-execute \
     --fast-low-latency-guards --disk-baud 19200 \
+    --boot-result-json cs00015-fastboot-v9-low-latency.json \
     --writable --timeout 86400 /dev/ttyUSB0 \
     juku-net-mode2-system.bin cs00015-fastboot.img
 ```
+
+`--boot-result-json` atomically records the stage hash, system hash, learned
+station pair, individual stage/bulk timings, selected guard policy, and the
+elapsed time from the first checksum-valid stock-ROM request to the first valid
+resident disk request. It writes at that first request while continuing to
+serve the disk, so a later interrupted session cannot lose the benchmark.
+Use a distinct filename for every cold or warm run when collecting a timing
+distribution.
 
 Run the v8 comparison without changing the ROM:
 

@@ -5,11 +5,14 @@ from __future__ import annotations
 
 import argparse
 import errno
+import hashlib
+import json
 import os
 import select
 import sys
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
+from datetime import datetime, timezone
 from pathlib import Path
 
 from janet_netboot import configure_serial, serve as serve_boot, write_all
@@ -69,7 +72,10 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                resume: bool = False,
                verbose: bool = True,
                stats: dict[str, int] | None = None,
-               boot_started_at: float | None = None) -> dict[str, int]:
+               boot_started_at: float | None = None,
+               first_request_hook: Callable[
+                   [dict[str, int | float]], None
+               ] | None = None) -> dict[str, int]:
     """Serve the compact CP/M record protocol on an already configured fd."""
     if len(volume) != VOLUME_SIZE:
         raise ValueError(f"network volume is {len(volume)} bytes; expected {VOLUME_SIZE}")
@@ -96,6 +102,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
         write_all(fd, b"NR")
     next_ready = time.monotonic() + 0.02
     synchronized = resume
+    first_request_seen = False
 
     while deadline is None or time.monotonic() < deadline:
         wait = 0.1 if deadline is None else min(
@@ -179,9 +186,26 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             body = REPLY_SYNC + bytes((sequence, status)) + payload
             reply = body + bytes((checksum(body),))
 
+            request_at = time.monotonic()
+            if not first_request_seen:
+                first_request_seen = True
+                if first_request_hook is not None:
+                    first_request_hook({
+                        "elapsed_seconds": (
+                            request_at - boot_started_at
+                            if boot_started_at is not None else 0.0
+                        ),
+                        "operation": operation,
+                        "sequence": sequence,
+                        "drive": drive,
+                        "track": track,
+                        "sector": sector,
+                        "status": status,
+                    })
+
             if verbose:
                 elapsed = "" if boot_started_at is None else \
-                    f" boot+{time.monotonic() - boot_started_at:.3f}s"
+                    f" boot+{request_at - boot_started_at:.3f}s"
                 print(
                     f"disk request op={operation:02X} seq={sequence:02X} "
                     f"drive={drive} track={track} sector={sector} "
@@ -218,6 +242,13 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
         print(f"Janet disk session: reads={reads}, writes={writes}, retries={retries}",
               flush=True)
     return stats
+
+
+def write_boot_result(path: Path, report: dict[str, object]) -> None:
+    """Atomically persist one physical boot timing result."""
+    temporary = path.with_name(path.name + ".tmp")
+    temporary.write_text(json.dumps(report, indent=2) + "\n")
+    temporary.replace(path)
 
 
 def parser() -> argparse.ArgumentParser:
@@ -270,6 +301,10 @@ def parser() -> argparse.ArgumentParser:
         "--disk-timeout", type=float,
         help="optional total disk-session lifetime in seconds",
     )
+    result.add_argument(
+        "--boot-result-json", type=Path,
+        help="write timing evidence when the first valid disk request arrives",
+    )
     return result
 
 
@@ -285,6 +320,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     volume = bytearray(args.volume.read_bytes())
     drive_b = juku_image_to_volume(args.drive_b.read_bytes()) \
         if args.drive_b else None
+    fast_stage = args.fast_stage1.read_bytes() if args.fast_stage1 else b""
     fd = os.open(args.serial, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     try:
         configure_serial(fd, args.boot_baud)
@@ -306,7 +342,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                     f"--disk-baud {FAST_BAUD}"
                 )
             boot = serve_fast(
-                fd, args.fast_stage1.read_bytes(), system,
+                fd, fast_stage, system,
                 client=args.client, server=args.server,
                 stock_timeout=args.timeout,
                 compact_stock_execute=args.compact_stock_execute,
@@ -331,6 +367,36 @@ def main(argv: Iterable[str] | None = None) -> int:
               flush=True)
         if args.drive_b:
             print(f"Serving read-only native B: from {args.drive_b}", flush=True)
+
+        def record_first_request(event: dict[str, int | float]) -> None:
+            if args.boot_result_json is None:
+                return
+            report: dict[str, object] = {
+                "schema": "juku-janet-boot-result-v1",
+                "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+                "serial": str(args.serial),
+                "boot_baud": args.boot_baud,
+                "disk_baud": args.disk_baud,
+                "system": str(args.system),
+                "system_sha256": hashlib.sha256(system).hexdigest(),
+                "volume": str(args.volume),
+                "fast_stage": str(args.fast_stage1)
+                if args.fast_stage1 else None,
+                "fast_stage_sha256": hashlib.sha256(fast_stage).hexdigest()
+                if fast_stage else None,
+                "compact_stock_execute": args.compact_stock_execute,
+                "fast_low_latency_guards": args.fast_low_latency_guards,
+                "station_server": station_server,
+                "station_client": station_client,
+                "bootstrap": {
+                    key: value for key, value in boot.items()
+                    if key != "request_started_at"
+                },
+                "first_disk_request": event,
+            }
+            write_boot_result(args.boot_result_json, report)
+            print(f"Saved boot timing to {args.boot_result_json}", flush=True)
+
         serve_disk(
             fd,
             volume,
@@ -340,6 +406,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             reply_guard=args.disk_reply_guard_ms / 1000.0,
             tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
             boot_started_at=float(boot["request_started_at"]),
+            first_request_hook=record_first_request,
         )
     finally:
         if args.writable:

@@ -25,6 +25,7 @@ from tools.janet_disk_server import (  # noqa: E402
     juku_image_to_volume,
     record_offset,
     serve_disk,
+    write_boot_result,
 )
 
 
@@ -64,6 +65,7 @@ def main() -> int:
     drive_b[high_offset:high_offset + RECORD_SIZE] = bytes(range(RECORD_SIZE))
     host, client = socket.socketpair()
     stats: dict[str, int] = {}
+    first_requests: list[dict[str, int | float]] = []
     errors: list[BaseException] = []
 
     def worker() -> None:
@@ -72,6 +74,8 @@ def main() -> int:
                 host.fileno(), drive_a, drive_b=drive_b, writable=True,
                 timeout=2, idle_timeout=0.05, reply_guard=0,
                 verbose=False, stats=stats,
+                boot_started_at=0.0,
+                first_request_hook=first_requests.append,
             )
         except BaseException as error:
             errors.append(error)
@@ -111,6 +115,21 @@ def main() -> int:
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
+    if len(first_requests) != 1 or first_requests[0]["operation"] != READ or \
+            first_requests[0]["drive"] != 1 or \
+            first_requests[0]["track"] != 159 or \
+            first_requests[0]["sector"] != 40 or \
+            first_requests[0]["status"] != 0 or \
+            float(first_requests[0]["elapsed_seconds"]) <= 0:
+        raise AssertionError(f"first disk request evidence differs: {first_requests}")
+
+    result = ROOT / ".obj" / "janet-disk-server-result-test.json"
+    result.parent.mkdir(exist_ok=True)
+    write_boot_result(result, {"schema": "test", "elapsed_seconds": 1.25})
+    if result.read_text() != \
+            '{\n  "schema": "test",\n  "elapsed_seconds": 1.25\n}\n':
+        raise AssertionError("boot timing JSON differs")
+    result.unlink()
     print("JANET-DISK-SERVER-TEST: PASS (writable 386K A: + read-only native 784K B:)")
     return 0
 
