@@ -53,6 +53,7 @@ SECTOR_ORDER = (
 DIRECTORY_SECTORS = frozenset(SECTOR_ORDER[:32])
 READ_AHEAD_RECORDS = 3
 V3_RECORD_GUARD = 0.004
+V3_WIRE_BYTE_TIME = 11 / FAST_BAUD  # 8 data + odd parity + start/stop
 
 
 def encode_v3_record(payload: bytes, *, deleted_directory: bool) -> bytes:
@@ -139,6 +140,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                idle_timeout: float | None = None,
                reply_guard: float = 0.002,
                tx_byte_delay: float = 0.0,
+               read_ahead_records: int = READ_AHEAD_RECORDS,
+               v3_wire_drain: bool = True,
                stop_marker: bytes | None = None,
                failure_marker: bytes | None = None,
                resume: bool = False,
@@ -167,6 +170,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
     buffer = bytearray()
     if protocol_version not in (1, 2, 3):
         raise ValueError("protocol_version must be 1, 2, or 3")
+    if not 1 <= read_ahead_records <= READ_AHEAD_RECORDS:
+        raise ValueError("read_ahead_records must be between 1 and 3")
     reads = read_records = writes = retries = 0
     if stats is None:
         stats = {}
@@ -353,7 +358,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     order_index = SECTOR_ORDER.index(sector)
                     next_track = track
                     next_index = order_index
-                    while records < READ_AHEAD_RECORDS and next_track < tracks:
+                    while records < read_ahead_records and next_track < tracks:
                         next_sector = SECTOR_ORDER[next_index]
                         next_offset = record_offset(
                             next_track, next_sector, tracks,
@@ -489,18 +494,37 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     rebuilt.append(outgoing[position:position + length])
                     position += length
                 reply_chunks = tuple(rebuilt)
-            elif not reply_chunks:
-                reply = outgoing
-            if reply_chunks:
+            reply = outgoing
+            if tx_byte_delay:
+                if reply_chunks:
+                    for index, chunk in enumerate(reply_chunks):
+                        for value in chunk:
+                            write_all(fd, bytes((value,)))
+                            time.sleep(max(tx_byte_delay, V3_WIRE_BYTE_TIME))
+                        if 0 < index < len(reply_chunks) - 1:
+                            time.sleep(V3_RECORD_GUARD)
+                else:
+                    for value in reply:
+                        write_all(fd, bytes((value,)))
+                        time.sleep(tx_byte_delay)
+            elif reply_chunks:
                 write_all(fd, reply_chunks[0])
+                queued = len(reply_chunks[0])
                 for chunk in reply_chunks[1:-1]:
                     write_all(fd, chunk)
-                    time.sleep(V3_RECORD_GUARD)
+                    queued += len(chunk)
+                    # write(2) only queues bytes; it does not mean that the
+                    # USB-UART has shifted them onto the wire.  Account for
+                    # every queued 8O1 character before starting the decoder
+                    # guard.  Otherwise a long descriptor consumes the whole
+                    # nominal guard while still transmitting and the target's
+                    # one-byte 8251 overruns during fill expansion.
+                    time.sleep(
+                        (queued * V3_WIRE_BYTE_TIME if v3_wire_drain else 0)
+                        + V3_RECORD_GUARD
+                    )
+                    queued = 0
                 write_all(fd, reply_chunks[-1])
-            elif tx_byte_delay:
-                for value in reply:
-                    write_all(fd, bytes((value,)))
-                    time.sleep(tx_byte_delay)
             else:
                 write_all(fd, reply)
 
@@ -576,6 +600,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument(
         "--disk-tx-byte-delay-ms", type=float, default=0.0,
         help="host-to-Juku delay between disk-reply bytes (default: 0)",
+    )
+    result.add_argument(
+        "--disk-read-ahead-records", type=int, choices=(1, 2, 3), default=3,
+        help="maximum records in each NetDisk-v3 reply (default: 3)",
     )
     result.add_argument(
         "--disk-protocol", type=int, choices=(1, 2, 3), default=2,
@@ -763,6 +791,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             timeout=args.disk_timeout,
             reply_guard=args.disk_reply_guard_ms / 1000.0,
             tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
+            read_ahead_records=args.disk_read_ahead_records,
             protocol_version=args.disk_protocol,
             boot_started_at=float(boot["request_started_at"]),
             first_request_hook=record_first_request,

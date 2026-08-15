@@ -59,6 +59,7 @@ def main() -> int:
             JUKU_USART_TRANSFER_CYCLES="16",
             JUKU_USART_BYTE_CYCLES="256",
             JUKU_TRACE_IO="1",
+            JUKU_CHECKPOINT_PREFIX=str(work / "overrun-state"),
         )
         process = subprocess.Popen(
             [str(trace), str(rom), "20000000"], cwd=work, env=env,
@@ -100,6 +101,16 @@ def main() -> int:
             failures.append(f"post-ER status 0x{after:02x} did not retain RxRDY/clear errors")
         if retained != 0x11:
             failures.append(f"retained byte 0x{retained:02x} != oldest byte 0x11")
+        state = dict(
+            line.split("=", 1)
+            for line in (work / "overrun-state.state").read_text().splitlines()
+            if "=" in line
+        )
+        if state.get("usart_rx_overruns") != "2":
+            failures.append(
+                "checkpoint overrun counter "
+                f"{state.get('usart_rx_overruns')!r} != '2'"
+            )
         if process.returncode != 0:
             failures.append(f"cosim exited {process.returncode}: {stderr[-500:]}")
         if failures:

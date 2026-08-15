@@ -292,11 +292,27 @@ the complete response body. The target retries malformed or corrupt replies.
 Cycle-accurate integration found that descriptor streaming itself needs flow
 control: expanding a compressed fill record can take the 8080 longer than one
 19,200-baud character. A 4 ms host guard between descriptors prevents D11's
-single-byte receiver from overrunning. Clean and corrupt-first-CRC runs both
-complete `DIR`; the latter makes exactly one retry. Read-ahead cuts the test's
-35 record requests to 12. The same client negotiates `N2`/opcode 13h or legacy
-`NR`/opcode 11h and completes `DIR` in both fallback modes. This v3 image is
-simulator-qualified and awaits physical testing.
+single-byte receiver from overrunning, but only if it begins after queued UART
+bytes have actually consumed their wire time. Clean and corrupt-first-CRC runs
+both complete `DIR`; the latter makes exactly one retry. Read-ahead cuts the
+test's 35 record requests to 12. The same client negotiates `N2`/opcode 13h or
+legacy `NR`/opcode 11h and completes `DIR` in both fallback modes.
+
+The first CP/M Plus/NetDisk-v3 run on CS00015 reached the banner but repeated
+`CP/M Error On A: Disk I/O`. The host observed each opcode-14h request three
+times. A short status-error reply passed, while real multi-record replies did
+not. Re-running cosim at the measured 1.70 MHz target rate reproduced three
+real mechanisms rather than injecting a disk error: the old 400-iteration
+target drain kept command 35h active beyond the host's 2 ms reply guard; the
+server's 4 ms record guard expired while the preceding descriptor was still in
+the USB-UART queue; and stock `TN` left stale PIC sources unmasked. The fixed
+matrix assembles each old branch as a negative fixture, then proves direct `N`
+and stock `TN` through `A>`, `DIR`, and `DIAG CPU` with zero disk retries and
+zero 8251 overruns. The target drain is now a bounded two-character delay, the
+host accounts for queued 8O1 wire time, the fill loop keeps its counter in a
+register, and CP/M masks every PIC input. The later manual-server recovery on
+CS00015 qualified this corrected resident path; only the earlier stock-`TN`
+completion handoff remains open, as recorded below.
 
 Physical CS00015 then qualified NetDisk v2 on 2026-08-15. Three boots reached
 the first opcode-13h request at 6.116354, 6.116790, and 6.115778 seconds, a
@@ -370,11 +386,18 @@ replacing the stock ROM. Stock Janet loads the 558-byte
 `juku-fastboot-stage1.bin` executable at 9600; stage 1 changes D57 channel 0 to
 mode 2/count 4, reinitializes D11 for 19,200/8O1, and receives the fixed CP/Mish
 resident system as thirteen 512-byte blocks. See `janet-fastboot.md` for the
-wire contract, command, regression evidence, and physical benchmark plan. A
-The separately versioned `ekta4402` custom ROM now enters the V15 core directly
+wire contract, command, regression evidence, and physical benchmark plan. The
+separately versioned `ekta4402` custom ROM now enters the V15 core directly
 with monitor command `N`, while the stock-ROM route and the original all-stock
 server remain available alongside it. That direct path is simulator-qualified
 through the CP/Mish prompt and NetDisk-v3 `DIR`, but not yet physically tested.
+
+The separate CP/M Plus V15 consumer is also simulator-qualified. A CS00015
+stock-`TN` run physically started CP/M Plus, and manual retention of its
+corrected 19,200-baud NetDisk-v3 server reached `A>`, passed `DIR`, and passed
+the full `DIAG`. The remaining CP/M Plus fault is the preceding wrapper
+handoff: the host misses final `JA` and returns to 9,600 although the payload
+has started. This does not reopen the proven 19,200 mode-2/count-4 link.
 
 The implemented single-client baseline fixes the only supported layout at
 B400h-CDFFh with entry CA00h, avoiding general address/length fields in the

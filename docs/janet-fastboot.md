@@ -552,11 +552,14 @@ byte-exact, stays in mode 3 with every IRQ masked, reaches CP/M, and completes
 `DIR` in 12 host exchanges for at least 35 records. The matching server sends
 up to three translated records per CRC16/IBM-protected response. It places a
 4 ms guard between record descriptors because the 8080 may still be expanding
-a fill record when the next wire byte would otherwise reach D11. With no guard,
-the cycle-accurate USART reproduces a one-byte-buffer overrun and a stalled
-client. A corrupt-first-CRC injection produces exactly one duplicate request
-and then the same framebuffer. Separate negotiation cases prove fallback to
-v2 compact and v1 raw replies, both with 35 requests.
+a fill record when the next wire byte would otherwise reach D11. The guard now
+starts only after the server accounts for all bytes already queued at the
+19,200/8O1 wire rate: `write()` completion is not physical UART completion.
+With the old queue-time guard, the physical-time cosim reproduces D11's
+one-byte-buffer overrun and the repeating CP/M disk error. A corrupt-first-CRC
+injection produces exactly one duplicate request and then the same
+framebuffer. Separate negotiation cases prove fallback to v2 compact and v1
+raw replies, both with 35 requests.
 
 The client also bounds every receive byte to 65,536 D11 status polls and every
 transaction to three attempts. A disconnect therefore returns BIOS error 1

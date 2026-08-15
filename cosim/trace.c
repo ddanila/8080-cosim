@@ -373,6 +373,9 @@ typedef struct {
   unsigned long byte_cycles;
   unsigned long tx_bytes;
   unsigned long rx_bytes;
+  unsigned long rx_overruns;
+  unsigned long rx_overruns_at_all_ram;
+  int all_ram_seen;
   unsigned long rx_disabled_bytes;
 } juku_usart;
 
@@ -592,22 +595,41 @@ static void usart_poll(unsigned long cyc) {
      Do not let the host PTY become an impossible extra FIFO: at each complete
      character time, consume the next wire byte.  If firmware has not read the
      previous byte, latch OE and discard the newcomer. */
-  if ((usart.command & 0x04) && cyc >= usart.rx_next_cyc) {
+  while ((usart.command & 0x04) && cyc >= usart.rx_next_cyc) {
     uint8_t value;
     ssize_t received = read(usart.fd, &value, 1);
     if (received == 1) {
       if (usart.rx_ready) {
         usart.rx_errors |= 0x10;
+        usart.rx_overruns++;
+        if (usart.rx_overruns <= 20)
+          fprintf(stderr,
+                  "[USART] Rx overrun #%lu byte=%lu data=%02X cyc=%lu "
+                  "next=%lu mode=%d command=%02X\n",
+                  usart.rx_overruns, usart.rx_bytes + 1, value, cyc,
+                  usart.rx_next_cyc, mode, usart.command);
       } else {
         usart.rx_data = value;
         usart.rx_ready = 1;
       }
       usart.rx_bytes++;
-      usart.rx_next_cyc = cyc + usart.byte_cycles;
-    } else if (received < 0 && errno != EAGAIN && errno != EWOULDBLOCK && errno != EIO) {
+      /* The receive clock is independent of the CPU.  Advance from the
+         scheduled wire time, not from a late firmware poll; otherwise every
+         slow instruction silently stretches the emulated serial line and
+         makes a one-byte 8251 impossible to overrun. */
+      usart.rx_next_cyc += usart.byte_cycles;
+      continue;
+    }
+    if (received < 0 && errno != EAGAIN && errno != EWOULDBLOCK &&
+        errno != EIO) {
       perror("JUKU USART PTY read");
       exit(2);
     }
+    /* No character is currently on the wire.  Anchor the next batch at the
+       present cycle so an idle interval cannot accumulate fictitious slots;
+       once a batch starts, the loop above preserves every real slot. */
+    usart.rx_next_cyc = cyc;
+    break;
   }
   usart_update_irq_edges();
 }
@@ -690,6 +712,10 @@ static void set_mode(int m) {
     if (bank_trace)
       fprintf(stderr, "[BANK] mode %d -> %d  (portC=0x%02X)\n", mode, m, portc);
     mode = m;
+    if (m == 3 && !usart.all_ram_seen) {
+      usart.all_ram_seen = 1;
+      usart.rx_overruns_at_all_ram = usart.rx_overruns;
+    }
     mode_switches++;
   }
 }
@@ -758,6 +784,8 @@ static unsigned long g_vw = 0, g_vw_limit = 0;   // video-RAM write count + opti
 // --- minimal 8259 PIC (MCS-80/CALL mode) for the frame interrupt (ports 0x00/0x01) ---
 static uint8_t pic_icw1 = 0, pic_icw2 = 0, pic_mask = 0xFF;  // mask: 1=masked
 static int     pic_expect_icw2 = 0;
+static unsigned long usart_rx_irq_count = 0, usart_tx_irq_count = 0;
+static unsigned long frame_irq_count = 0;
 
 // --- keyboard (opt-in via env JUKU_KEYS): matrix scan via 8255 PortA(col)/PortB(74148) ---
 // char -> (column 0-14, encoded row bit, SHIFT); independently transcribed from
@@ -1179,6 +1207,9 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "pic_icw2=%02X\n", pic_icw2);
   fprintf(state_out, "pic_mask=%02X\n", pic_mask);
   fprintf(state_out, "pic_expect_icw2=%d\n", pic_expect_icw2);
+  fprintf(state_out, "pic_usart_rx_irq_count=%lu\n", usart_rx_irq_count);
+  fprintf(state_out, "pic_usart_tx_irq_count=%lu\n", usart_tx_irq_count);
+  fprintf(state_out, "pic_frame_irq_count=%lu\n", frame_irq_count);
   fprintf(state_out, "pic_fault_enabled=%d\n", pic_fault_enabled);
   fprintf(state_out, "pic_fault_stuck_low=%02X\n", pic_fault_stuck_low);
   fprintf(state_out, "pic_fault_stuck_high=%02X\n", pic_fault_stuck_high);
@@ -1228,6 +1259,11 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "usart_fault_tx_stuck_once_recoveries=%lu\n", usart.fault_tx_stuck_once_recoveries);
   fprintf(state_out, "usart_tx_bytes=%lu\n", usart.tx_bytes);
   fprintf(state_out, "usart_rx_bytes=%lu\n", usart.rx_bytes);
+  fprintf(state_out, "usart_rx_overruns=%lu\n", usart.rx_overruns);
+  fprintf(state_out, "usart_rx_overruns_at_all_ram=%lu\n",
+          usart.rx_overruns_at_all_ram);
+  fprintf(state_out, "usart_rx_overruns_in_all_ram=%lu\n",
+          usart.rx_overruns - usart.rx_overruns_at_all_ram);
   fprintf(state_out, "usart_rx_disabled_bytes=%lu\n",
           usart.rx_disabled_bytes);
   fprintf(state_out, "usart_rx_next_cyc=%lu\n", usart.rx_next_cyc);
@@ -1767,8 +1803,6 @@ int main(int argc, char** argv) {
   cpu.pc = 0x0000;
 
   unsigned long last_write_total = 0, writes_total, idle_cyc = 0;
-  unsigned long usart_rx_irq_count = 0, usart_tx_irq_count = 0;
-  unsigned long frame_irq_count = 0;
   static uint32_t pchist[MEM_SIZE];
 
   // Optional interactive console (JUKU_CONSOLE_PTY).

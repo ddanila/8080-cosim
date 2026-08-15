@@ -69,11 +69,17 @@ with the machine-readable board model.
   CP/M Plus 3.1 baseline at `7000h`: its standard SCB-linked RAM BIOS reaches
   `A>`, performs NetDisk-v3 `DIR`, and loads the shared `DIAG CPU` transient.
   CP/M Plus owns that system's sources, images, and regression; this repo owns
-  the machine model, ROM, and host transport. The RomBios CP/Mish image remains
-  the physical baseline.
-  V15 and ekta4402 are simulator-proven, not yet physical replacements for
-  V14/ekta4401. The
-  original stock Janet path is unchanged as fallback.
+  the machine model, ROM, and host transport. A first CS00015 bench run exposed
+  target-turnaround, queued-host-guard, and stale-PIC failures. Physical-time
+  cosim now reproduces each through the real legacy code path; corrected direct
+  and stock boots pass `A>`, `DIR`, and `DIAG CPU` with zero retries and zero
+  modeled overruns. On physical CS00015, manually retaining the corrected
+  19,200-baud disk server recovered the already-started system to `A>`, then
+  passed `DIR` and the full `DIAG`; this qualifies the resident disk fix. The
+  stock-`TN` wrapper still misses V15's final `JA` and falls back to 9,600, so
+  one-command completion remains open. The RomBios CP/Mish image remains the
+  physical baseline. V15 and ekta4402 are not yet physical replacements for
+  V14/ekta4401. The original stock Janet path is unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.
