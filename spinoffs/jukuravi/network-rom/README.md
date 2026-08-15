@@ -10,7 +10,7 @@ CP/M Plus a larger TPA. The accepted staged plan and budgets live in the
 `cpm-plus-juku` repository.
 
 The present image proves the versioned ROM ABI, reset/POST path, keyless V15
-boot, resident serial initialization, and the resident shared keyboard. Its
+boot, resident serial initialization, shared keyboard, and compact console. Its
 dedicated CP/M Plus consumer reaches `A>`, accepts `DIR` and `DIAG CPU` through
 that keyboard, and completes both commands. Its split files test exact EPROM
 geometry, but their metadata still says `not for physical programming`; they
@@ -32,7 +32,7 @@ Committed deterministic artifacts:
 - `juku-network-rom-abi1-d16.bin`: exact high 8 KiB half;
 - `juku-network-rom-abi1.json`: hashes, sizes, ABI identity, and prohibition.
 
-The builder stores a 196-byte gate and 44-byte mode-3 helper in the boot-only
+The builder stores a 196-byte gate and 119-byte mode-3 helper in the boot-only
 ROM. Reset configures D27 as all-input, D26 as keyboard/memory-mode I/O with
 PC7 safely high, the stock D54/D55/D57 raster/refresh chain, and the 8259 in
 the original MCS-80 vector form with every source masked. It then runs CPU,
@@ -51,16 +51,17 @@ without another RESET.
 
 The resident manifest is fixed at `FF00h`; stable three-byte vectors begin at
 `FF20h`. The dedicated CP/M Plus image remains in mode 1, validates the ABI,
-delegates serial initialization and polled keyboard input, and uses the proven
-RAM console and NetDisk implementation for the remaining services. The normal
+delegates serial initialization, polled keyboard input, and the 80x24 console,
+and uses the proven RAM NetDisk implementation for the remaining disk service. The normal
 all-RAM image remains a byte-exact comparison baseline.
 
-The resident advertises serial, keyboard, and diagnostic feature bits. It
+The resident advertises console, serial, keyboard, and diagnostic feature bits. It
 programs the proven D57 mode-2/count-4 19,200-baud clock, supports bounded 8251
 send/receive, reuses the shared 15-column keyboard scanner and translation
 tables with three mutable bytes in low RAM, publishes build/workspace/helper
-metadata, and supplies a small diagnostic signature. Console, NetDisk, and
-sound vectors remain unavailable until migrated and tested; POST and automatic
+metadata, supplies the MODX 5x7 font/text policy, and calls a 119-byte copied
+helper for mode-3 clear, scroll, and packed-row merges. NetDisk and sound
+vectors remain unavailable until migrated and tested; POST and automatic
 boot are reset-only facilities rather than runtime service vectors.
 
 ## What the regression proves
@@ -80,11 +81,13 @@ check together prove:
   consumed after manifest/video/diagnostic/transmit calls;
 - a shifted physical `T` through D26 ports 4/5, translated and consumed by the
   shared resident keyboard with its debounce state retained in low RAM;
+- exact resident rendering of `Z` and the next-cell underline against a
+  9,600-byte framebuffer oracle, plus rejection of a direct overlay write;
 - all five POST classes through real firmware paths: a changed CPU vector,
   stuck RAM bit, address alias, complete-ROM bit flip, D57 count fault, and D11
   ready-state fault;
-- a bounded successful POST: target-ready C4 appears after 722,002 cycles,
-  about 425 ms at CS00015's measured 1.70 MHz;
+- a bounded successful POST: target-ready C4 appears after 725,602 cycles,
+  about 427 ms at CS00015's measured 1.70 MHz;
 - no-host waiting, corrupted-extension rejection/resynchronization, and a
   valid keyless 19,200 handoff into a test payload;
 - host restart fallback when C4 was missed;
@@ -93,6 +96,8 @@ check together prove:
 - the real CP/M Plus ROM consumer remaining in mode 1, reaching `A>`, accepting
   all 13 matrix keystrokes for `DIR` and `DIAG CPU`, and completing both with
   36 NetDisk reads, no retries, and no USART overruns.
+- byte-exact parity between the final resident-ROM and RAM-console framebuffers
+  after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
 
 The write rule matters: MAME maps the high window with `.rom()` and the C model
 rejects writes into an active high-ROM overlay. Therefore **all** framebuffer
@@ -118,8 +123,8 @@ the machine-readable release gate.
 
 ## Next implementation boundary
 
-Move the next common services behind ABI 1 one at a time: console/font, then a
-whole NetDisk/bulk operation which avoids a mode crossing per byte. Each ROM
+Move the next common service behind ABI 1 as a whole NetDisk/bulk operation;
+the resident transaction avoids a mode crossing per byte. Each ROM
 service must match the retained RAM oracle before its RAM copy is removed.
 Relink CP/M Plus after every meaningful saving and publish the exact TPA/map;
 the automatic-boot milestone alone intentionally claims no additional RAM.

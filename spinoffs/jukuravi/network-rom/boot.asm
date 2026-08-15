@@ -216,7 +216,7 @@ transition_source:
         ori     1
         out     MODEPORT
 .ifdef ABI_SELFTEST
-        jmp     0d800h
+        jmp     0e600h
 .else
         jmp     00100h
 .endif

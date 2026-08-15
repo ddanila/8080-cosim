@@ -1,12 +1,12 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "1018621a9aeee656bbff200f90c0b6ffca0b0150571a23ebc9ed3e8d76b834df",
-  "d15_sha256": "af428d5d9d054e6154aef2680c9d3bbb81157689138782f58f22fc7872cff0bc",
-  "d16_sha256": "8fd4103992239a2feb2839f7a34d64636e00e7fcad46c80322c2a31329f728f9",
+  "image_sha256": "a4ec766fc57bee81bc7a13d69c75d220254a8ca883fdb1a40bde6d915c7e8fac",
+  "d15_sha256": "dec35d3351aa4ba7a3a24f5cfef13623d65bd663517ba62adea387570be883e7",
+  "d16_sha256": "a80dd43b3934205db201ee9a402f10f6cbae6e8a984cbc8c70fa70d2efae1d84",
   "boot_code_bytes": 997,
   "gate_bytes": 196,
-  "helper_bytes": 44,
+  "helper_bytes": 119,
   "fastboot_core_bytes": 141,
   "fastboot_extension_bytes": 267,
   "quick_post": [
@@ -35,6 +35,7 @@
   "target_ready_byte": "C4",
   "resident_bytes": 10240,
   "resident_services": [
+    "console",
     "serial",
     "keyboard",
     "diagnostics"

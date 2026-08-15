@@ -54,7 +54,7 @@ def main() -> int:
         fail(f"ABI signature/version differs: {manifest[:10].hex()}")
     if int.from_bytes(manifest[10:12], "little") != 0x100:
         fail("ABI table size differs")
-    if int.from_bytes(manifest[12:14], "little") != 0x26:
+    if int.from_bytes(manifest[12:14], "little") != 0x27:
         fail("resident ROM advertises unexpected features")
     if int.from_bytes(manifest[16:18], "little") != 0x200:
         fail("ABI workspace size differs")
@@ -145,8 +145,8 @@ def main() -> int:
                 state.get("port_1B", "").split(",", 1)[0] != "last:15":
             fail("serial ABI did not select D57 mode 2/count 4")
         for port, expected in (
-            ("07", "0F"), ("10", "64"), ("11", "24"), ("12", "08"),
-            ("14", "01"), ("15", "00"), ("16", "25"), ("17", "34"),
+            ("07", "0F"), ("10", "64"), ("11", "14"), ("12", "03"),
+            ("14", "01"), ("15", "01"), ("16", "45"), ("17", "73"),
             ("1A", "FF"),
         ):
             if state.get(f"port_{port}", "").split(",", 1)[0] != \
@@ -174,11 +174,27 @@ def main() -> int:
                 "resident keyboard state differs: "
                 f"{ram[0xD786:0xD789].hex()}"
             )
-        if ram[0xD780] != 0x5A or ram[0xD782] != 0x5A:
-            fail("mode-3 helper did not preserve and read back its test byte")
-        if ram[0xD800] != 0x5A:
-            fail("mode-3 helper did not reach underlying framebuffer RAM")
-        if ram[0xD801] != 0x00:
+        expected_screen = bytearray(9600)
+        for row, value in enumerate((0x88, 0, 0, 0xF8, 0x08, 0x10, 0x20)):
+            expected_screen[row * 50] = value
+        expected_screen[7 * 50] = 0x07
+        expected_screen[7 * 50 + 1] = 0xC0
+        if ram[0xD800:0xD800 + 9600] != expected_screen:
+            first = next(
+                index for index, (got, want) in enumerate(zip(
+                    ram[0xD800:0xD800 + 9600], expected_screen,
+                )) if got != want
+            )
+            rows = ",".join(
+                ram[0xD800 + row * 50:0xD804 + row * 50].hex()
+                for row in range(8)
+            )
+            fail(
+                f"resident console differs at framebuffer byte {first}: "
+                f"{ram[0xD800 + first]:02X} != {expected_screen[first]:02X}; "
+                f"rows={rows}"
+            )
+        if ram[0xD800 + 100] != 0:
             fail("mode-1 write unexpectedly passed through the ROM overlay")
         if ram[0xD5C0:0xD5D0] != b"\xA6" * 16 or \
                 ram[0xD5F0:0xD600] != b"\xA6" * 16:
