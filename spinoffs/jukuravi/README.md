@@ -24,8 +24,11 @@ command is specified in
 [`EKTA37-REMIX-PLAN.md`](EKTA37-REMIX-PLAN.md).
 
 The separately built, from-scratch network-only successor is under staged
-development in [`network-rom/`](network-rom/README.md). Its current ABI
-skeleton is simulator-only and explicitly must not be programmed yet.
+development in [`network-rom/`](network-rom/README.md). Its ABI, bounded POST,
+target-ready handshake, keyless 19,200 V15 loader, and real CP/M Plus handoff
+are simulator-qualified. The generated D15/D16 files remain desk artifacts and
+explicitly must not be programmed until resident-service migration and the
+physical release matrix are complete.
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0

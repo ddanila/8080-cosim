@@ -565,6 +565,11 @@ def parser() -> argparse.ArgumentParser:
              "stock Janet",
     )
     result.add_argument(
+        "--network-rom", action="store_true",
+        help="with --fast-stage1, prefer the automatic ROM's C4 ready byte "
+             "and use restart-safe direct V15 without a keypress",
+    )
+    result.add_argument(
         "--compact-stock-execute", action="store_true",
         help="with --fast-stage1, replace NETD's padded execute service with "
              "the ROM-proven one-fragment form",
@@ -636,11 +641,12 @@ def parser() -> argparse.ArgumentParser:
 
 def main(argv: Iterable[str] | None = None) -> int:
     args = parser().parse_args(argv)
+    direct_fastboot = args.direct_fastboot or args.network_rom
     if args.compact_stock_execute and not args.fast_stage1:
         raise ValueError("--compact-stock-execute requires --fast-stage1")
-    if args.direct_fastboot and not args.fast_stage1:
-        raise ValueError("--direct-fastboot requires --fast-stage1")
-    if args.direct_fastboot and args.compact_stock_execute:
+    if direct_fastboot and not args.fast_stage1:
+        raise ValueError("direct/network ROM fastboot requires --fast-stage1")
+    if direct_fastboot and args.compact_stock_execute:
         raise ValueError(
             "--direct-fastboot has no --compact-stock-execute stage"
         )
@@ -662,17 +668,19 @@ def main(argv: Iterable[str] | None = None) -> int:
     try:
         if console_fd is not None:
             tty.setraw(console_fd)
-        effective_boot_baud = FAST_BAUD if args.direct_fastboot \
+        effective_boot_baud = FAST_BAUD if direct_fastboot \
             else args.boot_baud
         configure_serial(
             fd, effective_boot_baud,
-            parity="none" if args.direct_fastboot else "odd",
+            parity="none" if direct_fastboot else "odd",
         )
+        boot_framing = "8N1 automatic network ROM" if args.network_rom else \
+            "8N1 direct ROM core" if direct_fastboot else "8O1"
         print(
             f"Booting {args.system} at {effective_boot_baud} baud, "
-            f"{'8N1 direct ROM core' if args.direct_fastboot else '8O1'}, "
+            f"{boot_framing}, "
             + ("no Janet station discovery"
-               if args.direct_fastboot else
+               if direct_fastboot else
                "accepting the first valid station pair"
                if args.client is None and args.server is None
                else f"station {args.server!r} -> {args.client!r}")
@@ -683,7 +691,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             flush=True,
         )
         if args.fast_stage1:
-            if not args.direct_fastboot and args.boot_baud != 9600:
+            if not direct_fastboot and args.boot_baud != 9600:
                 raise ValueError(
                     "stock --fast-stage1 requires --boot-baud 9600"
                 )
@@ -701,14 +709,15 @@ def main(argv: Iterable[str] | None = None) -> int:
                     extension_guard=args.fast_extension_guard_ms / 1000.0,
                     stock_handoff_guard=
                     args.fast_stock_handoff_guard_ms / 1000.0,
-                    direct_core=args.direct_fastboot,
+                    direct_core=direct_fastboot,
+                    auto_rom_ready=args.network_rom,
                 )
 
             boot = boot_with_recovery(
                 boot_attempt,
                 prepare_retry=lambda: configure_serial(
                     fd, effective_boot_baud,
-                    parity="none" if args.direct_fastboot else "odd",
+                    parity="none" if direct_fastboot else "odd",
                 ),
                 max_restarts=args.boot_restarts,
             )
@@ -725,9 +734,13 @@ def main(argv: Iterable[str] | None = None) -> int:
             )
             station_server = int(boot["server"])
             station_client = int(boot["client"])
-        if args.direct_fastboot:
-            print("Direct ROM fastboot skipped Janet station discovery",
-                  flush=True)
+        if direct_fastboot:
+            print(
+                "Automatic network ROM" if args.network_rom
+                else "Direct ROM fastboot",
+                "skipped Janet station discovery",
+                flush=True,
+            )
         else:
             print(
                 f"Serving learned station {station_server:02X} -> "
@@ -767,7 +780,8 @@ def main(argv: Iterable[str] | None = None) -> int:
                 "fast_stage_sha256": hashlib.sha256(fast_stage).hexdigest()
                 if fast_stage else None,
                 "compact_stock_execute": args.compact_stock_execute,
-                "direct_fastboot": args.direct_fastboot,
+                "direct_fastboot": direct_fastboot,
+                "network_rom": args.network_rom,
                 "fast_low_latency_guards": args.fast_low_latency_guards,
                 "fast_extension_guard_ms": args.fast_extension_guard_ms,
                 "fast_stock_handoff_guard_ms":

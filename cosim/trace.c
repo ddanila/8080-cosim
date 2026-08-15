@@ -1052,6 +1052,7 @@ static uint8_t pin(void* u, uint8_t p) {
   in_count[p]++;
   uint8_t value;
   if (p == 0x05 && kbd_enabled) value = kbd_portb(cpu);          // 8255 Port B = keyboard 74148/config scan
+  else if (p == 0x06) value = portc;  // Port C latch, including BSR writes
   else if (usart.enabled && p >= 0x08 && p <= 0x0B)
     value = usart_read(p & 1, cpu ? cpu->cyc : 0);
   else if (fdc_enabled && p >= 0x1C && p <= 0x1F) {

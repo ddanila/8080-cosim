@@ -37,6 +37,7 @@ def main() -> int:
         fail("usage: test.py /path/to/trace")
     trace = Path(sys.argv[1]).resolve()
     image, metadata = network_rom.build()
+    selftest_image, _ = network_rom.build(abi_selftest=True)
     committed = network_rom.OUTPUT.read_bytes()
     if committed != image:
         fail("committed combined ROM differs from deterministic rebuild")
@@ -45,7 +46,8 @@ def main() -> int:
     if network_rom.D15_OUTPUT.read_bytes() != image[:0x2000] or \
             network_rom.D16_OUTPUT.read_bytes() != image[0x2000:]:
         fail("D15/D16 split does not reproduce the combined image")
-    if metadata["status"] != "ABI skeleton; not for physical programming":
+    if metadata["status"] != \
+            "automatic-boot desk image; not for physical programming":
         fail("skeleton artifact lost its programming prohibition")
     manifest = image[0x3F00:0x3F20]
     if manifest[:10] != b"JUKUABI\0\x01\x00":
@@ -62,7 +64,7 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="network-first-rom-abi.") as name:
         temporary = Path(name)
         rom = temporary / "network-rom.bin"
-        rom.write_bytes(image)
+        rom.write_bytes(selftest_image)
         checkpoint = temporary / "checkpoint"
         master, slave = pty.openpty()
         tty.setraw(slave)
@@ -129,7 +131,9 @@ def main() -> int:
         ram = checkpoint.with_suffix(".ram").read_bytes()
         for key, expected in (
             ("halted", "1"), ("iff", "0"), ("mode", "1"),
-            ("portc", "01"), ("sp", "D5F0"), ("pic_mask", "FF"),
+            ("portc", "81"), ("sp", "D5F0"), ("pic_icw1", "D6"),
+            ("pic_icw2", "FE"), ("pic_mask", "FF"),
+            ("ppi1_control", "9B"),
             ("usart_mode", "4E"), ("usart_command", "35"),
             ("usart_tx_bytes", "4"), ("usart_rx_bytes", "1"),
         ):
@@ -138,17 +142,28 @@ def main() -> int:
         if state.get("port_18", "").split(",", 1)[0] != "last:04" or \
                 state.get("port_1B", "").split(",", 1)[0] != "last:15":
             fail("serial ABI did not select D57 mode 2/count 4")
+        for port, expected in (
+            ("07", "0F"), ("10", "64"), ("11", "24"), ("12", "08"),
+            ("14", "01"), ("15", "00"), ("16", "25"), ("17", "34"),
+            ("1A", "FF"),
+        ):
+            if state.get(f"port_{port}", "").split(",", 1)[0] != \
+                    f"last:{expected}":
+                fail(f"reset hardware initialization lost port {port}")
 
         gate_bytes = int(metadata["gate_bytes"])
         helper_bytes = int(metadata["helper_bytes"])
-        expected_gate = bytearray(image[0x1000:0x1000 + gate_bytes])
+        expected_gate = bytearray(
+            selftest_image[0x1000:0x1000 + gate_bytes]
+        )
         signature_offset = expected_gate.rfind(b"JUKUABI\0")
         if signature_offset <= 0:
             fail("stored gate has no local ABI signature")
         expected_gate[signature_offset - 1] = 1  # JCGREADY after init
         if ram[0xD620:0xD620 + gate_bytes] != expected_gate:
             fail("boot did not install the low-RAM call gate byte-exactly")
-        if ram[0xD700:0xD700 + helper_bytes] != image[0x1400:0x1400 + helper_bytes]:
+        if ram[0xD700:0xD700 + helper_bytes] != \
+                selftest_image[0x1400:0x1400 + helper_bytes]:
             fail("boot did not install the mode-3 helper byte-exactly")
         if ram[0xD783] != 0xA5:
             fail(f"resident self-test status is {ram[0xD783]:02X}")

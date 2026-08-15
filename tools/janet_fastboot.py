@@ -86,6 +86,7 @@ V13_PAYLOAD_MAGIC = b"ZD"
 V14_PAYLOAD_MAGIC = b"ZE"
 V15_PAYLOAD_MAGIC = b"ZF"
 EXTENSION_HEADER_ACK = 0xC5
+AUTO_ROM_READY = 0xC4
 STREAM_HEADER_ACK = 0xC6
 V6_STREAM_MAGIC = b"JZ"
 V6_COMPRESSED_LIMIT = 0x1800
@@ -430,6 +431,7 @@ def serve_fast(
     compact_stock_execute: bool = False,
     low_latency_guards: bool = False,
     direct_core: bool = False,
+    auto_rom_ready: bool = False,
 ) -> dict[str, int | float]:
     """Load through stock Janet, or enter a ROM-resident V15 core directly."""
     if not stage1:
@@ -461,6 +463,8 @@ def serve_fast(
         raise ValueError("direct ROM fastboot requires a V15 artifact")
     if direct_core and compact_stock_execute:
         raise ValueError("direct ROM fastboot has no stock execute stage")
+    if auto_rom_ready and not direct_core:
+        raise ValueError("automatic ROM readiness requires direct-core mode")
     if low_latency_guards and not compact_stock_execute:
         raise ValueError(
             "low-latency guards require compact stock execute"
@@ -528,6 +532,23 @@ def serve_fast(
                 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
             ) else "odd",
         )
+    auto_ready_seen = 0
+    if auto_rom_ready:
+        # C4 avoids speculative traffic during the ordinary reset/POST path,
+        # but it is deliberately not a permanent dependency. A server may be
+        # restarted after the one-shot byte has left the UART; after a short
+        # observation window the ordinary self-synchronizing A5/3A probes can
+        # recover a target already waiting anywhere in the header scanner.
+        ready_timeout = min(stock_timeout, 3.0)
+        auto_ready_seen = int(wait_byte(
+            fd, AUTO_ROM_READY, ready_timeout,
+        ))
+        if verbose and not auto_ready_seen:
+            print(
+                "Automatic ROM C4 readiness was not observed; "
+                "falling back to synchronized V15 probes",
+                flush=True,
+            )
     parser = TargetFrameParser()
 
     extension_retries = 0
@@ -932,6 +953,8 @@ def serve_fast(
             ),
             "success_guard_ms": 10 if low_latency_guards else 20,
             "direct_core": int(direct_core),
+            "auto_rom_ready": int(auto_rom_ready),
+            "auto_ready_seen": auto_ready_seen,
         }
 
     exchange(header(system, protocol_version), HEADER_SEQUENCE)
@@ -1009,6 +1032,8 @@ def serve_fast(
             ) else 80)
         ),
         "direct_core": int(direct_core),
+        "auto_rom_ready": int(auto_rom_ready),
+        "auto_ready_seen": auto_ready_seen,
     }
 
 
@@ -1044,15 +1069,21 @@ def parser() -> argparse.ArgumentParser:
         "--direct-core", action="store_true",
         help="wait for the ekta4402 N command at 19200 and skip stock Janet",
     )
+    result.add_argument(
+        "--network-rom", action="store_true",
+        help="prefer the automatic ROM's C4 ready byte, then use restart-safe "
+             "direct V15",
+    )
     return result
 
 
 def main(argv: Iterable[str] | None = None) -> int:
     args = parser().parse_args(argv)
+    direct_core = args.direct_core or args.network_rom
     fd = os.open(args.serial, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     try:
-        configure_serial(fd, FAST_BAUD if args.direct_core else 9600,
-                         parity="none" if args.direct_core else "odd")
+        configure_serial(fd, FAST_BAUD if direct_core else 9600,
+                         parity="none" if direct_core else "odd")
         serve_fast(
             fd, args.stage1.read_bytes(), args.system.read_bytes(),
             client=args.client, server=args.server,
@@ -1062,7 +1093,8 @@ def main(argv: Iterable[str] | None = None) -> int:
             stock_handoff_guard=args.stock_handoff_guard_ms / 1000.0,
             compact_stock_execute=args.compact_stock_execute,
             low_latency_guards=args.low_latency_guards,
-            direct_core=args.direct_core,
+            direct_core=direct_core,
+            auto_rom_ready=args.network_rom,
         )
     finally:
         os.close(fd)

@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools.janet_fastboot import (  # noqa: E402
+    AUTO_ROM_READY,
     BLOCK_COUNT,
     BLOCK_SIZE,
     READY,
@@ -379,9 +380,12 @@ def main() -> int:
             result.extend(os.read(fd, length - len(result)))
         return bytes(result)
 
-    def direct_target() -> None:
+    def direct_target(announce_ready: bool = True,
+                      initial_header: bytes = b"") -> None:
         try:
-            header_window = bytearray()
+            if announce_ready:
+                os.write(slave, bytes((AUTO_ROM_READY,)))
+            header_window = bytearray(initial_header)
             while not header_window.endswith(b"\xA5\x3A"):
                 header_window += read_exact(slave, 1)
                 del header_window[:-2]
@@ -407,7 +411,7 @@ def main() -> int:
         direct_result = serve_fast(
             master, bundle_v15, ram_image, stock_timeout=1.0,
             reply_timeout=1.0, retries=2, configure_rate=False,
-            direct_core=True, verbose=False,
+            direct_core=True, auto_rom_ready=True, verbose=False,
         )
     finally:
         target.join(timeout=3.0)
@@ -419,11 +423,40 @@ def main() -> int:
     assert captured["stream"] == compressed
     assert direct_result["protocol_version"] == 15
     assert direct_result["direct_core"] == 1
+    assert direct_result["auto_rom_ready"] == 1
+    assert direct_result["auto_ready_seen"] == 1
     assert direct_result["stock_sent_frames"] == 0
     assert direct_result["stock_sent_bytes"] == 0
     assert direct_result["extension_header_acks"] == 1
     assert direct_result["stream_header_acks"] == 1
     assert direct_result["stream_bytes"] == len(compressed)
+
+    # A restarted server cannot depend on observing the ROM's one-shot C4.
+    # After the short readiness window it must fall back to the same
+    # self-synchronizing probes and complete the transfer without RESET.
+    master, slave = pty.openpty()
+    tty.setraw(slave)
+    target_errors = []
+    captured = {}
+    target = threading.Thread(target=direct_target, args=(False, b"\xA5"))
+    target.start()
+    try:
+        restarted_result = serve_fast(
+            master, bundle_v15, ram_image, stock_timeout=0.02,
+            reply_timeout=1.0, retries=2, configure_rate=False,
+            direct_core=True, auto_rom_ready=True, verbose=False,
+        )
+    finally:
+        target.join(timeout=3.0)
+        os.close(master)
+        os.close(slave)
+    assert not target.is_alive()
+    assert not target_errors, target_errors
+    assert captured["extension"] == extension_packet(extension_v14)[2:]
+    assert captured["stream"] == compressed
+    assert restarted_result["auto_rom_ready"] == 1
+    assert restarted_result["auto_ready_seen"] == 0
+    assert restarted_result["protocol_version"] == 15
 
     large_payload = bytes((index * 29 + 7) & 0xFF for index in range(0x1800))
     large_bundle_v15 = (
