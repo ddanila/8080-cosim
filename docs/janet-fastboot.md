@@ -355,7 +355,46 @@ the `06h` end descriptor or shortening its fixed eight-byte descriptor prevents
 the stage from announcing readiness. Those structures therefore remain
 unchanged.
 
-Run it without changing the ROM:
+## Fast stage v9: polled marker and exact-length extension
+
+V9 keeps v8's interrupt-fed payload, concurrent native ZX0 decode, fixed
+4826-byte CRC-protected stream, 256-byte producer lead, retry policy, output
+fence, and temporary RomBios dispatcher. It removes interrupts from the idle
+two-byte `JZ` search: the extension polls those bytes through the core's
+existing receiver, then unmasks IR2 only for payload bytes. Before arming the
+payload it deliberately services the PIC request latched by the polled `Z`;
+the existing 2 ms host gap makes that drain deterministic. This removes the
+marker ring, its producer/consumer state, and the payload/idle branches from
+the hot ISR.
+
+The resulting extension is **556 bytes**. V9's core carries an exact 16-bit
+extension length instead of a count of padded 128-byte records, so all 556
+bytes and no 640-byte padding travel at 19,200. The self-contained
+`juku-fastboot-v9.bin` is 5518 bytes and has SHA-256
+`7dd745e67ac400c22a229a796e77dd51239df793ec5375bf9ebc6bd8069de924`.
+The v8 artifact remains byte-exact at its published hash.
+
+Clean and injected-fault cosim reject corrupt extension/stream data, recover
+from a lost stream and lost success reply, and reproduce B400h-CDFFh exactly.
+The full continuation reaches `A>`, performs `DIR` with 34 reads and zero disk
+retries, restores D11 to `5Eh`, and restores `D79Fh`. V9 measures 78,667 cycles
+from the last compressed byte to CA00h, versus v8's 203,037. Including its
+300-byte extension delta over v7 and the common 2 ms marker gap, it saves a
+modeled **390 ms over v7** and **117 ms over v8**. Adding the compact stock
+execute wire floor to the prior v7 estimate projects about **5.52 seconds** to
+the first A: request. This remains a desk prediction until logged on CS00015.
+
+Run the fastest current candidate without changing the ROM:
+
+```sh
+cd ~/fun/cpmish && make juku-fastboot-v9.bin
+../8080-cosim/tools/janet_disk_server.py \
+    --fast-stage1 juku-fastboot-v9.bin --compact-stock-execute \
+    --disk-baud 19200 --writable --timeout 86400 /dev/ttyUSB0 \
+    juku-net-mode2-system.bin cs00015-fastboot.img
+```
+
+Run the v8 comparison without changing the ROM:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v8.bin
@@ -441,8 +480,8 @@ Further worthwhile measurements are, in order:
    matters;
 4. compare stop-and-wait with a two-block window only after fault recovery is
    equally deterministic;
-5. repeat v7 with its exact host log retained, then benchmark v8 on the same
-   CS00015 setup and gather repeated cold/warm v6/v7/v8 distributions before
+5. retain exact host logs while benchmarking v8 and v9 on the same CS00015
+   setup, then gather repeated cold/warm v6/v7/v8/v9 distributions before
    tightening more guards;
 6. keep production fastboot at 19,200. Revisit a higher rate only with new
    electrical evidence, because the in-spec x1 experiment already failed and

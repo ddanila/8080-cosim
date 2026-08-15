@@ -32,9 +32,12 @@ with the machine-readable board model.
   CS00015. The optional `tools/janet_fastboot.py` path now lets an unmodified
   stock ROM load one compact record at 9,600 before that proven setting sends
   a fixed CRC-protected ZX0 stream. Its separately named v8 desk candidate
-  overlaps D11 interrupt-fed reception and decompression and is modeled about
-  273 ms faster than physically qualified v7; physical v8 timing remains
-  pending. The original stock Janet path is unchanged and remains the fallback.
+  overlaps D11 interrupt-fed reception and decompression. V9 then polls only
+  the `JZ` marker, simplifies the payload ISR, and transfers its extension at
+  its exact 556-byte length. Together with the optional compact stock execute
+  policy, v9 projects roughly 5.52 seconds to the first disk request, while
+  physical timing remains pending. The original stock Janet path is unchanged
+  and remains the fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.

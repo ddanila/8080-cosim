@@ -191,6 +191,38 @@ def main() -> int:
         else:
             raise AssertionError("malformed v8 artifact was accepted")
 
+    extension_v9 = bytes(range(256)) * 2 + bytes(range(42))
+    core_v9 = (
+        b"\xC3\x0B\x01JFV9\x01\x00"
+        + len(extension_v9).to_bytes(2, "little")
+    ).ljust(128, b"\0")
+    bundle_v9 = (
+        core_v9 + extension_v9 + b"Z9"
+        + crc16_ibm(expected).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v9)
+    assert bundle_core == core_v9
+    assert bundle_extension == extension_v9
+    assert bundle_payload == compressed
+    assert extension_packet(extension_v9)[-2:] == \
+        bytes(fletcher16(extension_v9))
+    for broken in (
+        bundle_v9[:8] + b"\x01" + bundle_v9[9:],
+        bundle_v9[:9] + b"\xff\xff" + bundle_v9[11:],
+        bundle_v9[:-1],
+        bundle_v9[:-1] + bytes((bundle_v9[-1] ^ 1,)),
+    ):
+        try:
+            split_stage_artifact(broken)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("malformed v9 artifact was accepted")
+
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.
     with mock.patch.object(

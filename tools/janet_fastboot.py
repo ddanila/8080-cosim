@@ -8,6 +8,8 @@ retains 19,200/8N1 and sends a ZX0-classic compressed stream. V7 fixes that
 stream's authenticated metadata in its two-record extension, removing one
 extension record and four redundant bytes from the bulk stream. V8 uses the
 D11 RxRDY interrupt and a linear buffer to overlap ZX0 expansion with reception.
+V9 polls only its two-byte marker and transfers the resulting extension at its
+exact byte length instead of padding it to Janet-style 128-byte records.
 """
 
 from __future__ import annotations
@@ -44,7 +46,7 @@ NEGOTIATED_BAUD = 28800
 BLOCK_SIZE = 512
 BLOCK_COUNT = SYSTEM_BYTES // BLOCK_SIZE
 VERSION = 1
-SUPPORTED_VERSIONS = (1, 2, 3, 4, 5, 6, 7, 8)
+SUPPORTED_VERSIONS = (1, 2, 3, 4, 5, 6, 7, 8, 9)
 BLOCK_PROTOCOL_VERSIONS = (1, 2)
 READY = ord("R")
 REPLY = ord("A")
@@ -57,11 +59,13 @@ V5_BUNDLE_MAGIC = b"JFV5"
 V6_BUNDLE_MAGIC = b"JFV6"
 V7_BUNDLE_MAGIC = b"JFV7"
 V8_BUNDLE_MAGIC = b"JFV8"
+V9_BUNDLE_MAGIC = b"JFV9"
 V3_EXTENSION_MAGIC = b"\xA5\x3A"
 V3_STREAM_MAGIC = b"JS"
 V6_PAYLOAD_MAGIC = b"Z0"
 V7_PAYLOAD_MAGIC = b"Z7"
 V8_PAYLOAD_MAGIC = b"Z8"
+V9_PAYLOAD_MAGIC = b"Z9"
 V6_STREAM_MAGIC = b"JZ"
 V6_COMPRESSED_LIMIT = 0x1800
 V3_WRITE_STALL_TIMEOUT = 10.0
@@ -106,19 +110,28 @@ def split_stage_artifact(
     """Split a self-describing streaming bundle or retain a legacy stage."""
     if len(stage) >= 9 and stage[3:7] in (
         V3_BUNDLE_MAGIC, V4_BUNDLE_MAGIC, V5_BUNDLE_MAGIC, V6_BUNDLE_MAGIC,
-        V7_BUNDLE_MAGIC, V8_BUNDLE_MAGIC,
+        V7_BUNDLE_MAGIC, V8_BUNDLE_MAGIC, V9_BUNDLE_MAGIC,
     ):
+        magic = stage[3:7]
         core_size = stage[7] * 128
-        extension_size = stage[8] * 128
+        if magic == V9_BUNDLE_MAGIC:
+            if len(stage) < 11 or stage[8] != 0:
+                raise ValueError("malformed v9 exact-length metadata")
+            extension_size = int.from_bytes(stage[9:11], "little")
+        else:
+            extension_size = stage[8] * 128
         expected_extension = {
             V4_BUNDLE_MAGIC: 384,
             V6_BUNDLE_MAGIC: 384,
             V8_BUNDLE_MAGIC: 640,
-        }.get(stage[3:7], 256)
+        }.get(magic, 256)
         payload_offset = core_size + extension_size
-        if core_size != 128 or extension_size != expected_extension:
+        extension_valid = 256 <= extension_size <= 640 \
+            if magic == V9_BUNDLE_MAGIC \
+            else extension_size == expected_extension
+        if core_size != 128 or not extension_valid:
             raise ValueError("malformed streaming fast-bootstrap bundle")
-        if stage[3:7] == V6_BUNDLE_MAGIC:
+        if magic == V6_BUNDLE_MAGIC:
             if len(stage) <= payload_offset + 4 or \
                     stage[payload_offset:payload_offset + 2] != \
                     V6_PAYLOAD_MAGIC:
@@ -131,11 +144,18 @@ def split_stage_artifact(
                 stage[core_size:payload_offset],
                 compressed,
             )
-        if stage[3:7] in (V7_BUNDLE_MAGIC, V8_BUNDLE_MAGIC):
+        if magic in (V7_BUNDLE_MAGIC, V8_BUNDLE_MAGIC, V9_BUNDLE_MAGIC):
             descriptor_size = 8
-            version = 8 if stage[3:7] == V8_BUNDLE_MAGIC else 7
-            payload_magic = V8_PAYLOAD_MAGIC if version == 8 \
-                else V7_PAYLOAD_MAGIC
+            version = {
+                V7_BUNDLE_MAGIC: 7,
+                V8_BUNDLE_MAGIC: 8,
+                V9_BUNDLE_MAGIC: 9,
+            }[magic]
+            payload_magic = {
+                7: V7_PAYLOAD_MAGIC,
+                8: V8_PAYLOAD_MAGIC,
+                9: V9_PAYLOAD_MAGIC,
+            }[version]
             if len(stage) <= payload_offset + descriptor_size or \
                     stage[payload_offset:payload_offset + 2] != \
                     payload_magic:
@@ -150,8 +170,10 @@ def split_stage_artifact(
                 raise ValueError(
                     f"v{version} compressed payload length mismatch"
                 )
-            if version == 8 and len(compressed) < 256:
-                raise ValueError("v8 compressed payload is shorter than its lead")
+            if version in (8, 9) and len(compressed) < 256:
+                raise ValueError(
+                    f"v{version} compressed payload is shorter than its lead"
+                )
             if len(compressed) >= V6_COMPRESSED_LIMIT:
                 raise ValueError(
                     f"v{version} compressed payload exceeds target limit"
@@ -172,9 +194,9 @@ def split_stage_artifact(
 
 
 def extension_packet(extension: bytes) -> bytes:
-    if len(extension) not in (256, 384, 640):
+    if not 256 <= len(extension) <= 640:
         raise ValueError(
-            "fast-bootstrap extension must be 256, 384, or 640 bytes"
+            "fast-bootstrap extension must contain 256..640 bytes"
         )
     sum1, sum2 = fletcher16(extension)
     return V3_EXTENSION_MAGIC + extension + bytes((sum1, sum2))
@@ -342,14 +364,13 @@ def serve_fast(
         V6_BUNDLE_MAGIC: 6,
         V7_BUNDLE_MAGIC: 7,
         V8_BUNDLE_MAGIC: 8,
+        V9_BUNDLE_MAGIC: 9,
     }.get(stock_stage[3:7], 3)
     system = extract_system(image)
-    if bundle_version in (6, 7, 8):
-        payload_offset = 128 + {
-            6: 384,
-            7: 256,
-            8: 640,
-        }[bundle_version]
+    if bundle_version in (6, 7, 8, 9):
+        if extension is None:
+            raise ValueError(f"fastboot v{bundle_version} extension is missing")
+        payload_offset = len(stock_stage) + len(extension)
         expected_crc = int.from_bytes(
             stage1[payload_offset + 2:payload_offset + 4], "big",
         )
@@ -375,7 +396,7 @@ def serve_fast(
     if configure_rate:
         configure_serial(
             fd, FAST_BAUD,
-            parity="none" if bundle_version in (5, 6, 7, 8) else "odd",
+            parity="none" if bundle_version in (5, 6, 7, 8, 9) else "odd",
         )
     parser = TargetFrameParser()
 
@@ -512,7 +533,8 @@ def serve_fast(
                 flush=True,
             )
 
-    transfer_framing = "8N1" if protocol_version in (5, 6, 7, 8) else "8O1"
+    transfer_framing = \
+        "8N1" if protocol_version in (5, 6, 7, 8, 9) else "8O1"
     if verbose:
         extension_detail = "" if extension is None else \
             f"; {len(extension)}-byte extension at high speed"
@@ -556,11 +578,11 @@ def serve_fast(
                 )
         raise TimeoutError(f"fast-bootstrap exchange {sequence:02X} failed")
 
-    if protocol_version in (3, 4, 5, 6, 7, 8):
+    if protocol_version in (3, 4, 5, 6, 7, 8, 9):
         packet = compressed_stream_packet(
-            compressed, fixed=protocol_version in (7, 8),
+            compressed, fixed=protocol_version in (7, 8, 9),
         ) \
-            if protocol_version in (6, 7, 8) and compressed is not None \
+            if protocol_version in (6, 7, 8, 9) and compressed is not None \
             else stream_packet(system)
         stream_ready = (READY, protocol_version, rate_flag)
         success_sequence = 4 if protocol_version == 4 else 0
@@ -568,8 +590,8 @@ def serve_fast(
             time.sleep(turnaround_guard)
             outgoing = block_filter(0, attempt, packet) \
                 if block_filter is not None else packet
-            if protocol_version == 8 and len(outgoing) >= 2:
-                # Let v8 consume JZ and atomically arm its linear producer
+            if protocol_version in (8, 9) and len(outgoing) >= 2:
+                # Let v8/v9 consume JZ and atomically arm the linear producer
                 # before the first compressed byte reaches D11.
                 write_all(
                     fd, outgoing[:2], stall_timeout=V3_WRITE_STALL_TIMEOUT,
@@ -612,12 +634,12 @@ def serve_fast(
             raise TimeoutError(
                 f"fast-bootstrap v{protocol_version} stream failed"
             )
-        if protocol_version in (4, 5, 6, 7, 8):
+        if protocol_version in (4, 5, 6, 7, 8, 9):
             # The target emits three success copies and drains them before
-            # entering NETROM2. V4-v6 restore 8O1 in the extension; v7/v8 rely
+            # entering NETROM2. V4-v6 restore 8O1; v7-v9 rely
             # on NETROM2's immediate NETINIT. Avoid changing the host framing
             # in the middle of the repeated success frames.
-            time.sleep(0.020 if protocol_version in (7, 8) else 0.080)
+            time.sleep(0.020 if protocol_version in (7, 8, 9) else 0.080)
             if configure_rate:
                 configure_serial(fd, FAST_BAUD)
         finished = time.monotonic()
