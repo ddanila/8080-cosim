@@ -184,6 +184,13 @@ at 4.22x/56.365 s/76.3%. All three runs used the same system, volume, cable,
 host, and CS00015. See `janet-fastboot.md` and
 `evidence/juku-serial/cs00015-fastboot-20260814.json`.
 
+On 2026-08-15 CS00015 also passed the exact 5518-byte fast stage v9 artifact
+(`7dd745e67ac400c22a229a796e77dd51239df793ec5375bf9ebc6bd8069de924`)
+with compact stock execute and the conservative host guards. It reached the
+visible CP/M prompt and completed network `DIR`. This run qualified the current
+fastest code path functionally but did not retain an exact boot timestamp; the
+separate low-latency host-guard policy still needs a physical run.
+
 ## Current deployment
 
 Following the Arvutimuuseum demonstration, CS00015 is in the home lab with the

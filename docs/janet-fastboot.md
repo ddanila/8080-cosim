@@ -382,7 +382,27 @@ from the last compressed byte to CA00h, versus v8's 203,037. Including its
 300-byte extension delta over v7 and the common 2 ms marker gap, it saves a
 modeled **390 ms over v7** and **117 ms over v8**. Adding the compact stock
 execute wire floor to the prior v7 estimate projects about **5.52 seconds** to
-the first A: request. This remains a desk prediction until logged on CS00015.
+the first A: request.
+
+On 2026-08-15 physical CS00015 completed this exact v9 artifact using
+`--compact-stock-execute` and the conservative default guards. It reached the
+visible CP/M prompt, then completed network `DIR`. This qualifies v9, compact
+stock execute, the 19,200 handoff, resident 8O1 restoration, and subsequent
+Janet disk traffic as one real-hardware path. No exact first-request timestamp
+was retained, so 5.52 seconds remains a desk projection and the low-latency
+guard policy below remains a separate physical candidate.
+
+A post-qualification instruction audit deliberately did not replace this
+artifact. Removing the payload ISR's unconditional exit jump shortened the
+routine by three bytes but made the first overlapped decode fail
+deterministically: the received compressed input and CRC were exact, while the
+decoded output was not; a retry succeeded only because the whole input was
+then resident. The saved ISR cycles let the decoder consume the fixed 256-byte
+lead too soon. Restoring the jump recovered every clean, fault, and `DIR` test.
+Other static rearrangements produced a 5505-byte desk variant, only about
+6.8 ms less wire time, but changing the now physically qualified v9 hash for
+that marginal unmeasured gain is not justified. Preserve the published hash;
+if revisited, give the smaller artifact a new version and physical test.
 
 ### Low-latency host guards
 

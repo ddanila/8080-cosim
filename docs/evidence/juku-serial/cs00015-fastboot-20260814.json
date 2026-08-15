@@ -65,7 +65,7 @@
     "physical_test": false,
     "qualification": "ROM-executed cosim candidate; logged CS00015 timing pending"
   },
-  "fast_stage_v9_desk_candidate": {
+  "fast_stage_v9": {
     "date": "2026-08-15",
     "artifact_bytes": 5518,
     "artifact_sha256": "7dd745e67ac400c22a229a796e77dd51239df793ec5375bf9ebc6bd8069de924",
@@ -93,8 +93,23 @@
     "fault_retry_cosim": true,
     "network_dir_cosim_reads": 34,
     "rombios_d79f_restored": true,
-    "physical_test": false,
-    "qualification": "simulation-qualified fastest candidate; logged CS00015 timing pending"
+    "physical_test": true,
+    "physical_date": "2026-08-15",
+    "physical_host_policy": "--compact-stock-execute with conservative default guards",
+    "physical_result": "visible CP/M prompt and network DIR completed on CS00015",
+    "physical_timing_retained": false,
+    "qualification": "simulation and functional CS00015 qualification complete; exact timing pending"
+  },
+  "fast_stage_v9_instruction_audit": {
+    "date": "2026-08-15",
+    "aggressive_isr_exit_removal": "rejected",
+    "failure_signature": "first overlapped decode output corrupt despite exact compressed input and CRC; retry passed once input was fully resident",
+    "cause": "saved ISR cycles let decoder exhaust the fixed 256-byte producer lead",
+    "restored_isr_exit_full_cosim": true,
+    "static_only_variant_bytes": 5505,
+    "static_only_variant_cosim": true,
+    "static_only_nominal_wire_seconds_saved": 0.0068,
+    "decision": "preserve physically qualified v9 hash; use a new version and repeat physical qualification if revisited"
   },
   "fast_stage_v9_low_latency_host_policy": {
     "date": "2026-08-15",

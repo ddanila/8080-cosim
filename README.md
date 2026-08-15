@@ -35,9 +35,11 @@ with the machine-readable board model.
   overlaps D11 interrupt-fed reception and decompression. V9 then polls only
   the `JZ` marker, simplifies the payload ISR, and transfers its extension at
   its exact 556-byte length. Together with the optional compact stock execute
-  policy, v9 projects roughly 5.52 seconds to the first disk request, while
-  physical timing remains pending. The original stock Janet path is unchanged
-  and remains the fallback.
+  policy, v9 projects roughly 5.52 seconds to the first disk request. Physical
+  CS00015 has now reached the prompt and completed `DIR` with that exact
+  conservative-guard combination; exact timing and the separately selected
+  low-latency guards remain pending. The original stock Janet path is
+  unchanged and remains the fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.
