@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+CC=${CC:-cc}
+check_tmp=$(mktemp -d)
+trap 'rm -rf "$check_tmp"' EXIT
+
+python3 -m py_compile \
+  spinoffs/jukuravi/network-rom/build_network_rom.py \
+  tests/network_first_rom_abi_test.py
+python3 spinoffs/jukuravi/network-rom/build_network_rom.py --check
+
+"$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
+  -o "$check_tmp/trace" \
+  cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
+python3 tests/network_first_rom_abi_test.py "$check_tmp/trace"
+
+echo "NETWORK-FIRST-ROM-ABI-CHECK: PASS"

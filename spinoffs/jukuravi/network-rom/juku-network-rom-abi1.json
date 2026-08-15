@@ -1,0 +1,17 @@
+{
+  "schema": "juku-network-rom-abi1-v1",
+  "image_bytes": 16384,
+  "image_sha256": "6a47c6787f7957269cee4d7f7988fa06921b29fc947740045e2a08fc81986a6e",
+  "d15_sha256": "0413dd01896cb338130ac84bfb83192a6f09b24906d340cd19ce6e46b6c1a20a",
+  "d16_sha256": "edb9d755e25ab6a1781b62e14f549f835849062a1c1c165d2e372d43f185e13d",
+  "boot_code_bytes": 94,
+  "gate_bytes": 196,
+  "helper_bytes": 44,
+  "resident_bytes": 10240,
+  "abi": {
+    "base": "FF00",
+    "major": 1,
+    "minor": 0
+  },
+  "status": "ABI skeleton; not for physical programming"
+}

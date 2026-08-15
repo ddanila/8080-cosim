@@ -23,6 +23,10 @@ EktaSoft-based remix ROM that embeds the Jukuravi loader as a monitor
 command is specified in
 [`EKTA37-REMIX-PLAN.md`](EKTA37-REMIX-PLAN.md).
 
+The separately built, from-scratch network-only successor is under staged
+development in [`network-rom/`](network-rom/README.md). Its current ABI
+skeleton is simulator-only and explicitly must not be programmed yet.
+
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0
 counts. T34 is the first clock-safe D55 functional-path image. Neither
