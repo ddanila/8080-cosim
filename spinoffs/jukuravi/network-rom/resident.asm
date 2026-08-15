@@ -12,6 +12,7 @@ FEATURES        equ     JROMFSERIAL+JROMFDIAG
 
 SELFSTATUS      equ     JROMSTATEBASE+3
 TXBYTE          equ     JROMSTATEBASE+4
+SERIALMODE      equ     JROMSTATEBASE+5
 
         org     0d800h
 
@@ -148,6 +149,7 @@ rom_conout_impl:
         ret
 
 rom_serinit_impl:
+        sta     SERIALMODE
         push    psw
         mvi     a,015h                  ; D57 ch0 mode 2, LSB, BCD
         out     PITCTL
@@ -168,6 +170,7 @@ rom_serinit_mode:
         out     USARTCTL
         mvi     a,035h
         out     USARTCTL
+        in      USARTDATA               ; discard stale data after reset
         xra     a
         ret
 
@@ -224,7 +227,7 @@ rom_unavailable:
         ret
 
 build_identity:
-        db      'Juku network ROM ABI 1.0 skeleton 2026-08-16',0
+        db      'Juku network ROM ABI 1.0 automatic boot 2026-08-16',0
 
         dc      JROMABIBASE-$,0ffh
 
