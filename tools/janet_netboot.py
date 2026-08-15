@@ -28,9 +28,13 @@ POLL_CONTROL = 0x0C
 ACK_CONTROL = 0x08
 LOAD_ADDRESS = 0x0100
 SYSTEM_LOAD_ADDRESS = 0xB400
+RAM51_LOAD_ADDRESS = 0xB000
 SYSTEM_ENTRY = 0xCA00
+RAM51_ENTRY = 0xC600
 SYSTEM_PREFIX = 0x0200
 SYSTEM_BYTES = 0x1A00
+RAM51_SYSTEM_BYTES = 0x1E00
+RAM51_MAGIC = b"JUKU51\x1a\x00"
 SYSTEM_STAGING_ADDRESS = 0x0180
 RECORD_SIZE = 128
 DEFAULT_BAUD = 9600
@@ -139,17 +143,20 @@ class BootImage:
     format: str
 
 
-def system_bootstrap(system: bytes) -> bytes:
-    """Build the 0100h staging executable used for a 52K system image."""
-    if len(system) != SYSTEM_BYTES:
-        raise ValueError("52K system payload must contain 52 128-byte sectors")
-    # LXI H,0180 / LXI D,B400 / LXI B,1A00; copy BC bytes; JMP CA00.
+def system_bootstrap(system: bytes, *, load_address: int = SYSTEM_LOAD_ADDRESS,
+                     entry: int = SYSTEM_ENTRY) -> bytes:
+    """Build the 0100h staging executable which relocates a resident image."""
+    if not system or len(system) % RECORD_SIZE:
+        raise ValueError("system payload must contain complete 128-byte sectors")
+    if load_address + len(system) > 0x10000:
+        raise ValueError("system payload crosses the 16-bit address space")
+    # LXI H,0180 / LXI D,target / LXI B,length; copy BC bytes; JMP entry.
     stub = bytes((
         0x21, SYSTEM_STAGING_ADDRESS & 0xFF, SYSTEM_STAGING_ADDRESS >> 8,
-        0x11, SYSTEM_LOAD_ADDRESS & 0xFF, SYSTEM_LOAD_ADDRESS >> 8,
-        0x01, SYSTEM_BYTES & 0xFF, SYSTEM_BYTES >> 8,
+        0x11, load_address & 0xFF, load_address >> 8,
+        0x01, len(system) & 0xFF, len(system) >> 8,
         0x7E, 0x12, 0x23, 0x13, 0x0B, 0x78, 0xB1, 0xC2, 0x09, 0x01,
-        0xC3, SYSTEM_ENTRY & 0xFF, SYSTEM_ENTRY >> 8,
+        0xC3, entry & 0xFF, entry >> 8,
     ))
     return stub.ljust(RECORD_SIZE, b"\x00") + system
 
@@ -166,6 +173,18 @@ def prepare_image(image: bytes, *, load_address: int | None = None,
         raise ValueError("load address and entry must be supplied together")
     if load_address is not None and entry is not None:
         return BootImage(pad_records(image), load_address, entry, "explicit")
+    if len(image) == 10240 and image.startswith(RAM51_MAGIC):
+        system = image[
+            SYSTEM_PREFIX:SYSTEM_PREFIX + RAM51_SYSTEM_BYTES
+        ]
+        return BootImage(
+            system_bootstrap(
+                system, load_address=RAM51_LOAD_ADDRESS, entry=RAM51_ENTRY,
+            ),
+            LOAD_ADDRESS,
+            LOAD_ADDRESS,
+            "JUKU51 51K RAM-console system via staging bootstrap",
+        )
     if (len(image) == 10240 and
             image[:SYSTEM_PREFIX] == bytes((0xE5,)) * SYSTEM_PREFIX and
             image[SYSTEM_PREFIX] == 0xC3):

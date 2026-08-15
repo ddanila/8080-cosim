@@ -752,6 +752,7 @@ static int console_len = 0;
 // target shows the boot banner and monitor output as well as CP/M's.
 static uint16_t console_out_pc = 0xD9E3;   // EktaSoft console char-out, A = char
 static uint16_t console_in_pc = 0xFFD3;    // ROM RDCHR: entered when reading
+static int console_out_register_c = 0;
 
 static const char* kbd_str = 0;     // keystrokes to "type" (0/empty = keyboard off)
 static int   kbd_pos = 0, kbd_phase = 0;
@@ -1664,8 +1665,18 @@ int main(int argc, char** argv) {
       return 2;
     }
     const char* out_pc = getenv("JUKU_CONSOLE_OUT_PC");
+    const char* out_register = getenv("JUKU_CONSOLE_OUT_REGISTER");
     const char* in_pc = getenv("JUKU_CONSOLE_IN_PC");
     if (out_pc && out_pc[0]) console_out_pc = (uint16_t)strtoul(out_pc, NULL, 0);
+    if (out_register && out_register[0]) {
+      if (strcmp(out_register, "C") == 0 || strcmp(out_register, "c") == 0)
+        console_out_register_c = 1;
+      else if (strcmp(out_register, "A") != 0 && strcmp(out_register, "a") != 0) {
+        fprintf(stderr, "invalid JUKU_CONSOLE_OUT_REGISTER=%s (expected A or C)\n",
+                out_register);
+        return 2;
+      }
+    }
     if (in_pc && in_pc[0]) console_in_pc = (uint16_t)strtoul(in_pc, NULL, 0);
     (void)console_in_pc;
     kbd_enabled = 1;
@@ -1684,8 +1695,8 @@ int main(int argc, char** argv) {
     }
     kbd_str = console_queue;
     kbd_pos = 0;
-    fprintf(stderr, "[TERM] console attached; WRCHR hook=%04X\n",
-            console_out_pc);
+    fprintf(stderr, "[TERM] console attached; output hook=%04X register=%c\n",
+            console_out_pc, console_out_register_c ? 'C' : 'A');
   }
 
   // Optional real-time pacing (JUKU_REALTIME_HZ). Sleeps whenever simulated
@@ -1761,7 +1772,7 @@ int main(int argc, char** argv) {
       // and at its ROM-file address in mode 0, so accept either.
       if (cpu.pc == console_out_pc ||
           (console_out_pc >= 0xC000 && cpu.pc == (uint16_t)(console_out_pc - 0xC000))) {
-        char out = (char)cpu.a;
+        char out = (char)(console_out_register_c ? cpu.c : cpu.a);
         ssize_t ignored = write(console_fd, &out, 1);
         (void)ignored;
       }

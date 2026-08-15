@@ -108,6 +108,12 @@ sectors precede 52 system sectors. The host wraps those sectors in a one-record
 exact 6,656 bytes to the source-defined `CCP=B400h` and jumps to cold
 `BIOS=CA00h`.
 
+The host also recognizes the separate experimental `JUKU51` format without
+changing the ROM protocol. It sends a 7,808-byte staging executable: the same
+one-record copier followed by 7,680 resident bytes. That copier targets
+`B000h` and enters `C600h`, supporting CP/Mish's 51K RAM-console layout while
+leaving ordinary 52K `JUKUSYS` recognition byte-for-byte compatible.
+
 One simulator-only input distinction is explicit: the ROM's `1209h..123Bh`
 hardware-configuration scan samples PB5 high for the unstrapped/onboard-D11
 setting. Ordinary keyboard-idle reads remain the drawing-derived `CFh`; merging
@@ -382,15 +388,23 @@ registrations as sufficient to reproduce the dead keyboard; the separately
 observed interim D79F overwrite remains an additional architectural violation
 associated with the physical video corruption.
 
-This result defines the safe route toward a RAM-owned CP/M console. Preserve
-the 52K `B400h/BC00h/CA00h` RomBios build as the baseline. A separate 51K
-experiment can shift CCP/BDOS/BIOS to `B000h/B800h/C600h`, retaining the same
+This result defined the safe route toward a RAM-owned CP/M console. The 52K
+`B400h/BC00h/CA00h` RomBios build remains the baseline; the separate 51K
+experiment shifts CCP/BDOS/BIOS to `B000h/B800h/C600h`, retaining the same
 exclusive `CE00h` upper boundary while gaining 1 KiB for a renderer and font.
-The unmodified ROM can bootstrap that layout through a host-supplied staging
-copier, so proving it does not require a ROM change. Replace output first while
-retaining RomBios input and IR5; replace input second; own the whole interrupt
-contract only after both stages match the baseline. At no stage is D79F a
-standalone keyboard hook.
+The unmodified ROM now boots that layout through the host-supplied `JUKU51`
+staging copier.
+
+Stage 1 is simulator-proven. CP/M output is rendered from RAM through temporary
+all-RAM mode 3, while RomBios still owns input and IR5. The retained firmware
+frame service first had to be told `ESC 4`: otherwise it painted a solid cursor
+at its stale coordinates over the independent RAM screen. The focused test
+boots through stock Janet, executes matrix-typed `DIR`, completes 35 disk
+reads, preserves `D79Fh`, and compares all 9,600 framebuffer bytes with a
+reference rendering of the captured BIOS transcript. It caught and rejected
+both a broken clear loop and the stale cursor. Physical validation remains
+pending. Replace input second; own the whole interrupt contract only after both
+stages match the baseline. At no stage is D79F a standalone keyboard hook.
 
 The resident record format already carries a drive byte. CP/Mish `NETROM2`
 uses drive 0 for its writable 386 KiB A: volume and drive 1 for a read-only

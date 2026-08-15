@@ -173,6 +173,11 @@ EktaSoft family, which the monitor's `WRCHR` vector at `FFD9h` jumps to);
 and its mode-0 ROM alias are matched, because the same routine runs at either
 depending on the memory mode.
 
+The hook reads the character from register A by default. A BIOS jump-table
+entry is often easier to identify before its `MOV A,C`; set
+`JUKU_CONSOLE_OUT_REGISTER=C` for that case. This remains observation only and
+does not bypass the emulated renderer or keyboard.
+
 Pair it with `JUKU_REALTIME_HZ` for hands-on use — at full simulation speed
 a session runs faster than a human can type into it. `JUKU_KEYS` and the
 console share one key queue: the scripted string plays first and anything
