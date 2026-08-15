@@ -64,11 +64,13 @@ with the machine-readable board model.
   discovery and the complete 9,600-baud stock stage. A ROM-level simulator
   guard proves the checked extension handoff and execution; CP/Mish then
   reaches `A>` and completes NetDisk-v3 `DIR` with zero stock frames.
-  The same direct V15 transport now boots the separate non-banked CP/M Plus
-  3.1 baseline at `7000h`: its standard SCB-linked RAM BIOS reaches `A>`,
-  performs NetDisk-v3 `DIR`, and loads the shared `DIAG CPU` transient. This
-  also gives the RAM-owned path a reproducible modern-CP/M reference while
-  the RomBios CP/Mish image remains the physical baseline.
+  The same direct V15 transport boots the separately maintained
+  [`cpm-plus-juku`](https://github.com/ddanila/cpm-plus-juku) non-banked
+  CP/M Plus 3.1 baseline at `7000h`: its standard SCB-linked RAM BIOS reaches
+  `A>`, performs NetDisk-v3 `DIR`, and loads the shared `DIAG CPU` transient.
+  CP/M Plus owns that system's sources, images, and regression; this repo owns
+  the machine model, ROM, and host transport. The RomBios CP/Mish image remains
+  the physical baseline.
   V15 and ekta4402 are simulator-proven, not yet physical replacements for
   V14/ekta4401. The
   original stock Janet path is unchanged as fallback.

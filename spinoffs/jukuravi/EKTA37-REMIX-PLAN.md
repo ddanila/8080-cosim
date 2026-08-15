@@ -15,11 +15,14 @@ are at the end.
 The separately versioned `ekta4402.bin` preserves all of that behavior and
 adds `N fastboot`: a 128-byte ROM-resident V15 core enters 19200/8N1 directly,
 eliminating the stock 9600-baud Janet stage. It is fully simulator-qualified
-through both CP/Mish and the non-banked CP/M Plus 3.1 baseline: each reaches
-`A>` and completes NetDisk-v3 `DIR` with zero stock bootstrap frames; CP/M Plus
-also loads and passes the shared `DIAG CPU` transient. It is not yet burned or
-physically qualified. `ekta4401` remains byte-exact and is the hardware
-baseline.
+through both CP/Mish and the separately maintained
+[`cpm-plus-juku`](https://github.com/ddanila/cpm-plus-juku) non-banked CP/M
+Plus 3.1 baseline: each reaches `A>` and completes NetDisk-v3 `DIR` with zero
+stock bootstrap frames; CP/M Plus also loads and passes the shared `DIAG CPU`
+transient. CP/M Plus sources, images, and its end-to-end regression belong to
+that repository; this tree owns Ekta4402 and the common host/model side. It is
+not yet burned or physically qualified. `ekta4401` remains byte-exact and is
+the hardware baseline.
 
 ## Goal
 

@@ -619,6 +619,14 @@ disk exchanges. The latter also proves the 8N1-to-8O1 handoff. Ekta4402 has
 not yet been burned or tested on physical hardware, so stock-ROM V14 and
 ekta4401 remain the physical baselines.
 
+The same direct-ROM transport is consumed by the separate
+[`cpm-plus-juku`](https://github.com/ddanila/cpm-plus-juku) project. That
+repository owns its CP/M Plus BIOS, system container, disk image, and
+end-to-end `A>`/`DIR`/`DIAG CPU` regression; it imports this repository's
+Ekta4402 ROM, simulator, and Janet host implementation. Keeping that boundary
+prevents the genuine CP/M 3 port from becoming an artificial “CP/Mish 3”
+variant while retaining one tested transport implementation.
+
 Frame-level stock instrumentation also explains the 2.21/3.75-second stage
 spread. A normal one-record request has 36 client frames after the request:
 one request, 26 polls of other stations, one start poll, five ACKs, and three
