@@ -280,8 +280,8 @@ below v6, or roughly **6.09 s** to the first A: request on CS00015. A physical
 CS00015 run on 2026-08-15 passed the stock-ROM bootstrap, 19,200 handoff,
 visible prompt, and network `DIR`, qualifying v7's complete functional path and
 short handoff guard. Its exact first-disk timestamp was not retained, so this
-value remains a prediction and v6 remains the fastest *timed* physical
-baseline pending a separately logged v7 repeat.
+value remains a prediction. At that stage v6 remained the fastest timed
+physical baseline; later v12 repeats supersede it at 5.739-5.740 seconds.
 
 ## Fast stage v8: interrupt-fed receive/decode overlap
 
@@ -409,28 +409,125 @@ if revisited, give the smaller artifact a new version and physical test.
 The separate `--fast-low-latency-guards` policy requires compact stock
 execute and does not change the v9 artifact. It replaces the blind 50 ms
 stock-to-fast wait with POSIX `tcdrain()`, so the baud change occurs only after
-the adapter reports its transmit queue empty. The two fast-path turnaround
-guards fall from 20 to 5 ms, and the post-success guard falls from 20 to 10 ms.
-The latter still exceeds the roughly 7.8 ms wire time of all three 5-byte
-success frames; measured target drain then completes before the host changes
-back to resident 8O1.
+the adapter reports its transmit queue empty. The physically safe default
+retains the 20 ms extension and stream turnaround guards and reduces only the
+post-success guard from 20 to 10 ms. The latter still exceeds the roughly
+7.8 ms wire time of all three 5-byte success frames; measured target drain then
+completes before the host changes back to resident 8O1.
 
-The fixed waits are reduced by 40 ms. For compact execute, its final
+The fixed wait is reduced by 10 ms. For compact execute, its final
 turn/execute/turn sequence has a roughly 24 ms wire floor, so replacing the
-50 ms blind wait can save up to another 26 ms: **about 66 ms maximum**. Three
+50 ms blind wait can save up to another 26 ms: **about 36 ms maximum**. Three
 repeated clean v9 runs, the corruption/loss run, and the complete CP/M `DIR`
 continuation pass in cosim with zero clean retries. Adding the full modeled
-saving to v9's earlier estimate projects roughly **5.45 seconds**, but USB
+saving to v9's earlier estimate projects roughly **5.48 seconds**, but USB
 queue overlap makes physical timing—not subtraction—the qualification gate.
+
+The first CS00015 experiment used an explicitly shortened 5 ms extension
+guard. It recovered and reached the prompt, and `DIR` worked, but the extension
+and stream each retried once. The first disk request arrived at **10.167 s**
+(stage 2.227 s, bulk 7.455 s), so 5 ms is rejected as a production default.
+The exact run is preserved in
+`evidence/juku-serial/cs00015-fastboot-v9-low-latency-20260815.json`.
+Use `--fast-extension-guard-ms` only for named threshold experiments; the
+default is 20 ms.
+
+## Fast stages v10-v14: bounded decode, explicit readiness, buffered control
+
+The later variants preserve v9 as immutable evidence and address two physical
+races found by repeated CS00015 runs:
+
+- **V10** replaces the fixed 256-byte producer-lead assumption with a bounded
+  page-ahead input wait. This prevents the decoder from overtaking the ISR at
+  different CPU/wire schedules. Its 5570-byte artifact has SHA-256
+  `fff6f3d4b69eb2056b61a26ec1362b85bfe7a30f9d8e1938c97fa4acb330e1e2`.
+- **V11** makes the one-record core acknowledge the `A5 3A` extension header.
+  Two of four physical runs were retry-free, but two missed the first ACK. The
+  host still sent all 610 remaining packet bytes after a missing ACK, so both
+  runs contaminated the exchange and retried the extension and stream.
+- **V12** makes the core sync search overlap-safe and sends only repeated
+  `00 A5 3A` probes until the core answers `C5`; the extension body never
+  precedes that answer. Four physical runs had zero extension retries. The
+  fourth actually needed two probes and still continued cleanly, directly
+  qualifying this repair. That run then exposed the independent fixed 2 ms
+  `JZ`-to-stream race and retried the compressed stream once.
+- **V13** applies the same contract to the stream. Its extension accepts
+  overlap-safe `00 JZ` probes, initializes length, CRC, failure state, write
+  pointer, saved stack, and interrupt reception, then answers raw `C6`. The
+  host sends no compressed body before `C6`. The artifact is 5582 bytes
+  (125/128-byte core, 620-byte extension, 4826-byte ZX0 payload) with SHA-256
+  `7e4e5fcf821c6f16fd41349060650ad20361af4b8f1c77498fbf88488b6c38f9`.
+
+The V13 regression deliberately delivers only a lone `A5` and lone `J` on the
+first extension and stream probes. Both next probes resynchronize. Clean and
+injected extension corruption, stream corruption, complete loss, lost reply,
+3.4 MHz CPU stress, byte-exact B400h-CDFFh installation, prompt, and network
+`DIR` all pass. V13 retains a modeled 296 ms gain over v7 and 23 ms over v8;
+its 12-byte growth over v12 costs about 7 ms of 19,200-baud wire time.
+
+Five subsequent physical V13 boots all reached CP/M, but only one completed
+the first compressed stream without retry. The other four failed its CRC and
+passed the complete retransmission, reaching the first disk request at
+8.353-8.374 seconds instead of 5.769 seconds. Extension transfer itself was
+clean in all five. The correlation was exact: every retrying run needed a
+second extension-header probe, while the sole one-probe run was stream-clean.
+Explicit state readiness fixed header ambiguity but did not eliminate the
+phase-sensitive first-pass failure. The ideal USART/PIC cosim remains clean at
+normal and 3.4 MHz schedules. A new one-shot timing fault delays one RxRDY IRQ
+for over two character times after byte 900. That is sufficient to overrun V13,
+produce exactly one stream retry, and then recover; V14 remains retry-free
+under the identical disturbance because it polls the bulk receive path. This
+does not prove the board's electrical root cause, but it reproduces the failure
+class and distinguishes the two software architectures.
+
+**V14** is the conservative control and current desk candidate. It keeps v13's
+overlap-safe `A5 3A`/`C5` and `JZ`/`C6` contracts but returns to v7's fully
+buffered path: receive all 4826 bytes at 4000h, verify CRC16/IBM, then decode
+into B400h-CDFFh with interrupts out of the data path. The artifact is 5229
+bytes: a 125/128-byte core, 267-byte exact extension, eight-byte `ZE`
+descriptor, and unchanged payload. SHA-256 is
+`83fd401af727a3c8c85fbe94d3d5458c71675efd974a0a8734f99987b420980c`.
+Clean, partial-header, corrupted extension, corrupted/lost stream, lost reply,
+one-shot RxRDY delay, 3.4 MHz, byte-exact handoff, prompt, and network `DIR`
+simulations pass. It is
+approximately v7 plus 11 high-speed bytes and explicit acknowledgements:
+expected near 6.1 seconds, roughly 0.3 seconds slower than a clean v13 but much
+faster than v13's observed retry path. This deliberately optimizes repeatable
+latency rather than the best single run. Three physical CS00015 runs confirmed
+that prediction at **6.115, 6.100, and 6.069 seconds**. Every extension and
+stream completed without retry. Runs one and two needed a second extension
+header probe, while run three needed only one; all stream headers needed one.
+The overlap-safe handshake therefore recovered twice without contaminating the
+body, and the complete first-request spread was only 46 ms.
+
+The four V12 physical first-request times were 5.739, 5.740, 5.739, and
+8.307 seconds. The last value includes one 2.56-second stream retry; the
+extension remained clean. The best current repeatable physical result is thus
+about 5.74 seconds, while v13's single clean 5.769-second run is not repeatable
+enough for promotion. V14 is the current **physically qualified deterministic
+candidate**. V12 retains the clean speed record, while v14 establishes the
+repeatable physical baseline.
+
+Decision: freeze V14 as the production fastboot baseline. Further variants
+must address functionality, observability, or a reproduced reliability defect;
+best-case millisecond savings alone do not justify reopening the timing path.
+
+Frame-level stock instrumentation also explains the 2.21/3.75-second stage
+spread. A normal one-record request has 36 client frames after the request:
+one request, 26 polls of other stations, one start poll, five ACKs, and three
+advance polls. A slow run had 64. Those scans are owned by the stock ROM.
+Sending the next fragment eagerly on every ACK was rejected in cosim: the ROM
+discarded/rejected premature frames and host output grew from 14 to 44-58
+frames. The captured Janet turn discipline remains unchanged.
 
 Run the fastest current candidate without changing the ROM:
 
 ```sh
-cd ~/fun/cpmish && make juku-fastboot-v9.bin
+cd ~/fun/cpmish && make juku-fastboot-v14.bin
 ../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v9.bin --compact-stock-execute \
+    --fast-stage1 juku-fastboot-v14.bin --compact-stock-execute \
     --fast-low-latency-guards --disk-baud 19200 \
-    --boot-result-json cs00015-fastboot-v9-low-latency.json \
+    --boot-result-json cs00015-fastboot-v14-run1.json \
     --writable --timeout 86400 /dev/ttyUSB0 \
     juku-net-mode2-system.bin cs00015-fastboot.img
 ```
@@ -522,17 +619,16 @@ agreement also validates the cycle-level explanation of v1's excess time.
 
 Further worthwhile measurements are, in order:
 
-1. ten cold/warm runs on CS00014 and CS00015, recording stage, bulk, total,
-   retries, rejects, and Linux UART counters;
-2. profile the final bitwise CRC scan and the conservative 20 ms turn guard;
-3. reduce the stage below 512 bytes only if one fewer stock record measurably
-   matters;
-4. compare stop-and-wait with a two-block window only after fault recovery is
-   equally deterministic;
-5. retain exact host logs while benchmarking v8 and v9 on the same CS00015
-   setup, then gather repeated cold/warm v6/v7/v8/v9 distributions before
-   tightening more guards;
-6. keep production fastboot at 19,200. Revisit a higher rate only with new
+1. repeat v14 on CS00014 and confirm zero retries, prompt, and `DIR`;
+2. optionally extend the three clean CS00015 runs to ten cold/warm runs for
+   long-term characterization, not as a promotion gate, recording
+   stage, bulk, total, probes, retries, rejects, and Linux UART counters;
+3. retain v12's 5.739-second clean result as the speed record, v13's five-run
+   distribution as evidence, and v14's 6.069-6.115 s range as the deterministic
+   physical baseline;
+4. change the stock-ROM Janet turn discipline only if a new client-side design
+   replaces it; eager host fragments are disproven;
+5. keep production fastboot at 19,200. Revisit a higher rate only with new
    electrical evidence, because the in-spec x1 experiment already failed and
    count-2/x16 would exceed the USART clock limit by about two times.
 

@@ -223,6 +223,96 @@ def main() -> int:
         else:
             raise AssertionError("malformed v9 artifact was accepted")
 
+    extension_v10 = extension_v9 + bytes(range(15))
+    core_v10 = (
+        b"\xC3\x0B\x01JF10\x01\x00"
+        + len(extension_v10).to_bytes(2, "little")
+    ).ljust(128, b"\0")
+    bundle_v10 = (
+        core_v10 + extension_v10 + b"ZA"
+        + crc16_ibm(expected).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v10)
+    assert bundle_core == core_v10
+    assert bundle_extension == extension_v10
+    assert bundle_payload == compressed
+    for broken in (
+        bundle_v10[:8] + b"\x01" + bundle_v10[9:],
+        bundle_v10[:9] + b"\xff\xff" + bundle_v10[11:],
+        bundle_v10[:-1],
+        bundle_v10[:-1] + bytes((bundle_v10[-1] ^ 1,)),
+    ):
+        try:
+            split_stage_artifact(broken)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("malformed v10 artifact was accepted")
+
+    core_v11 = core_v10[:3] + b"JF11" + core_v10[7:]
+    bundle_v11 = (
+        core_v11 + extension_v10 + b"ZB"
+        + crc16_ibm(expected).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v11)
+    assert bundle_core == core_v11
+    assert bundle_extension == extension_v10
+    assert bundle_payload == compressed
+
+    core_v12 = core_v10[:3] + b"JF12" + core_v10[7:]
+    bundle_v12 = (
+        core_v12 + extension_v10 + b"ZC"
+        + crc16_ibm(expected).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v12)
+    assert bundle_core == core_v12
+    assert bundle_extension == extension_v10
+    assert bundle_payload == compressed
+
+    core_v13 = core_v10[:3] + b"JF13" + core_v10[7:]
+    bundle_v13 = (
+        core_v13 + extension_v10 + b"ZD"
+        + crc16_ibm(expected).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v13)
+    assert bundle_core == core_v13
+    assert bundle_extension == extension_v10
+    assert bundle_payload == compressed
+
+    extension_v14 = bytes(range(256)) + bytes(range(11))
+    core_v14 = (
+        b"\xC3\x0B\x01JF14\x01\x00"
+        + len(extension_v14).to_bytes(2, "little")
+    ).ljust(128, b"\0")
+    bundle_v14 = (
+        core_v14 + extension_v14 + b"ZE"
+        + crc16_ibm(expected).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v14)
+    assert bundle_core == core_v14
+    assert bundle_extension == extension_v14
+    assert bundle_payload == compressed
+
     # A USB serial driver may not advertise new write room until its several-
     # kilobyte URB drains. V3 grants that one long stream its real wire time.
     with mock.patch.object(

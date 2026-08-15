@@ -31,15 +31,20 @@ with the machine-readable board model.
   sustained network-disk traffic subsequently passed on physical CS00014 and
   CS00015. The optional `tools/janet_fastboot.py` path now lets an unmodified
   stock ROM load one compact record at 9,600 before that proven setting sends
-  a fixed CRC-protected ZX0 stream. Its separately named v8 desk candidate
-  overlaps D11 interrupt-fed reception and decompression. V9 then polls only
-  the `JZ` marker, simplifies the payload ISR, and transfers its extension at
-  its exact 556-byte length. Together with the optional compact stock execute
-  policy, v9 projects roughly 5.52 seconds to the first disk request. Physical
-  CS00015 has now reached the prompt and completed `DIR` with that exact
-  conservative-guard combination; exact timing and the separately selected
-  low-latency guards remain pending. The original stock Janet path is
-  unchanged and remains the fallback.
+  a fixed CRC-protected ZX0 stream while D11 interrupt reception overlaps
+  decompression. Repeated CS00015 work measured three clean v12 boots at
+  5.739-5.740 seconds to the first disk request. V13 made both `A5 3A` and `JZ`
+  handoffs overlap-safe and explicitly acknowledged; five of five physical
+  boots succeeded, but four first streams still needed a CRC retry. The current
+  v14 desk candidate removes that last timing dependency: it receives and
+  authenticates the entire 4826-byte stream before ZX0 decode. Its clean,
+  corruption/loss, partial-header, 3.4 MHz, prompt, and network `DIR` cosim
+  matrix passes. A one-shot RxRDY IRQ delay reproduces a V13 retry but leaves
+  V14 retry-free. Three physical CS00015 runs then completed at 6.069-6.115 s
+  with zero retries, including two runs that needed a second extension-header
+  probe. V14 is now the frozen production fastboot baseline; marginal timing
+  gains alone do not justify another variant. The original stock Janet path is
+  unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.

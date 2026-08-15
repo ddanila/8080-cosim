@@ -34,7 +34,9 @@
 //        the transmit input register full until the next 8251 reset;
 //        tx_stuck_once:BYTE jams one matching write until an 8251 reset;
 //        tx_not_ready_once_after:COUNT jams between completed output bytes;
-//        tx_empty_low_after:COUNT holds only status bit 2 low thereafter.
+//        tx_empty_low_after:COUNT holds only status bit 2 low thereafter;
+//        rx_irq_delay_once_after:COUNT:CYCLES delays one RxRDY interrupt long
+//        enough to model a phase-sensitive ISR/overrun boundary.
 // RAM:   JUKU_RAM_FAULT=ADDR:STUCK_LOW:STUCK_HIGH injects one faulty byte
 //        (ADDR=* applies the stuck masks globally);
 //        JUKU_RAM_ALIAS=PAGE_A:PAGE_B maps logical PAGE_B onto PAGE_A.
@@ -344,6 +346,11 @@ typedef struct {
   unsigned long fault_tx_not_ready_once_after;
   int fault_tx_empty_low_after_enabled;
   unsigned long fault_tx_empty_low_after;
+  int fault_rx_irq_delay_once_enabled;
+  int fault_rx_irq_delay_once_fired;
+  unsigned long fault_rx_irq_delay_once_after;
+  unsigned long fault_rx_irq_delay_cycles;
+  unsigned long fault_rx_irq_delay_until;
   unsigned long fault_tx_stuck_once_recoveries;
   unsigned long tx_transfer_cyc;
   unsigned long tx_complete_cyc;
@@ -1184,6 +1191,14 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "usart_tx_irq_armed=%d\n", usart_tx_irq_armed);
   fprintf(state_out, "usart_tx_irq_pending=%d\n", usart_tx_irq_pending);
   fprintf(state_out, "usart_rx_irq_pending=%d\n", usart_rx_irq_pending);
+  fprintf(state_out, "usart_rx_irq_delay_once_enabled=%d\n",
+          usart.fault_rx_irq_delay_once_enabled);
+  fprintf(state_out, "usart_rx_irq_delay_once_fired=%d\n",
+          usart.fault_rx_irq_delay_once_fired);
+  fprintf(state_out, "usart_rx_irq_delay_once_after=%lu\n",
+          usart.fault_rx_irq_delay_once_after);
+  fprintf(state_out, "usart_rx_irq_delay_cycles=%lu\n",
+          usart.fault_rx_irq_delay_cycles);
   for (int p = 0; p < 256; p++) {
     if (out_count[p] || in_count[p] || out_last[p])
       fprintf(state_out, "port_%02X=last:%02X,out:%lu,in:%lu\n",
@@ -1387,13 +1402,28 @@ int main(int argc, char** argv) {
       }
       usart.fault_tx_not_ready_once_after_enabled = 1;
       usart.fault_tx_not_ready_once_after = count;
+    } else if (strncmp(usart_fault, "rx_irq_delay_once_after:", 24) == 0) {
+      unsigned long count, delay;
+      char trailing;
+      if (sscanf(usart_fault, "rx_irq_delay_once_after:%lu:%lu%c",
+                 &count, &delay, &trailing) != 2 || !delay) {
+        fprintf(stderr,
+                "unknown JUKU_USART_FAULT=%s (expected "
+                "rx_irq_delay_once_after:COUNT:CYCLES)\n",
+                usart_fault);
+        return 2;
+      }
+      usart.fault_rx_irq_delay_once_enabled = 1;
+      usart.fault_rx_irq_delay_once_after = count;
+      usart.fault_rx_irq_delay_cycles = delay;
     } else {
       unsigned long count;
       char trailing;
       if (sscanf(usart_fault, "tx_empty_low_after:%lu%c", &count, &trailing) != 1) {
         fprintf(stderr,
                 "unknown JUKU_USART_FAULT=%s (expected tx_stuck, "
-                "tx_stuck_once:BYTE, tx_not_ready_once_after:COUNT, or "
+                "tx_stuck_once:BYTE, tx_not_ready_once_after:COUNT, "
+                "rx_irq_delay_once_after:COUNT:CYCLES, or "
                 "tx_empty_low_after:COUNT)\n",
                 usart_fault);
         return 2;
@@ -1759,6 +1789,19 @@ int main(int argc, char** argv) {
     // interrupt-driven, so status-register emulation alone cannot put its
     // queued request onto the wire.
     if (usart_rx_irq_pending &&
+        usart.fault_rx_irq_delay_once_enabled &&
+        !usart.fault_rx_irq_delay_once_fired &&
+        usart.rx_bytes >= usart.fault_rx_irq_delay_once_after) {
+      usart.fault_rx_irq_delay_once_fired = 1;
+      usart.fault_rx_irq_delay_until =
+          cpu.cyc + usart.fault_rx_irq_delay_cycles;
+      fprintf(stderr,
+              "[USART] delaying one RxRDY IRQ after byte=%lu until cyc=%lu\n",
+              usart.rx_bytes, usart.fault_rx_irq_delay_until);
+    }
+    if (usart_rx_irq_pending &&
+        (!usart.fault_rx_irq_delay_once_fired ||
+         cpu.cyc >= usart.fault_rx_irq_delay_until) &&
         take_pic_irq(&cpu, 2, "USART RxRDY", &usart_rx_irq_count))
       usart_rx_irq_pending = 0;
     if (usart_tx_irq_pending &&

@@ -273,7 +273,17 @@ def parser() -> argparse.ArgumentParser:
     )
     result.add_argument(
         "--fast-low-latency-guards", action="store_true",
-        help="with compact stock execute, use TX drain plus 5/10 ms guards",
+        help="with compact stock execute, use TX drain plus a 10 ms success "
+             "guard",
+    )
+    result.add_argument(
+        "--fast-extension-guard-ms", type=float, default=20.0,
+        help="delay before sending the high-speed extension (default: 20 ms)",
+    )
+    result.add_argument(
+        "--fast-stock-handoff-guard-ms", type=float, default=30.0,
+        help="after TX drain, allow final 9600-baud bytes to leave the USB "
+             "UART (default: 30 ms)",
     )
     result.add_argument(
         "--client", type=lambda value: int(value, 0),
@@ -347,6 +357,9 @@ def main(argv: Iterable[str] | None = None) -> int:
                 stock_timeout=args.timeout,
                 compact_stock_execute=args.compact_stock_execute,
                 low_latency_guards=args.fast_low_latency_guards,
+                extension_guard=args.fast_extension_guard_ms / 1000.0,
+                stock_handoff_guard=
+                args.fast_stock_handoff_guard_ms / 1000.0,
             )
             station_server = int(boot["stock_server"])
             station_client = int(boot["stock_client"])
@@ -386,6 +399,9 @@ def main(argv: Iterable[str] | None = None) -> int:
                 if fast_stage else None,
                 "compact_stock_execute": args.compact_stock_execute,
                 "fast_low_latency_guards": args.fast_low_latency_guards,
+                "fast_extension_guard_ms": args.fast_extension_guard_ms,
+                "fast_stock_handoff_guard_ms":
+                args.fast_stock_handoff_guard_ms,
                 "station_server": station_server,
                 "station_client": station_client,
                 "bootstrap": {

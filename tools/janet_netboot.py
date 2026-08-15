@@ -339,7 +339,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
           server: int | None = None,
           timeout: float = 30.0,
           verbose: bool = True,
-          compact_execute: bool = False) -> dict[str, int | float]:
+          compact_execute: bool = False) -> dict[str, object]:
     """Serve the first matching client through the bootstrap execute service.
 
     A ``None`` identity is learned from the first checksum-valid bootstrap
@@ -357,6 +357,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
     advance_pending = False
     completion_pending = False
     received_frames = 0
+    received_frames_before_request = 0
     sent_frames = 0
     ack_08 = 0
     ack_09 = 0
@@ -364,14 +365,38 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
     last_progress_bucket = -1
     deadline = time.monotonic() + timeout
     request_started_at: float | None = None
+    frame_actions: dict[str, int] = {}
+    frame_timeline: list[dict[str, object]] = []
 
-    def boot_stats() -> dict[str, int | float]:
+    def trace_frame(action: str, packet: bytes, payload: bytes) -> None:
+        """Record the stock client's turns after its bootstrap request."""
+        if request_started_at is None:
+            return
+        frame_actions[action] = frame_actions.get(action, 0) + 1
+        frame_timeline.append({
+            "elapsed_ms": round(
+                (time.monotonic() - request_started_at) * 1000, 3,
+            ),
+            "action": action,
+            "destination": packet[2],
+            "source": packet[3],
+            "control": packet[4],
+            "payload_prefix_hex": payload[:4].hex(),
+        })
+
+    def boot_stats() -> dict[str, object]:
         if request_started_at is None:
             raise RuntimeError("bootstrap completed without a request timestamp")
-        return {
+        stats: dict[str, object] = {
             "image_bytes": len(prepared.data),
             "sent_frames": sent_frames,
             "received_frames": received_frames,
+            "received_frames_before_request": received_frames_before_request,
+            "received_frames_after_request": (
+                received_frames - received_frames_before_request
+            ),
+            "frame_actions": frame_actions,
+            "frame_timeline": frame_timeline,
             "ack_08": ack_08,
             "ack_09": ack_09,
             "client": int(active_client),
@@ -381,6 +406,18 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
             "request_started_at": request_started_at,
             "transfer_seconds": time.monotonic() - request_started_at,
         }
+        if verbose:
+            actions = ", ".join(
+                f"{name}={count}" for name, count in frame_actions.items()
+            )
+            print(
+                "Janet client turns: "
+                f"before-request={received_frames_before_request}, "
+                f"after-request={received_frames - received_frames_before_request}"
+                + (f" ({actions})" if actions else ""),
+                flush=True,
+            )
+        return stats
 
     if verbose:
         print(
@@ -425,6 +462,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
             if (request_seen and destination == active_server and
                     source == active_client and
                     control == POLL_CONTROL and start_pending):
+                trace_frame("start_poll", packet, payload)
                 # The request ACK and first data frame must occupy separate
                 # Janet turns.  Back-to-back bytes race the client's receive
                 # reset; the next directed poll is its ready indication.
@@ -449,6 +487,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                  (destination == active_server and control == POLL_CONTROL))
             )
             if request_seen and ready_turn and completion_pending:
+                trace_frame("completion_ready", packet, payload)
                 write_all(fd, frame(0, active_server, 0x00))
                 sent_frames += 1
                 if verbose:
@@ -462,6 +501,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                 return boot_stats()
 
             if request_seen and ready_turn and advance_pending:
+                trace_frame("advance_ready", packet, payload)
                 write_all(fd, frame(0, active_server, 0x00))
                 write_all(fd, transfer[next_message])
                 next_message += 1
@@ -475,12 +515,14 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                 active_client = source
                 active_server = destination
                 request_started_at = time.monotonic()
+                received_frames_before_request = received_frames - 1
                 transfer = boot_frames(
                     prepared.data, load_address=prepared.load_address,
                     entry=prepared.entry, client=active_client,
                     server=active_server, compact_execute=compact_execute,
                 )
                 request_seen = True
+                trace_frame("boot_request", packet, payload)
                 write_all(fd, frame(active_client, active_server, ACK_CONTROL))
                 sent_frames += 1
                 if not awaiting_ack and next_message == 0:
@@ -490,6 +532,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
             if (request_seen and awaiting_ack and
                     destination == active_server and
                     source == active_client and control == ACK_CONTROL):
+                trace_frame("ack", packet, payload)
                 awaiting_ack = False
                 ack_08 += 1
                 acknowledged = transfer[next_message - 1]
@@ -544,6 +587,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                     destination == active_server and
                     source == active_client and
                     control == (ACK_CONTROL | 1)):
+                trace_frame("reject", packet, payload)
                 # 09h is REJ.  It also hands the line back, so NETD can emit
                 # the release marker and retry without waiting for a poll.
                 ack_09 += 1
@@ -551,6 +595,9 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                 write_all(fd, transfer[next_message - 1])
                 sent_frames += 2
                 continue
+
+            if request_seen:
+                trace_frame("ignored", packet, payload)
 
     stage = "bootstrap acknowledgements" if request_seen else "boot request"
     raise TimeoutError(

@@ -237,6 +237,33 @@ turns. The resident disk protocol is roughly sixteen times faster in useful
 payload. Optimizing boot framing is a separate opportunity and does not limit
 the already-running network disk.
 
+### Next optimization target: NetDisk v2
+
+With fastboot v14 frozen, network-disk latency is the next controlled software
+boundary. The legacy 128-byte transaction remains the compatibility baseline:
+physical service is about 1.3-1.4 KiB/s, already 86-91% of its stop-and-wait
+ceiling. Removing a few header bytes therefore has limited value.
+
+NetDisk v2 should keep CP/M's geometry and 128-byte BIOS sector API unchanged
+while changing only the resident BIOS/host wire contract:
+
+- request and return multiple records per transaction, with a small BIOS-side
+  read-ahead cache so sequential program loads amortize turnaround;
+- start with reads; retain synchronous single-record writes until explicit
+  flush, retry, duplicate, and power-loss semantics are proven;
+- use an overlap-safe sync word, explicit ready/ACK state, fixed bounds, strong
+  CRC, and whole-window retransmission, following the v14 fastboot lessons;
+- evaluate 19,200/8N1 for the new controlled protocol while preserving legacy
+  19,200/8O1 NetBios as fallback;
+- benchmark `DIR`, sequential `TYPE`, program startup, cache hit rate, useful
+  KiB/s, retries, and cold/warm behavior on CS00014 and CS00015.
+
+At the same baud, 8N1 and lower framing overhead can improve raw sequential
+throughput only by roughly 25-35%. The larger user-visible gain must come from
+fewer turnarounds and useful read-ahead. Compression is not a first-line disk
+optimization: it complicates bounded retries and spends 8080 time for a gain
+that depends strongly on file contents.
+
 ### Physical interactive CP/M baseline
 
 A later 2026-08-13 CS00014 run validated the corrected CP/Mish `NETROM1`

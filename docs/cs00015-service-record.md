@@ -191,6 +191,42 @@ visible CP/M prompt and completed network `DIR`. This run qualified the current
 fastest code path functionally but did not retain an exact boot timestamp; the
 separate low-latency host-guard policy still needs a physical run.
 
+Later repeated runs replaced that pending timing claim with a sharper result.
+Guard tuning alone was intermittent: v9 and bounded-decoder v10 each produced
+both clean roughly 5.6-5.7-second boots and multi-second extension/stream
+retries. V11 added an extension-header ACK, but two of four runs missed the
+first ACK and the host contaminated the exchange by sending the body anyway.
+V12 made the header parser overlap-safe and withheld the body until ACK. All
+four physical runs then had zero extension retries; the fourth required two
+header probes and recovered as designed. Its first three disk requests arrived
+at 5.739, 5.740, and 5.739 seconds. The fourth exposed the separate `JZ` stream
+handoff race, retried that stream once, and arrived at 8.307 seconds.
+
+Fast stage v13 then applied the same explicit readiness protocol to `JZ`. All
+five CS00015 runs booted, and the extension needed no retry, but four first
+streams failed CRC and succeeded on the complete retransmission. In every such
+run the extension header had also required its second probe; the sole one-probe
+run was stream-clean. Thus v13 proved recovery, but not a deterministic first
+pass.
+
+Fast stage v14 is the simulator-qualified conservative successor. It keeps
+v13's two overlap-safe acknowledged handoffs but removes interrupt-fed overlap:
+all 4826 compressed bytes are first received into 4000h and CRC-checked, then
+ZX0 expands them to B400h. Clean, partial-header, injected corruption/loss,
+3.4 MHz, byte-exact, prompt, and network `DIR` simulations pass. A one-shot
+RxRDY interrupt delay of more than two character times makes v13 overrun and
+retry once in cosim, while v14 stays retry-free under the same disturbance.
+Its 5229-byte artifact is only 11 bytes larger than proven v7 and should cost
+roughly 0.3 s against a clean v13 while avoiding the observed 2.6 s retry.
+Three immediate physical CS00015 runs then reached their first disk request at
+6.115, 6.100, and 6.069 seconds. All had zero extension and stream retries;
+the first two needed two extension-header probes and recovered without body
+contamination. The 46 ms total spread and clean first-pass streams physically
+qualify v14 as the repeatable production baseline. Speed optimization is frozen
+at this version; later variants require a functional, observability, or
+reproduced reliability reason. Exact per-run evidence and rationale are in
+`janet-fastboot.md` and `evidence/juku-serial/`.
+
 ## Current deployment
 
 Following the Arvutimuuseum demonstration, CS00015 is in the home lab with the
