@@ -118,6 +118,18 @@
     "physical_test": false,
     "qualification": "simulation-qualified host timing policy; logged CS00015 timing pending"
   },
+  "fast_stage_v9_preprocessing_audit": {
+    "date": "2026-08-15",
+    "compressor": "ZX0 v2.2 optimal classic",
+    "raw_bytes": 4826,
+    "bcj_flow_bytes": 5200,
+    "bcj_flow_and_memory_bytes": 5402,
+    "bcj_flow_memory_and_lxi_bytes": 5498,
+    "even_odd_byte_planes_bytes": 5389,
+    "previous_byte_xor_bytes": 5717,
+    "previous_byte_subtraction_bytes": 5728,
+    "verdict": "reject preprocessing; raw resident layout is smallest and needs no inverse pass"
+  },
   "fast_stage_v7": {
     "date": "2026-08-15",
     "artifact_bytes": 5218,

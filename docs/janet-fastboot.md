@@ -599,6 +599,15 @@ far too slowly. ZX1 wins about 18 ms before layout, then loses about 49 ms once
 its extra extension record is transmitted. ZX0 therefore remains the fastest
 measured and layout-valid choice, not merely the smallest-stream choice.
 
+V9 also closes the remaining cheap preprocessing idea. Optimal ZX0 compresses
+the exact resident image to 4826 bytes. Reversible 8080-aware normalization of
+all CALL/JMP operands grows it to 5200 bytes; including absolute-memory
+operands grows it to 5402, and including LXI operands to 5498. Even/odd byte
+planes produce 5389, previous-byte XOR 5717, and previous-byte subtraction
+5728 bytes. All would additionally require an inverse pass on the 8080. Raw
+layout is therefore both the smallest stream and the lowest-decoder-overhead
+choice among these transforms.
+
 The separately named v6 implementation measured 0.701 seconds faster than v3
 and 0.337 seconds faster than v5 on CS00015, with prompt and `DIR` proven. V7
 keeps its codec while removing one extension record. V8 keeps the codec and
