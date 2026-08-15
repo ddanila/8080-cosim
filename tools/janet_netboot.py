@@ -182,7 +182,8 @@ def prepare_image(image: bytes, *, load_address: int | None = None,
 
 def boot_frames(image: bytes, *, load_address: int = LOAD_ADDRESS,
                 entry: int = LOAD_ADDRESS, client: int = 1,
-                server: int = 2) -> list[bytes]:
+                server: int = 2,
+                compact_execute: bool = False) -> list[bytes]:
     """Encode the captured Janet bootstrap start/data/end message sequence."""
     if not image:
         raise ValueError("system image is empty")
@@ -216,7 +217,12 @@ def boot_frames(image: bytes, *, load_address: int = LOAD_ADDRESS,
     # NETD follows the end descriptor with the 127-byte execute service
     # message observed in the native server capture.  Its first logical byte
     # is 0Fh; the remaining bytes are zero-filled and use the same
-    # first/middle/last fragment markers.
+    # first/middle/last fragment markers.  Fastboot may ask the unmodified
+    # client to accept the semantically equivalent one-byte logical service:
+    # 03h is the canonical single-fragment start+end marker, followed by 0Fh.
+    if compact_execute:
+        messages.append(frame(client, server, DATA_CONTROL, b"\x03\x0f"))
+        return messages
     execute = b"\x0f" + bytes(126)
     messages.extend((
         frame(client, server, DATA_CONTROL, b"\x02" + execute[:63]),
@@ -332,7 +338,8 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
           entry: int | None = None, client: int | None = None,
           server: int | None = None,
           timeout: float = 30.0,
-          verbose: bool = True) -> dict[str, int | float]:
+          verbose: bool = True,
+          compact_execute: bool = False) -> dict[str, int | float]:
     """Serve the first matching client through the bootstrap execute service.
 
     A ``None`` identity is learned from the first checksum-valid bootstrap
@@ -369,6 +376,8 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
             "ack_09": ack_09,
             "client": int(active_client),
             "server": int(active_server),
+            "compact_execute": int(compact_execute),
+            "execute_service_bytes": 1 if compact_execute else 127,
             "request_started_at": request_started_at,
             "transfer_seconds": time.monotonic() - request_started_at,
         }
@@ -469,7 +478,7 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                 transfer = boot_frames(
                     prepared.data, load_address=prepared.load_address,
                     entry=prepared.entry, client=active_client,
-                    server=active_server,
+                    server=active_server, compact_execute=compact_execute,
                 )
                 request_seen = True
                 write_all(fd, frame(active_client, active_server, ACK_CONTROL))
@@ -496,10 +505,10 @@ def serve(fd: int, image: bytes, *, load_address: int | None = None,
                         last_progress_bucket = progress_bucket
                 if next_message == len(transfer):
                     completion_pending = True
-                elif next_message == len(transfer) - 3:
+                elif acknowledged[6:8] == b"\x03\x06":
                     # After ACKing the 06h end descriptor the client stops
                     # polling and waits for the complete 0Fh execute service.
-                    # NETD therefore emits its three fragments with explicit
+                    # Emit all remaining execute fragments with explicit
                     # destination-0 line turns, without per-fragment ACKs.
                     while next_message < len(transfer):
                         write_all(fd, frame(0, active_server, 0x00))

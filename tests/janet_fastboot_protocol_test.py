@@ -30,7 +30,9 @@ from tools.janet_fastboot import (  # noqa: E402
 from tools.janet_netboot import (  # noqa: E402
     SYSTEM_BYTES,
     SYSTEM_PREFIX,
+    boot_frames,
     configure_serial,
+    xor_bytes,
 )
 from tools import janet_netboot  # noqa: E402
 
@@ -47,6 +49,19 @@ def main() -> int:
     image = image[:SYSTEM_PREFIX] + b"\xC3" + image[SYSTEM_PREFIX + 1:]
     expected = b"\xC3" + system[1:]
     assert extract_system(image) == expected
+
+    stock_record = bytes(range(128))
+    native_execute = boot_frames(stock_record)
+    compact_execute = boot_frames(stock_record, compact_execute=True)
+    assert len(native_execute) == 8
+    assert sum(map(len, native_execute)) == 340
+    assert native_execute[-3][6:8] == b"\x02\x0f"
+    assert native_execute[-2][6] == 0x04
+    assert native_execute[-1][6] == 0x09
+    assert len(compact_execute) == 6
+    assert sum(map(len, compact_execute)) == 198
+    assert compact_execute[-1][6:-1] == b"\x03\x0f"
+    assert xor_bytes(compact_execute[-1]) == 0
 
     session_header = header(image[SYSTEM_PREFIX:SYSTEM_PREFIX + SYSTEM_BYTES])
     assert len(session_header) == 7

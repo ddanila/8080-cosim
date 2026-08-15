@@ -325,6 +325,7 @@ def serve_fast(
     extension_filter: Callable[[int, bytes], bytes] | None = None,
     rate_probe_filter: Callable[[int, bytes], bytes] | None = None,
     configure_rate: bool = True,
+    compact_stock_execute: bool = False,
 ) -> dict[str, int | float]:
     """Load stage 1 through stock Janet, then send the resident image fast."""
     if not stage1:
@@ -360,6 +361,7 @@ def serve_fast(
     stock = serve_stock(
         fd, stock_stage, load_address=0x0100, entry=0x0100,
         client=client, server=server, timeout=stock_timeout, verbose=verbose,
+        compact_execute=compact_stock_execute,
     )
     stock_finished = time.monotonic()
     request_started_at = float(stock["request_started_at"])
@@ -726,6 +728,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--timeout", type=float, default=120.0)
     result.add_argument("--reply-timeout", type=float, default=2.0)
     result.add_argument("--retries", type=int, default=5)
+    result.add_argument(
+        "--compact-stock-execute", action="store_true",
+        help="use the ROM-proven one-fragment 0Fh execute service",
+    )
     return result
 
 
@@ -739,6 +745,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             client=args.client, server=args.server,
             stock_timeout=args.timeout, reply_timeout=args.reply_timeout,
             retries=args.retries,
+            compact_stock_execute=args.compact_stock_execute,
         )
     finally:
         os.close(fd)

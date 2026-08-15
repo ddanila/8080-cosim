@@ -327,12 +327,41 @@ three extra 128-byte extension records (0.200 s at 884 cycles/byte) and its
 2 ms marker gap leaves a deterministic **273 ms projected gain**. This is a
 desk result, not a physical timing claim; v8 needs a logged CS00015 run.
 
+### Compact stock execute policy
+
+The native NETD capture pads its final `0Fh` execute service to 127 logical
+bytes and carries it as three Janet fragments. The unmodified `ekta37` client
+also accepts the canonical single-fragment logical message `03 0F`: `03h` is
+the start-and-end fragment marker and `0Fh` is the complete service body. The
+optional host policy `--compact-stock-execute` uses that representation only
+for fastboot; the byte-exact captured form remains the default for ordinary
+stock boot and for comparison.
+
+For a one-record core this changes the clean host count from 18 to 14 frames.
+The encoded bootstrap messages fall from 340 to 198 bytes, and removing two
+now-unneeded destination-zero line turns saves another 12 bytes: **154 serial
+bytes**, whose 9600/8O1 wire floor is about **176 ms**. Combining that floor
+with v8's earlier 5.82-second projection suggests roughly **5.64 seconds** to
+the first A: request, but only a logged physical run may claim the gain. This
+policy also makes the existing 50 ms pre-rate-change guard sufficient for the
+entire final 21-byte turn/execute/turn sequence instead of relying on USB-UART
+queue behaviour for NETD's padded tail.
+
+Clean, extension/stream-fault, and complete CP/M continuations pass with the
+compact form. The latter reaches `A>`, completes `DIR` with 34 reads and zero
+disk retries, restores D11 to `5Eh`, and restores the temporarily patched
+RomBios bytes. Two negative experiments delimit the safe shortening: omitting
+the `06h` end descriptor or shortening its fixed eight-byte descriptor prevents
+the stage from announcing readiness. Those structures therefore remain
+unchanged.
+
 Run it without changing the ROM:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v8.bin
 ../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v8.bin --disk-baud 19200 \
+    --fast-stage1 juku-fastboot-v8.bin --compact-stock-execute \
+    --disk-baud 19200 \
     --writable --timeout 86400 /dev/ttyUSB0 \
     juku-net-mode2-system.bin cs00015-fastboot.img
 ```

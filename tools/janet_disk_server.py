@@ -236,6 +236,11 @@ def parser() -> argparse.ArgumentParser:
         help="stock-load this stage at 9600, then bulk-load the system at 19200",
     )
     result.add_argument(
+        "--compact-stock-execute", action="store_true",
+        help="with --fast-stage1, replace NETD's padded execute service with "
+             "the ROM-proven one-fragment form",
+    )
+    result.add_argument(
         "--client", type=lambda value: int(value, 0),
         help="require this NetBios client (default: learn from request)",
     )
@@ -266,6 +271,8 @@ def parser() -> argparse.ArgumentParser:
 
 def main(argv: Iterable[str] | None = None) -> int:
     args = parser().parse_args(argv)
+    if args.compact_stock_execute and not args.fast_stage1:
+        raise ValueError("--compact-stock-execute requires --fast-stage1")
     system = args.system.read_bytes()
     volume = bytearray(args.volume.read_bytes())
     drive_b = juku_image_to_volume(args.drive_b.read_bytes()) \
@@ -277,7 +284,9 @@ def main(argv: Iterable[str] | None = None) -> int:
             f"Booting {args.system} at {args.boot_baud} baud, 8O1, "
             + ("accepting the first valid station pair"
                if args.client is None and args.server is None
-               else f"station {args.server!r} -> {args.client!r}"),
+               else f"station {args.server!r} -> {args.client!r}")
+            + (", compact stock execute"
+               if args.compact_stock_execute else ""),
             flush=True,
         )
         if args.fast_stage1:
@@ -290,6 +299,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 fd, args.fast_stage1.read_bytes(), system,
                 client=args.client, server=args.server,
                 stock_timeout=args.timeout,
+                compact_stock_execute=args.compact_stock_execute,
             )
             station_server = int(boot["stock_server"])
             station_client = int(boot["stock_client"])
