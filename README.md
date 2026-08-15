@@ -53,8 +53,12 @@ with the machine-readable board model.
   full stock-Janet-to-`DIR` path takes 12 disk exchanges instead of 35; cosim
   also proves one corrupted-response retry, negotiated v2/v1 fallback, and a
   complete host-loss recovery: three missing replies produce a bounded CP/M
-  disk error, after which restored replies serve a fresh `DIR` without a target
-  restart.
+  disk error, after which restored replies serve a fresh `TYPE README.TXT`
+  without a target restart. Explicit N4 negotiation also provides a dual
+  local/remote console:
+  simulator runs type `VER` remotely and `DIR` locally with byte-identical
+  transcripts, including automatic disable/backoff/reconnect after a lost
+  console reply. N3 remains disk-only by default.
   V15 is simulator-proven, not yet a physical replacement for V14. The
   original stock Janet path is unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared

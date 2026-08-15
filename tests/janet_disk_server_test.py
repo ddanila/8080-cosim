@@ -14,6 +14,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
 from tools.janet_disk_server import (  # noqa: E402
+    CONSOLE_OUT,
+    CONSOLE_POLL,
     NATIVE_VOLUME_SIZE,
     READ,
     READ_AHEAD,
@@ -156,6 +158,8 @@ def main() -> int:
         "read_ahead_records": 0,
         "v3_raw": 0, "v3_fill": 0, "v3_deleted": 0, "v3_prefix": 0,
         "dropped_replies": 0,
+        "console_polls": 0, "console_input_bytes": 0,
+        "console_output_bytes": 0,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
@@ -224,6 +228,63 @@ def main() -> int:
             v3_stats["dropped_replies"] != 1:
         raise AssertionError(f"v3 counters differ: {v3_stats}")
 
+    console_host, console_client = socket.socketpair()
+    console_input = bytearray(b"X")
+    console_output = bytearray()
+    console_stats: dict[str, int] = {}
+    console_errors: list[BaseException] = []
+
+    def console_worker() -> None:
+        try:
+            serve_disk(
+                console_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
+                reply_guard=0, protocol_version=3, console_protocol=True,
+                console_input=console_input, console_output=console_output,
+                verbose=False, stats=console_stats,
+            )
+        except BaseException as error:
+            console_errors.append(error)
+
+    console_thread = threading.Thread(target=console_worker)
+    console_thread.start()
+    if receive_exact(console_client, 4) != b"NRN4":
+        raise AssertionError("remote-console capability marker differs")
+    out_request = request(CONSOLE_OUT, 7, ord("A"), 0, 0)
+    console_client.sendall(out_request)
+    out_reply = receive_exact(console_client, 5)
+    if out_reply[:4] != REPLY_SYNC + b"\x07\x00" or checksum(out_reply):
+        raise AssertionError("console-output acknowledgement differs")
+    console_client.sendall(out_request)
+    if receive_exact(console_client, 5) != out_reply:
+        raise AssertionError("duplicate console output did not replay exactly")
+    poll_request = request(CONSOLE_POLL, 8, 0, 0, 0)
+    console_client.sendall(poll_request)
+    poll_reply = receive_exact(console_client, 6)
+    if poll_reply[:5] != REPLY_SYNC + b"\x08\x02X" or checksum(poll_reply):
+        raise AssertionError("remote console input reply differs")
+    console_client.sendall(poll_request)
+    if receive_exact(console_client, 6) != poll_reply:
+        raise AssertionError("duplicate console poll did not replay exactly")
+    console_client.sendall(request(CONSOLE_POLL, 9, 0, 0, 0))
+    empty_reply = receive_exact(console_client, 5)
+    if empty_reply[:4] != REPLY_SYNC + b"\x09\x00" or checksum(empty_reply):
+        raise AssertionError("empty remote console poll differs")
+    console_thread.join(timeout=2)
+    console_client.close()
+    console_host.close()
+    if console_thread.is_alive() or console_errors:
+        raise AssertionError(
+            f"remote console server did not finish: {console_errors!r}"
+        )
+    if console_output != b"A" or console_input or \
+            console_stats["console_output_bytes"] != 1 or \
+            console_stats["console_input_bytes"] != 1 or \
+            console_stats["console_polls"] != 3:
+        raise AssertionError(
+            f"remote console state/counters differ: output={console_output!r} "
+            f"input={console_input!r} stats={console_stats}"
+        )
+
     result = ROOT / ".obj" / "janet-disk-server-result-test.json"
     result.parent.mkdir(exist_ok=True)
     write_boot_result(result, {"schema": "test", "elapsed_seconds": 1.25})
@@ -231,7 +292,10 @@ def main() -> int:
             '{\n  "schema": "test",\n  "elapsed_seconds": 1.25\n}\n':
         raise AssertionError("boot timing JSON differs")
     result.unlink()
-    print("JANET-DISK-SERVER-TEST: PASS (writable 386K A: + read-only native 784K B:)")
+    print(
+        "JANET-DISK-SERVER-TEST: PASS "
+        "(dual drive + NetDisk v3 + idempotent N4 console)"
+    )
     return 0
 
 

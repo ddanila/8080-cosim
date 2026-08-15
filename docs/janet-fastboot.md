@@ -538,11 +538,11 @@ from the otherwise inactive RomBios workspace. Its builder rejects growth past
 `D080h`; V15 is already interrupt-disabled and observes the same boundary.
 
 The separately named CP/Mish `juku-fastboot-v15-netdisk-v3.bin` extends the
-same RAM-owned design through `D47Fh`. Its 9,344-byte resident uses the former
-RomBios workspace for a three-record cache, bounded NetDisk-v3 decoder, and
-receive-timeout state; V14 and the original V15/RAM-BIOS artifacts remain
-unchanged. Its 6,665-byte bundle contains a 6,262-byte ZX0 stream. Accordingly,
-only V15 accepts a
+same RAM-owned design through `D5FFh`. Its 9,728-byte resident uses the former
+RomBios workspace for a three-record cache, bounded NetDisk-v3 decoder,
+receive-timeout state, and optional remote-console client; V14 and the original
+V15/RAM-BIOS artifacts remain unchanged. Its 6,893-byte bundle contains a
+6,490-byte ZX0 stream. Accordingly, only V15 accepts a
 compressed payload below 8 KiB; V6-V14 retain the original below-6-KiB
 validator. A protocol regression explicitly accepts the larger V15 bundle and
 rejects the same size when labeled V14.
@@ -563,16 +563,28 @@ transaction to three attempts. A disconnect therefore returns BIOS error 1
 rather than trapping CP/M in an infinite poll; the next call starts a fresh
 sequence. The end-to-end reconnect regression drops three complete replies
 after the first prompt, observes CP/M's `Bad Sector` path, answers it, restores
-host replies, and completes another `DIR` without restarting the emulator.
+host replies, and completes `TYPE README.TXT` without restarting the emulator.
+Unlike a cache-warm `DIR`, that sequential read requires fresh host traffic.
 The server's reply filter accepts an empty result specifically to model a
 whole missing reply; altered non-empty replies must remain length-preserving.
 
 `DIAG ALL` also exposed the tail of the RAM font overlapping the historical
 `CE00h` CP/M directory buffer: both `|` glyphs changed into live `DIAG ` bytes.
 V15 moves only its runtime directory/allocation/check buffers to
-`D500h..D5FFh`, below the framebuffer and above initialized code. Bytes above
+`D640h..D73Fh`, below the preserved `D773h` service slots and framebuffer.
+Bytes above
 the font's `7Dh` ceiling now render as `?`. The independent transcript renderer
 checks the repaired final glyphs exactly; the older layouts are unchanged.
+
+An explicit N4 marker adds the full remote-console baseline. Operation 20h
+rate-limits remote key polling; operation 21h mirrors output after it is drawn
+locally. A short receive deadline disables the remote side on host loss, while
+local screen and matrix input continue; a later 256-status-call reprobe
+reconnects it. Cosim types `VER` remotely and `DIR` locally, proves exact
+remote/local/framebuffer transcripts and zero disk retries, then repeats with
+the first console-poll reply dropped. The target disables, backs off, reprobes,
+consumes the queued command, and completes without reboot. N3 remains the
+default unless `--console-pty` is explicitly supplied.
 
 Frame-level stock instrumentation also explains the 2.21/3.75-second stage
 spread. A normal one-record request has 36 client frames after the request:
