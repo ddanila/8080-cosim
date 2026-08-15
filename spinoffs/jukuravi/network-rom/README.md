@@ -51,17 +51,19 @@ without another RESET.
 
 The resident manifest is fixed at `FF00h`; stable three-byte vectors begin at
 `FF20h`. The dedicated CP/M Plus image remains in mode 1, validates the ABI,
-delegates serial initialization, polled keyboard input, and the 80x24 console,
-and uses the proven RAM NetDisk implementation for the remaining disk service. The normal
+delegates serial initialization, polled keyboard input, the 80x24 console, and
+the bounded NetDisk-v3 read-ahead transaction. Network writes retain the RAM
+compatibility path. The normal
 all-RAM image remains a byte-exact comparison baseline.
 
-The resident advertises console, serial, keyboard, and diagnostic feature bits. It
+The resident advertises console, serial, keyboard, NetDisk, and diagnostic feature bits. It
 programs the proven D57 mode-2/count-4 19,200-baud clock, supports bounded 8251
 send/receive, reuses the shared 15-column keyboard scanner and translation
 tables with three mutable bytes in low RAM, publishes build/workspace/helper
 metadata, supplies the MODX 5x7 font/text policy, and calls a 119-byte copied
-helper for mode-3 clear, scroll, and packed-row merges. NetDisk and sound
-vectors remain unavailable until migrated and tested; POST and automatic
+helper for mode-3 clear, scroll, and packed-row merges. Its versioned 10-byte
+NetDisk request owns complete three-attempt read transactions and a caller
+supplied DMA/cache. Sound remains unavailable until migrated; POST and automatic
 boot are reset-only facilities rather than runtime service vectors.
 
 ## What the regression proves
@@ -123,8 +125,6 @@ the machine-readable release gate.
 
 ## Next implementation boundary
 
-Move the next common service behind ABI 1 as a whole NetDisk/bulk operation;
-the resident transaction avoids a mode crossing per byte. Each ROM
-service must match the retained RAM oracle before its RAM copy is removed.
-Relink CP/M Plus after every meaningful saving and publish the exact TPA/map;
-the automatic-boot milestone alone intentionally claims no additional RAM.
+Move network writes behind ABI 1, then regenerate and relink CP/M Plus for the
+compact adapter map. Publish the exact TPA/map; resident code alone does not
+justify a RAM claim.

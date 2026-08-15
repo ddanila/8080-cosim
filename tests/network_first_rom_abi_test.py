@@ -54,7 +54,7 @@ def main() -> int:
         fail(f"ABI signature/version differs: {manifest[:10].hex()}")
     if int.from_bytes(manifest[10:12], "little") != 0x100:
         fail("ABI table size differs")
-    if int.from_bytes(manifest[12:14], "little") != 0x27:
+    if int.from_bytes(manifest[12:14], "little") != 0x2F:
         fail("resident ROM advertises unexpected features")
     if int.from_bytes(manifest[16:18], "little") != 0x200:
         fail("ABI workspace size differs")

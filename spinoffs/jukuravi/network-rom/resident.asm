@@ -8,12 +8,13 @@ USARTCTL        equ     009h
 PITCOUNT0       equ     018h
 PITCTL          equ     01bh
 VRAM            equ     0d800h
-FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFDIAG
+FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFDIAG
 
 SELFSTATUS      equ     JROMSTATEBASE+3
 TXBYTE          equ     JROMSTATEBASE+4
 SERIALMODE      equ     JROMSTATEBASE+5
 ROMKEYSTATEBASE equ     JROMSTATEBASE+6
+ROMNETSTATEBASE equ     JROMSTATEBASE+010h
 
 ; D800h..DCFFh: resident text policy and immutable 5x7 font.
         org     0d800h
@@ -86,6 +87,58 @@ rom_sertx_ready:
         ret
 rom_serial_end:
 
+        dc      0e100h-$,0ffh
+
+; E100h..E3FFh: versioned NetDisk-v3 bulk read service.
+ROMNETDISK      equ     1
+        include "netdisk-v3.asm"
+
+rom_netdisk_impl:
+        mov     a,m
+        cpi     1                       ; request version
+        jnz     rom_netdisk_bad
+        inx     h
+        mov     a,m                     ; operation: 0 read, 1 invalidate, 2 mode
+        inx     h
+        ora     a
+        jz      rom_netdisk_read
+        dcr     a
+        jz      N3INV
+        dcr     a
+        jnz     rom_netdisk_bad
+        mov     a,m
+        jmp     N3ENA
+rom_netdisk_read:
+        mov     a,m
+        sta     SEKDSK
+        inx     h
+        mov     a,m
+        sta     SEKTRK
+        inx     h
+        mov     a,m
+        sta     SEKTRK+1
+        inx     h
+        mov     a,m
+        sta     SEKSEC
+        inx     h
+        mov     a,m
+        sta     MEMADR
+        inx     h
+        mov     a,m
+        sta     MEMADR+1
+        inx     h
+        mov     a,m
+        sta     N3CACHE
+        inx     h
+        mov     a,m
+        sta     N3CACHE+1
+        jmp     N3READ
+rom_netdisk_bad:
+        mvi     a,0ffh
+        stc
+        ret
+rom_netdisk_end:
+
         dc      0e600h-$,0ffh
 
 ; E600h onward: initialization, diagnostics, and retained ABI self-test.
@@ -151,6 +204,10 @@ resident_entry:
         call    JCGDIAGADDR
         cpi     0a5h
         jnz     self_fail_diag
+        lxi     h,0d7f0h                ; cleared/invalid request version
+        call    JCGNETDISKADDR
+        cpi     0ffh
+        jnz     self_fail_netdisk
 
         call    JCGKEYINITADDR
         ora     a
@@ -221,6 +278,9 @@ self_fail_keyboard:
         jmp     self_store_fail
 self_fail_console:
         mvi     a,0e7h
+        jmp     self_store_fail
+self_fail_netdisk:
+        mvi     a,0e8h
 self_store_fail:
         sta     SELFSTATUS
         jmp     self_done
@@ -289,7 +349,7 @@ build_identity:
         jmp     rom_serinit_impl
         jmp     rom_serrx_impl
         jmp     rom_sertx_impl
-        jmp     rom_unavailable
+        jmp     rom_netdisk_impl
         jmp     RKINIT
         jmp     rom_keyscan_impl
         jmp     rom_unavailable

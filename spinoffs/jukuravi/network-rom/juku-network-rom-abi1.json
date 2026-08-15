@@ -1,9 +1,9 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "a4ec766fc57bee81bc7a13d69c75d220254a8ca883fdb1a40bde6d915c7e8fac",
-  "d15_sha256": "dec35d3351aa4ba7a3a24f5cfef13623d65bd663517ba62adea387570be883e7",
-  "d16_sha256": "a80dd43b3934205db201ee9a402f10f6cbae6e8a984cbc8c70fa70d2efae1d84",
+  "image_sha256": "9decf18217d20c94539507b6031cfcef75188c42da4baa75b270e1a685ded331",
+  "d15_sha256": "d489bf256c73793238432bc6e88f373cac7f79014de07fb67115c6c586d29a19",
+  "d16_sha256": "d7e95ff3d8fedb4a4785f42880e3789a9eba529549990506b25e0349b8783c42",
   "boot_code_bytes": 997,
   "gate_bytes": 196,
   "helper_bytes": 119,
@@ -38,6 +38,7 @@
     "console",
     "serial",
     "keyboard",
+    "netdisk-v3",
     "diagnostics"
   ],
   "abi": {
