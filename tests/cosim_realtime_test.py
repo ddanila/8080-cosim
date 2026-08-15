@@ -86,6 +86,21 @@ def main() -> int:
     if bad.returncode != 2 or "invalid JUKU_REALTIME_HZ" not in bad.stderr:
         fail("a malformed rate must be rejected with exit code 2")
 
+    history = subprocess.run(
+        [str(trace), str(ROM), "1000"], cwd=ROOT,
+        env={**os.environ, "JUKU_PC_HISTORY": "1"},
+        capture_output=True, text=True, timeout=60, check=False,
+    )
+    marker = "[EXEC] recent PCs:"
+    lines = [line for line in history.stderr.splitlines()
+             if line.startswith(marker)]
+    if history.returncode != 0 or len(lines) != 1:
+        fail("JUKU_PC_HISTORY did not emit one bounded execution history")
+    addresses = lines[0][len(marker):].split()
+    if not addresses or len(addresses) > 256 or any(
+            len(address) != 4 for address in addresses):
+        fail("JUKU_PC_HISTORY emitted malformed or unbounded addresses")
+
     print(
         f"COSIM-REALTIME-TEST: PASS (unpaced {unpaced:.2f}s, "
         f"paced {expected:.2f}s of machine time honoured)",

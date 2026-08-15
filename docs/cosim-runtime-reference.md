@@ -154,6 +154,17 @@ Pacing is therefore the honest way to compare a simulated session against a
 stopwatch on the bench, and the right mode for any experiment whose result
 depends on host and machine agreeing about time.
 
+## Recent execution history (`JUKU_PC_HISTORY`)
+
+Set `JUKU_PC_HISTORY=1` to retain a bounded ring of the last 256 instruction
+addresses. On every normal, checkpoint, or stop-PC exit, cosim prints the ring
+in execution order as one `[EXEC] recent PCs:` line. It is intentionally off
+by default and records only addresses, so long runs neither grow a trace file
+without bound nor pay for full instruction logging. This is useful when a
+protocol-level timeout leaves the CPU alive but does not identify the loop or
+error path that consumed the target. `tests/cosim_realtime_test.py` guards the
+opt-in, single-line, and 256-entry bounds.
+
 ## Interactive console (`JUKU_CONSOLE_PTY`)
 
 `JUKU_CONSOLE_PTY=auto` creates a PTY and prints its slave path; a device path

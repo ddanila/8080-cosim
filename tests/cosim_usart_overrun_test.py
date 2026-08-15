@@ -6,6 +6,7 @@ from __future__ import annotations
 import os
 import pty
 import re
+import select
 import subprocess
 import sys
 import tempfile
@@ -19,13 +20,17 @@ from pathlib import Path
 ROM = bytes((
     0x3E, 0x4E,       # MVI A,4E
     0xD3, 0x09,       # OUT USART control: mode
-    0x3E, 0x34,       # MVI A,34: RxEN + ER + RTS, Tx disabled
+    0x3E, 0x37,       # MVI A,37: TxEN + RxEN + ER + RTS
     0xD3, 0x09,       # OUT command
+    0x3E, 0xA5,       # emit a wire-level receiver-ready marker
+    0xD3, 0x08,
+    0x3E, 0x34,       # leave Rx enabled, disable Tx for the actual test
+    0xD3, 0x09,
     0x01, 0x00, 0x20, # LXI B,2000h
     0x0B,             # delay: DCX B
     0x78,             # MOV A,B
     0xB1,             # ORA C
-    0xC2, 0x0B, 0x00, # JNZ delay
+    0xC2, 0x13, 0x00, # JNZ delay
     0xDB, 0x09,       # IN status: must have RxRDY + OE
     0x3E, 0x34,       # ER while the byte remains unread
     0xD3, 0x09,
@@ -59,6 +64,15 @@ def main() -> int:
             [str(trace), str(rom), "20000000"], cwd=work, env=env,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         )
+        ready, _, _ = select.select([master], [], [], 2)
+        if not ready or os.read(master, 1) != b"\xA5":
+            process.kill()
+            stdout, stderr = process.communicate()
+            print(
+                "COSIM-USART-OVERRUN: FAIL: receiver-ready marker missing\n"
+                f"{stdout}\n{stderr}", file=sys.stderr,
+            )
+            return 1
         os.write(master, b"\x11\x22\x33")
         try:
             stdout, stderr = process.communicate(timeout=5)

@@ -1839,6 +1839,9 @@ int main(int argc, char** argv) {
   if (realtime_hz) clock_gettime(CLOCK_MONOTONIC, &realtime_start);
 
   int chk_logs = 0;
+  const int pc_history_enabled = env_enabled(getenv("JUKU_PC_HISTORY"));
+  uint16_t pc_history[256] = {0};
+  unsigned pc_history_pos = 0;
   while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) &&
          !(g_vw_limit && g_vw >= g_vw_limit) &&
          !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc) &&
@@ -1909,6 +1912,10 @@ int main(int argc, char** argv) {
       set_mode(0);
     }
     pchist[cpu.pc]++;
+    if (pc_history_enabled) {
+      pc_history[pc_history_pos & 255] = cpu.pc;
+      pc_history_pos++;
+    }
     if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
       fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",
               (cpu.h<<8)|cpu.l, (cpu.d<<8)|cpu.e, mode);
@@ -2015,6 +2022,14 @@ int main(int argc, char** argv) {
 
   fprintf(stderr, "\nstopped pc=0x%04X cyc=%lu halted=%d iff=%d mode=%d switches=%lu\n",
           cpu.pc, cpu.cyc, cpu.halted, cpu.iff, mode, mode_switches);
+  if (pc_history_enabled) {
+    unsigned count = pc_history_pos < 256 ? pc_history_pos : 256;
+    unsigned start = pc_history_pos - count;
+    fprintf(stderr, "[EXEC] recent PCs:");
+    for (unsigned i = 0; i < count; i++)
+      fprintf(stderr, " %04X", pc_history[(start + i) & 255]);
+    fputc('\n', stderr);
+  }
   if (stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)
     fprintf(stderr, "[FDC] stopped after %lu data reads at cyc=%lu pc=%04X g_vw=%lu\n",
             fdc_data_reads, cpu.cyc, cpu.pc, g_vw);
