@@ -1,9 +1,9 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "a52e0578dfdc4ce70f1d740ee4ed031e2fb4bb6eb996ddab23fa1670545630f6",
-  "d15_sha256": "f81d5b9490d734f51cbba81570b37984ac201861cbd90f44e3797bea699d8626",
-  "d16_sha256": "e868306d25b1be2d9881c89aa0ba4a38ac9f8e2c4ed72250dda72940ab9d5d78",
+  "image_sha256": "1018621a9aeee656bbff200f90c0b6ffca0b0150571a23ebc9ed3e8d76b834df",
+  "d15_sha256": "af428d5d9d054e6154aef2680c9d3bbb81157689138782f58f22fc7872cff0bc",
+  "d16_sha256": "8fd4103992239a2feb2839f7a34d64636e00e7fcad46c80322c2a31329f728f9",
   "boot_code_bytes": 997,
   "gate_bytes": 196,
   "helper_bytes": 44,
@@ -34,6 +34,11 @@
   },
   "target_ready_byte": "C4",
   "resident_bytes": 10240,
+  "resident_services": [
+    "serial",
+    "keyboard",
+    "diagnostics"
+  ],
   "abi": {
     "base": "FF00",
     "major": 1,

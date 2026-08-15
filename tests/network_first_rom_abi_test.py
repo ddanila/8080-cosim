@@ -54,8 +54,8 @@ def main() -> int:
         fail(f"ABI signature/version differs: {manifest[:10].hex()}")
     if int.from_bytes(manifest[10:12], "little") != 0x100:
         fail("ABI table size differs")
-    if int.from_bytes(manifest[12:14], "little") != 0x24:
-        fail("skeleton advertises unexpected features")
+    if int.from_bytes(manifest[12:14], "little") != 0x26:
+        fail("resident ROM advertises unexpected features")
     if int.from_bytes(manifest[16:18], "little") != 0x200:
         fail("ABI workspace size differs")
     if int.from_bytes(manifest[18:20], "little") != metadata["helper_bytes"]:
@@ -78,6 +78,8 @@ def main() -> int:
             JUKU_CHECKPOINT_PREFIX=str(checkpoint),
             JUKU_TRACE_BANK="1",
             JUKU_REALTIME_HZ="1700000",
+            JUKU_KEYS="T",
+            JUKU_KEY_START_VRAM="0",
         )
         process = subprocess.Popen(
             [str(trace), str(rom), "2000000"], cwd=temporary,
@@ -167,6 +169,11 @@ def main() -> int:
             fail("boot did not install the mode-3 helper byte-exactly")
         if ram[0xD783] != 0xA5:
             fail(f"resident self-test status is {ram[0xD783]:02X}")
+        if ram[0xD786:0xD789] != bytes((1, 0, ord("T"))):
+            fail(
+                "resident keyboard state differs: "
+                f"{ram[0xD786:0xD789].hex()}"
+            )
         if ram[0xD780] != 0x5A or ram[0xD782] != 0x5A:
             fail("mode-3 helper did not preserve and read back its test byte")
         if ram[0xD800] != 0x5A:

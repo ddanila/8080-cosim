@@ -8,11 +8,12 @@ USARTCTL        equ     009h
 PITCOUNT0       equ     018h
 PITCTL          equ     01bh
 VRAM            equ     0d800h
-FEATURES        equ     JROMFSERIAL+JROMFDIAG
+FEATURES        equ     JROMFKEYBOARD+JROMFSERIAL+JROMFDIAG
 
 SELFSTATUS      equ     JROMSTATEBASE+3
 TXBYTE          equ     JROMSTATEBASE+4
 SERIALMODE      equ     JROMSTATEBASE+5
+ROMKEYSTATEBASE equ     JROMSTATEBASE+6
 
         org     0d800h
 
@@ -73,6 +74,23 @@ resident_entry:
         cpi     0a5h
         jnz     self_fail_diag
 
+        call    JCGKEYINITADDR
+        ora     a
+        jnz     self_fail_keyboard
+        lxi     b,0ffffh
+self_wait_keyboard:
+        call    JCGKEYSCANADDR
+        ora     a
+        jnz     self_got_keyboard
+        dcx     b
+        mov     a,b
+        ora     c
+        jnz     self_wait_keyboard
+        jmp     self_fail_keyboard
+self_got_keyboard:
+        cpi     'T'
+        jnz     self_fail_keyboard
+
         mvi     a,0
         call    JCGSERINITADDR
         ora     a
@@ -119,6 +137,9 @@ self_fail_serial:
         jmp     self_store_fail
 self_fail_registers:
         mvi     a,0e5h
+        jmp     self_store_fail
+self_fail_keyboard:
+        mvi     a,0e6h
 self_store_fail:
         sta     SELFSTATUS
         jmp     self_done
@@ -218,6 +239,12 @@ rom_getinfo_impl:
         lxi     d,FEATURES
         ret
 
+rom_keyscan_impl:
+        call    RKSTAT
+        ora     a
+        rz
+        jmp     RKIN
+
 rom_no_key:
         xra     a
         ret
@@ -228,6 +255,10 @@ rom_unavailable:
 
 build_identity:
         db      'Juku network ROM ABI 1.0 automatic boot 2026-08-16',0
+
+        org     0dd00h
+ROMKEYBOARD     equ     1
+        include "ram-keyboard.asm"
 
         dc      JROMABIBASE-$,0ffh
 
@@ -249,8 +280,8 @@ build_identity:
         jmp     rom_serrx_impl
         jmp     rom_sertx_impl
         jmp     rom_unavailable          ; NetDisk follows in migration step
-        jmp     rom_unavailable          ; keyboard init
-        jmp     rom_no_key               ; keyboard scan
+        jmp     RKINIT
+        jmp     rom_keyscan_impl
         jmp     rom_unavailable          ; sound
         jmp     rom_diag_impl
         jmp     rom_getinfo_impl

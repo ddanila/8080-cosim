@@ -168,6 +168,7 @@ def build(*, abi_selftest: bool = False) -> tuple[bytes, dict[str, object]]:
         },
         "target_ready_byte": "C4",
         "resident_bytes": len(resident),
+        "resident_services": ["serial", "keyboard", "diagnostics"],
         "abi": {"base": "FF00", "major": 1, "minor": 0},
         "status": "automatic-boot desk image; not for physical programming",
     }

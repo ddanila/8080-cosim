@@ -9,9 +9,10 @@ baud, exposes common platform services from its resident 10 KiB, and gives
 CP/M Plus a larger TPA. The accepted staged plan and budgets live in the
 `cpm-plus-juku` repository.
 
-The present image proves the versioned ROM ABI, reset/POST path, and keyless
-V15 boot. It reaches the real CP/M Plus `A>` prompt in cosim and completes
-`DIR` and `DIAG CPU`. Its split files are generated to test exact EPROM
+The present image proves the versioned ROM ABI, reset/POST path, keyless V15
+boot, resident serial initialization, and the resident shared keyboard. Its
+dedicated CP/M Plus consumer reaches `A>`, accepts `DIR` and `DIAG CPU` through
+that keyboard, and completes both commands. Its split files test exact EPROM
 geometry, but their metadata still says `not for physical programming`; they
 are not bench candidates until resident services, reset-side hardware state,
 and the physical qualification matrix are complete.
@@ -49,15 +50,17 @@ reset timing; if a restarted server missed it, synchronized V15 probes recover
 without another RESET.
 
 The resident manifest is fixed at `FF00h`; stable three-byte vectors begin at
-`FF20h`. The current CP/M Plus milestone deliberately returns to its proven
-all-RAM BIOS after loading. Migrating those RAM services behind the resident
-ABI is the next step and is what will produce the TPA gain.
+`FF20h`. The dedicated CP/M Plus image remains in mode 1, validates the ABI,
+delegates serial initialization and polled keyboard input, and uses the proven
+RAM console and NetDisk implementation for the remaining services. The normal
+all-RAM image remains a byte-exact comparison baseline.
 
-The resident still advertises only serial and diagnostic feature bits. It
+The resident advertises serial, keyboard, and diagnostic feature bits. It
 programs the proven D57 mode-2/count-4 19,200-baud clock, supports bounded 8251
-send/receive, publishes build/workspace/helper metadata, and supplies a small
-diagnostic signature. Console, keyboard, NetDisk, and sound ABI vectors
-deliberately return unavailable until migrated and tested; POST and automatic
+send/receive, reuses the shared 15-column keyboard scanner and translation
+tables with three mutable bytes in low RAM, publishes build/workspace/helper
+metadata, and supplies a small diagnostic signature. Console, NetDisk, and
+sound vectors remain unavailable until migrated and tested; POST and automatic
 boot are reset-only facilities rather than runtime service vectors.
 
 ## What the regression proves
@@ -75,6 +78,8 @@ check together prove:
 - low/high stack sentinels, final SP, disabled interrupts, and masked PIC;
 - D57/D11 state, four transmitted `ABI1` bytes, and a queued receive byte
   consumed after manifest/video/diagnostic/transmit calls;
+- a shifted physical `T` through D26 ports 4/5, translated and consumed by the
+  shared resident keyboard with its debounce state retained in low RAM;
 - all five POST classes through real firmware paths: a changed CPU vector,
   stuck RAM bit, address alias, complete-ROM bit flip, D57 count fault, and D11
   ready-state fault;
@@ -85,8 +90,9 @@ check together prove:
 - host restart fallback when C4 was missed;
 - D26 Port C readback that includes BSR-updated upper hardware bits, proving
   mode changes preserve PC7 instead of relying on the direct-write shadow;
-- the real CP/M Plus system reaching `A>`, completing `DIR`, and passing
-  `DIAG CPU` with 36 NetDisk reads, no retries, and no USART overruns.
+- the real CP/M Plus ROM consumer remaining in mode 1, reaching `A>`, accepting
+  all 13 matrix keystrokes for `DIR` and `DIAG CPU`, and completing both with
+  36 NetDisk reads, no retries, and no USART overruns.
 
 The write rule matters: MAME maps the high window with `.rom()` and the C model
 rejects writes into an active high-ROM overlay. Therefore **all** framebuffer
@@ -101,8 +107,9 @@ identity-free host command will be:
 
 ```sh
 cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
-  /dev/ttyUSB0 out/cpm-plus-juku-system.bin out/cpm-plus-juku.img \
-  --fast-stage1 out/cpm-plus-juku-fastboot-v15.bin --network-rom \
+  /dev/ttyUSB0 out/cpm-plus-juku-network-rom-system.bin \
+  out/cpm-plus-juku.img \
+  --fast-stage1 out/cpm-plus-juku-network-rom-fastboot-v15.bin --network-rom \
   --disk-baud 19200 --disk-protocol 3 --timeout 86400
 ```
 
@@ -111,8 +118,8 @@ the machine-readable release gate.
 
 ## Next implementation boundary
 
-Move common services behind ABI 1 one at a time, beginning with serial and
-memory-mode primitives, then keyboard, console/font, and NetDisk. Each ROM
+Move the next common services behind ABI 1 one at a time: console/font, then a
+whole NetDisk/bulk operation which avoids a mode crossing per byte. Each ROM
 service must match the retained RAM oracle before its RAM copy is removed.
 Relink CP/M Plus after every meaningful saving and publish the exact TPA/map;
 the automatic-boot milestone alone intentionally claims no additional RAM.
