@@ -370,6 +370,28 @@ image booted through the stock 9600-baud loader, ran its Janet A: disk at
 Requests through sequence `90` completed with status zero and the prior
 vertical-line display corruption did not recur.
 
+The old handoff is now reproducible without hardware. CP/Mish builds a
+simulator-only negative image which deliberately omits the early interrupt
+exclusion, NetBios service-vector detach, and coherent PIC hardware/shadow
+update. It reaches the normal initial prompt, but matrix input `DIR` is neither
+echoed nor executed and network reads remain at the 32 startup directory
+records. The corrected RomBios control immediately accepts the same input and
+reaches 35 reads. The negative checkpoint still contains the original
+`D79Fh = E3 22 56 D4 E1` dispatcher prefix. This isolates the stale NetBios
+registrations as sufficient to reproduce the dead keyboard; the separately
+observed interim D79F overwrite remains an additional architectural violation
+associated with the physical video corruption.
+
+This result defines the safe route toward a RAM-owned CP/M console. Preserve
+the 52K `B400h/BC00h/CA00h` RomBios build as the baseline. A separate 51K
+experiment can shift CCP/BDOS/BIOS to `B000h/B800h/C600h`, retaining the same
+exclusive `CE00h` upper boundary while gaining 1 KiB for a renderer and font.
+The unmodified ROM can bootstrap that layout through a host-supplied staging
+copier, so proving it does not require a ROM change. Replace output first while
+retaining RomBios input and IR5; replace input second; own the whole interrupt
+contract only after both stages match the baseline. At no stage is D79F a
+standalone keyboard hook.
+
 The resident record format already carries a drive byte. CP/Mish `NETROM2`
 uses drive 0 for its writable 386 KiB A: volume and drive 1 for a read-only
 native Juku B: volume. The latter keeps the period 160-track, 40-record/track,
