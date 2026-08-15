@@ -10,7 +10,8 @@
 //        mode 1:         ROM 0xD800..0xFFFF  (region maincpu +0x1800), rest RAM
 //        mode 2:         expcart 0x4000..0xBFFF + ROM 0xD800..0xFFFF
 //        mode 3:         all RAM
-//   - video reads DRAM at 0xD800, stride = WIDTH/8 = 40 bytes/line (320x241 mono)
+//   - video reads DRAM at 0xD800, normally 40 bytes/line (320x241 mono);
+//     the exact MODX PIT sequence selects its 50-byte/192-line 80x24 view
 //
 // IN ports return the 8255 output latch when no device owns the read.  The
 // functional PIC path covers frame, 8251 RxRDY, and 8251 TxRDY interrupts.
@@ -102,14 +103,18 @@ static void request_termination(int signal_number) {
 #define ROM_SIZE   0x4000u          // 16 KB
 #define CART_SIZE  0x8000u          // 32 KB expansion window at 0x4000..0xBFFF
 #define VRAM_BASE  0xD800u
-#define VID_STRIDE 40               // WIDTH(320)/8
-#define VID_LINES  241
+#define VID_DEFAULT_STRIDE 40       // WIDTH(320)/8
+#define VID_DEFAULT_LINES  241
 
 static uint8_t rom[ROM_SIZE];
 static uint8_t cart[CART_SIZE];
 static uint8_t ram[MEM_SIZE];
 static int     mode = 0;            // memory view 0..3 (reset = 0)
 static uint8_t portc = 0;           // 8255#0 Port C output latch
+static unsigned video_stride = VID_DEFAULT_STRIDE;
+static unsigned video_lines = VID_DEFAULT_LINES;
+static unsigned video_modx_sequence = 0;
+static int video_modx_mode = 0;
 static juk_disk disk;
 static juku_fdc fdc;
 static int      fdc_enabled = 0;
@@ -247,6 +252,35 @@ static void pit_write(uint8_t port, uint8_t value) {
                                          (counter->write_latch & 0xFF));
     counter->write_phase = 0;
   }
+}
+
+static void video_observe_pit_write(uint8_t port, uint8_t value) {
+  /* MODX's resident console programs D54/D55 with this exact sequence.  The
+     resulting timing is a 400x192 bitmap: 50 bytes per raster line and 24
+     eight-scanline text rows.  Keep the stock 320x241 view until the complete
+     signature is observed so ordinary EktaSoft video remains unchanged. */
+  static const uint8_t modx_sequence[][2] = {
+    {0x17, 0x73}, {0x11, 0x14}, {0x12, 0x03},
+    {0x15, 0x1A}, {0x15, 0x01}, {0x16, 0x45},
+  };
+  const unsigned sequence_length =
+      (unsigned)(sizeof(modx_sequence) / sizeof(modx_sequence[0]));
+
+  if (port == modx_sequence[video_modx_sequence][0] &&
+      value == modx_sequence[video_modx_sequence][1]) {
+    video_modx_sequence++;
+    if (video_modx_sequence == sequence_length) {
+      video_stride = 50;
+      video_lines = 192;
+      video_modx_mode = 1;
+      video_modx_sequence = 0;
+      fprintf(stderr, "[VIDEO] recognized MODX 400x192 timing\n");
+    }
+    return;
+  }
+
+  video_modx_sequence =
+      (port == modx_sequence[0][0] && value == modx_sequence[0][1]) ? 1 : 0;
 }
 
 static uint8_t pit_read(uint8_t port) {
@@ -858,13 +892,14 @@ static void console_poll(void) {
 }
 
 static int vram_pixel(int x, int y) {
-  if (x < 0 || x >= VID_STRIDE * 8 || y < 0 || y >= VID_LINES) return 0;
-  uint8_t byte = ram[VRAM_BASE + y * VID_STRIDE + (x >> 3)];
+  if (x < 0 || x >= (int)video_stride * 8 ||
+      y < 0 || y >= (int)video_lines) return 0;
+  uint8_t byte = ram[VRAM_BASE + y * video_stride + (x >> 3)];
   return (byte >> (7 - (x & 7))) & 1;
 }
 
 static int ekdos_prompt_visible(void) {
-  static const char* pattern[] = {
+  static const char* stock_pattern[] = {
     "................",
     "....#......#....",
     "...#.#......#...",
@@ -876,9 +911,22 @@ static int ekdos_prompt_visible(void) {
     "................",
     "................",
   };
-  const int ph = (int)(sizeof(pattern) / sizeof(pattern[0]));
-  const int pw = 16;
-  for (int y = 0; y <= VID_LINES - ph; y++) {
+  static const char* modx_pattern[] = {
+    "..........",
+    ".###......",
+    "#...#.#...",
+    "#...#..#..",
+    "#####...#.",
+    "#...#..#..",
+    "#...#.#...",
+    "..........",
+  };
+  const char** pattern = video_modx_mode ? modx_pattern : stock_pattern;
+  const int ph = video_modx_mode
+      ? (int)(sizeof(modx_pattern) / sizeof(modx_pattern[0]))
+      : (int)(sizeof(stock_pattern) / sizeof(stock_pattern[0]));
+  const int pw = video_modx_mode ? 10 : 16;
+  for (int y = 0; y <= (int)video_lines - ph; y++) {
     for (int x = 0; x < 3; x++) {
       int ok = 1;
       for (int dy = 0; dy < ph && ok; dy++) {
@@ -1065,6 +1113,7 @@ static void pout(void* u, uint8_t p, uint8_t v) {
     usart_write(p & 1, v, cpu ? cpu->cyc : 0);
   if (p >= 0x10 && p <= 0x1B) {
     pit_write(p, v);
+    if (p <= 0x17) video_observe_pit_write(p, v);
     if (usart_pit_clock && p == 0x18 && v) {
       /* D57 CLK0 is 16 MHz / 13.  Preserve the PIT's BCD interpretation and
          recompute after either the count or the 8251 x1/x16/x64 mode changes. */
@@ -1175,6 +1224,9 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "mode=%d\n", mode);
   fprintf(state_out, "portc=%02X\n", portc);
   fprintf(state_out, "mode_switches=%lu\n", mode_switches);
+  fprintf(state_out, "video_stride=%u\n", video_stride);
+  fprintf(state_out, "video_lines=%u\n", video_lines);
+  fprintf(state_out, "video_modx_mode=%d\n", video_modx_mode);
   fprintf(state_out, "rom_consecutive_a12_low=%d\n",
           rom_consecutive_a12_low);
   fprintf(state_out, "rom_read_burst_count=%u\n", rom_read_burst_count);
@@ -1917,6 +1969,10 @@ int main(int argc, char** argv) {
       cpu.iff = 0;
       cpu.halted = 0;
       set_mode(0);
+      video_stride = VID_DEFAULT_STRIDE;
+      video_lines = VID_DEFAULT_LINES;
+      video_modx_sequence = 0;
+      video_modx_mode = 0;
       usart_reset();
       kbd_pos = 0;
       kbd_phase = 0;
@@ -1944,6 +2000,10 @@ int main(int argc, char** argv) {
       cpu.iff = 0;
       cpu.halted = 0;
       set_mode(0);
+      video_stride = VID_DEFAULT_STRIDE;
+      video_lines = VID_DEFAULT_LINES;
+      video_modx_sequence = 0;
+      video_modx_mode = 0;
     }
     pchist[cpu.pc]++;
     if (pc_history_enabled) {
@@ -2101,9 +2161,10 @@ int main(int argc, char** argv) {
     if (wpage[pg]) printf("  0x%02X00 : %8lu\n", pg, wpage[pg]);
 
   FILE* o = fopen("vram.bin", "wb");
-  if (o) { fwrite(&ram[VRAM_BASE], 1, (size_t)VID_STRIDE * VID_LINES, o); fclose(o);
-           printf("\nwrote vram.bin (%d bytes, %dx%d @ 0x%04X)\n",
-                  VID_STRIDE * VID_LINES, VID_STRIDE * 8, VID_LINES, VRAM_BASE); }
+  if (o) { fwrite(&ram[VRAM_BASE], 1, (size_t)video_stride * video_lines, o); fclose(o);
+           printf("\nwrote vram.bin (%u bytes, %ux%u @ 0x%04X)\n",
+                  video_stride * video_lines, video_stride * 8,
+                  video_lines, VRAM_BASE); }
   if (fdc_enabled) juk_disk_close(&disk);
   if (usart.fd >= 0) close(usart.fd);
   if (rdtrace_fp) fclose(rdtrace_fp);
