@@ -59,7 +59,13 @@ with the machine-readable board model.
   simulator runs type `VER` remotely and `DIR` locally with byte-identical
   transcripts, including automatic disable/backoff/reconnect after a lost
   console reply. N3 remains disk-only by default.
-  V15 is simulator-proven, not yet a physical replacement for V14. The
+  The separately versioned EktaSoft `ekta4402` ROM adds `N fastboot`: its
+  pinned 128-byte V15 core begins directly at 19,200/8N1, skipping Janet
+  discovery and the complete 9,600-baud stock stage. A ROM-level simulator
+  guard proves the checked extension handoff and execution; CP/Mish then
+  reaches `A>` and completes NetDisk-v3 `DIR` with zero stock frames.
+  V15 and ekta4402 are simulator-proven, not yet physical replacements for
+  V14/ekta4401. The
   original stock Janet path is unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.

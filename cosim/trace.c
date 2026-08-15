@@ -373,6 +373,7 @@ typedef struct {
   unsigned long byte_cycles;
   unsigned long tx_bytes;
   unsigned long rx_bytes;
+  unsigned long rx_disabled_bytes;
 } juku_usart;
 
 static juku_usart usart = {
@@ -565,6 +566,27 @@ static void usart_poll(unsigned long cyc) {
     usart.tx_holding_full = 0;
     usart.tx_busy = 1;
     usart.tx_complete_cyc = cyc + usart.byte_cycles;
+  }
+  /* Bytes sent while RxEnable is clear have already passed on a physical
+     wire; they cannot wait in an invisible PTY FIFO and appear after firmware
+     enables the 8251. Drain that emulator-only backlog. This matters when a
+     host probes continuously while a ROM command is still initializing D11.
+     Once enabled, preserve byte timing and overrun behavior below. */
+  if (!(usart.command & 0x04)) {
+    uint8_t discarded[256];
+    for (;;) {
+      ssize_t received = read(usart.fd, discarded, sizeof(discarded));
+      if (received > 0) {
+        usart.rx_disabled_bytes += (unsigned long)received;
+        continue;
+      }
+      if (received < 0 && errno != EAGAIN && errno != EWOULDBLOCK &&
+          errno != EIO) {
+        perror("JUKU USART PTY disabled-RX drain");
+        exit(2);
+      }
+      break;
+    }
   }
   /* The serial line keeps shifting while the receive data register is full.
      Do not let the host PTY become an impossible extra FIFO: at each complete
@@ -1206,6 +1228,8 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "usart_fault_tx_stuck_once_recoveries=%lu\n", usart.fault_tx_stuck_once_recoveries);
   fprintf(state_out, "usart_tx_bytes=%lu\n", usart.tx_bytes);
   fprintf(state_out, "usart_rx_bytes=%lu\n", usart.rx_bytes);
+  fprintf(state_out, "usart_rx_disabled_bytes=%lu\n",
+          usart.rx_disabled_bytes);
   fprintf(state_out, "usart_rx_next_cyc=%lu\n", usart.rx_next_cyc);
   fprintf(state_out, "usart_tx_irq_armed=%d\n", usart_tx_irq_armed);
   fprintf(state_out, "usart_tx_irq_pending=%d\n", usart_tx_irq_pending);

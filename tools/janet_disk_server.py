@@ -533,7 +533,12 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--disk-baud", type=int, default=9600)
     result.add_argument(
         "--fast-stage1", type=Path,
-        help="stock-load this stage at 9600, then bulk-load the system at 19200",
+        help="load this bootstrap artifact, then the system at 19200",
+    )
+    result.add_argument(
+        "--direct-fastboot", action="store_true",
+        help="with --fast-stage1, wait for ekta4402 N at 19200 and skip "
+             "stock Janet",
     )
     result.add_argument(
         "--compact-stock-execute", action="store_true",
@@ -605,6 +610,12 @@ def main(argv: Iterable[str] | None = None) -> int:
     args = parser().parse_args(argv)
     if args.compact_stock_execute and not args.fast_stage1:
         raise ValueError("--compact-stock-execute requires --fast-stage1")
+    if args.direct_fastboot and not args.fast_stage1:
+        raise ValueError("--direct-fastboot requires --fast-stage1")
+    if args.direct_fastboot and args.compact_stock_execute:
+        raise ValueError(
+            "--direct-fastboot has no --compact-stock-execute stage"
+        )
     if args.fast_low_latency_guards and not args.compact_stock_execute:
         raise ValueError(
             "--fast-low-latency-guards requires --compact-stock-execute"
@@ -623,10 +634,18 @@ def main(argv: Iterable[str] | None = None) -> int:
     try:
         if console_fd is not None:
             tty.setraw(console_fd)
-        configure_serial(fd, args.boot_baud)
+        effective_boot_baud = FAST_BAUD if args.direct_fastboot \
+            else args.boot_baud
+        configure_serial(
+            fd, effective_boot_baud,
+            parity="none" if args.direct_fastboot else "odd",
+        )
         print(
-            f"Booting {args.system} at {args.boot_baud} baud, 8O1, "
-            + ("accepting the first valid station pair"
+            f"Booting {args.system} at {effective_boot_baud} baud, "
+            f"{'8N1 direct ROM core' if args.direct_fastboot else '8O1'}, "
+            + ("no Janet station discovery"
+               if args.direct_fastboot else
+               "accepting the first valid station pair"
                if args.client is None and args.server is None
                else f"station {args.server!r} -> {args.client!r}")
             + (", compact stock execute"
@@ -636,10 +655,13 @@ def main(argv: Iterable[str] | None = None) -> int:
             flush=True,
         )
         if args.fast_stage1:
-            if args.boot_baud != 9600 or args.disk_baud != FAST_BAUD:
+            if not args.direct_fastboot and args.boot_baud != 9600:
                 raise ValueError(
-                    "--fast-stage1 requires --boot-baud 9600 and "
-                    f"--disk-baud {FAST_BAUD}"
+                    "stock --fast-stage1 requires --boot-baud 9600"
+                )
+            if args.disk_baud != FAST_BAUD:
+                raise ValueError(
+                    f"--fast-stage1 requires --disk-baud {FAST_BAUD}"
                 )
             def boot_attempt() -> dict[str, object]:
                 return serve_fast(
@@ -651,11 +673,15 @@ def main(argv: Iterable[str] | None = None) -> int:
                     extension_guard=args.fast_extension_guard_ms / 1000.0,
                     stock_handoff_guard=
                     args.fast_stock_handoff_guard_ms / 1000.0,
+                    direct_core=args.direct_fastboot,
                 )
 
             boot = boot_with_recovery(
                 boot_attempt,
-                prepare_retry=lambda: configure_serial(fd, args.boot_baud),
+                prepare_retry=lambda: configure_serial(
+                    fd, effective_boot_baud,
+                    parity="none" if args.direct_fastboot else "odd",
+                ),
                 max_restarts=args.boot_restarts,
             )
             station_server = int(boot["stock_server"])
@@ -671,11 +697,15 @@ def main(argv: Iterable[str] | None = None) -> int:
             )
             station_server = int(boot["server"])
             station_client = int(boot["client"])
-        print(
-            f"Serving learned station {station_server:02X} -> "
-            f"{station_client:02X}",
-            flush=True,
-        )
+        if args.direct_fastboot:
+            print("Direct ROM fastboot skipped Janet station discovery",
+                  flush=True)
+        else:
+            print(
+                f"Serving learned station {station_server:02X} -> "
+                f"{station_client:02X}",
+                flush=True,
+            )
         configure_serial(fd, args.disk_baud)
         print(
             f"Serving A: from {args.volume} at {args.disk_baud} baud, 8O1, "
@@ -699,6 +729,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
                 "serial": str(args.serial),
                 "boot_baud": args.boot_baud,
+                "effective_boot_baud": effective_boot_baud,
                 "disk_baud": args.disk_baud,
                 "system": str(args.system),
                 "system_sha256": hashlib.sha256(system).hexdigest(),
@@ -708,6 +739,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 "fast_stage_sha256": hashlib.sha256(fast_stage).hexdigest()
                 if fast_stage else None,
                 "compact_stock_execute": args.compact_stock_execute,
+                "direct_fastboot": args.direct_fastboot,
                 "fast_low_latency_guards": args.fast_low_latency_guards,
                 "fast_extension_guard_ms": args.fast_extension_guard_ms,
                 "fast_stock_handoff_guard_ms":

@@ -327,10 +327,13 @@ screen remained clean, unlike the earlier BIOS-owned interrupt-handler attempt
 which had bypassed the RomBios dispatcher and produced vertical-line garbage.
 
 The native character generator displayed a printable Estonian glyph while a
-control-key combination was entered. Treat selectable native/English glyphs or
-caret notation as future console work; first establish the original RomBios
-control-character convention. It is not a blocker for the validated network
-disk baseline.
+control-key combination was entered. The desk follow-up traced Ekta37's
+`WRCHR` path: it preserves the byte unchanged through the RomBios service
+vector, so that glyph is the stock font convention, not corrupted input. V15's
+independent RAM console instead handles BS/CR/LF/ESC, suppresses other low
+controls, uses public ASCII glyphs, and maps bytes above 7Dh to `?`. A
+selectable presentation is now a user-interface/physical-console preference,
+not an unimplemented correctness test.
 
 ## Future network-boot work
 
@@ -368,8 +371,10 @@ replacing the stock ROM. Stock Janet loads the 558-byte
 mode 2/count 4, reinitializes D11 for 19,200/8O1, and receives the fixed CP/Mish
 resident system as thirteen 512-byte blocks. See `janet-fastboot.md` for the
 wire contract, command, regression evidence, and physical benchmark plan. A
-custom ROM can enter the same stage directly later, while the stock-ROM route
-and the original all-stock server remain available alongside it.
+The separately versioned `ekta4402` custom ROM now enters the V15 core directly
+with monitor command `N`, while the stock-ROM route and the original all-stock
+server remain available alongside it. That direct path is simulator-qualified
+through the CP/Mish prompt and NetDisk-v3 `DIR`, but not yet physically tested.
 
 The implemented single-client baseline fixes the only supported layout at
 B400h-CDFFh with entry CA00h, avoiding general address/length fields in the
@@ -410,7 +415,7 @@ Keep protocol/version negotiation explicit so the same host can serve:
 
 1. original stock Janet at 9600;
 2. stock Janet loading the high-speed stage 1;
-3. a future custom-ROM direct bulk bootstrap.
+3. the implemented, simulator-qualified ekta4402 `N` direct V15 bootstrap.
 
 Cosim now injects complete-block loss, payload corruption, duplication, and a
 lost target ACK against the assembled 8080 stage, and verifies the exact RAM

@@ -25,7 +25,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -35,6 +37,9 @@ SOURCE_SHA256 = "fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc2
 OUTPUT = HERE / "ekta4401.bin"
 D15_OUTPUT = HERE / "ekta4401-d15.bin"
 D16_OUTPUT = HERE / "ekta4401-d16.bin"
+DIRECT_CORE_SOURCE = HERE / "direct-fastboot-v15-core.asm"
+DIRECT_CORE_SIZE = 128
+DIRECT_CORE_SHA256 = "a3a073f3f8f0e5c4e68964952c8ed636c66436904bba9d96184a183e4517713d"
 
 BANNER_OFFSET = 0x00DF
 BANNER_OLD = b"'EktaSoft '88  Serial #0037"
@@ -56,6 +61,32 @@ HELP_TEXT = (
     b"H this help\r\n"
     b"\x00"
 )
+
+HELP_TEXT_DIRECT = HELP_TEXT.replace(
+    b"J service  V ?", b"J service  N fastboot  V ?",
+)
+
+
+def direct_fastboot_core() -> bytes:
+    """Assemble and pin the direct-ROM copy of the CP/Mish V15 core."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    from build_zmac import executable  # noqa: PLC0415
+
+    with tempfile.TemporaryDirectory(prefix="ekta4402-direct-core-") as name:
+        output = Path(name) / "direct-fastboot-v15-core.cim"
+        subprocess.run(
+            [str(executable()), "--nmnv", "--zmac", "-8", "-o", str(output),
+             str(DIRECT_CORE_SOURCE)],
+            check=True,
+        )
+        core = output.read_bytes()
+    if len(core) > DIRECT_CORE_SIZE:
+        raise SystemExit(f"direct fastboot core is {len(core)} bytes")
+    core = core.ljust(DIRECT_CORE_SIZE, b"\0")
+    digest = hashlib.sha256(core).hexdigest()
+    if DIRECT_CORE_SHA256 and digest != DIRECT_CORE_SHA256:
+        raise SystemExit(f"direct fastboot core differs: {digest}")
+    return core
 
 # --- Phase 2: the Jukuravi loader as a monitor service -----------------------
 #
@@ -296,7 +327,9 @@ def t36_image() -> bytes:
     return image
 
 
-def build() -> tuple[bytes, dict[str, object]]:
+def build(
+    *, include_direct: bool = False, banner_new: bytes = BANNER_NEW,
+) -> tuple[bytes, dict[str, object]]:
     rom = SOURCE.read_bytes()
     digest = hashlib.sha256(rom).hexdigest()
     if digest != SOURCE_SHA256:
@@ -306,9 +339,9 @@ def build() -> tuple[bytes, dict[str, object]]:
     # 1. banner identity line (same length, inside checksummed block 1)
     if image[BANNER_OFFSET : BANNER_OFFSET + len(BANNER_OLD)] != BANNER_OLD:
         raise SystemExit("banner line is not at the pinned offset")
-    if len(BANNER_NEW) != len(BANNER_OLD):
+    if len(banner_new) != len(BANNER_OLD):
         raise SystemExit("banner replacement must be the exact same length")
-    image[BANNER_OFFSET : BANNER_OFFSET + len(BANNER_NEW)] = BANNER_NEW
+    image[BANNER_OFFSET : BANNER_OFFSET + len(banner_new)] = banner_new
 
     # 2. relocated dispatch table + H/J/V entries
     table = bytearray()
@@ -323,11 +356,13 @@ def build() -> tuple[bytes, dict[str, object]]:
     # Size the complete table upfront so none of the handlers which follow it
     # move when the J and V targets are filled in later.
     stock_entries = bytes(table)
-    table_length = len(stock_entries) + 3 + 3 + 3 + 1
+    table_length = len(stock_entries) + 3 + 3 + (3 if include_direct else 0) + 3 + 1
     handler_runtime = NEW_TABLE_RUNTIME + table_length
     table = bytearray(stock_entries)
     table += bytes((ord("H"), handler_runtime & 0xFF, handler_runtime >> 8))
     table += bytes((ord("J"), 0, 0))          # J target patched in below
+    if include_direct:
+        table += bytes((ord("N"), 0, 0))      # direct fastboot target below
     table += bytes((ord("V"), 0, 0))          # V target patched in below
     table += b"\x00"
     if len(table) != table_length:
@@ -342,9 +377,10 @@ def build() -> tuple[bytes, dict[str, object]]:
             0xC9,                                              # RET
         )
     )
-    demo_runtime = handler_runtime + len(handler) + len(HELP_TEXT)
+    help_text = HELP_TEXT_DIRECT if include_direct else HELP_TEXT
+    demo_runtime = handler_runtime + len(handler) + len(help_text)
     demo, demo_metadata = visual_demo(demo_runtime)
-    blob = bytes(table) + handler + HELP_TEXT + demo
+    blob = bytes(table) + handler + help_text + demo
     end = NEW_TABLE_OFFSET + len(blob)
     if end > FREE_GAP_END:
         raise SystemExit("relocated table + H overflow the free gap")
@@ -353,7 +389,8 @@ def build() -> tuple[bytes, dict[str, object]]:
     image[NEW_TABLE_OFFSET:end] = blob
 
     # Patch the easter-egg target after the complete blob has been laid out.
-    v_slot = NEW_TABLE_OFFSET + len(stock_entries) + 6
+    v_slot = NEW_TABLE_OFFSET + len(stock_entries) + \
+        (9 if include_direct else 6)
     if image[v_slot] != ord("V"):
         raise SystemExit("V table slot is not where it was reserved")
     image[v_slot + 1] = demo_runtime & 0xFF
@@ -420,6 +457,38 @@ def build() -> tuple[bytes, dict[str, object]]:
                   0xCD, PRINT_STRING & 0xFF, PRINT_STRING >> 8, 0xC9)) + NO_DISK_TEXT
     image[cursor : cursor + len(stub)] = stub
     cursor += len(stub)
+
+    # N copies the exact one-record V15 core out of mapped ROM and enters it
+    # directly. The core itself takes D57/D11 from the monitor state to the
+    # proven 19,200/8N1 transport before asking the host for its extension.
+    n_runtime = direct_core_runtime = 0
+    direct_core = b""
+    if include_direct:
+        direct_core = direct_fastboot_core()
+        n_runtime = cursor + 0xC000
+        n_handler_bytes = 38
+        direct_core_runtime = n_runtime + n_handler_bytes
+        copy_runtime = n_runtime + 25
+        n_handler = bytes((
+            0xF3,                                           # DI
+            0xDB, MODE_PORT, 0xE6, 0xFC, 0xF6, 0x01,
+            0xD3, MODE_PORT,                                # memory mode 1
+            0x3E, 0xFF, 0xD3, 0x01,                        # mask all PIC inputs
+            0x32, 0x54, 0xD4,                              # RomBios mask shadow
+            0x21, direct_core_runtime & 0xFF,
+            direct_core_runtime >> 8,                       # LXI H,source
+            0x11, 0x00, 0x01,                              # LXI D,0100h
+            0x01, DIRECT_CORE_SIZE, 0x00,                   # LXI B,128
+            0x7E, 0x12, 0x23, 0x13, 0x0B, 0x78, 0xB1,     # copy loop
+            0xC2, copy_runtime & 0xFF, copy_runtime >> 8,
+            0xC3, 0x00, 0x01,                              # JMP 0100h
+        ))
+        if len(n_handler) != n_handler_bytes:
+            raise SystemExit("N handler layout drifted")
+        image[cursor : cursor + len(n_handler)] = n_handler
+        cursor += len(n_handler)
+        image[cursor : cursor + len(direct_core)] = direct_core
+        cursor += len(direct_core)
     if cursor > FREE_GAP_END:
         raise SystemExit("Phase 2 payload overflows the free gap")
     for vector in DISK_VECTORS:
@@ -433,6 +502,13 @@ def build() -> tuple[bytes, dict[str, object]]:
         raise SystemExit("J table slot is not where it was reserved")
     image[j_slot + 1] = j_runtime & 0xFF
     image[j_slot + 2] = j_runtime >> 8
+
+    if include_direct:
+        n_slot = NEW_TABLE_OFFSET + len(stock_entries) + 6
+        if image[n_slot] != ord("N"):
+            raise SystemExit("N table slot is not where it was reserved")
+        image[n_slot + 1] = n_runtime & 0xFF
+        image[n_slot + 2] = n_runtime >> 8
 
     # 4. repoint the parser's single table reference
     if image[TABLE_POINTER_OFFSET : TABLE_POINTER_OFFSET + 2] != bytes((0x77, 0xD9)):
@@ -459,10 +535,17 @@ def build() -> tuple[bytes, dict[str, object]]:
             for n, o, s, d, ln in placements
         ],
         "j_runtime": f"0x{j_runtime:04X}",
+        "n_runtime": f"0x{n_runtime:04X}" if include_direct else None,
+        "direct_core_runtime": (
+            f"0x{direct_core_runtime:04X}" if include_direct else None
+        ),
+        "direct_core_sha256": (
+            hashlib.sha256(direct_core).hexdigest() if include_direct else None
+        ),
         "no_disk_stub_runtime": f"0x{stub_runtime:04X}",
         "free_gap_used_to": f"0x{cursor:04X}",
-        "banner": BANNER_NEW.decode(),
-        "commands": "".join(letters) + "HJV",
+        "banner": banner_new.decode(),
+        "commands": "".join(letters) + ("HJNV" if include_direct else "HJV"),
         "table_runtime": f"0x{NEW_TABLE_RUNTIME:04X}",
         "h_handler_runtime": f"0x{handler_runtime:04X}",
         "visual_demo": {

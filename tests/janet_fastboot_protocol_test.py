@@ -4,7 +4,11 @@
 from pathlib import Path
 import os
 import pty
+import select
 import sys
+import threading
+import time
+import tty
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +28,7 @@ from tools.janet_fastboot import (  # noqa: E402
     extract_system,
     fletcher16,
     header,
+    serve_fast,
     split_stage_artifact,
     stream_packet,
 )
@@ -352,6 +357,73 @@ def main() -> int:
     assert bundle_extension == extension_v14
     assert bundle_payload == compressed
     assert extract_system(ram_image) == ram_system
+
+    # The ekta4402 N path begins at the V15 extension handshake: there is no
+    # stock Janet request, station discovery, or 128-byte stage transfer.
+    # Model that ROM core across a raw PTY and pin the complete direct wire
+    # contract independently of the full target/cosim test.
+    master, slave = pty.openpty()
+    tty.setraw(slave)
+    target_errors: list[BaseException] = []
+    captured: dict[str, bytes] = {}
+
+    def read_exact(fd: int, length: int, timeout: float = 2.0) -> bytes:
+        result = bytearray()
+        deadline = time.monotonic() + timeout
+        while len(result) < length:
+            ready_fds, _, _ = select.select(
+                [fd], [], [], max(0.0, deadline - time.monotonic()),
+            )
+            if not ready_fds:
+                raise TimeoutError(f"PTY target wanted {length} bytes")
+            result.extend(os.read(fd, length - len(result)))
+        return bytes(result)
+
+    def direct_target() -> None:
+        try:
+            header_window = bytearray()
+            while not header_window.endswith(b"\xA5\x3A"):
+                header_window += read_exact(slave, 1)
+                del header_window[:-2]
+            os.write(slave, bytes((0xC5,)))
+            captured["extension"] = read_exact(
+                slave, len(extension_v14) + 2,
+            )
+            os.write(slave, checked_frame(READY, bytes((15, 1))))
+
+            stream_window = bytearray()
+            while not stream_window.endswith(b"JZ"):
+                stream_window += read_exact(slave, 1)
+                del stream_window[:-2]
+            os.write(slave, bytes((0xC6,)))
+            captured["stream"] = read_exact(slave, len(compressed))
+            os.write(slave, checked_frame(ord("A"), b"\x00\x00"))
+        except BaseException as error:  # relay thread failures to main
+            target_errors.append(error)
+
+    target = threading.Thread(target=direct_target)
+    target.start()
+    try:
+        direct_result = serve_fast(
+            master, bundle_v15, ram_image, stock_timeout=1.0,
+            reply_timeout=1.0, retries=2, configure_rate=False,
+            direct_core=True, verbose=False,
+        )
+    finally:
+        target.join(timeout=3.0)
+        os.close(master)
+        os.close(slave)
+    assert not target.is_alive()
+    assert not target_errors, target_errors
+    assert captured["extension"] == extension_packet(extension_v14)[2:]
+    assert captured["stream"] == compressed
+    assert direct_result["protocol_version"] == 15
+    assert direct_result["direct_core"] == 1
+    assert direct_result["stock_sent_frames"] == 0
+    assert direct_result["stock_sent_bytes"] == 0
+    assert direct_result["extension_header_acks"] == 1
+    assert direct_result["stream_header_acks"] == 1
+    assert direct_result["stream_bytes"] == len(compressed)
 
     large_payload = bytes((index * 29 + 7) & 0xFF for index in range(0x1800))
     large_bundle_v15 = (

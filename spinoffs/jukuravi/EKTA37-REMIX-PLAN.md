@@ -1,6 +1,7 @@
 # EktaSoft remix plan: ekta37 + Jukuravi service module
 
-Status: **PHASES 1 AND 2 + VISUAL EASTER EGG COMPLETE, 2026-08-11** —
+Status: **EKTA4401 COMPLETE AND FROZEN; EKTA4402 DIRECT FASTBOOT SIMULATOR-
+QUALIFIED, 2026-08-15** —
 `ekta4401.bin` boots with the banner identity, `H` help, a guarded `V`
 diamond-tunnel demo carrying the `JUKU 2026` mark, the floppy subsystem stripped,
 and a `J` command that starts the Jukuravi loader from RAM; all guarded
@@ -10,6 +11,12 @@ LOAD/READ, and RUN. Open: the pre-registered normal-raster retention control,
 not the service-loader handshake. Measurements below are byte-verified
 against the pinned `roms/ekta37.bin` and the exact T36 build; phase results
 are at the end.
+
+The separately versioned `ekta4402.bin` preserves all of that behavior and
+adds `N fastboot`: a 128-byte ROM-resident V15 core enters 19200/8N1 directly,
+eliminating the stock 9600-baud Janet stage. It is fully simulator-qualified
+through CP/Mish V15/NetDisk v3 and `DIR`, but is not yet burned or physically
+qualified. `ekta4401` remains byte-exact and is the hardware baseline.
 
 ## Goal
 
@@ -183,3 +190,28 @@ and returns. `H` advertises it only as `V ?`.
    hash could be byte-diverse yet look like one glyph tiled over the screen.
 5. **Space after both phases and the demo:** 395 B still free in the `F900h`
    gap.
+
+## Direct-fastboot successor results (ekta4402, 2026-08-15)
+
+1. `N` disables interrupts, selects mode 1, masks the PIC and shadow latch,
+   copies a pinned 128-byte V15 core to `0100h`, and jumps there. The core
+   programs D57 mode 2/count 4 and D11 x16/8N1, acknowledges the overlap-safe
+   `A5 3A` extension header, verifies the 267-byte extension with Fletcher-16,
+   and enters it at `0300h`.
+2. The core assembles from `remix/direct-fastboot-v15-core.asm` and is
+   byte-identical to the first record of CP/Mish's proven
+   `juku-fastboot-v15-netdisk-v3.bin`; its padded SHA-256 is
+   `a3a073f3f8f0e5c4e68964952c8ed636c66436904bba9d96184a183e4517713d`.
+3. `tests/ekta4402_direct_fastboot_test.py` proves the complete ROM command,
+   D57/D11 state, byte-exact core copy, checked extension load, and extension
+   execution. The CP/Mish V15 matrix then uses the real artifact and system,
+   reaches the prompt, and completes NetDisk-v3 `DIR` in 12 exchanges with
+   zero stock Janet frames.
+4. That integration exposed a cosim artifact: PTY bytes sent while RxEnable
+   was clear survived until D11 was enabled. Real wire bytes are gone by then.
+   The USART model now drains and counts disabled-receiver bytes, preventing an
+   emulator-only stale prefix without weakening enabled-RX timing or overrun.
+5. The new image uses the banner `#02`, commands
+   `FDSXGMCEKTBRWPAHJNV`, and ends at ROM `3DE4h`, leaving 214 bytes in the
+   mapped high-ROM gap. Its SHA-256 is
+   `20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`.

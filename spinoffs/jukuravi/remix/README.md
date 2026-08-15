@@ -1,4 +1,4 @@
-# ekta4401 — the EktaSoft #0037 remix ROM
+# ekta4401/ekta4402 — EktaSoft #0037 remix ROMs
 
 Phases 1 + 2 and the visual easter egg are complete, 2026-08-12. A derived 16 KiB image built deterministically
 from the pinned `roms/ekta37.bin`. Plan and phase results:
@@ -17,6 +17,29 @@ from the pinned `roms/ekta37.bin`. Plan and phase results:
   expected)
 - Guard: `sync/ekta4401_check.sh`, test
   [`../../../tests/ekta4401_remix_test.py`](../../../tests/ekta4401_remix_test.py)
+
+`ekta4401` is frozen and physically proven. The separately named simulator-
+qualified successor adds direct CP/Mish fastboot without changing that
+baseline:
+
+- Image: [`ekta4402.bin`](ekta4402.bin), SHA256
+  `20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`
+- D15: [`ekta4402-d15.bin`](ekta4402-d15.bin), SHA256
+  `ee87c5b199b409c97909f0eb2b7cfd24cbee2537569bbcdec378631ec8fc85d5`
+- D16: [`ekta4402-d16.bin`](ekta4402-d16.bin), SHA256
+  `e76587d94189ce8d1cf33ee95cb50f68f5d62280a9dd675ded006eb32232e6e7`
+- Builder: [`build_ekta4402.py`](build_ekta4402.py); readable core:
+  [`direct-fastboot-v15-core.asm`](direct-fastboot-v15-core.asm)
+- Guard:
+  [`../../../tests/ekta4402_direct_fastboot_test.py`](../../../tests/ekta4402_direct_fastboot_test.py),
+  plus CP/Mish's full V15/NetDisk-v3 prompt and `DIR` regression
+
+Its `#02` banner and new `N fastboot` command identify the change. `N` needs
+no Enter: it copies the pinned V15 core to `0100h`, selects D57 mode 2/count 4
+and D11 19200/8N1, then receives the normal checked V15 extension and ZX0
+stream directly. No stock Janet station request or 9600-baud stage occurs.
+This remains simulator-only until both named halves are burned and qualified
+on a real board.
 
 **This is not a factory image.** Its banner says so: the stock identity line
 `'EktaSoft '88  Serial #0037` is replaced, same length, by

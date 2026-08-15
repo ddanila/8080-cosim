@@ -586,6 +586,39 @@ the first console-poll reply dropped. The target disables, backs off, reprobes,
 consumes the queued command, and completes without reboot. N3 remains the
 default unless `--console-pty` is explicitly supplied.
 
+### Direct-ROM V15 path (ekta4402)
+
+The separately versioned `spinoffs/jukuravi/remix/ekta4402.bin` removes the
+remaining stock bootstrap from the V15 path. Its monitor command `N` copies a
+pinned 128-byte V15 core to `0100h`; that core immediately selects the proven
+D57 mode-2/count-4 clock and D11 19200/8N1 framing. The host therefore starts
+with the existing overlap-safe `A5 3A` extension handshake. There is no Janet
+station discovery, 9600-baud record transfer, or stock execute service.
+
+Build the CP/Mish artifacts, start this server, and press `N` alone (no Enter):
+
+```sh
+cd ~/fun/cpmish && make juku-fastboot-v15-netdisk-v3.bin \
+    juku-net-v3-rambio-system.bin juku-net-v2.img && \
+../8080-cosim/tools/janet_disk_server.py \
+    --fast-stage1 juku-fastboot-v15-netdisk-v3.bin --direct-fastboot \
+    --disk-baud 19200 --disk-protocol 3 --timeout 86400 \
+    /dev/ttyUSB0 juku-net-v3-rambio-system.bin juku-net-v2.img
+```
+
+`--direct-fastboot` configures the initial host side as 19200/8N1, waits for
+`N`, and excludes the operator wait from the reported transfer duration. The
+result records zero stock frames/bytes. It is incompatible with
+`--compact-stock-execute`, because there is no stock stage to compact. After
+V15 enters its RAM BIOS, both ends use the normal 19200/8O1 NetDisk-v3 link.
+
+Two independent regressions qualify the desk path. The ROM-level test loads a
+checked synthetic extension and proves its execution. CP/Mish then boots the
+real 6,893-byte bundle through `N`, reaches `A>`, and completes `DIR` in 12
+disk exchanges. The latter also proves the 8N1-to-8O1 handoff. Ekta4402 has
+not yet been burned or tested on physical hardware, so stock-ROM V14 and
+ekta4401 remain the physical baselines.
+
 Frame-level stock instrumentation also explains the 2.21/3.75-second stage
 spread. A normal one-record request has 36 client frames after the request:
 one request, 26 polls of other stations, one start poll, five ACKs, and three

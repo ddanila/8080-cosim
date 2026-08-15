@@ -429,8 +429,9 @@ def serve_fast(
     configure_rate: bool = True,
     compact_stock_execute: bool = False,
     low_latency_guards: bool = False,
+    direct_core: bool = False,
 ) -> dict[str, int | float]:
-    """Load stage 1 through stock Janet, then send the resident image fast."""
+    """Load through stock Janet, or enter a ROM-resident V15 core directly."""
     if not stage1:
         raise ValueError("stage 1 is empty")
     if retries < 1:
@@ -456,6 +457,10 @@ def serve_fast(
         V14_BUNDLE_MAGIC: 14,
         V15_BUNDLE_MAGIC: 15,
     }.get(stock_stage[3:7], 3)
+    if direct_core and bundle_version != 15:
+        raise ValueError("direct ROM fastboot requires a V15 artifact")
+    if direct_core and compact_stock_execute:
+        raise ValueError("direct ROM fastboot has no stock execute stage")
     if low_latency_guards and not compact_stock_execute:
         raise ValueError(
             "low-latency guards require compact stock execute"
@@ -481,17 +486,33 @@ def serve_fast(
                 f"fastboot v{bundle_version} compressed payload does not "
                 "match system image"
             )
-    stock = serve_stock(
-        fd, stock_stage, load_address=0x0100, entry=0x0100,
-        client=client, server=server, timeout=stock_timeout, verbose=verbose,
-        compact_execute=compact_stock_execute,
-    )
-    stock_finished = time.monotonic()
-    request_started_at = float(stock["request_started_at"])
-    stage_seconds = float(stock["transfer_seconds"])
+    if direct_core:
+        now = time.monotonic()
+        stock: dict[str, int | float] = {
+            "server": server if server is not None else 2,
+            "client": client if client is not None else 1,
+            "sent_frames": 0,
+            "sent_bytes": 0,
+            "acks": 0,
+            "rejects": 0,
+            "request_started_at": now,
+            "transfer_seconds": 0.0,
+        }
+        stock_finished = now
+        request_started_at = now
+        stage_seconds = 0.0
+    else:
+        stock = serve_stock(
+            fd, stock_stage, load_address=0x0100, entry=0x0100,
+            client=client, server=server, timeout=stock_timeout,
+            verbose=verbose, compact_execute=compact_stock_execute,
+        )
+        stock_finished = time.monotonic()
+        request_started_at = float(stock["request_started_at"])
+        stage_seconds = float(stock["transfer_seconds"])
     # PTY cosim models the target clock from D57 and has no physical line
     # rate; production callers retain the real termios transition.
-    if extension is not None:
+    if extension is not None and not direct_core:
         # The stock execute service is unacknowledged. Give its final bytes
         # time to leave the USB-UART before tcflush changes the line rate.
         if low_latency_guards:
@@ -532,7 +553,10 @@ def serve_fast(
                 if extension_filter is not None else packet
             if bundle_version in (12, 13, 14, 15) and len(outgoing) >= 2:
                 header_acknowledged = False
-                for probe in range(32):
+                probe_limit = 32 if not direct_core else max(
+                    32, int(stock_timeout / 0.025) + 1,
+                )
+                for probe in range(probe_limit):
                     # A zero before every repeated A5/3A pair releases an
                     # overlap-safe parser from a lone A5 received while D11
                     # changes rate. Never send the extension body until the
@@ -547,6 +571,11 @@ def serve_fast(
                     if wait_byte(fd, EXTENSION_HEADER_ACK, 0.025):
                         extension_header_acks += 1
                         header_acknowledged = True
+                        if direct_core:
+                            # Exclude the operator's wait before pressing N.
+                            request_started_at = time.monotonic()
+                            stock_finished = request_started_at
+                            stock["request_started_at"] = request_started_at
                         break
                 if not header_acknowledged:
                     extension_retries += 1
@@ -554,7 +583,8 @@ def serve_fast(
                         print(
                             f"Fast v{bundle_version} extension: core did not "
                             f"acknowledge "
-                            f"32 header probes; retry {attempt + 1}/"
+                            f"{probe_limit} header probes; retry "
+                            f"{attempt + 1}/"
                             f"{retries - 1}",
                             flush=True,
                         )
@@ -695,10 +725,12 @@ def serve_fast(
             5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
         ) else "8O1"
     if verbose:
+        stage_detail = "direct ROM core" if direct_core else \
+            f"{len(stock_stage)} bytes via stock Janet"
         extension_detail = "" if extension is None else \
             f"; {len(extension)}-byte extension at high speed"
         print(
-            f"Fast stage ready: {len(stock_stage)} bytes via stock Janet"
+            f"Fast stage ready: {stage_detail}"
             f"{extension_detail}; "
             f"protocol v{protocol_version}; switching bulk load to "
             f"{transfer_baud} baud, {transfer_framing}"
@@ -891,12 +923,15 @@ def serve_fast(
             "extension_guard_ms": effective_extension_guard * 1000,
             "stream_guard_ms": turnaround_guard * 1000,
             "stock_handoff": (
-                "tcdrain" if low_latency_guards else "50ms guard"
+                "not applicable" if direct_core else
+                ("tcdrain" if low_latency_guards else "50ms guard")
             ),
             "stock_handoff_guard_ms": (
-                stock_handoff_guard * 1000 if low_latency_guards else 50
+                0 if direct_core else
+                (stock_handoff_guard * 1000 if low_latency_guards else 50)
             ),
             "success_guard_ms": 10 if low_latency_guards else 20,
+            "direct_core": int(direct_core),
         }
 
     exchange(header(system, protocol_version), HEADER_SEQUENCE)
@@ -961,9 +996,11 @@ def serve_fast(
         "turnaround_guard_ms": effective_extension_guard * 1000,
         "extension_guard_ms": effective_extension_guard * 1000,
         "stream_guard_ms": turnaround_guard * 1000,
-        "stock_handoff": "tcdrain" if low_latency_guards else "50ms guard",
+        "stock_handoff": "not applicable" if direct_core else
+        ("tcdrain" if low_latency_guards else "50ms guard"),
         "stock_handoff_guard_ms": (
-            stock_handoff_guard * 1000 if low_latency_guards else 50
+            0 if direct_core else
+            (stock_handoff_guard * 1000 if low_latency_guards else 50)
         ),
         "success_guard_ms": (
             10 if low_latency_guards
@@ -971,6 +1008,7 @@ def serve_fast(
                 7, 8, 9, 10, 11, 12, 13, 14, 15,
             ) else 80)
         ),
+        "direct_core": int(direct_core),
     }
 
 
@@ -1002,6 +1040,10 @@ def parser() -> argparse.ArgumentParser:
         help="after TX drain, allow final 9600-baud bytes to leave the USB "
              "UART (default: 30 ms)",
     )
+    result.add_argument(
+        "--direct-core", action="store_true",
+        help="wait for the ekta4402 N command at 19200 and skip stock Janet",
+    )
     return result
 
 
@@ -1009,7 +1051,8 @@ def main(argv: Iterable[str] | None = None) -> int:
     args = parser().parse_args(argv)
     fd = os.open(args.serial, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     try:
-        configure_serial(fd, 9600)
+        configure_serial(fd, FAST_BAUD if args.direct_core else 9600,
+                         parity="none" if args.direct_core else "odd")
         serve_fast(
             fd, args.stage1.read_bytes(), args.system.read_bytes(),
             client=args.client, server=args.server,
@@ -1019,6 +1062,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             stock_handoff_guard=args.stock_handoff_guard_ms / 1000.0,
             compact_stock_execute=args.compact_stock_execute,
             low_latency_guards=args.low_latency_guards,
+            direct_core=args.direct_core,
         )
     finally:
         os.close(fd)
