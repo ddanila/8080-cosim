@@ -54,6 +54,10 @@
 //        reaches ADDR or above (used to model the physical D15 A12 boundary).
 // CPU:   JUKU_CPU_A12_INCREMENT_FAULT=1 makes D1's 16-bit +1 path lose an
 //        already-high A12. It covers PC, INX, LHLD/SHLD, POP, and boundaries.
+//        JUKU_CPU_A12_INCREMENT_FAULT_ARM_PC=ADDR enables that model when PC
+//        reaches ADDR; ..._DISARM_PC=ADDR disables it again. This brackets a
+//        diagnostic without corrupting the bootstrap used to reach it. Set
+//        ..._ARM_BANK_MODE=0..3 when the address can also occur in an overlay.
 // ROM:   JUKU_ROM_CONSECUTIVE_A12_LOW=1 retains the older ROM-local model.
 // EXEC:  JUKU_EXEC_BYTE_FAULT=ADDR:VALUE overrides an instruction-stream byte
 //        when the CPU PC has just advanced past ADDR; ordinary data reads pass.
@@ -114,6 +118,13 @@ static int      cart_enabled = 0;
 static int      rom_consecutive_a12_low = 0;
 static unsigned rom_read_burst_count = 0;
 static int      cpu_a12_increment_fault = 0;
+static int      cpu_a12_increment_fault_arm_enabled = 0;
+static int      cpu_a12_increment_fault_arm_fired = 0;
+static uint16_t cpu_a12_increment_fault_arm_pc = 0;
+static int      cpu_a12_increment_fault_arm_bank_mode = -1;
+static int      cpu_a12_increment_fault_disarm_enabled = 0;
+static int      cpu_a12_increment_fault_disarm_fired = 0;
+static uint16_t cpu_a12_increment_fault_disarm_pc = 0;
 static int      exec_byte_fault_enabled = 0;
 static uint16_t exec_byte_fault_addr = 0;
 static uint8_t  exec_byte_fault_value = 0;
@@ -1119,6 +1130,10 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "rom_read_burst_count=%u\n", rom_read_burst_count);
   fprintf(state_out, "cpu_a12_increment_fault=%d\n",
           cpu_a12_increment_fault);
+  fprintf(state_out, "cpu_a12_increment_fault_arm_fired=%d\n",
+          cpu_a12_increment_fault_arm_fired);
+  fprintf(state_out, "cpu_a12_increment_fault_disarm_fired=%d\n",
+          cpu_a12_increment_fault_disarm_fired);
   fprintf(state_out, "exec_byte_fault_enabled=%d\n", exec_byte_fault_enabled);
   fprintf(state_out, "exec_byte_fault_addr=%04X\n", exec_byte_fault_addr);
   fprintf(state_out, "exec_byte_fault_value=%02X\n", exec_byte_fault_value);
@@ -1337,6 +1352,12 @@ int main(int argc, char** argv) {
       getenv("JUKU_ROM_CONSECUTIVE_A12_LOW");
   const char* cpu_a12_increment_fault_env =
       getenv("JUKU_CPU_A12_INCREMENT_FAULT");
+  const char* cpu_a12_increment_fault_arm_pc_env =
+      getenv("JUKU_CPU_A12_INCREMENT_FAULT_ARM_PC");
+  const char* cpu_a12_increment_fault_disarm_pc_env =
+      getenv("JUKU_CPU_A12_INCREMENT_FAULT_DISARM_PC");
+  const char* cpu_a12_increment_fault_arm_bank_mode_env =
+      getenv("JUKU_CPU_A12_INCREMENT_FAULT_ARM_BANK_MODE");
   const char* exec_byte_fault = getenv("JUKU_EXEC_BYTE_FAULT");
   const char* ram_drop_write = getenv("JUKU_RAM_DROP_WRITE");
   const char* ram_alias = getenv("JUKU_RAM_ALIAS");
@@ -1372,6 +1393,60 @@ int main(int argc, char** argv) {
       strcmp(cpu_a12_increment_fault_env, "0") != 0;
   if (cpu_a12_increment_fault)
     fprintf(stderr, "[CPU] A12 increment-retention fault enabled\n");
+  if (cpu_a12_increment_fault_arm_pc_env &&
+      cpu_a12_increment_fault_arm_pc_env[0]) {
+    char* end = NULL;
+    unsigned long value = strtoul(
+        cpu_a12_increment_fault_arm_pc_env, &end, 0);
+    if (!end || *end || value > 0xFFFF) {
+      fprintf(stderr,
+              "invalid JUKU_CPU_A12_INCREMENT_FAULT_ARM_PC=%s\n",
+              cpu_a12_increment_fault_arm_pc_env);
+      return 2;
+    }
+    cpu_a12_increment_fault_arm_enabled = 1;
+    cpu_a12_increment_fault_arm_pc = (uint16_t)value;
+    cpu_a12_increment_fault = 0;
+    fprintf(stderr, "[CPU] A12 increment fault will arm at pc=0x%04X\n",
+            cpu_a12_increment_fault_arm_pc);
+  }
+  if (cpu_a12_increment_fault_disarm_pc_env &&
+      cpu_a12_increment_fault_disarm_pc_env[0]) {
+    char* end = NULL;
+    unsigned long value = strtoul(
+        cpu_a12_increment_fault_disarm_pc_env, &end, 0);
+    if (!end || *end || value > 0xFFFF) {
+      fprintf(stderr,
+              "invalid JUKU_CPU_A12_INCREMENT_FAULT_DISARM_PC=%s\n",
+              cpu_a12_increment_fault_disarm_pc_env);
+      return 2;
+    }
+    if (!cpu_a12_increment_fault_arm_enabled) {
+      fprintf(stderr,
+              "JUKU_CPU_A12_INCREMENT_FAULT_DISARM_PC requires ARM_PC\n");
+      return 2;
+    }
+    cpu_a12_increment_fault_disarm_enabled = 1;
+    cpu_a12_increment_fault_disarm_pc = (uint16_t)value;
+    fprintf(stderr, "[CPU] A12 increment fault will disarm at pc=0x%04X\n",
+            cpu_a12_increment_fault_disarm_pc);
+  }
+  if (cpu_a12_increment_fault_arm_bank_mode_env &&
+      cpu_a12_increment_fault_arm_bank_mode_env[0]) {
+    char* end = NULL;
+    unsigned long value = strtoul(
+        cpu_a12_increment_fault_arm_bank_mode_env, &end, 0);
+    if (!end || *end || value > 3 ||
+        !cpu_a12_increment_fault_arm_enabled) {
+      fprintf(stderr,
+              "invalid JUKU_CPU_A12_INCREMENT_FAULT_ARM_BANK_MODE=%s\n",
+              cpu_a12_increment_fault_arm_bank_mode_env);
+      return 2;
+    }
+    cpu_a12_increment_fault_arm_bank_mode = (int)value;
+    fprintf(stderr, "[CPU] A12 increment fault arm requires bank mode %d\n",
+            cpu_a12_increment_fault_arm_bank_mode);
+  }
   if (usart_transfer_cycles && usart_transfer_cycles[0]) {
     usart.transfer_cycles = strtoul(usart_transfer_cycles, 0, 0);
     if (!usart.transfer_cycles) usart.transfer_cycles = 1;
@@ -1749,6 +1824,28 @@ int main(int argc, char** argv) {
          !stop_prompt_hit &&
          !terminate_requested &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
+    if (cpu_a12_increment_fault_arm_enabled &&
+        !cpu_a12_increment_fault_arm_fired &&
+        (cpu_a12_increment_fault_arm_bank_mode < 0 ||
+         mode == cpu_a12_increment_fault_arm_bank_mode) &&
+        cpu.pc == cpu_a12_increment_fault_arm_pc) {
+      cpu_a12_increment_fault_arm_fired = 1;
+      cpu_a12_increment_fault = 1;
+      cpu.fault_a12_increment_high_loss = 1;
+      fprintf(stderr, "[CPU] A12 increment fault armed at pc=%04X cyc=%lu\n",
+              cpu.pc, cpu.cyc);
+    }
+    if (cpu_a12_increment_fault_disarm_enabled &&
+        cpu_a12_increment_fault_arm_fired &&
+        !cpu_a12_increment_fault_disarm_fired &&
+        cpu.pc == cpu_a12_increment_fault_disarm_pc) {
+      cpu_a12_increment_fault_disarm_fired = 1;
+      cpu_a12_increment_fault = 0;
+      cpu.fault_a12_increment_high_loss = 0;
+      fprintf(stderr,
+              "[CPU] A12 increment fault disarmed at pc=%04X cyc=%lu\n",
+              cpu.pc, cpu.cyc);
+    }
     if (reset_after_rx && !reset_after_rx_fired &&
         usart.rx_bytes >= reset_after_rx) {
       reset_after_rx_fired = 1;

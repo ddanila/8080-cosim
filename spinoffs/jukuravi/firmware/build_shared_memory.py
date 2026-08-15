@@ -19,9 +19,9 @@ COMMON = ROOT / "third_party" / "juku-common" / "diag"
 OUTPUT = HERE / "shared-memory-4000.bin"
 
 
-def build() -> bytes:
+def build_source(source: Path) -> bytes:
     with tempfile.TemporaryDirectory(prefix="jukuravi-shared-diag.") as name:
-        output = Path(name) / "shared-memory-4000.cim"
+        output = Path(name) / (source.stem + ".cim")
         subprocess.run(
             [
                 str(executable()),
@@ -31,11 +31,15 @@ def build() -> bytes:
                 f"-I{COMMON}",
                 "-o",
                 str(output),
-                str(SOURCE),
+                str(source),
             ],
             check=True,
         )
         return output.read_bytes()
+
+
+def build() -> bytes:
+    return build_source(SOURCE)
 
 
 def main() -> int:

@@ -2,10 +2,12 @@
 
 ## Shared mnemonic diagnostic
 
-`shared-memory-4000.asm` is a loader-callable wrapper around the pinned
-`juku-common/diag/memory.asm` source. Unlike the older NASM probes, its 8080
-instructions are written as assembler mnemonics. It tests and restores
-`5000h..50FFh`, writes the accumulated mismatch mask to `4E00h`, and returns.
+`shared-memory-4000.asm` and `shared-cpu-4000.asm` are loader-callable wrappers
+around the pinned `juku-common/diag` sources. Unlike the older NASM probes,
+their 8080 instructions are written as assembler mnemonics. The memory wrapper
+tests and restores `5000h..50FFh`; the CPU wrapper covers the ALU/flags,
+register-pair, INX/DAD, stack, and PUSH/POP paths. Both write their structured
+result mask to `4E00h` and return.
 
 Initialize the shared sources. The build compiles the pinned zmac submodule and
 uses its Intel 8080 mode; no separately installed assembler is required:
@@ -14,12 +16,18 @@ uses its Intel 8080 mode; no separately installed assembler is required:
 git submodule update --init --recursive
 python3 spinoffs/jukuravi/firmware/build_shared_memory.py
 python3 spinoffs/jukuravi/firmware/build_shared_memory.py --check
+python3 spinoffs/jukuravi/firmware/build_shared_cpu.py
+python3 spinoffs/jukuravi/firmware/build_shared_cpu.py --check
 python3 spinoffs/jukuravi/firmware/build_smoke.py
 python3 spinoffs/jukuravi/firmware/build_smoke.py --check
 cc -O2 -Wall -Wextra -o /tmp/jukuravi-shared-memory-test \
   tests/jukuravi_shared_memory_test.c cosim/i8080.c
 /tmp/jukuravi-shared-memory-test \
   spinoffs/jukuravi/firmware/shared-memory-4000.bin
+cc -O2 -Wall -Wextra -o /tmp/jukuravi-shared-cpu-test \
+  tests/jukuravi_shared_cpu_test.c cosim/i8080.c
+/tmp/jukuravi-shared-cpu-test \
+  spinoffs/jukuravi/firmware/shared-cpu-4000.bin
 ```
 
 The host prerequisites for zmac are `make`, `bison`, and a C/C++ compiler. Set
