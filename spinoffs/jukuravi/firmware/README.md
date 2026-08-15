@@ -5,9 +5,11 @@
 `shared-memory-4000.asm` and `shared-cpu-4000.asm` are loader-callable wrappers
 around the pinned `juku-common/diag` sources. Unlike the older NASM probes,
 their 8080 instructions are written as assembler mnemonics. The memory wrapper
-tests and restores `5000h..50FFh`; the CPU wrapper covers the ALU/flags,
+tests and restores `5000h..50FFh` with byte-cell/data-lane and A0..A7 alias
+checks, holds one cell through two delay intervals, and records the restored
+page checksum; the CPU wrapper covers the ALU/flags,
 register-pair, INX/DAD, stack, and PUSH/POP paths. Both write their structured
-result mask to `4E00h` and return.
+results from `4E00h` and return.
 
 Initialize the shared sources. The build compiles the pinned zmac submodule and
 uses its Intel 8080 mode; no separately installed assembler is required:

@@ -98,6 +98,8 @@ python3 spinoffs/jukuravi/firmware/build_d0_d55_stress.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_best_effort.py --check
 python3 spinoffs/jukuravi/firmware/build_d2_loader.py --check
 python3 spinoffs/jukuravi/firmware/build_d0_solicited.py --check
+python3 spinoffs/jukuravi/firmware/build_shared_memory.py --check
+python3 spinoffs/jukuravi/firmware/build_shared_cpu.py --check
 "$CC" -std=c11 -O2 -Wall -Wextra -Werror -I cosim \
   -o "$tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
@@ -122,6 +124,22 @@ trace_test() {
 
 bare_test() {
   python3 "tests/$1"
+}
+
+shared_memory() {
+  "$CC" -std=c11 -O2 -Wall -Wextra -Werror \
+    -o "$tmp/jukuravi-shared-memory-test" \
+    tests/jukuravi_shared_memory_test.c cosim/i8080.c
+  "$tmp/jukuravi-shared-memory-test" \
+    spinoffs/jukuravi/firmware/shared-memory-4000.bin
+}
+
+shared_cpu() {
+  "$CC" -std=c11 -O2 -Wall -Wextra -Werror \
+    -o "$tmp/jukuravi-shared-cpu-test" \
+    tests/jukuravi_shared_cpu_test.c cosim/i8080.c
+  "$tmp/jukuravi-shared-cpu-test" \
+    spinoffs/jukuravi/firmware/shared-cpu-4000.bin
 }
 
 hdl_pit_latch() {
@@ -786,6 +804,8 @@ PY
 echo "jukuravi-d0: fanning out across $JOBS job(s)" >&2
 
 spawn cosim:pit-latch    trace_test cosim_pit_latch_test.py
+spawn shared:memory      shared_memory
+spawn shared:cpu         shared_cpu
 spawn cosim:alive        cosim_test jukuravi_d0_alive_test.py diag-d0-alive.bin
 spawn cosim:cpu          cosim_test jukuravi_d0_cpu_test.py diag-d0-cpu.bin
 spawn cosim:usart-local  cosim_test jukuravi_d0_usart_local_test.py diag-d0-usart-local.bin
