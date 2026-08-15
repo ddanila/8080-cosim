@@ -166,7 +166,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                  request_wire_bytes=0, reply_wire_bytes=0,
                  compact_records=0, compact_bytes_saved=0,
                  read_ahead_records=0, v3_raw=0, v3_fill=0,
-                 v3_deleted=0, v3_prefix=0)
+                 v3_deleted=0, v3_prefix=0, dropped_replies=0)
     last_sequence: int | None = None
     last_request = b""
     last_reply = b""
@@ -402,6 +402,15 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             reply_attempts += 1
             outgoing = reply_filter(reply_attempts, reply) \
                 if reply_filter is not None else reply
+            if outgoing == b"":
+                stats["dropped_replies"] += 1
+                if verbose:
+                    print(
+                        f"disk reply attempt {reply_attempts} intentionally "
+                        "dropped",
+                        flush=True,
+                    )
+                continue
             if len(outgoing) != len(reply):
                 raise ValueError("disk reply filter must preserve length")
             if reply_chunks and outgoing != reply:

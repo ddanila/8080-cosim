@@ -51,7 +51,10 @@ with the machine-readable board model.
   PIC. The separately named RAM-BIOS/NetDisk-v3 payload adds CRC-protected
   three-record read-ahead with bounded raw/fill/deleted/prefix encodings. Its
   full stock-Janet-to-`DIR` path takes 12 disk exchanges instead of 35; cosim
-  also proves one corrupted-response retry and negotiated v2/v1 fallback.
+  also proves one corrupted-response retry, negotiated v2/v1 fallback, and a
+  complete host-loss recovery: three missing replies produce a bounded CP/M
+  disk error, after which restored replies serve a fresh `DIR` without a target
+  restart.
   V15 is simulator-proven, not yet a physical replacement for V14. The
   original stock Janet path is unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared

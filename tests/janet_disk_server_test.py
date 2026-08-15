@@ -155,6 +155,7 @@ def main() -> int:
         "compact_records": 2, "compact_bytes_saved": 255,
         "read_ahead_records": 0,
         "v3_raw": 0, "v3_fill": 0, "v3_deleted": 0, "v3_prefix": 0,
+        "dropped_replies": 0,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
@@ -176,6 +177,9 @@ def main() -> int:
                 v3_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
                 reply_guard=0, protocol_version=3, verbose=False,
                 stats=v3_stats,
+                reply_filter=lambda attempt, reply: (
+                    b"" if attempt == 1 else reply
+                ),
             )
         except BaseException as error:
             v3_errors.append(error)
@@ -194,6 +198,16 @@ def main() -> int:
     expected_reply = expected_body + crc16_ibm(expected_body).to_bytes(
         2, "big",
     )
+    v3_client.settimeout(0.05)
+    try:
+        v3_client.recv(1)
+    except socket.timeout:
+        pass
+    else:
+        raise AssertionError("empty reply filter did not drop the reply")
+    finally:
+        v3_client.settimeout(None)
+    v3_client.sendall(request(READ_AHEAD, 6, 0, 2, 1))
     reply = receive_exact(v3_client, len(expected_reply))
     if reply != expected_reply:
         raise AssertionError(f"v3 read-ahead reply differs: {reply.hex()}")
@@ -206,7 +220,8 @@ def main() -> int:
     if v3_thread.is_alive() or v3_errors:
         raise AssertionError(f"v3 disk server did not finish: {v3_errors!r}")
     if v3_stats["reads"] != 1 or v3_stats["read_records"] != 3 or \
-            v3_stats["retries"] != 1:
+            v3_stats["retries"] != 2 or \
+            v3_stats["dropped_replies"] != 1:
         raise AssertionError(f"v3 counters differ: {v3_stats}")
 
     result = ROOT / ".obj" / "janet-disk-server-result-test.json"
