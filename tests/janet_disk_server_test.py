@@ -285,6 +285,7 @@ def main() -> int:
     console_input = bytearray(b"X")
     console_output = bytearray()
     console_stats: dict[str, int] = {}
+    console_confirmations: list[dict[str, int]] = []
     console_errors: list[BaseException] = []
 
     def console_worker() -> None:
@@ -293,6 +294,7 @@ def main() -> int:
                 console_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
                 reply_guard=0, protocol_version=3, console_protocol=True,
                 console_input=console_input, console_output=console_output,
+                console_confirm_hook=console_confirmations.append,
                 verbose=False, stats=console_stats,
             )
         except BaseException as error:
@@ -332,10 +334,13 @@ def main() -> int:
     if console_output != b"A" or console_input or \
             console_stats["console_output_bytes"] != 1 or \
             console_stats["console_input_bytes"] != 1 or \
-            console_stats["console_polls"] != 3:
+            console_stats["console_polls"] != 3 or \
+            console_confirmations != [{"operation": CONSOLE_OUT,
+                                       "sequence": 7}]:
         raise AssertionError(
             f"remote console state/counters differ: output={console_output!r} "
-            f"input={console_input!r} stats={console_stats}"
+            f"input={console_input!r} stats={console_stats} "
+            f"confirmations={console_confirmations!r}"
         )
 
     result = ROOT / ".obj" / "janet-disk-server-result-test.json"

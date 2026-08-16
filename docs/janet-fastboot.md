@@ -596,6 +596,14 @@ the first console-poll reply dropped. The target disables, backs off, reprobes,
 consumes the queued command, and completes without reboot. N3 remains the
 default unless `--console-pty` is explicitly supplied.
 
+Capability markers are repeated every 250 ms while the server is not yet
+synchronized. The earlier 20 ms cadence could leave another `NRN4` behind the
+marker a target had just consumed and collide with its first reply on a
+one-byte 8251. The console startup message deliberately distinguishes
+advertisement from confirmation: the host reports N4 as confirmed only after
+the first valid operation 20h or 21h request arrives. Console traffic cannot
+be mistaken for the first disk request in boot-timing JSON.
+
 ### Direct-ROM V15 path (ekta4402)
 
 The separately versioned `spinoffs/jukuravi/remix/ekta4402.bin` removes the

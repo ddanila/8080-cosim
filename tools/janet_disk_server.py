@@ -55,6 +55,7 @@ DIRECTORY_SECTORS = frozenset(SECTOR_ORDER[:32])
 READ_AHEAD_RECORDS = 3
 V3_RECORD_GUARD = 0.004
 V3_WIRE_BYTE_TIME = 11 / FAST_BAUD  # 8 data + odd parity + start/stop
+CAPABILITY_RETRY_INTERVAL = 0.25
 
 
 def encode_v3_record(payload: bytes, *, deleted_directory: bool) -> bytes:
@@ -153,6 +154,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                first_request_hook: Callable[
                    [dict[str, int | float]], None
                ] | None = None,
+               console_confirm_hook: Callable[
+                   [dict[str, int]], None
+               ] | None = None,
                reply_filter: Callable[[int, bytes], bytes] | None = None,
                console_reply_filter: Callable[[int, int, bytes], bytes] |
                None = None,
@@ -203,9 +207,13 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
         write_all(fd, b"NRN4" if console_protocol else
                   b"NRN3" if protocol_version == 3 else
                   b"NRN2" if protocol_version == 2 else b"NR")
-    next_ready = time.monotonic() + 0.02
+    # Give the target time to consume one complete marker and begin its first
+    # request before repeating it. A 20 ms cadence could queue another marker
+    # behind N4 and collide with the first console reply on a one-byte 8251.
+    next_ready = time.monotonic() + CAPABILITY_RETRY_INTERVAL
     synchronized = resume
     first_request_seen = False
+    console_confirmed = False
     reply_attempts = 0
     console_reply_attempts = 0
 
@@ -221,7 +229,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     b"NRN3" if protocol_version == 3 else
                     b"NRN2" if protocol_version == 2 else b"NR",
                 )
-                next_ready = time.monotonic() + 0.02
+                next_ready = time.monotonic() + CAPABILITY_RETRY_INTERVAL
             if reads + writes and idle_timeout is not None and \
                     time.monotonic() - last_activity >= idle_timeout:
                 break
@@ -415,7 +423,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             stats["reply_wire_bytes"] += len(reply)
 
             request_at = time.monotonic()
-            if not first_request_seen:
+            if operation not in (CONSOLE_POLL, CONSOLE_OUT) and \
+                    not first_request_seen:
                 first_request_seen = True
                 if first_request_hook is not None:
                     first_request_hook({
@@ -430,8 +439,19 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                         "sector": sector,
                         "status": 0 if status in (2, 3) else status,
                     })
+            if operation in (CONSOLE_POLL, CONSOLE_OUT) and \
+                    console_supported and not console_confirmed:
+                console_confirmed = True
+                if console_confirm_hook is not None:
+                    console_confirm_hook({
+                        "operation": operation,
+                        "sequence": sequence,
+                    })
 
-            if verbose:
+            # Confirmation plus aggregate counters are useful; one line for
+            # every idle poll and mirrored character makes a real terminal
+            # session's log unreadable and can produce thousands of lines.
+            if verbose and operation not in (CONSOLE_POLL, CONSOLE_OUT):
                 elapsed = "" if boot_started_at is None else \
                     f" boot+{request_at - boot_started_at:.3f}s"
                 display_status = 0 if status in (2, 3) else status
@@ -545,11 +565,17 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 write_all(fd, reply)
 
     if verbose:
-        print(
+        summary = (
             f"Janet disk session: read requests={reads}, "
-            f"records={read_records}, writes={writes}, retries={retries}",
-            flush=True,
+            f"records={read_records}, writes={writes}, retries={retries}"
         )
+        if console_protocol:
+            summary += (
+                f", console polls={stats['console_polls']}, "
+                f"input bytes={stats['console_input_bytes']}, "
+                f"output bytes={stats['console_output_bytes']}"
+            )
+        print(summary, flush=True)
     return stats
 
 
@@ -829,8 +855,8 @@ def main(argv: Iterable[str] | None = None) -> int:
             print(f"Serving read-only native B: from {args.drive_b}", flush=True)
         if args.console_pty:
             print(
-                f"Remote console negotiated as N4 on {args.console_pty}; "
-                "local Juku screen/keyboard remain enabled",
+                f"Advertising N4 remote console on {args.console_pty}; "
+                "awaiting the first target console request",
                 flush=True,
             )
 
@@ -879,6 +905,16 @@ def main(argv: Iterable[str] | None = None) -> int:
             write_boot_result(args.boot_result_json, report)
             print(f"Saved boot timing to {args.boot_result_json}", flush=True)
 
+        def confirm_remote_console(event: dict[str, int]) -> None:
+            operation = "output" if event["operation"] == CONSOLE_OUT \
+                else "poll"
+            print(
+                "Remote console N4 confirmed by target "
+                f"{operation} request (sequence {event['sequence']:02X}); "
+                "local Juku screen/keyboard remain enabled",
+                flush=True,
+            )
+
         serve_disk(
             fd,
             volume,
@@ -893,6 +929,8 @@ def main(argv: Iterable[str] | None = None) -> int:
             first_request_hook=record_first_request,
             console_protocol=bool(args.console_pty),
             console_fd=console_fd,
+            console_confirm_hook=confirm_remote_console,
+            resume=args.network_rom,
         )
     finally:
         if args.writable:
