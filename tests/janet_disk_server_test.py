@@ -25,6 +25,7 @@ from tools.janet_disk_server import (  # noqa: E402
     READ_COMPACT,
     RECORD_SIZE,
     REPLY_SYNC,
+    STATUS_REPORT,
     TRACK_SIZE,
     TIME_GET,
     TIME_SET,
@@ -168,6 +169,7 @@ def main() -> int:
         "console_polls": 0, "console_input_bytes": 0,
         "console_output_bytes": 0,
         "clock_gets": 0, "clock_sets": 0, "clock_failures": 0,
+        "status_reports": 0,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
@@ -308,6 +310,7 @@ def main() -> int:
     console_stats: dict[str, int] = {}
     console_confirmations: list[dict[str, int]] = []
     console_errors: list[BaseException] = []
+    status_reports: list[dict[str, int]] = []
     clock = HostClock(lambda: datetime(
         2026, 8, 17, 12, 34, 56, tzinfo=timezone.utc,
     ))
@@ -319,6 +322,7 @@ def main() -> int:
                 reply_guard=0, protocol_version=3, console_protocol=True,
                 console_input=console_input, console_output=console_output,
                 console_confirm_hook=console_confirmations.append,
+                status_report_hook=status_reports.append,
                 clock=clock,
                 verbose=False, stats=console_stats,
             )
@@ -375,6 +379,13 @@ def main() -> int:
     if bad_set_reply[:4] != REPLY_SYNC + b"\x0D\x01" or \
             checksum(bad_set_reply):
         raise AssertionError("invalid CP/M date was not rejected")
+    console_client.sendall(request(
+        STATUS_REPORT, 14, 0x12, (0x0F << 8) | 1, 0,
+    ))
+    status_reply = receive_exact(console_client, 5)
+    if status_reply[:4] != REPLY_SYNC + b"\x0E\x00" or \
+            checksum(status_reply):
+        raise AssertionError("target status report was not acknowledged")
     console_thread.join(timeout=2)
     console_client.close()
     console_host.close()
@@ -389,6 +400,7 @@ def main() -> int:
             console_stats["clock_gets"] != 2 or \
             console_stats["clock_sets"] != 1 or \
             console_stats["clock_failures"] != 1 or \
+            console_stats["status_reports"] != 1 or \
             console_confirmations != [{"operation": CONSOLE_OUT,
                                        "sequence": 7}]:
         raise AssertionError(
@@ -396,6 +408,11 @@ def main() -> int:
             f"input={console_input!r} stats={console_stats} "
             f"confirmations={console_confirmations!r}"
         )
+    if status_reports != [{
+        "sequence": 14, "s21": 0x12, "video_mode": 1,
+        "features": 0x0F, "clock_status": 0,
+    }]:
+        raise AssertionError(f"target status hook differs: {status_reports!r}")
 
     result = ROOT / ".obj" / "janet-disk-server-result-test.json"
     result.parent.mkdir(exist_ok=True)

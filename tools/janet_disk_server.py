@@ -42,6 +42,7 @@ CONSOLE_POLL = 0x20
 CONSOLE_OUT = 0x21
 TIME_GET = 0x22
 TIME_SET = 0x23
+STATUS_REPORT = 0x24
 RECORD_SIZE = 128
 TRACK_SIZE = 40 * RECORD_SIZE
 TRACKS = 80
@@ -212,6 +213,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                console_confirm_hook: Callable[
                    [dict[str, int]], None
                ] | None = None,
+               status_report_hook: Callable[
+                   [dict[str, int]], None
+               ] | None = None,
                reply_filter: Callable[[int, bytes], bytes] | None = None,
                console_reply_filter: Callable[[int, int, bytes], bytes] |
                None = None,
@@ -245,7 +249,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                  short_replies=0, extra_reply_bytes=0,
                  console_polls=0, console_input_bytes=0,
                  console_output_bytes=0, clock_gets=0, clock_sets=0,
-                 clock_failures=0)
+                 clock_failures=0, status_reports=0)
     if console_protocol and protocol_version != 3:
         raise ValueError("remote console requires NetDisk protocol 3")
     if console_protocol and console_input is None:
@@ -344,6 +348,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             if request[2] not in (
                     READ, WRITE, READ_COMPACT, READ_AHEAD, WRITE_V3,
                     CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
+                    STATUS_REPORT,
             ) or \
                     checksum(request):
                 retries += 1
@@ -431,6 +436,10 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     stats["clock_failures"] += 1
                 body = REPLY_SYNC + bytes((sequence, status))
                 reply = body + bytes((checksum(body),))
+            elif operation == STATUS_REPORT:
+                status = 0 if protocol_version == 3 else 1
+                body = REPLY_SYNC + bytes((sequence, status))
+                reply = body + bytes((checksum(body),))
             elif operation == READ_COMPACT and status == 0:
                 if payload and payload.count(payload[:1]) == RECORD_SIZE:
                     status = 2
@@ -502,7 +511,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 body = REPLY_SYNC + bytes((sequence, status, 0))
                 reply = body + crc16_ibm(body).to_bytes(2, "big")
             elif operation not in (
-                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET):
+                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
+                    STATUS_REPORT):
                 body = REPLY_SYNC + bytes((sequence, status)) + payload
                 reply = body + bytes((checksum(body),))
             stats["request_wire_bytes"] += len(request)
@@ -510,7 +520,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
 
             request_at = time.monotonic()
             if operation not in (
-                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET) and \
+                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
+                    STATUS_REPORT) and \
                     not first_request_seen:
                 first_request_seen = True
                 if first_request_hook is not None:
@@ -539,7 +550,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             # every idle poll and mirrored character makes a real terminal
             # session's log unreadable and can produce thousands of lines.
             if verbose and operation not in (
-                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET):
+                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
+                    STATUS_REPORT):
                 elapsed = "" if boot_started_at is None else \
                     f" boot+{request_at - boot_started_at:.3f}s"
                 display_status = 0 if status in (2, 3) else status
@@ -553,6 +565,14 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             elif verbose and operation in (TIME_GET, TIME_SET):
                 print(
                     f"clock request op={operation:02X} seq={sequence:02X} "
+                    f"status={status}",
+                    flush=True,
+                )
+            elif verbose and operation == STATUS_REPORT:
+                print(
+                    f"target status seq={sequence:02X} "
+                    f"s21={request[4]:02X} video={request[5]} "
+                    f"features={request[6]:02X} clock={request[7]:02X} "
                     f"status={status}",
                     flush=True,
                 )
@@ -584,6 +604,16 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 assert pending_time_set is not None
                 clock.set(pending_time_set)
                 stats["clock_sets"] += 1
+            elif status == 0 and operation == STATUS_REPORT:
+                stats["status_reports"] += 1
+                if status_report_hook is not None:
+                    status_report_hook({
+                        "sequence": sequence,
+                        "s21": request[4],
+                        "video_mode": request[5],
+                        "features": request[6],
+                        "clock_status": request[7],
+                    })
             elif status in (0, 2, 3) and operation in (
                     READ, READ_COMPACT, READ_AHEAD):
                 reads += 1

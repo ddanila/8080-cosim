@@ -613,6 +613,16 @@ unchanged, so clock availability cannot block boot, disk, or local console.
 Replies retain the N4 XOR framing and duplicate sequence/request pairs replay
 the exact prior reply without repeating a SET side effect.
 
+Operation `24h` is a bounded, target-to-host status report. Its four request
+argument bytes carry the raw S21 keyboard DIP value, decoded video-mode
+number, target feature flags, and last clock status respectively. The host
+acknowledges the report with the normal five-byte N4 reply, counts accepted
+reports, and prints a single structured `target status` log line. Duplicate
+requests replay the previous acknowledgement without publishing or counting
+the report twice. This gives unattended tests and field logs the same
+configuration facts that the on-screen CP/M `STATUS` utility reports, without
+adding unsolicited traffic to boot or normal disk access.
+
 ### Direct-ROM V15 path (ekta4402)
 
 The separately versioned `spinoffs/jukuravi/remix/ekta4402.bin` removes the
