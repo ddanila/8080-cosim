@@ -561,6 +561,13 @@ injection produces exactly one duplicate request and then the same
 framebuffer. Separate negotiation cases prove fallback to v2 compact and v1
 raw replies, both with 35 requests.
 
+NetDisk v3 operation `15h` is the CRC-protected synchronous write-through
+counterpart to read-ahead `14h`. Its request carries the same 128-byte payload
+as legacy write `12h`; its reply is `DJ`, sequence, status, zero record count,
+and CRC-16/IBM. The resident client invalidates read-ahead before its first
+attempt and uses the same three-attempt timeout/retry machinery as reads.
+Legacy `12h` and its XOR reply remain unchanged for older clients.
+
 The client also bounds every receive byte to 65,536 D11 status polls and every
 transaction to three attempts. A disconnect therefore returns BIOS error 1
 rather than trapping CP/M in an infinite poll; the next call starts a fresh

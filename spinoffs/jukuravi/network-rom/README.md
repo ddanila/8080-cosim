@@ -52,9 +52,10 @@ without another RESET.
 The resident manifest is fixed at `FF00h`; stable three-byte vectors begin at
 `FF20h`. The dedicated CP/M Plus image remains in mode 1, validates the ABI,
 delegates serial initialization, polled keyboard input, the 80x24 console, and
-the bounded NetDisk-v3 read-ahead transaction. Network writes retain the RAM
-compatibility path. The normal
-all-RAM image remains a byte-exact comparison baseline.
+bounded NetDisk-v3 read-ahead and synchronous write-through transactions. The
+normal all-RAM image remains a byte-exact comparison baseline. The relinked
+consumer exposes a measured 39,168-byte transient span, exactly 8 KiB above
+that baseline.
 
 The resident advertises console, serial, keyboard, NetDisk, and diagnostic feature bits. It
 programs the proven D57 mode-2/count-4 19,200-baud clock, supports bounded 8251
@@ -62,8 +63,10 @@ send/receive, reuses the shared 15-column keyboard scanner and translation
 tables with three mutable bytes in low RAM, publishes build/workspace/helper
 metadata, supplies the MODX 5x7 font/text policy, and calls a 119-byte copied
 helper for mode-3 clear, scroll, and packed-row merges. Its versioned 10-byte
-NetDisk request owns complete three-attempt read transactions and a caller
-supplied DMA/cache. Sound remains unavailable until migrated; POST and automatic
+NetDisk request owns complete three-attempt read and write transactions and a
+caller-supplied DMA/cache. Writes invalidate read-ahead before their first
+attempt and use synchronous write-through; an uncertain outcome never leaves
+cache data valid. Sound remains unavailable until migrated; POST and automatic
 boot are reset-only facilities rather than runtime service vectors.
 
 ## What the regression proves
@@ -96,8 +99,8 @@ check together prove:
 - D26 Port C readback that includes BSR-updated upper hardware bits, proving
   mode changes preserve PC7 instead of relying on the direct-write shadow;
 - the real CP/M Plus ROM consumer remaining in mode 1, reaching `A>`, accepting
-  all 13 matrix keystrokes for `DIR` and `DIAG CPU`, and completing both with
-  36 NetDisk reads, no retries, and no USART overruns.
+  matrix input for `DIR`, `DIAG CPU`, and `ERA README.TXT`, and completing the
+  sequence with 38 NetDisk reads, one write, no retries, and no USART overruns;
 - byte-exact parity between the final resident-ROM and RAM-console framebuffers
   after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
 
@@ -117,7 +120,7 @@ cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
   /dev/ttyUSB0 out/cpm-plus-juku-network-rom-system.bin \
   out/cpm-plus-juku.img \
   --fast-stage1 out/cpm-plus-juku-network-rom-fastboot-v15.bin --network-rom \
-  --disk-baud 19200 --disk-protocol 3 --timeout 86400
+  --disk-baud 19200 --disk-protocol 3 --writable --timeout 86400
 ```
 
 Do not use that as authorization to burn the current files; the JSON status is
@@ -125,6 +128,7 @@ the machine-readable release gate.
 
 ## Next implementation boundary
 
-Move network writes behind ABI 1, then regenerate and relink CP/M Plus for the
-compact adapter map. Publish the exact TPA/map; resident code alone does not
-justify a RAM claim.
+Exercise the full recovery matrix, including corrupt/truncated/duplicate disk
+traffic, reset during transfer, and server restart. Then package named D15/D16
+candidates and qualify them physically on CS00015 before changing the release
+gate.

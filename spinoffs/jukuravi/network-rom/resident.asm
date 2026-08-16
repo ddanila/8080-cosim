@@ -89,7 +89,7 @@ rom_serial_end:
 
         dc      0e100h-$,0ffh
 
-; E100h..E3FFh: versioned NetDisk-v3 bulk read service.
+; E100h..E3FFh: versioned NetDisk-v3 read-ahead/write-through service.
 ROMNETDISK      equ     1
         include "netdisk-v3.asm"
 
@@ -98,17 +98,26 @@ rom_netdisk_impl:
         cpi     1                       ; request version
         jnz     rom_netdisk_bad
         inx     h
-        mov     a,m                     ; operation: 0 read, 1 invalidate, 2 mode
+        mov     a,m                     ; operation: read/invalidate/mode/write
         inx     h
         ora     a
         jz      rom_netdisk_read
         dcr     a
         jz      N3INV
         dcr     a
-        jnz     rom_netdisk_bad
+        jz      rom_netdisk_mode
+        dcr     a
+        jz      rom_netdisk_write
+        jmp     rom_netdisk_bad
+rom_netdisk_mode:
         mov     a,m
         jmp     N3ENA
 rom_netdisk_read:
+        mvi     b,0
+        jmp     rom_netdisk_rw
+rom_netdisk_write:
+        mvi     b,1
+rom_netdisk_rw:
         mov     a,m
         sta     SEKDSK
         inx     h
@@ -132,6 +141,9 @@ rom_netdisk_read:
         inx     h
         mov     a,m
         sta     N3CACHE+1
+        mov     a,b
+        ora     a
+        jnz     N3WRITE
         jmp     N3READ
 rom_netdisk_bad:
         mvi     a,0ffh

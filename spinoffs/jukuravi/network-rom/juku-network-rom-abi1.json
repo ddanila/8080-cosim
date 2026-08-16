@@ -1,9 +1,9 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "9decf18217d20c94539507b6031cfcef75188c42da4baa75b270e1a685ded331",
-  "d15_sha256": "d489bf256c73793238432bc6e88f373cac7f79014de07fb67115c6c586d29a19",
-  "d16_sha256": "d7e95ff3d8fedb4a4785f42880e3789a9eba529549990506b25e0349b8783c42",
+  "image_sha256": "84488717b335039c12e87a9055c0a4950925fa17a556283e2dbfb86e8c07e900",
+  "d15_sha256": "1eaf3410849aa967b38f5b74c3db48c1f0ab5684f888998ee6575fd98c1a8534",
+  "d16_sha256": "f15b1b029edd845e0aa7622d61e9b84740957dce1f38a75867cedccef54494ac",
   "boot_code_bytes": 997,
   "gate_bytes": 196,
   "helper_bytes": 119,

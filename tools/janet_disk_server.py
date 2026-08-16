@@ -37,6 +37,7 @@ READ = 0x11
 WRITE = 0x12
 READ_COMPACT = 0x13
 READ_AHEAD = 0x14
+WRITE_V3 = 0x15
 CONSOLE_POLL = 0x20
 CONSOLE_OUT = 0x21
 RECORD_SIZE = 128
@@ -265,13 +266,15 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 del buffer[:start]
             if len(buffer) < 3:
                 break
-            size = 9 + (RECORD_SIZE if buffer[2] == WRITE else 0)
+            size = 9 + (
+                RECORD_SIZE if buffer[2] in (WRITE, WRITE_V3) else 0
+            )
             if len(buffer) < size:
                 break
             request = bytes(buffer[:size])
             del buffer[:size]
             if request[2] not in (
-                    READ, WRITE, READ_COMPACT, READ_AHEAD,
+                    READ, WRITE, READ_COMPACT, READ_AHEAD, WRITE_V3,
                     CONSOLE_POLL, CONSOLE_OUT,
             ) or \
                     checksum(request):
@@ -302,13 +305,16 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                         if error.errno not in (errno.EAGAIN, errno.EWOULDBLOCK):
                             raise
             can_write = writable and drive == 0
+            valid_write = operation == WRITE or (
+                operation == WRITE_V3 and protocol_version == 3
+            )
             records = 1
             valid_read = operation in (READ, READ_COMPACT, READ_AHEAD) and \
                 (operation != READ_COMPACT or protocol_version >= 2) and \
                 (operation != READ_AHEAD or protocol_version == 3) and \
                 offset is not None
             status = 0 if valid_read or \
-                (operation == WRITE and offset is not None and can_write) else 1
+                (valid_write and offset is not None and can_write) else 1
             encoding = ""
             reply_chunks: tuple[bytes, ...] = ()
             payload = bytes(selected[offset:offset + RECORD_SIZE]) \
@@ -398,6 +404,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 payload = bytes(descriptors)
                 encoding = f"v3-ahead-{records}"
                 stats["read_ahead_records"] += records
+            elif operation == WRITE_V3:
+                body = REPLY_SYNC + bytes((sequence, status, 0))
+                reply = body + crc16_ibm(body).to_bytes(2, "big")
             elif operation not in (CONSOLE_POLL, CONSOLE_OUT):
                 body = REPLY_SYNC + bytes((sequence, status)) + payload
                 reply = body + bytes((checksum(body),))
@@ -438,7 +447,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 stats["retries"] = retries
                 reply = last_reply
                 reply_chunks = last_reply_chunks
-            elif status == 0 and operation == WRITE:
+            elif status == 0 and operation in (WRITE, WRITE_V3):
                 selected[offset:offset + RECORD_SIZE] = request[8:8 + RECORD_SIZE]
                 writes += 1
                 stats["writes"] = writes

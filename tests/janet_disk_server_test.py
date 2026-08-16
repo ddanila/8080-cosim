@@ -25,6 +25,7 @@ from tools.janet_disk_server import (  # noqa: E402
     TRACK_SIZE,
     VOLUME_SIZE,
     WRITE,
+    WRITE_V3,
     checksum,
     crc16_ibm,
     encode_v3_record,
@@ -178,7 +179,8 @@ def main() -> int:
     def v3_worker() -> None:
         try:
             serve_disk(
-                v3_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
+                v3_host.fileno(), drive_a, writable=True,
+                timeout=2, idle_timeout=0.05,
                 reply_guard=0, protocol_version=3, verbose=False,
                 stats=v3_stats,
                 reply_filter=lambda attempt, reply: (
@@ -218,12 +220,23 @@ def main() -> int:
     v3_client.sendall(request(READ_AHEAD, 6, 0, 2, 1))
     if receive_exact(v3_client, len(expected_reply)) != expected_reply:
         raise AssertionError("v3 duplicate request did not replay exactly")
+    written = bytes((0x5A,)) * RECORD_SIZE
+    v3_client.sendall(request(WRITE_V3, 7, 0, 4, 9, written))
+    write_body = REPLY_SYNC + b"\x07\x00\x00"
+    write_reply = write_body + crc16_ibm(write_body).to_bytes(2, "big")
+    if receive_exact(v3_client, len(write_reply)) != write_reply:
+        raise AssertionError("v3 write-through reply differs")
+    write_offset = record_offset(4, 9)
+    assert write_offset is not None
+    if drive_a[write_offset:write_offset + RECORD_SIZE] != written:
+        raise AssertionError("v3 write-through did not update the volume")
     v3_thread.join(timeout=2)
     v3_client.close()
     v3_host.close()
     if v3_thread.is_alive() or v3_errors:
         raise AssertionError(f"v3 disk server did not finish: {v3_errors!r}")
     if v3_stats["reads"] != 1 or v3_stats["read_records"] != 3 or \
+            v3_stats["writes"] != 1 or \
             v3_stats["retries"] != 2 or \
             v3_stats["dropped_replies"] != 1:
         raise AssertionError(f"v3 counters differ: {v3_stats}")
