@@ -13,7 +13,7 @@ import sys
 import time
 import tty
 from collections.abc import Callable, Iterable
-from datetime import datetime, timezone
+from datetime import date, datetime, time as datetime_time, timedelta, timezone
 from pathlib import Path
 
 try:
@@ -40,6 +40,8 @@ READ_AHEAD = 0x14
 WRITE_V3 = 0x15
 CONSOLE_POLL = 0x20
 CONSOLE_OUT = 0x21
+TIME_GET = 0x22
+TIME_SET = 0x23
 RECORD_SIZE = 128
 TRACK_SIZE = 40 * RECORD_SIZE
 TRACKS = 80
@@ -56,6 +58,59 @@ READ_AHEAD_RECORDS = 3
 V3_RECORD_GUARD = 0.004
 V3_WIRE_BYTE_TIME = 11 / FAST_BAUD  # 8 data + odd parity + start/stop
 CAPABILITY_RETRY_INTERVAL = 0.25
+CPM_EPOCH = date(1978, 1, 1)
+
+
+def bcd(value: int) -> int:
+    if not 0 <= value <= 99:
+        raise ValueError(f"value cannot be represented as BCD: {value}")
+    return (value // 10) << 4 | value % 10
+
+
+def from_bcd(value: int, *, maximum: int) -> int:
+    result = (value >> 4) * 10 + (value & 0x0F)
+    if value & 0x0F > 9 or value >> 4 > 9 or result > maximum:
+        raise ValueError(f"invalid BCD value {value:02X}")
+    return result
+
+
+class HostClock:
+    """CP/M clock backed by host local time plus a session-only offset."""
+
+    def __init__(self, now: Callable[[], datetime] | None = None) -> None:
+        self._now = now or (lambda: datetime.now().astimezone())
+        self._offset = timedelta(0)
+
+    def get(self) -> bytes:
+        current = self._now() + self._offset
+        days = (current.date() - CPM_EPOCH).days + 1
+        if not 1 <= days <= 0xFFFF:
+            raise ValueError("host date is outside the CP/M date range")
+        return days.to_bytes(2, "little") + bytes((
+            bcd(current.hour), bcd(current.minute), bcd(current.second),
+        ))
+
+    def _target(self, encoded: bytes) -> datetime:
+        if len(encoded) != 4:
+            raise ValueError("CP/M set-time request must contain four bytes")
+        days = int.from_bytes(encoded[:2], "little")
+        if days < 1:
+            raise ValueError("CP/M day zero is invalid")
+        target_date = CPM_EPOCH + timedelta(days=days - 1)
+        hour = from_bcd(encoded[2], maximum=23)
+        minute = from_bcd(encoded[3], maximum=59)
+        current = self._now()
+        return datetime.combine(
+            target_date, datetime_time(hour, minute), tzinfo=current.tzinfo,
+        )
+
+    def validate_set(self, encoded: bytes) -> None:
+        self._target(encoded)
+
+    def set(self, encoded: bytes) -> None:
+        current = self._now()
+        target = self._target(encoded)
+        self._offset = target - current
 
 
 def encode_v3_record(payload: bytes, *, deleted_directory: bool) -> bytes:
@@ -164,6 +219,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                console_input: bytearray | None = None,
                console_output: bytearray | None = None,
                console_fd: int | None = None,
+               clock: HostClock | None = None,
                ) -> dict[str, int]:
     """Serve the compact CP/M record protocol on an already configured fd."""
     if len(volume) != VOLUME_SIZE:
@@ -188,11 +244,14 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                  v3_deleted=0, v3_prefix=0, dropped_replies=0,
                  short_replies=0, extra_reply_bytes=0,
                  console_polls=0, console_input_bytes=0,
-                 console_output_bytes=0)
+                 console_output_bytes=0, clock_gets=0, clock_sets=0,
+                 clock_failures=0)
     if console_protocol and protocol_version != 3:
         raise ValueError("remote console requires NetDisk protocol 3")
     if console_protocol and console_input is None:
         console_input = bytearray()
+    if clock is None:
+        clock = HostClock()
     last_sequence: int | None = None
     last_request = b""
     last_reply = b""
@@ -284,7 +343,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             del buffer[:size]
             if request[2] not in (
                     READ, WRITE, READ_COMPACT, READ_AHEAD, WRITE_V3,
-                    CONSOLE_POLL, CONSOLE_OUT,
+                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
             ) or \
                     checksum(request):
                 retries += 1
@@ -328,6 +387,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             reply_chunks: tuple[bytes, ...] = ()
             payload = bytes(selected[offset:offset + RECORD_SIZE]) \
                 if valid_read and status == 0 else b""
+            pending_time_set: bytes | None = None
             if operation == CONSOLE_POLL:
                 stats["console_polls"] += 1
                 if not console_supported:
@@ -344,6 +404,31 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             elif operation == CONSOLE_OUT:
                 status = 0 if console_supported else 1
                 payload = b""
+                body = REPLY_SYNC + bytes((sequence, status))
+                reply = body + bytes((checksum(body),))
+            elif operation == TIME_GET:
+                try:
+                    payload = clock.get() if protocol_version == 3 else b""
+                    status = 0 if payload else 1
+                except (OverflowError, ValueError):
+                    status = 1
+                    payload = b""
+                    stats["clock_failures"] += 1
+                body = REPLY_SYNC + bytes((sequence, status)) + payload
+                reply = body + bytes((checksum(body),))
+            elif operation == TIME_SET:
+                pending_time_set = request[4:8] \
+                    if protocol_version == 3 else None
+                try:
+                    if pending_time_set is None:
+                        raise ValueError("clock service requires NetDisk v3")
+                    # Validate without changing state before duplicate replay.
+                    clock.validate_set(pending_time_set)
+                    status = 0
+                except (OverflowError, ValueError):
+                    status = 1
+                    pending_time_set = None
+                    stats["clock_failures"] += 1
                 body = REPLY_SYNC + bytes((sequence, status))
                 reply = body + bytes((checksum(body),))
             elif operation == READ_COMPACT and status == 0:
@@ -416,14 +501,16 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             elif operation == WRITE_V3:
                 body = REPLY_SYNC + bytes((sequence, status, 0))
                 reply = body + crc16_ibm(body).to_bytes(2, "big")
-            elif operation not in (CONSOLE_POLL, CONSOLE_OUT):
+            elif operation not in (
+                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET):
                 body = REPLY_SYNC + bytes((sequence, status)) + payload
                 reply = body + bytes((checksum(body),))
             stats["request_wire_bytes"] += len(request)
             stats["reply_wire_bytes"] += len(reply)
 
             request_at = time.monotonic()
-            if operation not in (CONSOLE_POLL, CONSOLE_OUT) and \
+            if operation not in (
+                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET) and \
                     not first_request_seen:
                 first_request_seen = True
                 if first_request_hook is not None:
@@ -451,7 +538,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             # Confirmation plus aggregate counters are useful; one line for
             # every idle poll and mirrored character makes a real terminal
             # session's log unreadable and can produce thousands of lines.
-            if verbose and operation not in (CONSOLE_POLL, CONSOLE_OUT):
+            if verbose and operation not in (
+                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET):
                 elapsed = "" if boot_started_at is None else \
                     f" boot+{request_at - boot_started_at:.3f}s"
                 display_status = 0 if status in (2, 3) else status
@@ -460,6 +548,12 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     f"disk request op={operation:02X} seq={sequence:02X} "
                     f"drive={drive} track={track} sector={sector} "
                     f"status={display_status}{encoding_detail}{elapsed}",
+                    flush=True,
+                )
+            elif verbose and operation in (TIME_GET, TIME_SET):
+                print(
+                    f"clock request op={operation:02X} seq={sequence:02X} "
+                    f"status={status}",
                     flush=True,
                 )
 
@@ -484,7 +578,14 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 assert console_input
                 del console_input[0]
                 stats["console_input_bytes"] += 1
-            elif status in (0, 2, 3):
+            elif status == 0 and operation == TIME_GET:
+                stats["clock_gets"] += 1
+            elif status == 0 and operation == TIME_SET:
+                assert pending_time_set is not None
+                clock.set(pending_time_set)
+                stats["clock_sets"] += 1
+            elif status in (0, 2, 3) and operation in (
+                    READ, READ_COMPACT, READ_AHEAD):
                 reads += 1
                 read_records += records
                 stats["reads"] = reads
@@ -722,6 +823,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     volume = bytearray(args.volume.read_bytes())
     drive_b = juku_image_to_volume(args.drive_b.read_bytes()) \
         if args.drive_b else None
+    clock = HostClock()
     fast_stage = args.fast_stage1.read_bytes() if args.fast_stage1 else b""
     fd = os.open(args.serial, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     console_fd = os.open(
@@ -773,6 +875,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 console_protocol=bool(args.console_pty),
                 console_fd=console_fd,
                 console_confirm_hook=confirm_remote_console,
+                clock=clock,
                 resume=True,
             )
             return 0
@@ -938,6 +1041,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             console_protocol=bool(args.console_pty),
             console_fd=console_fd,
             console_confirm_hook=confirm_remote_console,
+            clock=clock,
             resume=args.network_rom,
         )
     finally:

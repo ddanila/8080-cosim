@@ -8,6 +8,7 @@ from pathlib import Path
 import socket
 import sys
 import threading
+from datetime import date, datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -16,6 +17,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 from tools.janet_disk_server import (  # noqa: E402
     CONSOLE_OUT,
     CONSOLE_POLL,
+    CPM_EPOCH,
+    HostClock,
     NATIVE_VOLUME_SIZE,
     READ,
     READ_AHEAD,
@@ -23,6 +26,8 @@ from tools.janet_disk_server import (  # noqa: E402
     RECORD_SIZE,
     REPLY_SYNC,
     TRACK_SIZE,
+    TIME_GET,
+    TIME_SET,
     VOLUME_SIZE,
     WRITE,
     WRITE_V3,
@@ -162,6 +167,7 @@ def main() -> int:
         "dropped_replies": 0, "short_replies": 0, "extra_reply_bytes": 0,
         "console_polls": 0, "console_input_bytes": 0,
         "console_output_bytes": 0,
+        "clock_gets": 0, "clock_sets": 0, "clock_failures": 0,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
@@ -302,6 +308,9 @@ def main() -> int:
     console_stats: dict[str, int] = {}
     console_confirmations: list[dict[str, int]] = []
     console_errors: list[BaseException] = []
+    clock = HostClock(lambda: datetime(
+        2026, 8, 17, 12, 34, 56, tzinfo=timezone.utc,
+    ))
 
     def console_worker() -> None:
         try:
@@ -310,6 +319,7 @@ def main() -> int:
                 reply_guard=0, protocol_version=3, console_protocol=True,
                 console_input=console_input, console_output=console_output,
                 console_confirm_hook=console_confirmations.append,
+                clock=clock,
                 verbose=False, stats=console_stats,
             )
         except BaseException as error:
@@ -339,6 +349,32 @@ def main() -> int:
     empty_reply = receive_exact(console_client, 5)
     if empty_reply[:4] != REPLY_SYNC + b"\x09\x00" or checksum(empty_reply):
         raise AssertionError("empty remote console poll differs")
+    day = (date(2026, 8, 17) - CPM_EPOCH).days + 1
+    console_client.sendall(request(TIME_GET, 10, 0, 0, 0))
+    time_reply = receive_exact(console_client, 10)
+    expected_time = day.to_bytes(2, "little") + b"\x12\x34\x56"
+    if time_reply[:4] != REPLY_SYNC + b"\x0A\x00" or \
+            time_reply[4:-1] != expected_time or checksum(time_reply):
+        raise AssertionError(f"host clock reply differs: {time_reply!r}")
+    next_day = day + 1
+    console_client.sendall(request(
+        TIME_SET, 11, next_day & 0xFF,
+        (0x09 << 8) | (next_day >> 8), 0x08,
+    ))
+    set_reply = receive_exact(console_client, 5)
+    if set_reply[:4] != REPLY_SYNC + b"\x0B\x00" or checksum(set_reply):
+        raise AssertionError("host clock set acknowledgement differs")
+    console_client.sendall(request(TIME_GET, 12, 0, 0, 0))
+    adjusted_reply = receive_exact(console_client, 10)
+    if adjusted_reply[4:-1] != \
+            next_day.to_bytes(2, "little") + b"\x09\x08\x00" or \
+            checksum(adjusted_reply):
+        raise AssertionError("session clock offset was not retained")
+    console_client.sendall(request(TIME_SET, 13, 0, 0, 0))
+    bad_set_reply = receive_exact(console_client, 5)
+    if bad_set_reply[:4] != REPLY_SYNC + b"\x0D\x01" or \
+            checksum(bad_set_reply):
+        raise AssertionError("invalid CP/M date was not rejected")
     console_thread.join(timeout=2)
     console_client.close()
     console_host.close()
@@ -350,6 +386,9 @@ def main() -> int:
             console_stats["console_output_bytes"] != 1 or \
             console_stats["console_input_bytes"] != 1 or \
             console_stats["console_polls"] != 3 or \
+            console_stats["clock_gets"] != 2 or \
+            console_stats["clock_sets"] != 1 or \
+            console_stats["clock_failures"] != 1 or \
             console_confirmations != [{"operation": CONSOLE_OUT,
                                        "sequence": 7}]:
         raise AssertionError(
@@ -375,7 +414,7 @@ def main() -> int:
     print(
         "JANET-DISK-SERVER-TEST: PASS "
         "(dual drive + NetDisk v3 + live resume + atomic save + "
-        "idempotent N4 console)"
+        "idempotent N4 console + host clock)"
     )
     return 0
 

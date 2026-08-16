@@ -604,6 +604,15 @@ advertisement from confirmation: the host reports N4 as confirmed only after
 the first valid operation 20h or 21h request arrives. Console traffic cannot
 be mistaken for the first disk request in boot-timing JSON.
 
+NetDisk-v3 operations `22h` and `23h` provide an optional CP/M Plus clock.
+`22h` returns the CP/M day word followed by BCD hour, minute, and second;
+`23h` accepts day, hour, and minute in the normal four request argument bytes.
+The server maintains a session-only offset after SET and never changes the host
+operating system clock. A missing or rejected clock reply leaves the target SCB
+unchanged, so clock availability cannot block boot, disk, or local console.
+Replies retain the N4 XOR framing and duplicate sequence/request pairs replay
+the exact prior reply without repeating a SET side effect.
+
 ### Direct-ROM V15 path (ekta4402)
 
 The separately versioned `spinoffs/jukuravi/remix/ekta4402.bin` removes the
