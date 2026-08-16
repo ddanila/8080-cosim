@@ -623,6 +623,14 @@ the report twice. This gives unattended tests and field logs the same
 configuration facts that the on-screen CP/M `STATUS` utility reports, without
 adding unsolicited traffic to boot or normal disk access.
 
+Operation `25h` carries an unattended diagnostic result using the same bounded
+and duplicate-safe request/reply turn. Its argument bytes are suite identifier,
+passed-test mask, failed-test mask, and flags. The host counts accepted reports,
+prints one structured `target diag` line, and invokes an optional automation
+hook exactly once; replaying a duplicate request only replays its prior ACK.
+Diagnostics therefore cannot monopolize the half-duplex USART or bypass the
+normal local-console and disk recovery rules.
+
 ### Direct-ROM V15 path (ekta4402)
 
 The separately versioned `spinoffs/jukuravi/remix/ekta4402.bin` removes the

@@ -26,6 +26,7 @@ from tools.janet_disk_server import (  # noqa: E402
     RECORD_SIZE,
     REPLY_SYNC,
     STATUS_REPORT,
+    DIAG_REPORT,
     TRACK_SIZE,
     TIME_GET,
     TIME_SET,
@@ -170,6 +171,7 @@ def main() -> int:
         "console_output_bytes": 0,
         "clock_gets": 0, "clock_sets": 0, "clock_failures": 0,
         "status_reports": 0,
+        "diag_reports": 0,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
@@ -311,6 +313,7 @@ def main() -> int:
     console_confirmations: list[dict[str, int]] = []
     console_errors: list[BaseException] = []
     status_reports: list[dict[str, int]] = []
+    diag_reports: list[dict[str, int]] = []
     clock = HostClock(lambda: datetime(
         2026, 8, 17, 12, 34, 56, tzinfo=timezone.utc,
     ))
@@ -323,6 +326,7 @@ def main() -> int:
                 console_input=console_input, console_output=console_output,
                 console_confirm_hook=console_confirmations.append,
                 status_report_hook=status_reports.append,
+                diag_report_hook=diag_reports.append,
                 clock=clock,
                 verbose=False, stats=console_stats,
             )
@@ -386,6 +390,12 @@ def main() -> int:
     if status_reply[:4] != REPLY_SYNC + b"\x0E\x00" or \
             checksum(status_reply):
         raise AssertionError("target status report was not acknowledged")
+    console_client.sendall(request(
+        DIAG_REPORT, 15, 0x03, (0xA5 << 8) | 0x5A, 0x80,
+    ))
+    diag_reply = receive_exact(console_client, 5)
+    if diag_reply[:4] != REPLY_SYNC + b"\x0F\x00" or checksum(diag_reply):
+        raise AssertionError("target diagnostic report was not acknowledged")
     console_thread.join(timeout=2)
     console_client.close()
     console_host.close()
@@ -401,6 +411,7 @@ def main() -> int:
             console_stats["clock_sets"] != 1 or \
             console_stats["clock_failures"] != 1 or \
             console_stats["status_reports"] != 1 or \
+            console_stats["diag_reports"] != 1 or \
             console_confirmations != [{"operation": CONSOLE_OUT,
                                        "sequence": 7}]:
         raise AssertionError(
@@ -413,6 +424,11 @@ def main() -> int:
         "features": 0x0F, "clock_status": 0,
     }]:
         raise AssertionError(f"target status hook differs: {status_reports!r}")
+    if diag_reports != [{
+        "sequence": 15, "suite": 0x03, "pass_mask": 0x5A,
+        "fail_mask": 0xA5, "flags": 0x80,
+    }]:
+        raise AssertionError(f"target diagnostic hook differs: {diag_reports!r}")
 
     result = ROOT / ".obj" / "janet-disk-server-result-test.json"
     result.parent.mkdir(exist_ok=True)
@@ -431,7 +447,7 @@ def main() -> int:
     print(
         "JANET-DISK-SERVER-TEST: PASS "
         "(dual drive + NetDisk v3 + live resume + atomic save + "
-        "idempotent N4 console + host clock)"
+        "idempotent N4 console + host clock + target reports)"
     )
     return 0
 
