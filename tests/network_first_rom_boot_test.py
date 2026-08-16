@@ -99,6 +99,81 @@ def wait_ack(fd: int, process: subprocess.Popen[bytes], timeout: float) -> bool:
     return False
 
 
+def run_reset_recovery(trace: Path, temporary: Path, image: bytes,
+                       metadata: dict[str, object]) -> None:
+    """Reset during an extension body, then boot on the same host link."""
+    case = temporary / "reset-recovery"
+    case.mkdir()
+    rom = case / "rom.bin"
+    rom.write_bytes(image)
+    master, slave = pty.openpty()
+    tty.setraw(slave)
+    tty_name = os.ttyname(slave)
+
+    def launch(name: str) -> tuple[subprocess.Popen[bytes], Path]:
+        checkpoint = case / name
+        environment = os.environ.copy()
+        environment.update(
+            JUKU_USART_PTY=tty_name,
+            JUKU_USART_TRANSFER_CYCLES="16",
+            JUKU_USART_BYTE_CYCLES="1024",
+            JUKU_USART_PIT_CLOCK="1",
+            JUKU_USART_PIT_CPU_HZ="1700000",
+            JUKU_CHECKPOINT_PREFIX=str(checkpoint),
+            JUKU_STOP_PC="0x0305",
+            JUKU_STOP_PC_AFTER_USART_RX="500",
+            JUKU_TRACE_BANK="1",
+            JUKU_DISABLE_SETTLE="1",
+            JUKU_REALTIME_HZ="20000000",
+        )
+        return subprocess.Popen(
+            [str(trace), str(rom), "500000000"], cwd=case, env=environment,
+            stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+        ), checkpoint
+
+    extension = bytes((0x3E, 0x5A, 0x32, 0x00, 0x4E)).ljust(
+        int(metadata["fastboot_extension_bytes"]), b"\0",
+    )
+    packet = extension_packet(extension)
+    first, _ = launch("first")
+    second: subprocess.Popen[bytes] | None = None
+    try:
+        if not wait_byte(master, AUTO_ROM_READY, 2.0) or \
+                not wait_ack(master, first, 5.0):
+            fail("reset fixture did not begin its first extension")
+        partial = bytes(packet[2:2 + (len(packet) - 2) // 2])
+        write_all(master, partial)
+        time.sleep(0.05)
+        first.terminate()
+        first.wait(timeout=5.0)
+
+        second, checkpoint = launch("second")
+        if not wait_byte(master, AUTO_ROM_READY, 2.0) or \
+                not wait_ack(master, second, 5.0):
+            fail("reset fixture did not reacquire the restarted target")
+        write_all(master, packet[2:])
+        time.sleep(0.10)
+        if second.poll() is None:
+            if not wait_ack(master, second, 5.0):
+                fail("reset fixture did not discard its stale partial body")
+            write_all(master, packet[2:])
+        second.wait(timeout=20.0)
+        state = parse_state(checkpoint.with_suffix(".state"))
+        ram = checkpoint.with_suffix(".ram").read_bytes()
+        if second.returncode != 0 or state.get("pc") != "0305" or \
+                state.get("mode") != "1" or ram[0x4E00] != 0x5A:
+            detail = second.stderr.read().decode(errors="replace") \
+                if second.stderr is not None else ""
+            fail(f"reset-mid-extension recovery differs: {state}; {detail[-800:]}")
+    finally:
+        for process in (first, second):
+            if process is not None and process.poll() is None:
+                process.kill()
+                process.wait()
+        os.close(master)
+        os.close(slave)
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         fail("usage: test.py /path/to/trace")
@@ -266,11 +341,13 @@ def main() -> int:
                     f"last:{expected}":
                 fail(f"automatic boot lost reset timer state at port {port}")
 
+        run_reset_recovery(trace, temporary, image, metadata)
+
     print(
         "NETWORK-FIRST-ROM-BOOT-TEST: PASS "
         f"{metadata['image_sha256']} (POST C1/C2/C3/C4/C5; "
         f"ready={ready_cycles} cycles; absent host; corrupt recovery; "
-        "keyless 19200 handoff)"
+        "reset-mid-extension recovery; keyless 19200 handoff)"
     )
     return 0
 

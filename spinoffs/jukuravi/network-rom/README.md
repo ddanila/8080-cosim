@@ -128,7 +128,13 @@ the machine-readable release gate.
 
 ## Next implementation boundary
 
-Exercise the full recovery matrix, including corrupt/truncated/duplicate disk
-traffic, reset during transfer, and server restart. Then package named D15/D16
-candidates and qualify them physically on CS00015 before changing the release
-gate.
+The desk recovery matrix is complete. It covers target reset halfway through a
+bootstrap extension while stale bytes remain on the same PTY, plus CP/M Plus
+recovery from truncated, 50 ms delayed, duplicated, and bad-CRC NetDisk-v3
+replies. The duplicate reply causes modeled 8251 overruns. A fresh stateless
+disk server also takes over after its predecessor receives a request but exits
+before replying. Clean and faulted paths all reach the real prompt and complete
+directory, diagnostic, and write-through operations without a manual reset.
+
+The next boundary is to package named D15/D16 candidates and qualify them
+physically on CS00015 before changing the release gate.

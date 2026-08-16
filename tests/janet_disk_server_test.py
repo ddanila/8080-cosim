@@ -158,7 +158,7 @@ def main() -> int:
         "compact_records": 2, "compact_bytes_saved": 255,
         "read_ahead_records": 0,
         "v3_raw": 0, "v3_fill": 0, "v3_deleted": 0, "v3_prefix": 0,
-        "dropped_replies": 0,
+        "dropped_replies": 0, "short_replies": 0, "extra_reply_bytes": 0,
         "console_polls": 0, "console_input_bytes": 0,
         "console_output_bytes": 0,
     }

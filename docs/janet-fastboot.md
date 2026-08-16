@@ -874,6 +874,17 @@ three complete bootstrap rediscoveries by default (`--boot-restarts` changes
 the bounded budget). This proves software recovery; physical reset behavior
 still belongs in bench qualification.
 
+The network-first V15 path also has a reset-with-stale-input fixture. It stops
+the modeled target halfway through an extension body, starts a fresh target on
+the same PTY, leaves the old partial bytes queued, and proves that overlapping
+synchronization discards them before accepting a complete retransmission. The
+CP/M Plus consumer adds malformed NetDisk-v3 cases: a truncated reply, 50 ms
+reply guards, a duplicated full reply that deliberately raises modeled 8251
+overruns, a bad CRC, and replacement by a fresh stateless disk server. All
+recover without a target reset. Variable-sized `reply_filter` output exists
+only to inject these deterministic test faults; the normal server still sends
+complete protocol-sized frames.
+
 A direct stock transfer to B400h was also tested as a possible zero-stage
 shortcut. The stock client reached the requested CA00h execute address but did
 not install the records at B400h (6327 of 6656 bytes differed in cosim). The

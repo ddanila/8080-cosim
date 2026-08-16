@@ -182,6 +182,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                  compact_records=0, compact_bytes_saved=0,
                  read_ahead_records=0, v3_raw=0, v3_fill=0,
                  v3_deleted=0, v3_prefix=0, dropped_replies=0,
+                 short_replies=0, extra_reply_bytes=0,
                  console_polls=0, console_input_bytes=0,
                  console_output_bytes=0)
     if console_protocol and protocol_version != 3:
@@ -493,9 +494,15 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                         flush=True,
                     )
                 continue
-            if len(outgoing) != len(reply):
-                raise ValueError("disk reply filter must preserve length")
-            if reply_chunks and outgoing != reply:
+            # Production filters preserve the frame. Tests may deliberately
+            # shorten or duplicate it to exercise target resynchronization.
+            if len(outgoing) < len(reply):
+                stats["short_replies"] += 1
+                reply_chunks = ()
+            elif len(outgoing) > len(reply):
+                stats["extra_reply_bytes"] += len(outgoing) - len(reply)
+                reply_chunks = ()
+            elif reply_chunks and outgoing != reply:
                 lengths = tuple(map(len, reply_chunks))
                 rebuilt = []
                 position = 0
