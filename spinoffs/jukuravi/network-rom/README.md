@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **CS00015 BENCH CANDIDATE C1 — PHYSICAL QUALIFICATION PENDING**
+Status: **CS00015 BENCH CANDIDATE C2 — PHYSICAL QUALIFICATION PENDING**
 
 This directory is the from-scratch successor to the frozen Ekta4401 monitor
 and simulator-only Ekta4402 direct-fastboot experiment. The product goal is a
@@ -9,7 +9,7 @@ baud, exposes common platform services from its resident 10 KiB, and gives
 CP/M Plus a larger TPA. The accepted staged plan and budgets live in the
 `cpm-plus-juku` repository.
 
-The present image, named `network-first-abi1-cs00015-c1`, proves the versioned
+The present image, named `network-first-abi1-cs00015-c2`, proves the versioned
 ROM ABI, reset/POST path, keyless V15
 boot, resident serial initialization, shared keyboard, and compact console. Its
 dedicated CP/M Plus consumer reaches `A>`, accepts `DIR` and `DIAG CPU` through
@@ -18,6 +18,12 @@ geometry. Resident services, reset-side hardware state, and the simulated
 recovery matrix are complete, so its metadata now permits a controlled
 CS00015 bench burn. It is not a generally qualified release until the physical
 matrix passes.
+
+C2 supersedes the unburned C1 package. A stock-ROM/manual-resume CS00015 run
+exposed deterministic bad glyphs before C1 qualification: the CC0 sprite-sheet
+generator used an 8-pixel vertical pitch for a sheet whose glyph rows actually
+start every 9 pixels. C2 corrects that shared font and adds a source-glyph
+oracle. The change affects D15; D16 remains byte-identical to C1.
 
 ## Build and test
 
@@ -82,7 +88,7 @@ check together prove:
 - byte-exact gate/helper installation and successful signature/version init;
 - reset mode 0 to resident mode 1 transition;
 - a nested mode 1 -> mode 3 -> mode 1 framebuffer helper call;
-- the corrected overlay rule: a direct mode-1 write at `D801h` is rejected,
+- the corrected overlay rule: a direct mode-1 write at `D864h` is rejected,
   while the helper reaches and reads back underlying RAM at `D800h`;
 - accumulator, BC, DE, and HL preservation around the crossing test;
 - low/high stack sentinels, final SP, disabled interrupts, and masked PIC;
@@ -92,7 +98,7 @@ check together prove:
   shared resident keyboard with its debounce state retained in low RAM;
 - exact resident rendering of `Z` and the next-cell underline against a
   9,600-byte framebuffer oracle, plus rejection of a direct overlay write;
-- test-only resident variants around the byte-identical C1 image: exactly
+- test-only resident variants around the byte-identical C2 image: exactly
   1,024 console-status polls erase the underline and 2,048 restore it, proving
   a complete visible/hidden/visible cursor cycle;
 - all five POST classes through real firmware paths: a changed CPU vector,
@@ -112,7 +118,7 @@ check together prove:
   after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
 
 The focused [structural HDL gate](../../../docs/network-first-rom-hdl.md) also
-boots the exact C1 production image through `juku_top`/`vm80a`, exercises the
+boots the exact C2 production image through `juku_top`/`vm80a`, exercises the
 resident ABI and framebuffer helper, accepts a shifted matrix key, and
 completes one CRC-checked NetDisk-v3 read into a 128-byte DMA record. The full
 CP/M, recovery, cursor-pixel, and soak oracles remain in the faster C model.
@@ -135,7 +141,7 @@ cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
   --disk-baud 19200 --disk-protocol 3 --writable --timeout 86400
 ```
 
-Use this command only with the matching C1 D15/D16 pair. The JSON status is the
+Use this command only with the matching C2 D15/D16 pair. The JSON status is the
 machine-readable release gate and still records that physical qualification is
 pending.
 
@@ -144,8 +150,8 @@ running, start a replacement at the disk layer only:
 
 ```sh
 cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
-  /dev/ttyUSB0 out/network-first-abi1-cs00015-c1/cpm-plus-system.bin \
-  out/physical-CS00015-C1/working-network-disk.img \
+  /dev/ttyUSB0 out/network-first-abi1-cs00015-c2/cpm-plus-system.bin \
+  out/physical-CS00015-C2/working-network-disk.img \
   --resume-disk --disk-baud 19200 --disk-protocol 3 --writable \
   --disk-timeout 86400
 ```
@@ -167,4 +173,4 @@ directory, diagnostic, and write-through operations without a manual reset.
 
 The next boundary is to qualify the named D15/D16 candidate physically on
 CS00015, then either promote these exact hashes or record and fix the observed
-failure before producing C2.
+failure before producing another named candidate.

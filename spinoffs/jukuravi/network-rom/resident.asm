@@ -214,7 +214,7 @@ resident_entry:
 
 ; Test-only variants exercise complete cursor periods using the public
 ; console-status vector. They are assembled only into transient ABI fixtures;
-; the committed C1 production image is byte-identical.
+; the committed production image is byte-identical.
 .ifdef ABI_CURSOR_HIDDEN
         call    self_cursor_phase
         lda     RCCURVISIBLE
@@ -286,7 +286,7 @@ self_got_keyboard:
 
 .ifdef ABI_NETDISK_SELFTEST
         ; Switch to runtime 8O1 and issue one public read request. The HDL host
-        ; returns a checked single-record fill, proving the exact resident C1
+        ; returns a checked single-record fill, proving the exact resident
         ; transaction code through the structural D57/D11/D104 path.
         mvi     a,1
         call    JCGSERINITADDR

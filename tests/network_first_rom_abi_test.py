@@ -16,6 +16,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "third_party" / "juku-common" / "tools"))
+from ram_console_oracle import render_transcript  # noqa: E402
 FIRMWARE = ROOT / "spinoffs" / "jukuravi" / "network-rom"
 sys.path.insert(0, str(FIRMWARE))
 import build_network_rom as network_rom  # noqa: E402
@@ -106,7 +108,7 @@ def main() -> int:
     if network_rom.D15_OUTPUT.read_bytes() != image[:0x2000] or \
             network_rom.D16_OUTPUT.read_bytes() != image[0x2000:]:
         fail("D15/D16 split does not reproduce the combined image")
-    if metadata.get("candidate") != "network-first-abi1-cs00015-c1" or \
+    if metadata.get("candidate") != "network-first-abi1-cs00015-c2" or \
             metadata["status"] != \
             "CS00015 bench candidate; physical qualification pending":
         fail("network ROM bench-candidate release gate differs")
@@ -235,11 +237,10 @@ def main() -> int:
                 "resident keyboard state differs: "
                 f"{ram[0xD786:0xD789].hex()}"
             )
-        expected_screen = bytearray(9600)
-        for row, value in enumerate((0x88, 0, 0, 0xF8, 0x08, 0x10, 0x20)):
-            expected_screen[row * 50] = value
-        expected_screen[7 * 50] = 0x07
-        expected_screen[7 * 50 + 1] = 0xC0
+        # This source-font oracle is independent of both the resident and RAM
+        # assembly renderers. It caught the C1 generator's wrong vertical
+        # sprite-sheet pitch, which a ROM-vs-RAM parity check could not see.
+        expected_screen = bytearray(render_transcript(b"Z"))
         if ram[0xD800:0xD800 + 9600] != expected_screen:
             first = next(
                 index for index, (got, want) in enumerate(zip(
@@ -255,7 +256,7 @@ def main() -> int:
                 f"{ram[0xD800 + first]:02X} != {expected_screen[first]:02X}; "
                 f"rows={rows}"
             )
-        if ram[0xD800 + 100] != 0:
+        if ram[0xD800 + 100] == 0x5A:
             fail("mode-1 write unexpectedly passed through the ROM overlay")
         if ram[0xD5C0:0xD5D0] != b"\xA6" * 16 or \
                 ram[0xD5F0:0xD600] != b"\xA6" * 16:
