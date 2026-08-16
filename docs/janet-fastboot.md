@@ -895,11 +895,11 @@ Writable A: images are replaced through a sibling temporary file, so Ctrl+C or
 another interruption during shutdown cannot truncate the last complete image.
 
 The same ABI harness now assembles test-only cursor-phase variants without
-changing the C1 production image. The public console-status vector is called
+changing the production image. The public console-status vector is called
 for exactly one 1,024-poll period and then two periods; raw framebuffer oracles
 prove visible/hidden/visible underline phases and mode-1 restoration.
 
-The exact C1 image now also crosses the structural HDL boundary. The focused
+The exact C2 image now also crosses the structural HDL boundary. The focused
 `sync/network_first_rom_hdl_check.sh` gate boots it through `juku_top`/`vm80a`
 to the `C4h` ready byte, proves reset-side PIT/USART/memory state, exercises the
 unchanged resident ABI with framebuffer and matrix-key input, and completes one

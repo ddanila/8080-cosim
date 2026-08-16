@@ -71,6 +71,17 @@ takes its network identity from S21.  Only a zero configuration falls through
 to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately models that
 open-switch fallback and therefore injects `TN0201`.
 
+For a later identity-free monitorless ROM, the accepted project plan may
+repurpose this same raw byte as shared ROM/OS machine configuration: logical
+bit 0 is ROM-only immediate-network-boot policy; bits 2:1 select four video
+modes used by both ROM and CP/M (`00` stock, `11` MODX 80x24, with the two
+historical intermediate timings still to be extracted); bits 7:3 remain
+reserved. This is not part of C2. Implementation must first verify active
+polarity and the S21.1..S21.8 order by drawing plus physical readback. ROM then
+latches the byte once, exposes it through the resident ABI, and CP/M consumes
+that same value instead of resampling the keyboard. Host and diagnostics report
+both raw and decoded settings.
+
 ## Model comparison
 
 - All 26 letters, ten digits, their drawing-visible ASCII shift pairs, Space,
