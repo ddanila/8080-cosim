@@ -381,7 +381,8 @@ def main() -> int:
         return bytes(result)
 
     def direct_target(announce_ready: bool = True,
-                      initial_header: bytes = b"") -> None:
+                      initial_header: bytes = b"",
+                      send_final: bool = True) -> None:
         try:
             if announce_ready:
                 os.write(slave, bytes((AUTO_ROM_READY,)))
@@ -401,7 +402,8 @@ def main() -> int:
                 del stream_window[:-2]
             os.write(slave, bytes((0xC6,)))
             captured["stream"] = read_exact(slave, len(compressed))
-            os.write(slave, checked_frame(ord("A"), b"\x00\x00"))
+            if send_final:
+                os.write(slave, checked_frame(ord("A"), b"\x00\x00"))
         except BaseException as error:  # relay thread failures to main
             target_errors.append(error)
 
@@ -430,6 +432,7 @@ def main() -> int:
     assert direct_result["extension_header_acks"] == 1
     assert direct_result["stream_header_acks"] == 1
     assert direct_result["stream_bytes"] == len(compressed)
+    assert direct_result["completion_confirmed"] == 1
 
     # A restarted server cannot depend on observing the ROM's one-shot C4.
     # After the short readiness window it must fall back to the same
@@ -457,6 +460,35 @@ def main() -> int:
     assert restarted_result["auto_rom_ready"] == 1
     assert restarted_result["auto_ready_seen"] == 0
     assert restarted_result["protocol_version"] == 15
+    assert restarted_result["completion_confirmed"] == 1
+
+    # The physical CS00015 session proved that the resident target can be
+    # alive and issuing disk requests even when all three final V15 replies
+    # are missed at the 8N1 -> 8O1 transition. Pin the safe behavior: do not
+    # retransmit a fully sent stream into a potentially running CP/M session.
+    master, slave = pty.openpty()
+    tty.setraw(slave)
+    target_errors = []
+    captured = {}
+    target = threading.Thread(
+        target=direct_target, args=(True, b"", False),
+    )
+    target.start()
+    try:
+        unconfirmed_result = serve_fast(
+            master, bundle_v15, ram_image, stock_timeout=1.0,
+            reply_timeout=0.05, retries=2, configure_rate=False,
+            direct_core=True, auto_rom_ready=True, verbose=False,
+        )
+    finally:
+        target.join(timeout=3.0)
+        os.close(master)
+        os.close(slave)
+    assert not target.is_alive()
+    assert not target_errors, target_errors
+    assert captured["stream"] == compressed
+    assert unconfirmed_result["completion_confirmed"] == 0
+    assert unconfirmed_result["retries"] == 0
 
     large_payload = bytes((index * 29 + 7) & 0xFF for index in range(0x1800))
     large_bundle_v15 = (

@@ -874,6 +874,16 @@ three complete bootstrap rediscoveries by default (`--boot-restarts` changes
 the bounded budget). This proves software recovery; physical reset behavior
 still belongs in bench qualification.
 
+A separate physical CS00015 run exposed an important completion ambiguity:
+the complete V15 stream was accepted and CP/M entered its NetDisk retry loop,
+but the host missed all final success replies during the 8N1-to-8O1 handoff.
+The host now records this as `completion_confirmed=0` and immediately attempts
+the disk attach. It does not retransmit the system image into what may already
+be a live CP/M receiver. The first valid NetDisk request promotes the outcome
+to confirmed running, with both stages stated explicitly in the console log
+and timing JSON. A PTY regression drops the final reply and pins zero stream
+retries for this case.
+
 The network-first V15 path also has a reset-with-stale-input fixture. It stops
 the modeled target halfway through an extension body, starts a fresh target on
 the same PTY, leaves the old partial bytes queued, and proves that overlapping
@@ -896,10 +906,10 @@ another interruption during shutdown cannot truncate the last complete image.
 
 The same ABI harness now assembles test-only cursor-phase variants without
 changing the production image. The public console-status vector is called
-for exactly one 1,024-poll period and then two periods; raw framebuffer oracles
+for exactly one 512-poll period and then two periods; raw framebuffer oracles
 prove visible/hidden/visible underline phases and mode-1 restoration.
 
-The exact C2 image now also crosses the structural HDL boundary. The focused
+The exact C3 image now also crosses the structural HDL boundary. The focused
 `sync/network_first_rom_hdl_check.sh` gate boots it through `juku_top`/`vm80a`
 to the `C4h` ready byte, proves reset-side PIT/USART/memory state, exercises the
 unchanged resident ABI with framebuffer and matrix-key input, and completes one

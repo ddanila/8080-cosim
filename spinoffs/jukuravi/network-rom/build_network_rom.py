@@ -30,7 +30,7 @@ GATE_STORED = 0x1000
 HELP_STORED = 0x1400
 CORE_STORED = 0x0F00
 EXTENSION_BYTES = 267
-CANDIDATE = "network-first-abi1-cs00015-c2"
+CANDIDATE = "network-first-abi1-cs00015-c3"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -188,6 +188,11 @@ def build(*, abi_selftest: bool = False,
         "resident_services": [
             "console", "serial", "keyboard", "netdisk-v3", "diagnostics",
         ],
+        "console": {
+            "geometry": "80x24",
+            "font": "Creep-0.31-adapted-5x7",
+            "cursor_period_polls": 512,
+        },
         "abi": {"base": "FF00", "major": 1, "minor": 0},
         "candidate": CANDIDATE,
         "status": "CS00015 bench candidate; physical qualification pending",

@@ -811,6 +811,14 @@ def main(argv: Iterable[str] | None = None) -> int:
                 f"{station_client:02X}",
                 flush=True,
             )
+        if boot.get("completion_confirmed") == 0:
+            print(
+                "Bootstrap completion remains unconfirmed because the final "
+                "V15 reply was not seen. A valid NetDisk request will confirm "
+                "that CP/M is running; the host did not retransmit over a "
+                "possibly live disk session.",
+                flush=True,
+            )
         configure_serial(fd, args.disk_baud)
         print(
             f"Serving A: from {args.volume} at {args.disk_baud} baud, 8O1, "
@@ -826,7 +834,17 @@ def main(argv: Iterable[str] | None = None) -> int:
                 flush=True,
             )
 
+        attach_confirmed = False
+
         def record_first_request(event: dict[str, int | float]) -> None:
+            nonlocal attach_confirmed
+            if boot.get("completion_confirmed") == 0 and not attach_confirmed:
+                attach_confirmed = True
+                print(
+                    "NetDisk request received: the previously unconfirmed "
+                    "V15 bootstrap is now confirmed running.",
+                    flush=True,
+                )
             if args.boot_result_json is None:
                 return
             report: dict[str, object] = {

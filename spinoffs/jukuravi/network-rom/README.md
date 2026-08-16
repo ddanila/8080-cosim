@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **CS00015 BENCH CANDIDATE C2 — PHYSICAL QUALIFICATION PENDING**
+Status: **CS00015 BENCH CANDIDATE C3 — PHYSICAL QUALIFICATION PENDING**
 
 This directory is the from-scratch successor to the frozen Ekta4401 monitor
 and simulator-only Ekta4402 direct-fastboot experiment. The product goal is a
@@ -9,7 +9,7 @@ baud, exposes common platform services from its resident 10 KiB, and gives
 CP/M Plus a larger TPA. The accepted staged plan and budgets live in the
 `cpm-plus-juku` repository.
 
-The present image, named `network-first-abi1-cs00015-c2`, proves the versioned
+The present image, named `network-first-abi1-cs00015-c3`, proves the versioned
 ROM ABI, reset/POST path, keyless V15
 boot, resident serial initialization, shared keyboard, and compact console. Its
 dedicated CP/M Plus consumer reaches `A>`, accepts `DIR` and `DIAG CPU` through
@@ -19,11 +19,14 @@ recovery matrix are complete, so its metadata now permits a controlled
 CS00015 bench burn. It is not a generally qualified release until the physical
 matrix passes.
 
-C2 supersedes the unburned C1 package. A stock-ROM/manual-resume CS00015 run
-exposed deterministic bad glyphs before C1 qualification: the CC0 sprite-sheet
-generator used an 8-pixel vertical pitch for a sheet whose glyph rows actually
-start every 9 pixels. C2 corrects that shared font and adds a source-glyph
-oracle. The change affects D15; D16 remains byte-identical to C1.
+C3 supersedes the immutable C2 package. C2 corrected the original sprite-sheet
+extraction after a stock-ROM/manual-resume CS00015 run exposed deterministic
+bad glyphs. C3 replaces that wide font with the MIT-licensed Creep 0.31 ASCII
+adaptation used by the all-RAM CP/M console and halves the cursor phase from
+1,024 to 512 idle polls. Its letters retain a blank separator column. The
+all-RAM CP/M path additionally supports the S21-selected historical video
+modes; ABI 1 intentionally keeps this resident-ROM baseline fixed at 80x24.
+Both C2 and C3 change D15 only; D16 remains byte-identical to C1.
 
 ## Build and test
 
@@ -71,10 +74,10 @@ The resident advertises console, serial, keyboard, NetDisk, and diagnostic featu
 programs the proven D57 mode-2/count-4 19,200-baud clock, supports bounded 8251
 send/receive, reuses the shared 15-column keyboard scanner and translation
 tables with three mutable bytes in low RAM, publishes build/workspace/helper
-metadata, supplies the MODX 5x7 font/text policy, and calls a 119-byte copied
-helper for mode-3 clear, scroll, and packed-row merges. Its versioned 10-byte
-NetDisk request owns complete three-attempt read and write transactions and a
-caller-supplied DMA/cache. Writes invalidate read-ahead before their first
+metadata, supplies the MODX Creep-derived 5x7 text policy, and calls a 119-byte
+copied helper for mode-3 clear, scroll, and packed-row merges. Its versioned
+10-byte NetDisk request owns complete three-attempt read and write transactions
+and a caller-supplied DMA/cache. Writes invalidate read-ahead before their first
 attempt and use synchronous write-through; an uncertain outcome never leaves
 cache data valid. Sound remains unavailable until migrated; POST and automatic
 boot are reset-only facilities rather than runtime service vectors.
@@ -98,8 +101,8 @@ check together prove:
   shared resident keyboard with its debounce state retained in low RAM;
 - exact resident rendering of `Z` and the next-cell underline against a
   9,600-byte framebuffer oracle, plus rejection of a direct overlay write;
-- test-only resident variants around the byte-identical C2 image: exactly
-  1,024 console-status polls erase the underline and 2,048 restore it, proving
+- test-only resident variants around the byte-identical C3 image: exactly
+  512 console-status polls erase the underline and 1,024 restore it, proving
   a complete visible/hidden/visible cursor cycle;
 - all five POST classes through real firmware paths: a changed CPU vector,
   stuck RAM bit, address alias, complete-ROM bit flip, D57 count fault, and D11
@@ -118,7 +121,7 @@ check together prove:
   after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
 
 The focused [structural HDL gate](../../../docs/network-first-rom-hdl.md) also
-boots the exact C2 production image through `juku_top`/`vm80a`, exercises the
+boots the exact C3 production image through `juku_top`/`vm80a`, exercises the
 resident ABI and framebuffer helper, accepts a shifted matrix key, and
 completes one CRC-checked NetDisk-v3 read into a 128-byte DMA record. The full
 CP/M, recovery, cursor-pixel, and soak oracles remain in the faster C model.
@@ -141,7 +144,7 @@ cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
   --disk-baud 19200 --disk-protocol 3 --writable --timeout 86400
 ```
 
-Use this command only with the matching C2 D15/D16 pair. The JSON status is the
+Use this command only with the matching C3 D15/D16 pair. The JSON status is the
 machine-readable release gate and still records that physical qualification is
 pending.
 
@@ -150,8 +153,8 @@ running, start a replacement at the disk layer only:
 
 ```sh
 cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
-  /dev/ttyUSB0 out/network-first-abi1-cs00015-c2/cpm-plus-system.bin \
-  out/physical-CS00015-C2/working-network-disk.img \
+  /dev/ttyUSB0 out/network-first-abi1-cs00015-c3/cpm-plus-system.bin \
+  out/physical-CS00015-C3/working-network-disk.img \
   --resume-disk --disk-baud 19200 --disk-protocol 3 --writable \
   --disk-timeout 86400
 ```

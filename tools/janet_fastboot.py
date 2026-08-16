@@ -762,6 +762,7 @@ def serve_fast(
     retries_used = 0
     stream_header_acks = 0
     stream_header_probes = 0
+    completion_confirmed = 1
 
     def exchange(packet: bytes, sequence: int) -> int:
         nonlocal retries_used
@@ -810,6 +811,7 @@ def serve_fast(
         stream_ready = (READY, protocol_version, rate_flag)
         success_sequence = 4 if protocol_version == 4 else 0
         for attempt in range(retries):
+            stream_acknowledged = False
             time.sleep(turnaround_guard)
             outgoing = block_filter(0, attempt, packet) \
                 if block_filter is not None else packet
@@ -873,6 +875,26 @@ def serve_fast(
             if response is not None and response[0] == REPLY and \
                     response[2] == 0:
                 break
+            # V15 has already authenticated the complete compressed stream
+            # before it jumps into the all-RAM system. On a real machine the
+            # three final replies can be lost exactly while the target changes
+            # from 8N1 to the resident BIOS's 8O1. Re-sending the whole stream
+            # at this point is harmful: the receiver may already be CP/M's
+            # NetDisk loop. Treat a missing final reply as explicitly
+            # *unconfirmed*, then let the first valid disk request be the
+            # authoritative evidence that the target entered CP/M.
+            if response is None and protocol_version == 15 and \
+                    stream_acknowledged:
+                completion_confirmed = 0
+                if verbose:
+                    print(
+                        "Fast v15 stream was fully sent after a target header "
+                        "ACK, but its final reply was not observed; proceeding "
+                        "to NetDisk attach instead of retransmitting into a "
+                        "possibly running CP/M",
+                        flush=True,
+                    )
+                break
             retries_used += 1
             if verbose:
                 reason = "timeout" if response is None else \
@@ -905,7 +927,9 @@ def serve_fast(
             compression_detail = \
                 f"ZX0={len(compressed)} bytes, " if compressed else ""
             print(
-                f"Fast bootstrap complete: {len(system)} bytes, "
+                ("Fast bootstrap complete: " if completion_confirmed else
+                 "Fast bootstrap transfer sent (completion unconfirmed): ")
+                + f"{len(system)} bytes, "
                 f"{compression_detail}"
                 f"CRC16/IBM={crc16_ibm(system):04X}, "
                 f"extension-retries={extension_retries}, "
@@ -934,6 +958,7 @@ def serve_fast(
             "rate_failure_stage": rate_failure_stage,
             "transfer_framing": transfer_framing,
             "retries": retries_used,
+            "completion_confirmed": completion_confirmed,
             "crc16": crc16_ibm(system),
             "request_started_at": request_started_at,
             "stage_seconds": stage_seconds,

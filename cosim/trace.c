@@ -114,7 +114,11 @@ static uint8_t portc = 0;           // 8255#0 Port C output latch
 static unsigned video_stride = VID_DEFAULT_STRIDE;
 static unsigned video_lines = VID_DEFAULT_LINES;
 static unsigned video_modx_sequence = 0;
+static unsigned video_stock_sequence = 0;
+static unsigned video_64_sequence = 0;
 static int video_modx_mode = 0;
+static unsigned video_console_mode = 0;
+static uint8_t kbd_s21_config = 0;  // S21.1..8 become logical bits 7..0
 static juk_disk disk;
 static juku_fdc fdc;
 static int      fdc_enabled = 0;
@@ -263,6 +267,14 @@ static void video_observe_pit_write(uint8_t port, uint8_t value) {
     {0x17, 0x73}, {0x11, 0x14}, {0x12, 0x03},
     {0x15, 0x1A}, {0x15, 0x01}, {0x16, 0x45},
   };
+  static const uint8_t stock_sequence[][2] = {
+    {0x11, 0x24}, {0x12, 0x08}, {0x15, 0x72},
+    {0x15, 0x00}, {0x16, 0x25},
+  };
+  static const uint8_t mode64_sequence[][2] = {
+    {0x11, 0x16}, {0x12, 0x04}, {0x15, 0x12},
+    {0x15, 0x01}, {0x16, 0x45},
+  };
   const unsigned sequence_length =
       (unsigned)(sizeof(modx_sequence) / sizeof(modx_sequence[0]));
 
@@ -273,6 +285,7 @@ static void video_observe_pit_write(uint8_t port, uint8_t value) {
       video_stride = 50;
       video_lines = 192;
       video_modx_mode = 1;
+      video_console_mode = 3;
       video_modx_sequence = 0;
       fprintf(stderr, "[VIDEO] recognized MODX 400x192 timing\n");
     }
@@ -281,6 +294,27 @@ static void video_observe_pit_write(uint8_t port, uint8_t value) {
 
   video_modx_sequence =
       (port == modx_sequence[0][0] && value == modx_sequence[0][1]) ? 1 : 0;
+
+#define OBSERVE_MODE(sequence, position, stride_value, lines_value, mode_value) \
+  do { \
+    const unsigned length = (unsigned)(sizeof(sequence) / sizeof((sequence)[0])); \
+    if (port == (sequence)[position][0] && value == (sequence)[position][1]) { \
+      (position)++; \
+      if ((position) == length) { \
+        video_stride = (stride_value); \
+        video_lines = (lines_value); \
+        video_modx_mode = 0; \
+        video_console_mode = (mode_value); \
+        (position) = 0; \
+      } \
+    } else { \
+      (position) = (port == (sequence)[0][0] && value == (sequence)[0][1]) ? 1 : 0; \
+    } \
+  } while (0)
+  OBSERVE_MODE(stock_sequence, video_stock_sequence, 40, 241,
+               (kbd_s21_config >> 1) & 1);
+  OBSERVE_MODE(mode64_sequence, video_64_sequence, 48, 201, 2);
+#undef OBSERVE_MODE
 }
 
 static uint8_t pit_read(uint8_t port) {
@@ -948,12 +982,13 @@ static int ekdos_prompt_visible(void) {
 // shift regardless of column); the 74148 code (b1-3) + GS (b0, active-low) are per-column.
 #define KBD_NONE 0xCF              // no key: encoder + -FK released, SHIFT/CTRL released
 static uint8_t kbd_portb(const i8080* cpu) {
-  // ROM 1209h..123Bh selects eight configuration positions and samples PB5.
-  // Model the source-closed, unstrapped/onboard-serial setting as released
-  // high only in that scan; ordinary keyboard-idle remains the established
-  // drawing-derived 0xCF value.
-  int config_scan = cpu && cpu->pc >= 0x1209 && cpu->pc <= 0x123B;
-  uint8_t idle = (uint8_t)(KBD_NONE | (config_scan ? 0x20 : 0));
+  // S21.1..8 occupy columns 8..15 on active-low CONTRDAT/PB5. Keep this
+  // electrical behavior independent of the caller's PC so RAM-owned systems
+  // can sample the same switches after the stock ROM has disappeared.
+  int s21_bit = (kbd_col >= 8 && kbd_col <= 15) ? 15 - kbd_col : -1;
+  int s21_closed = s21_bit >= 0 && (kbd_s21_config & (1u << s21_bit));
+  uint8_t contrdat = (s21_bit >= 0 && !s21_closed) ? 0x20 : 0;
+  uint8_t idle = (uint8_t)(KBD_NONE | contrdat);
   if (g_vw < kbd_start_vram) return idle;              // default waits until the ekta37 banner is drawn
   char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < kbd_hold_frames) ? kbd_str[kbd_pos] : 0;
   if (c == '|') return idle;                           // prompt wait marker, not a typed key
@@ -963,7 +998,7 @@ static uint8_t kbd_portb(const i8080* cpu) {
     for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
       if (KMAP[i].c == lc) { col = KMAP[i].col; bit = KMAP[i].bit; shift |= KMAP[i].shift; break; }
   }
-  uint8_t pb = (uint8_t)(0xC0 | (config_scan ? 0x20 : 0));
+  uint8_t pb = (uint8_t)(0xC0 | contrdat);
   if (shift) pb &= (uint8_t)~0x40;                     // SHIFT1 held = bit6 low (active-low)
   if (c && col == kbd_col)
     pb |= (uint8_t)(((~bit) & 7) << 1);                // 74148 code in b1-3, GS active (b0=0)
@@ -1228,6 +1263,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "video_stride=%u\n", video_stride);
   fprintf(state_out, "video_lines=%u\n", video_lines);
   fprintf(state_out, "video_modx_mode=%d\n", video_modx_mode);
+  fprintf(state_out, "video_console_mode=%u\n", video_console_mode);
   fprintf(state_out, "rom_consecutive_a12_low=%d\n",
           rom_consecutive_a12_low);
   fprintf(state_out, "rom_read_burst_count=%u\n", rom_read_burst_count);
@@ -1413,7 +1449,19 @@ int main(int argc, char** argv) {
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
   const char* kbd_enabled_env = getenv("JUKU_KEYBOARD_ENABLE");
+  const char* kbd_s21_env = getenv("JUKU_S21_CONFIG");
+  if (kbd_s21_env && kbd_s21_env[0]) {
+    char* end = NULL;
+    unsigned long parsed = strtoul(kbd_s21_env, &end, 0);
+    if (!end || *end || parsed > 0xFF) {
+      fprintf(stderr, "invalid JUKU_S21_CONFIG=%s (expected 0..255)\n",
+              kbd_s21_env);
+      return 2;
+    }
+    kbd_s21_config = (uint8_t)parsed;
+  }
   kbd_enabled = (kbd_str && kbd_str[0]) ||
+                (kbd_s21_env && kbd_s21_env[0]) ||
                 (kbd_enabled_env && kbd_enabled_env[0] && strcmp(kbd_enabled_env, "0") != 0);
   const char* kbd_start_vram_env = getenv("JUKU_KEY_START_VRAM");
   if (kbd_start_vram_env && kbd_start_vram_env[0]) kbd_start_vram = strtoul(kbd_start_vram_env, 0, 0);
@@ -1973,7 +2021,10 @@ int main(int argc, char** argv) {
       video_stride = VID_DEFAULT_STRIDE;
       video_lines = VID_DEFAULT_LINES;
       video_modx_sequence = 0;
+      video_stock_sequence = 0;
+      video_64_sequence = 0;
       video_modx_mode = 0;
+      video_console_mode = 0;
       usart_reset();
       kbd_pos = 0;
       kbd_phase = 0;
@@ -2004,7 +2055,10 @@ int main(int argc, char** argv) {
       video_stride = VID_DEFAULT_STRIDE;
       video_lines = VID_DEFAULT_LINES;
       video_modx_sequence = 0;
+      video_stock_sequence = 0;
+      video_64_sequence = 0;
       video_modx_mode = 0;
+      video_console_mode = 0;
     }
     pchist[cpu.pc]++;
     if (pc_history_enabled) {

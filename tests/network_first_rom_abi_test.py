@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "third_party" / "juku-common" / "tools"))
-from ram_console_oracle import render_transcript  # noqa: E402
+from creep_console_oracle import render_transcript  # noqa: E402
 FIRMWARE = ROOT / "spinoffs" / "jukuravi" / "network-rom"
 sys.path.insert(0, str(FIRMWARE))
 import build_network_rom as network_rom  # noqa: E402
@@ -108,7 +108,7 @@ def main() -> int:
     if network_rom.D15_OUTPUT.read_bytes() != image[:0x2000] or \
             network_rom.D16_OUTPUT.read_bytes() != image[0x2000:]:
         fail("D15/D16 split does not reproduce the combined image")
-    if metadata.get("candidate") != "network-first-abi1-cs00015-c2" or \
+    if metadata.get("candidate") != "network-first-abi1-cs00015-c3" or \
             metadata["status"] != \
             "CS00015 bench candidate; physical qualification pending":
         fail("network ROM bench-candidate release gate differs")

@@ -1,8 +1,8 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "928bdbbd8845f6d3b3f73ead8070a3a55a55bc4b284a8a4da8a0eed9e1c6671a",
-  "d15_sha256": "8093a8fb84c0f51a55245fe0cbbd29236d199a63e1760234ab5cb2b3e1277864",
+  "image_sha256": "931218a654412e2f9b0776a81bd5369f0c22c1da45cada220a2b96bbe70854c0",
+  "d15_sha256": "3e8b9eb2f3752002821e6ec18dd59805108389c9d93aba40316bd2e18eb7684f",
   "d16_sha256": "f15b1b029edd845e0aa7622d61e9b84740957dce1f38a75867cedccef54494ac",
   "boot_code_bytes": 997,
   "gate_bytes": 196,
@@ -41,11 +41,16 @@
     "netdisk-v3",
     "diagnostics"
   ],
+  "console": {
+    "geometry": "80x24",
+    "font": "Creep-0.31-adapted-5x7",
+    "cursor_period_polls": 512
+  },
   "abi": {
     "base": "FF00",
     "major": 1,
     "minor": 0
   },
-  "candidate": "network-first-abi1-cs00015-c2",
+  "candidate": "network-first-abi1-cs00015-c3",
   "status": "CS00015 bench candidate; physical qualification pending"
 }
