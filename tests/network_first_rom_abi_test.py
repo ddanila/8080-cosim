@@ -108,7 +108,7 @@ def main() -> int:
     if network_rom.D15_OUTPUT.read_bytes() != image[:0x2000] or \
             network_rom.D16_OUTPUT.read_bytes() != image[0x2000:]:
         fail("D15/D16 split does not reproduce the combined image")
-    if metadata.get("candidate") != "network-first-abi1-cs00015-c3" or \
+    if metadata.get("candidate") != "network-first-abi1-cs00015-c4" or \
             metadata["status"] != \
             "CS00015 bench candidate; physical qualification pending":
         fail("network ROM bench-candidate release gate differs")

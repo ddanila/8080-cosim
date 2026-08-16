@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **CS00015 BENCH CANDIDATE C3 — PHYSICAL QUALIFICATION PENDING**
+Status: **CS00015 BENCH CANDIDATE C4 — PHYSICAL QUALIFICATION PENDING**
 
 This directory is the from-scratch successor to the frozen Ekta4401 monitor
 and physically qualified Ekta4402 direct-fastboot/service ROM. The product
@@ -9,24 +9,36 @@ baud, exposes common platform services from its resident 10 KiB, and gives
 CP/M Plus a larger TPA. The accepted staged plan and budgets live in the
 `cpm-plus-juku` repository.
 
-The present image, named `network-first-abi1-cs00015-c3`, proves the versioned
+The present image, named `network-first-abi1-cs00015-c4`, proves the versioned
 ROM ABI, reset/POST path, keyless V15
 boot, resident serial initialization, shared keyboard, and compact console. Its
 dedicated CP/M Plus consumer reaches `A>`, accepts `DIR` and `DIAG CPU` through
 that keyboard, and completes both commands. Its split files test exact EPROM
 geometry. Resident services, reset-side hardware state, and the simulated
-recovery matrix are complete, so its metadata now permits a controlled
-CS00015 bench burn. It is not a generally qualified release until the physical
+recovery matrix are complete, so its metadata now permits controlled
+CS00015 bench qualification. It is not a generally qualified release until the physical
 matrix passes.
 
-C3 supersedes the immutable C2 package. C2 corrected the original sprite-sheet
+C4 supersedes the immutable C3 package but keeps both ROM halves byte-identical.
+The first blind C3 run on CS00015 proved automatic reset, V15 loading, resident
+console output, and NetDisk operation, then exposed a bug in its matching
+CP/M binding: it entered the resident ROM's blocking local `CONIN` before a
+later N4 byte could be polled. The corrected binding checks resident `CONSTAT`
+and keeps polling N4 while the local keyboard is idle. On the same installed
+C3 ROM pair, the corrected C4 runtime completed remote `DIR`, `DIAG CPU`,
+explicit `WBOOT`, and another `DIR` with no retry or overrun. Thus no EPROM
+rewrite is required when moving from C3 to C4; the new candidate name freezes
+the corrected matching runtime.
+
+C3 had superseded the immutable C2 package. C2 corrected the original sprite-sheet
 extraction after a stock-ROM/manual-resume CS00015 run exposed deterministic
 bad glyphs. C3 replaces that wide font with the MIT-licensed Creep 0.31 ASCII
 adaptation used by the all-RAM CP/M console and halves the cursor phase from
 1,024 to 512 idle polls. Its letters retain a blank separator column. The
 all-RAM CP/M path additionally supports the S21-selected historical video
 modes; ABI 1 intentionally keeps this resident-ROM baseline fixed at 80x24.
-Both C2 and C3 change D15 only; D16 remains byte-identical to C1.
+C2 and C3 changed D15 only; C4 changes neither half. D16 remains
+byte-identical to C1.
 
 ## Build and test
 
@@ -101,7 +113,7 @@ check together prove:
   shared resident keyboard with its debounce state retained in low RAM;
 - exact resident rendering of `Z` and the next-cell underline against a
   9,600-byte framebuffer oracle, plus rejection of a direct overlay write;
-- test-only resident variants around the byte-identical C3 image: exactly
+- test-only resident variants around the byte-identical C4 image: exactly
   512 console-status polls erase the underline and 1,024 restore it, proving
   a complete visible/hidden/visible cursor cycle;
 - all five POST classes through real firmware paths: a changed CPU vector,
@@ -121,7 +133,7 @@ check together prove:
   after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
 
 The focused [structural HDL gate](../../../docs/network-first-rom-hdl.md) also
-boots the exact C3 production image through `juku_top`/`vm80a`, exercises the
+boots the exact C4 production image through `juku_top`/`vm80a`, exercises the
 resident ABI and framebuffer helper, accepts a shifted matrix key, and
 completes one CRC-checked NetDisk-v3 read into a 128-byte DMA record. The full
 CP/M, recovery, cursor-pixel, and soak oracles remain in the faster C model.
@@ -144,7 +156,8 @@ cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
   --disk-baud 19200 --disk-protocol 3 --writable --timeout 86400
 ```
 
-Use this command only with the matching C3 D15/D16 pair. The JSON status is the
+Use this command only with the matching C4 runtime and the byte-identical
+C3/C4 D15/D16 pair. The JSON status is the
 machine-readable release gate and still records that physical qualification is
 pending.
 
@@ -153,8 +166,8 @@ running, start a replacement at the disk layer only:
 
 ```sh
 cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
-  /dev/ttyUSB0 out/network-first-abi1-cs00015-c3/cpm-plus-system.bin \
-  out/physical-CS00015-C3/working-network-disk.img \
+  /dev/ttyUSB0 out/network-first-abi1-cs00015-c4/cpm-plus-system.bin \
+  out/physical-CS00015-C4/working-network-disk.img \
   --resume-disk --disk-baud 19200 --disk-protocol 3 --writable \
   --disk-timeout 86400
 ```
@@ -174,6 +187,8 @@ disk server also takes over after its predecessor receives a request but exits
 before replying. Clean and faulted paths all reach the real prompt and complete
 directory, diagnostic, and write-through operations without a manual reset.
 
-The next boundary is to qualify the named D15/D16 candidate physically on
-CS00015, then either promote these exact hashes or record and fix the observed
-failure before producing another named candidate.
+The next boundary is to complete the C4 physical matrix on CS00015. Automatic
+boot, N4 input/output, `DIR`, `DIAG CPU`, warm boot, and post-warm-boot `DIR`
+already pass blindly with the C3/C4-identical EPROM pair; display, local
+keyboard, write, repeated cold boot, and live host-loss/reconnect observations
+remain before promotion.

@@ -926,7 +926,7 @@ changing the production image. The public console-status vector is called
 for exactly one 512-poll period and then two periods; raw framebuffer oracles
 prove visible/hidden/visible underline phases and mode-1 restoration.
 
-The exact C3 image now also crosses the structural HDL boundary. The focused
+The exact C4 image now also crosses the structural HDL boundary. The focused
 `sync/network_first_rom_hdl_check.sh` gate boots it through `juku_top`/`vm80a`
 to the `C4h` ready byte, proves reset-side PIT/USART/memory state, exercises the
 unchanged resident ABI with framebuffer and matrix-key input, and completes one

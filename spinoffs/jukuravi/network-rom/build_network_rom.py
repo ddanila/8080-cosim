@@ -30,7 +30,7 @@ GATE_STORED = 0x1000
 HELP_STORED = 0x1400
 CORE_STORED = 0x0F00
 EXTENSION_BYTES = 267
-CANDIDATE = "network-first-abi1-cs00015-c3"
+CANDIDATE = "network-first-abi1-cs00015-c4"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
