@@ -885,6 +885,11 @@ recover without a target reset. Variable-sized `reply_filter` output exists
 only to inject these deterministic test faults; the normal server still sends
 complete protocol-sized frames.
 
+The same ABI harness now assembles test-only cursor-phase variants without
+changing the C1 production image. The public console-status vector is called
+for exactly one 1,024-poll period and then two periods; raw framebuffer oracles
+prove visible/hidden/visible underline phases and mode-1 restoration.
+
 A direct stock transfer to B400h was also tested as a possible zero-stage
 shortcut. The stock client reached the requested CA00h execute address but did
 not install the records at B400h (6327 of 6656 bytes differed in cosim). The

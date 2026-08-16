@@ -212,6 +212,26 @@ resident_entry:
         cpi     0bch
         jnz     self_fail_registers
 
+; Test-only variants exercise complete cursor periods using the public
+; console-status vector. They are assembled only into transient ABI fixtures;
+; the committed C1 production image is byte-identical.
+.ifdef ABI_CURSOR_HIDDEN
+        call    self_cursor_phase
+        lda     RCCURVISIBLE
+        ora     a
+        jnz     self_fail_console
+.endif
+.ifdef ABI_CURSOR_VISIBLE
+        call    self_cursor_phase
+        lda     RCCURVISIBLE
+        ora     a
+        jnz     self_fail_console
+        call    self_cursor_phase
+        lda     RCCURVISIBLE
+        cpi     1
+        jnz     self_fail_console
+.endif
+
         mvi     a,0
         call    JCGDIAGADDR
         cpi     0a5h
@@ -303,6 +323,29 @@ fill_guard:
         dcr     b
         jnz     fill_guard
         ret
+
+.ifdef ABI_CURSOR_HIDDEN
+self_cursor_phase:
+        lxi     d,CURSORPERIOD
+self_cursor_tick:
+        call    JCGCONSTATADDR
+        dcx     d
+        mov     a,d
+        ora     e
+        jnz     self_cursor_tick
+        ret
+.endif
+.ifdef ABI_CURSOR_VISIBLE
+self_cursor_phase:
+        lxi     d,CURSORPERIOD
+self_cursor_tick:
+        call    JCGCONSTATADDR
+        dcx     d
+        mov     a,d
+        ora     e
+        jnz     self_cursor_tick
+        ret
+.endif
 
 rom_init_impl:
         lxi     h,JROMSTATEBASE

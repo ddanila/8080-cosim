@@ -32,6 +32,66 @@ def parse_state(path: Path) -> dict[str, str]:
     )
 
 
+def run_cursor_fixture(trace: Path, temporary: Path, phase: str) -> bytes:
+    image, _ = network_rom.build(abi_selftest=True, cursor_phase=phase)
+    case = temporary / f"cursor-{phase}"
+    case.mkdir()
+    rom = case / "network-rom.bin"
+    rom.write_bytes(image)
+    checkpoint = case / "checkpoint"
+    master, slave = pty.openpty()
+    tty.setraw(slave)
+    environment = os.environ.copy()
+    environment.update(
+        JUKU_USART_PTY=os.ttyname(slave),
+        JUKU_USART_TRANSFER_CYCLES="16",
+        JUKU_USART_BYTE_CYCLES="1024",
+        JUKU_USART_PIT_CLOCK="1",
+        JUKU_USART_PIT_CPU_HZ="1700000",
+        JUKU_CHECKPOINT_PREFIX=str(checkpoint),
+        JUKU_REALTIME_HZ="1700000",
+        JUKU_KEYS="T",
+        JUKU_KEY_START_VRAM="0",
+    )
+    process = subprocess.Popen(
+        [str(trace), str(rom), "4000000"], cwd=case, env=environment,
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+    )
+    os.close(slave)
+    received = bytearray()
+    try:
+        deadline = time.monotonic() + 10.0
+        while b"ABI1" not in received and time.monotonic() < deadline:
+            ready, _, _ = select.select([master], [], [], 0.05)
+            if not ready:
+                continue
+            try:
+                received.extend(os.read(master, 4096))
+            except OSError as error:
+                if error.errno != errno.EIO:
+                    raise
+                time.sleep(0.01)
+        if bytes(received) != b"ABI1":
+            fail(f"cursor-{phase} serial ABI output differs: {bytes(received)!r}")
+        os.write(master, b"\xC3")
+        process.wait(timeout=20.0)
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+        os.close(master)
+    stderr = process.stderr.read().decode(errors="replace") \
+        if process.stderr is not None else ""
+    if process.returncode != 0:
+        fail(f"cursor-{phase} cosim exited {process.returncode}: {stderr[-800:]}")
+    state = parse_state(checkpoint.with_suffix(".state"))
+    ram = checkpoint.with_suffix(".ram").read_bytes()
+    if state.get("halted") != "1" or state.get("mode") != "1" or \
+            ram[0xD783] != 0xA5:
+        fail(f"cursor-{phase} fixture did not finish cleanly: {state}")
+    return ram[0xD800:0xD800 + 9600]
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         fail("usage: test.py /path/to/trace")
@@ -207,10 +267,19 @@ def main() -> int:
         if stderr.rfind("[BANK] mode 3 -> 1") < stderr.rfind("[BANK] mode 1 -> 3"):
             fail("mode-3 helper did not finish in resident-ROM mode")
 
+        hidden_screen = bytearray(expected_screen)
+        hidden_screen[7 * 50] = 0
+        hidden_screen[7 * 50 + 1] = 0
+        if run_cursor_fixture(trace, temporary, "hidden") != hidden_screen:
+            fail("one full cursor period did not erase the underline")
+        if run_cursor_fixture(trace, temporary, "visible") != expected_screen:
+            fail("two full cursor periods did not restore the underline")
+
     print(
         "NETWORK-FIRST-ROM-ABI-TEST: PASS "
         f"{metadata['image_sha256']} "
-        f"(gate={metadata['gate_bytes']}, helper={metadata['helper_bytes']})"
+        f"(gate={metadata['gate_bytes']}, helper={metadata['helper_bytes']}; "
+        "cursor=visible/hidden/visible)"
     )
     return 0
 

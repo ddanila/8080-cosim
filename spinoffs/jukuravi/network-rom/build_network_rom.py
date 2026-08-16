@@ -48,7 +48,17 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def build(*, abi_selftest: bool = False) -> tuple[bytes, dict[str, object]]:
+def build(*, abi_selftest: bool = False,
+          cursor_phase: str | None = None) -> tuple[bytes, dict[str, object]]:
+    if cursor_phase not in (None, "hidden", "visible"):
+        raise ValueError(f"unknown cursor phase {cursor_phase!r}")
+    if cursor_phase is not None and not abi_selftest:
+        raise ValueError("cursor phase fixtures require abi_selftest")
+    selftest_defines = ("ABI_SELFTEST",) if abi_selftest else ()
+    if cursor_phase is not None:
+        selftest_defines += (
+            "ABI_CURSOR_" + cursor_phase.upper(),
+        )
     with tempfile.TemporaryDirectory(prefix="juku-network-rom.") as name:
         temporary = Path(name)
         gate = assemble(HERE / "gate-wrapper.asm", temporary / "gate.cim",
@@ -123,10 +133,11 @@ def build(*, abi_selftest: bool = False) -> tuple[bytes, dict[str, object]]:
         )
         boot = assemble(
             HERE / "boot.asm", temporary / "boot.cim", includes,
-            ("ABI_SELFTEST",) if abi_selftest else (),
+            selftest_defines,
         )
         resident = assemble(
             HERE / "resident.asm", temporary / "resident.cim", includes,
+            selftest_defines,
         )
         if len(boot) > GATE_STORED:
             raise ValueError(f"boot code overlaps stored gate: {len(boot)} bytes")

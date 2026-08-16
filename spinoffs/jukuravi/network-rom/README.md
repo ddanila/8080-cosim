@@ -91,6 +91,9 @@ check together prove:
   shared resident keyboard with its debounce state retained in low RAM;
 - exact resident rendering of `Z` and the next-cell underline against a
   9,600-byte framebuffer oracle, plus rejection of a direct overlay write;
+- test-only resident variants around the byte-identical C1 image: exactly
+  1,024 console-status polls erase the underline and 2,048 restore it, proving
+  a complete visible/hidden/visible cursor cycle;
 - all five POST classes through real firmware paths: a changed CPU vector,
   stuck RAM bit, address alias, complete-ROM bit flip, D57 count fault, and D11
   ready-state fault;
