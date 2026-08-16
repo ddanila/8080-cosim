@@ -230,8 +230,8 @@ reproduced reliability reason. Exact per-run evidence and rationale are in
 ## Current deployment
 
 Following the Arvutimuuseum demonstration, CS00015 is in the home lab with the
-Ekta4401 D15/D16 service-ROM pair still fitted. This is the current
-Jukuravi-enabled reference machine. CS00014 is in the museum's main exhibition
+Ekta4402 D15/D16 service-ROM pair fitted. This is the current Jukuravi-enabled
+reference machine. CS00014 is in the museum's main exhibition
 with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 `machine-deployment-status.md` for the cross-machine ledger.
 
@@ -242,7 +242,21 @@ with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 | D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official EktaSoft 3.7 low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
 | D55/D57 vertical timing path | Historical T15/T16/T31/T32 D55 bits used an unclocked predicate; corrected Ekta raster plus D57 channel-2 sampling passed 8/8 | D57 channel 2 and D55.13 `/VER RTR` output path are physically validated; this does not independently exercise every D55 counter predicate |
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
-| Currently fitted firmware | Ekta4401 D15/D16 service-ROM pair | Physically booted; `J` API-v2 attach, PROBE, LOAD, READ and RUN demonstrated |
+| Currently fitted firmware | Ekta4402 D15/D16 service-ROM pair | Direct `N` CP/M Plus/NetDisk-v3/N4 boot and reconnect physically qualified; inherited `J` API-v2 attach, PROBE, refresh query and READ requalified with zero transport mismatch on 2026-08-16 |
+
+The exact fitted Ekta4402 image is SHA-256
+`20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`;
+its low/high halves are respectively
+`ee87c5b199b409c97909f0eb2b7cfd24cbee2537569bbcdec378631ec8fc85d5`
+and `e76587d94189ce8d1cf33ee95cb50f68f5d62280a9dd675ded006eb32232e6e7`.
+The retained Jukuravi evidence is under
+`spinoffs/jukuravi/sessions/cs00015-ekta4402-j-physical/`. The first capture
+received no bytes because its host timeout expired before `J` was entered; it
+is timing chronology, not a board failure. Two immediate no-reset attaches
+then completed with zero mismatch. Both proved API-v2 PROBE and 128-row
+software refresh; the second also read 32 bytes at `4000h` without modifying
+RAM. Ekta4401 remains the frozen preceding physical baseline, not the fitted
+firmware.
 
 ## Serial connector measurement
 

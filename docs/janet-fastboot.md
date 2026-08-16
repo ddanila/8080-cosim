@@ -634,8 +634,13 @@ Two independent regressions qualify the desk path. The ROM-level test loads a
 checked synthetic extension and proves its execution. CP/Mish then boots the
 real 6,893-byte bundle through `N`, reaches `A>`, and completes `DIR` in 12
 disk exchanges. The latter also proves the 8N1-to-8O1 handoff. Ekta4402 has
-not yet been burned or tested on physical hardware, so stock-ROM V14 and
-ekta4401 remain the physical baselines.
+since been burned into CS00015 and physically qualified with CP/M Plus: direct
+`N` reaches `A>`, NetDisk-v3 and N4; a fresh stateless host resumes disk and
+remote-console service after approximately 23.19 seconds without a server;
+and `DIR` plus `DIAG CPU` complete without RESET. The inherited `J` service
+was separately requalified through API-v2 PROBE, refresh query and READ with
+zero transport mismatch. Ekta4401 remains the frozen preceding image rather
+than the currently fitted physical baseline.
 
 The same direct-ROM transport is consumed by the separate
 [`cpm-plus-juku`](https://github.com/ddanila/cpm-plus-juku) project. That

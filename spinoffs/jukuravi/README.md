@@ -39,9 +39,13 @@ see
 
 ## Current machine configuration
 
-CS00015 was restored on 2026-08-08 with **EK37 / EktaSoft 3.7**, then received
-the project's Ekta4401 D15/D16 service-ROM pair on 2026-08-11. Ekta4401 remains
-fitted in the home-lab machine and provides the Jukuravi API-v2 entry. The
+CS00015 was restored on 2026-08-08 with **EK37 / EktaSoft 3.7**, received the
+project's frozen Ekta4401 D15/D16 service-ROM pair on 2026-08-11, and was
+upgraded to Ekta4402 on 2026-08-16. Ekta4402 is fitted in the home-lab machine
+and provides direct `N` fastboot plus the inherited Jukuravi API-v2 `J` entry.
+Two physical `J` attaches requalified PROBE, 128-row refresh query and READ
+with zero transport mismatch; evidence is retained under
+`sessions/cs00015-ekta4402-j-physical/`. The
 T31/T32 configurations below and the intervening EK37 restoration remain
 historical evidence, not the current firmware. The donor D6 `.038` remains
 fitted, the original D8 `.039` is restored, and D1 is repaired;

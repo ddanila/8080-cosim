@@ -18,8 +18,8 @@ from the pinned `roms/ekta37.bin`. Plan and phase results:
 - Guard: `sync/ekta4401_check.sh`, test
   [`../../../tests/ekta4401_remix_test.py`](../../../tests/ekta4401_remix_test.py)
 
-`ekta4401` is frozen and physically proven. The separately named simulator-
-qualified successor adds direct CP/Mish fastboot without changing that
+`ekta4401` is frozen and physically proven. The separately named, now also
+physically proven successor adds direct fastboot without changing that
 baseline:
 
 - Image: [`ekta4402.bin`](ekta4402.bin), SHA256
@@ -38,8 +38,9 @@ Its `#02` banner and new `N fastboot` command identify the change. `N` needs
 no Enter: it copies the pinned V15 core to `0100h`, selects D57 mode 2/count 4
 and D11 19200/8N1, then receives the normal checked V15 extension and ZX0
 stream directly. No stock Janet station request or 9600-baud stage occurs.
-This remains simulator-only until both named halves are burned and qualified
-on a real board.
+Both named halves are fitted and qualified on CS00015. Direct `N` has booted
+CP/M Plus through NetDisk-v3 and N4, and the inherited `J` service has passed
+two physical API-v2 attaches with zero transport mismatch.
 
 **This is not a factory image.** Its banner says so: the stock identity line
 `'EktaSoft '88  Serial #0037` is replaced, same length, by
@@ -152,30 +153,43 @@ tiles; byte diversity alone had incorrectly accepted that version.
 
 ## Physical validation
 
-The immediately preceding image (`20a9c25b...`) was programmed into both
-AT28C64 devices on 2026-08-11 with the DOSRAVI/Willem controlled-write path.
-D15 changed 8,167 bytes and D16 changed
-8,173; Willem's built-in post-write read verified all 8,192 bytes of each
-image with zero retries and left VCC/VPP off. The verified CRC32 values were
-`5E306759` and `3B734DEC`, matching that image's D15/D16 halves. The current
-image adds the deterministic `CALL 0CE1h` serial/PIT restore before loader
-entry and therefore has not yet been programmed physically; both current
-halves must be burned because the upper-ROM checksum byte also changes D15.
-The first D15 operation took about 393 seconds, outlasting the host's former
-300-second EXEC wait; its persistent execution ID allowed the completed result
-to be retrieved without programming twice. D16 used a 900-second bound.
+The frozen Ekta4401 pair and its immediately preceding service image were
+programmed and qualified on 2026-08-11; that chronology remains in the
+original session records. The current Ekta4402 pair was programmed on
+2026-08-16 through the DOSRAVI/Willem controlled-write path, using only the
+programmer's built-in full read/verify. The fitted devices are labeled
+`Ekta4402low` (D15) and `Ekta4402high` (D16). Their exact committed SHA-256
+values are `ee87c5b199b409c97909f0eb2b7cfd24cbee2537569bbcdec378631ec8fc85d5`
+and `e76587d94189ce8d1cf33ee95cb50f68f5d62280a9dd675ded006eb32232e6e7`;
+their concatenation is the guarded Ekta4402 image
+`20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`.
 
-The pair then booted physically in CS00015. With no display attached, typing
-`J` alone (no Enter) entered the resident service loader. The retained session
+The Ekta4401 pair first booted physically in CS00015. With no display attached,
+typing `J` alone (no Enter) entered the resident service loader. The retained session
 [`../sessions/cs00015-ekta4401-first-j-physical/`](../sessions/cs00015-ekta4401-first-j-physical/)
 attached to API v2, passed PROBE without changing RAM, and reported 128-row
 refresh enabled at `07A9h`, with no transport mismatch. Subsequent retained
 sessions uploaded, read back, and executed D57 probes successfully, proving
 the complete LOAD → READ → RUN → result path rather than only the READY frame.
 
-The service design therefore has both deterministic desk validation and
-physical validation of its preceding byte image. Burning always touches both
-chips: D15 carries the
+Ekta4402 preserves those exact loader segments and `J` handler. On 2026-08-16
+the fitted successor was requalified directly: `J` entered service mode, two
+no-reset host attaches completed with zero encoded-symbol mismatch, both
+passed API-v2 PROBE and reported software refresh enabled for all 128 rows at
+`07A9h`, and the second returned a 32-byte READ from `4000h`. The first capture
+in the retained directory contains zero traffic because the host timeout
+expired before the operator entered `J`; it is negative timing chronology,
+not a firmware result. Exact RX/TX and JSON evidence is retained under
+[`../sessions/cs00015-ekta4402-j-physical/`](../sessions/cs00015-ekta4402-j-physical/).
+
+Direct `N` on the same fitted pair also physically boots the separately
+maintained CP/M Plus image, reaches NetDisk-v3/N4 service, and recovers from a
+fresh stateless host replacement without resetting the machine. Those system
+and timing records belong to `cpm-plus-juku`.
+
+The service design therefore has deterministic desk validation and direct
+physical validation of the currently fitted byte image. Burning always
+touches both chips: D15 carries the
 banner and table pointer, while D16 carries the copied loader segments and the
 H/J/V code. Program the named D15/D16 files; never load the combined 16 KiB
 image into either 8 KiB device.

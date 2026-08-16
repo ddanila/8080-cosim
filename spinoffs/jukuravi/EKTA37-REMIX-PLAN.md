@@ -1,7 +1,7 @@
 # EktaSoft remix plan: ekta37 + Jukuravi service module
 
-Status: **EKTA4401 COMPLETE AND FROZEN; EKTA4402 DIRECT FASTBOOT SIMULATOR-
-QUALIFIED, 2026-08-15** —
+Status: **EKTA4401 COMPLETE AND FROZEN; EKTA4402 PHYSICALLY QUALIFIED ON
+CS00015, 2026-08-16** —
 `ekta4401.bin` boots with the banner identity, `H` help, a guarded `V`
 diamond-tunnel demo carrying the `JUKU 2026` mark, the floppy subsystem stripped,
 and a `J` command that starts the Jukuravi loader from RAM; all guarded
@@ -21,8 +21,10 @@ Plus 3.1 baseline: each reaches `A>` and completes NetDisk-v3 `DIR` with zero
 stock bootstrap frames; CP/M Plus also loads and passes the shared `DIAG CPU`
 transient. CP/M Plus sources, images, and its end-to-end regression belong to
 that repository; this tree owns Ekta4402 and the common host/model side. It is
-not yet burned or physically qualified. `ekta4401` remains byte-exact and is
-the hardware baseline.
+now fitted in CS00015 and physically qualifies direct `N`, CP/M Plus,
+NetDisk-v3, N4, live stateless host replacement, and its inherited `J`
+API-v2 PROBE/refresh/READ path. `ekta4401` remains byte-exact as the frozen
+preceding hardware baseline.
 
 ## Goal
 

@@ -3,8 +3,8 @@
 Status: **CS00015 BENCH CANDIDATE C3 — PHYSICAL QUALIFICATION PENDING**
 
 This directory is the from-scratch successor to the frozen Ekta4401 monitor
-and simulator-only Ekta4402 direct-fastboot experiment. The product goal is a
-network-only ROM which performs bounded POST, boots automatically at 19,200
+and physically qualified Ekta4402 direct-fastboot/service ROM. The product
+goal is a network-only ROM which performs bounded POST, boots automatically at 19,200
 baud, exposes common platform services from its resident 10 KiB, and gives
 CP/M Plus a larger TPA. The accepted staged plan and budgets live in the
 `cpm-plus-juku` repository.

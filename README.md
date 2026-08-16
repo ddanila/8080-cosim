@@ -77,9 +77,12 @@ with the machine-readable board model.
   19,200-baud disk server recovered the already-started system to `A>`, then
   passed `DIR` and the full `DIAG`; this qualifies the resident disk fix. The
   stock-`TN` wrapper still misses V15's final `JA` and falls back to 9,600, so
-  one-command completion remains open. The RomBios CP/Mish image remains the
-  physical baseline. V15 and ekta4402 are not yet physical replacements for
-  V14/ekta4401. The original stock Janet path is unchanged as fallback.
+  its one-command fast completion remains open. Ekta4402 is now fitted in
+  CS00015: direct `N` boot reaches CP/M Plus, NetDisk-v3 and N4; live host
+  replacement recovers without RESET; and the inherited `J` API-v2 service
+  passes PROBE, refresh query and READ with zero transport mismatch. Ekta4401
+  and V14 remain frozen historical baselines. The original stock Janet path is
+  unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.
