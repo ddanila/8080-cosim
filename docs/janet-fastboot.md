@@ -890,6 +890,14 @@ changing the C1 production image. The public console-status vector is called
 for exactly one 1,024-poll period and then two periods; raw framebuffer oracles
 prove visible/hidden/visible underline phases and mode-1 restoration.
 
+The exact C1 image now also crosses the structural HDL boundary. The focused
+`sync/network_first_rom_hdl_check.sh` gate boots it through `juku_top`/`vm80a`
+to the `C4h` ready byte, proves reset-side PIT/USART/memory state, exercises the
+unchanged resident ABI with framebuffer and matrix-key input, and completes one
+CRC-checked NetDisk-v3 record into DMA. See
+[`network-first-rom-hdl.md`](network-first-rom-hdl.md) for the intentional
+boundary between these structural checks and the full-system C-model suite.
+
 A direct stock transfer to B400h was also tested as a possible zero-stage
 shortcut. The stock client reached the requested CA00h execute address but did
 not install the records at B400h (6327 of 6656 bytes differed in cosim). The

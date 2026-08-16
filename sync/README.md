@@ -54,6 +54,7 @@ sync/ie10_check.sh
 sync/ag3_check.sh
 sync/basic_cart_check.sh
 sync/d2_ready_path_check.sh
+sync/network_first_rom_hdl_check.sh
 ```
 
 These cover the real-ROM boot/framebuffer path, an independent and mostly
@@ -96,6 +97,10 @@ retrigger-inhibit and pulse-extension contract plus D56's photo-proved grounded
 A inputs and traced board RC timing parameters.
 `d2_ready_path_check.sh` separately guards the physical `.037` open-collector
 raw polarity through the D30 READY latch; it does not claim complete WAIT timing.
+`network_first_rom_hdl_check.sh` boots the exact C1 network-first production ROM
+to its target-ready marker and uses test-only dispatch around the same resident
+bytes to prove the ABI, framebuffer helper, matrix keyboard, serial marker, and
+one CRC-checked NetDisk-v3 DMA record in structural HDL.
 
 `sync/cosim_check.sh` is slower than the others (it drives `juku_top` to ~20 ms
 of simulated boot); see `docs/cosim-runtime-reference.md`. Activate the tracked

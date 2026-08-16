@@ -284,6 +284,54 @@ self_got_keyboard:
         cpi     0c3h
         jnz     self_fail_serial
 
+.ifdef ABI_NETDISK_SELFTEST
+        ; Switch to runtime 8O1 and issue one public read request. The HDL host
+        ; returns a checked single-record fill, proving the exact resident C1
+        ; transaction code through the structural D57/D11/D104 path.
+        mvi     a,1
+        call    JCGSERINITADDR
+        ora     a
+        jnz     self_fail_serial
+        lxi     h,0d7f0h
+        mvi     m,1                     ; request version
+        inx     h
+        mvi     m,JROMNETOPMODE
+        inx     h
+        mvi     m,3                     ; enable NetDisk v3
+        lxi     h,0d7f0h
+        call    JCGNETDISKADDR
+        ora     a
+        jnz     self_fail_netdisk
+
+        lxi     h,0d7f0h
+        mvi     m,1
+        inx     h
+        mvi     m,JROMNETOPREAD
+        inx     h
+        mvi     m,0                     ; drive A
+        inx     h
+        mvi     m,2                     ; track 2
+        inx     h
+        mvi     m,0
+        inx     h
+        mvi     m,1                     ; sector 1
+        inx     h
+        mvi     m,0                     ; DMA 0300h
+        inx     h
+        mvi     m,3
+        inx     h
+        mvi     m,0                     ; cache 0400h
+        inx     h
+        mvi     m,4
+        lxi     h,0d7f0h
+        call    JCGNETDISKADDR
+        ora     a
+        jnz     self_fail_netdisk
+        lda     0300h
+        cpi     05ah
+        jnz     self_fail_netdisk
+.endif
+
         mvi     a,0a5h
         sta     SELFSTATUS
 self_done:

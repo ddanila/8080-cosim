@@ -24,6 +24,7 @@ matrix passes.
 ```sh
 python3 spinoffs/jukuravi/network-rom/build_network_rom.py
 sync/network_first_rom_abi_check.sh
+sync/network_first_rom_hdl_check.sh
 cd ../cpm-plus-juku && make network-rom-cosim-check
 ```
 
@@ -109,6 +110,12 @@ check together prove:
   sequence with 38 NetDisk reads, one write, no retries, and no USART overruns;
 - byte-exact parity between the final resident-ROM and RAM-console framebuffers
   after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
+
+The focused [structural HDL gate](../../../docs/network-first-rom-hdl.md) also
+boots the exact C1 production image through `juku_top`/`vm80a`, exercises the
+resident ABI and framebuffer helper, accepts a shifted matrix key, and
+completes one CRC-checked NetDisk-v3 read into a 128-byte DMA record. The full
+CP/M, recovery, cursor-pixel, and soak oracles remain in the faster C model.
 
 The write rule matters: MAME maps the high window with `.rom()` and the C model
 rejects writes into an active high-ROM overlay. Therefore **all** framebuffer

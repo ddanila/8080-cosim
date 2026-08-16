@@ -49,16 +49,21 @@ def digest(data: bytes) -> str:
 
 
 def build(*, abi_selftest: bool = False,
-          cursor_phase: str | None = None) -> tuple[bytes, dict[str, object]]:
+          cursor_phase: str | None = None,
+          netdisk_selftest: bool = False) -> tuple[bytes, dict[str, object]]:
     if cursor_phase not in (None, "hidden", "visible"):
         raise ValueError(f"unknown cursor phase {cursor_phase!r}")
     if cursor_phase is not None and not abi_selftest:
         raise ValueError("cursor phase fixtures require abi_selftest")
+    if netdisk_selftest and not abi_selftest:
+        raise ValueError("NetDisk fixture requires abi_selftest")
     selftest_defines = ("ABI_SELFTEST",) if abi_selftest else ()
     if cursor_phase is not None:
         selftest_defines += (
             "ABI_CURSOR_" + cursor_phase.upper(),
         )
+    if netdisk_selftest:
+        selftest_defines += ("ABI_NETDISK_SELFTEST",)
     with tempfile.TemporaryDirectory(prefix="juku-network-rom.") as name:
         temporary = Path(name)
         gate = assemble(HERE / "gate-wrapper.asm", temporary / "gate.cim",
