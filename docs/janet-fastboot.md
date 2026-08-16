@@ -891,6 +891,8 @@ NetDisk baud/framing, emits no bootstrap capability marker, and waits for the
 running target to retry its outstanding request. Bootstrap-related options and
 boot-result output are rejected in this mode so a replacement server cannot
 accidentally send a new system image into a live disk session.
+Writable A: images are replaced through a sibling temporary file, so Ctrl+C or
+another interruption during shutdown cannot truncate the last complete image.
 
 The same ABI harness now assembles test-only cursor-phase variants without
 changing the C1 production image. The public console-status vector is called

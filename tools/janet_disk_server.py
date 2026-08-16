@@ -560,6 +560,13 @@ def write_boot_result(path: Path, report: dict[str, object]) -> None:
     temporary.replace(path)
 
 
+def write_volume(path: Path, volume: bytes | bytearray) -> None:
+    """Replace a writable disk atomically so interruption preserves the old copy."""
+    temporary = path.with_name(path.name + ".tmp")
+    temporary.write_bytes(volume)
+    temporary.replace(path)
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument("serial", help="serial device, for example /dev/ttyUSB0")
@@ -871,7 +878,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         )
     finally:
         if args.writable:
-            args.volume.write_bytes(volume)
+            write_volume(args.volume, volume)
             print(f"Saved writable A: to {args.volume}", flush=True)
         os.close(fd)
         if console_fd is not None:

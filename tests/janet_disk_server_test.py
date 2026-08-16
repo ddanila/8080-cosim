@@ -33,6 +33,7 @@ from tools.janet_disk_server import (  # noqa: E402
     record_offset,
     serve_disk,
     write_boot_result,
+    write_volume,
 )
 
 
@@ -344,9 +345,17 @@ def main() -> int:
             '{\n  "schema": "test",\n  "elapsed_seconds": 1.25\n}\n':
         raise AssertionError("boot timing JSON differs")
     result.unlink()
+    volume_result = ROOT / ".obj" / "janet-disk-server-volume-test.img"
+    volume_result.write_bytes(b"old")
+    write_volume(volume_result, b"new volume")
+    if volume_result.read_bytes() != b"new volume" or \
+            volume_result.with_name(volume_result.name + ".tmp").exists():
+        raise AssertionError("atomic writable-volume replacement differs")
+    volume_result.unlink()
     print(
         "JANET-DISK-SERVER-TEST: PASS "
-        "(dual drive + NetDisk v3 + live resume + idempotent N4 console)"
+        "(dual drive + NetDisk v3 + live resume + atomic save + "
+        "idempotent N4 console)"
     )
     return 0
 
