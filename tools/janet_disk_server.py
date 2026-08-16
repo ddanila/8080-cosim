@@ -586,6 +586,11 @@ def parser() -> argparse.ArgumentParser:
              "and use restart-safe direct V15 without a keypress",
     )
     result.add_argument(
+        "--resume-disk", action="store_true",
+        help="attach directly to an already-running NetDisk client at "
+             "--disk-baud without performing another bootstrap",
+    )
+    result.add_argument(
         "--compact-stock-execute", action="store_true",
         help="with --fast-stage1, replace NETD's padded execute service with "
              "the ROM-proven one-fragment form",
@@ -658,6 +663,14 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: Iterable[str] | None = None) -> int:
     args = parser().parse_args(argv)
     direct_fastboot = args.direct_fastboot or args.network_rom
+    if args.resume_disk and (
+        args.fast_stage1 or direct_fastboot or args.compact_stock_execute
+        or args.fast_low_latency_guards or args.boot_result_json
+    ):
+        raise ValueError(
+            "--resume-disk cannot be combined with bootstrap or boot-result "
+            "options"
+        )
     if args.compact_stock_execute and not args.fast_stage1:
         raise ValueError("--compact-stock-execute requires --fast-stage1")
     if direct_fastboot and not args.fast_stage1:
@@ -684,6 +697,34 @@ def main(argv: Iterable[str] | None = None) -> int:
     try:
         if console_fd is not None:
             tty.setraw(console_fd)
+        if args.resume_disk:
+            configure_serial(fd, args.disk_baud)
+            print(
+                f"Resuming A: from {args.volume} at {args.disk_baud} baud, "
+                f"8O1, NetDisk v{args.disk_protocol}; waiting for a retried "
+                "request from the running target",
+                flush=True,
+            )
+            if args.drive_b:
+                print(
+                    f"Serving read-only native B: from {args.drive_b}",
+                    flush=True,
+                )
+            serve_disk(
+                fd,
+                volume,
+                drive_b=drive_b,
+                writable=args.writable,
+                timeout=args.disk_timeout,
+                reply_guard=args.disk_reply_guard_ms / 1000.0,
+                tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
+                read_ahead_records=args.disk_read_ahead_records,
+                protocol_version=args.disk_protocol,
+                console_protocol=bool(args.console_pty),
+                console_fd=console_fd,
+                resume=True,
+            )
+            return 0
         effective_boot_baud = FAST_BAUD if direct_fastboot \
             else args.boot_baud
         configure_serial(

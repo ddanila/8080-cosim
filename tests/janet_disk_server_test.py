@@ -241,6 +241,45 @@ def main() -> int:
             v3_stats["dropped_replies"] != 1:
         raise AssertionError(f"v3 counters differ: {v3_stats}")
 
+    # A replacement physical server joins an already-running client without
+    # emitting the NRN capability marker which belongs only to initial boot.
+    resume_host, resume_client = socket.socketpair()
+    resume_errors: list[BaseException] = []
+
+    def resume_worker() -> None:
+        try:
+            serve_disk(
+                resume_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
+                reply_guard=0, protocol_version=3, verbose=False, resume=True,
+            )
+        except BaseException as error:
+            resume_errors.append(error)
+
+    resume_thread = threading.Thread(target=resume_worker)
+    resume_thread.start()
+    resume_client.settimeout(0.05)
+    try:
+        resume_client.recv(1)
+    except socket.timeout:
+        pass
+    else:
+        raise AssertionError("resumed server emitted a bootstrap marker")
+    finally:
+        resume_client.settimeout(None)
+    resume_client.sendall(request(READ_AHEAD, 10, 0, 2, 1))
+    resume_reply = receive_exact(resume_client, len(expected_reply))
+    if resume_reply[:5] != b"DJ\x0A\x00\x03" or \
+            int.from_bytes(resume_reply[-2:], "big") != \
+            crc16_ibm(resume_reply[:-2]):
+        raise AssertionError("resumed NetDisk-v3 reply differs")
+    resume_thread.join(timeout=2)
+    resume_client.close()
+    resume_host.close()
+    if resume_thread.is_alive() or resume_errors:
+        raise AssertionError(
+            f"resumed disk server did not finish: {resume_errors!r}"
+        )
+
     console_host, console_client = socket.socketpair()
     console_input = bytearray(b"X")
     console_output = bytearray()
@@ -307,7 +346,7 @@ def main() -> int:
     result.unlink()
     print(
         "JANET-DISK-SERVER-TEST: PASS "
-        "(dual drive + NetDisk v3 + idempotent N4 console)"
+        "(dual drive + NetDisk v3 + live resume + idempotent N4 console)"
     )
     return 0
 

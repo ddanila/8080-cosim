@@ -885,6 +885,13 @@ recover without a target reset. Variable-sized `reply_filter` output exists
 only to inject these deterministic test faults; the normal server still sends
 complete protocol-sized frames.
 
+For the corresponding physical server-loss check, the production disk-server
+CLI accepts `--resume-disk`. It configures the link directly for the requested
+NetDisk baud/framing, emits no bootstrap capability marker, and waits for the
+running target to retry its outstanding request. Bootstrap-related options and
+boot-result output are rejected in this mode so a replacement server cannot
+accidentally send a new system image into a live disk session.
+
 The same ABI harness now assembles test-only cursor-phase variants without
 changing the C1 production image. The public console-status vector is called
 for exactly one 1,024-poll period and then two periods; raw framebuffer oracles

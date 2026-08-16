@@ -139,6 +139,22 @@ Use this command only with the matching C1 D15/D16 pair. The JSON status is the
 machine-readable release gate and still records that physical qualification is
 pending.
 
+To qualify recovery after deliberately stopping that host while CP/M remains
+running, start a replacement at the disk layer only:
+
+```sh
+cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
+  /dev/ttyUSB0 out/network-first-abi1-cs00015-c1/cpm-plus-system.bin \
+  out/physical-CS00015-C1/working-network-disk.img \
+  --resume-disk --disk-baud 19200 --disk-protocol 3 --writable \
+  --disk-timeout 86400
+```
+
+This sends no bootstrap marker or payload. It waits for a retried NetDisk-v3
+request from the live target; a subsequent successful `DIR` proves reattachment
+without RESET. The CP/M Plus repository's physical-qualification runner wraps
+both commands and preserves the required logs.
+
 ## Next implementation boundary
 
 The desk recovery matrix is complete. It covers target reset halfway through a
