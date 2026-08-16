@@ -46,5 +46,6 @@
     "major": 1,
     "minor": 0
   },
-  "status": "automatic-boot desk image; not for physical programming"
+  "candidate": "network-first-abi1-cs00015-c1",
+  "status": "CS00015 bench candidate; physical qualification pending"
 }

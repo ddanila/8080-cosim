@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **AUTOMATIC-BOOT DESK IMAGE — DO NOT PROGRAM INTO D15/D16**
+Status: **CS00015 BENCH CANDIDATE C1 — PHYSICAL QUALIFICATION PENDING**
 
 This directory is the from-scratch successor to the frozen Ekta4401 monitor
 and simulator-only Ekta4402 direct-fastboot experiment. The product goal is a
@@ -9,13 +9,15 @@ baud, exposes common platform services from its resident 10 KiB, and gives
 CP/M Plus a larger TPA. The accepted staged plan and budgets live in the
 `cpm-plus-juku` repository.
 
-The present image proves the versioned ROM ABI, reset/POST path, keyless V15
+The present image, named `network-first-abi1-cs00015-c1`, proves the versioned
+ROM ABI, reset/POST path, keyless V15
 boot, resident serial initialization, shared keyboard, and compact console. Its
 dedicated CP/M Plus consumer reaches `A>`, accepts `DIR` and `DIAG CPU` through
 that keyboard, and completes both commands. Its split files test exact EPROM
-geometry, but their metadata still says `not for physical programming`; they
-are not bench candidates until resident services, reset-side hardware state,
-and the physical qualification matrix are complete.
+geometry. Resident services, reset-side hardware state, and the simulated
+recovery matrix are complete, so its metadata now permits a controlled
+CS00015 bench burn. It is not a generally qualified release until the physical
+matrix passes.
 
 ## Build and test
 
@@ -30,7 +32,8 @@ Committed deterministic artifacts:
 - `juku-network-rom-abi1.bin`: combined 16 KiB image;
 - `juku-network-rom-abi1-d15.bin`: exact low 8 KiB half;
 - `juku-network-rom-abi1-d16.bin`: exact high 8 KiB half;
-- `juku-network-rom-abi1.json`: hashes, sizes, ABI identity, and prohibition.
+- `juku-network-rom-abi1.json`: candidate name, hashes, sizes, ABI identity,
+  and physical-qualification status.
 
 The builder stores a 196-byte gate and 119-byte mode-3 helper in the boot-only
 ROM. Reset configures D27 as all-input, D26 as keyboard/memory-mode I/O with
@@ -112,8 +115,7 @@ lookup but cannot paint directly.
 
 ## Desk invocation
 
-Once a physical programming candidate is explicitly released, its matching
-identity-free host command will be:
+The candidate's matching identity-free host command is:
 
 ```sh
 cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
@@ -123,8 +125,9 @@ cd ~/fun/cpm-plus-juku && ../8080-cosim/tools/janet_disk_server.py \
   --disk-baud 19200 --disk-protocol 3 --writable --timeout 86400
 ```
 
-Do not use that as authorization to burn the current files; the JSON status is
-the machine-readable release gate.
+Use this command only with the matching C1 D15/D16 pair. The JSON status is the
+machine-readable release gate and still records that physical qualification is
+pending.
 
 ## Next implementation boundary
 
@@ -136,5 +139,6 @@ disk server also takes over after its predecessor receives a request but exits
 before replying. Clean and faulted paths all reach the real prompt and complete
 directory, diagnostic, and write-through operations without a manual reset.
 
-The next boundary is to package named D15/D16 candidates and qualify them
-physically on CS00015 before changing the release gate.
+The next boundary is to qualify the named D15/D16 candidate physically on
+CS00015, then either promote these exact hashes or record and fix the observed
+failure before producing C2.

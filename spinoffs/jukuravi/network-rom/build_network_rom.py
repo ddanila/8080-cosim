@@ -30,6 +30,7 @@ GATE_STORED = 0x1000
 HELP_STORED = 0x1400
 CORE_STORED = 0x0F00
 EXTENSION_BYTES = 267
+CANDIDATE = "network-first-abi1-cs00015-c1"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -172,7 +173,8 @@ def build(*, abi_selftest: bool = False) -> tuple[bytes, dict[str, object]]:
             "console", "serial", "keyboard", "netdisk-v3", "diagnostics",
         ],
         "abi": {"base": "FF00", "major": 1, "minor": 0},
-        "status": "automatic-boot desk image; not for physical programming",
+        "candidate": CANDIDATE,
+        "status": "CS00015 bench candidate; physical qualification pending",
     }
     return image, metadata
 
