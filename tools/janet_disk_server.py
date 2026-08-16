@@ -727,6 +727,17 @@ def main(argv: Iterable[str] | None = None) -> int:
     console_fd = os.open(
         args.console_pty, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK,
     ) if args.console_pty else None
+
+    def confirm_remote_console(event: dict[str, int]) -> None:
+        operation = "output" if event["operation"] == CONSOLE_OUT \
+            else "poll"
+        print(
+            "Remote console N4 confirmed by target "
+            f"{operation} request (sequence {event['sequence']:02X}); "
+            "local Juku screen/keyboard remain enabled",
+            flush=True,
+        )
+
     try:
         if console_fd is not None:
             tty.setraw(console_fd)
@@ -743,6 +754,12 @@ def main(argv: Iterable[str] | None = None) -> int:
                     f"Serving read-only native B: from {args.drive_b}",
                     flush=True,
                 )
+            if args.console_pty:
+                print(
+                    f"Resuming N4 remote console on {args.console_pty}; "
+                    "awaiting a target console reprobe",
+                    flush=True,
+                )
             serve_disk(
                 fd,
                 volume,
@@ -755,6 +772,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 protocol_version=args.disk_protocol,
                 console_protocol=bool(args.console_pty),
                 console_fd=console_fd,
+                console_confirm_hook=confirm_remote_console,
                 resume=True,
             )
             return 0
@@ -904,16 +922,6 @@ def main(argv: Iterable[str] | None = None) -> int:
             }
             write_boot_result(args.boot_result_json, report)
             print(f"Saved boot timing to {args.boot_result_json}", flush=True)
-
-        def confirm_remote_console(event: dict[str, int]) -> None:
-            operation = "output" if event["operation"] == CONSOLE_OUT \
-                else "poll"
-            print(
-                "Remote console N4 confirmed by target "
-                f"{operation} request (sequence {event['sequence']:02X}); "
-                "local Juku screen/keyboard remain enabled",
-                flush=True,
-            )
 
         serve_disk(
             fd,

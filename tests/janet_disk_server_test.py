@@ -246,12 +246,15 @@ def main() -> int:
     # emitting the NRN capability marker which belongs only to initial boot.
     resume_host, resume_client = socket.socketpair()
     resume_errors: list[BaseException] = []
+    resume_console_confirmations: list[dict[str, int]] = []
 
     def resume_worker() -> None:
         try:
             serve_disk(
                 resume_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
                 reply_guard=0, protocol_version=3, verbose=False, resume=True,
+                console_protocol=True,
+                console_confirm_hook=resume_console_confirmations.append,
             )
         except BaseException as error:
             resume_errors.append(error)
@@ -267,6 +270,18 @@ def main() -> int:
         raise AssertionError("resumed server emitted a bootstrap marker")
     finally:
         resume_client.settimeout(None)
+    resume_client.sendall(request(CONSOLE_POLL, 9, 0, 0, 0))
+    resume_console_reply = receive_exact(resume_client, 5)
+    if resume_console_reply[:4] != REPLY_SYNC + b"\x09\x00" or \
+            checksum(resume_console_reply) or \
+            resume_console_confirmations != [
+                {"operation": CONSOLE_POLL, "sequence": 9}
+            ]:
+        raise AssertionError(
+            "resumed N4 console did not confirm its first target reprobe: "
+            f"reply={resume_console_reply!r} "
+            f"confirmations={resume_console_confirmations!r}"
+        )
     resume_client.sendall(request(READ_AHEAD, 10, 0, 2, 1))
     resume_reply = receive_exact(resume_client, len(expected_reply))
     if resume_reply[:5] != b"DJ\x0A\x00\x03" or \

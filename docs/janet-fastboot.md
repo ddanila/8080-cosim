@@ -909,6 +909,10 @@ NetDisk baud/framing, emits no bootstrap capability marker, and waits for the
 running target to retry its outstanding request. Bootstrap-related options and
 boot-result output are rejected in this mode so a replacement server cannot
 accidentally send a new system image into a live disk session.
+When `--console-pty` is also present, resume mode explicitly reports that it is
+waiting for an N4 reprobe and confirms the first console poll/output received
+from the running target. It still emits no `NRN4` marker: the replacement host
+must join the target's established protocol instead of renegotiating it.
 Writable A: images are replaced through a sibling temporary file, so Ctrl+C or
 another interruption during shutdown cannot truncate the last complete image.
 
