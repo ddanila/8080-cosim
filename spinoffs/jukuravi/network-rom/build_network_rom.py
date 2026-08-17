@@ -23,6 +23,10 @@ OUTPUT = HERE / "juku-network-rom-abi1.bin"
 D15_OUTPUT = HERE / "juku-network-rom-abi1-d15.bin"
 D16_OUTPUT = HERE / "juku-network-rom-abi1-d16.bin"
 METADATA_OUTPUT = HERE / "juku-network-rom-abi1.json"
+LOCALE_OUTPUT = HERE / "juku-network-rom-abi1.1-c5.bin"
+LOCALE_D15_OUTPUT = HERE / "juku-network-rom-abi1.1-c5-d15.bin"
+LOCALE_D16_OUTPUT = HERE / "juku-network-rom-abi1.1-c5-d16.bin"
+LOCALE_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.1-c5.json"
 
 LOWER_SIZE = 0x1800
 RESIDENT_SIZE = 0x2800
@@ -31,6 +35,7 @@ HELP_STORED = 0x1400
 CORE_STORED = 0x0F00
 EXTENSION_BYTES = 267
 CANDIDATE = "network-first-abi1-cs00015-c4"
+LOCALE_CANDIDATE = "network-first-abi1.1-cs00015-c5-desk"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -50,14 +55,17 @@ def digest(data: bytes) -> str:
 
 def build(*, abi_selftest: bool = False,
           cursor_phase: str | None = None,
-          netdisk_selftest: bool = False) -> tuple[bytes, dict[str, object]]:
+          netdisk_selftest: bool = False,
+          locale: bool = False) -> tuple[bytes, dict[str, object]]:
     if cursor_phase not in (None, "hidden", "visible"):
         raise ValueError(f"unknown cursor phase {cursor_phase!r}")
     if cursor_phase is not None and not abi_selftest:
         raise ValueError("cursor phase fixtures require abi_selftest")
     if netdisk_selftest and not abi_selftest:
         raise ValueError("NetDisk fixture requires abi_selftest")
-    selftest_defines = ("ABI_SELFTEST",) if abi_selftest else ()
+    selftest_defines = ("ROM_ABI_LOCALE",) if locale else ()
+    if abi_selftest:
+        selftest_defines += ("ABI_SELFTEST",)
     if cursor_phase is not None:
         selftest_defines += (
             "ABI_CURSOR_" + cursor_phase.upper(),
@@ -67,7 +75,7 @@ def build(*, abi_selftest: bool = False,
     with tempfile.TemporaryDirectory(prefix="juku-network-rom.") as name:
         temporary = Path(name)
         gate = assemble(HERE / "gate-wrapper.asm", temporary / "gate.cim",
-                        (COMMON,))
+                        (COMMON,), selftest_defines)
         helper = assemble(HERE / "ram-helper.asm", temporary / "helper.cim",
                           (COMMON,))
         core = assemble(
@@ -116,13 +124,22 @@ def build(*, abi_selftest: bool = False,
         core = bytes(core)
         if len(gate) > 0xE0:
             raise ValueError(f"RAM gate is {len(gate)} bytes; envelope is 224")
+        expected_gate_bytes = 214 if locale else 196
+        if len(gate) != expected_gate_bytes:
+            raise ValueError(
+                f"RAM gate is {len(gate)} bytes, expected {expected_gate_bytes}"
+            )
         if len(helper) > 0x80:
             raise ValueError(f"RAM helper is {len(helper)} bytes; envelope is 128")
 
         generated = HERE / "network-rom-generated.inc"
         expected_generated = (
             "; Generated/verified by build_network_rom.py.\n"
-            f"JROMGATEBYTES equ {len(gate)}\n"
+            ".ifdef ROM_ABI_LOCALE\n"
+            "JROMGATEBYTES equ 214\n"
+            ".else\n"
+            "JROMGATEBYTES equ 196\n"
+            ".endif\n"
             f"JROMHELPERBYTES equ {len(helper)}\n"
             f"JROMCOREBYTES equ {len(core)}\n"
             f"JROMEXTENSIONBYTES equ {EXTENSION_BYTES}\n"
@@ -193,10 +210,25 @@ def build(*, abi_selftest: bool = False,
             "font": "Creep-0.31-adapted-5x7",
             "cursor_period_polls": 512,
         },
-        "abi": {"base": "FF00", "major": 1, "minor": 0},
-        "candidate": CANDIDATE,
-        "status": "CS00015 bench candidate; physical qualification pending",
+        "abi": {"base": "FF00", "major": 1, "minor": 1 if locale else 0},
+        "candidate": LOCALE_CANDIDATE if locale else CANDIDATE,
+        "status": (
+            "desk-qualified locale candidate; physical qualification pending"
+            if locale else
+            "CS00015 bench candidate; physical qualification pending"
+        ),
     }
+    if locale:
+        metadata["console"]["locale"] = {
+            "s21_bits": "4:3", "banks": ["english", "estonian", "cp866"],
+            "cp437_ui": "B0-DF",
+        }
+        metadata["key_remap_pairs"] = 4
+        metadata["boot_policy"] = {
+            "s21_bit": 0,
+            "set": "automatic network boot",
+            "clear": "wait for local N",
+        }
     return image, metadata
 
 
@@ -205,12 +237,18 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     image, metadata = build()
+    locale_image, locale_metadata = build(locale=True)
     expected = (
         (OUTPUT, image),
         (D15_OUTPUT, image[:0x2000]),
         (D16_OUTPUT, image[0x2000:]),
         (METADATA_OUTPUT,
          (json.dumps(metadata, indent=2) + "\n").encode()),
+        (LOCALE_OUTPUT, locale_image),
+        (LOCALE_D15_OUTPUT, locale_image[:0x2000]),
+        (LOCALE_D16_OUTPUT, locale_image[0x2000:]),
+        (LOCALE_METADATA_OUTPUT,
+         (json.dumps(locale_metadata, indent=2) + "\n").encode()),
     )
     if args.check:
         for path, data in expected:

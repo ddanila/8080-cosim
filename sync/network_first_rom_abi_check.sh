@@ -16,6 +16,7 @@ python3 spinoffs/jukuravi/network-rom/build_network_rom.py --check
   -o "$check_tmp/trace" \
   cosim/trace.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
 python3 tests/network_first_rom_abi_test.py "$check_tmp/trace"
+python3 tests/network_first_rom_locale_test.py "$check_tmp/trace"
 python3 tests/network_first_rom_boot_test.py "$check_tmp/trace"
 
 echo "NETWORK-FIRST-ROM-ABI-CHECK: PASS"

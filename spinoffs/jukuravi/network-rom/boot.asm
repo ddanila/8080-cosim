@@ -218,7 +218,13 @@ transition_source:
 .ifdef ABI_SELFTEST
         jmp     0e600h
 .else
+.ifdef ROM_ABI_LOCALE
+        ; The copied stub cannot branch to its own link-time ROM addresses.
+        ; Continue through a fixed upper-ROM vector after selecting mode 1.
+        jmp     JROMBOOTPOLICY
+.else
         jmp     00100h
+.endif
 .endif
 transition_end:
 

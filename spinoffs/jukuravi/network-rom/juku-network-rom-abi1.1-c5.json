@@ -1,0 +1,71 @@
+{
+  "schema": "juku-network-rom-abi1-v1",
+  "image_bytes": 16384,
+  "image_sha256": "147279bbdc8bf371abf000d49ebc63b5f33d55fb39b7571f46227e49e7ebdb93",
+  "d15_sha256": "3ec6c3c23b81464aff8ad79d386d7a82ce8011fe5b36e5af85dd5be059967fff",
+  "d16_sha256": "df543ba40deb19d460e0e89c2d118a91d5e93d08f4bcf98e90a750adb4340052",
+  "boot_code_bytes": 997,
+  "gate_bytes": 214,
+  "helper_bytes": 119,
+  "fastboot_core_bytes": 141,
+  "fastboot_extension_bytes": 267,
+  "quick_post": [
+    "cpu",
+    "ram-data",
+    "ram-address",
+    "complete-rom",
+    "pit-usart"
+  ],
+  "hardware_init": [
+    "ppi0-82-pc7-high",
+    "ppi1-9b",
+    "stock-raster-refresh",
+    "pic-d6-fe-masked",
+    "d57-ch0-mode2-count4",
+    "d11-8n1"
+  ],
+  "post_status": {
+    "ok": "00",
+    "cpu": "C1",
+    "ram-data": "C2",
+    "ram-address": "C3",
+    "complete-rom": "C4",
+    "pit-usart": "C5"
+  },
+  "target_ready_byte": "C4",
+  "resident_bytes": 10240,
+  "resident_services": [
+    "console",
+    "serial",
+    "keyboard",
+    "netdisk-v3",
+    "diagnostics"
+  ],
+  "console": {
+    "geometry": "80x24",
+    "font": "Creep-0.31-adapted-5x7",
+    "cursor_period_polls": 512,
+    "locale": {
+      "s21_bits": "4:3",
+      "banks": [
+        "english",
+        "estonian",
+        "cp866"
+      ],
+      "cp437_ui": "B0-DF"
+    }
+  },
+  "abi": {
+    "base": "FF00",
+    "major": 1,
+    "minor": 1
+  },
+  "candidate": "network-first-abi1.1-cs00015-c5-desk",
+  "status": "desk-qualified locale candidate; physical qualification pending",
+  "key_remap_pairs": 4,
+  "boot_policy": {
+    "s21_bit": 0,
+    "set": "automatic network boot",
+    "clear": "wait for local N"
+  }
+}

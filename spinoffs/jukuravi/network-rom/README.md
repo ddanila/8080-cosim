@@ -30,6 +30,18 @@ explicit `WBOOT`, and another `DIR` with no retry or overrun. Thus no EPROM
 rewrite is required when moving from C3 to C4; the new candidate name freezes
 the corrected matching runtime.
 
+The separately named `network-first-abi1.1-cs00015-c5-desk` image is the next
+desk-qualified candidate; it does not replace or mutate C4. ABI 1.1 places
+licensed Estonian and CP866 Russian extensions plus the connected CP437 UI
+bank in the reserved `F000h..F7FFh` region. S21 bits 4:3 select English,
+Estonian, Russian, or the English/user fallback through one renderer. Two
+appended vectors return the reset-latched S21 configuration and install up to
+four persistent key substitutions. S21 bit 0 set enters network boot
+immediately; clear waits at a concealed local `N` recovery gate. The C model
+proves both policy branches, exact locale pixels, and a `T` to `X` remap.
+Physical qualification and shared ROM/CP/M video-mode selection remain before
+C5 can become a bench candidate.
+
 C3 had superseded the immutable C2 package. C2 corrected the original sprite-sheet
 extraction after a stock-ROM/manual-resume CS00015 run exposed deterministic
 bad glyphs. C3 replaces that wide font with the MIT-licensed Creep 0.31 ASCII
@@ -56,6 +68,9 @@ Committed deterministic artifacts:
 - `juku-network-rom-abi1-d16.bin`: exact high 8 KiB half;
 - `juku-network-rom-abi1.json`: candidate name, hashes, sizes, ABI identity,
   and physical-qualification status.
+- `juku-network-rom-abi1.1-c5{,-d15,-d16}.bin` and matching JSON: separate
+  locale/remap/boot-policy desk candidate; never aliases the immutable C4
+  files.
 
 The builder stores a 196-byte gate and 119-byte mode-3 helper in the boot-only
 ROM. Reset configures D27 as all-input, D26 as keyboard/memory-mode I/O with
@@ -131,6 +146,12 @@ check together prove:
   sequence with 38 NetDisk reads, one write, no retries, and no USART overruns;
 - byte-exact parity between the final resident-ROM and RAM-console framebuffers
   after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
+
+The additional ABI 1.1 regression verifies its 214-byte gate, feature/vector
+manifest, reset-latched `S21=08h`, exact Estonian `Ä` framebuffer pixels,
+copied `T` to `X` remap, immediate bit-0 autoboot, bit-0-clear waiting, and
+release of that wait by a local `N`. The ordinary ABI 1.0 regression continues
+to rebuild and execute the byte-exact C4 image in the same check.
 
 The focused [structural HDL gate](../../../docs/network-first-rom-hdl.md) also
 boots the exact C4 production image through `juku_top`/`vm80a`, exercises the

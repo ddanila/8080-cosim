@@ -8,13 +8,21 @@ USARTCTL        equ     009h
 PITCOUNT0       equ     018h
 PITCTL          equ     01bh
 VRAM            equ     0d800h
+.ifdef ROM_ABI_LOCALE
+FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFDIAG+JROMFLOCALE+JROMFKEYREMAP
+.else
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFDIAG
+.endif
 
 SELFSTATUS      equ     JROMSTATEBASE+3
 TXBYTE          equ     JROMSTATEBASE+4
 SERIALMODE      equ     JROMSTATEBASE+5
 ROMKEYSTATEBASE equ     JROMSTATEBASE+6
 ROMNETSTATEBASE equ     JROMSTATEBASE+010h
+.ifdef ROM_ABI_LOCALE
+ROMCONFIG       equ     JROMSTATEBASE+041h
+ROMKEYREMAPBASE equ     JROMSTATEBASE+042h
+.endif
 
 ; D800h..DCFFh: resident text policy and immutable 5x7 font.
         org     0d800h
@@ -23,10 +31,20 @@ ROMNETSTATEBASE equ     JROMSTATEBASE+010h
 
 ; DD00h..DE7Fh: shared matrix scanner and immutable translation tables.
 ROMKEYBOARD     equ     1
+.ifdef ROM_ABI_LOCALE
+RAMKEYREMAP     equ     1
+.endif
         include "ram-keyboard.asm"
+.ifdef ROM_ABI_LOCALE
+        dc      0df00h-$,0ffh
+.else
         dc      0de80h-$,0ffh
+.endif
 
 ; DE80h..E0FFh: common D57/D11 serial service.
+.ifdef ROM_ABI_LOCALE
+        org     0df00h
+.endif
 rom_serinit_impl:
         sta     SERIALMODE
         push    psw
@@ -175,11 +193,31 @@ resident_entry:
         ora     a
         jnz     self_fail_info
         mov     a,d
+.ifdef ROM_ABI_LOCALE
+        cpi     1
+.else
         ora     a
+.endif
         jnz     self_fail_info
         mov     a,e
+.ifdef ROM_ABI_LOCALE
+        cpi     0afh
+.else
         cpi     FEATURES
+.endif
         jnz     self_fail_info
+
+.ifdef ROM_ABI_LOCALE
+        call    JCGCONFIGADDR
+        cpi     008h                    ; self-test fixture selects Estonian
+        jnz     self_fail_info
+        mov     a,b
+        ora     a                       ; video 0
+        jnz     self_fail_info
+        mov     a,c
+        cpi     1                       ; locale 1
+        jnz     self_fail_info
+.endif
 
         call    JCGCONINITADDR
         ora     a
@@ -211,6 +249,12 @@ resident_entry:
         mov     a,l
         cpi     0bch
         jnz     self_fail_registers
+.ifdef ROM_ABI_LOCALE
+        mvi     a,0c4h                  ; ISO-8859-1 Estonian A-diaeresis
+        call    JCGCONOUTADDR
+        cpi     0c4h
+        jnz     self_fail_console
+.endif
 
 ; Test-only variants exercise complete cursor periods using the public
 ; console-status vector. They are assembled only into transient ABI fixtures;
@@ -244,6 +288,13 @@ resident_entry:
         call    JCGKEYINITADDR
         ora     a
         jnz     self_fail_keyboard
+.ifdef ROM_ABI_LOCALE
+        lxi     h,self_keyremap
+        mvi     a,1
+        call    JCGKEYREMAPADDR
+        ora     a
+        jnz     self_fail_keyboard
+.endif
         lxi     b,0ffffh
 self_wait_keyboard:
         call    JCGKEYSCANADDR
@@ -255,7 +306,11 @@ self_wait_keyboard:
         jnz     self_wait_keyboard
         jmp     self_fail_keyboard
 self_got_keyboard:
+.ifdef ROM_ABI_LOCALE
+        cpi     'X'
+.else
         cpi     'T'
+.endif
         jnz     self_fail_keyboard
 
         mvi     a,0
@@ -372,6 +427,11 @@ fill_guard:
         jnz     fill_guard
         ret
 
+.ifdef ROM_ABI_LOCALE
+self_keyremap:
+        db      'T','X'
+.endif
+
 .ifdef ABI_CURSOR_HIDDEN
 self_cursor_phase:
         lxi     d,CURSORPERIOD
@@ -405,6 +465,10 @@ rom_init_clear:
         mov     a,b
         ora     c
         jnz     rom_init_clear
+.ifdef ROM_ABI_LOCALE
+        call    RKCONFIG
+        sta     ROMCONFIG
+.endif
         xra     a
         ret
 
@@ -425,13 +489,149 @@ rom_getinfo_impl:
         lxi     d,FEATURES
         ret
 
+.ifdef ROM_ABI_LOCALE
+; Return raw S21 in A, video bits 2:1 in B, and locale bits 4:3 in C.
+rom_config_impl:
+        lda     ROMCONFIG
+        mov     d,a
+        rrc
+        ani     3
+        mov     b,a
+        mov     a,d
+        rrc
+        rrc
+        rrc
+        ani     3
+        mov     c,a
+        mov     a,d
+        ret
+
+rom_keyremap_impl:
+        call    RKSETREMAP
+        xra     a
+        ret
+
+; Reset handoff for the network-only ABI 1.1 image. Bit 0 set is immediate
+; autoboot; clear is a concealed local-N recovery gate rather than a menu.
+rom_boot_policy_impl:
+        call    JCGINITADDR
+        ora     a
+        jnz     rom_boot_policy_halt
+        call    JCGCONFIGADDR
+        ani     1
+        jnz     rom_boot_policy_network
+        call    JCGKEYINITADDR
+rom_boot_policy_wait_n:
+        call    JCGKEYSCANADDR
+        cpi     'N'
+        jz      rom_boot_policy_network
+        cpi     'n'
+        jnz     rom_boot_policy_wait_n
+rom_boot_policy_network:
+        jmp     00100h
+rom_boot_policy_halt:
+        hlt
+        jmp     rom_boot_policy_halt
+.endif
+
 rom_unavailable:
         mvi     a,0ffh
         stc
         ret
 
+.ifdef ROM_ABI_LOCALE
+build_identity:
+        db      'Juku network ROM ABI 1.1 locale candidate 2026-08-17',0
+.else
 build_identity:
         db      'Juku network ROM ABI 1.0 automatic boot 2026-08-16',0
+.endif
+
+.ifdef ROM_ABI_LOCALE
+; F000h..F7FFh is the planned locale bank. Sparse lookups return DE at seven
+; text rows or eight edge-connected pseudographic rows and A=row count.
+        org     0f000h
+RCFONTLOOKUP:
+        mov     e,a
+        lda     ROMCONFIG
+        rrc
+        rrc
+        rrc
+        ani     3
+        cpi     1
+        jz      RCFONTEST
+        cpi     2
+        jz      RCFONTRUS
+        jmp     RCFONTPSEUDOTRY
+RCFONTEST:
+        lxi     h,RAMFONTESTONIANCODES
+        mvi     b,8
+        call    RCFONTFIND
+        jc      RCFONTPSEUDOTRY
+        lxi     h,RAMFONTESTONIAN
+        jmp     RCFONTPTR7
+RCFONTRUS:
+        lxi     h,RAMFONTCP866CODES
+        mvi     b,66
+        call    RCFONTFIND
+        jc      RCFONTPSEUDOTRY
+        lxi     h,RAMFONTCP866
+        jmp     RCFONTPTR7
+RCFONTPSEUDOTRY:
+        lxi     h,RAMFONTPSEUDOCODES
+        mvi     b,17
+        call    RCFONTFIND
+        rc
+        lxi     h,RAMFONTPSEUDO
+        xchg
+        mov     l,c
+        mvi     h,0
+        dad     h
+        dad     h
+        dad     h
+        dad     d
+        xchg
+        mvi     a,8
+        ora     a
+        ret
+RCFONTPTR7:
+        xchg
+        mov     l,c
+        mvi     h,0
+        mov     c,l
+        mvi     b,0
+        dad     h
+        dad     h
+        dad     b
+        dad     b
+        dad     b
+        dad     d
+        xchg
+        mvi     a,7
+        ora     a
+        ret
+; E=encoded byte, HL=code table, B=count; C=index on success.
+RCFONTFIND:
+        mvi     c,0
+RCFONTFIND1:
+        mov     a,e
+        cmp     m
+        jz      RCFONTFOUND
+        inx     h
+        inr     c
+        dcr     b
+        jnz     RCFONTFIND1
+        stc
+        ret
+RCFONTFOUND:
+        ora     a
+        ret
+
+CREEP_PSEUDO_ONLY equ  1
+        include "creep-console-font.asm"
+        include "locale-console-fonts.asm"
+        dc      0f800h-$,0ffh
+.endif
 
         dc      JROMABIBASE-$,0ffh
 
@@ -458,6 +658,11 @@ build_identity:
         jmp     rom_unavailable
         jmp     rom_diag_impl
         jmp     rom_getinfo_impl
+.ifdef ROM_ABI_LOCALE
+        jmp     rom_config_impl
+        jmp     rom_keyremap_impl
+        jmp     rom_boot_policy_impl
+.endif
 
         dc      10000h-$,0ffh
         end     resident_entry
