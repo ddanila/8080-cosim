@@ -209,11 +209,13 @@ resident_entry:
 
 .ifdef ROM_ABI_LOCALE
         call    JCGCONFIGADDR
-        cpi     008h                    ; self-test fixture selects Estonian
+        mov     d,a
+        ani     018h                    ; fixture selects Estonian in any mode
+        cpi     008h
         jnz     self_fail_info
         mov     a,b
-        ora     a                       ; video 0
-        jnz     self_fail_info
+        cpi     4
+        jnc     self_fail_info
         mov     a,c
         cpi     1                       ; locale 1
         jnz     self_fail_info
@@ -548,9 +550,130 @@ build_identity:
 .endif
 
 .ifdef ROM_ABI_LOCALE
-; F000h..F7FFh is the planned locale bank. Sparse lookups return DE at seven
-; text rows or eight edge-connected pseudographic rows and A=row count.
+; F000h..F7FFh holds ABI 1.1 console extensions and locale banks. S21 bits
+; 2:1 select the same four proven geometries as the shared RAM console.
         org     0f000h
+RCSETVIDEO:
+        lda     ROMCONFIG
+        rrc
+        ani     3
+        sta     RCVIDMODE
+        ora     a
+        jz      RCMODE40
+        dcr     a
+        jz      RCMODE53
+        dcr     a
+        jz      RCMODE64
+RCMODE80:
+        mvi     a,80
+        sta     RCCOLS
+        mvi     a,24
+        sta     RCTEXTROWS
+        mvi     a,5
+        sta     RCCELLWIDTH
+        mvi     a,8
+        sta     RCCELLHEIGHT
+        mvi     a,0f8h
+        sta     RCCELLMASK
+        mvi     a,49
+        sta     RCVIDSTEP
+        lxi     h,400
+        shld    RCROWBYTES
+        lxi     h,0d990h
+        shld    RCSCROLLSOURCE
+        lxi     h,350
+        shld    RCCURSORLINE
+        lxi     h,9200
+        shld    RCSCROLLBYTES
+        mvi     a,073h
+        out     017h
+        mvi     a,014h
+        out     011h
+        mvi     a,003h
+        out     012h
+        mvi     a,01ah
+        out     015h
+        mvi     a,001h
+        out     015h
+        mvi     a,045h
+        out     016h
+        ret
+RCMODE40:
+        mvi     a,40
+        sta     RCCOLS
+        mvi     a,8
+        sta     RCCELLWIDTH
+        mvi     a,0ffh
+        sta     RCCELLMASK
+        jmp     RCMODESTOCK
+RCMODE53:
+        mvi     a,53
+        sta     RCCOLS
+        mvi     a,6
+        sta     RCCELLWIDTH
+        mvi     a,0fch
+        sta     RCCELLMASK
+RCMODESTOCK:
+        mvi     a,24
+        sta     RCTEXTROWS
+        mvi     a,10
+        sta     RCCELLHEIGHT
+        mvi     a,39
+        sta     RCVIDSTEP
+        lxi     h,400
+        shld    RCROWBYTES
+        lxi     h,0d990h
+        shld    RCSCROLLSOURCE
+        lxi     h,360
+        shld    RCCURSORLINE
+        lxi     h,9200
+        shld    RCSCROLLBYTES
+        mvi     a,024h
+        out     011h
+        mvi     a,008h
+        out     012h
+        mvi     a,072h
+        out     015h
+        xra     a
+        out     015h
+        mvi     a,025h
+        out     016h
+        ret
+RCMODE64:
+        mvi     a,64
+        sta     RCCOLS
+        mvi     a,20
+        sta     RCTEXTROWS
+        mvi     a,6
+        sta     RCCELLWIDTH
+        mvi     a,10
+        sta     RCCELLHEIGHT
+        mvi     a,0fch
+        sta     RCCELLMASK
+        mvi     a,47
+        sta     RCVIDSTEP
+        lxi     h,480
+        shld    RCROWBYTES
+        lxi     h,0d9e0h
+        shld    RCSCROLLSOURCE
+        lxi     h,432
+        shld    RCCURSORLINE
+        lxi     h,9120
+        shld    RCSCROLLBYTES
+        mvi     a,016h
+        out     011h
+        mvi     a,004h
+        out     012h
+        mvi     a,012h
+        out     015h
+        mvi     a,001h
+        out     015h
+        mvi     a,045h
+        out     016h
+        ret
+
+; Sparse lookups return DE at seven text rows or eight edge-connected
+; pseudographic rows and A=row count.
 RCFONTLOOKUP:
         mov     e,a
         lda     ROMCONFIG

@@ -1,12 +1,12 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "147279bbdc8bf371abf000d49ebc63b5f33d55fb39b7571f46227e49e7ebdb93",
-  "d15_sha256": "3ec6c3c23b81464aff8ad79d386d7a82ce8011fe5b36e5af85dd5be059967fff",
-  "d16_sha256": "df543ba40deb19d460e0e89c2d118a91d5e93d08f4bcf98e90a750adb4340052",
+  "image_sha256": "1b25df3a6f32f8c81298fc2802974d79c0bda61bc522d2dca27642ea88b974a7",
+  "d15_sha256": "644ef57c7852f121a218857ad85a128cd246e264ada7fa52a68ed3bd11eea8ba",
+  "d16_sha256": "e00fb883584a10ced971ca12f573f9eb5ae39e60c226965951ab96fff2b5d1ff",
   "boot_code_bytes": 997,
   "gate_bytes": 214,
-  "helper_bytes": 119,
+  "helper_bytes": 128,
   "fastboot_core_bytes": 141,
   "fastboot_extension_bytes": 267,
   "quick_post": [
@@ -42,9 +42,15 @@
     "diagnostics"
   ],
   "console": {
-    "geometry": "80x24",
+    "geometry": "S21-bits-2:1",
     "font": "Creep-0.31-adapted-5x7",
     "cursor_period_polls": 512,
+    "modes": {
+      "00": "40x24",
+      "01": "53x24",
+      "10": "64x20",
+      "11": "80x24"
+    },
     "locale": {
       "s21_bits": "4:3",
       "banks": [

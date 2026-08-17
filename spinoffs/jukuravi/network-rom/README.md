@@ -38,9 +38,9 @@ Estonian, Russian, or the English/user fallback through one renderer. Two
 appended vectors return the reset-latched S21 configuration and install up to
 four persistent key substitutions. S21 bit 0 set enters network boot
 immediately; clear waits at a concealed local `N` recovery gate. The C model
-proves both policy branches, exact locale pixels, and a `T` to `X` remap.
-Physical qualification and shared ROM/CP/M video-mode selection remain before
-C5 can become a bench candidate.
+proves both policy branches, a `T` to `X` remap, and exact locale pixels in
+all four S21 bits-2:1 geometries: 40x24, 53x24, 64x20, and 80x24. Physical
+qualification remains before C5 can become a bench candidate.
 
 C3 had superseded the immutable C2 package. C2 corrected the original sprite-sheet
 extraction after a stock-ROM/manual-resume CS00015 run exposed deterministic
@@ -48,7 +48,8 @@ bad glyphs. C3 replaces that wide font with the MIT-licensed Creep 0.31 ASCII
 adaptation used by the all-RAM CP/M console and halves the cursor phase from
 1,024 to 512 idle polls. Its letters retain a blank separator column. The
 all-RAM CP/M path additionally supports the S21-selected historical video
-modes; ABI 1 intentionally keeps this resident-ROM baseline fixed at 80x24.
+modes; ABI 1.0 intentionally keeps the immutable C4 baseline fixed at 80x24,
+while ABI 1.1 C5 now applies the same selection in resident ROM.
 C2 and C3 changed D15 only; C4 changes neither half. D16 remains
 byte-identical to C1.
 
@@ -72,7 +73,8 @@ Committed deterministic artifacts:
   locale/remap/boot-policy desk candidate; never aliases the immutable C4
   files.
 
-The builder stores a 196-byte gate and 119-byte mode-3 helper in the boot-only
+The builder stores a 196-byte gate and 119-byte mode-3 helper for C4, or a
+214-byte gate and exactly 128-byte geometry-aware helper for C5, in boot-only
 ROM. Reset configures D27 as all-input, D26 as keyboard/memory-mode I/O with
 PC7 safely high, the stock D54/D55/D57 raster/refresh chain, and the 8259 in
 the original MCS-80 vector form with every source masked. It then runs CPU,
@@ -91,7 +93,7 @@ without another RESET.
 
 The resident manifest is fixed at `FF00h`; stable three-byte vectors begin at
 `FF20h`. The dedicated CP/M Plus image remains in mode 1, validates the ABI,
-delegates serial initialization, polled keyboard input, the 80x24 console, and
+delegates serial initialization, polled keyboard input, the selected console, and
 bounded NetDisk-v3 read-ahead and synchronous write-through transactions. The
 normal all-RAM image remains a byte-exact comparison baseline. The relinked
 consumer exposes a measured 39,168-byte transient span, exactly 8 KiB above
@@ -101,8 +103,8 @@ The resident advertises console, serial, keyboard, NetDisk, and diagnostic featu
 programs the proven D57 mode-2/count-4 19,200-baud clock, supports bounded 8251
 send/receive, reuses the shared 15-column keyboard scanner and translation
 tables with three mutable bytes in low RAM, publishes build/workspace/helper
-metadata, supplies the MODX Creep-derived 5x7 text policy, and calls a 119-byte
-copied helper for mode-3 clear, scroll, and packed-row merges. Its versioned
+metadata, supplies the Creep-derived 5x7 text policy, and calls the copied
+helper for mode-3 clear, scroll, and packed-row merges. Its versioned
 10-byte NetDisk request owns complete three-attempt read and write transactions
 and a caller-supplied DMA/cache. Writes invalidate read-ahead before their first
 attempt and use synchronous write-through; an uncertain outcome never leaves
@@ -147,11 +149,12 @@ check together prove:
 - byte-exact parity between the final resident-ROM and RAM-console framebuffers
   after the same `A>`, `DIR`, and `DIAG CPU` transcript, including the cursor.
 
-The additional ABI 1.1 regression verifies its 214-byte gate, feature/vector
-manifest, reset-latched `S21=08h`, exact Estonian `Ä` framebuffer pixels,
-copied `T` to `X` remap, immediate bit-0 autoboot, bit-0-clear waiting, and
-release of that wait by a local `N`. The ordinary ABI 1.0 regression continues
-to rebuild and execute the byte-exact C4 image in the same check.
+The additional ABI 1.1 regression verifies its 214-byte gate, 128-byte helper,
+feature/vector manifest, all four reset-latched video modes, exact Estonian
+`Ä` framebuffer pixels in each geometry, copied `T` to `X` remap, immediate
+bit-0 autoboot, bit-0-clear waiting, and release of that wait by a local `N`.
+The ordinary ABI 1.0 regression continues to rebuild and execute the
+byte-exact C4 image in the same check.
 
 The focused [structural HDL gate](../../../docs/network-first-rom-hdl.md) also
 boots the exact C4 production image through `juku_top`/`vm80a`, exercises the

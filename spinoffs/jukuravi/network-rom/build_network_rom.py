@@ -76,8 +76,14 @@ def build(*, abi_selftest: bool = False,
         temporary = Path(name)
         gate = assemble(HERE / "gate-wrapper.asm", temporary / "gate.cim",
                         (COMMON,), selftest_defines)
-        helper = assemble(HERE / "ram-helper.asm", temporary / "helper.cim",
-                          (COMMON,))
+        helper_c4 = assemble(
+            HERE / "ram-helper.asm", temporary / "helper-c4.cim", (COMMON,),
+        )
+        helper_c5 = assemble(
+            HERE / "ram-helper.asm", temporary / "helper-c5.cim", (COMMON,),
+            ("ROM_ABI_LOCALE",),
+        )
+        helper = helper_c5 if locale else helper_c4
         core = assemble(
             ROOT / "third_party" / "juku-common" / "transport" /
             "fastboot-core.asm",
@@ -129,7 +135,7 @@ def build(*, abi_selftest: bool = False,
             raise ValueError(
                 f"RAM gate is {len(gate)} bytes, expected {expected_gate_bytes}"
             )
-        if len(helper) > 0x80:
+        if len(helper_c4) > 0x80 or len(helper_c5) > 0x80:
             raise ValueError(f"RAM helper is {len(helper)} bytes; envelope is 128")
 
         generated = HERE / "network-rom-generated.inc"
@@ -140,7 +146,11 @@ def build(*, abi_selftest: bool = False,
             ".else\n"
             "JROMGATEBYTES equ 196\n"
             ".endif\n"
-            f"JROMHELPERBYTES equ {len(helper)}\n"
+            ".ifdef ROM_ABI_LOCALE\n"
+            f"JROMHELPERBYTES equ {len(helper_c5)}\n"
+            ".else\n"
+            f"JROMHELPERBYTES equ {len(helper_c4)}\n"
+            ".endif\n"
             f"JROMCOREBYTES equ {len(core)}\n"
             f"JROMEXTENSIONBYTES equ {EXTENSION_BYTES}\n"
             f"CORESTORED equ 0{CORE_STORED:04x}h\n"
@@ -219,6 +229,11 @@ def build(*, abi_selftest: bool = False,
         ),
     }
     if locale:
+        metadata["console"]["geometry"] = "S21-bits-2:1"
+        metadata["console"]["modes"] = {
+            "00": "40x24", "01": "53x24",
+            "10": "64x20", "11": "80x24",
+        }
         metadata["console"]["locale"] = {
             "s21_bits": "4:3", "banks": ["english", "estonian", "cp866"],
             "cp437_ui": "B0-DF",

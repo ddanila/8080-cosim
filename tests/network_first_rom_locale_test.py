@@ -84,6 +84,63 @@ def boot_ready(trace: Path, image: bytes, root: Path, name: str, *,
     return ready, alive
 
 
+def run_selftest(trace: Path, image: bytes, root: Path, mode: int) \
+        -> tuple[dict[str, str], bytes]:
+    case = root / f"console-mode-{mode}"
+    case.mkdir()
+    rom = case / "locale-selftest.bin"
+    rom.write_bytes(image)
+    checkpoint = case / "checkpoint"
+    master, slave = pty.openpty()
+    tty.setraw(slave)
+    environment = os.environ.copy()
+    environment.update(
+        JUKU_USART_PTY=os.ttyname(slave),
+        JUKU_USART_TRANSFER_CYCLES="16",
+        JUKU_USART_BYTE_CYCLES="1024",
+        JUKU_USART_PIT_CLOCK="1",
+        JUKU_USART_PIT_CPU_HZ="1700000",
+        JUKU_CHECKPOINT_PREFIX=str(checkpoint),
+        JUKU_REALTIME_HZ="1700000",
+        JUKU_KEYS="T",
+        JUKU_KEY_START_VRAM="0",
+        JUKU_S21_CONFIG=f"0x{0x08 | (mode << 1):02X}",
+    )
+    process = subprocess.Popen(
+        [str(trace), str(rom), "3000000"], cwd=case,
+        env=environment, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+    )
+    os.close(slave)
+    received = bytearray()
+    try:
+        deadline = time.monotonic() + 10
+        while b"ABI1" not in received and time.monotonic() < deadline:
+            ready, _, _ = select.select([master], [], [], 0.05)
+            if not ready:
+                continue
+            try:
+                received.extend(os.read(master, 4096))
+            except OSError as error:
+                if error.errno != errno.EIO:
+                    raise
+        if bytes(received) != b"ABI1":
+            fail(f"mode {mode} serial self-test output differs: "
+                 f"{bytes(received)!r}")
+        os.write(master, b"\xC3")
+        process.wait(timeout=20)
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+        os.close(master)
+    stderr = process.stderr.read().decode(errors="replace") \
+        if process.stderr is not None else ""
+    if process.returncode != 0:
+        fail(f"mode {mode} cosim exited {process.returncode}: {stderr[-800:]}")
+    return (state_file(checkpoint.with_suffix(".state")),
+            checkpoint.with_suffix(".ram").read_bytes())
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         fail("usage: test.py /path/to/trace")
@@ -104,69 +161,36 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="network-rom-locale.") as name:
         temporary = Path(name)
-        rom = temporary / "locale-selftest.bin"
-        rom.write_bytes(selftest)
-        checkpoint = temporary / "checkpoint"
-        master, slave = pty.openpty()
-        tty.setraw(slave)
-        environment = os.environ.copy()
-        environment.update(
-            JUKU_USART_PTY=os.ttyname(slave),
-            JUKU_USART_TRANSFER_CYCLES="16",
-            JUKU_USART_BYTE_CYCLES="1024",
-            JUKU_USART_PIT_CLOCK="1",
-            JUKU_USART_PIT_CPU_HZ="1700000",
-            JUKU_CHECKPOINT_PREFIX=str(checkpoint),
-            JUKU_REALTIME_HZ="1700000",
-            JUKU_KEYS="T",
-            JUKU_KEY_START_VRAM="0",
-            JUKU_S21_CONFIG="0x08",
-        )
-        process = subprocess.Popen(
-            [str(trace), str(rom), "3000000"], cwd=temporary,
-            env=environment, stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE,
-        )
-        os.close(slave)
-        received = bytearray()
-        try:
-            deadline = time.monotonic() + 10
-            while b"ABI1" not in received and time.monotonic() < deadline:
-                ready, _, _ = select.select([master], [], [], 0.05)
-                if not ready:
-                    continue
-                try:
-                    received.extend(os.read(master, 4096))
-                except OSError as error:
-                    if error.errno != errno.EIO:
-                        raise
-            if bytes(received) != b"ABI1":
-                fail(f"serial self-test output differs: {bytes(received)!r}")
-            os.write(master, b"\xC3")
-            process.wait(timeout=20)
-        finally:
-            if process.poll() is None:
-                process.kill()
-                process.wait()
-            os.close(master)
-        stderr = process.stderr.read().decode(errors="replace") \
-            if process.stderr is not None else ""
-        if process.returncode != 0:
-            fail(f"cosim exited {process.returncode}: {stderr[-800:]}")
-
-        state = state_file(checkpoint.with_suffix(".state"))
-        ram = checkpoint.with_suffix(".ram").read_bytes()
-        if state.get("halted") != "1" or state.get("mode") != "1" or \
-                ram[0xD783] != 0xA5:
-            fail(f"localized fixture did not finish cleanly: {state}")
-        if ram[0xD7C1] != 0x08 or ram[0xD7C2:0xD7C5] != b"\x01TX":
-            fail("latched S21 or copied key-remap state differs: "
-                 f"{ram[0xD7C1:0xD7CA].hex()}")
-        if ram[0xD786:0xD789] != bytes((1, 0, ord("X"))):
-            fail(f"remapped keyboard event differs: {ram[0xD786:0xD789].hex()}")
-        expected = render_transcript(b"Z\xC4", locale=1)
-        if ram[0xD800:0xD800 + 9600] != expected:
-            fail("Estonian resident framebuffer differs from source oracle")
+        geometries = {
+            0: bytes((0, 40, 24, 8, 10, 0xFF, 39,
+                      0x90, 0x01, 0x68, 0x01, 0xF0, 0x23, 0x90, 0xD9)),
+            1: bytes((1, 53, 24, 6, 10, 0xFC, 39,
+                      0x90, 0x01, 0x68, 0x01, 0xF0, 0x23, 0x90, 0xD9)),
+            2: bytes((2, 64, 20, 6, 10, 0xFC, 47,
+                      0xE0, 0x01, 0xB0, 0x01, 0xA0, 0x23, 0xE0, 0xD9)),
+            3: bytes((3, 80, 24, 5, 8, 0xF8, 49,
+                      0x90, 0x01, 0x5E, 0x01, 0xF0, 0x23, 0x90, 0xD9)),
+        }
+        for mode, geometry in geometries.items():
+            state, ram = run_selftest(trace, selftest, temporary, mode)
+            if state.get("halted") != "1" or state.get("mode") != "1" or \
+                    state.get("video_console_mode") != str(mode) or \
+                    ram[0xD783] != 0xA5:
+                fail(f"mode {mode} fixture did not finish cleanly: {state}")
+            config = 0x08 | (mode << 1)
+            if ram[0xD7C1] != config or \
+                    ram[0xD7C2:0xD7C5] != b"\x01TX":
+                fail(f"mode {mode} latched S21/remap differs: "
+                     f"{ram[0xD7C1:0xD7CA].hex()}")
+            if ram[0xD7CB:0xD7DA] != geometry:
+                fail(f"mode {mode} resident geometry differs: "
+                     f"{ram[0xD7CB:0xD7DA].hex()}")
+            if ram[0xD786:0xD789] != bytes((1, 0, ord("X"))):
+                fail(f"mode {mode} remapped key differs: "
+                     f"{ram[0xD786:0xD789].hex()}")
+            expected = render_transcript(b"Z\xC4", locale=1, mode=mode)
+            if ram[0xD800:0xD800 + 9600] != expected:
+                fail(f"mode {mode} Estonian framebuffer differs from oracle")
 
         auto_ready, _ = boot_ready(
             trace, image, temporary, "auto-bit-set", s21=0x01,
@@ -190,7 +214,7 @@ def main() -> int:
     print(
         "NETWORK-FIRST-ROM-LOCALE-TEST: PASS "
         f"{metadata['image_sha256']} "
-        "(S21 locale, remap T->X, bit0 auto/local-N policy)"
+        "(four S21 modes, Estonian locale, remap T->X, bit0 policy)"
     )
     return 0
 
