@@ -45,6 +45,7 @@ TIME_GET = 0x22
 TIME_SET = 0x23
 STATUS_REPORT = 0x24
 DIAG_REPORT = 0x25
+CAPABILITY_QUERY = 0x26
 RECORD_SIZE = 128
 TRACK_SIZE = 40 * RECORD_SIZE
 TRACKS = 80
@@ -255,6 +256,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                  console_polls=0, console_input_bytes=0,
                  console_output_bytes=0, clock_gets=0, clock_sets=0,
                  clock_failures=0, status_reports=0, diag_reports=0)
+    stats["capability_queries"] = 0
     if console_protocol and protocol_version != 3:
         raise ValueError("remote console requires NetDisk protocol 3")
     if console_protocol and console_input is None:
@@ -355,6 +357,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
                     STATUS_REPORT,
                     DIAG_REPORT,
+                    CAPABILITY_QUERY,
             ) or \
                     checksum(request):
                 retries += 1
@@ -446,6 +449,22 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 status = 0 if protocol_version == 3 else 1
                 body = REPLY_SYNC + bytes((sequence, status))
                 reply = body + bytes((checksum(body),))
+            elif operation == CAPABILITY_QUERY:
+                status = 0 if protocol_version == 3 else 1
+                features = (
+                    (0x01 if console_protocol else 0)
+                    | 0x02                    # host time
+                    | 0x04                    # target status report
+                    | 0x08                    # target diagnostic report
+                    | (0x10 if drive_b is not None else 0)
+                    | (0x20 if writable else 0)
+                )
+                payload = bytes((
+                    protocol_version, read_ahead_records, features,
+                    2 if drive_b is not None else 1,
+                )) if status == 0 else b""
+                body = REPLY_SYNC + bytes((sequence, status)) + payload
+                reply = body + bytes((checksum(body),))
             elif operation == READ_COMPACT and status == 0:
                 if payload and payload.count(payload[:1]) == RECORD_SIZE:
                     status = 2
@@ -518,7 +537,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 reply = body + crc16_ibm(body).to_bytes(2, "big")
             elif operation not in (
                     CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
-                    STATUS_REPORT, DIAG_REPORT):
+                    STATUS_REPORT, DIAG_REPORT, CAPABILITY_QUERY):
                 body = REPLY_SYNC + bytes((sequence, status)) + payload
                 reply = body + bytes((checksum(body),))
             stats["request_wire_bytes"] += len(request)
@@ -527,7 +546,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             request_at = time.monotonic()
             if operation not in (
                     CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
-                    STATUS_REPORT, DIAG_REPORT) and \
+                    STATUS_REPORT, DIAG_REPORT, CAPABILITY_QUERY) and \
                     not first_request_seen:
                 first_request_seen = True
                 if first_request_hook is not None:
@@ -557,7 +576,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             # session's log unreadable and can produce thousands of lines.
             if verbose and operation not in (
                     CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
-                    STATUS_REPORT, DIAG_REPORT):
+                    STATUS_REPORT, DIAG_REPORT, CAPABILITY_QUERY):
                 elapsed = "" if boot_started_at is None else \
                     f" boot+{request_at - boot_started_at:.3f}s"
                 display_status = 0 if status in (2, 3) else status
@@ -589,6 +608,13 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     f"fail={request[6]:02X} flags={request[7]:02X} "
                     f"status={status}",
                     flush=True,
+                )
+            elif verbose and operation == CAPABILITY_QUERY:
+                print(
+                    f"capability query seq={sequence:02X} "
+                    f"protocol={protocol_version} ahead={read_ahead_records} "
+                    f"features={features:02X} drives={payload[3] if payload else 0} "
+                    f"status={status}", flush=True,
                 )
 
             if sequence == last_sequence and request == last_request:
@@ -638,6 +664,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                         "fail_mask": request[6],
                         "flags": request[7],
                     })
+            elif status == 0 and operation == CAPABILITY_QUERY:
+                stats["capability_queries"] += 1
             elif status in (0, 2, 3) and operation in (
                     READ, READ_COMPACT, READ_AHEAD):
                 reads += 1

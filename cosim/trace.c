@@ -149,6 +149,8 @@ static unsigned long fdc_last_cyc;
 static int           timing_log = 0;
 static int           io_trace = 0;
 static int           bank_trace = 1;
+static int           watch_address = -1;
+static int           watch_address_end = -1;
 static int           ram_fault_enabled = 0;
 static uint16_t      ram_fault_addr = 0;
 static uint8_t       ram_fault_stuck_low = 0;
@@ -840,6 +842,10 @@ static uint8_t rb(void* u, uint16_t a) {
   if (exec_byte_fault_enabled && a == exec_byte_fault_addr && cpu &&
       (cpu->pc == a || cpu->pc == (uint16_t)(a + 1)))
     v = exec_byte_fault_value;
+  if (watch_address >= 0 && a >= (uint16_t)watch_address &&
+      a <= (uint16_t)watch_address_end)
+    fprintf(stderr, "[WATCH] MR %04X=%02X pc=%04X cyc=%lu\n",
+            a, v, cpu ? cpu->pc : 0, cpu ? cpu->cyc : 0);
   if (rdtrace_fp) {
     fprintf(rdtrace_fp, "%04x %02x\n", a, v);
     if (rdtrace_limit && ++rdtrace_n >= rdtrace_limit) { fclose(rdtrace_fp); rdtrace_fp = NULL; }
@@ -1013,6 +1019,10 @@ static uint8_t kbd_portb(const i8080* cpu) {
 }
 static void wb(void* u, uint16_t a, uint8_t v) {
   rom_read_burst_count = 0;
+  if (watch_address >= 0 && a >= (uint16_t)watch_address &&
+      a <= (uint16_t)watch_address_end)
+    fprintf(stderr, "[WATCH] MW %04X=%02X pc=%04X cyc=%lu\n",
+            a, v, u ? ((i8080*)u)->pc : 0, u ? ((i8080*)u)->cyc : 0);
   trace_bus_event("MW", a, v);
   unsigned idx = 0;
   int ov = overlay(a, &idx);
@@ -1502,6 +1512,14 @@ int main(int argc, char** argv) {
   const char* bank_trace_env = getenv("JUKU_TRACE_BANK");
   if (bank_trace_env && bank_trace_env[0])
     bank_trace = strcmp(bank_trace_env, "0") != 0;
+  const char* watch_address_env = getenv("JUKU_WATCH_ADDRESS");
+  if (watch_address_env && watch_address_env[0]) {
+    char* endptr = NULL;
+    watch_address = (int)strtoul(watch_address_env, &endptr, 0);
+    watch_address_end = watch_address;
+    if (endptr && *endptr == '-')
+      watch_address_end = (int)strtoul(endptr + 1, NULL, 0);
+  }
   const char* usart_pty = getenv("JUKU_USART_PTY");
   const char* usart_fault = getenv("JUKU_USART_FAULT");
   const char* usart_transfer_cycles = getenv("JUKU_USART_TRANSFER_CYCLES");

@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
 from tools.janet_disk_server import (  # noqa: E402
+    CAPABILITY_QUERY,
     CONSOLE_OUT,
     CONSOLE_POLL,
     CPM_EPOCH,
@@ -176,6 +177,7 @@ def main() -> int:
         "clock_gets": 0, "clock_sets": 0, "clock_failures": 0,
         "status_reports": 0,
         "diag_reports": 0,
+        "capability_queries": 0,
     }
     if stats != expected_stats:
         raise AssertionError(f"dual-drive counters differ: {stats}")
@@ -400,6 +402,15 @@ def main() -> int:
     diag_reply = receive_exact(console_client, 5)
     if diag_reply[:4] != REPLY_SYNC + b"\x0F\x00" or checksum(diag_reply):
         raise AssertionError("target diagnostic report was not acknowledged")
+    caps_request = request(CAPABILITY_QUERY, 16, 0, 0, 0)
+    console_client.sendall(caps_request)
+    caps_reply = receive_exact(console_client, 9)
+    if caps_reply[:8] != REPLY_SYNC + b"\x10\x00\x03\x03\x0F\x01" or \
+            checksum(caps_reply):
+        raise AssertionError(f"explicit capability reply differs: {caps_reply!r}")
+    console_client.sendall(caps_request)
+    if receive_exact(console_client, 9) != caps_reply:
+        raise AssertionError("duplicate capability query did not replay reply")
     console_thread.join(timeout=2)
     console_client.close()
     console_host.close()
@@ -416,6 +427,7 @@ def main() -> int:
             console_stats["clock_failures"] != 1 or \
             console_stats["status_reports"] != 1 or \
             console_stats["diag_reports"] != 1 or \
+            console_stats["capability_queries"] != 1 or \
             console_confirmations != [{"operation": CONSOLE_OUT,
                                        "sequence": 7}]:
         raise AssertionError(
@@ -531,7 +543,8 @@ def main() -> int:
     print(
         "JANET-DISK-SERVER-TEST: PASS "
         "(dual drive + NetDisk v3 + live resume + atomic save + "
-        "media policies + idempotent N4 console + host clock + target reports)"
+        "media policies + idempotent N4 console + host clock + target reports "
+        "+ explicit capabilities)"
     )
     return 0
 

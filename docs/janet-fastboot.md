@@ -660,6 +660,16 @@ hook exactly once; replaying a duplicate request only replays its prior ACK.
 Diagnostics therefore cannot monopolize the half-duplex USART or bypass the
 normal local-console and disk recovery rules.
 
+Operation `26h` is the explicit runtime capability query. A successful reply
+adds four bytes after the normal `DJ`, sequence, status prefix: NetDisk
+protocol version, maximum records in one read-ahead reply, feature flags, and
+drive count. Feature bits currently mean console, host time, target status
+reports, target diagnostic reports, B: present, and writable A: from bit 0
+through bit 5. The request is bounded and duplicate-safe; an exact retry
+replays the prior reply without incrementing the accepted-query counter. This
+replaces banner/host-identity inference while leaving N3/N4 startup markers as
+transport synchronization hints.
+
 ### Direct-ROM V15 path (ekta4402)
 
 The separately versioned `spinoffs/jukuravi/remix/ekta4402.bin` removes the

@@ -165,6 +165,15 @@ protocol-level timeout leaves the CPU alive but does not identify the loop or
 error path that consumed the target. `tests/cosim_realtime_test.py` guards the
 opt-in, single-line, and 256-entry bounds.
 
+## Address watchpoint (`JUKU_WATCH_ADDRESS`)
+
+Set `JUKU_WATCH_ADDRESS` to one numeric address or an inclusive `start-end`
+range, for example `0xC600-0xC63F`. Cosim logs each memory read and write in
+that range with value, PC, and cycle count. It is observation-only and disabled
+by default. This is intentionally much narrower than a complete bus trace: it
+was added to prove that a CP/M native disk workspace was overwriting service
+code and, after its first relocation, the resident NetDisk cache.
+
 ## Interactive console (`JUKU_CONSOLE_PTY`)
 
 `JUKU_CONSOLE_PTY=auto` creates a PTY and prints its slave path; a device path
