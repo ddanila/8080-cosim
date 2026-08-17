@@ -152,7 +152,7 @@ def main() -> int:
     if metadata["abi"] != {"base": "FF00", "major": 1, "minor": 1} or \
             metadata["gate_bytes"] != 214 or \
             metadata.get("netdisk_cache") != {
-                "records_per_drive": 3,
+                "records_per_drive": 8,
                 "drives": 2,
                 "shared_pointer_fallback": "alias-safe",
             }:

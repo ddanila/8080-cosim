@@ -112,6 +112,7 @@ ROMNETDISK      equ     1
 .ifdef ROM_ABI_LOCALE
 ROMNETDISK_PER_DRIVE equ 1
 ROMNETDRIVESTATEBASE equ JROMSTATEBASE+05ah
+N3MAXRECORDS   equ     8
 .endif
         include "netdisk-v3.asm"
 

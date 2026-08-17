@@ -240,7 +240,7 @@ def build(*, abi_selftest: bool = False,
         }
         metadata["key_remap_pairs"] = 4
         metadata["netdisk_cache"] = {
-            "records_per_drive": 3,
+            "records_per_drive": 8,
             "drives": 2,
             "shared_pointer_fallback": "alias-safe",
         }

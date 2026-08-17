@@ -29,6 +29,7 @@ from tools.janet_disk_server import (  # noqa: E402
     READ_COMPACT,
     RECORD_SIZE,
     REPLY_SYNC,
+    SECTOR_ORDER,
     STATUS_REPORT,
     DIAG_REPORT,
     TRACK_SIZE,
@@ -261,6 +262,49 @@ def main() -> int:
             v3_stats["retries"] != 2 or \
             v3_stats["dropped_replies"] != 1:
         raise AssertionError(f"v3 counters differ: {v3_stats}")
+
+    # C5 may explicitly negotiate/use eight records; the default remains
+    # three for every older target.
+    wide_host, wide_client = socket.socketpair()
+    wide_stats: dict[str, int] = {}
+    wide_errors: list[BaseException] = []
+
+    def wide_worker() -> None:
+        try:
+            serve_disk(
+                wide_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
+                reply_guard=0, protocol_version=3, verbose=False,
+                stats=wide_stats, read_ahead_records=8,
+            )
+        except BaseException as error:
+            wide_errors.append(error)
+
+    wide_thread = threading.Thread(target=wide_worker)
+    wide_thread.start()
+    if receive_exact(wide_client, 4) != b"NRN3":
+        raise AssertionError("wide resident-ready marker differs")
+    wide_client.sendall(request(READ_AHEAD, 8, 0, 3, SECTOR_ORDER[0]))
+    descriptors = bytearray()
+    for sector in SECTOR_ORDER[:8]:
+        offset = record_offset(3, sector)
+        assert offset is not None
+        record = bytes(drive_a[offset:offset + RECORD_SIZE])
+        descriptors.extend((3, 0, sector))
+        descriptors.extend(encode_v3_record(
+            record, deleted_directory=False,
+        ))
+    wide_body = REPLY_SYNC + b"\x08\x00\x08" + bytes(descriptors)
+    wide_reply = wide_body + crc16_ibm(wide_body).to_bytes(2, "big")
+    if receive_exact(wide_client, len(wide_reply)) != wide_reply:
+        raise AssertionError("eight-record NetDisk reply differs")
+    wide_thread.join(timeout=2)
+    wide_client.close()
+    wide_host.close()
+    if wide_thread.is_alive() or wide_errors:
+        raise AssertionError(f"wide disk server did not finish: {wide_errors!r}")
+    if wide_stats["reads"] != 1 or wide_stats["read_records"] != 8 or \
+            wide_stats["read_ahead_records"] != 8:
+        raise AssertionError(f"wide counters differ: {wide_stats}")
 
     # A replacement physical server joins an already-running client without
     # emitting the NRN capability marker which belongs only to initial boot.

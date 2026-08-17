@@ -42,11 +42,15 @@ proves both policy branches, a `T` to `X` remap, and exact locale pixels in
 all four S21 bits-2:1 geometries: 40x24, 53x24, 64x20, and 80x24. Physical
 qualification remains before C5 can become a bench candidate.
 
-C5 also retains independent three-record A:/B: cache validity and caller
+C5 also retains independent eight-record A:/B: cache validity and caller
 buffer pointers. Its alias guard detects an older consumer that reuses one
 buffer and invalidates the other drive, preserving the original safe
 single-cache behavior. The matching CP/M image uses distinct buffers and the
 cosimulation alternates B: then A: before verifying that both remain valid.
+The server remains conservative at three records by default; the matching C5
+host explicitly selects eight. In paced cosimulation this reduces recovery-A
+login from 22 read turns to 10 and native-B login from 11 to 4 without growing
+the measured boot reply bytes.
 
 C3 had superseded the immutable C2 package. C2 corrected the original sprite-sheet
 extraction after a stock-ROM/manual-resume CS00015 run exposed deterministic

@@ -59,6 +59,7 @@ SECTOR_ORDER = (
 )
 DIRECTORY_SECTORS = frozenset(SECTOR_ORDER[:32])
 READ_AHEAD_RECORDS = 3
+MAX_READ_AHEAD_RECORDS = 8
 V3_RECORD_GUARD = 0.004
 V3_WIRE_BYTE_TIME = 11 / FAST_BAUD  # 8 data + odd parity + start/stop
 CAPABILITY_RETRY_INTERVAL = 0.25
@@ -323,8 +324,11 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
     buffer = bytearray()
     if protocol_version not in (1, 2, 3):
         raise ValueError("protocol_version must be 1, 2, or 3")
-    if not 1 <= read_ahead_records <= READ_AHEAD_RECORDS:
-        raise ValueError("read_ahead_records must be between 1 and 3")
+    if not 1 <= read_ahead_records <= MAX_READ_AHEAD_RECORDS:
+        raise ValueError(
+            f"read_ahead_records must be between 1 and "
+            f"{MAX_READ_AHEAD_RECORDS}"
+        )
     reads = read_records = writes = retries = 0
     if stats is None:
         stats = {}
@@ -1129,8 +1133,9 @@ def parser() -> argparse.ArgumentParser:
         help="host-to-Juku delay between disk-reply bytes (default: 0)",
     )
     result.add_argument(
-        "--disk-read-ahead-records", type=int, choices=(1, 2, 3), default=3,
-        help="maximum records in each NetDisk-v3 reply (default: 3)",
+        "--disk-read-ahead-records", type=int,
+        choices=range(1, MAX_READ_AHEAD_RECORDS + 1), default=3,
+        help="maximum records in each NetDisk-v3 reply (default: 3; C5: 8)",
     )
     result.add_argument(
         "--disk-protocol", type=int, choices=(1, 2, 3), default=2,
