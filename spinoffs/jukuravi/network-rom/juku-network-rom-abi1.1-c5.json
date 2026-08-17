@@ -1,9 +1,9 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "1b25df3a6f32f8c81298fc2802974d79c0bda61bc522d2dca27642ea88b974a7",
-  "d15_sha256": "644ef57c7852f121a218857ad85a128cd246e264ada7fa52a68ed3bd11eea8ba",
-  "d16_sha256": "e00fb883584a10ced971ca12f573f9eb5ae39e60c226965951ab96fff2b5d1ff",
+  "image_sha256": "740cade319bf110179ba3dc43c15ab6cbd837c532973eaefa256fb9cf5adbffc",
+  "d15_sha256": "78b00cbee30fa49a8fd8784bc7f57c759c4f56a4da669642172260494ddf5d9f",
+  "d16_sha256": "b0978e2bd3644f2d722b1047387c85e397e6e6608b87b3be922614a7bdf74f0a",
   "boot_code_bytes": 997,
   "gate_bytes": 214,
   "helper_bytes": 128,
@@ -69,6 +69,11 @@
   "candidate": "network-first-abi1.1-cs00015-c5-desk",
   "status": "desk-qualified locale candidate; physical qualification pending",
   "key_remap_pairs": 4,
+  "netdisk_cache": {
+    "records_per_drive": 3,
+    "drives": 2,
+    "shared_pointer_fallback": "alias-safe"
+  },
   "boot_policy": {
     "s21_bit": 0,
     "set": "automatic network boot",

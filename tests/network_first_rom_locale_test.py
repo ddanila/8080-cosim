@@ -150,7 +150,12 @@ def main() -> int:
     if image != network_rom.LOCALE_OUTPUT.read_bytes():
         fail("committed ABI 1.1 image differs from deterministic rebuild")
     if metadata["abi"] != {"base": "FF00", "major": 1, "minor": 1} or \
-            metadata["gate_bytes"] != 214:
+            metadata["gate_bytes"] != 214 or \
+            metadata.get("netdisk_cache") != {
+                "records_per_drive": 3,
+                "drives": 2,
+                "shared_pointer_fallback": "alias-safe",
+            }:
         fail(f"localized ABI metadata differs: {metadata}")
     manifest = image[0x3F00:0x3F50]
     if manifest[:10] != b"JUKUABI\0\x01\x01" or \

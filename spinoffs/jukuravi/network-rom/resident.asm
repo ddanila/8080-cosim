@@ -109,6 +109,10 @@ rom_serial_end:
 
 ; E100h..E3FFh: versioned NetDisk-v3 read-ahead/write-through service.
 ROMNETDISK      equ     1
+.ifdef ROM_ABI_LOCALE
+ROMNETDISK_PER_DRIVE equ 1
+ROMNETDRIVESTATEBASE equ JROMSTATEBASE+05ah
+.endif
         include "netdisk-v3.asm"
 
 rom_netdisk_impl:
