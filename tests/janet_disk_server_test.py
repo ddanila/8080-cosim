@@ -7,9 +7,11 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import pty
 import socket
 import sys
 import threading
+import tty
 from datetime import date, datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +44,7 @@ from tools.janet_disk_server import (  # noqa: E402
     WRITE_V3,
     checksum,
     boot_slots_with_recovery,
+    configure_console,
     crc16_ibm,
     encode_v3_record,
     juku_image_to_volume,
@@ -73,6 +76,18 @@ def receive_exact(sock: socket.socket, length: int) -> bytes:
 
 
 def main() -> int:
+    # A reconnect client may queue input before the replacement server opens
+    # its PTY. Raw-mode setup must preserve that command rather than flush it.
+    console_master, console_slave = pty.openpty()
+    tty.setraw(console_master)
+    tty.setraw(console_slave)
+    os.write(console_master, b"DIR\r")
+    configure_console(console_slave)
+    if os.read(console_slave, 4) != b"DIR\r":
+        raise AssertionError("console raw-mode setup flushed queued input")
+    os.close(console_master)
+    os.close(console_slave)
+
     if encode_v3_record(b"\xA5" * RECORD_SIZE,
                         deleted_directory=False) != b"\x01\xA5":
         raise AssertionError("v3 uniform-fill encoding differs")

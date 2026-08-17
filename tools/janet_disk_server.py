@@ -10,6 +10,7 @@ import json
 import os
 import select
 import sys
+import termios
 import time
 import tty
 from collections.abc import Callable, Iterable
@@ -312,6 +313,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                reply_filter: Callable[[int, bytes], bytes] | None = None,
                console_reply_filter: Callable[[int, int, bytes], bytes] |
                None = None,
+               console_trace: bool = False,
                console_protocol: bool = False,
                console_input: bytearray | None = None,
                console_output: bytearray | None = None,
@@ -719,7 +721,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     f"status={status}", flush=True,
                 )
 
-            if sequence == last_sequence and request == last_request:
+            duplicate_request = sequence == last_sequence and \
+                request == last_request
+            if duplicate_request:
                 retries += 1
                 stats["retries"] = retries
                 reply = last_reply
@@ -800,6 +804,26 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 outgoing = console_reply_filter(
                     console_reply_attempts, operation, outgoing,
                 )
+            if console_trace and operation in (CONSOLE_POLL, CONSOLE_OUT):
+                reply_status = reply[3] if len(reply) >= 4 else -1
+                detail = (
+                    f"deliver={reply[4]:02X}"
+                    if operation == CONSOLE_POLL and reply_status == 2
+                    and len(reply) >= 6 else
+                    f"output={request[4]:02X}"
+                    if operation == CONSOLE_OUT else
+                    "empty"
+                )
+                disposition = "drop" if not outgoing else \
+                    f"send={len(outgoing)}"
+                print(
+                    f"N4 trace op={operation:02X} seq={sequence:02X} "
+                    f"duplicate={int(duplicate_request)} "
+                    f"status={reply_status:02X} {detail} "
+                    f"pending={len(console_input) if console_input is not None else 0} "
+                    f"{disposition}",
+                    flush=True,
+                )
             if outgoing == b"":
                 stats["dropped_replies"] += 1
                 if verbose:
@@ -879,6 +903,11 @@ def write_boot_result(path: Path, report: dict[str, object]) -> None:
     temporary = path.with_name(path.name + ".tmp")
     temporary.write_text(json.dumps(report, indent=2) + "\n")
     temporary.replace(path)
+
+
+def configure_console(fd: int) -> None:
+    """Select raw PTY framing without discarding already queued input."""
+    tty.setraw(fd, when=termios.TCSANOW)
 
 
 def write_volume(path: Path, volume: bytes | bytearray) -> None:
@@ -1174,6 +1203,10 @@ def parser() -> argparse.ArgumentParser:
              "(requires --disk-protocol 3)",
     )
     result.add_argument(
+        "--console-trace", action="store_true",
+        help="log every N4 poll/output exchange for reconnect diagnosis",
+    )
+    result.add_argument(
         "--timeout", type=float, default=120.0,
         help="bootstrap timeout in seconds (default: 120)",
     )
@@ -1233,6 +1266,8 @@ def main(argv: Iterable[str] | None = None) -> int:
         )
     if args.console_pty and args.disk_protocol != 3:
         raise ValueError("--console-pty requires --disk-protocol 3")
+    if args.console_trace and not args.console_pty:
+        raise ValueError("--console-trace requires --console-pty")
     if args.writable and args.media_mode is not None:
         raise ValueError("--writable and --media-mode are mutually exclusive")
     media_mode = "write-through" if args.writable else \
@@ -1329,7 +1364,7 @@ def main(argv: Iterable[str] | None = None) -> int:
 
     try:
         if console_fd is not None:
-            tty.setraw(console_fd)
+            configure_console(console_fd)
         if args.resume_disk:
             configure_serial(fd, args.disk_baud)
             print(
@@ -1362,6 +1397,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 protocol_version=args.disk_protocol,
                 console_protocol=bool(args.console_pty),
                 console_fd=console_fd,
+                console_trace=args.console_trace,
                 console_confirm_hook=confirm_remote_console,
                 clock=clock,
                 resume=True,
@@ -1553,6 +1589,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             first_request_hook=record_first_request,
             console_protocol=bool(args.console_pty),
             console_fd=console_fd,
+            console_trace=args.console_trace,
             console_confirm_hook=confirm_remote_console,
             clock=clock,
             resume=args.network_rom,

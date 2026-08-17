@@ -78,9 +78,13 @@ with the machine-readable board model.
   passed `DIR` and the full `DIAG`; this qualifies the resident disk fix. The
   stock-`TN` wrapper still misses V15's final `JA` and falls back to 9,600, so
   its one-command fast completion remains open. Ekta4402 is now fitted in
-  CS00015: direct `N` boot reaches CP/M Plus, NetDisk-v3 and N4; live host
-  replacement recovers without RESET; and the inherited `J` API-v2 service
-  passes PROBE, refresh query and READ with zero transport mismatch. Ekta4401
+  CS00015: direct `N` boot reaches CP/M Plus, NetDisk-v3 and N4; three
+  automatic C4 boots reach disk service in 6.068--6.070 seconds, and live host
+  replacement recovers `DIR` without RESET. A traced false failure proved that
+  eager PTY input had been flushed by host raw-mode setup while Juku continued
+  valid polls; readiness synchronization now prevents it. The inherited `J`
+  API-v2 service passes PROBE, refresh query and READ with zero transport
+  mismatch. Ekta4401
   and V14 remain frozen historical baselines. The original stock Janet path is
   unchanged as fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared

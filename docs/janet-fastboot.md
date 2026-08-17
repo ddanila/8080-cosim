@@ -1015,6 +1015,20 @@ When `--console-pty` is also present, resume mode explicitly reports that it is
 waiting for an N4 reprobe and confirms the first console poll/output received
 from the running target. It still emits no `NRN4` marker: the replacement host
 must join the target's established protocol instead of renegotiating it.
+`--console-trace` additionally logs every N4 operation, sequence, duplicate
+decision, reply status, delivered/output byte, and pending-input count. It is
+diagnostic and does not alter timing or protocol behavior.
+
+A 2026-08-17 CS00015 trace resolved an apparent reconnect failure. The target
+continued thousands of valid polls across sequence wrap while the replacement
+host reported `pending=0`: the qualification client had queued `DIR` before
+the server called `tty.setraw()`, whose flush semantics discarded it. Console
+PTY setup now preserves already-raw queued bytes, and the qualification client
+waits for the server's explicit PTY-ready line before injecting input. Without
+resetting the still-running target, the corrected host delivered `D`, `I`,
+`R`, and carriage return on successive polls, received every echo, listed the
+disk, and returned to `A>`. This distinguishes host orchestration from target
+reconnect behavior and is covered by server and recorder regressions.
 Writable A: images are replaced through a sibling temporary file, so Ctrl+C or
 another interruption during shutdown cannot truncate the last complete image.
 
