@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from pathlib import Path
 import socket
@@ -42,6 +44,7 @@ from tools.janet_disk_server import (  # noqa: E402
     serve_disk,
     write_boot_result,
     write_volume,
+    validate_boot_manifest,
 )
 
 
@@ -483,6 +486,48 @@ def main() -> int:
     media_copy.unlink()
     media_snapshot.unlink()
     media_root.rmdir()
+
+    manifest_system = b"system"
+    manifest_stage = b"stage"
+    manifest_a = b"A" * VOLUME_SIZE
+    manifest_b = b"B" * NATIVE_VOLUME_SIZE
+    artifact = lambda name, data: {
+        "file": name, "bytes": len(data),
+        "sha256": hashlib.sha256(data).hexdigest(),
+    }
+    manifest_data = {
+        "schema": "cpm-plus-juku-boot-manifest-v1",
+        "build_identity": "native-test",
+        "system": artifact("system.bin", manifest_system),
+        "fast_stage": artifact("fast.bin", manifest_stage),
+        "requirements": {"netdisk": 3, "disk_baud": 19200},
+        "volumes": [
+            {**artifact("a.img", manifest_a), "drive": "A"},
+            {**artifact("b.juk", manifest_b), "drive": "B"},
+        ],
+    }
+    manifest_path = ROOT / ".obj" / "janet-boot-manifest-test.json"
+    manifest_path.write_text(json.dumps(manifest_data))
+    validated = validate_boot_manifest(
+        manifest_path, system=manifest_system, system_name="system.bin",
+        fast_stage=manifest_stage, fast_stage_name="fast.bin",
+        volume=manifest_a, volume_name="a.img", drive_b=manifest_b,
+        drive_b_name="b.juk", disk_protocol=3, disk_baud=19200,
+    )
+    if validated["build_identity"] != "native-test":
+        raise AssertionError("boot manifest identity differs")
+    try:
+        validate_boot_manifest(
+            manifest_path, system=manifest_system, system_name="system.bin",
+            fast_stage=manifest_stage, fast_stage_name="fast.bin",
+            volume=manifest_a, volume_name="a.img", drive_b=manifest_b,
+            drive_b_name="b.juk", disk_protocol=2, disk_baud=19200,
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("boot manifest accepted a protocol mismatch")
+    manifest_path.unlink()
     print(
         "JANET-DISK-SERVER-TEST: PASS "
         "(dual drive + NetDisk v3 + live resume + atomic save + "

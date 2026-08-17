@@ -97,6 +97,18 @@ Copy and snapshot modes never alter the base image. B: remains read-only in
 all modes. Persistence is atomic; write-through at the NetDisk level remains
 synchronous, while host-file replacement occurs only during clean shutdown.
 
+For the native CP/M Plus artifacts, add the generated manifest to bind every
+selected artifact and protocol setting before the serial device is opened:
+
+```sh
+--boot-manifest out/cpm-plus-juku-native-manifest.json
+```
+
+The server verifies system, optional v15 stage, A:, optional physical B:,
+NetDisk version, and disk baud. Its build identity and manifest SHA-256 are
+also written to `--boot-result-json`, making a physical result independently
+traceable to the complete software/media set.
+
 The frozen physical baseline command above uses `juku-fastboot-stage1.bin`
 (protocol v1). The next distinct candidate is **Fast stage v2**:
 

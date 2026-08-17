@@ -749,6 +749,66 @@ def write_volume(path: Path, volume: bytes | bytearray) -> None:
 
 
 SNAPSHOT_SCHEMA = "juku-netdisk-snapshot-v1"
+BOOT_MANIFEST_SCHEMA = "cpm-plus-juku-boot-manifest-v1"
+
+
+def validate_boot_manifest(
+        path: Path, *, system: bytes, system_name: str,
+        fast_stage: bytes, fast_stage_name: str | None,
+        volume: bytes, volume_name: str,
+        drive_b: bytes | None, drive_b_name: str | None,
+        disk_protocol: int, disk_baud: int) -> dict[str, object]:
+    """Fail closed when selected artifacts differ from a published build."""
+    manifest = json.loads(path.read_text())
+    if not isinstance(manifest, dict) or \
+            manifest.get("schema") != BOOT_MANIFEST_SCHEMA:
+        raise ValueError("unsupported boot manifest schema")
+    if not isinstance(manifest.get("build_identity"), str) or \
+            not manifest["build_identity"]:
+        raise ValueError("boot manifest build identity is missing")
+
+    def verify_artifact(record: object, data: bytes, name: str) -> None:
+        if not isinstance(record, dict) or \
+                record.get("file") != name or \
+                record.get("bytes") != len(data) or \
+                record.get("sha256") != hashlib.sha256(data).hexdigest():
+            raise ValueError(f"boot manifest differs for {name}")
+
+    verify_artifact(manifest.get("system"), system, system_name)
+    if fast_stage:
+        if fast_stage_name is None:
+            raise ValueError("fast-stage name is unavailable")
+        verify_artifact(
+            manifest.get("fast_stage"), fast_stage, fast_stage_name,
+        )
+    requirements = manifest.get("requirements")
+    if not isinstance(requirements, dict) or \
+            requirements.get("netdisk") != disk_protocol or \
+            requirements.get("disk_baud") != disk_baud:
+        raise ValueError("boot manifest NetDisk requirements differ")
+    volumes = manifest.get("volumes")
+    if not isinstance(volumes, list):
+        raise ValueError("boot manifest volume list is missing")
+
+    def verify_volume(data: bytes, name: str, drive: str) -> None:
+        digest_value = hashlib.sha256(data).hexdigest()
+        matches = [
+            record for record in volumes
+            if isinstance(record, dict) and record.get("drive") == drive and
+            record.get("file") == name and record.get("bytes") == len(data) and
+            record.get("sha256") == digest_value
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f"boot manifest does not select {drive}: volume {name}"
+            )
+
+    verify_volume(volume, volume_name, "A")
+    if drive_b is not None:
+        if drive_b_name is None:
+            raise ValueError("B: volume name is unavailable")
+        verify_volume(drive_b, drive_b_name, "B")
+    return manifest
 
 
 @dataclass
@@ -947,6 +1007,10 @@ def parser() -> argparse.ArgumentParser:
         "--boot-result-json", type=Path,
         help="write timing evidence when the first valid disk request arrives",
     )
+    result.add_argument(
+        "--boot-manifest", type=Path,
+        help="verify system, stage, protocol, baud, and media against manifest",
+    )
     return result
 
 
@@ -982,10 +1046,26 @@ def main(argv: Iterable[str] | None = None) -> int:
     system = args.system.read_bytes()
     media = VolumeMedia.open(args.volume, media_mode, args.media_output)
     volume = media.volume
-    drive_b = juku_image_to_volume(args.drive_b.read_bytes()) \
-        if args.drive_b else None
+    drive_b_image = args.drive_b.read_bytes() if args.drive_b else None
+    drive_b = juku_image_to_volume(drive_b_image) \
+        if drive_b_image is not None else None
     clock = HostClock()
     fast_stage = args.fast_stage1.read_bytes() if args.fast_stage1 else b""
+    manifest = validate_boot_manifest(
+        args.boot_manifest,
+        system=system, system_name=args.system.name,
+        fast_stage=fast_stage,
+        fast_stage_name=args.fast_stage1.name if args.fast_stage1 else None,
+        volume=media.baseline, volume_name=args.volume.name,
+        drive_b=drive_b_image,
+        drive_b_name=args.drive_b.name if args.drive_b else None,
+        disk_protocol=args.disk_protocol, disk_baud=args.disk_baud,
+    ) if args.boot_manifest else None
+    if manifest is not None:
+        print(
+            f"Verified boot manifest {args.boot_manifest}: "
+            f"{manifest['build_identity']}", flush=True,
+        )
     fd = os.open(args.serial, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     console_fd = os.open(
         args.console_pty, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK,
@@ -1173,6 +1253,13 @@ def main(argv: Iterable[str] | None = None) -> int:
                 "compact_stock_execute": args.compact_stock_execute,
                 "direct_fastboot": direct_fastboot,
                 "network_rom": args.network_rom,
+                "boot_manifest": str(args.boot_manifest)
+                if args.boot_manifest else None,
+                "boot_manifest_sha256": hashlib.sha256(
+                    args.boot_manifest.read_bytes()
+                ).hexdigest() if args.boot_manifest else None,
+                "build_identity": manifest["build_identity"]
+                if manifest is not None else None,
                 "fast_low_latency_guards": args.fast_low_latency_guards,
                 "fast_extension_guard_ms": args.fast_extension_guard_ms,
                 "fast_stock_handoff_guard_ms":
