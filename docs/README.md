@@ -50,8 +50,8 @@ Most reports are outputs of scripts or checks; a few are consolidated durable
 findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
-  `machine-deployment-status.md` (current CS00014/CS00015/CS00000 locations,
-  fitted-state summary, and provisional CS00000 USART investigation),
+  `machine-deployment-status.md` and `machines/` (current CS00000/CS00014/
+  CS00015/CS00024 locations, fitted-state profiles, and board-local open work),
   `cs00015-service-record.md` (Arvutimuuseum machine identity, D15 history,
   repaired D1, corrected D55 status, current Ekta4401/Jukuravi service ROM,
   and physical dual-network-drive validation),

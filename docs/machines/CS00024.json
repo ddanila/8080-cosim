@@ -1,0 +1,27 @@
+{
+  "schema": "juku-machine-profile-v1",
+  "machine_id": "CS00024",
+  "updated": "2026-08-18",
+  "location": null,
+  "deployment_role": "Arvutimuuseum diagnostic board; last used on the bench",
+  "fitted_firmware": {
+    "identity": "T36 1E/C617",
+    "sha256": null,
+    "confidence": "owner-report"
+  },
+  "qualified_paths": [
+    "complete 32 KiB RAM patterns under corrected T36 128-row software refresh",
+    "loader API v2 upload, exact readback, and basic execution",
+    "corrected D55 functional path on four T34 cold boots"
+  ],
+  "open_investigations": [
+    "rerun corrected D57 channel-2 probe after arming the raster",
+    "compare none, raster, and raster-syncb DRAM retention stages",
+    "isolate the separate 12 ms-per-symbol serial/parser margin"
+  ],
+  "evidence": [
+    "spinoffs/jukuravi/CS00024-PHYSICAL.md",
+    "docs/cs00024-t36-diagnosis.md",
+    "spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md"
+  ]
+}

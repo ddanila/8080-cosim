@@ -9,6 +9,10 @@
   "helper_bytes": 119,
   "fastboot_core_bytes": 141,
   "fastboot_extension_bytes": 267,
+  "embedded_fastboot_extension_bytes": 0,
+  "embedded_fastboot_extension_sha256": null,
+  "embedded_fastboot_extension_file_offset": null,
+  "fastboot_protocol": 15,
   "quick_post": [
     "cpu",
     "ram-data",
@@ -50,6 +54,22 @@
     "base": "FF00",
     "major": 1,
     "minor": 0
+  },
+  "abi_vectors": {
+    "init": "FF20",
+    "console_init": "FF23",
+    "console_status": "FF26",
+    "console_input": "FF29",
+    "console_output": "FF2C",
+    "serial_init": "FF2F",
+    "serial_receive": "FF32",
+    "serial_transmit": "FF35",
+    "netdisk_single": "FF38",
+    "keyboard_init": "FF3B",
+    "keyboard_scan": "FF3E",
+    "sound": "FF41",
+    "diagnostics": "FF44",
+    "get_info": "FF47"
   },
   "candidate": "network-first-abi1-cs00015-c4",
   "status": "CS00015 bench candidate; physical qualification pending"

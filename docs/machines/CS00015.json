@@ -1,0 +1,29 @@
+{
+  "schema": "juku-machine-profile-v1",
+  "machine_id": "CS00015",
+  "updated": "2026-08-18",
+  "location": "home lab",
+  "deployment_role": "physical promotion and Jukuravi reference machine",
+  "fitted_firmware": {
+    "identity": "JukuNet C5 D15/D16",
+    "sha256": "9ed6273f44c1b09dcb5fcd3ca94e5a1aad813b285607558a7d8cb98b1a5e6e7a",
+    "confidence": "physical-record"
+  },
+  "qualified_paths": [
+    "automatic 19,200-baud C5 bootstrap and CP/M Plus prompt",
+    "A: and native-geometry B: NetDisk operation",
+    "DIR, sequential TYPE, DIAG ALL, WBOOT, and snapshot ERA",
+    "local alphanumeric and control-key input observed through N4",
+    "live host replacement without RESET"
+  ],
+  "open_investigations": [
+    "observe exact C5 display geometry, glyphs, and blinking underline cursor with a working monitor",
+    "physically promote C6 only after the simulator-qualified package is frozen"
+  ],
+  "evidence": [
+    "docs/cs00015-service-record.md",
+    "spinoffs/jukuravi/T32-PHYSICAL.md",
+    "spinoffs/jukuravi/network-rom/juku-network-rom-abi1.1-c5.json",
+    "../cpm-plus-juku/docs/cs00015-c5-blind-qualification-20260817.md"
+  ]
+}

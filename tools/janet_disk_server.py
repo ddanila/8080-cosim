@@ -48,6 +48,8 @@ STATUS_REPORT = 0x24
 DIAG_REPORT = 0x25
 CAPABILITY_QUERY = 0x26
 BOOT_REPORT = 0x27
+CONSOLE_OUT_BLOCK = 0x28
+MAX_CONSOLE_BLOCK = 32
 RECORD_SIZE = 128
 TRACK_SIZE = 40 * RECORD_SIZE
 TRACKS = 80
@@ -291,6 +293,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                stop_marker: bytes | None = None,
                failure_marker: bytes | None = None,
                resume: bool = False,
+               accumulate_stats: bool = False,
                protocol_version: int = 2,
                verbose: bool = True,
                stats: dict[str, int] | None = None,
@@ -335,21 +338,31 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             f"read_ahead_records must be between 1 and "
             f"{MAX_READ_AHEAD_RECORDS}"
         )
-    reads = read_records = writes = retries = 0
     if stats is None:
         stats = {}
-    stats.update(reads=0, read_records=0, writes=0, retries=0,
-                 reads_a=0, reads_b=0, writes_a=0, writes_b=0,
-                 request_wire_bytes=0, reply_wire_bytes=0,
-                 compact_records=0, compact_bytes_saved=0,
-                 read_ahead_records=0, v3_raw=0, v3_fill=0,
-                 v3_deleted=0, v3_prefix=0, dropped_replies=0,
-                 short_replies=0, extra_reply_bytes=0,
-                 console_polls=0, console_input_bytes=0,
-                 console_output_bytes=0, clock_gets=0, clock_sets=0,
-                 clock_failures=0, status_reports=0, diag_reports=0,
-                 boot_reports=0)
-    stats["capability_queries"] = 0
+    defaults = {
+        "reads": 0, "read_records": 0, "writes": 0, "retries": 0,
+        "reads_a": 0, "reads_b": 0, "writes_a": 0, "writes_b": 0,
+        "request_wire_bytes": 0, "reply_wire_bytes": 0,
+        "compact_records": 0, "compact_bytes_saved": 0,
+        "read_ahead_records": 0, "v3_raw": 0, "v3_fill": 0,
+        "v3_deleted": 0, "v3_prefix": 0, "dropped_replies": 0,
+        "short_replies": 0, "extra_reply_bytes": 0,
+        "console_polls": 0, "console_input_bytes": 0,
+        "console_output_bytes": 0, "console_bulk_requests": 0,
+        "clock_gets": 0, "clock_sets": 0,
+        "clock_failures": 0, "status_reports": 0, "diag_reports": 0,
+        "boot_reports": 0, "capability_queries": 0,
+    }
+    if accumulate_stats:
+        for key, value in defaults.items():
+            stats.setdefault(key, value)
+    else:
+        stats.update(defaults)
+    reads = stats["reads"]
+    read_records = stats["read_records"]
+    writes = stats["writes"]
+    retries = stats["retries"]
     if console_protocol and protocol_version != 3:
         raise ValueError("remote console requires NetDisk protocol 3")
     if console_protocol and console_input is None:
@@ -438,9 +451,20 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 del buffer[:start]
             if len(buffer) < 3:
                 break
-            size = 9 + (
-                RECORD_SIZE if buffer[2] in (WRITE, WRITE_V3) else 0
-            )
+            if buffer[2] == CONSOLE_OUT_BLOCK:
+                if len(buffer) < 5:
+                    break
+                count = buffer[4]
+                if not 1 <= count <= MAX_CONSOLE_BLOCK:
+                    del buffer[:2]
+                    retries += 1
+                    stats["retries"] = retries
+                    continue
+                size = 6 + count
+            else:
+                size = 9 + (
+                    RECORD_SIZE if buffer[2] in (WRITE, WRITE_V3) else 0
+                )
             if len(buffer) < size:
                 break
             request = bytes(buffer[:size])
@@ -451,7 +475,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     STATUS_REPORT,
                     DIAG_REPORT,
                     CAPABILITY_QUERY,
-                    BOOT_REPORT,
+                    BOOT_REPORT, CONSOLE_OUT_BLOCK,
             ) or \
                     checksum(request):
                 retries += 1
@@ -461,9 +485,15 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 continue
             synchronized = True
 
-            operation, sequence, drive = request[2:5]
-            track = request[5] | request[6] << 8
-            sector = request[7]
+            operation, sequence = request[2:4]
+            if operation == CONSOLE_OUT_BLOCK:
+                drive = track = sector = 0
+                console_block = request[5:-1]
+            else:
+                drive = request[4]
+                track = request[5] | request[6] << 8
+                sector = request[7]
+                console_block = b""
             selected = volume if drive == 0 else drive_b if drive == 1 else None
             tracks = TRACKS if drive == 0 else NATIVE_TRACKS
             offset = record_offset(track, sector, tracks) \
@@ -514,6 +544,11 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 payload = b""
                 body = REPLY_SYNC + bytes((sequence, status))
                 reply = body + bytes((checksum(body),))
+            elif operation == CONSOLE_OUT_BLOCK:
+                status = 0 if console_supported and protocol_version == 3 else 1
+                payload = b""
+                body = REPLY_SYNC + bytes((sequence, status))
+                reply = body + bytes((checksum(body),))
             elif operation == TIME_GET:
                 try:
                     payload = clock.get() if protocol_version == 3 else b""
@@ -552,6 +587,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     | 0x08                    # target diagnostic report
                     | (0x10 if drive_b is not None else 0)
                     | (0x20 if writable else 0)
+                    | (0x40 if console_protocol else 0)  # bounded N4 output
                 )
                 payload = bytes((
                     protocol_version, read_ahead_records, features,
@@ -630,7 +666,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 body = REPLY_SYNC + bytes((sequence, status, 0))
                 reply = body + crc16_ibm(body).to_bytes(2, "big")
             elif operation not in (
-                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
+                    CONSOLE_POLL, CONSOLE_OUT, CONSOLE_OUT_BLOCK,
+                    TIME_GET, TIME_SET,
                     STATUS_REPORT, DIAG_REPORT, CAPABILITY_QUERY,
                     BOOT_REPORT):
                 body = REPLY_SYNC + bytes((sequence, status)) + payload
@@ -640,7 +677,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
 
             request_at = time.monotonic()
             if operation not in (
-                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
+                    CONSOLE_POLL, CONSOLE_OUT, CONSOLE_OUT_BLOCK,
+                    TIME_GET, TIME_SET,
                     STATUS_REPORT, DIAG_REPORT, CAPABILITY_QUERY,
                     BOOT_REPORT) and \
                     not first_request_seen:
@@ -658,7 +696,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                         "sector": sector,
                         "status": 0 if status in (2, 3) else status,
                     })
-            if operation in (CONSOLE_POLL, CONSOLE_OUT) and \
+            if operation in (CONSOLE_POLL, CONSOLE_OUT, CONSOLE_OUT_BLOCK) and \
                     console_supported and not console_confirmed:
                 console_confirmed = True
                 if console_confirm_hook is not None:
@@ -671,7 +709,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             # every idle poll and mirrored character makes a real terminal
             # session's log unreadable and can produce thousands of lines.
             if verbose and operation not in (
-                    CONSOLE_POLL, CONSOLE_OUT, TIME_GET, TIME_SET,
+                    CONSOLE_POLL, CONSOLE_OUT, CONSOLE_OUT_BLOCK,
+                    TIME_GET, TIME_SET,
                     STATUS_REPORT, DIAG_REPORT, CAPABILITY_QUERY,
                     BOOT_REPORT):
                 elapsed = "" if boot_started_at is None else \
@@ -740,6 +779,13 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                 if console_fd is not None:
                     write_all(console_fd, bytes((value,)))
                 stats["console_output_bytes"] += 1
+            elif status == 0 and operation == CONSOLE_OUT_BLOCK:
+                if console_output is not None:
+                    console_output.extend(console_block)
+                if console_fd is not None:
+                    write_all(console_fd, console_block)
+                stats["console_output_bytes"] += len(console_block)
+                stats["console_bulk_requests"] += 1
             elif status == 2 and operation == CONSOLE_POLL:
                 assert console_input
                 del console_input[0]
@@ -798,13 +844,14 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             reply_attempts += 1
             outgoing = reply_filter(reply_attempts, reply) \
                 if reply_filter is not None else reply
-            if operation in (CONSOLE_POLL, CONSOLE_OUT) and \
+            if operation in (CONSOLE_POLL, CONSOLE_OUT, CONSOLE_OUT_BLOCK) and \
                     console_reply_filter is not None:
                 console_reply_attempts += 1
                 outgoing = console_reply_filter(
                     console_reply_attempts, operation, outgoing,
                 )
-            if console_trace and operation in (CONSOLE_POLL, CONSOLE_OUT):
+            if console_trace and operation in (
+                    CONSOLE_POLL, CONSOLE_OUT, CONSOLE_OUT_BLOCK):
                 reply_status = reply[3] if len(reply) >= 4 else -1
                 detail = (
                     f"deliver={reply[4]:02X}"
@@ -812,6 +859,8 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     and len(reply) >= 6 else
                     f"output={request[4]:02X}"
                     if operation == CONSOLE_OUT else
+                    f"output-block={console_block.hex()}"
+                    if operation == CONSOLE_OUT_BLOCK else
                     "empty"
                 )
                 disposition = "drop" if not outgoing else \
@@ -1353,8 +1402,11 @@ def main(argv: Iterable[str] | None = None) -> int:
     ) if args.console_pty else None
 
     def confirm_remote_console(event: dict[str, int]) -> None:
-        operation = "output" if event["operation"] == CONSOLE_OUT \
-            else "poll"
+        operation = (
+            "output" if event["operation"] == CONSOLE_OUT else
+            "bulk output" if event["operation"] == CONSOLE_OUT_BLOCK else
+            "poll"
+        )
         print(
             "Remote console N4 confirmed by target "
             f"{operation} request (sequence {event['sequence']:02X}); "

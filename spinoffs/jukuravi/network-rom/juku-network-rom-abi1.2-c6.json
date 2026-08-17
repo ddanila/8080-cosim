@@ -1,18 +1,18 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "9ed6273f44c1b09dcb5fcd3ca94e5a1aad813b285607558a7d8cb98b1a5e6e7a",
-  "d15_sha256": "2100718d75a2bcf2fc9d6497622f1db94ebf82b48f05445afc130a08b081a9bf",
-  "d16_sha256": "a47d9be5e9a087efffb68c95f249084ec4bce8038446bb07897f354d8197d193",
-  "boot_code_bytes": 1015,
+  "image_sha256": "0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09",
+  "d15_sha256": "8cf403663ed860f7e5ab56f382e42bddf6e8951e478e89313074c03ab31f2750",
+  "d16_sha256": "3a60561d0e5f8a8d8e9a1f1c355e503db5daeadec174b45380de732690c9bdf1",
+  "boot_code_bytes": 1027,
   "gate_bytes": 214,
   "helper_bytes": 128,
-  "fastboot_core_bytes": 141,
-  "fastboot_extension_bytes": 307,
-  "embedded_fastboot_extension_bytes": 0,
-  "embedded_fastboot_extension_sha256": null,
-  "embedded_fastboot_extension_file_offset": null,
-  "fastboot_protocol": 15,
+  "fastboot_core_bytes": 128,
+  "fastboot_extension_bytes": 0,
+  "embedded_fastboot_extension_bytes": 361,
+  "embedded_fastboot_extension_sha256": "107b37897a392b9250e34e0884029df65a11e65dec6f6bbca541ef3d002d7d0b",
+  "embedded_fastboot_extension_file_offset": "0600",
+  "fastboot_protocol": 16,
   "quick_post": [
     "cpu",
     "ram-data",
@@ -36,14 +36,18 @@
     "complete-rom": "C4",
     "pit-usart": "C5"
   },
-  "target_ready_byte": "C4",
+  "target_ready_byte": "C7",
   "resident_bytes": 10240,
   "resident_services": [
     "console",
     "serial",
     "keyboard",
     "netdisk-v3",
-    "diagnostics"
+    "diagnostics",
+    "bounded-console-span",
+    "netdisk-multi",
+    "raw-keyboard",
+    "sound"
   ],
   "console": {
     "geometry": "S21-bits-2:1",
@@ -68,7 +72,7 @@
   "abi": {
     "base": "FF00",
     "major": 1,
-    "minor": 1
+    "minor": 2
   },
   "abi_vectors": {
     "init": "FF20",
@@ -87,10 +91,13 @@
     "get_info": "FF47",
     "configuration": "FF4A",
     "keyboard_remap": "FF4D",
-    "boot_policy": "FF50"
+    "boot_policy": "FF50",
+    "console_block": "FF53",
+    "netdisk_multi": "FF56",
+    "keyboard_raw": "FF59"
   },
-  "candidate": "network-first-abi1.1-cs00015-c5-desk",
-  "status": "desk-qualified locale candidate; physical qualification pending",
+  "candidate": "network-first-abi1.2-c6-simulator",
+  "status": "simulator candidate; C5 remains the physical baseline",
   "key_remap_pairs": 4,
   "netdisk_cache": {
     "records_per_drive": 8,
@@ -110,7 +117,7 @@
     "protocol": "D613",
     "stages": {
       "10": "POST active",
-      "20": "V15 core entered; extension pending",
+      "20": "V16 core entered; ROM-resident loader active",
       "30": "extension active; system header pending",
       "31": "system header accepted; payload pending",
       "E2": "compressed payload CRC failed; retrying",
@@ -118,5 +125,17 @@
       "40": "CP/M system entered",
       "50": "first NetDisk transaction succeeded"
     }
+  },
+  "fastboot_wire_contract": "JF16 core descriptor plus JZ/length/compressed/CRC stream; no executable extension",
+  "feature_bits": {
+    "value": "0FBF",
+    "console_block": "0200",
+    "netdisk_multi": "0400",
+    "keyboard_raw": "0800"
+  },
+  "netdisk_multi": {
+    "maximum_descriptors": 8,
+    "descriptor_bytes": 10,
+    "write_policy": "synchronous-write-through"
   }
 }

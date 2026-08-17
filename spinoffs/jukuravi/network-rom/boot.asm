@@ -46,7 +46,11 @@ boot_start:
         sta     BOOTRETRIES
         mvi     a,010h                  ; reset/quick POST active
         sta     BOOTSTAGE
+.ifdef ROM_ABI_EXTENDED
+        mvi     a,16
+.else
         mvi     a,15
+.endif
         sta     BOOTPROTOCOL
 .endif
 
@@ -113,6 +117,12 @@ boot_start:
         call    copy_bytes
 
 .ifndef ABI_SELFTEST
+.ifdef ROM_ABI_EXTENDED
+        lxi     d,EMBEDSTORED
+        lxi     h,00300h
+        lxi     b,JROMEMBEDEXTBYTES
+        call    copy_bytes
+.endif
         lxi     d,CORESTORED
         lxi     h,00100h
         lxi     b,JROMCOREBYTES

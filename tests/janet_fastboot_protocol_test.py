@@ -359,6 +359,26 @@ def main() -> int:
     assert bundle_payload == compressed
     assert extract_system(ram_image) == ram_system
 
+    core_v16 = bytearray(core_v15)
+    core_v16[3:7] = b"JF16"
+    core_v16[9:11] = b"\0\0"
+    bundle_v16 = (
+        bytes(core_v16) + b"ZG"
+        + crc16_ibm(ram_system).to_bytes(2, "big")
+        + len(compressed).to_bytes(2, "big")
+        + compressed_crc.to_bytes(2, "big")
+        + compressed
+    )
+    bundle_core, bundle_extension, bundle_payload = \
+        split_stage_artifact(bundle_v16)
+    assert bundle_core == bytes(core_v16)
+    assert bundle_extension is None
+    assert bundle_payload == compressed
+    assert compressed_stream_packet(
+        compressed, fixed=False, compressed_limit=0x2800,
+    ) == b"JZ" + len(compressed).to_bytes(2, "big") + compressed + \
+        compressed_crc.to_bytes(2, "big")
+
     # The ekta4402 N path begins at the V15 extension handshake: there is no
     # stock Janet request, station discovery, or 128-byte stage transfer.
     # Model that ROM core across a raw PTY and pin the complete direct wire

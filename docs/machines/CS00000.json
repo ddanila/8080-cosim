@@ -1,0 +1,20 @@
+{
+  "schema": "juku-machine-profile-v1",
+  "machine_id": "CS00000",
+  "updated": "2026-08-18",
+  "location": "home lab",
+  "deployment_role": "diagnostic candidate; not a reference machine",
+  "fitted_firmware": {
+    "identity": null,
+    "sha256": null,
+    "confidence": "unknown"
+  },
+  "qualified_paths": [],
+  "open_investigations": [
+    "USART operation is suspected faulty but D11 is not diagnosed",
+    "establish local 8251 status and clock, then connector/level-shifter loopback and end-to-end traffic"
+  ],
+  "evidence": [
+    "docs/machine-deployment-status.md"
+  ]
+}

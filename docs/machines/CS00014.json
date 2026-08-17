@@ -1,0 +1,24 @@
+{
+  "schema": "juku-machine-profile-v1",
+  "machine_id": "CS00014",
+  "updated": "2026-08-18",
+  "location": "Arvutimuuseum main exhibition",
+  "deployment_role": "preserved public exhibition machine",
+  "fitted_firmware": {
+    "identity": "stock ROM",
+    "sha256": null,
+    "confidence": "owner-report"
+  },
+  "qualified_paths": [
+    "stock Janet network bootstrap",
+    "CP/Mish NETROM2 network A: and native-geometry B: demonstration",
+    "19,200-baud NetDisk operation with the downloaded system"
+  ],
+  "open_investigations": [
+    "preserve the exhibition configuration; repeat invasive bench work only when the machine is available"
+  ],
+  "evidence": [
+    "docs/ekta37-netbios-notes.md",
+    "docs/machine-deployment-status.md"
+  ]
+}

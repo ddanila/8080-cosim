@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ddanila/8080-cosim/docs/machines/machine-profile.schema.json",
+  "title": "Juku machine deployment profile",
+  "type": "object",
+  "required": [
+    "schema", "machine_id", "updated", "location", "deployment_role",
+    "fitted_firmware", "qualified_paths", "open_investigations", "evidence"
+  ],
+  "properties": {
+    "schema": {"const": "juku-machine-profile-v1"},
+    "machine_id": {"pattern": "^CS[0-9]{5}$"},
+    "updated": {"format": "date"},
+    "location": {"type": ["string", "null"]},
+    "deployment_role": {"type": "string", "minLength": 1},
+    "fitted_firmware": {
+      "type": "object",
+      "required": ["identity", "sha256", "confidence"],
+      "properties": {
+        "identity": {"type": ["string", "null"]},
+        "sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "confidence": {"enum": ["physical-record", "owner-report", "unknown"]}
+      },
+      "additionalProperties": false
+    },
+    "qualified_paths": {"type": "array", "items": {"type": "string"}},
+    "open_investigations": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

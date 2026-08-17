@@ -23,6 +23,7 @@ from tools.janet_disk_server import (  # noqa: E402
     BootSlot,
     BOOT_REPORT,
     CONSOLE_OUT,
+    CONSOLE_OUT_BLOCK,
     CONSOLE_POLL,
     CPM_EPOCH,
     HostClock,
@@ -62,6 +63,11 @@ def request(operation: int, sequence: int, drive: int, track: int,
             sector: int, payload: bytes = b"") -> bytes:
     body = b"JD" + bytes((operation, sequence, drive, track & 0xFF,
                            track >> 8, sector)) + payload
+    return body + bytes((checksum(body),))
+
+
+def console_block_request(sequence: int, payload: bytes) -> bytes:
+    body = b"JD" + bytes((CONSOLE_OUT_BLOCK, sequence, len(payload))) + payload
     return body + bytes((checksum(body),))
 
 
@@ -194,7 +200,7 @@ def main() -> int:
         "v3_raw": 0, "v3_fill": 0, "v3_deleted": 0, "v3_prefix": 0,
         "dropped_replies": 0, "short_replies": 0, "extra_reply_bytes": 0,
         "console_polls": 0, "console_input_bytes": 0,
-        "console_output_bytes": 0,
+        "console_output_bytes": 0, "console_bulk_requests": 0,
         "clock_gets": 0, "clock_sets": 0, "clock_failures": 0,
         "status_reports": 0,
         "diag_reports": 0,
@@ -328,12 +334,14 @@ def main() -> int:
     resume_host, resume_client = socket.socketpair()
     resume_errors: list[BaseException] = []
     resume_console_confirmations: list[dict[str, int]] = []
+    resume_stats: dict[str, int] = {"reads": 5, "read_records": 15}
 
     def resume_worker() -> None:
         try:
             serve_disk(
                 resume_host.fileno(), drive_a, timeout=2, idle_timeout=0.05,
                 reply_guard=0, protocol_version=3, verbose=False, resume=True,
+                accumulate_stats=True, stats=resume_stats,
                 console_protocol=True,
                 console_confirm_hook=resume_console_confirmations.append,
             )
@@ -375,6 +383,10 @@ def main() -> int:
     if resume_thread.is_alive() or resume_errors:
         raise AssertionError(
             f"resumed disk server did not finish: {resume_errors!r}"
+        )
+    if resume_stats["reads"] != 6 or resume_stats["read_records"] != 18:
+        raise AssertionError(
+            f"resumed server reset cumulative counters: {resume_stats}"
         )
 
     console_host, console_client = socket.socketpair()
@@ -472,7 +484,7 @@ def main() -> int:
     caps_request = request(CAPABILITY_QUERY, 16, 0, 0, 0)
     console_client.sendall(caps_request)
     caps_reply = receive_exact(console_client, 9)
-    if caps_reply[:8] != REPLY_SYNC + b"\x10\x00\x03\x03\x0F\x01" or \
+    if caps_reply[:8] != REPLY_SYNC + b"\x10\x00\x03\x03\x4F\x01" or \
             checksum(caps_reply):
         raise AssertionError(f"explicit capability reply differs: {caps_reply!r}")
     console_client.sendall(caps_request)
@@ -484,6 +496,14 @@ def main() -> int:
     boot_reply = receive_exact(console_client, 5)
     if boot_reply[:4] != REPLY_SYNC + b"\x11\x00" or checksum(boot_reply):
         raise AssertionError("target bootstrap report was not acknowledged")
+    block_request = console_block_request(18, b"BULK")
+    console_client.sendall(block_request)
+    block_reply = receive_exact(console_client, 5)
+    if block_reply[:4] != REPLY_SYNC + b"\x12\x00" or checksum(block_reply):
+        raise AssertionError("bounded console block was not acknowledged")
+    console_client.sendall(block_request)
+    if receive_exact(console_client, 5) != block_reply:
+        raise AssertionError("duplicate console block did not replay exactly")
     console_thread.join(timeout=2)
     console_client.close()
     console_host.close()
@@ -491,8 +511,9 @@ def main() -> int:
         raise AssertionError(
             f"remote console server did not finish: {console_errors!r}"
         )
-    if console_output != b"A" or console_input or \
-            console_stats["console_output_bytes"] != 1 or \
+    if console_output != b"ABULK" or console_input or \
+            console_stats["console_output_bytes"] != 5 or \
+            console_stats["console_bulk_requests"] != 1 or \
             console_stats["console_input_bytes"] != 1 or \
             console_stats["console_polls"] != 3 or \
             console_stats["clock_gets"] != 2 or \

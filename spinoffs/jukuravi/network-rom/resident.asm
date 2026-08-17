@@ -8,10 +8,14 @@ USARTCTL        equ     009h
 PITCOUNT0       equ     018h
 PITCTL          equ     01bh
 VRAM            equ     0d800h
+.ifdef ROM_ABI_EXTENDED
+FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFSOUND+JROMFDIAG+JROMFLOCALE+JROMFKEYREMAP+JROMFCONBLOCK+JROMFNETMULTI+JROMFKEYRAW
+.else
 .ifdef ROM_ABI_LOCALE
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFDIAG+JROMFLOCALE+JROMFKEYREMAP
 .else
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFDIAG
+.endif
 .endif
 
 SELFSTATUS      equ     JROMSTATEBASE+3
@@ -198,17 +202,25 @@ resident_entry:
         ora     a
         jnz     self_fail_info
         mov     a,d
+.ifdef ROM_ABI_EXTENDED
+        cpi     00fh
+.else
 .ifdef ROM_ABI_LOCALE
         cpi     1
 .else
         ora     a
 .endif
+.endif
         jnz     self_fail_info
         mov     a,e
+.ifdef ROM_ABI_EXTENDED
+        cpi     0bfh
+.else
 .ifdef ROM_ABI_LOCALE
         cpi     0afh
 .else
         cpi     FEATURES
+.endif
 .endif
         jnz     self_fail_info
 
@@ -262,6 +274,25 @@ resident_entry:
         cpi     0c4h
         jnz     self_fail_console
 .endif
+.ifdef ROM_ABI_EXTENDED
+        lxi     h,0d5d0h
+        mvi     m,'Q'
+        inx     h
+        mvi     m,'!'
+        dcx     h
+        lxi     b,2
+        call    JCGCONBLOCKADDR
+        ora     a
+        jnz     self_fail_console
+.ifdef ABI_SOUND_SELFTEST
+        mvi     a,1                     ; complete shared diagnostic phrase
+.else
+        xra     a                       ; bounded silence operation
+.endif
+        call    JCGSOUNDADDR
+        ora     a
+        jnz     self_fail_sound
+.endif
 
 ; Test-only variants exercise complete cursor periods using the public
 ; console-status vector. They are assembled only into transient ABI fixtures;
@@ -291,10 +322,41 @@ resident_entry:
         call    JCGNETDISKADDR
         cpi     0ffh
         jnz     self_fail_netdisk
+.ifdef ROM_ABI_EXTENDED
+        lxi     h,0d7efh                ; zero descriptors is invalid
+        mvi     m,0
+        call    JCGNETMULTIADDR
+        cpi     0ffh
+        jnz     self_fail_netdisk
+        lxi     h,0d580h
+        mvi     m,2                     ; two successful bounded descriptors
+        inx     h
+        mvi     m,1
+        inx     h
+        mvi     m,JROMNETOPINVALIDATE
+        lxi     h,0d58bh                ; second descriptor (+1 count +10)
+        mvi     m,1
+        inx     h
+        mvi     m,JROMNETOPINVALIDATE
+        lxi     h,0d580h
+        call    JCGNETMULTIADDR
+        ora     a
+        jnz     self_fail_netdisk
+.endif
 
         call    JCGKEYINITADDR
         ora     a
         jnz     self_fail_keyboard
+.ifdef ROM_ABI_EXTENDED
+        call    JCGKEYRAWADDR
+        jc      self_fail_keyboard
+        cpi     15
+        jnc     self_fail_keyboard
+        mov     a,b
+        ani     0cfh                    ; uppercase T includes SHIFT
+        cpi     0cfh
+        jz      self_fail_keyboard
+.endif
 .ifdef ROM_ABI_LOCALE
         lxi     h,self_keyremap
         mvi     a,1
@@ -423,6 +485,11 @@ self_fail_console:
         jmp     self_store_fail
 self_fail_netdisk:
         mvi     a,0e8h
+.ifdef ROM_ABI_EXTENDED
+        jmp     self_store_fail
+self_fail_sound:
+        mvi     a,0e9h
+.endif
 self_store_fail:
         sta     SELFSTATUS
         jmp     self_done
@@ -438,7 +505,6 @@ fill_guard:
 self_keyremap:
         db      'T','X'
 .endif
-
 .ifdef ABI_CURSOR_HIDDEN
 self_cursor_phase:
         lxi     d,CURSORPERIOD
@@ -484,6 +550,100 @@ rom_keyscan_impl:
         ora     a
         rz
         jmp     RKIN
+
+.ifdef ROM_ABI_EXTENDED
+; HL is a low-RAM byte span and BC is its length (1..256). One gate crossing
+; commits the complete span while retaining the ordinary console renderer and
+; control-character policy as the single behavioral implementation.
+rom_conblock_impl:
+        mov     a,b
+        ora     c
+        jz      rom_extended_bad
+        mov     a,b
+        ora     a
+        jz      rom_conblock_bounds
+        cpi     1
+        jnz     rom_extended_bad
+        mov     a,c
+        ora     a
+        jnz     rom_extended_bad        ; 0100h is the sole B=1 length
+rom_conblock_bounds:
+        mov     a,h
+        cpi     0d8h
+        jnc     rom_extended_bad
+        push    h
+        dad     b
+        dcx     h
+        mov     a,h
+        cpi     0d8h
+        pop     h
+        jnc     rom_extended_bad
+rom_conblock_loop:
+        mov     a,m
+        call    ROMCONOUT
+        inx     h
+        dcx     b
+        mov     a,b
+        ora     c
+        jnz     rom_conblock_loop
+        xra     a
+        ret
+
+; HL points to a count byte (1..8) followed by that many ordinary ten-byte
+; NetDisk v1 request blocks. Descriptors may mix reads, synchronous writes,
+; invalidations, and mode changes. They execute in order and stop on the first
+; nonzero result, so write-through and cache invalidation semantics remain
+; identical to the single-request ABI.
+rom_netmulti_impl:
+        mov     a,m
+        ora     a
+        jz      rom_extended_bad
+        cpi     9
+        jnc     rom_extended_bad
+        mov     b,a
+        inx     h
+rom_netmulti_loop:
+        push    b
+        push    h
+        call    rom_netdisk_impl
+        pop     h
+        pop     b
+        ora     a
+        rnz
+        lxi     d,JROMNETREQBYTES
+        dad     d
+        dcr     b
+        jnz     rom_netmulti_loop
+        xra     a
+        ret
+
+rom_keyraw_impl:
+        jmp     RKRAWSCAN
+
+rom_sound_impl:
+        ora     a
+        jz      rom_sound_silence
+        cpi     1
+        jnz     rom_extended_bad
+        call    smoke_play
+        xra     a
+        ret
+rom_sound_silence:
+        mvi     a,050h                  ; D57 ch1, LSB-only, mode 0
+        out     PITCTL
+        mvi     a,1                     ; static high = silence
+        out     019h
+        xra     a
+        ret
+
+rom_extended_bad:
+        mvi     a,0ffh
+        stc
+        ret
+
+        include "smoke-player.asm"
+        include "smoke-table.asm"
+.endif
 
 rom_diag_impl:
         ora     a
@@ -546,12 +706,17 @@ rom_unavailable:
         stc
         ret
 
+.ifdef ROM_ABI_EXTENDED
+build_identity:
+        db      'Juku network ROM ABI 1.2 complete services 2026-08-17',0
+.else
 .ifdef ROM_ABI_LOCALE
 build_identity:
         db      'Juku network ROM ABI 1.1 locale candidate 2026-08-17',0
 .else
 build_identity:
         db      'Juku network ROM ABI 1.0 automatic boot 2026-08-16',0
+.endif
 .endif
 
 .ifdef ROM_ABI_LOCALE
@@ -783,13 +948,22 @@ CREEP_PSEUDO_ONLY equ  1
         jmp     rom_netdisk_impl
         jmp     RKINIT
         jmp     rom_keyscan_impl
+.ifdef ROM_ABI_EXTENDED
+        jmp     rom_sound_impl
+.else
         jmp     rom_unavailable
+.endif
         jmp     rom_diag_impl
         jmp     rom_getinfo_impl
 .ifdef ROM_ABI_LOCALE
         jmp     rom_config_impl
         jmp     rom_keyremap_impl
         jmp     rom_boot_policy_impl
+.endif
+.ifdef ROM_ABI_EXTENDED
+        jmp     rom_conblock_impl
+        jmp     rom_netmulti_impl
+        jmp     rom_keyraw_impl
 .endif
 
         dc      10000h-$,0ffh
