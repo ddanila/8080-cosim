@@ -80,6 +80,23 @@ Power/reset the stock-ROM machine and type `TN` without Enter, as for the
 ordinary Janet boot. The host learns the one active station pair from that
 request. Do not use `--fast-stage1` with a disk baud other than 19200.
 
+### A: media safety modes
+
+Network A: is read-only by default. Select one explicit policy when writes are
+required:
+
+- `--media-mode write-through` atomically saves changes back to the named A:
+  image at clean shutdown (`--writable` remains a compatibility alias);
+- `--media-mode copy --media-output working.img` initializes a full writable
+  copy from the base and subsequently resumes that copy;
+- `--media-mode snapshot --media-output session.json` stores only changed
+  128-byte records in a sparse JSON overlay and verifies the base-image
+  SHA-256 whenever it is reopened.
+
+Copy and snapshot modes never alter the base image. B: remains read-only in
+all modes. Persistence is atomic; write-through at the NetDisk level remains
+synchronous, while host-file replacement occurs only during clean shutdown.
+
 The frozen physical baseline command above uses `juku-fastboot-stage1.bin`
 (protocol v1). The next distinct candidate is **Fast stage v2**:
 

@@ -13,6 +13,7 @@ import sys
 import time
 import tty
 from collections.abc import Callable, Iterable
+from dataclasses import dataclass
 from datetime import date, datetime, time as datetime_time, timedelta, timezone
 from pathlib import Path
 
@@ -747,6 +748,97 @@ def write_volume(path: Path, volume: bytes | bytearray) -> None:
     temporary.replace(path)
 
 
+SNAPSHOT_SCHEMA = "juku-netdisk-snapshot-v1"
+
+
+@dataclass
+class VolumeMedia:
+    """One A: media policy with explicit, atomic persistence semantics."""
+
+    source: Path
+    mode: str
+    volume: bytearray
+    baseline: bytes
+    output: Path | None = None
+
+    @property
+    def writable(self) -> bool:
+        return self.mode != "read-only"
+
+    @classmethod
+    def open(cls, source: Path, mode: str,
+             output: Path | None = None) -> "VolumeMedia":
+        baseline = source.read_bytes()
+        if len(baseline) != VOLUME_SIZE:
+            raise ValueError(
+                f"network volume is {len(baseline)} bytes; "
+                f"expected {VOLUME_SIZE}"
+            )
+        if mode not in ("read-only", "write-through", "copy", "snapshot"):
+            raise ValueError(f"unknown media mode: {mode}")
+        if mode in ("copy", "snapshot") and output is None:
+            raise ValueError(f"media mode {mode} requires --media-output")
+        if mode in ("read-only", "write-through") and output is not None:
+            raise ValueError(
+                f"media mode {mode} does not accept --media-output"
+            )
+        volume = bytearray(baseline)
+        if mode == "copy" and output is not None and output.exists():
+            volume = bytearray(output.read_bytes())
+            if len(volume) != VOLUME_SIZE:
+                raise ValueError(
+                    f"writable copy is {len(volume)} bytes; "
+                    f"expected {VOLUME_SIZE}"
+                )
+        elif mode == "snapshot" and output is not None and output.exists():
+            snapshot = json.loads(output.read_text())
+            expected_hash = hashlib.sha256(baseline).hexdigest()
+            if not isinstance(snapshot, dict) or \
+                    snapshot.get("schema") != SNAPSHOT_SCHEMA or \
+                    snapshot.get("base_sha256") != expected_hash or \
+                    snapshot.get("record_size") != RECORD_SIZE or \
+                    not isinstance(snapshot.get("records"), dict):
+                raise ValueError(
+                    "snapshot metadata or base-image hash differs"
+                )
+            for key, encoded in snapshot["records"].items():
+                try:
+                    index = int(key, 16)
+                    payload = bytes.fromhex(encoded)
+                except (TypeError, ValueError) as error:
+                    raise ValueError("snapshot record is malformed") from error
+                offset = index * RECORD_SIZE
+                if not 0 <= offset <= VOLUME_SIZE - RECORD_SIZE or \
+                        len(payload) != RECORD_SIZE:
+                    raise ValueError("snapshot record is outside the volume")
+                volume[offset:offset + RECORD_SIZE] = payload
+        return cls(source, mode, volume, baseline, output)
+
+    def save(self) -> None:
+        if self.mode == "read-only":
+            return
+        if self.mode == "write-through":
+            write_volume(self.source, self.volume)
+            return
+        assert self.output is not None
+        if self.mode == "copy":
+            write_volume(self.output, self.volume)
+            return
+        records: dict[str, str] = {}
+        for offset in range(0, VOLUME_SIZE, RECORD_SIZE):
+            payload = bytes(self.volume[offset:offset + RECORD_SIZE])
+            if payload != self.baseline[offset:offset + RECORD_SIZE]:
+                records[f"{offset // RECORD_SIZE:04X}"] = payload.hex()
+        report = {
+            "schema": SNAPSHOT_SCHEMA,
+            "base": str(self.source),
+            "base_sha256": hashlib.sha256(self.baseline).hexdigest(),
+            "record_size": RECORD_SIZE,
+            "records": records,
+        }
+        write_boot_result(self.output, report)
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument("serial", help="serial device, for example /dev/ttyUSB0")
@@ -804,8 +896,19 @@ def parser() -> argparse.ArgumentParser:
         "--server", type=lambda value: int(value, 0),
         help="require this destination station (default: learn from request)",
     )
-    result.add_argument("--writable", action="store_true",
-                        help="allow writes to A: (B: remains read-only)")
+    result.add_argument(
+        "--media-mode",
+        choices=("read-only", "write-through", "copy", "snapshot"),
+        help="A: policy (default: read-only); copy/snapshot preserve the base",
+    )
+    result.add_argument(
+        "--media-output", type=Path,
+        help="persistent writable image or sparse overlay for copy/snapshot",
+    )
+    result.add_argument(
+        "--writable", action="store_true",
+        help="deprecated alias for --media-mode write-through",
+    )
     result.add_argument(
         "--disk-reply-guard-ms", type=float, default=2.0,
         help="request-to-reply half-duplex guard (default: 2 ms)",
@@ -872,8 +975,13 @@ def main(argv: Iterable[str] | None = None) -> int:
         )
     if args.console_pty and args.disk_protocol != 3:
         raise ValueError("--console-pty requires --disk-protocol 3")
+    if args.writable and args.media_mode is not None:
+        raise ValueError("--writable and --media-mode are mutually exclusive")
+    media_mode = "write-through" if args.writable else \
+        args.media_mode or "read-only"
     system = args.system.read_bytes()
-    volume = bytearray(args.volume.read_bytes())
+    media = VolumeMedia.open(args.volume, media_mode, args.media_output)
+    volume = media.volume
     drive_b = juku_image_to_volume(args.drive_b.read_bytes()) \
         if args.drive_b else None
     clock = HostClock()
@@ -900,7 +1008,8 @@ def main(argv: Iterable[str] | None = None) -> int:
             configure_serial(fd, args.disk_baud)
             print(
                 f"Resuming A: from {args.volume} at {args.disk_baud} baud, "
-                f"8O1, NetDisk v{args.disk_protocol}; waiting for a retried "
+                f"8O1, NetDisk v{args.disk_protocol}, {media.mode}; "
+                "waiting for a retried "
                 "request from the running target",
                 flush=True,
             )
@@ -919,7 +1028,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 fd,
                 volume,
                 drive_b=drive_b,
-                writable=args.writable,
+                writable=media.writable,
                 timeout=args.disk_timeout,
                 reply_guard=args.disk_reply_guard_ms / 1000.0,
                 tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
@@ -1022,7 +1131,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         configure_serial(fd, args.disk_baud)
         print(
             f"Serving A: from {args.volume} at {args.disk_baud} baud, 8O1, "
-            f"NetDisk v{args.disk_protocol}",
+            f"NetDisk v{args.disk_protocol}, {media.mode}",
             flush=True,
         )
         if args.drive_b:
@@ -1083,7 +1192,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             fd,
             volume,
             drive_b=drive_b,
-            writable=args.writable,
+            writable=media.writable,
             timeout=args.disk_timeout,
             reply_guard=args.disk_reply_guard_ms / 1000.0,
             tx_byte_delay=args.disk_tx_byte_delay_ms / 1000.0,
@@ -1098,9 +1207,13 @@ def main(argv: Iterable[str] | None = None) -> int:
             resume=args.network_rom,
         )
     finally:
-        if args.writable:
-            write_volume(args.volume, volume)
-            print(f"Saved writable A: to {args.volume}", flush=True)
+        if media.writable:
+            media.save()
+            destination = media.output if media.output is not None \
+                else media.source
+            print(
+                f"Saved {media.mode} A: state to {destination}", flush=True,
+            )
         os.close(fd)
         if console_fd is not None:
             os.close(console_fd)

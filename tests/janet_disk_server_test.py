@@ -30,6 +30,7 @@ from tools.janet_disk_server import (  # noqa: E402
     TRACK_SIZE,
     TIME_GET,
     TIME_SET,
+    VolumeMedia,
     VOLUME_SIZE,
     WRITE,
     WRITE_V3,
@@ -444,10 +445,48 @@ def main() -> int:
             volume_result.with_name(volume_result.name + ".tmp").exists():
         raise AssertionError("atomic writable-volume replacement differs")
     volume_result.unlink()
+
+    media_root = ROOT / ".obj" / "janet-media-test"
+    media_root.mkdir(exist_ok=True)
+    media_base = media_root / "base.img"
+    media_copy = media_root / "copy.img"
+    media_snapshot = media_root / "snapshot.json"
+    base_bytes = bytes(VOLUME_SIZE)
+    media_base.write_bytes(base_bytes)
+    read_only = VolumeMedia.open(media_base, "read-only")
+    if read_only.writable:
+        raise AssertionError("read-only media became writable")
+    copy = VolumeMedia.open(media_base, "copy", media_copy)
+    copy.volume[RECORD_SIZE:2 * RECORD_SIZE] = b"C" * RECORD_SIZE
+    copy.save()
+    if media_base.read_bytes() != base_bytes or \
+            media_copy.read_bytes()[RECORD_SIZE:2 * RECORD_SIZE] != \
+            b"C" * RECORD_SIZE:
+        raise AssertionError("writable-copy policy changed its base")
+    snapshot = VolumeMedia.open(media_base, "snapshot", media_snapshot)
+    snapshot.volume[2 * RECORD_SIZE:3 * RECORD_SIZE] = b"S" * RECORD_SIZE
+    snapshot.save()
+    restored = VolumeMedia.open(media_base, "snapshot", media_snapshot)
+    if restored.volume[2 * RECORD_SIZE:3 * RECORD_SIZE] != \
+            b"S" * RECORD_SIZE or media_base.read_bytes() != base_bytes:
+        raise AssertionError("sparse snapshot did not round-trip")
+    changed_base = bytearray(base_bytes)
+    changed_base[0] = 1
+    media_base.write_bytes(changed_base)
+    try:
+        VolumeMedia.open(media_base, "snapshot", media_snapshot)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("snapshot accepted a different base image")
+    media_base.unlink()
+    media_copy.unlink()
+    media_snapshot.unlink()
+    media_root.rmdir()
     print(
         "JANET-DISK-SERVER-TEST: PASS "
         "(dual drive + NetDisk v3 + live resume + atomic save + "
-        "idempotent N4 console + host clock + target reports)"
+        "media policies + idempotent N4 console + host clock + target reports)"
     )
     return 0
 
