@@ -109,6 +109,25 @@ NetDisk version, and disk baud. Its build identity and manifest SHA-256 are
 also written to `--boot-result-json`, making a physical result independently
 traceable to the complete software/media set.
 
+The same manifest binds two automatic system slots: the current native image
+and the immutable C4-compatible image. Enable fallback and last-known-good
+ordering with:
+
+```sh
+--fallback-system out/cpm-plus-juku-network-rom-system.bin \
+--fallback-fast-stage1 out/cpm-plus-juku-network-rom-fastboot-v15.bin \
+--boot-slot-state out/cs00015-boot-slot.json
+```
+
+Each slot receives the normal bounded `--boot-restarts` budget. Only after one
+slot exhausts that budget does the host try the other. The state file is
+updated atomically only after a valid NetDisk request proves that the selected
+system actually executed; merely transferring a system never promotes it.
+On the next run a hash-matching last-known-good slot is tried first. Stale,
+malformed, or differently hashed state is ignored, so it cannot select an
+artifact outside the manifest. This is host-side automatic recovery and adds
+no ROM menu or station identity.
+
 The frozen physical baseline command above uses `juku-fastboot-stage1.bin`
 (protocol v1). The next distinct candidate is **Fast stage v2**:
 

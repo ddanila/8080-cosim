@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from tools.janet_disk_server import (  # noqa: E402
     CAPABILITY_QUERY,
+    BootSlot,
     CONSOLE_OUT,
     CONSOLE_POLL,
     CPM_EPOCH,
@@ -38,12 +39,15 @@ from tools.janet_disk_server import (  # noqa: E402
     WRITE,
     WRITE_V3,
     checksum,
+    boot_slots_with_recovery,
     crc16_ibm,
     encode_v3_record,
     juku_image_to_volume,
+    order_boot_slots,
     record_offset,
     serve_disk,
     write_boot_result,
+    write_boot_slot_state,
     write_volume,
     validate_boot_manifest,
 )
@@ -501,6 +505,8 @@ def main() -> int:
 
     manifest_system = b"system"
     manifest_stage = b"stage"
+    fallback_system = b"fallback-system"
+    fallback_stage = b"fallback-stage"
     manifest_a = b"A" * VOLUME_SIZE
     manifest_b = b"B" * NATIVE_VOLUME_SIZE
     artifact = lambda name, data: {
@@ -512,6 +518,18 @@ def main() -> int:
         "build_identity": "native-test",
         "system": artifact("system.bin", manifest_system),
         "fast_stage": artifact("fast.bin", manifest_stage),
+        "system_slots": [
+            {
+                "name": "primary",
+                "system": artifact("system.bin", manifest_system),
+                "fast_stage": artifact("fast.bin", manifest_stage),
+            },
+            {
+                "name": "fallback",
+                "system": artifact("fallback.bin", fallback_system),
+                "fast_stage": artifact("fallback-fast.bin", fallback_stage),
+            },
+        ],
         "requirements": {"netdisk": 3, "disk_baud": 19200},
         "volumes": [
             {**artifact("a.img", manifest_a), "drive": "A"},
@@ -525,6 +543,10 @@ def main() -> int:
         fast_stage=manifest_stage, fast_stage_name="fast.bin",
         volume=manifest_a, volume_name="a.img", drive_b=manifest_b,
         drive_b_name="b.juk", disk_protocol=3, disk_baud=19200,
+        fallback_system=fallback_system,
+        fallback_system_name="fallback.bin",
+        fallback_fast_stage=fallback_stage,
+        fallback_fast_stage_name="fallback-fast.bin",
     )
     if validated["build_identity"] != "native-test":
         raise AssertionError("boot manifest identity differs")
@@ -539,12 +561,51 @@ def main() -> int:
         pass
     else:
         raise AssertionError("boot manifest accepted a protocol mismatch")
+    slot_state = ROOT / ".obj" / "janet-boot-slot-state-test.json"
+    primary_slot = BootSlot(
+        "primary", Path("system.bin"), manifest_system,
+        Path("fast.bin"), manifest_stage,
+    )
+    fallback_slot = BootSlot(
+        "fallback", Path("fallback.bin"), fallback_system,
+        Path("fallback-fast.bin"), fallback_stage,
+    )
+    attempts: list[str] = []
+
+    def attempt_slot(slot: BootSlot) -> dict[str, object]:
+        attempts.append(slot.name)
+        if slot.name == "primary":
+            raise TimeoutError("injected primary failure")
+        return {"completion_confirmed": 1}
+
+    selected_slot, slot_result = boot_slots_with_recovery(
+        [primary_slot, fallback_slot], attempt_slot,
+        max_restarts=0, verbose=False,
+    )
+    if selected_slot is not fallback_slot or attempts != [
+            "primary", "fallback"] or \
+            slot_result["boot_slot"] != "fallback":
+        raise AssertionError("two-slot fallback order differs")
+    write_boot_slot_state(slot_state, fallback_slot)
+    if order_boot_slots(
+            [primary_slot, fallback_slot], slot_state,
+            )[0] is not fallback_slot:
+        raise AssertionError("last-known-good slot was not preferred")
+    stale_fallback = BootSlot(
+        "fallback", Path("fallback.bin"), b"new-system",
+        Path("fallback-fast.bin"), fallback_stage,
+    )
+    if order_boot_slots(
+            [primary_slot, stale_fallback], slot_state,
+            )[0] is not primary_slot:
+        raise AssertionError("stale last-known-good hash was trusted")
+    slot_state.unlink()
     manifest_path.unlink()
     print(
         "JANET-DISK-SERVER-TEST: PASS "
         "(dual drive + NetDisk v3 + live resume + atomic save + "
         "media policies + idempotent N4 console + host clock + target reports "
-        "+ explicit capabilities)"
+        "+ explicit capabilities + two-slot recovery)"
     )
     return 0
 

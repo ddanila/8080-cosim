@@ -63,6 +63,58 @@ V3_RECORD_GUARD = 0.004
 V3_WIRE_BYTE_TIME = 11 / FAST_BAUD  # 8 data + odd parity + start/stop
 CAPABILITY_RETRY_INTERVAL = 0.25
 CPM_EPOCH = date(1978, 1, 1)
+BOOT_SLOT_STATE_SCHEMA = "juku-boot-slot-state-v1"
+
+
+@dataclass(frozen=True)
+class BootSlot:
+    """One manifest-bound system/bootstrap pair."""
+
+    name: str
+    system_path: Path
+    system: bytes
+    fast_stage_path: Path | None
+    fast_stage: bytes
+
+    def identity(self) -> dict[str, str | None]:
+        return {
+            "name": self.name,
+            "system_sha256": hashlib.sha256(self.system).hexdigest(),
+            "fast_stage_sha256": hashlib.sha256(self.fast_stage).hexdigest()
+            if self.fast_stage else None,
+        }
+
+
+def order_boot_slots(
+        slots: list[BootSlot], state_path: Path | None) -> list[BootSlot]:
+    """Prefer a matching last-known-good slot; ignore stale state safely."""
+    if state_path is None or not state_path.exists():
+        return slots
+    try:
+        state = json.loads(state_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return slots
+    if not isinstance(state, dict) or \
+            state.get("schema") != BOOT_SLOT_STATE_SCHEMA:
+        return slots
+    identity = state.get("last_known_good")
+    if not isinstance(identity, dict):
+        return slots
+    match = next((slot for slot in slots if slot.identity() == identity), None)
+    return slots if match is None else [
+        match, *(slot for slot in slots if slot is not match),
+    ]
+
+
+def write_boot_slot_state(path: Path, slot: BootSlot) -> None:
+    """Atomically record a slot only after target execution is confirmed."""
+    temporary = path.with_name(path.name + ".tmp")
+    temporary.write_text(json.dumps({
+        "schema": BOOT_SLOT_STATE_SCHEMA,
+        "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+        "last_known_good": slot.identity(),
+    }, indent=2) + "\n")
+    temporary.replace(path)
 
 
 def bcd(value: int) -> int:
@@ -163,6 +215,36 @@ def boot_with_recovery(
                 )
             if prepare_retry is not None:
                 prepare_retry()
+
+
+def boot_slots_with_recovery(
+        slots: list[BootSlot],
+        attempt: Callable[[BootSlot], dict[str, object]], *,
+        prepare_retry: Callable[[], None] | None = None,
+        max_restarts: int = 3, verbose: bool = True,
+) -> tuple[BootSlot, dict[str, object]]:
+    """Try each ordered slot only after the prior slot exhausts retries."""
+    if not slots:
+        raise ValueError("at least one boot slot is required")
+    for index, slot in enumerate(slots):
+        try:
+            result = boot_with_recovery(
+                lambda: attempt(slot), prepare_retry=prepare_retry,
+                max_restarts=max_restarts, verbose=verbose,
+            )
+            result["boot_slot"] = slot.name
+            return slot, result
+        except TimeoutError:
+            if index + 1 == len(slots):
+                raise
+            if verbose:
+                print(
+                    f"Boot slot {slot.name} exhausted; trying "
+                    f"{slots[index + 1].name}", flush=True,
+                )
+            if prepare_retry is not None:
+                prepare_retry()
+    raise AssertionError("unreachable boot-slot loop")
 
 
 def checksum(data: bytes) -> int:
@@ -785,7 +867,11 @@ def validate_boot_manifest(
         fast_stage: bytes, fast_stage_name: str | None,
         volume: bytes, volume_name: str,
         drive_b: bytes | None, drive_b_name: str | None,
-        disk_protocol: int, disk_baud: int) -> dict[str, object]:
+        disk_protocol: int, disk_baud: int,
+        fallback_system: bytes | None = None,
+        fallback_system_name: str | None = None,
+        fallback_fast_stage: bytes | None = None,
+        fallback_fast_stage_name: str | None = None) -> dict[str, object]:
     """Fail closed when selected artifacts differ from a published build."""
     manifest = json.loads(path.read_text())
     if not isinstance(manifest, dict) or \
@@ -809,6 +895,31 @@ def validate_boot_manifest(
         verify_artifact(
             manifest.get("fast_stage"), fast_stage, fast_stage_name,
         )
+    if fallback_system is not None:
+        if fallback_system_name is None or fallback_fast_stage is None or \
+                fallback_fast_stage_name is None:
+            raise ValueError("fallback slot artifact names are unavailable")
+        slots = manifest.get("system_slots")
+        if not isinstance(slots, list):
+            raise ValueError("boot manifest has no fallback system slots")
+        matches = []
+        for slot in slots:
+            if not isinstance(slot, dict):
+                continue
+            try:
+                verify_artifact(
+                    slot.get("system"), fallback_system,
+                    fallback_system_name,
+                )
+                verify_artifact(
+                    slot.get("fast_stage"), fallback_fast_stage,
+                    fallback_fast_stage_name,
+                )
+            except ValueError:
+                continue
+            matches.append(slot)
+        if len(matches) != 1:
+            raise ValueError("boot manifest does not bind the fallback slot")
     requirements = manifest.get("requirements")
     if not isinstance(requirements, dict) or \
             requirements.get("netdisk") != disk_protocol or \
@@ -943,6 +1054,18 @@ def parser() -> argparse.ArgumentParser:
         help="load this bootstrap artifact, then the system at 19200",
     )
     result.add_argument(
+        "--fallback-system", type=Path,
+        help="automatic second system slot after primary bootstrap exhaustion",
+    )
+    result.add_argument(
+        "--fallback-fast-stage1", type=Path,
+        help="bootstrap artifact paired with --fallback-system",
+    )
+    result.add_argument(
+        "--boot-slot-state", type=Path,
+        help="persist and prefer the last slot confirmed by a disk request",
+    )
+    result.add_argument(
         "--direct-fastboot", action="store_true",
         help="with --fast-stage1, wait for ekta4402 N at 19200 and skip "
              "stock Janet",
@@ -1048,6 +1171,8 @@ def main(argv: Iterable[str] | None = None) -> int:
     if args.resume_disk and (
         args.fast_stage1 or direct_fastboot or args.compact_stock_execute
         or args.fast_low_latency_guards or args.boot_result_json
+        or args.fallback_system or args.fallback_fast_stage1
+        or args.boot_slot_state
     ):
         raise ValueError(
             "--resume-disk cannot be combined with bootstrap or boot-result "
@@ -1057,6 +1182,16 @@ def main(argv: Iterable[str] | None = None) -> int:
         raise ValueError("--compact-stock-execute requires --fast-stage1")
     if direct_fastboot and not args.fast_stage1:
         raise ValueError("direct/network ROM fastboot requires --fast-stage1")
+    if bool(args.fallback_system) != bool(args.fallback_fast_stage1):
+        raise ValueError(
+            "--fallback-system and --fallback-fast-stage1 are required together"
+        )
+    if args.fallback_system and not args.fast_stage1:
+        raise ValueError("fallback slots require the primary --fast-stage1")
+    if args.fallback_system and not args.boot_manifest:
+        raise ValueError("fallback slots require --boot-manifest binding")
+    if args.boot_slot_state and not args.fallback_system:
+        raise ValueError("--boot-slot-state requires a fallback slot")
     if direct_fastboot and args.compact_stock_execute:
         raise ValueError(
             "--direct-fastboot has no --compact-stock-execute stage"
@@ -1079,6 +1214,10 @@ def main(argv: Iterable[str] | None = None) -> int:
         if drive_b_image is not None else None
     clock = HostClock()
     fast_stage = args.fast_stage1.read_bytes() if args.fast_stage1 else b""
+    fallback_system = args.fallback_system.read_bytes() \
+        if args.fallback_system else None
+    fallback_fast_stage = args.fallback_fast_stage1.read_bytes() \
+        if args.fallback_fast_stage1 else None
     manifest = validate_boot_manifest(
         args.boot_manifest,
         system=system, system_name=args.system.name,
@@ -1087,6 +1226,12 @@ def main(argv: Iterable[str] | None = None) -> int:
         volume=media.baseline, volume_name=args.volume.name,
         drive_b=drive_b_image,
         drive_b_name=args.drive_b.name if args.drive_b else None,
+        fallback_system=fallback_system,
+        fallback_system_name=args.fallback_system.name
+        if args.fallback_system else None,
+        fallback_fast_stage=fallback_fast_stage,
+        fallback_fast_stage_name=args.fallback_fast_stage1.name
+        if args.fallback_fast_stage1 else None,
         disk_protocol=args.disk_protocol, disk_baud=args.disk_baud,
     ) if args.boot_manifest else None
     if manifest is not None:
@@ -1094,6 +1239,48 @@ def main(argv: Iterable[str] | None = None) -> int:
             f"Verified boot manifest {args.boot_manifest}: "
             f"{manifest['build_identity']}", flush=True,
         )
+    def manifest_slot_name(
+            system_path: Path, system_data: bytes,
+            stage_path: Path | None, stage_data: bytes,
+            default: str) -> str:
+        if manifest is None or not isinstance(manifest.get("system_slots"), list):
+            return default
+        for record in manifest["system_slots"]:
+            if not isinstance(record, dict):
+                continue
+            system_record = record.get("system")
+            stage_record = record.get("fast_stage")
+            if isinstance(system_record, dict) and \
+                    isinstance(stage_record, dict) and \
+                    system_record.get("file") == system_path.name and \
+                    system_record.get("sha256") == \
+                    hashlib.sha256(system_data).hexdigest() and \
+                    stage_path is not None and \
+                    stage_record.get("file") == stage_path.name and \
+                    stage_record.get("sha256") == \
+                    hashlib.sha256(stage_data).hexdigest() and \
+                    isinstance(record.get("name"), str):
+                return str(record["name"])
+        return default
+
+    boot_slots = [BootSlot(
+        manifest_slot_name(
+            args.system, system, args.fast_stage1, fast_stage, "primary",
+        ),
+        args.system, system, args.fast_stage1, fast_stage,
+    )]
+    if args.fallback_system is not None and fallback_system is not None and \
+            args.fallback_fast_stage1 is not None and \
+            fallback_fast_stage is not None:
+        boot_slots.append(BootSlot(
+            manifest_slot_name(
+                args.fallback_system, fallback_system,
+                args.fallback_fast_stage1, fallback_fast_stage, "fallback",
+            ),
+            args.fallback_system, fallback_system,
+            args.fallback_fast_stage1, fallback_fast_stage,
+        ))
+    boot_slots = order_boot_slots(boot_slots, args.boot_slot_state)
     fd = os.open(args.serial, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     console_fd = os.open(
         args.console_pty, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK,
@@ -1180,9 +1367,9 @@ def main(argv: Iterable[str] | None = None) -> int:
                 raise ValueError(
                     f"--fast-stage1 requires --disk-baud {FAST_BAUD}"
                 )
-            def boot_attempt() -> dict[str, object]:
+            def boot_attempt(slot: BootSlot) -> dict[str, object]:
                 return serve_fast(
-                    fd, fast_stage, system,
+                    fd, slot.fast_stage, slot.system,
                     client=args.client, server=args.server,
                     stock_timeout=args.timeout,
                     compact_stock_execute=args.compact_stock_execute,
@@ -1194,8 +1381,8 @@ def main(argv: Iterable[str] | None = None) -> int:
                     auto_rom_ready=args.network_rom,
                 )
 
-            boot = boot_with_recovery(
-                boot_attempt,
+            selected_slot, boot = boot_slots_with_recovery(
+                boot_slots, boot_attempt,
                 prepare_retry=lambda: configure_serial(
                     fd, effective_boot_baud,
                     parity="none" if direct_fastboot else "odd",
@@ -1205,6 +1392,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             station_server = int(boot["stock_server"])
             station_client = int(boot["stock_client"])
         else:
+            selected_slot = boot_slots[0]
             boot = boot_with_recovery(
                 lambda: serve_boot(
                     fd, system, client=args.client, server=args.server,
@@ -1213,8 +1401,16 @@ def main(argv: Iterable[str] | None = None) -> int:
                 prepare_retry=lambda: configure_serial(fd, args.boot_baud),
                 max_restarts=args.boot_restarts,
             )
+            boot["boot_slot"] = selected_slot.name
             station_server = int(boot["server"])
             station_client = int(boot["client"])
+        system = selected_slot.system
+        fast_stage = selected_slot.fast_stage
+        if len(boot_slots) > 1:
+            print(
+                f"Boot slot {selected_slot.name} reached system transfer: "
+                f"{selected_slot.system_path}", flush=True,
+            )
         if direct_fastboot:
             print(
                 "Automatic network ROM" if args.network_rom
@@ -1252,15 +1448,23 @@ def main(argv: Iterable[str] | None = None) -> int:
             )
 
         attach_confirmed = False
+        slot_recorded = False
 
         def record_first_request(event: dict[str, int | float]) -> None:
-            nonlocal attach_confirmed
+            nonlocal attach_confirmed, slot_recorded
             if boot.get("completion_confirmed") == 0 and not attach_confirmed:
                 attach_confirmed = True
                 print(
                     "NetDisk request received: the previously unconfirmed "
                     "V15 bootstrap is now confirmed running.",
                     flush=True,
+                )
+            if args.boot_slot_state is not None and not slot_recorded:
+                write_boot_slot_state(args.boot_slot_state, selected_slot)
+                slot_recorded = True
+                print(
+                    f"Recorded boot slot {selected_slot.name} as "
+                    f"last-known-good in {args.boot_slot_state}", flush=True,
                 )
             if args.boot_result_json is None:
                 return
@@ -1271,11 +1475,11 @@ def main(argv: Iterable[str] | None = None) -> int:
                 "boot_baud": args.boot_baud,
                 "effective_boot_baud": effective_boot_baud,
                 "disk_baud": args.disk_baud,
-                "system": str(args.system),
+                "system": str(selected_slot.system_path),
                 "system_sha256": hashlib.sha256(system).hexdigest(),
                 "volume": str(args.volume),
-                "fast_stage": str(args.fast_stage1)
-                if args.fast_stage1 else None,
+                "fast_stage": str(selected_slot.fast_stage_path)
+                if selected_slot.fast_stage_path else None,
                 "fast_stage_sha256": hashlib.sha256(fast_stage).hexdigest()
                 if fast_stage else None,
                 "compact_stock_execute": args.compact_stock_execute,
@@ -1288,6 +1492,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 ).hexdigest() if args.boot_manifest else None,
                 "build_identity": manifest["build_identity"]
                 if manifest is not None else None,
+                "boot_slot": selected_slot.name,
                 "fast_low_latency_guards": args.fast_low_latency_guards,
                 "fast_extension_guard_ms": args.fast_extension_guard_ms,
                 "fast_stock_handoff_guard_ms":
