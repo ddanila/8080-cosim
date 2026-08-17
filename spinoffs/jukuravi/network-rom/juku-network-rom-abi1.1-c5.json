@@ -1,14 +1,14 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "f9bb4a0d0d252e7abf504e4f0f3185222a81bfd292c068e71d7e12044007dfce",
-  "d15_sha256": "5191838b9e5d0871713e022080ef1eb73c09e224506d40a2756ac64caeba7fb9",
+  "image_sha256": "9ed6273f44c1b09dcb5fcd3ca94e5a1aad813b285607558a7d8cb98b1a5e6e7a",
+  "d15_sha256": "2100718d75a2bcf2fc9d6497622f1db94ebf82b48f05445afc130a08b081a9bf",
   "d16_sha256": "a47d9be5e9a087efffb68c95f249084ec4bce8038446bb07897f354d8197d193",
-  "boot_code_bytes": 997,
+  "boot_code_bytes": 1015,
   "gate_bytes": 214,
   "helper_bytes": 128,
   "fastboot_core_bytes": 141,
-  "fastboot_extension_bytes": 267,
+  "fastboot_extension_bytes": 307,
   "quick_post": [
     "cpu",
     "ram-data",
@@ -78,5 +78,22 @@
     "s21_bit": 0,
     "set": "automatic network boot",
     "clear": "wait for local N"
+  },
+  "boot_status_record": {
+    "base": "D610",
+    "post": "D610",
+    "stage": "D611",
+    "crc_retries": "D612",
+    "protocol": "D613",
+    "stages": {
+      "10": "POST active",
+      "20": "V15 core entered; extension pending",
+      "30": "extension active; system header pending",
+      "31": "system header accepted; payload pending",
+      "E2": "compressed payload CRC failed; retrying",
+      "32": "compressed payload authenticated; decompressing",
+      "40": "CP/M system entered",
+      "50": "first NetDisk transaction succeeded"
+    }
   }
 }

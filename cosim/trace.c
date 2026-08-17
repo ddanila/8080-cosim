@@ -1991,7 +1991,8 @@ int main(int argc, char** argv) {
   struct timespec realtime_start;
   if (realtime_hz) clock_gettime(CLOCK_MONOTONIC, &realtime_start);
 
-  int chk_logs = 0;
+  int chk_entry_logs = 0;
+  int chk_compare_logs = 0;
   const int pc_history_enabled = env_enabled(getenv("JUKU_PC_HISTORY"));
   uint16_t pc_history[256] = {0};
   unsigned pc_history_pos = 0;
@@ -2083,10 +2084,10 @@ int main(int argc, char** argv) {
       pc_history[pc_history_pos & 255] = cpu.pc;
       pc_history_pos++;
     }
-    if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
+    if (cpu.pc == 0x03E0 && chk_entry_logs++ < 12)    // checksum entry: HL=ptr, DE=count
       fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",
               (cpu.h<<8)|cpu.l, (cpu.d<<8)|cpu.e, mode);
-    if (cpu.pc == 0x03E6 && chk_logs++ < 12)           // compare: A=stored, B=computed
+    if (cpu.pc == 0x03E6 && chk_compare_logs++ < 12)   // compare: A=stored, B=computed
       fprintf(stderr, "[CHK] cmp computed=%02X stored=%02X %s\n",
               cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
     if (console_fd >= 0) {

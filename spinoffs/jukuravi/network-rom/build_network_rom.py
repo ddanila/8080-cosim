@@ -34,6 +34,7 @@ GATE_STORED = 0x1000
 HELP_STORED = 0x1400
 CORE_STORED = 0x0F00
 EXTENSION_BYTES = 267
+LOCALE_EXTENSION_BYTES = 307
 CANDIDATE = "network-first-abi1-cs00015-c4"
 LOCALE_CANDIDATE = "network-first-abi1.1-cs00015-c5-desk"
 
@@ -64,6 +65,7 @@ def build(*, abi_selftest: bool = False,
     if netdisk_selftest and not abi_selftest:
         raise ValueError("NetDisk fixture requires abi_selftest")
     selftest_defines = ("ROM_ABI_LOCALE",) if locale else ()
+    extension_bytes = LOCALE_EXTENSION_BYTES if locale else EXTENSION_BYTES
     if abi_selftest:
         selftest_defines += ("ABI_SELFTEST",)
     if cursor_phase is not None:
@@ -98,13 +100,13 @@ def build(*, abi_selftest: bool = False,
         core = bytearray(core.ljust(128, b"\0"))
         if core[3:7] != b"JF15" or core[8] != 0:
             raise ValueError("V15 core metadata layout changed")
-        core[9:11] = EXTENSION_BYTES.to_bytes(2, "little")
+        core[9:11] = extension_bytes.to_bytes(2, "little")
         length_sentinel = bytes.fromhex("01 5A A5")
         if core.count(length_sentinel) != 1:
             raise ValueError("V15 core extension-length sentinel changed")
         length_offset = core.index(length_sentinel) + 1
         core[length_offset:length_offset + 2] = \
-            EXTENSION_BYTES.to_bytes(2, "little")
+            extension_bytes.to_bytes(2, "little")
 
         # The automatic ROM has no operator event for host synchronization.
         # Redirect only the first find_first RX call to a one-shot prelude at
@@ -152,7 +154,11 @@ def build(*, abi_selftest: bool = False,
             f"JROMHELPERBYTES equ {len(helper_c4)}\n"
             ".endif\n"
             f"JROMCOREBYTES equ {len(core)}\n"
+            ".ifdef ROM_ABI_LOCALE\n"
+            f"JROMEXTENSIONBYTES equ {LOCALE_EXTENSION_BYTES}\n"
+            ".else\n"
             f"JROMEXTENSIONBYTES equ {EXTENSION_BYTES}\n"
+            ".endif\n"
             f"CORESTORED equ 0{CORE_STORED:04x}h\n"
             f"GATESTORED equ 0{GATE_STORED:04x}h\n"
             f"HELPSTORED equ 0{HELP_STORED:04x}h\n"
@@ -198,7 +204,7 @@ def build(*, abi_selftest: bool = False,
         "gate_bytes": len(gate),
         "helper_bytes": len(helper),
         "fastboot_core_bytes": len(core),
-        "fastboot_extension_bytes": EXTENSION_BYTES,
+        "fastboot_extension_bytes": extension_bytes,
         "quick_post": [
             "cpu", "ram-data", "ram-address", "complete-rom", "pit-usart",
         ],
@@ -248,6 +254,23 @@ def build(*, abi_selftest: bool = False,
             "s21_bit": 0,
             "set": "automatic network boot",
             "clear": "wait for local N",
+        }
+        metadata["boot_status_record"] = {
+            "base": "D610",
+            "post": "D610",
+            "stage": "D611",
+            "crc_retries": "D612",
+            "protocol": "D613",
+            "stages": {
+                "10": "POST active",
+                "20": "V15 core entered; extension pending",
+                "30": "extension active; system header pending",
+                "31": "system header accepted; payload pending",
+                "E2": "compressed payload CRC failed; retrying",
+                "32": "compressed payload authenticated; decompressing",
+                "40": "CP/M system entered",
+                "50": "first NetDisk transaction succeeded",
+            },
         }
     return image, metadata
 

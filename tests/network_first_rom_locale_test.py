@@ -151,11 +151,13 @@ def main() -> int:
         fail("committed ABI 1.1 image differs from deterministic rebuild")
     if metadata["abi"] != {"base": "FF00", "major": 1, "minor": 1} or \
             metadata["gate_bytes"] != 214 or \
+            metadata["fastboot_extension_bytes"] != 307 or \
             metadata.get("netdisk_cache") != {
                 "records_per_drive": 8,
                 "drives": 2,
                 "shared_pointer_fallback": "alias-safe",
-            }:
+            } or metadata.get("boot_status_record", {}).get("stage") != \
+            "D611":
         fail(f"localized ABI metadata differs: {metadata}")
     manifest = image[0x3F00:0x3F50]
     if manifest[:10] != b"JUKUABI\0\x01\x01" or \
@@ -180,7 +182,8 @@ def main() -> int:
             state, ram = run_selftest(trace, selftest, temporary, mode)
             if state.get("halted") != "1" or state.get("mode") != "1" or \
                     state.get("video_console_mode") != str(mode) or \
-                    ram[0xD783] != 0xA5:
+                    ram[0xD783] != 0xA5 or \
+                    ram[0xD611:0xD614] != bytes((0x20, 0, 15)):
                 fail(f"mode {mode} fixture did not finish cleanly: {state}")
             config = 0x08 | (mode << 1)
             if ram[0xD7C1] != config or \

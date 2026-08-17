@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from tools.janet_disk_server import (  # noqa: E402
     CAPABILITY_QUERY,
     BootSlot,
+    BOOT_REPORT,
     CONSOLE_OUT,
     CONSOLE_POLL,
     CPM_EPOCH,
@@ -182,6 +183,7 @@ def main() -> int:
         "clock_gets": 0, "clock_sets": 0, "clock_failures": 0,
         "status_reports": 0,
         "diag_reports": 0,
+        "boot_reports": 0,
         "capability_queries": 0,
     }
     if stats != expected_stats:
@@ -368,6 +370,7 @@ def main() -> int:
     console_errors: list[BaseException] = []
     status_reports: list[dict[str, int]] = []
     diag_reports: list[dict[str, int]] = []
+    boot_reports: list[dict[str, int]] = []
     clock = HostClock(lambda: datetime(
         2026, 8, 17, 12, 34, 56, tzinfo=timezone.utc,
     ))
@@ -381,6 +384,7 @@ def main() -> int:
                 console_confirm_hook=console_confirmations.append,
                 status_report_hook=status_reports.append,
                 diag_report_hook=diag_reports.append,
+                boot_report_hook=boot_reports.append,
                 clock=clock,
                 verbose=False, stats=console_stats,
             )
@@ -459,6 +463,12 @@ def main() -> int:
     console_client.sendall(caps_request)
     if receive_exact(console_client, 9) != caps_reply:
         raise AssertionError("duplicate capability query did not replay reply")
+    console_client.sendall(request(
+        BOOT_REPORT, 17, 0x50, (15 << 8) | 2, 1,
+    ))
+    boot_reply = receive_exact(console_client, 5)
+    if boot_reply[:4] != REPLY_SYNC + b"\x11\x00" or checksum(boot_reply):
+        raise AssertionError("target bootstrap report was not acknowledged")
     console_thread.join(timeout=2)
     console_client.close()
     console_host.close()
@@ -475,6 +485,7 @@ def main() -> int:
             console_stats["clock_failures"] != 1 or \
             console_stats["status_reports"] != 1 or \
             console_stats["diag_reports"] != 1 or \
+            console_stats["boot_reports"] != 1 or \
             console_stats["capability_queries"] != 1 or \
             console_confirmations != [{"operation": CONSOLE_OUT,
                                        "sequence": 7}]:
@@ -493,6 +504,11 @@ def main() -> int:
         "fail_mask": 0xA5, "flags": 0x80,
     }]:
         raise AssertionError(f"target diagnostic hook differs: {diag_reports!r}")
+    if boot_reports != [{
+        "sequence": 17, "stage": 0x50, "retries": 2,
+        "protocol": 15, "abi_minor": 1,
+    }]:
+        raise AssertionError(f"target bootstrap hook differs: {boot_reports!r}")
 
     result = ROOT / ".obj" / "janet-disk-server-result-test.json"
     result.parent.mkdir(exist_ok=True)

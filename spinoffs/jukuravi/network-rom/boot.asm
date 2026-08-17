@@ -22,6 +22,11 @@ PITCOUNT2       equ     01ah
 PITCTL          equ     01bh
 TRANSITION      equ     JROMRAMBASE
 POSTSTATUS      equ     JROMRAMBASE+010h
+.ifdef ROM_ABI_LOCALE
+BOOTSTAGE       equ     JROMRAMBASE+011h
+BOOTRETRIES     equ     JROMRAMBASE+012h
+BOOTPROTOCOL    equ     JROMRAMBASE+013h
+.endif
 
         org     0
         jmp     boot_start
@@ -37,6 +42,13 @@ boot_start:
         call    hardware_init
         xra     a
         sta     POSTSTATUS
+.ifdef ROM_ABI_LOCALE
+        sta     BOOTRETRIES
+        mvi     a,010h                  ; reset/quick POST active
+        sta     BOOTSTAGE
+        mvi     a,15
+        sta     BOOTPROTOCOL
+.endif
 
         call    diag_cpu_test
         ora     a
@@ -111,6 +123,10 @@ boot_start:
         lxi     h,TRANSITION
         lxi     b,transition_end-transition_source
         call    copy_bytes
+.ifdef ROM_ABI_LOCALE
+        mvi     a,020h                  ; V15 core installed and entering
+        sta     BOOTSTAGE
+.endif
         jmp     TRANSITION
 
 ; Establish the same safe PPI and raster/refresh baseline used by EktaSoft

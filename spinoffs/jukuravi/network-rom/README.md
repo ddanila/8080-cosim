@@ -52,6 +52,16 @@ host explicitly selects eight. In paced cosimulation this reduces recovery-A
 login from 22 read turns to 10 and native-B login from 11 to 4 without growing
 the measured boot reply bytes.
 
+C5 reserves `D610h..D613h` as a retained boot record. `D610h` keeps the
+existing POST result; `D611h` records progress from POST through V15,
+extension authentication, CP/M entry, and the first successful NetDisk turn;
+`D612h` is a saturated compressed-stream CRC retry count; and `D613h` is the
+active protocol (`15`). The matching CP/M `STATUS` command shows this tuple
+and publishes it to the host through duplicate-safe NetDisk operation `27h`.
+The exact stage dictionary is emitted in the deterministic C5 JSON metadata.
+The immutable C4 image and its 267-byte extension remain byte-identical; C5
+uses a separately built 307-byte extension with the optional record enabled.
+
 C3 had superseded the immutable C2 package. C2 corrected the original sprite-sheet
 extraction after a stock-ROM/manual-resume CS00015 run exposed deterministic
 bad glyphs. C3 replaces that wide font with the MIT-licensed Creep 0.31 ASCII

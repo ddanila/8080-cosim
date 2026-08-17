@@ -689,6 +689,18 @@ replays the prior reply without incrementing the accepted-query counter. This
 replaces banner/host-identity inference while leaving N3/N4 startup markers as
 transport synchronization hints.
 
+Operation `27h` publishes the four-byte retained bootstrap record: stage,
+saturated compressed-stream CRC retry count, active fastboot protocol, and
+ROM ABI minor. It has the same bounded, duplicate-safe acknowledgement as the
+other target reports and an independent host counter/automation hook. The C5
+ROM and matching CP/M system use stages `10h` (POST), `20h` (V15 core), `30h`
+(extension), `31h` (system header accepted), `E2h` (bad compressed CRC),
+`32h` (authenticated), `40h` (system entered), and `50h` (first successful
+NetDisk transaction). A core-level extension failure intentionally remains at
+`20h`, distinguishing failure to enter the extension from a system-stream
+failure. ABI 1.0 consumers publish a zero tuple rather than interpreting
+unassigned RAM.
+
 ### Direct-ROM V15 path (ekta4402)
 
 The separately versioned `spinoffs/jukuravi/remix/ekta4402.bin` removes the
