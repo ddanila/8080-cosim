@@ -20,17 +20,27 @@ code-size oracle.
 
 For attributable CP/M transient stack measurements, `trace` has a separate
 command-scoped interface. Send `SIGUSR2` immediately before submitting the
-command: the emulator arms on the next `0100h` entry, excludes the resident
-BDOS excursion bracketed by `CALL 0005h`, follows internal CALL/RET depth, and
-freezes the SP low-water result at the top-level return. Send `SIGUSR1` after
-the prompt to write the configured `JUKU_CHECKPOINT_PREFIX` `.ram` and `.state`
-files without stopping execution. Repeated requests are generation-counted,
-so one emulator session can measure a complete command matrix. The state
-records entry, compiler-selected anchor, low SP, observed bytes, explicit SP
-writes, measurement generation, and armed/frozen status. `SIGTERM` and
-`SIGINT` retain the final stop-and-checkpoint behavior. The CP/M Plus compiler
-comparison uses this interface for all six representative programs and checks
-the exact results during its strict rebuild gate.
+command: the emulator arms on the next `0100h` entry, excludes resident BDOS
+excursions reached by `CALL 0005h` or the equivalent `JMP 0005h` tail call,
+follows internal CALL/RET depth, and freezes the SP low-water result at the
+top-level return. For a tail call it records the existing return address from
+the transient stack, waits for that exact address rather than merely the next
+instruction in the broad TPA address range, and mirrors the implicit unwind.
+It also recognizes BDOS function 0 reached by either form as a non-returning
+system reset. This
+distinction is required by ordinary DRI PL/M startup code and prevents the
+following CCP/BDOS stack from being charged to the completed transient. Send
+`SIGUSR1` after the prompt to write the configured
+`JUKU_CHECKPOINT_PREFIX` `.ram` and `.state` files without stopping execution.
+Repeated requests are generation-counted, so one emulator session can measure
+a complete command matrix. The state records entry SP, the anchor and low SP
+of the deepest segment, minimum and maximum segment anchors, segment count,
+observed bytes, explicit SP writes, measurement generation, and armed/frozen
+status. `SIGTERM` and `SIGINT` retain the final stop-and-checkpoint behavior.
+The CP/M Plus compiler comparison uses this interface for all six
+representative programs and checks the exact results during its strict rebuild
+gate; the DRI utility admission matrix additionally exercises function-0 and
+BDOS-tail termination.
 
 ## How it works
 

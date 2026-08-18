@@ -837,6 +837,25 @@ static void trace_bus_event(const char* kind, uint16_t address, uint8_t data) {
   }
 }
 
+/* Read CPU-visible memory without refreshing DRAM, advancing fault state, or
+ * emitting a bus trace. Runtime instrumentation uses this only to inspect a
+ * transient's existing return frame; it must not perturb the emulated run. */
+static uint8_t peek_byte(uint16_t address) {
+  unsigned idx = 0;
+  int ov = overlay(address, &idx);
+  if (ov == 1)
+    return rom[idx];
+  if (ov == 2)
+    return cart_enabled ? cart[address - 0x4000] : 0xFF;
+  return apply_ram_fault(address, ram[map_ram_address(address)]);
+}
+
+static uint16_t peek_word(uint16_t address) {
+  uint8_t low = peek_byte(address);
+  uint8_t high = peek_byte((uint16_t)(address + 1));
+  return (uint16_t)(low | ((uint16_t)high << 8));
+}
+
 static uint8_t rb(void* u, uint16_t a) {
   i8080* cpu = (i8080*)u;
   uint16_t physical_a = a;
@@ -882,11 +901,16 @@ static unsigned long tpa_program_starts = 0;
 static uint16_t tpa_program_entry_sp = 0;
 static uint16_t tpa_program_stack_anchor_sp = 0;
 static uint16_t tpa_program_stack_low_sp = 0;
+static uint16_t tpa_program_current_stack_anchor_sp = 0;
+static uint16_t tpa_program_segment_min_anchor_sp = 0;
+static uint16_t tpa_program_segment_max_anchor_sp = 0;
+static unsigned tpa_program_stack_segments = 0;
 static unsigned tpa_program_stack_bytes = 0;
 static unsigned tpa_program_explicit_sp_writes = 0;
 static unsigned tpa_program_call_depth = 0;
 static uint16_t tpa_program_bdos_return_pc = 0;
 static int tpa_program_in_bdos = 0;
+static int tpa_program_bdos_tail_call = 0;
 static int tpa_program_seen = 0;
 static unsigned long tpa_measurement_generation = 0;
 static int tpa_measurement_controlled = 0;
@@ -1317,6 +1341,12 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
           tpa_program_stack_anchor_sp);
   fprintf(state_out, "tpa_program_stack_low_sp=%04X\n",
           tpa_program_stack_low_sp);
+  fprintf(state_out, "tpa_program_segment_min_anchor_sp=%04X\n",
+          tpa_program_segment_min_anchor_sp);
+  fprintf(state_out, "tpa_program_segment_max_anchor_sp=%04X\n",
+          tpa_program_segment_max_anchor_sp);
+  fprintf(state_out, "tpa_program_stack_segments=%u\n",
+          tpa_program_stack_segments);
   fprintf(state_out, "tpa_program_stack_bytes=%u\n",
           tpa_program_stack_bytes);
   fprintf(state_out, "tpa_program_explicit_sp_writes=%u\n",
@@ -1324,6 +1354,8 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "tpa_program_call_depth=%u\n",
           tpa_program_call_depth);
   fprintf(state_out, "tpa_program_in_bdos=%d\n", tpa_program_in_bdos);
+  fprintf(state_out, "tpa_program_bdos_tail_call=%d\n",
+          tpa_program_bdos_tail_call);
   fprintf(state_out, "tpa_measurement_generation=%lu\n",
           tpa_measurement_generation);
   fprintf(state_out, "tpa_measurement_armed=%d\n", tpa_measurement_armed);
@@ -2099,6 +2131,7 @@ int main(int argc, char** argv) {
       tpa_measurement_frozen = 0;
       tpa_program_seen = 0;
       tpa_program_in_bdos = 0;
+      tpa_program_bdos_tail_call = 0;
     }
     if (cpu_a12_increment_fault_arm_enabled &&
         !cpu_a12_increment_fault_arm_fired &&
@@ -2221,22 +2254,27 @@ int main(int argc, char** argv) {
     if (instruction_will_execute && !cpu.last_opcode_was_interrupt &&
         cpu.last_opcode_pc >= 0x0100 && cpu.last_opcode_pc <= 0x99FF) {
       uint8_t opcode = cpu.last_opcode;
-      /* CP/M transients enter at 0100h.  Compiler startup code may establish
-       * a private stack with LXI SP or SPHL; the first such write becomes the
-       * measurement anchor, while subsequent downward movement contributes
-       * to the observed high-water mark.  This excludes the CCP/BDOS private
-       * stacks while retaining CALL/PUSH use on the transient's own stack. */
+      /* CP/M transients enter at 0100h. Startup code may establish one or
+       * more private stack segments with LXI SP or SPHL. Track each segment
+       * independently and preserve the largest observed depth; this handles
+       * relocators such as SID as well as ordinary single-stack compilers.
+       * Resident CCP/BDOS stack traffic remains excluded. */
       if (cpu.last_opcode_pc == 0x0100 && !tpa_program_in_bdos &&
           (!tpa_measurement_controlled || tpa_measurement_armed)) {
         tpa_program_starts++;
         tpa_program_entry_sp = instruction_sp;
         tpa_program_stack_anchor_sp = instruction_sp;
         tpa_program_stack_low_sp = instruction_sp;
+        tpa_program_current_stack_anchor_sp = instruction_sp;
+        tpa_program_segment_min_anchor_sp = instruction_sp;
+        tpa_program_segment_max_anchor_sp = instruction_sp;
+        tpa_program_stack_segments = 1;
         tpa_program_stack_bytes = 0;
         tpa_program_explicit_sp_writes = 0;
         tpa_program_call_depth = 0;
         tpa_program_bdos_return_pc = 0;
         tpa_program_in_bdos = 0;
+        tpa_program_bdos_tail_call = 0;
         tpa_program_seen = 1;
         tpa_measurement_armed = 0;
         if (tpa_stack_trace_enabled)
@@ -2245,40 +2283,83 @@ int main(int argc, char** argv) {
       }
       if (tpa_program_seen && tpa_program_in_bdos &&
           cpu.last_opcode_pc == tpa_program_bdos_return_pc) {
+        int bdos_tail_call = tpa_program_bdos_tail_call;
         tpa_program_in_bdos = 0;
+        tpa_program_bdos_tail_call = 0;
+        /* JMP 0005h lets BDOS RET consume the return address of the
+         * transient helper that made the tail call. Mirror that implicit
+         * return in the semantic call depth. Without it, every such call
+         * leaks a frame and the eventual top-level RET is missed. */
+        if (bdos_tail_call && tpa_program_call_depth)
+          tpa_program_call_depth--;
         if (tpa_stack_trace_enabled)
-          fprintf(stderr, "[TPA-STACK] resume pc=%04X sp=%04X cyc=%lu\n",
-                  cpu.last_opcode_pc, instruction_sp, cpu.cyc);
+          fprintf(stderr,
+                  "[TPA-STACK] resume pc=%04X sp=%04X tail=%d "
+                  "depth=%u cyc=%lu\n",
+                  cpu.last_opcode_pc, instruction_sp, bdos_tail_call,
+                  tpa_program_call_depth, cpu.cyc);
       }
       if (tpa_program_seen && !tpa_program_in_bdos) {
-        if ((opcode == 0x31 || opcode == 0xF9) &&
-            tpa_program_explicit_sp_writes++ == 0) {
-          tpa_program_stack_anchor_sp = cpu.sp;
-          tpa_program_stack_low_sp = cpu.sp;
+        if (opcode == 0x31 || opcode == 0xF9) {
+          int first_sp_write = tpa_program_explicit_sp_writes++ == 0;
+          /* The first explicit write selects the program's private stack.
+           * A later LXI SP is also an unambiguous new segment (notably SID's
+           * post-relocation stack). Later SPHL instructions are counted but
+           * not treated as anchors: historical tools also use SPHL to borrow
+           * SP as a general 16-bit register. */
+          if (first_sp_write || opcode == 0x31) {
+            tpa_program_current_stack_anchor_sp = cpu.sp;
+            tpa_program_stack_segments++;
+            if (cpu.sp < tpa_program_segment_min_anchor_sp)
+              tpa_program_segment_min_anchor_sp = cpu.sp;
+            if (cpu.sp > tpa_program_segment_max_anchor_sp)
+              tpa_program_segment_max_anchor_sp = cpu.sp;
+            if (first_sp_write && tpa_program_stack_bytes == 0) {
+              tpa_program_stack_anchor_sp = cpu.sp;
+              tpa_program_stack_low_sp = cpu.sp;
+            }
+          }
           if (tpa_stack_trace_enabled)
             fprintf(stderr,
-                    "[TPA-STACK] first SP write pc=%04X opcode=%02X "
-                    "sp=%04X cyc=%lu\n",
-                    cpu.last_opcode_pc, opcode, cpu.sp, cpu.cyc);
-        } else if (cpu.sp <= tpa_program_stack_anchor_sp) {
+                    "[TPA-STACK] SP write pc=%04X opcode=%02X "
+                    "sp=%04X writes=%u segments=%u cyc=%lu\n",
+                    cpu.last_opcode_pc, opcode, cpu.sp,
+                    tpa_program_explicit_sp_writes,
+                    tpa_program_stack_segments, cpu.cyc);
+        } else {
           unsigned depth =
-              (unsigned)(tpa_program_stack_anchor_sp - cpu.sp);
+              (unsigned)(tpa_program_current_stack_anchor_sp - cpu.sp);
           if (depth < 0x8000u && depth > tpa_program_stack_bytes) {
             tpa_program_stack_bytes = depth;
+            tpa_program_stack_anchor_sp =
+                tpa_program_current_stack_anchor_sp;
             tpa_program_stack_low_sp = cpu.sp;
           }
         }
       }
       if (tpa_program_seen && !tpa_program_in_bdos) {
-        if (opcode == 0xCD && cpu.pc == 0x0005) {
-          tpa_program_bdos_return_pc =
-              (uint16_t)(cpu.last_opcode_pc + 3);
+        int bdos_system_reset =
+            (opcode == 0xCD || opcode == 0xC3) && cpu.pc == 0x0005 &&
+            cpu.c == 0;
+        if (bdos_system_reset) {
+          /* BDOS function 0 does not return. DRI's PL/M startup commonly
+           * emits MVI C,0 / CALL 0005h, so following that resident excursion
+           * would attribute the CCP/BDOS stack to the finished transient and
+           * leave a command-scoped measurement permanently unfrozen. */
+          tpa_program_seen = 0;
+        } else if ((opcode == 0xCD || opcode == 0xC3) &&
+                   cpu.pc == 0x0005) {
+          tpa_program_bdos_tail_call = opcode == 0xC3;
+          tpa_program_bdos_return_pc = opcode == 0xCD
+              ? (uint16_t)(cpu.last_opcode_pc + 3)
+              : peek_word(instruction_sp);
           tpa_program_in_bdos = 1;
           if (tpa_stack_trace_enabled)
             fprintf(stderr,
-                    "[TPA-STACK] BDOS pc=%04X return=%04X sp=%04X cyc=%lu\n",
+                    "[TPA-STACK] BDOS pc=%04X return=%04X tail=%d "
+                    "sp=%04X cyc=%lu\n",
                     cpu.last_opcode_pc, tpa_program_bdos_return_pc,
-                    cpu.sp, cpu.cyc);
+                    tpa_program_bdos_tail_call, cpu.sp, cpu.cyc);
         }
         int conditional_call =
             opcode == 0xC4 || opcode == 0xCC || opcode == 0xD4 ||
@@ -2294,7 +2375,9 @@ int main(int argc, char** argv) {
               opcode == 0xD8 || opcode == 0xE0 || opcode == 0xE8 ||
               opcode == 0xF0 || opcode == 0xF8) &&
              cpu.pc != (uint16_t)(cpu.last_opcode_pc + 1));
-        if (tpa_program_in_bdos) {
+        if (!tpa_program_seen) {
+          /* A terminal BDOS function-0 call was recognized above. */
+        } else if (tpa_program_in_bdos) {
           /* CALL 0005h returns to the recorded transient address; resident
            * BDOS stack traffic is deliberately outside this measurement. */
         } else if (internal_call) {
