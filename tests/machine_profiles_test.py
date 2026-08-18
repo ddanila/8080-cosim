@@ -57,8 +57,12 @@ def main() -> int:
         digests.append(hashlib.sha256(path.read_bytes()).hexdigest()[:8])
 
     c15 = json.loads((PROFILE_DIR / "CS00015.json").read_text())
-    if c15["fitted_firmware"]["identity"] != "JukuNet C5 D15/D16":
-        raise AssertionError("CS00015 fitted firmware regressed to a pre-C5 record")
+    if c15["fitted_firmware"] != {
+        "identity": "JukuNet C6 / ROM ABI 1.2 D15/D16",
+        "sha256": "0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09",
+        "confidence": "physical-record",
+    }:
+        raise AssertionError("CS00015 fitted C6 identity or hash drifted")
     c24 = json.loads((PROFILE_DIR / "CS00024.json").read_text())
     if not any("D57" in item for item in c24["open_investigations"]):
         raise AssertionError("CS00024 corrected D57 rerun is not retained")

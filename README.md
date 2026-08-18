@@ -77,16 +77,20 @@ with the machine-readable board model.
   19,200-baud disk server recovered the already-started system to `A>`, then
   passed `DIR` and the full `DIAG`; this qualifies the resident disk fix. The
   stock-`TN` wrapper still misses V15's final `JA` and falls back to 9,600, so
-  its one-command fast completion remains open. Ekta4402 is now fitted in
-  CS00015: direct `N` boot reaches CP/M Plus, NetDisk-v3 and N4; three
+  its one-command fast completion remains open. Ekta4402 was then fitted in
+  CS00015: direct `N` boot reached CP/M Plus, NetDisk-v3 and N4; three
   automatic C4 boots reach disk service in 6.068--6.070 seconds, and live host
   replacement recovers `DIR` without RESET. A traced false failure proved that
   eager PTY input had been flushed by host raw-mode setup while Juku continued
   valid polls; readiness synchronization now prevents it. The inherited `J`
   API-v2 service passes PROBE, refresh query and READ with zero transport
-  mismatch. Ekta4401
-  and V14 remain frozen historical baselines. The original stock Janet path is
-  unchanged as fallback.
+  mismatch. On 2026-08-18 the exact ABI 1.2 C6 pair replaced Ekta4402 in
+  CS00015 and passed repeated automatic 19,200-baud V16 boot, A:/B:, full
+  diagnostics, local keyboard, ROM sound, writes, warm boot, soak, delayed-host
+  recovery, and two live host replacements. Only monitor-dependent physical
+  display/cursor observation remains. Ekta4401, Ekta4402, and V14 remain frozen
+  historical baselines. The original stock Janet path is unchanged as
+  fallback.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.

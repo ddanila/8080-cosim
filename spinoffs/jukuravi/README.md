@@ -23,12 +23,13 @@ EktaSoft-based remix ROM that embeds the Jukuravi loader as a monitor
 command is specified in
 [`EKTA37-REMIX-PLAN.md`](EKTA37-REMIX-PLAN.md).
 
-The separately built, from-scratch network-only successor is under staged
-development in [`network-rom/`](network-rom/README.md). Its ABI, bounded POST,
-target-ready handshake, keyless 19,200 V15 loader, and real CP/M Plus handoff
-are simulator-qualified. The generated D15/D16 files remain desk artifacts and
-explicitly must not be programmed until resident-service migration and the
-physical release matrix are complete.
+The separately built, from-scratch network-only successor is in
+[`network-rom/`](network-rom/README.md). Its C6 / ABI 1.2 bounded POST,
+ROM-resident Fastboot V16, services, and real CP/M Plus handoff are
+simulator-qualified. On 2026-08-18 the exact C6 D15/D16 pair was programmed,
+verified, fitted in CS00015, and passed every monitor-independent physical
+item. Display/cursor observation remains pending; see the CP/M Plus
+[`C6 qualification record`](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0
@@ -41,13 +42,13 @@ see
 
 CS00015 was restored on 2026-08-08 with **EK37 / EktaSoft 3.7**, received the
 project's frozen Ekta4401 D15/D16 service-ROM pair on 2026-08-11, and was
-upgraded to Ekta4402 on 2026-08-16. Ekta4402 is fitted in the home-lab machine
-and provides direct `N` fastboot plus the inherited Jukuravi API-v2 `J` entry.
+upgraded to Ekta4402 on 2026-08-16. Ekta4402 provided direct `N` fastboot plus
+the inherited Jukuravi API-v2 `J` entry and is now a frozen preceding baseline.
 Two physical `J` attaches requalified PROBE, 128-row refresh query and READ
 with zero transport mismatch; evidence is retained under
 `sessions/cs00015-ekta4402-j-physical/`. The
 T31/T32 configurations below and the intervening EK37 restoration remain
-historical evidence, not the current firmware. The donor D6 `.038` remains
+historical evidence. JukuNet C6 / ABI 1.2 is fitted as of 2026-08-18. The donor D6 `.038` remains
 fitted, the original D8 `.039` is restored, and D1 is repaired;
 see [`../../docs/cs00015-service-record.md`](../../docs/cs00015-service-record.md).
 

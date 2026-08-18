@@ -229,9 +229,10 @@ reproduced reliability reason. Exact per-run evidence and rationale are in
 
 ## Current deployment
 
-Following the Arvutimuuseum demonstration, CS00015 is in the home lab with the
-Ekta4402 D15/D16 service-ROM pair fitted. This is the current Jukuravi-enabled
-reference machine. CS00014 is in the museum's main exhibition
+Following the Arvutimuuseum demonstration, CS00015 is in the home lab. On
+2026-08-18 the Ekta4402 pair was replaced by the exact JukuNet C6 / ROM ABI
+1.2 D15/D16 pair. This is the current network-first CP/M Plus and Jukuravi
+development reference machine. CS00014 is in the museum's main exhibition
 with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 `machine-deployment-status.md` for the cross-machine ledger.
 
@@ -242,9 +243,9 @@ with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 | D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official EktaSoft 3.7 low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
 | D55/D57 vertical timing path | Historical T15/T16/T31/T32 D55 bits used an unclocked predicate; corrected Ekta raster plus D57 channel-2 sampling passed 8/8 | D57 channel 2 and D55.13 `/VER RTR` output path are physically validated; this does not independently exercise every D55 counter predicate |
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
-| Currently fitted firmware | Ekta4402 D15/D16 service-ROM pair | Direct `N` CP/M Plus/NetDisk-v3/N4 boot and reconnect physically qualified; inherited `J` API-v2 attach, PROBE, refresh query and READ requalified with zero transport mismatch on 2026-08-16 |
+| Currently fitted firmware | JukuNet C6 / ABI 1.2 D15/D16 pair | Repeated automatic 19,200-baud V16 boot, NetDisk-v3/N4, diagnostics, keyboard, sound, write/warm-boot/soak, and two live reconnects passed blind qualification on 2026-08-18; display observation remains pending |
 
-The exact fitted Ekta4402 image is SHA-256
+The preceding Ekta4402 image is SHA-256
 `20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`;
 its low/high halves are respectively
 `ee87c5b199b409c97909f0eb2b7cfd24cbee2537569bbcdec378631ec8fc85d5`
@@ -255,8 +256,18 @@ received no bytes because its host timeout expired before `J` was entered; it
 is timing chronology, not a board failure. Two immediate no-reset attaches
 then completed with zero mismatch. Both proved API-v2 PROBE and 128-row
 software refresh; the second also read 32 bytes at `4000h` without modifying
-RAM. Ekta4401 remains the frozen preceding physical baseline, not the fitted
-firmware.
+RAM. Ekta4401 and Ekta4402 remain frozen preceding physical baselines, not the
+currently fitted firmware.
+
+The fitted C6 ROM SHA-256 is
+`0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09`;
+its D15-low and D16-high halves are respectively
+`8cf403663ed860f7e5ab56f382e42bddf6e8951e478e89313074c03ab31f2750`
+and `3a60561d0e5f8a8d8e9a1f1c355e503db5daeadec174b45380de732690c9bdf1`.
+Both AT28C64 writes passed their single built-in 8,192-byte verify with zero
+retries or late completions. The complete monitorless physical matrix and its
+remaining display boundary are recorded in
+[`../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md`](../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md).
 
 ## Serial connector measurement
 

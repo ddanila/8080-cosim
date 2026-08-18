@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **ABI 1.2 C6 SIMULATOR CANDIDATE; PHYSICAL PROMOTION PENDING**
+Status: **ABI 1.2 C6 SIMULATOR RELEASE; BLIND PHYSICAL MATRIX PASSED**
 
 This is the from-scratch network-only successor to the EktaSoft monitor ROM.
 Reset performs a bounded POST, acquires an identity-independent host at the
@@ -23,8 +23,9 @@ line is deliberately additive:
   observation remains a physical promotion item.
 - C6 / ABI 1.2 appends bounded console-span, ordered multi-request NetDisk,
   instantaneous raw-keyboard, and sound services.  It changes none of the
-  ABI 1.0/1.1 vector addresses or C5 bytes.  C6 is qualified and packaged as a
-  simulator candidate; a later CS00015 session decides physical promotion.
+  ABI 1.0/1.1 vector addresses or C5 bytes. C6 is qualified and packaged as a
+  simulator release. The exact pair is fitted in CS00015 and passed every
+  monitor-independent physical item; display/cursor observation remains.
 
 ## Build and test
 
@@ -122,7 +123,9 @@ sequential reads, synchronous writes, diagnostics, warm boot, absent/corrupt
 host recovery, duplicate replies, modeled 8251 overrun recovery, stateless
 server replacement, and long read/write/reconnect operation.
 
-It does not claim a physical C6 promotion.  That later step burns the named
-halves and repeats the short acceptance matrix on CS00015.  C5 and the stock
-ROM/RAM-BIOS route remain recovery and comparison baselines regardless of the
-C6 result.
+On 2026-08-18 the named halves were programmed, verified, and fitted in
+CS00015. Repeated automatic boot, local keyboard, sound, A:/B:, sequential
+reads, synchronous writes, diagnostics, warm boot, soak, and live host
+replacement passed. The external display was unavailable, so exact physical
+geometry, glyph, pseudographic, and cursor appearance remain unclaimed. C5 and
+the stock ROM/RAM-BIOS route remain recovery and comparison baselines.
