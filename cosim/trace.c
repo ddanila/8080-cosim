@@ -82,6 +82,10 @@
 //        CP/M transient's stack low-water evidence; SIGTERM/SIGINT retain their
 //        existing stop-and-checkpoint behaviour. SIGUSR2 arms that evidence
 //        for the next 0100h transient and freezes it at the top-level return.
+// CP/M DISK: JUKU_CPM_DISK_TRACE=/path records every C6 native-BIOS READ/WRITE
+//        entry, including requests satisfied by the resident cache. The fixed
+//        binding is C027h/C02Ah with drive/track/sector/DMA at C93Ah; use this
+//        only with the documented C000h network-ROM adapter layout.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -164,6 +168,8 @@ static int           out_seen[256], in_seen[256];
 static unsigned long wpage[256];
 static unsigned long mode_switches;
 static unsigned long fdc_data_reads, stop_fdc_data_reads;
+static FILE*          cpm_disk_trace_fp;
+static unsigned long cpm_disk_trace_sequence;
 static unsigned long fdc_last_cyc;
 static int           timing_log = 0;
 static int           io_trace = 0;
@@ -1632,6 +1638,17 @@ int main(int argc, char** argv) {
     if (bustrace_limit_env && bustrace_limit_env[0])
       bustrace_limit = strtoul(bustrace_limit_env, NULL, 0);
   }
+  const char* cpm_disk_trace_path = getenv("JUKU_CPM_DISK_TRACE");
+  if (cpm_disk_trace_path && cpm_disk_trace_path[0]) {
+    cpm_disk_trace_fp = fopen(cpm_disk_trace_path, "w");
+    if (!cpm_disk_trace_fp) {
+      fprintf(stderr, "JUKU_CPM_DISK_TRACE=%s could not be opened for writing\n",
+              cpm_disk_trace_path);
+      return 2;
+    }
+    fputs("sequence operation drive track sector dma cycles\n",
+          cpm_disk_trace_fp);
+  }
   const char* cart_path = getenv("JUKU_CART");
   timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
@@ -2248,6 +2265,16 @@ int main(int argc, char** argv) {
       }
       if ((cpu.cyc & 0x3FF) == 0) console_poll();
     }
+    if (cpm_disk_trace_fp && (cpu.pc == 0xC027 || cpu.pc == 0xC02A)) {
+      uint8_t drive = peek_byte(0xC93A);
+      uint16_t track = peek_word(0xC93B);
+      uint8_t sector = peek_byte(0xC93D);
+      uint16_t dma = peek_word(0xC94E);
+      fprintf(cpm_disk_trace_fp, "%lu %c %u %u %u %04X %lu\n",
+              ++cpm_disk_trace_sequence,
+              cpu.pc == 0xC027 ? 'R' : 'W', drive, track, sector, dma,
+              cpu.cyc);
+    }
     if (realtime_hz && cpu.cyc >= realtime_next) {
       realtime_next = cpu.cyc + realtime_slice;
       struct timespec now;
@@ -2549,5 +2576,6 @@ int main(int argc, char** argv) {
   if (usart.fd >= 0) close(usart.fd);
   if (rdtrace_fp) fclose(rdtrace_fp);
   if (bustrace_fp) fclose(bustrace_fp);
+  if (cpm_disk_trace_fp) fclose(cpm_disk_trace_fp);
   return 0;
 }

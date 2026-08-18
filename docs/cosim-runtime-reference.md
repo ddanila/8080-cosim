@@ -42,6 +42,15 @@ representative programs and checks the exact results during its strict rebuild
 gate; the DRI utility admission matrix additionally exercises function-0 and
 BDOS-tail termination.
 
+For CP/M Plus NetDisk analysis, set
+`JUKU_CPM_DISK_TRACE=/path/to/disk-trace.txt`. With the documented C6 native
+binding at `C000h`, the trace records every BIOS `READ` and `WRITE` entry plus
+drive, track, translated sector, DMA address, and cycle count. Unlike the host
+protocol log, this includes resident-cache hits and therefore exposes the
+actual record-consumption sequence without changing target code or timing.
+The fixed instrumentation addresses are `C027h`/`C02Ah` with state at
+`C93Ah`; do not use it for another adapter layout.
+
 ## How it works
 
 1. `cosim` boots the real `ekta37` BIOS and dumps `TYPE addr data` lines through
