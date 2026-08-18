@@ -712,6 +712,9 @@ void i8080_init(i8080* const c) {
   c->interrupt_pending = 0;
   c->interrupt_vector = 0;
   c->interrupt_delay = 0;
+  c->last_opcode_pc = 0;
+  c->last_opcode = 0;
+  c->last_opcode_was_interrupt = 0;
 }
 
 void i8080_step(i8080* const c) {
@@ -722,9 +725,15 @@ void i8080_step(i8080* const c) {
     c->iff = 0;
     c->halted = 0;
 
+    c->last_opcode_pc = c->pc;
+    c->last_opcode = c->interrupt_vector;
+    c->last_opcode_was_interrupt = 1;
     i8080_execute(c, c->interrupt_vector);
   } else if (!c->halted) {
-    i8080_execute(c, i8080_next_byte(c));
+    c->last_opcode_pc = c->pc;
+    c->last_opcode = i8080_next_byte(c);
+    c->last_opcode_was_interrupt = 0;
+    i8080_execute(c, c->last_opcode);
   }
 }
 

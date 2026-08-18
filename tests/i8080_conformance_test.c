@@ -344,6 +344,10 @@ static void test_interrupts_and_undocumented(fixture *f) {
   CHECK(cpu.pc == 1 && cpu.iff && cpu.interrupt_delay == 1,
       "EI state PC/IFF/delay %04x/%u/%u", cpu.pc, cpu.iff,
       cpu.interrupt_delay);
+  CHECK(cpu.last_opcode_pc == 0 && cpu.last_opcode == 0xFB &&
+          !cpu.last_opcode_was_interrupt,
+      "normal opcode-fetch evidence differs: %04x/%02x/%u",
+      cpu.last_opcode_pc, cpu.last_opcode, cpu.last_opcode_was_interrupt);
   i8080_step(&cpu);
   CHECK(cpu.pc == 2 && cpu.interrupt_pending && cpu.interrupt_delay == 0,
       "EI delay did not execute exactly one instruction");
@@ -351,6 +355,10 @@ static void test_interrupts_and_undocumented(fixture *f) {
   CHECK(cpu.pc == 0x0008 && !cpu.iff && !cpu.interrupt_pending,
       "interrupt service PC/IFF/pending %04x/%u/%u", cpu.pc, cpu.iff,
       cpu.interrupt_pending);
+  CHECK(cpu.last_opcode_pc == 2 && cpu.last_opcode == 0xCF &&
+          cpu.last_opcode_was_interrupt,
+      "interrupt opcode evidence differs: %04x/%02x/%u",
+      cpu.last_opcode_pc, cpu.last_opcode, cpu.last_opcode_was_interrupt);
   CHECK(f->writes[0].addr == 0x3fff && f->writes[0].data == 0x00 &&
           f->writes[1].addr == 0x3ffe && f->writes[1].data == 0x02,
       "interrupt RST stack bus order differs");

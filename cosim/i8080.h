@@ -24,6 +24,12 @@ typedef struct i8080 {
   bool interrupt_pending : 1;
   uint8_t interrupt_vector;
   uint8_t interrupt_delay;
+
+  // Last instruction actually fetched. Consumers use this for execution
+  // coverage without misclassifying embedded data as opcodes.
+  uint16_t last_opcode_pc;
+  uint8_t last_opcode;
+  bool last_opcode_was_interrupt : 1;
 } i8080;
 
 void i8080_init(i8080* const c);

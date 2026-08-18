@@ -9,6 +9,12 @@ flat-memory model, written independently and in a different language, whose fram
 `boot_check` already validates. LVS checks connectivity and `boot_check` checks sampled memory;
 this checks the live transaction stream value-by-value.
 
+The C CPU also records the address and byte of the last instruction actually
+fetched, distinguishing an interrupt acknowledge from a memory opcode. This
+supports execution-aware compatibility gates without mistaking embedded data
+for code. The Juku trace checkpoint uses it to report total TPA opcode fetches
+and separate Z80-prefix and undocumented-8080 counts for `0100h..99FFh`.
+
 ## How it works
 
 1. `cosim` boots the real `ekta37` BIOS and dumps `TYPE addr data` lines through

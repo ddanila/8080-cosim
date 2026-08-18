@@ -855,6 +855,9 @@ static uint8_t rb(void* u, uint16_t a) {
 }
 
 static unsigned long g_vw = 0, g_vw_limit = 0;   // video-RAM write count + optional stop limit
+static unsigned long tpa_opcode_fetches = 0;
+static unsigned long tpa_z80_prefix_fetches = 0;
+static unsigned long tpa_undocumented_opcode_fetches = 0;
 // --- minimal 8259 PIC (MCS-80/CALL mode) for the frame interrupt (ports 0x00/0x01) ---
 static uint8_t pic_icw1 = 0, pic_icw2 = 0, pic_mask = 0xFF;  // mask: 1=masked
 static int     pic_expect_icw2 = 0;
@@ -1266,6 +1269,11 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "interrupt_vector=%02X\n", cpu->interrupt_vector);
   fprintf(state_out, "interrupt_delay=%02X\n", cpu->interrupt_delay);
   fprintf(state_out, "cyc=%lu\n", cpu->cyc);
+  fprintf(state_out, "tpa_opcode_fetches=%lu\n", tpa_opcode_fetches);
+  fprintf(state_out, "tpa_z80_prefix_fetches=%lu\n",
+          tpa_z80_prefix_fetches);
+  fprintf(state_out, "tpa_undocumented_opcode_fetches=%lu\n",
+          tpa_undocumented_opcode_fetches);
   fprintf(state_out, "vram_writes=%lu\n", g_vw);
   fprintf(state_out, "mode=%d\n", mode);
   fprintf(state_out, "portc=%02X\n", portc);
@@ -2119,7 +2127,22 @@ int main(int argc, char** argv) {
         nanosleep(&nap, NULL);
       }
     }
+    int instruction_will_execute = !cpu.halted ||
+      (cpu.interrupt_pending && cpu.iff && cpu.interrupt_delay == 0);
     i8080_step(&cpu);
+    if (instruction_will_execute && !cpu.last_opcode_was_interrupt &&
+        cpu.last_opcode_pc >= 0x0100 && cpu.last_opcode_pc <= 0x99FF) {
+      uint8_t opcode = cpu.last_opcode;
+      tpa_opcode_fetches++;
+      if (opcode == 0xCB || opcode == 0xDD || opcode == 0xED ||
+          opcode == 0xFD)
+        tpa_z80_prefix_fetches++;
+      if (opcode == 0x08 || opcode == 0x10 || opcode == 0x18 ||
+          opcode == 0x20 || opcode == 0x28 || opcode == 0x30 ||
+          opcode == 0x38 || opcode == 0xCB || opcode == 0xD9 ||
+          opcode == 0xDD || opcode == 0xED || opcode == 0xFD)
+        tpa_undocumented_opcode_fetches++;
+    }
     sync_fdc_time(&cpu);
     usart_poll(cpu.cyc);
     // D11 RxRDY and TxRDY directly drive D10/PIC IR2 and IR3.  NetBios is
