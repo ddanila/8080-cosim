@@ -77,6 +77,11 @@
 //        second, so wall-clock time equals machine time (use 2000000 for the
 //        nominal Juku clock; "1" is accepted as shorthand for it). Unset means
 //        run as fast as possible, which is the right default for tests.
+// CHECKPOINT: SIGUSR1 writes the configured JUKU_CHECKPOINT_PREFIX RAM/state
+//        pair without stopping the machine.  The state includes the latest
+//        CP/M transient's stack low-water evidence; SIGTERM/SIGINT retain their
+//        existing stop-and-checkpoint behaviour. SIGUSR2 arms that evidence
+//        for the next 0100h transient and freezes it at the top-level return.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,10 +96,24 @@
 #include "i8080.h"
 
 static volatile sig_atomic_t terminate_requested;
+static volatile sig_atomic_t checkpoint_requests;
+static volatile sig_atomic_t tpa_measurement_requests;
 
 static void request_termination(int signal_number) {
   (void)signal_number;
   terminate_requested = 1;
+}
+
+static void request_checkpoint(int signal_number) {
+  (void)signal_number;
+  if (checkpoint_requests < 0x7FFF)
+    checkpoint_requests++;
+}
+
+static void request_tpa_measurement(int signal_number) {
+  (void)signal_number;
+  if (tpa_measurement_requests < 0x7FFF)
+    tpa_measurement_requests++;
 }
 #include "juk_disk.h"
 #include "juku_fdc.h"
@@ -858,6 +877,21 @@ static unsigned long g_vw = 0, g_vw_limit = 0;   // video-RAM write count + opti
 static unsigned long tpa_opcode_fetches = 0;
 static unsigned long tpa_z80_prefix_fetches = 0;
 static unsigned long tpa_undocumented_opcode_fetches = 0;
+static unsigned long checkpoint_generation = 0;
+static unsigned long tpa_program_starts = 0;
+static uint16_t tpa_program_entry_sp = 0;
+static uint16_t tpa_program_stack_anchor_sp = 0;
+static uint16_t tpa_program_stack_low_sp = 0;
+static unsigned tpa_program_stack_bytes = 0;
+static unsigned tpa_program_explicit_sp_writes = 0;
+static unsigned tpa_program_call_depth = 0;
+static uint16_t tpa_program_bdos_return_pc = 0;
+static int tpa_program_in_bdos = 0;
+static int tpa_program_seen = 0;
+static unsigned long tpa_measurement_generation = 0;
+static int tpa_measurement_controlled = 0;
+static int tpa_measurement_armed = 0;
+static int tpa_measurement_frozen = 0;
 // --- minimal 8259 PIC (MCS-80/CALL mode) for the frame interrupt (ports 0x00/0x01) ---
 static uint8_t pic_icw1 = 0, pic_icw2 = 0, pic_mask = 0xFF;  // mask: 1=masked
 static int     pic_expect_icw2 = 0;
@@ -1231,6 +1265,8 @@ static size_t load_image(const char* path, uint8_t* dst, size_t cap, int fill) {
 static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   if (!prefix || !prefix[0]) return;
 
+  checkpoint_generation++;
+
   char ram_path[1024];
   char state_path[1024];
   snprintf(ram_path, sizeof(ram_path), "%s.ram", prefix);
@@ -1269,11 +1305,29 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "interrupt_vector=%02X\n", cpu->interrupt_vector);
   fprintf(state_out, "interrupt_delay=%02X\n", cpu->interrupt_delay);
   fprintf(state_out, "cyc=%lu\n", cpu->cyc);
+  fprintf(state_out, "checkpoint_generation=%lu\n", checkpoint_generation);
   fprintf(state_out, "tpa_opcode_fetches=%lu\n", tpa_opcode_fetches);
   fprintf(state_out, "tpa_z80_prefix_fetches=%lu\n",
           tpa_z80_prefix_fetches);
   fprintf(state_out, "tpa_undocumented_opcode_fetches=%lu\n",
           tpa_undocumented_opcode_fetches);
+  fprintf(state_out, "tpa_program_starts=%lu\n", tpa_program_starts);
+  fprintf(state_out, "tpa_program_entry_sp=%04X\n", tpa_program_entry_sp);
+  fprintf(state_out, "tpa_program_stack_anchor_sp=%04X\n",
+          tpa_program_stack_anchor_sp);
+  fprintf(state_out, "tpa_program_stack_low_sp=%04X\n",
+          tpa_program_stack_low_sp);
+  fprintf(state_out, "tpa_program_stack_bytes=%u\n",
+          tpa_program_stack_bytes);
+  fprintf(state_out, "tpa_program_explicit_sp_writes=%u\n",
+          tpa_program_explicit_sp_writes);
+  fprintf(state_out, "tpa_program_call_depth=%u\n",
+          tpa_program_call_depth);
+  fprintf(state_out, "tpa_program_in_bdos=%d\n", tpa_program_in_bdos);
+  fprintf(state_out, "tpa_measurement_generation=%lu\n",
+          tpa_measurement_generation);
+  fprintf(state_out, "tpa_measurement_armed=%d\n", tpa_measurement_armed);
+  fprintf(state_out, "tpa_measurement_frozen=%d\n", tpa_measurement_frozen);
   fprintf(state_out, "vram_writes=%lu\n", g_vw);
   fprintf(state_out, "mode=%d\n", mode);
   fprintf(state_out, "portc=%02X\n", portc);
@@ -1397,6 +1451,24 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
 int main(int argc, char** argv) {
   signal(SIGTERM, request_termination);
   signal(SIGINT, request_termination);
+  struct sigaction checkpoint_action;
+  memset(&checkpoint_action, 0, sizeof(checkpoint_action));
+  checkpoint_action.sa_handler = request_checkpoint;
+  sigemptyset(&checkpoint_action.sa_mask);
+  checkpoint_action.sa_flags = SA_RESTART;
+  if (sigaction(SIGUSR1, &checkpoint_action, NULL) != 0) {
+    perror("sigaction(SIGUSR1)");
+    return 2;
+  }
+  struct sigaction measurement_action;
+  memset(&measurement_action, 0, sizeof(measurement_action));
+  measurement_action.sa_handler = request_tpa_measurement;
+  sigemptyset(&measurement_action.sa_mask);
+  measurement_action.sa_flags = SA_RESTART;
+  if (sigaction(SIGUSR2, &measurement_action, NULL) != 0) {
+    perror("sigaction(SIGUSR2)");
+    return 2;
+  }
   pit_init();
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
@@ -2002,6 +2074,8 @@ int main(int argc, char** argv) {
   int chk_entry_logs = 0;
   int chk_compare_logs = 0;
   const int pc_history_enabled = env_enabled(getenv("JUKU_PC_HISTORY"));
+  const int tpa_stack_trace_enabled =
+      env_enabled(getenv("JUKU_TPA_STACK_TRACE"));
   uint16_t pc_history[256] = {0};
   unsigned pc_history_pos = 0;
   while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) &&
@@ -2013,6 +2087,19 @@ int main(int argc, char** argv) {
          !stop_prompt_hit &&
          !terminate_requested &&
          !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
+    if ((unsigned long)checkpoint_requests > checkpoint_generation) {
+      dump_checkpoint(getenv("JUKU_CHECKPOINT_PREFIX"), &cpu);
+    }
+    if ((unsigned long)tpa_measurement_requests >
+        tpa_measurement_generation) {
+      tpa_measurement_generation =
+          (unsigned long)tpa_measurement_requests;
+      tpa_measurement_controlled = 1;
+      tpa_measurement_armed = 1;
+      tpa_measurement_frozen = 0;
+      tpa_program_seen = 0;
+      tpa_program_in_bdos = 0;
+    }
     if (cpu_a12_increment_fault_arm_enabled &&
         !cpu_a12_increment_fault_arm_fired &&
         (cpu_a12_increment_fault_arm_bank_mode < 0 ||
@@ -2129,10 +2216,107 @@ int main(int argc, char** argv) {
     }
     int instruction_will_execute = !cpu.halted ||
       (cpu.interrupt_pending && cpu.iff && cpu.interrupt_delay == 0);
+    uint16_t instruction_sp = cpu.sp;
     i8080_step(&cpu);
     if (instruction_will_execute && !cpu.last_opcode_was_interrupt &&
         cpu.last_opcode_pc >= 0x0100 && cpu.last_opcode_pc <= 0x99FF) {
       uint8_t opcode = cpu.last_opcode;
+      /* CP/M transients enter at 0100h.  Compiler startup code may establish
+       * a private stack with LXI SP or SPHL; the first such write becomes the
+       * measurement anchor, while subsequent downward movement contributes
+       * to the observed high-water mark.  This excludes the CCP/BDOS private
+       * stacks while retaining CALL/PUSH use on the transient's own stack. */
+      if (cpu.last_opcode_pc == 0x0100 && !tpa_program_in_bdos &&
+          (!tpa_measurement_controlled || tpa_measurement_armed)) {
+        tpa_program_starts++;
+        tpa_program_entry_sp = instruction_sp;
+        tpa_program_stack_anchor_sp = instruction_sp;
+        tpa_program_stack_low_sp = instruction_sp;
+        tpa_program_stack_bytes = 0;
+        tpa_program_explicit_sp_writes = 0;
+        tpa_program_call_depth = 0;
+        tpa_program_bdos_return_pc = 0;
+        tpa_program_in_bdos = 0;
+        tpa_program_seen = 1;
+        tpa_measurement_armed = 0;
+        if (tpa_stack_trace_enabled)
+          fprintf(stderr, "[TPA-STACK] entry sp=%04X cyc=%lu\n",
+                  instruction_sp, cpu.cyc);
+      }
+      if (tpa_program_seen && tpa_program_in_bdos &&
+          cpu.last_opcode_pc == tpa_program_bdos_return_pc) {
+        tpa_program_in_bdos = 0;
+        if (tpa_stack_trace_enabled)
+          fprintf(stderr, "[TPA-STACK] resume pc=%04X sp=%04X cyc=%lu\n",
+                  cpu.last_opcode_pc, instruction_sp, cpu.cyc);
+      }
+      if (tpa_program_seen && !tpa_program_in_bdos) {
+        if ((opcode == 0x31 || opcode == 0xF9) &&
+            tpa_program_explicit_sp_writes++ == 0) {
+          tpa_program_stack_anchor_sp = cpu.sp;
+          tpa_program_stack_low_sp = cpu.sp;
+          if (tpa_stack_trace_enabled)
+            fprintf(stderr,
+                    "[TPA-STACK] first SP write pc=%04X opcode=%02X "
+                    "sp=%04X cyc=%lu\n",
+                    cpu.last_opcode_pc, opcode, cpu.sp, cpu.cyc);
+        } else if (cpu.sp <= tpa_program_stack_anchor_sp) {
+          unsigned depth =
+              (unsigned)(tpa_program_stack_anchor_sp - cpu.sp);
+          if (depth < 0x8000u && depth > tpa_program_stack_bytes) {
+            tpa_program_stack_bytes = depth;
+            tpa_program_stack_low_sp = cpu.sp;
+          }
+        }
+      }
+      if (tpa_program_seen && !tpa_program_in_bdos) {
+        if (opcode == 0xCD && cpu.pc == 0x0005) {
+          tpa_program_bdos_return_pc =
+              (uint16_t)(cpu.last_opcode_pc + 3);
+          tpa_program_in_bdos = 1;
+          if (tpa_stack_trace_enabled)
+            fprintf(stderr,
+                    "[TPA-STACK] BDOS pc=%04X return=%04X sp=%04X cyc=%lu\n",
+                    cpu.last_opcode_pc, tpa_program_bdos_return_pc,
+                    cpu.sp, cpu.cyc);
+        }
+        int conditional_call =
+            opcode == 0xC4 || opcode == 0xCC || opcode == 0xD4 ||
+            opcode == 0xDC || opcode == 0xE4 || opcode == 0xEC ||
+            opcode == 0xF4 || opcode == 0xFC;
+        int internal_call =
+            (opcode == 0xCD ||
+             (conditional_call &&
+              cpu.pc != (uint16_t)(cpu.last_opcode_pc + 3))) &&
+            cpu.pc >= 0x0100 && cpu.pc <= 0x99FF;
+        int return_taken = opcode == 0xC9 || opcode == 0xE9 ||
+            ((opcode == 0xC0 || opcode == 0xC8 || opcode == 0xD0 ||
+              opcode == 0xD8 || opcode == 0xE0 || opcode == 0xE8 ||
+              opcode == 0xF0 || opcode == 0xF8) &&
+             cpu.pc != (uint16_t)(cpu.last_opcode_pc + 1));
+        if (tpa_program_in_bdos) {
+          /* CALL 0005h returns to the recorded transient address; resident
+           * BDOS stack traffic is deliberately outside this measurement. */
+        } else if (internal_call) {
+          tpa_program_call_depth++;
+        } else if (return_taken) {
+          if (tpa_program_call_depth)
+            tpa_program_call_depth--;
+          else
+            tpa_program_seen = 0;
+        } else if ((opcode & 0xC7) == 0xC7 || cpu.pc == 0x0000) {
+          /* CP/M programs use RST 0 or a jump through page zero to exit. */
+          tpa_program_seen = 0;
+        }
+        if (!tpa_program_seen && tpa_stack_trace_enabled)
+          fprintf(stderr,
+                  "[TPA-STACK] exit pc=%04X opcode=%02X target=%04X "
+                  "depth=%u bytes=%u cyc=%lu\n",
+                  cpu.last_opcode_pc, opcode, cpu.pc,
+                  tpa_program_call_depth, tpa_program_stack_bytes, cpu.cyc);
+        if (!tpa_program_seen && tpa_measurement_controlled)
+          tpa_measurement_frozen = 1;
+      }
       tpa_opcode_fetches++;
       if (opcode == 0xCB || opcode == 0xDD || opcode == 0xED ||
           opcode == 0xFD)

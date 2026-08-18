@@ -14,6 +14,23 @@ fetched, distinguishing an interrupt acknowledge from a memory opcode. This
 supports execution-aware compatibility gates without mistaking embedded data
 for code. The Juku trace checkpoint uses it to report total TPA opcode fetches
 and separate Z80-prefix and undocumented-8080 counts for `0100h..99FFh`.
+That numerical range deliberately also covers resident code in compact legacy
+layouts, so it is a broad fetched-opcode safety gate rather than a per-program
+code-size oracle.
+
+For attributable CP/M transient stack measurements, `trace` has a separate
+command-scoped interface. Send `SIGUSR2` immediately before submitting the
+command: the emulator arms on the next `0100h` entry, excludes the resident
+BDOS excursion bracketed by `CALL 0005h`, follows internal CALL/RET depth, and
+freezes the SP low-water result at the top-level return. Send `SIGUSR1` after
+the prompt to write the configured `JUKU_CHECKPOINT_PREFIX` `.ram` and `.state`
+files without stopping execution. Repeated requests are generation-counted,
+so one emulator session can measure a complete command matrix. The state
+records entry, compiler-selected anchor, low SP, observed bytes, explicit SP
+writes, measurement generation, and armed/frozen status. `SIGTERM` and
+`SIGINT` retain the final stop-and-checkpoint behavior. The CP/M Plus compiler
+comparison uses this interface for all six representative programs and checks
+the exact results during its strict rebuild gate.
 
 ## How it works
 
