@@ -350,12 +350,11 @@ resident_entry:
 .ifdef ROM_ABI_EXTENDED
         call    JCGKEYRAWADDR
         jc      self_fail_keyboard
-        cpi     15
-        jnc     self_fail_keyboard
+        cpi     4                       ; shifted T must retain its own column
+        jnz     self_fail_keyboard
         mov     a,b
-        ani     0cfh                    ; uppercase T includes SHIFT
-        cpi     0cfh
-        jz      self_fail_keyboard
+        cpi     088h                    ; row 3 plus active-low SHIFT
+        jnz     self_fail_keyboard
 .endif
 .ifdef ROM_ABI_LOCALE
         lxi     h,self_keyremap
