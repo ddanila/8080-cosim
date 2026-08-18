@@ -1059,14 +1059,30 @@ static uint8_t kbd_portb(const i8080* cpu) {
   if (g_vw < kbd_start_vram) return idle;              // default waits until the ekta37 banner is drawn
   char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < kbd_hold_frames) ? kbd_str[kbd_pos] : 0;
   if (c == '|') return idle;                           // prompt wait marker, not a typed key
-  int shift = 0, col = -1, bit = -1;
+  int shift = 0, ctrl = 0, col = -1, bit = -1;
   if (c) {
-    char lc = c; if (c >= 'A' && c <= 'Z') { lc = (char)(c + 32); shift = 1; }
+    char lc = c;
+    // Prefer a dedicated physical key (Tab, Return, Backspace, Escape) over
+    // spelling the same ASCII control byte as Ctrl+letter.
     for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
       if (KMAP[i].c == lc) { col = KMAP[i].col; bit = KMAP[i].bit; shift |= KMAP[i].shift; break; }
+    if (col < 0 && c >= 1 && c <= 26) {
+      // The interactive PTY expresses Ctrl-A..Ctrl-Z as their ordinary
+      // ASCII control bytes. Translate those bytes back to the physical
+      // letter contact plus Juku's dedicated active-low CTRL return.
+      lc = (char)('a' + c - 1);
+      ctrl = 1;
+    } else if (c >= 'A' && c <= 'Z') {
+      lc = (char)(c + 32);
+      shift = 1;
+    }
+    if (col < 0)
+      for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
+        if (KMAP[i].c == lc) { col = KMAP[i].col; bit = KMAP[i].bit; shift |= KMAP[i].shift; break; }
   }
   uint8_t pb = (uint8_t)(0xC0 | contrdat);
   if (shift) pb &= (uint8_t)~0x40;                     // SHIFT1 held = bit6 low (active-low)
+  if (ctrl) pb &= (uint8_t)~0x80;                      // CTRL held = bit7 low (active-low)
   if (c && col == kbd_col)
     pb |= (uint8_t)(((~bit) & 7) << 1);                // 74148 code in b1-3, GS active (b0=0)
   else
