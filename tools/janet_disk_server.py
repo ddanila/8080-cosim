@@ -414,9 +414,19 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             incoming = os.read(fd, 4096)
         except OSError as error:
             if error.errno == errno.EIO:
+                # A PTY master reports EIO after its already-synchronised
+                # target closes the slave.  Before the first request this can
+                # merely mean that an emulator has not opened the slave yet,
+                # so retain the historical wait-for-attachment behaviour.
+                # Once a session is live, however, EIO is its clean EOF; an
+                # unbounded server must not spin forever after test shutdown.
+                if synchronized:
+                    break
                 continue
             raise
         if not incoming:
+            if synchronized:
+                break
             continue
         buffer.extend(incoming)
         last_activity = time.monotonic()

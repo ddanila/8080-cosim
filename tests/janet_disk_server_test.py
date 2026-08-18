@@ -94,6 +94,34 @@ def main() -> int:
     os.close(console_master)
     os.close(console_slave)
 
+    # An active server may deliberately have no wall-clock deadline.  Closing
+    # its transport after synchronisation must still stop it promptly.
+    eof_host, eof_client = socket.socketpair()
+    eof_errors: list[BaseException] = []
+
+    def eof_worker() -> None:
+        try:
+            serve_disk(
+                eof_host.fileno(), bytearray(VOLUME_SIZE), timeout=None,
+                reply_guard=0, verbose=False,
+            )
+        except BaseException as error:
+            eof_errors.append(error)
+
+    eof_thread = threading.Thread(target=eof_worker)
+    eof_thread.start()
+    if receive_exact(eof_client, 4) != b"NRN2":
+        raise AssertionError("unbounded server readiness marker differs")
+    eof_client.sendall(request(READ, 1, 0, 2, 1))
+    receive_exact(eof_client, 5 + RECORD_SIZE)
+    eof_client.close()
+    eof_thread.join(timeout=2)
+    eof_host.close()
+    if eof_thread.is_alive() or eof_errors:
+        raise AssertionError(
+            f"unbounded disk server did not stop at EOF: {eof_errors!r}"
+        )
+
     if encode_v3_record(b"\xA5" * RECORD_SIZE,
                         deleted_directory=False) != b"\x01\xA5":
         raise AssertionError("v3 uniform-fill encoding differs")

@@ -726,6 +726,11 @@ cd ~/fun/cpmish && make juku-fastboot-v15-netdisk-v3.bin \
 result records zero stock frames/bytes. It is incompatible with
 `--compact-stock-execute`, because there is no stock stage to compact. After
 V15 enters its RAM BIOS, both ends use the normal 19200/8O1 NetDisk-v3 link.
+The disk phase has no total lifetime limit unless `--disk-timeout` is supplied.
+After the first valid request, EOF or PTY `EIO` is treated as a clean session
+end; before synchronisation, PTY `EIO` still means “wait for the emulator to
+attach.” This lets long simulator/interactive sessions remain active without
+leaving an unbounded server thread spinning after its target exits.
 
 Two independent regressions qualify the desk path. The ROM-level test loads a
 checked synthetic extension and proves its execution. CP/Mish then boots the
