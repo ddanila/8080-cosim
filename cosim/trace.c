@@ -1077,6 +1077,11 @@ static uint8_t kbd_portb(const i8080* cpu) {
   int shift = 0, ctrl = 0, col = -1, bit = -1;
   if (c) {
     char lc = c;
+    if ((unsigned char)c == 0x85) {                    // synthetic Ctrl-Up / Home
+      col = 10;
+      bit = 2;
+      ctrl = 1;
+    }
     // Prefer a dedicated physical key (Tab, Return, Backspace, Escape) over
     // spelling the same ASCII control byte as Ctrl+letter.
     for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
