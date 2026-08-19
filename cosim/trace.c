@@ -2352,6 +2352,8 @@ int main(int argc, char** argv) {
       if (tpa_program_seen && tpa_program_in_bdos &&
           cpu.last_opcode_pc == tpa_program_bdos_return_pc) {
         int bdos_tail_call = tpa_program_bdos_tail_call;
+        int top_level_tail_exit =
+            bdos_tail_call && tpa_program_call_depth == 0;
         tpa_program_in_bdos = 0;
         tpa_program_bdos_tail_call = 0;
         /* JMP 0005h lets BDOS RET consume the return address of the
@@ -2360,12 +2362,17 @@ int main(int argc, char** argv) {
          * leaks a frame and the eventual top-level RET is missed. */
         if (bdos_tail_call && tpa_program_call_depth)
           tpa_program_call_depth--;
+        if (top_level_tail_exit) {
+          tpa_program_seen = 0;
+          if (tpa_measurement_controlled)
+            tpa_measurement_frozen = 1;
+        }
         if (tpa_stack_trace_enabled)
           fprintf(stderr,
-                  "[TPA-STACK] resume pc=%04X sp=%04X tail=%d "
+                  "[TPA-STACK] resume pc=%04X sp=%04X tail=%d exit=%d "
                   "depth=%u cyc=%lu\n",
                   cpu.last_opcode_pc, instruction_sp, bdos_tail_call,
-                  tpa_program_call_depth, cpu.cyc);
+                  top_level_tail_exit, tpa_program_call_depth, cpu.cyc);
       }
       if (tpa_program_seen && !tpa_program_in_bdos) {
         if (opcode == 0x31 || opcode == 0xF9) {

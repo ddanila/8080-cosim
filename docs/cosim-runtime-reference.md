@@ -28,6 +28,9 @@ the transient stack, waits for that exact address rather than merely the next
 instruction in the broad TPA address range, and mirrors the implicit unwind.
 That return may be the page-zero warm-boot vector rather than another TPA
 instruction; the tracer observes and freezes that non-TPA exit explicitly.
+It also freezes a top-level tail return into a still-resident CCP inside the
+broad TPA range, using semantic call depth rather than mistaking CCP execution
+for continued transient stack use.
 It also recognizes BDOS function 0 reached by either form as a non-returning
 system reset. This distinction is required by ordinary DRI PL/M startup code
 and small assembly utilities and prevents the
