@@ -421,6 +421,7 @@ def main() -> int:
         capture.unlink()
         print(f"wrote {gif}")
     trace.unlink()
+    (output / "vram.bin").unlink(missing_ok=True)
     return 0
 
 
