@@ -956,6 +956,7 @@ static int console_fd = -1;
 static unsigned long console_poll_at = 0;
 static char console_queue[CONSOLE_QUEUE];
 static int console_len = 0;
+static int console_visible_len = 0;
 // Default to the routine the WRCHR vector (FFD9h) jumps to rather than the
 // vector itself: the ROM's own printing calls it directly, so hooking the
 // target shows the boot banner and monitor output as well as CP/M's.
@@ -974,6 +975,12 @@ static int kbd_trace = 0;
 #define KBD_HOLD 3
 #define KBD_GAP  3
 
+static char kbd_current_char(void) {
+  if (!kbd_str) return 0;
+  if (kbd_str == console_queue && kbd_pos >= console_visible_len) return 0;
+  return kbd_str[kbd_pos];
+}
+
 // Drain anything the operator typed into the console PTY onto the key queue.
 // Newlines become carriage returns because the ROM's key matrix speaks CR.
 static void console_poll(void) {
@@ -990,6 +997,8 @@ static void console_poll(void) {
         memmove(console_queue, console_queue + kbd_pos,
                 (size_t)(console_len - kbd_pos));
         console_len -= kbd_pos;
+        console_visible_len = console_visible_len > kbd_pos
+            ? console_visible_len - kbd_pos : 0;
         kbd_pos = 0;
       } else {
         return;                                    // full and nothing consumed
@@ -1093,7 +1102,8 @@ static uint8_t kbd_portb(const i8080* cpu) {
   uint8_t contrdat = (s21_bit >= 0 && !s21_closed) ? 0x20 : 0;
   uint8_t idle = (uint8_t)(KBD_NONE | contrdat);
   if (g_vw < kbd_start_vram) return idle;              // default waits until the ekta37 banner is drawn
-  char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < kbd_hold_frames) ? kbd_str[kbd_pos] : 0;
+  char current = kbd_current_char();
+  char c = (current && kbd_phase < kbd_hold_frames) ? current : 0;
   if (c == '|') return idle;                           // prompt wait marker, not a typed key
   int shift = 0, ctrl = 0, col = -1, bit = -1;
   if (c) {
@@ -2554,12 +2564,17 @@ int main(int argc, char** argv) {
     // --- frame interrupt: 8253 VER-RTR -> 8259 IR5 -> CPU (MCS-80 CALL to the ICW vector) ---
     if (frame_cyc && cpu.cyc >= next_frame) {
       next_frame += frame_cyc;
+      // A host PTY byte represents a physical contact. Publish newly queued
+      // contacts only at a frame boundary so they cannot appear halfway
+      // through one guest matrix sweep. Scripted JUKU_KEYS are unchanged.
+      if (kbd_str == console_queue) console_visible_len = console_len;
       int frame_taken = take_pic_irq(&cpu, 5, "frame", &frame_irq_count);
-      if (kbd_trace && kbd_str && kbd_str[kbd_pos])
+      char frame_key = kbd_current_char();
+      if (kbd_trace && frame_key)
         fprintf(stderr,
                 "[KBD] frame char=%02X pos=%d phase=%d irq=%s iff=%d mask=%02X "
                 "pc=%04X cyc=%lu g_vw=%lu\n",
-                (unsigned char)kbd_str[kbd_pos], kbd_pos, kbd_phase,
+                (unsigned char)frame_key, kbd_pos, kbd_phase,
                 frame_taken ? "taken" : "blocked", cpu.iff, pic_mask,
                 cpu.pc, cpu.cyc, g_vw);
       if (stop_prompt_after_rx && usart.rx_bytes >= stop_prompt_after_rx &&
@@ -2568,8 +2583,8 @@ int main(int argc, char** argv) {
       // Scripted key contacts follow physical frame time. They may be sampled
       // either by the monitor's frame ISR or by a RAM-resident polling BIOS;
       // PIC masking must not freeze a real key contact in time.
-      if (kbd_str && kbd_str[kbd_pos] && g_vw >= kbd_start_vram) {
-        if (kbd_str[kbd_pos] == '|') {
+      if (frame_key && g_vw >= kbd_start_vram) {
+        if (frame_key == '|') {
           if (ekdos_prompt_visible()) {
             fprintf(stderr, "[KBD] prompt wait marker consumed at g_vw=%lu cyc=%lu pos=%d\n",
                     g_vw, cpu.cyc, kbd_pos);
