@@ -70,6 +70,7 @@ def build(*, abi_selftest: bool = False,
           cursor_phase: str | None = None,
           netdisk_selftest: bool = False,
           sound_selftest: bool = False,
+          raw_selftest: str | None = None,
           locale: bool = False,
           extended: bool = False,
           successor: bool = False) -> tuple[bytes, dict[str, object]]:
@@ -85,6 +86,10 @@ def build(*, abi_selftest: bool = False,
         raise ValueError("NetDisk fixture requires abi_selftest")
     if sound_selftest and (not abi_selftest or not extended):
         raise ValueError("sound fixture requires extended ABI selftest")
+    if raw_selftest not in (None, "shift-f8", "ctrl-up"):
+        raise ValueError(f"unknown raw-key fixture {raw_selftest!r}")
+    if raw_selftest is not None and (not abi_selftest or not successor):
+        raise ValueError("raw-key fixtures require successor ABI selftest")
     selftest_defines = ("ROM_ABI_LOCALE",) if locale else ()
     if locale and not successor:
         selftest_defines += ("CREEP_LEGACY_PSEUDO",)
@@ -105,6 +110,10 @@ def build(*, abi_selftest: bool = False,
         selftest_defines += ("ABI_NETDISK_SELFTEST",)
     if sound_selftest:
         selftest_defines += ("ABI_SOUND_SELFTEST",)
+    if raw_selftest is not None:
+        selftest_defines += (
+            "ABI_RAW_" + raw_selftest.replace("-", "_").upper(),
+        )
     with tempfile.TemporaryDirectory(prefix="juku-network-rom.") as name:
         temporary = Path(name)
         gate = assemble(HERE / "gate-wrapper.asm", temporary / "gate.cim",

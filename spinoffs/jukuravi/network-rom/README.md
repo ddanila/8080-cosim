@@ -35,7 +35,10 @@ line is deliberately additive:
   C6 boot protocol, adds the VC-compatible CP437 box glyphs, and scans every
   ordinary matrix column before accepting a standalone global modifier. The
   build still reproduces the exact fitted C5 and C6 hashes before emitting
-  `juku-network-rom-abi1.2-c7.bin`.
+  `juku-network-rom-abi1.2-c7.bin`. Executable fixtures prove the exact
+  Shift-F8 `(column 0Eh, PB 8Eh)` and Ctrl-Up/Home `(column 0Ah, PB 6Ah)`
+  contacts with the intended S21 setting; physical acceptance remains a
+  separately retained focused run.
 
 ## Build and test
 
@@ -48,7 +51,7 @@ sync/network_first_rom_hdl_check.sh
 python3 tests/janet_disk_server_test.py
 ```
 
-The ABI gate rebuilds the images, executes C4, C5, and C6 against the practical
+The ABI gate rebuilds the images, executes C4 through C7 against the practical
 C-model twin, and checks exact manifests, fixed vectors, stack guards,
 interrupt ownership, overlay protection, all S21 geometries, locale pixels,
 keyboard behavior, cursor phases, and resident serial activity.  The focused
@@ -73,11 +76,18 @@ slot, manifests, hashes, and the complete ROM/RAM/vector map.
 - `juku-network-rom-abi1{,-d15,-d16}.bin` and JSON: immutable C4 / ABI 1.0.
 - `juku-network-rom-abi1.1-c5{,-d15,-d16}.bin` and JSON: C5 / ABI 1.1.
 - `juku-network-rom-abi1.2-c6{,-d15,-d16}.bin` and JSON: C6 / ABI 1.2.
+- `juku-network-rom-abi1.2-c7{,-d15,-d16}.bin` and JSON: C7 / ABI 1.2
+  modified-raw bench candidate.
 
 These named releases are immutable. In particular, rebuilding a modified
 scanner under the C6 filenames is not a C6 update: the fitted combined image
 remains SHA-256
 `0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09`.
+The C7 combined image is
+`a05c74d948d9f01c5a89dc3ea69bfeb4fdf9ac48b3e37845d1edbf03e6e203b8`;
+its D15-low and D16-high hashes are respectively
+`8a1db7dcd0bdf6403bcd64ac7a7f12b278ae0c70778508ddbe90d4cc50e3f413`
+and `5512b75f1550ec4c305b721ad0ee179556c938780a197b3bed1001366c7e4b94`.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must
 reproduce the 16 KiB image exactly.  The generated JSON is the machine-readable

@@ -351,16 +351,38 @@ resident_entry:
         call    JCGKEYRAWADDR
         jc      self_fail_keyboard
 .ifdef ROM_ABI_RAW_FIXED
+.ifdef ABI_RAW_SHIFT_F8
+        cpi     14                      ; Shift-F8 ordinary column
+        jnz     self_fail_keyboard
+        mov     a,b
+        cpi     08eh                    ; SHIFT low + row-5 contact
+        jnz     self_fail_keyboard
+        jmp     self_keyboard_done
+.else
+.ifdef ABI_RAW_CTRL_UP
+        cpi     10                      ; Ctrl-Up/Home ordinary column
+        jnz     self_fail_keyboard
+        mov     a,b
+        cpi     06ah                    ; CTRL low + row-6 contact + S21
+        jnz     self_fail_keyboard
+        jmp     self_keyboard_done
+.else
         cpi     4                       ; uppercase T's ordinary column
         jnz     self_fail_keyboard
+.endif
+.endif
 .else
         cpi     15
         jnc     self_fail_keyboard
 .endif
+.ifndef ABI_RAW_SHIFT_F8
+.ifndef ABI_RAW_CTRL_UP
         mov     a,b
         ani     0cfh                    ; uppercase T includes SHIFT
         cpi     0cfh
         jz      self_fail_keyboard
+.endif
+.endif
 .endif
 .ifdef ROM_ABI_LOCALE
         lxi     h,self_keyremap
@@ -387,6 +409,7 @@ self_got_keyboard:
 .endif
         jnz     self_fail_keyboard
 
+self_keyboard_done:
         mvi     a,0
         call    JCGSERINITADDR
         ora     a

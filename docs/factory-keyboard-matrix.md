@@ -95,6 +95,10 @@ both raw and decoded settings.
   (hex) inject Down, Erase, F5, F6, F8, Shift-F8, F1, and F2 respectively.
   `85` injects the special Ctrl-Up/Home chord outside `KMAP`. These bytes are
   a cosim test protocol, not character encodings exposed to Juku software.
+- The C7 ABI fixture feeds raw bytes `86` and `85` directly through this
+  matrix model and requires the public raw-key vector to return column/PB
+  pairs `0E/8E` and `0A/6A`. This is an executable regression for the exact
+  modified contacts, not an inference from translated ASCII input.
 - The remaining function, navigation, locking, DEL, LAT/RUS, and national keys
   are transcribed above but are not byte-addressable in `JUKU_KEYS`; extending
   the stimulus syntax is a test-interface boundary, not missing hardware.

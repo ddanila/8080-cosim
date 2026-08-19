@@ -40,6 +40,7 @@ def parse_state(path: Path) -> dict[str, str]:
 def run_fixture(trace: Path, image: bytes, root: Path, name: str,
                 mode: int, *, max_cycles: int = 5_000_000,
                 realtime_hz: int = 1_700_000,
+                keys: bytes = b"T",
                 timeout: float = 25.0) -> tuple[dict[str, str], bytes]:
     case = root / name
     case.mkdir()
@@ -48,19 +49,19 @@ def run_fixture(trace: Path, image: bytes, root: Path, name: str,
     checkpoint = case / "checkpoint"
     master, slave = pty.openpty()
     tty.setraw(slave)
-    environment = os.environ.copy()
-    environment.update(
-        JUKU_USART_PTY=os.ttyname(slave),
-        JUKU_USART_TRANSFER_CYCLES="16",
-        JUKU_USART_BYTE_CYCLES="1024",
-        JUKU_USART_PIT_CLOCK="1",
-        JUKU_USART_PIT_CPU_HZ="1700000",
-        JUKU_CHECKPOINT_PREFIX=str(checkpoint),
-        JUKU_REALTIME_HZ=str(realtime_hz),
-        JUKU_KEYS="T",
-        JUKU_KEY_START_VRAM="0",
-        JUKU_S21_CONFIG=f"0x{0x08 | (mode << 1):02X}",
-    )
+    environment = os.environb.copy()
+    environment.update({
+        b"JUKU_USART_PTY": os.fsencode(os.ttyname(slave)),
+        b"JUKU_USART_TRANSFER_CYCLES": b"16",
+        b"JUKU_USART_BYTE_CYCLES": b"1024",
+        b"JUKU_USART_PIT_CLOCK": b"1",
+        b"JUKU_USART_PIT_CPU_HZ": b"1700000",
+        b"JUKU_CHECKPOINT_PREFIX": os.fsencode(checkpoint),
+        b"JUKU_REALTIME_HZ": str(realtime_hz).encode("ascii"),
+        b"JUKU_KEYS": keys,
+        b"JUKU_KEY_START_VRAM": b"0",
+        b"JUKU_S21_CONFIG": f"0x{0x08 | (mode << 1):02X}".encode("ascii"),
+    })
     process = subprocess.Popen(
         [str(trace), str(rom), str(max_cycles)], cwd=case, env=environment,
         stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
@@ -161,6 +162,15 @@ def main() -> int:
         run_fixture(
             trace, successor_fixture, temporary, "c7-modified-raw", 3,
         )
+        for raw_name, raw_byte in (("shift-f8", b"\x86"),
+                                   ("ctrl-up", b"\x85")):
+            raw_fixture, _ = network_rom.build(
+                successor=True, abi_selftest=True, raw_selftest=raw_name,
+            )
+            run_fixture(
+                trace, raw_fixture, temporary, f"c7-{raw_name}", 3,
+                keys=raw_byte,
+            )
         for mode in range(4):
             fixture, _ = network_rom.build(
                 extended=True, abi_selftest=True,
@@ -222,7 +232,8 @@ def main() -> int:
     print(
         "NETWORK-FIRST-ROM-EXTENDED-TEST: PASS "
         f"{metadata['image_sha256']} {successor_metadata['image_sha256']} "
-        "(immutable C6; C7 modified raw; four modes; integrated cursor/key)"
+        "(immutable C6; C7 Shift-F8/Ctrl-Up raw; four modes; "
+        "integrated cursor/key)"
     )
     return 0
 
