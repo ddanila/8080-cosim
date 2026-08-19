@@ -288,6 +288,66 @@ def main() -> int:
     if drive_b[high_offset:high_offset + RECORD_SIZE] != attempted:
         raise AssertionError("opt-in writable B: volume was not updated")
 
+    # A request-status fault must be applied before write-through. Duplicate
+    # transport retries replay the same failed reply without invoking the
+    # semantic filter twice; a new sequence can then succeed normally.
+    fault_host, fault_client = socket.socketpair()
+    fault_volume = bytearray(VOLUME_SIZE)
+    fault_errors: list[BaseException] = []
+    fault_requests: list[dict[str, int]] = []
+
+    def request_status_filter(context: dict[str, int]) -> int | None:
+        fault_requests.append(context.copy())
+        return 1 if len(fault_requests) == 1 else None
+
+    def fault_worker() -> None:
+        try:
+            serve_disk(
+                fault_host.fileno(), fault_volume, writable=True,
+                timeout=2, idle_timeout=0.05, reply_guard=0, verbose=False,
+                request_status_filter=request_status_filter,
+            )
+        except BaseException as error:
+            fault_errors.append(error)
+
+    fault_thread = threading.Thread(target=fault_worker)
+    fault_thread.start()
+    if receive_exact(fault_client, 4) != b"NRN2":
+        raise AssertionError("fault-filter server readiness marker differs")
+    failed_write = request(WRITE, 7, 0, 2, 1, attempted)
+    fault_client.sendall(failed_write)
+    reply = receive_exact(fault_client, 5)
+    if reply[:4] != REPLY_SYNC + b"\x07\x01" or checksum(reply):
+        raise AssertionError("pre-mutation write fault was not reported")
+    if fault_volume[compact_offset:compact_offset + RECORD_SIZE] == attempted:
+        raise AssertionError("failed filtered write changed the volume")
+    fault_client.sendall(failed_write)
+    if receive_exact(fault_client, 5) != reply:
+        raise AssertionError("duplicate filtered write reply was not replayed")
+    if len(fault_requests) != 1:
+        raise AssertionError("duplicate request re-entered the status filter")
+    fault_client.sendall(request(WRITE, 8, 0, 2, 1, attempted))
+    reply = receive_exact(fault_client, 5)
+    if reply[:4] != REPLY_SYNC + b"\x08\x00" or checksum(reply):
+        raise AssertionError("post-fault write did not recover")
+    fault_thread.join(timeout=2)
+    fault_client.close()
+    fault_host.close()
+    if fault_thread.is_alive() or fault_errors:
+        raise AssertionError(
+            f"request-status fault server did not finish: {fault_errors!r}"
+        )
+    if fault_volume[compact_offset:compact_offset + RECORD_SIZE] != attempted:
+        raise AssertionError("post-fault write did not update the volume")
+    if len(fault_requests) != 2 or fault_requests[0] != {
+            "request_index": 1, "operation": WRITE, "sequence": 7,
+            "drive": 0, "track": 2, "sector": 1,
+            "offset": compact_offset, "status": 0,
+    } or fault_requests[1]["request_index"] != 3:
+        raise AssertionError(
+            f"request-status filter context differs: {fault_requests!r}"
+        )
+
     v3_host, v3_client = socket.socketpair()
     v3_stats: dict[str, int] = {}
     v3_errors: list[BaseException] = []

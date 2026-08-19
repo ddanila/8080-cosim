@@ -315,6 +315,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                boot_report_hook: Callable[
                    [dict[str, int]], None
                ] | None = None,
+               request_status_filter: Callable[
+                   [dict[str, int]], int | None
+               ] | None = None,
                reply_filter: Callable[[int, bytes], bytes] | None = None,
                console_reply_filter: Callable[[int, int, bytes], bytes] |
                None = None,
@@ -393,6 +396,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
     first_request_seen = False
     console_confirmed = False
     reply_attempts = 0
+    request_index = 0
     console_reply_attempts = 0
 
     while deadline is None or time.monotonic() < deadline:
@@ -539,6 +543,31 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             reply_chunks: tuple[bytes, ...] = ()
             payload = bytes(selected[offset:offset + RECORD_SIZE]) \
                 if valid_read and status == 0 else b""
+            duplicate_request = sequence == last_sequence and \
+                request == last_request
+            request_index += 1
+            if request_status_filter is not None and not duplicate_request and \
+                    operation in (
+                        READ, WRITE, READ_COMPACT, READ_AHEAD, WRITE_V3,
+                    ):
+                filtered_status = request_status_filter({
+                    "request_index": request_index,
+                    "operation": operation,
+                    "sequence": sequence,
+                    "drive": drive,
+                    "track": track,
+                    "sector": sector,
+                    "offset": offset if offset is not None else -1,
+                    "status": status,
+                })
+                if filtered_status is not None:
+                    if not 0 <= filtered_status <= 0xFF:
+                        raise ValueError(
+                            "request status filter returned an invalid status"
+                        )
+                    status = filtered_status
+                    if status:
+                        payload = b""
             pending_time_set: bytes | None = None
             if operation == CONSOLE_POLL:
                 stats["console_polls"] += 1
@@ -774,8 +803,6 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     f"status={status}", flush=True,
                 )
 
-            duplicate_request = sequence == last_sequence and \
-                request == last_request
             if request_hook is not None:
                 request_hook({
                     "monotonic_seconds": request_at,
