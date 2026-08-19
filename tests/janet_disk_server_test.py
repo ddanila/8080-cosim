@@ -255,6 +255,39 @@ def main() -> int:
             float(first_requests[0]["elapsed_seconds"]) <= 0:
         raise AssertionError(f"first disk request evidence differs: {first_requests}")
 
+    # B stays read-only by default, but a controlled integration harness may
+    # explicitly opt its supplied in-memory image into write-through testing.
+    write_b_host, write_b_client = socket.socketpair()
+    write_b_errors: list[BaseException] = []
+
+    def write_b_worker() -> None:
+        try:
+            serve_disk(
+                write_b_host.fileno(), drive_a, drive_b=drive_b,
+                writable=True, writable_drive_b=True,
+                timeout=2, idle_timeout=0.05, reply_guard=0, verbose=False,
+            )
+        except BaseException as error:
+            write_b_errors.append(error)
+
+    write_b_thread = threading.Thread(target=write_b_worker)
+    write_b_thread.start()
+    if receive_exact(write_b_client, 4) != b"NRN2":
+        raise AssertionError("writable-B server readiness marker differs")
+    write_b_client.sendall(request(WRITE, 6, 1, 159, 40, attempted))
+    reply = receive_exact(write_b_client, 5)
+    if reply[:4] != REPLY_SYNC + b"\x06\x00" or checksum(reply):
+        raise AssertionError("opt-in writable B: record was rejected")
+    write_b_thread.join(timeout=2)
+    write_b_client.close()
+    write_b_host.close()
+    if write_b_thread.is_alive() or write_b_errors:
+        raise AssertionError(
+            f"writable-B server did not finish: {write_b_errors!r}"
+        )
+    if drive_b[high_offset:high_offset + RECORD_SIZE] != attempted:
+        raise AssertionError("opt-in writable B: volume was not updated")
+
     v3_host, v3_client = socket.socketpair()
     v3_stats: dict[str, int] = {}
     v3_errors: list[BaseException] = []

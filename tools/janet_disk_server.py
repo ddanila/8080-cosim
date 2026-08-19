@@ -284,6 +284,7 @@ def juku_image_to_volume(image: bytes) -> bytearray:
 
 def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                writable: bool = False,
+               writable_drive_b: bool = False,
                timeout: float | None = None,
                idle_timeout: float | None = None,
                reply_guard: float = 0.002,
@@ -521,7 +522,9 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     except OSError as error:
                         if error.errno not in (errno.EAGAIN, errno.EWOULDBLOCK):
                             raise
-            can_write = writable and drive == 0
+            can_write = writable and (
+                drive == 0 or (drive == 1 and writable_drive_b)
+            )
             valid_write = operation == WRITE or (
                 operation == WRITE_V3 and protocol_version == 3
             )
