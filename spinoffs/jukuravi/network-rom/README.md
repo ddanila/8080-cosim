@@ -26,6 +26,11 @@ line is deliberately additive:
   ABI 1.0/1.1 vector addresses or C5 bytes. C6 is qualified and packaged as a
   simulator release. The exact pair is fitted in CS00015 and passed every
   monitor-independent physical item; display/cursor observation remains.
+  The frozen fitted image has one subsequently found raw-service limitation:
+  with SHIFT or CTRL held, `JCGKEYRAW` can report column zero before reaching
+  the ordinary key's column. Translated keyboard input and unmodified raw keys
+  are unaffected. `juku-common` master contains the corrected scanner; it must
+  enter a separately named future ROM candidate rather than rewrite C6.
 
 ## Build and test
 
@@ -63,6 +68,11 @@ slot, manifests, hashes, and the complete ROM/RAM/vector map.
 - `juku-network-rom-abi1{,-d15,-d16}.bin` and JSON: immutable C4 / ABI 1.0.
 - `juku-network-rom-abi1.1-c5{,-d15,-d16}.bin` and JSON: C5 / ABI 1.1.
 - `juku-network-rom-abi1.2-c6{,-d15,-d16}.bin` and JSON: C6 / ABI 1.2.
+
+These named releases are immutable. In particular, rebuilding a modified
+scanner under the C6 filenames is not a C6 update: the fitted combined image
+remains SHA-256
+`0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09`.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must
 reproduce the 16 KiB image exactly.  The generated JSON is the machine-readable

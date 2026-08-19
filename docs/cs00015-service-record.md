@@ -269,6 +269,14 @@ retries or late completions. The complete monitorless physical matrix and its
 remaining display boundary are recorded in
 [`../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md`](../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md).
 
+Later source review found a bounded limitation in the immutable fitted C6
+`JCGKEYRAW` implementation: the global active-low SHIFT/CTRL returns can make
+the scan stop at column zero before an ordinary modified key's column is
+visited. This does not affect translated keyboard input or unmodified raw-key
+tests. The scanner is corrected on `juku-common` master; the fitted hashes
+above remain authoritative, and any ROM carrying the fix must receive a new
+candidate name rather than replace the C6 artifacts.
+
 ## Serial connector measurement
 
 Owner continuity on 2026-08-01 identifies `X3.7` as signal ground.  The
