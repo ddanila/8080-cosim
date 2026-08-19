@@ -301,6 +301,7 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                first_request_hook: Callable[
                    [dict[str, int | float]], None
                ] | None = None,
+               request_hook: Callable[[dict[str, object]], None] | None = None,
                console_confirm_hook: Callable[
                    [dict[str, int]], None
                ] | None = None,
@@ -772,6 +773,25 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
 
             duplicate_request = sequence == last_sequence and \
                 request == last_request
+            if request_hook is not None:
+                request_hook({
+                    "monotonic_seconds": request_at,
+                    "elapsed_seconds": (
+                        request_at - boot_started_at
+                        if boot_started_at is not None else 0.0
+                    ),
+                    "operation": operation,
+                    "sequence": sequence,
+                    "drive": drive,
+                    "track": track,
+                    "sector": sector,
+                    "status": 0 if status in (2, 3) else status,
+                    "records": records,
+                    "request_bytes": len(request),
+                    "reply_bytes": len(reply),
+                    "encoding": encoding,
+                    "duplicate": duplicate_request,
+                })
             if duplicate_request:
                 retries += 1
                 stats["retries"] = retries
@@ -1282,6 +1302,10 @@ def parser() -> argparse.ArgumentParser:
         help="write timing evidence when the first valid disk request arrives",
     )
     result.add_argument(
+        "--request-trace-jsonl", type=Path,
+        help="write one timestamped JSON record for every target request",
+    )
+    result.add_argument(
         "--boot-manifest", type=Path,
         help="verify system, stage, protocol, baud, and media against manifest",
     )
@@ -1410,6 +1434,16 @@ def main(argv: Iterable[str] | None = None) -> int:
     console_fd = os.open(
         args.console_pty, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK,
     ) if args.console_pty else None
+    request_trace = args.request_trace_jsonl.open("w", buffering=1) \
+        if args.request_trace_jsonl else None
+
+    def record_request(event: dict[str, object]) -> None:
+        if request_trace is not None:
+            request_trace.write(json.dumps({
+                "schema": "juku-netdisk-request-trace-v1",
+                **event,
+            }, sort_keys=True) + "\n")
+            request_trace.flush()
 
     def confirm_remote_console(event: dict[str, int]) -> None:
         operation = (
@@ -1461,6 +1495,7 @@ def main(argv: Iterable[str] | None = None) -> int:
                 console_fd=console_fd,
                 console_trace=args.console_trace,
                 console_confirm_hook=confirm_remote_console,
+                request_hook=record_request,
                 clock=clock,
                 resume=True,
             )
@@ -1653,6 +1688,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             console_fd=console_fd,
             console_trace=args.console_trace,
             console_confirm_hook=confirm_remote_console,
+            request_hook=record_request,
             clock=clock,
             resume=args.network_rom,
         )
@@ -1667,6 +1703,8 @@ def main(argv: Iterable[str] | None = None) -> int:
         os.close(fd)
         if console_fd is not None:
             os.close(console_fd)
+        if request_trace is not None:
+            request_trace.close()
     return 0
 
 

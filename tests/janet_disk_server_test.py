@@ -165,6 +165,7 @@ def main() -> int:
     host, client = socket.socketpair()
     stats: dict[str, int] = {}
     first_requests: list[dict[str, int | float]] = []
+    request_trace: list[dict[str, object]] = []
     errors: list[BaseException] = []
 
     def worker() -> None:
@@ -175,6 +176,7 @@ def main() -> int:
                 verbose=False, stats=stats,
                 boot_started_at=0.0,
                 first_request_hook=first_requests.append,
+                request_hook=request_trace.append,
             )
         except BaseException as error:
             errors.append(error)
@@ -189,6 +191,14 @@ def main() -> int:
     if reply[:4] != REPLY_SYNC + b"\x01\x00" or checksum(reply) or \
             reply[4:-1] != bytes(range(RECORD_SIZE)):
         raise AssertionError("native B: high-track read differs")
+    if len(request_trace) != 1 or request_trace[0]["operation"] != READ or \
+            request_trace[0]["drive"] != 1 or \
+            request_trace[0]["track"] != 159 or \
+            request_trace[0]["sector"] != 40 or \
+            request_trace[0]["records"] != 1 or \
+            request_trace[0]["duplicate"] is not False or \
+            not isinstance(request_trace[0]["monotonic_seconds"], float):
+        raise AssertionError("structured request trace differs")
 
     client.sendall(request(READ_COMPACT, 2, 0, 2, 1))
     reply = receive_exact(client, 6)
