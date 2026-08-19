@@ -295,6 +295,7 @@ def main() -> int:
     fault_volume = bytearray(VOLUME_SIZE)
     fault_errors: list[BaseException] = []
     fault_requests: list[dict[str, int]] = []
+    fault_trace: list[dict[str, object]] = []
 
     def request_status_filter(context: dict[str, int]) -> int | None:
         fault_requests.append(context.copy())
@@ -306,6 +307,7 @@ def main() -> int:
                 fault_host.fileno(), fault_volume, writable=True,
                 timeout=2, idle_timeout=0.05, reply_guard=0, verbose=False,
                 request_status_filter=request_status_filter,
+                request_hook=fault_trace.append,
             )
         except BaseException as error:
             fault_errors.append(error)
@@ -346,6 +348,12 @@ def main() -> int:
     } or fault_requests[1]["request_index"] != 3:
         raise AssertionError(
             f"request-status filter context differs: {fault_requests!r}"
+        )
+    if [event["status"] for event in fault_trace] != [1, 1, 0] or \
+            [event["duplicate"] for event in fault_trace] != \
+            [False, True, False]:
+        raise AssertionError(
+            f"duplicate request trace differs: {fault_trace!r}"
         )
 
     v3_host, v3_client = socket.socketpair()

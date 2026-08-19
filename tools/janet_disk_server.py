@@ -715,6 +715,15 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
                     BOOT_REPORT):
                 body = REPLY_SYNC + bytes((sequence, status)) + payload
                 reply = body + bytes((checksum(body),))
+            # A duplicate is a transport replay, not a fresh semantic
+            # request.  Publish the status that is actually being replayed;
+            # otherwise hooks and verbose logs can claim success after a
+            # deliberately failed request even though the wire reply remains
+            # the cached failure.
+            if duplicate_request:
+                status = last_reply[3]
+                reply = last_reply
+                reply_chunks = last_reply_chunks
             stats["request_wire_bytes"] += len(request)
             stats["reply_wire_bytes"] += len(reply)
 
@@ -825,8 +834,6 @@ def serve_disk(fd: int, volume: bytearray, *, drive_b: bytearray | None = None,
             if duplicate_request:
                 retries += 1
                 stats["retries"] = retries
-                reply = last_reply
-                reply_chunks = last_reply_chunks
             elif status == 0 and operation in (WRITE, WRITE_V3):
                 selected[offset:offset + RECORD_SIZE] = request[8:8 + RECORD_SIZE]
                 writes += 1

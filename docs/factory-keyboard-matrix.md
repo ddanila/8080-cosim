@@ -91,7 +91,11 @@ both raw and decoded settings.
 - The HDL accepts the same `(column, key-bit, shift)` tuple at its simulation
   boundary; shifted `T` remains column 4, bit 3 and reads as Port B `0x88`.
 - No-key remains `0xCF`: `K0–K2` and `-FK` released, SHIFT/CTRL released.
-- Function, navigation, locking, DEL/ERASE, LAT/RUS, CTRL, and national keys
+- Interactive PTY bytes `80`, `81`, `82`, `83`, `84`, `86`, `87`, and `88`
+  (hex) inject Down, Erase, F5, F6, F8, Shift-F8, F1, and F2 respectively.
+  `85` injects the special Ctrl-Up/Home chord outside `KMAP`. These bytes are
+  a cosim test protocol, not character encodings exposed to Juku software.
+- The remaining function, navigation, locking, DEL, LAT/RUS, and national keys
   are transcribed above but are not byte-addressable in `JUKU_KEYS`; extending
   the stimulus syntax is a test-interface boundary, not missing hardware.
 

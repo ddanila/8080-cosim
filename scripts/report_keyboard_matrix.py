@@ -50,8 +50,21 @@ EXPECTED.update({
     ";":(11,1,0), "+":(11,1,1), "-":(11,4,0), "=":(11,4,1), ":":(10,5,0), "*":(10,5,1),
     "[":(9,3,0), "]":(8,3,0), "\\":(11,3,0), "^":(11,3,1),
 })
+SYNTHETIC_EXPECTED = {
+    0x80: (9, 2, 0),    # Down
+    0x81: (8, 4, 0),    # Erase
+    0x82: (4, 0, 0),    # F5
+    0x83: (0, 0, 0),    # F6
+    0x84: (14, 0, 0),   # F8
+    0x86: (14, 0, 1),   # Shift-F8
+    0x87: (3, 0, 0),    # F1
+    0x88: (5, 0, 0),    # F2
+}
 
 CHAR_RE = re.compile(r"\{'((?:\\[0-7]{3}|\\.|[^']))',\s*(\d+),(\d+),(\d+)\}")
+HEX_CHAR_RE = re.compile(
+    r"\{'\\x([0-9a-fA-F]{2})',\s*(\d+),(\d+),(\d+)\}",
+)
 
 def decode_c_char(token: str) -> str:
     if token == r"\033": return "\x1b"
@@ -70,6 +83,15 @@ def main() -> None:
         extra = sorted(set(actual) - set(EXPECTED))
         wrong = sorted(k for k in EXPECTED.keys() & actual.keys() if EXPECTED[k] != actual[k])
         raise SystemExit(f"cosim KMAP mismatch: missing={missing!r} extra={extra!r} wrong={wrong!r}")
+    actual_synthetic = {
+        int(value, 16): (int(col), int(bit), int(shift))
+        for value, col, bit, shift in HEX_CHAR_RE.findall(source)
+    }
+    if actual_synthetic != SYNTHETIC_EXPECTED:
+        raise SystemExit(
+            "cosim synthetic KMAP mismatch: "
+            f"expected={SYNTHETIC_EXPECTED!r} actual={actual_synthetic!r}"
+        )
 
     def cell(item):
         if item is None: return "—"
@@ -138,6 +160,17 @@ takes its network identity from S21.  Only a zero configuration falls through
 to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately models that
 open-switch fallback and therefore injects `TN0201`.
 
+For a later identity-free monitorless ROM, the accepted project plan may
+repurpose this same raw byte as shared ROM/OS machine configuration: logical
+bit 0 is ROM-only immediate-network-boot policy; bits 2:1 select four video
+modes used by both ROM and CP/M (`00` stock, `11` MODX 80x24, with the two
+historical intermediate timings still to be extracted); bits 7:3 remain
+reserved. This is not part of C2. Implementation must first verify active
+polarity and the S21.1..S21.8 order by drawing plus physical readback. ROM then
+latches the byte once, exposes it through the resident ABI, and CP/M consumes
+that same value instead of resampling the keyboard. Host and diagnostics report
+both raw and decoded settings.
+
 ## Model comparison
 
 - All 26 letters, ten digits, their drawing-visible ASCII shift pairs, Space,
@@ -147,7 +180,11 @@ open-switch fallback and therefore injects `TN0201`.
 - The HDL accepts the same `(column, key-bit, shift)` tuple at its simulation
   boundary; shifted `T` remains column 4, bit 3 and reads as Port B `0x88`.
 - No-key remains `0xCF`: `K0–K2` and `-FK` released, SHIFT/CTRL released.
-- Function, navigation, locking, DEL/ERASE, LAT/RUS, CTRL, and national keys
+- Interactive PTY bytes `80`, `81`, `82`, `83`, `84`, `86`, `87`, and `88`
+  (hex) inject Down, Erase, F5, F6, F8, Shift-F8, F1, and F2 respectively.
+  `85` injects the special Ctrl-Up/Home chord outside `KMAP`. These bytes are
+  a cosim test protocol, not character encodings exposed to Juku software.
+- The remaining function, navigation, locking, DEL, LAT/RUS, and national keys
   are transcribed above but are not byte-addressable in `JUKU_KEYS`; extending
   the stimulus syntax is a test-interface boundary, not missing hardware.
 
@@ -158,6 +195,9 @@ The guarded table now closes that software-stimulus completeness gap.
     out = ROOT / "docs/factory-keyboard-matrix.md"
     out.write_text(report)
     print(f"keyboard matrix: 15 scan lines, {sum(x is not None for row in MATRIX.values() for x in row)} fitted matrix positions")
-    print(f"cosim ASCII tuples: {len(EXPECTED)} exact matches")
+    print(
+        f"cosim tuples: {len(EXPECTED)} ASCII + "
+        f"{len(SYNTHETIC_EXPECTED)} synthetic exact matches"
+    )
 
 if __name__ == "__main__": main()
