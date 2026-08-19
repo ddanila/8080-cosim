@@ -1,0 +1,16 @@
+{
+  "schema": "juku-cosim-smoke-kit-v1",
+  "architecture": "linux-amd64",
+  "root": "/opt/8080-cosim",
+  "trace": "bin/trace",
+  "python_modules": [
+    "tools/janet_disk_server.py",
+    "tools/janet_fastboot.py",
+    "tools/janet_netboot.py"
+  ],
+  "roms": {
+    "direct": "spinoffs/jukuravi/remix/ekta4402.bin",
+    "stock": "spinoffs/jukuravi/remix/ekta4401.bin",
+    "network": "spinoffs/jukuravi/network-rom/juku-network-rom-abi1.bin"
+  }
+}

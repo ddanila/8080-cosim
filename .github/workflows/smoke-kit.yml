@@ -1,0 +1,77 @@
+name: Publish smoke kit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - cosim/**
+      - tools/janet_disk_server.py
+      - tools/janet_fastboot.py
+      - tools/janet_netboot.py
+      - spinoffs/jukuravi/remix/ekta4401.bin
+      - spinoffs/jukuravi/remix/ekta4402.bin
+      - spinoffs/jukuravi/network-rom/juku-network-rom-abi1.bin
+      - .github/smoke-kit/**
+      - .github/workflows/smoke-kit.yml
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: smoke-kit
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Prepare minimal build context
+        run: |
+          context="$RUNNER_TEMP/smoke-kit"
+          mkdir -p \
+            "$context/cosim" \
+            "$context/tools" \
+            "$context/spinoffs/jukuravi/remix" \
+            "$context/spinoffs/jukuravi/network-rom"
+          cp cosim/*.c cosim/*.h "$context/cosim/"
+          cp tools/janet_disk_server.py tools/janet_fastboot.py \
+            tools/janet_netboot.py "$context/tools/"
+          cp spinoffs/jukuravi/remix/ekta4401.bin \
+            spinoffs/jukuravi/remix/ekta4402.bin \
+            "$context/spinoffs/jukuravi/remix/"
+          cp spinoffs/jukuravi/network-rom/juku-network-rom-abi1.bin \
+            "$context/spinoffs/jukuravi/network-rom/"
+          cp .github/smoke-kit/Dockerfile \
+            .github/smoke-kit/smoke-kit.json "$context/"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - name: Build and publish
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: ${{ runner.temp }}/smoke-kit
+          file: ${{ runner.temp }}/smoke-kit/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/ddanila/8080-cosim-smoke-kit:v1
+            ghcr.io/ddanila/8080-cosim-smoke-kit:sha-${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/ddanila/8080-cosim
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.description=Minimal Juku simulator kit for downstream boot smoke tests
+          cache-from: type=gha,scope=smoke-kit
+          cache-to: type=gha,mode=max,scope=smoke-kit

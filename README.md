@@ -189,6 +189,13 @@ resident version report, text utilities, command history, and control panel.
 The capture inputs, dependencies, and regeneration commands are documented in
 [`media/demos/README.md`](media/demos/README.md).
 
+Downstream projects can consume the digest-pinned
+`ghcr.io/ddanila/8080-cosim-smoke-kit` OCI image instead of cloning this whole
+repository. The kit contains the Linux simulator, Janet transport modules,
+required ROMs, and a machine-readable interface manifest at
+`/opt/8080-cosim/smoke-kit.json`. It is republished only when those inputs or
+its image definition change.
+
 ## Evidence and source hierarchy
 
 1. Factory drawings, board photographs, dumps, and owner measurements under
