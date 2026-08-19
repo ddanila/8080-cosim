@@ -2294,6 +2294,31 @@ int main(int argc, char** argv) {
       (cpu.interrupt_pending && cpu.iff && cpu.interrupt_delay == 0);
     uint16_t instruction_sp = cpu.sp;
     i8080_step(&cpu);
+    /* A transient can tail-call BDOS with JMP 0005h while its caller's return
+     * address is outside the TPA (normally page-zero warm boot). The existing
+     * resume detector below runs only for instructions fetched in the TPA, so
+     * that legitimate exit used to leave a controlled stack measurement
+     * permanently active. Observe the first instruction at the recorded
+     * non-TPA return address and freeze the completed transient explicitly. */
+    if (instruction_will_execute && !cpu.last_opcode_was_interrupt &&
+        tpa_program_seen && tpa_program_in_bdos &&
+        (cpu.last_opcode_pc < 0x0100 || cpu.last_opcode_pc > 0x99FF) &&
+        cpu.last_opcode_pc == tpa_program_bdos_return_pc) {
+      int bdos_tail_call = tpa_program_bdos_tail_call;
+      tpa_program_in_bdos = 0;
+      tpa_program_bdos_tail_call = 0;
+      if (bdos_tail_call && tpa_program_call_depth)
+        tpa_program_call_depth--;
+      tpa_program_seen = 0;
+      if (tpa_measurement_controlled)
+        tpa_measurement_frozen = 1;
+      if (tpa_stack_trace_enabled)
+        fprintf(stderr,
+                "[TPA-STACK] non-TPA tail exit pc=%04X sp=%04X "
+                "tail=%d depth=%u bytes=%u cyc=%lu\n",
+                cpu.last_opcode_pc, instruction_sp, bdos_tail_call,
+                tpa_program_call_depth, tpa_program_stack_bytes, cpu.cyc);
+    }
     if (instruction_will_execute && !cpu.last_opcode_was_interrupt &&
         cpu.last_opcode_pc >= 0x0100 && cpu.last_opcode_pc <= 0x99FF) {
       uint8_t opcode = cpu.last_opcode;

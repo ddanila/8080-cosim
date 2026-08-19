@@ -26,9 +26,11 @@ follows internal CALL/RET depth, and freezes the SP low-water result at the
 top-level return. For a tail call it records the existing return address from
 the transient stack, waits for that exact address rather than merely the next
 instruction in the broad TPA address range, and mirrors the implicit unwind.
+That return may be the page-zero warm-boot vector rather than another TPA
+instruction; the tracer observes and freezes that non-TPA exit explicitly.
 It also recognizes BDOS function 0 reached by either form as a non-returning
-system reset. This
-distinction is required by ordinary DRI PL/M startup code and prevents the
+system reset. This distinction is required by ordinary DRI PL/M startup code
+and small assembly utilities and prevents the
 following CCP/BDOS stack from being charged to the completed transient. Send
 `SIGUSR1` after the prompt to write the configured
 `JUKU_CHECKPOINT_PREFIX` `.ram` and `.state` files without stopping execution.
