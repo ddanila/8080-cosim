@@ -25,6 +25,7 @@ import build_network_rom as network_rom  # noqa: E402
 
 
 C5_SHA256 = "9ed6273f44c1b09dcb5fcd3ca94e5a1aad813b285607558a7d8cb98b1a5e6e7a"
+C6_SHA256 = "0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09"
 
 
 def fail(message: str) -> None:
@@ -106,11 +107,16 @@ def main() -> int:
         fail("usage: test.py /path/to/trace")
     trace = Path(sys.argv[1]).resolve()
     image, metadata = network_rom.build(extended=True)
+    successor_image, successor_metadata = network_rom.build(successor=True)
     if image != network_rom.EXTENDED_OUTPUT.read_bytes():
         fail("committed ABI 1.2 image differs from deterministic rebuild")
+    if successor_image != network_rom.SUCCESSOR_OUTPUT.read_bytes():
+        fail("committed C7 successor differs from deterministic rebuild")
     if hashlib.sha256(network_rom.LOCALE_OUTPUT.read_bytes()).hexdigest() != \
             C5_SHA256:
         fail("ABI 1.2 work changed the immutable C5 ROM")
+    if hashlib.sha256(image).hexdigest() != C6_SHA256:
+        fail("C7 work changed the immutable C6 ROM")
     if metadata.get("abi") != {"base": "FF00", "major": 1, "minor": 2} or \
             metadata.get("candidate") != \
             "network-first-abi1.2-c6-simulator" or \
@@ -128,6 +134,11 @@ def main() -> int:
                 "diagnostics": "FF44",
             }.items() <= metadata.get("abi_vectors", {}).items():
         fail(f"ABI 1.2 metadata differs: {metadata}")
+    if successor_metadata.get("candidate") != \
+            "network-first-abi1.2-c7-modified-raw-simulator" or \
+            successor_metadata.get("abi") != metadata.get("abi") or \
+            successor_image == image:
+        fail(f"C7 successor metadata differs: {successor_metadata}")
     extension_start = network_rom.EMBEDDED_EXTENSION_STORED
     extension_end = extension_start + network_rom.EMBEDDED_EXTENSION_BYTES
     embedded_extension = image[extension_start:extension_end]
@@ -144,6 +155,12 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="network-rom-extended.") as name:
         temporary = Path(name)
         screens: dict[int, bytes] = {}
+        successor_fixture, _ = network_rom.build(
+            successor=True, abi_selftest=True,
+        )
+        run_fixture(
+            trace, successor_fixture, temporary, "c7-modified-raw", 3,
+        )
         for mode in range(4):
             fixture, _ = network_rom.build(
                 extended=True, abi_selftest=True,
@@ -204,8 +221,8 @@ def main() -> int:
 
     print(
         "NETWORK-FIRST-ROM-EXTENDED-TEST: PASS "
-        f"{metadata['image_sha256']} "
-        "(ABI 1.2 block/multi/raw/sound; four modes; integrated cursor/key)"
+        f"{metadata['image_sha256']} {successor_metadata['image_sha256']} "
+        "(immutable C6; C7 modified raw; four modes; integrated cursor/key)"
     )
     return 0
 

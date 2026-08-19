@@ -1,0 +1,141 @@
+{
+  "schema": "juku-network-rom-abi1-v1",
+  "image_bytes": 16384,
+  "image_sha256": "a05c74d948d9f01c5a89dc3ea69bfeb4fdf9ac48b3e37845d1edbf03e6e203b8",
+  "d15_sha256": "8a1db7dcd0bdf6403bcd64ac7a7f12b278ae0c70778508ddbe90d4cc50e3f413",
+  "d16_sha256": "5512b75f1550ec4c305b721ad0ee179556c938780a197b3bed1001366c7e4b94",
+  "boot_code_bytes": 1027,
+  "gate_bytes": 214,
+  "helper_bytes": 128,
+  "fastboot_core_bytes": 128,
+  "fastboot_extension_bytes": 0,
+  "embedded_fastboot_extension_bytes": 361,
+  "embedded_fastboot_extension_sha256": "107b37897a392b9250e34e0884029df65a11e65dec6f6bbca541ef3d002d7d0b",
+  "embedded_fastboot_extension_file_offset": "0600",
+  "fastboot_protocol": 16,
+  "quick_post": [
+    "cpu",
+    "ram-data",
+    "ram-address",
+    "complete-rom",
+    "pit-usart"
+  ],
+  "hardware_init": [
+    "ppi0-82-pc7-high",
+    "ppi1-9b",
+    "stock-raster-refresh",
+    "pic-d6-fe-masked",
+    "d57-ch0-mode2-count4",
+    "d11-8n1"
+  ],
+  "post_status": {
+    "ok": "00",
+    "cpu": "C1",
+    "ram-data": "C2",
+    "ram-address": "C3",
+    "complete-rom": "C4",
+    "pit-usart": "C5"
+  },
+  "target_ready_byte": "C7",
+  "resident_bytes": 10240,
+  "resident_services": [
+    "console",
+    "serial",
+    "keyboard",
+    "netdisk-v3",
+    "diagnostics",
+    "bounded-console-span",
+    "netdisk-multi",
+    "raw-keyboard",
+    "sound"
+  ],
+  "console": {
+    "geometry": "S21-bits-2:1",
+    "font": "Creep-0.31-adapted-5x7",
+    "cursor_period_polls": 512,
+    "modes": {
+      "00": "40x24",
+      "01": "53x24",
+      "10": "64x20",
+      "11": "80x24"
+    },
+    "locale": {
+      "s21_bits": "4:3",
+      "banks": [
+        "english",
+        "estonian",
+        "cp866"
+      ],
+      "cp437_ui": "B0-DF"
+    }
+  },
+  "abi": {
+    "base": "FF00",
+    "major": 1,
+    "minor": 2
+  },
+  "abi_vectors": {
+    "init": "FF20",
+    "console_init": "FF23",
+    "console_status": "FF26",
+    "console_input": "FF29",
+    "console_output": "FF2C",
+    "serial_init": "FF2F",
+    "serial_receive": "FF32",
+    "serial_transmit": "FF35",
+    "netdisk_single": "FF38",
+    "keyboard_init": "FF3B",
+    "keyboard_scan": "FF3E",
+    "sound": "FF41",
+    "diagnostics": "FF44",
+    "get_info": "FF47",
+    "configuration": "FF4A",
+    "keyboard_remap": "FF4D",
+    "boot_policy": "FF50",
+    "console_block": "FF53",
+    "netdisk_multi": "FF56",
+    "keyboard_raw": "FF59"
+  },
+  "candidate": "network-first-abi1.2-c7-modified-raw-simulator",
+  "status": "modified-raw simulator successor; C6 remains immutable",
+  "key_remap_pairs": 4,
+  "netdisk_cache": {
+    "records_per_drive": 8,
+    "drives": 2,
+    "shared_pointer_fallback": "alias-safe"
+  },
+  "boot_policy": {
+    "s21_bit": 0,
+    "set": "automatic network boot",
+    "clear": "wait for local N"
+  },
+  "boot_status_record": {
+    "base": "D610",
+    "post": "D610",
+    "stage": "D611",
+    "crc_retries": "D612",
+    "protocol": "D613",
+    "stages": {
+      "10": "POST active",
+      "20": "V16 core entered; ROM-resident loader active",
+      "30": "extension active; system header pending",
+      "31": "system header accepted; payload pending",
+      "E2": "compressed payload CRC failed; retrying",
+      "32": "compressed payload authenticated; decompressing",
+      "40": "CP/M system entered",
+      "50": "first NetDisk transaction succeeded"
+    }
+  },
+  "fastboot_wire_contract": "JF16 core descriptor plus JZ/length/compressed/CRC stream; no executable extension",
+  "feature_bits": {
+    "value": "0FBF",
+    "console_block": "0200",
+    "netdisk_multi": "0400",
+    "keyboard_raw": "0800"
+  },
+  "netdisk_multi": {
+    "maximum_descriptors": 8,
+    "descriptor_bytes": 10,
+    "write_policy": "synchronous-write-through"
+  }
+}

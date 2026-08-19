@@ -350,8 +350,13 @@ resident_entry:
 .ifdef ROM_ABI_EXTENDED
         call    JCGKEYRAWADDR
         jc      self_fail_keyboard
+.ifdef ROM_ABI_RAW_FIXED
+        cpi     4                       ; uppercase T's ordinary column
+        jnz     self_fail_keyboard
+.else
         cpi     15
         jnc     self_fail_keyboard
+.endif
         mov     a,b
         ani     0cfh                    ; uppercase T includes SHIFT
         cpi     0cfh

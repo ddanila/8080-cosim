@@ -31,6 +31,11 @@ line is deliberately additive:
   the ordinary key's column. Translated keyboard input and unmodified raw keys
   are unaffected. `juku-common` master contains the corrected scanner; it must
   enter a separately named future ROM candidate rather than rewrite C6.
+- C7 is that separately named simulator successor. It retains ABI 1.2 and the
+  C6 boot protocol, adds the VC-compatible CP437 box glyphs, and scans every
+  ordinary matrix column before accepting a standalone global modifier. The
+  build still reproduces the exact fitted C5 and C6 hashes before emitting
+  `juku-network-rom-abi1.2-c7.bin`.
 
 ## Build and test
 

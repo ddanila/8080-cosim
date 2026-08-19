@@ -31,6 +31,10 @@ EXTENDED_OUTPUT = HERE / "juku-network-rom-abi1.2-c6.bin"
 EXTENDED_D15_OUTPUT = HERE / "juku-network-rom-abi1.2-c6-d15.bin"
 EXTENDED_D16_OUTPUT = HERE / "juku-network-rom-abi1.2-c6-d16.bin"
 EXTENDED_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.2-c6.json"
+SUCCESSOR_OUTPUT = HERE / "juku-network-rom-abi1.2-c7.bin"
+SUCCESSOR_D15_OUTPUT = HERE / "juku-network-rom-abi1.2-c7-d15.bin"
+SUCCESSOR_D16_OUTPUT = HERE / "juku-network-rom-abi1.2-c7-d16.bin"
+SUCCESSOR_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.2-c7.json"
 
 LOWER_SIZE = 0x1800
 RESIDENT_SIZE = 0x2800
@@ -44,6 +48,7 @@ LOCALE_EXTENSION_BYTES = 307
 CANDIDATE = "network-first-abi1-cs00015-c4"
 LOCALE_CANDIDATE = "network-first-abi1.1-cs00015-c5-desk"
 EXTENDED_CANDIDATE = "network-first-abi1.2-c6-simulator"
+SUCCESSOR_CANDIDATE = "network-first-abi1.2-c7-modified-raw-simulator"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -66,7 +71,10 @@ def build(*, abi_selftest: bool = False,
           netdisk_selftest: bool = False,
           sound_selftest: bool = False,
           locale: bool = False,
-          extended: bool = False) -> tuple[bytes, dict[str, object]]:
+          extended: bool = False,
+          successor: bool = False) -> tuple[bytes, dict[str, object]]:
+    if successor:
+        extended = True
     if extended:
         locale = True
     if cursor_phase not in (None, "hidden", "visible"):
@@ -78,8 +86,14 @@ def build(*, abi_selftest: bool = False,
     if sound_selftest and (not abi_selftest or not extended):
         raise ValueError("sound fixture requires extended ABI selftest")
     selftest_defines = ("ROM_ABI_LOCALE",) if locale else ()
+    if locale and not successor:
+        selftest_defines += ("CREEP_LEGACY_PSEUDO",)
     if extended:
         selftest_defines += ("ROM_ABI_EXTENDED",)
+        selftest_defines += (
+            ("ROM_ABI_RAW_FIXED",) if successor else
+            ("ROM_ABI_RAW_MODIFIER_FIRST",)
+        )
     extension_bytes = LOCALE_EXTENSION_BYTES if locale else EXTENSION_BYTES
     if abi_selftest:
         selftest_defines += ("ABI_SELFTEST",)
@@ -317,11 +331,14 @@ def build(*, abi_selftest: bool = False,
             "get_info": "FF47",
         },
         "candidate": (
-            EXTENDED_CANDIDATE if extended else
+            (SUCCESSOR_CANDIDATE if successor else EXTENDED_CANDIDATE)
+            if extended else
             (LOCALE_CANDIDATE if locale else CANDIDATE)
         ),
         "status": (
-            "simulator candidate; C5 remains the physical baseline"
+            ("modified-raw simulator successor; C6 remains immutable"
+             if successor else
+             "simulator candidate; C5 remains the physical baseline")
             if extended else (
                 "desk-qualified locale candidate; physical qualification pending"
                 if locale else
@@ -407,6 +424,7 @@ def main() -> int:
     image, metadata = build()
     locale_image, locale_metadata = build(locale=True)
     extended_image, extended_metadata = build(extended=True)
+    successor_image, successor_metadata = build(successor=True)
     expected = (
         (OUTPUT, image),
         (D15_OUTPUT, image[:0x2000]),
@@ -423,6 +441,11 @@ def main() -> int:
         (EXTENDED_D16_OUTPUT, extended_image[0x2000:]),
         (EXTENDED_METADATA_OUTPUT,
          (json.dumps(extended_metadata, indent=2) + "\n").encode()),
+        (SUCCESSOR_OUTPUT, successor_image),
+        (SUCCESSOR_D15_OUTPUT, successor_image[:0x2000]),
+        (SUCCESSOR_D16_OUTPUT, successor_image[0x2000:]),
+        (SUCCESSOR_METADATA_OUTPUT,
+         (json.dumps(successor_metadata, indent=2) + "\n").encode()),
     )
     if args.check:
         for path, data in expected:
