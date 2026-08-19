@@ -158,6 +158,37 @@ That last distinction matters: a clean DRC and a green LVS prove only the
 connectivity represented in those checks. They do not prove omitted pins,
 unmodeled footprints, reconstructed PROM contents, or analog/timing assumptions.
 
+## Network boot demonstrations
+
+These simulator captures pair the native Juku framebuffer on the left with
+timestamped Janet host activity on the right. The simulator is paced at the
+real 1.7 MHz CPU clock, the serial links use their stated baud rates, and GIF
+delays preserve the measured scenario timeline.
+
+### Stock ROM and CP/Mish CP/M 2.2
+
+The archival 9,600-baud Janet bootstrap is intentionally shown at its original
+speed.
+
+![Stock ROM booting CP/M 2.2](media/demos/stock-rom-cpm22.gif)
+
+### Stock ROM and the fastest CP/M Plus bootstrap
+
+The unmodified ROM starts the transfer, then the compact loader switches to
+19,200 baud and boots CP/M Plus 3.1.
+
+![Stock ROM fast-booting CP/M Plus 3.1](media/demos/stock-rom-fast-cpm31.gif)
+
+### Network ROM and CP/M Plus tools
+
+The C6 network-first ROM boots CP/M Plus 3.1 directly and demonstrates the
+resident version report, text utilities, command history, and control panel.
+
+![Network ROM booting CP/M Plus 3.1](media/demos/netboot-rom-cpm31.gif)
+
+The capture inputs, dependencies, and regeneration commands are documented in
+[`media/demos/README.md`](media/demos/README.md).
+
 ## Evidence and source hierarchy
 
 1. Factory drawings, board photographs, dumps, and owner measurements under

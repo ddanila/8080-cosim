@@ -141,6 +141,9 @@ static unsigned video_stock_sequence = 0;
 static unsigned video_64_sequence = 0;
 static int video_modx_mode = 0;
 static unsigned video_console_mode = 0;
+static FILE* video_capture_fp;
+static uint8_t video_capture_previous[VID_DEFAULT_STRIDE * VID_DEFAULT_LINES];
+static int video_capture_has_previous;
 static uint8_t kbd_s21_config = 0;  // S21.1..8 become logical bits 7..0
 static juk_disk disk;
 static juku_fdc fdc;
@@ -950,6 +953,7 @@ static const struct { char c; uint8_t col, bit, shift; } KMAP[] = {
 // terminal and a scripted JUKU_KEYS string drive the matrix the same way.
 #define CONSOLE_QUEUE 4096
 static int console_fd = -1;
+static unsigned long console_poll_at = 0;
 static char console_queue[CONSOLE_QUEUE];
 static int console_len = 0;
 // Default to the routine the WRCHR vector (FFD9h) jumps to rather than the
@@ -1003,6 +1007,32 @@ static int vram_pixel(int x, int y) {
       y < 0 || y >= (int)video_lines) return 0;
   uint8_t byte = ram[VRAM_BASE + y * video_stride + (x >> 3)];
   return (byte >> (7 - (x & 7))) & 1;
+}
+
+static void capture_video_frame(unsigned long cycle) {
+  if (!video_capture_fp) return;
+  size_t size = (size_t)video_stride * video_lines;
+  const uint8_t* frame = &ram[VRAM_BASE];
+  if (video_capture_has_previous &&
+      memcmp(video_capture_previous, frame, size) == 0) return;
+  (void)cycle;
+  struct timespec captured_at;
+  clock_gettime(CLOCK_MONOTONIC, &captured_at);
+  uint64_t timestamp = (uint64_t)captured_at.tv_sec * 1000000000u +
+      (uint64_t)captured_at.tv_nsec;
+  uint16_t stride = (uint16_t)video_stride;
+  uint16_t lines = (uint16_t)video_lines;
+  if (fwrite(&timestamp, sizeof(timestamp), 1, video_capture_fp) != 1 ||
+      fwrite(&stride, sizeof(stride), 1, video_capture_fp) != 1 ||
+      fwrite(&lines, sizeof(lines), 1, video_capture_fp) != 1 ||
+      fwrite(frame, 1, size, video_capture_fp) != size) {
+    fprintf(stderr, "[VIDEO] capture write failed\n");
+    fclose(video_capture_fp);
+    video_capture_fp = NULL;
+    return;
+  }
+  memcpy(video_capture_previous, frame, size);
+  video_capture_has_previous = 1;
 }
 
 static int ekdos_prompt_visible(void) {
@@ -1528,6 +1558,15 @@ int main(int argc, char** argv) {
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
   g_vw_limit            = argc > 3 ? strtoul(argv[3], 0, 0) : 0UL;   // 0 = no video-write limit
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
+  const char* video_capture_path = getenv("JUKU_VIDEO_CAPTURE");
+  if (video_capture_path && video_capture_path[0]) {
+    video_capture_fp = fopen(video_capture_path, "wb");
+    if (!video_capture_fp) {
+      fprintf(stderr, "cannot open JUKU_VIDEO_CAPTURE=%s: %s\n",
+              video_capture_path, strerror(errno));
+      return 2;
+    }
+  }
   const char* checkpoint_cyc_env = getenv("JUKU_CHECKPOINT_CYC");
   unsigned long checkpoint_cyc = (checkpoint_cyc_env && checkpoint_cyc_env[0]) ? strtoul(checkpoint_cyc_env, 0, 0) : 0UL;
   const char* stop_pc_env = getenv("JUKU_STOP_PC");
@@ -2263,7 +2302,10 @@ int main(int argc, char** argv) {
         ssize_t ignored = write(console_fd, &out, 1);
         (void)ignored;
       }
-      if ((cpu.cyc & 0x3FF) == 0) console_poll();
+      if (cpu.cyc >= console_poll_at) {
+        console_poll();
+        console_poll_at = cpu.cyc + 0x400;
+      }
     }
     if (cpm_disk_trace_fp && (cpu.pc == 0xC027 || cpu.pc == 0xC02A)) {
       uint8_t drive = peek_byte(0xC93A);
@@ -2539,6 +2581,7 @@ int main(int argc, char** argv) {
           kbd_pos++;
         }
       }
+      capture_video_frame(cpu.cyc);
     }
     if (!disable_settle && (cpu.cyc & 0xFFFFF) == 0) {
       writes_total = 0;
@@ -2579,6 +2622,7 @@ int main(int argc, char** argv) {
             usart.rx_bytes);
 
   dump_checkpoint(getenv("JUKU_CHECKPOINT_PREFIX"), &cpu);
+  capture_video_frame(cpu.cyc);
 
   printf("\n==== OUT ports ====\n");
   for (int p = 0; p < 256; p++)
@@ -2609,5 +2653,6 @@ int main(int argc, char** argv) {
   if (rdtrace_fp) fclose(rdtrace_fp);
   if (bustrace_fp) fclose(bustrace_fp);
   if (cpm_disk_trace_fp) fclose(cpm_disk_trace_fp);
+  if (video_capture_fp) fclose(video_capture_fp);
   return 0;
 }
