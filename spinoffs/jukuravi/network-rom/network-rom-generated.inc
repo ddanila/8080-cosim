@@ -1,8 +1,12 @@
 ; Generated/verified by build_network_rom.py.
+.ifdef ROM_ABI_HOSTSERVICES
+JROMGATEBYTES equ 219
+.else
 .ifdef ROM_ABI_LOCALE
 JROMGATEBYTES equ 214
 .else
 JROMGATEBYTES equ 196
+.endif
 .endif
 .ifdef ROM_ABI_LOCALE
 JROMHELPERBYTES equ 128

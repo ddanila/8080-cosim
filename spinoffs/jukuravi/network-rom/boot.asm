@@ -219,9 +219,60 @@ post_io_fail:
         mvi     a,0c5h
 post_fail:
         sta     POSTSTATUS
+.ifdef ROM_ABI_HOSTSERVICES
+; Repeat a fixed three-tone binary-style failure code. Bits 2..0 of C1..C5
+; select long/short duration, so the audible series are SSL, SLS, SLL, LSS,
+; and LSL respectively. The target remains in reset view with interrupts
+; masked; successful boot and an absent network host never enter this path.
+post_audio_repeat:
+        lda     POSTSTATUS
+        ani     00fh
+        mov     d,a
+        mvi     e,4
+post_audio_tone:
+        mvi     a,076h                  ; D57 ch1, mode 3
+        out     PITCTL
+        mvi     a,0eeh                  ; 5102 -> approximately G4
+        out     019h
+        mvi     a,013h
+        out     019h
+        mov     a,d
+        ana     e
+        mvi     h,1                     ; short = one unit
+        jz      post_audio_length
+        mvi     h,3                     ; long = three units
+post_audio_length:
+        call    post_audio_units
+        mvi     a,050h                  ; silence between tones
+        out     PITCTL
+        mvi     a,1
+        out     019h
+        mvi     h,1
+        call    post_audio_units
+        mov     a,e
+        rrc
+        mov     e,a
+        cpi     080h                    ; after mask 1 rotates to 80h
+        jnz     post_audio_tone
+        mvi     h,6                     ; long pause between series
+        call    post_audio_units
+        jmp     post_audio_repeat
+
+post_audio_units:
+        lxi     b,10000
+post_audio_delay:
+        dcx     b
+        mov     a,b
+        ora     c
+        jnz     post_audio_delay
+        dcr     h
+        jnz     post_audio_units
+        ret
+.else
 post_halt:
         hlt
         jmp     post_halt
+.endif
 
 copy_bytes:
         ldax    d
@@ -242,7 +293,11 @@ transition_source:
         ori     1
         out     MODEPORT
 .ifdef ABI_SELFTEST
+.ifdef ROM_ABI_HOSTSERVICES
+        jmp     0e800h
+.else
         jmp     0e600h
+.endif
 .else
 .ifdef ROM_ABI_LOCALE
         ; The copied stub cannot branch to its own link-time ROM addresses.

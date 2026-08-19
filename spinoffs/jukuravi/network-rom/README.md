@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **ABI 1.2 C6 SIMULATOR RELEASE; BLIND PHYSICAL MATRIX PASSED**
+Status: **C8 / ABI 1.3 SIMULATOR CANDIDATE; C6 IS PHYSICAL ROLLBACK**
 
 This is the from-scratch network-only successor to the EktaSoft monitor ROM.
 Reset performs a bounded POST, acquires an identity-independent host at the
@@ -39,6 +39,13 @@ line is deliberately additive:
   Shift-F8 `(column 0Eh, PB 8Eh)` and Ctrl-Up/Home `(column 0Ah, PB 6Ah)`
   contacts with the intended S21 setting; physical acceptance remains a
   separately retained focused run.
+- C8 / ABI 1.3 moves the remaining N4/host transport into resident ROM behind
+  the appended `FF5Ch` selector vector, replaces the diagnostic placeholder
+  with eight bounded tests, and repeats IBM-style three-tone short/long codes
+  for POST failures C1--C5. The matching CP/M Plus system replaces 733 bytes
+  of RAM transport with a 147-byte binding and raises TPA by 512 bytes. C8 is
+  simulator-qualified; it is not physically promoted until its focused
+  CS00015 workload passes.
 
 ## Build and test
 
@@ -51,13 +58,19 @@ sync/network_first_rom_hdl_check.sh
 python3 tests/janet_disk_server_test.py
 ```
 
-The ABI gate rebuilds the images, executes C4 through C7 against the practical
+The ABI gate rebuilds the images, executes C4 through C8 against the practical
 C-model twin, and checks exact manifests, fixed vectors, stack guards,
 interrupt ownership, overlay protection, all S21 geometries, locale pixels,
 keyboard behavior, cursor phases, and resident serial activity.  The focused
 HDL gate retains the exact C4 reset/POST, call-gate, framebuffer, keyboard,
 serial, and one-record NetDisk boundary; full CP/M, recovery, and long-soak
 coverage remains in the faster C-model oracle.
+
+The matching C8 system/TPA/local/N4 gate is run from `cpm-plus-juku`:
+
+```sh
+make c8-check
+```
 
 From `cpm-plus-juku`, the complete C6 release gate is:
 
@@ -78,6 +91,8 @@ slot, manifests, hashes, and the complete ROM/RAM/vector map.
 - `juku-network-rom-abi1.2-c6{,-d15,-d16}.bin` and JSON: C6 / ABI 1.2.
 - `juku-network-rom-abi1.2-c7{,-d15,-d16}.bin` and JSON: C7 / ABI 1.2
   modified-raw bench candidate.
+- `juku-network-rom-abi1.3-c8{,-d15,-d16}.bin` and JSON: C8 / ABI 1.3
+  resident-host simulator candidate.
 
 These named releases are immutable. In particular, rebuilding a modified
 scanner under the C6 filenames is not a C6 update: the fitted combined image
@@ -88,6 +103,10 @@ The C7 combined image is
 its D15-low and D16-high hashes are respectively
 `8a1db7dcd0bdf6403bcd64ac7a7f12b278ae0c70778508ddbe90d4cc50e3f413`
 and `5512b75f1550ec4c305b721ad0ee179556c938780a197b3bed1001366c7e4b94`.
+The current C8 combined, D15-low and D16-high hashes are respectively
+`a54cb877edfe25e939e05ada0e98783acb53cfc8969071c63928b119c8e09e46`,
+`aa14d114a0176d3123b5d58366c45d05462c8a2127893fa996a533a9107d1773`,
+and `1afbed0b22ec5ab8d32fffb9784c0e87a287f54ec65cb2b0565afa91552dc5ee`.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must
 reproduce the 16 KiB image exactly.  The generated JSON is the machine-readable
@@ -117,7 +136,7 @@ samples the byte once at reset and CP/M consumes the same latched value.
 
 ## Resident ABI
 
-The manifest is fixed at `FF00h` and vectors start at `FF20h`.  ABI 1.2 offers:
+The manifest is fixed at `FF00h` and vectors start at `FF20h`. ABI 1.2 offers:
 
 - console init/status/input/output and `FF53h` bounded span output;
 - 19,200-baud serial initialization plus bounded byte receive/transmit;
@@ -125,6 +144,13 @@ The manifest is fixed at `FF00h` and vectors start at `FF20h`.  ABI 1.2 offers:
 - translated keyboard events and `FF59h` raw matrix samples;
 - S21 configuration, key remapping, built-in sound cue/silence, and safe
   diagnostics.
+
+ABI 1.3 appends `FF5Ch` without moving an earlier vector. C selects bounded
+host-console, capability, time, publication, bulk, or state operations. Its
+27 mutable bytes occupy `D7E0h..D7FAh`; framing/recovery code stays in ROM.
+The complete-ROM diagnostic selector checks the independently balanced
+resident `D800h..FFFFh` span. POST failure tones use SSL, SLS, SLL, LSS and
+LSL for C1 through C5, with short intra-series gaps and a long repeat pause.
 
 Framebuffer writes cannot execute directly through the active ROM overlay.
 The resident text policy calls the copied low-RAM helper, which briefly selects

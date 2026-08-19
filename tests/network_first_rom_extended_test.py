@@ -26,6 +26,7 @@ import build_network_rom as network_rom  # noqa: E402
 
 C5_SHA256 = "9ed6273f44c1b09dcb5fcd3ca94e5a1aad813b285607558a7d8cb98b1a5e6e7a"
 C6_SHA256 = "0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09"
+C7_SHA256 = "a05c74d948d9f01c5a89dc3ea69bfeb4fdf9ac48b3e37845d1edbf03e6e203b8"
 
 
 def fail(message: str) -> None:
@@ -109,15 +110,20 @@ def main() -> int:
     trace = Path(sys.argv[1]).resolve()
     image, metadata = network_rom.build(extended=True)
     successor_image, successor_metadata = network_rom.build(successor=True)
+    c8_image, c8_metadata = network_rom.build(c8=True)
     if image != network_rom.EXTENDED_OUTPUT.read_bytes():
         fail("committed ABI 1.2 image differs from deterministic rebuild")
     if successor_image != network_rom.SUCCESSOR_OUTPUT.read_bytes():
         fail("committed C7 successor differs from deterministic rebuild")
+    if c8_image != network_rom.C8_OUTPUT.read_bytes():
+        fail("committed C8 successor differs from deterministic rebuild")
     if hashlib.sha256(network_rom.LOCALE_OUTPUT.read_bytes()).hexdigest() != \
             C5_SHA256:
         fail("ABI 1.2 work changed the immutable C5 ROM")
     if hashlib.sha256(image).hexdigest() != C6_SHA256:
         fail("C7 work changed the immutable C6 ROM")
+    if hashlib.sha256(successor_image).hexdigest() != C7_SHA256:
+        fail("C8 work changed the immutable C7 ROM")
     if metadata.get("abi") != {"base": "FF00", "major": 1, "minor": 2} or \
             metadata.get("candidate") != \
             "network-first-abi1.2-c6-simulator" or \
@@ -140,6 +146,14 @@ def main() -> int:
             successor_metadata.get("abi") != metadata.get("abi") or \
             successor_image == image:
         fail(f"C7 successor metadata differs: {successor_metadata}")
+    if c8_metadata.get("candidate") != \
+            "network-first-abi1.3-c8-resident-host-simulator" or \
+            c8_metadata.get("abi") != \
+            {"base": "FF00", "major": 1, "minor": 3} or \
+            c8_metadata.get("feature_bits", {}).get("value") != "0FFF" or \
+            c8_metadata.get("abi_vectors", {}).get("host_services") != \
+            "FF5C" or sum(c8_image[0x1800:]) & 0xff:
+        fail(f"C8 metadata/resident checksum differs: {c8_metadata}")
     extension_start = network_rom.EMBEDDED_EXTENSION_STORED
     extension_end = extension_start + network_rom.EMBEDDED_EXTENSION_BYTES
     embedded_extension = image[extension_start:extension_end]
@@ -161,6 +175,10 @@ def main() -> int:
         )
         run_fixture(
             trace, successor_fixture, temporary, "c7-modified-raw", 3,
+        )
+        c8_fixture, _ = network_rom.build(c8=True, abi_selftest=True)
+        run_fixture(
+            trace, c8_fixture, temporary, "c8-diagnostics", 3,
         )
         for raw_name, raw_byte in (("shift-f8", b"\x86"),
                                    ("ctrl-up", b"\x85")):
@@ -232,7 +250,8 @@ def main() -> int:
     print(
         "NETWORK-FIRST-ROM-EXTENDED-TEST: PASS "
         f"{metadata['image_sha256']} {successor_metadata['image_sha256']} "
-        "(immutable C6; C7 Shift-F8/Ctrl-Up raw; four modes; "
+        f"{c8_metadata['image_sha256']} "
+        "(immutable C6/C7; C8 diagnostics; C7 Shift-F8/Ctrl-Up raw; four modes; "
         "integrated cursor/key)"
     )
     return 0

@@ -35,6 +35,10 @@ SUCCESSOR_OUTPUT = HERE / "juku-network-rom-abi1.2-c7.bin"
 SUCCESSOR_D15_OUTPUT = HERE / "juku-network-rom-abi1.2-c7-d15.bin"
 SUCCESSOR_D16_OUTPUT = HERE / "juku-network-rom-abi1.2-c7-d16.bin"
 SUCCESSOR_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.2-c7.json"
+C8_OUTPUT = HERE / "juku-network-rom-abi1.3-c8.bin"
+C8_D15_OUTPUT = HERE / "juku-network-rom-abi1.3-c8-d15.bin"
+C8_D16_OUTPUT = HERE / "juku-network-rom-abi1.3-c8-d16.bin"
+C8_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.3-c8.json"
 
 LOWER_SIZE = 0x1800
 RESIDENT_SIZE = 0x2800
@@ -49,6 +53,7 @@ CANDIDATE = "network-first-abi1-cs00015-c4"
 LOCALE_CANDIDATE = "network-first-abi1.1-cs00015-c5-desk"
 EXTENDED_CANDIDATE = "network-first-abi1.2-c6-simulator"
 SUCCESSOR_CANDIDATE = "network-first-abi1.2-c7-modified-raw-simulator"
+C8_CANDIDATE = "network-first-abi1.3-c8-resident-host-simulator"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -73,7 +78,10 @@ def build(*, abi_selftest: bool = False,
           raw_selftest: str | None = None,
           locale: bool = False,
           extended: bool = False,
-          successor: bool = False) -> tuple[bytes, dict[str, object]]:
+          successor: bool = False,
+          c8: bool = False) -> tuple[bytes, dict[str, object]]:
+    if c8:
+        successor = True
     if successor:
         extended = True
     if extended:
@@ -99,6 +107,8 @@ def build(*, abi_selftest: bool = False,
             ("ROM_ABI_RAW_FIXED",) if successor else
             ("ROM_ABI_RAW_MODIFIER_FIRST",)
         )
+    if c8:
+        selftest_defines += ("ROM_ABI_HOSTSERVICES",)
     extension_bytes = LOCALE_EXTENSION_BYTES if locale else EXTENSION_BYTES
     if abi_selftest:
         selftest_defines += ("ABI_SELFTEST",)
@@ -136,7 +146,7 @@ def build(*, abi_selftest: bool = False,
                 "FASTBOOT_STREAM_ACK", "FASTBOOT_CPM3",
                 "FASTBOOT_CPM3_ROM", "FASTBOOT_BOOT_RECORD",
                 "FASTBOOT_V16",
-            ),
+            ) + (("FASTBOOT_CPM3_C8",) if c8 else ()),
         ) if extended else b""
         if extended and len(embedded_extension) != EMBEDDED_EXTENSION_BYTES:
             raise ValueError(
@@ -201,7 +211,7 @@ def build(*, abi_selftest: bool = False,
         core = bytes(core)
         if len(gate) > 0xE0:
             raise ValueError(f"RAM gate is {len(gate)} bytes; envelope is 224")
-        expected_gate_bytes = 214 if locale else 196
+        expected_gate_bytes = 219 if c8 else (214 if locale else 196)
         if len(gate) != expected_gate_bytes:
             raise ValueError(
                 f"RAM gate is {len(gate)} bytes, expected {expected_gate_bytes}"
@@ -212,10 +222,14 @@ def build(*, abi_selftest: bool = False,
         generated = HERE / "network-rom-generated.inc"
         expected_generated = (
             "; Generated/verified by build_network_rom.py.\n"
+            ".ifdef ROM_ABI_HOSTSERVICES\n"
+            "JROMGATEBYTES equ 219\n"
+            ".else\n"
             ".ifdef ROM_ABI_LOCALE\n"
             "JROMGATEBYTES equ 214\n"
             ".else\n"
             "JROMGATEBYTES equ 196\n"
+            ".endif\n"
             ".endif\n"
             ".ifdef ROM_ABI_LOCALE\n"
             f"JROMHELPERBYTES equ {len(helper_c5)}\n"
@@ -259,6 +273,14 @@ def build(*, abi_selftest: bool = False,
             raise ValueError(
                 f"resident image is {len(resident)} bytes, expected {RESIDENT_SIZE}"
             )
+
+        if c8:
+            resident = bytearray(resident)
+            checksum_offset = 0xFF1F - 0xD800
+            resident[checksum_offset] = (-sum(resident)) & 0xFF
+            if sum(resident) & 0xFF:
+                raise ValueError("C8 resident-ROM checksum balance failed")
+            resident = bytes(resident)
 
         lower = bytearray(b"\xFF" * LOWER_SIZE)
         lower[:len(boot)] = boot
@@ -313,6 +335,7 @@ def build(*, abi_selftest: bool = False,
         ] + ([
             "bounded-console-span", "netdisk-multi", "raw-keyboard",
             "sound",
+            *( ["resident-host", "full-diagnostics"] if c8 else [] ),
         ] if extended else []),
         "console": {
             "geometry": "80x24",
@@ -321,7 +344,7 @@ def build(*, abi_selftest: bool = False,
         },
         "abi": {
             "base": "FF00", "major": 1,
-            "minor": 2 if extended else (1 if locale else 0),
+            "minor": 3 if c8 else (2 if extended else (1 if locale else 0)),
         },
         "abi_vectors": {
             "init": "FF20",
@@ -340,14 +363,17 @@ def build(*, abi_selftest: bool = False,
             "get_info": "FF47",
         },
         "candidate": (
-            (SUCCESSOR_CANDIDATE if successor else EXTENDED_CANDIDATE)
+            (C8_CANDIDATE if c8 else
+             (SUCCESSOR_CANDIDATE if successor else EXTENDED_CANDIDATE))
             if extended else
             (LOCALE_CANDIDATE if locale else CANDIDATE)
         ),
         "status": (
-            ("modified-raw simulator successor; C6 remains immutable"
-             if successor else
-             "simulator candidate; C5 remains the physical baseline")
+            ("resident-host simulator successor; C7 remains immutable"
+             if c8 else
+             ("modified-raw simulator successor; C6 remains immutable"
+              if successor else
+              "simulator candidate; C5 remains the physical baseline"))
             if extended else (
                 "desk-qualified locale candidate; physical qualification pending"
                 if locale else
@@ -423,6 +449,19 @@ def build(*, abi_selftest: bool = False,
             "descriptor_bytes": 10,
             "write_policy": "synchronous-write-through",
         }
+    if c8:
+        metadata["abi_vectors"]["host_services"] = "FF5C"
+        metadata["feature_bits"]["value"] = "0FFF"
+        metadata["feature_bits"]["resident_host"] = "0040"
+        metadata["post_audio"] = {
+            "C1": "short-short-long",
+            "C2": "short-long-short",
+            "C3": "short-long-long",
+            "C4": "long-short-short",
+            "C5": "long-short-long",
+            "success_and_host_wait": "silent",
+        }
+        metadata["resident_checksum"] = "additive-8 over D800h..FFFFh = 00"
     return image, metadata
 
 
@@ -434,6 +473,7 @@ def main() -> int:
     locale_image, locale_metadata = build(locale=True)
     extended_image, extended_metadata = build(extended=True)
     successor_image, successor_metadata = build(successor=True)
+    c8_image, c8_metadata = build(c8=True)
     expected = (
         (OUTPUT, image),
         (D15_OUTPUT, image[:0x2000]),
@@ -455,6 +495,11 @@ def main() -> int:
         (SUCCESSOR_D16_OUTPUT, successor_image[0x2000:]),
         (SUCCESSOR_METADATA_OUTPUT,
          (json.dumps(successor_metadata, indent=2) + "\n").encode()),
+        (C8_OUTPUT, c8_image),
+        (C8_D15_OUTPUT, c8_image[:0x2000]),
+        (C8_D16_OUTPUT, c8_image[0x2000:]),
+        (C8_METADATA_OUTPUT,
+         (json.dumps(c8_metadata, indent=2) + "\n").encode()),
     )
     if args.check:
         for path, data in expected:

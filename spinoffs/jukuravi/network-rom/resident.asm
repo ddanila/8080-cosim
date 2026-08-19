@@ -8,6 +8,9 @@ USARTCTL        equ     009h
 PITCOUNT0       equ     018h
 PITCTL          equ     01bh
 VRAM            equ     0d800h
+.ifdef ROM_ABI_HOSTSERVICES
+FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFSOUND+JROMFDIAG+JROMFNETCON+JROMFLOCALE+JROMFKEYREMAP+JROMFCONBLOCK+JROMFNETMULTI+JROMFKEYRAW
+.else
 .ifdef ROM_ABI_EXTENDED
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFSOUND+JROMFDIAG+JROMFLOCALE+JROMFKEYREMAP+JROMFCONBLOCK+JROMFNETMULTI+JROMFKEYRAW
 .else
@@ -15,6 +18,7 @@ FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROM
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFDIAG+JROMFLOCALE+JROMFKEYREMAP
 .else
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFDIAG
+.endif
 .endif
 .endif
 
@@ -26,6 +30,9 @@ ROMNETSTATEBASE equ     JROMSTATEBASE+010h
 .ifdef ROM_ABI_LOCALE
 ROMCONFIG       equ     JROMSTATEBASE+041h
 ROMKEYREMAPBASE equ     JROMSTATEBASE+042h
+.endif
+.ifdef ROM_ABI_HOSTSERVICES
+ROMHOSTSTATEBASE equ    JROMSTATEBASE+060h
 .endif
 
 ; D800h..DCFFh: resident text policy and immutable 5x7 font.
@@ -178,7 +185,13 @@ rom_netdisk_bad:
         ret
 rom_netdisk_end:
 
+.ifdef ROM_ABI_HOSTSERVICES
+        dc      0e500h-$,0ffh
+        include "rom-host-services.asm"
+        dc      0e800h-$,0ffh
+.else
         dc      0e600h-$,0ffh
+.endif
 
 ; E600h onward: initialization, diagnostics, and retained ABI self-test.
 resident_entry:
@@ -213,6 +226,9 @@ resident_entry:
 .endif
         jnz     self_fail_info
         mov     a,e
+.ifdef ROM_ABI_HOSTSERVICES
+        cpi     0ffh
+.else
 .ifdef ROM_ABI_EXTENDED
         cpi     0bfh
 .else
@@ -220,6 +236,7 @@ resident_entry:
         cpi     0afh
 .else
         cpi     FEATURES
+.endif
 .endif
 .endif
         jnz     self_fail_info
@@ -318,7 +335,36 @@ resident_entry:
         call    JCGDIAGADDR
         cpi     0a5h
         jnz     self_fail_diag
+.ifdef ROM_ABI_HOSTSERVICES
+        ; Prove that selector/register dispatch preserves A into the resident
+        ; feature configurator before any serial transaction is attempted.
+        mvi     a,07fh
+        mvi     c,JROMHOSTCONFIG
+        call    JCGHOSTADDR
+        lxi     h,ROMHOSTSTATEBASE
+        mov     a,m
+        cpi     1
+        jnz     self_fail_info
+        inx     h
+        mov     a,m
+        cpi     1
+        jnz     self_fail_info
+
+        mvi     c,8
+self_diag_selector:
+        mov     a,c
+        push    b
+        call    JCGDIAGADDR
+        pop     b
+        ora     a
+        jnz     self_fail_diag
+        dcr     c
+        jnz     self_diag_selector
+.endif
         lxi     h,0d7f0h                ; cleared/invalid request version
+.ifdef ROM_ABI_HOSTSERVICES
+        mvi     m,0
+.endif
         call    JCGNETDISKADDR
         cpi     0ffh
         jnz     self_fail_netdisk
@@ -673,11 +719,56 @@ rom_extended_bad:
         include "smoke-table.asm"
 .endif
 
+.ifdef ROM_ABI_HOSTSERVICES
+rom_diag_impl:
+        ora     a
+        jz      rom_diag_marker
+        dcr     a
+        jz      diag_cpu_test
+        dcr     a
+        jz      rom_diag_memory
+        dcr     a
+        jz      rom_diag_address
+        dcr     a
+        jz      rom_diag_retention
+        dcr     a
+        jz      rom_diag_checksum
+        dcr     a
+        jz      diag_pit_d57_test
+        dcr     a
+        jz      diag_usart_status_test
+        dcr     a
+        jz      rom_diag_post
+        jmp     rom_unavailable
+rom_diag_marker:
+        mvi     a,0a5h
+        ret
+rom_diag_memory:
+        lxi     h,0d5c0h
+        lxi     d,0d5e0h
+        jmp     diag_memory_test
+rom_diag_address:
+        lxi     h,0d5c0h
+        mvi     a,5
+        jmp     diag_memory_address_test
+rom_diag_retention:
+        lxi     h,0d5c0h
+        lxi     b,04000h
+        jmp     diag_memory_retention_test
+rom_diag_checksum:
+        lxi     h,0d800h
+        lxi     d,00000h
+        jmp     diag_checksum8
+rom_diag_post:
+        lda     0d610h
+        ret
+.else
 rom_diag_impl:
         ora     a
         jnz     rom_unavailable
         mvi     a,0a5h
         ret
+.endif
 
 rom_getinfo_impl:
         lxi     h,JROMABIBASE
@@ -734,6 +825,10 @@ rom_unavailable:
         stc
         ret
 
+.ifdef ROM_ABI_HOSTSERVICES
+build_identity:
+        db      'JukuNet C8 ROM ABI 1.3 resident host services 2026-08-20',0
+.else
 .ifdef ROM_ABI_EXTENDED
 build_identity:
         db      'Juku network ROM ABI 1.2 complete services 2026-08-17',0
@@ -745,6 +840,22 @@ build_identity:
 build_identity:
         db      'Juku network ROM ABI 1.0 automatic boot 2026-08-16',0
 .endif
+.endif
+.endif
+
+.ifdef ROM_ABI_HOSTSERVICES
+        dc      0ec00h-$,0ffh
+DIAG_PIT_CONTROL equ   PITCTL
+DIAG_PIT_COUNT0 equ    PITCOUNT0
+DIAG_USART_CONTROL equ USARTCTL
+        include "cpu.asm"
+        include "memory.asm"
+        include "memory-address.asm"
+        include "memory-retention.asm"
+        include "checksum.asm"
+        include "pit-d57.asm"
+        include "usart-status.asm"
+        dc      0f000h-$,0ffh
 .endif
 
 .ifdef ROM_ABI_LOCALE
@@ -963,7 +1074,13 @@ CREEP_PSEUDO_ONLY equ  1
         dw      build_identity
         dw      JROMRAMEND-JROMRAMBASE
         dw      JROMHELPERBYTES
+.ifdef ROM_ABI_HOSTSERVICES
+        dc      JROMMANIFESTEND-1-$,0ffh
+resident_checksum_balance:
+        db      0
+.else
         dc      JROMMANIFESTEND-$,0ffh
+.endif
 
         jmp     rom_init_impl
         jmp     ROMCONINIT
@@ -992,6 +1109,9 @@ CREEP_PSEUDO_ONLY equ  1
         jmp     rom_conblock_impl
         jmp     rom_netmulti_impl
         jmp     rom_keyraw_impl
+.endif
+.ifdef ROM_ABI_HOSTSERVICES
+        jmp     rom_host_impl
 .endif
 
         dc      10000h-$,0ffh

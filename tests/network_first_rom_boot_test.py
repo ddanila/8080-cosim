@@ -75,6 +75,69 @@ def run_post_failure(trace: Path, temporary: Path, label: str, image: bytes,
         fail(f"{label} POST failure was not bounded: {state['cyc']} cycles")
 
 
+def run_post_audio(trace: Path, temporary: Path, label: str, image: bytes,
+                   expected: int, pattern: str,
+                   extra_env: dict[str, str] | None = None) -> None:
+    case = temporary / f"c8-audio-{label}"
+    case.mkdir()
+    rom = case / "rom.bin"
+    rom.write_bytes(image)
+    checkpoint = case / "checkpoint"
+    environment = os.environ.copy()
+    environment.update(
+        JUKU_CHECKPOINT_PREFIX=str(checkpoint),
+        JUKU_TRACE_BANK="0",
+        JUKU_TRACE_IO="1",
+    )
+    if extra_env:
+        environment.update(extra_env)
+    result = subprocess.run(
+        [str(trace), str(rom), "9000000"], cwd=case, env=environment,
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=15.0,
+    )
+    if result.returncode != 0:
+        fail(f"C8 {label} audio cosim exited {result.returncode}")
+    ram = checkpoint.with_suffix(".ram").read_bytes()
+    state = parse_state(checkpoint.with_suffix(".state"))
+    if ram[0xD610] != expected or state.get("mode") != "0" or \
+            state.get("iff") != "0":
+        fail(f"C8 {label} audio failure state differs: {state}")
+    events = [
+        (int(value, 16), int(cycles))
+        for value, cycles in re.findall(
+            r"\[IOSEQ\] OUT port=0x1B value=0x([0-9A-F]+) "
+            r"cyc=(\d+)", result.stderr.decode(errors="replace"),
+        )
+    ]
+    values = [value for value, _ in events]
+    signature = [0x76, 0x50] * 3
+    start = next(
+        (index for index in range(len(values) - len(signature) + 1)
+         if values[index:index + len(signature)] == signature),
+        None,
+    )
+    if start is None:
+        fail(f"C8 {label} has no complete three-tone POST series: {values}")
+    series = events[start:start + 6]
+    durations = [series[index + 1][1] - series[index][1]
+                 for index in (0, 2, 4)]
+    shortest = min(durations)
+    observed = "".join(
+        "L" if duration > shortest * 2 else "S" for duration in durations
+    )
+    if observed != pattern:
+        fail(
+            f"C8 {label} audio pattern={observed}, expected={pattern}, "
+            f"durations={durations}"
+        )
+    next_tone = next(
+        (cycles for value, cycles in events[start + 6:] if value == 0x76),
+        None,
+    )
+    if next_tone is None or next_tone - series[-1][1] <= max(durations) * 2:
+        fail(f"C8 {label} lacks the long inter-series pause")
+
+
 def wait_ack(fd: int, process: subprocess.Popen[bytes], timeout: float) -> bool:
     deadline = time.monotonic() + timeout
     probe = 0
@@ -210,6 +273,33 @@ def main() -> int:
                 "JUKU_USART_PTY": "auto",
                 "JUKU_USART_FAULT": "tx_not_ready_once_after:0",
             },
+        )
+
+        c8_image, _ = network_rom.build(c8=True)
+        c8_cpu_bad = bytearray(c8_image)
+        c8_boot = bytes(c8_cpu_bad[:network_rom.EMBEDDED_EXTENSION_STORED])
+        if c8_boot.count(cpu_vector) != 1:
+            fail("C8 CPU diagnostic vector signature differs")
+        c8_cpu_bad[c8_boot.index(cpu_vector) + 1] = 0x7E
+        run_post_audio(
+            trace, temporary, "cpu", bytes(c8_cpu_bad), 0xC1, "SSL",
+        )
+        run_post_audio(
+            trace, temporary, "ram", c8_image, 0xC2, "SLS",
+            {"JUKU_RAM_FAULT": "0xD400:0x01:0"},
+        )
+        run_post_audio(
+            trace, temporary, "address", c8_image, 0xC3, "SLL",
+            {"JUKU_RAM_ALIAS": "0xC0:0xC1"},
+        )
+        c8_rom_bad = bytearray(c8_image)
+        c8_rom_bad[0x1800] ^= 0x01
+        run_post_audio(
+            trace, temporary, "rom", bytes(c8_rom_bad), 0xC4, "LSS",
+        )
+        run_post_audio(
+            trace, temporary, "pit-usart", c8_image, 0xC5, "LSL",
+            {"JUKU_PIT_FAULT": "18:00:80"},
         )
 
         case = temporary / "automatic"
