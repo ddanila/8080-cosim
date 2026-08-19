@@ -940,6 +940,7 @@ static const struct { char c; uint8_t col, bit, shift; } KMAP[] = {
   {'[',9,3,0},{']',8,3,0},{'\\',11,3,0},{'^',11,3,1},
   {'\x80',9,2,0}, // synthetic PTY byte: factory Down contact (row 6)
   {'\x81',8,4,0}, // synthetic PTY byte: factory Erase contact (row 1)
+  {'\x82',4,0,0}, // synthetic PTY byte: factory F5 contact (row 5)
 };
 // Interactive console (JUKU_CONSOLE_PTY): typed bytes are appended to this
 // queue and consumed by the ordinary keystroke machinery, so an operator at a
