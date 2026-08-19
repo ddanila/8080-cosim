@@ -273,6 +273,12 @@ jobs:
       - name: Install Icarus Verilog
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
+      # The D0 aggregate also rebuilds the shared mnemonic smoke fixture.
+      # Fetch the same assembler and platform sources as the later Jukuravi
+      # regression job before starting its parallel fan-out.
+      - name: Fetch assembler and shared sources
+        run: git submodule update --init third_party/zmac third_party/juku-common
+
       # Fans its 31 vvp runs out across the runner's cores; see the script header.
       - name: Run Jukuravi D0 diagnostic guards
         run: ./sync/jukuravi_d0_check.sh

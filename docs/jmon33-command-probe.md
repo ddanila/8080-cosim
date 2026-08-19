@@ -27,9 +27,9 @@ Environment overrides:
 
 | Case | Keys | Exit | Stop PC | Cycles | Port `0x05` samples | Active key values | Visible blocks | Pixels | VRAM SHA256 | Result |
 | --- | --- | ---: | --- | ---: | ---: | --- | --- | ---: | --- | --- |
-| A-enter | `A\n` | `0` | `0xFF54` | `60000012` | `5015` | `0x84`, `0x8F`, `0xC4` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | PASS |
-| T-enter | `T\n` | `0` | `0xFF54` | `60000006` | `5015` | `0x88`, `0x8F`, `0xC4` | `x=200,y=20`, `x=152,y=40` | `160` | `348a571e28b5021fc28ca0a83d19e87100d28a9e32910333814eb71a8573b911` | PASS |
-| B-enter | `B\n` | `0` | `0xFF54` | `60000005` | `5015` | `0x8C`, `0x8F`, `0xC4` | `x=0,y=80` | `80` | `7de5d7ccbcbe39fc6f644adbeb68b1d38706be9d77616772b3d10686e005d52e` | PASS |
+| A-enter | `A\n` | `0` | `0xFF54` | `60000012` | `5015` | `0x84`, `0x8F`, `0xAF`, `0xE4`, `0xEF` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | PASS |
+| T-enter | `T\n` | `0` | `0xFF54` | `60000006` | `5015` | `0x88`, `0x8F`, `0xAF`, `0xE4`, `0xEF` | `x=200,y=20`, `x=152,y=40` | `160` | `348a571e28b5021fc28ca0a83d19e87100d28a9e32910333814eb71a8573b911` | PASS |
+| B-enter | `B\n` | `0` | `0xFF54` | `60000005` | `5015` | `0x8C`, `0x8F`, `0xAF`, `0xE4`, `0xEF` | `x=0,y=80` | `80` | `7de5d7ccbcbe39fc6f644adbeb68b1d38706be9d77616772b3d10686e005d52e` | PASS |
 
 ## Disposition
 
