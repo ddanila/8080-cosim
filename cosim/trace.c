@@ -952,6 +952,7 @@ static const struct { char c; uint8_t col, bit, shift; } KMAP[] = {
   {'\x82',4,0,0}, // synthetic PTY byte: factory F5 contact (row 5)
   {'\x83',0,0,0}, // synthetic PTY byte: factory F6 contact (row 5)
   {'\x84',14,0,0}, // synthetic PTY byte: factory F8 contact (row 5)
+  {'\x86',14,0,1}, // synthetic PTY byte: factory Shift-F8 contact (row 5)
 };
 // Interactive console (JUKU_CONSOLE_PTY): typed bytes are appended to this
 // queue and consumed by the ordinary keystroke machinery, so an operator at a
