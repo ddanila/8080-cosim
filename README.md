@@ -195,8 +195,9 @@ The capture inputs, dependencies, and regeneration commands are documented in
 
 Downstream projects can consume the digest-pinned
 `ghcr.io/ddanila/8080-cosim-smoke-kit` OCI image instead of cloning this whole
-repository. The kit contains the Linux simulator, Janet transport modules,
-required ROMs, and a machine-readable interface manifest at
+repository. The kit contains the Linux simulator, the static native
+`jukuhost`, frozen non-runnable Python test fixtures, required ROMs, and a
+machine-readable interface manifest at
 `/opt/8080-cosim/smoke-kit.json`. It is republished only when those inputs or
 its image definition change.
 

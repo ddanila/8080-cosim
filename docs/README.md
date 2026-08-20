@@ -22,7 +22,10 @@ history.
 - `portable-c-host-m0-contract.md` — frozen Python-era production modules,
   artifacts, wire vectors, and required C-host parity.
 - `portable-c-host-implementation.md` — milestone-by-milestone admitted C-host
-  code, verification, and remaining gate work.
+  code and verification.
+- `portable-c-host-m2-acceptance.md` — retained Linux parity comparison,
+  caller-retirement audit, CI identities, and the boundary before platform
+  porting.
 - `jukuhost-config.md` — strict portable INI schema, authenticated boot slots,
   and safe A:/B: media policies.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC

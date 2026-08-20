@@ -35,6 +35,18 @@ Key files:
 
 ## Fast behavioral checks
 
+The complete native-Linux production-host promotion gate is:
+
+```sh
+sync/jukuhost_m2_check.sh
+```
+
+It compares the frozen Python-era oracle with the sole supported C host, then
+runs stock/C8 boot, disk, console, reconnect, recovery, wrapper, and current
+network-ROM fault regressions. See
+`docs/portable-c-host-m2-acceptance.md` for the accepted result and exact
+platform-port boundary.
+
 ```sh
 sync/boot_check.sh
 sync/i8080_check.sh

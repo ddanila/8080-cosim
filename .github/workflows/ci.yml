@@ -43,6 +43,7 @@ jobs:
           bash -n sync/inta_bus_check.sh
           bash -n sync/i8080_check.sh
           bash -n sync/i8080_vm80a_diff_check.sh
+          bash -n sync/jukuhost_m2_check.sh
           sh -n sync/boot_check.sh
           sh -n sync/d2_ready_path_check.sh
           sh -n scripts/find-kicad-cli.sh
@@ -276,6 +277,9 @@ jobs:
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py
+
+      - name: Check native Juku host and retirement boundary
+        run: sync/jukuhost_linux_check.sh
 
       - name: Check automatic completion audit freshness
         run: python3 scripts/report_automatic_completion_audit.py --check

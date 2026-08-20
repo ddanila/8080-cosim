@@ -52,17 +52,17 @@ checksum parser recovery, duplicate side-effect suppression, geometry and
 read-only boundaries, capture truncation/corruption, and media crash-point
 fault injection. All sources are free of POSIX and Win32 headers.
 
-No platform backend or production command has been introduced at the M1 gate.
-Python remains the production host until M2 parity, caller migration, and
-retirement all pass.
+At the M1 gate no platform backend or production command had been introduced;
+Python remained the production host until the M2 parity, caller-migration, and
+retirement work below passed.
 
-## M2 — in progress
+## M2 — complete
 
-Implement the POSIX serial/filesystem/clock/console layer and the single Linux
-`jukuhost` command, then drive the existing simulator through stock and C8
-boots, A:/B:, N4, reset, missed-ready, host-loss, reconnect, writable-media,
-logging, and capture tests. Only after those pass are callers migrated and the
-Python production entry points retired.
+The POSIX serial/filesystem/clock/console layer and single Linux `jukuhost`
+command now drive the existing simulator through stock and C8 boots, A:/B:,
+N4, reset, missed-ready, host-loss, reconnect, writable-media, logging, and
+capture tests. Those passed before callers were migrated and the Python
+production entry points retired.
 
 ### Native Linux runtime checkpoint
 
@@ -92,9 +92,9 @@ silently clear it, and reject the same PTY when a replacement process adopts
 it. This is confined to named `/dev/pts/*` devices and the integration-only
 `--serial-fd` path; physical serial ports still require set-and-readback parity.
 
-This is an intermediate M2 checkpoint, not promotion. Full Juku simulator
-boot/reconnect/fault parity, configuration/manifest identity, caller migration,
-and Python-host retirement remain open.
+At this intermediate checkpoint, full Juku simulator boot/reconnect/fault
+parity, configuration/manifest identity, caller migration, and Python-host
+retirement were still open. The subsequent checkpoints below close each item.
 
 ### C8 end-to-end simulator checkpoint
 
@@ -267,3 +267,22 @@ Smoke-kit v2 now publishes a statically linked `bin/jukuhost` beside the C
 simulator and labels the Python files as test fixtures. This lets downstream
 CP/M integration tests preserve historical fault injection without packaging
 a second runnable production host.
+
+### M2 promotion and closure
+
+`sync/jukuhost_m2_check.sh` is the repeatable promotion gate. It compares the
+frozen Python-era behavior with the native C implementation, then exercises
+the Linux executable through stock and C8 boots, A:/B:, N4, target reset,
+missed readiness, host replacement, serial reopen, media recovery, evidence,
+and the current ROM fault matrix. The gate passes.
+
+All known operational callers now launch `jukuhost`. The only imports of the
+frozen Python implementation are tests and four explicitly bounded UART
+diagnostic laboratories. CP/M Plus CI consumes smoke-kit v2, which contains a
+static C host and labels those Python files as non-runnable test fixtures.
+There is no production Python command or fallback.
+
+The complete comparison, related-repository commits, CI image digests, and
+single-host audit are retained in
+[portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). M2 is
+therefore accepted. Work stops here before the M3 Open Watcom/Win32 port.

@@ -1,6 +1,11 @@
 # Portable C Juku host plan
 
-Status: **M2 NATIVE LINUX PARITY IN PROGRESS**
+Status: **M2 COMPLETE — READY FOR PLATFORM PORTS**
+
+Native-Linux acceptance and Python-host retirement are recorded in
+[portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). The next
+permitted implementation milestone is M3; this plan deliberately stops before
+platform-specific porting begins.
 
 ## Goal
 
@@ -145,8 +150,8 @@ The protocol core must not include Win32, POSIX, terminal, or concrete
 filesystem headers:
 
 ```text
-                   Python host during migration only
-                    golden vectors / differential runs
+                 frozen Python-era test fixtures
+                    golden vectors / replay
                                   |
                          portable C protocol core
                     Janet / Fastboot / N3 / N4 / media
