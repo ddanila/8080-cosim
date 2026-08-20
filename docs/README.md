@@ -15,6 +15,10 @@ history.
 - `crt-cvbs-simulation-plan.md` — subordinate execution plan for generating a
   loaded X7 voltage waveform, adapting the forked sample-domain receiver, and
   validating monitor lock before optional CRT presentation.
+- `portable-c-host-plan.md` — subordinate implementation and qualification plan
+  for a Linux-first portable C Janet/Fastboot/NetDisk/N4 host, an Open Watcom
+  Windows 95 build, headless Wine-to-simulator automation, and eventual
+  physical-COM validation.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC
   baseline plus fork-owned provenance, fixture policy, green Linux CI, and the
   pinned generic float32 WP1 and profile-driven receiver WP2 follow-ups.
