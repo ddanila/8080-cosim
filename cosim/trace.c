@@ -988,10 +988,16 @@ static unsigned long kbd_start_vram = 42000;
 static int kbd_hold_frames = 3;
 static int kbd_gap_frames = 3;
 static int kbd_trace = 0;
+static int kbd_pc_trigger_enabled = 0;
+static int kbd_pc_trigger_fired = 0;
+static int kbd_pc_trigger_active = 0;
+static uint16_t kbd_pc_trigger_pc = 0;
+static char kbd_pc_trigger_char = 0;
 #define KBD_HOLD 3
 #define KBD_GAP  3
 
 static char kbd_current_char(void) {
+  if (kbd_pc_trigger_active) return kbd_pc_trigger_char;
   if (!kbd_str) return 0;
   if (kbd_str == console_queue && kbd_pos >= console_visible_len) return 0;
   return kbd_str[kbd_pos];
@@ -1688,6 +1694,22 @@ int main(int argc, char** argv) {
   if (kbd_hold_env && kbd_hold_env[0]) kbd_hold_frames = atoi(kbd_hold_env);
   const char* kbd_gap_env = getenv("JUKU_KEY_GAP_FRAMES");
   if (kbd_gap_env && kbd_gap_env[0]) kbd_gap_frames = atoi(kbd_gap_env);
+  const char* kbd_at_pc_env = getenv("JUKU_KEY_AT_PC");
+  if (kbd_at_pc_env && kbd_at_pc_env[0]) {
+    unsigned long pc = 0, key = 0;
+    char trailing = 0;
+    if (sscanf(kbd_at_pc_env, "%lx:%lx%c", &pc, &key, &trailing) != 2 ||
+        pc > 0xFFFF || key == 0 || key > 0xFF) {
+      fprintf(stderr,
+              "invalid JUKU_KEY_AT_PC=%s (expected 0000..FFFF:01..FF)\n",
+              kbd_at_pc_env);
+      return 2;
+    }
+    kbd_pc_trigger_enabled = 1;
+    kbd_pc_trigger_pc = (uint16_t)pc;
+    kbd_pc_trigger_char = (char)key;
+    kbd_enabled = 1;
+  }
   kbd_trace = getenv("JUKU_TRACE_KBD") && getenv("JUKU_TRACE_KBD")[0] &&
               strcmp(getenv("JUKU_TRACE_KBD"), "0") != 0;
   if (kbd_hold_frames < 1) kbd_hold_frames = KBD_HOLD;
@@ -2315,6 +2337,15 @@ int main(int argc, char** argv) {
       video_modx_mode = 0;
       video_console_mode = 0;
     }
+    if (kbd_pc_trigger_enabled && !kbd_pc_trigger_fired &&
+        cpu.pc == kbd_pc_trigger_pc) {
+      kbd_pc_trigger_fired = 1;
+      kbd_pc_trigger_active = 1;
+      kbd_phase = 0;
+      fprintf(stderr,
+              "[KBD] triggered char=%02X at pc=%04X cyc=%lu\n",
+              (unsigned char)kbd_pc_trigger_char, cpu.pc, cpu.cyc);
+    }
     pchist[cpu.pc]++;
     if (pc_history_enabled) {
       pc_history[pc_history_pos & 255] = cpu.pc;
@@ -2619,7 +2650,10 @@ int main(int argc, char** argv) {
           }
         } else if (++kbd_phase >= kbd_hold_frames + kbd_gap_frames) {
           kbd_phase = 0;
-          kbd_pos++;
+          if (kbd_pc_trigger_active)
+            kbd_pc_trigger_active = 0;
+          else
+            kbd_pos++;
         }
       }
       capture_video_frame(cpu.cyc);
