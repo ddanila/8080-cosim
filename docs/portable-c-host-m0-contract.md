@@ -32,6 +32,11 @@ The five archived stock-system inputs remain byte-identical:
 | `EKDOS230.BIN` | `819d0ab7a30fbb8e87ebe42eddc2da599816f21b131f96bab2bd8f7cdc4f96d8` |
 | `EKDOSVSW.BIN` | `8c70eda07c2cde8e73a0e664d7ff51356b4559649fad6df24f45784f3076e994` |
 
+The module paths and hashes above identify the immutable M0 repository state.
+At M2 their implementations moved to `tests/fixtures/legacy_janet_*.py` and
+lost all runnable entry points. They remain PTY regression/diagnostic fixtures;
+the original `tools/janet_*.py` production commands no longer exist.
+
 `tests/fixtures/jukuhost/python-era-v1.txt` is the compact, standalone wire
 oracle. `tests/jukuhost_contract_test.py` proves that it still agrees with the
 pinned Python implementation while that implementation exists. The C tests

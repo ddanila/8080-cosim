@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
-from tools.janet_disk_server import (  # noqa: E402
+from tests.fixtures.legacy_janet_disk_server import (  # noqa: E402
     CAPABILITY_QUERY,
     BootSlot,
     BOOT_REPORT,

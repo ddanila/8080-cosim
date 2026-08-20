@@ -33,15 +33,16 @@ the runnable 52-sector system at `0200h..1BFFh` belongs at the source-defined
 part of the runnable system (the isolated `FFh` in `EKDOSVSW.BIN` is likewise
 outside the 52 sectors).
 
-`tools/janet_netboot.py` recognizes this format and creates an in-memory 128-byte
-8080 staging record. The stock NetBios loads the resulting 6,784-byte executable
+`build/jukuhost` recognizes this format and creates an in-memory 128-byte 8080
+staging record. The stock NetBios loads the resulting 6,784-byte executable
 at `0100h`; it copies the exact 6,656 system bytes to `B400h` and jumps `CA00h`.
 No source image is modified.
 
 ```sh
 # Configured physical Juku: start this, then type TN (no Enter).
 # Use TN0201 only if NetBios prompts for maximum/own station numbers.
-tools/janet_netboot.py /dev/ttyUSB0 media/system/EKDOS230.BIN
+build/jukuhost --serial /dev/ttyUSB0 \
+    --system media/system/EKDOS230.BIN --boot-only
 
 # Simulator proof for all five images.
 sync/janet_netboot_check.sh

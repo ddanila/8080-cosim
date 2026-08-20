@@ -358,8 +358,8 @@ Keep two distinct and permanently testable boot paths.
 ### 1. Fastest possible server for the stock ROM protocol
 
 Stock EktaSoft NetBios compatibility is a preservation requirement, not a
-temporary stepping stone. `tools/janet_netboot.py` must remain able to boot all
-five archived system images through an unmodified ROM. Optimize only the host
+temporary stepping stone. `build/jukuhost` must remain able to boot all five
+archived system images through an unmodified ROM. Optimize only the host
 implementation and timing that the existing client permits: profile every
 poll/frame/ACK turn, remove avoidable host-side waits, batch writes where the
 ROM accepts them, and tune retry/poll scheduling from captures rather than

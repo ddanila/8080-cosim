@@ -23,16 +23,17 @@ with the machine-readable board model.
   plus an optional external image such as the CP/Mish Juku build,
   through the stock interrupt-driven NetBios/Janet protocol. The parallel
   `sync/janet_netboot_check.sh` guard reaches each byte-exact `CA00h` handoff.
-  `tools/janet_disk_server.py` can then keep a diskless CP/Mish Juku attached
-  to a host-backed A: volume and optionally expose an unchanged native 800 KiB
+  The native `build/jukuhost` can then keep a diskless CP/Mish Juku attached to
+  a host-backed A: volume and optionally expose an unchanged native 800 KiB
   Juku image as read-only B:. The archival stock bootstrap remains at nominal
   9,600 baud. BAUDTEST2 found that the original 19,200 mode-3 clock shape fails
   in the receive direction, then proved D57 mode 2/count 4 at 19,200/8O1;
   sustained network-disk traffic subsequently passed on physical CS00014 and
-  CS00015. The optional `tools/janet_fastboot.py` path now lets an unmodified
-  stock ROM load one compact record at 9,600 before that proven setting sends
-  a fixed CRC-protected ZX0 stream while D11 interrupt reception overlaps
-  decompression. Repeated CS00015 work measured three clean v12 boots at
+  CS00015. The frozen Python-era Fastboot experiments let an unmodified stock
+  ROM load one compact record at 9,600 before that proven setting sent a fixed
+  CRC-protected ZX0 stream while D11 interrupt reception overlapped
+  decompression. They are retained as regression fixtures, not as a supported
+  host path. Repeated CS00015 work measured three clean v12 boots at
   5.739-5.740 seconds to the first disk request. V13 made both `A5 3A` and `JZ`
   handoffs overlap-safe and explicitly acknowledged; five of five physical
   boots succeeded, but four first streams still needed a CRC retry. The current

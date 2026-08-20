@@ -16,8 +16,12 @@ import time
 import traceback
 from pathlib import Path
 
-from janet_disk_server import checksum, serve_disk
-from janet_netboot import configure_serial, serve as serve_boot, write_all
+FIXTURES = Path(__file__).resolve().parents[1] / "tests" / "fixtures"
+sys.path.insert(0, str(FIXTURES))
+from legacy_janet_disk_server import checksum, serve_disk  # noqa: E402
+from legacy_janet_netboot import (  # noqa: E402
+    configure_serial, serve as serve_boot, write_all,
+)
 
 
 SYNC = b"\xD5\x3A"

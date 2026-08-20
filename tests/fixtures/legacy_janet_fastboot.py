@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Boot a Juku with its stock ROM, then load CP/M at 19200 baud.
+"""Frozen Python-era Fastboot fixture for PTY regressions and diagnostics.
+
+The production entry point was retired at the portable C host M2 gate. This
+module intentionally has no runnable CLI; normal Fastboot uses ``jukuhost``.
 
 The stock Janet 1.2 client transfers a compact stage-1 program at 9600/8O1.
 V1/v2 receive thirteen CRC-protected 512-byte blocks; v3-v5 use a one-record
@@ -34,15 +37,15 @@ from collections.abc import Callable, Iterable
 from pathlib import Path
 
 try:
-    from janet_netboot import (
+    from legacy_janet_netboot import (
         SYSTEM_BYTES,
         SYSTEM_PREFIX,
         configure_serial,
         serve as serve_stock,
         write_all,
     )
-except ModuleNotFoundError:  # Imported as tools.janet_fastboot by tests.
-    from tools.janet_netboot import (
+except ModuleNotFoundError:  # Imported as a package by repository tests.
+    from tests.fixtures.legacy_janet_netboot import (
         SYSTEM_BYTES,
         SYSTEM_PREFIX,
         configure_serial,
@@ -1163,14 +1166,3 @@ def main(argv: Iterable[str] | None = None) -> int:
     finally:
         os.close(fd)
     return 0
-
-
-if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except KeyboardInterrupt:
-        print("janet-fastboot: stopped by operator", file=sys.stderr)
-        raise SystemExit(130)
-    except (OSError, RuntimeError, TimeoutError, ValueError) as error:
-        print(f"janet-fastboot: {error}", file=sys.stderr)
-        raise SystemExit(1)

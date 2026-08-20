@@ -100,8 +100,9 @@ The byte capture establishes the host implementation's boundaries:
 - a 128-byte memory record uses `02h`, `04h`, and `09h` first/middle/last
   fragment markers. The `09h` payload marker is distinct from control `09h`.
 
-`tools/janet_netboot.py` implements those captured turns, including retries;
-it does not write simulator RAM. The five public `JUKUSYS.ZIP` images are
+The frozen `tests/fixtures/legacy_janet_netboot.py` implements those captured
+turns for PTY regression, including retries; it does not write simulator RAM.
+The five public `JUKUSYS.ZIP` images are
 SYSGEN/system-track artifacts rather than 0100h executables: four `E5`-filled
 sectors precede 52 system sectors. The host wraps those sectors in a one-record
 8080 staging program. NetBios loads 6,784 bytes at `0100h`; the stub copies the
@@ -147,8 +148,8 @@ exchanges checksummed 128-byte CP/M disk records with a host-backed A: image.
 Keeping the proven 9600/8O1 rate avoids modifying the ROM protocol while the
 filesystem phase remains independently retried.
 
-`tools/janet_disk_server.py` implements both phases. After `serve()` completes,
-it keeps the physical serial device at 9600 and repeatedly
+The native C `jukuhost` implements both production phases. After stock
+bootstrap, it keeps the physical serial device at 9600 and repeatedly
 sends the `NR` synchronization marker until the resident BIOS sends a valid
 request. Requests contain `JD`, operation, sequence, drive, 16-bit track,
 logical sector, an optional 128-byte write payload, and XOR checksum. Replies
@@ -349,15 +350,14 @@ adapter, start the server, then type `TN` at a configured physical Juku ROM
 prompt (no Enter). Use `TN0201` only if the ROM asks for `N=` and `S=`:
 
 ```sh
-tools/janet_netboot.py /dev/ttyUSB0 media/system/EKDOS230.BIN
+build/jukuhost --serial /dev/ttyUSB0 \
+    --system media/system/EKDOS230.BIN --boot-only
 ```
 
 The host learns the destination and client station numbers from the first
-checksum-valid bootstrap request by default, so the same command accepts any
-configured Juku. `--client` and `--server` retain strict matching when needed
-for diagnostics. The line defaults to 9600 baud, 8 data bits, odd parity, and
-one stop bit. `--load-address` and `--entry` are available for a raw non-JUKUSYS
-executable; ordinary 0100h executables are auto-detected.
+checksum-valid bootstrap request, so the same command accepts any configured
+Juku. The line uses 9600 baud, 8 data bits, odd parity, and one stop bit.
+Ordinary 0100h executables and the archived system formats are auto-detected.
 
 The CP/Mish `NETROM1` integration also established an important handoff rule.
 NetBios registers RomBios service slots 2, 3, and 9 at `D773h`, `D777h`, and

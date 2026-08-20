@@ -22,8 +22,8 @@ sys.path.insert(0, str(ROOT))
 
 import build_ekta4401 as ekta4401  # noqa: E402
 import build_ekta4402 as ekta4402  # noqa: E402
-from tools.janet_fastboot import extension_packet  # noqa: E402
-from tools.janet_netboot import write_all  # noqa: E402
+from tests.fixtures.legacy_janet_fastboot import extension_packet  # noqa: E402
+from tests.fixtures.legacy_janet_netboot import write_all  # noqa: E402
 
 
 def fail(message: str) -> None:

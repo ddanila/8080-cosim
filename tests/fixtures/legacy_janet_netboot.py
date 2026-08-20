@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Serve a Juku system image through the native Janet 1.2 serial protocol.
+"""Frozen Python-era Janet fixture for PTY regressions and diagnostics.
+
+The production entry point was retired at the portable C host M2 gate. This
+module intentionally has no runnable CLI; normal serving uses ``jukuhost``.
 
 The stock EktaSoft NetBios client is selected with ``T``/``N`` at the ROM
 prompt.  A physical Juku whose keyboard S21 configuration switches define its
@@ -711,11 +714,3 @@ def main(argv: Iterable[str] | None = None) -> int:
     finally:
         os.close(fd)
     return 0
-
-
-if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except (OSError, TimeoutError, ValueError) as error:
-        print(f"janet-netboot: {error}", file=sys.stderr)
-        raise SystemExit(1)

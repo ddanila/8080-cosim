@@ -14,7 +14,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from tools.janet_fastboot import (  # noqa: E402
+from tests.fixtures.legacy_janet_fastboot import (  # noqa: E402
     AUTO_ROM_READY,
     BLOCK_COUNT,
     BLOCK_SIZE,
@@ -33,7 +33,7 @@ from tools.janet_fastboot import (  # noqa: E402
     split_stage_artifact,
     stream_packet,
 )
-from tools.janet_netboot import (  # noqa: E402
+from tests.fixtures.legacy_janet_netboot import (  # noqa: E402
     SYSTEM_BYTES,
     SYSTEM_PREFIX,
     boot_frames,
@@ -41,8 +41,10 @@ from tools.janet_netboot import (  # noqa: E402
     prepare_image,
     xor_bytes,
 )
-from tools import janet_netboot  # noqa: E402
-from tools.janet_disk_server import boot_with_recovery  # noqa: E402
+from tests.fixtures import legacy_janet_netboot as janet_netboot  # noqa: E402
+from tests.fixtures.legacy_janet_disk_server import (  # noqa: E402
+    boot_with_recovery,
+)
 
 
 def main() -> int:

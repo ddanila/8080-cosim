@@ -21,12 +21,12 @@ FIRMWARE = ROOT / "spinoffs" / "jukuravi" / "network-rom"
 sys.path.insert(0, str(FIRMWARE))
 sys.path.insert(0, str(ROOT))
 import build_network_rom as network_rom  # noqa: E402
-from tools.janet_fastboot import (  # noqa: E402
+from tests.fixtures.legacy_janet_fastboot import (  # noqa: E402
     AUTO_ROM_READY,
     extension_packet,
     wait_byte,
 )
-from tools.janet_netboot import write_all  # noqa: E402
+from tests.fixtures.legacy_janet_netboot import write_all  # noqa: E402
 
 
 def fail(message: str) -> None:

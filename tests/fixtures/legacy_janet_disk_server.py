@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Boot diskless Juku CP/M and serve its A: volume over the onboard USART."""
+"""Frozen Python-era NetDisk fixture for PTY regressions and diagnostics.
+
+The production entry point was retired at the portable C host M2 gate. This
+module intentionally has no runnable CLI; normal serving uses ``jukuhost``.
+"""
 
 from __future__ import annotations
 
@@ -19,15 +23,15 @@ from datetime import date, datetime, time as datetime_time, timedelta, timezone
 from pathlib import Path
 
 try:
-    from janet_netboot import configure_serial, serve as serve_boot, write_all
-    from janet_fastboot import FAST_BAUD, crc16_ibm, serve_fast
-except ModuleNotFoundError:  # Imported as tools.janet_disk_server by tests.
-    from tools.janet_netboot import (  # type: ignore[no-redef]
+    from legacy_janet_netboot import configure_serial, serve as serve_boot, write_all
+    from legacy_janet_fastboot import FAST_BAUD, crc16_ibm, serve_fast
+except ModuleNotFoundError:  # Imported as a package by repository tests.
+    from tests.fixtures.legacy_janet_netboot import (  # type: ignore[no-redef]
         configure_serial,
         serve as serve_boot,
         write_all,
     )
-    from tools.janet_fastboot import (  # type: ignore[no-redef]
+    from tests.fixtures.legacy_janet_fastboot import (  # type: ignore[no-redef]
         FAST_BAUD, crc16_ibm,
         serve_fast,
     )
@@ -1743,14 +1747,3 @@ def main(argv: Iterable[str] | None = None) -> int:
         if request_trace is not None:
             request_trace.close()
     return 0
-
-
-if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except KeyboardInterrupt:
-        print("janet-disk-server: stopped by operator", file=sys.stderr)
-        raise SystemExit(130)
-    except (OSError, TimeoutError, ValueError) as error:
-        print(f"janet-disk-server: {error}", file=sys.stderr)
-        raise SystemExit(1)

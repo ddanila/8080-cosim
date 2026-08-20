@@ -134,10 +134,11 @@ nonzero exit when generated `docs/` or `ref/` output drifts.
   intermediate is written to a temporary file.
 - `jukuravi_d55_clock_audit.sh` — slow full-ROM T31 negative control plus T34
   clean, D55-data, D54-clock, D56-clock, and D9-select structural fault matrix.
-- `janet_netboot_check.sh` — five parallel stock-ROM NetBios clients served
-  through D11 PTYs; proves Janet retry/turn handling, exact 52-sector system
-  installation at `B400h`, and the `CA00h` cold-start handoff for every
-  `media/system/*.BIN` image.
+- `janet_netboot_check.sh` — frozen Python-era fixture regression: five
+  parallel stock-ROM NetBios clients served only through simulator D11 PTYs;
+  proves Janet retry/turn handling, exact 52-sector system installation at
+  `B400h`, and the `CA00h` cold-start handoff for every `media/system/*.BIN`
+  image. It is not an operational host command.
 
 Checkpoint load/resume tools remain useful for narrowing regressions, but their
 old intermediate report files are not project milestones. The uninterrupted

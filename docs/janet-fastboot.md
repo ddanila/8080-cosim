@@ -1,7 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **V6 FASTEST EXACT PHYSICAL TIMING; V7 PHYSICALLY QUALIFIED; V8
-SIMULATION-QUALIFIED OVERLAP CANDIDATE; V4 RATE FAILED; 19,200 FROZEN**
+Status: **HISTORICAL V1-V15 EXPERIMENT RECORD; PRODUCTION HOST PATH RETIRED**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -12,8 +11,8 @@ at B400h-CDFFh. It then jumps to the normal CA00h BIOS entry.
 
 This is intentionally a single-client, fixed-layout CP/Mish protocol. Avoiding
 general address/length negotiation keeps the stock-loaded stage to five
-128-byte records. The normal `janet_netboot.py` path remains byte-for-byte
-unchanged and can still boot all five preserved systems.
+128-byte records. The frozen fixture remains byte-for-byte testable, while
+normal stock bootstrap and C8/V16 operation now use `build/jukuhost`.
 
 ## Wire contract
 
@@ -63,22 +62,17 @@ it in full; v1/v2 remain the finer-grained recovery alternatives.
 
 ## Use
 
-Build the stage and network system in the CP/Mish checkout, then serve the
-usual A: and optional B: volumes with one extra option:
+The historical stage and network system can still be rebuilt in the CP/Mish
+checkout for simulator regression:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-stage1.bin \
     juku-net-mode2-system.bin juku-net-mode2.img
 cp juku-net-mode2.img cs00015-fastboot.img
-../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-stage1.bin --disk-baud 19200 \
-    --writable --timeout 86400 /dev/ttyUSB0 \
-    juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
-Power/reset the stock-ROM machine and type `TN` without Enter, as for the
-ordinary Janet boot. The host learns the one active station pair from that
-request. Do not use `--fast-stage1` with a disk baud other than 19200.
+The removed Python command is not an operational option. For physical work,
+use stock Janet through `jukuhost`, or C8 and Fastboot V16.
 
 ### A: media safety modes
 
@@ -128,25 +122,14 @@ malformed, or differently hashed state is ignored, so it cannot select an
 artifact outside the manifest. This is host-side automatic recovery and adds
 no ROM menu or station identity.
 
-The frozen physical baseline command above uses `juku-fastboot-stage1.bin`
-(protocol v1). The next distinct candidate is **Fast stage v2**:
-
-```sh
-../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v2.bin --disk-baud 19200 \
-    --writable --timeout 86400 /dev/ttyUSB0 \
-    juku-net-mode2-system.bin cs00015-fastboot.img
-```
+The frozen physical baseline used `juku-fastboot-stage1.bin` (protocol v1).
+The next distinct candidate was **Fast stage v2**.
 
 The physically proven **Fast stage v3** uses the identical command with the new
 bundle; it does not require a ROM burn:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v3.bin
-../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v3.bin --disk-baud 19200 \
-    --writable --timeout 86400 /dev/ttyUSB0 \
-    juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
 The physically proven artifact is 384 bytes (117-byte core padded to 128 plus a
@@ -710,15 +693,12 @@ D57 mode-2/count-4 clock and D11 19200/8N1 framing. The host therefore starts
 with the existing overlap-safe `A5 3A` extension handshake. There is no Janet
 station discovery, 9600-baud record transfer, or stock execute service.
 
-Build the CP/Mish artifacts, start this server, and press `N` alone (no Enter):
+The corresponding V15 direct-host command is retired. Its artifacts remain
+rebuildable for the frozen simulator regression:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v15-netdisk-v3.bin \
-    juku-net-v3-rambio-system.bin juku-net-v2.img && \
-../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v15-netdisk-v3.bin --direct-fastboot \
-    --disk-baud 19200 --disk-protocol 3 --timeout 86400 \
-    /dev/ttyUSB0 juku-net-v3-rambio-system.bin juku-net-v2.img
+    juku-net-v3-rambio-system.bin juku-net-v2.img
 ```
 
 `--direct-fastboot` configures the initial host side as 19200/8N1, waits for
@@ -760,16 +740,10 @@ Sending the next fragment eagerly on every ACK was rejected in cosim: the ROM
 discarded/rejected premature frames and host output grew from 14 to 44-58
 frames. The captured Janet turn discipline remains unchanged.
 
-Run the fastest current candidate without changing the ROM:
+Rebuild the formerly fastest stock-ROM candidate for historical regression:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v14.bin
-../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v14.bin --compact-stock-execute \
-    --fast-low-latency-guards --disk-baud 19200 \
-    --boot-result-json cs00015-fastboot-v14-run1.json \
-    --writable --timeout 86400 /dev/ttyUSB0 \
-    juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
 `--boot-result-json` atomically records the stage hash, system hash, learned
@@ -780,25 +754,16 @@ serve the disk, so a later interrupted session cannot lose the benchmark.
 Use a distinct filename for every cold or warm run when collecting a timing
 distribution.
 
-Run the v8 comparison without changing the ROM:
+Rebuild the v8 comparison fixture:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v8.bin
-../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v8.bin --compact-stock-execute \
-    --disk-baud 19200 \
-    --writable --timeout 86400 /dev/ttyUSB0 \
-    juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
-Run the physically qualified v7 path without changing the ROM:
+Rebuild the physically qualified v7 fixture:
 
 ```sh
 cd ~/fun/cpmish && make juku-fastboot-v7.bin
-../8080-cosim/tools/janet_disk_server.py \
-    --fast-stage1 juku-fastboot-v7.bin --disk-baud 19200 \
-    --writable --timeout 86400 /dev/ttyUSB0 \
-    juku-net-mode2-system.bin cs00015-fastboot.img
 ```
 
 Freeze the 2026-08-14/15 CS00015 comparison as six named physical baselines. All

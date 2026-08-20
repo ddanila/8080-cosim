@@ -9,20 +9,20 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from tools.janet_disk_server import (  # noqa: E402
+from tests.fixtures.legacy_janet_disk_server import (  # noqa: E402
     REPLY_SYNC,
     SECTOR_ORDER,
     checksum,
     encode_v3_record,
     record_offset,
 )
-from tools.janet_fastboot import (  # noqa: E402
+from tests.fixtures.legacy_janet_fastboot import (  # noqa: E402
     checked_frame,
     crc16_ccitt,
     crc16_ibm,
     fletcher16,
 )
-from tools.janet_netboot import boot_frames, frame  # noqa: E402
+from tests.fixtures.legacy_janet_netboot import boot_frames, frame  # noqa: E402
 
 FIXTURE = ROOT / "tests" / "fixtures" / "jukuhost" / "python-era-v1.txt"
 

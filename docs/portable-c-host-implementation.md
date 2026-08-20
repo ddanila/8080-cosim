@@ -251,3 +251,19 @@ The related `vc8080` interactive launcher has likewise moved from embedded
 Python serving to the current C8/V16 artifacts and `jukuhost`, preserving its
 host log and raw capture. That local repository has no configured remote, so
 its migration commit is retained locally pending publication of that project.
+
+### Python-host retirement checkpoint
+
+The three generic Python Janet, Fastboot, and NetDisk command files have been
+removed from `tools/`. Their frozen implementations live under
+`tests/fixtures/legacy_janet_*.py`, have no `__main__` entry point, and remain
+only for byte-exact historical PTY regressions and the explicitly out-of-scope
+BAUD diagnostic laboratories. Normal documentation and operational wrappers
+cannot launch them. The current C host and frozen fixtures both pass the M0
+contract, five-system stock-bootstrap, Fastboot, NetDisk/N4, direct-ROM, and
+network-ROM regression gates.
+
+Smoke-kit v2 now publishes a statically linked `bin/jukuhost` beside the C
+simulator and labels the Python files as test fixtures. This lets downstream
+CP/M integration tests preserve historical fault injection without packaging
+a second runnable production host.
