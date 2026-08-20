@@ -991,6 +991,7 @@ static int kbd_trace = 0;
 static int kbd_pc_trigger_enabled = 0;
 static int kbd_pc_trigger_fired = 0;
 static int kbd_pc_trigger_active = 0;
+static int kbd_pc_trigger_hold_frames = 0;
 static uint16_t kbd_pc_trigger_pc = 0;
 static char kbd_pc_trigger_char = 0;
 #define KBD_HOLD 3
@@ -1125,7 +1126,9 @@ static uint8_t kbd_portb(const i8080* cpu) {
   uint8_t idle = (uint8_t)(KBD_NONE | contrdat);
   if (g_vw < kbd_start_vram) return idle;              // default waits until the ekta37 banner is drawn
   char current = kbd_current_char();
-  char c = (current && kbd_phase < kbd_hold_frames) ? current : 0;
+  int hold_frames = kbd_pc_trigger_active && kbd_pc_trigger_hold_frames > 0
+                    ? kbd_pc_trigger_hold_frames : kbd_hold_frames;
+  char c = (current && kbd_phase < hold_frames) ? current : 0;
   if (c == '|') return idle;                           // prompt wait marker, not a typed key
   int shift = 0, ctrl = 0, col = -1, bit = -1;
   if (c) {
@@ -1710,10 +1713,15 @@ int main(int argc, char** argv) {
     kbd_pc_trigger_char = (char)key;
     kbd_enabled = 1;
   }
+  const char* kbd_at_pc_hold_env = getenv("JUKU_KEY_AT_PC_HOLD_FRAMES");
+  if (kbd_at_pc_hold_env && kbd_at_pc_hold_env[0])
+    kbd_pc_trigger_hold_frames = atoi(kbd_at_pc_hold_env);
   kbd_trace = getenv("JUKU_TRACE_KBD") && getenv("JUKU_TRACE_KBD")[0] &&
               strcmp(getenv("JUKU_TRACE_KBD"), "0") != 0;
   if (kbd_hold_frames < 1) kbd_hold_frames = KBD_HOLD;
   if (kbd_gap_frames < 1) kbd_gap_frames = KBD_GAP;
+  if (kbd_pc_trigger_hold_frames < 1)
+    kbd_pc_trigger_hold_frames = kbd_hold_frames;
   const char* stop_fdc_data_reads_env = getenv("JUKU_STOP_FDC_DATA_READS");
   if (stop_fdc_data_reads_env && stop_fdc_data_reads_env[0])
     stop_fdc_data_reads = strtoul(stop_fdc_data_reads_env, 0, 0);
@@ -2641,6 +2649,8 @@ int main(int argc, char** argv) {
       // either by the monitor's frame ISR or by a RAM-resident polling BIOS;
       // PIC masking must not freeze a real key contact in time.
       if (frame_key && g_vw >= kbd_start_vram) {
+        int hold_frames = kbd_pc_trigger_active
+                          ? kbd_pc_trigger_hold_frames : kbd_hold_frames;
         if (frame_key == '|') {
           if (ekdos_prompt_visible()) {
             fprintf(stderr, "[KBD] prompt wait marker consumed at g_vw=%lu cyc=%lu pos=%d\n",
@@ -2648,7 +2658,7 @@ int main(int argc, char** argv) {
             kbd_phase = 0;
             kbd_pos++;
           }
-        } else if (++kbd_phase >= kbd_hold_frames + kbd_gap_frames) {
+        } else if (++kbd_phase >= hold_frames + kbd_gap_frames) {
           kbd_phase = 0;
           if (kbd_pc_trigger_active)
             kbd_pc_trigger_active = 0;
