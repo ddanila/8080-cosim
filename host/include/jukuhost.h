@@ -358,6 +358,8 @@ int jh_service_init(struct jh_service *service, struct jh_media *drive_a,
                     unsigned read_ahead_records, int console_enabled);
 int jh_service_console_input(struct jh_service *service,
                              const uint8_t *data, size_t length);
+int jh_service_is_duplicate(const struct jh_service *service,
+                            const struct jh_n3_request *request);
 int jh_service_handle(struct jh_service *service,
                       const struct jh_n3_request *request,
                       const uint8_t clock_value[5],

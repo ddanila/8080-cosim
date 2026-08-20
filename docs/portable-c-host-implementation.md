@@ -63,3 +63,31 @@ Implement the POSIX serial/filesystem/clock/console layer and the single Linux
 boots, A:/B:, N4, reset, missed-ready, host-loss, reconnect, writable-media,
 logging, and capture tests. Only after those pass are callers migrated and the
 Python production entry points retired.
+
+### Native Linux runtime checkpoint
+
+The first POSIX executable is now available as `build/jukuhost`, built by
+`sync/jukuhost_linux_build.sh`. It currently provides:
+
+- strictly configured 9,600 8O1 and 19,200 8N1/8O1 serial phases with bounded
+  partial reads/writes, drain support, monotonic deadlines, and clean signal
+  handling;
+- stock Janet and direct C8 Fastboot V16 execution through the admitted core;
+- N3 A:/B: and N4 console/clock/report service, duplicate replay, and ready-
+  marker recovery;
+- writable A: persistence through the CRC journal and synchronous record
+  writes;
+- simultaneous human-readable console/file logging and exact binary capture;
+- stable command/configuration, artifact, serial, protocol, and media exit
+  classes.
+
+`sync/jukuhost_linux_check.sh` proves the executable over real PTYs: N3 raw,
+compact, V3 write and duplicate replay, native high-track B:, N4 capabilities,
+bulk output and input, persisted media, journal cleanup, capture creation, and
+Ctrl+C shutdown. Linux PTYs do not preserve physical parity-enable bits in
+termios readback, so only `/dev/pts/*` relaxes that one readback assertion; a
+physical tty retains strict 8O1 verification.
+
+This is an intermediate M2 checkpoint, not promotion. Full Juku simulator
+boot/reconnect/fault parity, configuration/manifest identity, caller migration,
+and Python-host retirement remain open.

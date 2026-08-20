@@ -13,6 +13,13 @@ static int request_equal(const struct jh_n3_request *left,
         memcmp(left->payload, right->payload, left->payload_length) == 0;
 }
 
+int jh_service_is_duplicate(const struct jh_service *service,
+                            const struct jh_n3_request *request)
+{
+    return service != NULL && request != NULL && service->have_last_request &&
+        request_equal(&service->last_request, request);
+}
+
 static int directory_sector(unsigned sector)
 {
     const uint8_t *order = jh_n3_sector_order();
@@ -154,8 +161,7 @@ int jh_service_handle(struct jh_service *service,
         return JH_ERR_ARGUMENT;
     }
     memset(event, 0, sizeof(*event));
-    if (service->have_last_request &&
-            request_equal(&service->last_request, request)) {
+    if (jh_service_is_duplicate(service, request)) {
         memcpy(event->reply, service->last_reply, service->last_reply_length);
         event->reply_length = service->last_reply_length;
         event->duplicate = 1;
