@@ -1,6 +1,6 @@
 # Portable C Juku host plan
 
-Status: **PLANNED; NO C HOST IMPLEMENTATION YET**
+Status: **M0 CONTRACT FROZEN; C IMPLEMENTATION NOT STARTED**
 
 ## Goal
 
