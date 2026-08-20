@@ -11,6 +11,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import juku_run  # noqa: E402
+import netboot_demo_gifs as demos  # noqa: E402
 
 
 def main() -> int:
@@ -55,6 +56,20 @@ def main() -> int:
                 )
         if "python" in joined or "janet_" in joined:
             raise AssertionError(f"Python host fallback remains: {joined}")
+
+        for scenario in ("cpm22", "cpm31_netrom"):
+            command, _rom, _keys = demos.scenario_command(
+                scenario, "/dev/pts/3", work, "/dev/pts/4",
+            )
+            joined = " ".join(command)
+            if command[0] != str(ROOT / "build" / "jukuhost") or \
+                    "python" in joined or "janet_" in joined:
+                raise AssertionError(
+                    f"{scenario} demo retained another host: {joined}"
+                )
+            if scenario == "cpm31_netrom" and \
+                    "--fast-stage" not in command:
+                raise AssertionError("current network-ROM demo lacks V16")
     print("JUKU-RUN-HOST-TEST: PASS")
     return 0
 

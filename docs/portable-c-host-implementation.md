@@ -222,3 +222,32 @@ A real wrapper-level simulator run used stock Ekta 3.7, scripted `TN0201`, and
 identity, completed all 53 bootstrap records, and exited cleanly with 2,421 RX
 bytes, 11,095 TX bytes, and no protocol retry. This proves the wrapper's
 auto-discovered serial PTY rather than only testing constructed arguments.
+
+### Acceptance and demonstration caller checkpoint
+
+The current `cpm-plus-juku` physical-acceptance runner now launches only the
+native C host, snapshots that executable and the evidence converter, waits for
+the explicit serial-open phase, and derives its JSON/JSONL report from the C
+text log and raw capture. The obsolete C4/V15 qualification runner was removed;
+current physical work is C8/V16. Its focused runner test passes independently
+of the repository's separately tracked historical artifact pins.
+
+`tools/netboot_demo_gifs.py` also invokes only `build/jukuhost`. Its stock-ROM
+CP/M 2.2 and current C8/V16 CP/M Plus scenarios both pass from bootstrap through
+their scripted console workloads and retain host log, raw capture, and simulator
+log beside the framebuffer capture. The generator now owns the simulator PTY
+and passes its master descriptor directly to the host, matching the admitted
+C8 integration topology. The old stock-ROM V15 CP/M Plus GIF remains frozen
+historical evidence and is not a runnable scenario.
+
+During that migration, orderly SIGINT under continuous N4 traffic exposed a
+real lifecycle race: an interrupted, back-pressured serial write was reported
+as a serial failure. The runtime now recognizes the pending stop before
+reconnect/error classification. The Linux PTY gate deliberately fills the
+reply queue and interrupts an active write; it requires exit zero and a clean
+stop event.
+
+The related `vc8080` interactive launcher has likewise moved from embedded
+Python serving to the current C8/V16 artifacts and `jukuhost`, preserving its
+host log and raw capture. That local repository has no configured remote, so
+its migration commit is retained locally pending publication of that project.
