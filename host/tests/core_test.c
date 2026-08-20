@@ -168,6 +168,59 @@ static int test_fastboot(const char *fixture)
     return 0;
 }
 
+static int test_bootstrap(const char *fixture)
+{
+    uint8_t raw[JH_BOOT_RECORD_SIZE];
+    uint8_t frame[JH_JANET_MAX_FRAME];
+    uint8_t expected[JH_JANET_MAX_FRAME];
+    uint8_t *jukusys = (uint8_t *)malloc(10240u);
+    uint8_t *prepared_bytes = (uint8_t *)malloc(8192u);
+    struct jh_boot_image prepared;
+    size_t frame_length;
+    size_t expected_length;
+    size_t index;
+    static const uint8_t stub_prefix[] = {
+        0x21u, 0x80u, 0x01u, 0x11u, 0x00u, 0xb4u,
+        0x01u, 0x00u, 0x1au, 0x7eu, 0x12u, 0x23u, 0x13u,
+        0x0bu, 0x78u, 0xb1u, 0xc2u, 0x09u, 0x01u,
+        0xc3u, 0x00u, 0xcau
+    };
+    CHECK(jukusys != NULL && prepared_bytes != NULL);
+    for (index = 0u; index < sizeof(raw); ++index) raw[index] = (uint8_t)index;
+    CHECK(jh_boot_frame_count(sizeof(raw), 0) == 8u);
+    for (index = 0u; index < 8u; ++index) {
+        char key[32];
+        CHECK(snprintf(key, sizeof(key), "boot_raw_frame_%u",
+                       (unsigned)index) > 0);
+        CHECK(fixture_hex(fixture, key, expected, sizeof(expected),
+                          &expected_length));
+        CHECK(jh_boot_frame_at(raw, sizeof(raw), JH_BOOT_LOAD_ADDRESS,
+                               JH_BOOT_LOAD_ADDRESS, 1u, 2u, 0, index,
+                               frame, sizeof(frame), &frame_length) == JH_OK);
+        CHECK(frame_length == expected_length &&
+              memcmp(frame, expected, frame_length) == 0);
+    }
+    memset(jukusys, 0xe5, 10240u);
+    for (index = 0u; index < JH_SYSTEM_SIZE; ++index) {
+        jukusys[0x0200u + index] = (uint8_t)(index * 73u + 19u);
+    }
+    jukusys[0x0200u] = 0xc3u;
+    CHECK(jh_boot_prepare(jukusys, 10240u, 0, 0u, 0u, prepared_bytes,
+                          8192u, &prepared) == JH_OK);
+    CHECK(prepared.format == JH_BOOT_JUKUSYS && prepared.length == 0x1a80u &&
+          prepared.load_address == 0x0100u && prepared.entry == 0x0100u);
+    CHECK(memcmp(prepared_bytes, stub_prefix, sizeof(stub_prefix)) == 0);
+    CHECK(memcmp(prepared_bytes + 128u, jukusys + 0x0200u,
+                 JH_SYSTEM_SIZE) == 0);
+    CHECK(jh_boot_prepare(raw, 127u, 0, 0u, 0u, prepared_bytes, 8192u,
+                          &prepared) == JH_OK);
+    CHECK(prepared.format == JH_BOOT_PLAIN && prepared.length == 128u &&
+          prepared_bytes[127] == 0u);
+    free(prepared_bytes);
+    free(jukusys);
+    return 0;
+}
+
 static int test_netdisk(const char *fixture)
 {
     uint8_t request_bytes[JH_N3_MAX_REQUEST];
@@ -251,6 +304,109 @@ static int test_media(void)
     return 0;
 }
 
+static int test_service(void)
+{
+    uint8_t *a_bytes = (uint8_t *)calloc(1u, JH_N3_VOLUME_SIZE);
+    uint8_t *b_bytes = (uint8_t *)calloc(1u, JH_N3_NATIVE_VOLUME_SIZE);
+    struct jh_media drive_a;
+    struct jh_media drive_b;
+    struct jh_service service;
+    struct jh_service_event event;
+    struct jh_n3_request request;
+    uint8_t clock_value[5] = {1u, 0u, 0x12u, 0x34u, 0x56u};
+    size_t offset;
+    size_t index;
+    CHECK(a_bytes != NULL && b_bytes != NULL);
+    CHECK(jh_media_init(&drive_a, a_bytes, JH_N3_VOLUME_SIZE,
+                        JH_N3_TRACKS, 1) == JH_OK);
+    CHECK(jh_media_init(&drive_b, b_bytes, JH_N3_NATIVE_VOLUME_SIZE,
+                        JH_N3_NATIVE_TRACKS, 0) == JH_OK);
+    CHECK(jh_service_init(&service, &drive_a, &drive_b, 3u, 3u, 1) == JH_OK);
+
+    memset(&request, 0, sizeof(request));
+    request.operation = JH_N3_WRITE_V3;
+    request.sequence = 1u;
+    request.track = 2u;
+    request.sector = 1u;
+    request.payload_length = JH_N3_RECORD_SIZE;
+    memset(request.payload, 0xa5, sizeof(request.payload));
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.reply_length == 7u && event.reply[3] == 0u);
+    CHECK(jh_n3_record_offset(2u, 1u, JH_N3_TRACKS, &offset) == JH_OK);
+    CHECK(a_bytes[offset] == 0xa5u);
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.duplicate == 1);
+
+    request.operation = JH_N3_READ_COMPACT;
+    request.sequence = 2u;
+    request.payload_length = 0u;
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.reply_length == 6u && event.reply[3] == 2u &&
+          event.reply[4] == 0xa5u);
+
+    request.operation = JH_N3_READ_AHEAD;
+    request.sequence = 3u;
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.reply_length >= 7u && event.reply[3] == 0u &&
+          event.reply[4] == 3u);
+    CHECK(jh_crc16_ibm(event.reply, event.reply_length - 2u, 0u) ==
+          (uint16_t)((uint16_t)event.reply[event.reply_length - 2u] << 8 |
+                     event.reply[event.reply_length - 1u]));
+
+    request.operation = JH_N4_CAPABILITY_QUERY;
+    request.sequence = 4u;
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.reply_length == 9u && event.reply[3] == 0u &&
+          event.reply[4] == 3u && event.reply[5] == 3u &&
+          event.reply[7] == 2u);
+
+    CHECK(jh_service_console_input(&service, (const uint8_t *)"X", 1u) == JH_OK);
+    request.operation = JH_N4_CONSOLE_POLL;
+    request.sequence = 5u;
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.reply[3] == 2u && event.reply[4] == (uint8_t)'X' &&
+          service.console_input_length == 0u);
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.duplicate == 1 && event.reply[4] == (uint8_t)'X');
+
+    memset(&request, 0, sizeof(request));
+    request.operation = JH_N4_CONSOLE_OUT_BLOCK;
+    request.sequence = 6u;
+    request.payload_length = 3u;
+    memcpy(request.payload, "ABC", 3u);
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.console_output_length == 3u &&
+          memcmp(event.console_output, "ABC", 3u) == 0);
+
+    memset(&request, 0, sizeof(request));
+    request.operation = JH_N4_TIME_SET;
+    request.sequence = 7u;
+    request.arguments[0] = 1u;
+    request.arguments[2] = 0x23u;
+    request.arguments[3] = 0x59u;
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.time_set_requested == 1 && event.reply[3] == 0u);
+    request.sequence = 8u;
+    request.arguments[2] = 0x24u;
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.time_set_requested == 0 && event.reply[3] == 1u);
+
+    for (index = 0u; index < JH_N3_RECORD_SIZE; ++index) {
+        request.payload[index] = (uint8_t)index;
+    }
+    request.operation = JH_N3_WRITE;
+    request.sequence = 9u;
+    request.drive = 1u;
+    request.track = 159u;
+    request.sector = 40u;
+    request.payload_length = JH_N3_RECORD_SIZE;
+    CHECK(jh_service_handle(&service, &request, clock_value, &event) == JH_OK);
+    CHECK(event.reply[3] == 1u);
+    free(b_bytes);
+    free(a_bytes);
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     const char *fixture = argc == 2 ? argv[1] :
@@ -258,9 +414,11 @@ int main(int argc, char **argv)
     CHECK(argc <= 2);
     CHECK(test_checksums() == 0);
     CHECK(test_janet(fixture) == 0);
+    CHECK(test_bootstrap(fixture) == 0);
     CHECK(test_fastboot(fixture) == 0);
     CHECK(test_netdisk(fixture) == 0);
     CHECK(test_media() == 0);
+    CHECK(test_service() == 0);
     puts("JUKUHOST-CORE-TEST: PASS (frozen vectors + parser recovery + media)");
     return 0;
 }

@@ -20,11 +20,17 @@ The first platform-neutral C99 slice is under `host/`:
   parser;
 - CRC-16/CCITT, CRC-16/IBM, Fletcher-16, and XOR primitives;
 - checked Fastboot frames and strict V16 bundle metadata/payload validation;
+- plain, explicit, JUKUSYS, JUKU51, and CRC-checked `JUKURM1` image
+  preparation, byte-exact relocation stubs, and indexed stock-bootstrap frame
+  generation;
 - incremental N3/N4 request framing with bounded target-controlled lengths;
 - ordinary and CRC-protected reply builders;
 - V3 raw, fill, deleted-directory, and prefix/fill record encodings;
 - 80-track and native 160-track geometry, bounds checks, read-only enforcement,
   and cylinder/head-interleaved `.JUK` conversion.
+- in-memory N3/N4 service semantics for raw/compact/read-ahead reads, legacy
+  and V3 writes, duplicate replay, console queues, clock requests, target
+  reports, and capability negotiation.
 
 `sync/jukuhost_core_check.sh` compiles the same sources in strict C99 mode with
 GCC using signed and unsigned `char`, with Clang when installed, and under
@@ -33,9 +39,8 @@ the same immutable `python-era-v1.txt` oracle as the Python contract test.
 
 Still required before M1 closes:
 
-- stock image recognition, staging bootstrap, and complete Janet boot state;
+- complete Janet request/ACK/REJ/line-turn boot state;
 - the V16 transfer state machine, missed-ready recovery, and no-resend result;
-- complete N3/N4 service semantics including duplicates and read-ahead;
 - in-memory session/reconnect, logging/capture records, and media transaction
   recovery with fault injection;
 - differential and malformed-input coverage for every admitted transition.

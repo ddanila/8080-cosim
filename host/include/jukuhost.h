@@ -19,6 +19,20 @@ extern "C" {
 #define JH_N3_MAX_REQUEST (9u + JH_N3_RECORD_SIZE)
 #define JH_N4_MAX_CONSOLE_BLOCK 32u
 #define JH_SYSTEM_SIZE 0x1a00u
+#define JH_SERVICE_MAX_REPLY 1063u
+#define JH_SERVICE_CONSOLE_QUEUE 256u
+#define JH_BOOT_RECORD_SIZE 128u
+#define JH_BOOT_LOAD_ADDRESS 0x0100u
+#define JH_BOOT_SYSTEM_LOAD_ADDRESS 0xb400u
+#define JH_BOOT_SYSTEM_ENTRY 0xca00u
+
+enum jh_boot_format {
+    JH_BOOT_PLAIN = 0,
+    JH_BOOT_EXPLICIT = 1,
+    JH_BOOT_JUKUSYS = 2,
+    JH_BOOT_JUKU51 = 3,
+    JH_BOOT_JUKURM1 = 4
+};
 
 enum jh_result {
     JH_OK = 0,
@@ -70,8 +84,35 @@ struct jh_n3_request {
     uint8_t drive;
     uint16_t track;
     uint8_t sector;
+    uint8_t arguments[4];
     size_t payload_length;
     uint8_t payload[JH_N3_RECORD_SIZE];
+};
+
+struct jh_service_event {
+    uint8_t reply[JH_SERVICE_MAX_REPLY];
+    size_t reply_length;
+    uint8_t console_output[JH_N4_MAX_CONSOLE_BLOCK];
+    size_t console_output_length;
+    uint8_t time_set[4];
+    int time_set_requested;
+    uint8_t report_operation;
+    uint8_t report_arguments[4];
+    int duplicate;
+};
+
+struct jh_service {
+    struct jh_media *drive_a;
+    struct jh_media *drive_b;
+    unsigned protocol_version;
+    unsigned read_ahead_records;
+    int console_enabled;
+    uint8_t console_input[JH_SERVICE_CONSOLE_QUEUE];
+    size_t console_input_length;
+    struct jh_n3_request last_request;
+    int have_last_request;
+    uint8_t last_reply[JH_SERVICE_MAX_REPLY];
+    size_t last_reply_length;
 };
 
 struct jh_n3_parser {
@@ -85,6 +126,13 @@ struct jh_media {
     size_t size;
     unsigned tracks;
     int writable;
+};
+
+struct jh_boot_image {
+    size_t length;
+    uint16_t load_address;
+    uint16_t entry;
+    enum jh_boot_format format;
 };
 
 uint8_t jh_xor(const uint8_t *data, size_t length);
@@ -110,6 +158,17 @@ int jh_fast_v16_bundle(const uint8_t *artifact, size_t artifact_length,
                        const uint8_t **core, const uint8_t **compressed,
                        size_t *compressed_length, uint16_t *system_crc);
 
+int jh_boot_prepare(const uint8_t *input, size_t input_length,
+                    int explicit_addresses, uint16_t explicit_load,
+                    uint16_t explicit_entry, uint8_t *output,
+                    size_t output_capacity, struct jh_boot_image *prepared);
+size_t jh_boot_frame_count(size_t image_length, int compact_execute);
+int jh_boot_frame_at(const uint8_t *image, size_t image_length,
+                     uint16_t load_address, uint16_t entry,
+                     uint8_t client, uint8_t server, int compact_execute,
+                     size_t frame_index, uint8_t *output, size_t capacity,
+                     size_t *output_length);
+
 void jh_n3_parser_init(struct jh_n3_parser *parser);
 int jh_n3_parser_push(struct jh_n3_parser *parser, uint8_t value,
                       struct jh_n3_request *request);
@@ -134,6 +193,16 @@ int jh_media_write(struct jh_media *media, unsigned track, unsigned sector,
                    const uint8_t record[JH_N3_RECORD_SIZE]);
 int jh_native_image_to_volume(const uint8_t *image, size_t image_length,
                               uint8_t *volume, size_t volume_capacity);
+
+int jh_service_init(struct jh_service *service, struct jh_media *drive_a,
+                    struct jh_media *drive_b, unsigned protocol_version,
+                    unsigned read_ahead_records, int console_enabled);
+int jh_service_console_input(struct jh_service *service,
+                             const uint8_t *data, size_t length);
+int jh_service_handle(struct jh_service *service,
+                      const struct jh_n3_request *request,
+                      const uint8_t clock_value[5],
+                      struct jh_service_event *event);
 
 #ifdef __cplusplus
 }

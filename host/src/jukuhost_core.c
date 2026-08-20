@@ -351,6 +351,12 @@ int jh_n3_parser_push(struct jh_n3_parser *parser, uint8_t value,
     request->operation = parser->bytes[2];
     request->sequence = parser->bytes[3];
     if (request->operation == JH_N4_CONSOLE_OUT_BLOCK) {
+        memset(request->arguments, 0, sizeof(request->arguments));
+    } else {
+        memcpy(request->arguments, parser->bytes + 4,
+               sizeof(request->arguments));
+    }
+    if (request->operation == JH_N4_CONSOLE_OUT_BLOCK) {
         request->drive = 0u;
         request->track = 0u;
         request->sector = 0u;
