@@ -1041,6 +1041,10 @@ static int run_disk(struct host_context *host, uint8_t *volume,
         if (!synchronized && now >= next_ready) {
             size_t marker_length = host->options.disk_protocol == 1u ? 2u : 4u;
             if (host_write(host, ready_marker, marker_length) != 0) {
+                if (jh_posix_stop_requested()) {
+                    result = EXIT_CLEAN;
+                    goto done;
+                }
                 if (reconnect_serial(host, host->options.disk_baud, 'O') != 0) {
                     result = EXIT_SERIAL;
                     goto done;
@@ -1106,6 +1110,10 @@ static int run_disk(struct host_context *host, uint8_t *volume,
                 jh_posix_sleep(host->options.reply_guard_ms);
             }
             if (host_write_disk_reply(host, &request, &event) != 0) {
+                if (jh_posix_stop_requested()) {
+                    result = EXIT_CLEAN;
+                    goto done;
+                }
                 if (reconnect_serial(host, host->options.disk_baud, 'O') != 0) {
                     result = EXIT_SERIAL;
                     goto done;
@@ -1388,6 +1396,10 @@ int main(int argc, char **argv)
                 run_fastboot(&host, fast_stage, fast_stage_length,
                              system, system_length) :
                 run_stock_boot(&host, system, system_length);
+            if (jh_posix_stop_requested()) {
+                result = EXIT_CLEAN;
+                goto cleanup;
+            }
             if (result != RUN_TARGET_RESET) break;
             ++host.target_reset_count;
             if (host.boot_restart_count >= host.options.boot_restarts) {

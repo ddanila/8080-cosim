@@ -178,6 +178,23 @@ def main() -> int:
             console_reply = read_exact(serial_master, 6)
             assert console_reply[:5] == b"DJ\x07\x02K"
 
+            # Fill the host-to-target PTY queue with valid N4 poll replies,
+            # then interrupt while the writer is back-pressured. This pins
+            # Ctrl+C as a clean lifecycle stop even when it lands inside a
+            # partial serial write rather than in the idle read loop.
+            os.set_blocking(serial_master, False)
+            sequence = 8
+            while True:
+                burst = b"".join(
+                    request(0x20, (sequence + index) & 0xFF)
+                    for index in range(128)
+                )
+                try:
+                    os.write(serial_master, burst)
+                except BlockingIOError:
+                    break
+                sequence = (sequence + 128) & 0xFF
+            time.sleep(0.1)
             process.send_signal(signal.SIGINT)
             process.wait(timeout=5.0)
             remainder = process.stdout.read() if process.stdout is not None else ""
@@ -212,7 +229,7 @@ def main() -> int:
         assert converted.returncode == 0, converted.stdout
         request_evidence = [json.loads(line)
                             for line in requests_path.read_text().splitlines()]
-        assert len(request_evidence) == 8
+        assert len(request_evidence) >= 8
         assert request_evidence[0]["operation"] == 0x11
         assert request_evidence[-1]["operation"] == 0x20
         assert all(record["schema"] == "juku-netdisk-request-trace-v1"
