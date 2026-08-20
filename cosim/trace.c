@@ -957,6 +957,11 @@ static const struct { char c; uint8_t col, bit, shift; } KMAP[] = {
   {'\x88',5,0,0}, // synthetic PTY byte: factory F2 contact (row 5)
   {'\x89',6,0,0}, // synthetic PTY byte: factory F3 contact (row 5)
   {'\x8a',2,0,0}, // synthetic PTY byte: factory F4 contact (row 5)
+  {'\x8b',10,2,0}, // synthetic PTY byte: factory Up contact (row 6)
+  {'\x8c',12,2,0}, // synthetic PTY byte: factory Right contact (row 6)
+  {'\x8d',13,2,0}, // synthetic PTY byte: factory Left contact (row 6)
+  {'\x8f',10,2,1}, // synthetic PTY byte: factory Shift-Up contact (row 6)
+  {'\x90',9,2,1}, // synthetic PTY byte: factory Shift-Down contact (row 6)
 };
 // Interactive console (JUKU_CONSOLE_PTY): typed bytes are appended to this
 // queue and consumed by the ordinary keystroke machinery, so an operator at a
@@ -1120,6 +1125,11 @@ static uint8_t kbd_portb(const i8080* cpu) {
     char lc = c;
     if ((unsigned char)c == 0x85) {                    // synthetic Ctrl-Up / Home
       col = 10;
+      bit = 2;
+      ctrl = 1;
+    }
+    if ((unsigned char)c == 0x8e) {                    // synthetic Ctrl-Down / End
+      col = 9;
       bit = 2;
       ctrl = 1;
     }
