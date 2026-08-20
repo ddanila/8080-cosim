@@ -59,6 +59,14 @@ SYNTHETIC_EXPECTED = {
     0x86: (14, 0, 1),   # Shift-F8
     0x87: (3, 0, 0),    # F1
     0x88: (5, 0, 0),    # F2
+    0x89: (6, 0, 0),    # F3
+    0x8A: (2, 0, 0),    # F4
+    0x8B: (10, 2, 0),   # Up
+    0x8C: (12, 2, 0),   # Right
+    0x8D: (13, 2, 0),   # Left
+    0x8F: (10, 2, 1),   # Shift-Up
+    0x90: (9, 2, 1),    # Shift-Down
+    0x91: (7, 0, 0),    # F7
 }
 
 CHAR_RE = re.compile(r"\{'((?:\\[0-7]{3}|\\.|[^']))',\s*(\d+),(\d+),(\d+)\}")
@@ -180,10 +188,15 @@ both raw and decoded settings.
 - The HDL accepts the same `(column, key-bit, shift)` tuple at its simulation
   boundary; shifted `T` remains column 4, bit 3 and reads as Port B `0x88`.
 - No-key remains `0xCF`: `K0–K2` and `-FK` released, SHIFT/CTRL released.
-- Interactive PTY bytes `80`, `81`, `82`, `83`, `84`, `86`, `87`, and `88`
-  (hex) inject Down, Erase, F5, F6, F8, Shift-F8, F1, and F2 respectively.
-  `85` injects the special Ctrl-Up/Home chord outside `KMAP`. These bytes are
-  a cosim test protocol, not character encodings exposed to Juku software.
+- Interactive PTY bytes `80`..`91` (except `85` and `8e`) inject the guarded
+  Down, Erase, F5, F6, F8, Shift-F8, F1, F2, F3, F4, Up, Right, Left,
+  Shift-Up, Shift-Down, and F7 contacts. `85` and `8e` inject Ctrl-Up/Home and
+  Ctrl-Down/End outside `KMAP`. These bytes are a cosim test protocol, not
+  character encodings exposed to Juku software.
+- The C7 ABI fixture feeds raw bytes `86` and `85` directly through this
+  matrix model and requires the public raw-key vector to return column/PB
+  pairs `0E/8E` and `0A/6A`. This is an executable regression for the exact
+  modified contacts, not an inference from translated ASCII input.
 - The remaining function, navigation, locking, DEL, LAT/RUS, and national keys
   are transcribed above but are not byte-addressable in `JUKU_KEYS`; extending
   the stimulus syntax is a test-interface boundary, not missing hardware.
