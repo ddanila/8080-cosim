@@ -29,6 +29,10 @@ extern "C" {
 #define JH_BOOT_SYSTEM_LOAD_ADDRESS 0xb400u
 #define JH_BOOT_SYSTEM_ENTRY 0xca00u
 #define JH_BOOT_MAX_OUTPUT 1024u
+#define JH_SHA256_SIZE 32u
+#define JH_SHA256_HEX_SIZE 64u
+#define JH_CONFIG_PATH_MAX 512u
+#define JH_CONFIG_NAME_MAX 32u
 
 enum jh_boot_format {
     JH_BOOT_PLAIN = 0,
@@ -96,6 +100,55 @@ enum jh_result {
     JH_ERR_RANGE = -5,
     JH_ERR_READ_ONLY = -6,
     JH_ERR_UNSUPPORTED = -7
+};
+
+enum jh_config_media_mode {
+    JH_CONFIG_MEDIA_READ_ONLY = 0,
+    JH_CONFIG_MEDIA_DIRECT = 1,
+    JH_CONFIG_MEDIA_SNAPSHOT = 2
+};
+
+struct jh_config_artifact {
+    char file[JH_CONFIG_PATH_MAX];
+    uint64_t size;
+    uint8_t sha256[JH_SHA256_SIZE];
+};
+
+struct jh_config_disk {
+    char file[JH_CONFIG_PATH_MAX];
+    char base[JH_CONFIG_PATH_MAX];
+    char geometry[JH_CONFIG_NAME_MAX];
+    uint64_t size;
+    uint8_t sha256[JH_SHA256_SIZE];
+    enum jh_config_media_mode mode;
+    int present;
+};
+
+struct jh_host_config {
+    char port[JH_CONFIG_PATH_MAX];
+    char log[JH_CONFIG_PATH_MAX];
+    char capture[JH_CONFIG_PATH_MAX];
+    char console[JH_CONFIG_PATH_MAX];
+    struct jh_config_artifact system;
+    struct jh_config_artifact fastboot;
+    struct jh_config_artifact fallback_system;
+    struct jh_config_artifact fallback_fastboot;
+    struct jh_config_disk disk_a;
+    struct jh_config_disk disk_b;
+    unsigned timeout_seconds;
+    unsigned disk_timeout_seconds;
+    unsigned disk_protocol;
+    unsigned disk_baud;
+    unsigned read_ahead;
+    unsigned reply_guard_ms;
+    int network_rom;
+    int have_fastboot;
+    int have_fallback;
+};
+
+struct jh_config_error {
+    size_t line;
+    const char *message;
 };
 
 enum jh_n3_operation {
@@ -270,6 +323,14 @@ uint8_t jh_xor(const uint8_t *data, size_t length);
 uint16_t jh_crc16_ccitt(const uint8_t *data, size_t length, uint16_t initial);
 uint16_t jh_crc16_ibm(const uint8_t *data, size_t length, uint16_t initial);
 uint32_t jh_crc32(const uint8_t *data, size_t length, uint32_t initial);
+void jh_sha256(const uint8_t *data, size_t length,
+               uint8_t output[JH_SHA256_SIZE]);
+int jh_sha256_parse(const char *text, uint8_t output[JH_SHA256_SIZE]);
+void jh_sha256_format(const uint8_t digest[JH_SHA256_SIZE],
+                      char output[JH_SHA256_HEX_SIZE + 1u]);
+int jh_config_parse(const char *text, size_t length,
+                    struct jh_host_config *config,
+                    struct jh_config_error *error);
 void jh_fletcher16(const uint8_t *data, size_t length,
                    uint8_t *sum1, uint8_t *sum2);
 

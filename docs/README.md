@@ -23,6 +23,8 @@ history.
   artifacts, wire vectors, and required C-host parity.
 - `portable-c-host-implementation.md` — milestone-by-milestone admitted C-host
   code, verification, and remaining gate work.
+- `jukuhost-config.md` — strict portable INI schema, authenticated boot slots,
+  and safe A:/B: media policies.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC
   baseline plus fork-owned provenance, fixture policy, green Linux CI, and the
   pinned generic float32 WP1 and profile-driven receiver WP2 follow-ups.

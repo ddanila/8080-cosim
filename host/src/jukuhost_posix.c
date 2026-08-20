@@ -24,6 +24,7 @@ enum exit_code {
 };
 
 struct options {
+    const char *config_path;
     const char *serial;
     const char *system;
     const char *fast_stage;
@@ -32,6 +33,14 @@ struct options {
     const char *console_pty;
     const char *log;
     const char *capture;
+    const char *fallback_system;
+    const char *fallback_fast_stage;
+    const struct jh_config_artifact *system_identity;
+    const struct jh_config_artifact *fast_stage_identity;
+    const struct jh_config_artifact *fallback_system_identity;
+    const struct jh_config_artifact *fallback_fast_stage_identity;
+    const struct jh_config_disk *volume_identity;
+    const struct jh_config_disk *drive_b_identity;
     int serial_fd;
     unsigned timeout_seconds;
     unsigned disk_timeout_seconds;
@@ -43,6 +52,7 @@ struct options {
     int resume_disk;
     int writable;
     int verbose;
+    int selftest;
 };
 
 struct host_context {
@@ -62,9 +72,11 @@ struct host_context {
 static void usage(FILE *file)
 {
     fprintf(file,
-        "usage: jukuhost --serial DEVICE --system FILE --volume FILE [options]\n"
+        "usage: jukuhost CONFIG.INI\n"
+        "       jukuhost --serial DEVICE --system FILE --volume FILE [options]\n"
         "\n"
         "Boot options:\n"
+        "  --config FILE           explicit INI configuration\n"
         "  --serial-fd FD          inherited PTY (integration tests only)\n"
         "  --fast-stage FILE       current JF16 bundle\n"
         "  --network-rom           C8 automatic/direct Fastboot V16\n"
@@ -85,6 +97,8 @@ static void usage(FILE *file)
         "  --log FILE              text log (console is always used)\n"
         "  --capture FILE          CRC-protected exact-byte capture\n"
         "  --verbose               log individual disk requests\n"
+        "  --selftest              run portable startup checks\n"
+        "  --help                  print this summary\n"
         "  --version               print version\n");
 }
 
@@ -121,7 +135,10 @@ static int parse_options(int argc, char **argv, struct options *options)
     for (index = 1; index < argc; ++index) {
         const char *argument = argv[index];
         const char *value;
-        if (strcmp(argument, "--help") == 0) {
+        if (argument[0] != '-') {
+            if (options->config_path != NULL || argc != 2) return -1;
+            options->config_path = argument;
+        } else if (strcmp(argument, "--help") == 0) {
             usage(stdout);
             return 1;
         } else if (strcmp(argument, "--version") == 0) {
@@ -129,6 +146,10 @@ static int parse_options(int argc, char **argv, struct options *options)
             return 1;
         } else if (strcmp(argument, "--serial") == 0) {
             if (require_value(argc, argv, &index, &options->serial) != 0) return -1;
+        } else if (strcmp(argument, "--config") == 0) {
+            if (require_value(argc, argv, &index, &options->config_path) != 0) {
+                return -1;
+            }
         } else if (strcmp(argument, "--serial-fd") == 0) {
             unsigned descriptor;
             if (require_value(argc, argv, &index, &value) != 0 ||
@@ -158,6 +179,8 @@ static int parse_options(int argc, char **argv, struct options *options)
             options->writable = 1;
         } else if (strcmp(argument, "--verbose") == 0) {
             options->verbose = 1;
+        } else if (strcmp(argument, "--selftest") == 0) {
+            options->selftest = 1;
         } else if (strcmp(argument, "--timeout") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 1u, 86400u,
@@ -187,6 +210,18 @@ static int parse_options(int argc, char **argv, struct options *options)
             fprintf(stderr, "jukuhost: unknown option: %s\n", argument);
             return -1;
         }
+    }
+    if (options->selftest) return argc == 2 ? 0 : -1;
+    if (options->config_path != NULL) {
+        if (options->serial != NULL || options->serial_fd >= 0 ||
+                options->system != NULL || options->fast_stage != NULL ||
+                options->volume != NULL || options->drive_b != NULL ||
+                options->console_pty != NULL || options->log != NULL ||
+                options->capture != NULL || options->direct_fastboot ||
+                options->resume_disk || options->writable || options->verbose) {
+            return -1;
+        }
+        return 0;
     }
     if ((options->serial != NULL) == (options->serial_fd >= 0) ||
             options->volume == NULL ||
@@ -218,6 +253,184 @@ static void host_log(struct host_context *host, const char *level,
         fprintf(host->log_file, "%08lu %-5s %s\n", elapsed, level, message);
         fflush(host->log_file);
     }
+}
+
+static int path_is_absolute(const char *path)
+{
+    return path[0] == '/' || path[0] == '\\' ||
+        (path[0] != '\0' && path[1] == ':');
+}
+
+static int resolve_path(const char *config_path, char *path, size_t capacity)
+{
+    const char *slash;
+    const char *backslash;
+    const char *separator;
+    size_t directory_length;
+    size_t path_length;
+    char resolved[JH_CONFIG_PATH_MAX];
+    if (path[0] == '\0' || path_is_absolute(path)) return 0;
+    slash = strrchr(config_path, '/');
+    backslash = strrchr(config_path, '\\');
+    separator = slash == NULL ? backslash : backslash == NULL ? slash :
+        slash > backslash ? slash : backslash;
+    directory_length = separator == NULL ? 1u :
+        (size_t)(separator - config_path);
+    path_length = strlen(path);
+    if (directory_length + 1u + path_length >= sizeof(resolved) ||
+            capacity > sizeof(resolved)) return -1;
+    if (separator == NULL) resolved[0] = '.';
+    else memcpy(resolved, config_path, directory_length);
+    resolved[directory_length] = '/';
+    memcpy(resolved + directory_length + 1u, path, path_length + 1u);
+    memcpy(path, resolved, directory_length + 1u + path_length + 1u);
+    return 0;
+}
+
+static int resolve_config_paths(const char *path, struct jh_host_config *config)
+{
+    char *paths[] = {
+        config->log, config->capture, config->system.file,
+        config->fastboot.file, config->fallback_system.file,
+        config->fallback_fastboot.file, config->disk_a.file,
+        config->disk_a.base, config->disk_b.file, config->disk_b.base
+    };
+    size_t index;
+    for (index = 0u; index < sizeof(paths) / sizeof(paths[0]); ++index) {
+        if (resolve_path(path, paths[index], JH_CONFIG_PATH_MAX) != 0) return -1;
+    }
+    return 0;
+}
+
+static int configure_from_file(const char *path, struct options *options,
+                               struct jh_host_config *config)
+{
+    uint8_t *bytes = NULL;
+    size_t length = 0u;
+    struct jh_config_error error;
+    int parsed;
+    if (jh_posix_load_file(path, &bytes, &length) != 0) {
+        fprintf(stderr, "jukuhost: cannot read configuration %s: %s\n",
+                path, strerror(errno));
+        return -1;
+    }
+    parsed = jh_config_parse((const char *)bytes, length, config, &error);
+    free(bytes);
+    if (parsed != JH_OK) {
+        fprintf(stderr, "jukuhost: %s:%lu: %s\n", path,
+                (unsigned long)error.line,
+                error.message == NULL ? jh_result_name(parsed) : error.message);
+        return -1;
+    }
+    if (resolve_config_paths(path, config) != 0) {
+        fprintf(stderr, "jukuhost: resolved configuration path is too long\n");
+        return -1;
+    }
+    options->serial = config->port;
+    options->system = config->system.file;
+    options->system_identity = &config->system;
+    options->fast_stage = config->have_fastboot ? config->fastboot.file : NULL;
+    options->fast_stage_identity = config->have_fastboot ?
+        &config->fastboot : NULL;
+    options->fallback_system = config->have_fallback ?
+        config->fallback_system.file : NULL;
+    options->fallback_fast_stage = config->have_fallback ?
+        config->fallback_fastboot.file : NULL;
+    options->fallback_system_identity = config->have_fallback ?
+        &config->fallback_system : NULL;
+    options->fallback_fast_stage_identity = config->have_fallback ?
+        &config->fallback_fastboot : NULL;
+    options->volume = config->disk_a.file;
+    options->volume_identity = &config->disk_a;
+    options->drive_b = config->disk_b.present ? config->disk_b.file : NULL;
+    options->drive_b_identity = config->disk_b.present ? &config->disk_b : NULL;
+    options->console_pty = config->console[0] == '\0' ? NULL : config->console;
+    options->log = config->log[0] == '\0' ? NULL : config->log;
+    options->capture = config->capture[0] == '\0' ? NULL : config->capture;
+    options->timeout_seconds = config->timeout_seconds;
+    options->disk_timeout_seconds = config->disk_timeout_seconds;
+    options->disk_protocol = config->disk_protocol;
+    options->disk_baud = config->disk_baud;
+    options->read_ahead = config->read_ahead;
+    options->reply_guard_ms = config->reply_guard_ms;
+    options->direct_fastboot = config->network_rom;
+    options->writable = config->disk_a.mode != JH_CONFIG_MEDIA_READ_ONLY;
+    return 0;
+}
+
+static int portable_selftest(void)
+{
+    static const uint8_t input[] = "abc";
+    static const char expected[] =
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
+    uint8_t digest[JH_SHA256_SIZE];
+    char formatted[JH_SHA256_HEX_SIZE + 1u];
+    jh_sha256(input, sizeof(input) - 1u, digest);
+    jh_sha256_format(digest, formatted);
+    if (strcmp(formatted, expected) != 0 ||
+            jh_crc16_ibm((const uint8_t *)"123456789", 9u, 0u) != 0xbb3du) {
+        fprintf(stderr, "jukuhost selftest: FAIL\n");
+        return EXIT_PROTOCOL;
+    }
+    printf("jukuhost %s selftest: PASS\n", HOST_VERSION);
+    return EXIT_CLEAN;
+}
+
+static int verify_identity(struct host_context *host, const char *label,
+                           const uint8_t *bytes, size_t length,
+                           const struct jh_config_artifact *identity,
+                           int warning)
+{
+    uint8_t digest[JH_SHA256_SIZE];
+    char actual[JH_SHA256_HEX_SIZE + 1u];
+    char expected[JH_SHA256_HEX_SIZE + 1u];
+    if (identity == NULL) return 0;
+    jh_sha256(bytes, length, digest);
+    if ((uint64_t)length == identity->size &&
+            memcmp(digest, identity->sha256, sizeof(digest)) == 0) {
+        jh_sha256_format(digest, actual);
+        host_log(host, "INFO", "%s identity size=%lu sha256=%s", label,
+                 (unsigned long)length, actual);
+        return 0;
+    }
+    jh_sha256_format(digest, actual);
+    jh_sha256_format(identity->sha256, expected);
+    host_log(host, warning ? "WARN" : "ERROR",
+        "%s identity mismatch expected-size=%lu actual-size=%lu "
+        "expected-sha256=%s actual-sha256=%s", label,
+        (unsigned long)identity->size, (unsigned long)length, expected, actual);
+    return -1;
+}
+
+static int load_verified(struct host_context *host, const char *label,
+                         const char *path,
+                         const struct jh_config_artifact *identity,
+                         uint8_t **bytes, size_t *length, int warning)
+{
+    if (jh_posix_load_file(path, bytes, length) != 0) {
+        host_log(host, warning ? "WARN" : "ERROR", "cannot load %s %s: %s",
+                 label, path, strerror(errno));
+        return -1;
+    }
+    if (verify_identity(host, label, *bytes, *length, identity, warning) != 0) {
+        free(*bytes);
+        *bytes = NULL;
+        *length = 0u;
+        return -1;
+    }
+    return 0;
+}
+
+static int verify_disk_identity(struct host_context *host, const char *label,
+                                const uint8_t *bytes, size_t length,
+                                const struct jh_config_disk *identity)
+{
+    struct jh_config_artifact artifact;
+    if (identity == NULL) return 0;
+    memset(&artifact, 0, sizeof(artifact));
+    artifact.size = identity->size;
+    memcpy(artifact.sha256, identity->sha256, sizeof(artifact.sha256));
+    return verify_identity(host, label, bytes, length, &artifact, 0);
 }
 
 static int capture_record(struct host_context *host, enum jh_capture_type type,
@@ -755,9 +968,136 @@ done:
     return result;
 }
 
+static int load_boot_artifacts(struct host_context *host, uint8_t **system,
+                               size_t *system_length, uint8_t **fast_stage,
+                               size_t *fast_stage_length)
+{
+    int have_fallback = host->options.fallback_system != NULL;
+    int loaded = load_verified(host, "system", host->options.system,
+        host->options.system_identity, system, system_length,
+        have_fallback) == 0;
+    if (loaded && host->options.fast_stage != NULL) {
+        loaded = load_verified(host, "Fastboot", host->options.fast_stage,
+            host->options.fast_stage_identity, fast_stage, fast_stage_length,
+            have_fallback) == 0;
+    }
+    if (loaded) return 0;
+    free(*system);
+    free(*fast_stage);
+    *system = NULL;
+    *fast_stage = NULL;
+    *system_length = 0u;
+    *fast_stage_length = 0u;
+    if (!have_fallback) {
+        host_log(host, "ERROR", "no valid boot artifact slot remains");
+        return -1;
+    }
+    host_log(host, "WARN", "primary boot slot rejected; trying fallback");
+    if (load_verified(host, "fallback system", host->options.fallback_system,
+            host->options.fallback_system_identity, system, system_length,
+            0) != 0 ||
+            load_verified(host, "fallback Fastboot",
+                host->options.fallback_fast_stage,
+                host->options.fallback_fast_stage_identity, fast_stage,
+                fast_stage_length, 0) != 0) {
+        free(*system);
+        free(*fast_stage);
+        *system = NULL;
+        *fast_stage = NULL;
+        host_log(host, "ERROR", "fallback boot slot rejected");
+        return -1;
+    }
+    host->options.system = host->options.fallback_system;
+    host->options.fast_stage = host->options.fallback_fast_stage;
+    host->options.system_identity = host->options.fallback_system_identity;
+    host->options.fast_stage_identity =
+        host->options.fallback_fast_stage_identity;
+    host_log(host, "INFO", "fallback boot slot selected");
+    return 0;
+}
+
+static int load_volume(struct host_context *host, uint8_t **volume,
+                       size_t *length)
+{
+    const struct jh_config_disk *identity = host->options.volume_identity;
+    if (identity == NULL || identity->mode != JH_CONFIG_MEDIA_SNAPSHOT) {
+        if (jh_posix_load_file(host->options.volume, volume, length) != 0 ||
+                *length != JH_N3_VOLUME_SIZE ||
+                verify_disk_identity(host, "A:", *volume, *length,
+                                     identity) != 0) {
+            free(*volume);
+            *volume = NULL;
+            host_log(host, "ERROR", "A: must be a valid %u-byte image",
+                     (unsigned)JH_N3_VOLUME_SIZE);
+            return -1;
+        }
+        return 0;
+    }
+    {
+        uint8_t *base = NULL;
+        size_t base_length = 0u;
+        int saved;
+        if (jh_posix_load_file(identity->base, &base, &base_length) != 0 ||
+                base_length != JH_N3_VOLUME_SIZE ||
+                verify_disk_identity(host, "A: snapshot base", base,
+                                     base_length, identity) != 0) {
+            free(base);
+            host_log(host, "ERROR", "invalid A: snapshot base");
+            return -1;
+        }
+        if (jh_posix_load_file(identity->file, volume, length) == 0) {
+            if (*length != JH_N3_VOLUME_SIZE) {
+                free(base);
+                free(*volume);
+                *volume = NULL;
+                host_log(host, "ERROR", "A: snapshot working copy has wrong size");
+                return -1;
+            }
+            free(base);
+            host_log(host, "INFO", "A: resumed snapshot working copy %s",
+                     identity->file);
+            return 0;
+        }
+        saved = errno;
+        if (saved != ENOENT || jh_posix_write_file(identity->file, base,
+                base_length, 1) != 0) {
+            free(base);
+            host_log(host, "ERROR", "cannot create A: snapshot %s: %s",
+                     identity->file, strerror(saved == ENOENT ? errno : saved));
+            return -1;
+        }
+        *volume = base;
+        *length = base_length;
+        host_log(host, "INFO", "A: created snapshot working copy %s",
+                 identity->file);
+    }
+    return 0;
+}
+
+static int load_drive_b(struct host_context *host, uint8_t **image,
+                        size_t *image_length, uint8_t **volume)
+{
+    if (host->options.drive_b == NULL) return 0;
+    if (jh_posix_load_file(host->options.drive_b, image, image_length) != 0 ||
+            *image_length != JH_N3_NATIVE_VOLUME_SIZE ||
+            verify_disk_identity(host, "B:", *image, *image_length,
+                                 host->options.drive_b_identity) != 0) {
+        host_log(host, "ERROR", "B: must be a valid native 800 KiB image");
+        return -1;
+    }
+    *volume = (uint8_t *)malloc(JH_N3_NATIVE_VOLUME_SIZE);
+    if (*volume == NULL || jh_native_image_to_volume(
+            *image, *image_length, *volume,
+            JH_N3_NATIVE_VOLUME_SIZE) != JH_OK) {
+        return -1;
+    }
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     struct host_context host;
+    struct jh_host_config config;
     uint8_t *system = NULL;
     uint8_t *fast_stage = NULL;
     uint8_t *volume = NULL;
@@ -776,6 +1116,11 @@ int main(int argc, char **argv)
     if (parsed > 0) return EXIT_CLEAN;
     if (parsed < 0) {
         usage(stderr);
+        return EXIT_COMMAND;
+    }
+    if (host.options.selftest) return portable_selftest();
+    if (host.options.config_path != NULL && configure_from_file(
+            host.options.config_path, &host.options, &config) != 0) {
         return EXIT_COMMAND;
     }
     host.started_ms = jh_posix_milliseconds();
@@ -799,42 +1144,22 @@ int main(int argc, char **argv)
     }
     host_log(&host, "INFO", "start version=%s port=%s", HOST_VERSION,
              host.options.serial != NULL ? host.options.serial : "inherited-fd");
-    if (jh_posix_load_file(host.options.volume, &volume, &volume_length) != 0 ||
-            volume_length != JH_N3_VOLUME_SIZE) {
-        host_log(&host, "ERROR", "A: must be exactly %u bytes",
-                 (unsigned)JH_N3_VOLUME_SIZE);
+    if (host.options.config_path != NULL) {
+        host_log(&host, "INFO", "configuration=%s", host.options.config_path);
+    }
+    if (load_volume(&host, &volume, &volume_length) != 0) {
         result = EXIT_ARTIFACT;
         goto cleanup;
     }
-    if (host.options.system != NULL &&
-            jh_posix_load_file(host.options.system, &system, &system_length) != 0) {
-        host_log(&host, "ERROR", "cannot load system: %s", strerror(errno));
+    if (!host.options.resume_disk && load_boot_artifacts(
+            &host, &system, &system_length, &fast_stage,
+            &fast_stage_length) != 0) {
         result = EXIT_ARTIFACT;
         goto cleanup;
     }
-    if (host.options.fast_stage != NULL &&
-            jh_posix_load_file(host.options.fast_stage, &fast_stage,
-                               &fast_stage_length) != 0) {
-        host_log(&host, "ERROR", "cannot load Fastboot artifact: %s",
-                 strerror(errno));
+    if (load_drive_b(&host, &drive_b_image, &drive_b_length, &drive_b) != 0) {
         result = EXIT_ARTIFACT;
         goto cleanup;
-    }
-    if (host.options.drive_b != NULL) {
-        if (jh_posix_load_file(host.options.drive_b, &drive_b_image,
-                               &drive_b_length) != 0 ||
-                drive_b_length != JH_N3_NATIVE_VOLUME_SIZE) {
-            host_log(&host, "ERROR", "B: must be a native 800 KiB image");
-            result = EXIT_ARTIFACT;
-            goto cleanup;
-        }
-        drive_b = (uint8_t *)malloc(JH_N3_NATIVE_VOLUME_SIZE);
-        if (drive_b == NULL || jh_native_image_to_volume(
-                drive_b_image, drive_b_length, drive_b,
-                JH_N3_NATIVE_VOLUME_SIZE) != JH_OK) {
-            result = EXIT_ARTIFACT;
-            goto cleanup;
-        }
     }
     jh_posix_install_signals();
     {

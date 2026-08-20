@@ -113,3 +113,23 @@ descriptor, avoiding a relay process that could alter timing. Its verbose
 simulator trace is written to a file rather than an unread pipe; this prevents
 test-infrastructure backpressure from blocking the simulated CPU during a
 long N4 transcript.
+
+### Configuration and identity checkpoint
+
+The portable core now includes a bounded INI parser and SHA-256 implementation.
+The parser applies defaults explicitly, accepts the primary system/Fastboot
+pair and one inseparable fallback pair, validates A:/B: geometry and media
+policy, and rejects unknown, duplicate, incomplete, oversized, or malformed
+input. The same code passes GCC with both `char` signedness modes, Clang, and
+ASan/UBSan.
+
+The Linux application accepts `jukuhost CONFIG.INI`, resolves artifact paths
+relative to that file, verifies declared sizes and SHA-256 values before
+opening serial, and logs the applied identities. A failed primary identity
+selects the fallback pair; it never mixes artifacts across slots. Writable
+snapshot mode authenticates and preserves an immutable base, creates a
+separate working image, and resumes only that working image on later runs.
+Direct and read-only modes remain explicit. `tests/jukuhost_config_test.py`
+proves rejection, fallback, snapshot creation/resume, base preservation, and
+the no-serial `--selftest` command. The exact syntax and policies are recorded
+in [jukuhost-config.md](jukuhost-config.md).

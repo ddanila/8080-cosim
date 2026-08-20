@@ -60,7 +60,13 @@ static int fixture_hex(const char *path, const char *key,
 static int test_checksums(void)
 {
     static const uint8_t text[] = "123456789";
+    static const uint8_t abc[] = "abc";
+    static const char abc_sha[] =
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
     uint8_t range[16];
+    uint8_t digest[JH_SHA256_SIZE];
+    uint8_t parsed[JH_SHA256_SIZE];
+    char formatted[JH_SHA256_HEX_SIZE + 1u];
     uint8_t sum1;
     uint8_t sum2;
     size_t index;
@@ -70,6 +76,93 @@ static int test_checksums(void)
     CHECK(jh_crc16_ibm(text, sizeof(text) - 1u, 0u) == UINT16_C(0xbb3d));
     jh_fletcher16(range, sizeof(range), &sum1, &sum2);
     CHECK(sum1 == 0x78u && sum2 == 0xaau);
+    jh_sha256(abc, sizeof(abc) - 1u, digest);
+    jh_sha256_format(digest, formatted);
+    CHECK(strcmp(formatted, abc_sha) == 0);
+    CHECK(jh_sha256_parse(abc_sha, parsed) == JH_OK);
+    CHECK(memcmp(parsed, digest, sizeof(digest)) == 0);
+    CHECK(jh_sha256_parse("xyz", parsed) == JH_ERR_ARGUMENT);
+    return 0;
+}
+
+static int test_configuration(void)
+{
+    static const char hash[] =
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
+    static const char valid[] =
+        "# portable host fixture\n"
+        "[host]\n"
+        "port=/dev/ttyS0\n"
+        "log=JUKUHOST.LOG\n"
+        "capture=JUKUHOST.CAP\n"
+        "console=/dev/pts/7\n"
+        "network_rom=yes\n"
+        "timeout=90\n"
+        "disk_timeout=0\n"
+        "[network]\n"
+        "protocol=3\n"
+        "baud=19200\n"
+        "read_ahead=8\n"
+        "reply_guard_ms=2\n"
+        "[system]\n"
+        "file=SYSTEM.BIN\n"
+        "size=18432\n"
+        "sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n"
+        "[fastboot]\n"
+        "file=FAST16.BIN\n"
+        "size=7806\n"
+        "sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n"
+        "[fallback_system]\n"
+        "file=SYSTEM2.BIN\n"
+        "size=18432\n"
+        "sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n"
+        "[fallback_fastboot]\n"
+        "file=FAST162.BIN\n"
+        "size=7807\n"
+        "sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n"
+        "[disk_a]\n"
+        "base=BASE.IMG\n"
+        "file=WORK.IMG\n"
+        "size=409600\n"
+        "sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n"
+        "geometry=juku-cpm3\n"
+        "mode=snapshot\n"
+        "[disk_b]\n"
+        "file=APPS.JUK\n"
+        "size=819200\n"
+        "sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n"
+        "geometry=juku-native\n"
+        "writable=no\n";
+    static const char duplicate[] =
+        "[host]\nport=x\nport=y\n";
+    static const char unknown[] =
+        "[host]\nport=x\nfuture=surprise\n";
+    struct jh_host_config config;
+    struct jh_config_error error;
+    char oversized[JH_CONFIG_PATH_MAX + 32u];
+    CHECK(jh_config_parse(valid, sizeof(valid) - 1u, &config, &error) == JH_OK);
+    CHECK(strcmp(config.port, "/dev/ttyS0") == 0 && config.network_rom == 1 &&
+          config.timeout_seconds == 90u && config.disk_timeout_seconds == 0u &&
+          config.disk_protocol == 3u && config.disk_baud == 19200u &&
+          config.read_ahead == 8u && config.have_fastboot &&
+          config.have_fallback && config.disk_a.present &&
+          config.disk_a.mode == JH_CONFIG_MEDIA_SNAPSHOT &&
+          strcmp(config.disk_a.base, "BASE.IMG") == 0 &&
+          config.disk_b.present &&
+          config.disk_b.mode == JH_CONFIG_MEDIA_READ_ONLY &&
+          memcmp(config.system.sha256, config.disk_a.sha256,
+                 JH_SHA256_SIZE) == 0);
+    CHECK(jh_sha256_parse(hash, config.system.sha256) == JH_OK);
+    CHECK(jh_config_parse(duplicate, sizeof(duplicate) - 1u,
+                          &config, &error) == JH_ERR_FORMAT && error.line == 3u);
+    CHECK(jh_config_parse(unknown, sizeof(unknown) - 1u,
+                          &config, &error) == JH_ERR_UNSUPPORTED &&
+          error.line == 3u);
+    memset(oversized, 'x', sizeof(oversized));
+    oversized[0] = '[';
+    oversized[sizeof(oversized) - 1u] = '\n';
+    CHECK(jh_config_parse(oversized, sizeof(oversized), &config, &error) ==
+          JH_ERR_RANGE && error.line == 1u);
     return 0;
 }
 
@@ -625,6 +718,7 @@ int main(int argc, char **argv)
         "tests/fixtures/jukuhost/python-era-v1.txt";
     CHECK(argc <= 2);
     CHECK(test_checksums() == 0);
+    CHECK(test_configuration() == 0);
     CHECK(test_janet(fixture) == 0);
     CHECK(test_bootstrap(fixture) == 0);
     CHECK(test_boot_session() == 0);
