@@ -50,6 +50,7 @@ struct options {
     unsigned reply_guard_ms;
     int direct_fastboot;
     int resume_disk;
+    int boot_only;
     int writable;
     int verbose;
     int selftest;
@@ -82,6 +83,7 @@ static void usage(FILE *file)
         "  --network-rom           C8 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
         "  --resume-disk           attach to an already running system\n"
+        "  --boot-only             stop after a successful bootstrap\n"
         "  --timeout SECONDS       boot deadline (default 120)\n"
         "\n"
         "Disk and console:\n"
@@ -175,6 +177,8 @@ static int parse_options(int argc, char **argv, struct options *options)
             options->direct_fastboot = 1;
         } else if (strcmp(argument, "--resume-disk") == 0) {
             options->resume_disk = 1;
+        } else if (strcmp(argument, "--boot-only") == 0) {
+            options->boot_only = 1;
         } else if (strcmp(argument, "--writable") == 0) {
             options->writable = 1;
         } else if (strcmp(argument, "--verbose") == 0) {
@@ -218,14 +222,16 @@ static int parse_options(int argc, char **argv, struct options *options)
                 options->volume != NULL || options->drive_b != NULL ||
                 options->console_pty != NULL || options->log != NULL ||
                 options->capture != NULL || options->direct_fastboot ||
-                options->resume_disk || options->writable || options->verbose) {
+                options->resume_disk || options->boot_only ||
+                options->writable || options->verbose) {
             return -1;
         }
         return 0;
     }
     if ((options->serial != NULL) == (options->serial_fd >= 0) ||
-            options->volume == NULL ||
+            (options->volume == NULL && !options->boot_only) ||
             (!options->resume_disk && options->system == NULL)) return -1;
+    if (options->resume_disk && options->boot_only) return -1;
     if (options->direct_fastboot && options->fast_stage == NULL) return -1;
     if (options->fast_stage != NULL && !options->direct_fastboot) {
         fprintf(stderr,
@@ -1147,7 +1153,8 @@ int main(int argc, char **argv)
     if (host.options.config_path != NULL) {
         host_log(&host, "INFO", "configuration=%s", host.options.config_path);
     }
-    if (load_volume(&host, &volume, &volume_length) != 0) {
+    if (!host.options.boot_only &&
+            load_volume(&host, &volume, &volume_length) != 0) {
         result = EXIT_ARTIFACT;
         goto cleanup;
     }
@@ -1187,6 +1194,7 @@ int main(int argc, char **argv)
                          system, system_length) :
             run_stock_boot(&host, system, system_length);
         if (result != EXIT_CLEAN) goto cleanup;
+        if (host.options.boot_only) goto cleanup;
         if (jh_posix_serial_configure(&host.serial, host.options.disk_baud,
                                       'O') != 0) {
             host_log(&host, "ERROR", "cannot switch to disk framing: %s",

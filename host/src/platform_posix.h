@@ -7,6 +7,7 @@
 
 struct jh_posix_serial {
     int fd;
+    int pseudo_terminal;
     char path[512];
     unsigned baud;
     char parity;

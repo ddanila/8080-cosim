@@ -58,6 +58,24 @@ def read_paged(fd: int, timeout: float) -> bytes:
     raise AssertionError(f"paged command did not return: {bytes(result)[-1000:]!r}")
 
 
+def wait_host_line(process: subprocess.Popen[str], marker: str,
+                   timeout: float) -> str:
+    assert process.stdout is not None
+    result = ""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        ready, _, _ = select.select([process.stdout], [], [], 0.1)
+        if not ready:
+            continue
+        chunk = os.read(process.stdout.fileno(), 4096)
+        if not chunk:
+            break
+        result += chunk.decode(errors="replace")
+        if marker in result:
+            return result
+    raise AssertionError(f"host did not emit {marker!r}: {result}")
+
+
 def capture_tail(path: Path, records: int = 40) -> str:
     if not path.exists():
         return "<missing>"
@@ -117,6 +135,8 @@ def main() -> int:
     required = (ROM, SYSTEM, FASTBOOT, VOLUME, HOST)
     require(all(path.is_file() for path in required),
             "missing C8/CPM artifacts or build/jukuhost")
+    discard_ready = os.environ.get("JUKUHOST_C8_DISCARD_READY") == "1"
+    replace_host = os.environ.get("JUKUHOST_C8_REPLACE_HOST") == "1"
     with tempfile.TemporaryDirectory(prefix="jukuhost-c8-cosim.") as name:
         temp = Path(name)
         trace = temp / "trace"
@@ -151,7 +171,14 @@ def main() -> int:
             cwd=temp, env=environment, stdout=subprocess.DEVNULL,
             stderr=simulator_stderr,
         )
-        host = subprocess.Popen([
+        if discard_ready:
+            time.sleep(0.5)
+            discarded = bytearray()
+            while select.select([serial_master], [], [], 0.05)[0]:
+                discarded.extend(os.read(serial_master, 4096))
+            require(b"JR\x10\x01" in discarded,
+                    f"one-shot JR16 readiness was not captured: {discarded.hex()}")
+        host_command = [
             str(HOST), "--serial-fd", str(serial_master), "--system", str(SYSTEM),
             "--fast-stage", str(FASTBOOT), "--network-rom",
             "--volume", str(volume), "--writable", "--disk-protocol", "3",
@@ -159,8 +186,10 @@ def main() -> int:
             "--console-pty", os.ttyname(console_slave), "--timeout", "30",
             "--disk-timeout", "120", "--log", str(temp / "host.log"),
             "--capture", str(temp / "host.cap"), "--verbose",
-        ], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-           text=True, pass_fds=(serial_master,))
+        ]
+        host = subprocess.Popen(
+            host_command, cwd=ROOT, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT, text=True, pass_fds=(serial_master,))
         try:
             try:
                 transcript = read_until(console_master, b"A>", 25.0)
@@ -181,6 +210,31 @@ def main() -> int:
                 ) from error
             require(b"DIR" in directory or b"COM" in directory,
                     f"DIR produced no directory text: {directory!r}")
+            if replace_host:
+                host.send_signal(signal.SIGINT)
+                host.wait(timeout=5.0)
+                require(host.returncode == 0,
+                        f"first host exit={host.returncode}")
+                reconnect_command = [
+                    str(HOST), "--serial-fd", str(serial_master),
+                    "--volume", str(volume), "--resume-disk", "--writable",
+                    "--disk-protocol", "3", "--disk-baud", "19200",
+                    "--read-ahead", "3", "--console-pty",
+                    os.ttyname(console_slave), "--disk-timeout", "120",
+                    "--log", str(temp / "host-reconnect.log"),
+                    "--capture", str(temp / "host-reconnect.cap"), "--verbose",
+                ]
+                host = subprocess.Popen(
+                    reconnect_command, cwd=ROOT, stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT, text=True,
+                    pass_fds=(serial_master,),
+                )
+                wait_host_line(host, "serving A:", 5.0)
+                time.sleep(0.25)
+                os.write(console_master, b"VER\r")
+                resumed = read_until(console_master, b"A>", 30.0)
+                require(b"VER" in resumed,
+                        f"replacement host did not resume console: {resumed!r}")
             host.send_signal(signal.SIGINT)
             host.wait(timeout=5.0)
             require(host.returncode == 0,
@@ -190,6 +244,12 @@ def main() -> int:
                     f"host evidence incomplete: {log}")
             require((temp / "host.cap").stat().st_size > 100,
                     "capture is unexpectedly small")
+            if replace_host:
+                require("stop exit=0" in
+                        (temp / "host-reconnect.log").read_text(),
+                        "replacement host did not stop cleanly")
+                require((temp / "host-reconnect.cap").stat().st_size > 100,
+                        "replacement capture is unexpectedly small")
         finally:
             for process in (host, simulator):
                 if process.poll() is None:
@@ -200,7 +260,13 @@ def main() -> int:
             os.close(serial_master)
             os.close(serial_slave)
             simulator_stderr.close()
-    print("JUKUHOST-C8-COSIM-TEST: PASS (C8 V16 -> N3/N4 -> DIR)")
+    additions = []
+    if discard_ready:
+        additions.append("missed-ready recovery")
+    if replace_host:
+        additions.append("host replacement")
+    detail = "" if not additions else " + " + " + ".join(additions)
+    print(f"JUKUHOST-C8-COSIM-TEST: PASS (C8 V16 -> N3/N4 -> DIR{detail})")
     return 0
 
 

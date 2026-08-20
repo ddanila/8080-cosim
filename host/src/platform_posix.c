@@ -78,7 +78,7 @@ int jh_posix_serial_configure(struct jh_posix_serial *serial, unsigned baud,
     if (serial == NULL || serial->fd < 0 ||
             (parity != 'N' && parity != 'O')) return -1;
     speed = baud_value(baud);
-    pseudo_terminal = strncmp(serial->path, "/dev/pts/", 9u) == 0;
+    pseudo_terminal = serial->pseudo_terminal;
     if (speed == (speed_t)0 || tcgetattr(serial->fd, &attributes) != 0) return -1;
     attributes.c_iflag = IGNPAR;
     attributes.c_oflag = 0;
@@ -89,14 +89,25 @@ int jh_posix_serial_configure(struct jh_posix_serial *serial, unsigned baud,
 #endif
     );
     attributes.c_cflag |= CS8 | CLOCAL | CREAD;
-    if (parity == 'O') attributes.c_cflag |= PARENB | PARODD;
+    /* Linux PTYs neither generate nor validate parity.  Some kernels accept
+     * the first PARENB request, silently clear it, and reject an identical
+     * request when the same PTY is adopted by a replacement process.  Keep
+     * PTY framing logical for simulator tests; physical ports remain strict. */
+    if (parity == 'O' && !pseudo_terminal) {
+        attributes.c_cflag |= PARENB | PARODD;
+    }
     attributes.c_cc[VMIN] = 0;
     attributes.c_cc[VTIME] = 0;
     if (cfsetispeed(&attributes, speed) != 0 ||
             cfsetospeed(&attributes, speed) != 0 ||
-            tcsetattr(serial->fd, TCSANOW, &attributes) != 0 ||
-            tcflush(serial->fd, TCIOFLUSH) != 0 ||
-            tcgetattr(serial->fd, &applied) != 0) {
+            tcsetattr(serial->fd, TCSANOW, &attributes) != 0) {
+        return -1;
+    }
+    if (tcflush(serial->fd, TCIOFLUSH) != 0 &&
+            !(pseudo_terminal && errno == EINVAL)) {
+        return -1;
+    }
+    if (tcgetattr(serial->fd, &applied) != 0) {
         return -1;
     }
     required = CS8 | CLOCAL | CREAD;
@@ -129,6 +140,7 @@ int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
     serial->fd = open(path, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (serial->fd < 0) return -1;
     memcpy(serial->path, path, length + 1u);
+    serial->pseudo_terminal = strncmp(path, "/dev/pts/", 9u) == 0;
     if (jh_posix_serial_configure(serial, baud, parity) != 0) {
         int saved = errno;
         close(serial->fd);
@@ -153,6 +165,9 @@ int jh_posix_serial_adopt(struct jh_posix_serial *serial, int fd,
         return -1;
     }
     memcpy(serial->path, description, length + 1u);
+    /* Descriptor adoption is deliberately an integration-test-only PTY path;
+     * production devices are always opened by name and remain strict. */
+    serial->pseudo_terminal = 1;
     flags = fcntl(fd, F_GETFL);
     if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) != 0 ||
             jh_posix_serial_configure(serial, baud, parity) != 0) {

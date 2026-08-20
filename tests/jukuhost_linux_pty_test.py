@@ -56,6 +56,7 @@ def read_exact(fd: int, length: int, timeout: float = 3.0) -> bytes:
 def wait_log(process: subprocess.Popen[str], marker: str) -> list[str]:
     assert process.stdout is not None
     lines: list[str] = []
+    pending = ""
     deadline = time.monotonic() + 5.0
     while time.monotonic() < deadline:
         ready, _, _ = select.select([process.stdout], [], [], 0.1)
@@ -63,11 +64,12 @@ def wait_log(process: subprocess.Popen[str], marker: str) -> list[str]:
             if process.poll() is not None:
                 break
             continue
-        line = process.stdout.readline()
-        if not line:
+        chunk = os.read(process.stdout.fileno(), 4096)
+        if not chunk:
             break
-        lines.append(line)
-        if marker in line:
+        pending += chunk.decode(errors="replace")
+        lines = pending.splitlines(keepends=True)
+        if marker in pending:
             return lines
     raise AssertionError(f"host did not log {marker!r}: {''.join(lines)}")
 

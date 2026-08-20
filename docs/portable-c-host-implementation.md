@@ -86,7 +86,11 @@ compact, V3 write and duplicate replay, native high-track B:, N4 capabilities,
 bulk output and input, persisted media, journal cleanup, capture creation, and
 Ctrl+C shutdown. Linux PTYs do not preserve physical parity-enable bits in
 termios readback, so only `/dev/pts/*` relaxes that one readback assertion; a
-physical tty retains strict 8O1 verification.
+physical tty retains strict 8O1 verification. The PTY backend also deliberately
+does not request kernel parity generation: Linux may accept the first request,
+silently clear it, and reject the same PTY when a replacement process adopts
+it. This is confined to named `/dev/pts/*` devices and the integration-only
+`--serial-fd` path; physical serial ports still require set-and-readback parity.
 
 This is an intermediate M2 checkpoint, not promotion. Full Juku simulator
 boot/reconnect/fault parity, configuration/manifest identity, caller migration,
@@ -113,6 +117,24 @@ descriptor, avoiding a relay process that could alter timing. Its verbose
 simulator trace is written to a file rather than an unread pipe; this prevents
 test-infrastructure backpressure from blocking the simulated CPU during a
 long N4 transcript.
+
+The same gate now runs a second fault session which discards the ROM's
+one-shot JR16 readiness frame before starting the host. The overlap-safe V16
+probe recovers and reaches CP/M. After `DIR`, that session cleanly stops the
+first host, starts a fresh `--resume-disk` process on the same PTY and media,
+and proves resumed N4 traffic with `VER`. This pins missed-readiness and host-
+replacement behavior, including repeated PTY adoption.
+
+### Stock-system simulator checkpoint
+
+`sync/jukuhost_stock_cosim_check.sh` boots all five frozen stock-system images
+through the native executable: `CPM22.BIN`, `CPM231E.BIN`, `EKDOS229.BIN`,
+`EKDOS230.BIN`, and `EKDOSVSW.BIN`. It verifies the installed payload and
+entry address, the selected system preparation mode, and the final USART
+state. A sixth run sends an unconfigured station identity and proves automatic
+identity learning. The integration-only `--boot-only` mode ends immediately
+after a successful bootstrap so this test exercises the real production
+bootstrap implementation without requiring a compatible NetDisk client.
 
 ### Configuration and identity checkpoint
 
