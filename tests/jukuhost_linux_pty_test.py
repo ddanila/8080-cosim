@@ -8,11 +8,13 @@ from pathlib import Path
 import pty
 import select
 import signal
+import struct
 import subprocess
 import sys
 import tempfile
 import time
 import tty
+import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 HOST = ROOT / "build" / "jukuhost"
@@ -72,6 +74,34 @@ def wait_log(process: subprocess.Popen[str], marker: str) -> list[str]:
         if marker in pending:
             return lines
     raise AssertionError(f"host did not log {marker!r}: {''.join(lines)}")
+
+
+def capture_records(data: bytes) -> list[tuple[int, int, bytes]]:
+    assert data.startswith(b"JHCAP1\x01")
+    result: list[tuple[int, int, bytes]] = []
+    position = 16
+    while position < len(data):
+        assert position + 16 <= len(data)
+        kind, flags, length = struct.unpack_from("<BBH", data, position)
+        end = position + 16 + length
+        assert end <= len(data)
+        expected = struct.unpack_from("<I", data, end - 4)[0]
+        assert zlib.crc32(data[position:end - 4]) == expected
+        result.append((kind, flags, data[position + 12:end - 4]))
+        position = end
+    return result
+
+
+def journal(state: int, sequence: int, offset: int,
+            before: bytes, after: bytes) -> bytes:
+    assert len(before) == RECORD and len(after) == RECORD
+    result = bytearray(276)
+    result[:8] = b"JHJR1" + bytes((1, state, 0))
+    struct.pack_into("<II", result, 8, sequence, offset)
+    result[16:144] = before
+    result[144:272] = after
+    struct.pack_into("<I", result, 272, zlib.crc32(result[:272]))
+    return bytes(result)
 
 
 def main() -> int:
@@ -162,8 +192,51 @@ def main() -> int:
         assert not Path(str(volume) + ".jhj").exists()
         assert "stop exit=0" in log.read_text()
         captured = capture.read_bytes()
-        assert captured.startswith(b"JHCAP1\x01") and len(captured) > 16
-    print("JUKUHOST-LINUX-PTY-TEST: PASS (N3/N4 + B: + duplicate + journal)")
+        records = capture_records(captured)
+        events = [(flags, payload) for kind, flags, payload in records
+                  if kind == 3]
+        assert any(payload == b"phase=netdisk" for _, payload in events)
+        assert any(payload.startswith(b"media write seq=1")
+                   for _, payload in events)
+        assert any(payload.startswith(b"stop exit=0") for _, payload in events)
+        assert any(kind == 1 for kind, _, _ in records)
+        assert any(kind == 2 for kind, _, _ in records)
+
+        # Simulate a crash after the image record was applied but before the
+        # journal could be committed. A new production process must roll back
+        # the working image before serving any request.
+        image = bytearray(volume.read_bytes())
+        image[:RECORD] = b"\x5A" * RECORD
+        volume.write_bytes(image)
+        journal_path = Path(str(volume) + ".jhj")
+        journal_path.write_bytes(journal(
+            2, 99, 0, b"\xA5" * RECORD, b"\x5A" * RECORD))
+        recovery_master, recovery_slave = pty.openpty()
+        tty.setraw(recovery_master)
+        tty.setraw(recovery_slave)
+        recovery_log = temp / "recovery.log"
+        recovery = subprocess.Popen([
+            str(HOST), "--serial", os.ttyname(recovery_slave),
+            "--volume", str(volume), "--resume-disk", "--writable",
+            "--disk-timeout", "10", "--log", str(recovery_log),
+        ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+           stderr=subprocess.STDOUT)
+        try:
+            wait_log(recovery, "recovered interrupted media transaction")
+            recovery.send_signal(signal.SIGINT)
+            recovery.wait(timeout=5.0)
+            assert recovery.returncode == 0
+        finally:
+            if recovery.poll() is None:
+                recovery.kill()
+                recovery.wait()
+            os.close(recovery_master)
+            os.close(recovery_slave)
+        assert volume.read_bytes()[:RECORD] == b"\xA5" * RECORD
+        assert not journal_path.exists()
+        assert "stop exit=0" in recovery_log.read_text()
+    print("JUKUHOST-LINUX-PTY-TEST: PASS "
+          "(N3/N4 + B: + duplicate + journal recovery + capture events)")
     return 0
 
 

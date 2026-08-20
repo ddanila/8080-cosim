@@ -99,6 +99,25 @@ def main() -> int:
         assert completed.returncode == 2
         assert "invalid or duplicate value" in completed.stdout
 
+        if Path("/dev/full").exists():
+            evidence_failure = subprocess.run([
+                str(HOST), "--serial", "/dev/jukuhost-missing",
+                "--volume", str(base), "--resume-disk",
+                "--log", "/dev/full",
+            ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+               stderr=subprocess.STDOUT, check=False)
+            assert evidence_failure.returncode == 7
+            assert "log write failed" in evidence_failure.stdout
+
+            evidence_failure = subprocess.run([
+                str(HOST), "--serial", "/dev/jukuhost-missing",
+                "--volume", str(base), "--resume-disk",
+                "--capture", "/dev/full",
+            ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+               stderr=subprocess.STDOUT, check=False)
+            assert evidence_failure.returncode == 7
+            assert "cannot initialize capture" in evidence_failure.stdout
+
     selftest = subprocess.run(
         [str(HOST), "--selftest"], cwd=ROOT, text=True,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False,

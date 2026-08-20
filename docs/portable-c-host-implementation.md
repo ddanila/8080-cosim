@@ -143,6 +143,25 @@ reapplies and verifies 19,200 8O1, emits `NRN3`, and serves the next request.
 The final evidence records one reconnect and two accepted requests. Inherited
 test descriptors intentionally cannot be reopened.
 
+### Evidence and media-recovery checkpoint
+
+The normal text log now records explicit artifact-validation, serial-open,
+stock/Fastboot, NetDisk, reconnect, and stop/failure phases. Its final summary
+includes requests, read operations, returned records, writes, parser/duplicate
+retries, bootstrap restarts, target resets, and serial reconnects. Every log
+message is also a typed INFO/WARN/ERROR event in the CRC-protected binary
+capture alongside exact RX and TX bytes. Important transitions are flushed;
+configured log or capture failure has a distinct nonzero exit instead of
+silently discarding required evidence.
+
+The Linux PTY gate independently parses every capture record and verifies its
+CRC, directions, lifecycle events, media-write event, and clean final summary.
+It then plants an on-disk `APPLIED` journal and a corresponding partially
+changed A: record, starts a fresh production process, and proves deterministic
+rollback plus sidecar removal before service begins. This complements the
+portable core's prepared/applied/complete crash-point matrix with real POSIX
+file operations.
+
 ### Stock-system simulator checkpoint
 
 `sync/jukuhost_stock_cosim_check.sh` boots all five frozen stock-system images

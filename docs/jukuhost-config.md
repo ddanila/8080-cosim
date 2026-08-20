@@ -105,3 +105,11 @@ served file in the other modes. Drive B is always `mode=read-only` with
 
 `build/jukuhost --selftest` checks the portable checksum primitives without a
 serial device. It is also the future headless Win32/Wine startup check.
+
+When configured, the text log and binary capture are required evidence rather
+than best-effort decoration. Failure to open, write, or flush either stream
+stops the session with exit code 7. The capture contains CRC-protected RX, TX,
+and local-event records; event flags 1, 2, and 3 denote INFO, WARN, and ERROR.
+Startup settings, phase transitions, warnings/errors, media writes, and the
+final summary are explicitly flushed. High-volume INFO request events remain
+buffered so verbose evidence cannot perturb serial timing unnecessarily.

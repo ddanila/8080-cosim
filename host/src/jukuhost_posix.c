@@ -20,7 +20,8 @@ enum exit_code {
     EXIT_ARTIFACT = 3,
     EXIT_SERIAL = 4,
     EXIT_PROTOCOL = 5,
-    EXIT_MEDIA = 6
+    EXIT_MEDIA = 6,
+    EXIT_EVIDENCE = 7
 };
 
 enum run_result {
@@ -73,11 +74,18 @@ struct host_context {
     unsigned long requests;
     unsigned long retries;
     unsigned long reads;
+    unsigned long read_records;
     unsigned long writes;
     unsigned long boot_restart_count;
     unsigned long reconnect_count;
     unsigned long target_reset_count;
+    int log_error;
+    int capture_error;
+    int capture_ready;
 };
+
+static int capture_record(struct host_context *host, enum jh_capture_type type,
+                          uint8_t flags, const uint8_t *data, size_t length);
 
 static void usage(FILE *file)
 {
@@ -268,6 +276,7 @@ static void host_log(struct host_context *host, const char *level,
                      const char *format, ...)
 {
     char message[1024];
+    uint8_t capture_flags = 1u;
     va_list arguments;
     unsigned long elapsed = (unsigned long)(jh_posix_milliseconds() -
                                              host->started_ms);
@@ -276,9 +285,32 @@ static void host_log(struct host_context *host, const char *level,
     va_end(arguments);
     printf("%08lu %-5s %s\n", elapsed, level, message);
     fflush(stdout);
-    if (host->log_file != NULL) {
-        fprintf(host->log_file, "%08lu %-5s %s\n", elapsed, level, message);
-        fflush(host->log_file);
+    if (strcmp(level, "WARN") == 0) capture_flags = 2u;
+    else if (strcmp(level, "ERROR") == 0) capture_flags = 3u;
+    if (host->log_file != NULL && !host->log_error &&
+            (fprintf(host->log_file, "%08lu %-5s %s\n", elapsed, level,
+                     message) < 0 || fflush(host->log_file) != 0)) {
+        host->log_error = 1;
+        fprintf(stderr, "jukuhost: log write failed: %s\n", strerror(errno));
+    }
+    if (host->capture_ready && !host->capture_error) {
+        if (capture_record(host, JH_CAPTURE_EVENT, capture_flags,
+                           (const uint8_t *)message, strlen(message)) != 0) {
+            host->capture_error = 1;
+            fprintf(stderr, "jukuhost: capture event write failed: %s\n",
+                    strerror(errno));
+        } else if (capture_flags != 1u ||
+                strncmp(message, "start ", 6u) == 0 ||
+                strncmp(message, "serial ", 7u) == 0 ||
+                strncmp(message, "phase=", 6u) == 0 ||
+                strncmp(message, "media write ", 12u) == 0 ||
+                strncmp(message, "stop ", 5u) == 0) {
+            if (fflush(host->capture_file) != 0) {
+                host->capture_error = 1;
+                fprintf(stderr, "jukuhost: capture flush failed: %s\n",
+                        strerror(errno));
+            }
+        }
     }
 }
 
@@ -463,7 +495,7 @@ static int verify_disk_identity(struct host_context *host, const char *label,
 }
 
 static int capture_record(struct host_context *host, enum jh_capture_type type,
-                          const uint8_t *data, size_t length)
+                          uint8_t flags, const uint8_t *data, size_t length)
 {
     uint8_t *encoded;
     size_t encoded_length;
@@ -471,12 +503,13 @@ static int capture_record(struct host_context *host, enum jh_capture_type type,
     if (host->capture_file == NULL) return 0;
     encoded = (uint8_t *)malloc(length + JH_CAPTURE_RECORD_OVERHEAD);
     if (encoded == NULL) return -1;
-    result = jh_capture_encode(type, 0u,
+    result = jh_capture_encode(type, flags,
         jh_posix_milliseconds() - host->started_ms, data, length, encoded,
         length + JH_CAPTURE_RECORD_OVERHEAD, &encoded_length);
     if (result != JH_OK ||
             fwrite(encoded, 1u, encoded_length, host->capture_file) !=
             encoded_length) {
+        if (result != JH_OK) errno = EIO;
         free(encoded);
         return -1;
     }
@@ -491,7 +524,11 @@ static int host_write(struct host_context *host, const uint8_t *data,
         return -1;
     }
     host->tx_bytes += (unsigned long)length;
-    return capture_record(host, JH_CAPTURE_TX, data, length);
+    if (capture_record(host, JH_CAPTURE_TX, 0u, data, length) != 0) {
+        host->capture_error = 1;
+        return -1;
+    }
+    return 0;
 }
 
 static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
@@ -500,7 +537,9 @@ static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
     int received = jh_posix_serial_read(&host->serial, data, capacity, timeout_ms);
     if (received > 0) {
         host->rx_bytes += (unsigned long)received;
-        if (capture_record(host, JH_CAPTURE_RX, data, (size_t)received) != 0) {
+        if (capture_record(host, JH_CAPTURE_RX, 0u, data,
+                           (size_t)received) != 0) {
+            host->capture_error = 1;
             return -1;
         }
     }
@@ -513,13 +552,15 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
     uint64_t deadline;
     int original_error = errno;
     int last_error = original_error;
-    if (host->options.serial == NULL ||
+    if (host->capture_error || host->log_error ||
+            host->options.serial == NULL ||
             host->options.reconnect_timeout_seconds == 0u) {
         errno = original_error;
         return -1;
     }
     host_log(host, "WARN", "serial link lost (%s); reopening %s for %u 8%c1",
              strerror(original_error), host->options.serial, baud, parity);
+    host_log(host, "INFO", "phase=reconnect");
     jh_posix_serial_close(&host->serial);
     deadline = jh_posix_milliseconds() +
         (uint64_t)host->options.reconnect_timeout_seconds * 1000u;
@@ -531,6 +572,7 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
             host_log(host, "INFO", "serial reconnected count=%lu applied=%u 8%c1",
                      host->reconnect_count, host->serial.baud,
                      host->serial.parity);
+            host_log(host, "INFO", "phase=netdisk");
             return 0;
         }
         last_error = errno;
@@ -886,6 +928,8 @@ static int persist_write(struct host_context *host, struct jh_media *media,
             jh_journal_encode(&transaction, encoded) != JH_OK ||
             jh_posix_write_file(journal_path, encoded, sizeof(encoded), 1) != 0 ||
             jh_posix_remove_file(journal_path) != 0) return -1;
+    host_log(host, "INFO", "media write seq=%lu track=%u sector=%u",
+             (unsigned long)sequence, request->track, request->sector);
     return 0;
 }
 
@@ -1036,7 +1080,11 @@ static int run_disk(struct host_context *host, uint8_t *volume,
                 (void)apply_clock_set(event.time_set, &clock_offset);
             }
             if (request.operation >= JH_N3_READ &&
-                    request.operation <= JH_N3_READ_AHEAD) ++host->reads;
+                    request.operation <= JH_N3_READ_AHEAD) {
+                ++host->reads;
+                host->read_records += request.operation == JH_N3_READ_AHEAD &&
+                    event.reply[3] == 0u ? event.reply[4] : 1u;
+            }
             if ((request.operation == JH_N3_WRITE ||
                     request.operation == JH_N3_WRITE_V3) &&
                     event.reply[3] == 0u && !event.duplicate) ++host->writes;
@@ -1218,7 +1266,7 @@ int main(int argc, char **argv)
         host.log_file = fopen(host.options.log, "w");
         if (host.log_file == NULL) {
             fprintf(stderr, "jukuhost: cannot open log: %s\n", strerror(errno));
-            return EXIT_COMMAND;
+            return EXIT_EVIDENCE;
         }
     }
     if (host.options.capture != NULL) {
@@ -1226,16 +1274,23 @@ int main(int argc, char **argv)
         if (host.capture_file == NULL ||
                 jh_capture_header(host.started_ms, 0u, capture_header) != JH_OK ||
                 fwrite(capture_header, 1u, sizeof(capture_header),
-                       host.capture_file) != sizeof(capture_header)) {
+                       host.capture_file) != sizeof(capture_header) ||
+                fflush(host.capture_file) != 0) {
             host_log(&host, "ERROR", "cannot initialize capture");
-            result = EXIT_COMMAND;
+            result = EXIT_EVIDENCE;
             goto cleanup;
         }
+        host.capture_ready = 1;
     }
     host_log(&host, "INFO", "start version=%s port=%s", HOST_VERSION,
              host.options.serial != NULL ? host.options.serial : "inherited-fd");
     if (host.options.config_path != NULL) {
         host_log(&host, "INFO", "configuration=%s", host.options.config_path);
+    }
+    host_log(&host, "INFO", "phase=artifact-validation");
+    if (host.log_error || host.capture_error) {
+        result = EXIT_EVIDENCE;
+        goto cleanup;
     }
     if (!host.options.boot_only &&
             load_volume(&host, &volume, &volume_length) != 0) {
@@ -1257,6 +1312,8 @@ int main(int argc, char **argv)
         unsigned initial_baud = host.options.resume_disk ?
             host.options.disk_baud : host.options.direct_fastboot ? 19200u : 9600u;
         char initial_parity = host.options.direct_fastboot ? 'N' : 'O';
+        host_log(&host, "INFO", "phase=serial-open requested=%u 8%c1 flow=none",
+                 initial_baud, initial_parity);
         int opened = host.options.serial_fd >= 0 ?
             jh_posix_serial_adopt(&host.serial, host.options.serial_fd,
                                   "/dev/pts/inherited", initial_baud,
@@ -1273,6 +1330,8 @@ int main(int argc, char **argv)
     host_log(&host, "INFO", "serial applied=%u 8%c1 flow=none",
              host.serial.baud, host.serial.parity);
     if (!host.options.resume_disk) {
+        host_log(&host, "INFO", "phase=%s",
+                 host.options.direct_fastboot ? "fastboot" : "stock-boot");
         for (;;) {
             result = host.options.direct_fastboot ?
                 run_fastboot(&host, fast_stage, fast_stage_length,
@@ -1290,6 +1349,8 @@ int main(int argc, char **argv)
             ++host.boot_restart_count;
             host_log(&host, "WARN", "restarting complete bootstrap %lu/%u",
                      host.boot_restart_count, host.options.boot_restarts);
+            host_log(&host, "INFO", "phase=%s",
+                     host.options.direct_fastboot ? "fastboot" : "stock-boot");
             if (jh_posix_serial_configure(&host.serial,
                     host.options.direct_fastboot ? 19200u : 9600u,
                     host.options.direct_fastboot ? 'N' : 'O') != 0) {
@@ -1312,14 +1373,25 @@ int main(int argc, char **argv)
         result = EXIT_SERIAL;
         goto cleanup;
     }
+    host_log(&host, "INFO", "phase=netdisk");
     result = run_disk(&host, volume, drive_b);
 cleanup:
+    if (result == EXIT_CLEAN && (host.log_error || host.capture_error)) {
+        result = EXIT_EVIDENCE;
+    }
+    host_log(&host, "INFO", "phase=%s",
+             result == EXIT_CLEAN ? "stopped" : "failed");
     host_log(&host, result == EXIT_CLEAN ? "INFO" : "ERROR",
-        "stop exit=%d rx=%lu tx=%lu requests=%lu reads=%lu writes=%lu "
+        "stop exit=%d rx=%lu tx=%lu requests=%lu reads=%lu records=%lu "
+        "writes=%lu "
         "retries=%lu boot-restarts=%lu target-resets=%lu reconnects=%lu",
         result, host.rx_bytes, host.tx_bytes, host.requests, host.reads,
-        host.writes, host.retries, host.boot_restart_count,
+        host.read_records, host.writes, host.retries, host.boot_restart_count,
         host.target_reset_count, host.reconnect_count);
+    if (result == EXIT_CLEAN && (host.log_error || host.capture_error)) {
+        result = EXIT_EVIDENCE;
+        fprintf(stderr, "jukuhost: required evidence stream failed\n");
+    }
     jh_posix_serial_close(&host.serial);
     if (host.capture_file != NULL) {
         fflush(host.capture_file);
