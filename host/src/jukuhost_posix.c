@@ -584,6 +584,37 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
     return -1;
 }
 
+static int capture_request(struct host_context *host,
+                           const struct jh_n3_request *request,
+                           const struct jh_service_event *event)
+{
+    char message[256];
+    size_t request_bytes = request->operation == JH_N4_CONSOLE_OUT_BLOCK ?
+        6u + request->payload_length : 9u + request->payload_length;
+    unsigned records = 0u;
+    int length;
+    if (request->operation >= JH_N3_READ &&
+            request->operation <= JH_N3_READ_AHEAD &&
+            event->reply[3] == 0u) {
+        records = request->operation == JH_N3_READ_AHEAD ?
+            event->reply[4] : 1u;
+    }
+    length = snprintf(message, sizeof(message),
+        "request op=%02X seq=%02X drive=%u track=%u sector=%u status=%u "
+        "records=%u request-bytes=%lu reply-bytes=%lu duplicate=%u",
+        request->operation, request->sequence, request->drive, request->track,
+        request->sector, event->reply[3], records,
+        (unsigned long)request_bytes, (unsigned long)event->reply_length,
+        event->duplicate ? 1u : 0u);
+    if (length < 0 || (size_t)length >= sizeof(message) ||
+            capture_record(host, JH_CAPTURE_EVENT, 1u,
+                           (const uint8_t *)message, (size_t)length) != 0) {
+        host->capture_error = host->capture_file != NULL;
+        return host->capture_file == NULL ? 0 : -1;
+    }
+    return 0;
+}
+
 static int host_write_disk_reply(struct host_context *host,
                                  const struct jh_n3_request *request,
                                  const struct jh_service_event *event)
@@ -741,6 +772,8 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
     uint8_t *tail;
     size_t probe_length;
     size_t tail_length;
+    uint64_t boot_deadline = jh_posix_milliseconds() +
+        (uint64_t)host->options.timeout_seconds * 1000u;
     int result;
     unsigned attempt;
     result = jh_fast_session_init(&session, artifact, artifact_length, system,
@@ -751,7 +784,10 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
         return EXIT_ARTIFACT;
     }
     jh_fast_parser_init(&parser);
-    result = wait_fast_frame(host, &parser, 3000u, &kind, &first, &second);
+    result = wait_fast_frame(host, &parser,
+        host->options.timeout_seconds < 3u ?
+            host->options.timeout_seconds * 1000u : 3000u,
+        &kind, &first, &second);
     if (result < 0) return EXIT_SERIAL;
     if (result == 1 && kind == (uint8_t)'R' && first == 16u && second == 1u) {
         (void)jh_fast_session_ready(&session, kind, first, second);
@@ -760,7 +796,8 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
         (void)jh_fast_session_ready_timeout(&session);
         host_log(host, "WARN", "V16 ready marker missed; probing resident stream scanner");
     }
-    for (attempt = 0u; attempt < 32u; ++attempt) {
+    for (attempt = 0u; !jh_posix_stop_requested() &&
+            jh_posix_milliseconds() < boot_deadline; ++attempt) {
         uint64_t deadline;
         int ack = 0;
         size_t probe_index;
@@ -794,9 +831,19 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
             }
             break;
         }
+        if ((attempt + 1u) % 32u == 0u) {
+            ++host->retries;
+            if (attempt == 31u || (attempt + 1u) % 1024u == 0u) {
+                host_log(host, "WARN",
+                    "V16 target absent; resident probe attempts=%u",
+                    attempt + 1u);
+            }
+        }
     }
     if (session.state != JH_FAST_SEND_STREAM) {
-        host_log(host, "ERROR", "V16 stream header not acknowledged after 32 probes");
+        host_log(host, "ERROR",
+                 "V16 stream header not acknowledged before boot deadline "
+                 "after %u probes", attempt);
         return EXIT_PROTOCOL;
     }
     jh_posix_sleep(host->options.reply_guard_ms);
@@ -1088,6 +1135,10 @@ static int run_disk(struct host_context *host, uint8_t *volume,
             if ((request.operation == JH_N3_WRITE ||
                     request.operation == JH_N3_WRITE_V3) &&
                     event.reply[3] == 0u && !event.duplicate) ++host->writes;
+            if (capture_request(host, &request, &event) != 0) {
+                result = EXIT_EVIDENCE;
+                goto done;
+            }
             if (host->options.verbose &&
                     request.operation >= JH_N3_READ &&
                     request.operation <= JH_N3_WRITE_V3) {

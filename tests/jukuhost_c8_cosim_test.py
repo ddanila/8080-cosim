@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 import select
@@ -20,6 +21,7 @@ SYSTEM = CPM / "out/cpm-plus-juku-network-rom-c8-system.bin"
 FASTBOOT = CPM / "out/cpm-plus-juku-network-rom-c8-fastboot-v16.bin"
 VOLUME = CPM / "out/cpm-plus-juku-full.img"
 HOST = ROOT / "build/jukuhost"
+EVIDENCE = ROOT / "tools/jukuhost_evidence.py"
 
 
 def require(condition: bool, message: str) -> None:
@@ -250,6 +252,26 @@ def main() -> int:
                         f"target-reset recovery evidence differs: {log}")
             require((temp / "host.cap").stat().st_size > 100,
                     "capture is unexpectedly small")
+            converted = subprocess.run([
+                sys.executable, str(EVIDENCE), str(temp / "host.cap"),
+                "--requests-jsonl", str(temp / "requests.jsonl"),
+                "--boot-result", str(temp / "boot.json"),
+                "--system", str(SYSTEM), "--fast-stage", str(FASTBOOT),
+                "--serial", "inherited-fd",
+            ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+               stderr=subprocess.STDOUT, check=False)
+            require(converted.returncode == 0,
+                    f"evidence conversion failed: {converted.stdout}")
+            boot = json.loads((temp / "boot.json").read_text())
+            requests = [json.loads(line) for line in
+                        (temp / "requests.jsonl").read_text().splitlines()]
+            require(boot["schema"] == "juku-janet-boot-result-v1" and
+                    boot["network_rom"] is True and
+                    boot["first_disk_request"]["elapsed_seconds"] > 0,
+                    f"boot evidence differs: {boot}")
+            require(any(record["operation"] in (0x11, 0x13, 0x14)
+                        for record in requests),
+                    "request evidence contains no disk read")
             if replace_host:
                 require("stop exit=0" in
                         (temp / "host-reconnect.log").read_text(),

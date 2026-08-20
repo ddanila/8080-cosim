@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 import pty
@@ -18,6 +19,7 @@ import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 HOST = ROOT / "build" / "jukuhost"
+EVIDENCE = ROOT / "tools" / "jukuhost_evidence.py"
 RECORD = 128
 TRACK_BYTES = 40 * RECORD
 VOLUME_BYTES = 80 * TRACK_BYTES
@@ -201,6 +203,20 @@ def main() -> int:
         assert any(payload.startswith(b"stop exit=0") for _, payload in events)
         assert any(kind == 1 for kind, _, _ in records)
         assert any(kind == 2 for kind, _, _ in records)
+        requests_path = temp / "requests.jsonl"
+        converted = subprocess.run([
+            sys.executable, str(EVIDENCE), str(capture),
+            "--requests-jsonl", str(requests_path),
+        ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+           stderr=subprocess.STDOUT, check=False)
+        assert converted.returncode == 0, converted.stdout
+        request_evidence = [json.loads(line)
+                            for line in requests_path.read_text().splitlines()]
+        assert len(request_evidence) == 8
+        assert request_evidence[0]["operation"] == 0x11
+        assert request_evidence[-1]["operation"] == 0x20
+        assert all(record["schema"] == "juku-netdisk-request-trace-v1"
+                   for record in request_evidence)
 
         # Simulate a crash after the image record was applied but before the
         # journal could be committed. A new production process must roll back

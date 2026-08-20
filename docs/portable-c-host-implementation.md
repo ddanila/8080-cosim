@@ -162,6 +162,21 @@ rollback plus sidecar removal before service begins. This complements the
 portable core's prepared/applied/complete crash-point matrix with real POSIX
 file operations.
 
+`tools/jukuhost_evidence.py` is a post-session converter, not another host. It
+validates the native capture header and every record CRC, extracts the compact
+request events into the established JSONL acceptance schema, and can derive a
+manifest-bound boot-result JSON record from the first disk request. This keeps
+JSON useful to modern acceptance tooling without adding a JSON runtime or a
+second protocol implementation to `jukuhost`.
+
+High-frequency N4 polls are never printed individually. They are retained as
+compact capture events, while `--verbose` text output remains limited to disk
+requests. A regression demonstrated why this separation matters: an unread
+stdout pipe can otherwise fill and block the host, changing target timing.
+The resident V16 probe loop now also runs until the configured boot deadline,
+so starting the host before an operator powers or resets the Juku does not
+exhaust a short fixed probe count.
+
 ### Stock-system simulator checkpoint
 
 `sync/jukuhost_stock_cosim_check.sh` boots all five frozen stock-system images
