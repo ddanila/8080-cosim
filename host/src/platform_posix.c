@@ -1,14 +1,12 @@
 #define _POSIX_C_SOURCE 200809L
 
-#include "platform_posix.h"
+#include "platform.h"
 
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
 #include <signal.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
@@ -21,7 +19,7 @@ static void stop_handler(int signal_number)
     stop_requested = 1;
 }
 
-void jh_posix_install_signals(void)
+void jh_platform_install_signals(void)
 {
     struct sigaction action;
     memset(&action, 0, sizeof(action));
@@ -31,19 +29,19 @@ void jh_posix_install_signals(void)
     (void)sigaction(SIGTERM, &action, NULL);
 }
 
-int jh_posix_stop_requested(void)
+int jh_platform_stop_requested(void)
 {
     return stop_requested != 0;
 }
 
-uint64_t jh_posix_milliseconds(void)
+uint64_t jh_platform_milliseconds(void)
 {
     struct timespec now;
     if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) return 0u;
     return (uint64_t)now.tv_sec * 1000u + (uint64_t)now.tv_nsec / 1000000u;
 }
 
-void jh_posix_sleep(unsigned milliseconds)
+void jh_platform_sleep(unsigned milliseconds)
 {
     struct timespec requested;
     struct timespec remaining;
@@ -53,6 +51,26 @@ void jh_posix_sleep(unsigned milliseconds)
             !stop_requested) {
         requested = remaining;
     }
+}
+
+const char *jh_platform_timer_name(void)
+{
+    return "CLOCK_MONOTONIC";
+}
+
+unsigned jh_platform_timer_resolution_ms(void)
+{
+    struct timespec resolution;
+    uint64_t nanoseconds;
+    if (clock_getres(CLOCK_MONOTONIC, &resolution) != 0) return 0u;
+    nanoseconds = (uint64_t)resolution.tv_sec * UINT64_C(1000000000) +
+        (uint64_t)resolution.tv_nsec;
+    return (unsigned)((nanoseconds + UINT64_C(999999)) / UINT64_C(1000000));
+}
+
+uint32_t jh_platform_available_memory(void)
+{
+    return 0u;
 }
 
 static speed_t baud_value(unsigned baud)
@@ -67,7 +85,7 @@ static speed_t baud_value(unsigned baud)
     }
 }
 
-int jh_posix_serial_configure(struct jh_posix_serial *serial, unsigned baud,
+int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned baud,
                               char parity)
 {
     struct termios attributes;
@@ -125,7 +143,7 @@ int jh_posix_serial_configure(struct jh_posix_serial *serial, unsigned baud,
     return 0;
 }
 
-int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
+int jh_platform_serial_open(struct jh_platform_serial *serial, const char *path,
                          unsigned baud, char parity)
 {
     char actual[512];
@@ -145,7 +163,7 @@ int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
         (ttyname_r(serial->fd, actual, sizeof(actual)) == 0 &&
          strncmp(actual, "/dev/pts/", 9u) == 0) ||
         strncmp(path, "/dev/pts/", 9u) == 0;
-    if (jh_posix_serial_configure(serial, baud, parity) != 0) {
+    if (jh_platform_serial_configure(serial, baud, parity) != 0) {
         int saved = errno;
         close(serial->fd);
         serial->fd = -1;
@@ -155,7 +173,7 @@ int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
     return 0;
 }
 
-int jh_posix_serial_adopt(struct jh_posix_serial *serial, int fd,
+int jh_platform_serial_adopt(struct jh_platform_serial *serial, int fd,
                           const char *description, unsigned baud, char parity)
 {
     int flags;
@@ -174,14 +192,14 @@ int jh_posix_serial_adopt(struct jh_posix_serial *serial, int fd,
     serial->pseudo_terminal = 1;
     flags = fcntl(fd, F_GETFL);
     if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) != 0 ||
-            jh_posix_serial_configure(serial, baud, parity) != 0) {
+            jh_platform_serial_configure(serial, baud, parity) != 0) {
         serial->fd = -1;
         return -1;
     }
     return 0;
 }
 
-void jh_posix_serial_close(struct jh_posix_serial *serial)
+void jh_platform_serial_close(struct jh_platform_serial *serial)
 {
     if (serial != NULL && serial->fd >= 0) {
         (void)close(serial->fd);
@@ -189,7 +207,7 @@ void jh_posix_serial_close(struct jh_posix_serial *serial)
     }
 }
 
-int jh_posix_serial_read(struct jh_posix_serial *serial, uint8_t *output,
+int jh_platform_serial_read(struct jh_platform_serial *serial, uint8_t *output,
                          size_t capacity, unsigned timeout_ms)
 {
     struct pollfd descriptor;
@@ -226,10 +244,10 @@ int jh_posix_serial_read(struct jh_posix_serial *serial, uint8_t *output,
     return (int)received;
 }
 
-int jh_posix_serial_write(struct jh_posix_serial *serial, const uint8_t *data,
+int jh_platform_serial_write(struct jh_platform_serial *serial, const uint8_t *data,
                           size_t length, unsigned timeout_ms)
 {
-    uint64_t deadline = jh_posix_milliseconds() + timeout_ms;
+    uint64_t deadline = jh_platform_milliseconds() + timeout_ms;
     size_t written_total = 0u;
     if (serial == NULL || serial->fd < 0 ||
             (data == NULL && length != 0u)) {
@@ -247,7 +265,7 @@ int jh_posix_serial_write(struct jh_posix_serial *serial, const uint8_t *data,
                 errno != EINTR) return -1;
         {
             struct pollfd descriptor;
-            uint64_t now = jh_posix_milliseconds();
+            uint64_t now = jh_platform_milliseconds();
             int wait;
             if (now >= deadline) {
                 errno = ETIMEDOUT;
@@ -268,12 +286,12 @@ int jh_posix_serial_write(struct jh_posix_serial *serial, const uint8_t *data,
     return written_total == length ? 0 : -1;
 }
 
-int jh_posix_serial_drain(struct jh_posix_serial *serial)
+int jh_platform_serial_drain(struct jh_platform_serial *serial)
 {
     return serial == NULL || serial->fd < 0 ? -1 : tcdrain(serial->fd);
 }
 
-int jh_posix_set_raw(int fd)
+static int set_raw(int fd)
 {
     struct termios attributes;
     if (tcgetattr(fd, &attributes) != 0) return -1;
@@ -281,107 +299,55 @@ int jh_posix_set_raw(int fd)
     return tcsetattr(fd, TCSANOW, &attributes);
 }
 
-int jh_posix_open_console(const char *path)
+int jh_platform_console_open(struct jh_platform_console *console,
+                             const char *path)
 {
-    int fd = open(path, O_RDWR | O_NOCTTY | O_NONBLOCK);
-    if (fd >= 0 && jh_posix_set_raw(fd) != 0) {
+    int fd;
+    if (console == NULL || path == NULL) return -1;
+    console->fd = -1;
+    console->file = NULL;
+    console->ready_ms = 0u;
+    fd = open(path, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if (fd >= 0 && set_raw(fd) != 0) {
         int saved = errno;
         close(fd);
         errno = saved;
         return -1;
     }
-    return fd;
+    console->fd = fd;
+    return fd < 0 ? -1 : 0;
 }
 
-int jh_posix_load_file(const char *path, uint8_t **data, size_t *length)
+int jh_platform_console_read(struct jh_platform_console *console,
+                             uint8_t *output, size_t capacity)
 {
-    struct stat status;
-    uint8_t *buffer;
-    size_t offset = 0u;
-    int fd;
-    if (path == NULL || data == NULL || length == NULL) return -1;
-    fd = open(path, O_RDONLY);
-    if (fd < 0) return -1;
-    if (fstat(fd, &status) != 0 || status.st_size < 0 ||
-            (uintmax_t)status.st_size > SIZE_MAX) {
-        close(fd);
-        errno = EFBIG;
-        return -1;
-    }
-    buffer = (uint8_t *)malloc((size_t)status.st_size == 0u ? 1u :
-                               (size_t)status.st_size);
-    if (buffer == NULL) {
-        close(fd);
-        return -1;
-    }
-    while (offset < (size_t)status.st_size) {
-        ssize_t got = read(fd, buffer + offset, (size_t)status.st_size - offset);
-        if (got < 0 && errno == EINTR) continue;
-        if (got <= 0) {
-            free(buffer);
-            close(fd);
-            errno = EIO;
-            return -1;
-        }
-        offset += (size_t)got;
-    }
-    if (close(fd) != 0) {
-        free(buffer);
-        return -1;
-    }
-    *data = buffer;
-    *length = (size_t)status.st_size;
-    return 0;
+    ssize_t received;
+    if (console == NULL || console->fd < 0 || output == NULL) return -1;
+    received = read(console->fd, output, capacity);
+    if (received < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) return 0;
+    return received < 0 ? -1 : (int)received;
 }
 
-int jh_posix_write_file(const char *path, const uint8_t *data, size_t length,
-                        int sync_data)
+int jh_platform_console_write(struct jh_platform_console *console,
+                              const uint8_t *data, size_t length)
 {
-    size_t offset = 0u;
-    int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-    if (fd < 0) return -1;
-    while (offset < length) {
-        ssize_t wrote = write(fd, data + offset, length - offset);
-        if (wrote < 0 && errno == EINTR) continue;
-        if (wrote <= 0) {
-            close(fd);
-            errno = EIO;
-            return -1;
-        }
-        offset += (size_t)wrote;
-    }
-    if (sync_data && fsync(fd) != 0) {
-        close(fd);
-        return -1;
-    }
-    return close(fd);
+    ssize_t written;
+    if (console == NULL || console->fd < 0 ||
+            (data == NULL && length != 0u)) return -1;
+    written = write(console->fd, data, length);
+    return written == (ssize_t)length ? 0 : -1;
 }
 
-int jh_posix_pwrite_record(const char *path, uint32_t offset,
-                           const uint8_t *data, size_t length)
+void jh_platform_console_close(struct jh_platform_console *console)
 {
-    size_t done = 0u;
-    int fd = open(path, O_WRONLY);
-    if (fd < 0) return -1;
-    while (done < length) {
-        ssize_t wrote = pwrite(fd, data + done, length - done,
-                               (off_t)offset + (off_t)done);
-        if (wrote < 0 && errno == EINTR) continue;
-        if (wrote <= 0) {
-            close(fd);
-            errno = EIO;
-            return -1;
-        }
-        done += (size_t)wrote;
+    if (console != NULL && console->fd >= 0) {
+        (void)close(console->fd);
+        console->fd = -1;
+        console->file = NULL;
+        console->ready_ms = 0u;
     }
-    if (fsync(fd) != 0) {
-        close(fd);
-        return -1;
-    }
-    return close(fd);
 }
 
-int jh_posix_remove_file(const char *path)
+void jh_platform_idle(void)
 {
-    return unlink(path) == 0 || errno == ENOENT ? 0 : -1;
 }

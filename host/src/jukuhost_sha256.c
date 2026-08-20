@@ -2,13 +2,6 @@
 
 #include <string.h>
 
-struct sha256_context {
-    uint32_t state[8];
-    uint64_t bits;
-    uint8_t block[64];
-    size_t used;
-};
-
 static uint32_t rotate_right(uint32_t value, unsigned count)
 {
     return (value >> count) | (value << (32u - count));
@@ -28,7 +21,7 @@ static void put_u32be(uint8_t *output, uint32_t value)
     output[3] = (uint8_t)value;
 }
 
-static void transform(struct sha256_context *context, const uint8_t block[64])
+static void transform(struct jh_sha256_state *context, const uint8_t block[64])
 {
     static const uint32_t constants[64] = {
         UINT32_C(0x428a2f98), UINT32_C(0x71374491), UINT32_C(0xb5c0fbcf),
@@ -104,7 +97,7 @@ static void transform(struct sha256_context *context, const uint8_t block[64])
     context->state[7] += h;
 }
 
-static void sha256_init(struct sha256_context *context)
+void jh_sha256_init(struct jh_sha256_state *context)
 {
     static const uint32_t initial[8] = {
         UINT32_C(0x6a09e667), UINT32_C(0xbb67ae85), UINT32_C(0x3c6ef372),
@@ -116,8 +109,8 @@ static void sha256_init(struct sha256_context *context)
     context->used = 0u;
 }
 
-static void sha256_update(struct sha256_context *context,
-                          const uint8_t *data, size_t length)
+void jh_sha256_update(struct jh_sha256_state *context,
+                      const uint8_t *data, size_t length)
 {
     while (length != 0u) {
         size_t available = sizeof(context->block) - context->used;
@@ -134,8 +127,8 @@ static void sha256_update(struct sha256_context *context,
     }
 }
 
-static void sha256_final(struct sha256_context *context,
-                         uint8_t output[JH_SHA256_SIZE])
+void jh_sha256_final(struct jh_sha256_state *context,
+                     uint8_t output[JH_SHA256_SIZE])
 {
     unsigned index;
     context->block[context->used++] = 0x80u;
@@ -158,10 +151,10 @@ static void sha256_final(struct sha256_context *context,
 void jh_sha256(const uint8_t *data, size_t length,
                uint8_t output[JH_SHA256_SIZE])
 {
-    struct sha256_context context;
-    sha256_init(&context);
-    if (length != 0u && data != NULL) sha256_update(&context, data, length);
-    sha256_final(&context, output);
+    struct jh_sha256_state context;
+    jh_sha256_init(&context);
+    if (length != 0u && data != NULL) jh_sha256_update(&context, data, length);
+    jh_sha256_final(&context, output);
 }
 
 static int hex_value(char character)

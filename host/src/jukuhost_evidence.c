@@ -98,8 +98,11 @@ int jh_capture_encode(enum jh_capture_type type, uint8_t flags,
             (payload == NULL && payload_length != 0u)) {
         return JH_ERR_ARGUMENT;
     }
-    if (type < JH_CAPTURE_RX || type > JH_CAPTURE_EVENT ||
-            payload_length > UINT16_MAX) {
+    if (type < JH_CAPTURE_RX || type > JH_CAPTURE_EVENT
+#if SIZE_MAX > UINT16_MAX
+            || payload_length > UINT16_MAX
+#endif
+            ) {
         return JH_ERR_RANGE;
     }
     length = JH_CAPTURE_RECORD_OVERHEAD + payload_length;
@@ -151,21 +154,23 @@ int jh_media_transaction_prepare(struct jh_media_transaction *transaction,
                                  const uint8_t after[JH_N3_RECORD_SIZE],
                                  uint32_t sequence)
 {
-    size_t offset;
+    uint32_t offset;
     int result;
     if (transaction == NULL || media == NULL || after == NULL) {
         return JH_ERR_ARGUMENT;
     }
     if (!media->writable) return JH_ERR_READ_ONLY;
     result = jh_n3_record_offset(track, sector, media->tracks, &offset);
-    if (result != JH_OK || offset > UINT32_MAX ||
-            offset + JH_N3_RECORD_SIZE > media->size) {
+    if (result != JH_OK || offset > media->size ||
+            media->size - offset < JH_N3_RECORD_SIZE) {
         return JH_ERR_RANGE;
     }
     transaction->state = JH_JOURNAL_PREPARED;
     transaction->sequence = sequence;
-    transaction->offset = (uint32_t)offset;
-    memcpy(transaction->before, media->bytes + offset, JH_N3_RECORD_SIZE);
+    transaction->offset = offset;
+    if (jh_media_read_offset(media, offset, transaction->before) != JH_OK) {
+        return JH_ERR_RANGE;
+    }
     memcpy(transaction->after, after, JH_N3_RECORD_SIZE);
     return JH_OK;
 }
@@ -179,8 +184,10 @@ int jh_media_transaction_apply(struct jh_media_transaction *transaction,
             media->size - transaction->offset < JH_N3_RECORD_SIZE) {
         return JH_ERR_FORMAT;
     }
-    memcpy(media->bytes + transaction->offset, transaction->after,
-           JH_N3_RECORD_SIZE);
+    if (jh_media_write_offset(media, transaction->offset,
+                              transaction->after) != JH_OK) {
+        return JH_ERR_FORMAT;
+    }
     transaction->state = JH_JOURNAL_APPLIED;
     return JH_OK;
 }
@@ -204,11 +211,15 @@ int jh_media_transaction_recover(struct jh_media_transaction *transaction,
     }
     if (transaction->state == JH_JOURNAL_PREPARED ||
             transaction->state == JH_JOURNAL_APPLIED) {
-        memcpy(media->bytes + transaction->offset, transaction->before,
-               JH_N3_RECORD_SIZE);
+        if (jh_media_write_offset(media, transaction->offset,
+                                  transaction->before) != JH_OK) {
+            return JH_ERR_FORMAT;
+        }
     } else if (transaction->state == JH_JOURNAL_COMPLETE) {
-        memcpy(media->bytes + transaction->offset, transaction->after,
-               JH_N3_RECORD_SIZE);
+        if (jh_media_write_offset(media, transaction->offset,
+                                  transaction->after) != JH_OK) {
+            return JH_ERR_FORMAT;
+        }
     } else {
         return JH_ERR_FORMAT;
     }

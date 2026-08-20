@@ -11,6 +11,6 @@ mkdir -p build
   host/src/jukuhost_media.c \
   host/src/jukuhost_service.c host/src/jukuhost_session.c \
   host/src/jukuhost_sha256.c \
-  host/src/platform_posix.c host/src/jukuhost_posix.c \
+  host/src/platform_file.c host/src/platform_posix.c host/src/jukuhost_main.c \
   -o build/jukuhost
 build/jukuhost --version

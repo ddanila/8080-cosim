@@ -98,13 +98,13 @@ static int parse_uint64(const char *text, uint64_t minimum, uint64_t maximum,
     return JH_OK;
 }
 
-static int parse_unsigned_value(const char *text, unsigned minimum,
-                                unsigned maximum, unsigned *result)
+static int parse_unsigned_value(const char *text, uint32_t minimum,
+                                uint32_t maximum, uint32_t *result)
 {
     uint64_t value;
     int parsed = parse_uint64(text, minimum, maximum, &value);
     if (parsed != JH_OK) return parsed;
-    *result = (unsigned)value;
+    *result = (uint32_t)value;
     return JH_OK;
 }
 

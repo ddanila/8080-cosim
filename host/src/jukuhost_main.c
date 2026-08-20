@@ -1,18 +1,16 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include "jukuhost.h"
-#include "platform_posix.h"
+#include "platform.h"
 
 #include <errno.h>
-#include <fcntl.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
-#define HOST_VERSION "0.1.0-m2"
+#define HOST_VERSION "0.2.0-m2.2"
 
 enum exit_code {
     EXIT_CLEAN = 0,
@@ -47,14 +45,14 @@ struct options {
     const struct jh_config_disk *volume_identity;
     const struct jh_config_disk *drive_b_identity;
     int serial_fd;
-    unsigned timeout_seconds;
-    unsigned disk_timeout_seconds;
-    unsigned boot_restarts;
-    unsigned reconnect_timeout_seconds;
-    unsigned disk_protocol;
-    unsigned disk_baud;
-    unsigned read_ahead;
-    unsigned reply_guard_ms;
+    uint32_t timeout_seconds;
+    uint32_t disk_timeout_seconds;
+    uint32_t boot_restarts;
+    uint32_t reconnect_timeout_seconds;
+    uint32_t disk_protocol;
+    uint32_t disk_baud;
+    uint32_t read_ahead;
+    uint32_t reply_guard_ms;
     int direct_fastboot;
     int resume_disk;
     int boot_only;
@@ -65,7 +63,7 @@ struct options {
 
 struct host_context {
     struct options options;
-    struct jh_posix_serial serial;
+    struct jh_platform_serial serial;
     FILE *log_file;
     FILE *capture_file;
     uint64_t started_ms;
@@ -79,6 +77,7 @@ struct host_context {
     unsigned long boot_restart_count;
     unsigned long reconnect_count;
     unsigned long target_reset_count;
+    unsigned long serial_line_errors;
     int log_error;
     int capture_error;
     int capture_ready;
@@ -123,8 +122,8 @@ static void usage(FILE *file)
         "  --version               print version\n");
 }
 
-static int parse_unsigned(const char *text, unsigned minimum, unsigned maximum,
-                          unsigned *result)
+static int parse_unsigned(const char *text, uint32_t minimum, uint32_t maximum,
+                          uint32_t *result)
 {
     char *end;
     unsigned long value;
@@ -132,7 +131,7 @@ static int parse_unsigned(const char *text, unsigned minimum, unsigned maximum,
     value = strtoul(text, &end, 10);
     if (errno != 0 || *text == '\0' || *end != '\0' ||
             value < minimum || value > maximum) return -1;
-    *result = (unsigned)value;
+    *result = (uint32_t)value;
     return 0;
 }
 
@@ -155,6 +154,12 @@ static int parse_options(int argc, char **argv, struct options *options)
     options->read_ahead = 3u;
     options->reply_guard_ms = 2u;
     options->serial_fd = -1;
+#ifdef JH_DOS
+    if (argc == 1) {
+        options->config_path = "JUKUHOST.INI";
+        return 0;
+    }
+#endif
     for (index = 1; index < argc; ++index) {
         const char *argument = argv[index];
         const char *value;
@@ -174,7 +179,7 @@ static int parse_options(int argc, char **argv, struct options *options)
                 return -1;
             }
         } else if (strcmp(argument, "--serial-fd") == 0) {
-            unsigned descriptor;
+            uint32_t descriptor;
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 0u, 65535u, &descriptor) != 0) return -1;
             options->serial_fd = (int)descriptor;
@@ -278,7 +283,7 @@ static void host_log(struct host_context *host, const char *level,
     char message[1024];
     uint8_t capture_flags = 1u;
     va_list arguments;
-    unsigned long elapsed = (unsigned long)(jh_posix_milliseconds() -
+    unsigned long elapsed = (unsigned long)(jh_platform_milliseconds() -
                                              host->started_ms);
     va_start(arguments, format);
     (void)vsnprintf(message, sizeof(message), format, arguments);
@@ -333,13 +338,15 @@ static int resolve_path(const char *config_path, char *path, size_t capacity)
     backslash = strrchr(config_path, '\\');
     separator = slash == NULL ? backslash : backslash == NULL ? slash :
         slash > backslash ? slash : backslash;
-    directory_length = separator == NULL ? 1u :
-        (size_t)(separator - config_path);
+    /* A configuration in the current directory needs no prefix. Besides
+       being simpler, this avoids ./NAME on DOS C libraries that accept the
+       file for reading but reject that spelling when creating it. */
+    if (separator == NULL) return 0;
+    directory_length = (size_t)(separator - config_path);
     path_length = strlen(path);
     if (directory_length + 1u + path_length >= sizeof(resolved) ||
             capacity > sizeof(resolved)) return -1;
-    if (separator == NULL) resolved[0] = '.';
-    else memcpy(resolved, config_path, directory_length);
+    memcpy(resolved, config_path, directory_length);
     resolved[directory_length] = '/';
     memcpy(resolved + directory_length + 1u, path, path_length + 1u);
     memcpy(path, resolved, directory_length + 1u + path_length + 1u);
@@ -348,13 +355,18 @@ static int resolve_path(const char *config_path, char *path, size_t capacity)
 
 static int resolve_config_paths(const char *path, struct jh_host_config *config)
 {
-    char *paths[] = {
-        config->log, config->capture, config->system.file,
-        config->fastboot.file, config->fallback_system.file,
-        config->fallback_fastboot.file, config->disk_a.file,
-        config->disk_a.base, config->disk_b.file, config->disk_b.base
-    };
+    char *paths[10];
     size_t index;
+    paths[0] = config->log;
+    paths[1] = config->capture;
+    paths[2] = config->system.file;
+    paths[3] = config->fastboot.file;
+    paths[4] = config->fallback_system.file;
+    paths[5] = config->fallback_fastboot.file;
+    paths[6] = config->disk_a.file;
+    paths[7] = config->disk_a.base;
+    paths[8] = config->disk_b.file;
+    paths[9] = config->disk_b.base;
     for (index = 0u; index < sizeof(paths) / sizeof(paths[0]); ++index) {
         if (resolve_path(path, paths[index], JH_CONFIG_PATH_MAX) != 0) return -1;
     }
@@ -368,7 +380,7 @@ static int configure_from_file(const char *path, struct options *options,
     size_t length = 0u;
     struct jh_config_error error;
     int parsed;
-    if (jh_posix_load_file(path, &bytes, &length) != 0) {
+    if (jh_platform_load_file(path, &bytes, &length) != 0) {
         fprintf(stderr, "jukuhost: cannot read configuration %s: %s\n",
                 path, strerror(errno));
         return -1;
@@ -468,7 +480,7 @@ static int load_verified(struct host_context *host, const char *label,
                          const struct jh_config_artifact *identity,
                          uint8_t **bytes, size_t *length, int warning)
 {
-    if (jh_posix_load_file(path, bytes, length) != 0) {
+    if (jh_platform_load_file(path, bytes, length) != 0) {
         host_log(host, warning ? "WARN" : "ERROR", "cannot load %s %s: %s",
                  label, path, strerror(errno));
         return -1;
@@ -482,16 +494,33 @@ static int load_verified(struct host_context *host, const char *label,
     return 0;
 }
 
-static int verify_disk_identity(struct host_context *host, const char *label,
-                                const uint8_t *bytes, size_t length,
-                                const struct jh_config_disk *identity)
+static int verify_disk_path(struct host_context *host, const char *label,
+                            const char *path,
+                            const struct jh_config_disk *identity)
 {
-    struct jh_config_artifact artifact;
+    uint8_t digest[JH_SHA256_SIZE];
+    char actual[JH_SHA256_HEX_SIZE + 1u];
+    char expected[JH_SHA256_HEX_SIZE + 1u];
+    uint32_t size;
     if (identity == NULL) return 0;
-    memset(&artifact, 0, sizeof(artifact));
-    artifact.size = identity->size;
-    memcpy(artifact.sha256, identity->sha256, sizeof(artifact.sha256));
-    return verify_identity(host, label, bytes, length, &artifact, 0);
+    if (jh_platform_file_identity(path, &size, digest) != 0) {
+        host_log(host, "ERROR", "cannot read %s %s: %s", label, path,
+                 strerror(errno));
+        return -1;
+    }
+    jh_sha256_format(digest, actual);
+    jh_sha256_format(identity->sha256, expected);
+    if ((uint64_t)size != identity->size ||
+            memcmp(digest, identity->sha256, sizeof(digest)) != 0) {
+        host_log(host, "ERROR", "%s identity mismatch expected-size=%lu "
+            "actual-size=%lu expected-sha256=%s actual-sha256=%s", label,
+            (unsigned long)identity->size, (unsigned long)size, expected,
+            actual);
+        return -1;
+    }
+    host_log(host, "INFO", "%s identity size=%lu sha256=%s", label,
+             (unsigned long)size, actual);
+    return 0;
 }
 
 static int capture_record(struct host_context *host, enum jh_capture_type type,
@@ -504,7 +533,7 @@ static int capture_record(struct host_context *host, enum jh_capture_type type,
     encoded = (uint8_t *)malloc(length + JH_CAPTURE_RECORD_OVERHEAD);
     if (encoded == NULL) return -1;
     result = jh_capture_encode(type, flags,
-        jh_posix_milliseconds() - host->started_ms, data, length, encoded,
+        jh_platform_milliseconds() - host->started_ms, data, length, encoded,
         length + JH_CAPTURE_RECORD_OVERHEAD, &encoded_length);
     if (result != JH_OK ||
             fwrite(encoded, 1u, encoded_length, host->capture_file) !=
@@ -520,7 +549,7 @@ static int capture_record(struct host_context *host, enum jh_capture_type type,
 static int host_write(struct host_context *host, const uint8_t *data,
                       size_t length)
 {
-    if (jh_posix_serial_write(&host->serial, data, length, 10000u) != 0) {
+    if (jh_platform_serial_write(&host->serial, data, length, 10000u) != 0) {
         return -1;
     }
     host->tx_bytes += (unsigned long)length;
@@ -534,7 +563,7 @@ static int host_write(struct host_context *host, const uint8_t *data,
 static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
                      unsigned timeout_ms)
 {
-    int received = jh_posix_serial_read(&host->serial, data, capacity, timeout_ms);
+    int received = jh_platform_serial_read(&host->serial, data, capacity, timeout_ms);
     if (received > 0) {
         host->rx_bytes += (unsigned long)received;
         if (capture_record(host, JH_CAPTURE_RX, 0u, data,
@@ -561,12 +590,13 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
     host_log(host, "WARN", "serial link lost (%s); reopening %s for %u 8%c1",
              strerror(original_error), host->options.serial, baud, parity);
     host_log(host, "INFO", "phase=reconnect");
-    jh_posix_serial_close(&host->serial);
-    deadline = jh_posix_milliseconds() +
+    host->serial_line_errors += host->serial.line_errors;
+    jh_platform_serial_close(&host->serial);
+    deadline = jh_platform_milliseconds() +
         (uint64_t)host->options.reconnect_timeout_seconds * 1000u;
-    while (!jh_posix_stop_requested() &&
-            jh_posix_milliseconds() < deadline) {
-        if (jh_posix_serial_open(&host->serial, host->options.serial,
+    while (!jh_platform_stop_requested() &&
+            jh_platform_milliseconds() < deadline) {
+        if (jh_platform_serial_open(&host->serial, host->options.serial,
                                  baud, parity) == 0) {
             ++host->reconnect_count;
             host_log(host, "INFO", "serial reconnected count=%lu applied=%u 8%c1",
@@ -576,11 +606,12 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
             return 0;
         }
         last_error = errno;
-        jh_posix_sleep(250u);
+        jh_platform_sleep(250u);
     }
     errno = last_error;
-    host_log(host, "ERROR", "serial reopen timed out after %u seconds: %s",
-             host->options.reconnect_timeout_seconds, strerror(errno));
+    host_log(host, "ERROR", "serial reopen timed out after %lu seconds: %s",
+             (unsigned long)host->options.reconnect_timeout_seconds,
+             strerror(errno));
     return -1;
 }
 
@@ -653,7 +684,7 @@ static int host_write_disk_reply(struct host_context *host,
                                 chunk_length) * 11000u +
                                host->options.disk_baud - 1u) /
                               host->options.disk_baud) + 4u;
-        jh_posix_sleep(drain_ms);
+        jh_platform_sleep(drain_ms);
         position += chunk_length;
     }
     if (position != event->reply_length - 2u) return -1;
@@ -669,15 +700,24 @@ static int run_stock_boot(struct host_context *host, const uint8_t *system,
     struct jh_boot_session session;
     struct jh_janet_parser parser;
     struct jh_janet_frame frame;
-    uint64_t deadline = jh_posix_milliseconds() +
+    uint64_t deadline = jh_platform_milliseconds() +
         (uint64_t)host->options.timeout_seconds * 1000u;
     int received;
     int result;
     size_t index;
-    prepared_bytes = (uint8_t *)malloc(65536u);
-    if (prepared_bytes == NULL) return EXIT_ARTIFACT;
+    size_t prepared_capacity;
+    if (system_length > SIZE_MAX - JH_BOOT_RECORD_SIZE) {
+        host_log(host, "ERROR", "stock system is too large for this host");
+        return EXIT_ARTIFACT;
+    }
+    prepared_capacity = system_length + JH_BOOT_RECORD_SIZE;
+    prepared_bytes = (uint8_t *)malloc(prepared_capacity);
+    if (prepared_bytes == NULL) {
+        host_log(host, "ERROR", "not enough memory to prepare stock system");
+        return EXIT_ARTIFACT;
+    }
     result = jh_boot_prepare(system, system_length, 0, 0u, 0u, prepared_bytes,
-                             65536u, &prepared);
+                             prepared_capacity, &prepared);
     if (result != JH_OK) {
         host_log(host, "ERROR", "system preparation failed: %s",
                  jh_result_name(result));
@@ -694,8 +734,8 @@ static int run_stock_boot(struct host_context *host, const uint8_t *system,
     host_log(host, "INFO", "waiting for stock Janet request: %lu bytes, "
              "load=%04X entry=%04X", (unsigned long)prepared.length,
              prepared.load_address, prepared.entry);
-    while (!session.complete && !jh_posix_stop_requested() &&
-            jh_posix_milliseconds() < deadline) {
+    while (!session.complete && !jh_platform_stop_requested() &&
+            jh_platform_milliseconds() < deadline) {
         received = host_read(host, incoming, sizeof(incoming), 100u);
         if (received < 0) {
             host_log(host, "ERROR", "serial read during stock boot: %s",
@@ -744,8 +784,8 @@ static int wait_fast_frame(struct host_context *host,
                            uint8_t *kind, uint8_t *first, uint8_t *second)
 {
     uint8_t incoming[256];
-    uint64_t deadline = jh_posix_milliseconds() + timeout_ms;
-    while (!jh_posix_stop_requested() && jh_posix_milliseconds() < deadline) {
+    uint64_t deadline = jh_platform_milliseconds() + timeout_ms;
+    while (!jh_platform_stop_requested() && jh_platform_milliseconds() < deadline) {
         int received = host_read(host, incoming, sizeof(incoming), 25u);
         size_t index;
         if (received < 0) return -1;
@@ -772,7 +812,7 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
     uint8_t *tail;
     size_t probe_length;
     size_t tail_length;
-    uint64_t boot_deadline = jh_posix_milliseconds() +
+    uint64_t boot_deadline = jh_platform_milliseconds() +
         (uint64_t)host->options.timeout_seconds * 1000u;
     int result;
     unsigned attempt;
@@ -796,8 +836,8 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
         (void)jh_fast_session_ready_timeout(&session);
         host_log(host, "WARN", "V16 ready marker missed; probing resident stream scanner");
     }
-    for (attempt = 0u; !jh_posix_stop_requested() &&
-            jh_posix_milliseconds() < boot_deadline; ++attempt) {
+    for (attempt = 0u; !jh_platform_stop_requested() &&
+            jh_platform_milliseconds() < boot_deadline; ++attempt) {
         uint64_t deadline;
         int ack = 0;
         size_t probe_index;
@@ -811,10 +851,10 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
             if (host_write(host, probe + probe_index, 1u) != 0) {
                 return EXIT_SERIAL;
             }
-            if (probe_index + 1u < probe_length) jh_posix_sleep(1u);
+            if (probe_index + 1u < probe_length) jh_platform_sleep(1u);
         }
-        deadline = jh_posix_milliseconds() + 25u;
-        while (jh_posix_milliseconds() < deadline && !ack) {
+        deadline = jh_platform_milliseconds() + 25u;
+        while (jh_platform_milliseconds() < deadline && !ack) {
             int received = host_read(host, incoming, sizeof(incoming), 5u);
             size_t index;
             if (received < 0) return EXIT_SERIAL;
@@ -846,7 +886,7 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
                  "after %u probes", attempt);
         return EXIT_PROTOCOL;
     }
-    jh_posix_sleep(host->options.reply_guard_ms);
+    jh_platform_sleep(host->options.reply_guard_ms);
     tail = (uint8_t *)malloc(jh_fast_session_tail_size(&session));
     if (tail == NULL) return EXIT_ARTIFACT;
     result = jh_fast_session_tail(&session, tail,
@@ -896,7 +936,11 @@ static int clock_value(time_t offset, uint8_t output[5])
     epoch_tm.tm_mday = 1;
     epoch_tm.tm_isdst = -1;
     epoch = mktime(&epoch_tm);
-    if (epoch == (time_t)-1 || localtime_r(&current, &current_tm) == NULL) return -1;
+    {
+        struct tm *converted = localtime(&current);
+        if (epoch == (time_t)-1 || converted == NULL) return -1;
+        current_tm = *converted;
+    }
     days = (long)((current - epoch) / (24 * 60 * 60)) + 1L;
     if (days < 1L || days > 65535L) return -1;
     output[0] = (uint8_t)days;
@@ -922,7 +966,11 @@ static int apply_clock_set(const uint8_t encoded[4], time_t *offset)
     epoch_tm.tm_mday = 1;
     epoch_tm.tm_isdst = -1;
     epoch = mktime(&epoch_tm);
-    if (epoch == (time_t)-1 || localtime_r(&epoch, &target_tm) == NULL) return -1;
+    {
+        struct tm *converted = localtime(&epoch);
+        if (epoch == (time_t)-1 || converted == NULL) return -1;
+        target_tm = *converted;
+    }
     target_tm.tm_mday += (int)days - 1;
     target_tm.tm_hour = (int)hour;
     target_tm.tm_min = (int)minute;
@@ -940,15 +988,12 @@ static int recover_journal(struct host_context *host, struct jh_media *media,
     uint8_t *bytes;
     size_t length;
     struct jh_media_transaction transaction;
-    if (jh_posix_load_file(journal_path, &bytes, &length) != 0) {
+    if (jh_platform_load_file(journal_path, &bytes, &length) != 0) {
         return errno == ENOENT ? 0 : -1;
     }
     if (jh_journal_decode(bytes, length, &transaction) != JH_OK ||
             jh_media_transaction_recover(&transaction, media) != JH_OK ||
-            jh_posix_pwrite_record(host->options.volume, transaction.offset,
-                                   media->bytes + transaction.offset,
-                                   JH_N3_RECORD_SIZE) != 0 ||
-            jh_posix_remove_file(journal_path) != 0) {
+            jh_platform_remove_file(journal_path) != 0) {
         free(bytes);
         return -1;
     }
@@ -967,21 +1012,20 @@ static int persist_write(struct host_context *host, struct jh_media *media,
         request->track, request->sector, request->payload, sequence);
     if (result != JH_OK) return result == JH_ERR_READ_ONLY ? 0 : -1;
     if (jh_journal_encode(&transaction, encoded) != JH_OK ||
-            jh_posix_write_file(journal_path, encoded, sizeof(encoded), 1) != 0 ||
+            jh_platform_write_file(journal_path, encoded, sizeof(encoded), 1) != 0 ||
             jh_media_transaction_apply(&transaction, media) != JH_OK ||
-            jh_posix_pwrite_record(host->options.volume, transaction.offset,
-                                   transaction.after, JH_N3_RECORD_SIZE) != 0 ||
             jh_media_transaction_commit(&transaction) != JH_OK ||
             jh_journal_encode(&transaction, encoded) != JH_OK ||
-            jh_posix_write_file(journal_path, encoded, sizeof(encoded), 1) != 0 ||
-            jh_posix_remove_file(journal_path) != 0) return -1;
+            jh_platform_write_file(journal_path, encoded, sizeof(encoded), 1) != 0 ||
+            jh_platform_remove_file(journal_path) != 0) return -1;
     host_log(host, "INFO", "media write seq=%lu track=%u sector=%u",
              (unsigned long)sequence, request->track, request->sector);
     return 0;
 }
 
-static int run_disk(struct host_context *host, uint8_t *volume,
-                    uint8_t *drive_b_bytes)
+static int run_disk(struct host_context *host,
+                    struct jh_platform_media *volume,
+                    struct jh_platform_media *drive_b_file)
 {
     struct jh_media drive_a;
     struct jh_media drive_b;
@@ -993,21 +1037,24 @@ static int run_disk(struct host_context *host, uint8_t *volume,
     uint8_t time_encoded[5];
     uint8_t ready_marker[4] = {'N', 'R', 'N', '3'};
     char journal_path[1024];
-    uint64_t started = jh_posix_milliseconds();
+    uint64_t started = jh_platform_milliseconds();
     uint64_t next_ready = started;
     time_t clock_offset = 0;
-    int console_fd = -1;
+    struct jh_platform_console console;
+    int console_open = 0;
     int synchronized = host->options.resume_disk;
     uint32_t write_sequence = 1u;
     int result;
     if (host->options.console_pty != NULL) ready_marker[3] = '4';
     else if (host->options.disk_protocol == 2u) ready_marker[3] = '2';
     else if (host->options.disk_protocol == 1u) ready_marker[2] = 0u;
-    if (jh_media_init(&drive_a, volume, JH_N3_VOLUME_SIZE, JH_N3_TRACKS,
-                      host->options.writable) != JH_OK) return EXIT_MEDIA;
-    if (drive_b_bytes != NULL &&
-            jh_media_init(&drive_b, drive_b_bytes, JH_N3_NATIVE_VOLUME_SIZE,
-                          JH_N3_NATIVE_TRACKS, 0) != JH_OK) return EXIT_MEDIA;
+    if (jh_media_init_backend(&drive_a, volume, JH_N3_VOLUME_SIZE,
+            JH_N3_TRACKS, host->options.writable, jh_platform_media_read,
+            jh_platform_media_write) != JH_OK) return EXIT_MEDIA;
+    if (drive_b_file != NULL && jh_media_init_backend(
+            &drive_b, drive_b_file, JH_N3_NATIVE_VOLUME_SIZE,
+            JH_N3_NATIVE_TRACKS, 0, jh_platform_media_read,
+            jh_platform_media_write) != JH_OK) return EXIT_MEDIA;
     if (snprintf(journal_path, sizeof(journal_path), "%s.jhj",
                  host->options.volume) >= (int)sizeof(journal_path)) {
         return EXIT_MEDIA;
@@ -1018,30 +1065,36 @@ static int run_disk(struct host_context *host, uint8_t *volume,
         return EXIT_MEDIA;
     }
     if (jh_service_init(&service, &drive_a,
-            drive_b_bytes == NULL ? NULL : &drive_b,
+            drive_b_file == NULL ? NULL : &drive_b,
             host->options.disk_protocol, host->options.read_ahead,
             host->options.console_pty != NULL) != JH_OK) return EXIT_COMMAND;
+    console.fd = -1;
+    console.file = NULL;
+    console.ready_ms = 0u;
     if (host->options.console_pty != NULL) {
-        console_fd = jh_posix_open_console(host->options.console_pty);
-        if (console_fd < 0) return EXIT_SERIAL;
+        if (jh_platform_console_open(&console, host->options.console_pty) != 0) {
+            return EXIT_SERIAL;
+        }
+        console_open = 1;
     }
     jh_n3_parser_init(&parser);
-    host_log(host, "INFO", "serving A: %s, %u baud 8O1, N%u%s",
+    host_log(host, "INFO", "serving A: %s, %lu baud 8O1, N%lu%s",
         host->options.writable ? "writable+journal" : "read-only",
-        host->options.disk_baud, host->options.disk_protocol,
-        drive_b_bytes != NULL ? ", read-only native B:" : "");
-    while (!jh_posix_stop_requested() &&
+        (unsigned long)host->options.disk_baud,
+        (unsigned long)host->options.disk_protocol,
+        drive_b_file != NULL ? ", read-only native B:" : "");
+    while (!jh_platform_stop_requested() &&
             (host->options.disk_timeout_seconds == 0u ||
-             jh_posix_milliseconds() - started <
+             jh_platform_milliseconds() - started <
                 (uint64_t)host->options.disk_timeout_seconds * 1000u)) {
-        uint64_t now = jh_posix_milliseconds();
+        uint64_t now = jh_platform_milliseconds();
         int received;
         int recovered = 0;
         size_t index;
         if (!synchronized && now >= next_ready) {
             size_t marker_length = host->options.disk_protocol == 1u ? 2u : 4u;
             if (host_write(host, ready_marker, marker_length) != 0) {
-                if (jh_posix_stop_requested()) {
+                if (jh_platform_stop_requested()) {
                     result = EXIT_CLEAN;
                     goto done;
                 }
@@ -1051,13 +1104,14 @@ static int run_disk(struct host_context *host, uint8_t *volume,
                 }
                 jh_n3_parser_init(&parser);
                 synchronized = 0;
-                next_ready = jh_posix_milliseconds();
+                next_ready = jh_platform_milliseconds();
                 continue;
             }
             next_ready = now + 250u;
         }
-        if (console_fd >= 0) {
-            ssize_t console_received = read(console_fd, incoming, 256u);
+        if (console_open) {
+            int console_received = jh_platform_console_read(
+                &console, incoming, 256u);
             if (console_received > 0 && jh_service_console_input(
                     &service, incoming, (size_t)console_received) != JH_OK) {
                 host_log(host, "WARN", "N4 input queue full; input deferred");
@@ -1073,7 +1127,7 @@ static int run_disk(struct host_context *host, uint8_t *volume,
             }
             jh_n3_parser_init(&parser);
             synchronized = 0;
-            next_ready = jh_posix_milliseconds();
+            next_ready = jh_platform_milliseconds();
             continue;
         }
         for (index = 0u; index < (size_t)received; ++index) {
@@ -1107,10 +1161,10 @@ static int run_disk(struct host_context *host, uint8_t *volume,
             }
             if (event.duplicate) ++host->retries;
             if (host->options.reply_guard_ms != 0u) {
-                jh_posix_sleep(host->options.reply_guard_ms);
+                jh_platform_sleep(host->options.reply_guard_ms);
             }
             if (host_write_disk_reply(host, &request, &event) != 0) {
-                if (jh_posix_stop_requested()) {
+                if (jh_platform_stop_requested()) {
                     result = EXIT_CLEAN;
                     goto done;
                 }
@@ -1120,14 +1174,13 @@ static int run_disk(struct host_context *host, uint8_t *volume,
                 }
                 jh_n3_parser_init(&parser);
                 synchronized = 0;
-                next_ready = jh_posix_milliseconds();
+                next_ready = jh_platform_milliseconds();
                 recovered = 1;
                 break;
             }
-            if (event.console_output_length != 0u && console_fd >= 0 &&
-                    write(console_fd, event.console_output,
-                          event.console_output_length) < 0 &&
-                    errno != EAGAIN) {
+            if (event.console_output_length != 0u && console_open &&
+                    jh_platform_console_write(&console, event.console_output,
+                                              event.console_output_length) != 0) {
                 result = EXIT_SERIAL;
                 goto done;
             }
@@ -1158,10 +1211,11 @@ static int run_disk(struct host_context *host, uint8_t *volume,
             }
         }
         if (recovered) continue;
+        jh_platform_idle();
     }
     result = EXIT_CLEAN;
 done:
-    if (console_fd >= 0) (void)close(console_fd);
+    if (console_open) jh_platform_console_close(&console);
     return result;
 }
 
@@ -1213,81 +1267,62 @@ static int load_boot_artifacts(struct host_context *host, uint8_t **system,
     return 0;
 }
 
-static int load_volume(struct host_context *host, uint8_t **volume,
-                       size_t *length)
+static int open_disk_media(struct host_context *host,
+                           struct jh_platform_media *volume,
+                           struct jh_platform_media *drive_b,
+                           int *have_drive_b)
 {
     const struct jh_config_disk *identity = host->options.volume_identity;
-    if (identity == NULL || identity->mode != JH_CONFIG_MEDIA_SNAPSHOT) {
-        if (jh_posix_load_file(host->options.volume, volume, length) != 0 ||
-                *length != JH_N3_VOLUME_SIZE ||
-                verify_disk_identity(host, "A:", *volume, *length,
-                                     identity) != 0) {
-            free(*volume);
-            *volume = NULL;
-            host_log(host, "ERROR", "A: must be a valid %u-byte image",
-                     (unsigned)JH_N3_VOLUME_SIZE);
-            return -1;
-        }
-        return 0;
-    }
-    {
-        uint8_t *base = NULL;
-        size_t base_length = 0u;
+    uint8_t ignored_digest[JH_SHA256_SIZE];
+    uint32_t size;
+    *have_drive_b = 0;
+    if (identity != NULL && identity->mode == JH_CONFIG_MEDIA_SNAPSHOT) {
         int saved;
-        if (jh_posix_load_file(identity->base, &base, &base_length) != 0 ||
-                base_length != JH_N3_VOLUME_SIZE ||
-                verify_disk_identity(host, "A: snapshot base", base,
-                                     base_length, identity) != 0) {
-            free(base);
+        if (verify_disk_path(host, "A: snapshot base", identity->base,
+                             identity) != 0) {
             host_log(host, "ERROR", "invalid A: snapshot base");
             return -1;
         }
-        if (jh_posix_load_file(identity->file, volume, length) == 0) {
-            if (*length != JH_N3_VOLUME_SIZE) {
-                free(base);
-                free(*volume);
-                *volume = NULL;
+        if (jh_platform_file_identity(identity->file, &size,
+                                      ignored_digest) == 0) {
+            if (size != JH_N3_VOLUME_SIZE) {
                 host_log(host, "ERROR", "A: snapshot working copy has wrong size");
                 return -1;
             }
-            free(base);
             host_log(host, "INFO", "A: resumed snapshot working copy %s",
                      identity->file);
-            return 0;
+        } else {
+            saved = errno;
+            if (saved != ENOENT ||
+                    jh_platform_copy_file(identity->base, identity->file) != 0) {
+                host_log(host, "ERROR", "cannot create A: snapshot %s: %s",
+                         identity->file,
+                         strerror(saved == ENOENT ? errno : saved));
+                return -1;
+            }
+            host_log(host, "INFO", "A: created snapshot working copy %s",
+                     identity->file);
         }
-        saved = errno;
-        if (saved != ENOENT || jh_posix_write_file(identity->file, base,
-                base_length, 1) != 0) {
-            free(base);
-            host_log(host, "ERROR", "cannot create A: snapshot %s: %s",
-                     identity->file, strerror(saved == ENOENT ? errno : saved));
-            return -1;
-        }
-        *volume = base;
-        *length = base_length;
-        host_log(host, "INFO", "A: created snapshot working copy %s",
-                 identity->file);
+    } else if (verify_disk_path(host, "A:", host->options.volume,
+                                identity) != 0) {
+        return -1;
     }
-    return 0;
-}
-
-static int load_drive_b(struct host_context *host, uint8_t **image,
-                        size_t *image_length, uint8_t **volume)
-{
+    if (jh_platform_media_open(volume, host->options.volume,
+            JH_N3_VOLUME_SIZE, host->options.writable, 0) != 0) {
+        host_log(host, "ERROR", "A: must be a valid %lu-byte image",
+                 (unsigned long)JH_N3_VOLUME_SIZE);
+        return -1;
+    }
     if (host->options.drive_b == NULL) return 0;
-    if (jh_posix_load_file(host->options.drive_b, image, image_length) != 0 ||
-            *image_length != JH_N3_NATIVE_VOLUME_SIZE ||
-            verify_disk_identity(host, "B:", *image, *image_length,
-                                 host->options.drive_b_identity) != 0) {
+    if (verify_disk_path(host, "B:", host->options.drive_b,
+                         host->options.drive_b_identity) != 0 ||
+            jh_platform_media_open(drive_b, host->options.drive_b,
+                JH_N3_NATIVE_VOLUME_SIZE, 0, 1) != 0) {
         host_log(host, "ERROR", "B: must be a valid native 800 KiB image");
+        jh_platform_media_close(volume);
         return -1;
     }
-    *volume = (uint8_t *)malloc(JH_N3_NATIVE_VOLUME_SIZE);
-    if (*volume == NULL || jh_native_image_to_volume(
-            *image, *image_length, *volume,
-            JH_N3_NATIVE_VOLUME_SIZE) != JH_OK) {
-        return -1;
-    }
+    *have_drive_b = 1;
     return 0;
 }
 
@@ -1297,17 +1332,18 @@ int main(int argc, char **argv)
     struct jh_host_config config;
     uint8_t *system = NULL;
     uint8_t *fast_stage = NULL;
-    uint8_t *volume = NULL;
-    uint8_t *drive_b_image = NULL;
-    uint8_t *drive_b = NULL;
+    struct jh_platform_media volume;
+    struct jh_platform_media drive_b;
     size_t system_length = 0u;
     size_t fast_stage_length = 0u;
-    size_t volume_length = 0u;
-    size_t drive_b_length = 0u;
+    int media_open = 0;
+    int have_drive_b = 0;
     uint8_t capture_header[JH_CAPTURE_HEADER_SIZE];
     int parsed;
     int result = EXIT_CLEAN;
     memset(&host, 0, sizeof(host));
+    memset(&volume, 0, sizeof(volume));
+    memset(&drive_b, 0, sizeof(drive_b));
     host.serial.fd = -1;
     parsed = parse_options(argc, argv, &host.options);
     if (parsed > 0) return EXIT_CLEAN;
@@ -1320,7 +1356,7 @@ int main(int argc, char **argv)
             host.options.config_path, &host.options, &config) != 0) {
         return EXIT_COMMAND;
     }
-    host.started_ms = jh_posix_milliseconds();
+    host.started_ms = jh_platform_milliseconds();
     if (host.options.log != NULL) {
         host.log_file = fopen(host.options.log, "w");
         if (host.log_file == NULL) {
@@ -1343,6 +1379,10 @@ int main(int argc, char **argv)
     }
     host_log(&host, "INFO", "start version=%s port=%s", HOST_VERSION,
              host.options.serial != NULL ? host.options.serial : "inherited-fd");
+    host_log(&host, "INFO", "platform timer=%s resolution-ms=%u "
+             "available-memory=%lu", jh_platform_timer_name(),
+             jh_platform_timer_resolution_ms(),
+             (unsigned long)jh_platform_available_memory());
     if (host.options.config_path != NULL) {
         host_log(&host, "INFO", "configuration=%s", host.options.config_path);
     }
@@ -1351,22 +1391,19 @@ int main(int argc, char **argv)
         result = EXIT_EVIDENCE;
         goto cleanup;
     }
-    if (!host.options.boot_only &&
-            load_volume(&host, &volume, &volume_length) != 0) {
+    if (!host.options.boot_only && open_disk_media(
+            &host, &volume, &drive_b, &have_drive_b) != 0) {
         result = EXIT_ARTIFACT;
         goto cleanup;
     }
+    media_open = !host.options.boot_only;
     if (!host.options.resume_disk && load_boot_artifacts(
             &host, &system, &system_length, &fast_stage,
             &fast_stage_length) != 0) {
         result = EXIT_ARTIFACT;
         goto cleanup;
     }
-    if (load_drive_b(&host, &drive_b_image, &drive_b_length, &drive_b) != 0) {
-        result = EXIT_ARTIFACT;
-        goto cleanup;
-    }
-    jh_posix_install_signals();
+    jh_platform_install_signals();
     {
         unsigned initial_baud = host.options.resume_disk ?
             host.options.disk_baud : host.options.direct_fastboot ? 19200u : 9600u;
@@ -1374,10 +1411,10 @@ int main(int argc, char **argv)
         host_log(&host, "INFO", "phase=serial-open requested=%u 8%c1 flow=none",
                  initial_baud, initial_parity);
         int opened = host.options.serial_fd >= 0 ?
-            jh_posix_serial_adopt(&host.serial, host.options.serial_fd,
+            jh_platform_serial_adopt(&host.serial, host.options.serial_fd,
                                   "/dev/pts/inherited", initial_baud,
                                   initial_parity) :
-            jh_posix_serial_open(&host.serial, host.options.serial,
+            jh_platform_serial_open(&host.serial, host.options.serial,
                                  initial_baud, initial_parity);
         if (opened != 0) {
             host_log(&host, "ERROR", "cannot configure serial: %s",
@@ -1388,6 +1425,10 @@ int main(int argc, char **argv)
     }
     host_log(&host, "INFO", "serial applied=%u 8%c1 flow=none",
              host.serial.baud, host.serial.parity);
+    if (host.serial.base_port != 0u) {
+        host_log(&host, "INFO", "serial hardware base=%04X fifo-depth=%u",
+                 host.serial.base_port, host.serial.fifo_depth);
+    }
     if (!host.options.resume_disk) {
         host_log(&host, "INFO", "phase=%s",
                  host.options.direct_fastboot ? "fastboot" : "stock-boot");
@@ -1396,7 +1437,7 @@ int main(int argc, char **argv)
                 run_fastboot(&host, fast_stage, fast_stage_length,
                              system, system_length) :
                 run_stock_boot(&host, system, system_length);
-            if (jh_posix_stop_requested()) {
+            if (jh_platform_stop_requested()) {
                 result = EXIT_CLEAN;
                 goto cleanup;
             }
@@ -1410,11 +1451,12 @@ int main(int argc, char **argv)
                 break;
             }
             ++host.boot_restart_count;
-            host_log(&host, "WARN", "restarting complete bootstrap %lu/%u",
-                     host.boot_restart_count, host.options.boot_restarts);
+            host_log(&host, "WARN", "restarting complete bootstrap %lu/%lu",
+                     host.boot_restart_count,
+                     (unsigned long)host.options.boot_restarts);
             host_log(&host, "INFO", "phase=%s",
                      host.options.direct_fastboot ? "fastboot" : "stock-boot");
-            if (jh_posix_serial_configure(&host.serial,
+            if (jh_platform_serial_configure(&host.serial,
                     host.options.direct_fastboot ? 19200u : 9600u,
                     host.options.direct_fastboot ? 'N' : 'O') != 0) {
                 result = EXIT_SERIAL;
@@ -1423,7 +1465,7 @@ int main(int argc, char **argv)
         }
         if (result != EXIT_CLEAN) goto cleanup;
         if (host.options.boot_only) goto cleanup;
-        if (jh_posix_serial_configure(&host.serial, host.options.disk_baud,
+        if (jh_platform_serial_configure(&host.serial, host.options.disk_baud,
                                       'O') != 0) {
             host_log(&host, "ERROR", "cannot switch to disk framing: %s",
                      strerror(errno));
@@ -1431,13 +1473,13 @@ int main(int argc, char **argv)
             goto cleanup;
         }
     } else if (host.serial.parity != 'O' &&
-            jh_posix_serial_configure(&host.serial, host.options.disk_baud,
+            jh_platform_serial_configure(&host.serial, host.options.disk_baud,
                                       'O') != 0) {
         result = EXIT_SERIAL;
         goto cleanup;
     }
     host_log(&host, "INFO", "phase=netdisk");
-    result = run_disk(&host, volume, drive_b);
+    result = run_disk(&host, &volume, have_drive_b ? &drive_b : NULL);
 cleanup:
     if (result == EXIT_CLEAN && (host.log_error || host.capture_error)) {
         result = EXIT_EVIDENCE;
@@ -1447,23 +1489,27 @@ cleanup:
     host_log(&host, result == EXIT_CLEAN ? "INFO" : "ERROR",
         "stop exit=%d rx=%lu tx=%lu requests=%lu reads=%lu records=%lu "
         "writes=%lu "
-        "retries=%lu boot-restarts=%lu target-resets=%lu reconnects=%lu",
+        "retries=%lu boot-restarts=%lu target-resets=%lu reconnects=%lu "
+        "uart-errors=%lu available-memory=%lu",
         result, host.rx_bytes, host.tx_bytes, host.requests, host.reads,
         host.read_records, host.writes, host.retries, host.boot_restart_count,
-        host.target_reset_count, host.reconnect_count);
+        host.target_reset_count, host.reconnect_count,
+        host.serial_line_errors + host.serial.line_errors,
+        (unsigned long)jh_platform_available_memory());
     if (result == EXIT_CLEAN && (host.log_error || host.capture_error)) {
         result = EXIT_EVIDENCE;
         fprintf(stderr, "jukuhost: required evidence stream failed\n");
     }
-    jh_posix_serial_close(&host.serial);
+    jh_platform_serial_close(&host.serial);
     if (host.capture_file != NULL) {
         fflush(host.capture_file);
         fclose(host.capture_file);
     }
     if (host.log_file != NULL) fclose(host.log_file);
-    free(drive_b);
-    free(drive_b_image);
-    free(volume);
+    if (media_open) {
+        if (have_drive_b) jh_platform_media_close(&drive_b);
+        jh_platform_media_close(&volume);
+    }
     free(fast_stage);
     free(system);
     return result;

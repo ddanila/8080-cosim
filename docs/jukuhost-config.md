@@ -8,6 +8,12 @@ build/jukuhost JUKUHOST.INI
 build/jukuhost --config JUKUHOST.INI
 ```
 
+The DOS build uses `JUKUHOST.INI` automatically when invoked without options.
+The generated Pocket8086 folder therefore starts with either `JUKUHOST` or
+`JUKU.BAT`; no command-line parameters are required. Its production defaults
+are COM1, 19,200-baud NetDisk v3, `CON` for the local N4 console, a writable
+A: snapshot, read-only native B:, and DOS-safe log/capture names.
+
 Relative file names are resolved beside the configuration file. The format is
 ASCII, line-oriented, and deliberately strict: section and key names are
 case-insensitive, but duplicate keys, unknown sections or keys, malformed
@@ -113,3 +119,8 @@ and local-event records; event flags 1, 2, and 3 denote INFO, WARN, and ERROR.
 Startup settings, phase transitions, warnings/errors, media writes, and the
 final summary are explicitly flushed. High-volume INFO request events remain
 buffered so verbose evidence cannot perturb serial timing unnecessarily.
+
+For the DOSBox-X integration test only, a console path of the form
+`@12000:INPUT.TXT` delays scripted input by 12,000 ms. This is a deterministic
+headless-harness facility, not a recommended deployment setting; Pocket8086
+packages always use `console=CON`.

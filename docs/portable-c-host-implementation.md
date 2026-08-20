@@ -292,11 +292,42 @@ therefore accepted.
 1. M2.1 is complete: the exact accepted Linux host passed the physical
    CS00015 matrix documented in
    [portable-c-host-m2.1-physical-acceptance.md](portable-c-host-m2.1-physical-acceptance.md).
-2. M2.2 is next: port the admitted core to a 16-bit DOS executable for
-   Pocket8086 and prove its memory, timer, filesystem, COM1, and sustained
-   19,200-baud margin with desk tests.
-3. M2.3 validates that exact Pocket8086 executable against CS00015 and compares
-   its full workload with the M2.1 Linux baseline.
+2. M2.2 is desk-complete: the admitted core builds reproducibly as a 16-bit
+   DOS executable and passes real-COM1-path stock and C8 simulator sessions.
+   Its evidence is retained in
+   [portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).
+3. M2.3 is next: validate that exact Pocket8086 executable against CS00015 and
+   compare its full workload with the M2.1 Linux baseline.
 
 Only after all three pass does M3 begin. The detailed entry/exit criteria are
 in [portable-c-host-plan.md](portable-c-host-plan.md).
+
+## M2.2 — Pocket8086 DOS port desk-complete
+
+The production source is no longer POSIX-shaped. `jukuhost_main.c` and
+`platform_file.c` are shared, while `platform_posix.c` and `platform_dos.c`
+provide only their platform boundaries. Media reads, writes, native B: layout,
+identity hashing, snapshots, and journal recovery are streamed through a
+file-backed backend; neither 400 KiB A: nor 800 KiB B: is copied into 16-bit
+memory.
+
+The DOS layer directly owns COM1 or COM2, preserves and restores the previous
+UART registers, programs 9,600/19,200 baud and 8O1/8N1, detects a FIFO, drains
+TX, counts line-status errors, and clears stale RX on every framing change.
+The combined BIOS tick/PIT channel-0 clock gives one-millisecond deadlines.
+The local N4 console uses DOS `CON`; F10 requests a clean stop only while the
+host is polling the idle console path, so an active transfer is not aborted.
+
+`sync/jukuhost_dos_build.sh` uses the exact Open Watcom V2 asset vendored in
+this repository and treats warnings as errors. `tools/package-jukuhost-dos.py`
+authenticates the adjacent CP/M Plus C8 manifest and emits one 8.3-safe folder
+with the EXE, no-options INI/BAT entry point, system/Fastboot artifacts, A:/B:
+images, and a package SHA-256 list. There is no Kolobok dependency.
+
+`sync/jukuhost_dos_check.sh` rebuilds twice and compares the executables, runs
+the actual 16-bit program under headless DOSBox-X, then places its emulated
+COM1 on a paced bridge to the Juku simulator. The gate covers stock 9,600/8O1
+Janet and current C8 19,200/8N1 Fastboot followed by 19,200/8O1 NetDisk v3 and
+N4. The exact artifact identity, measurements, test boundary, and next physical
+gate are in
+[portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).

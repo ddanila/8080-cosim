@@ -47,6 +47,19 @@ network-ROM fault regressions. See
 `docs/portable-c-host-m2-acceptance.md` for the accepted result and exact
 platform-port boundary.
 
+The complete Pocket8086/DOS desk gate is:
+
+```sh
+sync/jukuhost_dos_check.sh
+```
+
+It verifies the locally vendored Open Watcom toolchain, builds the 16-bit host
+twice byte-identically, runs its self-test under DOSBox-X, and exercises the
+actual EXE through emulated COM1 against stock 9,600-baud Janet and current C8
+19,200-baud Fastboot/NetDisk/N4. See
+`docs/portable-c-host-m2.2-dos-acceptance.md`. Physical Pocket8086 timing and
+CS00015 behavior remain the separate M2.3 gate.
+
 ```sh
 sync/boot_check.sh
 sync/i8080_check.sh

@@ -1,12 +1,13 @@
 # Portable C Juku host plan
 
-Status: **M2.1 COMPLETE — M2.2 POCKET8086/DOS PORT NEXT**
+Status: **M2.2 DESK COMPLETE — M2.3 PHYSICAL POCKET8086 QUALIFICATION NEXT**
 
 Native-Linux acceptance and Python-host retirement are recorded in
 [portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). The first
-pre-M3 gate, physical Linux validation on CS00015, is complete. The two
-remaining gates port the same core to Pocket8086/DOS and validate that host
-against CS00015. M3 does not begin until both pass.
+pre-M3 gate, physical Linux validation on CS00015, is complete. The same core
+has now been ported to Pocket8086/DOS and passed its emulator/simulator desk
+gate. The remaining gate validates that exact DOS host against CS00015. M3
+does not begin until it passes.
 
 ## Goal
 
@@ -42,8 +43,9 @@ conversion, and other non-host desk tooling.
    C provides small dependency-free DOS and Windows 95 executables without
    imposing a C++ runtime contract.
 2. Use Open Watcom V2 for the Pocket8086 DOS and Win32/Windows 95 builds. Pin
-   the compiler release and archive hashes by reusing the reproducible
-   bootstrap pattern already proven in `ddanila/kolobok`.
+   the official compiler asset and archive hashes directly in this repository.
+   The bootstrap is locally owned and has no checkout, build, or runtime
+   dependency on Kolobok or another project.
 3. Use GCC or Clang for Linux and Clang for macOS. Open Watcom is the Windows
    95 and DOS compiler, not a requirement for every host platform.
 4. Develop and qualify the C protocol core on Linux first. Win32/Wine work
@@ -530,6 +532,15 @@ Exit: one reproducible DOS executable passes all automatable core, filesystem,
 and serial tests with enough measured margin to justify a physical Juku run.
 Merely compiling or completing a short loopback does not close M2.2.
 
+Result: **desk-complete**. The locally vendored Open Watcom V2 nightly builds
+one deterministic 16-bit 8086 executable. The actual executable passes a
+headless DOS self-test, stock 9,600-baud Janet bootstrap, and a wire-paced C8
+19,200-baud Fastboot/NetDisk/N4 session under DOSBox-X. Both disks remain
+file-backed. Exact identities, resource measurements, commands, limitations,
+and the M2.3 physical matrix are recorded in
+[portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).
+Emulator timing is not physical Pocket8086 performance evidence.
+
 ### 3.3. Pocket8086 host on CS00015
 
 Use the exact hash-pinned M2.2 executable on Pocket8086 with its physical COM1
@@ -652,6 +663,8 @@ The accepted identities, 34-command physical matrix and replay evidence are in
 
 ### M2.2 — Pocket8086 DOS host port
 
+Status: **desk-complete**.
+
 - pinned Open Watcom V2 produces a reproducible 16-bit DOS executable;
 - the admitted core is unchanged and the DOS platform boundary is explicit;
 - emulator/self-test, filesystem/recovery and controlled COM1 tests pass;
@@ -659,6 +672,8 @@ The accepted identities, 34-command physical matrix and replay evidence are in
 
 Exit: the exact DOS artifact is ready for a physical CS00015 qualification,
 with evidence that Pocket8086 is likely fast enough for the complete workload.
+The retained evidence is in
+[portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).
 
 ### M2.3 — Pocket8086 host on CS00015
 

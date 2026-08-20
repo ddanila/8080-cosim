@@ -92,6 +92,13 @@ with the machine-readable board model.
   display/cursor observation remains. Ekta4401, Ekta4402, and V14 remain frozen
   historical baselines. The original stock Janet path is unchanged as
   fallback.
+- The sole production network host is portable C. Its native-Linux M2 build is
+  physically qualified on CS00015, and the M2.2 desk port now builds the same
+  core as a reproducible 16-bit Open Watcom DOS executable for Pocket8086.
+  The actual EXE passes headless DOSBox-X at stock Janet 9,600 baud and C8
+  Fastboot/NetDisk/N4 at 19,200 baud through emulated COM1. Images remain
+  file-backed and the Pocket package runs with no options. Physical
+  Pocket8086/CS00015 qualification is the remaining M2.3 gate before Win32.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.

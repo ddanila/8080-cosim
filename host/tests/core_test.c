@@ -442,7 +442,7 @@ static int test_netdisk(const char *fixture)
     size_t reply_length;
     size_t expected_length;
     size_t encoded_length;
-    size_t offset;
+    uint32_t offset;
     size_t index;
     struct jh_n3_parser parser;
     struct jh_n3_request request;
@@ -523,7 +523,7 @@ static int test_service(void)
     struct jh_service_event event;
     struct jh_n3_request request;
     uint8_t clock_value[5] = {1u, 0u, 0x12u, 0x34u, 0x56u};
-    size_t offset;
+    uint32_t offset;
     size_t index;
     CHECK(a_bytes != NULL && b_bytes != NULL);
     CHECK(jh_media_init(&drive_a, a_bytes, JH_N3_VOLUME_SIZE,
@@ -656,6 +656,9 @@ static int test_evidence_and_recovery(void)
     CHECK(jh_media_init(&media, media_bytes, sizeof(media_bytes), 1u, 1) ==
           JH_ERR_RANGE);
     media.bytes = media_bytes;
+    media.context = NULL;
+    media.read_offset = NULL;
+    media.write_offset = NULL;
     media.size = sizeof(media_bytes);
     media.tracks = 1u;
     media.writable = 1;

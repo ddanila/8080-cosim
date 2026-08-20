@@ -97,7 +97,8 @@ Janet/Fastboot/NetDisk/N4 production host.
 M2 is complete. The C executable is the sole supported production network
 host on Linux, and its frozen specifications, vectors, captures, and test
 fixtures no longer require a runnable Python server. M2.1 has subsequently
-qualified this exact executable on CS00015. The next permissible work is M2.2:
-port it to Pocket8086/DOS; M2.3 then validates that host against the physical
-M2.1 baseline. Only after both pass may the pinned Open Watcom Windows 95 and
-headless-Wine M3 work begin.
+qualified this exact executable on CS00015, and the M2.2 desk port now builds
+and simulator-qualifies the same core for Pocket8086/DOS. M2.3 next validates
+that DOS host against the physical M2.1 baseline. Only after it passes may the
+pinned Open Watcom Windows 95 and headless-Wine M3 work begin; see
+[portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).

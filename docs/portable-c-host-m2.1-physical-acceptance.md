@@ -1,6 +1,6 @@
 # Portable C host M2.1 physical acceptance
 
-Status: **ACCEPTED ON CS00015 — M2.2 POCKET8086/DOS PORT NEXT**
+Status: **ACCEPTED ON CS00015 — M2.2 DOS DESK PORT SUBSEQUENTLY COMPLETE**
 
 On 2026-08-20 the exact native-Linux M2 host was qualified against physical
 CS00015 fitted with JukuNet C8 / ROM ABI 1.3. This closes M2.1 without changing
@@ -86,7 +86,8 @@ message. Neither correction changes target or wire behavior.
 
 ## Decision
 
-M2.1 passes. The C host accepted at M2 is now the physically qualified Linux
-baseline for CS00015. M2.2 may begin: port the same admitted core to a
+M2.1 passes. The C host accepted at M2 is the physically qualified Linux
+baseline for CS00015. The subsequent M2.2 desk port now provides a
 reproducible 16-bit Open Watcom DOS executable for Pocket8086. M3 remains
-blocked until that port and its M2.3 comparison against this baseline pass.
+blocked until its M2.3 physical comparison against this baseline passes; see
+[portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).

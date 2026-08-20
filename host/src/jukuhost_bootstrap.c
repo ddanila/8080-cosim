@@ -185,9 +185,9 @@ int jh_boot_frame_at(const uint8_t *image, size_t image_length,
         return JH_ERR_RANGE;
     }
     if (frame_index == 0u) {
-        const uint8_t start[8] = {
-            3u, 5u, 0u, (uint8_t)entry, (uint8_t)(entry >> 8), 0u, 0u, 0u
-        };
+        uint8_t start[8] = {3u, 5u, 0u, 0u, 0u, 0u, 0u, 0u};
+        start[3] = (uint8_t)entry;
+        start[4] = (uint8_t)(entry >> 8);
         return jh_janet_encode(client, server, 7u, start, sizeof(start),
                                output, capacity, output_length);
     }
@@ -222,9 +222,9 @@ int jh_boot_frame_at(const uint8_t *image, size_t image_length,
                                output, capacity, output_length);
     }
     if (frame_index == data_frames + 1u) {
-        const uint8_t end[8] = {
-            3u, 6u, 0u, (uint8_t)entry, (uint8_t)(entry >> 8), 0u, 0u, 0u
-        };
+        uint8_t end[8] = {3u, 6u, 0u, 0u, 0u, 0u, 0u, 0u};
+        end[3] = (uint8_t)entry;
+        end[4] = (uint8_t)(entry >> 8);
         return jh_janet_encode(client, server, 7u, end, sizeof(end),
                                output, capacity, output_length);
     }

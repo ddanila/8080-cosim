@@ -29,6 +29,9 @@ history.
 - `portable-c-host-m2.1-physical-acceptance.md` — exact native-host identities,
   CS00015 cold/reconnect/reset matrix, raw captures, replay result, and the
   accepted physical baseline for the Pocket8086 comparison.
+- `portable-c-host-m2.2-dos-acceptance.md` — pinned local Open Watcom toolchain,
+  reproducible 16-bit DOS artifact, DOSBox-X COM1-to-simulator evidence, and
+  the exact M2.3 physical Pocket8086 gate.
 - `jukuhost-config.md` — strict portable INI schema, authenticated boot slots,
   and safe A:/B: media policies.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC

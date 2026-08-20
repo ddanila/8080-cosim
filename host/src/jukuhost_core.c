@@ -691,12 +691,12 @@ int jh_n3_encode_record(const uint8_t record[JH_N3_RECORD_SIZE],
 }
 
 int jh_n3_record_offset(unsigned track, unsigned sector, unsigned tracks,
-                        size_t *offset)
+                        uint32_t *offset)
 {
     if (offset == NULL) return JH_ERR_ARGUMENT;
     if (track >= tracks || sector == 0u || sector > 40u) return JH_ERR_RANGE;
-    *offset = (size_t)track * JH_N3_TRACK_SIZE +
-        (size_t)(sector - 1u) * JH_N3_RECORD_SIZE;
+    *offset = (uint32_t)track * JH_N3_TRACK_SIZE +
+        (uint32_t)(sector - 1u) * JH_N3_RECORD_SIZE;
     return JH_OK;
 }
 

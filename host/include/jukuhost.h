@@ -11,11 +11,11 @@ extern "C" {
 #define JH_JANET_MAX_PAYLOAD 255u
 #define JH_JANET_MAX_FRAME (JH_JANET_MAX_PAYLOAD + 7u)
 #define JH_N3_RECORD_SIZE 128u
-#define JH_N3_TRACK_SIZE (40u * JH_N3_RECORD_SIZE)
+#define JH_N3_TRACK_SIZE (UINT32_C(40) * JH_N3_RECORD_SIZE)
 #define JH_N3_TRACKS 80u
 #define JH_N3_NATIVE_TRACKS 160u
-#define JH_N3_VOLUME_SIZE (JH_N3_TRACKS * JH_N3_TRACK_SIZE)
-#define JH_N3_NATIVE_VOLUME_SIZE (JH_N3_NATIVE_TRACKS * JH_N3_TRACK_SIZE)
+#define JH_N3_VOLUME_SIZE (UINT32_C(80) * JH_N3_TRACK_SIZE)
+#define JH_N3_NATIVE_VOLUME_SIZE (UINT32_C(160) * JH_N3_TRACK_SIZE)
 #define JH_N3_MAX_REQUEST (9u + JH_N3_RECORD_SIZE)
 #define JH_N4_MAX_CONSOLE_BLOCK 32u
 #define JH_SYSTEM_SIZE 0x1a00u
@@ -135,14 +135,14 @@ struct jh_host_config {
     struct jh_config_artifact fallback_fastboot;
     struct jh_config_disk disk_a;
     struct jh_config_disk disk_b;
-    unsigned timeout_seconds;
-    unsigned disk_timeout_seconds;
-    unsigned boot_restarts;
-    unsigned reconnect_timeout_seconds;
-    unsigned disk_protocol;
-    unsigned disk_baud;
-    unsigned read_ahead;
-    unsigned reply_guard_ms;
+    uint32_t timeout_seconds;
+    uint32_t disk_timeout_seconds;
+    uint32_t boot_restarts;
+    uint32_t reconnect_timeout_seconds;
+    uint32_t disk_protocol;
+    uint32_t disk_baud;
+    uint32_t read_ahead;
+    uint32_t reply_guard_ms;
     int network_rom;
     int have_fastboot;
     int have_fallback;
@@ -255,9 +255,21 @@ struct jh_n3_parser {
 
 struct jh_media {
     uint8_t *bytes;
-    size_t size;
+    void *context;
+    int (*read_offset)(void *context, uint32_t offset,
+                       uint8_t record[JH_N3_RECORD_SIZE]);
+    int (*write_offset)(void *context, uint32_t offset,
+                        const uint8_t record[JH_N3_RECORD_SIZE]);
+    uint32_t size;
     unsigned tracks;
     int writable;
+};
+
+struct jh_sha256_state {
+    uint32_t state[8];
+    uint64_t bits;
+    uint8_t block[64];
+    size_t used;
 };
 
 struct jh_boot_image {
@@ -327,6 +339,11 @@ uint16_t jh_crc16_ibm(const uint8_t *data, size_t length, uint16_t initial);
 uint32_t jh_crc32(const uint8_t *data, size_t length, uint32_t initial);
 void jh_sha256(const uint8_t *data, size_t length,
                uint8_t output[JH_SHA256_SIZE]);
+void jh_sha256_init(struct jh_sha256_state *state);
+void jh_sha256_update(struct jh_sha256_state *state,
+                      const uint8_t *data, size_t length);
+void jh_sha256_final(struct jh_sha256_state *state,
+                     uint8_t output[JH_SHA256_SIZE]);
 int jh_sha256_parse(const char *text, uint8_t output[JH_SHA256_SIZE]);
 void jh_sha256_format(const uint8_t digest[JH_SHA256_SIZE],
                       char output[JH_SHA256_HEX_SIZE + 1u]);
@@ -404,17 +421,26 @@ int jh_n3_encode_record(const uint8_t record[JH_N3_RECORD_SIZE],
                         int deleted_directory, uint8_t *output,
                         size_t capacity, size_t *output_length);
 int jh_n3_record_offset(unsigned track, unsigned sector, unsigned tracks,
-                        size_t *offset);
+                        uint32_t *offset);
 const uint8_t *jh_n3_sector_order(void);
 
-int jh_media_init(struct jh_media *media, uint8_t *bytes, size_t size,
+int jh_media_init(struct jh_media *media, uint8_t *bytes, uint32_t size,
                   unsigned tracks, int writable);
+int jh_media_init_backend(struct jh_media *media, void *context,
+                          uint32_t size, unsigned tracks, int writable,
+                          int (*read_offset)(void *, uint32_t, uint8_t *),
+                          int (*write_offset)(void *, uint32_t,
+                                              const uint8_t *));
+int jh_media_read_offset(const struct jh_media *media, uint32_t offset,
+                         uint8_t record[JH_N3_RECORD_SIZE]);
+int jh_media_write_offset(struct jh_media *media, uint32_t offset,
+                          const uint8_t record[JH_N3_RECORD_SIZE]);
 int jh_media_read(const struct jh_media *media, unsigned track,
                   unsigned sector, uint8_t record[JH_N3_RECORD_SIZE]);
 int jh_media_write(struct jh_media *media, unsigned track, unsigned sector,
                    const uint8_t record[JH_N3_RECORD_SIZE]);
-int jh_native_image_to_volume(const uint8_t *image, size_t image_length,
-                              uint8_t *volume, size_t volume_capacity);
+int jh_native_image_to_volume(const uint8_t *image, uint32_t image_length,
+                              uint8_t *volume, uint32_t volume_capacity);
 
 int jh_service_init(struct jh_service *service, struct jh_media *drive_a,
                     struct jh_media *drive_b, unsigned protocol_version,
