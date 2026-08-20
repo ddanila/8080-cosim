@@ -207,3 +207,18 @@ Direct and read-only modes remain explicit. `tests/jukuhost_config_test.py`
 proves rejection, fallback, snapshot creation/resume, base preservation, and
 the no-serial `--selftest` command. The exact syntax and policies are recorded
 in [jukuhost-config.md](jukuhost-config.md).
+
+### Operational-wrapper migration checkpoint
+
+`tools/juku_run.py` now launches only `build/jukuhost` for its interactive
+Janet netboot and served-disk modes. It builds the native executable on demand,
+passes explicit NetDisk baud/protocol/read-ahead policy, retains the C text log
+and raw capture, and sends SIGINT for an orderly host shutdown. There is no
+Python-host selection or fallback. `tests/juku_run_host_test.py` freezes both
+the boot-only and A:/B: command forms.
+
+A real wrapper-level simulator run used stock Ekta 3.7, scripted `TN0201`, and
+`media/system/CPM22.BIN`. The native executable accepted the learned Janet
+identity, completed all 53 bootstrap records, and exited cleanly with 2,421 RX
+bytes, 11,095 TX bytes, and no protocol retry. This proves the wrapper's
+auto-discovered serial PTY rather than only testing constructed arguments.

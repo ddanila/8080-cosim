@@ -2,7 +2,7 @@
 """Run a Juku in the emulator with an attachable terminal, in one command.
 
 Starts cosim paced at the real 2 MHz clock with an interactive console PTY,
-and optionally brings up the Janet side as well:
+and optionally brings up the native C Juku host as well:
 
     tools/juku_run.py                                   # ROM monitor only
     tools/juku_run.py --netboot media/system/EKDOS230.BIN
@@ -39,6 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 NOMINAL_HZ = 2_000_000
 FRAME_IRQ_CYCLES = "200000"
+DEFAULT_HOST = ROOT / "build" / "jukuhost"
 
 
 def build_trace(destination: Path) -> Path:
@@ -50,6 +51,41 @@ def build_trace(destination: Path) -> Path:
         check=True, cwd=ROOT,
     )
     return destination
+
+
+def build_host() -> Path:
+    subprocess.run(
+        [str(ROOT / "sync" / "jukuhost_linux_build.sh")],
+        check=True, cwd=ROOT,
+    )
+    return DEFAULT_HOST
+
+
+def host_command(arguments: argparse.Namespace, serial: str,
+                 work: Path, host: Path) -> list[str]:
+    command = [
+        str(host), "--serial", serial,
+        "--log", str(work / "jukuhost.log"),
+        "--capture", str(work / "jukuhost.cap"),
+    ]
+    if arguments.netboot:
+        command.extend((
+            "--system", str(arguments.netboot), "--boot-only",
+        ))
+        return command
+    system, volume = arguments.disk
+    command.extend((
+        "--system", system, "--volume", volume,
+        "--disk-baud", str(arguments.disk_baud),
+        "--disk-protocol", str(arguments.disk_protocol),
+        "--read-ahead", str(arguments.read_ahead),
+        "--verbose",
+    ))
+    if arguments.drive_b:
+        command.extend(("--drive-b", str(arguments.drive_b)))
+    if arguments.writable:
+        command.append("--writable")
+    return command
 
 
 def wait_for(pattern: str, log: Path, timeout: float) -> str | None:
@@ -104,12 +140,22 @@ def main() -> int:
                         help="attach a raw floppy image as the local drive")
     parser.add_argument("--writable", action="store_true",
                         help="allow the served A: volume to be written")
+    parser.add_argument("--disk-baud", type=int, default=9600,
+                        help="served-disk baud rate (default: 9600)")
+    parser.add_argument("--disk-protocol", type=int, choices=(1, 2, 3),
+                        default=2,
+                        help="served-disk protocol (default: 2)")
+    parser.add_argument("--read-ahead", type=int, choices=range(1, 9),
+                        default=3,
+                        help="NetDisk-v3 records per read (default: 3)")
     parser.add_argument("--attach", action="store_true",
                         help="bridge this terminal instead of printing a device")
     parser.add_argument("--max-speed", action="store_true",
                         help="run flat out instead of at the 2 MHz machine clock")
     parser.add_argument("--keys", help="type this string automatically")
     parser.add_argument("--trace", type=Path, help="prebuilt cosim binary")
+    parser.add_argument("--host", type=Path,
+                        help="prebuilt native jukuhost executable")
     parser.add_argument("--keep-logs", action="store_true",
                         help="keep the run directory and cosim's verbose "
                              "bank-switch logging (writes GBs on long runs)")
@@ -119,6 +165,8 @@ def main() -> int:
         parser.error("--netboot and --disk are alternatives")
     if arguments.drive_b and not arguments.disk:
         parser.error("--drive-b requires --disk")
+    if arguments.disk_protocol != 3 and arguments.read_ahead != 3:
+        parser.error("--read-ahead applies only to --disk-protocol 3")
     arguments.rom = arguments.rom.resolve()
     if not arguments.rom.is_file():
         parser.error(f"ROM not found: {arguments.rom}")
@@ -146,6 +194,13 @@ def main() -> int:
     work = Path(os.environ.get("TMPDIR", "/tmp")) / f"juku-run-{os.getpid()}"
     work.mkdir(parents=True, exist_ok=True)
     trace = arguments.trace or build_trace(work / "trace")
+    host = None
+    if arguments.netboot or arguments.disk:
+        host = arguments.host.resolve() if arguments.host else DEFAULT_HOST
+        if not host.is_file():
+            if arguments.host:
+                parser.error(f"host executable not found: {host}")
+            host = build_host()
 
     environment = os.environ.copy()
     environment["JUKU_CONSOLE_PTY"] = "auto"
@@ -196,20 +251,10 @@ def main() -> int:
             cosim.kill()
             print(f"cosim did not report a serial PTY; see {log}", file=sys.stderr)
             return 1
-        if arguments.netboot:
-            command = [sys.executable, str(ROOT / "tools" / "janet_netboot.py"),
-                       serial, str(arguments.netboot)]
-        else:
-            system, volume = arguments.disk
-            command = [sys.executable, str(ROOT / "tools" / "janet_disk_server.py"),
-                       serial, system, volume]
-            if arguments.drive_b:
-                command.extend(("--drive-b", str(arguments.drive_b)))
-            if arguments.writable:
-                command.append("--writable")
+        assert host is not None
+        command = host_command(arguments, serial, work, host)
         server = subprocess.Popen(command, cwd=ROOT)
-        print(f"janet server: {' '.join(Path(c).name for c in command[1:3])} "
-              f"on {serial}")
+        print(f"jukuhost: {host.name} on {serial}")
 
     if disk is not None:
         print(f"disk: {disk}  (boot it with T D D)")
@@ -235,7 +280,9 @@ def main() -> int:
     finally:
         for process in (server, cosim):
             if process and process.poll() is None:
-                process.send_signal(signal.SIGTERM)
+                process.send_signal(
+                    signal.SIGINT if process is server else signal.SIGTERM,
+                )
                 try:
                     process.wait(timeout=5)
                 except subprocess.TimeoutExpired:

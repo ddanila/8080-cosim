@@ -253,10 +253,12 @@ CP/M `A>` in seconds and still accepts commands.
 
 `tools/juku_run.py` wraps this into one command: it builds cosim, starts it
 paced with a console PTY, optionally attaches a floppy image
-(`--disk-image`, or an inherited `JUKU_DISK`) or brings up the Janet netboot
-or disk server on a second PTY, and prints the device to attach to (or
-bridges the current terminal with `--attach`). Every path it hands to cosim
-is resolved first, because cosim runs in its own working directory.
+(`--disk-image`, or an inherited `JUKU_DISK`) or brings up the native C
+`jukuhost` on a second PTY, and prints the device to attach to (or bridges the
+current terminal with `--attach`). It builds `build/jukuhost` on demand,
+retains a text log plus raw capture when `--keep-logs` is selected, and has no
+Python-host fallback. Every path it hands to cosim is resolved first, because
+cosim runs in its own working directory.
 
 For a CP/Mish dual-network-drive session, `--drive-b` accepts a physical
 800 KiB `.JUK` image. A: remains the 386 KiB host volume and may be made
@@ -265,7 +267,8 @@ geometry and is read-only:
 
 ```sh
 tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \
-    ../cpmish/juku-net-mode2.img --drive-b J3KGAME2.JUK --writable --attach
+    ../cpmish/juku-net-mode2.img --drive-b J3KGAME2.JUK \
+    --disk-baud 19200 --disk-protocol 2 --writable --attach
 ```
 
 It also turns cosim's bank-switch logging off and deletes its run directory
