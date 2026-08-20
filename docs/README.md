@@ -24,8 +24,8 @@ history.
 - `portable-c-host-implementation.md` — milestone-by-milestone admitted C-host
   code and verification.
 - `portable-c-host-m2-acceptance.md` — retained Linux parity comparison,
-  caller-retirement audit, CI identities, and the boundary before platform
-  porting.
+  caller-retirement audit, CI identities, and the baseline for the M2.1-M2.3
+  CS00015/Pocket8086 gates before M3.
 - `jukuhost-config.md` — strict portable INI schema, authenticated boot slots,
   and safe A:/B: media policies.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC

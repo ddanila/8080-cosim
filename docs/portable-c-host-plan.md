@@ -1,11 +1,12 @@
 # Portable C Juku host plan
 
-Status: **M2 COMPLETE — READY FOR PLATFORM PORTS**
+Status: **M2 COMPLETE — M2.1 PHYSICAL LINUX VALIDATION NEXT**
 
 Native-Linux acceptance and Python-host retirement are recorded in
-[portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). The next
-permitted implementation milestone is M3; this plan deliberately stops before
-platform-specific porting begins.
+[portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). Three
+pre-M3 gates now follow: validate that exact solution on CS00015, port the same
+core to the Pocket8086 DOS host, and validate Pocket8086 against CS00015. M3
+does not begin until all three pass.
 
 ## Goal
 
@@ -13,8 +14,14 @@ Produce one small, dependable Juku network host whose production runtime does
 not require Python. The same source must build as:
 
 - a native Linux command-line program;
-- a native macOS command-line program; and
+- a native macOS command-line program;
+- a 16-bit DOS command-line program for Pocket8086-class hardware; and
 - a 32-bit Windows 95 command-line program built with Open Watcom V2.
+
+The Pocket8086 deployment uses its physical COM1 and local DOS filesystem. Its
+qualification must prove that the small 8086-class machine can sustain the
+accepted 19,200-baud disk and console workload; build compatibility alone is
+not sufficient.
 
 The first Windows 95 deployment is a physical x86 machine with a physical COM
 port. USB-to-serial drivers and adapters are not part of the Windows 95 support
@@ -32,27 +39,32 @@ conversion, and other non-host desk tooling.
 
 1. Use portable C for the production host. The application is primarily byte
    protocols, bounded state machines, serial I/O, timers, and disk-image I/O;
-   C provides a small dependency-free Windows 95 executable without imposing a
-   C++ runtime contract.
-2. Use Open Watcom V2 for the Win32/Windows 95 build. Pin the compiler release
-   and archive hashes by reusing the reproducible bootstrap pattern already
-   proven in `ddanila/kolobok`.
+   C provides small dependency-free DOS and Windows 95 executables without
+   imposing a C++ runtime contract.
+2. Use Open Watcom V2 for the Pocket8086 DOS and Win32/Windows 95 builds. Pin
+   the compiler release and archive hashes by reusing the reproducible
+   bootstrap pattern already proven in `ddanila/kolobok`.
 3. Use GCC or Clang for Linux and Clang for macOS. Open Watcom is the Windows
-   95 compiler, not a requirement for every host platform.
+   95 and DOS compiler, not a requirement for every host platform.
 4. Develop and qualify the C protocol core on Linux first. Win32/Wine work
    begins only after the same core passes native simulator sessions.
 5. Use headless Wine as the first Win32 execution environment. A temporary
    Wine prefix maps `COM1` to the Juku simulator PTY; actual Windows 95 and its
    physical UART are the final platform test.
 6. Keep ordinary human-readable logging and an optional raw traffic capture.
-   The Windows 95 executable does not need a JSON parser or JSON logger.
+   The DOS and Windows 95 executables do not need a JSON parser or JSON logger.
    Modern Python tooling may convert retained logs and captures to JSON/JSONL.
 7. Preserve exact existing wire contracts and recovery behavior before
    considering any new protocol or performance change.
 8. Define the MVP as full behavioral parity with the current production Python
    host on Linux, migration of every production caller to the C executable,
-   and retirement of the runnable Python host. Windows and macOS use the same
-   admitted C core; they do not introduce another host implementation.
+   and retirement of the runnable Python host. DOS, Windows, and macOS use the
+   same admitted C core; they do not introduce another host implementation.
+9. Before M3, qualify the accepted native Linux executable on CS00015, port
+   the same core to Pocket8086/DOS, and qualify that exact DOS executable on
+   CS00015. These are M2.1, M2.2, and M2.3 respectively. A slow or unreliable
+   Pocket8086 result is a failed gate to diagnose, not permission to skip
+   directly to M3.
 
 ## MVP and final migration boundary
 
@@ -75,12 +87,13 @@ At that gate:
   live Python server as the long-term behavioral oracle;
 - no automatic fallback to Python is retained.
 
-The Win32/Wine, macOS, and physical Windows 95 milestones qualify additional
+Pocket8086/DOS, Win32/Wine, macOS, and physical Windows 95 qualify additional
 builds of that same C host. They do not postpone the architectural decision or
-create platform-specific forks. No Win32 or macOS implementation work begins
-before the Linux parity-and-retirement gate closes. During any gap before a
-later platform build is ready, that platform is explicitly pending; the
-Python host is not kept alive as a temporary platform fallback.
+create platform-specific protocol forks. No platform port begins before the
+Linux parity-and-retirement gate closes. The Pocket8086 sequence is then
+completed before Win32/Wine M3 begins. During any gap before a later platform
+build is ready, that platform is explicitly pending; the Python host is not
+kept alive as a temporary platform fallback.
 
 ## Initial scope
 
@@ -116,6 +129,28 @@ when there is a concrete need to run them on a legacy host. No retained Python
 tool may quietly remain an alternative production network server after MVP.
 
 ## Compatibility contract
+
+### Pocket8086 / DOS
+
+- 16-bit real-mode DOS executable for the Pocket8086's 8086-compatible CPU;
+- physical `COM1` as the required first target, with explicit 9,600 and 19,200
+  baud, 8O1/8N1, and no flow control;
+- the same portable protocol/session/media core as Linux, with only serial,
+  clock, console, and filesystem behavior in the DOS platform layer;
+- bounded conventional-memory use: disk images remain file-backed and the
+  implementation must not assume that a complete 800 KiB image fits in RAM;
+- one executable, short DOS-safe configuration/log/capture names, artifacts,
+  and disk images; no Python or separately installed runtime;
+- retained text logging, summary counters, optional raw capture, safe writable
+  media, and an orderly idle-only keyboard exit;
+- measured serial turnaround, timer resolution, filesystem latency, sustained
+  NetDisk throughput, and retry/error counts on the physical machine.
+
+The choice between DOS/BIOS serial services and direct UART access is made by
+measurement during M2.2. A convenient API is not accepted if it cannot meet
+the existing reply deadlines. The host must print the detected/applied COM
+configuration and fail clearly when the required rate or timing cannot be
+provided.
 
 ### Windows 95
 
@@ -155,10 +190,10 @@ filesystem headers:
                                   |
                          portable C protocol core
                     Janet / Fastboot / N3 / N4 / media
-                         /          |          \
-                 Linux POSIX    macOS POSIX    Win32/Win95
-                 GCC/Clang         Clang       Open Watcom V2
-                         \          |          /
+                        /         |         |          \
+              Linux POSIX  macOS POSIX  DOS/8086   Win32/Win95
+               GCC/Clang      Clang     Open Watcom  Open Watcom
+                        \         |         |          /
                           logs + binary captures
                                   |
              frozen captures/specifications + Python evidence tools
@@ -198,7 +233,7 @@ mode supported by each toolchain:
 - warnings treated as errors in every compiler lane.
 
 Open Watcom supports an explicit C99 language mode, but each C library call
-used by the Windows binary must still be verified against its Windows 95
+used by the DOS or Windows binary must still be verified against its target
 runtime. Small local helpers are preferable to pulling in a compatibility
 library.
 
@@ -227,6 +262,12 @@ calls. Every backend must provide:
 The Win32 backend must initialize every relevant DCB field rather than inherit
 the last program's COM settings. It must acknowledge `ClearCommError` states
 and report both requested and applied configuration at startup.
+
+The DOS backend must likewise own the complete UART state rather than inherit
+whatever a previous DOS program left behind. M2.2 records whether BIOS serial
+services or direct UART polling satisfy the deadline contract, the detected
+UART/FIFO behavior, the timer source and wrap period, and the exact drain rule.
+All transfer loops remain non-interruptible by ordinary keyboard input.
 
 Windows 95's basic millisecond clock is coarse and wraps. The initial Win32
 spike therefore measures clock resolution, transmit drain, read timeout, and
@@ -447,7 +488,57 @@ closure, not a documentation label:
 
 No work on another platform begins until this gate passes.
 
-### 4. Open Watcom build and Wine self-test
+### 3.1. Native Linux host on CS00015
+
+Use the exact M2-qualified Linux executable and current C8/V16 artifacts on
+physical CS00015. Retain the executable/artifact hashes, configuration, text
+log and raw capture. Exercise:
+
+- repeated cold boot to the CP/M prompt;
+- A: and B: directory/read access plus a controlled writable-A: operation;
+- bidirectional N4 console, `VER`, warm boot, and a representative diagnostic;
+- host disconnect/restart and target reset recovery;
+- clean shutdown with no journal residue or unexplained protocol retry.
+
+Replay the resulting capture against the simulator where its events are
+modelable. Exit: the accepted Linux solution is physically qualified on
+CS00015, with any hardware-only variation documented rather than hidden by a
+new timing workaround.
+
+### 3.2. Pocket8086 DOS port
+
+Build a 16-bit DOS executable from the admitted core with pinned Open Watcom
+V2. Add only the DOS platform backend and bounded compatibility helpers; do
+not fork protocol logic. Before involving CS00015:
+
+- run the portable self-tests and frozen vectors under a DOS emulator;
+- verify configuration, artifact hashes, file-backed A:/B:, journal recovery,
+  logging, capture, exit handling, counter wrap, and malformed-input behavior;
+- exercise COM1 through a controlled loopback/peer harness at 9,600 and
+  19,200 with partial I/O, turnaround, and sustained-stream measurements;
+- record executable size, conventional-memory high-water mark, compiler
+  identity, binary hash, timer resolution, and measured maximum service load;
+- prove that logging/capture choices do not cause missed 19,200-baud replies.
+
+Exit: one reproducible DOS executable passes all automatable core, filesystem,
+and serial tests with enough measured margin to justify a physical Juku run.
+Merely compiling or completing a short loopback does not close M2.2.
+
+### 3.3. Pocket8086 host on CS00015
+
+Use the exact hash-pinned M2.2 executable on Pocket8086 with its physical COM1
+and the same CS00015/artifact/configuration baseline used in M2.1. Run repeated
+cold boots, A:/B:, N4 input/output, warm boot, controlled A: write, clean
+shutdown, and host restart/reconnect. Retain logs/captures and compare request
+counts, retries, media results, boot time, disk latency, and console behavior
+with M2.1.
+
+Exit: Pocket8086 is accepted as a practical production host only if the full
+workload is reliable and timing has measured margin. If it is too slow, M2.2
+is reopened and optimized or the limitation is resolved explicitly; M3 stays
+blocked until this gate passes.
+
+### 4. Win32 Open Watcom build and Wine self-test
 
 - bootstrap a pinned Open Watcom toolchain;
 - build the Windows 95 console artifact on Linux CI;
@@ -540,6 +631,35 @@ the runnable Python host and fallback are retired; C is the sole supported
 host. Frozen fixtures, specifications, and captures become the long-term
 oracle.
 
+### M2.1 — native Linux host on CS00015
+
+- exact M2 Linux executable and artifacts are hash-pinned;
+- repeated physical cold boot, A:/B:, N4, warm boot and diagnostics pass;
+- writable-media, clean-stop, host-replacement and reset recovery pass;
+- log/capture evidence is retained and replayed where modelable.
+
+Exit: the existing native Linux solution is physically qualified on CS00015.
+
+### M2.2 — Pocket8086 DOS host port
+
+- pinned Open Watcom V2 produces a reproducible 16-bit DOS executable;
+- the admitted core is unchanged and the DOS platform boundary is explicit;
+- emulator/self-test, filesystem/recovery and controlled COM1 tests pass;
+- size, memory, timer, UART and sustained 19,200-baud margins are recorded.
+
+Exit: the exact DOS artifact is ready for a physical CS00015 qualification,
+with evidence that Pocket8086 is likely fast enough for the complete workload.
+
+### M2.3 — Pocket8086 host on CS00015
+
+- the exact M2.2 executable serves repeated C8/V16 cold boots;
+- A:/B:, N4, warm boot, write safety, clean stop and reconnect pass;
+- boot/disk latency, retry counts, logs and captures are compared with M2.1;
+- no unexplained corruption, timeout, retry growth or timing cliff remains.
+
+Exit: Pocket8086 is qualified as a practical physical Juku host. M3 remains
+blocked until this exit gate passes.
+
 ### M3 — Windows 95 artifact and headless self-test
 
 - pinned Open Watcom build is reproducible;
@@ -581,6 +701,8 @@ Exit: Windows 95 moves from build-compatible to physically qualified.
 | --- | --- |
 | rewrite silently changes wire behavior | byte-exact Python/C differential tests during migration, then frozen capture/vector replay before hardware |
 | Wine masks or invents serial behavior | native Linux first; Wine treated as Win32 desk gate; physical Windows 95 remains final authority |
+| Pocket8086 cannot service 19,200 baud reliably | measure DOS timer/UART/filesystem paths before Juku use; preserve file-backed media; compare full physical workload with the Linux baseline; do not advance to M3 on a marginal result |
+| DOS conventional memory is exhausted | stream/file-cache bounded records, keep disk images file-backed, record high-water use, and test the exact packaged artifact |
 | coarse Windows 95 timers break tuned guards | early physical timer/drain spike, acknowledgement-first design, logged applied timing capability |
 | slow logging perturbs the serial loop | bounded buffering, compact capture, defined flush points and timing regression |
 | host crash damages A: | read-only default, working copies, CRC journal and startup recovery tests |
@@ -595,7 +717,8 @@ Exit: Windows 95 moves from build-compatible to physically qualified.
   work.
 - Every relevant hardware-discovered failure becomes a regression fixture.
 - Hardware is reserved for electrical behavior, physical UART/driver timing,
-  real Windows 95 API behavior, keyboard mechanics, display, and sound.
+  Pocket8086 performance, real Windows 95 API behavior, keyboard mechanics,
+  display, and sound.
 - The Python production host is removed after full parity rather than kept as
   a fallback. Python remains wherever it is the more useful non-host build,
   simulation, analysis, or research tool.
