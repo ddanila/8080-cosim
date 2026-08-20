@@ -266,6 +266,205 @@ int jh_fast_v16_bundle(const uint8_t *artifact, size_t artifact_length,
     return JH_OK;
 }
 
+void jh_fast_parser_init(struct jh_fast_parser *parser)
+{
+    if (parser != NULL) parser->length = 0u;
+}
+
+int jh_fast_parser_push(struct jh_fast_parser *parser, uint8_t value,
+                        uint8_t *kind, uint8_t *first, uint8_t *second)
+{
+    if (parser == NULL || kind == NULL || first == NULL || second == NULL) {
+        return JH_ERR_ARGUMENT;
+    }
+    if (parser->length == 0u) {
+        if (value == (uint8_t)'J') parser->bytes[parser->length++] = value;
+        return JH_NEED_MORE;
+    }
+    if (parser->length >= sizeof(parser->bytes)) parser->length = 0u;
+    parser->bytes[parser->length++] = value;
+    if (parser->length < sizeof(parser->bytes)) return JH_NEED_MORE;
+    if (jh_xor(parser->bytes, sizeof(parser->bytes)) == 0u) {
+        *kind = parser->bytes[1];
+        *first = parser->bytes[2];
+        *second = parser->bytes[3];
+        parser->length = 0u;
+        return JH_FRAME;
+    }
+    if (parser->bytes[4] == (uint8_t)'J') {
+        parser->bytes[0] = (uint8_t)'J';
+        parser->length = 1u;
+    } else {
+        parser->length = 0u;
+    }
+    return JH_ERR_CHECKSUM;
+}
+
+static int fast_extract_system(const uint8_t *image, size_t image_length,
+                               const uint8_t **system, size_t *system_length)
+{
+    static const uint8_t rm_magic[8] = {
+        'J', 'U', 'K', 'U', 'R', 'M', '1', 0x1a
+    };
+    size_t index;
+    if (image_length >= sizeof(rm_magic) &&
+            memcmp(image, rm_magic, sizeof(rm_magic)) == 0) {
+        uint16_t size;
+        uint16_t expected_crc;
+        if (image_length < 0x0200u) return JH_ERR_FORMAT;
+        size = (uint16_t)(image[12] | (uint16_t)((uint16_t)image[13] << 8));
+        expected_crc = (uint16_t)(image[14] |
+            (uint16_t)((uint16_t)image[15] << 8));
+        if (size == 0u || size % 128u != 0u || image_length != 0x0200u + size) {
+            return JH_ERR_FORMAT;
+        }
+        if (jh_crc16_ibm(image + 0x0200u, size, 0u) != expected_crc) {
+            return JH_ERR_CHECKSUM;
+        }
+        *system = image + 0x0200u;
+        *system_length = size;
+        return JH_OK;
+    }
+    if (image_length != 10240u || image[0x0200u] != 0xc3u) {
+        return JH_ERR_FORMAT;
+    }
+    for (index = 0u; index < 0x0200u; ++index) {
+        if (image[index] != 0xe5u) return JH_ERR_FORMAT;
+    }
+    *system = image + 0x0200u;
+    *system_length = JH_SYSTEM_SIZE;
+    return JH_OK;
+}
+
+int jh_fast_session_init(struct jh_fast_session *session,
+                         const uint8_t *artifact, size_t artifact_length,
+                         const uint8_t *system_image, size_t system_image_length)
+{
+    const uint8_t *core;
+    const uint8_t *compressed;
+    const uint8_t *system;
+    size_t compressed_length;
+    size_t system_length;
+    uint16_t system_crc;
+    int result;
+    if (session == NULL || system_image == NULL) return JH_ERR_ARGUMENT;
+    result = jh_fast_v16_bundle(artifact, artifact_length, &core, &compressed,
+                                &compressed_length, &system_crc);
+    if (result != JH_OK) return result;
+    result = fast_extract_system(system_image, system_image_length, &system,
+                                 &system_length);
+    if (result != JH_OK) return result;
+    if (jh_crc16_ibm(system, system_length, 0u) != system_crc) {
+        return JH_ERR_CHECKSUM;
+    }
+    (void)core;
+    memset(session, 0, sizeof(*session));
+    session->compressed = compressed;
+    session->compressed_length = compressed_length;
+    session->compressed_crc = jh_crc16_ibm(compressed, compressed_length, 0u);
+    session->system_crc = system_crc;
+    session->state = JH_FAST_WAIT_READY;
+    return JH_OK;
+}
+
+int jh_fast_session_ready(struct jh_fast_session *session,
+                          uint8_t kind, uint8_t version, uint8_t rate_flag)
+{
+    if (session == NULL) return JH_ERR_ARGUMENT;
+    if (session->state != JH_FAST_WAIT_READY) return JH_ERR_FORMAT;
+    if (kind != (uint8_t)'R' || version != 16u || rate_flag != 1u) {
+        return JH_ERR_UNSUPPORTED;
+    }
+    session->ready_seen = 1;
+    session->state = JH_FAST_PROBE_STREAM;
+    return JH_OK;
+}
+
+int jh_fast_session_ready_timeout(struct jh_fast_session *session)
+{
+    if (session == NULL) return JH_ERR_ARGUMENT;
+    if (session->state != JH_FAST_WAIT_READY) return JH_ERR_FORMAT;
+    session->state = JH_FAST_PROBE_STREAM;
+    return JH_OK;
+}
+
+int jh_fast_session_probe(struct jh_fast_session *session,
+                          uint8_t output[3], size_t *output_length)
+{
+    if (session == NULL || output == NULL || output_length == NULL) {
+        return JH_ERR_ARGUMENT;
+    }
+    if (session->state != JH_FAST_PROBE_STREAM) return JH_ERR_FORMAT;
+    if (session->header_probes == 0u) {
+        output[0] = (uint8_t)'J';
+        output[1] = (uint8_t)'Z';
+        *output_length = 2u;
+    } else {
+        output[0] = 0u;
+        output[1] = (uint8_t)'J';
+        output[2] = (uint8_t)'Z';
+        *output_length = 3u;
+    }
+    ++session->header_probes;
+    return JH_OK;
+}
+
+int jh_fast_session_header_ack(struct jh_fast_session *session, uint8_t value)
+{
+    if (session == NULL) return JH_ERR_ARGUMENT;
+    if (session->state != JH_FAST_PROBE_STREAM) return JH_ERR_FORMAT;
+    if (value != 0xc6u) return JH_ERR_UNSUPPORTED;
+    ++session->header_acks;
+    session->state = JH_FAST_SEND_STREAM;
+    return JH_OK;
+}
+
+size_t jh_fast_session_tail_size(const struct jh_fast_session *session)
+{
+    return session == NULL ? 0u : session->compressed_length + 4u;
+}
+
+int jh_fast_session_tail(struct jh_fast_session *session,
+                         uint8_t *output, size_t capacity,
+                         size_t *output_length)
+{
+    size_t length;
+    if (session == NULL || output == NULL || output_length == NULL) {
+        return JH_ERR_ARGUMENT;
+    }
+    if (session->state != JH_FAST_SEND_STREAM) return JH_ERR_FORMAT;
+    length = session->compressed_length + 4u;
+    if (capacity < length) return JH_ERR_SPACE;
+    output[0] = (uint8_t)(session->compressed_length >> 8);
+    output[1] = (uint8_t)session->compressed_length;
+    memcpy(output + 2u, session->compressed, session->compressed_length);
+    output[length - 2u] = (uint8_t)(session->compressed_crc >> 8);
+    output[length - 1u] = (uint8_t)session->compressed_crc;
+    *output_length = length;
+    session->state = JH_FAST_WAIT_FINAL;
+    return JH_OK;
+}
+
+int jh_fast_session_final(struct jh_fast_session *session,
+                          uint8_t kind, uint8_t sequence, uint8_t status)
+{
+    if (session == NULL) return JH_ERR_ARGUMENT;
+    if (session->state != JH_FAST_WAIT_FINAL) return JH_ERR_FORMAT;
+    if (kind != (uint8_t)'A' || sequence != 0u) return JH_ERR_UNSUPPORTED;
+    session->state = status == 0u ? JH_FAST_COMPLETE : JH_FAST_FAILED;
+    return status == 0u ? JH_OK : JH_ERR_FORMAT;
+}
+
+int jh_fast_session_final_timeout(struct jh_fast_session *session)
+{
+    if (session == NULL) return JH_ERR_ARGUMENT;
+    if (session->state != JH_FAST_WAIT_FINAL || session->header_acks == 0u) {
+        return JH_ERR_FORMAT;
+    }
+    session->state = JH_FAST_COMPLETE_UNCONFIRMED;
+    return JH_OK;
+}
+
 static int n3_supported(uint8_t operation)
 {
     return (operation >= JH_N3_READ && operation <= JH_N3_WRITE_V3) ||

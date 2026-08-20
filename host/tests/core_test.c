@@ -119,6 +119,9 @@ static int test_fastboot(const char *fixture)
     uint8_t expected[16];
     uint8_t encoded[16];
     uint8_t artifact[136u + 256u];
+    uint8_t system_image[10240];
+    uint8_t stream_tail[260];
+    uint8_t probe[3];
     uint8_t payload[2] = {16u, 1u};
     const uint8_t *decoded_payload;
     const uint8_t *core;
@@ -130,6 +133,14 @@ static int test_fastboot(const char *fixture)
     uint16_t system_crc;
     uint16_t payload_crc;
     uint8_t kind;
+    uint8_t first;
+    uint8_t second;
+    struct jh_fast_parser parser;
+    struct jh_fast_session session;
+    size_t probe_length;
+    size_t stream_tail_length;
+    uint16_t resident_crc;
+    int result = JH_NEED_MORE;
     size_t index;
     CHECK(fixture_hex(fixture, "fast_ready_v16", expected,
                       sizeof(expected), &expected_length));
@@ -165,6 +176,43 @@ static int test_fastboot(const char *fixture)
     artifact[200] ^= 1u;
     CHECK(jh_fast_v16_bundle(artifact, sizeof(artifact), &core, &compressed,
                              &compressed_length, &system_crc) == JH_ERR_CHECKSUM);
+    artifact[200] ^= 1u;
+
+    memset(system_image, 0xe5, sizeof(system_image));
+    for (index = 0u; index < JH_SYSTEM_SIZE; ++index) {
+        system_image[0x0200u + index] = (uint8_t)(index * 17u + 3u);
+    }
+    system_image[0x0200u] = 0xc3u;
+    resident_crc = jh_crc16_ibm(system_image + 0x0200u, JH_SYSTEM_SIZE, 0u);
+    artifact[130] = (uint8_t)(resident_crc >> 8);
+    artifact[131] = (uint8_t)resident_crc;
+    CHECK(jh_fast_session_init(&session, artifact, sizeof(artifact),
+                               system_image, sizeof(system_image)) == JH_OK);
+    CHECK(jh_fast_session_ready_timeout(&session) == JH_OK);
+    CHECK(jh_fast_session_probe(&session, probe, &probe_length) == JH_OK);
+    CHECK(probe_length == 2u && memcmp(probe, "JZ", 2u) == 0);
+    CHECK(jh_fast_session_probe(&session, probe, &probe_length) == JH_OK);
+    CHECK(probe_length == 3u && probe[0] == 0u &&
+          memcmp(probe + 1u, "JZ", 2u) == 0);
+    CHECK(jh_fast_session_header_ack(&session, 0xc6u) == JH_OK);
+    CHECK(jh_fast_session_tail_size(&session) == sizeof(stream_tail));
+    CHECK(jh_fast_session_tail(&session, stream_tail, sizeof(stream_tail),
+                               &stream_tail_length) == JH_OK);
+    CHECK(stream_tail_length == sizeof(stream_tail) && stream_tail[0] == 1u &&
+          stream_tail[1] == 0u &&
+          memcmp(stream_tail + 2u, artifact + 136u, 256u) == 0);
+    CHECK(jh_fast_session_final_timeout(&session) == JH_OK &&
+          session.state == JH_FAST_COMPLETE_UNCONFIRMED);
+
+    jh_fast_parser_init(&parser);
+    CHECK(jh_fast_parser_push(&parser, 0u, &kind, &first, &second) ==
+          JH_NEED_MORE);
+    for (index = 0u; index < expected_length; ++index) {
+        result = jh_fast_parser_push(&parser, expected[index], &kind, &first,
+                                     &second);
+    }
+    CHECK(result == JH_FRAME && kind == (uint8_t)'R' && first == 16u &&
+          second == 1u);
     return 0;
 }
 
@@ -218,6 +266,70 @@ static int test_bootstrap(const char *fixture)
           prepared_bytes[127] == 0u);
     free(prepared_bytes);
     free(jukusys);
+    return 0;
+}
+
+static int test_boot_session(void)
+{
+    uint8_t image[JH_BOOT_RECORD_SIZE];
+    struct jh_boot_session session;
+    struct jh_boot_output output;
+    struct jh_janet_frame incoming;
+    size_t index;
+    for (index = 0u; index < sizeof(image); ++index) image[index] = (uint8_t)index;
+    CHECK(jh_boot_session_init(&session, image, sizeof(image), 0x0100u,
+                               0x0100u, 0u, 0u, 0) == JH_OK);
+    memset(&incoming, 0, sizeof(incoming));
+    incoming.destination = 2u;
+    incoming.source = 1u;
+    incoming.control = 0x0cu;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.frame_count == 1u && output.length == 6u &&
+          session.request_seen == 0);
+    incoming.control = 7u;
+    incoming.payload_length = 2u;
+    incoming.payload[0] = 3u;
+    incoming.payload[1] = 4u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.event == JH_BOOT_EVENT_REQUEST && output.frame_count == 1u &&
+          session.client == 1u && session.server == 2u);
+    incoming.control = 0x0cu;
+    incoming.payload_length = 0u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.frame_count == 1u && session.awaiting_ack &&
+          session.next_message == 1u);
+    incoming.destination = 2u;
+    incoming.source = 1u;
+    incoming.control = 0x08u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(session.advance_pending && !session.awaiting_ack);
+    incoming.control = 0x0cu;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.frame_count == 2u && session.next_message == 2u);
+    incoming.control = 0x08u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(session.advance_pending);
+    incoming.control = 0x0cu;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(session.next_message == 3u);
+    incoming.control = 0x09u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.frame_count == 2u && session.reject_count == 1u &&
+          session.next_message == 3u);
+    incoming.control = 0x08u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(session.advance_pending);
+    incoming.control = 0x0cu;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(session.next_message == 4u);
+    incoming.control = 0x08u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.completed_records == 1u && session.next_message == 5u &&
+          session.awaiting_ack);
+    incoming.control = 0x08u;
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.event == JH_BOOT_EVENT_COMPLETE && output.frame_count == 7u &&
+          session.complete && session.next_message == 8u);
     return 0;
 }
 
@@ -407,6 +519,106 @@ static int test_service(void)
     return 0;
 }
 
+static int test_evidence_and_recovery(void)
+{
+    static const uint8_t text[] = "123456789";
+    uint8_t capture_header[JH_CAPTURE_HEADER_SIZE];
+    uint8_t capture[64];
+    uint8_t journal[JH_JOURNAL_SIZE];
+    uint8_t media_bytes[JH_N3_TRACK_SIZE];
+    uint8_t after[JH_N3_RECORD_SIZE];
+    struct jh_capture_record record;
+    struct jh_media media;
+    struct jh_media_transaction transaction;
+    struct jh_media_transaction decoded;
+    uint64_t started;
+    uint8_t flags;
+    size_t capture_length;
+    size_t consumed;
+    CHECK(jh_crc32(text, sizeof(text) - 1u, 0u) == UINT32_C(0xcbf43926));
+    CHECK(jh_capture_header(UINT64_C(0x0102030405060708), 0x5au,
+                            capture_header) == JH_OK);
+    CHECK(jh_capture_header_decode(capture_header, sizeof(capture_header),
+                                   &started, &flags) == JH_OK);
+    CHECK(started == UINT64_C(0x0102030405060708) && flags == 0x5au);
+    CHECK(jh_capture_encode(JH_CAPTURE_TX, 1u, 1234u,
+                            (const uint8_t *)"ABC", 3u, capture,
+                            sizeof(capture), &capture_length) == JH_OK);
+    CHECK(jh_capture_decode(capture, capture_length - 1u, &record, &consumed) ==
+          JH_NEED_MORE);
+    CHECK(jh_capture_decode(capture, capture_length, &record, &consumed) == JH_OK);
+    CHECK(consumed == capture_length && record.type == JH_CAPTURE_TX &&
+          record.flags == 1u && record.milliseconds == 1234u &&
+          record.payload_length == 3u && memcmp(record.payload, "ABC", 3u) == 0);
+    capture[12] ^= 1u;
+    CHECK(jh_capture_decode(capture, capture_length, &record, &consumed) ==
+          JH_ERR_CHECKSUM);
+
+    memset(media_bytes, 0, sizeof(media_bytes));
+    memset(after, 0xa5, sizeof(after));
+    CHECK(jh_media_init(&media, media_bytes, sizeof(media_bytes), 1u, 1) ==
+          JH_ERR_RANGE);
+    media.bytes = media_bytes;
+    media.size = sizeof(media_bytes);
+    media.tracks = 1u;
+    media.writable = 1;
+    CHECK(jh_media_transaction_prepare(&transaction, &media, 0u, 1u, after,
+                                       7u) == JH_OK);
+    CHECK(jh_journal_encode(&transaction, journal) == JH_OK);
+    CHECK(jh_journal_decode(journal, sizeof(journal), &decoded) == JH_OK);
+    CHECK(jh_media_transaction_recover(&decoded, &media) == JH_OK);
+    CHECK(media_bytes[0] == 0u && decoded.state == JH_JOURNAL_EMPTY);
+
+    CHECK(jh_media_transaction_apply(&transaction, &media) == JH_OK);
+    CHECK(media_bytes[0] == 0xa5u);
+    CHECK(jh_journal_encode(&transaction, journal) == JH_OK);
+    CHECK(jh_journal_decode(journal, sizeof(journal), &decoded) == JH_OK);
+    CHECK(jh_media_transaction_recover(&decoded, &media) == JH_OK);
+    CHECK(media_bytes[0] == 0u);
+
+    CHECK(jh_media_transaction_prepare(&transaction, &media, 0u, 1u, after,
+                                       8u) == JH_OK);
+    CHECK(jh_media_transaction_apply(&transaction, &media) == JH_OK);
+    CHECK(jh_media_transaction_commit(&transaction) == JH_OK);
+    CHECK(jh_journal_encode(&transaction, journal) == JH_OK);
+    memset(media_bytes, 0, sizeof(media_bytes));
+    CHECK(jh_journal_decode(journal, sizeof(journal), &decoded) == JH_OK);
+    CHECK(jh_media_transaction_recover(&decoded, &media) == JH_OK);
+    CHECK(media_bytes[0] == 0xa5u);
+    journal[20] ^= 1u;
+    CHECK(jh_journal_decode(journal, sizeof(journal), &decoded) ==
+          JH_ERR_CHECKSUM);
+    return 0;
+}
+
+static int test_session(void)
+{
+    struct jh_session session;
+    CHECK(jh_session_init(&session, 1, 1) == JH_OK);
+    CHECK(session.phase == JH_SESSION_FASTBOOT);
+    CHECK(jh_session_advance(&session, JH_SESSION_FAST_READY) == JH_OK);
+    CHECK(jh_session_advance(&session, JH_SESSION_FAST_UNCONFIRMED) == JH_OK);
+    CHECK(session.phase == JH_SESSION_NETDISK && session.fastboot_unconfirmed);
+    CHECK(jh_session_advance(&session, JH_SESSION_DISK_REQUEST) == JH_OK);
+    CHECK(!session.fastboot_unconfirmed && session.boot_count == 1u);
+    CHECK(jh_session_advance(&session, JH_SESSION_SERIAL_LOST) == JH_OK);
+    CHECK(session.phase == JH_SESSION_RECONNECT && session.reconnect_count == 1u);
+    CHECK(jh_session_advance(&session, JH_SESSION_SERIAL_REOPENED) == JH_OK);
+    CHECK(session.phase == JH_SESSION_DISCOVERY);
+    CHECK(jh_session_advance(&session, JH_SESSION_TARGET_RESET) == JH_OK);
+    CHECK(session.phase == JH_SESSION_FASTBOOT && session.reset_count == 1u);
+    CHECK(strcmp(jh_session_phase_name(session.phase), "fastboot") == 0);
+    CHECK(strcmp(jh_result_name(JH_ERR_CHECKSUM), "checksum") == 0);
+    CHECK(jh_session_advance(&session, JH_SESSION_STOP) == JH_OK);
+    CHECK(jh_session_advance(&session, JH_SESSION_FAST_READY) == JH_ERR_FORMAT);
+
+    CHECK(jh_session_init(&session, 0, 0) == JH_OK);
+    CHECK(jh_session_advance(&session, JH_SESSION_STOCK_REQUEST) == JH_OK);
+    CHECK(jh_session_advance(&session, JH_SESSION_STOCK_COMPLETE) == JH_OK);
+    CHECK(session.phase == JH_SESSION_NETDISK && session.boot_count == 1u);
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     const char *fixture = argc == 2 ? argv[1] :
@@ -415,10 +627,13 @@ int main(int argc, char **argv)
     CHECK(test_checksums() == 0);
     CHECK(test_janet(fixture) == 0);
     CHECK(test_bootstrap(fixture) == 0);
+    CHECK(test_boot_session() == 0);
     CHECK(test_fastboot(fixture) == 0);
     CHECK(test_netdisk(fixture) == 0);
     CHECK(test_media() == 0);
     CHECK(test_service() == 0);
+    CHECK(test_evidence_and_recovery() == 0);
+    CHECK(test_session() == 0);
     puts("JUKUHOST-CORE-TEST: PASS (frozen vectors + parser recovery + media)");
     return 0;
 }

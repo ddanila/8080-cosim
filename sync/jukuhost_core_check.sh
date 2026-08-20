@@ -10,7 +10,9 @@ COMMON=(
   -std=c99 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow
   -Ihost/include
   host/src/jukuhost_core.c host/src/jukuhost_bootstrap.c
+  host/src/jukuhost_evidence.c
   host/src/jukuhost_media.c host/src/jukuhost_service.c
+  host/src/jukuhost_session.c
   host/tests/core_test.c
 )
 

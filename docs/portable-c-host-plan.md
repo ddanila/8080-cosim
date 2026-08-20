@@ -1,6 +1,6 @@
 # Portable C Juku host plan
 
-Status: **M0 CONTRACT FROZEN; C IMPLEMENTATION NOT STARTED**
+Status: **M1 PORTABLE CORE COMPLETE; NATIVE LINUX HOST NEXT**
 
 ## Goal
 

@@ -251,3 +251,224 @@ int jh_boot_frame_at(const uint8_t *image, size_t image_length,
     return jh_janet_encode(client, server, 7u, payload, payload_length,
                            output, capacity, output_length);
 }
+
+int jh_boot_session_init(struct jh_boot_session *session,
+                         const uint8_t *image, size_t image_length,
+                         uint16_t load_address, uint16_t entry,
+                         uint8_t required_client, uint8_t required_server,
+                         int compact_execute)
+{
+    if (session == NULL || image == NULL) return JH_ERR_ARGUMENT;
+    if (jh_boot_frame_count(image_length, compact_execute) == 0u ||
+            image_length > 0x10000u - load_address ||
+            (required_client == 0u) != (required_server == 0u)) {
+        return JH_ERR_RANGE;
+    }
+    memset(session, 0, sizeof(*session));
+    session->image = image;
+    session->image_length = image_length;
+    session->load_address = load_address;
+    session->entry = entry;
+    session->required_client = required_client;
+    session->required_server = required_server;
+    session->compact_execute = compact_execute != 0;
+    return JH_OK;
+}
+
+static int boot_append_encoded(struct jh_boot_output *output,
+                               const uint8_t *frame, size_t frame_length)
+{
+    if (frame_length > sizeof(output->bytes) - output->length) {
+        return JH_ERR_SPACE;
+    }
+    memcpy(output->bytes + output->length, frame, frame_length);
+    output->length += frame_length;
+    ++output->frame_count;
+    return JH_OK;
+}
+
+static int boot_append_short(struct jh_boot_output *output,
+                             uint8_t destination, uint8_t source,
+                             uint8_t control)
+{
+    uint8_t frame[JH_JANET_MAX_FRAME];
+    size_t length;
+    int result = jh_janet_encode(destination, source, control, NULL, 0u,
+                                 frame, sizeof(frame), &length);
+    return result == JH_OK ? boot_append_encoded(output, frame, length) : result;
+}
+
+static int boot_append_transfer(struct jh_boot_session *session,
+                                struct jh_boot_output *output,
+                                size_t index)
+{
+    uint8_t frame[JH_JANET_MAX_FRAME];
+    size_t length;
+    int result = jh_boot_frame_at(
+        session->image, session->image_length, session->load_address,
+        session->entry, session->client, session->server,
+        session->compact_execute, index, frame, sizeof(frame), &length);
+    return result == JH_OK ? boot_append_encoded(output, frame, length) : result;
+}
+
+static int identity_allowed(const struct jh_boot_session *session,
+                            const struct jh_janet_frame *incoming)
+{
+    return incoming->source != 0u && incoming->destination != 0u &&
+        (session->required_client == 0u ||
+         incoming->source == session->required_client) &&
+        (session->required_server == 0u ||
+         incoming->destination == session->required_server);
+}
+
+static int ready_turn(const struct jh_boot_session *session,
+                      const struct jh_janet_frame *incoming)
+{
+    return incoming->source == session->client &&
+        ((incoming->destination == 0u && incoming->control == 0u) ||
+         (incoming->destination == session->server &&
+          incoming->control == 0x0cu));
+}
+
+int jh_boot_session_input(struct jh_boot_session *session,
+                          const struct jh_janet_frame *incoming,
+                          struct jh_boot_output *output)
+{
+    uint8_t acknowledged[JH_JANET_MAX_FRAME];
+    size_t acknowledged_length;
+    size_t frame_count;
+    size_t data_frame_count;
+    size_t acknowledged_index;
+    int result;
+    if (session == NULL || incoming == NULL || output == NULL) {
+        return JH_ERR_ARGUMENT;
+    }
+    memset(output, 0, sizeof(*output));
+    if (session->complete) return JH_OK;
+    if (!session->request_seen && identity_allowed(session, incoming) &&
+            incoming->control == 0x0cu) {
+        return boot_append_short(output, incoming->source,
+                                 incoming->destination, 0x0cu);
+    }
+    if (session->request_seen && incoming->destination == session->server &&
+            incoming->source == session->client &&
+            incoming->control == 0x0cu && session->start_pending) {
+        result = boot_append_transfer(session, output, 0u);
+        if (result != JH_OK) return result;
+        session->next_message = 1u;
+        session->awaiting_ack = 1;
+        session->start_pending = 0;
+        ++session->sent_frames;
+        output->event = JH_BOOT_EVENT_PROGRESS;
+        return JH_OK;
+    }
+    if (session->request_seen && ready_turn(session, incoming) &&
+            session->completion_pending) {
+        result = boot_append_short(output, 0u, session->server, 0u);
+        if (result != JH_OK) return result;
+        session->complete = 1;
+        ++session->sent_frames;
+        output->event = JH_BOOT_EVENT_COMPLETE;
+        return JH_OK;
+    }
+    if (session->request_seen && ready_turn(session, incoming) &&
+            session->advance_pending) {
+        result = boot_append_short(output, 0u, session->server, 0u);
+        if (result == JH_OK) {
+            result = boot_append_transfer(session, output, session->next_message);
+        }
+        if (result != JH_OK) return result;
+        ++session->next_message;
+        session->sent_frames += 2u;
+        session->awaiting_ack = 1;
+        session->advance_pending = 0;
+        return JH_OK;
+    }
+    if (!session->request_seen && identity_allowed(session, incoming) &&
+            (incoming->control & 0x0cu) == 0x04u &&
+            incoming->payload_length >= 2u &&
+            incoming->payload[0] == 3u && incoming->payload[1] == 4u) {
+        session->client = incoming->source;
+        session->server = incoming->destination;
+        session->request_seen = 1;
+        session->start_pending = 1;
+        result = boot_append_short(output, session->client, session->server,
+                                   0x08u);
+        if (result != JH_OK) return result;
+        ++session->sent_frames;
+        output->event = JH_BOOT_EVENT_REQUEST;
+        return JH_OK;
+    }
+    if (session->request_seen && session->awaiting_ack &&
+            incoming->destination == session->server &&
+            incoming->source == session->client &&
+            incoming->control == 0x08u) {
+        session->awaiting_ack = 0;
+        ++session->ack_count;
+        acknowledged_index = session->next_message - 1u;
+        frame_count = jh_boot_frame_count(session->image_length,
+                                          session->compact_execute);
+        result = jh_boot_frame_at(
+            session->image, session->image_length, session->load_address,
+            session->entry, session->client, session->server,
+            session->compact_execute, acknowledged_index,
+            acknowledged, sizeof(acknowledged), &acknowledged_length);
+        if (result != JH_OK) return result;
+        data_frame_count = session->image_length / JH_BOOT_RECORD_SIZE * 3u;
+        if (acknowledged_index >= 1u &&
+                acknowledged_index <= data_frame_count &&
+                acknowledged_length >= 7u && acknowledged[6] == 9u) {
+            output->completed_records = acknowledged_index / 3u;
+            output->event = JH_BOOT_EVENT_PROGRESS;
+        }
+        if (session->next_message == frame_count) {
+            session->completion_pending = 1;
+        } else if (acknowledged_length >= 8u &&
+                acknowledged[6] == 3u && acknowledged[7] == 6u) {
+            while (session->next_message < frame_count) {
+                result = boot_append_short(output, 0u, session->server, 0u);
+                if (result == JH_OK) {
+                    result = boot_append_transfer(session, output,
+                                                  session->next_message);
+                }
+                if (result != JH_OK) return result;
+                ++session->next_message;
+                session->sent_frames += 2u;
+            }
+            result = boot_append_short(output, 0u, session->server, 0u);
+            if (result != JH_OK) return result;
+            ++session->sent_frames;
+            session->complete = 1;
+            output->event = JH_BOOT_EVENT_COMPLETE;
+        } else if (acknowledged_length >= 7u && acknowledged[6] == 9u) {
+            result = boot_append_short(output, 0u, session->server, 0u);
+            if (result == JH_OK) {
+                result = boot_append_transfer(session, output,
+                                              session->next_message);
+            }
+            if (result != JH_OK) return result;
+            ++session->next_message;
+            session->sent_frames += 2u;
+            session->awaiting_ack = 1;
+        } else {
+            session->advance_pending = 1;
+        }
+        return JH_OK;
+    }
+    if (session->request_seen && session->awaiting_ack &&
+            incoming->destination == session->server &&
+            incoming->source == session->client &&
+            incoming->control == 0x09u) {
+        ++session->reject_count;
+        result = boot_append_short(output, 0u, session->server, 0u);
+        if (result == JH_OK) {
+            result = boot_append_transfer(session, output,
+                                          session->next_message - 1u);
+        }
+        if (result != JH_OK) return result;
+        session->sent_frames += 2u;
+        return JH_OK;
+    }
+    if (session->request_seen) output->event = JH_BOOT_EVENT_IGNORED;
+    return JH_OK;
+}
