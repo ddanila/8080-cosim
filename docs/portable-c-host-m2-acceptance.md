@@ -1,12 +1,13 @@
 # Portable C host M2 acceptance
 
-Status: **ACCEPTED ON NATIVE LINUX — M2.1 PHYSICAL VALIDATION NEXT**
+Status: **ACCEPTED ON NATIVE LINUX AND PHYSICAL CS00015**
 
 This report closes the native-Linux parity and Python-host-retirement gate in
-the [portable C host plan](portable-c-host-plan.md). It does not qualify
-physical CS00015 operation of this exact Linux build, Pocket8086/DOS, macOS,
-Wine, Win32, or physical Windows 95. The first two are now explicit M2.1-M2.3
-pre-M3 gates and all platforms use the same admitted C core.
+the [portable C host plan](portable-c-host-plan.md). Its exact Linux build has
+since passed physical M2.1 on CS00015; that evidence is retained in
+[portable-c-host-m2.1-physical-acceptance.md](portable-c-host-m2.1-physical-acceptance.md).
+Pocket8086/DOS, macOS, Wine, Win32, and physical Windows 95 remain outside this
+M2 report, and all future platforms use the same admitted C core.
 
 ## Accepted identities
 
@@ -95,8 +96,8 @@ Janet/Fastboot/NetDisk/N4 production host.
 
 M2 is complete. The C executable is the sole supported production network
 host on Linux, and its frozen specifications, vectors, captures, and test
-fixtures no longer require a runnable Python server. The next permissible
-work is M2.1: validate this exact solution against CS00015. M2.2 then ports it
-to Pocket8086/DOS, and M2.3 validates that host against CS00015. Only after
-those pass may the pinned Open Watcom Windows 95 and headless-Wine M3 work
-begin. No M2.1-M2.3 or M3 implementation is included in this acceptance state.
+fixtures no longer require a runnable Python server. M2.1 has subsequently
+qualified this exact executable on CS00015. The next permissible work is M2.2:
+port it to Pocket8086/DOS; M2.3 then validates that host against the physical
+M2.1 baseline. Only after both pass may the pinned Open Watcom Windows 95 and
+headless-Wine M3 work begin.

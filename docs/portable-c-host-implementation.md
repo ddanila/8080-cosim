@@ -287,14 +287,14 @@ single-host audit are retained in
 [portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). M2 is
 therefore accepted.
 
-### Planned pre-M3 sequence
+### Pre-M3 sequence
 
-No implementation or bench work has started for these newly inserted gates:
-
-1. M2.1 validates the exact accepted Linux host against physical CS00015.
-2. M2.2 ports the admitted core to a 16-bit DOS executable for Pocket8086 and
-   proves its memory, timer, filesystem, COM1, and sustained 19,200-baud margin
-   with desk tests.
+1. M2.1 is complete: the exact accepted Linux host passed the physical
+   CS00015 matrix documented in
+   [portable-c-host-m2.1-physical-acceptance.md](portable-c-host-m2.1-physical-acceptance.md).
+2. M2.2 is next: port the admitted core to a 16-bit DOS executable for
+   Pocket8086 and prove its memory, timer, filesystem, COM1, and sustained
+   19,200-baud margin with desk tests.
 3. M2.3 validates that exact Pocket8086 executable against CS00015 and compares
    its full workload with the M2.1 Linux baseline.
 

@@ -26,6 +26,9 @@ history.
 - `portable-c-host-m2-acceptance.md` — retained Linux parity comparison,
   caller-retirement audit, CI identities, and the baseline for the M2.1-M2.3
   CS00015/Pocket8086 gates before M3.
+- `portable-c-host-m2.1-physical-acceptance.md` — exact native-host identities,
+  CS00015 cold/reconnect/reset matrix, raw captures, replay result, and the
+  accepted physical baseline for the Pocket8086 comparison.
 - `jukuhost-config.md` — strict portable INI schema, authenticated boot slots,
   and safe A:/B: media policies.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC

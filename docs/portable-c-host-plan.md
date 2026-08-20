@@ -1,12 +1,12 @@
 # Portable C Juku host plan
 
-Status: **M2 COMPLETE — M2.1 PHYSICAL LINUX VALIDATION NEXT**
+Status: **M2.1 COMPLETE — M2.2 POCKET8086/DOS PORT NEXT**
 
 Native-Linux acceptance and Python-host retirement are recorded in
-[portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). Three
-pre-M3 gates now follow: validate that exact solution on CS00015, port the same
-core to the Pocket8086 DOS host, and validate Pocket8086 against CS00015. M3
-does not begin until all three pass.
+[portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). The first
+pre-M3 gate, physical Linux validation on CS00015, is complete. The two
+remaining gates port the same core to Pocket8086/DOS and validate that host
+against CS00015. M3 does not begin until both pass.
 
 ## Goal
 
@@ -505,6 +505,12 @@ modelable. Exit: the accepted Linux solution is physically qualified on
 CS00015, with any hardware-only variation documented rather than hidden by a
 new timing workaround.
 
+Result: **complete**. The exact M2 executable passed two physical cold/reset
+boots, the full A:/B:/N4/diagnostic/write/warm-boot matrix, live host
+replacement, clean shutdown, independent evidence audit, and raw-capture
+regeneration with zero NetDisk retries. See
+[portable-c-host-m2.1-physical-acceptance.md](portable-c-host-m2.1-physical-acceptance.md).
+
 ### 3.2. Pocket8086 DOS port
 
 Build a 16-bit DOS executable from the admitted core with pinned Open Watcom
@@ -633,12 +639,16 @@ oracle.
 
 ### M2.1 — native Linux host on CS00015
 
+Status: **complete**.
+
 - exact M2 Linux executable and artifacts are hash-pinned;
 - repeated physical cold boot, A:/B:, N4, warm boot and diagnostics pass;
 - writable-media, clean-stop, host-replacement and reset recovery pass;
 - log/capture evidence is retained and replayed where modelable.
 
 Exit: the existing native Linux solution is physically qualified on CS00015.
+The accepted identities, 34-command physical matrix and replay evidence are in
+[portable-c-host-m2.1-physical-acceptance.md](portable-c-host-m2.1-physical-acceptance.md).
 
 ### M2.2 — Pocket8086 DOS host port
 
