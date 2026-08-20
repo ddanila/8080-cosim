@@ -256,9 +256,12 @@ exact instruction boundary with `JUKU_KEY_AT_PC=PC:BYTE`. Both fields are
 hexadecimal; for example, `JUKU_KEY_AT_PC=34A2:1B` begins a physical Escape
 contact immediately before the instruction at `34A2h`. The contact then uses
 the normal `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES` timing and the same
-factory matrix mapping as PTY/scripted input. The trigger fires once and does
-not bypass the guest keyboard scanner; it exists to make a poll-overlap
-regression deterministic at full simulator speed.
+factory matrix mapping as PTY/scripted input. Set
+`JUKU_KEY_AT_PC_HOLD_FRAMES` to override only the triggered contact's hold
+time when it must span a slow guest operation; ordinary PTY/scripted contacts
+retain `JUKU_KEY_HOLD_FRAMES`. The trigger fires once and does not bypass the
+guest keyboard scanner; it exists to make a poll-overlap regression
+deterministic at full simulator speed.
 
 `tools/juku_run.py` wraps this into one command: it builds cosim, starts it
 paced with a console PTY, optionally attaches a floppy image
