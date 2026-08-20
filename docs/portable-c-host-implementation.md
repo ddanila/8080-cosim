@@ -125,6 +125,24 @@ first host, starts a fresh `--resume-disk` process on the same PTY and media,
 and proves resumed N4 traffic with `VER`. This pins missed-readiness and host-
 replacement behavior, including repeated PTY adoption.
 
+A third session resets the modeled board after byte 900 of the V16 stream.
+The new ROM emits a fresh checked `JR16` readiness frame; the host distinguishes
+that explicit reset from a merely lost final acknowledgement, flushes stale
+bytes, and retransmits the complete bootstrap within the configured bounded
+restart count. It then reaches CP/M, completes `DIR`, and records exactly one
+target reset and one bootstrap restart. The no-resend safety rule remains
+unchanged when no explicit reset marker is observed.
+
+### Serial reconnect checkpoint
+
+`tests/jukuhost_serial_reconnect_test.py` starts the production executable on
+a named PTY symlink, completes a disk request, removes that serial endpoint,
+atomically points the same configured name at a fresh PTY, and leaves the host
+process running. The host detects EOF/HUP, performs bounded reopen attempts,
+reapplies and verifies 19,200 8O1, emits `NRN3`, and serves the next request.
+The final evidence records one reconnect and two accepted requests. Inherited
+test descriptors intentionally cannot be reopened.
+
 ### Stock-system simulator checkpoint
 
 `sync/jukuhost_stock_cosim_check.sh` boots all five frozen stock-system images

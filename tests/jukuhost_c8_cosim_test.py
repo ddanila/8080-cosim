@@ -137,6 +137,7 @@ def main() -> int:
             "missing C8/CPM artifacts or build/jukuhost")
     discard_ready = os.environ.get("JUKUHOST_C8_DISCARD_READY") == "1"
     replace_host = os.environ.get("JUKUHOST_C8_REPLACE_HOST") == "1"
+    reset_during_stream = os.environ.get("JUKUHOST_C8_TARGET_RESET") == "1"
     with tempfile.TemporaryDirectory(prefix="jukuhost-c8-cosim.") as name:
         temp = Path(name)
         trace = temp / "trace"
@@ -165,6 +166,8 @@ def main() -> int:
             JUKU_S21_CONFIG="0x07",
             JUKU_CHECKPOINT_PREFIX=str(checkpoint),
         )
+        if reset_during_stream:
+            environment["JUKU_RESET_AFTER_USART_RX"] = "900"
         simulator_stderr = (temp / "simulator.stderr").open("wb")
         simulator = subprocess.Popen(
             [str(trace), str(ROM), "1000000000000", "0", "100000"],
@@ -242,6 +245,9 @@ def main() -> int:
             log = (temp / "host.log").read_text()
             require("Fastboot V16" in log and "requests=" in log,
                     f"host evidence incomplete: {log}")
+            if reset_during_stream:
+                require("boot-restarts=1" in log and "target-resets=1" in log,
+                        f"target-reset recovery evidence differs: {log}")
             require((temp / "host.cap").stat().st_size > 100,
                     "capture is unexpectedly small")
             if replace_host:
@@ -265,6 +271,8 @@ def main() -> int:
         additions.append("missed-ready recovery")
     if replace_host:
         additions.append("host replacement")
+    if reset_during_stream:
+        additions.append("target-reset recovery")
     detail = "" if not additions else " + " + " + ".join(additions)
     print(f"JUKUHOST-C8-COSIM-TEST: PASS (C8 V16 -> N3/N4 -> DIR{detail})")
     return 0

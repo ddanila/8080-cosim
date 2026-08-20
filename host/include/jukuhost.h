@@ -137,6 +137,8 @@ struct jh_host_config {
     struct jh_config_disk disk_b;
     unsigned timeout_seconds;
     unsigned disk_timeout_seconds;
+    unsigned boot_restarts;
+    unsigned reconnect_timeout_seconds;
     unsigned disk_protocol;
     unsigned disk_baud;
     unsigned read_ahead;

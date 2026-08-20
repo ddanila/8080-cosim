@@ -99,6 +99,8 @@ static int test_configuration(void)
         "network_rom=yes\n"
         "timeout=90\n"
         "disk_timeout=0\n"
+        "boot_restarts=4\n"
+        "reconnect_timeout=12\n"
         "[network]\n"
         "protocol=3\n"
         "baud=19200\n"
@@ -143,6 +145,8 @@ static int test_configuration(void)
     CHECK(jh_config_parse(valid, sizeof(valid) - 1u, &config, &error) == JH_OK);
     CHECK(strcmp(config.port, "/dev/ttyS0") == 0 && config.network_rom == 1 &&
           config.timeout_seconds == 90u && config.disk_timeout_seconds == 0u &&
+          config.boot_restarts == 4u &&
+          config.reconnect_timeout_seconds == 12u &&
           config.disk_protocol == 3u && config.disk_baud == 19200u &&
           config.read_ahead == 8u && config.have_fastboot &&
           config.have_fallback && config.disk_a.present &&

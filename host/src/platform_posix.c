@@ -128,6 +128,7 @@ int jh_posix_serial_configure(struct jh_posix_serial *serial, unsigned baud,
 int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
                          unsigned baud, char parity)
 {
+    char actual[512];
     size_t length;
     if (serial == NULL || path == NULL) return -1;
     memset(serial, 0, sizeof(*serial));
@@ -140,7 +141,10 @@ int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
     serial->fd = open(path, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (serial->fd < 0) return -1;
     memcpy(serial->path, path, length + 1u);
-    serial->pseudo_terminal = strncmp(path, "/dev/pts/", 9u) == 0;
+    serial->pseudo_terminal =
+        (ttyname_r(serial->fd, actual, sizeof(actual)) == 0 &&
+         strncmp(actual, "/dev/pts/", 9u) == 0) ||
+        strncmp(path, "/dev/pts/", 9u) == 0;
     if (jh_posix_serial_configure(serial, baud, parity) != 0) {
         int saved = errno;
         close(serial->fd);
@@ -210,6 +214,11 @@ int jh_posix_serial_read(struct jh_posix_serial *serial, uint8_t *output,
     }
     received = read(serial->fd, output, capacity);
     if (received < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) return 0;
+    if (received == 0 &&
+            (descriptor.revents & (POLLERR | POLLHUP | POLLNVAL)) != 0) {
+        errno = EIO;
+        return -1;
+    }
     if (received > INT32_MAX) {
         errno = EOVERFLOW;
         return -1;

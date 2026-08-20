@@ -23,6 +23,8 @@ console=/dev/pts/7
 network_rom=yes
 timeout=120
 disk_timeout=0
+boot_restarts=3
+reconnect_timeout=30
 
 [network]
 protocol=3
@@ -74,6 +76,20 @@ is optional, but its system and Fastboot identities form one inseparable slot:
 if either primary artifact is absent or fails its size/SHA-256 identity, both
 fallback artifacts are selected. A legacy JF1–JF15 fallback still fails the
 runtime's admitted-V16 check; fallback does not weaken the protocol boundary.
+
+`boot_restarts` bounds complete bootstrap retransmissions after an explicit
+target-reset indication; zero disables them. A V16 body is never resent merely
+because its final acknowledgement was lost. The host retries only after the
+reset ROM emits a fresh checked `JR16` readiness frame, so it cannot overwrite
+a possibly running CP/M system.
+
+`reconnect_timeout` bounds named serial-device reopen attempts in seconds;
+zero disables reopen. After a disk-session link loss, the host closes the stale
+handle, retries the same configured path every 250 ms, restores 19,200 8O1,
+discards any partial request, and advertises the normal NetDisk ready marker.
+The service and its duplicate-reply cache remain live, so a retried write is
+not applied twice. The integration-only inherited-descriptor mode cannot
+reopen a descriptor and therefore fails cleanly instead.
 
 Drive A supports three explicit policies:
 

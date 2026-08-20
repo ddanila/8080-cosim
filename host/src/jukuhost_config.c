@@ -246,6 +246,16 @@ static int parse_host(struct jh_host_config *config, unsigned *seen,
         return parse_unsigned_value(value, 0u, 86400u,
                                     &config->disk_timeout_seconds);
     }
+    if (text_equal(key, "boot_restarts")) {
+        if (set_once(seen, 128u) != JH_OK) return JH_ERR_FORMAT;
+        return parse_unsigned_value(value, 0u, 100u,
+                                    &config->boot_restarts);
+    }
+    if (text_equal(key, "reconnect_timeout")) {
+        if (set_once(seen, 256u) != JH_OK) return JH_ERR_FORMAT;
+        return parse_unsigned_value(value, 0u, 86400u,
+                                    &config->reconnect_timeout_seconds);
+    }
     return JH_ERR_UNSUPPORTED;
 }
 
@@ -354,6 +364,8 @@ int jh_config_parse(const char *text, size_t length,
     memset(config, 0, sizeof(*config));
     memset(&state, 0, sizeof(state));
     config->timeout_seconds = 120u;
+    config->boot_restarts = 3u;
+    config->reconnect_timeout_seconds = 30u;
     config->disk_protocol = 3u;
     config->disk_baud = 19200u;
     config->read_ahead = 3u;

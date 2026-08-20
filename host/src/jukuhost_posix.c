@@ -23,6 +23,10 @@ enum exit_code {
     EXIT_MEDIA = 6
 };
 
+enum run_result {
+    RUN_TARGET_RESET = 100
+};
+
 struct options {
     const char *config_path;
     const char *serial;
@@ -44,6 +48,8 @@ struct options {
     int serial_fd;
     unsigned timeout_seconds;
     unsigned disk_timeout_seconds;
+    unsigned boot_restarts;
+    unsigned reconnect_timeout_seconds;
     unsigned disk_protocol;
     unsigned disk_baud;
     unsigned read_ahead;
@@ -68,6 +74,9 @@ struct host_context {
     unsigned long retries;
     unsigned long reads;
     unsigned long writes;
+    unsigned long boot_restart_count;
+    unsigned long reconnect_count;
+    unsigned long target_reset_count;
 };
 
 static void usage(FILE *file)
@@ -85,6 +94,7 @@ static void usage(FILE *file)
         "  --resume-disk           attach to an already running system\n"
         "  --boot-only             stop after a successful bootstrap\n"
         "  --timeout SECONDS       boot deadline (default 120)\n"
+        "  --boot-restarts COUNT   target-reset retries (default 3)\n"
         "\n"
         "Disk and console:\n"
         "  --drive-b FILE          read-only native 800 KiB .JUK image\n"
@@ -94,6 +104,7 @@ static void usage(FILE *file)
         "  --read-ahead 1..8       default 3\n"
         "  --console-pty DEVICE    enable N4 remote console\n"
         "  --disk-timeout SECONDS  zero means run until stopped\n"
+        "  --reconnect-timeout SEC named-device reopen deadline (default 30)\n"
         "\n"
         "Evidence:\n"
         "  --log FILE              text log (console is always used)\n"
@@ -129,6 +140,8 @@ static int parse_options(int argc, char **argv, struct options *options)
     int index;
     memset(options, 0, sizeof(*options));
     options->timeout_seconds = 120u;
+    options->boot_restarts = 3u;
+    options->reconnect_timeout_seconds = 30u;
     options->disk_protocol = 3u;
     options->disk_baud = 19200u;
     options->read_ahead = 3u;
@@ -193,6 +206,14 @@ static int parse_options(int argc, char **argv, struct options *options)
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 0u, 86400u,
                                    &options->disk_timeout_seconds) != 0) return -1;
+        } else if (strcmp(argument, "--boot-restarts") == 0) {
+            if (require_value(argc, argv, &index, &value) != 0 ||
+                    parse_unsigned(value, 0u, 100u,
+                                   &options->boot_restarts) != 0) return -1;
+        } else if (strcmp(argument, "--reconnect-timeout") == 0) {
+            if (require_value(argc, argv, &index, &value) != 0 ||
+                    parse_unsigned(value, 0u, 86400u,
+                        &options->reconnect_timeout_seconds) != 0) return -1;
         } else if (strcmp(argument, "--disk-protocol") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 1u, 3u,
@@ -355,6 +376,8 @@ static int configure_from_file(const char *path, struct options *options,
     options->capture = config->capture[0] == '\0' ? NULL : config->capture;
     options->timeout_seconds = config->timeout_seconds;
     options->disk_timeout_seconds = config->disk_timeout_seconds;
+    options->boot_restarts = config->boot_restarts;
+    options->reconnect_timeout_seconds = config->reconnect_timeout_seconds;
     options->disk_protocol = config->disk_protocol;
     options->disk_baud = config->disk_baud;
     options->read_ahead = config->read_ahead;
@@ -482,6 +505,41 @@ static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
         }
     }
     return received;
+}
+
+static int reconnect_serial(struct host_context *host, unsigned baud,
+                            char parity)
+{
+    uint64_t deadline;
+    int original_error = errno;
+    int last_error = original_error;
+    if (host->options.serial == NULL ||
+            host->options.reconnect_timeout_seconds == 0u) {
+        errno = original_error;
+        return -1;
+    }
+    host_log(host, "WARN", "serial link lost (%s); reopening %s for %u 8%c1",
+             strerror(original_error), host->options.serial, baud, parity);
+    jh_posix_serial_close(&host->serial);
+    deadline = jh_posix_milliseconds() +
+        (uint64_t)host->options.reconnect_timeout_seconds * 1000u;
+    while (!jh_posix_stop_requested() &&
+            jh_posix_milliseconds() < deadline) {
+        if (jh_posix_serial_open(&host->serial, host->options.serial,
+                                 baud, parity) == 0) {
+            ++host->reconnect_count;
+            host_log(host, "INFO", "serial reconnected count=%lu applied=%u 8%c1",
+                     host->reconnect_count, host->serial.baud,
+                     host->serial.parity);
+            return 0;
+        }
+        last_error = errno;
+        jh_posix_sleep(250u);
+    }
+    errno = last_error;
+    host_log(host, "ERROR", "serial reopen timed out after %u seconds: %s",
+             host->options.reconnect_timeout_seconds, strerror(errno));
+    return -1;
 }
 
 static int host_write_disk_reply(struct host_context *host,
@@ -718,6 +776,10 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
         }
         host_log(host, "INFO", "Fastboot V16 complete: %lu compressed bytes",
                  (unsigned long)session.compressed_length);
+    } else if (result == 1 && kind == (uint8_t)'R' && first == 16u &&
+            second == 1u) {
+        host_log(host, "WARN", "target reset detected during V16 stream");
+        return RUN_TARGET_RESET;
     } else {
         if (jh_fast_session_final_timeout(&session) != JH_OK) {
             return EXIT_PROTOCOL;
@@ -883,12 +945,19 @@ static int run_disk(struct host_context *host, uint8_t *volume,
                 (uint64_t)host->options.disk_timeout_seconds * 1000u)) {
         uint64_t now = jh_posix_milliseconds();
         int received;
+        int recovered = 0;
         size_t index;
         if (!synchronized && now >= next_ready) {
             size_t marker_length = host->options.disk_protocol == 1u ? 2u : 4u;
             if (host_write(host, ready_marker, marker_length) != 0) {
-                result = EXIT_SERIAL;
-                goto done;
+                if (reconnect_serial(host, host->options.disk_baud, 'O') != 0) {
+                    result = EXIT_SERIAL;
+                    goto done;
+                }
+                jh_n3_parser_init(&parser);
+                synchronized = 0;
+                next_ready = jh_posix_milliseconds();
+                continue;
             }
             next_ready = now + 250u;
         }
@@ -901,9 +970,16 @@ static int run_disk(struct host_context *host, uint8_t *volume,
         }
         received = host_read(host, incoming, sizeof(incoming), 50u);
         if (received < 0) {
-            host_log(host, "ERROR", "disk serial read: %s", strerror(errno));
-            result = EXIT_SERIAL;
-            goto done;
+            if (reconnect_serial(host, host->options.disk_baud, 'O') != 0) {
+                host_log(host, "ERROR", "disk serial read: %s",
+                         strerror(errno));
+                result = EXIT_SERIAL;
+                goto done;
+            }
+            jh_n3_parser_init(&parser);
+            synchronized = 0;
+            next_ready = jh_posix_milliseconds();
+            continue;
         }
         for (index = 0u; index < (size_t)received; ++index) {
             int parsed = jh_n3_parser_push(&parser, incoming[index], &request);
@@ -939,8 +1015,15 @@ static int run_disk(struct host_context *host, uint8_t *volume,
                 jh_posix_sleep(host->options.reply_guard_ms);
             }
             if (host_write_disk_reply(host, &request, &event) != 0) {
-                result = EXIT_SERIAL;
-                goto done;
+                if (reconnect_serial(host, host->options.disk_baud, 'O') != 0) {
+                    result = EXIT_SERIAL;
+                    goto done;
+                }
+                jh_n3_parser_init(&parser);
+                synchronized = 0;
+                next_ready = jh_posix_milliseconds();
+                recovered = 1;
+                break;
             }
             if (event.console_output_length != 0u && console_fd >= 0 &&
                     write(console_fd, event.console_output,
@@ -967,6 +1050,7 @@ static int run_disk(struct host_context *host, uint8_t *volume,
                     event.duplicate ? " duplicate" : "");
             }
         }
+        if (recovered) continue;
     }
     result = EXIT_CLEAN;
 done:
@@ -1189,10 +1273,30 @@ int main(int argc, char **argv)
     host_log(&host, "INFO", "serial applied=%u 8%c1 flow=none",
              host.serial.baud, host.serial.parity);
     if (!host.options.resume_disk) {
-        result = host.options.direct_fastboot ?
-            run_fastboot(&host, fast_stage, fast_stage_length,
-                         system, system_length) :
-            run_stock_boot(&host, system, system_length);
+        for (;;) {
+            result = host.options.direct_fastboot ?
+                run_fastboot(&host, fast_stage, fast_stage_length,
+                             system, system_length) :
+                run_stock_boot(&host, system, system_length);
+            if (result != RUN_TARGET_RESET) break;
+            ++host.target_reset_count;
+            if (host.boot_restart_count >= host.options.boot_restarts) {
+                host_log(&host, "ERROR",
+                    "target-reset recovery exhausted after %lu restarts",
+                    host.boot_restart_count);
+                result = EXIT_PROTOCOL;
+                break;
+            }
+            ++host.boot_restart_count;
+            host_log(&host, "WARN", "restarting complete bootstrap %lu/%u",
+                     host.boot_restart_count, host.options.boot_restarts);
+            if (jh_posix_serial_configure(&host.serial,
+                    host.options.direct_fastboot ? 19200u : 9600u,
+                    host.options.direct_fastboot ? 'N' : 'O') != 0) {
+                result = EXIT_SERIAL;
+                break;
+            }
+        }
         if (result != EXIT_CLEAN) goto cleanup;
         if (host.options.boot_only) goto cleanup;
         if (jh_posix_serial_configure(&host.serial, host.options.disk_baud,
@@ -1211,9 +1315,11 @@ int main(int argc, char **argv)
     result = run_disk(&host, volume, drive_b);
 cleanup:
     host_log(&host, result == EXIT_CLEAN ? "INFO" : "ERROR",
-        "stop exit=%d rx=%lu tx=%lu requests=%lu reads=%lu writes=%lu retries=%lu",
+        "stop exit=%d rx=%lu tx=%lu requests=%lu reads=%lu writes=%lu "
+        "retries=%lu boot-restarts=%lu target-resets=%lu reconnects=%lu",
         result, host.rx_bytes, host.tx_bytes, host.requests, host.reads,
-        host.writes, host.retries);
+        host.writes, host.retries, host.boot_restart_count,
+        host.target_reset_count, host.reconnect_count);
     jh_posix_serial_close(&host.serial);
     if (host.capture_file != NULL) {
         fflush(host.capture_file);
