@@ -16,6 +16,8 @@ uint64_t jh_posix_milliseconds(void);
 void jh_posix_sleep(unsigned milliseconds);
 int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
                          unsigned baud, char parity);
+int jh_posix_serial_adopt(struct jh_posix_serial *serial, int fd,
+                          const char *description, unsigned baud, char parity);
 int jh_posix_serial_configure(struct jh_posix_serial *serial, unsigned baud,
                               char parity);
 void jh_posix_serial_close(struct jh_posix_serial *serial);

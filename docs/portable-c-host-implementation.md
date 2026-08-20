@@ -56,7 +56,7 @@ No platform backend or production command has been introduced at the M1 gate.
 Python remains the production host until M2 parity, caller migration, and
 retirement all pass.
 
-## M2 — next
+## M2 — in progress
 
 Implement the POSIX serial/filesystem/clock/console layer and the single Linux
 `jukuhost` command, then drive the existing simulator through stock and C8
@@ -91,3 +91,25 @@ physical tty retains strict 8O1 verification.
 This is an intermediate M2 checkpoint, not promotion. Full Juku simulator
 boot/reconnect/fault parity, configuration/manifest identity, caller migration,
 and Python-host retirement remain open.
+
+### C8 end-to-end simulator checkpoint
+
+`sync/jukuhost_c8_cosim_check.sh` now boots the admitted C8 network ROM and
+current CP/M Plus image entirely through the native C executable. It proves
+the one-shot JR16 readiness exchange, Fastboot V16, the transition to 19,200
+baud NetDisk v3, the first CP/M prompt, bidirectional N4 console traffic, a
+complete `DIR`, writable-media journal setup, clean signal shutdown, text log,
+and binary capture.
+
+The runtime preserves the Python-era NetDisk-v3 descriptor pacing: each
+read-ahead record is transmitted as its own chunk after accounting for queued
+8O1 wire time and the established four-millisecond decoder guard. Sending the
+whole aggregate reply at once reproduced the historical one-byte-USART Disk
+I/O loop; the chunked path reaches the prompt and completes the directory
+workload deterministically.
+
+The simulator harness passes its already-open PTY master as an inherited file
+descriptor, avoiding a relay process that could alter timing. Its verbose
+simulator trace is written to a file rather than an unread pipe; this prevents
+test-infrastructure backpressure from blocking the simulated CPU during a
+long N4 transcript.

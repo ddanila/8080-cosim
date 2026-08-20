@@ -32,6 +32,7 @@ struct options {
     const char *console_pty;
     const char *log;
     const char *capture;
+    int serial_fd;
     unsigned timeout_seconds;
     unsigned disk_timeout_seconds;
     unsigned disk_protocol;
@@ -64,6 +65,7 @@ static void usage(FILE *file)
         "usage: jukuhost --serial DEVICE --system FILE --volume FILE [options]\n"
         "\n"
         "Boot options:\n"
+        "  --serial-fd FD          inherited PTY (integration tests only)\n"
         "  --fast-stage FILE       current JF16 bundle\n"
         "  --network-rom           C8 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
@@ -115,6 +117,7 @@ static int parse_options(int argc, char **argv, struct options *options)
     options->disk_baud = 19200u;
     options->read_ahead = 3u;
     options->reply_guard_ms = 2u;
+    options->serial_fd = -1;
     for (index = 1; index < argc; ++index) {
         const char *argument = argv[index];
         const char *value;
@@ -126,6 +129,11 @@ static int parse_options(int argc, char **argv, struct options *options)
             return 1;
         } else if (strcmp(argument, "--serial") == 0) {
             if (require_value(argc, argv, &index, &options->serial) != 0) return -1;
+        } else if (strcmp(argument, "--serial-fd") == 0) {
+            unsigned descriptor;
+            if (require_value(argc, argv, &index, &value) != 0 ||
+                    parse_unsigned(value, 0u, 65535u, &descriptor) != 0) return -1;
+            options->serial_fd = (int)descriptor;
         } else if (strcmp(argument, "--system") == 0) {
             if (require_value(argc, argv, &index, &options->system) != 0) return -1;
         } else if (strcmp(argument, "--fast-stage") == 0 ||
@@ -180,7 +188,8 @@ static int parse_options(int argc, char **argv, struct options *options)
             return -1;
         }
     }
-    if (options->serial == NULL || options->volume == NULL ||
+    if ((options->serial != NULL) == (options->serial_fd >= 0) ||
+            options->volume == NULL ||
             (!options->resume_disk && options->system == NULL)) return -1;
     if (options->direct_fastboot && options->fast_stage == NULL) return -1;
     if (options->fast_stage != NULL && !options->direct_fastboot) {
@@ -254,6 +263,51 @@ static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
         }
     }
     return received;
+}
+
+static int host_write_disk_reply(struct host_context *host,
+                                 const struct jh_n3_request *request,
+                                 const struct jh_service_event *event)
+{
+    size_t position;
+    size_t record_index;
+    if (request->operation != JH_N3_READ_AHEAD || event->reply_length < 7u ||
+            event->reply[3] != 0u) {
+        return host_write(host, event->reply, event->reply_length);
+    }
+    if (host_write(host, event->reply, 5u) != 0) return -1;
+    position = 5u;
+    for (record_index = 0u; record_index < event->reply[4]; ++record_index) {
+        size_t encoded_length;
+        size_t chunk_length;
+        uint8_t encoding;
+        unsigned drain_ms;
+        if (position + 4u > event->reply_length - 2u) return -1;
+        encoding = event->reply[position + 3u];
+        if (encoding == 0u) encoded_length = 1u + JH_N3_RECORD_SIZE;
+        else if (encoding == 1u) encoded_length = 2u;
+        else if (encoding == 2u) encoded_length = 1u;
+        else if (encoding == 3u) {
+            if (position + 5u > event->reply_length - 2u) return -1;
+            encoded_length = (size_t)event->reply[position + 4u] + 3u;
+        } else return -1;
+        chunk_length = 3u + encoded_length;
+        if (position + chunk_length > event->reply_length - 2u ||
+                host_write(host, event->reply + position, chunk_length) != 0) {
+            return -1;
+        }
+        /* Match the proven Python-era rule: allow already queued 8O1 bytes
+         * to leave the driver, then give the 8080 decoder four milliseconds
+         * before the next descriptor can reach its one-byte USART. */
+        drain_ms = (unsigned)((((record_index == 0u ? 5u : 0u) +
+                                chunk_length) * 11000u +
+                               host->options.disk_baud - 1u) /
+                              host->options.disk_baud) + 4u;
+        jh_posix_sleep(drain_ms);
+        position += chunk_length;
+    }
+    if (position != event->reply_length - 2u) return -1;
+    return host_write(host, event->reply + position, 2u);
 }
 
 static int run_stock_boot(struct host_context *host, const uint8_t *system,
@@ -390,8 +444,19 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
     for (attempt = 0u; attempt < 32u; ++attempt) {
         uint64_t deadline;
         int ack = 0;
-        if (jh_fast_session_probe(&session, probe, &probe_length) != JH_OK ||
-                host_write(host, probe, probe_length) != 0) return EXIT_SERIAL;
+        size_t probe_index;
+        if (jh_fast_session_probe(&session, probe, &probe_length) != JH_OK) {
+            return EXIT_PROTOCOL;
+        }
+        /* The overlap-safe header is deliberately tiny. Pace its bytes so a
+         * simulator PTY relay cannot collapse them onto the one-byte 8251
+         * receive register; real UARTs naturally provide this spacing. */
+        for (probe_index = 0u; probe_index < probe_length; ++probe_index) {
+            if (host_write(host, probe + probe_index, 1u) != 0) {
+                return EXIT_SERIAL;
+            }
+            if (probe_index + 1u < probe_length) jh_posix_sleep(1u);
+        }
         deadline = jh_posix_milliseconds() + 25u;
         while (jh_posix_milliseconds() < deadline && !ack) {
             int received = host_read(host, incoming, sizeof(incoming), 5u);
@@ -654,7 +719,7 @@ static int run_disk(struct host_context *host, uint8_t *volume,
             if (host->options.reply_guard_ms != 0u) {
                 jh_posix_sleep(host->options.reply_guard_ms);
             }
-            if (host_write(host, event.reply, event.reply_length) != 0) {
+            if (host_write_disk_reply(host, &request, &event) != 0) {
                 result = EXIT_SERIAL;
                 goto done;
             }
@@ -733,7 +798,7 @@ int main(int argc, char **argv)
         }
     }
     host_log(&host, "INFO", "start version=%s port=%s", HOST_VERSION,
-             host.options.serial);
+             host.options.serial != NULL ? host.options.serial : "inherited-fd");
     if (jh_posix_load_file(host.options.volume, &volume, &volume_length) != 0 ||
             volume_length != JH_N3_VOLUME_SIZE) {
         host_log(&host, "ERROR", "A: must be exactly %u bytes",
@@ -772,13 +837,22 @@ int main(int argc, char **argv)
         }
     }
     jh_posix_install_signals();
-    if (jh_posix_serial_open(&host.serial, host.options.serial,
-            host.options.resume_disk ? host.options.disk_baud :
-            host.options.direct_fastboot ? 19200u : 9600u,
-            host.options.direct_fastboot ? 'N' : 'O') != 0) {
-        host_log(&host, "ERROR", "cannot configure serial: %s", strerror(errno));
-        result = EXIT_SERIAL;
-        goto cleanup;
+    {
+        unsigned initial_baud = host.options.resume_disk ?
+            host.options.disk_baud : host.options.direct_fastboot ? 19200u : 9600u;
+        char initial_parity = host.options.direct_fastboot ? 'N' : 'O';
+        int opened = host.options.serial_fd >= 0 ?
+            jh_posix_serial_adopt(&host.serial, host.options.serial_fd,
+                                  "/dev/pts/inherited", initial_baud,
+                                  initial_parity) :
+            jh_posix_serial_open(&host.serial, host.options.serial,
+                                 initial_baud, initial_parity);
+        if (opened != 0) {
+            host_log(&host, "ERROR", "cannot configure serial: %s",
+                     strerror(errno));
+            result = EXIT_SERIAL;
+            goto cleanup;
+        }
     }
     host_log(&host, "INFO", "serial applied=%u 8%c1 flow=none",
              host.serial.baud, host.serial.parity);

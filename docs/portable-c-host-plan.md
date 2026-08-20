@@ -1,6 +1,6 @@
 # Portable C Juku host plan
 
-Status: **M1 PORTABLE CORE COMPLETE; NATIVE LINUX HOST NEXT**
+Status: **M2 NATIVE LINUX PARITY IN PROGRESS**
 
 ## Goal
 

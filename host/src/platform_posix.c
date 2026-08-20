@@ -139,6 +139,29 @@ int jh_posix_serial_open(struct jh_posix_serial *serial, const char *path,
     return 0;
 }
 
+int jh_posix_serial_adopt(struct jh_posix_serial *serial, int fd,
+                          const char *description, unsigned baud, char parity)
+{
+    int flags;
+    size_t length;
+    if (serial == NULL || fd < 0 || description == NULL) return -1;
+    memset(serial, 0, sizeof(*serial));
+    serial->fd = fd;
+    length = strlen(description);
+    if (length == 0u || length >= sizeof(serial->path)) {
+        errno = ENAMETOOLONG;
+        return -1;
+    }
+    memcpy(serial->path, description, length + 1u);
+    flags = fcntl(fd, F_GETFL);
+    if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) != 0 ||
+            jh_posix_serial_configure(serial, baud, parity) != 0) {
+        serial->fd = -1;
+        return -1;
+    }
+    return 0;
+}
+
 void jh_posix_serial_close(struct jh_posix_serial *serial)
 {
     if (serial != NULL && serial->fd >= 0) {
