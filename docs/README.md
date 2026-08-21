@@ -74,6 +74,9 @@ findings. Every status applies only to the boundary named by the report.
 - Physical model: `board-fidelity-gap-ledger.md`,
   `machine-deployment-status.md` and `machines/` (current CS00000/CS00014/
   CS00015/CS00024 locations, fitted-state profiles, and board-local open work),
+  `cs00000-service-record.md` (stock-ROM identity, corrected S21/Janet result,
+  passed D11 and 19,200-baud paths, V15 host-window isolation, and remaining
+  intermittent-start investigation),
   `cs00015-service-record.md` (Arvutimuuseum machine identity, D15 history,
   repaired D1, corrected D55 status, current JukuNet ROM, physical
   dual-network-drive validation, and the CS00014-controlled isolation of the

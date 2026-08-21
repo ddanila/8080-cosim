@@ -16,6 +16,7 @@ struct jh_platform_serial {
     unsigned base_port;
     unsigned fifo_depth;
     unsigned line_errors;
+    uint64_t tx_ready_ms;
     unsigned saved_lcr;
     unsigned saved_ier;
     unsigned saved_mcr;

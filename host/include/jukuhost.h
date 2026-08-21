@@ -25,6 +25,7 @@ extern "C" {
 #define JH_CAPTURE_RECORD_OVERHEAD 16u
 #define JH_JOURNAL_SIZE 276u
 #define JH_BOOT_RECORD_SIZE 128u
+#define JH_BOOT_MAX_FRAMES 16u
 #define JH_BOOT_LOAD_ADDRESS 0x0100u
 #define JH_BOOT_SYSTEM_LOAD_ADDRESS 0xb400u
 #define JH_BOOT_SYSTEM_ENTRY 0xca00u
@@ -284,13 +285,15 @@ enum jh_boot_event_kind {
     JH_BOOT_EVENT_REQUEST = 1,
     JH_BOOT_EVENT_PROGRESS = 2,
     JH_BOOT_EVENT_COMPLETE = 3,
-    JH_BOOT_EVENT_IGNORED = 4
+    JH_BOOT_EVENT_IGNORED = 4,
+    JH_BOOT_EVENT_RETRY = 5
 };
 
 struct jh_boot_output {
     uint8_t bytes[JH_BOOT_MAX_OUTPUT];
     size_t length;
     unsigned frame_count;
+    size_t frame_lengths[JH_BOOT_MAX_FRAMES];
     enum jh_boot_event_kind event;
     size_t completed_records;
 };
@@ -333,6 +336,18 @@ struct jh_fast_session {
     int ready_seen;
 };
 
+struct jh_fast_v15_session {
+    const uint8_t *core;
+    const uint8_t *extension;
+    const uint8_t *compressed;
+    size_t extension_length;
+    size_t compressed_length;
+    uint16_t compressed_crc;
+    uint16_t system_crc;
+    uint8_t extension_sum1;
+    uint8_t extension_sum2;
+};
+
 uint8_t jh_xor(const uint8_t *data, size_t length);
 uint16_t jh_crc16_ccitt(const uint8_t *data, size_t length, uint16_t initial);
 uint16_t jh_crc16_ibm(const uint8_t *data, size_t length, uint16_t initial);
@@ -369,6 +384,14 @@ int jh_fast_checked_decode(const uint8_t *frame, size_t length,
 int jh_fast_v16_bundle(const uint8_t *artifact, size_t artifact_length,
                        const uint8_t **core, const uint8_t **compressed,
                        size_t *compressed_length, uint16_t *system_crc);
+int jh_fast_v15_session_init(struct jh_fast_v15_session *session,
+                             const uint8_t *artifact, size_t artifact_length,
+                             const uint8_t *system, size_t system_length);
+size_t jh_fast_v15_extension_tail_size(
+    const struct jh_fast_v15_session *session);
+int jh_fast_v15_extension_tail(const struct jh_fast_v15_session *session,
+                               uint8_t *output, size_t capacity,
+                               size_t *output_length);
 void jh_fast_parser_init(struct jh_fast_parser *parser);
 int jh_fast_parser_push(struct jh_fast_parser *parser, uint8_t value,
                         uint8_t *kind, uint8_t *first, uint8_t *second);

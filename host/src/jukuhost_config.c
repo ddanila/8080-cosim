@@ -321,7 +321,6 @@ static int validate(struct jh_host_config *config,
     if (state->fastboot != 0u && state->fastboot != 7u) return JH_ERR_FORMAT;
     config->have_fastboot = state->fastboot == 7u;
     if (config->network_rom && !config->have_fastboot) return JH_ERR_FORMAT;
-    if (!config->network_rom && config->have_fastboot) return JH_ERR_FORMAT;
     if ((state->fallback_system == 0u) !=
             (state->fallback_fastboot == 0u) ||
             (state->fallback_system != 0u &&

@@ -77,17 +77,37 @@ mode=read-only
 The hashes above are placeholders; a generated deployment file must contain
 the hashes from its canonical build manifest.
 
-`network_rom=yes` requires a system and a JF16 Fastboot artifact. A fallback
-is optional, but its system and Fastboot identities form one inseparable slot:
-if either primary artifact is absent or fails its size/SHA-256 identity, both
-fallback artifacts are selected. A legacy JF1–JF15 fallback still fails the
-runtime's admitted-V16 check; fallback does not weaken the protocol boundary.
+Boot selection is explicit:
+
+- no `[fastboot]` section selects a complete stock Janet bootstrap at
+  9,600/8O1;
+- `[fastboot]` with `network_rom=no` (the default) selects stock-assisted JF15:
+  one 128-byte core through Janet at 9,600/8O1, then its checked extension and
+  compressed system at 19,200/8N1;
+- `[fastboot]` with `network_rom=yes` selects direct JF16 from the JukuNet C8
+  ROM at 19,200/8N1.
+
+`network_rom=yes` therefore requires a system and a JF16 Fastboot artifact;
+stock-assisted mode requires an exact JF15 artifact. A fallback is optional,
+but its system and Fastboot identities form one inseparable slot: if either
+primary artifact is absent or fails its size/SHA-256 identity, both fallback
+artifacts are selected. A JF1–JF14 fallback still fails validation; fallback
+does not weaken the protocol boundary or switch direct/stock mode.
 
 `boot_restarts` bounds complete bootstrap retransmissions after an explicit
 target-reset indication; zero disables them. A V16 body is never resent merely
 because its final acknowledgement was lost. The host retries only after the
 reset ROM emits a fresh checked `JR16` readiness frame, so it cannot overwrite
 a possibly running CP/M system.
+
+Stock Janet begins with no added line-turn delay. If a particular client
+resumes polling or rejects a just-sent frame, the host resends that exact
+checked frame and raises only the current session's destination-zero guard
+through 2, 5, and at most 10 ms. Fast clients therefore retain the zero-guard
+path. After a JF15 core is executed, its overlap-safe `A5 3A` probe continues
+until the configured `timeout`; a fixed short probe count is deliberately not
+used because physical boards can take several seconds to complete the stock
+execute handoff.
 
 `reconnect_timeout` bounds named serial-device reopen attempts in seconds;
 zero disables reopen. After a disk-session link loss, the host closes the stale

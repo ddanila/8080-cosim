@@ -19,7 +19,8 @@ The first platform-neutral C99 slice is under `host/`:
 - explicit Janet encoding and an incremental noise/checksum-resynchronizing
   parser;
 - CRC-16/CCITT, CRC-16/IBM, Fletcher-16, and XOR primitives;
-- checked Fastboot frames and strict V16 bundle metadata/payload validation;
+- checked Fastboot frames and strict V15/V16 bundle metadata/payload
+  validation;
 - plain, explicit, JUKUSYS, JUKU51, and CRC-checked `JUKURM1` image
   preparation, byte-exact relocation stubs, and indexed stock-bootstrap frame
   generation;
@@ -31,9 +32,9 @@ The first platform-neutral C99 slice is under `host/`:
 - in-memory N3/N4 service semantics for raw/compact/read-ahead reads, legacy
   and V3 writes, duplicate replay, console queues, clock requests, target
   reports, and capability negotiation.
-- the complete stock request/ACK/REJ/line-turn state machine and the V16
-  readiness, overlap-safe stream probe, final acknowledgement, and explicitly
-  unconfirmed no-resend path;
+- the complete stock request/ACK/REJ/line-turn state machine, exact
+  stock-assisted V15 handoff, and V16 readiness, overlap-safe stream probes,
+  final acknowledgement, and explicitly unconfirmed no-resend paths;
 - a transport-independent lifecycle model for cold boot, Fastboot, NetDisk,
   target reset, host loss/reopen, reconnect, clean stop, and fatal stop;
 - a versioned little-endian raw capture stream with CRC-32, truncated-record
@@ -72,7 +73,8 @@ The first POSIX executable is now available as `build/jukuhost`, built by
 - strictly configured 9,600 8O1 and 19,200 8N1/8O1 serial phases with bounded
   partial reads/writes, drain support, monotonic deadlines, and clean signal
   handling;
-- stock Janet and direct C8 Fastboot V16 execution through the admitted core;
+- stock Janet, stock-assisted Fastboot V15, and direct C8 Fastboot V16
+  execution through the admitted core;
 - N3 A:/B: and N4 console/clock/report service, duplicate replay, and ready-
   marker recovery;
 - writable A: persistence through the CRC journal and synchronous record
@@ -176,6 +178,44 @@ stdout pipe can otherwise fill and block the host, changing target timing.
 The resident V16 probe loop now also runs until the configured boot deadline,
 so starting the host before an operator powers or resets the Juku does not
 exhaust a short fixed probe count.
+
+### Stock-assisted V15 compatibility checkpoint
+
+A 2026-08-21 CS00000 session isolated a host defect rather than a target or
+USART failure. Stock Janet loaded and executed the exact 128-byte JF15 core,
+but the retired Python wrapper exhausted roughly four seconds of fixed probes
+before the physical core answered. Reattaching directly at 19,200/8N1 without
+RESET immediately received `C5`; the same resident core accepted the 267-byte
+extension and 9,267-byte ZX0 stream, installed 16,384 bytes with CRC16/IBM
+`1C42`, and entered working NetDisk v3 with no extension or stream retry.
+
+Version `0.3.0-m6` admits that exact stock-assisted path in the sole production
+C host. It validates JF15 structure and both compressed/system CRCs before
+opening the serial device, sends only the core through learned-identity Janet,
+then switches to 19,200/8N1 and probes the overlap-safe core until the normal
+boot deadline. It does not reintroduce V1-V14 or a Python fallback.
+
+The stock state machine also recognizes a resumed ready/poll turn while an ACK
+is pending as an implicit reject. It resends the identical checked frame and
+raises only that session's destination-zero turnaround guard from zero through
+2, 5, and 10 ms. Thus boards needing more analog/firmware settling receive it
+without charging every frame or slowing boards that acknowledge immediately.
+Explicit REJ uses the same bounded adaptation.
+
+PTY `tcdrain()` means only that a peer process consumed queued bytes, not that
+the modeled UART wire finished. The POSIX PTY backend now accounts for 10-bit
+8N1 and 11-bit 8O1 wire time before a drain completes. This exposed and fixed
+an inconsistent accelerated C8 test whose target-time capability window could
+expire while the host correctly modeled real 19,200-baud transmission.
+
+`tests/jukuhost_v15_delayed_pty_test.py` holds the core response for five
+seconds and proves the former fixed-window failure cannot recur.
+`tests/jukuhost_stock_v15_cosim_test.py` boots stock Ekta4401 through the C
+host, JF15, CP/M Plus, and NetDisk/N4 to `A>`. The existing C8 gate still passes
+normal, missed-ready plus host-replacement, and mid-stream-reset variants at a
+physical 1.7 MHz clock. The exact new C path remains to be repeated on a real
+stock-ROM machine; the retained CS00000 transfer above used the retired host
+only to establish the failure boundary.
 
 ### Stock-system simulator checkpoint
 

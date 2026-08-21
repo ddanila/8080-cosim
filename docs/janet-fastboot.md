@@ -1,6 +1,6 @@
 # Stock-ROM fast bootstrap
 
-Status: **HISTORICAL V1-V15 EXPERIMENT RECORD; PRODUCTION HOST PATH RETIRED**
+Status: **V1-V14 HISTORICAL; EXACT V15 STOCK-COMPATIBILITY PATH ADMITTED IN C**
 
 The fast path preserves an unmodified EktaSoft Janet 1.2 ROM. The stock client
 first loads `cpmish/juku-fastboot-stage1.bin` at 0100h using its ordinary
@@ -11,8 +11,9 @@ at B400h-CDFFh. It then jumps to the normal CA00h BIOS entry.
 
 This is intentionally a single-client, fixed-layout CP/Mish protocol. Avoiding
 general address/length negotiation keeps the stock-loaded stage to five
-128-byte records. The frozen fixture remains byte-for-byte testable, while
-normal stock bootstrap and C8/V16 operation now use `build/jukuhost`.
+128-byte records. The frozen fixtures remain byte-for-byte testable. Normal
+stock bootstrap, the final JF15 stock-assisted CP/M Plus path, and C8/V16
+operation now all use `build/jukuhost`; there is no runnable Python host.
 
 ## Wire contract
 
@@ -72,7 +73,8 @@ cp juku-net-mode2.img cs00015-fastboot.img
 ```
 
 The removed Python command is not an operational option. For physical work,
-use stock Janet through `jukuhost`, or C8 and Fastboot V16.
+use stock Janet, exact JF15 stock-assisted Fastboot, or C8/JF16 through
+`jukuhost`.
 
 ### A: media safety modes
 

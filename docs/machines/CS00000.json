@@ -1,20 +1,27 @@
 {
   "schema": "juku-machine-profile-v1",
   "machine_id": "CS00000",
-  "updated": "2026-08-18",
+  "updated": "2026-08-21",
   "location": "home lab",
   "deployment_role": "diagnostic candidate; not a reference machine",
   "fitted_firmware": {
-    "identity": null,
+    "identity": "stock ROM #0031; RomBios 3.43; Janet 1.2",
     "sha256": null,
-    "confidence": "unknown"
+    "confidence": "owner-report"
   },
-  "qualified_paths": [],
+  "qualified_paths": [
+    "stock Janet boot with learned station identity 02 -> 01",
+    "CPU, RAM, PIT, and D11 network-loaded diagnostics",
+    "stock-assisted V15 core followed by direct 19,200 recovery without RESET",
+    "CP/M Plus prompt and sustained 19,200-baud NetDisk v3"
+  ],
   "open_investigations": [
-    "USART operation is suspected faulty but D11 is not diagnosed",
-    "establish local 8251 status and clock, then connector/level-shifter loopback and end-to-end traffic"
+    "repeat stock-assisted V15 cold boot using portable C host 0.3.0-m6",
+    "isolate intermittent silent or continuous-low-tone cold starts"
   ],
   "evidence": [
-    "docs/machine-deployment-status.md"
+    "docs/machine-deployment-status.md",
+    "docs/cs00000-service-record.md",
+    "docs/evidence/juku-serial/cs00000-stock-v15-20260821.json"
   ]
 }

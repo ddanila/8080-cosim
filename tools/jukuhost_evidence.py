@@ -113,19 +113,29 @@ def write_boot(path: Path, capture: Path, started_ms: int,
         raise EvidenceError("capture contains no disk request confirming boot")
     messages = [bytes(record["payload"]).decode("ascii", "replace")
                 for record in captured if record["kind"] == 3]
-    if not any(message.startswith("Fastboot V16 complete") or
-               message.startswith("V16 final reply not seen")
-               for message in messages):
-        raise EvidenceError("capture contains no completed V16 transfer")
-    confirmed = any(message.startswith("Fastboot V16 complete")
+    version = 16 if any(
+        message.startswith("Fastboot V16 complete") or
+        message.startswith("V16 final reply not seen")
+        for message in messages
+    ) else 15 if any(
+        message.startswith("Fastboot V15 complete") or
+        message.startswith("V15 final reply not seen")
+        for message in messages
+    ) else 0
+    if version == 0:
+        raise EvidenceError("capture contains no completed V15/V16 transfer")
+    confirmed = any(message.startswith(f"Fastboot V{version} complete")
                     for message in messages)
     value = {
         "schema": "juku-janet-boot-result-v1",
         "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
         "capture": str(capture.resolve()),
         "serial": args.serial,
-        "network_rom": True,
-        "boot_baud": 19200,
+        "network_rom": version == 16,
+        "fastboot_version": version,
+        "boot_baud": 19200 if version == 16 else 9600,
+        # V15 enters through one stock Janet record at 9,600, then transfers
+        # its extension and compressed system at the same 19,200 rate as V16.
         "effective_boot_baud": 19200,
         "disk_baud": args.disk_baud,
         "disk_protocol": args.disk_protocol,

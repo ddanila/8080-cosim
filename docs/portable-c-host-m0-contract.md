@@ -55,6 +55,9 @@ The C host must reproduce all behavior used by the accepted operational path:
 - C8/JR16 direct readiness and Fastboot V16 at 19,200 baud, including the
   missed-ready probe path, metadata and CRC validation, compressed streaming,
   acknowledgement handling, and the accepted no-resend timing policy;
+- the exact JF15 stock-assisted compatibility path: one 128-byte Janet record
+  at 9,600/8O1, followed by the checked extension and compressed system at
+  19,200/8N1;
 - N3 raw, compact, read-ahead, legacy write, and V3 write operations, duplicate
   request handling, 80-track A: and native 160-track B: geometry, and B:
   read-only enforcement;
@@ -64,10 +67,13 @@ The C host must reproduce all behavior used by the accepted operational path:
   safety, host replacement and reconnect, clean shutdown, human-readable logs,
   counters, and optional raw byte capture.
 
-Fastboot V1 through V15 were valuable hardware experiments and remain valid
+Fastboot V1 through V14 were valuable hardware experiments and remain valid
 historical builders and regression inputs. They are not separate admitted
-production protocols for the new runtime. The production C host accepts the
-current V16 artifact and fails clearly on an unsupported legacy bundle.
+production protocols for the new runtime. JF15 is the sole legacy-format
+exception because it provides the current stock-ROM-assisted CP/M Plus path;
+JF16 remains the direct network-ROM path. Both parsers require their exact
+magic, layout, length, metadata, and CRCs and fail clearly on every other
+legacy bundle.
 
 ## Observable result contract
 

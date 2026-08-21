@@ -159,6 +159,7 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
     }
     serial->baud = baud;
     serial->parity = parity;
+    if (pseudo_terminal) serial->tx_ready_ms = jh_platform_milliseconds();
     return 0;
 }
 
@@ -301,12 +302,37 @@ int jh_platform_serial_write(struct jh_platform_serial *serial, const uint8_t *d
             }
         }
     }
+    if (written_total == length && serial->pseudo_terminal && length != 0u) {
+        uint64_t now = jh_platform_milliseconds();
+        uint64_t bits_per_byte = serial->parity == 'O' ? 11u : 10u;
+        uint64_t bits = (uint64_t)length * bits_per_byte;
+        uint64_t milliseconds =
+            (bits * 1000u + serial->baud - 1u) / serial->baud;
+        if (serial->tx_ready_ms < now) serial->tx_ready_ms = now;
+        serial->tx_ready_ms += milliseconds;
+    }
     return written_total == length ? 0 : -1;
 }
 
 int jh_platform_serial_drain(struct jh_platform_serial *serial)
 {
-    return serial == NULL || serial->fd < 0 ? -1 : tcdrain(serial->fd);
+    if (serial == NULL || serial->fd < 0) return -1;
+    if (serial->pseudo_terminal) {
+        uint64_t now = jh_platform_milliseconds();
+        if (serial->tx_ready_ms > now) {
+            uint64_t remaining = serial->tx_ready_ms - now;
+            while (remaining != 0u) {
+                unsigned interval = remaining > UINT32_MAX ? UINT32_MAX :
+                    (unsigned)remaining;
+                jh_platform_sleep(interval);
+                now = jh_platform_milliseconds();
+                remaining = serial->tx_ready_ms > now ?
+                    serial->tx_ready_ms - now : 0u;
+            }
+        }
+        return 0;
+    }
+    return tcdrain(serial->fd);
 }
 
 static int set_raw(int fd)

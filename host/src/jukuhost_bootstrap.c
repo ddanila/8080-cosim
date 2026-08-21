@@ -278,10 +278,12 @@ int jh_boot_session_init(struct jh_boot_session *session,
 static int boot_append_encoded(struct jh_boot_output *output,
                                const uint8_t *frame, size_t frame_length)
 {
-    if (frame_length > sizeof(output->bytes) - output->length) {
+    if (frame_length > sizeof(output->bytes) - output->length ||
+            output->frame_count >= JH_BOOT_MAX_FRAMES) {
         return JH_ERR_SPACE;
     }
     memcpy(output->bytes + output->length, frame, frame_length);
+    output->frame_lengths[output->frame_count] = frame_length;
     output->length += frame_length;
     ++output->frame_count;
     return JH_OK;
@@ -467,6 +469,25 @@ int jh_boot_session_input(struct jh_boot_session *session,
         }
         if (result != JH_OK) return result;
         session->sent_frames += 2u;
+        output->event = JH_BOOT_EVENT_RETRY;
+        return JH_OK;
+    }
+    if (session->request_seen && session->awaiting_ack &&
+            ready_turn(session, incoming)) {
+        /* Some stock clients resume directed polling when a server frame
+         * reached them too soon after the destination-zero line turn. Treat
+         * that observable state as an implicit reject. The runtime can then
+         * increase only this session's physical turnaround guard and resend
+         * the exact same checked frame. */
+        ++session->reject_count;
+        result = boot_append_short(output, 0u, session->server, 0u);
+        if (result == JH_OK) {
+            result = boot_append_transfer(session, output,
+                                          session->next_message - 1u);
+        }
+        if (result != JH_OK) return result;
+        session->sent_frames += 2u;
+        output->event = JH_BOOT_EVENT_RETRY;
         return JH_OK;
     }
     if (session->request_seen) output->event = JH_BOOT_EVENT_IGNORED;

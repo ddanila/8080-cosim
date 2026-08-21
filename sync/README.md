@@ -42,8 +42,8 @@ sync/jukuhost_m2_check.sh
 ```
 
 It compares the frozen Python-era oracle with the sole supported C host, then
-runs stock/C8 boot, disk, console, reconnect, recovery, wrapper, and current
-network-ROM fault regressions. See
+runs stock, stock-assisted JF15, C8/JF16, disk, console, reconnect, recovery,
+wrapper, and current network-ROM fault regressions. See
 `docs/portable-c-host-m2-acceptance.md` for the accepted result and exact
 platform-port boundary.
 

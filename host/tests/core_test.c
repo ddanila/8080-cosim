@@ -142,6 +142,8 @@ static int test_configuration(void)
     struct jh_host_config config;
     struct jh_config_error error;
     char oversized[JH_CONFIG_PATH_MAX + 32u];
+    char stock_fast[sizeof(valid)];
+    const char *network_line;
     CHECK(jh_config_parse(valid, sizeof(valid) - 1u, &config, &error) == JH_OK);
     CHECK(strcmp(config.port, "/dev/ttyS0") == 0 && config.network_rom == 1 &&
           config.timeout_seconds == 90u && config.disk_timeout_seconds == 0u &&
@@ -156,6 +158,14 @@ static int test_configuration(void)
           config.disk_b.mode == JH_CONFIG_MEDIA_READ_ONLY &&
           memcmp(config.system.sha256, config.disk_a.sha256,
                  JH_SHA256_SIZE) == 0);
+    network_line = strstr(valid, "network_rom=yes\n");
+    CHECK(network_line != NULL);
+    memcpy(stock_fast, valid, (size_t)(network_line - valid));
+    strcpy(stock_fast + (network_line - valid),
+           network_line + strlen("network_rom=yes\n"));
+    CHECK(jh_config_parse(stock_fast, strlen(stock_fast), &config, &error) ==
+          JH_OK);
+    CHECK(config.have_fastboot && !config.network_rom);
     CHECK(jh_sha256_parse(hash, config.system.sha256) == JH_OK);
     CHECK(jh_config_parse(duplicate, sizeof(duplicate) - 1u,
                           &config, &error) == JH_ERR_FORMAT && error.line == 3u);
@@ -216,8 +226,10 @@ static int test_fastboot(const char *fixture)
     uint8_t expected[16];
     uint8_t encoded[16];
     uint8_t artifact[136u + 256u];
+    uint8_t artifact_v15[128u + 256u + 8u + 256u];
     uint8_t system_image[10240];
     uint8_t stream_tail[260];
+    uint8_t extension_tail[258];
     uint8_t probe[3];
     uint8_t payload[2] = {16u, 1u};
     const uint8_t *decoded_payload;
@@ -234,9 +246,11 @@ static int test_fastboot(const char *fixture)
     uint8_t second;
     struct jh_fast_parser parser;
     struct jh_fast_session session;
+    struct jh_fast_v15_session session_v15;
     size_t probe_length;
     size_t stream_tail_length;
     uint16_t resident_crc;
+    uint16_t compressed_crc;
     int result = JH_NEED_MORE;
     size_t index;
     CHECK(fixture_hex(fixture, "fast_ready_v16", expected,
@@ -300,6 +314,66 @@ static int test_fastboot(const char *fixture)
           memcmp(stream_tail + 2u, artifact + 136u, 256u) == 0);
     CHECK(jh_fast_session_final_timeout(&session) == JH_OK &&
           session.state == JH_FAST_COMPLETE_UNCONFIRMED);
+
+    memset(artifact_v15, 0, sizeof(artifact_v15));
+    artifact_v15[3] = (uint8_t)'J';
+    artifact_v15[4] = (uint8_t)'F';
+    artifact_v15[5] = (uint8_t)'1';
+    artifact_v15[6] = (uint8_t)'5';
+    artifact_v15[7] = 1u;
+    artifact_v15[9] = 0u;
+    artifact_v15[10] = 1u;
+    for (index = 0u; index < 256u; ++index) {
+        artifact_v15[128u + index] = (uint8_t)(index * 7u + 1u);
+        artifact_v15[392u + index] = (uint8_t)(index * 11u + 9u);
+    }
+    artifact_v15[384] = (uint8_t)'Z';
+    artifact_v15[385] = (uint8_t)'F';
+    artifact_v15[386] = (uint8_t)(resident_crc >> 8);
+    artifact_v15[387] = (uint8_t)resident_crc;
+    artifact_v15[388] = 1u;
+    artifact_v15[389] = 0u;
+    compressed_crc = jh_crc16_ibm(artifact_v15 + 392u, 256u, 0u);
+    artifact_v15[390] = (uint8_t)(compressed_crc >> 8);
+    artifact_v15[391] = (uint8_t)compressed_crc;
+    CHECK(jh_fast_v15_session_init(
+              &session_v15, artifact_v15, sizeof(artifact_v15),
+              system_image, sizeof(system_image)) == JH_OK);
+    CHECK(session_v15.core == artifact_v15 &&
+          session_v15.extension == artifact_v15 + 128u &&
+          session_v15.extension_length == 256u &&
+          session_v15.compressed == artifact_v15 + 392u &&
+          session_v15.compressed_length == 256u &&
+          session_v15.compressed_crc == compressed_crc &&
+          session_v15.system_crc == resident_crc);
+    CHECK(jh_fast_v15_extension_tail_size(&session_v15) ==
+          sizeof(extension_tail));
+    CHECK(jh_fast_v15_extension_tail(
+              &session_v15, extension_tail, sizeof(extension_tail),
+              &stream_tail_length) == JH_OK);
+    CHECK(stream_tail_length == sizeof(extension_tail) &&
+          memcmp(extension_tail, artifact_v15 + 128u, 256u) == 0 &&
+          extension_tail[256] == session_v15.extension_sum1 &&
+          extension_tail[257] == session_v15.extension_sum2);
+    artifact_v15[386] ^= 1u;
+    CHECK(jh_fast_v15_session_init(
+              &session_v15, artifact_v15, sizeof(artifact_v15),
+              system_image, sizeof(system_image)) == JH_ERR_CHECKSUM);
+    artifact_v15[386] ^= 1u;
+    artifact_v15[500] ^= 1u;
+    CHECK(jh_fast_v15_session_init(
+              &session_v15, artifact_v15, sizeof(artifact_v15),
+              system_image, sizeof(system_image)) == JH_ERR_CHECKSUM);
+    artifact_v15[500] ^= 1u;
+    artifact_v15[10] = 0u;
+    CHECK(jh_fast_v15_session_init(
+              &session_v15, artifact_v15, sizeof(artifact_v15),
+              system_image, sizeof(system_image)) == JH_ERR_FORMAT);
+    artifact_v15[10] = 1u;
+    artifact_v15[6] = (uint8_t)'4';
+    CHECK(jh_fast_v15_session_init(
+              &session_v15, artifact_v15, sizeof(artifact_v15),
+              system_image, sizeof(system_image)) == JH_ERR_UNSUPPORTED);
 
     jh_fast_parser_init(&parser);
     CHECK(jh_fast_parser_push(&parser, 0u, &kind, &first, &second) ==
@@ -395,6 +469,13 @@ static int test_boot_session(void)
     CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
     CHECK(output.frame_count == 1u && session.awaiting_ack &&
           session.next_message == 1u);
+    /* A stock client can resume polling instead of issuing an explicit REJ
+     * when the response followed the destination-zero handover too quickly.
+     * Preserve the message index and resend the exact checked transfer. */
+    CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
+    CHECK(output.event == JH_BOOT_EVENT_RETRY && output.frame_count == 2u &&
+          output.frame_lengths[0] == 6u && session.awaiting_ack &&
+          session.next_message == 1u && session.reject_count == 1u);
     incoming.destination = 2u;
     incoming.source = 1u;
     incoming.control = 0x08u;
@@ -411,7 +492,7 @@ static int test_boot_session(void)
     CHECK(session.next_message == 3u);
     incoming.control = 0x09u;
     CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);
-    CHECK(output.frame_count == 2u && session.reject_count == 1u &&
+    CHECK(output.frame_count == 2u && session.reject_count == 2u &&
           session.next_message == 3u);
     incoming.control = 0x08u;
     CHECK(jh_boot_session_input(&session, &incoming, &output) == JH_OK);

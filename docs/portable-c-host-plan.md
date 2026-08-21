@@ -71,8 +71,9 @@ conversion, and other non-host desk tooling.
 ## MVP and final migration boundary
 
 The MVP is not a partial protocol demonstration. It must cover every feature
-needed for the accepted CP/M workflow: stock and C8 boot discovery, Fastboot
-V16, N3 A:/B:, N4, learned identity, manifests, writable-media policy,
+needed for the accepted CP/M workflow: stock and C8 boot discovery, the exact
+stock-assisted Fastboot V15 compatibility path, Fastboot V16, N3 A:/B:, N4,
+learned identity, manifests, writable-media policy,
 reconnect, logging, capture, and clean shutdown. It must pass the existing
 simulator, physical-acceptance harness, and retained-failure regressions on
 Linux.
@@ -103,6 +104,8 @@ The first complete C host covers the production network path used by current
 Juku ROM and CP/M Plus builds:
 
 - stock Janet bootstrap at 9,600 baud;
+- exact JF15 stock-assisted bootstrap, retaining 9,600 only for its one-record
+  Janet core and using 19,200 for the extension and system;
 - automatic C8/JR16 readiness handling;
 - Fastboot V16 at 19,200 baud;
 - NetDisk v3 at 19,200 baud;

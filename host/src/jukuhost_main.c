@@ -10,7 +10,10 @@
 #include <string.h>
 #include <time.h>
 
-#define HOST_VERSION "0.3.0-m5"
+#define HOST_VERSION "0.3.0-m6"
+#define STOCK_TURN_GUARD_MS 10u
+#define V15_EXTENSION_GUARD_MS 20u
+#define V15_PROBE_REPLY_MS 25u
 
 enum exit_code {
     EXIT_CLEAN = 0,
@@ -95,7 +98,7 @@ static void usage(FILE *file)
         "Boot options:\n"
         "  --config FILE           explicit INI configuration\n"
         "  --serial-fd FD          inherited PTY (integration tests only)\n"
-        "  --fast-stage FILE       current JF16 bundle\n"
+        "  --fast-stage FILE       stock-assisted JF15 or network-ROM JF16\n"
         "  --network-rom           C8 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
         "  --resume-disk           attach to an already running system\n"
@@ -267,12 +270,6 @@ static int parse_options(int argc, char **argv, struct options *options)
             (!options->resume_disk && options->system == NULL)) return -1;
     if (options->resume_disk && options->boot_only) return -1;
     if (options->direct_fastboot && options->fast_stage == NULL) return -1;
-    if (options->fast_stage != NULL && !options->direct_fastboot) {
-        fprintf(stderr,
-            "jukuhost: legacy stock-loaded Fastboot V1-V15 is not an admitted "
-            "production runtime; use stock boot or the C8 V16 network ROM\n");
-        return -1;
-    }
     if (options->console_pty != NULL && options->disk_protocol != 3u) return -1;
     return 0;
 }
@@ -560,6 +557,31 @@ static int host_write(struct host_context *host, const uint8_t *data,
     return 0;
 }
 
+static int host_write_boot_output(struct host_context *host,
+                                  const struct jh_boot_output *output,
+                                  unsigned turn_guard_ms)
+{
+    size_t position = 0u;
+    unsigned index;
+    if (output == NULL || output->frame_count > JH_BOOT_MAX_FRAMES) return -1;
+    if (turn_guard_ms == 0u) return host_write(host, output->bytes,
+                                               output->length);
+    for (index = 0u; index < output->frame_count; ++index) {
+        size_t length = output->frame_lengths[index];
+        const uint8_t *frame;
+        if (length == 0u || length > output->length - position) return -1;
+        frame = output->bytes + position;
+        if (host_write(host, frame, length) != 0) return -1;
+        position += length;
+        if (length == 6u && frame[0] == 0xe4u && frame[1] == 0xe4u &&
+                frame[2] == 0u && frame[4] == 0u) {
+            if (jh_platform_serial_drain(&host->serial) != 0) return -1;
+            jh_platform_sleep(turn_guard_ms);
+        }
+    }
+    return position == output->length ? 0 : -1;
+}
+
 static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
                      unsigned timeout_ms)
 {
@@ -706,6 +728,7 @@ static int run_stock_boot(struct host_context *host, const uint8_t *system,
     int result;
     size_t index;
     size_t prepared_capacity;
+    unsigned turn_guard_ms = 0u;
     if (system_length > SIZE_MAX - JH_BOOT_RECORD_SIZE) {
         host_log(host, "ERROR", "stock system is too large for this host");
         return EXIT_ARTIFACT;
@@ -752,8 +775,18 @@ static int run_stock_boot(struct host_context *host, const uint8_t *system,
                     free(prepared_bytes);
                     return EXIT_PROTOCOL;
                 }
-                if (output.length != 0u &&
-                        host_write(host, output.bytes, output.length) != 0) {
+                if (output.event == JH_BOOT_EVENT_RETRY) {
+                    unsigned previous = turn_guard_ms;
+                    turn_guard_ms = turn_guard_ms == 0u ? 2u :
+                        turn_guard_ms < 5u ? 5u : STOCK_TURN_GUARD_MS;
+                    if (turn_guard_ms != previous) {
+                        host_log(host, "WARN", "stock client resumed polling; "
+                            "turnaround guard increased to %u ms",
+                            turn_guard_ms);
+                    }
+                }
+                if (output.length != 0u && host_write_boot_output(
+                        host, &output, turn_guard_ms) != 0) {
                     free(prepared_bytes);
                     return EXIT_SERIAL;
                 }
@@ -773,8 +806,9 @@ static int run_stock_boot(struct host_context *host, const uint8_t *system,
         free(prepared_bytes);
         return EXIT_PROTOCOL;
     }
-    host_log(host, "INFO", "stock bootstrap complete: sent=%u ACK=%u REJ=%u",
-             session.sent_frames, session.ack_count, session.reject_count);
+    host_log(host, "INFO", "stock bootstrap complete: sent=%u ACK=%u REJ=%u "
+             "turn-guard=%u-ms", session.sent_frames, session.ack_count,
+             session.reject_count, turn_guard_ms);
     free(prepared_bytes);
     return EXIT_CLEAN;
 }
@@ -796,6 +830,177 @@ static int wait_fast_frame(struct host_context *host,
         }
     }
     return 0;
+}
+
+static int fast_probe_raw(struct host_context *host, uint8_t first,
+                          uint8_t second, uint8_t acknowledgement,
+                          uint64_t deadline, unsigned maximum,
+                          unsigned *probe_count)
+{
+    uint8_t probe[3];
+    uint8_t incoming[256];
+    unsigned count = 0u;
+    while (!jh_platform_stop_requested() &&
+            jh_platform_milliseconds() < deadline &&
+            (maximum == 0u || count < maximum)) {
+        size_t length = count == 0u ? 2u : 3u;
+        size_t index;
+        uint64_t reply_deadline;
+        probe[0] = count == 0u ? first : 0u;
+        probe[1] = count == 0u ? second : first;
+        probe[2] = second;
+        for (index = 0u; index < length; ++index) {
+            if (host_write(host, probe + index, 1u) != 0) return -1;
+            if (index + 1u < length) jh_platform_sleep(1u);
+        }
+        ++count;
+        reply_deadline = jh_platform_milliseconds() + V15_PROBE_REPLY_MS;
+        if (reply_deadline > deadline) reply_deadline = deadline;
+        while (!jh_platform_stop_requested() &&
+                jh_platform_milliseconds() < reply_deadline) {
+            int received = host_read(host, incoming, sizeof(incoming), 5u);
+            if (received < 0) return -1;
+            for (index = 0u; index < (size_t)received; ++index) {
+                if (incoming[index] == acknowledgement) {
+                    if (probe_count != NULL) *probe_count += count;
+                    return 1;
+                }
+            }
+        }
+    }
+    if (probe_count != NULL) *probe_count += count;
+    return 0;
+}
+
+static int run_stock_fastboot(struct host_context *host,
+                              const uint8_t *artifact,
+                              size_t artifact_length,
+                              const uint8_t *system, size_t system_length)
+{
+    struct jh_fast_v15_session session;
+    struct jh_fast_parser parser;
+    uint8_t *extension_tail = NULL;
+    uint8_t kind = 0u;
+    uint8_t first = 0u;
+    uint8_t second = 0u;
+    size_t extension_tail_length = 0u;
+    uint64_t deadline;
+    unsigned extension_probes = 0u;
+    unsigned stream_probes = 0u;
+    unsigned extension_retries = 0u;
+    int result;
+
+    result = jh_fast_v15_session_init(&session, artifact, artifact_length,
+                                      system, system_length);
+    if (result != JH_OK) {
+        host_log(host, "ERROR", "stock-assisted V15 artifact/system "
+                 "validation failed: %s", jh_result_name(result));
+        return EXIT_ARTIFACT;
+    }
+    host_log(host, "INFO", "stock-assisted V15 core: 128 bytes at 9600 8O1; "
+             "adaptive turn-guard=0/2/5/10 ms");
+    result = run_stock_boot(host, session.core, JH_BOOT_RECORD_SIZE);
+    if (result != EXIT_CLEAN) return result;
+    if (jh_platform_serial_drain(&host->serial) != 0) return EXIT_SERIAL;
+    jh_platform_sleep(50u);
+    if (jh_platform_serial_configure(&host->serial, 19200u, 'N') != 0) {
+        host_log(host, "ERROR", "cannot enter V15 19200 8N1: %s",
+                 strerror(errno));
+        return EXIT_SERIAL;
+    }
+    host_log(host, "INFO", "phase=fastboot-v15 serial=19200 8N1; "
+             "waiting adaptively for the acknowledged core");
+    deadline = jh_platform_milliseconds() +
+        (uint64_t)host->options.timeout_seconds * 1000u;
+    extension_tail = (uint8_t *)malloc(
+        jh_fast_v15_extension_tail_size(&session));
+    if (extension_tail == NULL) return EXIT_ARTIFACT;
+    if (jh_fast_v15_extension_tail(
+            &session, extension_tail,
+            jh_fast_v15_extension_tail_size(&session),
+            &extension_tail_length) != JH_OK) {
+        free(extension_tail);
+        return EXIT_ARTIFACT;
+    }
+
+    for (;;) {
+        int acknowledged = fast_probe_raw(
+            host, 0xa5u, 0x3au, 0xc5u, deadline, 0u, &extension_probes);
+        if (acknowledged < 0) {
+            free(extension_tail);
+            return EXIT_SERIAL;
+        }
+        if (acknowledged == 0) {
+            host_log(host, "ERROR", "V15 core did not acknowledge before "
+                     "the boot deadline after %u probes", extension_probes);
+            free(extension_tail);
+            return EXIT_PROTOCOL;
+        }
+        host_log(host, "INFO", "V15 core acknowledged after %u probes",
+                 extension_probes);
+        jh_platform_sleep(V15_EXTENSION_GUARD_MS);
+        if (host_write(host, extension_tail, extension_tail_length) != 0 ||
+                jh_platform_serial_drain(&host->serial) != 0) {
+            free(extension_tail);
+            return EXIT_SERIAL;
+        }
+        jh_fast_parser_init(&parser);
+        result = wait_fast_frame(host, &parser, 750u,
+                                 &kind, &first, &second);
+        if (result < 0) {
+            free(extension_tail);
+            return EXIT_SERIAL;
+        }
+        if (result == 1 && kind == (uint8_t)'R' && first == 15u &&
+                second == 1u) {
+            host_log(host, "INFO", "Fastboot V15 extension ready");
+        } else {
+            host_log(host, "WARN", "V15 extension ready marker missed; "
+                     "probing its overlap-safe stream scanner");
+        }
+        result = fast_probe_raw(host, (uint8_t)'J', (uint8_t)'Z', 0xc6u,
+                                deadline, 64u, &stream_probes);
+        if (result < 0) {
+            free(extension_tail);
+            return EXIT_SERIAL;
+        }
+        if (result == 1) break;
+        ++extension_retries;
+        ++host->retries;
+        host_log(host, "WARN", "V15 stream scanner absent after %u probes; "
+                 "resynchronizing the downloaded extension (retry %u)",
+                 stream_probes, extension_retries);
+        if (jh_platform_milliseconds() >= deadline) {
+            free(extension_tail);
+            return EXIT_PROTOCOL;
+        }
+    }
+    free(extension_tail);
+    host_log(host, "INFO", "V15 stream header acknowledged after %u probes",
+             stream_probes);
+    jh_platform_sleep(V15_EXTENSION_GUARD_MS);
+    if (host_write(host, session.compressed, session.compressed_length) != 0 ||
+            jh_platform_serial_drain(&host->serial) != 0) {
+        return EXIT_SERIAL;
+    }
+    jh_fast_parser_init(&parser);
+    result = wait_fast_frame(host, &parser, 1500u,
+                             &kind, &first, &second);
+    if (result < 0) return EXIT_SERIAL;
+    if (result == 1 && kind == (uint8_t)'A' && first == 0u) {
+        if (second != 0u) {
+            host_log(host, "ERROR", "Fastboot V15 target status=%u", second);
+            return EXIT_PROTOCOL;
+        }
+        host_log(host, "INFO", "Fastboot V15 complete: %lu compressed bytes, "
+                 "CRC16/IBM=%04X, extension-retries=%u",
+                 (unsigned long)session.compressed_length,
+                 session.system_crc, extension_retries);
+    } else {
+        host_log(host, "WARN", "V15 final reply not seen; no resend, "
+                 "NetDisk will confirm the fully drained stream");
+    }
+    return EXIT_CLEAN;
 }
 
 static int run_fastboot(struct host_context *host, const uint8_t *artifact,
@@ -1434,12 +1639,16 @@ int main(int argc, char **argv)
                  host.serial.base_port, host.serial.fifo_depth);
     }
     if (!host.options.resume_disk) {
-        host_log(&host, "INFO", "phase=%s",
-                 host.options.direct_fastboot ? "fastboot" : "stock-boot");
+        const char *boot_phase = host.options.direct_fastboot ? "fastboot" :
+            host.options.fast_stage != NULL ? "stock-fastboot" : "stock-boot";
+        host_log(&host, "INFO", "phase=%s", boot_phase);
         for (;;) {
             result = host.options.direct_fastboot ?
                 run_fastboot(&host, fast_stage, fast_stage_length,
                              system, system_length) :
+                host.options.fast_stage != NULL ?
+                run_stock_fastboot(&host, fast_stage, fast_stage_length,
+                                   system, system_length) :
                 run_stock_boot(&host, system, system_length);
             if (jh_platform_stop_requested()) {
                 result = EXIT_CLEAN;
@@ -1458,8 +1667,7 @@ int main(int argc, char **argv)
             host_log(&host, "WARN", "restarting complete bootstrap %lu/%lu",
                      host.boot_restart_count,
                      (unsigned long)host.options.boot_restarts);
-            host_log(&host, "INFO", "phase=%s",
-                     host.options.direct_fastboot ? "fastboot" : "stock-boot");
+            host_log(&host, "INFO", "phase=%s", boot_phase);
             if (jh_platform_serial_configure(&host.serial,
                     host.options.direct_fastboot ? 19200u : 9600u,
                     host.options.direct_fastboot ? 'N' : 'O') != 0) {

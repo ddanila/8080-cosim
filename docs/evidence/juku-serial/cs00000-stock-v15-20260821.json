@@ -1,0 +1,52 @@
+{
+  "schema": "juku-physical-fastboot-evidence-v1",
+  "recorded_at": "2026-08-21",
+  "machine": "CS00000",
+  "firmware": {
+    "identity": "stock ROM #0031; RomBios 3.43; Janet 1.2",
+    "sha256": null,
+    "source": "owner-observed screen strings"
+  },
+  "s21": "00000001",
+  "janet_identity": {
+    "server": 2,
+    "client": 1
+  },
+  "system": {
+    "path": "../cpm-plus-juku/out/cpm-plus-juku-system.bin",
+    "sha256": "254f940e36501dcf3f46c5ba23b2b6cb3b1b7f3a13b1e42ae9786f2fa337a4a4",
+    "container_bytes": 16896,
+    "installed_bytes": 16384,
+    "crc16_ibm": "1C42"
+  },
+  "fastboot": {
+    "protocol": 15,
+    "path": "../cpm-plus-juku/out/cpm-plus-juku-fastboot-v15.bin",
+    "sha256": "881befd8ebd306ae7313b2dff8b83cb8d964988e17627d76efedaa49e6a19a5d",
+    "artifact_bytes": 9670,
+    "stock_core_bytes": 128,
+    "extension_bytes": 267,
+    "compressed_bytes": 9267,
+    "boot_baud": 9600,
+    "effective_boot_baud": 19200,
+    "transfer_framing": "8N1",
+    "extension_retries": 0,
+    "stream_retries": 0,
+    "bulk_seconds": 6.279138343874365,
+    "first_disk_request_seconds": 6.945068862987682
+  },
+  "isolation": {
+    "failed_run": "retired Python wrapper stock-loaded the core but exhausted its fixed probe window",
+    "recovery": "without RESET, direct 19200/8N1 attachment received C5 and completed the same resident core",
+    "conclusion": "host synchronization defect; target core and physical 19200 receive path functional"
+  },
+  "diagnostics": {
+    "passed": ["CPU", "RAM", "PIT", "D11"],
+    "stock_rom_capability_mismatch_mask_01": [
+      "ROM ABI",
+      "video/console",
+      "keyboard/S21"
+    ]
+  },
+  "new_c_host_physical_confirmation": "pending"
+}
