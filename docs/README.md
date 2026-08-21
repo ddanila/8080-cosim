@@ -75,8 +75,9 @@ findings. Every status applies only to the boundary named by the report.
   `machine-deployment-status.md` and `machines/` (current CS00000/CS00014/
   CS00015/CS00024 locations, fitted-state profiles, and board-local open work),
   `cs00015-service-record.md` (Arvutimuuseum machine identity, D15 history,
-  repaired D1, corrected D55 status, current Ekta4401/Jukuravi service ROM,
-  and physical dual-network-drive validation),
+  repaired D1, corrected D55 status, current JukuNet ROM, physical
+  dual-network-drive validation, and the CS00014-controlled isolation of the
+  board-local blank-video fault),
   `jukuravi-d55-diagnostic-audit.md` (exact-sheet/8253 review, invalidation of
   the unclocked T15/T16/T31/T32 predicate, and clock-safe T34 fault matrix),
   `cs00024-t36-diagnosis.md` (complete T36 four-pattern 32 KiB physical proof,
