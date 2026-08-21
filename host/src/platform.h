@@ -38,6 +38,7 @@ struct jh_platform_media {
 
 uint64_t jh_platform_milliseconds(void);
 void jh_platform_sleep(unsigned milliseconds);
+const char *jh_platform_name(void);
 const char *jh_platform_timer_name(void);
 unsigned jh_platform_timer_resolution_ms(void);
 uint32_t jh_platform_available_memory(void);

@@ -10,7 +10,7 @@
 #include <string.h>
 #include <time.h>
 
-#define HOST_VERSION "0.2.0-m2.2"
+#define HOST_VERSION "0.3.0-m5"
 
 enum exit_code {
     EXIT_CLEAN = 0,
@@ -896,6 +896,9 @@ static int run_fastboot(struct host_context *host, const uint8_t *artifact,
         return EXIT_SERIAL;
     }
     free(tail);
+    if (jh_platform_serial_drain(&host->serial) != 0) {
+        return EXIT_SERIAL;
+    }
     result = wait_fast_frame(host, &parser, 1000u, &kind, &first, &second);
     if (result < 0) return EXIT_SERIAL;
     if (result == 1 && kind == (uint8_t)'A' && first == 0u) {
@@ -1379,8 +1382,9 @@ int main(int argc, char **argv)
     }
     host_log(&host, "INFO", "start version=%s port=%s", HOST_VERSION,
              host.options.serial != NULL ? host.options.serial : "inherited-fd");
-    host_log(&host, "INFO", "platform timer=%s resolution-ms=%u "
-             "available-memory=%lu", jh_platform_timer_name(),
+    host_log(&host, "INFO", "platform=%s timer=%s resolution-ms=%u "
+             "available-memory=%lu", jh_platform_name(),
+             jh_platform_timer_name(),
              jh_platform_timer_resolution_ms(),
              (unsigned long)jh_platform_available_memory());
     if (host.options.config_path != NULL) {

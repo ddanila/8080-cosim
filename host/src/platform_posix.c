@@ -1,3 +1,6 @@
+#ifdef __APPLE__
+#define _DARWIN_C_SOURCE
+#endif
 #define _POSIX_C_SOURCE 200809L
 
 #include "platform.h"
@@ -58,6 +61,15 @@ const char *jh_platform_timer_name(void)
     return "CLOCK_MONOTONIC";
 }
 
+const char *jh_platform_name(void)
+{
+#ifdef __APPLE__
+    return "Darwin";
+#else
+    return "Linux";
+#endif
+}
+
 unsigned jh_platform_timer_resolution_ms(void)
 {
     struct timespec resolution;
@@ -85,6 +97,13 @@ static speed_t baud_value(unsigned baud)
     }
 }
 
+static int is_pseudo_terminal_path(const char *path)
+{
+    return strncmp(path, "/dev/pts/", 9u) == 0 ||
+        strncmp(path, "/dev/ttys", 9u) == 0 ||
+        strncmp(path, "/dev/pty", 8u) == 0;
+}
+
 int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned baud,
                               char parity)
 {
@@ -107,7 +126,7 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
 #endif
     );
     attributes.c_cflag |= CS8 | CLOCAL | CREAD;
-    /* Linux PTYs neither generate nor validate parity.  Some kernels accept
+    /* POSIX PTYs neither generate nor validate parity.  Some kernels accept
      * the first PARENB request, silently clear it, and reject an identical
      * request when the same PTY is adopted by a replacement process.  Keep
      * PTY framing logical for simulator tests; physical ports remain strict. */
@@ -159,10 +178,9 @@ int jh_platform_serial_open(struct jh_platform_serial *serial, const char *path,
     serial->fd = open(path, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (serial->fd < 0) return -1;
     memcpy(serial->path, path, length + 1u);
-    serial->pseudo_terminal =
+    serial->pseudo_terminal = is_pseudo_terminal_path(path) ||
         (ttyname_r(serial->fd, actual, sizeof(actual)) == 0 &&
-         strncmp(actual, "/dev/pts/", 9u) == 0) ||
-        strncmp(path, "/dev/pts/", 9u) == 0;
+         is_pseudo_terminal_path(actual));
     if (jh_platform_serial_configure(serial, baud, parity) != 0) {
         int saved = errno;
         close(serial->fd);

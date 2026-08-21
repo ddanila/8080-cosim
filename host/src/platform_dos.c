@@ -90,6 +90,11 @@ const char *jh_platform_timer_name(void)
     return "8253-PIT0+BIOS-tick";
 }
 
+const char *jh_platform_name(void)
+{
+    return "DOS";
+}
+
 unsigned jh_platform_timer_resolution_ms(void)
 {
     return 1u;
