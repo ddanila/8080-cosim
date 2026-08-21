@@ -32,6 +32,9 @@ history.
 - `portable-c-host-m2.2-dos-acceptance.md` — pinned local Open Watcom toolchain,
   reproducible 16-bit DOS artifact, DOSBox-X COM1-to-simulator evidence, and
   the exact M2.3 physical Pocket8086 gate.
+- `portable-c-host-macos-physical-check.md` — focused Apple Silicon build,
+  physical C8 cold-run evidence, Darwin transmit-drain finding, and the bounded
+  remaining M5 scope.
 - `jukuhost-config.md` — strict portable INI schema, authenticated boot slots,
   and safe A:/B: media policies.
 - `crt-decoder-baseline.md` — guarded clean-checkout build/CTest/synthetic-NTSC

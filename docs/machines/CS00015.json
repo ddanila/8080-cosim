@@ -1,29 +1,33 @@
 {
   "schema": "juku-machine-profile-v1",
   "machine_id": "CS00015",
-  "updated": "2026-08-18",
+  "updated": "2026-08-21",
   "location": "home lab",
   "deployment_role": "physical promotion and Jukuravi reference machine",
   "fitted_firmware": {
-    "identity": "JukuNet C6 / ROM ABI 1.2 D15/D16",
-    "sha256": "0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09",
+    "identity": "JukuNet C8 / ROM ABI 1.3 D15/D16",
+    "sha256": "a54cb877edfe25e939e05ada0e98783acb53cfc8969071c63928b119c8e09e46",
     "confidence": "physical-record"
   },
   "qualified_paths": [
-    "automatic 19,200-baud C6 Fastboot V16 and CP/M Plus prompt",
+    "automatic 19,200-baud C8 Fastboot V16 and CP/M Plus prompt",
     "A: and native-geometry B: NetDisk operation",
     "DIR, sequential TYPE, DIAG ALL, WBOOT, snapshot ERA, and six SOAK passes",
     "local keyboard input observed through N4 and ROM diagnostic sound",
-    "two live host replacements and delayed-host bootstrap recovery without RESET"
+    "live host replacement and delayed-host bootstrap recovery without RESET",
+    "native arm64 macOS cold STATUS, DIAG ALL, N4BULK, and SOAK with S21 07h"
   ],
   "open_investigations": [
-    "observe exact C6 display geometry, glyphs, pseudographics, and blinking underline cursor with a working monitor"
+    "observe exact C8 display geometry, glyphs, pseudographics, and blinking underline cursor with a working monitor",
+    "safely exercise and observe the C8 C1-C5 POST failure tones"
   ],
   "evidence": [
     "docs/cs00015-service-record.md",
     "spinoffs/jukuravi/T32-PHYSICAL.md",
     "spinoffs/jukuravi/network-rom/juku-network-rom-abi1.1-c5.json",
     "../cpm-plus-juku/docs/cs00015-c5-blind-qualification-20260817.md",
-    "../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md"
+    "../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md",
+    "../cpm-plus-juku/docs/cs00015-c8-blind-qualification-20260820.md",
+    "docs/portable-c-host-macos-physical-check.md"
   ]
 }

@@ -229,10 +229,11 @@ reproduced reliability reason. Exact per-run evidence and rationale are in
 
 ## Current deployment
 
-Following the Arvutimuuseum demonstration, CS00015 is in the home lab. On
-2026-08-18 the Ekta4402 pair was replaced by the exact JukuNet C6 / ROM ABI
-1.2 D15/D16 pair. This is the current network-first CP/M Plus and Jukuravi
-development reference machine. CS00014 is in the museum's main exhibition
+Following the Arvutimuuseum demonstration, CS00015 is in the home lab. The
+JukuNet C6 / ROM ABI 1.2 pair fitted on 2026-08-18 was replaced on 2026-08-20
+by the exact JukuNet C8 / ROM ABI 1.3 D15/D16 pair. This is the current
+network-first CP/M Plus and Jukuravi development reference machine. CS00014 is
+in the museum's main exhibition
 with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 `machine-deployment-status.md` for the cross-machine ledger.
 
@@ -243,7 +244,7 @@ with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 | D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official EktaSoft 3.7 low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
 | D55/D57 vertical timing path | Historical T15/T16/T31/T32 D55 bits used an unclocked predicate; corrected Ekta raster plus D57 channel-2 sampling passed 8/8 | D57 channel 2 and D55.13 `/VER RTR` output path are physically validated; this does not independently exercise every D55 counter predicate |
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
-| Currently fitted firmware | JukuNet C6 / ABI 1.2 D15/D16 pair | Repeated automatic 19,200-baud V16 boot, NetDisk-v3/N4, diagnostics, keyboard, sound, write/warm-boot/soak, and two live reconnects passed blind qualification on 2026-08-18; display observation remains pending |
+| Currently fitted firmware | JukuNet C8 / ABI 1.3 D15/D16 pair | Repeated automatic 19,200-baud V16 boot, NetDisk-v3/N4, diagnostics, keyboard, sound, write/warm-boot/soak, and live reconnect passed blind qualification. On 2026-08-21 a native arm64 macOS host additionally passed a cold `STATUS`/`DIAG ALL`/`N4BULK`/`SOAK` run with S21 `07h`; display observation remains pending. |
 
 The preceding Ekta4402 image is SHA-256
 `20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`;
