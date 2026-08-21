@@ -134,6 +134,14 @@ recovery wait.  Bits 2:1 select 40x24, 53x24, 64x20, or MODX-compatible 80x24.
 Bits 4:3 select English, Estonian, CP866 Russian, or English/user-remap.  ROM
 samples the byte once at reset and CP/M consumes the same latched value.
 
+For a future C9 or later successor, bit 0 is reserved rather than assigned to
+boot policy. Network boot will be unconditional: the concealed `N` gate has no
+visible prompt, monitor, or distinct destination and therefore does not justify
+a permanent configuration bit. This policy change is not sufficient reason to
+build or burn C9 by itself; it should be adopted only alongside another
+measured ROM improvement. C8 remains immutable and continues to interpret bit
+0 as documented above.
+
 ## Resident ABI
 
 The manifest is fixed at `FF00h` and vectors start at `FF20h`. ABI 1.2 offers:
