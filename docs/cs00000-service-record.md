@@ -149,6 +149,25 @@ no additional hardware conclusion is drawn from this failed host session.
 The retained log and capture begin at
 [`cs00000-ek37-diag06-20260822T162818Z.log`](evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log).
 
+### Post-fix physical confirmation and DIAG 0.6
+
+The next cold experiment used fixed host `0.3.1-m6` and the latest CP/M Plus
+native recovery image. The already-active EK37 Janet session was learned as
+`02 -> 01`; the one-record stock bootstrap completed with five ACKs and zero
+rejects. JF15 then acknowledged after two probes, accepted its extension and
+9,267-byte compressed stream with CRC16/IBM `1C42`, and reached NetDisk v3
+without extension or stream retries. The first valid disk request arrived
+8.234 seconds after host start.
+
+At the physical `A>` prompt, bare `DIAG` detected the fitted EK37 ROM and
+showed the new no-argument help behavior. `DIAG ALL` then reported every test
+as `PASS` on screen. This physically confirms the self-contained DIAG 0.6 path
+on a known stock/remix ROM without depending on the JukuNet ROM diagnostic
+ABI. The clean session served 59 read requests / 177 records and stopped with
+exit 0, zero retries, bootstrap restarts, target resets, reconnects, or UART
+errors. Its retained evidence begins at
+[`cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json`](evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json).
+
 ## Remaining work
 
 - Do not use the failed CS00000 PSU until both parallel primary capacitors and

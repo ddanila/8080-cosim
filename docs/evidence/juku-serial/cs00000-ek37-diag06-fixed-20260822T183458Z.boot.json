@@ -1,0 +1,24 @@
+{
+  "boot_baud": 9600,
+  "capture": "/home/ddanila/fun/8080-cosim/docs/evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.cap",
+  "capture_started_monotonic": 1289667.968,
+  "completion_confirmed": 1,
+  "disk_baud": 19200,
+  "disk_protocol": 3,
+  "effective_boot_baud": 19200,
+  "fast_stage": "/home/ddanila/fun/cpm-plus-juku/out/cpm-plus-juku-fastboot-v15.bin",
+  "fast_stage_sha256": "881befd8ebd306ae7313b2dff8b83cb8d964988e17627d76efedaa49e6a19a5d",
+  "fastboot_version": 15,
+  "first_disk_request": {
+    "elapsed_seconds": 8.234,
+    "monotonic_seconds": 1289676.202,
+    "operation": 20,
+    "sequence": 1
+  },
+  "network_rom": false,
+  "recorded_at_utc": "2026-08-22T18:38:15.730928+00:00",
+  "schema": "juku-janet-boot-result-v1",
+  "serial": "/dev/ttyUSB0",
+  "system": "/home/ddanila/fun/cpm-plus-juku/out/cpm-plus-juku-system.bin",
+  "system_sha256": "254f940e36501dcf3f46c5ba23b2b6cb3b1b7f3a13b1e42ae9786f2fa337a4a4"
+}

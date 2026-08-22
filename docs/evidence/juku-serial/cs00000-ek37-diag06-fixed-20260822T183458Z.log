@@ -1,0 +1,79 @@
+00000000 INFO  start version=0.3.1-m6 port=/dev/ttyUSB0
+00000000 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000014 INFO  serial applied=9600 8O1 flow=none
+00000014 INFO  phase=stock-fastboot
+00000014 INFO  stock-assisted V15 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00000014 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00000063 INFO  Janet request accepted: 02 -> 01
+00000933 INFO  Janet bootstrap 1/1 records
+00000968 INFO  stock bootstrap complete: sent=17 ACK=5 REJ=0 turn-guard=0-ms
+00001228 INFO  phase=fastboot-v15 serial=19200 8N1; waiting adaptively for the acknowledged core
+00001260 INFO  V15 core acknowledged after 2 probes
+00001424 INFO  Fastboot V15 extension ready
+00001428 INFO  V15 stream header acknowledged after 1 probes
+00007498 INFO  Fastboot V15 complete: 9267 compressed bytes, CRC16/IBM=1C42, extension-retries=0
+00007500 INFO  phase=netdisk
+00007500 INFO  serving A: read-only, 19200 baud 8O1, N3
+00008234 INFO  disk op=14 seq=01 drive=0 track=2 sector=1 status=0
+00008308 INFO  disk op=14 seq=02 drive=0 track=2 sector=4 status=0
+00008369 INFO  disk op=14 seq=03 drive=0 track=2 sector=11 status=0
+00008430 INFO  disk op=14 seq=04 drive=0 track=2 sector=18 status=0
+00008491 INFO  disk op=14 seq=05 drive=0 track=2 sector=25 status=0
+00008552 INFO  disk op=14 seq=06 drive=0 track=2 sector=28 status=0
+00008613 INFO  disk op=14 seq=07 drive=0 track=2 sector=35 status=0
+00008674 INFO  disk op=14 seq=08 drive=0 track=2 sector=6 status=0
+00008735 INFO  disk op=14 seq=09 drive=0 track=2 sector=13 status=0
+00008796 INFO  disk op=14 seq=0A drive=0 track=2 sector=16 status=0
+00008930 INFO  disk op=14 seq=0B drive=0 track=2 sector=23 status=0
+00009088 INFO  disk op=14 seq=0C drive=0 track=2 sector=1 status=0
+00009355 INFO  disk op=14 seq=0D drive=0 track=2 sector=29 status=0
+00009615 INFO  disk op=14 seq=0E drive=0 track=2 sector=32 status=0
+00009888 INFO  disk op=14 seq=0F drive=0 track=2 sector=39 status=0
+00010162 INFO  disk op=14 seq=10 drive=0 track=3 sector=2 status=0
+00010435 INFO  disk op=14 seq=11 drive=0 track=3 sector=9 status=0
+00010708 INFO  disk op=14 seq=12 drive=0 track=3 sector=12 status=0
+00010981 INFO  disk op=14 seq=13 drive=0 track=3 sector=19 status=0
+00011254 INFO  disk op=14 seq=14 drive=0 track=3 sector=26 status=0
+00011381 INFO  disk op=14 seq=15 drive=0 track=3 sector=33 status=0
+00011600 INFO  disk op=14 seq=16 drive=0 track=2 sector=1 status=0
+00033877 INFO  disk op=14 seq=17 drive=0 track=3 sector=13 status=0
+00034149 INFO  disk op=14 seq=18 drive=0 track=3 sector=16 status=0
+00034421 INFO  disk op=14 seq=19 drive=0 track=3 sector=23 status=0
+00034693 INFO  disk op=14 seq=1A drive=0 track=3 sector=30 status=0
+00034965 INFO  disk op=14 seq=1B drive=0 track=3 sector=37 status=0
+00035237 INFO  disk op=14 seq=1C drive=0 track=3 sector=40 status=0
+00035510 INFO  disk op=14 seq=1D drive=0 track=4 sector=3 status=0
+00035644 INFO  disk op=14 seq=1E drive=0 track=4 sector=10 status=0
+00037108 INFO  disk op=14 seq=1F drive=0 track=2 sector=1 status=0
+00037375 INFO  disk op=14 seq=20 drive=0 track=2 sector=29 status=0
+00037636 INFO  disk op=14 seq=21 drive=0 track=2 sector=32 status=0
+00037909 INFO  disk op=14 seq=22 drive=0 track=2 sector=39 status=0
+00038182 INFO  disk op=14 seq=23 drive=0 track=3 sector=2 status=0
+00038455 INFO  disk op=14 seq=24 drive=0 track=3 sector=9 status=0
+00038728 INFO  disk op=14 seq=25 drive=0 track=3 sector=12 status=0
+00039001 INFO  disk op=14 seq=26 drive=0 track=3 sector=19 status=0
+00039274 INFO  disk op=14 seq=27 drive=0 track=3 sector=26 status=0
+00039401 INFO  disk op=14 seq=28 drive=0 track=3 sector=33 status=0
+00079197 INFO  disk op=14 seq=29 drive=0 track=2 sector=1 status=0
+00079477 INFO  disk op=14 seq=2A drive=0 track=3 sector=13 status=0
+00079749 INFO  disk op=14 seq=2B drive=0 track=3 sector=16 status=0
+00080021 INFO  disk op=14 seq=2C drive=0 track=3 sector=23 status=0
+00080293 INFO  disk op=14 seq=2D drive=0 track=3 sector=30 status=0
+00080565 INFO  disk op=14 seq=2E drive=0 track=3 sector=37 status=0
+00080837 INFO  disk op=14 seq=2F drive=0 track=3 sector=40 status=0
+00081109 INFO  disk op=14 seq=30 drive=0 track=4 sector=3 status=0
+00081243 INFO  disk op=14 seq=31 drive=0 track=4 sector=10 status=0
+00087731 INFO  disk op=14 seq=32 drive=0 track=2 sector=1 status=0
+00087998 INFO  disk op=14 seq=33 drive=0 track=2 sector=29 status=0
+00088258 INFO  disk op=14 seq=34 drive=0 track=2 sector=32 status=0
+00088531 INFO  disk op=14 seq=35 drive=0 track=2 sector=39 status=0
+00088804 INFO  disk op=14 seq=36 drive=0 track=3 sector=2 status=0
+00089077 INFO  disk op=14 seq=37 drive=0 track=3 sector=9 status=0
+00089350 INFO  disk op=14 seq=38 drive=0 track=3 sector=12 status=0
+00089623 INFO  disk op=14 seq=39 drive=0 track=3 sector=19 status=0
+00089896 INFO  disk op=14 seq=3A drive=0 track=3 sector=26 status=0
+00090023 INFO  disk op=14 seq=3B drive=0 track=3 sector=33 status=0
+00175818 INFO  phase=stopped
+00175818 INFO  stop exit=0 rx=689 tx=27526 requests=59 reads=59 records=177 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0
