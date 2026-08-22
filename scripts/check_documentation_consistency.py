@@ -552,9 +552,23 @@ def main() -> int:
     cosim_runtime = read("docs/cosim-runtime-reference.md")
     fdc_readiness = read("docs/fdc-readiness.md")
     hdl_readme = read("hdl/README.md")
+    plan_status_match = re.search(
+        r"^Status date: \*\*(\d{4}-\d{2}-\d{2})\*\*\.$",
+        plan,
+        re.MULTILINE,
+    )
+    if not plan_status_match:
+        failures.append("PLAN status date is missing or malformed")
+    elif plan_status_match.group(1) < "2026-08-09":
+        failures.append("PLAN status date is older than the D55 diagnostic audit")
+    if not re.search(
+        r"(?:old\s+D55\s+predicate\s+invalidated|invalidated\s+(?:the\s+)?old\s+D55\s+predicate)",
+        plan,
+        re.IGNORECASE,
+    ):
+        failures.append("PLAN Jukuravi dashboard omits the invalidated old D55 predicate")
+
     august_markers = (
-        (plan, "Status date: **2026-08-09**", "PLAN status date is older than the D55 diagnostic audit"),
-        (plan, "OLD D55 PREDICATE INVALIDATED", "PLAN Jukuravi dashboard state is stale"),
         (plan, "Until new `MAIN-P0` measurements are accepted", "PLAN lost the physical-fidelity edit hold"),
         (jukuravi_readme, "completed serial-only T33 investigation", "Jukuravi README still presents T33 as future work"),
         (t33_plan, "Status: **COMPLETED 2026-08-05; no re-burn was required**", "T33 completion marker is missing"),
