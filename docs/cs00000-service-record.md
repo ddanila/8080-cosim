@@ -35,6 +35,20 @@ by the PSU failure. The prior intermittent silence/continuous-tone starts and
 the failed primary capacitor may be related, but that remains only a hypothesis
 until the supply and board rails/reset/clock behavior are measured.
 
+### EK37 ROM-swap discriminator
+
+Later on 2026-08-22, the owner replaced the stock `#0031` pair with the known
+EktaSoft 3.7 / Serial `#0037` ROM pair. CS00000 then started normally and
+produced a correct display on the first reported attempt.
+
+This is strong evidence against a broad post-PSU mainboard or video-output
+failure. It narrows the immediate no-display behavior to the removed `#0031`
+ROM pair, its socket/contact state, or a firmware-specific startup dependency.
+It does not yet prove that either `#0031` device is electrically bad: changing
+the ROMs also reseated the sockets and changed the exact cold-start event. The
+`#0031` pair should be preserved, identified by socket, read repeatedly, and
+compared before any repair conclusion.
+
 ## Stock Janet and S21
 
 The initially reported S21 value was `00101000`. With the stock-ROM meaning of
@@ -97,8 +111,12 @@ physical cold run with the new C host remains the final confirmation.
 - Do not use the failed CS00000 PSU until both parallel primary capacitors and
   the affected primary-side circuitry have been repaired and verified.
 - With the known-working CS00024 PSU, record the exact beep sequence and check
-  the CS00000 supply rails at the board, reset, CPU clock, and earliest POST
-  progress before inferring a video-only fault.
+  the CS00000 supply rails at the board. The successful EK37 start lowers the
+  priority of broad reset/clock/video diagnosis unless the symptom returns with
+  EK37.
+- Repeat several EK37 cold starts, then preserve and repeatedly dump the
+  removed `#0031` D15/D16 pair and inspect/clean its socket contacts before a
+  controlled comparison run.
 - Repeat the stock-assisted JF15 cold boot using C host `0.3.0-m6`; retain its
   log and capture.
 - Characterize the intermittent silent/continuous-tone cold-start symptom as
