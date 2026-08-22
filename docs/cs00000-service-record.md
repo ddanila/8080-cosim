@@ -1,6 +1,6 @@
 # CS00000 service record
 
-Status date: 2026-08-21
+Status date: 2026-08-22
 
 CS00000 is a home-lab Juku received from Arvutimuuseum. Its fitted stock ROM
 identifies itself on screen as ROM `#0031`, RomBios `3.43`, and Janet `1.2`.
@@ -13,6 +13,27 @@ The machine generally reaches the stock monitor, but some cold starts produce
 silence or the continuous low failure tone. A later start can succeed without
 a recorded repair. This intermittent power-on symptom remains open and must
 not be conflated with the serial result below.
+
+## PSU failure and subsequent startup state
+
+On 2026-08-22, one of the two parallel `22 uF / 350 V` primary-bus
+electrolytic capacitors in the CS00000 power supply failed. The computer
+continued operating at the time, but that supply is now out of service pending
+repair and verification.
+
+CS00000 was subsequently tried with the power supply from CS00024. It produced
+a short startup beep, but normally produced no visible display output. On one
+attempt the display contained garbage, establishing that the monitor and at
+least part of the physical video-output path could produce a signal; it does
+not establish correct video timing, framebuffer contents, CPU execution, or
+successful POST. No further diagnosis is claimed yet, and continued bench
+experiments are pending.
+
+This new state supersedes the earlier observation that CS00000 generally
+reached the monitor. It does not by itself prove that the mainboard was damaged
+by the PSU failure. The prior intermittent silence/continuous-tone starts and
+the failed primary capacitor may be related, but that remains only a hypothesis
+until the supply and board rails/reset/clock behavior are measured.
 
 ## Stock Janet and S21
 
@@ -73,6 +94,11 @@ physical cold run with the new C host remains the final confirmation.
 
 ## Remaining work
 
+- Do not use the failed CS00000 PSU until both parallel primary capacitors and
+  the affected primary-side circuitry have been repaired and verified.
+- With the known-working CS00024 PSU, record the exact beep sequence and check
+  the CS00000 supply rails at the board, reset, CPU clock, and earliest POST
+  progress before inferring a video-only fault.
 - Repeat the stock-assisted JF15 cold boot using C host `0.3.0-m6`; retain its
   log and capture.
 - Characterize the intermittent silent/continuous-tone cold-start symptom as
