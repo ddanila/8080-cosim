@@ -23,6 +23,14 @@ circuit, or mainboard electrical interface differ. In particular, a PSU that
 is electrically suitable must not be assumed to be a drop-in mechanical
 replacement across machines.
 
+The owner's current hypothesis is that CS00024 is a later, possibly the latest
+observed, production version: its higher machine number and reported later
+year are consistent with the coordinated construction differences. This is
+plausible but unconfirmed. Machine numbers need not be strictly chronological,
+and the PSU or keyboard could have been replaced independently during service.
+The exact year marking and comparison-machine markings have not yet been
+recorded here.
+
 ## Useful follow-up evidence
 
 - Photograph the complete PSU assembly, speaker attachment, connector and
@@ -32,3 +40,7 @@ replacement across machines.
 - Record PSU, keyboard and chassis assembly markings plus connector pin count,
   keying and wire colours before assigning a revision or interchangeability
   claim.
+- Record the exact machine/year labels and representative IC date codes from
+  CS00024 and at least one earlier-numbered machine. Correlated board, PSU and
+  keyboard dates would distinguish a later production build from replacement
+  subassemblies more convincingly than the serial number alone.
