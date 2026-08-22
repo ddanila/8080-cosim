@@ -81,6 +81,8 @@ findings. Every status applies only to the boundary named by the report.
   repaired D1, corrected D55 status, current JukuNet ROM, physical
   dual-network-drive validation, and the CS00014-controlled isolation of the
   board-local blank-video fault),
+  `cs00024-construction-variant.md` (owner-observed PSU-mounted speaker,
+  unmarked keyboard PCB and mechanically incompatible PSU bracket),
   `jukuravi-d55-diagnostic-audit.md` (exact-sheet/8253 review, invalidation of
   the unclocked T15/T16/T31/T32 predicate, and clock-safe T34 fault matrix),
   `cs00024-t36-diagnosis.md` (complete T36 four-pattern 32 KiB physical proof,

@@ -1,7 +1,7 @@
 {
   "schema": "juku-machine-profile-v1",
   "machine_id": "CS00024",
-  "updated": "2026-08-18",
+  "updated": "2026-08-22",
   "location": null,
   "deployment_role": "Arvutimuuseum diagnostic board; last used on the bench",
   "fitted_firmware": {
@@ -17,11 +17,13 @@
   "open_investigations": [
     "rerun corrected D57 channel-2 probe after arming the raster",
     "compare none, raster, and raster-syncb DRAM retention stages",
-    "isolate the separate 12 ms-per-symbol serial/parser margin"
+    "isolate the separate 12 ms-per-symbol serial/parser margin",
+    "photograph and identify the PSU, speaker, keyboard, and connector construction variant"
   ],
   "evidence": [
     "spinoffs/jukuravi/CS00024-PHYSICAL.md",
     "docs/cs00024-t36-diagnosis.md",
+    "docs/cs00024-construction-variant.md",
     "spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md"
   ]
 }
