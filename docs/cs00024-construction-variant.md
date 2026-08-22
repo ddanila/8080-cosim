@@ -23,11 +23,12 @@ circuit, or mainboard electrical interface differ. In particular, a PSU that
 is electrically suitable must not be assumed to be a drop-in mechanical
 replacement across machines.
 
-The owner's current hypothesis is that CS00024 is a later, possibly the latest
-observed, production version: its higher machine number and reported later
-year are consistent with the coordinated construction differences. This is
-plausible but unconfirmed. Machine numbers need not be strictly chronological,
-and the PSU or keyboard could have been replaced independently during service.
+The owner's current hypothesis is that this is a later, possibly the latest
+observed, production version. The reported later year is consistent with the
+coordinated construction differences, but the hypothesis remains unconfirmed;
+the exact factory serial number will be recorded later. `CS00024` is an
+Arvutimuuseum inventory identifier and provides no production chronology. The
+PSU or keyboard could also have been replaced independently during service.
 The exact year marking and comparison-machine markings have not yet been
 recorded here.
 
