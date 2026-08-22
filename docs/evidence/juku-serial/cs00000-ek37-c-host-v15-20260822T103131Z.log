@@ -1,0 +1,42 @@
+00000000 INFO  start version=0.3.0-m6 port=/dev/ttyUSB0
+00000000 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000025 INFO  serial applied=9600 8O1 flow=none
+00000025 INFO  phase=stock-fastboot
+00000026 INFO  stock-assisted V15 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00000026 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00029376 INFO  Janet request accepted: 02 -> 01
+00030267 INFO  Janet bootstrap 1/1 records
+00030301 INFO  stock bootstrap complete: sent=17 ACK=5 REJ=0 turn-guard=0-ms
+00030560 INFO  phase=fastboot-v15 serial=19200 8N1; waiting adaptively for the acknowledged core
+00030592 INFO  V15 core acknowledged after 2 probes
+00030756 INFO  Fastboot V15 extension ready
+00030760 INFO  V15 stream header acknowledged after 1 probes
+00036831 INFO  Fastboot V15 complete: 9267 compressed bytes, CRC16/IBM=1C42, extension-retries=0
+00036833 INFO  phase=netdisk
+00036833 INFO  serving A: read-only, 19200 baud 8O1, N3
+00037529 INFO  disk op=14 seq=01 drive=0 track=2 sector=1 status=0
+00037599 INFO  disk op=14 seq=02 drive=0 track=2 sector=4 status=0
+00037660 INFO  disk op=14 seq=03 drive=0 track=2 sector=11 status=0
+00037721 INFO  disk op=14 seq=04 drive=0 track=2 sector=18 status=0
+00037782 INFO  disk op=14 seq=05 drive=0 track=2 sector=25 status=0
+00037843 INFO  disk op=14 seq=06 drive=0 track=2 sector=28 status=0
+00037904 INFO  disk op=14 seq=07 drive=0 track=2 sector=35 status=0
+00037965 INFO  disk op=14 seq=08 drive=0 track=2 sector=6 status=0
+00038026 INFO  disk op=14 seq=09 drive=0 track=2 sector=13 status=0
+00038087 INFO  disk op=14 seq=0A drive=0 track=2 sector=16 status=0
+00038221 INFO  disk op=14 seq=0B drive=0 track=2 sector=23 status=0
+00038341 INFO  disk op=14 seq=0C drive=0 track=2 sector=1 status=0
+00038608 INFO  disk op=14 seq=0D drive=0 track=2 sector=29 status=0
+00038868 INFO  disk op=14 seq=0E drive=0 track=2 sector=32 status=0
+00039141 INFO  disk op=14 seq=0F drive=0 track=2 sector=39 status=0
+00039414 INFO  disk op=14 seq=10 drive=0 track=3 sector=2 status=0
+00039687 INFO  disk op=14 seq=11 drive=0 track=3 sector=9 status=0
+00039960 INFO  disk op=14 seq=12 drive=0 track=3 sector=12 status=0
+00040233 INFO  disk op=14 seq=13 drive=0 track=3 sector=19 status=0
+00040507 INFO  disk op=14 seq=14 drive=0 track=3 sector=26 status=0
+00040634 INFO  disk op=14 seq=15 drive=0 track=3 sector=33 status=0
+00040815 INFO  disk op=14 seq=16 drive=0 track=2 sector=1 status=0
+00089095 INFO  phase=stopped
+00089095 INFO  stop exit=0 rx=370 tx=14066 requests=22 reads=22 records=66 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0

@@ -213,9 +213,12 @@ seconds and proves the former fixed-window failure cannot recur.
 `tests/jukuhost_stock_v15_cosim_test.py` boots stock Ekta4401 through the C
 host, JF15, CP/M Plus, and NetDisk/N4 to `A>`. The existing C8 gate still passes
 normal, missed-ready plus host-replacement, and mid-stream-reset variants at a
-physical 1.7 MHz clock. The exact new C path remains to be repeated on a real
-stock-ROM machine; the retained CS00000 transfer above used the retired host
-only to establish the failure boundary.
+physical 1.7 MHz clock. On 2026-08-22, CS00000 with EK37 / RomBios 3.43m fitted
+physically passed the new C path: identity `02 -> 01`, zero Janet rejects,
+two core probes, one stream-header probe, zero extension/stream retries,
+CP/M `A>`, and 22 clean NetDisk requests. The exact removed `#0031` pair still
+belongs in the controlled ROM/socket comparison; the implementation itself is
+no longer awaiting a physical confirmation.
 
 ### Stock-system simulator checkpoint
 

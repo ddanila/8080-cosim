@@ -105,7 +105,30 @@ The portable C host `0.3.0-m6` consequently admits exact JF15, adapts Janet
 line-turn delay only when the client resumes polling or rejects a frame, and
 probes the core until the configured boot deadline. Simulator regressions
 cover a five-second core delay and the complete stock-ROM-to-CP/M path. A
-physical cold run with the new C host remains the final confirmation.
+physical cold run with the new C host was subsequently completed as described
+below.
+
+### Native C-host physical confirmation
+
+On 2026-08-22, with the known-working EK37 / RomBios 3.43m pair fitted, native
+C host `0.3.0-m6` completed the complete stock-assisted V15 path from one
+command. It learned Janet identity `02 -> 01`, sent the 128-byte core with no
+reject and a zero-millisecond destination-zero guard, switched to
+19,200/8N1, received the core acknowledgement after two probes, and installed
+the 9,267-byte compressed stream with CRC16/IBM `1C42`. Extension and stream
+retry counts were both zero.
+
+CP/M Plus reached `A>` and served 22 NetDisk read requests / 66 records at
+19,200/8O1. The session ended cleanly with exit 0 and counters `rx=370`,
+`tx=14066`, `retries=0`, `target-resets=0`, and `uart-errors=0`. The portable
+evidence converter accepts the 371-record capture and matching 22-request log.
+The retained artifacts begin at
+[`cs00000-ek37-c-host-v15-20260822T103131Z.boot.json`](evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json).
+
+This physically confirms the adaptive C-host/JF15 implementation on CS00000.
+It does not replace the still-useful controlled `#0031` comparison: EK37 was
+fitted during this run, so the exact removed stock pair has not yet repeated
+the new-host path.
 
 ## Remaining work
 
@@ -118,8 +141,6 @@ physical cold run with the new C host remains the final confirmation.
 - Preserve and repeatedly dump the removed `#0031` D15/D16 pair, then
   inspect/clean its socket contacts before a controlled comparison run. The
   repeated EK37 cold-start control is complete and remained fully stable.
-- Repeat the stock-assisted JF15 cold boot using C host `0.3.0-m6`; retain its
-  log and capture.
 - Characterize the intermittent silent/continuous-tone cold-start symptom as
   a separate power/reset/clock investigation.
 - Do not replace D11 based on the superseded suspicion: local D11 diagnostics,

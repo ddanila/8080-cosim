@@ -48,5 +48,8 @@
       "keyboard/S21"
     ]
   },
-  "new_c_host_physical_confirmation": "pending"
+  "new_c_host_physical_confirmation": {
+    "status": "passed with EK37 / RomBios 3.43m fitted; exact #0031 repeat remains part of the controlled ROM comparison",
+    "evidence": "cs00000-ek37-c-host-v15-20260822T103131Z.boot.json"
+  }
 }

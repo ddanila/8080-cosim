@@ -44,7 +44,9 @@ the exact JF15 stock-assisted CP/M Plus path to the same C executable after a
 CS00000 experiment proved the retired wrapper's fixed core-probe window was
 too short. V1-V14 remain rejected. Focused regressions delay the V15 core for
 five seconds and boot stock Ekta4401 through V15 to `A>`; the full Linux gate
-and Open Watcom DOS build pass. See
+and Open Watcom DOS build pass. A retained 2026-08-22 CS00000/EK37 run then
+physically passed the same native C state machine through `A>` and 22 clean
+NetDisk requests with zero retries or UART errors. See
 [portable-c-host-implementation.md](portable-c-host-implementation.md) and
 [cs00000-service-record.md](cs00000-service-record.md).
 
