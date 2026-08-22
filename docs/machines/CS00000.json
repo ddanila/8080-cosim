@@ -14,11 +14,10 @@
     "CPU, RAM, PIT, and D11 network-loaded diagnostics",
     "stock-assisted V15 core followed by direct 19,200 recovery without RESET",
     "CP/M Plus prompt and sustained 19,200-baud NetDisk v3",
-    "normal first reported start with EktaSoft 3.7 #0037 after #0031 no-display starts"
+    "100 percent successful repeated cold starts with EktaSoft 3.7 #0037 after #0031 no-display starts"
   ],
   "open_investigations": [
     "repeat stock-assisted V15 cold boot using portable C host 0.3.0-m6",
-    "repeat EK37 cold starts",
     "preserve and repeatedly dump removed stock #0031 D15/D16 pair",
     "inspect ROM socket contacts and compare #0031 with EK37 under controlled conditions",
     "repair and verify original PSU"

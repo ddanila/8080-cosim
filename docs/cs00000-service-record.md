@@ -39,7 +39,8 @@ until the supply and board rails/reset/clock behavior are measured.
 
 Later on 2026-08-22, the owner replaced the stock `#0031` pair with the known
 EktaSoft 3.7 / Serial `#0037` ROM pair. CS00000 then started normally and
-produced a correct display on the first reported attempt.
+produced a correct display. Subsequent repeated cold starts remained 100%
+successful at the time of reporting; the exact run count was not recorded.
 
 This is strong evidence against a broad post-PSU mainboard or video-output
 failure. It narrows the immediate no-display behavior to the removed `#0031`
@@ -114,9 +115,9 @@ physical cold run with the new C host remains the final confirmation.
   the CS00000 supply rails at the board. The successful EK37 start lowers the
   priority of broad reset/clock/video diagnosis unless the symptom returns with
   EK37.
-- Repeat several EK37 cold starts, then preserve and repeatedly dump the
-  removed `#0031` D15/D16 pair and inspect/clean its socket contacts before a
-  controlled comparison run.
+- Preserve and repeatedly dump the removed `#0031` D15/D16 pair, then
+  inspect/clean its socket contacts before a controlled comparison run. The
+  repeated EK37 cold-start control is complete and remained fully stable.
 - Repeat the stock-assisted JF15 cold boot using C host `0.3.0-m6`; retain its
   log and capture.
 - Characterize the intermittent silent/continuous-tone cold-start symptom as
