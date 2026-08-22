@@ -17,10 +17,11 @@ import tty
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CPM = Path(os.environ.get("CPM_PLUS_JUKU_ROOT", ROOT.parent / "cpm-plus-juku"))
+CPM_ROOT = os.environ.get("CPM_PLUS_JUKU_ROOT")
+CPM = Path(CPM_ROOT) / "out" if CPM_ROOT else ROOT / "tests/fixtures/jukuhost-v15"
 HOST = ROOT / "build/jukuhost"
-SYSTEM = CPM / "out/cpm-plus-juku-system.bin"
-FASTBOOT = CPM / "out/cpm-plus-juku-fastboot-v15.bin"
+SYSTEM = CPM / "cpm-plus-juku-system.bin"
+FASTBOOT = CPM / "cpm-plus-juku-fastboot-v15.bin"
 
 sys.path.insert(0, str(ROOT / "tests/fixtures"))
 from legacy_janet_fastboot import split_stage_artifact  # noqa: E402

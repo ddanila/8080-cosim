@@ -2,3 +2,4 @@ ref/photos/**/*.jpg filter=lfs diff=lfs merge=lfs -text
 third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820 filter=lfs diff=lfs merge=lfs -text
 *.pdf binary
 *.bin binary
+*.img binary

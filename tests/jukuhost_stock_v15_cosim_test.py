@@ -17,12 +17,13 @@ import tty
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CPM = Path(os.environ.get("CPM_PLUS_JUKU_ROOT", ROOT.parent / "cpm-plus-juku"))
+CPM_ROOT = os.environ.get("CPM_PLUS_JUKU_ROOT")
+CPM = Path(CPM_ROOT) / "out" if CPM_ROOT else ROOT / "tests/fixtures/jukuhost-v15"
 HOST = ROOT / "build/jukuhost"
 ROM = ROOT / "spinoffs/jukuravi/remix/ekta4401.bin"
-SYSTEM = CPM / "out/cpm-plus-juku-system.bin"
-FASTBOOT = CPM / "out/cpm-plus-juku-fastboot-v15.bin"
-VOLUME = CPM / "out/cpm-plus-juku.img"
+SYSTEM = CPM / "cpm-plus-juku-system.bin"
+FASTBOOT = CPM / "cpm-plus-juku-fastboot-v15.bin"
+VOLUME = CPM / "cpm-plus-juku.img"
 EVIDENCE = ROOT / "tools/jukuhost_evidence.py"
 
 
