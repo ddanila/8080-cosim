@@ -1,0 +1,50 @@
+00000000 INFO  start version=0.3.1-m6 port=/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0
+00000000 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000025 INFO  serial applied=9600 8O1 flow=none
+00000025 INFO  phase=stock-fastboot
+00000026 INFO  stock-assisted V15 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00000026 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00012542 INFO  Janet request accepted: 02 -> 01
+00013451 INFO  Janet bootstrap 1/1 records
+00013486 INFO  stock bootstrap complete: sent=17 ACK=5 REJ=0 turn-guard=0-ms
+00013745 INFO  phase=fastboot-v15 serial=19200 8N1; waiting adaptively for the acknowledged core
+00013776 INFO  V15 core acknowledged after 2 probes
+00013942 INFO  Fastboot V15 extension ready
+00013946 INFO  V15 stream header acknowledged after 1 probes
+00020015 INFO  Fastboot V15 complete: 9267 compressed bytes, CRC16/IBM=1C42, extension-retries=0
+00020017 INFO  phase=netdisk
+00020017 INFO  serving A: read-only, 19200 baud 8O1, N3
+00020752 INFO  disk op=14 seq=01 drive=0 track=2 sector=1 status=0
+00020825 INFO  disk op=14 seq=02 drive=0 track=2 sector=4 status=0
+00020886 INFO  disk op=14 seq=03 drive=0 track=2 sector=11 status=0
+00020947 INFO  disk op=14 seq=04 drive=0 track=2 sector=18 status=0
+00021009 INFO  disk op=14 seq=05 drive=0 track=2 sector=25 status=0
+00021070 INFO  disk op=14 seq=06 drive=0 track=2 sector=28 status=0
+00021131 INFO  disk op=14 seq=07 drive=0 track=2 sector=35 status=0
+00021192 INFO  disk op=14 seq=08 drive=0 track=2 sector=6 status=0
+00021253 INFO  disk op=14 seq=09 drive=0 track=2 sector=13 status=0
+00021314 INFO  disk op=14 seq=0A drive=0 track=2 sector=16 status=0
+00021448 INFO  disk op=14 seq=0B drive=0 track=2 sector=23 status=0
+00021607 INFO  disk op=14 seq=0C drive=0 track=2 sector=1 status=0
+00021874 INFO  disk op=14 seq=0D drive=0 track=2 sector=29 status=0
+00022134 INFO  disk op=14 seq=0E drive=0 track=2 sector=32 status=0
+00022407 INFO  disk op=14 seq=0F drive=0 track=2 sector=39 status=0
+00022680 INFO  disk op=14 seq=10 drive=0 track=3 sector=2 status=0
+00022953 INFO  disk op=14 seq=11 drive=0 track=3 sector=9 status=0
+00023226 INFO  disk op=14 seq=12 drive=0 track=3 sector=12 status=0
+00023500 INFO  disk op=14 seq=13 drive=0 track=3 sector=19 status=0
+00023773 INFO  disk op=14 seq=14 drive=0 track=3 sector=26 status=0
+00023900 INFO  disk op=14 seq=15 drive=0 track=3 sector=33 status=0
+00024120 INFO  disk op=14 seq=16 drive=0 track=2 sector=1 status=0
+00041926 INFO  disk op=14 seq=17 drive=0 track=3 sector=13 status=0
+00042200 INFO  disk op=14 seq=18 drive=0 track=3 sector=16 status=0
+00042476 INFO  disk op=14 seq=19 drive=0 track=3 sector=23 status=0
+00042748 INFO  disk op=14 seq=1A drive=0 track=3 sector=30 status=0
+00043020 INFO  disk op=14 seq=1B drive=0 track=3 sector=37 status=0
+00043292 INFO  disk op=14 seq=1C drive=0 track=3 sector=40 status=0
+00043565 INFO  disk op=14 seq=1D drive=0 track=4 sector=3 status=0
+00043700 INFO  disk op=14 seq=1E drive=0 track=4 sector=10 status=0
+00044586 INFO  phase=stopped
+00044586 INFO  stop exit=0 rx=441 tx=17245 requests=30 reads=30 records=90 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0

@@ -168,6 +168,37 @@ exit 0, zero retries, bootstrap restarts, target resets, reconnects, or UART
 errors. Its retained evidence begins at
 [`cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json`](evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json).
 
+### USB/RS-232 adapter comparison
+
+A Diymore multifunction FTDI module (`0403:6001`, Linux `ftdi_sio`, DB9 male)
+was evaluated as an alternative to the known CP2102 + MAX3232 chain. Its local
+DB9 pin-2/pin-3 loopback returned exact bytes at 9,600/8O1, 19,200/8N1, and
+19,200/8O1. With the DB9 open, pin 3 measured approximately -9 V relative to
+pin 5 while pin 2 measured 0 V. These observations prove a working local USB
+UART/DB9 loop but do not by themselves prove interoperability with a separate
+RS-232 driver.
+
+Two Juku trials used the documented X3 wiring and the existing local
+X3.10/RTS-to-X3.5/CTS loop. Both the original and data-swapped arrangements
+left EK37 in `Wait`; native host `0.3.1-m6` received and transmitted zero bytes
+before its bounded timeout. A direct FTDI-to-CP2102/MAX cross-test also
+received zero bytes in both directions under both attempted data orders. Since
+that temporary join was not electrically instrumented, this does not prove
+which multifunction-module path or join was at fault. The Diymore module is
+therefore **not qualified for Juku**, but is not declared defective.
+
+The original CP2102 + MAX3232 chain was then restored without changing
+CS00000, EK37, the Juku-side cable, or host artifacts. It immediately learned
+Janet `02 -> 01`, completed stock/JF15 boot with zero rejects or retries,
+reached `A>`, served 30 reads / 90 records, and stopped with exit 0 and zero
+UART errors. This control keeps CS00000, its X3 wiring, local CTS loop, and the
+production host qualified; only the alternative adapter path remains open.
+Evidence begins at
+[`cs00000-ek37-cp2102-control-20260822T202538Z.boot.json`](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json).
+The exact module identity, selector interpretation, corrected live assumptions,
+and next discriminating bench test are recorded in
+[`ft232bl-adapter-investigation.md`](ft232bl-adapter-investigation.md).
+
 ## Remaining work
 
 - Do not use the failed CS00000 PSU until both parallel primary capacitors and

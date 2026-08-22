@@ -15,6 +15,7 @@
     "stock-assisted V15 core followed by direct 19,200 recovery without RESET",
     "portable C host 0.3.0-m6 stock-assisted V15 cold boot with EK37, CP/M Plus prompt, and 22-request NetDisk session",
     "portable C host 0.3.1-m6 post-truncation-fix boot and physical ROM-independent DIAG 0.6 ALL pass with EK37",
+    "restored CP2102 plus MAX3232 control boot after an unqualified Diymore FTDI adapter comparison",
     "CP/M Plus prompt and sustained 19,200-baud NetDisk v3",
     "100 percent successful repeated cold starts with EktaSoft 3.7 #0037 after #0031 no-display starts"
   ],
@@ -29,6 +30,7 @@
     "docs/evidence/juku-serial/cs00000-stock-v15-20260821.json",
     "docs/evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json",
     "docs/evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log",
-    "docs/evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json"
+    "docs/evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json",
+    "docs/evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json"
   ]
 }

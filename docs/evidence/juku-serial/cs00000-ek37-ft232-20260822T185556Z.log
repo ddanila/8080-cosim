@@ -1,0 +1,11 @@
+00000000 INFO  start version=0.3.1-m6 port=/dev/serial/by-id/usb-FTDI_USB__-__Serial-if00-port0
+00000000 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000015 INFO  serial applied=9600 8O1 flow=none
+00000015 INFO  phase=stock-fastboot
+00000015 INFO  stock-assisted V15 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00000015 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00120063 ERROR stock bootstrap timed out
+00120063 INFO  phase=failed
+00120063 ERROR stop exit=5 rx=0 tx=0 requests=0 reads=0 records=0 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0
