@@ -220,6 +220,31 @@ CP/M `A>`, and 22 clean NetDisk requests. The exact removed `#0031` pair still
 belongs in the controlled ROM/socket comparison; the implementation itself is
 no longer awaiting a physical confirmation.
 
+### Physical Janet truncation recovery
+
+A later CS00000/EK37 run on 2026-08-22 exposed a distinct parser recovery
+case. After the host accepted identity `02 -> 01`, the target emitted the
+five-byte prefix `E4 E4 02 01 07` of a data frame and immediately resumed its
+six-byte directed polls. The following `E4` was consequently interpreted as a
+payload length of 228. When that impossible composite finally failed its
+checksum, the old resynchronizer retained the *first* embedded sync word and
+therefore kept a backlog of already-complete polls from which it could not
+advance. The host transmitted only its initial 18 response bytes, timed out,
+and the stock loader remained visibly in `Wait`.
+
+Host `0.3.1-m6` now searches backward after a rejected frame and retains only
+the newest incomplete sync/header prefix. Complete frames buried in the
+rejected composite are discarded because the incremental API cannot report
+them retroactively; the next repeated stock poll establishes a clean boundary.
+The portable core test reproduces the captured truncated header followed by
+repeated `02 <- 01` polls and requires recovery to a checksum-valid directed
+poll. The strict GCC signed/unsigned-char, Clang, ASan/UBSan, PTY, delayed-V15,
+stock-V15 cosim, serial-reconnect, and single-host retirement gates all pass.
+The failed physical evidence is retained as
+[`cs00000-ek37-diag06-20260822T162818Z.log`](evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log)
+and its matching `.cap`; it diagnoses the host defect and is not a CS00000
+component-failure record.
+
 ### Stock-system simulator checkpoint
 
 `sync/jukuhost_stock_cosim_check.sh` boots all five frozen stock-system images

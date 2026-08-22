@@ -26,6 +26,7 @@
     "docs/machine-deployment-status.md",
     "docs/cs00000-service-record.md",
     "docs/evidence/juku-serial/cs00000-stock-v15-20260821.json",
-    "docs/evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json"
+    "docs/evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json",
+    "docs/evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log"
   ]
 }

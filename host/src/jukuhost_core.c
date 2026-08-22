@@ -113,16 +113,31 @@ void jh_janet_parser_init(struct jh_janet_parser *parser)
 
 static void janet_resync(struct jh_janet_parser *parser)
 {
-    size_t index;
-    for (index = 1; index + 1u < parser->length; ++index) {
-        if (parser->bytes[index] == 0xe4u &&
-                parser->bytes[index + 1u] == 0xe4u) {
-            memmove(parser->bytes, parser->bytes + index,
-                    parser->length - index);
-            parser->length -= index;
-            parser->expected = 0;
+    size_t index = parser->length;
+
+    /*
+     * Search backwards.  A damaged or truncated data header may make a
+     * following E4 look like a large payload length, so the buffer can hold
+     * many complete poll frames by the time its checksum fails.  Keeping the
+     * first embedded sync word traps the parser in that stale backlog.  The
+     * newest incomplete prefix is the only useful state to carry forward.
+     */
+    while (index >= 2u) {
+        size_t start = index - 2u;
+        size_t remaining = parser->length - start;
+        if (parser->bytes[start] == 0xe4u &&
+                parser->bytes[start + 1u] == 0xe4u && remaining < 6u) {
+            memmove(parser->bytes, parser->bytes + start, remaining);
+            parser->length = remaining;
+            if (remaining == 5u) {
+                parser->expected =
+                    (parser->bytes[4] & 0x0cu) == 0x04u ? 0u : 6u;
+            } else {
+                parser->expected = 0u;
+            }
             return;
         }
+        --index;
     }
     if (parser->length != 0u &&
             parser->bytes[parser->length - 1u] == 0xe4u) {

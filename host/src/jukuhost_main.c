@@ -10,7 +10,7 @@
 #include <string.h>
 #include <time.h>
 
-#define HOST_VERSION "0.3.0-m6"
+#define HOST_VERSION "0.3.1-m6"
 #define STOCK_TURN_GUARD_MS 10u
 #define V15_EXTENSION_GUARD_MS 20u
 #define V15_PROBE_REPLY_MS 25u

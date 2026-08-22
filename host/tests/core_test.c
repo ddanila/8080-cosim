@@ -185,9 +185,15 @@ static int test_janet(const char *fixture)
     uint8_t expected[JH_JANET_MAX_FRAME];
     uint8_t encoded[JH_JANET_MAX_FRAME];
     uint8_t damaged[JH_JANET_MAX_FRAME];
+    static const uint8_t truncated_data_header[] = {
+        0xe4u, 0xe4u, 0x02u, 0x01u, 0x07u
+    };
+    uint8_t poll[JH_JANET_MAX_FRAME];
     size_t expected_length;
     size_t encoded_length;
+    size_t poll_length;
     size_t index;
+    size_t repeat;
     struct jh_janet_parser parser;
     struct jh_janet_frame frame;
     int result = JH_NEED_MORE;
@@ -218,6 +224,36 @@ static int test_janet(const char *fixture)
         result = jh_janet_parser_push(&parser, encoded[index], &frame);
     }
     CHECK(result == JH_FRAME);
+
+    /*
+     * Physical EK37 capture: a truncated data header was immediately
+     * followed by repeated directed polls.  The header consumed the next E4
+     * as a length of 228; recovery must select the newest partial sync, not
+     * the first complete poll buried in the rejected buffer.
+     */
+    CHECK(jh_janet_encode(2u, 1u, 0x0cu, NULL, 0u,
+                          poll, sizeof(poll), &poll_length) == JH_OK);
+    CHECK(poll_length == 6u);
+    jh_janet_parser_init(&parser);
+    for (index = 0u; index < sizeof(truncated_data_header); ++index) {
+        result = jh_janet_parser_push(&parser, truncated_data_header[index],
+                                      &frame);
+    }
+    CHECK(result == JH_NEED_MORE);
+    result = JH_NEED_MORE;
+    for (repeat = 0u; repeat < 48u && result != JH_FRAME; ++repeat) {
+        for (index = 0u; index < poll_length; ++index) {
+            result = jh_janet_parser_push(&parser, poll[index], &frame);
+            CHECK(result == JH_NEED_MORE || result == JH_ERR_CHECKSUM ||
+                  result == JH_FRAME);
+            if (result == JH_FRAME) {
+                break;
+            }
+        }
+    }
+    CHECK(result == JH_FRAME);
+    CHECK(frame.destination == 2u && frame.source == 1u &&
+          frame.control == 0x0cu && frame.payload_length == 0u);
     return 0;
 }
 

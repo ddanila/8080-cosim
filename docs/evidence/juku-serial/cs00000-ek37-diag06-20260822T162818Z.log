@@ -1,0 +1,12 @@
+00000001 INFO  start version=0.3.0-m6 port=/dev/ttyUSB0
+00000001 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000001 INFO  phase=artifact-validation
+00000001 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000020 INFO  serial applied=9600 8O1 flow=none
+00000020 INFO  phase=stock-fastboot
+00000020 INFO  stock-assisted V15 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00000020 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00019245 INFO  Janet request accepted: 02 -> 01
+00120041 ERROR stock bootstrap timed out
+00120041 INFO  phase=failed
+00120041 ERROR stop exit=5 rx=22667 tx=18 requests=0 reads=0 records=0 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0
