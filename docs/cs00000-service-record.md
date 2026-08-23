@@ -170,22 +170,37 @@ errors. Its retained evidence begins at
 
 ### USB/RS-232 adapter comparison
 
-A Diymore multifunction FTDI module (`0403:6001`, Linux `ftdi_sio`, DB9 male)
-was evaluated as an alternative to the known CP2102 + MAX3232 chain. Its local
+A Diymore multifunction FT232BL module (`0403:6001`, Linux `ftdi_sio`, DB9
+male, socketed MAX232CPE) was evaluated as an alternative to the known
+CP2102/MAX3232 chain. Its local
 DB9 pin-2/pin-3 loopback returned exact bytes at 9,600/8O1, 19,200/8N1, and
 19,200/8O1. With the DB9 open, pin 3 measured approximately -9 V relative to
 pin 5 while pin 2 measured 0 V. These observations prove a working local USB
 UART/DB9 loop but do not by themselves prove interoperability with a separate
 RS-232 driver.
 
-Two Juku trials used the documented X3 wiring and the existing local
-X3.10/RTS-to-X3.5/CTS loop. Both the original and data-swapped arrangements
-left EK37 in `Wait`; native host `0.3.1-m6` received and transmitted zero bytes
-before its bounded timeout. A direct FTDI-to-CP2102/MAX cross-test also
+Repeated Juku trials used the documented X3 wiring and the existing local
+X3.10/RTS-to-X3.5/CTS loop. Both complete data mappings were tried twice and
+left EK37 in `Wait`; native host `0.3.1-m6` received zero bytes before its
+bounded timeout. Its zero transmit count is expected because the stock host
+does not answer before receiving a valid Janet request. A separate
+`INPCK|PARMRK` 9,600/8O1 capture received neither data nor parity, framing, or
+break markers. A direct FTDI-to-CP2102/MAX cross-test also
 received zero bytes in both directions under both attempted data orders. Since
 that temporary join was not electrically instrumented, this does not prove
 which multifunction-module path or join was at fault. The Diymore module is
 therefore **not qualified for Juku**, but is not declared defective.
+
+A later full far-end loop ran through the selected onboard MAX232, both DB9
+joins, the entire Juku harness, and a motherboard-end X3.4-to-X3.9 short. It
+passed exact payloads at 9,600/8O1, 19,200/8N1, and 19,200/8O1. This closes both
+data conductors but still does not exercise an external signal-ground
+reference. The strongest remaining common explanation is therefore the
+unmeasured module-internal DB9.5 bond to MAX232/TTL ground, followed by a
+board-local receiver/socket/selector fault visible only with an independently
+referenced driver. The fitted plain MAX232CPE with four 0.1 µF `C104`
+charge-pump capacitors is a genuine BOM/application-circuit mismatch, but it
+affects transmitter margin and does not explain the isolated receive silence.
 
 The original CP2102 + MAX3232 chain was then restored without changing
 CS00000, EK37, the Juku-side cable, or host artifacts. It immediately learned

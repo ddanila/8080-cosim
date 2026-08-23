@@ -78,8 +78,9 @@ findings. Every status applies only to the boundary named by the report.
   passed D11 and 19,200-baud paths, V15 host-window isolation, USB/RS-232
   adapter comparison, and remaining intermittent-start investigation),
   `ft232bl-adapter-investigation.md` (exact Diymore module identity, corrected
-  selector/EEPROM assumptions, retained zero-RX evidence, CP2102 control, and
-  the next instrumented one-way test),
+  selector/EEPROM/capacitor assumptions, retained zero-RX and complete far-loop
+  evidence, CP2102 control, ranked signal-ground diagnosis, and the next
+  continuity/instrumented one-way test),
   `cs00015-service-record.md` (Arvutimuuseum machine identity, D15 history,
   repaired D1, corrected D55 status, current JukuNet ROM, physical
   dual-network-drive validation, and the CS00014-controlled isolation of the
