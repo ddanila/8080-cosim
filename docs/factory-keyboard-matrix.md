@@ -99,9 +99,11 @@ both raw and decoded settings.
 - `JUKU_KEY_AT_PC=PC:BYTE` begins one of those same mapped contacts at an exact
   guest instruction boundary and then applies the ordinary hold/release frame
   timing. `JUKU_KEY_AT_PC_HOLD_FRAMES` can lengthen only that one triggered
-  contact across a slow guest operation without changing queued-key timing.
-  It is the deterministic raw-poll test interface; it does not return a key
-  value directly or bypass the matrix.
+  contact across a slow guest operation without changing queued-key timing;
+  `JUKU_KEY_AT_PC_GATE=ADDRESS:BYTE` can additionally require a guest-memory
+  byte before the one-shot trigger is armed. It is the deterministic raw-poll
+  test interface; it does not return a key value directly or bypass the
+  matrix.
 - The C7 ABI fixture feeds raw bytes `86` and `85` directly through this
   matrix model and requires the public raw-key vector to return column/PB
   pairs `0E/8E` and `0A/6A`. This is an executable regression for the exact

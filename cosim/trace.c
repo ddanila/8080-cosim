@@ -994,6 +994,9 @@ static int kbd_pc_trigger_active = 0;
 static int kbd_pc_trigger_hold_frames = 0;
 static uint16_t kbd_pc_trigger_pc = 0;
 static char kbd_pc_trigger_char = 0;
+static int kbd_pc_trigger_gate_enabled = 0;
+static uint16_t kbd_pc_trigger_gate_address = 0;
+static uint8_t kbd_pc_trigger_gate_value = 0;
 #define KBD_HOLD 3
 #define KBD_GAP  3
 
@@ -1716,6 +1719,22 @@ int main(int argc, char** argv) {
   const char* kbd_at_pc_hold_env = getenv("JUKU_KEY_AT_PC_HOLD_FRAMES");
   if (kbd_at_pc_hold_env && kbd_at_pc_hold_env[0])
     kbd_pc_trigger_hold_frames = atoi(kbd_at_pc_hold_env);
+  const char* kbd_at_pc_gate_env = getenv("JUKU_KEY_AT_PC_GATE");
+  if (kbd_at_pc_gate_env && kbd_at_pc_gate_env[0]) {
+    unsigned long address = 0, value = 0;
+    char trailing = 0;
+    if (sscanf(kbd_at_pc_gate_env, "%lx:%lx%c", &address, &value,
+               &trailing) != 2 || address > 0xFFFF || value > 0xFF) {
+      fprintf(stderr,
+              "invalid JUKU_KEY_AT_PC_GATE=%s "
+              "(expected 0000..FFFF:00..FF)\n",
+              kbd_at_pc_gate_env);
+      return 2;
+    }
+    kbd_pc_trigger_gate_enabled = 1;
+    kbd_pc_trigger_gate_address = (uint16_t)address;
+    kbd_pc_trigger_gate_value = (uint8_t)value;
+  }
   kbd_trace = getenv("JUKU_TRACE_KBD") && getenv("JUKU_TRACE_KBD")[0] &&
               strcmp(getenv("JUKU_TRACE_KBD"), "0") != 0;
   if (kbd_hold_frames < 1) kbd_hold_frames = KBD_HOLD;
@@ -2346,6 +2365,9 @@ int main(int argc, char** argv) {
       video_console_mode = 0;
     }
     if (kbd_pc_trigger_enabled && !kbd_pc_trigger_fired &&
+        (!kbd_pc_trigger_gate_enabled ||
+         peek_byte(kbd_pc_trigger_gate_address) ==
+             kbd_pc_trigger_gate_value) &&
         cpu.pc == kbd_pc_trigger_pc) {
       kbd_pc_trigger_fired = 1;
       kbd_pc_trigger_active = 1;

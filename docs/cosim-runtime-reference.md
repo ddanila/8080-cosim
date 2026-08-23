@@ -259,9 +259,12 @@ the normal `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES` timing and the same
 factory matrix mapping as PTY/scripted input. Set
 `JUKU_KEY_AT_PC_HOLD_FRAMES` to override only the triggered contact's hold
 time when it must span a slow guest operation; ordinary PTY/scripted contacts
-retain `JUKU_KEY_HOLD_FRAMES`. The trigger fires once and does not bypass the
-guest keyboard scanner; it exists to make a poll-overlap regression
-deterministic at full simulator speed.
+retain `JUKU_KEY_HOLD_FRAMES`. If a relocatable or overlaid program can reach
+the same numeric PC during startup, `JUKU_KEY_AT_PC_GATE=ADDRESS:BYTE` delays
+the trigger until the byte visible at that hexadecimal guest address equals
+the hexadecimal value. The trigger fires once and does not bypass the guest
+keyboard scanner; it exists to make a poll-overlap regression deterministic
+at full simulator speed.
 
 `tools/juku_run.py` wraps this into one command: it builds cosim, starts it
 paced with a console PTY, optionally attaches a floppy image
