@@ -10,6 +10,7 @@ import select
 import subprocess
 import sys
 import tempfile
+import time
 import tty
 from pathlib import Path
 
@@ -54,6 +55,40 @@ ROM = bytes(
 )
 assert len(ROM) == 0x48
 
+SYNC_ROM = bytes(
+    [
+        0x3E, 0x4E,       # MVI A,4E: async 8-bit mode
+        0xD3, 0x09,       # OUT 09: mode
+        0x3E, 0x37,       # MVI A,37: TxEN/RxEN/DTR/RTS/error reset
+        0xD3, 0x09,       # OUT 09: command
+        0x3E, 0x55,
+        0xD3, 0x08,       # transmit 55
+        0xDB, 0x09,       # 000C: wait for TxRDY
+        0xE6, 0x01,
+        0xCA, 0x0C, 0x00,
+        0x3E, 0xA5,
+        0xD3, 0x08,       # transmit A5
+        0xDB, 0x09,       # 0017: wait for TxEMPTY
+        0xE6, 0x04,
+        0xCA, 0x17, 0x00,
+        0x3E, 0x36,       # TxEN low marks request/reply turnaround
+        0xD3, 0x09,
+        0xDB, 0x09,       # 0022: wait for RxRDY
+        0xE6, 0x02,
+        0xCA, 0x22, 0x00,
+        0xDB, 0x08,       # consume received byte
+        0x47,             # MOV B,A
+        0x3E, 0x37,       # re-enable transmitter
+        0xD3, 0x09,
+        0x78,             # MOV A,B
+        0xD3, 0x08,       # echo received byte
+        0xDB, 0x09,       # 0033: wait for TxEMPTY
+        0xE6, 0x04,
+        0xCA, 0x33, 0x00,
+        0x76,
+    ]
+)
+
 IO_RE = re.compile(
     r"^\[IOSEQ\] (IN |OUT) port=0x([0-9A-Fa-f]{2}) "
     r"value=0x([0-9A-Fa-f]{2}) cyc=([0-9]+)"
@@ -72,9 +107,13 @@ def read_exact(fd: int, count: int, timeout: float = 5.0) -> bytes:
     return bytes(result)
 
 
-def exchange(proc: subprocess.Popen[str], fd: int) -> tuple[bytes, bytes, str, str]:
+def exchange(
+    proc: subprocess.Popen[str], fd: int, reply_delay: float = 0.0,
+) -> tuple[bytes, bytes, str, str]:
     try:
         outbound = read_exact(fd, 2)
+        if reply_delay:
+            time.sleep(reply_delay)
         os.write(fd, b"\x3c")
         echoed = read_exact(fd, 1)
         stdout, stderr = proc.communicate(timeout=5)
@@ -150,6 +189,8 @@ def main() -> int:
         tmp = Path(tmp_name)
         rom = tmp / "usart-pty.bin"
         rom.write_bytes(ROM)
+        sync_rom = tmp / "usart-host-sync.bin"
+        sync_rom.write_bytes(SYNC_ROM)
         base_env = os.environ.copy()
         base_env["JUKU_TRACE_IO"] = "1"
         base_env["JUKU_USART_TRANSFER_CYCLES"] = "64"
@@ -169,6 +210,32 @@ def main() -> int:
             "attached", attached, outbound, echoed, stdout, stderr,
             "[USART] attached PTY=",
         ))
+
+        # Full-speed guest execution must not burn through its receive loop
+        # merely because a native helper is briefly descheduled.  This mode is
+        # opt-in: ordinary timing and overrun tests above remain untouched.
+        sync_master, sync_slave = pty.openpty()
+        tty.setraw(sync_slave)
+        sync_env = base_env | {
+            "JUKU_USART_PTY": os.ttyname(sync_slave),
+            "JUKU_USART_HOST_SYNC_MS": "250",
+        }
+        synchronized = subprocess.Popen(
+            [str(trace), str(sync_rom), "20000000"], cwd=tmp, env=sync_env,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        outbound, echoed, stdout, stderr = exchange(
+            synchronized, sync_master, reply_delay=0.05,
+        )
+        os.close(sync_master)
+        os.close(sync_slave)
+        if synchronized.returncode != 0 or outbound != b"\x55\xa5" or \
+                echoed != b"\x3c":
+            failures.append(
+                "host-sync: delayed request/reply exchange did not complete"
+            )
+        if "[USART] native-host synchronization=250 ms" not in stderr:
+            failures.append("host-sync: synchronization was not reported")
 
         auto_env = base_env | {"JUKU_USART_PTY": "auto"}
         automatic = subprocess.Popen(
@@ -200,7 +267,7 @@ def main() -> int:
     print(
         "COSIM-USART-PTY: PASS (attached+automatic PTY, TX 55a5, "
         "RX/echo 3c survives ER command, distinct TxRDY/TxEMPTY transitions, "
-        "RxRDY polled)"
+        "RxRDY polled, delayed native host synchronized)"
     )
     return 0
 

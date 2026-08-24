@@ -77,6 +77,10 @@
 //        second, so wall-clock time equals machine time (use 2000000 for the
 //        nominal Juku clock; "1" is accepted as shorthand for it). Unset means
 //        run as fast as possible, which is the right default for tests.
+// HOST:  JUKU_USART_HOST_SYNC_MS=N lets an unpaced PTY-backed USART wait up to
+//        N wall-clock milliseconds for the first byte of a host reply after
+//        target transmission. It keeps native helper processes schedulable
+//        without changing simulated baud or making all execution real-time.
 // CHECKPOINT: SIGUSR1 writes the configured JUKU_CHECKPOINT_PREFIX RAM/state
 //        pair without stopping the machine.  The state includes the latest
 //        CP/M transient's stack low-water evidence; SIGTERM/SIGINT retain their
@@ -93,6 +97,7 @@
 #include <stdint.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <signal.h>
 #include <termios.h>
 #include <time.h>
@@ -490,6 +495,9 @@ static int usart_pit_clock_valid = 1;
 static int usart_tx_irq_armed = 0;
 static int usart_tx_irq_level = 0, usart_rx_irq_level = 0;
 static int usart_tx_irq_pending = 0, usart_rx_irq_pending = 0;
+static int usart_host_sync_armed = 0;
+static int usart_host_sync_waiting = 0;
+static int usart_host_sync_ms = 0;
 
 static unsigned long pit_effective_divisor(const pit_counter* counter) {
   unsigned long raw = counter->count_register;
@@ -641,6 +649,8 @@ static void usart_reset(void) {
   usart.rx_errors = 0;
   usart.tx_holding_full = 0;
   usart.tx_busy = 0;
+  usart_host_sync_armed = 0;
+  usart_host_sync_waiting = 0;
   usart_tx_irq_armed = 0;
   usart_tx_irq_level = usart_rx_irq_level = 0;
   usart_tx_irq_pending = usart_rx_irq_pending = 0;
@@ -654,6 +664,10 @@ static void usart_poll(unsigned long cyc) {
     if (written == 1) {
       usart.tx_busy = 0;
       usart.tx_bytes++;
+      if (usart_host_sync_armed && !usart.tx_holding_full) {
+        usart_host_sync_armed = 0;
+        usart_host_sync_waiting = 1;
+      }
       if (usart.tx_holding_full)
         usart.tx_transfer_cyc = cyc + usart.transfer_cycles;
     } else if (written < 0 && errno != EAGAIN && errno != EWOULDBLOCK && errno != EIO) {
@@ -697,6 +711,7 @@ static void usart_poll(unsigned long cyc) {
     uint8_t value;
     ssize_t received = read(usart.fd, &value, 1);
     if (received == 1) {
+      usart_host_sync_waiting = 0;
       if (usart.rx_ready) {
         usart.rx_errors |= 0x10;
         usart.rx_overruns++;
@@ -722,6 +737,24 @@ static void usart_poll(unsigned long cyc) {
         errno != EIO) {
       perror("JUKU USART PTY read");
       exit(2);
+    }
+    /* An unpaced CPU can consume a firmware timeout before a native helper
+       process gets another scheduler slice.  Once the target has transmitted,
+       an explicitly synchronized PTY may wait for the first reply byte.  The
+       byte still enters the 8251 at the modeled wire time below; this only
+       coordinates two host processes at their asynchronous boundary. */
+    if (usart_host_sync_waiting && usart_host_sync_ms) {
+      struct pollfd descriptor = { usart.fd, POLLIN, 0 };
+      int ready;
+      do {
+        ready = poll(&descriptor, 1, usart_host_sync_ms);
+      } while (ready < 0 && errno == EINTR && !terminate_requested);
+      if (ready > 0 && (descriptor.revents & POLLIN)) continue;
+      if (ready < 0 && errno != EINTR) {
+        perror("JUKU USART PTY host sync");
+        exit(2);
+      }
+      usart_host_sync_waiting = 0;
     }
     /* No character is currently on the wire.  Anchor the next batch at the
        present cycle so an idle interval cannot accumulate fictitious slots;
@@ -779,6 +812,12 @@ static void usart_write(int control, uint8_t value, unsigned long cyc) {
         // 8251 enable occurs before its transmit descriptor is initialized.
         usart_tx_irq_armed = 1;
         usart_tx_irq_pending = 0;
+        if (usart_host_sync_ms) {
+          if (usart.tx_busy || usart.tx_holding_full)
+            usart_host_sync_armed = 1;
+          else
+            usart_host_sync_waiting = 1;
+        }
       }
       /* ER (bit 4) resets PE/OE/FE error latches; it does not consume the
          receive data register or clear RxRDY.  Preserving an unread byte is
@@ -1795,6 +1834,7 @@ int main(int argc, char** argv) {
   const char* usart_byte_cycles = getenv("JUKU_USART_BYTE_CYCLES");
   const char* usart_pit_clock_env = getenv("JUKU_USART_PIT_CLOCK");
   const char* usart_pit_cpu_hz_env = getenv("JUKU_USART_PIT_CPU_HZ");
+  const char* usart_host_sync_env = getenv("JUKU_USART_HOST_SYNC_MS");
   const char* ram_fault = getenv("JUKU_RAM_FAULT");
   const char* rom_consecutive_a12_low_env =
       getenv("JUKU_ROM_CONSECUTIVE_A12_LOW");
@@ -1913,6 +1953,20 @@ int main(int argc, char** argv) {
               usart_pit_cpu_hz_env);
       return 2;
     }
+  }
+  if (usart_host_sync_env && usart_host_sync_env[0]) {
+    char* end = NULL;
+    errno = 0;
+    unsigned long value = strtoul(usart_host_sync_env, &end, 0);
+    if (errno || !end || *end || !value || value > 60000UL) {
+      fprintf(stderr,
+              "invalid JUKU_USART_HOST_SYNC_MS=%s (expected 1..60000)\n",
+              usart_host_sync_env);
+      return 2;
+    }
+    usart_host_sync_ms = (int)value;
+    fprintf(stderr, "[USART] native-host synchronization=%d ms\n",
+            usart_host_sync_ms);
   }
   if (usart_fault && usart_fault[0]) {
     if (strcmp(usart_fault, "tx_stuck") == 0) {

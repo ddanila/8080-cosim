@@ -201,6 +201,15 @@ Pacing is therefore the honest way to compare a simulated session against a
 stopwatch on the bench, and the right mode for any experiment whose result
 depends on host and machine agreeing about time.
 
+An interactive tool may instead need maximum CPU speed while retaining a
+native helper process on the emulated USART. Set `JUKU_USART_HOST_SYNC_MS` to
+the maximum wall-clock wait for the first reply byte after target
+transmission. This opt-in coordination prevents the unpaced guest from
+consuming a firmware timeout before the helper is scheduled; it does not
+alter the 8251/PIT byte timing or pace CPU-only execution. Leave it unset for
+timing experiments and use `JUKU_REALTIME_HZ` whenever wall time itself is
+part of the experiment.
+
 ## Recent execution history (`JUKU_PC_HISTORY`)
 
 Set `JUKU_PC_HISTORY=1` to retain a bounded ring of the last 256 instruction
