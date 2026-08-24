@@ -140,7 +140,9 @@ visible prompt, monitor, or distinct destination and therefore does not justify
 a permanent configuration bit. This policy change is not sufficient reason to
 build or burn C9 by itself; it should be adopted only alongside another
 measured ROM improvement. C8 remains immutable and continues to interpret bit
-0 as documented above.
+0 as documented above. Candidate scope for such a successor, including one
+measured console defect to pair this policy with, is collected in
+[`docs/network-rom-c9-plan.md`](../../../docs/network-rom-c9-plan.md).
 
 ## Resident ABI
 
