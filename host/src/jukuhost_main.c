@@ -64,6 +64,10 @@ struct options {
     int selftest;
 };
 
+/* Twice the 256-byte buffer every frame reader uses, so a pushed-back tail
+ * can never collide with bytes an earlier push-back has not returned yet. */
+#define HOST_PENDING_CAPACITY 512u
+
 struct host_context {
     struct options options;
     struct jh_platform_serial serial;
@@ -84,6 +88,15 @@ struct host_context {
     int log_error;
     int capture_error;
     int capture_ready;
+    /* Bytes already read from the port but not yet consumed by the reader
+     * that read them.  A frame reader that stops mid-buffer returns the tail
+     * here so the next phase sees it; the target starts its first NetDisk
+     * request as soon as it acknowledges Fastboot, and on some hosts that
+     * request shares one read with the acknowledgement.  User-space, so it
+     * also survives the input flush in the 8N1->8O1 framing change. */
+    uint8_t pending[HOST_PENDING_CAPACITY];
+    size_t pending_length;
+    size_t pending_offset;
 };
 
 static int capture_record(struct host_context *host, enum jh_capture_type type,
@@ -582,10 +595,39 @@ static int host_write_boot_output(struct host_context *host,
     return position == output->length ? 0 : -1;
 }
 
+/* Return the tail of an already-read buffer to the reader queue.  The bytes
+ * keep their original position ahead of anything still queued, and are not
+ * counted or captured again: host_read did both when it first read them. */
+static void host_push_back(struct host_context *host, const uint8_t *data,
+                           size_t length)
+{
+    size_t queued;
+    if (length == 0u) return;
+    queued = host->pending_length - host->pending_offset;
+    if (length + queued > sizeof(host->pending)) return;
+    memmove(host->pending + length, host->pending + host->pending_offset,
+            queued);
+    memcpy(host->pending, data, length);
+    host->pending_offset = 0u;
+    host->pending_length = length + queued;
+}
+
 static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
                      unsigned timeout_ms)
 {
-    int received = jh_platform_serial_read(&host->serial, data, capacity, timeout_ms);
+    int received;
+    if (host->pending_offset < host->pending_length) {
+        size_t queued = host->pending_length - host->pending_offset;
+        size_t taken = queued < capacity ? queued : capacity;
+        memcpy(data, host->pending + host->pending_offset, taken);
+        host->pending_offset += taken;
+        if (host->pending_offset == host->pending_length) {
+            host->pending_offset = 0u;
+            host->pending_length = 0u;
+        }
+        return (int)taken;
+    }
+    received = jh_platform_serial_read(&host->serial, data, capacity, timeout_ms);
     if (received > 0) {
         host->rx_bytes += (unsigned long)received;
         if (capture_record(host, JH_CAPTURE_RX, 0u, data,
@@ -613,6 +655,11 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
              strerror(original_error), host->options.serial, baud, parity);
     host_log(host, "INFO", "phase=reconnect");
     host->serial_line_errors += host->serial.line_errors;
+    /* Anything pushed back belongs to the link that just died; the caller
+     * resynchronizes its parser, and these bytes would resynchronize it to a
+     * frame the replacement link never sent. */
+    host->pending_length = 0u;
+    host->pending_offset = 0u;
     jh_platform_serial_close(&host->serial);
     deadline = jh_platform_milliseconds() +
         (uint64_t)host->options.reconnect_timeout_seconds * 1000u;
@@ -826,7 +873,11 @@ static int wait_fast_frame(struct host_context *host,
         for (index = 0u; index < (size_t)received; ++index) {
             int result = jh_fast_parser_push(parser, incoming[index], kind,
                                              first, second);
-            if (result == JH_FRAME) return 1;
+            if (result == JH_FRAME) {
+                host_push_back(host, incoming + index + 1u,
+                               (size_t)received - index - 1u);
+                return 1;
+            }
         }
     }
     return 0;
@@ -862,6 +913,8 @@ static int fast_probe_raw(struct host_context *host, uint8_t first,
             if (received < 0) return -1;
             for (index = 0u; index < (size_t)received; ++index) {
                 if (incoming[index] == acknowledgement) {
+                    host_push_back(host, incoming + index + 1u,
+                                   (size_t)received - index - 1u);
                     if (probe_count != NULL) *probe_count += count;
                     return 1;
                 }
