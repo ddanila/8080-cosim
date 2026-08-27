@@ -1,0 +1,25 @@
+
+
+                                GAL16V8
+
+                          -------\___/-------
+                    IORQn |  1           20 | VCC
+                          |                 |
+                       A2 |  2           19 | NC
+                          |                 |
+                       A3 |  3           18 | NC
+                          |                 |
+                       A4 |  4           17 | INTAn
+                          |                 |
+                       A5 |  5           16 | INTn
+                          |                 |
+                       A6 |  6           15 | IORESET
+                          |                 |
+                       A7 |  7           14 | UARTCSn
+                          |                 |
+                   RESETn |  8           13 | PPICSn
+                          |                 |
+                      M1n |  9           12 | PICCSn
+                          |                 |
+                      GND | 10           11 | PICINT
+                          -------------------

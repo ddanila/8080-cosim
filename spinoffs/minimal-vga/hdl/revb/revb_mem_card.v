@@ -38,7 +38,10 @@ module revb_mem_card #(
                       .v_en_n(1'b0),
                       .rom_n(d6_rom_n), .ram_n(d6_ram_n), .rev(d6_rev), .roe_n(d6_roe));
     wire is_rom_promB = ~d6_rom_n;             // corrected physical D0/ROM_N is active-low
-    wire is_rom_intA  = (A[15:14] == 2'b00);
+    // The rev-B GAL implements the complete four-mode overlay, not rev A's
+    // former mode-0-only bring-up shortcut.
+    wire is_rom_intA  = ((mode == 2'b00) && (A <= 16'h3FFF))
+                      || (((mode == 2'b01) || (mode == 2'b10)) && (A >= FB_BASE));
     wire is_rom       = (DECODE_MODE == 1) ? is_rom_intA : is_rom_promB;
     wire rom_sel_n    = ~is_rom;
     tri1 [7:0] d8_d;

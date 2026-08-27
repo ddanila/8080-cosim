@@ -1,0 +1,23 @@
+GAL16V8
+VJIOR5
+
+IORQn A2 A3 A4 A5 A6 A7 RESETn M1n GND
+PICINT PICCSn PPICSn UARTCSn IORESET INTn INTAn NC NC VCC
+
+; Four-port decode granularity follows the available A2-A7 inputs. Peripheral
+; A0/A1 pins select registers inside each window.
+/PICCSn  = /IORQn * /A7 * /A6 * /A5 * /A4 * /A3 * /A2
+/PPICSn  = /IORQn * /A7 * /A6 * /A5 * /A4 * /A3 *  A2
+/UARTCSn = /IORQn * /A7 * /A6 * /A5 * /A4 *  A3 * /A2
+
+IORESET = /RESETn
+
+; The shared bus interrupt is open-drain: drive only zero while PIC_INT is high.
+INTn.T = GND
+INTn.E = PICINT
+
+/INTAn = /M1n * /IORQn
+
+DESCRIPTION
+
+VJUGA rev B I/O-card U2 selects, reset polarity, INTA and open-drain INT.

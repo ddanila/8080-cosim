@@ -57,10 +57,9 @@ those tools.
 
 ## Next action
 
-**R5.0 is complete.** Follow the dependency-ordered tasks in
-`rev-b-five-board-order-plan.md`. The next dependency-ready work is R5.S1
-(8251-to-backplane TTL serial), R5.P1 (reproducible B1 GAL programming), and
-R5.V1 (Video silicon/pin/full-LVS audit).
+**R5.0, R5.S1–S3 and R5.P1 are complete.** Follow the dependency-ordered tasks
+in `rev-b-five-board-order-plan.md`. The next dependency-ready work is R5.V1
+(Video silicon/pin/full-LVS audit).
 Do not upload the historical four-board packages. Ordering stays on hold until all
 five packages pass R5.R1 and the owner explicitly releases them.
 

@@ -1,0 +1,30 @@
+GAL22V10
+VJMEMR5
+
+MREQn RDn WRn A13 A14 A15 MODE0 MODE1 A11 A12 NC GND
+NC ROMCEn RAMCEn MEMRDn MEMWRn NC NC NC NC NC NC VCC
+
+; ROM: mode 0 owns 0000-3FFF; modes 1 and 2 own D800-FFFF.
+/ROMCEn = /MREQn * /MODE1 * /MODE0 * /A15 * /A14
+        + /MREQn * /MODE1 *  MODE0 *  A15 * A14 *  A13
+        + /MREQn * /MODE1 *  MODE0 *  A15 * A14 * /A13 * A12 * A11
+        + /MREQn *  MODE1 * /MODE0 *  A15 * A14 *  A13
+        + /MREQn *  MODE1 * /MODE0 *  A15 * A14 * /A13 * A12 * A11
+
+; SRAM always stops at D800. Below it: mode 0 excludes low ROM, mode 2
+; excludes the 4000-BFFF cartridge hole, and modes 1/3 expose ordinary RAM.
+/RAMCEn = /MREQn *  A15 *  A14 * /A13 * /A12
+        + /MREQn *  A15 *  A14 * /A13 * /A11
+        + /MREQn * /A15 * /A14 *  MODE1
+        + /MREQn * /A15 * /A14 *  MODE0
+        + /MREQn * /A15 *  A14 *  MODE0
+        + /MREQn *  A15 * /A14 *  MODE0
+        + /MREQn * /A15 *  A14 * /MODE1
+        + /MREQn *  A15 * /A14 * /MODE1
+
+/MEMRDn = /MREQn * /RDn
+/MEMWRn = /MREQn * /WRn
+
+DESCRIPTION
+
+VJUGA rev B Memory-card U3, full four-mode overlay and D800 handoff.

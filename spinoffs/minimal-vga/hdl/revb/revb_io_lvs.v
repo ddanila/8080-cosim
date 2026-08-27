@@ -14,7 +14,7 @@ endmodule
 
 module gal16v8_iosel_lvs(
     // scalar A2..A7 (a vector would canonicalize by position -> A0..A5 and mis-map)
-    input  wire        IORQ_N, A2, A3, A4, A5, A6, A7, RESET_N, RD_N, WR_N, M1_N, PIC_INT,
+    input  wire        IORQ_N, A2, A3, A4, A5, A6, A7, RESET_N, M1_N, PIC_INT,
     output wire        PIC_CS_N, PPI_CS_N, UART_CS_N, IO_RESET, INT_N, INTA_N
 );
 endmodule
@@ -33,7 +33,7 @@ module revb_io_lvs_top;
 
     gal16v8_iosel_lvs U_IOSEL(
         .IORQ_N(IORQ_N), .A2(A2), .A3(A3), .A4(A4), .A5(A5), .A6(A6), .A7(A7),
-        .RESET_N(RESET_N), .RD_N(RD_N), .WR_N(WR_N), .M1_N(M1_N), .PIC_INT(PIC_INT),
+        .RESET_N(RESET_N), .M1_N(M1_N), .PIC_INT(PIC_INT),
         .PIC_CS_N(PIC_CS_N), .PPI_CS_N(PPI_CS_N), .UART_CS_N(UART_CS_N),
         .IO_RESET(IO_RESET), .INT_N(INT_N), .INTA_N(INTA_N));
 endmodule

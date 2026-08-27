@@ -15,6 +15,10 @@ python3 scripts/check_spinoff_commons.py
 echo "== rev B: card connectivity specs + netlist completeness (T1.3-T1.6, D1.18) =="
 python3 scripts/check_revb_boards.py --completeness
 
+echo "== rev B: reproducible Memory/I/O GALs + physical 27C256 image (R5.P1) =="
+spinoffs/minimal-vga/pld/revb/build_revb_gals.sh
+python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check
+
 echo "== rev B: board-relative TTL serial continuity (R5.S1) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_contract.py
 

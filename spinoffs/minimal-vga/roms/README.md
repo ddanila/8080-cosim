@@ -1,5 +1,11 @@
 # VJUGA ROM images
 
+For the rev-B 27C256 programming image, run `build_revb_rom.py`. It duplicates
+the verified 16 KiB image into both halves so the direct A0–A14 wiring also maps
+the D800–FFFF overlay correctly. The resulting
+`ekta37_z80-27c256.bin` is 32768 bytes with SHA-256
+`e06dc0ee989d33049ad60c5a182df4d3da8814f206fd19c4f500603c772d9b2f`.
+
 ## `ekta37_z80.bin` — Z80-executable Juku boot ROM (derived)
 
 VJUGA uses a **Z80** CPU so the board runs from a single +5 V rail: the original

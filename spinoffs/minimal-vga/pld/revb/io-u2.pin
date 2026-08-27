@@ -1,0 +1,25 @@
+
+
+ Pin # | Name     | Pin Type
+-----------------------------
+   1   | IORQn    | Input
+   2   | A2       | Input
+   3   | A3       | Input
+   4   | A4       | Input
+   5   | A5       | Input
+   6   | A6       | Input
+   7   | A7       | Input
+   8   | RESETn   | Input
+   9   | M1n      | Input
+  10   | GND      | GND
+  11   | PICINT   | Input
+  12   | PICCSn   | Output
+  13   | PPICSn   | Output
+  14   | UARTCSn  | Output
+  15   | IORESET  | Output
+  16   | INTn     | Output
+  17   | INTAn    | Output
+  18   | NC       | NC
+  19   | NC       | NC
+  20   | VCC      | VCC
+

@@ -75,11 +75,12 @@ USART_8251 = {
 # ATF16V8/GAL16V8 DIP-20 I/O glue (D1.16 + D1.26): IORQ_N + A2..A7 -> chip selects;
 # inverts bus RESET_N to the active-HIGH IO_RESET (8251/8255); inverts the 8259 INT
 # (active-HIGH) to the open-drain bus INT_N; and gates M1_N+IORQ_N to INTA_N for the
-# 8259. Pins 18/19 are I/O used as inputs (M1_N, PIC_INT).
+# 8259. Complex mode makes pins 12/19 output-only, so M1_N/PIC_INT use dedicated
+# array-input pins 9/11; RD_N/WR_N are not inputs to any select equation.
 GAL16V8_IOSEL = {
     "1":"IORQ_N","2":"A2","3":"A3","4":"A4","5":"A5","6":"A6","7":"A7","8":"RESET_N",
-    "9":"RD_N","10":"GND","11":"WR_N","12":"PIC_CS_N","13":"PPI_CS_N","14":"UART_CS_N",
-    "15":"IO_RESET","16":"INT_N","17":"INTA_N","18":"M1_N","19":"PIC_INT","20":"VCC5",
+    "9":"M1_N","10":"GND","11":"PIC_INT","12":"PIC_CS_N","13":"PPI_CS_N","14":"UART_CS_N",
+    "15":"IO_RESET","16":"INT_N","17":"INTA_N","18":"IO_GAL_SPARE_IO_NC","19":"IO_GAL_SPARE_OUT_NC","20":"VCC5",
 }
 # ECS-2200B-049 half-can oscillator: 4.9152 MHz drives a 74HC393 divider. /16 is
 # 307.2 kHz (19,200 x16); /32 is 153.6 kHz (9,600 x16), selected at JP_BAUD.

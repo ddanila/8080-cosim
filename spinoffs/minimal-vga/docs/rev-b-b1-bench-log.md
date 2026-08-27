@@ -48,8 +48,8 @@ Vendor-preview checklist:
 | Board markings / lot codes | pending |
 | `revb_bringup.bin` SHA-256 | `edfdabda362cefd6716acd2fe70b8befa500cb5983afe097ccd2d4a0e8447892` |
 | Programmed ROM device / readback SHA-256 | pending |
-| Memory GAL device / source / fuse checksum | pending |
-| I/O GAL device / source / fuse checksum | pending |
+| Memory GAL device / source / fuse checksum | expected `ATF22V10C-15PU`; `memory-u3.pld` SHA `e29bfbe…5ac49`; JEDEC QF5892 / C6806; physical marking/readback pending |
+| I/O GAL device / source / fuse checksum | expected `ATF16V8B-15PU`; `io-u2.pld` SHA `37829f62…6dfee`; JEDEC QF2194 / C3676; physical marking/readback pending |
 | CPU oscillator fitted / measured | pending |
 | UART oscillator fitted / measured baud | pending |
 | Exact populated ICs and date codes | pending |
