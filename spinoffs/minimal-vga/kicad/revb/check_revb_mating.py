@@ -27,7 +27,7 @@ from revb_place import BOARD_H_BY_CARD, PLACE_BY_CARD  # noqa: E402
 
 C = json.load(open(os.path.join(HERE, "mating.json")))
 TOL = 0.001          # mm; contract values are exact, this only absorbs float noise
-CARDS = ("mem", "io", "cpu")
+CARDS = ("mem", "io", "cpu", "video")
 fails = []
 
 

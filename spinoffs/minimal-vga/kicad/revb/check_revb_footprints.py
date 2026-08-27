@@ -2,10 +2,10 @@
 """Resolve every footprint the rev B mem card needs against the KiCad library (TD.7.1).
 
 Reads the card's board.json component types, maps each to a candidate footprint list,
-verifies the .kicad_mod exists under $KICAD_FOOTPRINTS, and writes the chosen names to
-kicad/revb/footprints.json (consumed by gen_revb_pcb.py, TD.7.2). Skips (not fails)
-when $KICAD_FOOTPRINTS is unset. The THT 1x39 header IS in the library, so the D1.23
-programmatic-padrow fallback is not needed.
+verifies the .kicad_mod exists under $KICAD_FOOTPRINTS (or the checked-in VJUGA.pretty
+library), and writes the chosen names to kicad/revb/footprints.<card>.json. Cards use
+right-angle male bus headers; the backplane uses vertical female sockets. This physical
+orientation distinction is part of the mating contract, not a cosmetic library choice.
 """
 import json, os, sys
 from pathlib import Path
@@ -21,8 +21,10 @@ if not FPROOT or not Path(FPROOT).is_dir():
 
 # candidate footprints per abstract kind (first existing wins)
 CAND = {
-    "PIN_1x39": ["Connector_PinHeader_2.54mm:PinHeader_1x39_P2.54mm_Vertical"],
-    "PIN_1x10": ["Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical"],
+    "PIN_1x39_RA": ["Connector_PinHeader_2.54mm:PinHeader_1x39_P2.54mm_Horizontal"],
+    "PIN_1x10_RA": ["Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Horizontal"],
+    "SOCKET_1x39_VERT": ["Connector_PinSocket_2.54mm:PinSocket_1x39_P2.54mm_Vertical"],
+    "SOCKET_1x10_VERT": ["Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical"],
     "DIP14": ["Package_DIP:DIP-14_W7.62mm"],
     "DIP16": ["Package_DIP:DIP-16_W7.62mm"],
     "DIP20": ["Package_DIP:DIP-20_W7.62mm"],
@@ -47,10 +49,12 @@ CAND = {
     "PIN_2x2": ["Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical"],
     "CP_RADIAL": ["Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"],
     "PTC_RADIAL": ["Fuse:Fuse_Bourns_MF-RG300"],
+    "DSUB15HD_NORCOMP": ["VJUGA:NorComp_200-015-213L537"],
 }
 # board.json component type -> list of footprint kinds it needs
 TYPE_KINDS = {
-    "REVB_BUS_39_10": ["PIN_1x39", "PIN_1x10"],
+    "REVB_BUS_39_10": (["SOCKET_1x39_VERT", "SOCKET_1x10_VERT"] if CARD == "backplane"
+                        else ["PIN_1x39_RA", "PIN_1x10_RA"]),
     "Z80_DIP40": ["DIP40"],
     "EPROM_27C256": ["DIP28"], "SRAM_AS6C1008": ["DIP32"], "GAL22V10": ["DIP24"],
     "USART_8251": ["DIP28"], "GAL16V8_IOSEL": ["DIP20"], "OSC_BAUD": ["OSC8"],
@@ -65,6 +69,16 @@ TYPE_KINDS = {
     "R_10K_VERT": ["R_VERT"], "D_1N4148_VERT": ["D_DO35_VERT"],
     "SW_PUSH": ["SW_PUSH6"], "LED": ["LED5"], "JMP_2x2": ["PIN_2x2"],
     "C_ELEC_47U": ["CP_RADIAL"], "PTC_1A": ["PTC_RADIAL"],
+    # Video card (R5.V4): every physical package is explicit, including the exact
+    # NorComp connector whose two-row solder-tail fanout is not represented by either
+    # generic KiCad high-density D-sub footprint.
+    "GAL22V10_HDEC": ["DIP24"], "GAL22V10_VDEC": ["DIP24"],
+    "GAL22V10_CTRL": ["DIP24"], "SRAM_FB": ["DIP32"],
+    "OSC_25M175": ["OSC14"], "ST_HC393": ["DIP14"],
+    "ACT_157": ["DIP16"], "ACT_161": ["DIP16"], "TTL_283": ["DIP16"],
+    "ACT_273": ["DIP20"], "ALS_166": ["DIP16"], "HCT_245": ["DIP20"],
+    "HCT_08": ["DIP14"], "ACT_08": ["DIP14"],
+    "DSUB15HD": ["DSUB15HD_NORCOMP"], "R_470": ["R_AXIAL"],
 }
 # Datasheet DIP row spacing per chip type — the resolved footprint name MUST contain
 # this width token. This is the guard that catches "DRC-green board, chip doesn't fit":
@@ -82,6 +96,11 @@ PKG_WIDTH = {
     "PIC_8259": "W15.24mm",        # 8259A/82C59 DIP-28, 600 mil
     "TTL_393_BAUD": "W7.62mm",     # SN74HC393N PDIP-14, 300 mil
     "HCT125_CONSOLE": "W7.62mm",   # SN74HCT125N PDIP-14, 300 mil
+    "GAL22V10_HDEC": "W7.62mm", "GAL22V10_VDEC": "W7.62mm",
+    "GAL22V10_CTRL": "W7.62mm", "SRAM_FB": "W15.24mm",
+    "ST_HC393": "W7.62mm", "ACT_157": "W7.62mm", "ACT_161": "W7.62mm",
+    "TTL_283": "W7.62mm", "ACT_273": "W7.62mm", "ALS_166": "W7.62mm",
+    "HCT_245": "W7.62mm", "HCT_08": "W7.62mm", "ACT_08": "W7.62mm",
 }
 
 
@@ -110,7 +129,19 @@ PKG_PHYS = {
     "R_1K8_VERT": (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
     "R_10K_VERT": (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
     "D_1N4148_VERT": (2, 0.70, 2.54, "1N4148 DO-35 vertical, 2.54mm pad pitch"),
+    "OSC_25M175": (4, 0.80, 15.24, "ECS-100A-251.7 full DIP-14 can: pins 1/7/8/14; "
+                                           "7.62mm row spacing checked by R5.V4 gate"),
+    "DSUB15HD": (17, 0.70, 0.762, "NorComp 200-015-213L537: 15 x 0.70mm signal holes, "
+                                      "2 x 2.10mm board locks, 0.762mm stagger"),
+    "R_470": (2, 0.70, 7.62, "DIN0207 axial, 7.62mm pitch"),
 }
+
+
+def footprint_path(fpname):
+    """Resolve standard libraries plus the repo-owned VJUGA.pretty library."""
+    lib, name = fpname.split(":")
+    root = HERE if lib == "VJUGA" else Path(FPROOT)
+    return root / f"{lib}.pretty" / f"{name}.kicad_mod"
 
 
 def parse_pads(fpname):
@@ -118,8 +149,7 @@ def parse_pads(fpname):
     Drill is parsed from the (drill ...) sub-expression that follows (size ...) inside
     each pad block (it is not adjacent to (at ...))."""
     import re
-    lib, name = fpname.split(":")
-    txt = (Path(FPROOT) / f"{lib}.pretty" / f"{name}.kicad_mod").read_text()
+    txt = footprint_path(fpname).read_text()
     nums, tht, drills, xs = set(), 0, [], []
     for m in re.finditer(
             r'\(pad\s+"([^"]*)"\s+(\S+)\s+\S+\s+\(at\s+([-\d.]+)\s+([-\d.]+)', txt):
@@ -158,8 +188,7 @@ def width_ok(typ, fpname):
 
 
 def exists(fp):
-    lib, name = fp.split(":")
-    return (Path(FPROOT) / f"{lib}.pretty" / f"{name}.kicad_mod").is_file()
+    return footprint_path(fp).is_file()
 
 
 def resolve_kind(kind):
@@ -206,6 +235,8 @@ def self_test():
     """Prove the two high-consequence guards reject known-wrong library parts."""
     wrong_dip = "Package_DIP:DIP-28_W7.62mm"
     wrong_usb = "Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x_6P_TopMnt_Horizontal"
+    wrong_dsub = ("Connector_Dsub:DSUB-15-HD_Socket_Horizontal_P2.29x1.90mm_"
+                   "EdgePinOffset3.03mm_Housed_MountingHolesOffset4.94mm")
     failures = []
     if width_ok("EPROM_27C256", wrong_dip):
         failures.append("DIP width guard accepted a 300 mil footprint for a 600 mil DIP-28")
@@ -213,12 +244,16 @@ def self_test():
         failures.append(f"negative-test fixture missing: {wrong_usb}")
     elif not phys_ok("USB_C_PWR", wrong_usb):
         failures.append("physical guard accepted the known-wrong SMD USB-C footprint")
+    if not exists(wrong_dsub):
+        failures.append(f"negative-test fixture missing: {wrong_dsub}")
+    elif not phys_ok("DSUB15HD", wrong_dsub):
+        failures.append("physical guard accepted the wrong 1.90mm-row generic HD15 footprint")
     if failures:
         print("footprint guard negative self-test FAILED:")
         for failure in failures:
             print(f"- {failure}")
         return 1
-    print("footprint guard negative self-test PASS: wrong DIP-28 width and SMD USB-C rejected")
+    print("footprint guard negative self-test PASS: wrong DIP width, SMD USB-C and generic HD15 rejected")
     return 0
 
 

@@ -34,7 +34,7 @@ ALIASES = {
     },
     "video-vdec-u6": {
         "RBSTROBE": "RB_STROBE", "RESETn": "RESET_N", "VEND": "V_END", "/VSYNCn": "VSYNC_N",
-        "FDIV2": "FRAME_DIV2", "FDIV1": "FRAME_DIV1", "FDIV0": "FRAME_DIV0",
+        "FDIV2": "FRAME_DIV2_NC", "FDIV1": "FRAME_DIV1_NC", "FDIV0": "FRAME_DIV0_NC",
         "/FRAMETOPn": "FRAME_TOP_N", "FRAMETICK": "FRAME_TICK",
         "RBCLK": "RB_CLK", "VACTIVE": "V_ACTIVE", "GND": "GND", "VCC": "VCC5",
     },

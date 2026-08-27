@@ -4,7 +4,7 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 `rev-b-modular-design.md` (concept), `rev-b-build-plan.md` (decisions + phases),
 `rev-b-execution-guide.md` (tasks + executor rules), `rev-b-bus-contract.md`
 (interface), and `rev-b-five-board-order-plan.md` (controlling pre-order plan).
-Last updated 2026-08-27.
+Last updated 2026-08-28.
 
 **Owner direction (2026-08-27): finish a VGA-ready five-board machine and its
 TTL serial console before ordering.** This supersedes the four-board-first
@@ -31,7 +31,9 @@ in `rev-b-five-board-order-plan.md`.
 
 `spinoffs/minimal-vga/sim/revb_tier_suite.sh` runs the whole verified set:
 commons guard, board connectivity + **D1.18 completeness** (all six card specs),
-B1 footprint guards + negative controls, mem/io/video scoped LVS, per-card BFM TBs +
+serial contract/electrical/C10 gates, five reproducible GALs, five-card mating,
+exact Video parts/footprints/power plus negative controls, mem/io/video scoped LVS,
+per-card BFM TBs +
 negative control, bus-conflict + refresh-drive assertions, ekta37 banner boot (both
 modes) byte-identical to cosim, the minimum-tier bring-up TX stream, and the B2 video
 timing/crop/scanout/`WAIT` gates.
@@ -57,9 +59,10 @@ those tools.
 
 ## Next action
 
-**R5.0, R5.S1–S3 and R5.P1 are complete.** Follow the dependency-ordered tasks
-in `rev-b-five-board-order-plan.md`. The next dependency-ready work is R5.V1
-(Video silicon/pin/full-LVS audit).
+**R5.0, R5.S1–S3, R5.P1 and R5.V1–V4 are complete.** Follow the
+dependency-ordered tasks in `rev-b-five-board-order-plan.md`. The next
+dependency-ready work is R5.V5: generate, place and route the four-layer Video
+PCB while preserving the frozen parts, planes and return paths.
 Do not upload the historical four-board packages. Ordering stays on hold until all
 five packages pass R5.R1 and the owner explicitly releases them.
 

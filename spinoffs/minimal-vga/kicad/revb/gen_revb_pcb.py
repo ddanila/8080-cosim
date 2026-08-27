@@ -30,7 +30,8 @@ def mm(v): return pcbnew.FromMM(v)
 
 def load_fp(fpname):
     lib, name = fpname.split(":")
-    fp = pcbnew.FootprintLoad(os.path.join(FPROOT, f"{lib}.pretty"), name)
+    root = HERE if lib == "VJUGA" else FPROOT
+    fp = pcbnew.FootprintLoad(os.path.join(root, f"{lib}.pretty"), name)
     if fp is None:
         raise RuntimeError(f"missing footprint {fpname}")
     return fp
@@ -43,6 +44,25 @@ def place(fp, x, y, rot=0):
     fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
     c = fp.GetBoundingBox(False, False).GetCenter()
     fp.SetPosition(pcbnew.VECTOR2I(2 * mm(x) - c.x, 2 * mm(y) - c.y))
+
+
+def place_pad_row(fp, x, y, rot=0):
+    """Put the connector PAD-ROW centre, not its asymmetric body bbox, at (x,y).
+
+    mating.json defines electrical/mating row coordinates. A right-angle card header's
+    body sits wholly on one side of that row, so bbox-centering silently moves its pins
+    by several millimetres and makes the abstract mating proof false.
+    """
+    if rot:
+        fp.SetOrientationDegrees(rot)
+    fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
+    pads = [pad.GetPosition() for pad in fp.Pads() if str(pad.GetNumber()).isdigit()]
+    if not pads:
+        raise RuntimeError(f"{fp.GetReference()}: connector has no numeric pads")
+    cx = (min(p.x for p in pads) + max(p.x for p in pads)) // 2
+    cy = (min(p.y for p in pads) + max(p.y for p in pads)) // 2
+    pos = fp.GetPosition()
+    fp.SetPosition(pcbnew.VECTOR2I(pos.x + mm(x) - cx, pos.y + mm(y) - cy))
 
 
 def outline(board):
@@ -229,11 +249,11 @@ def main():
         ni = pcbnew.NETINFO_ITEM(board, name)
         board.Add(ni); nets[name] = ni
 
-    def add_fp(ref, fpname, xy, pin_to_net, dnp=False):
+    def add_fp(ref, fpname, xy, pin_to_net, dnp=False, pad_row_anchor=False):
         fp = load_fp(fpname)
         board.Add(fp)
         fp.SetReference(ref)
-        place(fp, *xy)
+        (place_pad_row if pad_row_anchor else place)(fp, *xy)
         if dnp:
             try: fp.SetDNP(True)
             except Exception: pass
@@ -259,8 +279,8 @@ def main():
             # and its pins align in vertical columns (D1.29 column-route prerequisite).
             bref = "J_BUS" if ref == "J_BUS" else f"{ref}_BUS"
             eref = "J_EXT" if ref == "J_BUS" else f"{ref}_EXT"
-            add_fp(bref, base_fp, PLACE[bref], base)
-            add_fp(eref, ext_fp, PLACE[eref], ext)
+            add_fp(bref, base_fp, PLACE[bref], base, pad_row_anchor=True)
+            add_fp(eref, ext_fp, PLACE[eref], ext, pad_row_anchor=True)
         elif typ == "USB_C_PWR":
             # Map logical power pins to the GCT USB4085 THT receptacle's pads (full USB-C
             # pinout): VBUS=A4/A9/B4/B9, GND=A1/A12/B1/B12 + shield, CC1=A5, CC2=B5. The

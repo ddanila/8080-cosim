@@ -106,9 +106,9 @@
         "13": "RESET_N",
         "14": "V_END",
         "15": "VSYNC_N",
-        "16": "FRAME_DIV2",
-        "17": "FRAME_DIV1",
-        "18": "FRAME_DIV0",
+        "16": "FRAME_DIV2_NC",
+        "17": "FRAME_DIV1_NC",
+        "18": "FRAME_DIV0_NC",
         "19": "FRAME_TOP_N",
         "20": "FRAME_TICK",
         "21": "RB_CLK",
@@ -611,7 +611,8 @@
         "12": "VGA_SDA_NC",
         "13": "HSYNC_N",
         "14": "VSYNC_N",
-        "15": "VGA_SCL_NC"
+        "15": "VGA_SCL_NC",
+        "SH": "GND"
       }
     },
     {
@@ -1245,6 +1246,10 @@
         [
           "J_VGA",
           "10"
+        ],
+        [
+          "J_VGA",
+          "SH"
         ],
         [
           "C1",
@@ -2366,7 +2371,7 @@
         ]
       ]
     },
-    "FRAME_DIV2": {
+    "FRAME_DIV2_NC": {
       "nodes": [
         [
           "U6",
@@ -2374,7 +2379,7 @@
         ]
       ]
     },
-    "FRAME_DIV1": {
+    "FRAME_DIV1_NC": {
       "nodes": [
         [
           "U6",
@@ -2382,7 +2387,7 @@
         ]
       ]
     },
-    "FRAME_DIV0": {
+    "FRAME_DIV0_NC": {
       "nodes": [
         [
           "U6",

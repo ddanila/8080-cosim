@@ -148,7 +148,7 @@ GAL22V10_HDEC = {"1":"DOTCLK","2":"HC0","3":"HC1","4":"HC2","5":"HC3","6":"HC4",
 # at VC=524.  Pin 13 supplies synchronous reset and combinatorial reset gating.
 GAL22V10_VDEC = {"1":"RB_STROBE","2":"VC0","3":"VC1","4":"VC2","5":"VC3","6":"VC4","7":"VC5",
     "8":"VC6","9":"VC7","10":"VC8","11":"VC9","12":"GND","13":"RESET_N","14":"V_END","15":"VSYNC_N",
-    "16":"FRAME_DIV2","17":"FRAME_DIV1","18":"FRAME_DIV0","19":"FRAME_TOP_N",
+    "16":"FRAME_DIV2_NC","17":"FRAME_DIV1_NC","18":"FRAME_DIV0_NC","19":"FRAME_TOP_N",
     "20":"FRAME_TICK","21":"RB_CLK","22":"V_ACTIVE","23":"VID_VDEC_O23_NC","24":"VCC5"}
 GAL22V10_CTRL = {"1":"FETCH","2":"A11","3":"A12","4":"A13","5":"A14","6":"A15","7":"MREQ_N",
     "8":"RD_N","9":"WR_N","10":"MODE0","11":"MODE1","12":"GND","13":"RESET_N","14":"WAIT_N",
@@ -377,11 +377,12 @@ CARD_EXTRAS = {
              "4": "VID_PIXEL", "5": "VCC5", "6": "VID_G_DRV", "7": "GND",
              "8": "VID_B_DRV", "9": "VID_PIXEL", "10": "VCC5", "11": "VID_RGB4Y_NC",
              "12": "GND", "13": "GND", "14": "VCC5"}),
-        # DSUB-15HD, mono series network, sync direct (negative polarity).
+        # Exact NorComp board locks are electrically common with the metal shell;
+        # bond both repeated SH pads to card GND for a defined cable shield path.
         comp("J_VGA", "DSUB15HD", {"1": "VID_R", "2": "VID_G", "3": "VID_B", "4": "VGA_ID2_NC",
              "5": "GND", "6": "GND", "7": "GND", "8": "GND", "9": "VGA_KEY_NC", "10": "GND",
              "11": "VGA_ID0_NC", "12": "VGA_SDA_NC", "13": "HSYNC_N", "14": "VSYNC_N",
-             "15": "VGA_SCL_NC"}),
+             "15": "VGA_SCL_NC", "SH": "GND"}),
         comp("R_VR", "R_470", {"1": "VID_R_DRV", "2": "VID_R"}),
         comp("R_VG", "R_470", {"1": "VID_G_DRV", "2": "VID_G"}),
         comp("R_VB", "R_470", {"1": "VID_B_DRV", "2": "VID_B"}),

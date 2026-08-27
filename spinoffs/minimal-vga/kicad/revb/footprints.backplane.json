@@ -1,7 +1,7 @@
 {
   "REVB_BUS_39_10": [
-    "Connector_PinHeader_2.54mm:PinHeader_1x39_P2.54mm_Vertical",
-    "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical"
+    "Connector_PinSocket_2.54mm:PinSocket_1x39_P2.54mm_Vertical",
+    "Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical"
   ],
   "USB_C_PWR": "Connector_USB:USB_C_Receptacle_GCT_USB4085",
   "R_5K1": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",

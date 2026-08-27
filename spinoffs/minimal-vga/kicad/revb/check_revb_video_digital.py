@@ -15,7 +15,7 @@ AUDIT = HERE / "video-digital-audit.json"
 # Digest of all 398 U1..U23 (reference, type, physical pin, net) records.  This is
 # deliberately separate from the generator: any pin edit needs an explicit audit
 # and digest update, while the structural LVS independently checks net membership.
-EXPECTED_DIGEST = "fada1852d12f6b6f084b2f0f1d64bcffdf57229a7d81f9bf01ef483d47de405f"
+EXPECTED_DIGEST = "117c32ea676f6d8528f8927e6948cd6f25fa214f61428a9d219a113a771a45a3"
 EXPECTED_TYPES = {
     "U1":"OSC_25M175", "U2":"ST_HC393", "U3":"ST_HC393", "U4":"ST_HC393",
     "U5":"GAL22V10_HDEC", "U6":"GAL22V10_VDEC", "U7":"GAL22V10_CTRL",

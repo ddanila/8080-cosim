@@ -43,7 +43,7 @@ Video has three. RGB assumes all three channels continuously high.
 | Memory complete card | 235 mA |
 | I/O UART tier, B3 parts DNP | 150 mA |
 | Backplane/reset/console/pulls | 30 mA |
-| Video oscillator | 30 mA |
+| Video oscillator (`ECS-100A-251.7`, 25.175 MHz band maximum) | 70 mA |
 | Video 3 x ATF22V10 | 375 mA |
 | Video 3 x M74HC393 | 24 mA |
 | Video 4 x CD74ACT157 | 20 mA |
@@ -56,14 +56,18 @@ Video has three. RGB assumes all three channels continuously high.
 | Video AS6C1008 | 40 mA |
 | Video three RGB loads | 28 mA |
 | Video card allowance | 30 mA |
-| **Video subtotal** | **646 mA** |
-| **Five-card total** | **1311 mA** |
+| **Video subtotal** | **686 mA** |
+| **Five-card total** | **1351 mA** |
 
-A regulated 5 V, 2 A supply leaves 689 mA (34.45%) planning headroom. The USB branch's
+A regulated 5 V, 2 A supply leaves 649 mA (32.45%) planning headroom. The USB branch's
 MF-R110 has 1.1 A hold current and therefore is not qualified for the complete machine;
 the order must not be presented as USB-powered. R5.V6 must qualify and protect the
 normal 2 A-or-better bench input, then check routed copper/connector drop. First power-up
 still uses a current limit and staged card insertion.
+
+The original R5.V2 desk placeholder allowed 30 mA for the oscillator. R5.V4 selected
+the exact `ECS-100A-251.7`; its datasheet permits 70 mA at 24–69.999 MHz, so this table
+was conservatively raised by 40 mA rather than preserving the obsolete placeholder.
 
 ## Machine gate
 

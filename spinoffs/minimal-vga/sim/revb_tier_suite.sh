@@ -32,10 +32,13 @@ echo "== rev B: mechanical mating contract (TG.1/D1.31; pure python, no CAD tool
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_mating.py
 
 echo "== rev B: footprint package guards (D1.36 phys + DIP width; skips w/o KiCad libs) =="
-for _c in mem io cpu backplane; do
+for _c in mem io cpu backplane video; do
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py "$_c"
 done
-python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py backplane --self-test
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py video --self-test
+
+echo "== rev B: exact Video purchasing/land-pattern contract (R5.V4) =="
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_parts.py --self-test
 
 echo "== rev B: mem-card LVS (structural netlist vs board.json; skips w/o yosys) =="
 spinoffs/minimal-vga/sync/revb_lvs.sh mem

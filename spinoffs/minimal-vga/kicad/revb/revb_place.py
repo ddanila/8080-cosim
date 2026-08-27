@@ -16,6 +16,7 @@ _C = json.load(open(os.path.join(_HERE, "mating.json")))
 
 BOARD_W = 100.0
 BOARD_H_BY_CARD = {"mem": 60.0, "io": 100.0, "cpu": 70.0,
+                   "video": 100.0,
                    "backplane": _C["backplane_board_h"]}
 
 
@@ -54,6 +55,9 @@ _PARTS = {
         "C1": (66.0, 36.0, 0), "C2": (88.0, 42.0, 0),
         "J_DIAG": (40.0, 46.0, 90),
     },
+    # R5.V4 establishes the exact bus connector geometry now. All non-connector Video
+    # placement remains deliberately deferred to R5.V5's four-layer SI-driven pass.
+    "video": {},
 }
 
 PLACE_BY_CARD = {c: {**_card_connectors(BOARD_H_BY_CARD[c]), **_PARTS[c]}

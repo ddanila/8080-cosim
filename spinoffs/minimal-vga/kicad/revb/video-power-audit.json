@@ -20,7 +20,7 @@
     "io": 150,
     "backplane": 30,
     "video": {
-      "oscillator": 30,
+      "oscillator": 70,
       "three_atf22v10": 375,
       "three_m74hc393": 24,
       "four_cd74act157": 20,
@@ -33,18 +33,19 @@
       "as6c1008": 40,
       "three_rgb_loads": 28,
       "card_allowance": 30,
-      "subtotal": 646
+      "subtotal": 686
     },
-    "five_card_total": 1311,
+    "five_card_total": 1351,
     "qualified_supply_ma": 2000,
-    "supply_headroom_ma": 689,
-    "supply_headroom_percent": 34.45,
+    "supply_headroom_ma": 649,
+    "supply_headroom_percent": 32.45,
     "usb_polyfuse_hold_ma": 1100,
     "usb_branch_qualified_for_five_cards": false
   },
   "sources": {
     "atf22v10": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0735.pdf",
     "act08": "https://www.ti.com/lit/ds/symlink/cd74act08.pdf",
+    "oscillator": "https://ecsxtal.com/store/pdf/ECF-100X.pdf",
     "vga_connector_signal_levels": "https://www.vesa.org/vesa-standards/"
   }
 }

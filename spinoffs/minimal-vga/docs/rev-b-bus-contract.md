@@ -189,10 +189,10 @@ budget. Details and machine-checked arithmetic are in `rev-b-five-card-power.md`
 | Memory | 235 mA |
 | I/O (UART tier, B3 parts DNP) | 150 mA |
 | Backplane | 30 mA |
-| Video | 646 mA |
-| **Five-card total** | **1311 mA** |
+| Video | 686 mA |
+| **Five-card total** | **1351 mA** |
 
-The required supply is regulated 5 V rated at least 2 A: 689 mA/34.45% planning
+The required supply is regulated 5 V rated at least 2 A: 649 mA/32.45% planning
 headroom remains. The MF-R110 USB-branch polyfuse holds only 1.1 A, below this
 worst-case total, so USB-C is **not qualified for the complete five-card machine**.
 Use the regulated 2 A-or-better bench input; R5.V6 must add/verify protection on that
