@@ -12,22 +12,22 @@ HERE = Path(__file__).resolve().parent
 BOARD = HERE / "video.board.json"
 AUDIT = HERE / "video-digital-audit.json"
 
-# Digest of all 384 U1..U22 (reference, type, physical pin, net) records.  This is
+# Digest of all 398 U1..U23 (reference, type, physical pin, net) records.  This is
 # deliberately separate from the generator: any pin edit needs an explicit audit
 # and digest update, while the structural LVS independently checks net membership.
-EXPECTED_DIGEST = "0c87e365c9d9cd9854b5820b1069cda0b85008e6654ecc03abe001b60c8ee23a"
+EXPECTED_DIGEST = "f03d9f7a38af9cca2bfe23c8d89eac86acfabafd82ef7fd948edc93c88ce084f"
 EXPECTED_TYPES = {
     "U1":"OSC_25M175", "U2":"ST_HC393", "U3":"ST_HC393", "U4":"ST_HC393",
     "U5":"GAL22V10_HDEC", "U6":"GAL22V10_VDEC", "U7":"GAL22V10_CTRL",
     "U8":"ACT_157", "U9":"ACT_157", "U10":"ACT_157", "U11":"ACT_157",
     "U12":"ACT_161", "U13":"ACT_161", "U14":"ACT_161", "U15":"ACT_161",
     "U16":"TTL_283", "U17":"ACT_273", "U18":"ACT_273", "U19":"ALS_166",
-    "U20":"HCT_245", "U21":"SRAM_FB", "U22":"HCT_08",
+    "U20":"HCT_245", "U21":"SRAM_FB", "U22":"HCT_08", "U23":"ACT_08",
 }
 PIN_COUNTS = {
     "OSC_25M175":4, "ST_HC393":14, "GAL22V10_HDEC":24, "GAL22V10_VDEC":24,
     "GAL22V10_CTRL":24, "ACT_157":16, "ACT_161":16, "TTL_283":16,
-    "ACT_273":20, "ALS_166":16, "HCT_245":20, "SRAM_FB":32, "HCT_08":14,
+    "ACT_273":20, "ALS_166":16, "HCT_245":20, "SRAM_FB":32, "HCT_08":14, "ACT_08":14,
 }
 
 # High-consequence maps are written from the manufacturers' physical pin tables,
@@ -62,6 +62,7 @@ TIED_INPUTS = {
     ("U16","7"):"GND", ("U16","11"):"GND", ("U16","12"):"GND", ("U16","15"):"GND",
     ("U18","17"):"GND", ("U18","18"):"GND",
     ("U22","12"):"GND", ("U22","13"):"GND",
+    ("U23","12"):"GND", ("U23","13"):"GND",
 }
 
 
@@ -78,7 +79,7 @@ def verify(board: dict) -> list[str]:
     chips = {c["ref"]: c for c in board["chips"] if c["ref"].startswith("U")}
     errors: list[str] = []
     if set(chips) != set(EXPECTED_TYPES):
-        errors.append(f"digital refs {sorted(chips)} != U1..U22")
+        errors.append(f"digital refs {sorted(chips)} != U1..U23")
     for ref, typ in EXPECTED_TYPES.items():
         if ref not in chips:
             continue
@@ -157,7 +158,7 @@ def main() -> int:
             print(f"REVB-VIDEO-DIGITAL: FAIL {error}", file=sys.stderr)
         return 1
     suffix = " + swapped/missing mutation controls" if "--self-test" in sys.argv else ""
-    print(f"REVB-VIDEO-DIGITAL: PASS 22 packages / 384 pins{suffix}")
+    print(f"REVB-VIDEO-DIGITAL: PASS 23 packages / 398 pins{suffix}")
     return 0
 
 

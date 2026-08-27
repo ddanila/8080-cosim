@@ -366,16 +366,24 @@ CARD_EXTRAS = {
              "5": "H_END", "6": "H_CLR", "7": "GND", "8": "V_CLR",
              "9": "V_END", "10": "V_END", "11": "VID_AND4Y_NC",
              "12": "GND", "13": "GND", "14": "VCC5"}),
-        # VGA output: DSUB-15HD + mono resistor DAC (VID_PIXEL -> R=G=B), sync direct (both
-        # negative polarity for 640x480@60)
+        # VGA output: U23 gives R/G/B independent 24 mA-capable ACT drivers so one gate
+        # never sources all three monitor loads. The on-card parts are 470-ohm SERIES
+        # resistors; each monitor input supplies the 75-ohm termination.
+        comp("U23", "ACT_08", {"1": "VID_PIXEL", "2": "VCC5", "3": "VID_R_DRV",
+             "4": "VID_PIXEL", "5": "VCC5", "6": "VID_G_DRV", "7": "GND",
+             "8": "VID_B_DRV", "9": "VID_PIXEL", "10": "VCC5", "11": "VID_RGB4Y_NC",
+             "12": "GND", "13": "GND", "14": "VCC5"}),
+        # DSUB-15HD, mono series network, sync direct (negative polarity).
         comp("J_VGA", "DSUB15HD", {"1": "VID_R", "2": "VID_G", "3": "VID_B", "4": "VGA_ID2_NC",
              "5": "GND", "6": "GND", "7": "GND", "8": "GND", "9": "VGA_KEY_NC", "10": "GND",
              "11": "VGA_ID0_NC", "12": "VGA_SDA_NC", "13": "HSYNC_N", "14": "VSYNC_N",
              "15": "VGA_SCL_NC"}),
-        comp("R_VR", "R_470", {"1": "VID_PIXEL", "2": "VID_R"}),
-        comp("R_VG", "R_470", {"1": "VID_PIXEL", "2": "VID_G"}),
-        comp("R_VB", "R_470", {"1": "VID_PIXEL", "2": "VID_B"}),
-        cap("C1"), cap("C2"), cap("C3"), cap("C4"), cap("C5"), cap("C6"), cap("C7"),
+        comp("R_VR", "R_470", {"1": "VID_R_DRV", "2": "VID_R"}),
+        comp("R_VG", "R_470", {"1": "VID_G_DRV", "2": "VID_G"}),
+        comp("R_VB", "R_470", {"1": "VID_B_DRV", "2": "VID_B"}),
+        # R5.V2: one local 100 nF bypass per U1..U23, plus local rail bulk.
+        *[cap(f"C{i}") for i in range(1, 24)],
+        comp("C_BULK", "C_ELEC_47U", {"1": "VCC5", "2": "GND"}),
     ],
 }
 

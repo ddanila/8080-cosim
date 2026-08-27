@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "rail_v": 5.0,
+  "video_decouplers_100nf": 23,
+  "video_bulk_uf": 47,
+  "rgb": {
+    "series_ohm": 470,
+    "monitor_termination_ohm": 75,
+    "channels": 3,
+    "ideal_monitor_high_v": 0.6880733944954128,
+    "guarded_driver_high_v": 4.4,
+    "guarded_monitor_high_v": 0.6055045871559633,
+    "ideal_driver_current_ma_per_channel": 9.174311926605505,
+    "driver_current_rating_ma_per_channel": 24.0,
+    "architecture": "three independent CD74ACT08 outputs; monitor supplies each 75-ohm load"
+  },
+  "current_budget_ma": {
+    "cpu": 250,
+    "memory": 235,
+    "io": 150,
+    "backplane": 30,
+    "video": {
+      "oscillator": 30,
+      "three_atf22v10": 375,
+      "three_m74hc393": 24,
+      "four_cd74act157": 20,
+      "four_cd74act161": 40,
+      "cd74hc283": 5,
+      "two_cd74act273": 10,
+      "sn74als166": 24,
+      "cd74hct245": 10,
+      "hct08_plus_act08": 10,
+      "as6c1008": 40,
+      "three_rgb_loads": 28,
+      "card_allowance": 30,
+      "subtotal": 646
+    },
+    "five_card_total": 1311,
+    "qualified_supply_ma": 2000,
+    "supply_headroom_ma": 689,
+    "supply_headroom_percent": 34.45,
+    "usb_polyfuse_hold_ma": 1100,
+    "usb_branch_qualified_for_five_cards": false
+  },
+  "sources": {
+    "atf22v10": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0735.pdf",
+    "act08": "https://www.ti.com/lit/ds/symlink/cd74act08.pdf",
+    "vga_connector_signal_levels": "https://www.vesa.org/vesa-standards/"
+  }
+}

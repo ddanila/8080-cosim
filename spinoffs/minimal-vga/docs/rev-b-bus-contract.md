@@ -177,32 +177,24 @@ tail starts at Y=82 on the 100×100 board. D1.37 supersedes the earlier 100×120
 variant: the complete planned five-card system still fits, while top-side power/reset/
 serial components stay outside the seated-card envelope.
 
-## B1-population power budget (planning estimate)
+## Five-card first-article power budget
 
-Conservative +5 V budget for the **minimum tier** (backplane + CPU + Memory +
-I/O-with-UART-only), for the USB-C headroom check. Method and per-part figures
-follow `rev-a-power-budget.md`; the big change vs rev A is **SRAM replaces the
-eight 4164 DRAMs** (build-plan C1), removing ~600 mA, and B1 carries **no video
-card and no bipolar PROMs** (GAL decode, C2).
+R5.V2 replaces the old four-card/B1 estimate with a conservative actual-population
+budget. Details and machine-checked arithmetic are in `rev-b-five-card-power.md` and
+`video-power-audit.json`.
 
-| Block | Qty | Budget each | Total | Card |
-|---|---:|---:|---:|---|
-| Z80 CPU (NMOS Z0840004-class) | 1 | 200 mA | 200 mA | CPU |
-| Bus buffers (74HCT245/244) | 2 | 10 mA | 20 mA | CPU |
-| Oscillator | 1 | 25 mA | 25 mA | CPU |
-| 27C256 ROM | 1 | 50 mA | 50 mA | Memory |
-| 128K×8 SRAM (AS6C1008 CMOS) | 1 | 40 mA | 40 mA | Memory |
-| GAL22V10 decode | 1 | 90 mA | 90 mA | Memory |
-| 8251-class UART (82C51 CMOS) | 1 | 30 mA | 30 mA | I/O |
-| TTL/CMOS glue (decode gates, latches) | 5 | 10 mA | 50 mA | all |
-| Reset supervisor + pull-ups | 1 | 5 mA | 5 mA | Backplane |
-| Power LED | 1 | 2 mA | 2 mA | Backplane |
-| Margin / sourcing variation | — | — | 200 mA | — |
-| **Total (B1 minimum tier)** | | | **~712 mA** | |
+| Card | Conservative +5 V budget |
+|---|---:|
+| CPU | 250 mA |
+| Memory | 235 mA |
+| I/O (UART tier, B3 parts DNP) | 150 mA |
+| Backplane | 30 mA |
+| Video | 646 mA |
+| **Five-card total** | **1311 mA** |
 
-**USB-C budget & headroom rule.** A non-PD USB-C source advertising 1.5 A (22 kΩ
-Rp) gives a 5 V budget of **1.5 A**. B1 draw ~712 mA = **~47 %** of that — under
-the 60 % headroom ceiling (0.9 A), with room for the video + I/O-full + FDC cards
-added in later tiers (each re-checked here as populated). As in rev A, without PD
-negotiation do not assume a given host delivers the full 1.5 A; the bench-supply
-path stays the safe primary bring-up input.
+The required supply is regulated 5 V rated at least 2 A: 689 mA/34.45% planning
+headroom remains. The MF-R110 USB-branch polyfuse holds only 1.1 A, below this
+worst-case total, so USB-C is **not qualified for the complete five-card machine**.
+Use the regulated 2 A-or-better bench input; R5.V6 must add/verify protection on that
+normal input before release. The old ~712 mA number remains historical four-card
+evidence only and must not be used for the VGA-populated system.

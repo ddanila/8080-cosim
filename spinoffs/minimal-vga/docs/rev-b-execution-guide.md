@@ -810,7 +810,8 @@ params + bounded loops + watchdog—full-frame waits are too slow under Icarus.
 - `gen_revb_boards.py`: add the `video` card — new CHIP_TYPES per D2.6/D2.7 (3×'393
   counters; **3× GAL22V10** H-decode/V-decode/control; 4×'157 CPU/scanout mux; **4×'161
   scan-addr counter + 2×'374 row-base register** (D2.7); '166 shifter; '245 buffer;
-  OSC_25M175; DSUB-15HD; R-DAC + 75 Ω terminations; decoupling ~1/chip — **~21 ICs**),
+  OSC_25M175; DSUB-15HD; three ACT RGB drivers + 470 Ω on-card series parts feeding
+  the monitor's 75 Ω loads; one 100 nF decoupler per IC — **23 ICs**),
   full pin tables wired per the TI.2 twin; AS6C1008 reused (D2.3, high addresses
   strapped). GAL equations → `rev-b-gal-equations.md`. Completeness + connectivity green.
 - LVS: `revb_video_lvs.v` (GALs + SRAM instances) + map; `revb_lvs.sh video` IN SYNC.

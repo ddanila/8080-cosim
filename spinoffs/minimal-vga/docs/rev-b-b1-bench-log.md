@@ -73,7 +73,7 @@ a card; keying is convention-only.
 | 7. I/O minimum population | 8251 + decode GAL + baud oscillator only; FTDI crossover checked before attaching host | pending | ⬜ |
 | 8. Bring-up ROM | Serial stream is exactly `VJUGA rev B bring-up`, `RAM PASS`, `ROM OK`, `READY`; 47 bytes total | pending | ⬜ |
 | 9. RAM boundary/retention | Test covers 0x4000–0xD6FF; 0xD700–0xD7FF remains reserved for stack/variables; repeated cold boots pass | pending | ⬜ |
-| 10. Bus timing/current | Worst read/write margins and total current recorded against the ~712 mA budget | pending | ⬜ |
+| 10. Bus timing/current | Worst read/write margins and total current recorded against the 1311 mA five-card budget and regulated 5 V/2 A supply | pending | ⬜ |
 | 11. Keying/clearance disposition | Measured gap compared with 4.16 mm conservative model; reversed-insertion mitigation accepted or changed | pending | ⬜ |
 
 ## Exit decision

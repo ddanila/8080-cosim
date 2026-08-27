@@ -47,6 +47,12 @@
       "reason": "TTL inputs accept ALS/GAL highs; two spare gates produce full-rail H_CLR and V_CLR",
       "vih_max_v": 2.0,
       "datasheet": "https://www.ti.com/lit/ds/symlink/cd74hc08.pdf"
+    },
+    "U23": {
+      "part": "TI CD74ACT08E",
+      "reason": "three independent 24 mA RGB drivers prevent one gate sourcing all monitor loads",
+      "vih_max_v": 2.0,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/cd74act08.pdf"
     }
   },
   "fanout": {

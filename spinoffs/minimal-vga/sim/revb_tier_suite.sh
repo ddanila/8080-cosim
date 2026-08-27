@@ -48,6 +48,9 @@ python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_digital.py --self-test
 spinoffs/minimal-vga/sync/revb_lvs.sh video
 spinoffs/minimal-vga/sync/revb_video_lvs_mutation_check.sh
 
+echo "== rev B: Video decoupling, RGB loads and five-card current (R5.V2) =="
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_power.py --self-test
+
 echo "== rev B: per-card unit TBs (BFM) =="
 spinoffs/minimal-vga/sim/revb_card_tb_check.sh
 

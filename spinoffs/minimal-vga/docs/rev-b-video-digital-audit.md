@@ -41,10 +41,11 @@ R5.V4 and equations/timing simulation remain R5.V3.
 | U20 | TI CD74HCT245E | CPU bus is isolated during scan fetch; TTL inputs accept both bus and SRAM levels. |
 | U21 | Alliance AS6C1008-55PCN | Correct 32-pin map; A14-A16 low, CE2 high, 16 KiB local address span. |
 | U22 | TI CD74HCT08E | Pixel blanking plus H/V reset-level translation; only fourth gate is unused and tied. |
+| U23 | TI CD74ACT08E | Three independent high-current RGB outputs; unused fourth gate inputs tied low. |
 
-The generated board has 22 populated digital packages and 384 physical package
-pins. Full structural LVS covers every one, including supply pins, and matches 102
-multi-endpoint nets. The independent pin guard hashes all 384 `(ref,type,pin,net)`
+The generated board has 23 populated digital packages and 398 physical package
+pins. Full structural LVS covers every one, including supply pins, and matches 104
+multi-endpoint nets. The independent pin guard hashes all 398 `(ref,type,pin,net)`
 records and separately spells out the SRAM, adder, control GAL, unused-input and bus
 isolation contracts. Its self-test rejects both a swapped U16 input and a missing U21
 select pin. The LVS negative test makes the same two mutations in a temporary board

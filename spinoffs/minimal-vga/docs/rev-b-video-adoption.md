@@ -16,17 +16,16 @@ obligation is met.
 
 ## What we adopt (the timing chain, redrawn)
 
-The **640×480 @ 60 Hz VGA sync + blanking generator** built from discrete TTL:
+The **640×480 @ 60 Hz VGA counter topology and decode terms**:
 
-- 3 × 74HCT393 (dual 4-bit counters) — horizontal dot counter + vertical line counter
-- 2 × 74HCT00, 1 × 74HCT10, 2 × 74HCT20 (NAND gates) — decode the sync/blank window
-  edges from the counter states
-- 1 × 74HCT04 (hex inverter) — sync polarity + clocking
-- a 3-diode + resistor **discrete NOR** — combines two window terms
+- 3 × pin-compatible ST M74HC393B1R dual counters — horizontal dot and vertical line
+  counters (the exact faster family is our real-silicon correction)
+- the original counter-bit terms that define sync, blanking and terminal counts; these
+  are re-expressed in two ATF22V10s rather than copying the original NAND/diode circuit
 - a **25.175 MHz** dot-clock reference (a canned oscillator on our card)
 
-We adopt the **topology and the decode terms** (which counter bits gate hsync/vsync/
-blank), not the Eagle layout. It is redrawn in our own `gen_revb_boards.py` netlist so
+We adopt those **counter/decode concepts**, not the Eagle gate-level circuit or layout.
+The VJUGA implementation is redrawn in our own `gen_revb_boards.py` netlist so
 it flows through our LVS / footprint-guard / DRC / mating pipeline like every other card.
 No Eagle files are imported.
 
@@ -40,12 +39,14 @@ ours:
 - **CPU bus interface** — address decode of the `0xD800–0xFFFF` window, data buffer
   (74HCT245), and the **scanout-priority contention** logic that asserts open-drain
   `WAIT_N` when a CPU access collides with an active-region fetch (D2.5).
-- **Address mux** (74HCT157 ×4) switching the SRAM between the CPU address and the
+- **Address mux** (CD74ACT157 ×4) switching the SRAM between the CPU address and the
   scanout (row,col) address.
-- **Pixel shifter** (74HCT166) serialising a fetched byte into the 8-pixel dot stream.
-- **GAL22V10** carrying the window decode, mode-overlay (MODE0/1), and WAIT equations
+- **Pixel shifter** (SN74ALS166) serialising a fetched byte into the 8-pixel dot stream.
+- **Three ATF22V10s** carrying H timing, V timing/frame division, window decode,
+  mode-overlay (MODE0/1), phase arbitration, and WAIT equations
   (`rev-b-gal-equations.md`).
-- **Mono→RGB resistor DAC** + DSUB-15HD VGA output and 75 Ω terminations.
+- **Mono→RGB output**: three independent ACT drivers and on-card 470 Ω series
+  resistors feeding the monitor's three 75 Ω terminations, plus the DE-15 output.
 - The **pixel-doubling + crop/letterbox** mapping of the 320×241 mono source onto the
   640×480 raster (decided by the oracle at TI.2, frozen in `video-timing.json`).
 
