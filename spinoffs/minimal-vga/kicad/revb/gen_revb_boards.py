@@ -81,8 +81,24 @@ GAL16V8_IOSEL = {
     "9":"RD_N","10":"GND","11":"WR_N","12":"PIC_CS_N","13":"PPI_CS_N","14":"UART_CS_N",
     "15":"IO_RESET","16":"INT_N","17":"INTA_N","18":"M1_N","19":"PIC_INT","20":"VCC5",
 }
-# DIP-14 half-can baud oscillator: drives BAUDCLK (8251 TxC/RxC), local per D1.8.
-OSC_BAUD = {"1":"OSC_EN_NC","7":"GND","8":"BAUDCLK","14":"VCC5"}
+# ECS-2200B-049 half-can oscillator: 4.9152 MHz drives a 74HC393 divider. /16 is
+# 307.2 kHz (19,200 x16); /32 is 153.6 kHz (9,600 x16), selected at JP_BAUD.
+OSC_BAUD = {"1":"OSC_EN_NC","4":"GND","5":"BAUD_MASTER","8":"VCC5"}
+TTL_393_BAUD = {
+    "1":"BAUD_MASTER", "2":"GND", "3":"BAUD_DIV2_NC", "4":"BAUD_DIV4_NC",
+    "5":"BAUD_DIV8_NC", "6":"BAUD_19200", "7":"GND", "8":"BAUD_DIV256_NC",
+    "9":"BAUD_DIV128_NC", "10":"BAUD_DIV64_NC", "11":"BAUD_9600",
+    "12":"GND", "13":"BAUD_19200", "14":"VCC5",
+}
+
+# Backplane USB-TTL boundary: two always-enabled 74HCT125 channels buffer TX/RX;
+# the other two are disabled and have defined inputs (no floating CMOS pins).
+HCT125_CONSOLE = {
+    "1":"GND", "2":"CON_TX_SRC", "3":"CON_TX_5V",
+    "4":"GND", "5":"CON_RX_BUF", "6":"CON_RX_DRIVE", "7":"GND",
+    "8":"CON_BUF3_OUT_NC", "9":"GND", "10":"VCC5",
+    "11":"CON_BUF4_OUT_NC", "12":"GND", "13":"VCC5", "14":"VCC5",
+}
 
 # --- B3-tier parts (D1.26): footprinted AND fully wired on the io card, but DNP so
 # B3 is populate-only, no respin. ---
@@ -142,7 +158,9 @@ SRAM_FB = {"1":"FB_A16_TIE","2":"FB_A14_TIE","3":"SA12","4":"SA7","5":"SA6","6":
 CHIP_TYPES = {
     "Z80_DIP40": Z80, "EPROM_27C256": ROM_27C256, "SRAM_AS6C1008": SRAM_128K,
     "GAL22V10": GAL22V10, "USART_8251": USART_8251,
-    "GAL16V8_IOSEL": GAL16V8_IOSEL, "OSC_BAUD": OSC_BAUD, "OSC_CPU": OSC_CPU,
+    "GAL16V8_IOSEL": GAL16V8_IOSEL, "OSC_BAUD": OSC_BAUD,
+    "TTL_393_BAUD": TTL_393_BAUD, "HCT125_CONSOLE": HCT125_CONSOLE,
+    "OSC_CPU": OSC_CPU,
     "PPI_8255": PPI_8255, "ENC_74148": ENC_74148, "PIC_8259": PIC_8259,
     "GAL22V10_HDEC": GAL22V10_HDEC, "GAL22V10_VDEC": GAL22V10_VDEC,
     "GAL22V10_CTRL": GAL22V10_CTRL, "SRAM_FB": SRAM_FB,
@@ -160,6 +178,7 @@ CARD_CHIPS = {
     "cpu":  [("U1", "Z80_DIP40"), ("U2", "OSC_CPU")],   # unbuffered (D1.21); U2 = clock osc
     "mem":  [("U1", "EPROM_27C256"), ("U2", "SRAM_AS6C1008"), ("U3", "GAL22V10")],
     "io":   [("U1", "USART_8251"), ("U2", "GAL16V8_IOSEL"), ("U3", "OSC_BAUD"),
+             ("U7", "TTL_393_BAUD"),
              ("U4", "PPI_8255"), ("U5", "ENC_74148"), ("U6", "PIC_8259")],   # U4-U6 DNP (B3)
     "backplane": [],
     # LVS'd video logic (distinct types); the repeated 74xx are in CARD_EXTRAS.
@@ -188,7 +207,8 @@ CARD_EXTRAS = {
                          "6": "D5", "7": "D6", "8": "D7", "9": "GND"}),
     ],
     "io": [
-        cap("C1"), cap("C2"), cap("C3"), cap("C4"),   # +2 for the DNP PPI/PIC
+        cap("C1"), cap("C2"), cap("C3"), cap("C4"), cap("C5"), cap("C6"), cap("C7"),
+        comp("JP_BAUD", "HDR_1x3", {"1": "BAUD_19200", "2": "BAUDCLK", "3": "BAUD_9600"}),
         # I/O-select observability (S9): also gives the B3-deferred PPI/PIC selects a
         # scope point so they are provisioned, not dangling, in B1.
         header("J_IOSEL", {"1": "UART_CS_N", "2": "PPI_CS_N", "3": "PIC_CS_N",
@@ -234,13 +254,21 @@ CARD_EXTRAS = {
         comp("R_WAIT", "R_4K7", {"1": "WAIT_N", "2": "VCC5"}),
         comp("R_NMI", "R_4K7", {"1": "NMI_N", "2": "VCC5"}),
         comp("R_BRQ", "R_4K7", {"1": "BUSRQ_N", "2": "VCC5"}),
-        # Board-relative TTL console contract (R5.S1). With both JP_S5 shunts fitted,
-        # the I/O card's 8251 TX reaches header pin 2 (BOARD_TX), while header pin 3
-        # (BOARD_RX) reaches the 8251 RX. JP_S5 isolates the console boundary for
-        # diagnosis/loopback; it does not select a nonexistent second serial card.
-        # R5.S2 adds the electrical protection between these logical nets.
-        comp("J_TTL", "HDR_1x4", {"1": "VCC5", "2": "BOARD_TX", "3": "BOARD_RX", "4": "GND"}),
-        comp("JP_S5", "JMP_2x2", {"1": "TX", "2": "BOARD_TX", "3": "BOARD_RX", "4": "RX"}),
+        # Protected board-relative TTL console boundary (R5.S2). Header pin 1 is
+        # sense-only through 10k + a blocking diode, so a powered USB adapter cannot
+        # power the machine.
+        # TX is buffered then divided to ~3.3 V; RX has series resistance, a default
+        # high pull-up and a TTL-threshold HCT input that accepts a 3.3 V host.
+        comp("U_CON", "HCT125_CONSOLE", dict(HCT125_CONSOLE)),
+        cap("C_CON"),
+        comp("J_TTL", "HDR_1x4", {"1": "VCC_SENSE", "2": "BOARD_TX", "3": "BOARD_RX", "4": "GND"}),
+        comp("JP_S5", "JMP_2x2", {"1": "TX", "2": "CON_TX_SRC", "3": "CON_RX_DRIVE", "4": "RX"}),
+        comp("R_TX_TOP", "R_1K_VERT", {"1": "CON_TX_5V", "2": "BOARD_TX"}),
+        comp("R_TX_BOT", "R_1K8_VERT", {"1": "BOARD_TX", "2": "GND"}),
+        comp("R_RX_SER", "R_1K_VERT", {"1": "BOARD_RX", "2": "CON_RX_BUF"}),
+        comp("R_RX_PULL", "R_10K_VERT", {"1": "CON_RX_BUF", "2": "VCC5"}),
+        comp("R_VSENSE", "R_10K_VERT", {"1": "VCC5", "2": "VSENSE_A"}),
+        comp("D_VSENSE", "D_1N4148_VERT", {"1": "VCC_SENSE", "2": "VSENSE_A"}),
         # Power LED. KiCad LED_D5.0mm pad 1 = cathode (K), pad 2 = anode (A) — so pad 1
         # goes to GND and pad 2 to the anode net through R_LED (was reversed).
         comp("D_PWR", "LED", {"1": "GND", "2": "LED_A"}),

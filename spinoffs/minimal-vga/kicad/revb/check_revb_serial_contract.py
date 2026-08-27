@@ -39,12 +39,12 @@ def main() -> int:
         errors.append("I/O bus pins 35/36 are not TX/RX")
 
     header = bp_refs.get("J_TTL", {}).get("pins", {})
-    expected_header = {"1": "VCC5", "2": "BOARD_TX", "3": "BOARD_RX", "4": "GND"}
+    expected_header = {"1": "VCC_SENSE", "2": "BOARD_TX", "3": "BOARD_RX", "4": "GND"}
     if header != expected_header:
         errors.append(f"J_TTL pinout {header} != {expected_header}")
 
     jumper = bp_refs.get("JP_S5", {}).get("pins", {})
-    expected_jumper = {"1": "TX", "2": "BOARD_TX", "3": "BOARD_RX", "4": "RX"}
+    expected_jumper = {"1": "TX", "2": "CON_TX_SRC", "3": "CON_RX_DRIVE", "4": "RX"}
     if jumper != expected_jumper:
         errors.append(f"JP_S5 shunt pairs {jumper} != {expected_jumper}")
 
@@ -53,7 +53,7 @@ def main() -> int:
             errors.append(f"{slot['ref']} pins 35/36 are not TX/RX")
 
     doc = DOC.read_text()
-    for phrase in ("pin 1 = `VCC5`", "pin 2 = `BOARD_TX`", "pin 3 = `BOARD_RX`",
+    for phrase in ("pin 1 = `VCC_SENSE`", "pin 2 = `BOARD_TX`", "pin 3 = `BOARD_RX`",
                    "pin 4 = GND", "TTL only, never RS-232"):
         if phrase not in doc:
             errors.append(f"bus contract lacks {phrase!r}")

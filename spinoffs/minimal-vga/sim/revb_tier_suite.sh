@@ -18,6 +18,9 @@ python3 scripts/check_revb_boards.py --completeness
 echo "== rev B: board-relative TTL serial continuity (R5.S1) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_contract.py
 
+echo "== rev B: protected TTL levels + selectable baud clock (R5.S2) =="
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_electrical.py
+
 echo "== rev B: mechanical mating contract (TG.1/D1.31; pure python, no CAD tools) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_mating.py
 

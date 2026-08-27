@@ -59,7 +59,7 @@ the change; a prose assertion is not a pass.
 |---|---|---|---|
 | **R5.0 — DONE 2026-08-27** | Freeze this five-board contract in the status/build/execution docs and mark the four-board ZIPs historical. | — | Docs agree on five boards, the order hold, serial ownership, 2 MHz clock and 4-layer Video card. |
 | **R5.S1 — DONE 2026-08-27** | Audit the complete 8251-to-backplane serial net path. Correct stale `JP_S5` wording so it describes console isolation/crossover, not a nonexistent Serial card. Freeze a board-relative header pinout (`5V`, board TX, board RX, GND) and conspicuous `TTL ONLY — NOT RS-232` silk. | R5.0 | `check_revb_serial_contract.py` proves 8251 pin direction through bus pins 35/36 and `JP_S5` to `J_TTL`; generated placement passes content and placement DRC. |
-| **R5.S2** | Fix the UART clock and electrical boundary: 307.2 kHz for 19,200x16, selectable 153.6 kHz for 9,600x16; 5 V logic must safely interoperate with ordinary 3.3/5 V USB-TTL adapters. Use a roughly 3.3 V board-TX high level, a 5 V HCT-compatible receive buffer, series resistors, isolation/loopback jumpers, and no default USB-adapter back-power path. | R5.S1 | Exact oscillator/divider, buffer, resistor, jumper and connector parts are pinned; DC thresholds, contention and power-off cases are checked. |
+| **R5.S2 — DONE 2026-08-27** | Fix the UART clock and electrical boundary: 307.2 kHz for 19,200x16, selectable 153.6 kHz for 9,600x16; 5 V logic must safely interoperate with ordinary 3.3/5 V USB-TTL adapters. Use a roughly 3.3 V board-TX high level, a 5 V HCT-compatible receive buffer, series resistors, isolation/loopback jumpers, and no default USB-adapter back-power path. | R5.S1 | `serial-electrical.json` plus `check_revb_serial_electrical.py` prove exact divider clocks, thresholds, 2.379–3.536 V board TX, defined unused inputs and the blocking-diode sense path; I/O and backplane placement DRC pass. |
 | **R5.S3** | Extend simulation/host tests through the real 8251 and external connector boundary, including reset, both baud selections, TX and RX, loopback and no-contention cases. Add one VJUGA-adapted C10 host request/reply transaction after the low-level gate passes. | R5.S2 | Automated test proves 19,200 8N1 primary, 9,600 fallback, bidirectional bytes and one C10 request/reply without changing root behavior. |
 | **R5.P1** | Make programmable logic on the existing boards buildable: Memory ATF22V10 and I/O ATF16V8 equations, device declarations, compiler command, pinned tool/version, JEDEC outputs and fuse/checksum record. | R5.0 | Clean rebuild reproduces both JEDECs; equations pass oracle and pin-map checks; programming/readback procedure is documented. |
 | **R5.V1** | Audit the video digital model against real silicon and convert scoped LVS into a full-card pin-level connectivity plan. Confirm logic families, fan-out, polarity, tied/unused inputs, reset states, bus ownership, SRAM timing and `WAIT_N`. | R5.0 | Component-by-component audit closes every pin; mutation controls prove full-card LVS/checkers detect a swapped or missing connection. |
@@ -119,19 +119,19 @@ Vendor references:
 
 R5.R1 cannot pass until all of the following are true:
 
-- [ ] All five board sources regenerate from a clean checkout.
-- [ ] All five pass full net/pin checks, total DRC 0/0 and mechanical mating.
-- [ ] The five-card simulation boots EKTA byte-identically and passes VGA timing,
+- **PENDING:** All five board sources regenerate from a clean checkout.
+- **PENDING:** All five pass full net/pin checks, total DRC 0/0 and mechanical mating.
+- **PENDING:** The five-card simulation boots EKTA byte-identically and passes VGA timing,
       framebuffer, `WAIT_N`, reset, `FRAME_TICK` and serial request/reply gates.
-- [ ] All five GALs (Memory, I/O and three Video) have reproducible, pin-checked
+- **PENDING:** All five GALs (Memory, I/O and three Video) have reproducible, pin-checked
       JEDECs and a recorded programming/readback procedure.
-- [ ] Exact connectors, oscillators, sockets and other footprint-critical parts
+- **PENDING:** Exact connectors, oscillators, sockets and other footprint-critical parts
       are orderable and tied to checked datasheets.
-- [ ] Decoupling, five-card current, regulated 5 V/2 A supply, input protection,
+- **PENDING:** Decoupling, five-card current, regulated 5 V/2 A supply, input protection,
       voltage drop and USB-TTL electrical compatibility are closed.
-- [ ] Five JLCPCB-ready ZIPs and their hashes pass the encoded vendor profile.
-- [ ] An independent layer/drill/mechanical review and current live quote pass.
-- [ ] The owner explicitly authorizes upload after seeing the final evidence.
+- **PENDING:** Five JLCPCB-ready ZIPs and their hashes pass the encoded vendor profile.
+- **PENDING:** An independent layer/drill/mechanical review and current live quote pass.
+- **PENDING:** The owner explicitly authorizes upload after seeing the final evidence.
 
 Until then, the correct next actions are the dependency-ready R5.S1, R5.P1 and
 R5.V1 tasks, not an order and not a partial four-board upload.

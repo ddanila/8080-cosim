@@ -127,7 +127,7 @@ def emit_power_rails(board):
     tail_y = MATING["tail_strip_y0"]
     RAILS = {
         "VCC5": {"layer": pcbnew.F_Cu, "y": tail_y + 0.9,
-                 "drops": {("J_PWR", "VCC5"), ("U_RST", "VCC5"), ("J_TTL", "VCC5"),
+                 "drops": {("J_PWR", "VCC5"), ("U_RST", "VCC5"), ("R_VSENSE", "VCC5"),
                            ("R_LED", "VCC5")}},
         "GND":  {"layer": pcbnew.B_Cu, "y": tail_y + 0.5,
                  "drops": {("U_RST", "GND"), ("SW_RST", "GND")}},
@@ -293,9 +293,11 @@ def main():
         "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
         # Backplane console labels are board-relative: TX is output from VJUGA,
         # RX is input to VJUGA. The electrical boundary is TTL, never RS-232.
-        "backplane": [("REVB BACKPLANE", 40.0, 80.0, 1.0),
-                      ("TTL ONLY - NOT RS-232", 97.0, 90.0, 0.8, 90),
-                      ("1:5V 2:TX 3:RX 4:GND", 69.0, 80.0, 0.8)],
+        "backplane": [("REVB BACKPLANE", 3.0, 90.0, 1.0, 90),
+                      ("TTL ONLY", 97.0, 85.5, 1.0, 90),
+                      ("NOT RS-232", 97.0, 94.0, 1.0, 90),
+                      ("1:5V SENSE", 51.0, 80.0, 1.0),
+                      ("2:TX 3:RX 4:GND", 70.0, 80.0, 1.0)],
     }
     for entry in SILK.get(CARD, SILK["mem"]):
         text, sx, sy, ssz, *rest = entry

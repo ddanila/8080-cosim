@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "oscillator": {
+    "part": "ECS-2200B-049",
+    "frequency_hz": 4915200,
+    "supply_v": 5.0,
+    "source": "https://ecsxtal.com/products/oscillators/through-hole-oscillators/ecs-2200x/"
+  },
+  "baud": {
+    "oversample": 16,
+    "primary": {"baud": 19200, "divider": 16, "clock_hz": 307200},
+    "fallback": {"baud": 9600, "divider": 32, "clock_hz": 153600}
+  },
+  "buffer": {
+    "part": "SN74HCT125N",
+    "vcc_min_v": 4.5,
+    "vcc_max_v": 5.5,
+    "vih_min_v": 2.0,
+    "vil_max_v": 0.8,
+    "voh_min_v": 3.7,
+    "source_limit_ma": 6.0,
+    "source": "https://www.ti.com/product/SN74HCT125"
+  },
+  "host_3v3_boundary": {
+    "tx_high_min_v": 3.0,
+    "tx_low_max_v": 0.4,
+    "rx_vdd_v": 3.3,
+    "rx_vih_fraction": 0.7,
+    "rx_abs_max_v": 3.6
+  },
+  "resistors_ohm": {
+    "tx_top": 1000,
+    "tx_bottom": 1800,
+    "rx_series": 1000,
+    "rx_pullup": 10000,
+    "vcc_sense": 10000
+  },
+  "sense_diode": {
+    "part": "1N4148",
+    "direction": "VCC5_TO_HEADER_ONLY",
+    "source": "https://www.vishay.com/docs/81857/1n4148.pdf"
+  }
+}

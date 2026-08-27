@@ -77,9 +77,12 @@ and operator discipline—not an unproved mechanical interlock—prevent reversa
   fitted, bus TX reaches the backplane's `J_TTL` pin 2 and `J_TTL` pin 3 reaches
   bus RX. Removing the shunts isolates the external console for diagnosis or
   loopback; it does not select a second serial card.
-- **`J_TTL` pinout is board-relative:** pin 1 = `VCC5`, pin 2 = `BOARD_TX`
+- **`J_TTL` pinout is board-relative:** pin 1 = `VCC_SENSE`, pin 2 = `BOARD_TX`
   (VJUGA output), pin 3 = `BOARD_RX` (VJUGA input), pin 4 = GND. The connector
-  is TTL only, never RS-232. R5.S2 owns its voltage/back-power protection.
+  is TTL only, never RS-232. Pin 1 is a measurement/reference output through
+  10 kΩ and a blocking diode, not a power input or an adapter supply. A 74HCT125
+  and series/divider resistors form the protected 3.3/5 V USB-TTL boundary; see
+  `rev-b-serial-console.md`.
 
 ## Memory map
 

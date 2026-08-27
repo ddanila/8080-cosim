@@ -31,10 +31,13 @@ CAND = {
     "DIP32": ["Package_DIP:DIP-32_W15.24mm", "Package_DIP:DIP-32_W7.62mm"],
     "DIP40": ["Package_DIP:DIP-40_W15.24mm", "Package_DIP:DIP-40_W7.62mm"],
     "OSC14": ["Oscillator:Oscillator_DIP-14", "Package_DIP:DIP-14_W7.62mm"],
+    "OSC8": ["Oscillator:Oscillator_DIP-8"],
     "C_DISC": ["Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
                "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"],
     # backplane support parts (TF.2)
     "R_AXIAL": ["Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"],
+    "R_VERT": ["Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical"],
+    "D_DO35_VERT": ["Diode_THT:D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp"],
     "LED5": ["LED_THT:LED_D5.0mm"],
     "SW_PUSH6": ["Button_Switch_THT:SW_PUSH_1P1T_6x3.5mm_H4.3_APEM_MJTP1243"],
     "TO92": ["Package_TO_SOT_THT:TO-92_Inline"],
@@ -50,13 +53,16 @@ TYPE_KINDS = {
     "REVB_BUS_39_10": ["PIN_1x39", "PIN_1x10"],
     "Z80_DIP40": ["DIP40"],
     "EPROM_27C256": ["DIP28"], "SRAM_AS6C1008": ["DIP32"], "GAL22V10": ["DIP24"],
-    "USART_8251": ["DIP28"], "GAL16V8_IOSEL": ["DIP20"], "OSC_BAUD": ["OSC14"],
+    "USART_8251": ["DIP28"], "GAL16V8_IOSEL": ["DIP20"], "OSC_BAUD": ["OSC8"],
+    "TTL_393_BAUD": ["DIP14"], "HCT125_CONSOLE": ["DIP14"],
     "OSC_CPU": ["OSC14"], "PPI_8255": ["DIP40"], "ENC_74148": ["DIP16"],
     "PIC_8259": ["DIP28"],
     "C_100N": ["C_DISC"],
     # backplane support parts (TF.2); all fixed resistors share one axial footprint
     "USB_C_PWR": ["USB_C_THT"], "R_5K1": ["R_AXIAL"], "R_10K": ["R_AXIAL"],
     "R_4K7": ["R_AXIAL"], "R_2K2": ["R_AXIAL"], "SUPERVISOR_3": ["TO92"],
+    "R_1K_VERT": ["R_VERT"], "R_1K8_VERT": ["R_VERT"],
+    "R_10K_VERT": ["R_VERT"], "D_1N4148_VERT": ["D_DO35_VERT"],
     "SW_PUSH": ["SW_PUSH6"], "LED": ["LED5"], "JMP_2x2": ["PIN_2x2"],
     "C_ELEC_47U": ["CP_RADIAL"], "PTC_1A": ["PTC_RADIAL"],
 }
@@ -74,6 +80,8 @@ PKG_WIDTH = {
     "PPI_8255": "W15.24mm",        # 8255A/82C55 DIP-40, 600 mil
     "ENC_74148": "W7.62mm",        # 74HC148 DIP-16, 300 mil
     "PIC_8259": "W15.24mm",        # 8259A/82C59 DIP-28, 600 mil
+    "TTL_393_BAUD": "W7.62mm",     # SN74HC393N PDIP-14, 300 mil
+    "HCT125_CONSOLE": "W7.62mm",   # SN74HCT125N PDIP-14, 300 mil
 }
 
 
@@ -97,6 +105,11 @@ PKG_PHYS = {
     "C_100N":     (2,  0.70, 5.00, "5mm disc ceramic, 5.08mm pitch"),
     "C_ELEC_47U": (2,  0.60, 2.50, "6.3mm radial electrolytic, 2.5mm pitch"),
     "PTC_1A":     (2,  0.70, 5.10, "Bourns MF-R110: 5.1mm lead pitch, 0.51mm leads (mf_r.pdf)"),
+    "OSC_BAUD":   (4,  0.80, 7.62, "ECS-2200B-049 half-size DIP-8: pins 1/4/5/8 on 7.62mm grid"),
+    "R_1K_VERT":  (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
+    "R_1K8_VERT": (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
+    "R_10K_VERT": (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
+    "D_1N4148_VERT": (2, 0.70, 2.54, "1N4148 DO-35 vertical, 2.54mm pad pitch"),
 }
 
 

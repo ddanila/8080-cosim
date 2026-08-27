@@ -40,9 +40,13 @@ _PARTS = {
         "U6": (26.0, 44.0, 90),   # 8259 DIP-28
         "U2": (76.0, 44.0, 90),   # GAL16V8 DIP-20
         "U5": (26.0, 72.0, 90),   # 74148 DIP-16
-        "U3": (88.0, 70.0, 0),    # baud osc DIP-14 (vertical)
-        "C1": (55.0, 28.0, 0), "C2": (55.0, 58.0, 0), "C3": (95.0, 28.0, 0), "C4": (62.0, 72.0, 0),
-        "J_IOSEL": (90.0, 84.0, 90), "J_KBD": (40.0, 84.0, 90),
+        "U7": (54.0, 70.0, 90),   # 74HC393 baud divider
+        "U3": (86.5, 68.0, 0),    # 4.9152 MHz full-can oscillator
+        "C1": (55.0, 28.0, 0), "C2": (55.0, 58.0, 0), "C3": (95.0, 28.0, 0),
+        "C4": (65.0, 58.0, 0), "C5": (78.0, 78.0, 0),
+        "C6": (50.0, 44.0, 0), "C7": (68.0, 82.0, 0),
+        "J_IOSEL": (92.0, 84.0, 90), "JP_BAUD": (77.0, 86.0, 90),
+        "J_KBD": (40.0, 84.0, 90),
     },
     "cpu": {   # 100x70: unbuffered Z80 + osc + diag, wide fan-out channel (D1.21)
         "U1": (41.0, 22.0, 90),   # Z80 DIP-40 horizontal; x=41 from TF.1 sweep (D1.28) routes A8 0/0
@@ -78,20 +82,27 @@ def backplane_place():
     y0 = _C["tail_strip_y0"]
     yr1, yr2, yr3 = y0 + 3.0, y0 + 9.0, y0 + 15.0
     p["R_CC1"]  = (12.0, yr1, 0)
-    p["C_BULK"] = (34.0, yr1, 0)
-    p["SW_RST"] = (48.0, yr1, 0)
-    p["D_PWR"]  = (57.625, yr1, 0)
+    p["C_BULK"] = (22.5, yr1, 0)
+    p["SW_RST"] = (32.0, yr1, 0)
+    p["D_PWR"]  = (68.0, yr1, 0)
     p["J_USBC"] = (85.27, yr1, 0)
     p["R_CC2"]  = (12.0, yr2, 0)
-    p["F_VBUS"] = (34.0, yr2, 0)
-    p["C_IN"]   = (46.0, yr2, 0)
-    p["J_PWR"]  = (66.0, yr2, 90)
-    p["U_RST"]  = (74.0, yr2 - 1.0, 90)
+    p["F_VBUS"] = (22.0, yr2, 0)
+    p["C_IN"]   = (31.0, yr2, 0)
+    p["C_CON"]  = (38.5, yr2, 0)
+    p["U_CON"]  = (54.0, yr2, 90)
+    p["J_PWR"]  = (68.0, yr2, 90)
+    p["U_RST"]  = (75.0, yr2 - 1.0, 90)
     p["R_LED"]  = (18.0, yr3, 0)
-    p["R_RST"]  = (34.0, yr3, 0)
-    p["C_RST"]  = (46.0, yr3, 0)
-    p["J_TTL"]  = (66.0, yr3, 90)
-    p["JP_S5"]  = (82.0, yr3, 0)
+    p["R_RST"]  = (28.0, yr3, 0)
+    p["C_RST"]  = (38.0, yr3, 0)
+    p["J_TTL"]  = (70.0, yr3, 90)
+    p["JP_S5"]  = (85.0, yr3, 0)
+    for ref, x in (("R_TX_TOP", 38.0), ("R_TX_BOT", 44.0),
+                   ("R_RX_SER", 50.0), ("R_RX_PULL", 56.0),
+                   ("R_VSENSE", 62.0)):
+        p[ref] = (x, y0, 0)
+    p["D_VSENSE"] = (74.0, y0, 0)
     # Bottom-strip bus-signal pullups, evenly spread (horizontal axials need ~16 mm
     # spacing). R_INT sits near its INT_N column (x~55); R_BRQ near BUSRQ_N (x~8).
     for ref, x in (("R_BRQ", 12.0), ("R_WAIT", 28.0), ("R_NMI", 44.0),

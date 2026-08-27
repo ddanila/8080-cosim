@@ -13,8 +13,13 @@
   "R_10K": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",
   "SW_PUSH": "Button_Switch_THT:SW_PUSH_1P1T_6x3.5mm_H4.3_APEM_MJTP1243",
   "R_4K7": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",
+  "HCT125_CONSOLE": "Package_DIP:DIP-14_W7.62mm",
   "HDR_1x4": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical",
   "JMP_2x2": "Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical",
+  "R_1K_VERT": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical",
+  "R_1K8_VERT": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical",
+  "R_10K_VERT": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical",
+  "D_1N4148_VERT": "Diode_THT:D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp",
   "LED": "LED_THT:LED_D5.0mm",
   "R_2K2": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 }

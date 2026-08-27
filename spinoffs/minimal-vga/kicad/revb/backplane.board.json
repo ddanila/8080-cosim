@@ -417,10 +417,38 @@
       }
     },
     {
+      "ref": "U_CON",
+      "type": "HCT125_CONSOLE",
+      "pins": {
+        "1": "GND",
+        "2": "CON_TX_SRC",
+        "3": "CON_TX_5V",
+        "4": "GND",
+        "5": "CON_RX_BUF",
+        "6": "CON_RX_DRIVE",
+        "7": "GND",
+        "8": "CON_BUF3_OUT_NC",
+        "9": "GND",
+        "10": "VCC5",
+        "11": "CON_BUF4_OUT_NC",
+        "12": "GND",
+        "13": "VCC5",
+        "14": "VCC5"
+      }
+    },
+    {
+      "ref": "C_CON",
+      "type": "C_100N",
+      "pins": {
+        "1": "VCC5",
+        "2": "GND"
+      }
+    },
+    {
       "ref": "J_TTL",
       "type": "HDR_1x4",
       "pins": {
-        "1": "VCC5",
+        "1": "VCC_SENSE",
         "2": "BOARD_TX",
         "3": "BOARD_RX",
         "4": "GND"
@@ -431,9 +459,57 @@
       "type": "JMP_2x2",
       "pins": {
         "1": "TX",
-        "2": "BOARD_TX",
-        "3": "BOARD_RX",
+        "2": "CON_TX_SRC",
+        "3": "CON_RX_DRIVE",
         "4": "RX"
+      }
+    },
+    {
+      "ref": "R_TX_TOP",
+      "type": "R_1K_VERT",
+      "pins": {
+        "1": "CON_TX_5V",
+        "2": "BOARD_TX"
+      }
+    },
+    {
+      "ref": "R_TX_BOT",
+      "type": "R_1K8_VERT",
+      "pins": {
+        "1": "BOARD_TX",
+        "2": "GND"
+      }
+    },
+    {
+      "ref": "R_RX_SER",
+      "type": "R_1K_VERT",
+      "pins": {
+        "1": "BOARD_RX",
+        "2": "CON_RX_BUF"
+      }
+    },
+    {
+      "ref": "R_RX_PULL",
+      "type": "R_10K_VERT",
+      "pins": {
+        "1": "CON_RX_BUF",
+        "2": "VCC5"
+      }
+    },
+    {
+      "ref": "R_VSENSE",
+      "type": "R_10K_VERT",
+      "pins": {
+        "1": "VCC5",
+        "2": "VSENSE_A"
+      }
+    },
+    {
+      "ref": "D_VSENSE",
+      "type": "D_1N4148_VERT",
+      "pins": {
+        "1": "VCC_SENSE",
+        "2": "VSENSE_A"
       }
     },
     {
@@ -925,8 +1001,36 @@
           "2"
         ],
         [
+          "U_CON",
+          "1"
+        ],
+        [
+          "U_CON",
+          "4"
+        ],
+        [
+          "U_CON",
+          "7"
+        ],
+        [
+          "U_CON",
+          "9"
+        ],
+        [
+          "U_CON",
+          "12"
+        ],
+        [
+          "C_CON",
+          "2"
+        ],
+        [
           "J_TTL",
           "4"
+        ],
+        [
+          "R_TX_BOT",
+          "2"
         ],
         [
           "D_PWR",
@@ -1018,7 +1122,27 @@
           "2"
         ],
         [
-          "J_TTL",
+          "U_CON",
+          "10"
+        ],
+        [
+          "U_CON",
+          "13"
+        ],
+        [
+          "U_CON",
+          "14"
+        ],
+        [
+          "C_CON",
+          "1"
+        ],
+        [
+          "R_RX_PULL",
+          "2"
+        ],
+        [
+          "R_VSENSE",
           "1"
         ],
         [
@@ -1808,6 +1932,86 @@
         ]
       ]
     },
+    "CON_TX_SRC": {
+      "nodes": [
+        [
+          "U_CON",
+          "2"
+        ],
+        [
+          "JP_S5",
+          "2"
+        ]
+      ]
+    },
+    "CON_TX_5V": {
+      "nodes": [
+        [
+          "U_CON",
+          "3"
+        ],
+        [
+          "R_TX_TOP",
+          "1"
+        ]
+      ]
+    },
+    "CON_RX_BUF": {
+      "nodes": [
+        [
+          "U_CON",
+          "5"
+        ],
+        [
+          "R_RX_SER",
+          "2"
+        ],
+        [
+          "R_RX_PULL",
+          "1"
+        ]
+      ]
+    },
+    "CON_RX_DRIVE": {
+      "nodes": [
+        [
+          "U_CON",
+          "6"
+        ],
+        [
+          "JP_S5",
+          "3"
+        ]
+      ]
+    },
+    "CON_BUF3_OUT_NC": {
+      "nodes": [
+        [
+          "U_CON",
+          "8"
+        ]
+      ]
+    },
+    "CON_BUF4_OUT_NC": {
+      "nodes": [
+        [
+          "U_CON",
+          "11"
+        ]
+      ]
+    },
+    "VCC_SENSE": {
+      "nodes": [
+        [
+          "J_TTL",
+          "1"
+        ],
+        [
+          "D_VSENSE",
+          "1"
+        ]
+      ]
+    },
     "BOARD_TX": {
       "nodes": [
         [
@@ -1815,8 +2019,12 @@
           "2"
         ],
         [
-          "JP_S5",
+          "R_TX_TOP",
           "2"
+        ],
+        [
+          "R_TX_BOT",
+          "1"
         ]
       ]
     },
@@ -1827,8 +2035,20 @@
           "3"
         ],
         [
-          "JP_S5",
-          "3"
+          "R_RX_SER",
+          "1"
+        ]
+      ]
+    },
+    "VSENSE_A": {
+      "nodes": [
+        [
+          "R_VSENSE",
+          "2"
+        ],
+        [
+          "D_VSENSE",
+          "2"
         ]
       ]
     },
