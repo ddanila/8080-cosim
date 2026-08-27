@@ -90,7 +90,7 @@ def backplane_place():
     p["R_LED"]  = (18.0, yr3, 0)
     p["R_RST"]  = (34.0, yr3, 0)
     p["C_RST"]  = (46.0, yr3, 0)
-    p["J_FTDI"] = (66.0, yr3, 90)
+    p["J_TTL"]  = (66.0, yr3, 90)
     p["JP_S5"]  = (82.0, yr3, 0)
     # Bottom-strip bus-signal pullups, evenly spread (horizontal axials need ~16 mm
     # spacing). R_INT sits near its INT_N column (x~55); R_BRQ near BUSRQ_N (x~8).

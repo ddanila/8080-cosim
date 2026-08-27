@@ -55,7 +55,8 @@ if "J_BUS" in fps:
         fail.append(f"J_BUS at y={y:.1f} not on the bottom edge")
 
 txt = "".join(d.GetText() for d in b.GetDrawings() if d.GetClass() == "PCB_TEXT")
-silk_required = ("REVB",) if CARD == "backplane" else ("REVB", "NO HOT-PLUG")
+silk_required = (("REVB", "TTL ONLY", "1:5V 2:TX 3:RX 4:GND")
+                 if CARD == "backplane" else ("REVB", "NO HOT-PLUG"))
 for need in silk_required:
     if need not in txt:
         fail.append(f"silk missing {need!r}")

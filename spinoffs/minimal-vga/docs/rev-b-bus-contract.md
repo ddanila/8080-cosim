@@ -73,8 +73,13 @@ and operator discipline—not an unproved mechanical interlock—prevent reversa
   minimum/standalone tiers (no I/O card populated) decode correctly instead of
   floating the Memory-card GAL inputs (S11).
 - **RESET_N** has exactly one driver: the backplane supervisor+button (S7).
-- **TX/RX**: the backplane's bring-up FTDI header is jumper-disconnected when the
-  I/O card's UART is present (S5).
+- **TX/RX**: the only UART is the I/O card's 8251. With both `JP_S5` shunts
+  fitted, bus TX reaches the backplane's `J_TTL` pin 2 and `J_TTL` pin 3 reaches
+  bus RX. Removing the shunts isolates the external console for diagnosis or
+  loopback; it does not select a second serial card.
+- **`J_TTL` pinout is board-relative:** pin 1 = `VCC5`, pin 2 = `BOARD_TX`
+  (VJUGA output), pin 3 = `BOARD_RX` (VJUGA input), pin 4 = GND. The connector
+  is TTL only, never RS-232. R5.S2 owns its voltage/back-power protection.
 
 ## Memory map
 

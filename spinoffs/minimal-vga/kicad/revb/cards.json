@@ -23,7 +23,7 @@
       "5x 39+10 slot connectors",
       "USB-C 5V in",
       "reset supervisor",
-      "FTDI 6-pin header",
+      "4-pin board-relative TTL console header + isolation jumper",
       "power LED",
       "pull-up/down resistors"
     ],

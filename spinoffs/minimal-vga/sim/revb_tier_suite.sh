@@ -15,6 +15,9 @@ python3 scripts/check_spinoff_commons.py
 echo "== rev B: card connectivity specs + netlist completeness (T1.3-T1.6, D1.18) =="
 python3 scripts/check_revb_boards.py --completeness
 
+echo "== rev B: board-relative TTL serial continuity (R5.S1) =="
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_contract.py
+
 echo "== rev B: mechanical mating contract (TG.1/D1.31; pure python, no CAD tools) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_mating.py
 

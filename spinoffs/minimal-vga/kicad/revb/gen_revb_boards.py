@@ -234,10 +234,13 @@ CARD_EXTRAS = {
         comp("R_WAIT", "R_4K7", {"1": "WAIT_N", "2": "VCC5"}),
         comp("R_NMI", "R_4K7", {"1": "NMI_N", "2": "VCC5"}),
         comp("R_BRQ", "R_4K7", {"1": "BUSRQ_N", "2": "VCC5"}),
-        # Bring-up FTDI console header + S5 crossover jumper (disconnect when the I/O
-        # card's UART is present): FTDI TX -> bus RX, bus TX -> FTDI RX.
-        comp("J_FTDI", "HDR_1x4", {"1": "VCC5", "2": "FTDI_TX", "3": "FTDI_RX", "4": "GND"}),
-        comp("JP_S5", "JMP_2x2", {"1": "FTDI_TX", "2": "RX", "3": "TX", "4": "FTDI_RX"}),
+        # Board-relative TTL console contract (R5.S1). With both JP_S5 shunts fitted,
+        # the I/O card's 8251 TX reaches header pin 2 (BOARD_TX), while header pin 3
+        # (BOARD_RX) reaches the 8251 RX. JP_S5 isolates the console boundary for
+        # diagnosis/loopback; it does not select a nonexistent second serial card.
+        # R5.S2 adds the electrical protection between these logical nets.
+        comp("J_TTL", "HDR_1x4", {"1": "VCC5", "2": "BOARD_TX", "3": "BOARD_RX", "4": "GND"}),
+        comp("JP_S5", "JMP_2x2", {"1": "TX", "2": "BOARD_TX", "3": "BOARD_RX", "4": "RX"}),
         # Power LED. KiCad LED_D5.0mm pad 1 = cathode (K), pad 2 = anode (A) — so pad 1
         # goes to GND and pad 2 to the anode net through R_LED (was reversed).
         comp("D_PWR", "LED", {"1": "GND", "2": "LED_A"}),

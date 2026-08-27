@@ -127,7 +127,7 @@ def emit_power_rails(board):
     tail_y = MATING["tail_strip_y0"]
     RAILS = {
         "VCC5": {"layer": pcbnew.F_Cu, "y": tail_y + 0.9,
-                 "drops": {("J_PWR", "VCC5"), ("U_RST", "VCC5"), ("J_FTDI", "VCC5"),
+                 "drops": {("J_PWR", "VCC5"), ("U_RST", "VCC5"), ("J_TTL", "VCC5"),
                            ("R_LED", "VCC5")}},
         "GND":  {"layer": pcbnew.B_Cu, "y": tail_y + 0.5,
                  "drops": {("U_RST", "GND"), ("SW_RST", "GND")}},
@@ -291,11 +291,15 @@ def main():
         "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
         "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
         "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
-        # backplane: short label in the clear band above the fifth connector pair.
-        "backplane": [("REVB BACKPLANE", 65.0, 80.0, 1.0)],
+        # Backplane console labels are board-relative: TX is output from VJUGA,
+        # RX is input to VJUGA. The electrical boundary is TTL, never RS-232.
+        "backplane": [("REVB BACKPLANE", 40.0, 80.0, 1.0),
+                      ("TTL ONLY - NOT RS-232", 97.0, 90.0, 0.8, 90),
+                      ("1:5V 2:TX 3:RX 4:GND", 69.0, 80.0, 0.8)],
     }
-    for text, sx, sy, ssz in SILK.get(CARD, SILK["mem"]):
-        silk(board, text, sx, sy, size=ssz)
+    for entry in SILK.get(CARD, SILK["mem"]):
+        text, sx, sy, ssz, *rest = entry
+        silk(board, text, sx, sy, size=ssz, angle=(rest[0] if rest else 0))
 
     # backplane bus columns are emitted deterministically (D1.29); other cards route
     # entirely via freerouting.
