@@ -1,24 +1,27 @@
 # VJUGA minimal-VGA experiment
 
-Status date: 2026-08-08.
+Status date: 2026-08-27.
 
 Status: **EXPERIMENTAL, WITH TWO PHYSICAL TRACKS**.
 
 VJUGA explores a smaller +5 V, Z80-based board with socketed ROM, one 64 KiB
 4164-style DRAM bank, keyboard I/O, and a VGA-oriented display path. It is an
 independent experiment, not the main Juku replica and not a released hardware
-product. The monolithic Rev A board remains on design hold; the modular Rev B B1
-bare-PCB set is a validated first-article order candidate.
+product. The monolithic Rev A board remains on design hold. For modular Rev B,
+the active order target is a complete five-board first article with VGA and TTL
+serial; it remains on order hold while `docs/rev-b-five-board-order-plan.md` is
+executed.
 
 ## Rev B modular status
 
-The current Rev B state is summarized in `docs/rev-b-status.md`. Its B1 CPU, memory,
-I/O and five-slot 100×100 backplane boards have been freshly generated/routed, pass
-total DRC 0/0, scoped LVS/footprint/mating gates, the full digital-twin suite and fabrication-ZIP
-validation. `docs/rev-b-order-readiness.md` is the upload decision record, and
-`docs/rev-b-b1-bench-log.md` is ready for the vendor preview and first-article evidence.
-The B2 video desk model is complete through TI.3; B2 PCB layout/tape-out remains held
-until the B1 bench pass.
+The current Rev B state is summarized in `docs/rev-b-status.md`. Its B1 CPU,
+memory, I/O and five-slot 100×100 backplane boards have generated/routed sources
+that pass the recorded desk gates; their former four-board fabrication ZIPs are
+now historical and must not be uploaded. The B2 video desk model is complete
+through TI.3. `docs/rev-b-five-board-order-plan.md` controls the remaining serial,
+programmable-logic, physical Video-card, JLCPCB-preflight and five-package release
+work. `docs/rev-b-order-readiness.md` and `docs/rev-b-b1-bench-log.md` are preserved
+records of the superseded four-board sequence.
 
 ## Rev A monolithic status
 

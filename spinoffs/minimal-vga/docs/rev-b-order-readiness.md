@@ -1,12 +1,16 @@
 # VJUGA rev B — order-readiness note (TG.4)
 
+> **SUPERSEDED ORDER TARGET (2026-08-27).** This is the preserved validation
+> record for the former four-board-first proposal. Do not upload its ZIPs. The
+> active target is one complete five-board system, including VGA and hardened
+> TTL serial, controlled by `rev-b-five-board-order-plan.md`.
+
 State of the four rev B B1 boards for bare-PCB fabrication. **All four boards are
-order candidates after the 2026-08-08 regeneration and validation described below.**
+historical order candidates after the 2026-08-08 regeneration and validation described below.**
 TH.1–TH.4 closed the backplane hold: non-DIP footprints pinned to exact parts + a
 physical-contract guard (TH.1/TH.2, D1.36), input power conditioning added (TH.3,
 D1.35), and three real defects fixed along the way (SMD USB-C, reversed LED, missing
-reset pull-up). **T1.10 (placing the order) is now a purchasing decision.** Last
-updated 2026-08-08.
+reset pull-up). **T1.10 is no longer authorized.** Last updated 2026-08-27.
 
 ## Boards
 

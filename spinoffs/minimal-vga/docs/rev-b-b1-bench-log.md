@@ -1,5 +1,10 @@
 # VJUGA rev B B1 — order and first-article bench record (T1.10/T1.11)
 
+> **HISTORICAL/UNUSED ORDER FORM (2026-08-27).** No four-board order was placed.
+> Keep the staged bench ladder as useful bring-up input, but do not fill or use
+> the order section below. R5.O1 in `rev-b-five-board-order-plan.md` requires a
+> new five-board order record after final package hashes exist.
+
 Fill this record as the four B1 bare-PCB ZIPs are uploaded and the first set is built.
 Do not mark observations from expectation. Do not release duplicate population or the
 B2 video PCB until every failed row has a disposition.

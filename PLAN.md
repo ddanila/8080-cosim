@@ -70,7 +70,7 @@ dependency/evidence link; checkbox counting alone is not a completeness audit.
 | `MAIN-BUILD` | first article | NOT AUTHORIZED | after `MAIN-REL`, order, receive, record as-built configuration, and run the staged acceptance ladder | `docs/replica-first-article-record.md` |
 | `JRV-HW` | Jukuravi / network ROM | CS00015 has the physically qualified JukuNet C8 / ABI 1.3 pair and passes automatic V16, A:/B:, diagnostics, keyboard, sound, writes, warm boot, soak, and host replacement; its CPU-visible framebuffer stores correctly but the board-local video-data path remains blank. CS00014 remains the stock-ROM exhibit. CS00000 stock Janet, D11 diagnostics, 19,200 V15 receive, CP/M Plus, and NetDisk pass, rejecting the former USART suspicion; after its PSU failure and `#0031` no-display starts, EK37 / EktaSoft 3.7 `#0037` remained 100% stable across repeated cold starts. With EK37 fitted, C host `0.3.0-m6` physically completed exact JF15, `A>`, and 22 clean NetDisk requests with zero retries/UART errors. | Preserve/read CS00000's removed `#0031` pair and inspect its sockets before diagnosing ROM failure; repeat the controlled comparison on that exact pair and repair its original PSU separately. Diagnose CS00015 video after framebuffer storage and retain C6 as rollback. Complete Pocket8086/CS00015 M2.3 before Win32 work. Preserve the CS00014 exhibition state and the invalidated old D55 predicate. | `docs/machine-deployment-status.md`; `docs/cs00000-service-record.md`; `docs/cs00015-service-record.md`; `docs/portable-c-host-implementation.md`; `docs/serial-handoff.md`; [`spinoffs/jukuravi/network-rom/README.md`](spinoffs/jukuravi/network-rom/README.md); [network-first ROM plan](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/network-first-rom-plan.md) |
 | `VJ-A` | VJUGA Rev A fixture | DESIGN HOLD | resolve remaining part/orientation review, full-board LVS disposition, fresh package, and independent review | `spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md` |
-| `VJ-B` | VJUGA Rev B modular set | ORDER-SAFE CLAIM; OWNER DECISION | decide whether to buy one first-article set; do not begin B2 tape-out before B1 bench evidence | `spinoffs/minimal-vga/docs/rev-b-order-readiness.md` |
+| `VJ-B` | VJUGA Rev B modular set | ACTIVE FIVE-BOARD PLAN; ORDER HOLD | execute R5 serial/GAL/Video/JLC gates; release CPU+mem+I/O+backplane+Video together | `spinoffs/minimal-vga/docs/rev-b-five-board-order-plan.md` |
 | `CVBS` | physical video/CRT model | EVIDENCE-GATED | continue only where a named main-board bring-up question requires it | `docs/crt-cvbs-simulation-plan.md` |
 
 Priority rule: `MAIN-P0` and measurements that directly close it outrank all
@@ -1487,17 +1487,21 @@ Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
 
 ### VJUGA Rev B modular spin-off
 
-Rev B is a distinct four-board modular experiment and must not be hidden under
-the Rev-A workbench status. Its B1 CPU, memory, I/O, and backplane sources,
-mechanical mating checks, packages, and pinned backplane parts are recorded as
-order-safe in `spinoffs/minimal-vga/docs/rev-b-order-readiness.md`. Ordering one
-first-article set is therefore an explicit owner purchasing decision, not an
-automatic consequence of this plan.
+Rev B is a distinct modular experiment and must not be hidden under the Rev-A
+workbench status. On 2026-08-27 the owner superseded the four-board-first order
+sequence: the first order must contain CPU, memory, I/O, backplane **and a ready
+VGA card**, with the existing 8251 exposed as a practical bidirectional TTL
+serial console. The dependency-ordered implementation and JLCPCB release gates
+are authoritative in
+`spinoffs/minimal-vga/docs/rev-b-five-board-order-plan.md`.
 
-If ordered, B1 bench bring-up is the only next implementation phase. Record
-as-built parts and jumper settings, prove the bring-up serial/RAM result, check
-slot clearance and convention-only card orientation, and capture power and bus
-timing before authorizing duplicate boards or any B2 video-card tape-out.
+The previously validated four-board packages and hashes remain useful historical
+evidence in `rev-b-order-readiness.md`, but are not authorized for upload. Complete
+the R5 serial, GAL, full Video-card, power/mechanical and fabrication-preflight
+tasks, generate all five packages together, then seek an explicit owner release.
+After delivery, assemble in stages and record parts, jumpers, serial/RAM/VGA
+results, power, bus timing, slot clearance and card orientation before populating
+any duplicate set.
 
 ### Parts and assembly preparation
 

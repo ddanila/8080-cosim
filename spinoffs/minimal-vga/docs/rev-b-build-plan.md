@@ -5,6 +5,14 @@ questions and sequences the build. Principle throughout: **inherit everything re
 already proved** (chip map, GAL equations, power budget, bring-up method, oracle,
 `ekta37_z80.bin`) — rev B changes the *packaging*, not the machine.
 
+> **2026-08-27 release-plan overlay:** `rev-b-five-board-order-plan.md` is the
+> authority where it supersedes this older phased sequence. The first order is a
+> five-board set including a complete four-layer Video card, not a B1-only
+> four-board set. Its first-article CPU oscillator is 2.000 MHz, and its
+> bidirectional USB-TTL console is the I/O card's existing 8251 exposed through
+> the backplane—not a console that functions without the I/O card. Ordering is
+> held until R5.R1 passes.
+
 ## Resolved decisions
 
 | Question | Decision | Rationale |
@@ -44,8 +52,9 @@ ports (mode bits PC0/PC1), PIC, UART, FDC — same ports the firmware pokes.
 
 1. **Backplane** — passive, 100×100, 2-layer, 5 slots; + USB-C 5V in, reset
    button/supervisor, power LED, FTDI-style 4-pin TTL serial header on the bus
-   TX/RX pins (bring-up console without any I/O card).
-2. **CPU** — Z80 (Z0840004PSC, 4 MHz), oscillator, diagnostic header; unbuffered in B1.
+   TX/RX pins (R5 hardens the path to the I/O card's 8251).
+2. **CPU** — Z80 (Z0840004PSC), socketed oscillator, diagnostic header;
+   unbuffered in B1. R5 fixes 2.000 MHz for the first article.
 3. **Memory** — 27C256 ROM (`ekta37_z80.bin`) + 32K/128K SRAM + GAL22V10 decode
    (rev A Mode-A equations, minus DRAM terms — SRAM kills U20–U24 entirely).
 4. **I/O** — one card, **populated in stages**: 8251-class UART (B1, minimum tier

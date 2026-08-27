@@ -3,7 +3,14 @@
 Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 `rev-b-modular-design.md` (concept), `rev-b-build-plan.md` (decisions + phases),
 `rev-b-execution-guide.md` (tasks + executor rules), `rev-b-bus-contract.md`
-(interface). Last updated 2026-08-08.
+(interface), and `rev-b-five-board-order-plan.md` (controlling pre-order plan).
+Last updated 2026-08-27.
+
+**Owner direction (2026-08-27): finish a VGA-ready five-board machine and its
+TTL serial console before ordering.** This supersedes the four-board-first
+T1.10/T1.11 sequence below. Existing four-board packages are historical
+evidence, not upload candidates; the active work and release gates are R5.0–R5.R1
+in `rev-b-five-board-order-plan.md`.
 
 ## Phase ledger
 
@@ -14,10 +21,10 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
 | **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four boards route DRC 0/0** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane uses the D1.34 clean-slate freerouting path |
-| **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | ✅ done | TG.1 mating contract+checker, TG.2 **all 4 route 0/0** at 4 mm offset, TG.3 FreeCAD clearance 4.16 mm + keying D1.32b, TG.4 fab packages + power re-check → **T1.10 armed** |
-| **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ T1.10 = purchasing decision; T1.11 hardware-blocked | see `rev-b-order-readiness.md` and `rev-b-b1-bench-log.md` |
+| **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | ✅ done | TG.1 mating contract+checker, TG.2 **all 4 route 0/0** at 4 mm offset, TG.3 FreeCAD clearance 4.16 mm + keying D1.32b, TG.4 fab packages + power re-check → historical T1.10 evidence |
+| **Five-board order** | CPU + memory + I/O + backplane + ready VGA card; hardened TTL serial | ⬜ **ORDER HOLD**; execute R5 plan | `rev-b-five-board-order-plan.md` |
 | **B2 video desk model** | TTL VGA + framebuffer through TI.3 | ✅ done | licensed timing adoption, chip-level twin, crop policy, row-base address generator, cycle-steal `/WAIT`, integrated ekta37 boot, `video.board.json`, completeness, and scoped LVS all guarded |
-| **B2 physical card** | TI.4 footprints, then TI.5–TI.8 PCB/package | ⬜ TI.4 next; TI.5+ held | exact DSUB/oscillator footprint contracts may proceed; placement/routing/tape-out remains held until T1.11 proves the B1 bus |
+| **B2 physical card** | exact parts, GALs, full LVS, power, 4-layer PCB/package | ⬜ included in R5 five-board release | R5.V1–R5.V6 replace the old TI.5/T1.11 hold |
 | **B3 / B4** | keyboard+PIC / FDC tiers | ⬜ B3 = populate-only; B4 future | B3 parts are already wired as DNP on the I/O card; no B4 tape-out work yet |
 
 ## One-command gate
@@ -50,18 +57,11 @@ those tools.
 
 ## Next action
 
-Stages C/D and the pre-order correction pass are complete. All four boards are
-recorded order-safe, including the five-slot 100×100 backplane, corrected package
-widths, through-hole USB-C, power LED polarity, reset pull-up, input conditioning, mating, and physical
-footprint contracts.
-
-**T1.10 is an explicit owner purchasing decision.** The four fabrication packages
-were freshly regenerated and machine-validated on 2026-08-08. If approved, upload
-those exact ZIPs, inspect the vendor previews/DFM, record the accepted hashes and
-stack-up, then order one first-article B1 set and perform T1.11 bench bring-up. Record exact parts,
-programmed images, jumper/orientation state, power, serial/RAM result, bus
-timing, and the convention-only keying/16 mm slot-clearance observations.
-Do not authorize duplicate boards or B2 video-card tape-out until the B1 bench
-record passes and every discrepancy is dispositioned.
+**R5.0 is complete.** Follow the dependency-ordered tasks in
+`rev-b-five-board-order-plan.md`. The next dependency-ready work is R5.S1
+(8251-to-backplane TTL serial), R5.P1 (reproducible B1 GAL programming), and
+R5.V1 (Video silicon/pin/full-LVS audit).
+Do not upload the historical four-board packages. Ordering stays on hold until all
+five packages pass R5.R1 and the owner explicitly releases them.
 
 Rule: `git pull --rebase` before every push — the remote moves mid-session.

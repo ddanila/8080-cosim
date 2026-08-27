@@ -3,6 +3,12 @@
 Task-level companion to `rev-b-build-plan.md`, written to be executed step by step
 in later sessions. The **design is decided** — this guide is about executing it.
 
+> **2026-08-27 owner supersession:** the old four-board T1.10 order and the
+> `TI.5 held until T1.11` sequence are not active. Execute the dependency-ordered
+> R5 tasks in `rev-b-five-board-order-plan.md`: finish all five boards, a usable
+> TTL serial console and JLCPCB preflight before one combined release. Historical
+> tasks below remain evidence and implementation context where R5 cites them.
+
 ## Rules for the executing session (read first, every time)
 
 1. **Do not redesign.** Decisions live in `rev-b-build-plan.md` (decisions table,
