@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "status": "R5.V1 frozen digital architecture",
+  "dot_clock_mhz": 25.175,
+  "families": {
+    "U2-U4": {
+      "part": "ST M74HC393B1R",
+      "reason": "PDIP ripple counter with 34 MHz guaranteed minimum fMAX at 4.5 V over -40..85 C",
+      "fmax_min_mhz": 34.0,
+      "datasheet": "https://www.st.com/resource/en/datasheet/m74hc393.pdf"
+    },
+    "U8-U11": {
+      "part": "TI CD74ACT157E",
+      "reason": "fast address selection with TTL-compatible inputs for Z80 and GAL outputs",
+      "vih_max_v": 2.0,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/cd74act157.pdf"
+    },
+    "U12-U15": {
+      "part": "TI CD74ACT161E",
+      "reason": "91 MHz guaranteed minimum clock rate and TTL-compatible control inputs",
+      "fmax_min_mhz": 91.0,
+      "vih_max_v": 2.0,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/cd74act161.pdf"
+    },
+    "U17-U18": {
+      "part": "TI CD74ACT273E",
+      "reason": "TTL-compatible GAL clock/reset and 97 MHz rated clock",
+      "fmax_min_mhz": 97.0,
+      "vih_max_v": 2.0,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/cd74ac273.pdf"
+    },
+    "U19": {
+      "part": "TI SN74ALS166N",
+      "reason": "45 MHz rated PDIP shifter; generic HC166 is not guaranteed above the 25.175 MHz dot clock",
+      "fmax_min_mhz": 45.0,
+      "vih_max_v": 2.0,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74als166.pdf"
+    },
+    "U20": {
+      "part": "TI CD74HCT245E",
+      "reason": "TTL inputs accept both Z80 and SRAM/GAL levels; CPU path only runs at 2 MHz",
+      "vih_max_v": 2.0,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/cd74hc245.pdf"
+    },
+    "U22": {
+      "part": "TI CD74HCT08E",
+      "reason": "TTL inputs accept ALS/GAL highs; two spare gates produce full-rail H_CLR and V_CLR",
+      "vih_max_v": 2.0,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/cd74hc08.pdf"
+    }
+  },
+  "fanout": {
+    "DOTCLK_cmos_inputs": 7,
+    "BYTE_TICK_act_inputs": 4,
+    "H_END_ttl_inputs": 4,
+    "V_END_ttl_inputs": 2,
+    "assessment": "within one local oscillator/GAL output load budget; physical trace/stub limits remain R5.V5"
+  },
+  "fetch_timing": {
+    "fetch_window_dots": 4,
+    "address_to_load_dots": 3,
+    "dot_period_ns": 39.72194637537239,
+    "available_ns": 119.16583912611717,
+    "guarded_mux_delay_ns": 15.0,
+    "sram_access_ns": 55.0,
+    "guarded_shifter_setup_ns": 20.0,
+    "path_ns": 90.0,
+    "margin_ns": 29.16583912611717,
+    "policy": "FETCH owns SRAM for phases 12-15 of each 16-dot byte; load and one-dot BYTE_TICK occur at phase 15"
+  },
+  "wait_contract": {
+    "cpu_clock_mhz": 2.0,
+    "worst_fetch_hold_ns": 158.88778550148956,
+    "driver": "ATF22V10 pin 14 open-drain emulation: WAIT_N.T=GND, WAIT_N.E=cpu_access*FETCH",
+    "pullup": "backplane R_WAIT 4.7k to VCC5",
+    "ownership": "scan owns mux/SRAM and U20 is disabled during FETCH; CPU owns them otherwise",
+    "write_rule": "WE may assert only outside FETCH after CPU address and D-to-FD direction are selected"
+  },
+  "reset_contract": {
+    "U2-U4": "RESET_N enters H-decode pin 13; H_END is forced asserted during reset, V_END follows, and HCT08 gates drive H_CLR/V_CLR",
+    "U12-U15": "direct asynchronous active-low RESET_N",
+    "U17-U18": "FRAME_TOP_N from V-decode is forced low while timing chain resets",
+    "U19": "direct asynchronous active-low RESET_N",
+    "SRAM": "contents undefined at reset; all selects remain inactive unless a valid owner is present"
+  },
+  "primary_sources": {
+    "sram": "https://www.alliancememory.com/wp-content/uploads/pdf/AS6C1008_Mar_2023V1.2.pdf",
+    "adder": "https://www.ti.com/lit/ds/symlink/cd74hc283.pdf",
+    "gal": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0735.pdf"
+  }
+}

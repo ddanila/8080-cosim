@@ -10,7 +10,7 @@ Pin 19 = NC           XOR = 0   AC1 = 0
   6  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
   7  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
 
-Pin 18 = NC           XOR = 0   AC1 = 0
+Pin 18 = GND0         XOR = 0   AC1 = 0
   8  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
   9  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  10  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx

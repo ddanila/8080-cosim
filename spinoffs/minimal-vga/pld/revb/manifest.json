@@ -5,8 +5,8 @@
   "rust_toolchain": "1.85.0",
   "artifacts": {
     "memory-u3.pld": {
-      "bytes": 1087,
-      "sha256": "e29bfbe9b6f3009b8fe92b3bef09c03f4583abcb8dbe17f72ba76fe1c815ac49"
+      "bytes": 1091,
+      "sha256": "2f2f8d2a3bdfaf25ba3b46514c99870a6ff108e7449698106792d6fbaa07e52c"
     },
     "memory-u3.jed": {
       "bytes": 1177,
@@ -16,19 +16,19 @@
     },
     "memory-u3.pin": {
       "bytes": 674,
-      "sha256": "8bdc92687012469781da86043d4685e354c505b95157c2370f9d026939c1e2bd"
+      "sha256": "55869851898efc93502a90e54552a76acd7d6eb53ab927e23857b783f09ee023"
     },
     "memory-u3.fus": {
       "bytes": 8320,
       "sha256": "9f464395ecbc5393ee26ae99e56156ef1611b6ca9e115dd3b08464c1a87717f4"
     },
     "memory-u3.chp": {
-      "bytes": 1247,
-      "sha256": "9787ef69829383e34a6abc76cfc6f059030dc762896ad8df8a2351e047af00e3"
+      "bytes": 1249,
+      "sha256": "b7bb1d2098543a7633b2eaf6ffee0ef58e37f19d2828306be9eb640f6e13c2ed"
     },
     "io-u2.pld": {
-      "bytes": 646,
-      "sha256": "37829f62913ffc5055d7e7752dcd731438ba6d89da188262ebdc88eaef06dfee"
+      "bytes": 648,
+      "sha256": "dadd427589fc906090efb939668a16f15aaf41a6bedf9bad159a08a39039f077"
     },
     "io-u2.jed": {
       "bytes": 722,
@@ -38,15 +38,15 @@
     },
     "io-u2.pin": {
       "bytes": 578,
-      "sha256": "0d28ce6e18fa51f32566f45928321b07e183ae4572fdce2d539977a70ecc15bb"
+      "sha256": "99ef3cd9dbd60b6fc29e268ef137930c1252d9e5971627626f1010599781b59c"
     },
     "io-u2.fus": {
       "bytes": 3210,
-      "sha256": "f1f5005e6d84b4de006949d9f4f99004ca6cdb767ecb3ab09e1ee4bac98e30ec"
+      "sha256": "ccb68e9d1749a7f3066fed8ea7f87e16578f5419c6bf0335583b4bb852af8ea8"
     },
     "io-u2.chp": {
-      "bytes": 1067,
-      "sha256": "ee8c25a6eac404933ea2bc9cf1ace95f4794f88cea6c5180dc60531b901aa8fd"
+      "bytes": 1069,
+      "sha256": "f6e3a0bf8095d5bd0e74204197cd793c31a1f072174e0a7dcc3287d662410276"
     }
   }
 }

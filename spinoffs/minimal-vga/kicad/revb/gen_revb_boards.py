@@ -44,13 +44,15 @@ ROM_27C256 = {
     "18":"D6","19":"D7","20":"ROM_CE_N","21":"A10","22":"MEM_RD_N","23":"A11","24":"A9",
     "25":"A8","26":"A13","27":"A14","28":"VCC5",
 }
-# AS6C1008 DIP-32 (128K x 8 SRAM), standard pinout. A16 is the top address line.
+# AS6C1008 DIP-32 (128K x 8 SRAM), Alliance Memory datasheet pinout.  Pin 1 is
+# NC; pin 30 is the active-HIGH CE2.  The rev-B Memory card uses A0..A15, holds
+# A16 low, and holds CE2 high.
 SRAM_128K = {
-    "1":"RAM_A16_TIE","2":"A14","3":"A12","4":"A7","5":"A6","6":"A5","7":"A4","8":"A3","9":"A2",
-    "10":"A1","11":"A0","12":"D0","13":"D1","14":"D2","15":"GND","16":"RAM_CE_N",
-    "17":"D3","18":"D4","19":"D5","20":"D6","21":"D7","22":"MEM_RD_N","23":"MEM_WR_N",
-    "24":"A8","25":"A9","26":"A13","27":"A15","28":"RAM_A17_TIE","29":"A11","30":"RAM_OE2_TIE",
-    "31":"A10","32":"VCC5",
+    "1":"RAM_PIN1_NC","2":"GND","3":"A14","4":"A12","5":"A7","6":"A6","7":"A5","8":"A4",
+    "9":"A3","10":"A2","11":"A1","12":"A0","13":"D0","14":"D1","15":"D2","16":"GND",
+    "17":"D3","18":"D4","19":"D5","20":"D6","21":"D7","22":"RAM_CE_N","23":"A10",
+    "24":"MEM_RD_N","25":"A11","26":"A9","27":"A8","28":"A13","29":"MEM_WR_N",
+    "30":"VCC5","31":"A15","32":"VCC5",
 }
 # GAL22V10 DIP-24: rev B MEMORY-ONLY decode (unlike rev A U5, which also did I/O
 # decode -- in rev B each card decodes its own I/O, so no IORQ_N / IO strobes here).
@@ -59,7 +61,7 @@ GAL22V10 = {
     # Inputs A11..A15 are needed so RAM_CE stops below the video window (0xD800) and
     # the mem card never fights the Video card on the bus (see rev-b-gal-equations.md).
     "1":"MREQ_N","2":"RD_N","3":"WR_N","4":"A13","5":"A14","6":"A15","7":"MODE0","8":"MODE1",
-    "9":"A11","10":"A12","11":"DEC_SPARE0_NC","12":"GND","13":"DEC_SPARE1_NC",
+    "9":"A11","10":"A12","11":"GND","12":"GND","13":"GND",
     "14":"ROM_CE_N","15":"RAM_CE_N","16":"MEM_RD_N","17":"MEM_WR_N","18":"DEC_SPARE4_NC",
     "19":"DEC_SPARE5_NC","20":"DEC_SPARE6_NC","21":"DEC_SPARE7_NC","22":"DEC_SPARE8_NC","23":"DEC_SPARE9_NC","24":"VCC5",
 }
@@ -80,7 +82,7 @@ USART_8251 = {
 GAL16V8_IOSEL = {
     "1":"IORQ_N","2":"A2","3":"A3","4":"A4","5":"A5","6":"A6","7":"A7","8":"RESET_N",
     "9":"M1_N","10":"GND","11":"PIC_INT","12":"PIC_CS_N","13":"PPI_CS_N","14":"UART_CS_N",
-    "15":"IO_RESET","16":"INT_N","17":"INTA_N","18":"IO_GAL_SPARE_IO_NC","19":"IO_GAL_SPARE_OUT_NC","20":"VCC5",
+    "15":"IO_RESET","16":"INT_N","17":"INTA_N","18":"GND","19":"IO_GAL_SPARE_OUT_NC","20":"VCC5",
 }
 # ECS-2200B-049 half-can oscillator: 4.9152 MHz drives a 74HC393 divider. /16 is
 # 307.2 kHz (19,200 x16); /32 is 153.6 kHz (9,600 x16), selected at JP_BAUD.
@@ -134,27 +136,26 @@ PIC_8259 = {
 # DIP-14 half-can CPU clock oscillator: drives CLK (socketed, ~2-4 MHz, S1).
 OSC_CPU = {"1":"OSC_EN_NC","7":"GND","8":"CLK","14":"VCC5"}
 
-# --- Video card (B2) LVS'd logic: the 3 decode/control GALs + framebuffer SRAM get
-# distinct types (unique pin tables) so the per-type LVS pinmap is unambiguous; the
-# standard 74xx (counters/mux/register/shifter/buffer) live in CARD_EXTRAS and are
-# verified by D1.18 completeness, exactly as the io card's discrete parts. ---
+# --- Video card (B2): the three GALs and SRAM use distinct pin tables here; repeated
+# logic lives in CARD_EXTRAS. R5.V1 nevertheless maps and LVS-checks all U1..U22 via
+# generic datasheet-role pinmaps in gen_revb_lvs_map.py. ---
 GAL22V10_HDEC = {"1":"DOTCLK","2":"HC0","3":"HC1","4":"HC2","5":"HC3","6":"HC4","7":"HC5",
-    "8":"HC6","9":"HC7","10":"HC8","11":"HC9","12":"GND","13":"VID_HDEC_I13_NC","14":"H_END",
+    "8":"HC6","9":"HC7","10":"HC8","11":"HC9","12":"GND","13":"RESET_N","14":"H_END",
     "15":"HSYNC_N","16":"H_BLANK","17":"BYTE_TICK","18":"FI_LOAD_N","19":"SR_LOAD_N",
-    "20":"SR_INH","21":"VID_HDEC_O21_NC","22":"VID_HDEC_O22_NC","23":"VID_HDEC_O23_NC","24":"VCC5"}
+    "20":"SR_INH","21":"FETCH","22":"VID_HDEC_O22_NC","23":"VID_HDEC_O23_NC","24":"VCC5"}
 GAL22V10_VDEC = {"1":"H_BLANK","2":"VC0","3":"VC1","4":"VC2","5":"VC3","6":"VC4","7":"VC5",
     "8":"VC6","9":"VC7","10":"VC8","11":"VC9","12":"GND","13":"H_END","14":"V_END","15":"VSYNC_N",
     "16":"VID_VDEC_VBLANK_NC","17":"VID_VDEC_BLANK_NC","18":"ACTIVE","19":"FRAME_TOP_N",
     "20":"FRAME_TICK","21":"RB_CLK","22":"VID_VDEC_O22_NC","23":"VID_VDEC_O23_NC","24":"VCC5"}
-GAL22V10_CTRL = {"1":"DOTCLK","2":"A11","3":"A12","4":"A13","5":"A14","6":"A15","7":"MREQ_N",
+GAL22V10_CTRL = {"1":"FETCH","2":"A11","3":"A12","4":"A13","5":"A14","6":"A15","7":"MREQ_N",
     "8":"RD_N","9":"WR_N","10":"MODE0","11":"MODE1","12":"GND","13":"ACTIVE","14":"WAIT_N",
     "15":"MUX_SEL","16":"D245_DIR","17":"D245_OE","18":"FB_CE_N","19":"FB_WE_N","20":"FB_OE_N",
     "21":"VID_CTRL_O21_NC","22":"VID_CTRL_O22_NC","23":"VID_CTRL_O23_NC","24":"VCC5"}
-SRAM_FB = {"1":"FB_A16_TIE","2":"FB_A14_TIE","3":"SA12","4":"SA7","5":"SA6","6":"SA5","7":"SA4",
-    "8":"SA3","9":"SA2","10":"SA1","11":"SA0","12":"FD0","13":"FD1","14":"FD2","15":"GND",
-    "16":"FB_CE_N","17":"FD3","18":"FD4","19":"FD5","20":"FD6","21":"FD7","22":"FB_OE_N",
-    "23":"FB_WE_N","24":"SA8","25":"SA9","26":"SA13","27":"FB_A15_TIE","28":"FB_A17_TIE",
-    "29":"SA11","30":"FB_OE2_TIE","31":"SA10","32":"VCC5"}
+SRAM_FB = {"1":"FB_PIN1_NC","2":"GND","3":"GND","4":"SA12","5":"SA7","6":"SA6","7":"SA5",
+    "8":"SA4","9":"SA3","10":"SA2","11":"SA1","12":"SA0","13":"FD0","14":"FD1","15":"FD2",
+    "16":"GND","17":"FD3","18":"FD4","19":"FD5","20":"FD6","21":"FD7","22":"FB_CE_N",
+    "23":"SA10","24":"FB_OE_N","25":"SA11","26":"SA9","27":"SA8","28":"SA13",
+    "29":"FB_WE_N","30":"VCC5","31":"GND","32":"VCC5"}
 
 CHIP_TYPES = {
     "Z80_DIP40": Z80, "EPROM_27C256": ROM_27C256, "SRAM_AS6C1008": SRAM_128K,
@@ -287,84 +288,84 @@ CARD_EXTRAS = {
     "video": [
         comp("U1", "OSC_25M175", {"1": "OSC_EN_NC", "7": "GND", "8": "DOTCLK", "14": "VCC5"}),
         # '393 dot/line counters (chained): HC0-9, VC0-9; MR = end-of-line/frame
-        comp("U2", "TTL_393", {"1": "DOTCLK", "2": "H_END", "3": "HC0", "4": "HC1", "5": "HC2",
+        comp("U2", "ST_HC393", {"1": "DOTCLK", "2": "H_CLR", "3": "HC0", "4": "HC1", "5": "HC2",
              "6": "HC3", "7": "GND", "8": "HC7", "9": "HC6", "10": "HC5", "11": "HC4",
-             "12": "H_END", "13": "HC3", "14": "VCC5"}),
-        comp("U3", "TTL_393", {"1": "HC7", "2": "H_END", "3": "HC8", "4": "HC9",
+             "12": "H_CLR", "13": "HC3", "14": "VCC5"}),
+        comp("U3", "ST_HC393", {"1": "HC7", "2": "H_CLR", "3": "HC8", "4": "HC9",
              "5": "VID_HC10_NC", "6": "VID_HC11_NC", "7": "GND", "8": "VC3", "9": "VC2",
-             "10": "VC1", "11": "VC0", "12": "V_END", "13": "H_END", "14": "VCC5"}),
-        comp("U4", "TTL_393", {"1": "VC3", "2": "V_END", "3": "VC4", "4": "VC5", "5": "VC6",
+             "10": "VC1", "11": "VC0", "12": "V_CLR", "13": "H_END", "14": "VCC5"}),
+        comp("U4", "ST_HC393", {"1": "VC3", "2": "V_CLR", "3": "VC4", "4": "VC5", "5": "VC6",
              "6": "VC7", "7": "GND", "8": "VID_VC11_NC", "9": "VID_VC10_NC", "10": "VC9",
-             "11": "VC8", "12": "V_END", "13": "VC7", "14": "VCC5"}),
+             "11": "VC8", "12": "V_CLR", "13": "VC7", "14": "VCC5"}),
         # (U5 H-decode GAL, U6 V-decode GAL, U7 control GAL, U21 framebuffer SRAM are in
         # CARD_CHIPS with distinct types so they are LVS'd.)
         # '157 address mux (4): SA = MUX_SEL ? A[13:0](CPU) : scan. A-side = scan, B = CPU.
-        comp("U8", "TTL_157", {"1": "MUX_SEL", "2": "SI0", "3": "A0", "4": "SA0", "5": "SI1",
+        comp("U8", "ACT_157", {"1": "MUX_SEL", "2": "SI0", "3": "A0", "4": "SA0", "5": "SI1",
              "6": "A1", "7": "SA1", "8": "GND", "9": "SA2", "10": "A2", "11": "SI2",
              "12": "SA3", "13": "A3", "14": "SI3", "15": "GND", "16": "VCC5"}),
-        comp("U9", "TTL_157", {"1": "MUX_SEL", "2": "SI4", "3": "A4", "4": "SA4", "5": "SI5",
+        comp("U9", "ACT_157", {"1": "MUX_SEL", "2": "SI4", "3": "A4", "4": "SA4", "5": "SI5",
              "6": "A5", "7": "SA5", "8": "GND", "9": "SA6", "10": "A6", "11": "SI6",
              "12": "SA7", "13": "A7", "14": "SI7", "15": "GND", "16": "VCC5"}),
-        comp("U10", "TTL_157", {"1": "MUX_SEL", "2": "SI8", "3": "A8", "4": "SA8", "5": "SI9",
+        comp("U10", "ACT_157", {"1": "MUX_SEL", "2": "SI8", "3": "A8", "4": "SA8", "5": "SI9",
              "6": "A9", "7": "SA9", "8": "GND", "9": "SA10", "10": "A10", "11": "SI10",
              "12": "SA11", "13": "A11", "14": "FBA11", "15": "GND", "16": "VCC5"}),
-        comp("U11", "TTL_157", {"1": "MUX_SEL", "2": "FBA12", "3": "A12", "4": "SA12",
+        comp("U11", "ACT_157", {"1": "MUX_SEL", "2": "FBA12", "3": "A12", "4": "SA12",
              "5": "FBA13", "6": "A13", "7": "SA13", "8": "GND", "9": "VID_MUX3_3Y_NC",
-             "10": "VID_MUX3_3B_NC", "11": "VID_MUX3_3A_NC", "12": "VID_MUX3_4Y_NC",
-             "13": "VID_MUX3_4B_NC", "14": "VID_MUX3_4A_NC", "15": "GND", "16": "VCC5"}),
+             "10": "GND", "11": "GND", "12": "VID_MUX3_4Y_NC",
+             "13": "GND", "14": "GND", "15": "GND", "16": "VCC5"}),
         # '161 scan-index counters (4): load ROW_BASE at FI_LOAD_N, +1 at BYTE_TICK -> SI0-13
-        comp("U12", "TTL_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB0", "4": "RB1",
+        comp("U12", "ACT_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB0", "4": "RB1",
              "5": "RB2", "6": "RB3", "7": "BYTE_TICK", "8": "GND", "9": "FI_LOAD_N",
              "10": "VCC5", "11": "SI3", "12": "SI2", "13": "SI1", "14": "SI0",
              "15": "SI_TC0", "16": "VCC5"}),
-        comp("U13", "TTL_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB4", "4": "RB5",
+        comp("U13", "ACT_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB4", "4": "RB5",
              "5": "RB6", "6": "RB7", "7": "BYTE_TICK", "8": "GND", "9": "FI_LOAD_N",
              "10": "SI_TC0", "11": "SI7", "12": "SI6", "13": "SI5", "14": "SI4",
              "15": "SI_TC1", "16": "VCC5"}),
-        comp("U14", "TTL_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB8", "4": "RB9",
+        comp("U14", "ACT_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB8", "4": "RB9",
              "5": "RB10", "6": "RB11", "7": "BYTE_TICK", "8": "GND", "9": "FI_LOAD_N",
              "10": "SI_TC1", "11": "SI11", "12": "SI10", "13": "SI9", "14": "SI8",
              "15": "SI_TC2", "16": "VCC5"}),
-        comp("U15", "TTL_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB12", "4": "RB13",
-             "5": "VID_SA3_D2_NC", "6": "VID_SA3_D3_NC", "7": "BYTE_TICK", "8": "GND",
+        comp("U15", "ACT_161", {"1": "RESET_N", "2": "DOTCLK", "3": "RB12", "4": "RB13",
+             "5": "GND", "6": "GND", "7": "BYTE_TICK", "8": "GND",
              "9": "FI_LOAD_N", "10": "SI_TC2", "11": "VID_SA3_Q3_NC", "12": "VID_SA3_Q2_NC",
              "13": "SI13", "14": "SI12", "15": "VID_SA3_TC_NC", "16": "VCC5"}),
         # '283 base adder: framebuffer lives at SRAM 0x1800 (= the 0xD800 window's low 14
         # bits), so scanout index SI[13:11] + 3 -> FBA11-13; SI[10:0] pass straight to the
         # mux (0x1800 has no low bits; SI<=9639 so +3 on the top nibble never overflows).
-        comp("U16", "TTL_283", {"11": "SI11", "10": "VCC5", "9": "FBA11", "4": "SI12",
-             "6": "VCC5", "5": "FBA12", "3": "SI13", "1": "GND", "2": "FBA13", "13": "GND",
-             "14": "GND", "12": "VID_ADD_S3_NC", "7": "GND", "15": "VID_ADD_C4_NC",
-             "8": "GND", "16": "VCC5"}),
+        comp("U16", "TTL_283", {"1": "FBA12", "2": "VCC5", "3": "SI12", "4": "FBA11",
+             "5": "SI11", "6": "VCC5", "7": "GND", "8": "GND", "9": "VID_ADD_C4_NC",
+             "10": "VID_ADD_S3_NC", "11": "GND", "12": "GND", "13": "FBA13",
+             "14": "SI13", "15": "GND", "16": "VCC5"}),
         # '273 row-base register (2, clearable): capture SI (=base+40 on the odd doubled
         # line) -> RB0-13; async-cleared to 0 at frame top (FRAME_TOP_N) so each frame
         # restarts at row 0.
-        comp("U17", "TTL_273", {"1": "FRAME_TOP_N", "2": "RB0", "3": "SI0", "4": "SI1",
+        comp("U17", "ACT_273", {"1": "FRAME_TOP_N", "2": "RB0", "3": "SI0", "4": "SI1",
              "5": "RB1", "6": "RB2", "7": "SI2", "8": "SI3", "9": "RB3", "10": "GND",
              "11": "RB_CLK", "12": "RB4", "13": "SI4", "14": "SI5", "15": "RB5", "16": "RB6",
              "17": "SI6", "18": "SI7", "19": "RB7", "20": "VCC5"}),
-        comp("U18", "TTL_273", {"1": "FRAME_TOP_N", "2": "RB8", "3": "SI8", "4": "SI9",
+        comp("U18", "ACT_273", {"1": "FRAME_TOP_N", "2": "RB8", "3": "SI8", "4": "SI9",
              "5": "RB9", "6": "RB10", "7": "SI10", "8": "SI11", "9": "RB11", "10": "GND",
              "11": "RB_CLK", "12": "RB12", "13": "SI12", "14": "SI13", "15": "RB13",
-             "16": "VID_RB_Q6_NC", "17": "VID_RB_D6_NC", "18": "VID_RB_D7_NC",
+             "16": "VID_RB_Q6_NC", "17": "GND", "18": "GND",
              "19": "VID_RB_Q7_NC", "20": "VCC5"}),
         # '166 pixel shifter: FD0-7 -> PIXEL (load each byte, shift 1 bit / 2 dots)
-        comp("U19", "TTL_166", {"1": "GND", "2": "FD0", "3": "FD1", "4": "FD2", "5": "FD3",
+        comp("U19", "ALS_166", {"1": "GND", "2": "FD0", "3": "FD1", "4": "FD2", "5": "FD3",
              "6": "SR_INH", "7": "DOTCLK", "8": "GND", "9": "RESET_N", "10": "FD4",
              "11": "FD5", "12": "FD6", "13": "FD7", "14": "PIXEL", "15": "SR_LOAD_N",
              "16": "VCC5"}),
         # '245 CPU data buffer: D0-7 (bus) <-> FD0-7 (framebuffer)
-        comp("U20", "TTL_245", {"1": "D245_DIR", "2": "D0", "3": "D1", "4": "D2", "5": "D3",
+        comp("U20", "HCT_245", {"1": "D245_DIR", "2": "D0", "3": "D1", "4": "D2", "5": "D3",
              "6": "D4", "7": "D5", "8": "D6", "9": "D7", "10": "GND", "11": "FD7", "12": "FD6",
              "13": "FD5", "14": "FD4", "15": "FD3", "16": "FD2", "17": "FD1", "18": "FD0",
              "19": "D245_OE", "20": "VCC5"}),
         # (U21 framebuffer SRAM is in CARD_CHIPS as type SRAM_FB, so it is LVS'd.)
-        # blanking AND: RGB must be 0 outside the active region or the monitor loses sync /
-        # shows garbage. VID_PIXEL = PIXEL & ACTIVE ('08, 1 of 4 gates).
-        comp("U22", "TTL_08", {"1": "PIXEL", "2": "ACTIVE", "3": "VID_PIXEL", "4": "VID_AND2A_NC",
-             "5": "VID_AND2B_NC", "6": "VID_AND2Y_NC", "7": "GND", "8": "VID_AND3A_NC",
-             "9": "VID_AND3B_NC", "10": "VID_AND3Y_NC", "11": "VID_AND4A_NC",
-             "12": "VID_AND4B_NC", "13": "VID_AND4Y_NC", "14": "VCC5"}),
+        # HCT inputs accept the ALS shifter and GAL TTL-high guarantees. Gate 1 blanks
+        # RGB; gates 2/3 translate GAL H/V clear signals to full-rail CMOS for U2-U4.
+        comp("U22", "HCT_08", {"1": "PIXEL", "2": "ACTIVE", "3": "VID_PIXEL", "4": "H_END",
+             "5": "H_END", "6": "H_CLR", "7": "GND", "8": "V_CLR",
+             "9": "V_END", "10": "V_END", "11": "VID_AND4Y_NC",
+             "12": "GND", "13": "GND", "14": "VCC5"}),
         # VGA output: DSUB-15HD + mono resistor DAC (VID_PIXEL -> R=G=B), sync direct (both
         # negative polarity for 640x480@60)
         comp("J_VGA", "DSUB15HD", {"1": "VID_R", "2": "VID_G", "3": "VID_B", "4": "VGA_ID2_NC",

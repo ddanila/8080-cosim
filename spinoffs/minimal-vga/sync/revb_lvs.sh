@@ -21,4 +21,6 @@ TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 echo "== rev B LVS: $CARD =="
 python3 "$MAPGEN" >/dev/null                     # regen map from the board generator (single source)
 yosys -q -p "read_verilog -lib $LVSV; read_verilog $LVSV; hierarchy -top revb_${CARD}_lvs_top; write_json $TMP/lvs.json"
-python3 sync/lvs.py --hdl "$TMP/lvs.json" --board "$BOARD" --map "$MAP"
+POWER_ARG=()
+[ "$CARD" = video ] && POWER_ARG=(--include-power)
+python3 sync/lvs.py --hdl "$TMP/lvs.json" --board "$BOARD" --map "$MAP" "${POWER_ARG[@]}"

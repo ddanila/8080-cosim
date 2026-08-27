@@ -17,13 +17,13 @@ ALIASES = {
         "MREQn": "MREQ_N", "RDn": "RD_N", "WRn": "WR_N",
         "ROMCEn": "ROM_CE_N", "RAMCEn": "RAM_CE_N",
         "MEMRDn": "MEM_RD_N", "MEMWRn": "MEM_WR_N",
-        "GND": "GND", "VCC": "VCC5",
+        "GND": "GND", "GND0": "GND", "GND1": "GND", "VCC": "VCC5",
     },
     "io-u2": {
         "IORQn": "IORQ_N", "RESETn": "RESET_N", "M1n": "M1_N",
         "PICINT": "PIC_INT", "PICCSn": "PIC_CS_N", "PPICSn": "PPI_CS_N",
         "UARTCSn": "UART_CS_N", "IORESET": "IO_RESET", "INTn": "INT_N",
-        "INTAn": "INTA_N", "GND": "GND", "VCC": "VCC5",
+        "INTAn": "INTA_N", "GND": "GND", "GND0": "GND", "VCC": "VCC5",
     },
 }
 BOARD_REF = {"memory-u3": ("mem", "U3"), "io-u2": ("io", "U2")}
@@ -97,6 +97,7 @@ def check_pins(base: str, device: str, pins: list[str]) -> None:
             expected = aliases.get(pld_name, pld_name)
             assert expected == board_name, (base, number, pld_name, board_name)
     if base == "io-u2":
+        assert pins[17] == "GND0", "unused complex-mode I/O pin 18 must not float"
         assert pins[18] == "NC", "ATF16V8 complex-mode pin 19 must not be an input"
 
 

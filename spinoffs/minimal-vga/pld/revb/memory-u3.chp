@@ -23,7 +23,7 @@
                           |                 |
                       A12 | 10           15 | RAMCEn
                           |                 |
-                       NC | 11           14 | ROMCEn
+                     GND0 | 11           14 | ROMCEn
                           |                 |
-                      GND | 12           13 | NC
+                      GND | 12           13 | GND1
                           -------------------

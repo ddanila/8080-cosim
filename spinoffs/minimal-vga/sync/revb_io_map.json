@@ -24,7 +24,7 @@
         "15": "IO_RESET",
         "16": "INT_N",
         "17": "INTA_N",
-        "18": "IO_GAL_SPARE_IO_NC",
+        "18": "GND",
         "19": "IO_GAL_SPARE_OUT_NC",
         "20": "VCC5"
       },

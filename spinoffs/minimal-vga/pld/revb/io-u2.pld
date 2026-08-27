@@ -2,7 +2,7 @@ GAL16V8
 VJIOR5
 
 IORQn A2 A3 A4 A5 A6 A7 RESETn M1n GND
-PICINT PICCSn PPICSn UARTCSn IORESET INTn INTAn NC NC VCC
+PICINT PICCSn PPICSn UARTCSn IORESET INTn INTAn GND0 NC VCC
 
 ; Four-port decode granularity follows the available A2-A7 inputs. Peripheral
 ; A0/A1 pins select registers inside each window.

@@ -19,7 +19,7 @@
   15   | IORESET  | Output
   16   | INTn     | Output
   17   | INTAn    | Output
-  18   | NC       | NC
+  18   | GND0     | NC
   19   | NC       | NC
   20   | VCC      | VCC
 

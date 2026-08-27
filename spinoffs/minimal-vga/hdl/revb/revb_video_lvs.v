@@ -1,68 +1,62 @@
-// VJUGA rev B — Video card structural LVS netlist (TI.3). Empty-bodied modules for the
-// LVS'd logic ICs: the three decode/control GAL22V10s and the framebuffer SRAM. The
-// standard 74xx (counters/mux/register/shifter/buffer/adder) are verified by D1.18
-// completeness, not full LVS (D1.22), exactly as the io card's discrete parts. Port
-// names = the CHIP_TYPES net names. Full ranges are vectors (HC[9:0], SA[13:0], like the
-// mem SRAM's A[15:0]); the A11..A15 subset stays SCALAR (a [15:11] vector would
-// canonicalize by position to A0..A4 and mis-map — the mem/io lesson).
+// VJUGA rev B Video card full-package structural LVS netlist (R5.V1).
+// Independently states every populated digital package U1..U22 and includes power.
+// Behaviour belongs in revb_video_card_ttl.v and the GAL sources; this file is only
+// the second connectivity representation used by sync/lvs.py.
 `default_nettype none
 
-module gal22v10_hdec_lvs(
-    input  wire        DOTCLK,
-    input  wire [9:0]  HC,      // HC0..HC9
-    output wire        H_END, HSYNC_N, H_BLANK, BYTE_TICK, FI_LOAD_N, SR_LOAD_N, SR_INH
-);
-endmodule
-
-module gal22v10_vdec_lvs(
-    input  wire        H_BLANK, H_END,
-    input  wire [9:0]  VC,      // VC0..VC9
-    output wire        V_END, VSYNC_N, ACTIVE, FRAME_TOP_N, FRAME_TICK, RB_CLK
-);
-endmodule
-
-module gal22v10_ctrl_lvs(
-    input  wire        DOTCLK,
-    input  wire        A11, A12, A13, A14, A15,   // scalar subset (position trap)
-    input  wire        MREQ_N, RD_N, WR_N, MODE0, MODE1, ACTIVE,
-    output wire        WAIT_N, MUX_SEL, D245_DIR, D245_OE, FB_CE_N, FB_WE_N, FB_OE_N
-);
-endmodule
-
-module sram_fb_lvs(
-    input  wire [13:0] SA,      // SA0..SA13 scanout/CPU address
-    inout  wire [7:0]  FD,      // framebuffer data
-    input  wire        FB_CE_N, FB_OE_N, FB_WE_N
-);
-endmodule
+module osc_25m175_lvs(inout wire OE,GND,CLKOUT,VCC); endmodule
+module ttl393_lvs(inout wire CLK1,CLR1,Q1A,Q1B,Q1C,Q1D,GND,Q2D,Q2C,Q2B,Q2A,CLR2,CLK2,VCC); endmodule
+module gal_hdec_lvs(inout wire DOTCLK,HC0,HC1,HC2,HC3,HC4,HC5,HC6,HC7,HC8,HC9,GND,RESET_N,H_END,HSYNC_N,H_BLANK,BYTE_TICK,FI_LOAD_N,SR_LOAD_N,SR_INH,FETCH,VID_HDEC_O22_NC,VID_HDEC_O23_NC,VCC5); endmodule
+module gal_vdec_lvs(inout wire H_BLANK,VC0,VC1,VC2,VC3,VC4,VC5,VC6,VC7,VC8,VC9,GND,H_END,V_END,VSYNC_N,VID_VDEC_VBLANK_NC,VID_VDEC_BLANK_NC,ACTIVE,FRAME_TOP_N,FRAME_TICK,RB_CLK,VID_VDEC_O22_NC,VID_VDEC_O23_NC,VCC5); endmodule
+module gal_ctrl_lvs(inout wire FETCH,A11,A12,A13,A14,A15,MREQ_N,RD_N,WR_N,MODE0,MODE1,GND,ACTIVE,WAIT_N,MUX_SEL,D245_DIR,D245_OE,FB_CE_N,FB_WE_N,FB_OE_N,VID_CTRL_O21_NC,VID_CTRL_O22_NC,VID_CTRL_O23_NC,VCC5); endmodule
+module ttl157_lvs(inout wire SEL,I1A,I1B,Y1,I2A,I2B,Y2,GND,Y3,I3B,I3A,Y4,I4B,I4A,ENABLE_N,VCC); endmodule
+module ttl161_lvs(inout wire CLR_N,CLK,D0,D1,D2,D3,ENP,GND,LOAD_N,ENT,Q3,Q2,Q1,Q0,RCO,VCC); endmodule
+module ttl283_lvs(inout wire S1,B1,A1,S0,A0,B0,CIN,GND,COUT,S3,B3,A3,S2,A2,B2,VCC); endmodule
+module ttl273_lvs(inout wire CLR_N,Q0,D0,D1,Q1,Q2,D2,D3,Q3,GND,CLK,Q4,D4,D5,Q5,Q6,D6,D7,Q7,VCC); endmodule
+module als166_lvs(inout wire SER,A,B,C,D,CLK_INH,CLK,GND,CLR_N,E,F,G,H,QH,SH_LD_N,VCC); endmodule
+module ttl245_lvs(inout wire DIR,A0,A1,A2,A3,A4,A5,A6,A7,GND,B7,B6,B5,B4,B3,B2,B1,B0,OE_N,VCC); endmodule
+module sram_fb_lvs(inout wire NC1,A16,A14,A12,A7,A6,A5,A4,A3,A2,A1,A0,DQ0,DQ1,DQ2,GND16,DQ3,DQ4,DQ5,DQ6,DQ7,CE1_N,A10,OE_N,A11,A9,A8,A13,WE_N,CE2,A15,VCC); endmodule
+module ttl08_lvs(inout wire A1,B1,Y1,A2,B2,Y2,GND,Y3,A3,B3,Y4,A4,B4,VCC); endmodule
 
 module revb_video_lvs_top;
-    wire DOTCLK;
-    wire [9:0] HC, VC;
-    wire H_END, HSYNC_N, H_BLANK, BYTE_TICK, FI_LOAD_N, SR_LOAD_N, SR_INH;
-    wire V_END, VSYNC_N, ACTIVE, FRAME_TOP_N, FRAME_TICK, RB_CLK;
-    wire A11, A12, A13, A14, A15, MREQ_N, RD_N, WR_N, MODE0, MODE1;
-    wire WAIT_N, MUX_SEL, D245_DIR, D245_OE, FB_CE_N, FB_WE_N, FB_OE_N;
-    wire [13:0] SA;
-    wire [7:0]  FD;
+    wire VCC5,GND,DOTCLK,H_END,HSYNC_N,H_BLANK,BYTE_TICK,FI_LOAD_N,SR_LOAD_N,SR_INH,FETCH;
+    wire V_END,VSYNC_N,ACTIVE,FRAME_TOP_N,FRAME_TICK,RB_CLK,H_CLR,V_CLR,MREQ_N,RD_N,WR_N,MODE0,MODE1,RESET_N,WAIT_N;
+    wire MUX_SEL,D245_DIR,D245_OE,FB_CE_N,FB_WE_N,FB_OE_N;
+    wire A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15;
+    wire D0,D1,D2,D3,D4,D5,D6,D7,HC0,HC1,HC2,HC3,HC4,HC5,HC6,HC7,HC8,HC9;
+    wire VC0,VC1,VC2,VC3,VC4,VC5,VC6,VC7,VC8,VC9;
+    wire SI0,SI1,SI2,SI3,SI4,SI5,SI6,SI7,SI8,SI9,SI10,SI11,SI12,SI13;
+    wire RB0,RB1,RB2,RB3,RB4,RB5,RB6,RB7,RB8,RB9,RB10,RB11,RB12,RB13;
+    wire SA0,SA1,SA2,SA3,SA4,SA5,SA6,SA7,SA8,SA9,SA10,SA11,SA12,SA13;
+    wire FD0,FD1,FD2,FD3,FD4,FD5,FD6,FD7,FBA11,FBA12,FBA13,SI_TC0,SI_TC1,SI_TC2,PIXEL,VID_PIXEL;
+    wire OSC_EN_NC,VID_HC10_NC,VID_HC11_NC,VID_VC10_NC,VID_VC11_NC;
+    wire VID_HDEC_O22_NC,VID_HDEC_O23_NC,VID_VDEC_VBLANK_NC,VID_VDEC_BLANK_NC,VID_VDEC_O22_NC,VID_VDEC_O23_NC;
+    wire VID_CTRL_O21_NC,VID_CTRL_O22_NC,VID_CTRL_O23_NC,VID_MUX3_3Y_NC,VID_MUX3_4Y_NC;
+    wire VID_SA3_Q3_NC,VID_SA3_Q2_NC,VID_SA3_TC_NC,VID_ADD_C4_NC,VID_ADD_S3_NC,VID_RB_Q6_NC,VID_RB_Q7_NC;
+    wire VID_AND4Y_NC,FB_PIN1_NC;
 
-    gal22v10_hdec_lvs U_HDEC(
-        .DOTCLK(DOTCLK), .HC(HC),
-        .H_END(H_END), .HSYNC_N(HSYNC_N), .H_BLANK(H_BLANK), .BYTE_TICK(BYTE_TICK),
-        .FI_LOAD_N(FI_LOAD_N), .SR_LOAD_N(SR_LOAD_N), .SR_INH(SR_INH));
+    osc_25m175_lvs U_OSC(.OE(OSC_EN_NC),.GND(GND),.CLKOUT(DOTCLK),.VCC(VCC5));
+    ttl393_lvs U_HC_LO(.CLK1(DOTCLK),.CLR1(H_CLR),.Q1A(HC0),.Q1B(HC1),.Q1C(HC2),.Q1D(HC3),.GND(GND),.Q2D(HC7),.Q2C(HC6),.Q2B(HC5),.Q2A(HC4),.CLR2(H_CLR),.CLK2(HC3),.VCC(VCC5));
+    ttl393_lvs U_HC_VC(.CLK1(HC7),.CLR1(H_CLR),.Q1A(HC8),.Q1B(HC9),.Q1C(VID_HC10_NC),.Q1D(VID_HC11_NC),.GND(GND),.Q2D(VC3),.Q2C(VC2),.Q2B(VC1),.Q2A(VC0),.CLR2(V_CLR),.CLK2(H_END),.VCC(VCC5));
+    ttl393_lvs U_VC_HI(.CLK1(VC3),.CLR1(V_CLR),.Q1A(VC4),.Q1B(VC5),.Q1C(VC6),.Q1D(VC7),.GND(GND),.Q2D(VID_VC11_NC),.Q2C(VID_VC10_NC),.Q2B(VC9),.Q2A(VC8),.CLR2(V_CLR),.CLK2(VC7),.VCC(VCC5));
+    gal_hdec_lvs U_HDEC(.DOTCLK(DOTCLK),.HC0(HC0),.HC1(HC1),.HC2(HC2),.HC3(HC3),.HC4(HC4),.HC5(HC5),.HC6(HC6),.HC7(HC7),.HC8(HC8),.HC9(HC9),.GND(GND),.RESET_N(RESET_N),.H_END(H_END),.HSYNC_N(HSYNC_N),.H_BLANK(H_BLANK),.BYTE_TICK(BYTE_TICK),.FI_LOAD_N(FI_LOAD_N),.SR_LOAD_N(SR_LOAD_N),.SR_INH(SR_INH),.FETCH(FETCH),.VID_HDEC_O22_NC(VID_HDEC_O22_NC),.VID_HDEC_O23_NC(VID_HDEC_O23_NC),.VCC5(VCC5));
+    gal_vdec_lvs U_VDEC(.H_BLANK(H_BLANK),.VC0(VC0),.VC1(VC1),.VC2(VC2),.VC3(VC3),.VC4(VC4),.VC5(VC5),.VC6(VC6),.VC7(VC7),.VC8(VC8),.VC9(VC9),.GND(GND),.H_END(H_END),.V_END(V_END),.VSYNC_N(VSYNC_N),.VID_VDEC_VBLANK_NC(VID_VDEC_VBLANK_NC),.VID_VDEC_BLANK_NC(VID_VDEC_BLANK_NC),.ACTIVE(ACTIVE),.FRAME_TOP_N(FRAME_TOP_N),.FRAME_TICK(FRAME_TICK),.RB_CLK(RB_CLK),.VID_VDEC_O22_NC(VID_VDEC_O22_NC),.VID_VDEC_O23_NC(VID_VDEC_O23_NC),.VCC5(VCC5));
+    gal_ctrl_lvs U_CTRL(.FETCH(FETCH),.A11(A11),.A12(A12),.A13(A13),.A14(A14),.A15(A15),.MREQ_N(MREQ_N),.RD_N(RD_N),.WR_N(WR_N),.MODE0(MODE0),.MODE1(MODE1),.GND(GND),.ACTIVE(ACTIVE),.WAIT_N(WAIT_N),.MUX_SEL(MUX_SEL),.D245_DIR(D245_DIR),.D245_OE(D245_OE),.FB_CE_N(FB_CE_N),.FB_WE_N(FB_WE_N),.FB_OE_N(FB_OE_N),.VID_CTRL_O21_NC(VID_CTRL_O21_NC),.VID_CTRL_O22_NC(VID_CTRL_O22_NC),.VID_CTRL_O23_NC(VID_CTRL_O23_NC),.VCC5(VCC5));
 
-    gal22v10_vdec_lvs U_VDEC(
-        .H_BLANK(H_BLANK), .H_END(H_END), .VC(VC),
-        .V_END(V_END), .VSYNC_N(VSYNC_N), .ACTIVE(ACTIVE), .FRAME_TOP_N(FRAME_TOP_N),
-        .FRAME_TICK(FRAME_TICK), .RB_CLK(RB_CLK));
-
-    gal22v10_ctrl_lvs U_CTRL(
-        .DOTCLK(DOTCLK), .A11(A11), .A12(A12), .A13(A13), .A14(A14), .A15(A15),
-        .MREQ_N(MREQ_N), .RD_N(RD_N), .WR_N(WR_N), .MODE0(MODE0), .MODE1(MODE1),
-        .ACTIVE(ACTIVE), .WAIT_N(WAIT_N), .MUX_SEL(MUX_SEL), .D245_DIR(D245_DIR),
-        .D245_OE(D245_OE), .FB_CE_N(FB_CE_N), .FB_WE_N(FB_WE_N), .FB_OE_N(FB_OE_N));
-
-    sram_fb_lvs U_FB(
-        .SA(SA), .FD(FD), .FB_CE_N(FB_CE_N), .FB_OE_N(FB_OE_N), .FB_WE_N(FB_WE_N));
+    ttl157_lvs U_MUX0(.SEL(MUX_SEL),.I1A(SI0),.I1B(A0),.Y1(SA0),.I2A(SI1),.I2B(A1),.Y2(SA1),.GND(GND),.Y3(SA2),.I3B(A2),.I3A(SI2),.Y4(SA3),.I4B(A3),.I4A(SI3),.ENABLE_N(GND),.VCC(VCC5));
+    ttl157_lvs U_MUX1(.SEL(MUX_SEL),.I1A(SI4),.I1B(A4),.Y1(SA4),.I2A(SI5),.I2B(A5),.Y2(SA5),.GND(GND),.Y3(SA6),.I3B(A6),.I3A(SI6),.Y4(SA7),.I4B(A7),.I4A(SI7),.ENABLE_N(GND),.VCC(VCC5));
+    ttl157_lvs U_MUX2(.SEL(MUX_SEL),.I1A(SI8),.I1B(A8),.Y1(SA8),.I2A(SI9),.I2B(A9),.Y2(SA9),.GND(GND),.Y3(SA10),.I3B(A10),.I3A(SI10),.Y4(SA11),.I4B(A11),.I4A(FBA11),.ENABLE_N(GND),.VCC(VCC5));
+    ttl157_lvs U_MUX3(.SEL(MUX_SEL),.I1A(FBA12),.I1B(A12),.Y1(SA12),.I2A(FBA13),.I2B(A13),.Y2(SA13),.GND(GND),.Y3(VID_MUX3_3Y_NC),.I3B(GND),.I3A(GND),.Y4(VID_MUX3_4Y_NC),.I4B(GND),.I4A(GND),.ENABLE_N(GND),.VCC(VCC5));
+    ttl161_lvs U_SCAN0(.CLR_N(RESET_N),.CLK(DOTCLK),.D0(RB0),.D1(RB1),.D2(RB2),.D3(RB3),.ENP(BYTE_TICK),.GND(GND),.LOAD_N(FI_LOAD_N),.ENT(VCC5),.Q3(SI3),.Q2(SI2),.Q1(SI1),.Q0(SI0),.RCO(SI_TC0),.VCC(VCC5));
+    ttl161_lvs U_SCAN1(.CLR_N(RESET_N),.CLK(DOTCLK),.D0(RB4),.D1(RB5),.D2(RB6),.D3(RB7),.ENP(BYTE_TICK),.GND(GND),.LOAD_N(FI_LOAD_N),.ENT(SI_TC0),.Q3(SI7),.Q2(SI6),.Q1(SI5),.Q0(SI4),.RCO(SI_TC1),.VCC(VCC5));
+    ttl161_lvs U_SCAN2(.CLR_N(RESET_N),.CLK(DOTCLK),.D0(RB8),.D1(RB9),.D2(RB10),.D3(RB11),.ENP(BYTE_TICK),.GND(GND),.LOAD_N(FI_LOAD_N),.ENT(SI_TC1),.Q3(SI11),.Q2(SI10),.Q1(SI9),.Q0(SI8),.RCO(SI_TC2),.VCC(VCC5));
+    ttl161_lvs U_SCAN3(.CLR_N(RESET_N),.CLK(DOTCLK),.D0(RB12),.D1(RB13),.D2(GND),.D3(GND),.ENP(BYTE_TICK),.GND(GND),.LOAD_N(FI_LOAD_N),.ENT(SI_TC2),.Q3(VID_SA3_Q3_NC),.Q2(VID_SA3_Q2_NC),.Q1(SI13),.Q0(SI12),.RCO(VID_SA3_TC_NC),.VCC(VCC5));
+    ttl283_lvs U_ADD(.S1(FBA12),.B1(VCC5),.A1(SI12),.S0(FBA11),.A0(SI11),.B0(VCC5),.CIN(GND),.GND(GND),.COUT(VID_ADD_C4_NC),.S3(VID_ADD_S3_NC),.B3(GND),.A3(GND),.S2(FBA13),.A2(SI13),.B2(GND),.VCC(VCC5));
+    ttl273_lvs U_ROW0(.CLR_N(FRAME_TOP_N),.Q0(RB0),.D0(SI0),.D1(SI1),.Q1(RB1),.Q2(RB2),.D2(SI2),.D3(SI3),.Q3(RB3),.GND(GND),.CLK(RB_CLK),.Q4(RB4),.D4(SI4),.D5(SI5),.Q5(RB5),.Q6(RB6),.D6(SI6),.D7(SI7),.Q7(RB7),.VCC(VCC5));
+    ttl273_lvs U_ROW1(.CLR_N(FRAME_TOP_N),.Q0(RB8),.D0(SI8),.D1(SI9),.Q1(RB9),.Q2(RB10),.D2(SI10),.D3(SI11),.Q3(RB11),.GND(GND),.CLK(RB_CLK),.Q4(RB12),.D4(SI12),.D5(SI13),.Q5(RB13),.Q6(VID_RB_Q6_NC),.D6(GND),.D7(GND),.Q7(VID_RB_Q7_NC),.VCC(VCC5));
+    als166_lvs U_SHIFT(.SER(GND),.A(FD0),.B(FD1),.C(FD2),.D(FD3),.CLK_INH(SR_INH),.CLK(DOTCLK),.GND(GND),.CLR_N(RESET_N),.E(FD4),.F(FD5),.G(FD6),.H(FD7),.QH(PIXEL),.SH_LD_N(SR_LOAD_N),.VCC(VCC5));
+    ttl245_lvs U_DBUF(.DIR(D245_DIR),.A0(D0),.A1(D1),.A2(D2),.A3(D3),.A4(D4),.A5(D5),.A6(D6),.A7(D7),.GND(GND),.B7(FD7),.B6(FD6),.B5(FD5),.B4(FD4),.B3(FD3),.B2(FD2),.B1(FD1),.B0(FD0),.OE_N(D245_OE),.VCC(VCC5));
+    sram_fb_lvs U_FB(.NC1(FB_PIN1_NC),.A16(GND),.A14(GND),.A12(SA12),.A7(SA7),.A6(SA6),.A5(SA5),.A4(SA4),.A3(SA3),.A2(SA2),.A1(SA1),.A0(SA0),.DQ0(FD0),.DQ1(FD1),.DQ2(FD2),.GND16(GND),.DQ3(FD3),.DQ4(FD4),.DQ5(FD5),.DQ6(FD6),.DQ7(FD7),.CE1_N(FB_CE_N),.A10(SA10),.OE_N(FB_OE_N),.A11(SA11),.A9(SA9),.A8(SA8),.A13(SA13),.WE_N(FB_WE_N),.CE2(VCC5),.A15(GND),.VCC(VCC5));
+    ttl08_lvs U_BLANK(.A1(PIXEL),.B1(ACTIVE),.Y1(VID_PIXEL),.A2(H_END),.B2(H_END),.Y2(H_CLR),.GND(GND),.Y3(V_CLR),.A3(V_END),.B3(V_END),.Y4(VID_AND4Y_NC),.A4(GND),.B4(GND),.VCC(VCC5));
 endmodule
 `default_nettype wire

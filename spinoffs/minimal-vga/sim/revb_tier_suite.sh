@@ -43,8 +43,10 @@ spinoffs/minimal-vga/sync/revb_lvs.sh mem
 echo "== rev B: io-card LVS (populated 8251 + GAL) =="
 spinoffs/minimal-vga/sync/revb_lvs.sh io
 
-echo "== rev B: video-card LVS (3 decode/control GALs + framebuffer SRAM; B2) =="
+echo "== rev B: video real-silicon/pin audit + full 22-package LVS (R5.V1) =="
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_digital.py --self-test
 spinoffs/minimal-vga/sync/revb_lvs.sh video
+spinoffs/minimal-vga/sync/revb_video_lvs_mutation_check.sh
 
 echo "== rev B: per-card unit TBs (BFM) =="
 spinoffs/minimal-vga/sim/revb_card_tb_check.sh
