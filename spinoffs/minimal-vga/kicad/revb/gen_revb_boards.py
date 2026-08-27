@@ -141,16 +141,19 @@ OSC_CPU = {"1":"OSC_EN_NC","7":"GND","8":"CLK","14":"VCC5"}
 # generic datasheet-role pinmaps in gen_revb_lvs_map.py. ---
 GAL22V10_HDEC = {"1":"DOTCLK","2":"HC0","3":"HC1","4":"HC2","5":"HC3","6":"HC4","7":"HC5",
     "8":"HC6","9":"HC7","10":"HC8","11":"HC9","12":"GND","13":"RESET_N","14":"H_END",
-    "15":"HSYNC_N","16":"H_BLANK","17":"BYTE_TICK","18":"FI_LOAD_N","19":"SR_LOAD_N",
-    "20":"SR_INH","21":"FETCH","22":"VID_HDEC_O22_NC","23":"VID_HDEC_O23_NC","24":"VCC5"}
-GAL22V10_VDEC = {"1":"H_BLANK","2":"VC0","3":"VC1","4":"VC2","5":"VC3","6":"VC4","7":"VC5",
-    "8":"VC6","9":"VC7","10":"VC8","11":"VC9","12":"GND","13":"H_END","14":"V_END","15":"VSYNC_N",
-    "16":"VID_VDEC_VBLANK_NC","17":"VID_VDEC_BLANK_NC","18":"ACTIVE","19":"FRAME_TOP_N",
-    "20":"FRAME_TICK","21":"RB_CLK","22":"VID_VDEC_O22_NC","23":"VID_VDEC_O23_NC","24":"VCC5"}
+    "15":"HSYNC_N","16":"H_ACTIVE","17":"BYTE_TICK","18":"FI_LOAD_N","19":"SR_LOAD_N",
+    "20":"SR_INH","21":"FETCH","22":"RB_STROBE","23":"VID_HDEC_O23_NC","24":"VCC5"}
+# U6 pin 1 is the ATF22V10 global clock.  HDEC's one-dot RB_STROBE clocks the
+# registered modulo-six frame divider once per line; the D equations hold except
+# at VC=524.  Pin 13 supplies synchronous reset and combinatorial reset gating.
+GAL22V10_VDEC = {"1":"RB_STROBE","2":"VC0","3":"VC1","4":"VC2","5":"VC3","6":"VC4","7":"VC5",
+    "8":"VC6","9":"VC7","10":"VC8","11":"VC9","12":"GND","13":"RESET_N","14":"V_END","15":"VSYNC_N",
+    "16":"FRAME_DIV2","17":"FRAME_DIV1","18":"FRAME_DIV0","19":"FRAME_TOP_N",
+    "20":"FRAME_TICK","21":"RB_CLK","22":"V_ACTIVE","23":"VID_VDEC_O23_NC","24":"VCC5"}
 GAL22V10_CTRL = {"1":"FETCH","2":"A11","3":"A12","4":"A13","5":"A14","6":"A15","7":"MREQ_N",
-    "8":"RD_N","9":"WR_N","10":"MODE0","11":"MODE1","12":"GND","13":"ACTIVE","14":"WAIT_N",
+    "8":"RD_N","9":"WR_N","10":"MODE0","11":"MODE1","12":"GND","13":"RESET_N","14":"WAIT_N",
     "15":"MUX_SEL","16":"D245_DIR","17":"D245_OE","18":"FB_CE_N","19":"FB_WE_N","20":"FB_OE_N",
-    "21":"VID_CTRL_O21_NC","22":"VID_CTRL_O22_NC","23":"VID_CTRL_O23_NC","24":"VCC5"}
+    "21":"VID_CTRL_O21_NC","22":"VID_CTRL_O22_NC","23":"VID_CTRL_CPUACC_NC","24":"VCC5"}
 SRAM_FB = {"1":"FB_PIN1_NC","2":"GND","3":"GND","4":"SA12","5":"SA7","6":"SA6","7":"SA5",
     "8":"SA4","9":"SA3","10":"SA2","11":"SA1","12":"SA0","13":"FD0","14":"FD1","15":"FD2",
     "16":"GND","17":"FD3","18":"FD4","19":"FD5","20":"FD6","21":"FD7","22":"FB_CE_N",
@@ -360,12 +363,13 @@ CARD_EXTRAS = {
              "13": "FD5", "14": "FD4", "15": "FD3", "16": "FD2", "17": "FD1", "18": "FD0",
              "19": "D245_OE", "20": "VCC5"}),
         # (U21 framebuffer SRAM is in CARD_CHIPS as type SRAM_FB, so it is LVS'd.)
-        # HCT inputs accept the ALS shifter and GAL TTL-high guarantees. Gate 1 blanks
-        # RGB; gates 2/3 translate GAL H/V clear signals to full-rail CMOS for U2-U4.
-        comp("U22", "HCT_08", {"1": "PIXEL", "2": "ACTIVE", "3": "VID_PIXEL", "4": "H_END",
+        # HCT inputs accept the ALS shifter and GAL TTL-high guarantees. Gate 1 forms
+        # combined active video, gate 4 blanks pixels, and gates 2/3 translate GAL
+        # H/V clear signals to full-rail CMOS for U2-U4.
+        comp("U22", "HCT_08", {"1": "H_ACTIVE", "2": "V_ACTIVE", "3": "HV_ACTIVE", "4": "H_END",
              "5": "H_END", "6": "H_CLR", "7": "GND", "8": "V_CLR",
-             "9": "V_END", "10": "V_END", "11": "VID_AND4Y_NC",
-             "12": "GND", "13": "GND", "14": "VCC5"}),
+             "9": "V_END", "10": "V_END", "11": "VID_PIXEL",
+             "12": "PIXEL", "13": "HV_ACTIVE", "14": "VCC5"}),
         # VGA output: U23 gives R/G/B independent 24 mA-capable ACT drivers so one gate
         # never sources all three monitor loads. The on-card parts are 470-ohm SERIES
         # resistors; each monitor input supplies the 75-ohm termination.

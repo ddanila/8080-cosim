@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""R5.P1 pin, oracle, artifact, and JEDEC guard for the Memory and I/O GALs."""
+"""Pin, oracle, artifact, and JEDEC guard for all five rev-B GALs."""
 from __future__ import annotations
 
 import hashlib
@@ -25,8 +25,32 @@ ALIASES = {
         "UARTCSn": "UART_CS_N", "IORESET": "IO_RESET", "INTn": "INT_N",
         "INTAn": "INTA_N", "GND": "GND", "GND0": "GND", "VCC": "VCC5",
     },
+    "video-hdec-u5": {
+        "RESETn": "RESET_N", "HEND": "H_END", "/HSYNCn": "HSYNC_N",
+        "HACTIVE": "H_ACTIVE", "BYTETICK": "BYTE_TICK",
+        "/FILOADn": "FI_LOAD_N", "/SRLOADn": "SR_LOAD_N",
+        "SRINH": "SR_INH", "RBSTROBE": "RB_STROBE",
+        "GND": "GND", "VCC": "VCC5",
+    },
+    "video-vdec-u6": {
+        "RBSTROBE": "RB_STROBE", "RESETn": "RESET_N", "VEND": "V_END", "/VSYNCn": "VSYNC_N",
+        "FDIV2": "FRAME_DIV2", "FDIV1": "FRAME_DIV1", "FDIV0": "FRAME_DIV0",
+        "/FRAMETOPn": "FRAME_TOP_N", "FRAMETICK": "FRAME_TICK",
+        "RBCLK": "RB_CLK", "VACTIVE": "V_ACTIVE", "GND": "GND", "VCC": "VCC5",
+    },
+    "video-ctrl-u7": {
+        "MREQn": "MREQ_N", "RDn": "RD_N", "WRn": "WR_N",
+        "RESETn": "RESET_N", "WAITn": "WAIT_N", "MUXSEL": "MUX_SEL",
+        "D245DIR": "D245_DIR", "/D245OE": "D245_OE", "/FBCEn": "FB_CE_N",
+        "/FBWEn": "FB_WE_N", "/FBOEn": "FB_OE_N",
+        "CPUACC": "VID_CTRL_CPUACC_NC", "GND": "GND", "VCC": "VCC5",
+    },
 }
-BOARD_REF = {"memory-u3": ("mem", "U3"), "io-u2": ("io", "U2")}
+BOARD_REF = {
+    "memory-u3": ("mem", "U3"), "io-u2": ("io", "U2"),
+    "video-hdec-u5": ("video", "U5"), "video-vdec-u6": ("video", "U6"),
+    "video-ctrl-u7": ("video", "U7"),
+}
 
 
 def source(base: str) -> tuple[str, list[str], dict[str, str]]:
@@ -49,7 +73,7 @@ def source(base: str) -> tuple[str, list[str], dict[str, str]]:
         if "=" in line:
             current, expr = (part.strip() for part in line.split("=", 1))
             assignments[current] = expr
-        elif line.startswith("+") and current:
+        elif current:
             assignments[current] += " " + line
     return device, pins, assignments
 
@@ -86,7 +110,11 @@ def check_pins(base: str, device: str, pins: list[str]) -> None:
     board_name, ref = BOARD_REF[base]
     board = json.loads((REVB / f"{board_name}.board.json").read_text())
     part = next(part for part in board["chips"] if part["ref"] == ref)
-    expected_device = "GAL22V10" if base == "memory-u3" else "GAL16V8_IOSEL"
+    expected_device = {
+        "memory-u3": "GAL22V10", "io-u2": "GAL16V8_IOSEL",
+        "video-hdec-u5": "GAL22V10_HDEC", "video-vdec-u6": "GAL22V10_VDEC",
+        "video-ctrl-u7": "GAL22V10_CTRL",
+    }[base]
     assert part["type"] == expected_device, (base, part["type"])
     aliases = ALIASES[base]
     for number, pld_name in enumerate(pins, 1):
@@ -158,6 +186,102 @@ def check_io(assignments: dict[str, str]) -> None:
         assert eval_sop(assignments["INTn.E"], env | {"PICINT": pic_int}) == pic_int
 
 
+def counter_env(prefix: str, value: int) -> dict[str, bool]:
+    return {f"{prefix}{bit}": bool(value & (1 << bit)) for bit in range(10)}
+
+
+def check_video_hdec(assignments: dict[str, str]) -> None:
+    for reset_n in (False, True):
+        for h in range(1024):
+            env = {"RESETn": reset_n, **counter_env("HC", h)}
+            assert physical(assignments, "HEND", env) == ((not reset_n) or h == 800), h
+            assert physical(assignments, "HSYNCn", env) == (
+                (not reset_n) or not (656 <= h <= 751)), h
+            assert physical(assignments, "HACTIVE", env) == (reset_n and h < 640), h
+            assert physical(assignments, "FETCH", env) == (
+                reset_n and (h & 15) >= 12), h
+            assert physical(assignments, "SRLOADn", env) == (
+                not (reset_n and (h & 15) == 0)), h
+            assert physical(assignments, "SRINH", env) == (reset_n and bool(h & 1)), h
+            assert physical(assignments, "BYTETICK", env) == (
+                reset_n and h < 640 and (h & 15) == 0), h
+            assert physical(assignments, "FILOADn", env) == (
+                not (reset_n and h == 784)), h
+            assert physical(assignments, "RBSTROBE", env) == (
+                reset_n and h == 640), h
+
+
+def check_video_vdec(assignments: dict[str, str]) -> None:
+    state_names = ("FDIV0", "FDIV1", "FDIV2")
+    for reset_n in (False, True):
+        for v in range(1024):
+            base = {"RESETn": reset_n, "RBSTROBE": True, **counter_env("VC", v)}
+            assert physical(assignments, "VEND", base) == ((not reset_n) or v == 525), v
+            assert physical(assignments, "VSYNCn", base) == (
+                (not reset_n) or not (490 <= v <= 491)), v
+            assert physical(assignments, "VACTIVE", base) == (reset_n and v < 480), v
+            assert physical(assignments, "FRAMETOPn", base) == (
+                reset_n and v != 0), v
+            assert physical(assignments, "RBCLK", base) == (
+                reset_n and bool(v & 1)), v
+            for state in range(8):
+                env = base | {name: bool(state & (1 << bit))
+                              for bit, name in enumerate(state_names)}
+                got = sum(eval_sop(assignments[f"{name}.R"], env) << bit
+                          for bit, name in enumerate(state_names))
+                if not reset_n:
+                    want = 0
+                elif v != 524:
+                    want = state
+                elif state < 5:
+                    want = state + 1
+                elif state == 5:
+                    want = 0
+                else:
+                    want = 0
+                assert got == want, (reset_n, v, state, got, want)
+                tick = physical(assignments, "FRAMETICK", env)
+                assert tick == (reset_n and v == 524 and state == 5), (
+                    reset_n, v, state, tick)
+
+
+def check_video_ctrl(assignments: dict[str, str]) -> None:
+    assert assignments["WAITn.T"] == "GND"
+    for reset_n in (False, True):
+        for mode in range(4):
+            # The GAL sees A11..A15, so all 32 distinguishable address classes
+            # exhaust the hardware decoder (the lower 11 bits are irrelevant).
+            for address_class in range(32):
+                address = address_class << 11
+                window = mode in (0, 3) and address >= 0xD800
+                address_env = {
+                    "RESETn": reset_n, "MODE0": bool(mode & 1),
+                    "MODE1": bool(mode & 2),
+                    **{f"A{bit}": bool(address & (1 << bit)) for bit in range(11, 16)},
+                }
+                for mreq_n, rd_n, wr_n in (
+                        (True, True, True), (False, True, True),
+                        (False, False, True), (False, True, False)):
+                    for fetch in (False, True):
+                        env = address_env | {"MREQn": mreq_n, "RDn": rd_n,
+                                             "WRn": wr_n, "FETCH": fetch}
+                        cpu = reset_n and window and not mreq_n and (not rd_n or not wr_n)
+                        assert physical(assignments, "CPUACC", env) == cpu
+                        assert physical(assignments, "MUXSEL", env) == (
+                            (not fetch) or (not reset_n))
+                        assert eval_sop(assignments["WAITn.E"], env | {"CPUACC": cpu}) == (
+                            cpu and fetch)
+                        assert physical(assignments, "D245DIR", env) == rd_n
+                        assert physical(assignments, "D245OE", env | {"CPUACC": cpu}) == (
+                            not (cpu and not fetch))
+                        assert physical(assignments, "FBCEn", env | {"CPUACC": cpu}) == (
+                            not ((reset_n and fetch) or (cpu and not fetch)))
+                        assert physical(assignments, "FBOEn", env | {"CPUACC": cpu}) == (
+                            not ((reset_n and fetch) or (cpu and not fetch and not rd_n)))
+                        assert physical(assignments, "FBWEn", env | {"CPUACC": cpu}) == (
+                            not (cpu and not fetch and not wr_n))
+
+
 def check_manifest() -> None:
     manifest = json.loads((HERE / "manifest.json").read_text())
     assert manifest["compiler"] == "Galette 0.3.0"
@@ -173,12 +297,17 @@ def check_manifest() -> None:
 
 
 def main() -> int:
-    for base in ("memory-u3", "io-u2"):
+    checks = {
+        "memory-u3": check_memory, "io-u2": check_io,
+        "video-hdec-u5": check_video_hdec, "video-vdec-u6": check_video_vdec,
+        "video-ctrl-u7": check_video_ctrl,
+    }
+    for base, check in checks.items():
         device, pins, assignments = source(base)
         check_pins(base, device, pins)
-        (check_memory if base == "memory-u3" else check_io)(assignments)
+        check(assignments)
     check_manifest()
-    print("REVB-GAL-CHECK: PASS full memory overlay, I/O decode/reset/open-drain INT, pins and artifacts")
+    print("REVB-GAL-CHECK: PASS memory/I-O decode plus exact Video timing, /6 tick, arbitration, pins and artifacts")
     return 0
 
 

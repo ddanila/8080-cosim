@@ -15,7 +15,7 @@ AUDIT = HERE / "video-digital-audit.json"
 # Digest of all 398 U1..U23 (reference, type, physical pin, net) records.  This is
 # deliberately separate from the generator: any pin edit needs an explicit audit
 # and digest update, while the structural LVS independently checks net membership.
-EXPECTED_DIGEST = "f03d9f7a38af9cca2bfe23c8d89eac86acfabafd82ef7fd948edc93c88ce084f"
+EXPECTED_DIGEST = "fada1852d12f6b6f084b2f0f1d64bcffdf57229a7d81f9bf01ef483d47de405f"
 EXPECTED_TYPES = {
     "U1":"OSC_25M175", "U2":"ST_HC393", "U3":"ST_HC393", "U4":"ST_HC393",
     "U5":"GAL22V10_HDEC", "U6":"GAL22V10_VDEC", "U7":"GAL22V10_CTRL",
@@ -50,9 +50,9 @@ ADDER = {
 CTRL = {
     "1":"FETCH", "2":"A11", "3":"A12", "4":"A13", "5":"A14", "6":"A15",
     "7":"MREQ_N", "8":"RD_N", "9":"WR_N", "10":"MODE0", "11":"MODE1",
-    "12":"GND", "13":"ACTIVE", "14":"WAIT_N", "15":"MUX_SEL", "16":"D245_DIR",
+    "12":"GND", "13":"RESET_N", "14":"WAIT_N", "15":"MUX_SEL", "16":"D245_DIR",
     "17":"D245_OE", "18":"FB_CE_N", "19":"FB_WE_N", "20":"FB_OE_N",
-    "21":"VID_CTRL_O21_NC", "22":"VID_CTRL_O22_NC", "23":"VID_CTRL_O23_NC", "24":"VCC5",
+    "21":"VID_CTRL_O21_NC", "22":"VID_CTRL_O22_NC", "23":"VID_CTRL_CPUACC_NC", "24":"VCC5",
 }
 
 # Every unused CMOS/PLD input is held at a rail. Outputs may remain unconnected.
@@ -61,7 +61,6 @@ TIED_INPUTS = {
     ("U15","5"):"GND", ("U15","6"):"GND",
     ("U16","7"):"GND", ("U16","11"):"GND", ("U16","12"):"GND", ("U16","15"):"GND",
     ("U18","17"):"GND", ("U18","18"):"GND",
-    ("U22","12"):"GND", ("U22","13"):"GND",
     ("U23","12"):"GND", ("U23","13"):"GND",
 }
 
@@ -105,10 +104,17 @@ def verify(board: dict) -> list[str]:
         errors.append("control GAL does not own WAIT_N")
     if chips["U5"]["pins"]["13"] != "RESET_N" or chips["U5"]["pins"]["21"] != "FETCH":
         errors.append("H-decode reset/fetch phase contract is absent")
+    if chips["U5"]["pins"]["22"] != "RB_STROBE" or chips["U6"]["pins"]["1"] != "RB_STROBE":
+        errors.append("per-line V-decode/divider clock contract is absent")
+    if chips["U6"]["pins"]["13"] != "RESET_N" or chips["U7"]["pins"]["13"] != "RESET_N":
+        errors.append("V-decode/control reset gating is absent")
     hct = chips["U22"]["pins"]
     if [hct[p] for p in ("4","5","6","9","10","8")] != [
             "H_END","H_END","H_CLR","V_END","V_END","V_CLR"]:
         errors.append("HCT reset-level translators are not wired as frozen")
+    if [hct[p] for p in ("1","2","3","12","13","11")] != [
+            "H_ACTIVE","V_ACTIVE","HV_ACTIVE","PIXEL","HV_ACTIVE","VID_PIXEL"]:
+        errors.append("HCT two-axis pixel blanking is not wired as frozen")
 
     audit = json.loads(AUDIT.read_text())
     dot = audit["dot_clock_mhz"]
@@ -129,7 +135,7 @@ def verify(board: dict) -> list[str]:
     if abs(wait["worst_fetch_hold_ns"] - timing["fetch_window_dots"] * 1000.0 / dot) > 1e-9:
         errors.append("WAIT hold arithmetic differs")
     if digest(chips) != EXPECTED_DIGEST:
-        errors.append("full 384-pin digital-map digest differs")
+        errors.append("full 398-pin digital-map digest differs")
     return errors
 
 

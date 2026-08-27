@@ -1,0 +1,29 @@
+
+
+ Pin # | Name     | Pin Type
+-----------------------------
+   1   | FETCH    | Clock/Input
+   2   | A11      | Input
+   3   | A12      | Input
+   4   | A13      | Input
+   5   | A14      | Input
+   6   | A15      | Input
+   7   | MREQn    | Input
+   8   | RDn      | Input
+   9   | WRn      | Input
+  10   | MODE0    | Input
+  11   | MODE1    | Input
+  12   | GND      | GND
+  13   | RESETn   | Input
+  14   | WAITn    | Output
+  15   | MUXSEL   | Output
+  16   | D245DIR  | Output
+  17   | /D245OE  | Output
+  18   | /FBCEn   | Output
+  19   | /FBWEn   | Output
+  20   | /FBOEn   | Output
+  21   | NC       | NC
+  22   | NC       | NC
+  23   | CPUACC   | Output
+  24   | VCC      | VCC
+

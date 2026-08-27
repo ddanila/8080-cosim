@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "R5.V1 frozen digital architecture",
+  "status": "R5.V1 digital architecture + R5.V3 exact GAL implementation",
   "dot_clock_mhz": 25.175,
   "families": {
     "U2-U4": {
@@ -44,7 +44,7 @@
     },
     "U22": {
       "part": "TI CD74HCT08E",
-      "reason": "TTL inputs accept ALS/GAL highs; two spare gates produce full-rail H_CLR and V_CLR",
+      "reason": "TTL inputs accept ALS/GAL highs; gates form two-axis blanking and full-rail H_CLR/V_CLR",
       "vih_max_v": 2.0,
       "datasheet": "https://www.ti.com/lit/ds/symlink/cd74hc08.pdf"
     },
@@ -72,7 +72,7 @@
     "guarded_shifter_setup_ns": 20.0,
     "path_ns": 90.0,
     "margin_ns": 29.16583912611717,
-    "policy": "FETCH owns SRAM for phases 12-15 of each 16-dot byte; load and one-dot BYTE_TICK occur at phase 15"
+    "policy": "FETCH owns SRAM for phases 12-15 of each 16-dot byte; shifter load and one-dot BYTE_TICK occur at phase 0; the three-dot budget is deliberately conservative"
   },
   "wait_contract": {
     "cpu_clock_mhz": 2.0,
@@ -83,11 +83,19 @@
     "write_rule": "WE may assert only outside FETCH after CPU address and D-to-FD direction are selected"
   },
   "reset_contract": {
-    "U2-U4": "RESET_N enters H-decode pin 13; H_END is forced asserted during reset, V_END follows, and HCT08 gates drive H_CLR/V_CLR",
+    "U2-U4": "RESET_N enters both decode GALs; H_END and V_END are forced asserted during reset, and HCT08 gates drive H_CLR/V_CLR",
     "U12-U15": "direct asynchronous active-low RESET_N",
     "U17-U18": "FRAME_TOP_N from V-decode is forced low while timing chain resets",
     "U19": "direct asynchronous active-low RESET_N",
     "SRAM": "contents undefined at reset; all selects remain inactive unless a valid owner is present"
+  },
+  "gal_release": {
+    "compiler": "Galette 0.3.0 at revision af529870729b1da8794b002cd522f5bf2d53f230",
+    "horizontal": "U5: 0..799 line, 656..751 sync, phases 12..15 FETCH, phase-0 load/tick, dot-640 row strobe",
+    "vertical": "U6: 0..524 frame, 490..491 sync, 0..479 active, odd-line row capture",
+    "frame_tick": "registered self-recovering modulo-six counter; ~25.4 us pulse every sixth 59.94 Hz frame",
+    "control": "U7: D800-FFFF only in modes 0/3; scan priority; open-drain WAIT; SRAM and HCT245 mutually owned",
+    "retarget": "A non-2.000 MHz CPU requires changing the modulo-N next-state/tick equations in video-vdec-u6.pld, rebuilding all artifacts and rerunning the exact oracle plus integrated boot"
   },
   "primary_sources": {
     "sram": "https://www.alliancememory.com/wp-content/uploads/pdf/AS6C1008_Mar_2023V1.2.pdf",

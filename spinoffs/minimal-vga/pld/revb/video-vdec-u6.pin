@@ -1,0 +1,29 @@
+
+
+ Pin # | Name     | Pin Type
+-----------------------------
+   1   | RBSTROBE | Clock/Input
+   2   | VC0      | Input
+   3   | VC1      | Input
+   4   | VC2      | Input
+   5   | VC3      | Input
+   6   | VC4      | Input
+   7   | VC5      | Input
+   8   | VC6      | Input
+   9   | VC7      | Input
+  10   | VC8      | Input
+  11   | VC9      | Input
+  12   | GND      | GND
+  13   | RESETn   | Input
+  14   | VEND     | Output
+  15   | /VSYNCn  | Output
+  16   | FDIV2    | Output
+  17   | FDIV1    | Output
+  18   | FDIV0    | Output
+  19   | /FRAMETOPn | Output
+  20   | FRAMETICK | Output
+  21   | RBCLK    | Output
+  22   | VACTIVE  | Output
+  23   | NC       | NC
+  24   | VCC      | VCC
+

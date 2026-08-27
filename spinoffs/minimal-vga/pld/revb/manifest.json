@@ -47,6 +47,72 @@
     "io-u2.chp": {
       "bytes": 1069,
       "sha256": "f6e3a0bf8095d5bd0e74204197cd793c31a1f072174e0a7dcc3287d662410276"
+    },
+    "video-hdec-u5.pld": {
+      "bytes": 1579,
+      "sha256": "dd30bada8305ae8d428ed78521898ae84e82e1576ffea4483f7f150075194eb5"
+    },
+    "video-hdec-u5.jed": {
+      "bytes": 1437,
+      "sha256": "224e88c3c76a585ed1893665e7333883a6d0fbfebc9dd4bcef8b1d5d43045153",
+      "qf": 5892,
+      "jedec_checksum": "81ED"
+    },
+    "video-hdec-u5.pin": {
+      "bytes": 694,
+      "sha256": "0affe144378213e7568f0c055ce77c55f53bafaa0838d79962bfc0b6c83a0743"
+    },
+    "video-hdec-u5.fus": {
+      "bytes": 8320,
+      "sha256": "92ac390a39e473cb294622f42c2b9fb9820677fbc6fcf6f48b91f946c418e04d"
+    },
+    "video-hdec-u5.chp": {
+      "bytes": 1277,
+      "sha256": "c714205f15cf4b135d3e193cecb3e5db3dfd72d0166e8e40235864b4b8994720"
+    },
+    "video-vdec-u6.pld": {
+      "bytes": 3203,
+      "sha256": "5518dde7edecad813fd2e0eb15e6de8e730e74f4462f054c1cb8f0b7aa756356"
+    },
+    "video-vdec-u6.jed": {
+      "bytes": 3101,
+      "sha256": "4884fb645b412a51159560886341c17630aff165e492e08ed0008ed32305675f",
+      "qf": 5892,
+      "jedec_checksum": "1DA2"
+    },
+    "video-vdec-u6.pin": {
+      "bytes": 697,
+      "sha256": "a934eca5ff2f7e61dd06d27aa845d3a91ae3b0227297a65ce320465beccb6c3d"
+    },
+    "video-vdec-u6.fus": {
+      "bytes": 8320,
+      "sha256": "7b07e6952a2d6a9f8bacdd47f0616187f479d2b590a03f6e97fc4081769d889c"
+    },
+    "video-vdec-u6.chp": {
+      "bytes": 1274,
+      "sha256": "efe23da10eddf1c780df2f3a15b671c6168e2c6b466f09dcc631af6092b4e2f5"
+    },
+    "video-ctrl-u7.pld": {
+      "bytes": 1599,
+      "sha256": "3fe004a1bb2bf17b99070c0e56fe997ba642d43e7255bbdca660fb20c8ed3d25"
+    },
+    "video-ctrl-u7.jed": {
+      "bytes": 1489,
+      "sha256": "0668bcd86c9e7bb59e3e4b99576794c14ac3a676086a89bffd20a260ca3a5d95",
+      "qf": 5892,
+      "jedec_checksum": "8809"
+    },
+    "video-ctrl-u7.pin": {
+      "bytes": 690,
+      "sha256": "d1a254b5d218a195b676f9dcd1116286e51b49dde4e7c5a388c43bb487cb4fc6"
+    },
+    "video-ctrl-u7.fus": {
+      "bytes": 8320,
+      "sha256": "164e48e87e77176813d76ded43fbfe5437cc83014d9253b77cdf7ad0eb6985f9"
+    },
+    "video-ctrl-u7.chp": {
+      "bytes": 1268,
+      "sha256": "9d935cd3eb4937a003ed7dbebe8b450ace150809d29fd489f0f67f1c033dba87"
     }
   }
 }

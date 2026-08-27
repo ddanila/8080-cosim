@@ -1,8 +1,7 @@
 # VJUGA rev B Video digital audit — R5.V1
 
-Status: **PASS / ARCHITECTURE FROZEN** on 2026-08-28. This closes the desk-level
-real-silicon and pin-connectivity gate; exact purchasing/land-pattern work remains
-R5.V4 and equations/timing simulation remain R5.V3.
+Status: **PASS / ARCHITECTURE AND GAL LOGIC FROZEN** on 2026-08-28. This closes
+R5.V1 and R5.V3; exact purchasing/land-pattern work remains R5.V4.
 
 ## Corrections made by the audit
 
@@ -40,11 +39,11 @@ R5.V4 and equations/timing simulation remain R5.V3.
 | U19 | TI SN74ALS166N | 45 MHz rated shift register; SRAM data and GAL controls are TTL compatible. |
 | U20 | TI CD74HCT245E | CPU bus is isolated during scan fetch; TTL inputs accept both bus and SRAM levels. |
 | U21 | Alliance AS6C1008-55PCN | Correct 32-pin map; A14-A16 low, CE2 high, 16 KiB local address span. |
-| U22 | TI CD74HCT08E | Pixel blanking plus H/V reset-level translation; only fourth gate is unused and tied. |
+| U22 | TI CD74HCT08E | H/V active combine, pixel blanking and H/V reset-level translation; all four gates are used. |
 | U23 | TI CD74ACT08E | Three independent high-current RGB outputs; unused fourth gate inputs tied low. |
 
 The generated board has 23 populated digital packages and 398 physical package
-pins. Full structural LVS covers every one, including supply pins, and matches 104
+pins. Full structural LVS covers every one, including supply pins, and matches 106
 multi-endpoint nets. The independent pin guard hashes all 398 `(ref,type,pin,net)`
 records and separately spells out the SRAM, adder, control GAL, unused-input and bus
 isolation contracts. Its self-test rejects both a swapped U16 input and a missing U21
@@ -54,7 +53,8 @@ and requires `sync/lvs.py` to report a mismatch.
 ## SRAM phase and WAIT closure
 
 One video byte occupies 16 dots. `FETCH` is high for phases 12-15; the scan address
-therefore has three dot periods (119.166 ns) before the phase-15 shifter load. The
+has a conservatively credited three dot periods (119.166 ns) before the phase-0
+shifter load. The
 guarded path budget is 15 ns ACT157 selection + 55 ns SRAM access + 20 ns shifter
 setup = 90 ns, leaving 29.166 ns. The adder settles hundreds of nanoseconds earlier,
 immediately after the preceding byte increment, and is not part of that last-edge path.
@@ -66,9 +66,16 @@ level. The maximum raw overlap is four dots (158.888 ns). At 2.000 MHz the Z80 m
 insert a full wait state, after which U7 selects CPU address/data direction and only
 then permits OE# or WE#. No write is dropped and no two outputs own FD or D together.
 
-R5.V3 must express this frozen phase/ownership table in the three GAL sources and
-prove it across every CPU/dot-clock phase. R5.V5 must keep the clock and ACT output
-traces short and add source damping where the routed topology requires it.
+R5.V3 expresses this phase/ownership table in three tracked GAL sources. U6 uses a
+registered, illegal-state-recovering modulo-six divider clocked by the dot-640
+`RB_STROBE`; `FRAME_TICK` is a roughly 25.4 us pulse on line 524 of every sixth VGA
+frame. The equation oracle exhausts all 1024 horizontal and vertical counter states,
+all divider states, all 32 address classes, four memory modes, reset and read/write
+ownership. The timing simulations prove the fetch collision and six-frame spacing,
+and the integrated TTL-card boot remains byte-identical to cosim.
+
+R5.V5 must keep the clock and ACT output traces short and add source damping where
+the routed topology requires it.
 
 ## Primary datasheets
 
@@ -86,6 +93,8 @@ traces short and add source damping where the routed topology requires it.
 
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_digital.py --self-test
+spinoffs/minimal-vga/pld/revb/build_revb_gals.sh
+spinoffs/minimal-vga/sim/revb_video_check.sh
 spinoffs/minimal-vga/sync/revb_lvs.sh video
 spinoffs/minimal-vga/sync/revb_video_lvs_mutation_check.sh
 ```

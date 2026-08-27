@@ -1,0 +1,29 @@
+
+
+                                GAL22V10
+
+                          -------\___/-------
+                 RBSTROBE |  1           24 | VCC
+                          |                 |
+                      VC0 |  2           23 | NC
+                          |                 |
+                      VC1 |  3           22 | VACTIVE
+                          |                 |
+                      VC2 |  4           21 | RBCLK
+                          |                 |
+                      VC3 |  5           20 | FRAMETICK
+                          |                 |
+                      VC4 |  6           19 | /FRAMETOPn
+                          |                 |
+                      VC5 |  7           18 | FDIV0
+                          |                 |
+                      VC6 |  8           17 | FDIV1
+                          |                 |
+                      VC7 |  9           16 | FDIV2
+                          |                 |
+                      VC8 | 10           15 | /VSYNCn
+                          |                 |
+                      VC9 | 11           14 | VEND
+                          |                 |
+                      GND | 12           13 | RESETn
+                          -------------------

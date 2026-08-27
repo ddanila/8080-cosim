@@ -1,0 +1,29 @@
+
+
+                                GAL22V10
+
+                          -------\___/-------
+                    FETCH |  1           24 | VCC
+                          |                 |
+                      A11 |  2           23 | CPUACC
+                          |                 |
+                      A12 |  3           22 | NC
+                          |                 |
+                      A13 |  4           21 | NC
+                          |                 |
+                      A14 |  5           20 | /FBOEn
+                          |                 |
+                      A15 |  6           19 | /FBWEn
+                          |                 |
+                    MREQn |  7           18 | /FBCEn
+                          |                 |
+                      RDn |  8           17 | /D245OE
+                          |                 |
+                      WRn |  9           16 | D245DIR
+                          |                 |
+                    MODE0 | 10           15 | MUXSEL
+                          |                 |
+                    MODE1 | 11           14 | WAITn
+                          |                 |
+                      GND | 12           13 | RESETn
+                          -------------------

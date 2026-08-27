@@ -1,0 +1,38 @@
+GAL22V10
+VJVCTRLR5
+
+FETCH A11 A12 A13 A14 A15 MREQn RDn WRn MODE0 MODE1 GND
+RESETn WAITn MUXSEL D245DIR /D245OE /FBCEn /FBWEn /FBOEn NC NC CPUACC VCC
+
+; D800-FFFF belongs to video only in memory modes 0 and 3.  CPUACC is an
+; internal-feedback macrocell; its physical pin is intentionally unconnected.
+CPUACC = RESETn * /MREQn * A15 * A14 * A13 * /MODE1 * /MODE0 * /RDn
+       + RESETn * /MREQn * A15 * A14 * A13 * /MODE1 * /MODE0 * /WRn
+       + RESETn * /MREQn * A15 * A14 * A13 * MODE1 * MODE0 * /RDn
+       + RESETn * /MREQn * A15 * A14 * A13 * MODE1 * MODE0 * /WRn
+       + RESETn * /MREQn * A15 * A14 * /A13 * A12 * A11 * /MODE1 * /MODE0 * /RDn
+       + RESETn * /MREQn * A15 * A14 * /A13 * A12 * A11 * /MODE1 * /MODE0 * /WRn
+       + RESETn * /MREQn * A15 * A14 * /A13 * A12 * A11 * MODE1 * MODE0 * /RDn
+       + RESETn * /MREQn * A15 * A14 * /A13 * A12 * A11 * MODE1 * MODE0 * /WRn
+
+; Scanout owns address/data during FETCH.  A colliding CPU request pulls WAIT
+; low through the GAL's open-drain output and resumes as FETCH falls.
+MUXSEL = /FETCH + /RESETn
+WAITn.T = GND
+WAITn.E = CPUACC * FETCH
+
+; 74HCT245 DIR: high is CPU A-side -> framebuffer B-side (write), low is read.
+D245DIR = RDn
+/D245OE = CPUACC * /FETCH
+
+; SRAM controls are active-low.  Reset disables both owners; scan reads during
+; FETCH, while CPU reads/writes are admitted only outside FETCH.
+/FBCEn = RESETn * FETCH
+       + CPUACC * /FETCH
+/FBOEn = RESETn * FETCH
+       + CPUACC * /FETCH * /RDn
+/FBWEn = CPUACC * /FETCH * /WRn
+
+DESCRIPTION
+
+VJUGA rev B Video-card U7 framebuffer decode, arbitration and open-drain WAIT.

@@ -15,7 +15,7 @@ python3 scripts/check_spinoff_commons.py
 echo "== rev B: card connectivity specs + netlist completeness (T1.3-T1.6, D1.18) =="
 python3 scripts/check_revb_boards.py --completeness
 
-echo "== rev B: reproducible Memory/I/O GALs + physical 27C256 image (R5.P1) =="
+echo "== rev B: five reproducible GALs + physical 27C256 image (R5.P1/R5.V3) =="
 spinoffs/minimal-vga/pld/revb/build_revb_gals.sh
 python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check
 
@@ -43,7 +43,7 @@ spinoffs/minimal-vga/sync/revb_lvs.sh mem
 echo "== rev B: io-card LVS (populated 8251 + GAL) =="
 spinoffs/minimal-vga/sync/revb_lvs.sh io
 
-echo "== rev B: video real-silicon/pin audit + full 22-package LVS (R5.V1) =="
+echo "== rev B: video real-silicon/pin audit + full 23-package LVS (R5.V1/V3) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_digital.py --self-test
 spinoffs/minimal-vga/sync/revb_lvs.sh video
 spinoffs/minimal-vga/sync/revb_video_lvs_mutation_check.sh

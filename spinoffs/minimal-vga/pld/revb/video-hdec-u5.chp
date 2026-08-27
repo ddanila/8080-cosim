@@ -1,0 +1,29 @@
+
+
+                                GAL22V10
+
+                          -------\___/-------
+                   DOTCLK |  1           24 | VCC
+                          |                 |
+                      HC0 |  2           23 | NC
+                          |                 |
+                      HC1 |  3           22 | RBSTROBE
+                          |                 |
+                      HC2 |  4           21 | FETCH
+                          |                 |
+                      HC3 |  5           20 | SRINH
+                          |                 |
+                      HC4 |  6           19 | /SRLOADn
+                          |                 |
+                      HC5 |  7           18 | /FILOADn
+                          |                 |
+                      HC6 |  8           17 | BYTETICK
+                          |                 |
+                      HC7 |  9           16 | HACTIVE
+                          |                 |
+                      HC8 | 10           15 | /HSYNCn
+                          |                 |
+                      HC9 | 11           14 | HEND
+                          |                 |
+                      GND | 12           13 | RESETn
+                          -------------------

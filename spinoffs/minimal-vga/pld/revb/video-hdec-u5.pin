@@ -1,0 +1,29 @@
+
+
+ Pin # | Name     | Pin Type
+-----------------------------
+   1   | DOTCLK   | Clock/Input
+   2   | HC0      | Input
+   3   | HC1      | Input
+   4   | HC2      | Input
+   5   | HC3      | Input
+   6   | HC4      | Input
+   7   | HC5      | Input
+   8   | HC6      | Input
+   9   | HC7      | Input
+  10   | HC8      | Input
+  11   | HC9      | Input
+  12   | GND      | GND
+  13   | RESETn   | Input
+  14   | HEND     | Output
+  15   | /HSYNCn  | Output
+  16   | HACTIVE  | Output
+  17   | BYTETICK | Output
+  18   | /FILOADn | Output
+  19   | /SRLOADn | Output
+  20   | SRINH    | Output
+  21   | FETCH    | Output
+  22   | RBSTROBE | Output
+  23   | NC       | NC
+  24   | VCC      | VCC
+

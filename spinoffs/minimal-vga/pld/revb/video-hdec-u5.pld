@@ -1,0 +1,41 @@
+GAL22V10
+VJVHDECR5
+
+DOTCLK HC0 HC1 HC2 HC3 HC4 HC5 HC6 HC7 HC8 HC9 GND
+RESETn HEND /HSYNCn HACTIVE BYTETICK /FILOADn /SRLOADn SRINH FETCH RBSTROBE NC VCC
+
+; 640x480 timing: horizontal counter runs 0..799 and is asynchronously
+; cleared when the decode reaches 800.  Reset also asserts the clear.
+HEND = /RESETn
+     + HC9 * HC8 * /HC7 * /HC6 * HC5 * /HC4 * /HC3 * /HC2 * /HC1 * /HC0
+
+; Negative sync is low for counts 656..751 inclusive.
+/HSYNCn = RESETn * HC9 * /HC8 * HC7 * /HC6 * /HC5 * HC4
+         + RESETn * HC9 * /HC8 * HC7 * /HC6 * HC5
+         + RESETn * HC9 * /HC8 * HC7 * HC6 * /HC5
+         + RESETn * HC9 * /HC8 * HC7 * HC6 * HC5 * /HC4
+
+; Visible dots 0..639.
+HACTIVE = RESETn * /HC9
+        + RESETn * /HC8 * /HC7
+
+; A byte occupies 16 dots.  SRAM owns phases 12..15; phase 0 loads the
+; shifter and advances the scan index only while the visible line is active.
+FETCH = RESETn * HC3 * HC2
+/SRLOADn = RESETn * /HC3 * /HC2 * /HC1 * /HC0
+SRINH = RESETn * HC0
+BYTETICK = RESETn * /HC3 * /HC2 * /HC1 * /HC0 * /HC9
+         + RESETn * /HC3 * /HC2 * /HC1 * /HC0 * /HC8 * /HC7
+
+; Reload the scan index from ROW_BASE at dot 784.  The final fetch at
+; dots 796..799 then prefetches byte zero before the next visible line.
+/FILOADn = RESETn * HC9 * HC8 * /HC7 * /HC6 * /HC5 * HC4
+         * /HC3 * /HC2 * /HC1 * /HC0
+
+; At dot 640, capture base+40 on odd VGA lines.  U6 gates this pulse with VC0.
+RBSTROBE = RESETn * HC9 * /HC8 * HC7 * /HC6 * /HC5 * /HC4
+         * /HC3 * /HC2 * /HC1 * /HC0
+
+DESCRIPTION
+
+VJUGA rev B Video-card U5 horizontal timing, fetch and scan phases.

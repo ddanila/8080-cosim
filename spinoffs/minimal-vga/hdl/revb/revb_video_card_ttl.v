@@ -47,7 +47,7 @@ module revb_video_card_ttl #(
     output wire        vsync_n,
     output wire        active,      // h_active & v_active (RGB valid)
     output wire        pixel,       // 1-bit mono video (R=G=B through the DAC)
-    output wire        frame_tick   // 60 Hz frame pulse to the bus (keyboard-scan anchor)
+    output wire        frame_tick   // VGA frame / 6 pulse to the bus (~9.99 Hz)
 );
     localparam integer H_SYNC_START = H_ACTIVE + H_FP;                 // 656
     localparam integer H_SYNC_END   = H_ACTIVE + H_FP + H_SYNC;        // 752
@@ -79,9 +79,18 @@ module revb_video_card_ttl #(
     wire h_active = (hcount < H_ACTIVE);
     wire v_active = (vcount < V_ACTIVE);
     assign active  = h_active & v_active;
-    // FRAME_TICK: one dot-wide pulse at the start of each frame (60 Hz) — the firmware's
-    // keyboard-scan timing anchor. Derived from the vsync counter (start of line 0).
-    assign frame_tick = (hcount == 0) && (vcount == 0);
+    // U6's registered modulo-six counter is clocked by RB_STROBE at dot 640 of
+    // the last VGA line.  FRAME_TICK is high over the visible-width portion of
+    // that line while the pre-increment state is five (~25.4 us at full timing).
+    reg [2:0] frame_div = 0;
+    always @(posedge dot_clk or negedge reset_n) begin
+        if (!reset_n)
+            frame_div <= 0;
+        else if ((hcount == H_ACTIVE - 1) && (vcount == V_TOTAL - 1))
+            frame_div <= (frame_div == 5) ? 0 : frame_div + 1'b1;
+    end
+    assign frame_tick = reset_n && (frame_div == 5) &&
+                        (vcount == V_TOTAL - 1) && (hcount < H_ACTIVE);
     // NAND-decode sync windows (active-low, negative polarity per the contract).
     assign hsync_n = ~((hcount >= H_SYNC_START) && (hcount < H_SYNC_END));
     assign vsync_n = ~((vcount >= V_SYNC_START) && (vcount < V_SYNC_END));
@@ -111,40 +120,34 @@ module revb_video_card_ttl #(
     wire       cpu_wr    = (mreq_n == 1'b0) && (wr_n == 1'b0) && in_window;
     wire       cpu_acc   = cpu_rd | cpu_wr;
 
-    // CYCLE-STEAL contention (D2.9, superseding D2.5's block-and-wait). The SRAM (~55 ns)
-    // is far faster than the scanout's demand of one byte per 16 dots (~640 ns), so a CPU
-    // access fits between scanout fetches: the CPU is NEVER blocked for the active region,
-    // and its write ALWAYS lands (byte-identity). WAIT is asserted only for the rare dot
-    // where a CPU access coincides with the scanout's own SRAM fetch (the byte boundary),
-    // i.e. a ~1-dot cycle-steal — synchronized into the CPU clock. `fetch_dot` marks the
-    // scanout SRAM cycle; everywhere else the CPU has the bus.
-    wire fetch_dot = active & (hcount[3:0] == 4'd0);
-    reg  steal_s1 = 1'b0, steal_cpu = 1'b0;
-    always @(posedge clk or negedge reset_n)
-        if (!reset_n) {steal_cpu, steal_s1} <= 2'b00;
-        else          {steal_cpu, steal_s1} <= {steal_s1, cpu_acc & fetch_dot};
-    assign wait_od_n = ~steal_cpu;            // brief steal wait only; never the whole active region
+    // Exact U5/U7 cycle stealing: scanout owns SRAM during phases 12..15 of
+    // every 16-dot group. A colliding CPU request pulls open-drain WAIT_N low;
+    // CPU mux/buffer/SRAM ownership becomes valid immediately when FETCH falls.
+    wire fetch = reset_n && (hcount[3:2] == 2'b11);
+    assign wait_od_n = ~(cpu_acc & fetch);
 
     reg [7:0] D_out_r;
     always @* D_out_r = fb[A - FB_BASE];
     assign D_out = D_out_r;
-    assign D_oe  = cpu_rd;                     // read data valid whenever the CPU reads the window
+    assign D_oe  = cpu_rd & ~fetch;
 
     // write + boot-oracle dump: one store per CPU write cycle (writes ALWAYS land — the
     // steal only delays the bus by <=1 dot, it never drops a write).
-    reg        prev_wr = 1'b0;
+    reg        write_seen = 1'b0;
     reg [31:0] vw = 0;
     reg        dumped = 0;
     integer fo, i;
     always @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
-            vw <= 0; prev_wr <= 1'b0; dumped <= 0;
+            vw <= 0; write_seen <= 1'b0; dumped <= 0;
         end else begin
-            if (cpu_wr && !prev_wr) begin
+            if (!cpu_wr)
+                write_seen <= 1'b0;
+            else if (!write_seen && !fetch) begin
                 fb[A - FB_BASE] <= D_in;
                 vw <= vw + 1;
+                write_seen <= 1'b1;
             end
-            prev_wr <= cpu_wr;
             if (vw_limit > 0 && vw == vw_limit && !dumped) begin
                 dumped <= 1;
                 fo = $fopen(dump_file, "wb");

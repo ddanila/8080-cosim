@@ -1,0 +1,83 @@
+GAL22V10
+VJVVDECR5
+
+RBSTROBE VC0 VC1 VC2 VC3 VC4 VC5 VC6 VC7 VC8 VC9 GND
+RESETn VEND /VSYNCn FDIV2 FDIV1 FDIV0 /FRAMETOPn FRAMETICK RBCLK VACTIVE NC VCC
+
+; Vertical counter runs 0..524 and is asynchronously cleared at 525.
+VEND = /RESETn
+     + VC9 * /VC8 * /VC7 * /VC6 * /VC5 * /VC4 * VC3 * VC2 * /VC1 * VC0
+
+; Negative sync is low for lines 490 and 491.
+/VSYNCn = RESETn * /VC9 * VC8 * VC7 * VC6 * VC5 * /VC4 * VC3 * /VC2 * VC1
+
+; Visible lines 0..479.  HACTIVE and VACTIVE are combined by U22.
+VACTIVE = RESETn * /VC9 * /VC8
+        + RESETn * /VC9 * /VC7
+        + RESETn * /VC9 * /VC6
+        + RESETn * /VC9 * /VC5
+
+; Clear row base for all of line zero.  On odd lines, capture base+40 at
+; horizontal dot 640 so each 240-line source row is displayed twice.
+/FRAMETOPn = /RESETn
+           + /VC9 * /VC8 * /VC7 * /VC6 * /VC5
+           * /VC4 * /VC3 * /VC2 * /VC1 * /VC0
+RBCLK = RESETn * RBSTROBE * VC0
+
+; Registered modulo-six counter.  RBSTROBE is the ATF22V10 global clock.
+; On every line except 524 each bit holds.  At line 524 the valid sequence is
+; 000,001,010,011,100,101,000.  Reset is sampled at the next per-line strobe;
+; the combinatorial outputs above are gated immediately by RESETn.
+FDIV0.R = RESETn * FDIV0 * /VC9
+        + RESETn * FDIV0 * VC8
+        + RESETn * FDIV0 * VC7
+        + RESETn * FDIV0 * VC6
+        + RESETn * FDIV0 * VC5
+        + RESETn * FDIV0 * VC4
+        + RESETn * FDIV0 * /VC3
+        + RESETn * FDIV0 * /VC2
+        + RESETn * FDIV0 * VC1
+        + RESETn * FDIV0 * VC0
+        + RESETn * /FDIV0 * /FDIV2 * VC9 * /VC8 * /VC7 * /VC6 * /VC5
+        * /VC4 * VC3 * VC2 * /VC1 * /VC0
+        + RESETn * /FDIV0 * /FDIV1 * VC9 * /VC8 * /VC7 * /VC6 * /VC5
+        * /VC4 * VC3 * VC2 * /VC1 * /VC0
+
+FDIV1.R = RESETn * FDIV1 * /VC9
+        + RESETn * FDIV1 * VC8
+        + RESETn * FDIV1 * VC7
+        + RESETn * FDIV1 * VC6
+        + RESETn * FDIV1 * VC5
+        + RESETn * FDIV1 * VC4
+        + RESETn * FDIV1 * /VC3
+        + RESETn * FDIV1 * /VC2
+        + RESETn * FDIV1 * VC1
+        + RESETn * FDIV1 * VC0
+        + RESETn * /FDIV2 * /FDIV1 * FDIV0 * VC9 * /VC8 * /VC7
+        * /VC6 * /VC5 * /VC4 * VC3 * VC2 * /VC1 * /VC0
+        + RESETn * /FDIV2 * FDIV1 * /FDIV0 * VC9 * /VC8 * /VC7
+        * /VC6 * /VC5 * /VC4 * VC3 * VC2 * /VC1 * /VC0
+
+FDIV2.R = RESETn * FDIV2 * /VC9
+        + RESETn * FDIV2 * VC8
+        + RESETn * FDIV2 * VC7
+        + RESETn * FDIV2 * VC6
+        + RESETn * FDIV2 * VC5
+        + RESETn * FDIV2 * VC4
+        + RESETn * FDIV2 * /VC3
+        + RESETn * FDIV2 * /VC2
+        + RESETn * FDIV2 * VC1
+        + RESETn * FDIV2 * VC0
+        + RESETn * /FDIV2 * FDIV1 * FDIV0 * VC9 * /VC8 * /VC7
+        * /VC6 * /VC5 * /VC4 * VC3 * VC2 * /VC1 * /VC0
+        + RESETn * FDIV2 * /FDIV1 * /FDIV0 * VC9 * /VC8 * /VC7
+        * /VC6 * /VC5 * /VC4 * VC3 * VC2 * /VC1 * /VC0
+
+; High for the visible portion of line 524 on every sixth VGA frame: about
+; 25.4 us at 25.175 MHz, an unambiguous PIC interrupt request at 9.99 Hz.
+FRAMETICK = RESETn * FDIV2 * /FDIV1 * FDIV0
+          * VC9 * /VC8 * /VC7 * /VC6 * /VC5 * /VC4 * VC3 * VC2 * /VC1 * /VC0
+
+DESCRIPTION
+
+VJUGA rev B Video-card U6 vertical timing, row doubling and divide-by-six tick.
