@@ -267,6 +267,8 @@ CARD_EXTRAS = {
         comp("R_TX_BOT", "R_1K8_VERT", {"1": "BOARD_TX", "2": "GND"}),
         comp("R_RX_SER", "R_1K_VERT", {"1": "BOARD_RX", "2": "CON_RX_BUF"}),
         comp("R_RX_PULL", "R_10K_VERT", {"1": "CON_RX_BUF", "2": "VCC5"}),
+        comp("R_TX_PULL", "R_10K_VERT", {"1": "CON_TX_SRC", "2": "VCC5"}),
+        comp("R_BUS_RX", "R_10K_VERT", {"1": "RX", "2": "VCC5"}),
         comp("R_VSENSE", "R_10K_VERT", {"1": "VCC5", "2": "VSENSE_A"}),
         comp("D_VSENSE", "D_1N4148_VERT", {"1": "VCC_SENSE", "2": "VSENSE_A"}),
         # Power LED. KiCad LED_D5.0mm pad 1 = cathode (K), pad 2 = anode (A) — so pad 1

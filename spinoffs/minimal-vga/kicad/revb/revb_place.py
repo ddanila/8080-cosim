@@ -103,6 +103,8 @@ def backplane_place():
                    ("R_VSENSE", 62.0)):
         p[ref] = (x, y0, 0)
     p["D_VSENSE"] = (74.0, y0, 0)
+    p["R_TX_PULL"] = (94.0, y0, 0)
+    p["R_BUS_RX"]  = (7.0, yr3, 0)
     # Bottom-strip bus-signal pullups, evenly spread (horizontal axials need ~16 mm
     # spacing). R_INT sits near its INT_N column (x~55); R_BRQ near BUSRQ_N (x~8).
     for ref, x in (("R_BRQ", 12.0), ("R_WAIT", 28.0), ("R_NMI", 44.0),

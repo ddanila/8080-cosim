@@ -56,6 +56,10 @@ def main() -> int:
            "RX series resistor")
     expect(errors, bp["R_RX_PULL"]["pins"], {"1": "CON_RX_BUF", "2": "VCC5"},
            "RX idle pull-up")
+    expect(errors, bp["R_TX_PULL"]["pins"], {"1": "CON_TX_SRC", "2": "VCC5"},
+           "isolated board-TX buffer input pull-up")
+    expect(errors, bp["R_BUS_RX"]["pins"], {"1": "RX", "2": "VCC5"},
+           "isolated 8251 RX bus pull-up")
     expect(errors, bp["R_VSENSE"]["pins"], {"1": "VCC5", "2": "VSENSE_A"},
            "sense resistor")
     expect(errors, bp["D_VSENSE"]["pins"], {"1": "VCC_SENSE", "2": "VSENSE_A"},

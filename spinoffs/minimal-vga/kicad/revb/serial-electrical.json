@@ -33,6 +33,8 @@
     "tx_bottom": 1800,
     "rx_series": 1000,
     "rx_pullup": 10000,
+    "tx_input_pullup": 10000,
+    "bus_rx_pullup": 10000,
     "vcc_sense": 10000
   },
   "sense_diode": {

@@ -21,6 +21,9 @@ python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_contract.py
 echo "== rev B: protected TTL levels + selectable baud clock (R5.S2) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_electrical.py
 
+echo "== rev B: bidirectional 8251 console + C10 transaction (R5.S3) =="
+spinoffs/minimal-vga/sim/revb_serial_console_check.sh
+
 echo "== rev B: mechanical mating contract (TG.1/D1.31; pure python, no CAD tools) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_mating.py
 
