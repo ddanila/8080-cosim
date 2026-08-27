@@ -19,6 +19,15 @@ REQUEST = re.compile(
     r"track=(\d+) sector=(\d+) status=(\d+) records=(\d+) "
     r"request-bytes=(\d+) reply-bytes=(\d+) duplicate=([01])$"
 )
+OPERATION_NAMES = {
+    0x11: "netdisk-read", 0x12: "netdisk-write",
+    0x13: "netdisk-read-compact", 0x14: "netdisk-read-ahead",
+    0x15: "netdisk-write-v3", 0x20: "console-poll",
+    0x21: "console-output", 0x22: "time-get", 0x23: "time-set",
+    0x24: "status-report", 0x25: "diagnostic-report",
+    0x26: "capability-query", 0x27: "boot-report",
+    0x28: "console-output-block",
+}
 
 
 class EvidenceError(ValueError):
@@ -77,6 +86,9 @@ def request_records(started_ms: int,
             "monotonic_seconds": round((started_ms + elapsed_ms) / 1000, 6),
             "elapsed_seconds": round(elapsed_ms / 1000, 6),
             "operation": values[0],
+            "operation_name": OPERATION_NAMES.get(
+                values[0], f"unknown-{values[0]:02x}",
+            ),
             "sequence": values[1],
             "drive": values[2],
             "track": values[3],

@@ -27,6 +27,24 @@ image, _ = build_network_rom.build(abi_selftest=True)
 Path(sys.argv[1]).write_text("\n".join(f"{byte:02x}" for byte in image) + "\n")
 PY
 
+PYTHONPATH=spinoffs/jukuravi/network-rom python3 - "$tmp/network-rom-c9-abi.hex" <<'PY'
+from pathlib import Path
+import sys
+import build_network_rom
+
+image, _ = build_network_rom.build(c9=True, abi_selftest=True)
+Path(sys.argv[1]).write_text("\n".join(f"{byte:02x}" for byte in image) + "\n")
+PY
+
+PYTHONPATH=spinoffs/jukuravi/network-rom python3 - "$tmp/network-rom-c10-abi.hex" <<'PY'
+from pathlib import Path
+import sys
+import build_network_rom
+
+image, _ = build_network_rom.build(c10=True, abi_selftest=True)
+Path(sys.argv[1]).write_text("\n".join(f"{byte:02x}" for byte in image) + "\n")
+PY
+
 PYTHONPATH=spinoffs/jukuravi/network-rom python3 - "$tmp/network-rom-netdisk.hex" <<'PY'
 from pathlib import Path
 import sys
@@ -56,6 +74,31 @@ output=$(vvp "$tmp/network-first-rom-abi-tb" \
 printf '%s\n' "$output"
 grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
 if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then
+  exit 1
+fi
+
+output=$(vvp "$tmp/network-first-rom-abi-tb" \
+  +rom="$tmp/network-rom-c9-abi.hex")
+printf '%s\n' "$output"
+grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
+if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then
+  exit 1
+fi
+
+output=$(vvp "$tmp/network-first-rom-abi-tb" \
+  +rom="$tmp/network-rom-c10-abi.hex" +pof_release)
+printf '%s\n' "$output"
+grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
+if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then
+  exit 1
+fi
+
+iverilog -g2012 -o "$tmp/video-pof-tb" \
+  hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/video_pof_tb.v
+output=$(vvp "$tmp/video-pof-tb")
+printf '%s\n' "$output"
+grep -q "VIDEO-POF-HDL: PASS" <<<"$output"
+if grep -q "VIDEO-POF-HDL: FAIL" <<<"$output"; then
   exit 1
 fi
 

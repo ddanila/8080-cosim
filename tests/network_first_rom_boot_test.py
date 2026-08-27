@@ -77,8 +77,9 @@ def run_post_failure(trace: Path, temporary: Path, label: str, image: bytes,
 
 def run_post_audio(trace: Path, temporary: Path, label: str, image: bytes,
                    expected: int, pattern: str,
-                   extra_env: dict[str, str] | None = None) -> None:
-    case = temporary / f"c8-audio-{label}"
+                   extra_env: dict[str, str] | None = None,
+                   *, release: str = "C8") -> None:
+    case = temporary / f"{release.lower()}-audio-{label}"
     case.mkdir()
     rom = case / "rom.bin"
     rom.write_bytes(image)
@@ -96,12 +97,12 @@ def run_post_audio(trace: Path, temporary: Path, label: str, image: bytes,
         stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=15.0,
     )
     if result.returncode != 0:
-        fail(f"C8 {label} audio cosim exited {result.returncode}")
+        fail(f"{release} {label} audio cosim exited {result.returncode}")
     ram = checkpoint.with_suffix(".ram").read_bytes()
     state = parse_state(checkpoint.with_suffix(".state"))
     if ram[0xD610] != expected or state.get("mode") != "0" or \
             state.get("iff") != "0":
-        fail(f"C8 {label} audio failure state differs: {state}")
+        fail(f"{release} {label} audio failure state differs: {state}")
     events = [
         (int(value, 16), int(cycles))
         for value, cycles in re.findall(
@@ -117,7 +118,7 @@ def run_post_audio(trace: Path, temporary: Path, label: str, image: bytes,
         None,
     )
     if start is None:
-        fail(f"C8 {label} has no complete three-tone POST series: {values}")
+        fail(f"{release} {label} has no complete three-tone POST series: {values}")
     series = events[start:start + 6]
     durations = [series[index + 1][1] - series[index][1]
                  for index in (0, 2, 4)]
@@ -127,7 +128,7 @@ def run_post_audio(trace: Path, temporary: Path, label: str, image: bytes,
     )
     if observed != pattern:
         fail(
-            f"C8 {label} audio pattern={observed}, expected={pattern}, "
+            f"{release} {label} audio pattern={observed}, expected={pattern}, "
             f"durations={durations}"
         )
     next_tone = next(
@@ -135,7 +136,7 @@ def run_post_audio(trace: Path, temporary: Path, label: str, image: bytes,
         None,
     )
     if next_tone is None or next_tone - series[-1][1] <= max(durations) * 2:
-        fail(f"C8 {label} lacks the long inter-series pause")
+        fail(f"{release} {label} lacks the long inter-series pause")
 
 
 def wait_ack(fd: int, process: subprocess.Popen[bytes], timeout: float) -> bool:
@@ -302,6 +303,35 @@ def main() -> int:
             {"JUKU_PIT_FAULT": "18:00:80"},
         )
 
+        c9_image, _ = network_rom.build(c9=True)
+        c9_cpu_bad = bytearray(c9_image)
+        c9_boot = bytes(c9_cpu_bad[:network_rom.EMBEDDED_EXTENSION_STORED])
+        if c9_boot.count(cpu_vector) != 1:
+            fail("C9 CPU diagnostic vector signature differs")
+        c9_cpu_bad[c9_boot.index(cpu_vector) + 1] = 0x7E
+        run_post_audio(
+            trace, temporary, "cpu", bytes(c9_cpu_bad), 0xC1, "SSL",
+            release="C9",
+        )
+        run_post_audio(
+            trace, temporary, "ram", c9_image, 0xC2, "SLS",
+            {"JUKU_RAM_FAULT": "0xD400:0x01:0"}, release="C9",
+        )
+        run_post_audio(
+            trace, temporary, "address", c9_image, 0xC3, "SLL",
+            {"JUKU_RAM_ALIAS": "0xC0:0xC1"}, release="C9",
+        )
+        c9_rom_bad = bytearray(c9_image)
+        c9_rom_bad[0x1800] ^= 0x01
+        run_post_audio(
+            trace, temporary, "rom", bytes(c9_rom_bad), 0xC4, "LSS",
+            release="C9",
+        )
+        run_post_audio(
+            trace, temporary, "pit-usart", c9_image, 0xC5, "LSL",
+            {"JUKU_PIT_FAULT": "18:00:80"}, release="C9",
+        )
+
         case = temporary / "automatic"
         case.mkdir()
         rom = case / "rom.bin"
@@ -435,7 +465,7 @@ def main() -> int:
 
     print(
         "NETWORK-FIRST-ROM-BOOT-TEST: PASS "
-        f"{metadata['image_sha256']} (POST C1/C2/C3/C4/C5; "
+        f"{metadata['image_sha256']} (C8/C9 POST C1/C2/C3/C4/C5; "
         f"ready={ready_cycles} cycles; absent host; corrupt recovery; "
         "reset-mid-extension recovery; keyless 19200 handoff)"
     )

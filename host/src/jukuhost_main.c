@@ -99,6 +99,27 @@ struct host_context {
     size_t pending_offset;
 };
 
+static const char *operation_name(uint8_t operation)
+{
+    switch (operation) {
+    case JH_N3_READ: return "netdisk-read";
+    case JH_N3_WRITE: return "netdisk-write";
+    case JH_N3_READ_COMPACT: return "netdisk-read-compact";
+    case JH_N3_READ_AHEAD: return "netdisk-read-ahead";
+    case JH_N3_WRITE_V3: return "netdisk-write-v3";
+    case JH_N4_CONSOLE_POLL: return "console-poll";
+    case JH_N4_CONSOLE_OUT: return "console-output";
+    case JH_N4_TIME_GET: return "time-get";
+    case JH_N4_TIME_SET: return "time-set";
+    case JH_N4_STATUS_REPORT: return "status-report";
+    case JH_N4_DIAG_REPORT: return "diagnostic-report";
+    case JH_N4_CAPABILITY_QUERY: return "capability-query";
+    case JH_N4_BOOT_REPORT: return "boot-report";
+    case JH_N4_CONSOLE_OUT_BLOCK: return "console-output-block";
+    default: return "unknown";
+    }
+}
+
 static int capture_record(struct host_context *host, enum jh_capture_type type,
                           uint8_t flags, const uint8_t *data, size_t length);
 
@@ -112,7 +133,7 @@ static void usage(FILE *file)
         "  --config FILE           explicit INI configuration\n"
         "  --serial-fd FD          inherited PTY (integration tests only)\n"
         "  --fast-stage FILE       stock-assisted JF15 or network-ROM JF16\n"
-        "  --network-rom           C8 automatic/direct Fastboot V16\n"
+        "  --network-rom           C8/C9 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
         "  --resume-disk           attach to an already running system\n"
         "  --boot-only             stop after a successful bootstrap\n"
@@ -1469,6 +1490,14 @@ static int run_disk(struct host_context *host,
                     request.sequence, request.drive, request.track,
                     request.sector, event.reply[3],
                     event.duplicate ? " duplicate" : "");
+            }
+            if (host->options.verbose &&
+                    request.operation > JH_N4_CONSOLE_OUT &&
+                    request.operation <= JH_N4_CONSOLE_OUT_BLOCK) {
+                host_log(host, "INFO", "host-service op=%02X name=%s "
+                    "seq=%02X status=%u%s", request.operation,
+                    operation_name(request.operation), request.sequence,
+                    event.reply[3], event.duplicate ? " duplicate" : "");
             }
         }
         if (recovered) continue;

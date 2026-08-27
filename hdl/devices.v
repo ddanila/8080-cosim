@@ -756,7 +756,9 @@ endmodule
 // low-nibble = the column the BIOS scans; Port B read = the 74148-encoded held key
 // {SHIFT b7-6 active-LOW, code b3-1, GS b0 active-LOW}. The key is presented as sim-only
 // stimulus (kbd_*, opt-in via kbd_en so a kbd-off boot stays byte-identical); PPI1 ties it off.
-module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
+module ppi_8255 #(
+                 parameter [7:0] S21_CONFIG = 8'hFF
+                 ) (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
                  output wire [7:0] pc,      // physical Port C pins (D26: mem-mode+floppy ctl; D27: X2)
                  output wire [7:0] pa,      // physical Port A pins (kbd scan SC0-3, AUDC, PREN, STB)
                  input wire [7:0] pb,       // physical Port B pins (kbd data; unused by the sim path)
@@ -770,7 +772,9 @@ module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     assign pa = regs[0];               // Port A latch drives the pins (mode-0 output)
     wire held    = kbd_en & kbd_pressed;
     wire kactive = held & (kbd_col_sel == kcol);
-    wire [7:0] kbd_portb = {1'b1, ~(held & kbd_shift), 2'b00,
+    wire s21_active = (kbd_col_sel >= 8 && kbd_col_sel <= 15) ?
+                      S21_CONFIG[15-kbd_col_sel] : 1'b0;
+    wire [7:0] kbd_portb = {1'b1, ~(held & kbd_shift), ~s21_active, 1'b0,
                             kactive ? {((~kbit) & 3'h7), 1'b0} : 4'hF};
 
     assign D = (~cs_n & ~rd_n) ? ((kbd_en & A == 2'd1) ? kbd_portb : regs[A]) : 8'bz;

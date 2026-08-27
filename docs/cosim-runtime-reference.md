@@ -254,6 +254,11 @@ entry is often easier to identify before its `MOV A,C`; set
 `JUKU_CONSOLE_OUT_REGISTER=C` for that case. This remains observation only and
 does not bypass the emulated renderer or keyboard.
 
+Set `JUKU_CONSOLE_OUT_DISABLE=1` to retain PTY-to-key-matrix input while
+disabling all simulator console-output interception. This is the appropriate
+mode when output must be observed exclusively through a production serial
+console such as C9 N4.
+
 Pair it with `JUKU_REALTIME_HZ` for hands-on use — at full simulation speed
 a session runs faster than a human can type into it. `JUKU_KEYS` and the
 console share one key queue: the scripted string plays first and anything

@@ -15,9 +15,13 @@ history.
 - `crt-cvbs-simulation-plan.md` — subordinate execution plan for generating a
   loaded X7 voltage waveform, adapting the forked sample-domain receiver, and
   validating monitor lock before optional CRT presentation.
-- `network-rom-c9-plan.md` — subordinate candidate scope for a network ROM
-  after C8: the resident console client's missing N4 output mirroring, and the
-  already-reserved unconditional-network-boot policy. C9 is not authorized.
+- `network-rom-c9-plan.md` — completed C9 scope and physical closeout: bounded
+  resident-host transport passed, while a proved PC7/POF initialization defect
+  blocks local-video promotion.
+- `network-rom-c10-plan.md` — implemented, desk-qualified successor: exact
+  stock PC7/POF release, full-Port-C/visibility guards, truthful video
+  diagnostics, preserved C9 transport, deterministic burn pair, and the
+  remaining attended display acceptance.
 - `portable-c-host-plan.md` — subordinate implementation and qualification plan
   for a Linux-first portable C Janet/Fastboot/NetDisk/N4 host, an Open Watcom
   Windows 95 build, headless Wine-to-simulator automation, and eventual

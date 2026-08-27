@@ -39,6 +39,14 @@ C8_OUTPUT = HERE / "juku-network-rom-abi1.3-c8.bin"
 C8_D15_OUTPUT = HERE / "juku-network-rom-abi1.3-c8-d15.bin"
 C8_D16_OUTPUT = HERE / "juku-network-rom-abi1.3-c8-d16.bin"
 C8_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.3-c8.json"
+C9_OUTPUT = HERE / "juku-network-rom-abi1.4-c9.bin"
+C9_D15_OUTPUT = HERE / "juku-network-rom-abi1.4-c9-d15.bin"
+C9_D16_OUTPUT = HERE / "juku-network-rom-abi1.4-c9-d16.bin"
+C9_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.4-c9.json"
+C10_OUTPUT = HERE / "juku-network-rom-abi1.4-c10.bin"
+C10_D15_OUTPUT = HERE / "juku-network-rom-abi1.4-c10-d15.bin"
+C10_D16_OUTPUT = HERE / "juku-network-rom-abi1.4-c10-d16.bin"
+C10_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.4-c10.json"
 
 LOWER_SIZE = 0x1800
 RESIDENT_SIZE = 0x2800
@@ -54,6 +62,8 @@ LOCALE_CANDIDATE = "network-first-abi1.1-cs00015-c5-desk"
 EXTENDED_CANDIDATE = "network-first-abi1.2-c6-simulator"
 SUCCESSOR_CANDIDATE = "network-first-abi1.2-c7-modified-raw-simulator"
 C8_CANDIDATE = "network-first-abi1.3-c8-resident-host-simulator"
+C9_CANDIDATE = "network-first-abi1.4-c9-bounded-host-simulator"
+C10_CANDIDATE = "network-first-abi1.4-c10-pof-release-candidate"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -79,7 +89,15 @@ def build(*, abi_selftest: bool = False,
           locale: bool = False,
           extended: bool = False,
           successor: bool = False,
-          c8: bool = False) -> tuple[bytes, dict[str, object]]:
+          c8: bool = False,
+          c9: bool = False,
+          c10: bool = False,
+          host_selftest: bool = False,
+          selftest_locale: int = 1) -> tuple[bytes, dict[str, object]]:
+    if c10:
+        c9 = True
+    if c9:
+        c8 = True
     if c8:
         successor = True
     if successor:
@@ -98,6 +116,12 @@ def build(*, abi_selftest: bool = False,
         raise ValueError(f"unknown raw-key fixture {raw_selftest!r}")
     if raw_selftest is not None and (not abi_selftest or not successor):
         raise ValueError("raw-key fixtures require successor ABI selftest")
+    if host_selftest and (not abi_selftest or not c9):
+        raise ValueError("host transport fixture requires C9 ABI selftest")
+    if selftest_locale not in range(4):
+        raise ValueError("selftest locale must be 0..3")
+    if selftest_locale != 1 and (not abi_selftest or not locale):
+        raise ValueError("non-default locale requires localized ABI selftest")
     selftest_defines = ("ROM_ABI_LOCALE",) if locale else ()
     if locale and not successor:
         selftest_defines += ("CREEP_LEGACY_PSEUDO",)
@@ -109,6 +133,16 @@ def build(*, abi_selftest: bool = False,
         )
     if c8:
         selftest_defines += ("ROM_ABI_HOSTSERVICES",)
+    if c9:
+        selftest_defines += ("ROM_ABI_C9",)
+    if c10:
+        selftest_defines += ("ROM_ABI_C10",)
+    if host_selftest:
+        selftest_defines += ("ABI_HOST_SELFTEST",)
+    selftest_defines += ((
+        "ABI_LOCALE_ENGLISH", "ABI_LOCALE_ESTONIAN",
+        "ABI_LOCALE_RUSSIAN", "ABI_LOCALE_USER",
+    )[selftest_locale],) if abi_selftest and locale else ()
     extension_bytes = LOCALE_EXTENSION_BYTES if locale else EXTENSION_BYTES
     if abi_selftest:
         selftest_defines += ("ABI_SELFTEST",)
@@ -321,7 +355,9 @@ def build(*, abi_selftest: bool = False,
             "cpu", "ram-data", "ram-address", "complete-rom", "pit-usart",
         ],
         "hardware_init": [
-            "ppi0-82-pc7-high", "ppi1-9b", "stock-raster-refresh",
+            ("ppi0-82-pc7-high-then-low" if c10 else
+             "ppi0-82-pc7-high"),
+            "ppi1-9b", "stock-raster-refresh",
             "pic-d6-fe-masked", "d57-ch0-mode2-count4", "d11-8n1",
         ],
         "post_status": {
@@ -344,7 +380,9 @@ def build(*, abi_selftest: bool = False,
         },
         "abi": {
             "base": "FF00", "major": 1,
-            "minor": 3 if c8 else (2 if extended else (1 if locale else 0)),
+            "minor": (4 if c9 else
+                      (3 if c8 else
+                       (2 if extended else (1 if locale else 0)))),
         },
         "abi_vectors": {
             "init": "FF20",
@@ -363,13 +401,22 @@ def build(*, abi_selftest: bool = False,
             "get_info": "FF47",
         },
         "candidate": (
-            (C8_CANDIDATE if c8 else
+            (C10_CANDIDATE if c10 else
+             (C9_CANDIDATE if c9 else
+             (C8_CANDIDATE if c8 else
              (SUCCESSOR_CANDIDATE if successor else EXTENDED_CANDIDATE))
+            ))
             if extended else
             (LOCALE_CANDIDATE if locale else CANDIDATE)
         ),
         "status": (
-            ("resident-host simulator successor; C7 remains immutable"
+            (("desk-qualified POF-release successor; physical acceptance "
+              "pending"
+              if c10 else
+              ("bounded-host simulator/HDL candidate; physical programming "
+              "not authorized; C8 remains immutable"
+              if c9 else
+              "resident-host simulator successor; C7 remains immutable"))
              if c8 else
              ("modified-raw simulator successor; C6 remains immutable"
               if successor else
@@ -462,6 +509,44 @@ def build(*, abi_selftest: bool = False,
             "success_and_host_wait": "silent",
         }
         metadata["resident_checksum"] = "additive-8 over D800h..FFFFh = 00"
+    if c9:
+        metadata["boot_policy"] = {
+            "s21_bit": 0,
+            "behavior": "reserved; unconditional network boot",
+        }
+        metadata["resident_host"] = {
+            "state_bytes": 4,
+            "state_prefix_abi_1_3_bytes": 2,
+            "failure_reasons": {
+                "00": "none", "01": "transmitter-timeout",
+                "02": "receive-timeout", "03": "sync-budget",
+                "04": "sequence", "05": "reply-integrity",
+                "06": "host-status",
+            },
+            "flags": {
+                "01": "host-detected", "02": "n4-selected",
+                "04": "console-capability", "08": "mirroring-enabled",
+                "10": "reconnected",
+            },
+            "transaction_deadline": {
+                "transmitter_ready_polls_per_byte": 8192,
+                "receiver_ready_polls_per_byte": 65535,
+                "reply_prefix_scan_bytes": 256,
+                "failure_backoff_console_polls": 1,
+            },
+        }
+    if c10:
+        metadata["video_enable"] = {
+            "ppi0_port_c_bit": 7,
+            "signal": "POF",
+            "post_state": "high-picture-suppressed",
+            "runtime_state": "low-picture-enabled",
+            "successful_runtime_port_c": "01",
+            "ordered_control_writes": ["82", "0F", "0E"],
+            "physical_evidence": (
+                "CS00000 C9 live 0E write restored local video 2026-08-27"
+            ),
+        }
     return image, metadata
 
 
@@ -474,6 +559,8 @@ def main() -> int:
     extended_image, extended_metadata = build(extended=True)
     successor_image, successor_metadata = build(successor=True)
     c8_image, c8_metadata = build(c8=True)
+    c9_image, c9_metadata = build(c9=True)
+    c10_image, c10_metadata = build(c10=True)
     expected = (
         (OUTPUT, image),
         (D15_OUTPUT, image[:0x2000]),
@@ -500,6 +587,16 @@ def main() -> int:
         (C8_D16_OUTPUT, c8_image[0x2000:]),
         (C8_METADATA_OUTPUT,
          (json.dumps(c8_metadata, indent=2) + "\n").encode()),
+        (C9_OUTPUT, c9_image),
+        (C9_D15_OUTPUT, c9_image[:0x2000]),
+        (C9_D16_OUTPUT, c9_image[0x2000:]),
+        (C9_METADATA_OUTPUT,
+         (json.dumps(c9_metadata, indent=2) + "\n").encode()),
+        (C10_OUTPUT, c10_image),
+        (C10_D15_OUTPUT, c10_image[:0x2000]),
+        (C10_D16_OUTPUT, c10_image[0x2000:]),
+        (C10_METADATA_OUTPUT,
+         (json.dumps(c10_metadata, indent=2) + "\n").encode()),
     )
     if args.check:
         for path, data in expected:

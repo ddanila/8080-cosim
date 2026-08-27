@@ -27,6 +27,7 @@ import build_network_rom as network_rom  # noqa: E402
 C5_SHA256 = "9ed6273f44c1b09dcb5fcd3ca94e5a1aad813b285607558a7d8cb98b1a5e6e7a"
 C6_SHA256 = "0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09"
 C7_SHA256 = "a05c74d948d9f01c5a89dc3ea69bfeb4fdf9ac48b3e37845d1edbf03e6e203b8"
+C8_SHA256 = "a54cb877edfe25e939e05ada0e98783acb53cfc8969071c63928b119c8e09e46"
 
 
 def fail(message: str) -> None:
@@ -41,6 +42,7 @@ def parse_state(path: Path) -> dict[str, str]:
 def run_fixture(trace: Path, image: bytes, root: Path, name: str,
                 mode: int, *, max_cycles: int = 5_000_000,
                 realtime_hz: int = 1_700_000,
+                locale: int = 1,
                 keys: bytes = b"T",
                 timeout: float = 25.0) -> tuple[dict[str, str], bytes]:
     case = root / name
@@ -61,7 +63,7 @@ def run_fixture(trace: Path, image: bytes, root: Path, name: str,
         b"JUKU_REALTIME_HZ": str(realtime_hz).encode("ascii"),
         b"JUKU_KEYS": keys,
         b"JUKU_KEY_START_VRAM": b"0",
-        b"JUKU_S21_CONFIG": f"0x{0x08 | (mode << 1):02X}".encode("ascii"),
+        b"JUKU_S21_CONFIG": f"0x{(locale << 3) | (mode << 1):02X}".encode("ascii"),
     })
     process = subprocess.Popen(
         [str(trace), str(rom), str(max_cycles)], cwd=case, env=environment,
@@ -111,12 +113,15 @@ def main() -> int:
     image, metadata = network_rom.build(extended=True)
     successor_image, successor_metadata = network_rom.build(successor=True)
     c8_image, c8_metadata = network_rom.build(c8=True)
+    c9_image, c9_metadata = network_rom.build(c9=True)
     if image != network_rom.EXTENDED_OUTPUT.read_bytes():
         fail("committed ABI 1.2 image differs from deterministic rebuild")
     if successor_image != network_rom.SUCCESSOR_OUTPUT.read_bytes():
         fail("committed C7 successor differs from deterministic rebuild")
     if c8_image != network_rom.C8_OUTPUT.read_bytes():
         fail("committed C8 successor differs from deterministic rebuild")
+    if c9_image != network_rom.C9_OUTPUT.read_bytes():
+        fail("committed C9 successor differs from deterministic rebuild")
     if hashlib.sha256(network_rom.LOCALE_OUTPUT.read_bytes()).hexdigest() != \
             C5_SHA256:
         fail("ABI 1.2 work changed the immutable C5 ROM")
@@ -124,6 +129,8 @@ def main() -> int:
         fail("C7 work changed the immutable C6 ROM")
     if hashlib.sha256(successor_image).hexdigest() != C7_SHA256:
         fail("C8 work changed the immutable C7 ROM")
+    if hashlib.sha256(c8_image).hexdigest() != C8_SHA256:
+        fail("C9 work changed the immutable C8 ROM")
     if metadata.get("abi") != {"base": "FF00", "major": 1, "minor": 2} or \
             metadata.get("candidate") != \
             "network-first-abi1.2-c6-simulator" or \
@@ -154,6 +161,15 @@ def main() -> int:
             c8_metadata.get("abi_vectors", {}).get("host_services") != \
             "FF5C" or sum(c8_image[0x1800:]) & 0xff:
         fail(f"C8 metadata/resident checksum differs: {c8_metadata}")
+    if c9_metadata.get("candidate") != \
+            "network-first-abi1.4-c9-bounded-host-simulator" or \
+            c9_metadata.get("abi") != \
+            {"base": "FF00", "major": 1, "minor": 4} or \
+            c9_metadata.get("feature_bits", {}).get("value") != "0FFF" or \
+            c9_metadata.get("abi_vectors", {}).get("host_services") != \
+            "FF5C" or c9_metadata.get("resident_host", {}).get(
+                "state_bytes") != 4 or sum(c9_image[0x1800:]) & 0xff:
+        fail(f"C9 metadata/resident checksum differs: {c9_metadata}")
     extension_start = network_rom.EMBEDDED_EXTENSION_STORED
     extension_end = extension_start + network_rom.EMBEDDED_EXTENSION_BYTES
     embedded_extension = image[extension_start:extension_end]
@@ -179,6 +195,10 @@ def main() -> int:
         c8_fixture, _ = network_rom.build(c8=True, abi_selftest=True)
         run_fixture(
             trace, c8_fixture, temporary, "c8-diagnostics", 3,
+        )
+        c9_fixture, _ = network_rom.build(c9=True, abi_selftest=True)
+        run_fixture(
+            trace, c9_fixture, temporary, "c9-diagnostics", 3,
         )
         for raw_name, raw_byte in (("shift-f8", b"\x86"),
                                    ("ctrl-up", b"\x85")):
@@ -207,6 +227,35 @@ def main() -> int:
             if screen != expected:
                 fail(f"mode {mode} console-span framebuffer differs")
             screens[mode] = screen
+
+        # C9 reserves only bit 0: every combination of the retained video and
+        # character-bank fields must still latch and render through ABI 1.4.
+        for locale in range(4):
+            for mode in range(4):
+                c9_matrix_fixture, _ = network_rom.build(
+                    c9=True, abi_selftest=True, selftest_locale=locale,
+                )
+                _, c9_matrix_ram = run_fixture(
+                    trace, c9_matrix_fixture, temporary,
+                    f"c9-locale-{locale}-mode-{mode}", mode,
+                    locale=locale,
+                )
+                expected = render_transcript(
+                    b"Z\xC4Q!", locale=locale, mode=mode,
+                )
+                observed_screen = c9_matrix_ram[0xD800:0xD800 + 9600]
+                if c9_matrix_ram[0xD7C1] != (locale << 3) | (mode << 1) or \
+                        observed_screen != expected:
+                    differences = [index for index, pair in enumerate(
+                        zip(observed_screen, expected)) if pair[0] != pair[1]]
+                    fail(
+                        f"C9 locale {locale}/mode {mode} differs from the "
+                        f"retained S21 contract: config="
+                        f"{c9_matrix_ram[0xD7C1]:02X}, "
+                        f"first screen differences={differences[:8]}, "
+                        f"observed={[observed_screen[i] for i in differences[:8]]}, "
+                        f"expected={[expected[i] for i in differences[:8]]}"
+                    )
 
         hidden_image, _ = network_rom.build(
             extended=True, abi_selftest=True, cursor_phase="hidden",
@@ -251,8 +300,9 @@ def main() -> int:
         "NETWORK-FIRST-ROM-EXTENDED-TEST: PASS "
         f"{metadata['image_sha256']} {successor_metadata['image_sha256']} "
         f"{c8_metadata['image_sha256']} "
-        "(immutable C6/C7; C8 diagnostics; C7 Shift-F8/Ctrl-Up raw; four modes; "
-        "integrated cursor/key)"
+        f"{c9_metadata['image_sha256']} "
+        "(immutable C6/C7/C8; C8/C9 diagnostics; C7 Shift-F8/Ctrl-Up raw; four modes; "
+        "C9 4x4 S21 matrix; integrated cursor/key)"
     )
     return 0
 

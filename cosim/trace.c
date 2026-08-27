@@ -73,6 +73,8 @@
 //        vectors (defaults FFD9h/FFD3h, the EktaSoft monitor entries that
 //        cpmish's BIOS CONOUT/CONIN call). This is a simulator affordance:
 //        the real machine's console is its bitmap screen and key matrix.
+//        JUKU_CONSOLE_OUT_DISABLE=1 keeps PTY keyboard input but disables the
+//        output hook, for qualification through a production serial console.
 // SPEED: JUKU_REALTIME_HZ=N paces execution to N simulated cycles per real
 //        second, so wall-clock time equals machine time (use 2000000 for the
 //        nominal Juku clock; "1" is accepted as shorthand for it). Unset means
@@ -1018,6 +1020,7 @@ static int console_visible_len = 0;
 static uint16_t console_out_pc = 0xD9E3;   // EktaSoft console char-out, A = char
 static uint16_t console_in_pc = 0xFFD3;    // ROM RDCHR: entered when reading
 static int console_out_register_c = 0;
+static int console_out_enabled = 1;
 
 static const char* kbd_str = 0;     // keystrokes to "type" (0/empty = keyboard off)
 static int   kbd_pos = 0, kbd_phase = 0;
@@ -1502,6 +1505,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "vram_writes=%lu\n", g_vw);
   fprintf(state_out, "mode=%d\n", mode);
   fprintf(state_out, "portc=%02X\n", portc);
+  fprintf(state_out, "video_pof_released=%u\n", (portc & 0x80u) ? 0u : 1u);
   fprintf(state_out, "mode_switches=%lu\n", mode_switches);
   fprintf(state_out, "video_stride=%u\n", video_stride);
   fprintf(state_out, "video_lines=%u\n", video_lines);
@@ -2257,7 +2261,10 @@ int main(int argc, char** argv) {
     }
     const char* out_pc = getenv("JUKU_CONSOLE_OUT_PC");
     const char* out_register = getenv("JUKU_CONSOLE_OUT_REGISTER");
+    const char* out_disable = getenv("JUKU_CONSOLE_OUT_DISABLE");
     const char* in_pc = getenv("JUKU_CONSOLE_IN_PC");
+    if (out_disable && out_disable[0] && strcmp(out_disable, "0") != 0)
+      console_out_enabled = 0;
     if (out_pc && out_pc[0]) console_out_pc = (uint16_t)strtoul(out_pc, NULL, 0);
     if (out_register && out_register[0]) {
       if (strcmp(out_register, "C") == 0 || strcmp(out_register, "c") == 0)
@@ -2286,8 +2293,11 @@ int main(int argc, char** argv) {
     }
     kbd_str = console_queue;
     kbd_pos = 0;
-    fprintf(stderr, "[TERM] console attached; output hook=%04X register=%c\n",
-            console_out_pc, console_out_register_c ? 'C' : 'A');
+    if (console_out_enabled)
+      fprintf(stderr, "[TERM] console attached; output hook=%04X register=%c\n",
+              console_out_pc, console_out_register_c ? 'C' : 'A');
+    else
+      fprintf(stderr, "[TERM] keyboard attached; output hook=disabled\n");
   }
 
   // Optional real-time pacing (JUKU_REALTIME_HZ). Sleeps whenever simulated
@@ -2447,8 +2457,9 @@ int main(int argc, char** argv) {
       // its own CR/LF pairs, so synthesising a newline here would double every
       // line break. The same routine runs at its banked address in modes 1/2
       // and at its ROM-file address in mode 0, so accept either.
-      if (cpu.pc == console_out_pc ||
-          (console_out_pc >= 0xC000 && cpu.pc == (uint16_t)(console_out_pc - 0xC000))) {
+      if (console_out_enabled && (cpu.pc == console_out_pc ||
+          (console_out_pc >= 0xC000 &&
+           cpu.pc == (uint16_t)(console_out_pc - 0xC000)))) {
         char out = (char)(console_out_register_c ? cpu.c : cpu.a);
         ssize_t ignored = write(console_fd, &out, 1);
         (void)ignored;

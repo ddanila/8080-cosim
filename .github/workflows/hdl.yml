@@ -22,6 +22,7 @@ on:
       - 'cosim/**'
       - 'tests/**'
       - 'spinoffs/jukuravi/firmware/**'
+      - 'spinoffs/jukuravi/network-rom/**'
       - 'spinoffs/jukuravi/host.py'
       - 'spinoffs/jukuravi/protocol.py'
       - 'spinoffs/jukuravi/raster.py'
@@ -69,6 +70,7 @@ on:
       - 'cosim/**'
       - 'tests/**'
       - 'spinoffs/jukuravi/firmware/**'
+      - 'spinoffs/jukuravi/network-rom/**'
       - 'spinoffs/jukuravi/host.py'
       - 'spinoffs/jukuravi/protocol.py'
       - 'spinoffs/jukuravi/raster.py'
@@ -282,6 +284,25 @@ jobs:
       # Fans its 31 vvp runs out across the runner's cores; see the script header.
       - name: Run Jukuravi D0 diagnostic guards
         run: ./sync/jukuravi_d0_check.sh
+
+  network-rom:
+    needs: changes
+    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'jukuravi'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install ROM/HDL toolchain
+        run: sudo apt-get update && sudo apt-get install -y gcc iverilog
+
+      - name: Fetch assembler and shared sources
+        run: git submodule update --init third_party/zmac third_party/juku-common
+
+      - name: Run network-ROM ABI and fault matrix
+        run: ./sync/network_first_rom_abi_check.sh
+
+      - name: Run network-ROM structural HDL matrix
+        run: ./sync/network_first_rom_hdl_check.sh
 
   # The T28-T32 loader/recovery guards. These are documented in the Jukuravi
   # READMEs and were reachable only by hand -- no workflow and no git hook ran

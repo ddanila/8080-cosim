@@ -96,9 +96,19 @@ with the machine-readable board model.
   diagnostics, local keyboard, ROM sound, writes, warm boot, soak, delayed-host
   recovery, and two live host replacements. The later ABI 1.3 C8 pair is now
   fitted and passed the same blind qualification plus native macOS service.
+  The separately named ABI 1.4 C9 candidate adds bounded resident-host
+  transactions and failure/negotiation telemetry, reserves S21 bit 0 for
+  unconditional network boot, and passes the C-model, structural HDL, CP/M,
+  native-host replacement, and `vc8080` N4 gates. Its CS00000 evaluation
+  proved a PC7/POF blank-video defect. The separately named C10 candidate
+  applies the stock-compatible POF release, adds full Port-C/visible-frame
+  regressions and direct diagnostics, and has passed all desk, HDL, CP/M,
+  native-host, and reproducible-package gates. Its D15/D16 pair is ready to
+  program; local-video and full physical acceptance remain pending, with the
+  known-good EKTA3.7 pair retained as rollback.
   A two-machine display control then isolated CS00015's remaining blank screen
   after CPU-visible framebuffer storage; the same corrected raw pattern is
-  visible on CS00014. C6 is the immutable rollback image. Ekta4401, Ekta4402,
+  visible on CS00014. C6 remains immutable. Ekta4401, Ekta4402,
   and V14 remain frozen historical baselines. The original stock Janet path is
   unchanged as fallback.
 - The sole production network host is portable C. Its native-Linux M2 build is

@@ -106,6 +106,17 @@ boot_start:
         cpi     005h
         jnz     post_io_fail
 
+.ifdef ROM_ABI_C10
+        ; EKTA 3.7 raises PC7/POF while the picture is unsafe during POST,
+        ; then releases it before installing the screen console. C9 omitted
+        ; this BSR reset and produced valid sync with every pixel suppressed.
+        mvi     a,00eh
+        out     PPI0CONTROL
+        in      MODEPORT
+        ani     080h                    ; 8255 output-latch readback
+        jnz     post_io_fail
+.endif
+
         lxi     d,GATESTORED
         lxi     h,JROMGATEBASE
         lxi     b,JROMGATEBYTES
@@ -141,8 +152,9 @@ boot_start:
 
 ; Establish the same safe PPI and raster/refresh baseline used by EktaSoft
 ; before relying on DRAM for a network load. D26 mode 82h makes Port A/output,
-; Port B/input and both Port C halves/output; BSR 0Fh leaves PC7 high (floppy
-; control in the stock-safe state) while PC2 keeps the motor off and the low
+; Port B/input and both Port C halves/output; BSR 0Fh leaves PC7/POF high
+; during POST, matching the stock picture-off interval. C10 releases POF only
+; after every quick-POST check passes. PC2 keeps the motor off and the low
 ; memory-mode bits remain reset view 0. The timer
 ; sequence is the observed stock D54/D55/D57 initialization; the compact MODX
 ; console may apply its six documented overrides after CP/M starts.

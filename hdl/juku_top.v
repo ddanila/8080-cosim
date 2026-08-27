@@ -10,7 +10,9 @@ module juku_top #(
     // Opt-in cycle-faithful 8253 Mode-0 count-register -> counting-element
     // transfer.  Historical regressions retain the earlier immediate-load
     // abstraction; D55 diagnostic validation enables this parameter.
-    parameter integer PIT_CLOCKED_MODE0_LOAD = 0
+    parameter integer PIT_CLOCKED_MODE0_LOAD = 0,
+    // SIM-ONLY S21 switch byte, sampled through D26 PB5 at columns 8..15.
+    parameter [7:0] S21_CONFIG = 8'hFF
 ) (
     input  wire clk,        // board oscillator (crystal Z1 -> D59), feeds the clock subsystem
     input  wire reset_n,
@@ -183,9 +185,9 @@ module juku_top #(
                      .a2(cas_n), .b2(d36_b2_tag17), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 boundary
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
-    wire vert_rtr, frame_int;
+    wire vert_rtr, frame_int, pof_released;
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1_d35), .phi2(phi2_d35), .phi2ttl(phi2ttl),
-                     .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(), .i5(1'bz), .o6(),
+                     .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(pof_released), .i5(1'bz), .o6(),
                      .i9(vert_rtr), .o8(frame_int));
     net_boundary U_W7  (.a(phi1_d35), .b(phi1));
     net_boundary U_W14 (.a(phi2_d35), .b(phi2));
@@ -532,11 +534,15 @@ module juku_top #(
     // (U_IR16) -> lp5_xor (U_D34V); the REAL chips D42/D43 (ИР16) are instantiated below for the LVS
     // structure (traced sheet-2 top-right; see board JSON provenance). The 2x4-bit +
     // analog node-"A" byte->pixel scheme + the КП14 µP/video arbitration remain physical boundaries.
-    wire vpixel, vshl_n;
+    wire vpixel, vpixel_enabled, vshl_n;
     video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
                     .d(vbyte), .so(vpixel));                            // abstracted serializer (runnable)
-    lp5_xor1 U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));                 // abstract pixel oracle only
+    lp5_xor1 U_D34V (.a(vpixel), .b(1'b0), .y(vpixel_enabled));          // abstract pixel oracle only
+    // POF is the physical picture-enable boundary proved by the C9/C10
+    // CS00000 discriminator. Keep sync outside this pixel-only oracle, but
+    // suppress pixels while PC7 is high exactly as the machine does.
+    assign vid_out = pof_released ? vpixel_enabled : 1'b0;
     // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. Parallel data
     // reads the REAL system data bus DB (the bit-sliced РУ5 drives the byte there during a video
     // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q -> node "A" (analog mix =
@@ -792,7 +798,7 @@ module juku_top #(
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries
-    ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),
+    ppi_8255 #(.S21_CONFIG(S21_CONFIG)) U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .pa(kbd_pa), .pb(8'hFF),
                       .reset(reset_sys), .pc(ppi0_pc),
                       .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),

@@ -231,7 +231,9 @@ def main() -> int:
                             for line in requests_path.read_text().splitlines()]
         assert len(request_evidence) >= 8
         assert request_evidence[0]["operation"] == 0x11
+        assert request_evidence[0]["operation_name"] == "netdisk-read"
         assert request_evidence[-1]["operation"] == 0x20
+        assert request_evidence[-1]["operation_name"] == "console-poll"
         assert all(record["schema"] == "juku-netdisk-request-trace-v1"
                    for record in request_evidence)
 

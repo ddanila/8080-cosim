@@ -186,9 +186,13 @@ rom_netdisk_bad:
 rom_netdisk_end:
 
 .ifdef ROM_ABI_HOSTSERVICES
+.ifdef ROM_ABI_C9
+        dc      0e800h-$,0ffh
+.else
         dc      0e500h-$,0ffh
         include "rom-host-services.asm"
         dc      0e800h-$,0ffh
+.endif
 .else
         dc      0e600h-$,0ffh
 .endif
@@ -206,6 +210,36 @@ resident_entry:
         call    JCGINITADDR
         ora     a
         jnz     self_fail_gate
+
+.ifdef ABI_HOST_SELFTEST
+        ; Focused C9 transport fixture: one mirrored byte exercises the exact
+        ; production request/reply path. Tests vary the modeled D11 and PTY
+        ; peer, then inspect the ABI 1.4 state at D7F8h..D7FBh.
+        call    JCGCONINITADDR
+        ora     a
+        jnz     self_fail_console
+        mvi     a,'L'
+        call    JCGCONOUTADDR
+        mvi     a,1
+        call    JCGSERINITADDR
+        ora     a
+        jnz     self_fail_serial
+        mvi     c,JROMHOSTENABLE
+        call    JCGHOSTADDR
+        mvi     a,1
+        mvi     c,JROMHOSTCONFIG
+        call    JCGHOSTADDR
+        mvi     a,'X'
+        mvi     c,JROMHOSTOUT
+        call    JCGHOSTADDR
+        mvi     a,'R'
+        call    JCGCONOUTADDR
+        mvi     a,0a5h
+        sta     SELFSTATUS
+self_host_done:
+        hlt
+        jmp     self_host_done
+.endif
 
         call    JCGGETINFOADDR
         mov     a,h
@@ -244,14 +278,38 @@ resident_entry:
 .ifdef ROM_ABI_LOCALE
         call    JCGCONFIGADDR
         mov     d,a
-        ani     018h                    ; fixture selects Estonian in any mode
+        ani     018h                    ; fixture-selected character bank
+.ifdef ABI_LOCALE_ENGLISH
+        cpi     000h
+.else
+.ifdef ABI_LOCALE_RUSSIAN
+        cpi     010h
+.else
+.ifdef ABI_LOCALE_USER
+        cpi     018h
+.else
         cpi     008h
+.endif
+.endif
+.endif
         jnz     self_fail_info
         mov     a,b
         cpi     4
         jnc     self_fail_info
         mov     a,c
-        cpi     1                       ; locale 1
+.ifdef ABI_LOCALE_ENGLISH
+        cpi     0
+.else
+.ifdef ABI_LOCALE_RUSSIAN
+        cpi     2
+.else
+.ifdef ABI_LOCALE_USER
+        cpi     3
+.else
+        cpi     1                       ; Estonian/default fixture
+.endif
+.endif
+.endif
         jnz     self_fail_info
 .endif
 
@@ -797,12 +855,16 @@ rom_keyremap_impl:
         xra     a
         ret
 
-; Reset handoff for the network-only ABI 1.1 image. Bit 0 set is immediate
-; autoboot; clear is a concealed local-N recovery gate rather than a menu.
+; Reset handoff for the network-only image. C9 makes network boot
+; unconditional and reserves S21 bit 0. C5--C8 retain the concealed local-N
+; recovery gate byte-for-byte.
 rom_boot_policy_impl:
         call    JCGINITADDR
         ora     a
         jnz     rom_boot_policy_halt
+.ifdef ROM_ABI_C9
+        jmp     rom_boot_policy_network
+.else
         call    JCGCONFIGADDR
         ani     1
         jnz     rom_boot_policy_network
@@ -813,6 +875,7 @@ rom_boot_policy_wait_n:
         jz      rom_boot_policy_network
         cpi     'n'
         jnz     rom_boot_policy_wait_n
+.endif
 rom_boot_policy_network:
         jmp     00100h
 rom_boot_policy_halt:
@@ -826,8 +889,18 @@ rom_unavailable:
         ret
 
 .ifdef ROM_ABI_HOSTSERVICES
+.ifdef ROM_ABI_C10
+build_identity:
+        db      'JukuNet C10 ROM ABI 1.4 physical POF release 2026-08-27',0
+.else
+.ifdef ROM_ABI_C9
+build_identity:
+        db      'JukuNet C9 ROM ABI 1.4 bounded resident host 2026-08-26',0
+.else
 build_identity:
         db      'JukuNet C8 ROM ABI 1.3 resident host services 2026-08-20',0
+.endif
+.endif
 .else
 .ifdef ROM_ABI_EXTENDED
 build_identity:
@@ -1065,7 +1138,17 @@ CREEP_PSEUDO_ONLY equ  1
         dc      0f800h-$,0ffh
 .endif
 
+.ifdef ROM_ABI_C9
+; C8's resident host nearly fills E500h..E7FFh. C9 keeps that immutable
+; envelope unused and places the successor implementation in the otherwise
+; empty ROM tail, without adding a direct vector or expanding the RAM gate.
+        org     0f800h
+        include "rom-host-services.asm"
         dc      JROMABIBASE-$,0ffh
+.else
+
+        dc      JROMABIBASE-$,0ffh
+.endif
 
         db      'J','U','K','U','A','B','I',0
         db      JROMABIMAJOR,JROMABIMINOR

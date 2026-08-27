@@ -2,8 +2,8 @@
 `default_nettype none
 
 // Execute the ROM's test-only ABI entry through the structural machine. The
-// resident bytes and public vectors are the same as C1; only reset dispatch is
-// redirected. Exact framebuffer bytes remain checked by the C oracle, while
+// production resident bytes and public vectors are preserved; only reset
+// dispatch is redirected. Exact framebuffer bytes remain checked by the C oracle, while
 // this test proves the physical bus/mode path, keyboard matrix and serial pins.
 module network_first_rom_abi_tb;
   reg osc = 0;
@@ -17,10 +17,12 @@ module network_first_rom_abi_tb;
   reg mode3_seen = 0;
   reg mode1_after_helper = 0;
   reg self_pass_seen = 0;
+  reg [7:0] self_status_value = 0;
   reg netdisk_fixture = 0;
+  reg require_pof_release = 0;
   integer dma_fill_writes = 0;
 
-  juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
+  juku_top #(.S21_CONFIG(8'h08)) dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
                .kbd_en(1'b1), .kbd_pressed(1'b1), .kbd_shift(1'b1),
                .kbd_kcol(4'd4), .kbd_kbit(3'd3), .frame_tick(1'b0));
 
@@ -87,7 +89,10 @@ module network_first_rom_abi_tb;
     if (dut.BA >= 16'hD800) vram_writes = vram_writes + 1;
     if (dut.BA >= 16'h0300 && dut.BA < 16'h0380 && dut.DB == 8'h5A)
       dma_fill_writes = dma_fill_writes + 1;
-    if (dut.BA == 16'hD783 && dut.DB == 8'hA5) self_pass_seen = 1;
+    if (dut.BA == 16'hD783) begin
+      self_status_value = dut.DB;
+      if (dut.DB == 8'hA5) self_pass_seen = 1;
+    end
   end
 
   always @(negedge dut.iowr_n) if (active) begin
@@ -133,7 +138,11 @@ module network_first_rom_abi_tb;
   end
 
   always @(posedge osc) if (active && dut.U_CPU.u.core.thalt) begin
-    if (!self_pass_seen) fail("resident self-test status is not A5");
+    if (!self_pass_seen) begin
+      $display("NETWORK-FIRST-ROM-ABI-HDL: observed resident status=%02h",
+               self_status_value);
+      fail("resident self-test status is not A5");
+    end
     if (!mode3_seen || !mode1_after_helper) fail("mode-3 helper did not restore mode 1");
     if (vram_writes < 9600) fail("framebuffer clear/draw traffic is incomplete");
     if (key_reads == 0) fail("keyboard matrix was not scanned");
@@ -142,6 +151,8 @@ module network_first_rom_abi_tb;
     if (netdisk_fixture && dma_fill_writes != 128)
       fail("NetDisk fill did not reach all 128 DMA bytes");
     if (dut.ppi0_pc[1:0] !== 2'b01) fail("final memory mode is not 1");
+    if (require_pof_release && dut.ppi0_pc !== 8'h01)
+      fail("final Port C is not mode 1 with PC7/POF released");
     if (dut.U_CPU.u.core.inte !== 1'b0) fail("interrupts became enabled");
     if (failures == 0)
       $display("NETWORK-FIRST-ROM-ABI-HDL: PASS status=A5 mode=1 mode3-helper vram=%0d key_reads=%0d tx=%0d rx=%0d netdisk_dma=%0d pc=%04h",
@@ -152,6 +163,7 @@ module network_first_rom_abi_tb;
 
   initial begin
     netdisk_fixture = $test$plusargs("netdisk");
+    require_pof_release = $test$plusargs("pof_release");
   end
 
   initial begin

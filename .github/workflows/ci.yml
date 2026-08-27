@@ -44,6 +44,10 @@ jobs:
           bash -n sync/i8080_check.sh
           bash -n sync/i8080_vm80a_diff_check.sh
           bash -n sync/jukuhost_m2_check.sh
+          bash -n sync/jukuhost_c8_cosim_check.sh
+          bash -n sync/jukuhost_c9_cosim_check.sh
+          bash -n sync/network_first_rom_abi_check.sh
+          bash -n sync/network_first_rom_hdl_check.sh
           sh -n sync/boot_check.sh
           sh -n sync/d2_ready_path_check.sh
           sh -n scripts/find-kicad-cli.sh
