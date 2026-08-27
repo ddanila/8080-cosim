@@ -772,8 +772,10 @@ module ppi_8255 #(
     assign pa = regs[0];               // Port A latch drives the pins (mode-0 output)
     wire held    = kbd_en & kbd_pressed;
     wire kactive = held & (kbd_col_sel == kcol);
+    // PB5 carries active-low S21 data only during configuration columns
+    // 8..15. Ordinary keyboard columns retain the historical low row bit.
     wire s21_active = (kbd_col_sel >= 8 && kbd_col_sel <= 15) ?
-                      S21_CONFIG[15-kbd_col_sel] : 1'b0;
+                      S21_CONFIG[15-kbd_col_sel] : 1'b1;
     wire [7:0] kbd_portb = {1'b1, ~(held & kbd_shift), ~s21_active, 1'b0,
                             kactive ? {((~kbit) & 3'h7), 1'b0} : 4'hF};
 
