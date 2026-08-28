@@ -73,8 +73,9 @@ Run the board-only profile gate with:
 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_jlcpcb.py --self-test
 ```
 
-R5.J2 will pass `--package-root` as well, so the same checker validates the generated
-upload archives rather than trusting their filenames by inspection.
+R5.J2 passes `--package-root` as well, so the same checker validates the generated
+upload archives rather than trusting their filenames by inspection. Exact archive
+members and hashes are frozen in `docs/rev-b-five-board-package-manifest.json`.
 
 Official references captured in the JSON profile:
 

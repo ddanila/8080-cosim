@@ -69,7 +69,7 @@ the change; a prose assertion is not a pass.
 | **R5.V5 — DONE 2026-08-28** | Generate, place and route the Video PCB on four layers (`signal / solid GND / solid VCC5 / signal`). Keep the dot-clock chain and pixel path short, add source damping where the audit calls for it, and preserve a continuous return plane. | R5.V2, R5.V3, R5.V4 | Fresh generation and bounded attempt-1 routing pass full connectivity/LVS, total DRC 0/0, single-island plane/return-path, local-bypass, critical-route and exact connector checks; routed source and negative controls are committed. |
 | **R5.V6 — DONE 2026-08-28** | Re-run the assembled five-card mechanical and power model: connector mating, 16 mm slot pitch, adjacent-card/tall-part clearance, VGA-cable access, orientation/keying, current path and supply drop. Qualify one regulated 5 V supply rated at least 2 A and protect every intended bench input. | R5.S2, R5.V5 | All four populated card STEP envelopes clear (4.16 mm minimum; Video in slot 5 with slot 4 empty); exact VGA face projects 5.80 mm beyond its edge. Mean Well GST25A05-P1J plus fused/reverse-protected barrel input is frozen; the R5.J2 release-source route gives 4.628 V minimum trough and rejects five physical/electrical mutations. |
 | **R5.J1 — DONE 2026-08-28** | Encode a JLCPCB rule profile and preflight checks for both the four 2-layer boards and the 4-layer Video board. The audit removed the optional USB4085 power path rather than relying on a vendor exception. | R5.V5 | `jlcpcb-profile.json` and `check_revb_jlcpcb.py --self-test` cover stack-up/layers, outline, drills/slots, annular rings, clearances, silk, masks, filenames and archive contents; seven negative fixtures fail. Fresh backplane generation/routes DRC 0/0 on attempt 1. |
-| **R5.J2** | Regenerate all five fabrication ZIPs in one release run. Emit a manifest with source revision, tool versions, board dimensions/layers, file list and SHA-256 per archive. | R5.P1, R5.S3, R5.V6, R5.J1 | One command regenerates and validates five safe archives; packages contain Gerber/Excellon production data only. |
+| **R5.J2 — DONE 2026-08-28** | Regenerate all five fabrication ZIPs in one release run. Emit a manifest with source revision, tool versions, board dimensions/layers, file list and SHA-256 per archive. | R5.P1, R5.S3, R5.V6, R5.J1 | `export_fab.sh` validates the five reviewed routed sources and emits five safe archives in one command. The source-verified manifest records revision `18927743`, dimensions, layers, tools, exact members and hashes; each package contains Gerber/Excellon production data only. |
 | **R5.J3** | Perform an independent pre-upload review and obtain a fresh live JLCPCB quote. Check every Gerber/drill rendering separately; reconcile the five designs with BOM quantities and programmed-device count. | R5.J2 | Signed checklist has no unresolved findings; price, quantity, lead time, selected options and any vendor warnings are recorded. |
 | **R5.R1** | Hold the final release review. | R5.J3 | All gates below are green, exact package hashes are recorded, and the owner explicitly changes `ORDER HOLD` to `RELEASED FOR UPLOAD`. |
 | **R5.O1** | Upload the five independent designs, inspect JLCPCB's generated production files, resolve rather than silently accept DFM edits, and place the order. | R5.R1 | Order ID, accepted production-file screenshots/results, options, quantities and uploaded hashes are in a new five-board order record. |
@@ -116,15 +116,38 @@ Vendor references:
 - [Surface finishes](https://jlcpcb.com/help/article/jlcpcb-surface-finish)
 - [Hole tolerances](https://jlcpcb.com/help/article/difference-and-tolerance-explanation-between-via-and-pad-holes)
 
+## R5.J2 release-candidate identity
+
+The machine-readable record is `rev-b-five-board-package-manifest.json`. These
+archives were generated from reviewed routed sources at Git revision
+`18927743e797a81f116aad4806318050adacefa0`; the ZIP files themselves remain
+untracked under `fab/minimal-vga/revb/package/` and are not authorized for upload.
+
+| Design | Layers | Production members | ZIP bytes | SHA-256 |
+|---|---:|---:|---:|---|
+| CPU | 2 | 9 | 14,880 | `ab5df984e8da992daf002f4b08446c38f0d952c1eacc29e9dd15fd79c9c1494b` |
+| Memory | 2 | 9 | 18,793 | `e7b1aac643cbb0ea0217dd0ec0df2476a5a7cf345055743806f92e5ef1b44ed1` |
+| I/O | 2 | 9 | 24,680 | `a1cbc083f5b5b98f29d350d8969b204ab2abead4ab34ec6bd2922dc300a7db34` |
+| Backplane | 2 | 9 | 26,151 | `3502064f327e7153172e0a929e7ecdd44a9c4817fb32ed27dd71a7b3ac991826` |
+| Video | 4 | 11 | 407,048 | `7d9591381c84a155061c6a82acfa48b4914d7fb8e28752240a8dfd3b40496921` |
+
+Reproduce and validate them with:
+
+```sh
+spinoffs/minimal-vga/kicad/revb/export_fab.sh
+```
+
 ## Final release gate
 
 R5.R1 cannot pass until all of the following are true:
 
-- **PENDING:** All five board sources regenerate from a clean checkout.
-- **PENDING:** All five pass full net/pin checks, total DRC 0/0 and mechanical mating.
-- **PENDING:** The five-card simulation boots EKTA byte-identically and passes VGA timing,
+- **DONE 2026-08-28:** All five reviewed routed board sources are present in a clean
+      checkout and feed the one-command fabrication release.
+- **DONE 2026-08-28:** All five pass full net/pin checks, total DRC 0/0 and
+      mechanical mating.
+- **DONE 2026-08-28:** The five-card simulation boots EKTA byte-identically and passes VGA timing,
       framebuffer, `WAIT_N`, reset, `FRAME_TICK` and serial request/reply gates.
-- **PENDING:** All five GALs (Memory, I/O and three Video) have reproducible, pin-checked
+- **DONE 2026-08-28:** All five GALs (Memory, I/O and three Video) have reproducible, pin-checked
       JEDECs and a recorded programming/readback procedure.
 - **DONE 2026-08-28:** Exact connectors, oscillators, sockets and other
       footprint-critical parts are orderable and tied to checked datasheets; live
@@ -133,9 +156,10 @@ R5.R1 cannot pass until all of the following are true:
       protected barrel input, routed voltage drop and USB-TTL electrical compatibility
       are closed. R5.J1 omits the non-JLC-compatible optional USB power connector;
       USB-TTL remains data-only.
-- **PENDING:** Five JLCPCB-ready ZIPs and their hashes pass the encoded vendor profile.
+- **DONE 2026-08-28:** Five JLCPCB-ready ZIPs and their recorded hashes pass the
+      encoded vendor profile and exact package-content checks.
 - **PENDING:** An independent layer/drill/mechanical review and current live quote pass.
 - **PENDING:** The owner explicitly authorizes upload after seeing the final evidence.
 
-Until then, the correct next action is R5.J2, not an order and not a partial
+Until then, the correct next action is R5.J3, not an order and not a partial
 four-board upload.
