@@ -1,6 +1,6 @@
 # VJUGA rev B — JLCPCB fabrication profile (R5.J1)
 
-Status: **PASS / PROFILE FROZEN** on 2026-08-28. This profile governs the five
+Status: **PASS / PROFILE FROZEN / R5.J3 LIVE-CORRECTED** on 2026-08-28. This profile governs the five
 independent bare-PCB archives produced at R5.J2. It does not authorize upload or
 ordering; `rev-b-five-board-order-plan.md` remains on **ORDER HOLD**.
 
@@ -80,6 +80,8 @@ Run the board-only profile gate with:
 R5.J2 passes `--package-root` as well, so the same checker validates the generated
 upload archives rather than trusting their filenames by inspection. Exact archive
 members and hashes are frozen in `docs/rev-b-five-board-package-manifest.json`.
+The signed independent render/BOM review and dated quote are in
+`docs/rev-b-five-board-preupload-review.md`.
 
 Official references captured in the JSON profile:
 

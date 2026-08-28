@@ -1,8 +1,8 @@
 {
   "cards": {
     "backplane": {
-      "archive_bytes": 26151,
-      "archive_sha256": "3502064f327e7153172e0a929e7ecdd44a9c4817fb32ed27dd71a7b3ac991826",
+      "archive_bytes": 26147,
+      "archive_sha256": "8ed116a001f1c575df0355800d52206de8297ae7a64e4c7661400cd625a4deca",
       "board_mm": [
         100.0,
         100.0
@@ -11,46 +11,46 @@
       "members": {
         "backplane-B_Cu.gbl": {
           "bytes": 35350,
-          "sha256": "126531f85a22735048f5db8f068876669da93e41805d4511b6ca68298f323f9b"
+          "sha256": "3e2d9dc44a531b19de7e42b36e589574d876ab945d937fd41e4740cb339d3cbd"
         },
         "backplane-B_Mask.gbs": {
           "bytes": 10576,
-          "sha256": "da10e39e4900540131fc17baed6070d7086ac3ef9bb7626a717d6f59420ee7aa"
+          "sha256": "82d09c176b75d2b142719fdde80f0059722418daf2fa70feaa7b7f5a27faae3c"
         },
         "backplane-B_Silkscreen.gbo": {
           "bytes": 497,
-          "sha256": "366891983eb412a7c85c0310ae68f5c5f1f6a02a36496d9470c048c644047b07"
+          "sha256": "4211cdaddf5ac2951415edade788583e3bc67beb3fccd8ffd01cdf4cb368288e"
         },
         "backplane-Edge_Cuts.gm1": {
           "bytes": 666,
-          "sha256": "916884cf7fbb5c7911b55fbe213dfd54a77d7128330e6c66885b5ac71fd26c4c"
+          "sha256": "192de36ca57330acd1a342b9d5445634db9c61de8d1f7b42bfc264600cd81d50"
         },
         "backplane-F_Cu.gtl": {
           "bytes": 30900,
-          "sha256": "facb0077e4172dd8fe9fbb31716fe38921c160164457df123e86c4e49602a2fa"
+          "sha256": "8bd38ff57065b26999326f7a48f1a34add8abd082b1f16898563f84a547d1212"
         },
         "backplane-F_Mask.gts": {
           "bytes": 10576,
-          "sha256": "bcb8d4c94ecc3dd801d786785f4ca31101b2f8be365b635aba60315fa0317fc6"
+          "sha256": "2fd2e54c9c39028d313ce1b8df934ddfc3e3be8c948241a8c54e39d1873447fa"
         },
         "backplane-F_Silkscreen.gto": {
           "bytes": 37472,
-          "sha256": "37d4c02033f3a36d2a14908fa010af0bb7b2b8fd9f6ab10a3e057211dc713c70"
+          "sha256": "42c91be2f36cfe2cb1bc8b92c451d1b0672f219f8f0b2e22c7c8d38a382b4db9"
         },
         "backplane-job.gbrjob": {
           "bytes": 2414,
-          "sha256": "556ab6c10ce32889ad6c979cc2a772509d7ea92aa0b9336a3c4e74c76a6d020f"
+          "sha256": "f3c9082a904309942a6b525758f1059e216db3e7b8295e9d8854c2dfd4f74240"
         },
         "backplane.drl": {
           "bytes": 5129,
-          "sha256": "dc67b35a6a3f79f15f4bdeb29e8055c4ba22d6569511357f11d99bcf5428f1d9"
+          "sha256": "8dfc19bd39158332fc0958839f912bef8f78ee9544d2db7db8f3b644654eca3b"
         }
       },
       "source_pcb_sha256": "1644ec4dd1cc64d0eda0d9fe99c4be98ac28ae2a0fe3b2cae6234bed848f0740"
     },
     "cpu": {
-      "archive_bytes": 14880,
-      "archive_sha256": "ab5df984e8da992daf002f4b08446c38f0d952c1eacc29e9dd15fd79c9c1494b",
+      "archive_bytes": 14884,
+      "archive_sha256": "b83ee98722bf3035059c192ac25406cf69e41931704c2f4493dca2f8f981e0a0",
       "board_mm": [
         100.0,
         70.0
@@ -59,46 +59,46 @@
       "members": {
         "cpu-B_Cu.gbl": {
           "bytes": 16951,
-          "sha256": "180dbd856e07dee957891653204c88731332d18337b27bb1f9d51fe3f2574ab4"
+          "sha256": "c8030f8e38d2eb4927010c6f738e1c7f5c74a73dc9e59256293895f04991d69a"
         },
         "cpu-B_Mask.gbs": {
           "bytes": 3864,
-          "sha256": "4ecc95460173d5b568853df36a468dd561c599e4a48fb33bd17b6214cc01d465"
+          "sha256": "59cdd8b1f560a8e24d4ee42ea099920f43ca513326e6be1fab4049ddcb423f7c"
         },
         "cpu-B_Silkscreen.gbo": {
           "bytes": 491,
-          "sha256": "c9d268d1a943edc61d7911f49b4d3fb1ad5252af6680c3e2b01ed7dbbe0cdd18"
+          "sha256": "49f3f6d888a23e9526aa3aad3c2d850165e4a489d89982b6813401ecc7182f3c"
         },
         "cpu-Edge_Cuts.gm1": {
           "bytes": 656,
-          "sha256": "f12868b626f4e34cc2c3fdf0b541e18638e964a5a81afbb6e6624cb2865e0aec"
+          "sha256": "092e1471ff686c53e4cec84ea715751f2a6ea75917f3b11593d101619ac493b4"
         },
         "cpu-F_Cu.gtl": {
           "bytes": 14412,
-          "sha256": "f7203676b57be4982701f3a551202a28cfaebf7379158916ef800be9c09598d0"
+          "sha256": "e4d57797690a94391b2d3abb94be035a8fc9a712bc68f9c5619ed4b1ffcd4076"
         },
         "cpu-F_Mask.gts": {
           "bytes": 3864,
-          "sha256": "8fc7c892ff5155897cd11271d862ac88f729cde35a44dc4b0853d729be956894"
+          "sha256": "255727b2643996e7dfa539e8fb487fa2b6a739ba3731dcf6571a4861a2566588"
         },
         "cpu-F_Silkscreen.gto": {
           "bytes": 9248,
-          "sha256": "d9b147593cd045bd797dcd49ab17777f881a4837099b64a905ca8421e2af32ae"
+          "sha256": "cc45e37b48884fc37650db3fb4568f541557529caacabc110dbd5d98d3b3fa26"
         },
         "cpu-job.gbrjob": {
           "bytes": 2363,
-          "sha256": "0a752811f1786bdbbad937fd88fb1d979f034d476a69053e9d91aa66af5246ac"
+          "sha256": "b65562ae5b6a1f3a35524c1683a1cdbe33c54c070931b42a9a4b301ba95353ff"
         },
         "cpu.drl": {
           "bytes": 2248,
-          "sha256": "96831e7d312febed06a5ddf190d2798b723de1edc68f19b4b35eae7bcb24dd5d"
+          "sha256": "ef24751741e12252c7c886811f073a521d448419c6634b74fc3c6eb7a961c3ff"
         }
       },
       "source_pcb_sha256": "c2d1438de028d587e9a0469699af46285e7e227bcece6d27b7e83793651bfd1d"
     },
     "io": {
-      "archive_bytes": 24680,
-      "archive_sha256": "a1cbc083f5b5b98f29d350d8969b204ab2abead4ab34ec6bd2922dc300a7db34",
+      "archive_bytes": 24678,
+      "archive_sha256": "a86c1ac422bdfb5dbd4225fde0fc26016438b93e21161c7f6de1e3c487c1589a",
       "board_mm": [
         100.0,
         100.0
@@ -107,46 +107,46 @@
       "members": {
         "io-B_Cu.gbl": {
           "bytes": 34899,
-          "sha256": "fc2f174bb6898dbfce082e48d7fda1c04696ea0bb261a05fbf53a24933f3d148"
+          "sha256": "f75c39f1889790e1fef76ca27afed43909b1a773a540457a3121c39819e211c0"
         },
         "io-B_Mask.gbs": {
           "bytes": 7376,
-          "sha256": "a03cd55c526058d30ed38d2d1578eb87c1a580c19da2e77f61bfb874d56c9dd8"
+          "sha256": "b7924fa554466239f3ec8f5b32a2470474c16a45bea7d219939b02c5f9f56ce3"
         },
         "io-B_Silkscreen.gbo": {
           "bytes": 490,
-          "sha256": "907c8b8a9b1547dcaf33bdcf0c479a506c072654cc4fc16f082f606c02837972"
+          "sha256": "965e01233a7f9ac3d0fc84ac2309cb5d9555342c5c9beafc07d99a7b03b6301c"
         },
         "io-Edge_Cuts.gm1": {
           "bytes": 659,
-          "sha256": "02d0677c4562624df47d3eb6ebfe33f7ec13977a5a4f84fec6f1d9a014ff4b00"
+          "sha256": "004bee509182d7233fc39eb5bd74759128be0c2f10a9bd448b66670b534f66c1"
         },
         "io-F_Cu.gtl": {
           "bytes": 31936,
-          "sha256": "88e4c906bff51670206131511983c1ad596fdfb17f80440fdf5bc103cd04a250"
+          "sha256": "c8a94f2504b84ec45899b10ba34954e526b0a2ab21e76f0ca8fbf5aa8b335865"
         },
         "io-F_Mask.gts": {
           "bytes": 7376,
-          "sha256": "a383231fce8fd771e7358c3477364f37037943de96a2b18173138ddd4a2732d0"
+          "sha256": "b412b0a1e7fef5642c3eb8bf284bc19fa1c4ef86bd8e00bc4a9e9154aeee3a3b"
         },
         "io-F_Silkscreen.gto": {
           "bytes": 12134,
-          "sha256": "944ada90a4cd6fc5280feec9c29befec6ce04f46b7073fb607ada88dfb78b460"
+          "sha256": "720e1afbe7092cc9112ea47ac618d360212733bcf483e99faef1253796f97221"
         },
         "io-job.gbrjob": {
           "bytes": 2356,
-          "sha256": "ff4184f6a25bc0ef4b4359360ae838392dffaf49a15c23ed2be0cff0aed817ce"
+          "sha256": "a9915db1687fcffa20214ffcb051bcb6c9495372488771a257593f484a099fa5"
         },
         "io.drl": {
           "bytes": 4538,
-          "sha256": "1da53d066196b48c350f5e1a9d41bf3ddfe467a3e580dae87c2a60fac7508160"
+          "sha256": "43495c7e79a8e722b2727e50f9270b67d6cdc721111e7f968764d8207b0676eb"
         }
       },
       "source_pcb_sha256": "b40acb98372cd835a967bcf9581f1deba3512928189ad897831f41ee1d5f8127"
     },
     "mem": {
-      "archive_bytes": 18793,
-      "archive_sha256": "e7b1aac643cbb0ea0217dd0ec0df2476a5a7cf345055743806f92e5ef1b44ed1",
+      "archive_bytes": 18797,
+      "archive_sha256": "002ecd84ecfefde6b6ae8fc3b2859b8d4599294e5821dd443b451916e708831e",
       "board_mm": [
         100.0,
         60.0
@@ -155,46 +155,46 @@
       "members": {
         "mem-B_Cu.gbl": {
           "bytes": 26299,
-          "sha256": "38c14d3df8947cf28195b13c3862ababf6b9bd162ed8607de768ab1f5b082576"
+          "sha256": "e0f7d738a805f1667aa45d67ee41ece46365cbb00a78cb77676081da478baac4"
         },
         "mem-B_Mask.gbs": {
           "bytes": 5230,
-          "sha256": "93fe81e5563d25c676e6b33ac5466264d73c78fd10d1a14e0fa52dd1660cc199"
+          "sha256": "4fc799ea9a6f9db3fbe533b87744da33f0cb9ff0af68739c2f7d078594aa79ac"
         },
         "mem-B_Silkscreen.gbo": {
           "bytes": 491,
-          "sha256": "fc60306f1f791bb9cba336bf3325c91c170a8c1a5294fa74971af4cca1f08a64"
+          "sha256": "f4597c056769a1a437425b059437572df5196c34d22846bfbe37a6602807926c"
         },
         "mem-Edge_Cuts.gm1": {
           "bytes": 656,
-          "sha256": "481c261084811f45101babd286267669cd80ad10203f1a7f58c682123f7dae39"
+          "sha256": "e40653faa68722fb0cd625982ce8b6b56e2dd78e9178a20b72095128cab8e378"
         },
         "mem-F_Cu.gtl": {
           "bytes": 21219,
-          "sha256": "1a67591b5bdf1a1e0159053f53fb39fa53b0f0bcd657dd8be185c1bc7f39e3a1"
+          "sha256": "7b39e8ef2d096169dbf32d9693bcba8f5615461efdafab8fe5834bef5aa644c5"
         },
         "mem-F_Mask.gts": {
           "bytes": 5230,
-          "sha256": "94a9b2f099a9a86b57d1a421d5c5e40810de7ecef878eccae605e475cbb90ad2"
+          "sha256": "7b95c4c36fba63eac85328dd44e72831940c1bff61eac6d4170a6b12a925d9a4"
         },
         "mem-F_Silkscreen.gto": {
           "bytes": 8982,
-          "sha256": "340e9c54117628665c9b96bfb711d0206352c51547af01e3b262db2b2d5643aa"
+          "sha256": "49515c9fd033d77f5f14d0896f9ed83afe4cdc3843e48362fcb3e3dfe7d9772c"
         },
         "mem-job.gbrjob": {
           "bytes": 2363,
-          "sha256": "693409b76c9e8c36427a762391ed495b585c7a509fb71419cd2b0751981f9cfb"
+          "sha256": "ae14cf32ef83d74b9645cab5a3ad272ff016bbffb8e24a596c2cd96d05d86698"
         },
         "mem.drl": {
           "bytes": 3092,
-          "sha256": "08f1eb3ff1fa1a20d13e89d3f4a00a006fa4cd8fbbc477cace91e0a202a8fa32"
+          "sha256": "211ae4b085ef40163419909c29b9bdbdaf463ddc61b22ef16b7ec2d07bc84755"
         }
       },
       "source_pcb_sha256": "63f763695d205cf3823fdfcf81dfb234d164d1317dbe09620947c8111c206479"
     },
     "video": {
-      "archive_bytes": 407048,
-      "archive_sha256": "7d9591381c84a155061c6a82acfa48b4914d7fb8e28752240a8dfd3b40496921",
+      "archive_bytes": 407054,
+      "archive_sha256": "05180d8fa2084feec9bfdc4fa5aba89350dc681e643ac5a4e3f239ed69d17dc1",
       "board_mm": [
         100.0,
         100.0
@@ -203,68 +203,82 @@
       "members": {
         "video-B_Cu.gbl": {
           "bytes": 77199,
-          "sha256": "52249bddac1007a2a65b87f26f299b0bab20d36f0ad64368846ef508b62c4055"
+          "sha256": "16665a2fe317b3bb6fb46d6a1a75c9c185674d04e9c4fe2f1cb211f675f922ab"
         },
         "video-B_Mask.gbs": {
           "bytes": 15051,
-          "sha256": "85eee281727dccc39c1f7274da3ac66bbee11bd77526c7eb147d8e6fbeda9f8d"
+          "sha256": "f9fd7242e2a423cefdc7e210f24636fd1beb4f5b7e70dc7efd50ec86f1fd076f"
         },
         "video-B_Silkscreen.gbo": {
           "bytes": 2609,
-          "sha256": "2e6ebada19b3d316e2407c6629390569c3f16ff6fa91b86a4446493fcb2f9a5c"
+          "sha256": "ac2aec45ca250c41f06d861fb3f4ee54d034901f4305cbdeec1ee5f5fb245048"
         },
         "video-Edge_Cuts.gm1": {
           "bytes": 662,
-          "sha256": "e0fe472b0621dd499bfa98164ff1933cb993805e9f0420b4660f7f3cc4243f04"
+          "sha256": "42a17998106fcd0013bb75b5f228c5a6289affb168ff8831b3b75df99c0e5e65"
         },
         "video-F_Cu.gtl": {
           "bytes": 109035,
-          "sha256": "d531e222ff152bcce4f22a6a6f971798fecf820d102491b331639d548031ac60"
+          "sha256": "403c56eea0b1b224fd302781cc47b11a6cb91f3746203969e799dfd133f8337b"
         },
         "video-F_Mask.gts": {
           "bytes": 15051,
-          "sha256": "3897f2e2e4328ef876ba760e0cfec9ba0f67579f9a1340b2b1e3f3a073d64bf0"
+          "sha256": "36716532dc6cb8fe18b275193e422f67e56309d0128cdb471371cbe4621e8628"
         },
         "video-F_Silkscreen.gto": {
           "bytes": 57336,
-          "sha256": "a21ae29acbff092aeefda854e161faa3a0d42949be350c272ce7e55bffe788b8"
+          "sha256": "aca0b0bdc5e900b7e8089564d9a36f1c29daa02947a8adfba866cdeeb3d66158"
         },
         "video-In1_Cu.g1": {
           "bytes": 782902,
-          "sha256": "91235be1b192b81b783b00b4ce84b2179c1521b8084ad704e328f8daf1401b1a"
+          "sha256": "0390ce67f432edd059637053f4ca27f9728626900f522d0c1b5e8a0a6bc1bae4"
         },
         "video-In2_Cu.g2": {
           "bytes": 799829,
-          "sha256": "0d310b08be08b84f30603aa02c5ea8801bab7225bfa09e65ea34f735264a7c44"
+          "sha256": "f6693cb94ab8334578ba2ee2ead350d136f8458da75cead57da3d37f08783424"
         },
         "video-job.gbrjob": {
           "bytes": 3338,
-          "sha256": "6169048834da685817de1d1fce3948c317accca0072f4e76dd6a5d0bbf98f3cf"
+          "sha256": "1155a3a2f443597640149133efb11309b29bf3868342040544018501bcca4643"
         },
         "video.drl": {
           "bytes": 10162,
-          "sha256": "0ffb46a9e6090dcc741dd1f3a2715d4219a0f05ff75e6f3538d8ebde61eae428"
+          "sha256": "0b924c87b401d7311dc5dc35ab1a749467a8bac3086a31ddc6e61acd2cebe1c2"
         }
       },
       "source_pcb_sha256": "3ba9e1b3497216b55eec45f61ac574e49f3bf76c31f3fec792bce14034d23e47"
     }
   },
-  "jlcpcb_profile_sha256": "39c14e2594b91e9137aefb3a59e2f4524bfdafaccdc2ab08c33a36acb87360a1",
+  "jlcpcb_profile_sha256": "71389d73858ecb5950a5eb2066258915e2b87e4176dba02c59e6ebf1302f036a",
   "order_options": {
     "assembly": false,
+    "board_outline_tolerance_mm": 0.2,
     "board_thickness_mm": 1.6,
     "controlled_impedance": false,
+    "delivery_format": "Single PCB",
+    "different_designs_per_archive": 1,
+    "electrical_test": "Flying Probe Fully Test",
+    "four_layer_inner_copper_oz": 0.5,
+    "fr4_tg_c": 135,
     "material": "FR-4",
+    "minimum_via_quote_option": "0.3mm/(0.4/0.45mm)",
     "outer_copper_oz": 1.0,
     "panelization": false,
+    "product_type": "Industrial/Consumer electronics",
     "production_file_confirmation": true,
+    "quantity_per_design": 5,
     "silkscreen": "white",
     "solder_mask": "green",
     "surface_finish": "lead-free HASL",
-    "via_covering": "tented"
+    "vendor_mark": "Remove Mark",
+    "via_covering_by_copper_layers": {
+      "2": "tented",
+      "4": "plugged"
+    },
+    "via_plating_method": "Not Specified"
   },
   "schema": 2,
-  "source_revision": "18927743e797a81f116aad4806318050adacefa0",
+  "source_revision": "6962a9a4ec6bfa67703112bbc828287d94ebc5b8",
   "status": "R5.J2 five-board bare-PCB release candidate; ORDER HOLD",
   "tool_versions": {
     "git": "git version 2.53.0",
