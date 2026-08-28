@@ -80,48 +80,56 @@ def build_report(out_dir):
     jar = FREEROUTING / "build" / "libs" / "freerouting-current-executable.jar"
     checks.append(("Custom executable jar built", jar.exists(), f"Jar: `{jar.relative_to(ROOT)}`."))
 
-    scheduler = FREEROUTING / "src" / "main" / "java" / "app" / "freerouting" / "management" / "RoutingJobSchedulerActionThread.java"
+    polyline = FREEROUTING / "src" / "main" / "java" / "app" / "freerouting" / "board" / "trace" / "PolylineTrace.java"
     checks.append((
-        "Headless scheduler honors v1.9 router",
+        "Bounded trace combining present",
         contains(
-            scheduler,
-            "RouterSettings.ALGORITHM_V19.equals(algorithm)",
-            "new BatchAutorouterV19(job)",
+            polyline,
+            "remainingIterations = 10000",
+            "PolylineTrace.combine: iteration limit reached",
         ),
-        "`RoutingJobSchedulerActionThread` selects `BatchAutorouterV19` for `freerouting-router-v19`.",
+        "`PolylineTrace.combine()` cannot loop forever on degenerate imported geometry.",
     ))
     checks.append((
-        "Built jar contains v1.9 scheduler path",
+        "Built jar contains bounded-combine marker",
         jar_entry_contains(
             jar,
-            "app/freerouting/management/RoutingJobSchedulerActionThread.class",
-            "freerouting-router-v19",
-            "BatchAutorouterV19",
+            "app/freerouting/board/trace/PolylineTrace.class",
+            "PolylineTrace.combine: iteration limit reached",
         ),
-        "The built executable jar contains the headless v1.9 scheduler selection, guarding against stale local jars.",
+        "The executable jar is a custom build rather than an unpatched upstream jar.",
     ))
 
-    headless_test = FREEROUTING / "src" / "test" / "java" / "app" / "freerouting" / "interactive" / "HeadlessRoutingTest.java"
+    ses_test = FREEROUTING / "src" / "test" / "java" / "app" / "freerouting" / "io" / "specctra" / "SesRoundTripTest.java"
     checks.append((
-        "Headless v1.9 regression test present",
+        "KiCad SES regression tests present",
         contains(
-            headless_test,
-            "headlessRouting_usesV19RouterWhenSelected",
-            "Starting V1.9 router",
-            "job.output.size > 0",
+            ses_test,
+            "sesWriterPreservesSuffixedPackageIdentifiers",
+            "host_cad",
+            "host_version",
         ),
-        "`HeadlessRoutingTest` guards the #508 workaround path and non-empty SES output.",
+        "`SesRoundTripTest` guards package identifiers and standard Specctra metadata tokens.",
     ))
 
     checks.append((
-        "VJUGA route script defaults to v1.9",
-        contains(ROUTE_SCRIPT, 'FREEROUTING_ALGORITHM="${FREEROUTING_ALGORITHM:-freerouting-router-v19}"'),
-        "`route_rev_a_pcb.sh` defaults to `freerouting-router-v19`.",
+        "VJUGA route script selects current router",
+        contains(ROUTE_SCRIPT, 'FREEROUTING_ALGORITHM="${FREEROUTING_ALGORITHM:-freerouting-router}"'),
+        "`route_rev_a_pcb.sh` uses the maintained current router.",
     ))
     checks.append((
-        "VJUGA rejects stock jar for v1.9",
-        contains(ROUTE_SCRIPT, 'USING_STOCK_FALLBACK=1', 'requires the custom FreeRouting fork jar'),
-        "`route_rev_a_pcb.sh` does not silently run v1.9 mode against the stock jar.",
+        "VJUGA disables route optimizer explicitly",
+        contains(ROUTE_SCRIPT, "--router.optimizer.enabled=false"),
+        "Routing does not inherit optimizer defaults from machine-global configuration.",
+    ))
+    checks.append((
+        "VJUGA uses project-local router state",
+        contains(
+            ROUTE_SCRIPT,
+            '--user_data_path="$REPO/.tools/freerouting-user"',
+            '--logging.file.location="$REPO/.tools/freerouting-user"',
+        ),
+        "Routing does not read or overwrite machine-global Freerouting state.",
     ))
     checks.append((
         "VJUGA route script disables GUI",
@@ -136,8 +144,8 @@ def build_report(out_dir):
         f"Status: **{status}**",
         "",
         "This report records the fast checks that make VJUGA's autorouting path",
-        "depend on the custom Freerouting fork instead of the stock v2.x headless",
-        "path discussed in upstream #508. It does not replace a full autoroute",
+        "depend on the custom Freerouting fork and a project-owned current-router",
+        "configuration. It does not replace a full autoroute",
         "quality run.",
         "",
         "## Summary",

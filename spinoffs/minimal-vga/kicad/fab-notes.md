@@ -123,11 +123,12 @@ Gradle's toolchain support auto-provisions a Temurin JDK 25 into
 route script probes that home-folder JDK automatically — both the Linux layout
 (`eclipse_adoptium-25-*/bin/java`) and the macOS bundle layout
 (`eclipse_adoptium-25-*/jdk-25*/Contents/Home/bin/java`). Overrides: `JAVA_BIN`
-for the runtime, `FREEROUTING_JAR` for the jar. The stock freerouting jar is a
-fallback only — the default `freerouting-router-v19` algorithm requires the
-fork (PolylineTrace.combine fix, headless settings application, dense-board
-stagnation tuning, headless v1.9 router selection). Verified on macOS arm64:
-Temurin 25.0.3 auto-provisioned, fork jar built and smoke-tested (2026-07-16).
+for the runtime, `FREEROUTING_JAR` for the jar. The maintained
+`freerouting-router` algorithm is selected explicitly, with the optimizer off
+so machine-global defaults cannot change the production route. The fork retains
+bounded trace combining, headless/offline defaults, and KiCad-compatible SES
+identifiers/grammar. Verified against the Rev-B video card at total DRC 0/0 on
+2026-08-28.
 
 `JAVA_HEAP` defaults to ~70% of RAM. Peak heap for this board is under ~1.5 GB,
 so on a memory-constrained machine cap it (`JAVA_HEAP=4096m`) to stop the JVM

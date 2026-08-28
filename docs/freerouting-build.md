@@ -10,13 +10,12 @@ this board.
 
 The `custom` branch (submodule `external/freerouting`) carries:
 
-- **Bounded `PolylineTrace.combine()`** — stock recurses with no progress
-  guarantee and hits `StackOverflowError` on degenerate/overlapping trace
-  geometry (e.g. hand-placed locked wires imported from a DSN), so a headless
-  routing job never completes (it then polls the job at 0% CPU forever). The
-  custom build bounds the loop.
-- Stagnation-stop tuning for our dense board (40-pass patience, 0.05 threshold).
-- Headless v1.9 router selection + serialized headless output.
+- **Bounded `PolylineTrace.combine()`** — upstream now uses an iterative loop,
+  but it still has no progress bound on degenerate/overlapping trace geometry
+  (for example hand-placed locked wires imported from a DSN). The custom build
+  caps successful combine iterations so a malformed case cannot run forever.
+- KiCad-compatible Specctra SES output: original `::N` package identifiers and
+  standard `host_cad` / `host_version` grammar tokens are preserved.
 
 ## Use it
 
@@ -79,6 +78,9 @@ jar was built from and its sha256.
 - **GUI forced off when headless** — `gui.enabled` is set false under
   `GraphicsEnvironment.isHeadless()`, so the "Couldn't get screen resolution"
   warning no longer prints on every headless/CI run.
+- **KiCad-compatible SES** — explicit front/back package IDs such as `::1` and
+  `::2` remain distinct, and Specctra metadata uses the standard `host_cad` and
+  `host_version` tokens accepted by KiCad.
 - **Deterministic routing** — the RNG is already seeded (`new Random(0)` /
   `setSeed(ripup_costs)`). Verified: two `-mt 1` runs of the same DSN produce a
   **byte-identical `.ses`**, so single-threaded routing is reproducible

@@ -34,7 +34,7 @@ fi
 [ -n "$JAVA_BIN" ] || { echo "  SKIP  route ($CARD): no Java 25 runtime (set JAVA_BIN)."; exit 0; }
 echo "  using java: $JAVA_BIN"
 
-OUT="fab/minimal-vga/revb/routing"; mkdir -p "$OUT"
+OUT="fab/minimal-vga/revb/routing"; mkdir -p "$OUT" .tools/freerouting-user
 DSN="$OUT/${CARD}.dsn"; SES="$OUT/${CARD}.ses"
 echo "== rev B route ($CARD) via freerouting =="
 # KiCad 10 kicad-cli has no specctra export; use pcbnew (rev A route_rev_a_pcb.sh method).
@@ -167,6 +167,10 @@ PY
   "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" \
     -de "$OUT/${CARD}-a${attempt}.dsn" -do "$SES" -mp "$PASSES" \
     -is "${FR_SELECTION:-prioritized}" -us "${FR_UPDATE:-greedy}" \
+    --router.optimizer.enabled=false \
+    --gui.enabled=false \
+    --user_data_path="$REPO/.tools/freerouting-user" \
+    --logging.file.location="$REPO/.tools/freerouting-user" \
     >"$OUT/${CARD}-fr.log" 2>&1 || true
   rm -f "$OUT/${CARD}-a${attempt}.dsn"
   [ -f "$SES" ] || { echo "  attempt $attempt: no SES produced, retrying"; continue; }

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/../../.."
+REPO="$(pwd)"
 
 BOARD_JSON="${BOARD_JSON:-spinoffs/minimal-vga/kicad/rev-a-physical.board.json}"
 PCB="${PCB:-spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb}"
@@ -27,11 +28,11 @@ if [ ! -x "$DEFAULT_JAVA_BIN" ]; then
 fi
 JAVA_BIN="${JAVA_BIN:-$DEFAULT_JAVA_BIN}"
 # Prefer the repo submodule fork jar when built (ddanila/freerouting `custom`:
-# PolylineTrace.combine fix, headless board-specific settings application,
-# dense-board stagnation tuning, and headless v1.9 router selection). The stock
-# jar remains a fallback only.
+# bounded PolylineTrace.combine, headless/offline defaults, and KiCad-compatible
+# SES output). Otherwise use the custom jar installed by build-freerouting.sh.
 FORK_JARS=(
   "external/freerouting/build/libs/freerouting-current-executable.jar"
+  ".tools/freerouting/freerouting.jar"
   "/Users/danila.sukharev/fun/freerouting/build/libs/freerouting-current-executable.jar"
 )
 if [ -z "${FREEROUTING_JAR:-}" ]; then
@@ -42,20 +43,16 @@ if [ -z "${FREEROUTING_JAR:-}" ]; then
     fi
   done
 fi
-USING_STOCK_FALLBACK=0
 if [ -z "${FREEROUTING_JAR:-}" ]; then
-  FREEROUTING_JAR=".tools/freerouting/freerouting-2.2.4.jar"
-  USING_STOCK_FALLBACK=1
+  FREEROUTING_JAR=".tools/freerouting/freerouting.jar"
 fi
-FREEROUTING_ALGORITHM="${FREEROUTING_ALGORITHM:-freerouting-router-v19}"
+FREEROUTING_ALGORITHM="${FREEROUTING_ALGORITHM:-freerouting-router}"
 PASSES="${PASSES:-30}"
-if [ "$FREEROUTING_ALGORITHM" = "freerouting-router-v19" ]; then
-  DEFAULT_THREADS=1
-elif [ "$FREEROUTING_ALGORITHM" = "freerouting-router" ]; then
+if [ "$FREEROUTING_ALGORITHM" = "freerouting-router" ]; then
   DEFAULT_THREADS=4
 else
   echo "Unsupported FreeRouting algorithm: $FREEROUTING_ALGORITHM" >&2
-  echo "Use freerouting-router-v19 or freerouting-router." >&2
+  echo "Use freerouting-router." >&2
   exit 2
 fi
 THREADS="${THREADS:-$DEFAULT_THREADS}"
@@ -100,15 +97,7 @@ if [ ! -f "$FREEROUTING_JAR" ]; then
     echo "  Linux: ~/.gradle/jdks/eclipse_adoptium-25-*/" >&2
     echo "  macOS: ~/.gradle/jdks/eclipse_adoptium-25-*/jdk-25*/Contents/Home" >&2
   fi
-  echo "Download FreeRouting 2.2.4+ or set FREEROUTING_JAR." >&2
-  exit 2
-fi
-
-if [ "$USING_STOCK_FALLBACK" = "1" ] && [ "$FREEROUTING_ALGORITHM" = "freerouting-router-v19" ]; then
-  echo "The default VJUGA router algorithm requires the custom FreeRouting fork jar." >&2
-  echo "Build external/freerouting/build/libs/freerouting-current-executable.jar or set:" >&2
-  echo "  FREEROUTING_ALGORITHM=freerouting-router" >&2
-  echo "for a stock-router comparison run." >&2
+  echo "Run scripts/build-freerouting.sh or set FREEROUTING_JAR to a custom build." >&2
   exit 2
 fi
 
@@ -178,14 +167,15 @@ fi
   -mt "$THREADS" \
   -da \
   --router.algorithm="$FREEROUTING_ALGORITHM" \
+  --router.optimizer.enabled=false \
   --gui.enabled=false \
-  --user_data_path=.tools/freerouting-user \
-  --logging.file.location=.tools/freerouting-user \
+  --user_data_path="$REPO/.tools/freerouting-user" \
+  --logging.file.location="$REPO/.tools/freerouting-user" \
   --logging.console.level=INFO
 
 if [ ! -s "$SES" ]; then
   echo "FreeRouting did not write a non-empty SES file: $SES" >&2
-  echo "Rebuild the custom fork jar and verify headless v1.9 output serialization." >&2
+  echo "Rebuild the custom fork jar and verify KiCad-compatible SES output." >&2
   exit 3
 fi
 

@@ -178,9 +178,9 @@ def machine_gate_summary(out_dir):
             "Headless router fork",
             has_ready_line(router, "READY")
             and "- Failed checks: 0" in router
-            and "Headless scheduler honors v1.9 router | PASS" in router
-            and "VJUGA route script defaults to v1.9 | PASS" in router,
-            "`router-readiness.md` records the custom Freerouting fork and VJUGA headless v1.9 route path.",
+            and "KiCad SES regression tests present | PASS" in router
+            and "VJUGA route script selects current router | PASS" in router,
+            "`router-readiness.md` records the custom Freerouting fork and maintained headless route path.",
         ),
         (
             "Behavioral simulation/LVS",
