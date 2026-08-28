@@ -1,6 +1,6 @@
 # Diymore FT232BL adapter investigation
 
-Status date: 2026-08-23
+Status date: 2026-08-28
 
 This note records the desk review and bench evidence for the Diymore
 USB/RS-232/TTL/RS-485 module tried with Juku CS00000. It deliberately separates
@@ -132,6 +132,41 @@ show that this instance can generate and receive its own levels. The mismatch
 can reduce transmitter margin under an external load and should be corrected
 before qualifying the module, but replacing the chip solely to fix Juku-to-host
 reception would be an unsupported diagnosis.
+
+### 2026-08-28 capacitor-replacement retest
+
+The owner replaced the four charge-pump capacitors to match the plain
+`MAX232CPE` application circuit, then repeated the bench work with the same
+`0403:6001` / `ftdi_sio` adapter identity. A stronger local DB9 pin-2/pin-3
+loop returned every byte exactly: 6,144 bytes at 9,600/8O1, 12,288 at
+19,200/8N1, and 12,288 at 19,200/8O1.
+
+The first C9 Network ROM trial exposed exact local echo: the host transmitted
+11,993 bytes of V16 probes and received the same 11,993-byte stream, while
+three deliberately non-protocol raw payloads were also returned byte-for-byte.
+A temporary host echo filter correctly removed that stream and passed a full
+echo-plus-real-target cosim, but a reset-controlled physical retry contained
+only 11,963 returned host bytes and no C9 response. This proved that filtering
+could not repair the physical routing and was not retained in the host.
+
+The owner then found the decisive assembly error: both selector shunts had
+been installed 90 degrees from their orientation in the product photograph.
+Removing them eliminated the echo but disconnected the DB9 path (`tx=6215`,
+`rx=0` after a reset-controlled C9 run). Installing them exactly as photographed
+also eliminated the echo, then let the unchanged host complete the C9 V16
+stream and switch from 19,200/8N1 to 19,200/8O1 NetDisk. The final V16 reply
+was missed, but the intended NetDisk confirmation followed. By the end of the
+session the host had completed 22 reads serving 66 records, with zero retries
+and zero UART errors. The host's final exit status 4 occurred only after the
+USB serial device itself disappeared during shutdown; it does not qualify the
+successful CS00000 traffic or indicate a target-side failure.
+
+This qualifies the corrected selector orientation, FT232BL/MAX232 data path,
+external ground reference, CS00000 C9 boot, framing handoff, and sustained
+read traffic together. The capacitor replacement corrects the documented
+plain-MAX232 mismatch, but its independent effect is not isolated because the
+selector orientation was corrected in the same revisit. The historical
+failure was therefore hardware configuration, not a host-parser defect.
 
 ### Juku comparison
 
