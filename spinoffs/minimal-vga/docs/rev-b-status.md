@@ -67,6 +67,8 @@ dependency-ordered tasks in `rev-b-five-board-order-plan.md`. The next
 dependency-ready work is R5.R1: present the exact hashes, signed independent review
 and dated quote to the owner and retain the machine-checked hold unless explicitly released.
 Do not upload the historical four-board packages. Ordering stays on hold until all
-five packages pass R5.R1 and the owner explicitly releases them.
+five packages pass R5.R1 and the owner explicitly releases them. The held R5.O1
+upload/DFM/order record and R5.B1 five-card bench log are prepared; they are runbooks,
+not evidence that either physical stage has begun.
 
 Rule: `git pull --rebase` before every push — the remote moves mid-session.

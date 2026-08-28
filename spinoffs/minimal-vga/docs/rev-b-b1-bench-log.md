@@ -1,87 +1,92 @@
-# VJUGA rev B B1 — order and first-article bench record (T1.10/T1.11)
+# VJUGA rev B — five-card first-article bench log (R5.B1)
 
-> **HISTORICAL/UNUSED ORDER FORM (2026-08-27).** No four-board order was placed.
-> Keep the staged bench ladder as useful bring-up input, but do not fill or use
-> the order section below. R5.O1 in `rev-b-five-board-order-plan.md` requires a
-> new five-board order record after final package hashes exist.
+Status: **TEMPLATE READY / HARDWARE PENDING**. Start only after the five-board
+R5.O1 order has arrived. Populate and power one first-article system in stages;
+surplus bare boards do not authorize duplicate builds.
 
-Fill this record as the four B1 bare-PCB ZIPs are uploaded and the first set is built.
-Do not mark observations from expectation. Do not release duplicate population or the
-B2 video PCB until every failed row has a disposition.
+Record measured observations, not expected values. A failed row stops the ladder
+until its cause and disposition are recorded. Power down before inserting or
+removing any card or IC; the bus uses orientation markings, not foolproof mechanical
+keying. Use the qualified regulated 5 V supply rated at least 2 A through the fused,
+reverse-protected center-positive `J_PWR`. The USB-TTL adapter is data-only and must
+not power the machine.
 
-## T1.10 order record
+## Receipt and build identity
 
 | Field | Recorded value |
 |---|---|
-| Vendor / order ID | pending |
-| Upload and preview date | pending |
-| Board stack-up | 2 layer, FR-4, 1.6 mm; copper/finish pending vendor preview |
-| Ordered quantities | pending (one assembled set; surplus bare boards held) |
-| Vendor DFM warnings / accepted exceptions | pending |
-| Approver | pending |
+| JLCPCB order ID / received date | pending |
+| Order-record reference | `rev-b-five-board-order-record.md` — pending completion |
+| Board lot markings: CPU / Memory / I/O / Backplane / Video | pending |
+| Quantity and visible shipping damage per design | pending |
+| Bare-board dimensions, thickness, finish, registration | pending |
+| Continuity/open checks and discrepancy references | pending |
+| Bench supply / current limit / DMM / scope or analyzer | pending |
+| Builder / independent checker / date | pending |
 
-Upload only the four ZIPs below from `fab/minimal-vga/revb/package/`. Before payment,
-compare them with `SHA256SUMS`, inspect every vendor layer preview, and record the hash
-the vendor actually received.
+Before assembly, compare all five boards to their accepted production-file previews,
+inspect both sides under magnification, and meter +5 V to ground on every bare board.
+Socket all programmed devices. Fit only the parts required by the active stage.
 
-| Board | Nominal size | Expected SHA-256 | Uploaded hash / preview result |
-|---|---:|---|---|
-| mem | 100 × 60 mm | `898308402f75ef4864ce598b2ef2177763199e8c972e8fd37b3c2dcb68bf7408` | pending |
-| io | 100 × 100 mm | `5cafb5b686e9904dbb7a86848c8618171f3a2fc02a5c79760bd3084c7e422de4` | pending |
-| cpu | 100 × 70 mm | `cc5f1d58906125625247d93cd7c686f0ca6afbb966e5b952aabc5f2b9a9ccc70` | pending |
-| backplane | 100 × 100 mm | `692ef44f186f987fa339644f528cf621435bd180f7a7f4ca01df6e27d9ca84a1` | pending |
+## Programmed-device identity and independent readback
 
-Vendor-preview checklist:
+Rebuild with `pld/revb/build_revb_gals.sh` and `roms/build_revb_rom.py --check`.
+Program out of circuit with security/fuse lock disabled. After programmer verify,
+power-cycle the programmer, read each part again, and compare its fuse count/checksum
+or full ROM SHA-256 before inserting it.
 
-- [ ] Dimensions and two copper layers match the table; no vendor auto-scaling.
-- [ ] Board outline is one closed rectangle; no cutouts were inferred from drawings.
-- [ ] Top/bottom copper, mask and silk are assigned to the correct sides.
-- [ ] Plated drill hits appear at every DIP/header/socket pad and via.
-- [ ] Historical only: USB4085 was later omitted by R5.J1; a regenerated archive must contain no USB-power connector or branch.
-- [ ] No paste, adhesive, courtyard, fab, user or assembly layer was uploaded.
-- [ ] Surface finish, copper weight, solder-mask color and shipping choice are recorded.
+| Board / ref | Device and exact artifact | Expected identity | Marking / programmer / saved readback / result |
+|---|---|---|---|
+| Memory U1 | 27C256 / `ekta37_z80-27c256.bin` | SHA-256 `e06dc0ee989d33049ad60c5a182df4d3da8814f206fd19c4f500603c772d9b2f` | pending |
+| Memory U3 | ATF22V10C / `memory-u3.jed` | QF5892, C6806, SHA `dbbe74d99400718f2d743b7e02a33291dc1efac68805ea0dd75830b84d06d363` | pending |
+| I/O U2 | ATF16V8B / `io-u2.jed` | QF2194, C3676, SHA `703412427efff890ebfc0e7d430b4a7cf016f3abdc9ad2f90bc3d9aac980e6e7` | pending |
+| Video U5 | ATF22V10C / `video-hdec-u5.jed` | QF5892, C81ED, SHA `224e88c3c76a585ed1893665e7333883a6d0fbfebc9dd4bcef8b1d5d43045153` | pending |
+| Video U6 | ATF22V10C / `video-vdec-u6.jed` | QF5892, C1DA2, SHA `4884fb645b412a51159560886341c17630aff165e492e08ed0008ed32305675f` | pending |
+| Video U7 | ATF22V10C / `video-ctrl-u7.jed` | QF5892, C8809, SHA `0668bcd86c9e7bb59e3e4b99576794c14ac3a676086a89bffd20a260ca3a5d95` | pending |
 
-## Build identity
+The minimum diagnostic alternative is `revb_bringup.bin`, SHA-256
+`edfdabda362cefd6716acd2fe70b8befa500cb5983afe097ccd2d4a0e8447892`.
+If it is used instead of EKTA, record the separate programmed ROM/readback here:
+pending.
 
-| Item | Recorded value |
-|---|---|
-| Board markings / lot codes | pending |
-| `revb_bringup.bin` SHA-256 | `edfdabda362cefd6716acd2fe70b8befa500cb5983afe097ccd2d4a0e8447892` |
-| Programmed ROM device / readback SHA-256 | pending |
-| Memory GAL device / source / fuse checksum | expected `ATF22V10C-15PU`; `memory-u3.pld` SHA `e29bfbe…5ac49`; JEDEC QF5892 / C6806; physical marking/readback pending |
-| I/O GAL device / source / fuse checksum | expected `ATF16V8B-15PU`; `io-u2.pld` SHA `37829f62…6dfee`; JEDEC QF2194 / C3676; physical marking/readback pending |
-| CPU oscillator fitted / measured | pending |
-| UART oscillator fitted / measured baud | pending |
-| Exact populated ICs and date codes | pending |
-| DNP parts confirmed absent (I/O U4/U5/U6 and B3-only paths) | pending |
+## Staged power and logic ladder
 
-## T1.11 staged bring-up
+At every powered stage, start with a conservative current limit, record steady and
+peak current plus +5 V at the backplane input and farthest active card, and inspect
+for heat. Stop immediately for reversed polarity, current-limit operation, smoke,
+odor, a hot device, less than 4.5 V at a 5 V logic rail, more than 5.25 V, or an
+unexpected rail-to-ground resistance. Increase the current limit only after the
+cause of the observed draw is understood.
 
-Use a current-limited 5 V source through the center-positive barrel `J_PWR` first:
-pin 1=`PWR_RAW` (+5 V center), pin 2=`GND_BUS` (sleeve). `F_MAIN` and `D_REV` protect
-this sole power path. The USB-TTL console is data-only and must not source the board.
-Power down before inserting/removing a card; keying is convention-only.
+| Stage | Configuration and required evidence | Current / rail / logic observations | Result / disposition |
+|---|---|---|---|
+| 1. Bare boards | Inspect five designs; verify outline/drill registration, orientation silk, intended DNPs, +5 V-to-GND resistance, and connector continuity | pending | pending |
+| 2. Mechanical fit | Unpowered cards seat without force in marked orientation; record adjacent clearance; reserve slot 5 for Video and leave slot 4 empty when Video is fitted | pending | pending |
+| 3. Bare backplane | No cards; current-limited `J_PWR`; verify polarity, fuse/reverse path, +5 V/GND at all five slots, and RESET_N assertion/release | pending | pending |
+| 4. CPU clock/reset | CPU card only with socketed 2.000 MHz oscillator; verify clock frequency/duty and reset at CPU and every slot | pending | pending |
+| 5. NOP free-run | Power off; add the unpopulated Memory card with ROM/RAM/GAL absent and fit eight roughly 1 kΩ resistors from `J_NOP` pins 1–8 (`D0`–`D7`) to pin 9 (GND); verify plausible binary A0–A15 count plus M1/RD/RFSH/control activity | pending | pending |
+| 6. Memory | Insert verified Memory card and ROM/GAL; verify ROM/RAM selects, no overlap, reset fetch, and stable reads before booting | pending | pending |
+| 7. I/O and TTL serial | Insert minimum I/O population and verified GAL; confirm header pinout/crossover and `TTL ONLY`; adapter VCC disconnected; test TX/RX at 19,200 8N1, then 9,600 fallback | pending | pending |
+| 8. Diagnostic boot | If used, `revb_bringup.bin` emits exactly `VJUGA rev B bring-up`, `RAM PASS`, `ROM OK`, `READY` (47 bytes) over the real 8251 | pending | pending |
+| 9. EKTA without Video | Boot the released EKTA ROM; record repeatable cold/reset behavior and serial evidence before adding Video | pending | pending |
+| 10. Video power-only | Power off; put Video in slot 5 with slot 4 empty; attach VGA before power; check card current, local rails, 25.175 MHz dot clock, sync, and abnormal heat | pending | pending |
+| 11. VGA function | Confirm stable 640x480 timing and visible EKTA output on the monitor; record monitor/mode, image evidence, RGB/sync observations, and cold/reset repeats | pending | pending |
+| 12. Bus interaction | Exercise framebuffer writes/reads, `WAIT_N` ownership, and divide-six frame tick; capture any contention or timing margins | pending | pending |
+| 13. Full-system serial | With VGA active, complete bidirectional ABI 1.4 C10 PROBE/DATA request/reply at 19,200 8N1; record exact bytes/log and 9,600 fallback result | pending | pending |
 
-| Step | Expected result | Observed result / evidence | Pass |
-|---|---|---|:---:|
-| 1. Bare-board inspection | Correct outline, drill registration, readable pin-1/orientation silk; no shorts/opens visible | pending | ⬜ |
-| 2. Bare mechanical fit | Each card seats in all five slots in the marked orientation; no forced insertion; measure adjacent-card gap | pending | ⬜ |
-| 3. Backplane only, current limited | +5 V and GND correct at every slot; RESET_N asserts low and releases high; idle current recorded | pending | ⬜ |
-| 4. CPU card, no memory/I/O | Clock reaches every slot; frequency and RESET_N timing recorded; no abnormal current/heat | pending | ⬜ |
-| 5. NOP free-run | With the documented NOP plug, A0–A15 count and control/refresh activity is plausible at the analyzer header | pending | ⬜ |
-| 6. Memory card | ROM/GAL readback hashes match; `J_OBS` shows ROM/RAM selects with no overlap; supply/current remain sane | pending | ⬜ |
-| 7. I/O minimum population | 8251 + decode GAL + baud oscillator only; FTDI crossover checked before attaching host | pending | ⬜ |
-| 8. Bring-up ROM | Serial stream is exactly `VJUGA rev B bring-up`, `RAM PASS`, `ROM OK`, `READY`; 47 bytes total | pending | ⬜ |
-| 9. RAM boundary/retention | Test covers 0x4000–0xD6FF; 0xD700–0xD7FF remains reserved for stack/variables; repeated cold boots pass | pending | ⬜ |
-| 10. Bus timing/current | Worst read/write margins and total current recorded against the 1351 mA five-card budget and regulated 5 V/2 A supply | pending | ⬜ |
-| 11. Keying/clearance disposition | Measured gap compared with 4.16 mm conservative model; reversed-insertion mitigation accepted or changed | pending | ⬜ |
-
-## Exit decision
+## First-article release decision
 
 | Decision | Recorded value |
 |---|---|
-| All T1.11 rows pass | pending |
+| All 13 stages pass | pending |
+| EKTA boots repeatably on VGA | pending |
+| Bidirectional C10 passes with Video installed | pending |
+| Worst total current / lowest measured +5 V | pending |
 | Discrepancies and dispositions | pending |
-| Duplicate B1 population released | no — pending first-article pass |
-| B2 TI.5+ PCB work/tape-out released | no — pending first-article pass |
-| Reviewer / date | pending |
+| Duplicate population released | **no — pending first-article pass** |
+| R5.B1 result | pending |
+| Owner / reviewer / ISO timestamp | pending |
+
+R5.B1 is complete only when all stages contain measured evidence, every discrepancy
+has a disposition, EKTA is visible on VGA, and the bidirectional C10 transaction
+passes with the complete five-card system.

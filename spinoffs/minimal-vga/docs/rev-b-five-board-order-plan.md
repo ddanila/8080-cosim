@@ -72,8 +72,8 @@ the change; a prose assertion is not a pass.
 | **R5.J2 — DONE 2026-08-28** | Regenerate all five fabrication ZIPs in one release run. Emit a manifest with source revision, tool versions, board dimensions/layers, file list and SHA-256 per archive. | R5.P1, R5.S3, R5.V6, R5.J1 | `export_fab.sh` validates the five reviewed routed sources and emits five safe archives in one command. The source-verified manifest records revision `6962a9a4`, dimensions, layers, tools, exact members and hashes; each package contains Gerber/Excellon production data only. |
 | **R5.J3 — DONE 2026-08-28** | Perform an independent pre-upload review and obtain a fresh live JLCPCB quote. Check every Gerber/drill rendering separately; reconcile the five designs with BOM quantities and programmed-device count. | R5.J2 | Signed review renders 42 individual layers/drills plus 10 composites with no unresolved finding; reconciles 131 footprints, 7 DNP and 6 programmed devices; and records a no-upload five-design web quote of $38.50 before combined shipping/tax, 5 copies each, 2-day 2L and 3–4-day 4L build times, exact options and no visible form warning. |
 | **R5.R1** | Hold the final release review. | R5.J3 | All gates below are green, exact package hashes are recorded, the owner explicitly changes `ORDER HOLD` to `RELEASED FOR UPLOAD`, and `check_revb_release_gate.py --require-released --package-root fab/minimal-vga/revb/package` passes. |
-| **R5.O1** | Upload the five independent designs, inspect JLCPCB's generated production files, resolve rather than silently accept DFM edits, and place the order. | R5.R1 | Order ID, accepted production-file screenshots/results, options, quantities and uploaded hashes are in a new five-board order record. |
-| **R5.B1** | After delivery, inspect and assemble in stages: bare backplane, CPU clock/reset, NOP free-run, Memory, I/O+serial, then Video. | R5.O1 | Each stage records current, rails, logic evidence and failures before the next card is inserted; final gate is EKTA boot with VGA plus bidirectional C10 serial. |
+| **R5.O1 — RUNBOOK READY / HELD** | After R5.R1, upload the five independent designs, inspect JLCPCB's generated production files, resolve rather than silently accept DFM edits, and place the order only after a separate owner order instruction. | R5.R1 | `rev-b-five-board-order-record.md` binds upload to the released hashes, records every preview/option/warning and final combined quote, and separates preview authorization from payment; completion requires the order ID. |
+| **R5.B1 — LOG READY / HARDWARE PENDING** | After delivery, inspect and assemble in stages: bare backplane, CPU clock/reset, NOP free-run, Memory, I/O+serial, then Video. | R5.O1 | `rev-b-b1-bench-log.md` records receipt, six independent programmed-device readbacks, current/rails/logic at 13 gated stages, and failures before proceeding; final gate is repeatable EKTA VGA boot plus bidirectional C10 serial. |
 
 The previous `TI.5 held until T1.11` dependency is therefore replaced by the
 R5 chain above. The physical risk is not erased; it moves into R5.V6/R5.J3 and
@@ -185,4 +185,7 @@ spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py \
 ```
 
 Until then, the correct next action is R5.R1, not an order and not a partial
-four-board upload.
+four-board upload. The post-release procedure is already frozen in
+`rev-b-five-board-order-record.md`; the after-delivery procedure is already frozen
+in `rev-b-b1-bench-log.md`. Neither prepared template changes its dependency or
+authorizes the physical step.
