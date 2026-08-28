@@ -200,10 +200,9 @@ budget. Details and machine-checked arithmetic are in `rev-b-five-card-power.md`
 | **Five-card total** | **1351 mA** |
 
 The required supply is regulated 5 V rated at least 2 A: 649 mA/32.45% planning
-headroom remains. The MF-R110 USB-branch polyfuse holds only 1.1 A, below this
-worst-case total, so USB-C is **not qualified for the complete five-card machine**.
-Normal operation is now frozen to the receipt-tested Mean Well GST25A05-P1J through
-the fused/reverse-crowbar-protected barrel input. The routed R5.V6 model gives a
-4.624 V minimum slot trough at 1.351 A. USB-C remains service-only and must not be
-used for the VGA-populated system. Exact protection and receipt-test limits are in
+headroom remains. Operation is frozen to the receipt-tested Mean Well GST25A05-P1J
+through the fused/reverse-crowbar-protected barrel input. The routed R5.V6 model gives
+a 4.623 V minimum slot trough at 1.351 A. R5.J1 removed the optional USB4085 power
+path because its fixed PTH lands fall below JLCPCB's published 2-layer annular-ring
+minimum; the USB-TTL console is data-only. Exact protection and receipt-test limits are in
 `rev-b-five-card-power.md`; the old ~712 mA number is historical evidence only.

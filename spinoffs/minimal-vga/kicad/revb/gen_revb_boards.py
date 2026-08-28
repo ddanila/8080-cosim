@@ -231,23 +231,18 @@ CARD_EXTRAS = {
         header("J_DIAG", {"1": "CLK", "2": "M1_N", "3": "RFSH_N", "4": "RESET_N", "5": "GND"}),
     ],
     "backplane": [
-        # R5.V6 power boundary.  The normal input is an exact 2.1/5.5-mm,
+        # R5.V6/R5.J1 power boundary.  The sole board input is an exact 2.1/5.5-mm,
         # center-positive barrel jack.  Its raw centre contact reaches VCC5 only through
         # F_MAIN; D_REV is reverse-biased normally and crowbars a reversed adapter through
-        # that fuse.  The USB-C service input retains its lower-current fuse and gains a
-        # series Schottky so the normal supply cannot back-power a connected USB source.
-        comp("J_USBC", "USB_C_PWR", {"VBUS": "VBUS_IN", "GND": "GND", "CC1": "USB_CC1", "CC2": "USB_CC2"}),
-        comp("R_CC1", "R_5K1", {"1": "USB_CC1", "2": "GND"}),
-        comp("R_CC2", "R_5K1", {"1": "USB_CC2", "2": "GND"}),
-        comp("F_VBUS", "PTC_1A", {"1": "VBUS_IN", "2": "USB_FUSED"}),
-        comp("D_USB", "SCHOTTKY_3A", {"1": "VCC_BUS", "2": "USB_FUSED"}),
+        # that fuse.  The optional USB4085 service-power path was removed at R5.J1 because
+        # its fixed 0.40/0.70-mm lands do not meet JLCPCB's published 2-layer PTH annular
+        # minimum.  The separate USB-TTL console remains data-only.
         comp("J_PWR", "BARREL_5A", {"1": "PWR_RAW", "2": "GND_BUS"}),
         comp("F_MAIN", "PTC_2A5", {"1": "PWR_RAW", "2": "VCC_BUS"}),
         comp("D_REV", "SCHOTTKY_5A", {"1": "VCC_BUS", "2": "GND_BUS"}),
         # Explicit 22-AWG tinned-copper links join the protected high-current bus
-        # rails to the low-current backplane/USB support rails.  This keeps the
-        # 0.8-mm routing class off the USB-C fine-pitch shell/contact fanout without
-        # creating a second electrical supply domain.
+        # rails to the low-current backplane support rails without creating a second
+        # electrical supply domain.
         comp("W_VCC", "WIRE_LINK_22AWG", {"1": "VCC_BUS", "2": "VCC5"}),
         comp("W_GND", "WIRE_LINK_22AWG", {"1": "GND_BUS", "2": "GND"}),
         # Input power conditioning (D1.35): bulk + HF bypass on the rail.

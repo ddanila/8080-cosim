@@ -278,48 +278,6 @@
       }
     },
     {
-      "ref": "J_USBC",
-      "type": "USB_C_PWR",
-      "pins": {
-        "VBUS": "VBUS_IN",
-        "GND": "GND",
-        "CC1": "USB_CC1",
-        "CC2": "USB_CC2"
-      }
-    },
-    {
-      "ref": "R_CC1",
-      "type": "R_5K1",
-      "pins": {
-        "1": "USB_CC1",
-        "2": "GND"
-      }
-    },
-    {
-      "ref": "R_CC2",
-      "type": "R_5K1",
-      "pins": {
-        "1": "USB_CC2",
-        "2": "GND"
-      }
-    },
-    {
-      "ref": "F_VBUS",
-      "type": "PTC_1A",
-      "pins": {
-        "1": "VBUS_IN",
-        "2": "USB_FUSED"
-      }
-    },
-    {
-      "ref": "D_USB",
-      "type": "SCHOTTKY_3A",
-      "pins": {
-        "1": "VCC_BUS",
-        "2": "USB_FUSED"
-      }
-    },
-    {
       "ref": "J_PWR",
       "type": "BARREL_5A",
       "pins": {
@@ -1072,10 +1030,6 @@
         [
           "J_S5",
           "E9"
-        ],
-        [
-          "D_USB",
-          "1"
         ],
         [
           "F_MAIN",
@@ -1844,135 +1798,6 @@
         ]
       ]
     },
-    "VBUS_IN": {
-      "nodes": [
-        [
-          "J_USBC",
-          "VBUS"
-        ],
-        [
-          "F_VBUS",
-          "1"
-        ]
-      ]
-    },
-    "GND": {
-      "nodes": [
-        [
-          "J_USBC",
-          "GND"
-        ],
-        [
-          "R_CC1",
-          "2"
-        ],
-        [
-          "R_CC2",
-          "2"
-        ],
-        [
-          "W_GND",
-          "2"
-        ],
-        [
-          "C_IN",
-          "2"
-        ],
-        [
-          "U_RST",
-          "3"
-        ],
-        [
-          "C_RST",
-          "2"
-        ],
-        [
-          "SW_RST",
-          "2"
-        ],
-        [
-          "R_M0",
-          "2"
-        ],
-        [
-          "R_M1",
-          "2"
-        ],
-        [
-          "U_CON",
-          "1"
-        ],
-        [
-          "U_CON",
-          "4"
-        ],
-        [
-          "U_CON",
-          "7"
-        ],
-        [
-          "U_CON",
-          "9"
-        ],
-        [
-          "U_CON",
-          "12"
-        ],
-        [
-          "C_CON",
-          "2"
-        ],
-        [
-          "J_TTL",
-          "4"
-        ],
-        [
-          "R_TX_BOT",
-          "2"
-        ],
-        [
-          "D_PWR",
-          "1"
-        ]
-      ],
-      "power": true
-    },
-    "USB_CC1": {
-      "nodes": [
-        [
-          "J_USBC",
-          "CC1"
-        ],
-        [
-          "R_CC1",
-          "1"
-        ]
-      ]
-    },
-    "USB_CC2": {
-      "nodes": [
-        [
-          "J_USBC",
-          "CC2"
-        ],
-        [
-          "R_CC2",
-          "1"
-        ]
-      ]
-    },
-    "USB_FUSED": {
-      "nodes": [
-        [
-          "F_VBUS",
-          "2"
-        ],
-        [
-          "D_USB",
-          "2"
-        ]
-      ]
-    },
     "PWR_RAW": {
       "nodes": [
         [
@@ -2053,6 +1878,75 @@
         ],
         [
           "R_LED",
+          "1"
+        ]
+      ],
+      "power": true
+    },
+    "GND": {
+      "nodes": [
+        [
+          "W_GND",
+          "2"
+        ],
+        [
+          "C_IN",
+          "2"
+        ],
+        [
+          "U_RST",
+          "3"
+        ],
+        [
+          "C_RST",
+          "2"
+        ],
+        [
+          "SW_RST",
+          "2"
+        ],
+        [
+          "R_M0",
+          "2"
+        ],
+        [
+          "R_M1",
+          "2"
+        ],
+        [
+          "U_CON",
+          "1"
+        ],
+        [
+          "U_CON",
+          "4"
+        ],
+        [
+          "U_CON",
+          "7"
+        ],
+        [
+          "U_CON",
+          "9"
+        ],
+        [
+          "U_CON",
+          "12"
+        ],
+        [
+          "C_CON",
+          "2"
+        ],
+        [
+          "J_TTL",
+          "4"
+        ],
+        [
+          "R_TX_BOT",
+          "2"
+        ],
+        [
+          "D_PWR",
           "1"
         ]
       ],

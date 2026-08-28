@@ -58,9 +58,10 @@ if not pcbnew.ExportSpecctraDSN(board, sys.argv[2]):
 PY
 
 # R5.V6: the normal machine current must not traverse 0.20-mm signal tracks.
-# Route the two bus rails at their frozen 0.8 mm release width. The system-level
-# copper solver proves the resulting voltage trough at the complete 1.351 A load.
-# The short protected barrel-input raw link is widened to 2.0 mm after import.
+# Route the two bus rails at their frozen 0.8 mm release width and the short
+# protected barrel-input raw link at 2.0 mm from the outset. Routing PWR_RAW at its
+# final width prevents post-import widening from creating an otherwise invisible
+# signal short. The system-level copper solver proves the resulting voltage trough.
 if [ "$CARD" = backplane ]; then
   python3 - "$DSN" <<'PY'
 import re
@@ -89,7 +90,7 @@ for net in ("GND_BUS", "PWR_RAW", "VCC_BUS"):
     if n != 1:
         raise SystemExit(f"expected {net} once in default DSN class, got {n}")
 default = head + tail
-power = """    (class r5_power GND_BUS PWR_RAW VCC_BUS
+power = """    (class r5_power GND_BUS VCC_BUS
       (circuit
         (use_via \"Via[0-1]_600:300_um\")
       )
@@ -98,10 +99,19 @@ power = """    (class r5_power GND_BUS PWR_RAW VCC_BUS
         (clearance 200)
       )
     )
+    (class r5_raw PWR_RAW
+      (circuit
+        (use_via \"Via[0-1]_600:300_um\")
+      )
+      (rule
+        (width 2000)
+        (clearance 200)
+      )
+    )
 """
 text = text[:start] + power + default + text[end:]
 open(path, "w", encoding="utf-8").write(text)
-print("  assigned GND_BUS/PWR_RAW/VCC_BUS to the 0.8-mm R5.V6 power class")
+print("  assigned GND_BUS/VCC_BUS to 0.8 mm and PWR_RAW to 2.0 mm")
 PY
 fi
 
@@ -169,15 +179,6 @@ import pcbnew
 board = pcbnew.LoadBoard(sys.argv[1])
 if not pcbnew.ImportSpecctraSES(board, sys.argv[2]):
     raise SystemExit("SES import failed")
-if sys.argv[4] == "backplane":
-    # Enforce the 2.0-mm protected raw-input width before total DRC. The two
-    # distribution nets already leave FreeRouting at their 0.8-mm release width.
-    for item in board.Tracks():
-        if isinstance(item, pcbnew.PCB_VIA):
-            continue
-        if item.GetNetname() == "PWR_RAW":
-            item.SetWidth(pcbnew.FromMM(2.0))
-            item.SetLocked(True)
 if sys.argv[4] == "video":
     def add_plane(net_name, layer, name):
         zone = pcbnew.ZONE(board)

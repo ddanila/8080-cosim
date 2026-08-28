@@ -62,10 +62,9 @@ Video has three. RGB assumes all three channels continuously high.
 | **Video subtotal** | **686 mA** |
 | **Five-card total** | **1351 mA** |
 
-A regulated 5 V, 2 A supply leaves 649 mA (32.45%) planning headroom. The USB branch's
-MF-R110 has 1.1 A hold current and therefore is not qualified for the complete machine;
-the order must not be presented as USB-powered. First power-up still uses a current
-limit and staged card insertion.
+A regulated 5 V, 2 A supply leaves 649 mA (32.45%) planning headroom. The production
+backplane has no USB power branch and must not be presented as USB-powered. First
+power-up still uses a current limit and staged card insertion.
 
 The original R5.V2 desk placeholder allowed 30 mA for the oscillator. R5.V4 selected
 the exact `ECS-100A-251.7`; its datasheet permits 70 mA at 24–69.999 MHz, so this table
@@ -80,11 +79,12 @@ the 1.351 A frozen load. `D_REV` is a 5 A Vishay SB560 crowbar after that fuse,
 cathode to `VCC_BUS` and anode to `GND_BUS`. A reversed center contact therefore
 becomes a protected fault instead of reverse rail voltage.
 
-USB-C remains an independent service input. MF-R110 fuses its VBUS and a Vishay
-1N5822 feeds the system rail anode-to-cathode, blocking the normal barrel supply from
-back-powering a USB source. It is explicitly **not** credited for the five-board load.
-`W_VCC` and `W_GND` are fitted insulated 22-AWG links that join the high-current bus
-rails to the backplane's local logic rails.
+R5.J1 deliberately omits the optional GCT USB4085 power input. Its exact
+0.40/0.70-mm holes/lands at 0.85-mm pitch yield a 0.15-mm annular ring, below
+JLCPCB's published 0.18-mm absolute for ordinary 2-layer PTH. The barrel jack is the
+sole power input; the USB-TTL console is data-only. `W_VCC` and `W_GND` are fitted
+insulated 22-AWG links that join the high-current bus rails to the backplane's local
+logic rails.
 
 The selected adapter publishes a broad +/-5% voltage tolerance, so its nameplate
 alone is insufficient for this conservative TTL corner. Receipt acceptance is an
@@ -102,14 +102,15 @@ GND bus contact per card, and half the adapter ripple limit.
 
 | Slot / card | routed copper drop | modeled rail trough | margin over 4.50 V |
 |---|---:|---:|---:|
-| 1 / CPU | 79.13 mV | 4.624 V | 124 mV |
-| 2 / Memory | 74.21 mV | 4.629 V | 129 mV |
-| 3 / I/O | 64.63 mV | 4.641 V | 141 mV |
-| 5 / Video | 39.59 mV | 4.650 V | 150 mV |
+| 1 / CPU | 78.93 mV | 4.623 V | 123 mV |
+| 2 / Memory | 74.00 mV | 4.628 V | 128 mV |
+| 3 / I/O | 64.43 mV | 4.640 V | 140 mV |
+| 5 / Video | 39.39 mV | 4.649 V | 149 mV |
 
-The effective raw-path resistance is 2.782 mOhm and the shared worst-case input drop
-is 149.67 mV. At the adapter's unqualified published -5% corner the modeled trough
-would be only 4.474 V; this is why the delivered-unit receipt test is mandatory.
+The R5.J1-rerouted effective raw-path resistance is 3.554 mOhm and the shared
+worst-case input drop is 150.71 mV. At the adapter's unqualified published -5%
+corner the modeled trough would be only 4.473 V; this is why the delivered-unit
+receipt test is mandatory.
 
 ## Machine gate
 

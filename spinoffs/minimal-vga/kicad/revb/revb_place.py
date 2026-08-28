@@ -122,20 +122,14 @@ def backplane_place():
         p[f"J_S{k+1}_EXT"] = (x_e, y_base + _C["ext_row_dy"], 90)
 
     # The top strip is outside every seated-card envelope. This retains accessible
-    # top-side USB/reset/serial hardware without the component-collision risk of the
+    # top-side power/reset/serial hardware without the component-collision risk of the
     # rejected six-slot 100x100 inter-slot experiment. Three sparse, staggered rows
     # keep through-hole chains from walling off the two-layer routing channels.
     y0 = _C["tail_strip_y0"]
     yr1, yr2, yr3 = y0 + 3.0, y0 + 9.0, y0 + 15.0
-    p["R_CC1"]  = (8.0, yr1, 0)
     p["C_BULK"] = (18.0, yr1, 0)
     p["SW_RST"] = (76.0, yr1, 0)
     p["D_PWR"]  = (85.0, yr1, 0)
-    # USB4085 datum: local PCB-edge line is y=6.1, hence origin y=93.9 puts
-    # its mating face exactly on the top edge.  gen_revb_pcb uses origin placement.
-    p["J_USBC"] = (87.0, 93.9, 0)
-    p["R_CC2"]  = (8.0, yr2, 0)
-    p["F_VBUS"] = (18.0, yr2, 0)
     p["W_VCC"]  = (8.0, y0 + 12.0, 0)
     p["W_GND"]  = (18.0, y0 + 12.0, 0)
     p["C_IN"]   = (37.6, yr1, 0)
@@ -148,7 +142,6 @@ def backplane_place():
     # terminates before the 2-mm VCC5 spine continues down the same X coordinate.
     p["F_MAIN"] = (55.08, 89.0, 90)
     p["D_REV"]  = (65.0, yr1, 0)
-    p["D_USB"]  = (94.0, yr1, 0)
     p["U_RST"]  = (71.5, yr2, 90)
     p["R_LED"]  = (8.0, yr3, 0)
     p["R_RST"]  = (18.0, yr3, 0)

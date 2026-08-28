@@ -63,18 +63,11 @@
     "reverse_protection_topology": "crowbar after F_MAIN: cathode VCC_BUS, anode GND_BUS; the qualified supply hiccups on a reversed plug while the PPTC limits a sustained fault",
     "reverse_protection_datasheet": "https://www.vishay.com/docs/88721/sb520.pdf"
   },
-  "usb_service_input": {
-    "system_power_qualified": false,
-    "purpose": "single-card/service operation only; never credit it for the populated five-board machine",
-    "connector_ref": "J_USBC",
-    "fuse_ref": "F_VBUS",
-    "fuse_mpn": "Bourns MF-R110",
-    "fuse_hold_a_23c": 1.10,
-    "isolation_ref": "D_USB",
-    "isolation_mpn": "Vishay 1N5822-E3/54",
-    "isolation_rating_a": 3.0,
-    "isolation_topology": "anode USB_FUSED, cathode VCC_BUS; blocks main-supply backfeed into USB-C",
-    "isolation_datasheet": "https://www.vishay.com/docs/88526/1n5820.pdf"
+  "usb_power_input": {
+    "populated": false,
+    "purpose": "none; USB-TTL console is data-only and must not source the machine",
+    "decision": "R5.J1 omits the optional GCT USB4085 path because its fixed 0.40/0.70-mm, 0.85-mm-pitch PTH lands have a 0.15-mm annular ring, below JLCPCB's published 0.18-mm absolute for ordinary 2-layer PTH",
+    "sole_power_input_ref": "J_PWR"
   },
   "distribution": {
     "copper_oz": 1.0,

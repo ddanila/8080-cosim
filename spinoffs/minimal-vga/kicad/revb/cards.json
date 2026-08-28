@@ -21,7 +21,7 @@
     "owns_io": [],
     "populated": [
       "5x 39+10 slot connectors",
-      "USB-C 5V in",
+      "protected barrel 5V in",
       "reset supervisor",
       "4-pin board-relative TTL console header + isolation jumper",
       "power LED",

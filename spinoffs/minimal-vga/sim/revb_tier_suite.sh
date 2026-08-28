@@ -61,8 +61,10 @@ if revb_have KICAD_PYTHON; then
   echo "== rev B: assembled mechanics + protected five-board power path (R5.V6) =="
   "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_system_physical.py --self-test
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py backplane --total
+  echo "== rev B: JLCPCB five-board geometry and archive profile (R5.J1) =="
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_jlcpcb.py --self-test
 else
-  echo "  SKIP  R5.V5/R5.V6 physical gates: pcbnew not found"
+  echo "  SKIP  R5.V5/R5.V6/R5.J1 physical gates: pcbnew not found"
 fi
 
 echo "== rev B: per-card unit TBs (BFM) =="

@@ -198,24 +198,20 @@ def audit(board, contract, quiet=False):
     check_pin(fails, comps, "J_PWR", {"1": "PWR_RAW", "2": "GND_BUS"})
     check_pin(fails, comps, "F_MAIN", {"1": "PWR_RAW", "2": "VCC_BUS"})
     check_pin(fails, comps, "D_REV", {"1": "VCC_BUS", "2": "GND_BUS"})
-    check_pin(fails, comps, "F_VBUS", {"1": "VBUS_IN", "2": "USB_FUSED"})
-    check_pin(fails, comps, "D_USB", {"1": "VCC_BUS", "2": "USB_FUSED"})
     check_pin(fails, comps, "W_VCC", {"1": "VCC_BUS", "2": "VCC5"})
     check_pin(fails, comps, "W_GND", {"1": "GND_BUS", "2": "GND"})
     raw_nodes = set(tuple(x) for x in json.load(open(BOARD_JSON, encoding="utf-8"))["nets"]["PWR_RAW"]["nodes"])
     if raw_nodes != {("J_PWR", "1"), ("F_MAIN", "1")}:
         fails.append(f"PWR_RAW has an unfused branch: {sorted(raw_nodes)}")
-    vbus_nodes = set(tuple(x) for x in json.load(open(BOARD_JSON, encoding="utf-8"))["nets"]["VBUS_IN"]["nodes"])
-    expected_vbus = {("F_VBUS", "1"), ("J_USBC", "VBUS")}
-    if vbus_nodes != expected_vbus:
-        fails.append(f"VBUS_IN bypasses F_VBUS: {sorted(vbus_nodes)}")
+    forbidden_usb_power_refs = {"J_USBC", "R_CC1", "R_CC2", "F_VBUS", "D_USB"}
+    present_usb_power_refs = forbidden_usb_power_refs.intersection(comps)
+    if present_usb_power_refs:
+        fails.append(f"R5.J1-omitted USB power parts returned: {sorted(present_usb_power_refs)}")
 
     expected_footprints = {
         "J_PWR": "BarrelJack_Wuerth_6941xx301002",
         "F_MAIN": "Fuse_Bourns_MF-R250",
-        "F_VBUS": "Fuse_Bourns_MF-R110",
         "D_REV": "D_DO-201AD_P5.08mm_Vertical_AnodeUp",
-        "D_USB": "D_DO-201AD_P5.08mm_Vertical_AnodeUp",
         "W_VCC": "WireLink_22AWG_P5.08mm",
         "W_GND": "WireLink_22AWG_P5.08mm",
     }
@@ -229,7 +225,7 @@ def audit(board, contract, quiet=False):
 
     supply = contract["supply"]
     normal = contract["normal_input"]
-    usb = contract["usb_service_input"]
+    usb_power = contract["usb_power_input"]
     dist = contract["distribution"]
     total_a = stack["total_current_ma"] / 1000.0
     summed_a = (stack["backplane_local_current_ma"]
@@ -246,8 +242,8 @@ def audit(board, contract, quiet=False):
         fails.append("F_MAIN cannot hold the five-board load at 70 C")
     if normal["reverse_protection_rating_a"] < supply["rated_current_a"]:
         fails.append("D_REV current rating is below qualified supply current")
-    if usb["system_power_qualified"] or usb["fuse_hold_a_23c"] >= total_a:
-        fails.append("USB service input is incorrectly qualified for the full machine")
+    if usb_power["populated"] or usb_power["sole_power_input_ref"] != "J_PWR":
+        fails.append("USB power must remain omitted and J_PWR must remain the sole input")
 
     card_loads = {f"J_S{slot}_BUS": item["current_ma"] / 1000.0
                   for slot, item in ((int(k), v) for k, v in stack["slot_assignment"].items())}

@@ -25,8 +25,8 @@ adopt (concept only, not his files):
   going to the wide 80-pin enhanced backplane. **Supersedes the earlier "use an 80-pin
   enhanced backplane" note.**
 - A future second-backplane/daisy-chain path remains possible but is **not fitted on B1**.
-- **Backplane carries housekeeping**: USB-C power in, reset circuit, passive TTL-serial
-  header/jumper, power LED —
+- **Backplane carries housekeeping**: protected barrel power in, reset circuit,
+  passive data-only TTL-serial header/jumper, power LED —
   so those aren't per-card.
 - Extension must be **bussed across all slots** (not per-card) or /WAIT is useless.
 - Not pin-compatible with vanilla 40-pin RC2014 — this is our own variant of the idea.

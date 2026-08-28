@@ -37,7 +37,7 @@ Vendor-preview checklist:
 - [ ] Board outline is one closed rectangle; no cutouts were inferred from drawings.
 - [ ] Top/bottom copper, mask and silk are assigned to the correct sides.
 - [ ] Plated drill hits appear at every DIP/header/socket pad and via.
-- [ ] Backplane USB4085 area retains 0.15 mm minimum clearance; no DFM edit accepted silently.
+- [ ] Historical only: USB4085 was later omitted by R5.J1; a regenerated archive must contain no USB-power connector or branch.
 - [ ] No paste, adhesive, courtyard, fab, user or assembly layer was uploaded.
 - [ ] Surface finish, copper weight, solder-mask color and shipping choice are recorded.
 
@@ -59,8 +59,8 @@ Vendor-preview checklist:
 
 Use a current-limited 5 V source through the center-positive barrel `J_PWR` first:
 pin 1=`PWR_RAW` (+5 V center), pin 2=`GND_BUS` (sleeve). `F_MAIN` and `D_REV` protect
-this normal path. Use only one input at a time even though `D_USB` blocks barrel-to-USB
-backfeed. Power down before inserting/removing a card; keying is convention-only.
+this sole power path. The USB-TTL console is data-only and must not source the board.
+Power down before inserting/removing a card; keying is convention-only.
 
 | Step | Expected result | Observed result / evidence | Pass |
 |---|---|---|:---:|

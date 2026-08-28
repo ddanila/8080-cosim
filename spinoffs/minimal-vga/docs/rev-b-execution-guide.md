@@ -663,7 +663,8 @@ zip is sent. One task = one commit; rebase before push.
 For every backplane part, choose one orderable MPN and check its datasheet drawing
 against the named footprint — drill ≥ pin diagonal, pitch, pad pattern, body outline:
 - `J_USBC` initial candidate GCT USB4125-xx-x was rejected because it is SMD; the
-  completed TH work uses the fully-through-hole **GCT USB4085** with its 16-pin map.
+  historical TH work selected fully-through-hole **GCT USB4085**. R5.J1 later proved
+  its exact annular ring below JLCPCB's 2-layer absolute and omitted the USB-power path.
 - `SW_RST` → **exactly APEM MJTP1243** (footprint names it; 2 pins per board.json).
 - `U_RST` → **DS1813-5 3-pin TO-92 supervisor**, whose authoritative pinout is
   1=/RESET, 2=VCC, 3=GND; if the chosen MPN differs, fix the
@@ -692,8 +693,10 @@ pad-count expectation or a too-small drill must FAIL) — same discipline as PKG
 
 **TH.3 — input power conditioning (D1.35).**
 > Historical four-board implementation. R5.V6 supersedes the direct/unfused
-> `J_PWR` wording below: the five-board normal input is an exact barrel jack through
-> MF-R250, with an SB560 reverse crowbar. USB-C remains MF-R110-fused service power.
+> `J_PWR` wording below: the five-board input is an exact barrel jack through
+> MF-R250, with an SB560 reverse crowbar. R5.J1 further supersedes the USB branch:
+> the exact USB4085 annular ring is below JLCPCB's 2-layer absolute, so production
+> omits it and the USB-TTL console remains data-only.
 
 `gen_revb_boards.py`: add to the backplane `C_BULK` (47 µF/16 V radial electrolytic,
 new footprint kind `CP_RADIAL_D6.3` or similar), `C_IN` (100 nF disc, existing kind),

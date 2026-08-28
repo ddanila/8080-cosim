@@ -34,6 +34,21 @@ def load_fp(fpname):
     fp = pcbnew.FootprintLoad(os.path.join(root, f"{lib}.pretty"), name)
     if fp is None:
         raise RuntimeError(f"missing footprint {fpname}")
+    # JLCPCB may widen sub-0.15-mm silk during CAM. Emit that floor ourselves so
+    # the checked preview, not an undocumented vendor edit, is the order intent.
+    for item in fp.GraphicalItems():
+        if item.GetLayer() not in (pcbnew.F_SilkS, pcbnew.B_SilkS):
+            continue
+        if isinstance(item, pcbnew.PCB_TEXT) and item.IsVisible():
+            size = item.GetTextSize()
+            item.SetTextSize(pcbnew.VECTOR2I(max(size.x, mm(1.0)),
+                                             max(size.y, mm(1.0))))
+            item.SetTextThickness(max(item.GetTextThickness(), mm(0.15)))
+        else:
+            try:
+                item.SetWidth(max(item.GetWidth(), mm(0.15)))
+            except Exception:
+                pass
     return fp
 
 
@@ -320,13 +335,31 @@ def emit_backplane_power_spines(board):
                 add_track(net, layer, source.GetPosition(), corner); count += 1
             add_track(net, layer, corner, top); count += 1
 
-    # The raw center-positive input is also a full-current path.  Keep it wide from
-    # the exact barrel contact to the upstream side of F_MAIN.
-    raw_a, raw_b = pad("J_PWR", "1"), pad("F_MAIN", "1")
-    corner = pcbnew.VECTOR2I(raw_b.GetPosition().x, raw_a.GetPosition().y)
-    add_track(raw_a.GetNet(), pcbnew.F_Cu, raw_a.GetPosition(), corner); count += 1
-    add_track(raw_a.GetNet(), pcbnew.F_Cu, corner, raw_b.GetPosition()); count += 1
     return count
+
+
+def emit_raw_input(board):
+    """Lock the sole, short 2-mm barrel-to-fuse path before autorouting.
+
+    Widening a 0.8-mm autorouted candidate after import can create a signal short
+    which the router never saw.  This two-segment path has no bus-column interaction,
+    so unlike the retired column pre-routes it survives the Specctra round trip and
+    gives FreeRouting the true copper obstacle.
+    """
+    fps = {fp.GetReference(): fp for fp in board.GetFootprints()}
+    raw_a = fps["J_PWR"].FindPadByNumber("1")
+    raw_b = fps["F_MAIN"].FindPadByNumber("1")
+    corner = pcbnew.VECTOR2I(raw_b.GetPosition().x, raw_a.GetPosition().y)
+    for start, end in ((raw_a.GetPosition(), corner), (corner, raw_b.GetPosition())):
+        track = pcbnew.PCB_TRACK(board)
+        track.SetStart(start)
+        track.SetEnd(end)
+        track.SetWidth(mm(2.0))
+        track.SetLayer(pcbnew.F_Cu)
+        track.SetNet(raw_a.GetNet())
+        track.SetLocked(True)
+        board.Add(track)
+    return 2
 
 
 def emit_video_vga_escapes(board):
@@ -454,6 +487,16 @@ def main():
                     pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
             if ref == "J_VGA" and str(pad.GetNumber()).isdigit():
                 pad.SetLocalClearance(mm(0.15))
+            if ref == "U_RST" and pad.HasHole():
+                # DS1813's exact inline TO-92 pitch is only 1.27 mm. Increase the
+                # stock footprint from 0.15 to JLCPCB's 0.18-mm 2-layer absolute ring;
+                # the recommended 0.25-mm ring cannot fit that exact pitch. Production
+                # confirmation is mandatory for this explicitly audited exception.
+                size, drill = pad.GetSize(), pad.GetDrillSize()
+                pad.SetSize(pcbnew.VECTOR2I(
+                    max(size.x, drill.x + mm(0.36)),
+                    max(size.y, drill.y + mm(0.36))))
+                pad.SetLocalClearance(mm(0.15))
         # Hide per-footprint ref/value silk (they stray onto pads/outlines on this
         # dense card); board-level silk carries the essentials. Adding tidy per-ref
         # designators is cosmetic polish for the visual layout pass.
@@ -478,32 +521,6 @@ def main():
             if CARD != "backplane":
                 strip_bus_edge_graphics(bfp)
                 strip_bus_edge_graphics(efp)
-        elif typ == "USB_C_PWR":
-            # Map logical power pins to the GCT USB4085 THT receptacle's pads (full USB-C
-            # pinout): VBUS=A4/A9/B4/B9, GND=A1/A12/B1/B12 + shield, CC1=A5, CC2=B5. The
-            # data/SBU pins (A6-A8/B6-B8) are intentionally unused on a power-only sink.
-            v, g = pins["VBUS"], pins["GND"]
-            padnet = {"A4": v, "A9": v, "B4": v, "B9": v,
-                      "A1": g, "A12": g, "B1": g, "B12": g, "SH": g,
-                      "A5": pins["CC1"], "B5": pins["CC2"]}
-            usb = add_fp(ref, fpmap[typ], PLACE.get(ref, (50.0, 40.0)), padnet,
-                         origin_anchor=(CARD == "backplane"))
-            # USB-C is 0.85 mm pitch -> 0.15 mm inter-pad copper gaps, inherent to the
-            # standard (VBUS/GND are always adjacent) and fine for any cheap fab, but
-            # below KiCad's 0.2 mm default. Relax clearance for THIS connector only so it
-            # doesn't force the whole board to 6-mil rules (order-readiness notes the
-            # 0.15 mm fab requirement at the connector).
-            try:
-                usb.SetLocalClearance(mm(0.1))
-                for pad in usb.Pads():
-                    pad.SetLocalClearance(mm(0.1))
-            except Exception:
-                pass
-            # Its mating shell intentionally projects beyond the PCB-edge datum.
-            # Keep fabrication silk/courtyard inside the board model; the exact edge
-            # anchor and body envelope are checked independently in R5.V6.
-            if CARD == "backplane":
-                strip_bus_edge_graphics(usb)
         else:
             fpname = fpmap.get(typ) or fpmap.get(f"HDR_1x{len(pins)}")
             xy = PLACE.get(ref, (50.0, 40.0))
@@ -538,7 +555,7 @@ def main():
             centre = box.GetCenter()
             angle = 0 if box.GetWidth() >= box.GetHeight() else 90
             silk(board, ref, pcbnew.ToMM(centre.x), pcbnew.ToMM(centre.y),
-                  size=0.8, angle=angle)
+                  size=1.0, angle=angle)
 
     # board-level silk placed in clear gaps (pin-1 marks come from the footprints).
     SILK = {
@@ -559,8 +576,8 @@ def main():
         text, sx, sy, ssz, *rest = entry
         silk(board, text, sx, sy, size=ssz, angle=(rest[0] if rest else 0))
 
-    # D1.34: the backplane routes like any other card — plain freerouting, no locked
-    # pre-routes. The Stage-C column pre-routing (D1.29) was retired when the layout
+    # D1.34: the backplane bus routes like any other card — plain freerouting, no
+    # locked bus-column pre-routes. The Stage-C column pre-routing (D1.29) was retired when the layout
     # became mate-compatible: pcbnew's specctra roundtrip mangles locked tracks near
     # the base/ext interleave (drops a varying subset), freerouting then reliably fails
     # around the corpse (170+ attempts), while the SAME board with no locked tracks
@@ -569,6 +586,11 @@ def main():
     # round trip can preserve their geometry yet leave FreeRouting with a stable
     # seven-net dead end.  The release flow instead assigns these nets a 0.8-mm
     # routing class in route_revb_pcb.sh, which lets the router negotiate crossings.
+    # R5.J1 keeps only the isolated two-segment PWR_RAW path deterministic so the
+    # router sees its final 2.0-mm obstacle instead of having it widened afterward.
+    if CARD == "backplane":
+        emit_raw_input(board)
+
     if CARD == "backplane" and os.environ.get("REVB_POWER_SPINES") == "1":
         npwr = emit_backplane_power_spines(board)
         print(f"  emitted {npwr} locked 2.0-mm normal-input/power-spine segments")

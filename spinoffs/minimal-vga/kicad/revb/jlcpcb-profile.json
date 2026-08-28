@@ -1,0 +1,88 @@
+{
+  "status": "R5.J1 frozen JLCPCB bare-PCB profile",
+  "checked_on": "2026-08-28",
+  "vendor": "JLCPCB",
+  "official_sources": {
+    "capabilities": "https://jlcpcb.com/capabilities/Capabilities",
+    "gerber_preparation": "https://jlcpcb.com/help/article/gerber-files-preparation",
+    "kicad_export": "https://jlcpcb.com/help/article/how-to-generate-gerber-and-drill-files-in-kicad-6",
+    "dimensions": "https://jlcpcb.com/help/article/pcb-dimensions",
+    "ordering": "https://jlcpcb.com/help/article/instructions-for-ordering",
+    "four_layer_stackup": "https://jlcpcb.com/quote/pcbOrderFaq/PCB%20Stackup"
+  },
+  "order_options": {
+    "material": "FR-4",
+    "board_thickness_mm": 1.6,
+    "outer_copper_oz": 1.0,
+    "solder_mask": "green",
+    "silkscreen": "white",
+    "surface_finish": "lead-free HASL",
+    "via_covering": "tented",
+    "panelization": false,
+    "assembly": false,
+    "controlled_impedance": false,
+    "production_file_confirmation": true
+  },
+  "boards": {
+    "cpu": {"width_mm": 100.0, "height_mm": 70.0, "copper_layers": 2},
+    "mem": {"width_mm": 100.0, "height_mm": 60.0, "copper_layers": 2},
+    "io": {"width_mm": 100.0, "height_mm": 100.0, "copper_layers": 2},
+    "backplane": {"width_mm": 100.0, "height_mm": 100.0, "copper_layers": 2},
+    "video": {
+      "width_mm": 100.0,
+      "height_mm": 100.0,
+      "copper_layers": 4,
+      "stackup": "JLC7628 standard 1.6-mm four-layer; signal / GND / VCC / signal",
+      "inner_layer_nets": {"In1.Cu": "GND", "In2.Cu": "VCC5"}
+    }
+  },
+  "geometry": {
+    "vendor_minimum_track_mm_1oz": 0.10,
+    "design_minimum_track_mm": 0.20,
+    "video_allowed_0_15mm_track_nets": ["VID_G", "HSYNC_N"],
+    "vendor_minimum_clearance_mm_1oz": 0.10,
+    "design_default_clearance_mm": 0.20,
+    "allowed_local_clearance_mm": {
+      "backplane:U_RST": 0.15,
+      "video:J_VGA": 0.15
+    },
+    "via_minimum_drill_mm": 0.30,
+    "via_minimum_diameter_mm": 0.60,
+    "via_minimum_annular_ring_mm": 0.15,
+    "two_layer_pth_recommended_ring_mm": 0.25,
+    "two_layer_pth_absolute_ring_mm": 0.18,
+    "four_layer_pth_recommended_ring_mm": 0.20,
+    "four_layer_pth_absolute_ring_mm": 0.15,
+    "backplane_exact_to92_ring_mm": 0.18,
+    "video_exact_vga_signal_ring_mm": 0.15,
+    "minimum_plated_slot_width_mm": 0.50,
+    "minimum_plated_slot_length_to_width": 2.0,
+    "minimum_nonplated_slot_width_mm": 1.0,
+    "silkscreen_minimum_stroke_mm": 0.15,
+    "silkscreen_minimum_text_height_mm": 1.0
+  },
+  "archive": {
+    "two_layer_suffixes": [
+      "F_Cu.gtl", "B_Cu.gbl", "F_Mask.gts", "B_Mask.gbs",
+      "F_Silkscreen.gto", "B_Silkscreen.gbo", "Edge_Cuts.gm1",
+      "job.gbrjob", "drl"
+    ],
+    "four_layer_additional_suffixes": ["In1_Cu.g2", "In2_Cu.g3"],
+    "single_top_directory": true,
+    "forbidden_extensions": [
+      ".step", ".stp", ".kicad_pcb", ".kicad_pro", ".pdf", ".svg",
+      ".png", ".csv", ".pos", ".bom", ".dxf"
+    ],
+    "forbidden_name_fragments": [
+      "Paste", "Adhesive", "Courtyard", "Fab", "Dwgs", "User", "Eco"
+    ]
+  },
+  "notes": [
+    "JLCPCB currently lists 0.10/0.10 mm for ordinary 1 oz work; this design keeps ordinary tracks and default clearance at 0.20 mm.",
+    "The seven Video neck segments at 0.15 mm are limited to VID_G and HSYNC_N and remain above the listed vendor minimum.",
+    "The exact DS1813 inline TO-92 footprint uses a 0.18-mm ring and 0.15-mm local clearance at its fixed 1.27-mm pitch; this equals JLCPCB's listed 2-layer absolute and requires production-file confirmation.",
+    "The exact Video VGA signal pads and standard 0.60/0.30 mm vias use 0.15 mm annular rings, equal to JLCPCB's listed multilayer absolute minimum; production-file confirmation remains mandatory.",
+    "The optional GCT USB4085 power input is deliberately omitted: its exact 0.40/0.70-mm, 0.85-mm-pitch lands yield a 0.15-mm PTH annular ring, below JLCPCB's published 0.18-mm absolute for ordinary 2-layer boards. The protected barrel jack is the sole power input.",
+    "The four-layer selection is JLC7628 at 1.6 mm with no impedance service; the live quote and generated production files remain R5.J3 gates."
+  ]
+}
