@@ -16,7 +16,7 @@ R5.J3 because fab options can change.
 | Outer copper | 1 oz |
 | Mask / silk | Green / white |
 | Finish | Lead-free HASL |
-| Vias | Tented |
+| Vias | Tented on the four 2-layer designs; Plugged on 4-layer Video (the live standard 4-layer form disables Tented) |
 | Delivery unit | Five separate designs; no panelization |
 | Assembly | Bare PCB only; no PCBA files |
 | Impedance | None |
@@ -40,6 +40,10 @@ R5.J3 because fab options can change.
   changing to a wide footprint would require bending the ordered part's leads.
 - Plated slots are at least 0.50 mm wide and at least twice as long as wide; non-plated
   slots are at least 1.0 mm wide. Silk text is at least 1.0 mm high with 0.15-mm strokes.
+- The 2026-08-28 live quote freezes five copies of each independent design, FR4 TG135,
+  1.6 mm, 1 oz outer copper, 0.5 oz Video inner copper, flying-probe test, regular
+  ±0.2-mm outline tolerance and no vendor mark. Two-layer via covering is Tented;
+  the four-layer form disables Tented and therefore Video is Plugged.
 
 The optional GCT USB4085 power connector failed this audit. Its specified 0.40-mm
 holes and 0.70-mm lands at 0.85-mm pitch yield only a 0.15-mm PTH annular ring, below

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import subprocess
@@ -21,6 +22,27 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 FAB = REPO / "fab" / "minimal-vga" / "revb"
 PROFILE_PATH = HERE / "jlcpcb-profile.json"
+
+
+def order_option_errors(profile):
+    """Guard selections that are easy to misapply between 2L and 4L quotes."""
+    options = profile.get("order_options", {})
+    errors = []
+    layer_counts = {str(spec["copper_layers"]) for spec in profile.get("boards", {}).values()}
+    coverings = options.get("via_covering_by_copper_layers", {})
+    if set(coverings) != layer_counts:
+        errors.append(f"via-covering layer keys {sorted(coverings)} != {sorted(layer_counts)}")
+    if coverings.get("2") != "tented" or coverings.get("4") != "plugged":
+        errors.append("live-quote via covering must be 2L=tented and 4L=plugged")
+    if options.get("quantity_per_design") != 5 or options.get("different_designs_per_archive") != 1:
+        errors.append("quote must use five copies of one independent design per archive")
+    if options.get("delivery_format") != "Single PCB" or options.get("panelization") is not False:
+        errors.append("delivery must be five independent non-panelized Single PCB designs")
+    if options.get("four_layer_inner_copper_oz") != 0.5:
+        errors.append("4-layer quote must retain its 0.5-oz inner copper selection")
+    if options.get("production_file_confirmation") is not True:
+        errors.append("production-file confirmation must remain enabled")
+    return errors
 
 
 def mm(value):
@@ -288,13 +310,18 @@ def self_test(profile):
     if not archive_errors("video", sorted(missing_inner), profile):
         failures.append("archive missing an inner plane accepted")
 
+    wrong_covering = copy.deepcopy(profile)
+    wrong_covering["order_options"]["via_covering_by_copper_layers"]["4"] = "tented"
+    if not order_option_errors(wrong_covering):
+        failures.append("4-layer tented-via quote mutation accepted")
+
     if failures:
         print("R5.J1 negative controls FAILED:")
         for failure in failures:
             print(f"    {failure}")
         return False
     print("R5.J1 negative controls OK: narrow track/via/ring, open outline, small silk, "
-          "STEP member and missing inner plane all rejected")
+          "STEP member, missing inner plane and wrong 4L via covering all rejected")
     return True
 
 
@@ -304,7 +331,7 @@ def main():
     parser.add_argument("--package-root", type=Path)
     args = parser.parse_args()
     profile = json.loads(PROFILE_PATH.read_text())
-    all_errors = []
+    all_errors = [f"order options: {error}" for error in order_option_errors(profile)]
     for card in profile["boards"]:
         path = FAB / f"{card}.kicad_pcb"
         if not path.is_file():

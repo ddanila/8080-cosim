@@ -12,12 +12,26 @@
   },
   "order_options": {
     "material": "FR-4",
+    "product_type": "Industrial/Consumer electronics",
+    "quantity_per_design": 5,
+    "different_designs_per_archive": 1,
+    "delivery_format": "Single PCB",
     "board_thickness_mm": 1.6,
+    "fr4_tg_c": 135,
     "outer_copper_oz": 1.0,
+    "four_layer_inner_copper_oz": 0.5,
     "solder_mask": "green",
     "silkscreen": "white",
     "surface_finish": "lead-free HASL",
-    "via_covering": "tented",
+    "via_covering_by_copper_layers": {
+      "2": "tented",
+      "4": "plugged"
+    },
+    "via_plating_method": "Not Specified",
+    "minimum_via_quote_option": "0.3mm/(0.4/0.45mm)",
+    "board_outline_tolerance_mm": 0.2,
+    "electrical_test": "Flying Probe Fully Test",
+    "vendor_mark": "Remove Mark",
     "panelization": false,
     "assembly": false,
     "controlled_impedance": false,
@@ -83,6 +97,7 @@
     "The exact DS1813 inline TO-92 footprint uses a 0.18-mm ring and 0.15-mm local clearance at its fixed 1.27-mm pitch; this equals JLCPCB's listed 2-layer absolute and requires production-file confirmation.",
     "The exact Video VGA signal pads and standard 0.60/0.30 mm vias use 0.15 mm annular rings, equal to JLCPCB's listed multilayer absolute minimum; production-file confirmation remains mandatory.",
     "The optional GCT USB4085 power input is deliberately omitted: its exact 0.40/0.70-mm, 0.85-mm-pitch lands yield a 0.15-mm PTH annular ring, below JLCPCB's published 0.18-mm absolute for ordinary 2-layer boards. The protected barrel jack is the sole power input.",
+    "The 2026-08-28 live quote allows tented vias on the 2-layer designs but disables that selection for the standard 4-layer design and forces Plugged; the order profile therefore records the choices by layer count.",
     "The four-layer selection is JLC7628 at 1.6 mm with no impedance service; the live quote and generated production files remain R5.J3 gates."
   ]
 }

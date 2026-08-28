@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "status": "R5.J3 first-system BOM/programming reconciliation; ORDER HOLD",
+  "scope": "One assembled CPU, Memory, I/O, Backplane and Video first-article system; bare-PCB vendor quantity is quoted separately.",
+  "boards": {
+    "cpu": {
+      "first_system_pcbs": 1,
+      "quote_quantity_candidate": 5,
+      "physical_footprints": 7,
+      "populated_footprints": 7,
+      "dnp_refs": []
+    },
+    "mem": {
+      "first_system_pcbs": 1,
+      "quote_quantity_candidate": 5,
+      "physical_footprints": 10,
+      "populated_footprints": 10,
+      "dnp_refs": []
+    },
+    "io": {
+      "first_system_pcbs": 1,
+      "quote_quantity_candidate": 5,
+      "physical_footprints": 19,
+      "populated_footprints": 12,
+      "dnp_refs": [
+        "C4",
+        "C5",
+        "C6",
+        "J_KBD",
+        "U4",
+        "U5",
+        "U6"
+      ]
+    },
+    "backplane": {
+      "first_system_pcbs": 1,
+      "quote_quantity_candidate": 5,
+      "physical_footprints": 41,
+      "populated_footprints": 41,
+      "dnp_refs": []
+    },
+    "video": {
+      "first_system_pcbs": 1,
+      "quote_quantity_candidate": 5,
+      "physical_footprints": 54,
+      "populated_footprints": 54,
+      "dnp_refs": []
+    }
+  },
+  "totals": {
+    "board_designs": 5,
+    "first_system_pcbs": 5,
+    "physical_footprints": 131,
+    "populated_footprints": 124,
+    "dnp_footprints": 7,
+    "programmed_devices": 6,
+    "jedec_devices": 5,
+    "rom_devices": 1
+  },
+  "programmed_devices": [
+    {
+      "board": "mem",
+      "ref": "U1",
+      "device": "27C256 EPROM",
+      "format": "raw 32768-byte ROM image",
+      "artifact": "spinoffs/minimal-vga/roms/ekta37_z80-27c256.bin",
+      "bytes": 32768,
+      "sha256": "e06dc0ee989d33049ad60c5a182df4d3da8814f206fd19c4f500603c772d9b2f"
+    },
+    {
+      "board": "mem",
+      "ref": "U3",
+      "device": "ATF22V10 decode GAL",
+      "format": "JEDEC",
+      "artifact": "spinoffs/minimal-vga/pld/revb/memory-u3.jed",
+      "bytes": 1177,
+      "sha256": "dbbe74d99400718f2d743b7e02a33291dc1efac68805ea0dd75830b84d06d363"
+    },
+    {
+      "board": "io",
+      "ref": "U2",
+      "device": "ATF16V8 I/O-select GAL",
+      "format": "JEDEC",
+      "artifact": "spinoffs/minimal-vga/pld/revb/io-u2.jed",
+      "bytes": 722,
+      "sha256": "703412427efff890ebfc0e7d430b4a7cf016f3abdc9ad2f90bc3d9aac980e6e7"
+    },
+    {
+      "board": "video",
+      "ref": "U5",
+      "device": "ATF22V10 horizontal-decode GAL",
+      "format": "JEDEC",
+      "artifact": "spinoffs/minimal-vga/pld/revb/video-hdec-u5.jed",
+      "bytes": 1437,
+      "sha256": "224e88c3c76a585ed1893665e7333883a6d0fbfebc9dd4bcef8b1d5d43045153"
+    },
+    {
+      "board": "video",
+      "ref": "U6",
+      "device": "ATF22V10 vertical-decode GAL",
+      "format": "JEDEC",
+      "artifact": "spinoffs/minimal-vga/pld/revb/video-vdec-u6.jed",
+      "bytes": 3101,
+      "sha256": "4884fb645b412a51159560886341c17630aff165e492e08ed0008ed32305675f"
+    },
+    {
+      "board": "video",
+      "ref": "U7",
+      "device": "ATF22V10 control/arbitration GAL",
+      "format": "JEDEC",
+      "artifact": "spinoffs/minimal-vga/pld/revb/video-ctrl-u7.jed",
+      "bytes": 1489,
+      "sha256": "0668bcd86c9e7bb59e3e4b99576794c14ac3a676086a89bffd20a260ca3a5d95"
+    }
+  ],
+  "notes": [
+    "I/O U4/U5/U6, their local C4/C5/C6 bypass capacitors, and J_KBD are B3 DNP for the first system.",
+    "The six programmed devices are five GALs plus one 27C256; a five-GAL build alone is not a complete programming kit.",
+    "This is a hand-assembly reconciliation contract, not a JLCPCB PCBA BOM or permission to populate surplus boards."
+  ]
+}

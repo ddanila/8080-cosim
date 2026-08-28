@@ -84,8 +84,10 @@ the deliberately staged R5.B1 bring-up.
 Capability snapshot: 2026-08-27. Recheck the vendor pages and live quote at
 R5.J3 because manufacturing options can change.
 
-- Common: FR-4, 1.6 mm, 1 oz finished copper, green solder mask, white silk,
-  lead-free HASL, tented vias; enable production-file confirmation.
+- Common: FR-4 TG135, 1.6 mm, 1 oz outer copper, green solder mask, white silk,
+  lead-free HASL; enable production-file confirmation. Use Tented vias for the
+  four 2-layer designs. The current standard 4-layer form disables Tented, so use
+  Plugged vias and its default 0.5 oz inner copper for Video.
 - Two-layer cards: plan ordinary routing at 0.20/0.20 mm or larger even though
   JLCPCB currently lists a 0.10/0.10 mm ordinary 1 oz minimum.
 - Video: use a listed standard four-layer stack-up without controlled impedance;
