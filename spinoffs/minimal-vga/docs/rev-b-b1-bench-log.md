@@ -57,10 +57,10 @@ Vendor-preview checklist:
 
 ## T1.11 staged bring-up
 
-Use a current-limited bench supply at `J_PWR` first: pin 1=`VCC5`, pin 2=`GND`.
-`J_PWR` bypasses the USB polyfuse, so keep the current limit conservative and never
-connect USB-C and the bench supply simultaneously. Power down before inserting/removing
-a card; keying is convention-only.
+Use a current-limited 5 V source through the center-positive barrel `J_PWR` first:
+pin 1=`PWR_RAW` (+5 V center), pin 2=`GND_BUS` (sleeve). `F_MAIN` and `D_REV` protect
+this normal path. Use only one input at a time even though `D_USB` blocks barrel-to-USB
+backfeed. Power down before inserting/removing a card; keying is convention-only.
 
 | Step | Expected result | Observed result / evidence | Pass |
 |---|---|---|:---:|

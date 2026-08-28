@@ -231,16 +231,27 @@ CARD_EXTRAS = {
         header("J_DIAG", {"1": "CLK", "2": "M1_N", "3": "RFSH_N", "4": "RESET_N", "5": "GND"}),
     ],
     "backplane": [
-        # +5V input: USB-C (THT, CC pulldowns advertise a 5V sink) through a resettable
-        # polyfuse into the board rail (D1.35); a bench header taps VCC5 directly (unfused,
-        # so the primary bring-up path can't be broken by a blown/absent fuse).
+        # R5.V6 power boundary.  The normal input is an exact 2.1/5.5-mm,
+        # center-positive barrel jack.  Its raw centre contact reaches VCC5 only through
+        # F_MAIN; D_REV is reverse-biased normally and crowbars a reversed adapter through
+        # that fuse.  The USB-C service input retains its lower-current fuse and gains a
+        # series Schottky so the normal supply cannot back-power a connected USB source.
         comp("J_USBC", "USB_C_PWR", {"VBUS": "VBUS_IN", "GND": "GND", "CC1": "USB_CC1", "CC2": "USB_CC2"}),
         comp("R_CC1", "R_5K1", {"1": "USB_CC1", "2": "GND"}),
         comp("R_CC2", "R_5K1", {"1": "USB_CC2", "2": "GND"}),
-        comp("F_VBUS", "PTC_1A", {"1": "VBUS_IN", "2": "VCC5"}),
-        comp("J_PWR", "HDR_1x2", {"1": "VCC5", "2": "GND"}),
+        comp("F_VBUS", "PTC_1A", {"1": "VBUS_IN", "2": "USB_FUSED"}),
+        comp("D_USB", "SCHOTTKY_3A", {"1": "VCC_BUS", "2": "USB_FUSED"}),
+        comp("J_PWR", "BARREL_5A", {"1": "PWR_RAW", "2": "GND_BUS"}),
+        comp("F_MAIN", "PTC_2A5", {"1": "PWR_RAW", "2": "VCC_BUS"}),
+        comp("D_REV", "SCHOTTKY_5A", {"1": "VCC_BUS", "2": "GND_BUS"}),
+        # Explicit 22-AWG tinned-copper links join the protected high-current bus
+        # rails to the low-current backplane/USB support rails.  This keeps the
+        # 0.8-mm routing class off the USB-C fine-pitch shell/contact fanout without
+        # creating a second electrical supply domain.
+        comp("W_VCC", "WIRE_LINK_22AWG", {"1": "VCC_BUS", "2": "VCC5"}),
+        comp("W_GND", "WIRE_LINK_22AWG", {"1": "GND_BUS", "2": "GND"}),
         # Input power conditioning (D1.35): bulk + HF bypass on the rail.
-        comp("C_BULK", "C_ELEC_47U", {"1": "VCC5", "2": "GND"}),
+        comp("C_BULK", "C_ELEC_47U", {"1": "VCC_BUS", "2": "GND_BUS"}),
         comp("C_IN", "C_100N", {"1": "VCC5", "2": "GND"}),
         # Reset: soldered DS1813-5 TO-92 supervisor with its DATASHEET-VERIFIED pinout
         # (pin 1 = /RST open-drain, pin 2 = VCC, pin 3 = GND; ds1813.pdf p1). Plus a
@@ -407,7 +418,7 @@ def bus_connector(ref):
     return {"ref": ref, "type": "REVB_BUS_39_10", "pins": pins}
 
 
-POWER_NETS = {"VCC5", "GND"}
+POWER_NETS = {"VCC5", "GND", "VCC_BUS", "GND_BUS"}
 
 
 def nets_from_chips(chips):
@@ -432,7 +443,13 @@ def build(card):
     if card == "backplane":
         # Contract-sized slot set wired in parallel: same signal on pin N of every slot.
         for s in range(1, mating["n_slots"] + 1):
-            chips.append(bus_connector(f"J_S{s}"))
+            conn = bus_connector(f"J_S{s}")
+            # The mating pin functions remain canonical; these PCB-local names
+            # distinguish the credited high-current distribution copper from the
+            # low-current support rails on the same board.
+            conn["pins"] = {p: ({"VCC5": "VCC_BUS", "GND": "GND_BUS"}.get(n, n))
+                            for p, n in conn["pins"].items()}
+            chips.append(conn)
         chips.extend(CARD_EXTRAS.get("backplane", []))
     else:
         chips.append(bus_connector("J_BUS"))

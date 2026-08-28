@@ -24,7 +24,7 @@ in `rev-b-five-board-order-plan.md`.
 | **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | ✅ done | TG.1 mating contract+checker, TG.2 **all 4 route 0/0** at 4 mm offset, TG.3 FreeCAD clearance 4.16 mm + keying D1.32b, TG.4 fab packages + power re-check → historical T1.10 evidence |
 | **Five-board order** | CPU + memory + I/O + backplane + ready VGA card; hardened TTL serial | ⬜ **ORDER HOLD**; execute R5 plan | `rev-b-five-board-order-plan.md` |
 | **B2 video desk model** | TTL VGA + framebuffer through TI.3 | ✅ done | licensed timing adoption, chip-level twin, crop policy, row-base address generator, cycle-steal `/WAIT`, integrated ekta37 boot, `video.board.json`, completeness, and scoped LVS all guarded |
-| **B2 physical card** | exact parts, GALs, full LVS, power, 4-layer PCB/package | 🟨 R5.V1–V5 done; five-card release checks pending | routed source passes DRC 0/0 and plane/critical-route guards; R5.V6 replaces the old TI.5/T1.11 hold |
+| **B2 physical card** | exact parts, GALs, full LVS, power, 4-layer PCB/package | ✅ R5.V1–V6 done; vendor packaging pending | routed source passes DRC 0/0 and plane/critical-route guards; assembled STEP/clearance plus protected 1.351 A distribution model pass |
 | **B3 / B4** | keyboard+PIC / FDC tiers | ⬜ B3 = populate-only; B4 future | B3 parts are already wired as DNP on the I/O card; no B4 tape-out work yet |
 
 ## One-command gate
@@ -32,7 +32,8 @@ in `rev-b-five-board-order-plan.md`.
 `spinoffs/minimal-vga/sim/revb_tier_suite.sh` runs the whole verified set:
 commons guard, board connectivity + **D1.18 completeness** (all six card specs),
 serial contract/electrical/C10 gates, five reproducible GALs, five-card mating,
-exact Video parts/footprints/power plus routed stack/plane/critical-path negative controls, mem/io/video scoped LVS,
+exact Video parts/footprints/power, routed stack/plane/critical-path negative controls,
+assembled R5.V6 mechanics/protected-power solve, mem/io/video scoped LVS,
 per-card BFM TBs +
 negative control, bus-conflict + refresh-drive assertions, ekta37 banner boot (both
 modes) byte-identical to cosim, the minimum-tier bring-up TX stream, and the B2 video
@@ -59,10 +60,10 @@ those tools.
 
 ## Next action
 
-**R5.0, R5.S1–S3, R5.P1 and R5.V1–V5 are complete.** Follow the
+**R5.0, R5.S1–S3, R5.P1 and R5.V1–V6 are complete.** Follow the
 dependency-ordered tasks in `rev-b-five-board-order-plan.md`. The next
-dependency-ready work is R5.V6: close assembled five-card mechanics, backside
-decoupler/tall-part clearance, VGA cable access and the protected 2 A power path.
+dependency-ready work is R5.J1: encode and negative-test the JLCPCB fabrication
+profile for the four two-layer boards and four-layer Video board.
 Do not upload the historical four-board packages. Ordering stays on hold until all
 five packages pass R5.R1 and the owner explicitly releases them.
 

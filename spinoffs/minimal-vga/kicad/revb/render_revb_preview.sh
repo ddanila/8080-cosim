@@ -13,6 +13,9 @@ mkdir -p "$(dirname "$OUT")"
   --output "$OUT" "$PCB" >/dev/null
 "$KICAD_CLI" pcb export svg --layers F.Cu,B.Cu,Edge.Cuts --page-size-mode 2 \
   --output "${OUT%-top.svg}-copper.svg" "$PCB" >/dev/null
+# pcbnew embeds wall-clock time and trailing spaces in SVG output. Normalize both
+# so a preview changes only when its board changes and remains git-diff clean.
+sed -i -E 's/ date [^<]*//; s/[[:space:]]+$//' "$OUT" "${OUT%-top.svg}-copper.svg"
 # 3D renders (PNG, gitignored per *.png; regenerate here). Top + isometric.
 DIR="$(dirname "$OUT")"
 "$KICAD_CLI" pcb render --side top --quality high --width 1400 --height 900 \

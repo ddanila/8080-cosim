@@ -67,7 +67,7 @@ the change; a prose assertion is not a pass.
 | **R5.V3 — DONE 2026-08-28** | Produce sources and reproducible JEDECs for all three Video GALs. Fix `FRAME_TICK` to divide by six for the 2.000 MHz first article and retain a documented way to retarget it if the CPU oscillator changes. | R5.V1 | Five-GAL clean rebuild passes; U5/U6/U7 pins and equations are exhaustively checked; exact fetch/WAIT and divide-six simulations pass; integrated TTL-card EKTA boot is byte-identical to cosim. |
 | **R5.V4 — DONE 2026-08-28** | Pin exact orderable mechanical parts before layout: right-angle female DE-15 VGA connector, 25.175 MHz 5 V oscillator, SRAM, GAL packages, bus headers, sockets and tall/polarized parts. | R5.V1 | Exact MPN contract and availability snapshot are recorded; checked custom VGA land pattern rejects a generic HD15; all 23 sockets are package-derived; card/backplane bus orientation, mating rows, tall/polarized parts and corrected oscillator current are machine-checked. |
 | **R5.V5 — DONE 2026-08-28** | Generate, place and route the Video PCB on four layers (`signal / solid GND / solid VCC5 / signal`). Keep the dot-clock chain and pixel path short, add source damping where the audit calls for it, and preserve a continuous return plane. | R5.V2, R5.V3, R5.V4 | Fresh generation and bounded attempt-1 routing pass full connectivity/LVS, total DRC 0/0, single-island plane/return-path, local-bypass, critical-route and exact connector checks; routed source and negative controls are committed. |
-| **R5.V6** | Re-run the assembled five-card mechanical and power model: connector mating, 16 mm slot pitch, adjacent-card/tall-part clearance, VGA-cable access, orientation/keying, current path and supply drop. Qualify one regulated 5 V supply rated at least 2 A and protect every intended bench input. | R5.S2, R5.V5 | Machine check plus 3-D/manual review pass; no unfused normal input remains; current/headroom and connector ratings are recorded. |
+| **R5.V6 — DONE 2026-08-28** | Re-run the assembled five-card mechanical and power model: connector mating, 16 mm slot pitch, adjacent-card/tall-part clearance, VGA-cable access, orientation/keying, current path and supply drop. Qualify one regulated 5 V supply rated at least 2 A and protect every intended bench input. | R5.S2, R5.V5 | All four populated card STEP envelopes clear (4.16 mm minimum; Video in slot 5 with slot 4 empty); exact VGA face projects 5.80 mm beyond its edge. Mean Well GST25A05-P1J plus fused/reverse-protected barrel input is frozen; routed copper solve gives 4.624 V minimum trough and rejects five physical/electrical mutations. |
 | **R5.J1** | Encode a JLCPCB rule profile and preflight checks for both the four 2-layer boards and the 4-layer Video board. | R5.V5 | Checks cover stack-up/layers, outline, drills/slots, annular rings, clearances, silk, masks, filenames and archive contents; negative fixtures fail. |
 | **R5.J2** | Regenerate all five fabrication ZIPs in one release run. Emit a manifest with source revision, tool versions, board dimensions/layers, file list and SHA-256 per archive. | R5.P1, R5.S3, R5.V6, R5.J1 | One command regenerates and validates five safe archives; packages contain Gerber/Excellon production data only. |
 | **R5.J3** | Perform an independent pre-upload review and obtain a fresh live JLCPCB quote. Check every Gerber/drill rendering separately; reconcile the five designs with BOM quantities and programmed-device count. | R5.J2 | Signed checklist has no unresolved findings; price, quantity, lead time, selected options and any vendor warnings are recorded. |
@@ -129,11 +129,12 @@ R5.R1 cannot pass until all of the following are true:
 - **DONE 2026-08-28:** Exact connectors, oscillators, sockets and other
       footprint-critical parts are orderable and tied to checked datasheets; live
       stock must still be refreshed at R5.J3.
-- **PENDING:** Decoupling, five-card current, regulated 5 V/2 A supply, input protection,
-      voltage drop and USB-TTL electrical compatibility are closed.
+- **DONE 2026-08-28:** Decoupling, five-card current, receipt-tested regulated supply,
+      protected normal/service inputs, routed voltage drop and USB-TTL electrical
+      compatibility are closed. USB-C is service-only, not a five-board supply.
 - **PENDING:** Five JLCPCB-ready ZIPs and their hashes pass the encoded vendor profile.
 - **PENDING:** An independent layer/drill/mechanical review and current live quote pass.
 - **PENDING:** The owner explicitly authorizes upload after seeing the final evidence.
 
-Until then, the correct next action is R5.V6, not an order and not a partial
+Until then, the correct next action is R5.J1, not an order and not a partial
 four-board upload.

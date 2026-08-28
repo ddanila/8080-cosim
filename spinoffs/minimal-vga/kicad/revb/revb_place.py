@@ -127,30 +127,42 @@ def backplane_place():
     # keep through-hole chains from walling off the two-layer routing channels.
     y0 = _C["tail_strip_y0"]
     yr1, yr2, yr3 = y0 + 3.0, y0 + 9.0, y0 + 15.0
-    p["R_CC1"]  = (12.0, yr1, 0)
-    p["C_BULK"] = (22.5, yr1, 0)
-    p["SW_RST"] = (32.0, yr1, 0)
-    p["D_PWR"]  = (68.0, yr1, 0)
-    p["J_USBC"] = (85.27, yr1, 0)
-    p["R_CC2"]  = (12.0, yr2, 0)
-    p["F_VBUS"] = (22.0, yr2, 0)
-    p["C_IN"]   = (31.0, yr2, 0)
-    p["C_CON"]  = (38.5, yr2, 0)
-    p["U_CON"]  = (54.0, yr2, 90)
-    p["J_PWR"]  = (68.0, yr2, 90)
-    p["U_RST"]  = (75.0, yr2 - 1.0, 90)
-    p["R_LED"]  = (18.0, yr3, 0)
-    p["R_RST"]  = (28.0, yr3, 0)
-    p["C_RST"]  = (38.0, yr3, 0)
-    p["J_TTL"]  = (70.0, yr3, 90)
-    p["JP_S5"]  = (85.0, yr3, 0)
+    p["R_CC1"]  = (8.0, yr1, 0)
+    p["C_BULK"] = (18.0, yr1, 0)
+    p["SW_RST"] = (76.0, yr1, 0)
+    p["D_PWR"]  = (85.0, yr1, 0)
+    # USB4085 datum: local PCB-edge line is y=6.1, hence origin y=93.9 puts
+    # its mating face exactly on the top edge.  gen_revb_pcb uses origin placement.
+    p["J_USBC"] = (87.0, 93.9, 0)
+    p["R_CC2"]  = (8.0, yr2, 0)
+    p["F_VBUS"] = (18.0, yr2, 0)
+    p["W_VCC"]  = (8.0, y0 + 12.0, 0)
+    p["W_GND"]  = (18.0, y0 + 12.0, 0)
+    p["C_IN"]   = (37.6, yr1, 0)
+    p["C_CON"]  = (37.6, yr2, 0)
+    p["U_CON"]  = (29.0, yr2 - 0.5, 0)
+    # J_PWR uses an origin-at-edge placement in gen_revb_pcb.py.  At 180 degrees
+    # the opening faces the top edge and the complete body remains on the board.
+    p["J_PWR"]  = (47.5, 98.4, 180)
+    # Vertical MF-R250: pad 1 (raw) is above pad 2 (VCC5), so the raw route
+    # terminates before the 2-mm VCC5 spine continues down the same X coordinate.
+    p["F_MAIN"] = (55.08, 89.0, 90)
+    p["D_REV"]  = (65.0, yr1, 0)
+    p["D_USB"]  = (94.0, yr1, 0)
+    p["U_RST"]  = (71.5, yr2, 90)
+    p["R_LED"]  = (8.0, yr3, 0)
+    p["R_RST"]  = (18.0, yr3, 0)
+    p["C_RST"]  = (37.6, yr3, 0)
+    p["J_TTL"]  = (78.0, yr3, 90)
+    p["JP_S5"]  = (77.5, yr2, 0)
     for ref, x in (("R_TX_TOP", 38.0), ("R_TX_BOT", 44.0),
-                   ("R_RX_SER", 50.0), ("R_RX_PULL", 56.0),
-                   ("R_VSENSE", 62.0)):
+                   ("R_RX_SER", 50.0)):
         p[ref] = (x, y0, 0)
-    p["D_VSENSE"] = (74.0, y0, 0)
-    p["R_TX_PULL"] = (94.0, y0, 0)
-    p["R_BUS_RX"]  = (7.0, yr3, 0)
+    p["R_RX_PULL"] = (61.0, yr2, 0)
+    p["R_VSENSE"] = (66.5, yr2, 0)
+    p["D_VSENSE"] = (85.0, yr2, 0)
+    p["R_TX_PULL"] = (97.0, yr2, 0)
+    p["R_BUS_RX"]  = (60.0, yr3, 0)
     # Bottom-strip bus-signal pullups, evenly spread (horizontal axials need ~16 mm
     # spacing). R_INT sits near its INT_N column (x~55); R_BRQ near BUSRQ_N (x~8).
     for ref, x in (("R_BRQ", 12.0), ("R_WAIT", 28.0), ("R_NMI", 44.0),

@@ -58,8 +58,11 @@ echo "== rev B: routed Video stack/planes/geometry/critical paths (R5.V5) =="
 if revb_have KICAD_PYTHON; then
   "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_video_pcb.py --self-test
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py video --total
+  echo "== rev B: assembled mechanics + protected five-board power path (R5.V6) =="
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_system_physical.py --self-test
+  python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py backplane --total
 else
-  echo "  SKIP  R5.V5 physical gate: pcbnew not found"
+  echo "  SKIP  R5.V5/R5.V6 physical gates: pcbnew not found"
 fi
 
 echo "== rev B: per-card unit TBs (BFM) =="

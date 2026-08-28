@@ -50,7 +50,11 @@ CAND = {
     "USB_C_THT": ["Connector_USB:USB_C_Receptacle_GCT_USB4085"],
     "PIN_2x2": ["Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical"],
     "CP_RADIAL": ["Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"],
-    "PTC_RADIAL": ["Fuse:Fuse_Bourns_MF-RG300"],
+    "PTC_RADIAL": ["VJUGA:Fuse_Bourns_MF-R110"],
+    "PTC_RADIAL_2A5": ["VJUGA:Fuse_Bourns_MF-R250"],
+    "BARREL_WUERTH_5A": ["Connector_BarrelJack:BarrelJack_Wuerth_6941xx301002"],
+    "D_DO201_VERT": ["Diode_THT:D_DO-201AD_P5.08mm_Vertical_AnodeUp"],
+    "WIRE_LINK_22AWG": ["VJUGA:WireLink_22AWG_P5.08mm"],
     "DSUB15HD_NORCOMP": ["VJUGA:NorComp_200-015-213L537"],
 }
 # board.json component type -> list of footprint kinds it needs
@@ -71,6 +75,9 @@ TYPE_KINDS = {
     "R_10K_VERT": ["R_VERT"], "D_1N4148_VERT": ["D_DO35_VERT"],
     "SW_PUSH": ["SW_PUSH6"], "LED": ["LED5"], "JMP_2x2": ["PIN_2x2"],
     "C_ELEC_47U": ["CP_RADIAL"], "PTC_1A": ["PTC_RADIAL"],
+    "PTC_2A5": ["PTC_RADIAL_2A5"], "BARREL_5A": ["BARREL_WUERTH_5A"],
+    "SCHOTTKY_3A": ["D_DO201_VERT"], "SCHOTTKY_5A": ["D_DO201_VERT"],
+    "WIRE_LINK_22AWG": ["WIRE_LINK_22AWG"],
     # Video card (R5.V4): every physical package is explicit, including the exact
     # NorComp connector whose two-row solder-tail fanout is not represented by either
     # generic KiCad high-density D-sub footprint.
@@ -129,6 +136,12 @@ PKG_PHYS = {
                     (2, 0.70, 5.00, "5mm disc ceramic, 5.08mm pitch")),
     "C_ELEC_47U": (2,  0.60, 2.50, "6.3mm radial electrolytic, 2.5mm pitch"),
     "PTC_1A":     (2,  0.70, 5.10, "Bourns MF-R110: 5.1mm lead pitch, 0.51mm leads (mf_r.pdf)"),
+    "PTC_2A5":    (2,  1.00, 5.10, "Bourns MF-R250: 5.1mm pitch, 0.81mm leads (mf-r.pdf)"),
+    "BARREL_5A":  (3,  0.80, 4.80, "Wurth 694106301002: three blade terminals; "
+                                            "4.8mm switched-contact X offset"),
+    "SCHOTTKY_3A": (2, 1.32, 5.08, "Vishay 1N5822 DO-201AD, 1.32mm maximum lead; vertical"),
+    "SCHOTTKY_5A": (2, 1.32, 5.08, "Vishay SB560 DO-201AD, 1.32mm maximum lead; vertical"),
+    "WIRE_LINK_22AWG": (2, 1.00, 5.08, "insulated 22-AWG tinned-copper assembly link"),
     "OSC_BAUD":   (4,  0.80, 7.62, "ECS-2200B-049 half-size DIP-8: pins 1/4/5/8 on 7.62mm grid"),
     "R_1K_VERT":  (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
     "R_1K8_VERT": (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
@@ -225,7 +238,11 @@ def main():
             if not exists(fp):
                 missing.append((f"{t}({n})", [fp]))
             chosen[f"HDR_1x{n}"] = fp
-        # passives on other cards (R/LED/USB-C/switch) resolve in their card's probe
+        else:
+            # Do not silently omit a newly introduced physical class. That failure
+            # once let the R5.V6 power parts disappear when this probe rewrote the
+            # generated footprint map.
+            missing.append((f"{t} [no resolver contract]", []))
     if missing:
         print(f"footprint probe ({CARD}) FAILED -- unresolved:")
         for t, c in missing:

@@ -76,6 +76,17 @@ def place_vga_edge(fp, x, y, rot=180):
     fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
 
 
+def place_origin(fp, x, y, rot=0):
+    """Place a mechanical datum directly, without bounding-box centring.
+
+    Edge connectors are dimensioned from their mating-face origin.  Treating that
+    datum as a generic component centre moves the opening away from the board edge
+    and makes an otherwise correct footprint mechanically inaccessible.
+    """
+    fp.SetOrientationDegrees(rot)
+    fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
+
+
 def strip_bus_edge_graphics(fp):
     """Remove generic library silk/courtyard around mating posts outside the PCB.
 
@@ -241,6 +252,83 @@ def emit_power_rails(board):
     return n
 
 
+def emit_backplane_power_spines(board):
+    """Emit the R5.V6 high-current path before autorouting.
+
+    The base connector alone is rated for the complete 1.351-A desk budget, so a
+    2.0-mm VCC_BUS spine and a 2.0-mm GND_BUS spine run directly through its power pads in
+    all five slots.  VCC_BUS uses F.Cu and GND_BUS uses B.Cu, allowing ordinary bus signals
+    to cross on the other layer.  The normal-input fuse and jack are tied directly to
+    those spines with the same width; no thin autorouted segment is in the normal
+    machine current path.  Extension-row power remains connected by the router as a
+    redundant, non-credit path.
+    """
+    import re
+    fps = {fp.GetReference(): fp for fp in board.GetFootprints()}
+
+    def pad(ref, number):
+        p = fps[ref].FindPadByNumber(str(number))
+        if p is None:
+            raise RuntimeError(f"{ref}: missing pad {number}")
+        return p
+
+    def add_track(net, layer, a, b, width=2.0):
+        t = pcbnew.PCB_TRACK(board)
+        t.SetStart(a); t.SetEnd(b); t.SetWidth(mm(width)); t.SetLayer(layer)
+        t.SetNet(net); t.SetLocked(True); board.Add(t)
+        return t
+
+    slot_refs = sorted((r for r in fps if re.fullmatch(r"J_S\d+_BUS", r)),
+                       key=lambda r: int(re.search(r"\d+", r).group()))
+    if len(slot_refs) != MATING["n_slots"]:
+        raise RuntimeError("cannot emit power spines: slot connector set incomplete")
+
+    specs = {
+        "VCC_BUS": (pcbnew.F_Cu, "F_MAIN", "2"),
+        "GND_BUS": (pcbnew.B_Cu, "J_PWR", "2"),
+    }
+    count = 0
+    for netname, (layer, source_ref, source_padno) in specs.items():
+        power_pads = []
+        for ref in slot_refs:
+            matches = [p for p in fps[ref].Pads() if p.GetNetname() == netname]
+            if len(matches) != 1:
+                raise RuntimeError(f"{ref}: expected one {netname} pad, got {len(matches)}")
+            power_pads.append(matches[0])
+        power_pads.sort(key=lambda p: p.GetPosition().y)
+        net = power_pads[0].GetNet()
+        for a, b in zip(power_pads, power_pads[1:]):
+            add_track(net, layer, a.GetPosition(), b.GetPosition()); count += 1
+
+        source = pad(source_ref, source_padno)
+        top = power_pads[-1].GetPosition()
+        if netname == "GND_BUS":
+            # The jack's wide centre-contact and the vertical main fuse sit above
+            # this row.  A short B.Cu dogleg at y=95 avoids both PTH envelopes before
+            # joining the dedicated GND column.
+            clear_y = mm(95.0)
+            a = pcbnew.VECTOR2I(source.GetPosition().x, clear_y)
+            corner = pcbnew.VECTOR2I(top.x, clear_y)
+            add_track(net, layer, source.GetPosition(), a); count += 1
+            add_track(net, layer, a, corner); count += 1
+            add_track(net, layer, corner, top); count += 1
+        else:
+            # Orthogonal source feed: first align X at the source Y, then descend
+            # along the exact slot-power column.
+            corner = pcbnew.VECTOR2I(top.x, source.GetPosition().y)
+            if source.GetPosition() != corner:
+                add_track(net, layer, source.GetPosition(), corner); count += 1
+            add_track(net, layer, corner, top); count += 1
+
+    # The raw center-positive input is also a full-current path.  Keep it wide from
+    # the exact barrel contact to the upstream side of F_MAIN.
+    raw_a, raw_b = pad("J_PWR", "1"), pad("F_MAIN", "1")
+    corner = pcbnew.VECTOR2I(raw_b.GetPosition().x, raw_a.GetPosition().y)
+    add_track(raw_a.GetNet(), pcbnew.F_Cu, raw_a.GetPosition(), corner); count += 1
+    add_track(raw_a.GetNet(), pcbnew.F_Cu, corner, raw_b.GetPosition()); count += 1
+    return count
+
+
 def emit_video_vga_escapes(board):
     """Route the two trapped inner VGA tails through the exact 7+8 pad fanout.
 
@@ -346,13 +434,14 @@ def main():
         board.Add(ni); nets[name] = ni
 
     def add_fp(ref, fpname, xy, pin_to_net, dnp=False, pad_row_anchor=False,
-               vga_edge_anchor=False, back_side=False):
+               vga_edge_anchor=False, origin_anchor=False, back_side=False):
         fp = load_fp(fpname)
         board.Add(fp)
         fp.SetReference(ref)
         if back_side:
             fp.Flip(fp.GetPosition(), False)
         (place_vga_edge if vga_edge_anchor else
+         place_origin if origin_anchor else
          place_pad_row if pad_row_anchor else place)(fp, *xy)
         if dnp:
             try: fp.SetDNP(True)
@@ -397,7 +486,8 @@ def main():
             padnet = {"A4": v, "A9": v, "B4": v, "B9": v,
                       "A1": g, "A12": g, "B1": g, "B12": g, "SH": g,
                       "A5": pins["CC1"], "B5": pins["CC2"]}
-            usb = add_fp(ref, fpmap[typ], PLACE.get(ref, (50.0, 40.0)), padnet)
+            usb = add_fp(ref, fpmap[typ], PLACE.get(ref, (50.0, 40.0)), padnet,
+                         origin_anchor=(CARD == "backplane"))
             # USB-C is 0.85 mm pitch -> 0.15 mm inter-pad copper gaps, inherent to the
             # standard (VBUS/GND are always adjacent) and fine for any cheap fab, but
             # below KiCad's 0.2 mm default. Relax clearance for THIS connector only so it
@@ -409,11 +499,17 @@ def main():
                     pad.SetLocalClearance(mm(0.1))
             except Exception:
                 pass
+            # Its mating shell intentionally projects beyond the PCB-edge datum.
+            # Keep fabrication silk/courtyard inside the board model; the exact edge
+            # anchor and body envelope are checked independently in R5.V6.
+            if CARD == "backplane":
+                strip_bus_edge_graphics(usb)
         else:
             fpname = fpmap.get(typ) or fpmap.get(f"HDR_1x{len(pins)}")
             xy = PLACE.get(ref, (50.0, 40.0))
             add_fp(ref, fpname, xy, pins, dnp=comp.get("dnp", False),
                    vga_edge_anchor=(CARD == "video" and ref == "J_VGA"),
+                   origin_anchor=(CARD == "backplane" and ref == "J_PWR"),
                    # These small through-hole decouplers occupy the clear space
                    # between socket rows on B.Cu. That keeps their VCC legs local
                    # without consuming the dense front-side signal channels.
@@ -453,9 +549,9 @@ def main():
                   ("NO HOT-PLUG", 76.0, 87.0, 1.0)],
         # Backplane console labels are board-relative: TX is output from VJUGA,
         # RX is input to VJUGA. The electrical boundary is TTL, never RS-232.
-        "backplane": [("REVB BACKPLANE", 3.0, 90.0, 1.0, 90),
-                      ("TTL ONLY", 97.0, 85.5, 1.0, 90),
-                      ("NOT RS-232", 97.0, 94.0, 1.0, 90),
+        "backplane": [("REVB BACKPLANE", 50.0, 68.0, 1.0),
+                      ("TTL ONLY", 97.0, 50.0, 1.0, 90),
+                      ("NOT RS-232", 94.0, 50.0, 1.0, 90),
                       ("1:5V SENSE", 51.0, 80.0, 1.0),
                       ("2:TX 3:RX 4:GND", 70.0, 80.0, 1.0)],
     }
@@ -463,14 +559,20 @@ def main():
         text, sx, sy, ssz, *rest = entry
         silk(board, text, sx, sy, size=ssz, angle=(rest[0] if rest else 0))
 
-    # backplane bus columns are emitted deterministically (D1.29); other cards route
-    # entirely via freerouting.
     # D1.34: the backplane routes like any other card — plain freerouting, no locked
     # pre-routes. The Stage-C column pre-routing (D1.29) was retired when the layout
     # became mate-compatible: pcbnew's specctra roundtrip mangles locked tracks near
     # the base/ext interleave (drops a varying subset), freerouting then reliably fails
     # around the corpse (170+ attempts), while the SAME board with no locked tracks
     # routes 0/0 on attempt 1. REVB_COLUMNS=1 re-enables the emitters for comparison.
+    # Direct locked spines remain a diagnostic comparison only.  The Specctra
+    # round trip can preserve their geometry yet leave FreeRouting with a stable
+    # seven-net dead end.  The release flow instead assigns these nets a 0.8-mm
+    # routing class in route_revb_pcb.sh, which lets the router negotiate crossings.
+    if CARD == "backplane" and os.environ.get("REVB_POWER_SPINES") == "1":
+        npwr = emit_backplane_power_spines(board)
+        print(f"  emitted {npwr} locked 2.0-mm normal-input/power-spine segments")
+
     if CARD == "backplane" and os.environ.get("REVB_COLUMNS"):
         ncol = emit_bus_columns(board)
         nris = emit_power_rails(board)

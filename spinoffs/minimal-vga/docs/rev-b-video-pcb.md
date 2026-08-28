@@ -2,7 +2,7 @@
 
 Status: **PASS / ROUTED SOURCE FROZEN 2026-08-28.** This closes the individual
 Video-card layout task; it does not authorize fabrication. Five-card mechanical,
-power-input and voltage-drop closure remains R5.V6, followed by the JLCPCB gates.
+power-input and voltage-drop closure passed R5.V6; the JLCPCB gates remain.
 
 ## Physical result
 
@@ -19,8 +19,9 @@ power-input and voltage-drop closure remains R5.V6, followed by the JLCPCB gates
   plane.
 - All 23 bypass capacitors have their VCC pad within 12.85 mm of the corresponding
   IC supply pad. C5, C7-C11 and C21 are mounted on B.Cu between their front-side
-  socket rows; this deliberate opposite-face arrangement remains an adjacent-card
-  height item for R5.V6. The other bypass parts and 47 uF bulk capacitor are front-side.
+  socket rows; R5.V6 includes them in the populated STEP envelope and proves 4.16 mm
+  minimum adjacent-card clearance. The other bypass parts and 47 uF bulk capacitor
+  are front-side.
 - `R_CLK` is a 33 ohm source resistor 6.27 mm from oscillator U1.8. Its pre-resistor
   `DOTCLK_RAW` route is 6.56 mm; the seven-load `DOTCLK` tree is 184.54 mm over the
   continuous return plane.

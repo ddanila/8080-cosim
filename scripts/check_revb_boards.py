@@ -153,7 +153,11 @@ def main() -> int:
             declared |= set(c.get(k, []))
         for comp in board["chips"]:
             if comp["type"] == "REVB_BUS_39_10":
-                if comp["pins"] != bus_map:
+                expected = bus_map
+                if name == "backplane":
+                    expected = {p: ({"VCC5": "VCC_BUS", "GND": "GND_BUS"}.get(n, n))
+                                for p, n in bus_map.items()}
+                if comp["pins"] != expected:
                     fail.append(f"{name}.board.json connector {comp['ref']} != canonical bus pinout")
                 continue
             for net in comp["pins"].values():

@@ -691,6 +691,10 @@ row). CI-safe (skips without KICAD_FOOTPRINTS).
 pad-count expectation or a too-small drill must FAIL) — same discipline as PKG_WIDTH.
 
 **TH.3 — input power conditioning (D1.35).**
+> Historical four-board implementation. R5.V6 supersedes the direct/unfused
+> `J_PWR` wording below: the five-board normal input is an exact barrel jack through
+> MF-R250, with an SB560 reverse crowbar. USB-C remains MF-R110-fused service power.
+
 `gen_revb_boards.py`: add to the backplane `C_BULK` (47 µF/16 V radial electrolytic,
 new footprint kind `CP_RADIAL_D6.3` or similar), `C_IN` (100 nF disc, existing kind),
 and `F_VBUS` (~1 A-hold polyfuse, radial) wired **USB VBUS → F_VBUS → VCC5 rail**, with

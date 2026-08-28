@@ -57,6 +57,54 @@ if not pcbnew.ExportSpecctraDSN(board, sys.argv[2]):
     raise SystemExit("DSN export failed")
 PY
 
+# R5.V6: the normal machine current must not traverse 0.20-mm signal tracks.
+# Route the two bus rails at their frozen 0.8 mm release width. The system-level
+# copper solver proves the resulting voltage trough at the complete 1.351 A load.
+# The short protected barrel-input raw link is widened to 2.0 mm after import.
+if [ "$CARD" = backplane ]; then
+  python3 - "$DSN" <<'PY'
+import re
+import sys
+
+path = sys.argv[1]
+text = open(path, encoding="utf-8").read()
+start = text.index("    (class kicad_default ")
+depth = 0
+end = None
+for i in range(start, len(text)):
+    if text[i] == "(":
+        depth += 1
+    elif text[i] == ")":
+        depth -= 1
+        if depth == 0:
+            end = i + 1
+            break
+if end is None:
+    raise SystemExit("cannot parse kicad_default DSN class")
+block = text[start:end]
+head_end = block.index("      (circuit")
+head, tail = block[:head_end], block[head_end:]
+for net in ("GND_BUS", "PWR_RAW", "VCC_BUS"):
+    head, n = re.subn(rf"(?<![A-Za-z0-9_]){net}(?![A-Za-z0-9_])", "", head)
+    if n != 1:
+        raise SystemExit(f"expected {net} once in default DSN class, got {n}")
+default = head + tail
+power = """    (class r5_power GND_BUS PWR_RAW VCC_BUS
+      (circuit
+        (use_via \"Via[0-1]_600:300_um\")
+      )
+      (rule
+        (width 800)
+        (clearance 200)
+      )
+    )
+"""
+text = text[:start] + power + default + text[end:]
+open(path, "w", encoding="utf-8").write(text)
+print("  assigned GND_BUS/PWR_RAW/VCC_BUS to the 0.8-mm R5.V6 power class")
+PY
+fi
+
 # R5.V5 reserves the Video inner layers as solid power planes. Mark them as power
 # in Specctra so FreeRouting cannot consume them for signal tracks.
 if [ "$CARD" = video ]; then
@@ -90,11 +138,25 @@ else
 fi
 ROUTED=""
 for attempt in $(seq 1 "$ATTEMPTS"); do
-  # per-attempt DSN copy: freerouting derives job/board identity (and some caching/
-  # seeding) from its input; a fresh filename per attempt guarantees an independent run.
+  # Per-attempt DSN identity: FreeRouting hashes the PCB name inside the file, not
+  # merely the input filename.  Rewrite that name so retry N really receives a
+  # distinct optimization seed instead of deterministically repeating attempt 1.
   cp "$DSN" "$OUT/${CARD}-a${attempt}.dsn"
+  python3 - "$OUT/${CARD}-a${attempt}.dsn" "$CARD" "$attempt" <<'PY'
+import re
+import sys
+
+path, card, attempt = sys.argv[1:]
+text = open(path, encoding="utf-8").read()
+text, count = re.subn(r'^\(pcb "[^"]+"', f'(pcb "{card}-attempt-{attempt}"',
+                      text, count=1)
+if count != 1:
+    raise SystemExit("cannot rewrite per-attempt DSN identity")
+open(path, "w", encoding="utf-8").write(text)
+PY
   "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" \
     -de "$OUT/${CARD}-a${attempt}.dsn" -do "$SES" -mp "$PASSES" \
+    -is "${FR_SELECTION:-prioritized}" -us "${FR_UPDATE:-greedy}" \
     >"$OUT/${CARD}-fr.log" 2>&1 || true
   rm -f "$OUT/${CARD}-a${attempt}.dsn"
   [ -f "$SES" ] || { echo "  attempt $attempt: no SES produced, retrying"; continue; }
@@ -107,6 +169,15 @@ import pcbnew
 board = pcbnew.LoadBoard(sys.argv[1])
 if not pcbnew.ImportSpecctraSES(board, sys.argv[2]):
     raise SystemExit("SES import failed")
+if sys.argv[4] == "backplane":
+    # Enforce the 2.0-mm protected raw-input width before total DRC. The two
+    # distribution nets already leave FreeRouting at their 0.8-mm release width.
+    for item in board.Tracks():
+        if isinstance(item, pcbnew.PCB_VIA):
+            continue
+        if item.GetNetname() == "PWR_RAW":
+            item.SetWidth(pcbnew.FromMM(2.0))
+            item.SetLocked(True)
 if sys.argv[4] == "video":
     def add_plane(net_name, layer, name):
         zone = pcbnew.ZONE(board)
