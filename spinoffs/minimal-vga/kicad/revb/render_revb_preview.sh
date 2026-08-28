@@ -13,13 +13,18 @@ mkdir -p "$(dirname "$OUT")"
   --output "$OUT" "$PCB" >/dev/null
 "$KICAD_CLI" pcb export svg --layers F.Cu,B.Cu,Edge.Cuts --page-size-mode 2 \
   --output "${OUT%-top.svg}-copper.svg" "$PCB" >/dev/null
+"$KICAD_CLI" pcb export svg --layers B.Cu,B.Silkscreen,Edge.Cuts --page-size-mode 2 \
+  --mirror --output "${OUT%-top.svg}-bottom.svg" "$PCB" >/dev/null
 # pcbnew embeds wall-clock time and trailing spaces in SVG output. Normalize both
 # so a preview changes only when its board changes and remains git-diff clean.
-sed -i -E 's/ date [^<]*//; s/[[:space:]]+$//' "$OUT" "${OUT%-top.svg}-copper.svg"
+sed -i -E 's/ date [^<]*//; s/[[:space:]]+$//' "$OUT" \
+  "${OUT%-top.svg}-copper.svg" "${OUT%-top.svg}-bottom.svg"
 # 3D renders (PNG, gitignored per *.png; regenerate here). Top + isometric.
 DIR="$(dirname "$OUT")"
 "$KICAD_CLI" pcb render --side top --quality high --width 1400 --height 900 \
   --output "$DIR/${CARD}-3d-top.png" "$PCB" >/dev/null 2>&1 || true
 "$KICAD_CLI" pcb render --side top --perspective --rotate "-25,0,20" --width 1400 --height 900 \
   --output "$DIR/${CARD}-3d-iso.png" "$PCB" >/dev/null 2>&1 || true
-echo "  rendered $OUT (+ copper SVG, 3D top/iso PNG)"
+"$KICAD_CLI" pcb render --side bottom --quality high --width 1400 --height 900 \
+  --output "$DIR/${CARD}-3d-bottom.png" "$PCB" >/dev/null 2>&1 || true
+echo "  rendered $OUT (+ mirrored bottom/copper SVG, 3D top/bottom/iso PNG)"

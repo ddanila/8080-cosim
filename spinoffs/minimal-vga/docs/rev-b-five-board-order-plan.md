@@ -2,6 +2,11 @@
 
 Status: **ACTIVE PLAN / ORDER HOLD**. Owner direction recorded 2026-08-27.
 
+Silkscreen correction 2026-08-28: all five designs now use the pinned GOST Book
+family with consistent assembly/safety/orientation labels. This changes fabrication
+hashes, so R5.J2/J3/R1 must be refreshed before any upload; see
+`rev-b-silkscreen-audit.md`.
+
 This is the controlling plan for the first VJUGA rev B order. The intended
 machine is one complete five-card system: CPU, memory, I/O, backplane, and a
 working VGA card. It must also expose the existing 8251 as a practical

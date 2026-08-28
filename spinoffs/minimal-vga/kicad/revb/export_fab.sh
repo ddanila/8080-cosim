@@ -20,6 +20,7 @@ for card in "${CARDS[@]}"; do
   pcb="fab/minimal-vga/revb/${card}.kicad_pcb"
   [ -f "$pcb" ] || { echo "  FAIL $card: tracked routed source missing"; exit 1; }
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py "$card"
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_pcb.py "$card"
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py "$card" --total
 done
 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_jlcpcb.py --self-test

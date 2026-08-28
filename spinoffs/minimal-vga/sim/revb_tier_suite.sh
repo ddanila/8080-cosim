@@ -56,6 +56,10 @@ python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_power.py --self-test
 
 echo "== rev B: routed Video stack/planes/geometry/critical paths (R5.V5) =="
 if revb_have KICAD_PYTHON; then
+  echo "== rev B: consistent GOST silkscreen and assembly/safety labels =="
+  for _c in cpu mem io backplane video; do
+    "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_pcb.py "$_c"
+  done
   "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_video_pcb.py --self-test
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py video --total
   echo "== rev B: assembled mechanics + protected five-board power path (R5.V6) =="

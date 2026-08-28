@@ -6,7 +6,7 @@ placement (no randomness); regeneration is content-checked, not byte-diffed (D1.
 
   KICAD_PYTHON gen_revb_pcb.py <card>   # writes fab/minimal-vga/revb/<card>.kicad_pcb
 """
-import json, os, sys
+import hashlib, json, os, shutil, subprocess, sys
 import pcbnew
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from revb_place import BOARD_W, BOARD_H_BY_CARD, PLACE_BY_CARD  # noqa: E402
@@ -23,6 +23,32 @@ BOARD_H = BOARD_H_BY_CARD.get(CARD, 60.0)
 
 board_spec = json.load(open(os.path.join(HERE, f"{CARD}.board.json")))
 fpmap = json.load(open(os.path.join(HERE, f"footprints.{CARD}.json")))
+
+# KiCad outline text is intentionally used for all printable silk.  The exact face
+# is a local generation dependency (not redistributed by this repository); the
+# generated Gerbers contain polygons and therefore do not require the font at fab.
+SILK_STYLE = json.load(open(os.path.join(HERE, "silkscreen-style.json")))
+SILK_FONT = SILK_STYLE["font_family"]
+
+
+def validate_silk_font():
+    """Reject a Fontconfig fallback or another file with the same family name."""
+    fc_match = shutil.which("fc-match")
+    if not fc_match:
+        raise RuntimeError("fc-match is required to verify the pinned GOST silk font")
+    result = subprocess.run(
+        [fc_match, "--format=%{family[0]}|%{style[0]}|%{file}\n", SILK_FONT],
+        check=True, text=True, capture_output=True).stdout.strip()
+    family, style, path = result.split("|", 2)
+    if family != SILK_FONT:
+        raise RuntimeError(f"silk font {SILK_FONT!r} resolved to fallback {family!r}")
+    digest = hashlib.sha256(open(path, "rb").read()).hexdigest()
+    if digest != SILK_STYLE["font_file_sha256"]:
+        raise RuntimeError(
+            f"silk font file {path} SHA-256 {digest} != pinned "
+            f"{SILK_STYLE['font_file_sha256']}")
+    if SILK_STYLE["font_style"] not in style.split(","):
+        raise RuntimeError(f"silk font style {style!r} is not {SILK_STYLE['font_style']!r}")
 
 
 def mm(v): return pcbnew.FromMM(v)
@@ -41,9 +67,10 @@ def load_fp(fpname):
             continue
         if isinstance(item, pcbnew.PCB_TEXT) and item.IsVisible():
             size = item.GetTextSize()
-            item.SetTextSize(pcbnew.VECTOR2I(max(size.x, mm(1.0)),
-                                             max(size.y, mm(1.0))))
+            item.SetTextSize(pcbnew.VECTOR2I(max(size.x, mm(1.5)),
+                                             max(size.y, mm(1.5))))
             item.SetTextThickness(max(item.GetTextThickness(), mm(0.15)))
+            item.SetFontProp(SILK_FONT)
         else:
             try:
                 item.SetWidth(max(item.GetWidth(), mm(0.15)))
@@ -426,10 +453,13 @@ def emit_video_local_strap(board):
     board.Add(track)
 
 
-def silk(board, text, x, y, size=1.5, angle=0):
-    t = pcbnew.PCB_TEXT(board); t.SetLayer(pcbnew.F_SilkS); t.SetText(text)
+def silk(board, text, x, y, size=1.5, angle=0, layer=pcbnew.F_SilkS):
+    t = pcbnew.PCB_TEXT(board); t.SetLayer(layer); t.SetText(text)
     t.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y))); t.SetTextAngleDegrees(angle)
     t.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size))); t.SetTextThickness(mm(0.2))
+    t.SetFontProp(SILK_FONT)
+    if layer == pcbnew.B_SilkS:
+        t.SetMirrored(True)
     board.Add(t)
 
 
@@ -467,6 +497,7 @@ if _sw_ref and _sw_ref in PLACE:
 
 
 def main():
+    validate_silk_font()
     board = pcbnew.BOARD()
     if CARD == "video":
         board.SetCopperLayerCount(4)
@@ -508,6 +539,13 @@ def main():
                     pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
             if ref == "J_VGA" and str(pad.GetNumber()).isdigit():
                 pad.SetLocalClearance(mm(0.15))
+        if ref == "J_VGA":
+            # The footprint's explicit pin-1 numeral is useful, but enlarging it to
+            # the GOST fabrication floor at its library location overlaps pad 1.
+            for item in fp.GraphicalItems():
+                if (isinstance(item, pcbnew.PCB_TEXT) and item.IsVisible()
+                        and item.GetText() == "1"):
+                    item.SetTextPos(pcbnew.VECTOR2I(mm(45.428), mm(5.0)))
             if ref == "U_RST" and pad.HasHole():
                 # DS1813's exact inline TO-92 pitch is only 1.27 mm. Increase the
                 # stock footprint from 0.15 to JLCPCB's 0.18-mm 2-layer absolute ring;
@@ -554,6 +592,28 @@ def main():
                    back_side=(CARD == "video" and ref in {
                        "C5", "C7", "C8", "C9", "C10", "C11", "C21"}))
 
+    # Socketed first article: keep every IC reference inside its package body so
+    # hand insertion is unambiguous. DNP ICs are called out explicitly and remain
+    # readable on an unpopulated board. This used to be Video-only, leaving the
+    # other four cards without assembly reference designators.
+    dnp_refs = {comp["ref"] for comp in board_spec["chips"] if comp.get("dnp", False)}
+    for fp in board.GetFootprints():
+        ref = fp.GetReference()
+        if not ref.startswith("U"):
+            continue
+        label = f"{ref} DNP" if ref in dnp_refs else ref
+        if CARD == "backplane" and ref == "U_RST":
+            # The three-pad TO-92 footprint has no front-side interior large enough
+            # for legible 1.5-mm GOST text. Put its assembly reference in the clear
+            # bottom-side corridor directly below the part instead.
+            silk(board, label, 70.0, 81.5, size=1.5, layer=pcbnew.B_SilkS)
+            continue
+        box = fp.GetBoundingBox(False, False)
+        centre = box.GetCenter()
+        angle = 0 if box.GetWidth() >= box.GetHeight() else 90
+        silk(board, label, pcbnew.ToMM(centre.x), pcbnew.ToMM(centre.y),
+              size=1.5, angle=angle)
+
     if CARD == "video":
         # KiCad's PTH courtyard test has no opposite-face body model: it reports
         # every B-side capacitor deliberately placed between a front-side socket's
@@ -565,37 +625,50 @@ def main():
                                   if fp.GetReference() == ref).GraphicalItems()):
                 if item.GetLayer() == pcbnew.F_CrtYd:
                     item.SetLayer(pcbnew.F_Fab)
-        # Socketed first article: keep an IC reference inside every package body so
-        # hand insertion remains unambiguous even though the library ref fields are
-        # hidden to prevent edge/pad collisions.
-        for fp in board.GetFootprints():
-            ref = fp.GetReference()
-            if not ref.startswith("U"):
-                continue
-            box = fp.GetBoundingBox(False, False)
-            centre = box.GetCenter()
-            angle = 0 if box.GetWidth() >= box.GetHeight() else 90
-            silk(board, ref, pcbnew.ToMM(centre.x), pcbnew.ToMM(centre.y),
-                  size=1.0, angle=angle)
-
-    # board-level silk placed in clear gaps (pin-1 marks come from the footprints).
+    # Board-level silk uses one visual grammar on all five designs. Component and
+    # connector labels are deliberately terse; safety and interface labels remain
+    # conspicuous. Coordinates are clear gaps verified by total KiCad DRC and the
+    # committed top-view renders.
     SILK = {
-        "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
-        "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
-        "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
-        "video": [("REVB VIDEO 4L", 34.0, 87.0, 1.0),
-                  ("NO HOT-PLUG", 76.0, 87.0, 1.0)],
+        "mem": [(SILK_STYLE["titles"]["mem"], 59.0, 52.0, 1.8),
+                (SILK_STYLE["common_safety_text"], 89.0, 49.0, 1.5),
+                ("J_NOP", 35.0, 42.0, 1.5), ("J_OBS", 75.0, 42.8, 1.5)],
+        "io":  [(SILK_STYLE["titles"]["io"], 40.0, 30.0, 1.8),
+                (SILK_STYLE["common_safety_text"], 40.0, 58.0, 1.5),
+                ("J_KBD DNP", 40.0, 80.0, 1.5),
+                ("JP_BAUD", 77.0, 81.0, 1.5), ("J_IOSEL", 92.0, 79.0, 1.5)],
+        "cpu": [(SILK_STYLE["titles"]["cpu"], 68.0, 46.0, 1.8),
+                (SILK_STYLE["common_safety_text"], 68.0, 53.0, 1.5),
+                ("J_DIAG", 40.0, 41.8, 1.5)],
+        "video": [(SILK_STYLE["titles"]["video"], 34.0, 87.0, 1.8),
+                  ("4 LAYER", 34.0, 91.0, 1.5),
+                  (SILK_STYLE["common_safety_text"], 76.0, 87.0, 1.5)],
         # Backplane console labels are board-relative: TX is output from VJUGA,
         # RX is input to VJUGA. The electrical boundary is TTL, never RS-232.
-        "backplane": [("REVB BACKPLANE", 50.0, 68.0, 1.0),
-                      ("TTL ONLY", 97.0, 50.0, 1.0, 90),
-                      ("NOT RS-232", 94.0, 50.0, 1.0, 90),
-                      ("1:5V SENSE", 51.0, 80.0, 1.0),
-                      ("2:TX 3:RX 4:GND", 70.0, 80.0, 1.0)],
+        "backplane": [(SILK_STYLE["titles"]["backplane"], 50.0, 68.0, 1.8),
+                      (SILK_STYLE["common_safety_text"], 82.0, 68.0, 1.5),
+                      ("SLOT 1", 35.0, 15.0, 1.5),
+                      ("SLOT 2", 35.0, 31.0, 1.5),
+                      ("SLOT 3", 35.0, 47.0, 1.5),
+                      ("SLOT 4 - KEEP EMPTY", 44.0, 63.0, 1.5),
+                      ("SLOT 5 - VIDEO", 40.0, 79.0, 1.5),
+                      ("TTL ONLY", 97.0, 50.0, 1.5, 90),
+                      ("NOT RS-232", 93.5, 50.0, 1.5, 90),
+                      ("1:5V SENSE", 51.0, 78.2, 1.5),
+                      ("2:TX 3:RX 4:GND", 70.0, 78.2, 1.5)],
     }
     for entry in SILK.get(CARD, SILK["mem"]):
         text, sx, sy, ssz, *rest = entry
         silk(board, text, sx, sy, size=ssz, angle=(rest[0] if rest else 0))
+
+    # Card connectors are symmetric enough to permit a dangerous reverse insertion.
+    # Put the pad-1 cue on both faces; bottom text is mirrored so it reads correctly
+    # when the board is viewed from that side.
+    if CARD != "backplane":
+        silk(board, "PIN 1 >", 91.5, BOARD_H - 9.0, size=1.5)
+        # Viewed from the bottom, physical X is reversed and pad 1 is to the left.
+        silk(board, "< PIN 1", 91.5, BOARD_H - 9.0, size=1.5,
+              layer=pcbnew.B_SilkS)
 
     # D1.34: the backplane bus routes like any other card — plain freerouting, no
     # locked bus-column pre-routes. The Stage-C column pre-routing (D1.29) was retired when the layout
@@ -629,9 +702,14 @@ def main():
         add_power_zone(board, nets["GND"], pcbnew.In1_Cu, "VJUGA rev B Video GND plane")
         add_power_zone(board, nets["VCC5"], pcbnew.In2_Cu, "VJUGA rev B Video VCC5 plane")
 
-    outdir = os.path.join(REPO, "fab", "minimal-vga", "revb")
+    requested_out = os.environ.get("REVB_OUTPUT")
+    outdir = (os.path.dirname(os.path.abspath(requested_out)) if requested_out else
+              os.path.join(REPO, "fab", "minimal-vga", "revb"))
     os.makedirs(outdir, exist_ok=True)
-    outpath = os.path.join(outdir, f"{CARD}.kicad_pcb")
+    outpath = (os.path.abspath(requested_out) if requested_out else
+               os.path.join(outdir, f"{CARD}.kicad_pcb"))
+    if not outpath.endswith(".kicad_pcb"):
+        raise RuntimeError("REVB_OUTPUT must name a .kicad_pcb file")
     board.Save(outpath)
     if board.Zones():
         pcbnew.ZONE_FILLER(board).Fill(board.Zones())

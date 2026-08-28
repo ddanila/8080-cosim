@@ -22,7 +22,9 @@ if CARD not in BOARD_H_BY_CARD:
     sys.exit(1)
 BOARD_H = BOARD_H_BY_CARD[CARD]
 BOARD_W, TOL = 100.0, 0.4
-PCB = os.path.join(REPO, "fab", "minimal-vga", "revb", f"{CARD}.kicad_pcb")
+PCB = os.environ.get("REVB_PCB", os.path.join(
+    REPO, "fab", "minimal-vga", "revb", f"{CARD}.kicad_pcb"))
+STYLE = json.load(open(os.path.join(HERE, "silkscreen-style.json")))
 
 fail = []
 if not os.path.isfile(PCB):
@@ -54,16 +56,68 @@ if "J_BUS" in fps:
     if y < BOARD_H * 0.75:
         fail.append(f"J_BUS at y={y:.1f} not on the bottom edge")
 
-txt = "".join(d.GetText() for d in b.GetDrawings() if d.GetClass() == "PCB_TEXT")
-silk_required = (("REVB", "TTL ONLY", "NOT RS-232", "1:5V SENSE", "2:TX 3:RX 4:GND")
-                 if CARD == "backplane" else ("REVB", "NO HOT-PLUG"))
+board_texts = [d for d in b.GetDrawings()
+               if isinstance(d, pcbnew.PCB_TEXT) and d.IsVisible()
+               and d.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS)]
+footprint_texts = [d for fp in b.GetFootprints() for d in fp.GraphicalItems()
+                   if isinstance(d, pcbnew.PCB_TEXT) and d.IsVisible()
+                   and d.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS)]
+silk_texts = board_texts + footprint_texts
+txt = "\n".join(d.GetText() for d in board_texts)
+silk_required = ((STYLE["titles"][CARD], STYLE["common_safety_text"],
+                  "SLOT 1", "SLOT 2", "SLOT 3", "SLOT 4 - KEEP EMPTY",
+                  "SLOT 5 - VIDEO", "TTL ONLY", "NOT RS-232", "1:5V SENSE",
+                  "2:TX 3:RX 4:GND")
+                 if CARD == "backplane" else
+                 (STYLE["titles"][CARD], STYLE["common_safety_text"], "PIN 1 >"))
 for need in silk_required:
     if need not in txt:
         fail.append(f"silk missing {need!r}")
+
+# Every printable text item, including footprint-owned polarity letters and the VGA
+# pin-1 numeral, must use the same GOST face. This prevents a mixed KiCad-stroke /
+# outline-font result from slipping through an otherwise clean render.
+for item in silk_texts:
+    if item.GetFontName() != STYLE["font_family"]:
+        fail.append(f"silk {item.GetText()!r} font {item.GetFontName()!r} != "
+                    f"{STYLE['font_family']!r}")
+    if pcbnew.ToMM(item.GetTextHeight()) + 1e-6 < STYLE["minimum_text_height_mm"]:
+        fail.append(f"silk {item.GetText()!r} height below style floor")
+
+# Common title/safety hierarchy is exact on every design.
+by_text = {}
+for item in board_texts:
+    by_text.setdefault(item.GetText(), []).append(item)
+for label, expected_h in ((STYLE["titles"][CARD], STYLE["board_title_height_mm"]),
+                          (STYLE["common_safety_text"], STYLE["safety_text_height_mm"])):
+    matches = by_text.get(label, [])
+    if len(matches) != 1:
+        fail.append(f"silk {label!r} occurs {len(matches)} times, expected once")
+    elif abs(pcbnew.ToMM(matches[0].GetTextHeight()) - expected_h) > 1e-6:
+        fail.append(f"silk {label!r} has inconsistent text height")
+
+# Every IC has a centred board-level assembly label; DNP ICs say so explicitly.
+dnp_refs = {c["ref"] for c in spec["chips"] if c.get("dnp", False)}
+for ref in sorted(r for r in fps if r.startswith("U")):
+    label = f"{ref} DNP" if ref in dnp_refs else ref
+    if len(by_text.get(label, [])) != 1:
+        fail.append(f"assembly silk label {label!r} missing or duplicated")
+
+if CARD == "io" and len(by_text.get("J_KBD DNP", [])) != 1:
+    fail.append("assembly silk label 'J_KBD DNP' missing or duplicated")
+
+if CARD != "backplane":
+    front_pin1 = by_text.get("PIN 1 >", [])
+    back_pin1 = by_text.get("< PIN 1", [])
+    if len(front_pin1) != 1 or front_pin1[0].GetLayer() != pcbnew.F_SilkS:
+        fail.append("front PIN 1 cue must point right toward card-bus pad 1")
+    if len(back_pin1) != 1 or back_pin1[0].GetLayer() != pcbnew.B_SilkS:
+        fail.append("bottom PIN 1 cue must point left toward mirrored card-bus pad 1")
 
 if fail:
     print(f"{CARD} PCB content check FAILED:")
     for f in fail:
         print(f"- {f}")
     sys.exit(1)
-print(f"{CARD} PCB content check OK: {w:.1f}x{h:.1f} mm, {len(fps)} footprints placed, silk present.")
+print(f"{CARD} PCB content check OK: {w:.1f}x{h:.1f} mm, {len(fps)} footprints placed, "
+      f"{len(silk_texts)} GOST silk labels present.")

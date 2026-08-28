@@ -62,6 +62,11 @@ those tools.
 
 ## Next action
 
+The 2026-08-28 GOST silkscreen audit corrected all five routed board sources without
+changing their electrical fingerprints. Because silkscreen is fabrication data, the
+previous package hashes are now stale; regenerate R5.J2, repeat R5.J3 render review,
+and issue a new held R5.R1 record before requesting owner release.
+
 **R5.0, R5.S1–S3, R5.P1, R5.V1–V6 and R5.J1–J3 are complete.** Follow the
 dependency-ordered tasks in `rev-b-five-board-order-plan.md`. The next
 dependency-ready work is R5.R1: present the exact hashes, signed independent review

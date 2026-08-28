@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "font_family": "GOST CAD KK",
+  "font_style": "Book",
+  "font_file_sha256": "14f22140e5ac3d581830b903d62d2fdd24392a480ab1284a3cbd16139d6e8d2d",
+  "font_note": "Local generation dependency; not redistributed. Gerber output contains vector geometry and has no runtime font dependency.",
+  "minimum_text_height_mm": 1.5,
+  "minimum_stroke_mm": 0.15,
+  "board_title_height_mm": 1.8,
+  "safety_text_height_mm": 1.5,
+  "common_safety_text": "NO HOT-PLUG",
+  "titles": {
+    "cpu": "VJUGA REV.B CPU",
+    "mem": "VJUGA REV.B MEM",
+    "io": "VJUGA REV.B I/O",
+    "backplane": "VJUGA REV.B BACKPLANE",
+    "video": "VJUGA REV.B VIDEO"
+  }
+}
