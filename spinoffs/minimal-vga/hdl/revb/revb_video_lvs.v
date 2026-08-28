@@ -1,5 +1,5 @@
 // VJUGA rev B Video card full-package structural LVS netlist (R5.V1).
-// Independently states every populated digital package U1..U22 and includes power.
+// Independently states every populated digital package U1..U23 and includes power.
 // Behaviour belongs in revb_video_card_ttl.v and the GAL sources; this file is only
 // the second connectivity representation used by sync/lvs.py.
 `default_nettype none
@@ -20,7 +20,7 @@ module ttl08_lvs(inout wire A1,B1,Y1,A2,B2,Y2,GND,Y3,A3,B3,Y4,A4,B4,VCC); endmod
 module act08_lvs(inout wire A1,B1,Y1,A2,B2,Y2,GND,Y3,A3,B3,Y4,A4,B4,VCC); endmodule
 
 module revb_video_lvs_top;
-    wire VCC5,GND,DOTCLK,H_END,HSYNC_N,H_ACTIVE,BYTE_TICK,FI_LOAD_N,SR_LOAD_N,SR_INH,FETCH,RB_STROBE;
+    wire VCC5,GND,DOTCLK_RAW,DOTCLK,H_END,HSYNC_N,H_ACTIVE,BYTE_TICK,FI_LOAD_N,SR_LOAD_N,SR_INH,FETCH,RB_STROBE;
     wire V_END,VSYNC_N,V_ACTIVE,HV_ACTIVE,FRAME_DIV0_NC,FRAME_DIV1_NC,FRAME_DIV2_NC,FRAME_TOP_N,FRAME_TICK,RB_CLK,H_CLR,V_CLR,MREQ_N,RD_N,WR_N,MODE0,MODE1,RESET_N,WAIT_N;
     wire MUX_SEL,D245_DIR,D245_OE,FB_CE_N,FB_WE_N,FB_OE_N;
     wire A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15;
@@ -36,7 +36,7 @@ module revb_video_lvs_top;
     wire VID_SA3_Q3_NC,VID_SA3_Q2_NC,VID_SA3_TC_NC,VID_ADD_C4_NC,VID_ADD_S3_NC,VID_RB_Q6_NC,VID_RB_Q7_NC;
     wire VID_R_DRV,VID_G_DRV,VID_B_DRV,VID_RGB4Y_NC,FB_PIN1_NC;
 
-    osc_25m175_lvs U_OSC(.OE(OSC_EN_NC),.GND(GND),.CLKOUT(DOTCLK),.VCC(VCC5));
+    osc_25m175_lvs U_OSC(.OE(OSC_EN_NC),.GND(GND),.CLKOUT(DOTCLK_RAW),.VCC(VCC5));
     ttl393_lvs U_HC_LO(.CLK1(DOTCLK),.CLR1(H_CLR),.Q1A(HC0),.Q1B(HC1),.Q1C(HC2),.Q1D(HC3),.GND(GND),.Q2D(HC7),.Q2C(HC6),.Q2B(HC5),.Q2A(HC4),.CLR2(H_CLR),.CLK2(HC3),.VCC(VCC5));
     ttl393_lvs U_HC_VC(.CLK1(HC7),.CLR1(H_CLR),.Q1A(HC8),.Q1B(HC9),.Q1C(VID_HC10_NC),.Q1D(VID_HC11_NC),.GND(GND),.Q2D(VC3),.Q2C(VC2),.Q2B(VC1),.Q2A(VC0),.CLR2(V_CLR),.CLK2(H_END),.VCC(VCC5));
     ttl393_lvs U_VC_HI(.CLK1(VC3),.CLR1(V_CLR),.Q1A(VC4),.Q1B(VC5),.Q1C(VC6),.Q1D(VC7),.GND(GND),.Q2D(VID_VC11_NC),.Q2C(VID_VC10_NC),.Q2B(VC9),.Q2A(VC8),.CLR2(V_CLR),.CLK2(VC7),.VCC(VCC5));

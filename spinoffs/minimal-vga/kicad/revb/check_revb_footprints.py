@@ -34,8 +34,10 @@ CAND = {
     "DIP40": ["Package_DIP:DIP-40_W15.24mm", "Package_DIP:DIP-40_W7.62mm"],
     "OSC14": ["Oscillator:Oscillator_DIP-14", "Package_DIP:DIP-14_W7.62mm"],
     "OSC8": ["Oscillator:Oscillator_DIP-8"],
-    "C_DISC": ["Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
-               "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"],
+    "C_DISC": (["Capacitor_THT:C_Disc_D3.0mm_W2.0mm_P2.50mm",
+                "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm"] if CARD == "video" else
+               ["Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+                "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"]),
     # backplane support parts (TF.2)
     "R_AXIAL": ["Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"],
     "R_VERT": ["Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical"],
@@ -79,6 +81,7 @@ TYPE_KINDS = {
     "ACT_273": ["DIP20"], "ALS_166": ["DIP16"], "HCT_245": ["DIP20"],
     "HCT_08": ["DIP14"], "ACT_08": ["DIP14"],
     "DSUB15HD": ["DSUB15HD_NORCOMP"], "R_470": ["R_AXIAL"],
+    "R_33": ["R_AXIAL"],
 }
 # Datasheet DIP row spacing per chip type — the resolved footprint name MUST contain
 # this width token. This is the guard that catches "DRC-green board, chip doesn't fit":
@@ -121,7 +124,9 @@ PKG_PHYS = {
     "R_4K7":      (2,  0.70, 7.62, "DIN0207 axial, 7.62mm pitch"),
     "R_2K2":      (2,  0.70, 7.62, "DIN0207 axial, 7.62mm pitch"),
     "R_10K":      (2,  0.70, 7.62, "DIN0207 axial, 7.62mm pitch"),
-    "C_100N":     (2,  0.70, 5.00, "5mm disc ceramic, 5.08mm pitch"),
+    "C_100N":     ((2, 0.70, 2.50, "Video 3mm disc ceramic, 2.5mm pitch")
+                    if CARD == "video" else
+                    (2, 0.70, 5.00, "5mm disc ceramic, 5.08mm pitch")),
     "C_ELEC_47U": (2,  0.60, 2.50, "6.3mm radial electrolytic, 2.5mm pitch"),
     "PTC_1A":     (2,  0.70, 5.10, "Bourns MF-R110: 5.1mm lead pitch, 0.51mm leads (mf_r.pdf)"),
     "OSC_BAUD":   (4,  0.80, 7.62, "ECS-2200B-049 half-size DIP-8: pins 1/4/5/8 on 7.62mm grid"),
@@ -131,9 +136,10 @@ PKG_PHYS = {
     "D_1N4148_VERT": (2, 0.70, 2.54, "1N4148 DO-35 vertical, 2.54mm pad pitch"),
     "OSC_25M175": (4, 0.80, 15.24, "ECS-100A-251.7 full DIP-14 can: pins 1/7/8/14; "
                                            "7.62mm row spacing checked by R5.V4 gate"),
-    "DSUB15HD": (17, 0.70, 0.762, "NorComp 200-015-213L537: 15 x 0.70mm signal holes, "
-                                      "2 x 2.10mm board locks, 0.762mm stagger"),
+    "DSUB15HD": (15, 0.70, 0.762, "NorComp 200-015-213L537: 15 x 0.70mm signal PTH, "
+                                      "2 x 2.10mm NPTH board locks, 0.762mm stagger"),
     "R_470": (2, 0.70, 7.62, "DIN0207 axial, 7.62mm pitch"),
+    "R_33": (2, 0.70, 7.62, "DIN0207 axial 33-ohm source terminator, 7.62mm pitch"),
 }
 
 

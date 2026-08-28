@@ -177,6 +177,13 @@ tail starts at Y=82 on the 100×100 board. D1.37 supersedes the earlier 100×120
 variant: the complete planned five-card system still fits, while top-side power/reset/
 serial components stay outside the seated-card envelope.
 
+The right-angle mating posts point out through the bottom card edge. The 39-pin base
+header is front-side and the 10-pin extension header is back-side; this is required
+because their pad rows are only 5 mm apart and two same-side Samtec bodies would
+physically overlap. Backplane base sockets use the corresponding reversed rotation,
+while extension sockets retain the opposite rotation, so pin 1 still meets pin 1 on
+both rows. `mating.json` freezes side and rotation as well as XY coordinates.
+
 ## Five-card first-article power budget
 
 R5.V2 replaces the old four-card/B1 estimate with a conservative actual-population

@@ -1,7 +1,7 @@
 # VJUGA rev B Video exact parts — R5.V4
 
-Status: **PASS / FROZEN 2026-08-28.** This is the mechanical purchasing input to
-R5.V5, not purchase authorization. Stock figures are dated evidence only and must be
+Status: **PASS / FROZEN 2026-08-28.** This is the mechanical purchasing input used by
+the completed R5.V5 layout, not purchase authorization. Stock figures are dated evidence only and must be
 refreshed during R5.J3. The executable source is `kicad/revb/video-parts.json`.
 
 ## No-substitution parts
@@ -44,9 +44,12 @@ from the purchasing list when a package changes.
 The checked-in `VJUGA.pretty/NorComp_200-015-213L537.kicad_mod` transcribes NorComp
 drawing `200-015-213LYYY` revision 5:
 
-- 15 signal holes at 0.70 mm, arranged as the drawing's staggered 7+8 solder-tail rows;
+- 15 signal holes at 0.70 mm with 1.00 mm pads (0.15 mm annular ring), arranged as
+  the drawing's staggered 7+8 solder-tail rows; a local 0.15 mm clearance is required
+  to escape the 1.524 mm same-row pitch while ordinary card routing remains 0.20 mm;
 - 1.50 mm row separation, 0.762 mm stagger, and 10.668 mm total X span;
-- two 2.10 mm board-lock holes on 16.00 mm centres, both assigned `SH` and bonded to GND;
+- two 2.10 mm NPTH board-lock holes on 16.00 mm centres, tangent to the specified
+  edge as drawn; the selected hardware has no separate electrical shell terminal;
 - PCB edge 2.50 mm from the top signal row and mating face 5.80 mm beyond that edge;
 - 30.81 mm shell width plus a 0.25 mm courtyard clearance.
 
@@ -59,7 +62,10 @@ guard and requires rejection.
 The prior footprint maps used vertical male headers on the cards. That contradicted the
 mechanical contract, which always specified right-angle males. R5.V4 corrects every card
 to the Samtec right-angle footprint and every backplane slot to a vertical female socket.
-The PCB generator now anchors connector **pad-row centres** to `mating.json`; centring an
+R5.V5 closes presentation: mating posts face out through the card edge, the base
+header is front-side, and the shorter extension header is back-side so their bodies do
+not occupy the same volume. Corresponding backplane rotations preserve pin numbering.
+The PCB generator anchors connector **pad-row centres** to `mating.json`; centring an
 asymmetric right-angle body would otherwise move the mating row several millimetres.
 
 ## Power correction and machine gate

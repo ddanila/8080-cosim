@@ -66,7 +66,7 @@ the change; a prose assertion is not a pass.
 | **R5.V2 — DONE 2026-08-28; V4 exact-part correction** | Close video power and analogue-output details. Provide one 100 nF capacitor at every IC plus local bulk capacitance; model total five-card current; retain monitor-side 75 ohm loading and verify that the 470 ohm RGB series network produces the intended level. | R5.V1 | Board/checker prove 23/23 local 100 nF capacitors plus 47 uF bulk; three independent ACT outputs drive 470-ohm series parts into monitor-side 75 ohms at 0.606–0.688 V; exact ECS oscillator raises the five-card budget to 1351 mA with 32.45% headroom on 2 A. |
 | **R5.V3 — DONE 2026-08-28** | Produce sources and reproducible JEDECs for all three Video GALs. Fix `FRAME_TICK` to divide by six for the 2.000 MHz first article and retain a documented way to retarget it if the CPU oscillator changes. | R5.V1 | Five-GAL clean rebuild passes; U5/U6/U7 pins and equations are exhaustively checked; exact fetch/WAIT and divide-six simulations pass; integrated TTL-card EKTA boot is byte-identical to cosim. |
 | **R5.V4 — DONE 2026-08-28** | Pin exact orderable mechanical parts before layout: right-angle female DE-15 VGA connector, 25.175 MHz 5 V oscillator, SRAM, GAL packages, bus headers, sockets and tall/polarized parts. | R5.V1 | Exact MPN contract and availability snapshot are recorded; checked custom VGA land pattern rejects a generic HD15; all 23 sockets are package-derived; card/backplane bus orientation, mating rows, tall/polarized parts and corrected oscillator current are machine-checked. |
-| **R5.V5** | Generate, place and route the Video PCB on four layers (`signal / solid GND / solid VCC5 / signal`). Keep the dot-clock chain and pixel path short, add source damping where the audit calls for it, and preserve a continuous return plane. | R5.V2, R5.V3, R5.V4 | Fresh generation passes full connectivity/LVS, total DRC 0/0, plane/return-path and mechanical checks; routed source is reproducible. |
+| **R5.V5 — DONE 2026-08-28** | Generate, place and route the Video PCB on four layers (`signal / solid GND / solid VCC5 / signal`). Keep the dot-clock chain and pixel path short, add source damping where the audit calls for it, and preserve a continuous return plane. | R5.V2, R5.V3, R5.V4 | Fresh generation and bounded attempt-1 routing pass full connectivity/LVS, total DRC 0/0, single-island plane/return-path, local-bypass, critical-route and exact connector checks; routed source and negative controls are committed. |
 | **R5.V6** | Re-run the assembled five-card mechanical and power model: connector mating, 16 mm slot pitch, adjacent-card/tall-part clearance, VGA-cable access, orientation/keying, current path and supply drop. Qualify one regulated 5 V supply rated at least 2 A and protect every intended bench input. | R5.S2, R5.V5 | Machine check plus 3-D/manual review pass; no unfused normal input remains; current/headroom and connector ratings are recorded. |
 | **R5.J1** | Encode a JLCPCB rule profile and preflight checks for both the four 2-layer boards and the 4-layer Video board. | R5.V5 | Checks cover stack-up/layers, outline, drills/slots, annular rings, clearances, silk, masks, filenames and archive contents; negative fixtures fail. |
 | **R5.J2** | Regenerate all five fabrication ZIPs in one release run. Emit a manifest with source revision, tool versions, board dimensions/layers, file list and SHA-256 per archive. | R5.P1, R5.S3, R5.V6, R5.J1 | One command regenerates and validates five safe archives; packages contain Gerber/Excellon production data only. |
@@ -94,8 +94,9 @@ R5.J3 because manufacturing options can change.
 - Through holes: design the finished hole at least 0.10 mm over the maximum lead
   dimension and account for the listed +0.13/-0.08 mm PTH tolerance. Prefer at
   least 0.25 mm annular ring on two-layer boards and 0.20 mm on four-layer.
-- Prefer vias of at least 0.20 mm finished hole; the existing 0.40/0.80 mm vias
-  are comfortably conservative. Any plated slot must be at least 0.50 mm wide
+- Prefer vias of at least 0.20 mm finished hole; the routed Video card uses
+  0.30/0.60 mm drill/diameter vias, leaving a 0.15 mm annular ring. R5.J1 must
+  explicitly qualify that local four-layer geometry. Any plated slot must be at least 0.50 mm wide
   and at least twice as long as it is wide.
 - Keep silk strokes and spacing at least 0.15 mm and text height at least 1.0 mm.
   No silk may cover pads or disappear under sockets where it is needed for safe
@@ -134,5 +135,5 @@ R5.R1 cannot pass until all of the following are true:
 - **PENDING:** An independent layer/drill/mechanical review and current live quote pass.
 - **PENDING:** The owner explicitly authorizes upload after seeing the final evidence.
 
-Until then, the correct next action is R5.V5, not an order and not a partial
+Until then, the correct next action is R5.V6, not an order and not a partial
 four-board upload.

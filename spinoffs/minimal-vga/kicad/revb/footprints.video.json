@@ -8,6 +8,7 @@
   "GAL22V10_CTRL": "Package_DIP:DIP-24_W7.62mm",
   "SRAM_FB": "Package_DIP:DIP-32_W15.24mm",
   "OSC_25M175": "Oscillator:Oscillator_DIP-14",
+  "R_33": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",
   "ST_HC393": "Package_DIP:DIP-14_W7.62mm",
   "ACT_157": "Package_DIP:DIP-16_W7.62mm",
   "ACT_161": "Package_DIP:DIP-16_W7.62mm",
@@ -19,6 +20,6 @@
   "ACT_08": "Package_DIP:DIP-14_W7.62mm",
   "DSUB15HD": "VJUGA:NorComp_200-015-213L537",
   "R_470": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",
-  "C_100N": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+  "C_100N": "Capacitor_THT:C_Disc_D3.0mm_W2.0mm_P2.50mm",
   "C_ELEC_47U": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
 }

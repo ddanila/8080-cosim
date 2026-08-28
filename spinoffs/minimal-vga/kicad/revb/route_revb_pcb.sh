@@ -43,26 +43,86 @@ echo "== rev B route ($CARD) via freerouting =="
 # with a fresh seed; each attempt imports into a pristine copy, never compounding.
 PRISTINE="$OUT/${CARD}.pristine.kicad_pcb"
 cp "$PCB" "$PRISTINE"
-"$KICAD_PYTHON" -c "import pcbnew,sys; b=pcbnew.LoadBoard('$PRISTINE');
-sys.exit(0 if pcbnew.ExportSpecctraDSN(b,'$DSN') else 'DSN export failed')"
+"$KICAD_PYTHON" - "$PRISTINE" "$DSN" "$CARD" <<'PY'
+import sys
+import pcbnew
+
+board = pcbnew.LoadBoard(sys.argv[1])
+if sys.argv[3] == "video":
+    for zone in list(board.Zones()):
+        if not zone.GetIsRuleArea():
+            board.Remove(zone)
+    board.Save(sys.argv[1])
+if not pcbnew.ExportSpecctraDSN(board, sys.argv[2]):
+    raise SystemExit("DSN export failed")
+PY
+
+# R5.V5 reserves the Video inner layers as solid power planes. Mark them as power
+# in Specctra so FreeRouting cannot consume them for signal tracks.
+if [ "$CARD" = video ]; then
+  python3 - "$DSN" <<'PY'
+import sys
+path = sys.argv[1]
+text = open(path, encoding="utf-8").read()
+for layer, net in (("In1.Cu", "GND"), ("In2.Cu", "VCC5")):
+    old = f"    (layer {layer}\n      (type signal)"
+    new = f"    (layer {layer}\n      (type power)\n      (use_net {net})"
+    if text.count(old) != 1:
+        raise SystemExit(f"cannot uniquely reserve {layer} for {net}")
+    text = text.replace(old, new)
+open(path, "w", encoding="utf-8").write(text)
+print("  reserved In1.Cu=GND and In2.Cu=VCC5 in DSN")
+PY
+fi
 # freerouting 2.x is GUI-first (-Djava.awt.headless=true runs it batch on macOS) and
 # stochastic -- a run can report success in its log yet leave a net island. So we don't
 # trust the log: we import each candidate and accept only when the TOTAL DRC is 0/0
 # (0 violations AND 0 unconnected). FR_ATTEMPTS bounds the retries (the TF.1 sweep sets
 # it low so a hopeless placement is rejected fast; routing uses the default otherwise).
-ATTEMPTS="${FR_ATTEMPTS:-25}"
+if [ "$CARD" = video ]; then
+  # R5.V5's four-layer placement plus two deterministic VGA necks reaches 0/0
+  # in a single bounded solve. Keep this release path fast and repeatable.
+  ATTEMPTS="${FR_ATTEMPTS:-1}"
+  PASSES="${FR_PASSES:-25}"
+else
+  ATTEMPTS="${FR_ATTEMPTS:-25}"
+  PASSES="${FR_PASSES:-100}"
+fi
 ROUTED=""
 for attempt in $(seq 1 "$ATTEMPTS"); do
   # per-attempt DSN copy: freerouting derives job/board identity (and some caching/
   # seeding) from its input; a fresh filename per attempt guarantees an independent run.
   cp "$DSN" "$OUT/${CARD}-a${attempt}.dsn"
   "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" \
-    -de "$OUT/${CARD}-a${attempt}.dsn" -do "$SES" -mp 100 \
+    -de "$OUT/${CARD}-a${attempt}.dsn" -do "$SES" -mp "$PASSES" \
     >"$OUT/${CARD}-fr.log" 2>&1 || true
   rm -f "$OUT/${CARD}-a${attempt}.dsn"
   [ -f "$SES" ] || { echo "  attempt $attempt: no SES produced, retrying"; continue; }
   grep -qi "could not be routed" "$OUT/${CARD}-fr.log" && { echo "  attempt $attempt: log reports unrouted nets, retrying"; continue; }
-  "$KICAD_PYTHON" -c "import pcbnew; b=pcbnew.LoadBoard('$PRISTINE'); pcbnew.ImportSpecctraSES(b,'$SES'); b.Save('$PCB')"
+  "$KICAD_PYTHON" - "$PRISTINE" "$SES" "$PCB" "$CARD" <<'PY'
+import os
+import sys
+import pcbnew
+
+board = pcbnew.LoadBoard(sys.argv[1])
+if not pcbnew.ImportSpecctraSES(board, sys.argv[2]):
+    raise SystemExit("SES import failed")
+if sys.argv[4] == "video":
+    def add_plane(net_name, layer, name):
+        zone = pcbnew.ZONE(board)
+        zone.SetLayer(layer)
+        zone.SetNet(board.FindNet(net_name))
+        zone.SetZoneName(name)
+        zone.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
+        zone.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
+        for x, y in ((0.8, 0.8), (99.2, 0.8), (99.2, 99.2), (0.8, 99.2)):
+            zone.AppendCorner(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)), -1)
+        board.Add(zone)
+    add_plane("GND", pcbnew.In1_Cu, "VJUGA rev B Video GND plane")
+    add_plane("VCC5", pcbnew.In2_Cu, "VJUGA rev B Video VCC5 plane")
+    pcbnew.ZONE_FILLER(board).Fill(board.Zones())
+board.Save(sys.argv[3])
+PY
   if python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py "$CARD" --total >/dev/null 2>&1; then
     ROUTED=1; echo "  routed 0/0 on attempt $attempt: $(grep -oE 'final score: [0-9.]+' "$OUT/${CARD}-fr.log" | tail -1)"; break
   fi

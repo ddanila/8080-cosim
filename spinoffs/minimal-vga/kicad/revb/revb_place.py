@@ -23,8 +23,11 @@ BOARD_H_BY_CARD = {"mem": 60.0, "io": 100.0, "cpu": 70.0,
 def _card_connectors(h):
     """Card bus/ext rows relative to the card's own bottom edge (contract-derived)."""
     return {
-        "J_BUS": (_C["base_row_x"], h - _C["base_edge_offset"], 90),
-        "J_EXT": (_C["ext_row_x"], h - _C["ext_edge_offset"], 90),
+        # 270 degrees points the right-angle mating posts out through the card's
+        # bottom edge. J_EXT is mounted on B.Cu by the PCB generator so the two
+        # connector bodies can overlap in XY without colliding in Z.
+        "J_BUS": (_C["base_row_x"], h - _C["base_edge_offset"], 270),
+        "J_EXT": (_C["ext_row_x"], h - _C["ext_edge_offset"], 270),
     }
 
 
@@ -55,9 +58,46 @@ _PARTS = {
         "C1": (66.0, 36.0, 0), "C2": (88.0, 42.0, 0),
         "J_DIAG": (40.0, 46.0, 90),
     },
-    # R5.V4 establishes the exact bus connector geometry now. All non-connector Video
-    # placement remains deliberately deferred to R5.V5's four-layer SI-driven pass.
-    "video": {},
+    # R5.V5 Video placement follows signal flow in six compact horizontal bands.
+    # The VGA connector is edge-anchored separately by gen_revb_pcb.py; its tuple is
+    # the exact footprint-origin position required after the 180-degree rotation.
+    "video": {
+        "J_VGA": (45.428, 2.5, 180),
+        # Pixel output, timing and local oscillator along the top two bands.
+        "U1": (10.8, 11.0, 0), "R_CLK": (23.4, 7.2, 90),
+        "U23": (35.0, 11.0, 90), "U19": (30.5, 25.0, 90),
+        "U5": (83.0, 11.0, 90),
+        "U2": (10.0, 25.0, 90), "U3": (89.5, 25.0, 90),
+        "U22": (51.0, 25.0, 90), "U4": (70.0, 25.0, 90),
+        "C_BULK": (96.0, 68.0, 0),
+        # Decode and scan address pipeline. U7 is vertical in the right-side channel.
+        "U6": (26.0, 38.0, 90), "U12": (53.0, 38.0, 90),
+        "U13": (74.0, 38.0, 90), "U7": (95.0, 45.5, 0),
+        "U15": (5.5, 46.5, 0), "U17": (24.0, 51.5, 90),
+        "U18": (51.0, 51.5, 90), "U14": (76.0, 51.5, 90),
+        # CPU/scan address mux row and framebuffer/data row.
+        "U8": (14.0, 62.8, 90), "U9": (35.0, 62.8, 90),
+        "U10": (56.0, 62.8, 90), "U11": (77.0, 62.8, 90),
+        "U20": (14.0, 76.6, 90), "U21": (50.0, 76.6, 90),
+        "U16": (85.0, 76.6, 90),
+        # RGB series network between the driver row and the edge connector.
+        "R_VR": (27.0, 18.4, 0), "R_VG": (51.0, 18.4, 0),
+        "R_VB": (39.0, 18.4, 0),
+        # One 100 nF capacitor per U-number. Small 2.5-mm-pitch discs sit beside
+        # their packages; the constrained set is mounted on B.Cu under sockets.
+        "C1": (10.8, 2.5, 0), "C2": (10.0, 31.5, 0),
+        "C3": (83.0, 18.4, 0), "C4": (70.0, 31.5, 0),
+        "C5": (72.5, 11.0, 0), "C6": (16.0, 44.8, 0),
+        "C7": (95.0, 35.0, 0), "C8": (8.9, 62.8, 0),
+        "C9": (29.9, 62.8, 0), "C10": (50.9, 62.8, 0),
+        "C11": (71.9, 62.8, 0), "C12": (43.0, 44.8, 0),
+        "C13": (66.0, 44.8, 0), "C14": (75.0, 44.8, 0),
+        "C15": (5.5, 34.0, 0), "C16": (85.0, 69.8, 0),
+        "C17": (24.0, 44.8, 0), "C18": (51.0, 44.8, 0),
+        "C19": (30.5, 31.5, 0), "C20": (14.0, 69.8, 0),
+        "C21": (34.2, 74.0, 0), "C22": (51.0, 31.5, 0),
+        "C23": (32.0, 2.5, 0),
+    },
 }
 
 PLACE_BY_CARD = {c: {**_card_connectors(BOARD_H_BY_CARD[c]), **_PARTS[c]}
@@ -76,7 +116,9 @@ def backplane_place():
     x_b, x_e = _C["base_row_x"], _C["ext_row_x"]
     for k in range(_C["n_slots"]):
         y_base = _C["slot0_y"] + k * _C["slot_pitch"]
-        p[f"J_S{k+1}_BUS"] = (x_b, y_base, 90)
+        # Match the outward-facing card headers: front-side base pin numbering
+        # runs with 270 degrees; the back-side extension header matches 90 degrees.
+        p[f"J_S{k+1}_BUS"] = (x_b, y_base, 270)
         p[f"J_S{k+1}_EXT"] = (x_e, y_base + _C["ext_row_dy"], 90)
 
     # The top strip is outside every seated-card envelope. This retains accessible

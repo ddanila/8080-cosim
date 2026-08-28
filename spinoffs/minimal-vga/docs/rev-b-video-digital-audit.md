@@ -74,8 +74,10 @@ all divider states, all 32 address classes, four memory modes, reset and read/wr
 ownership. The timing simulations prove the fetch collision and six-frame spacing,
 and the integrated TTL-card boot remains byte-identical to cosim.
 
-R5.V5 must keep the clock and ACT output traces short and add source damping where
-the routed topology requires it.
+R5.V5 adds a source-local 33 ohm clock resistor (6.56 mm pre-resistor route), bounds
+the seven-load clock tree to 184.54 mm over the solid return plane, and physically
+co-locates U19/U22/U23 so the two-net pixel chain is 59.16 mm. The routed-board gate
+also caps every ACT-to-RGB-resistor path at 20 mm.
 
 ## Primary datasheets
 

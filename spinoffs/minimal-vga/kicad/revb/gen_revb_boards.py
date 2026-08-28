@@ -137,7 +137,7 @@ PIC_8259 = {
 OSC_CPU = {"1":"OSC_EN_NC","7":"GND","8":"CLK","14":"VCC5"}
 
 # --- Video card (B2): the three GALs and SRAM use distinct pin tables here; repeated
-# logic lives in CARD_EXTRAS. R5.V1 nevertheless maps and LVS-checks all U1..U22 via
+# logic lives in CARD_EXTRAS. R5.V1 nevertheless maps and LVS-checks all U1..U23 via
 # generic datasheet-role pinmaps in gen_revb_lvs_map.py. ---
 GAL22V10_HDEC = {"1":"DOTCLK","2":"HC0","3":"HC1","4":"HC2","5":"HC3","6":"HC4","7":"HC5",
     "8":"HC6","9":"HC7","10":"HC8","11":"HC9","12":"GND","13":"RESET_N","14":"H_END",
@@ -289,7 +289,10 @@ CARD_EXTRAS = {
     # '166 shifts FD->PIXEL ; R-DAC -> DSUB. '245 buffers the CPU data. Control GAL does
     # window decode + WAIT contention (D2.5). ----
     "video": [
-        comp("U1", "OSC_25M175", {"1": "OSC_EN_NC", "7": "GND", "8": "DOTCLK", "14": "VCC5"}),
+        # The full-can oscillator has fast TTL edges.  A 33-ohm source resistor sits
+        # immediately at pin 8 before the seven-load on-card DOTCLK tree (R5.V5).
+        comp("U1", "OSC_25M175", {"1": "OSC_EN_NC", "7": "GND", "8": "DOTCLK_RAW", "14": "VCC5"}),
+        comp("R_CLK", "R_33", {"1": "DOTCLK_RAW", "2": "DOTCLK"}),
         # '393 dot/line counters (chained): HC0-9, VC0-9; MR = end-of-line/frame
         comp("U2", "ST_HC393", {"1": "DOTCLK", "2": "H_CLR", "3": "HC0", "4": "HC1", "5": "HC2",
              "6": "HC3", "7": "GND", "8": "HC7", "9": "HC6", "10": "HC5", "11": "HC4",
@@ -377,12 +380,13 @@ CARD_EXTRAS = {
              "4": "VID_PIXEL", "5": "VCC5", "6": "VID_G_DRV", "7": "GND",
              "8": "VID_B_DRV", "9": "VID_PIXEL", "10": "VCC5", "11": "VID_RGB4Y_NC",
              "12": "GND", "13": "GND", "14": "VCC5"}),
-        # Exact NorComp board locks are electrically common with the metal shell;
-        # bond both repeated SH pads to card GND for a defined cable shield path.
+        # The NorComp drawing calls out two 2.10-mm board-lock holes tangent to the
+        # PCB edge, but no electrical shell terminal. They are exact NPTH mechanics;
+        # inventing plated SH pads would create copper beyond the routed edge.
         comp("J_VGA", "DSUB15HD", {"1": "VID_R", "2": "VID_G", "3": "VID_B", "4": "VGA_ID2_NC",
              "5": "GND", "6": "GND", "7": "GND", "8": "GND", "9": "VGA_KEY_NC", "10": "GND",
              "11": "VGA_ID0_NC", "12": "VGA_SDA_NC", "13": "HSYNC_N", "14": "VSYNC_N",
-             "15": "VGA_SCL_NC", "SH": "GND"}),
+             "15": "VGA_SCL_NC"}),
         comp("R_VR", "R_470", {"1": "VID_R_DRV", "2": "VID_R"}),
         comp("R_VG", "R_470", {"1": "VID_G_DRV", "2": "VID_G"}),
         comp("R_VB", "R_470", {"1": "VID_B_DRV", "2": "VID_B"}),

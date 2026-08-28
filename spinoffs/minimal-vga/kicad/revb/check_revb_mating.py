@@ -48,6 +48,12 @@ for card in CARDS:
     place = PLACE_BY_CARD[card]
     check_xy(f"{card} J_BUS", place["J_BUS"], C["base_row_x"], h - C["base_edge_offset"])
     check_xy(f"{card} J_EXT", place["J_EXT"], C["ext_row_x"], h - C["ext_edge_offset"])
+    if place["J_BUS"][2] != C["card_base_rotation_deg"]:
+        fails.append(f"{card} J_BUS rotation {place['J_BUS'][2]} != outward-facing "
+                     f"{C['card_base_rotation_deg']}")
+    if place["J_EXT"][2] != C["card_ext_rotation_deg"]:
+        fails.append(f"{card} J_EXT rotation {place['J_EXT'][2]} != outward-facing "
+                     f"{C['card_ext_rotation_deg']}")
 
 # 3. backplane outline height
 if not near(BOARD_H_BY_CARD["backplane"], C["backplane_board_h"]):
@@ -61,10 +67,14 @@ for k in range(1, C["n_slots"] + 1):
     bref, eref = f"J_S{k}_BUS", f"J_S{k}_EXT"
     if bref in bp:
         check_xy(bref, bp[bref], C["base_row_x"], y_base)
+        if bp[bref][2] != C["backplane_base_rotation_deg"]:
+            fails.append(f"{bref}: rotation does not preserve base pin numbering")
     else:
         fails.append(f"{bref}: missing from backplane placement")
     if eref in bp:
         check_xy(eref, bp[eref], C["ext_row_x"], y_base + C["ext_row_dy"])
+        if bp[eref][2] != C["backplane_ext_rotation_deg"]:
+            fails.append(f"{eref}: rotation does not preserve extension pin numbering")
     else:
         fails.append(f"{eref}: missing from backplane placement")
 

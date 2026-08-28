@@ -51,6 +51,13 @@ def pad_records(text: str) -> list[tuple[str, float, float, float]]:
     return records
 
 
+def npth_records(text: str) -> list[tuple[float, float, float]]:
+    pattern = re.compile(
+        r'\(pad\s+""\s+np_thru_hole\s+\S+\s+\(at\s+([-\d.]+)\s+([-\d.]+)\)'
+        r'.{0,180}?\(drill\s+([-\d.]+)\)', re.S)
+    return [(float(x), float(y), float(drill)) for x, y, drill in pattern.findall(text)]
+
+
 def library_footprint_path(name: str) -> Path:
     lib, footprint = name.split(":")
     root = HERE if lib == "VJUGA" else Path(os.environ.get("KICAD_FOOTPRINTS", ""))
@@ -82,8 +89,8 @@ def verify(contract: dict, board: dict) -> list[str]:
     for ref, typ in expected_types.items():
         if by_ref.get(ref, {}).get("type") != typ:
             errors.append(f"{ref}: expected {typ}")
-    if by_ref.get("J_VGA", {}).get("pins", {}).get("SH") != "GND":
-        errors.append("J_VGA shell/board locks are not bonded to GND")
+    if "SH" in by_ref.get("J_VGA", {}).get("pins", {}):
+        errors.append("J_VGA invents an electrical shell terminal absent from the drawing")
 
     # Derive sockets from actual U1..U23 packages. U1's four-lead full can uses the
     # same 14-position socket grid; all 23 active packages therefore remain replaceable.
@@ -134,7 +141,9 @@ def verify(contract: dict, board: dict) -> list[str]:
     if vga.get("footprint") != "VJUGA:NorComp_200-015-213L537":
         errors.append("VGA footprint is not exact NorComp land pattern")
     expected_vga_geometry = {
-        "signal_holes": 15, "signal_drill": 0.70, "signal_row_separation": 1.50,
+        "signal_holes": 15, "signal_drill": 0.70, "signal_pad_diameter": 1.00,
+        "signal_annular_ring": 0.15, "signal_local_clearance": 0.15,
+        "signal_row_separation": 1.50,
         "signal_x_step": 0.762, "signal_span_x": 10.668, "board_lock_holes": 2,
         "board_lock_drill": 2.10, "board_lock_span_x": 16.00,
         "pcb_edge_from_top_signal_row": 2.50, "mating_face_from_pcb_edge": 5.80,
@@ -144,8 +153,10 @@ def verify(contract: dict, board: dict) -> list[str]:
         errors.append("VGA datasheet geometry contract differs")
     fp_text = (HERE / "VJUGA.pretty" / "NorComp_200-015-213L537.kicad_mod").read_text()
     pads = pad_records(fp_text)
+    if fp_text.count("(size 1.00 1.00)") != 15:
+        errors.append("VGA signal pads are not exactly 15 x 1.00-mm diameter")
     signal = {n: (x, y, d) for n, x, y, d in pads if n.isdigit()}
-    shell = [(x, y, d) for n, x, y, d in pads if n == "SH"]
+    board_locks = npth_records(fp_text)
     expected_xy = {
         "1": (0, 0), "2": (-2.286, 1.5), "3": (-4.572, 0),
         "4": (-6.858, 1.5), "5": (-9.144, 0), "6": (0.762, 1.5),
@@ -159,9 +170,9 @@ def verify(contract: dict, board: dict) -> list[str]:
         got = signal.get(pin)
         if not got or not close(got[0], ex) or not close(got[1], ey) or not close(got[2], 0.70):
             errors.append(f"VGA pad {pin}: expected ({ex},{ey}) drill 0.70, got {got}")
-    if len(shell) != 2 or any(not close(d, 2.10) for _, _, d in shell):
-        errors.append("VGA board locks are not 2 x 2.10mm")
-    elif not close(abs(shell[1][0] - shell[0][0]), 16.00):
+    if len(board_locks) != 2 or any(not close(d, 2.10) for _, _, d in board_locks):
+        errors.append("VGA board locks are not 2 x 2.10mm NPTH")
+    elif not close(abs(board_locks[1][0] - board_locks[0][0]), 16.00):
         errors.append("VGA board-lock span is not 16.00mm")
     geometry_tokens = (
         '(start -20.227 -2.25) (end 11.083 8.55)',

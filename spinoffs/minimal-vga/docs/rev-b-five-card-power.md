@@ -10,8 +10,10 @@ each 100 nF from VCC5 to GND, with the numbering contract `Cn` local to `Un` at 
 `C_BULK` is 47 uF from VCC5 to GND near the card power entry. The machine check rejects
 a missing bypass capacitor and requires the bypass count to equal the IC count.
 
-These values do not excuse poor placement: R5.V5 must put each 100 nF part at its
-corresponding socket/package supply pins with a short ground-plane return. The bulk part
+R5.V5 places every 100 nF VCC pad within 12.85 mm of its corresponding package
+supply pad and gives it a short solid-ground-plane return. Seven constrained parts
+(C5, C7-C11 and C21) sit on the card back directly between front-side socket rows;
+their assembled height/slot clearance is an explicit R5.V6 check. The bulk part
 handles card-scale transients; the solid four-layer GND/VCC planes supply the high-
 frequency return path.
 

@@ -14,6 +14,9 @@
       "geometry_mm": {
         "signal_holes": 15,
         "signal_drill": 0.70,
+        "signal_pad_diameter": 1.00,
+        "signal_annular_ring": 0.15,
+        "signal_local_clearance": 0.15,
         "signal_row_separation": 1.50,
         "signal_x_step": 0.762,
         "signal_span_x": 10.668,

@@ -65,6 +65,34 @@ def place_pad_row(fp, x, y, rot=0):
     fp.SetPosition(pcbnew.VECTOR2I(pos.x + mm(x) - cx, pos.y + mm(y) - cy))
 
 
+def place_vga_edge(fp, x, y, rot=180):
+    """Place the exact NorComp origin, not its body centre.
+
+    At 180 degrees, origin (45.428, 2.5) puts the drawing's PCB-edge line on
+    board y=0, centres the 30.81-mm shell on x=50, leaves every solder tail
+    inside the board, and projects the mating face 5.8 mm beyond the edge.
+    """
+    fp.SetOrientationDegrees(rot)
+    fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
+
+
+def strip_bus_edge_graphics(fp):
+    """Remove generic library silk/courtyard around mating posts outside the PCB.
+
+    The exact body/lead presentation is guarded by mating.json and the parts checker.
+    KiCad's stock footprint encloses the full 6-mm mating post in a courtyard, which
+    intentionally crosses the board edge and also treats the interleaved opposite-side
+    connector as a component collision. Those are not useful assembly courtyards.
+    """
+    move = {
+        pcbnew.F_SilkS: pcbnew.F_Fab, pcbnew.F_CrtYd: pcbnew.F_Fab,
+        pcbnew.B_SilkS: pcbnew.B_Fab, pcbnew.B_CrtYd: pcbnew.B_Fab,
+    }
+    for item in list(fp.GraphicalItems()):
+        if item.GetLayer() in move:
+            item.SetLayer(move[item.GetLayer()])
+
+
 def outline(board):
     for x1, y1, x2, y2 in ((0, 0, BOARD_W, 0), (BOARD_W, 0, BOARD_W, BOARD_H),
                            (BOARD_W, BOARD_H, 0, BOARD_H), (0, BOARD_H, 0, 0)):
@@ -87,7 +115,10 @@ def edge_keepout(board):
         z.SetIsRuleArea(True)
         z.SetDoNotAllowTracks(True)
         z.SetDoNotAllowVias(True)
-        z.SetLayerSet(pcbnew.LSET.AllCuMask(2))
+        z.SetDoNotAllowPads(False)
+        z.SetDoNotAllowFootprints(False)
+        z.SetDoNotAllowZoneFills(False)
+        z.SetLayerSet(pcbnew.LSET.AllCuMask(board.GetCopperLayerCount()))
         z.Outline().NewOutline()
         for px, py in ((x1, y1), (x2, y1), (x2, y2), (x1, y2)):
             z.Outline().Append(mm(px), mm(py))
@@ -210,11 +241,69 @@ def emit_power_rails(board):
     return n
 
 
+def emit_video_vga_escapes(board):
+    """Route the two trapped inner VGA tails through the exact 7+8 pad fanout.
+
+    A 0.15-mm neck with 0.15-mm local pad clearance fits the 1.524-mm same-row
+    pitch and 1.00-mm pads with 0.037 mm geometric margin per side. Once clear
+    of the connector, the deterministic tracks run in open B.Cu channels; all
+    remaining router-generated signals retain the ordinary 0.20-mm floor.
+    """
+    fps = {fp.GetReference(): fp for fp in board.GetFootprints()}
+
+    def pad(ref, number):
+        found = fps[ref].FindPadByNumber(str(number))
+        if found is None:
+            raise RuntimeError(f"missing escape endpoint {ref}.{number}")
+        return found
+
+    def polyline(net, points):
+        for start, end in zip(points, points[1:]):
+            track = pcbnew.PCB_TRACK(board)
+            track.SetStart(pcbnew.VECTOR2I(mm(start[0]), mm(start[1])))
+            track.SetEnd(pcbnew.VECTOR2I(mm(end[0]), mm(end[1])))
+            track.SetWidth(mm(0.15))
+            track.SetLayer(pcbnew.B_Cu)
+            track.SetNet(net)
+            track.SetLocked(True)
+            board.Add(track)
+
+    vg = pad("J_VGA", 2)
+    vg_end = pad("R_VG", 2)
+    polyline(vg.GetNet(), [
+        (pcbnew.ToMM(vg.GetPosition().x), pcbnew.ToMM(vg.GetPosition().y)),
+        (47.714, 5.5), (57.0, 5.5), (57.0, 17.2),
+        (pcbnew.ToMM(vg_end.GetPosition().x), pcbnew.ToMM(vg_end.GetPosition().y)),
+    ])
+    hs = pad("J_VGA", 13)
+    hs_end = pad("U5", 15)
+    polyline(hs.GetNet(), [
+        (pcbnew.ToMM(hs.GetPosition().x), pcbnew.ToMM(hs.GetPosition().y)),
+        (50.762, 4.5), (91.89, 4.5),
+        (pcbnew.ToMM(hs_end.GetPosition().x), pcbnew.ToMM(hs_end.GetPosition().y)),
+    ])
+
+
 def silk(board, text, x, y, size=1.5, angle=0):
     t = pcbnew.PCB_TEXT(board); t.SetLayer(pcbnew.F_SilkS); t.SetText(text)
     t.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y))); t.SetTextAngleDegrees(angle)
     t.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size))); t.SetTextThickness(mm(0.2))
     board.Add(t)
+
+
+def add_power_zone(board, net, layer, name):
+    """Continuous inner-layer power plane, inset only past the edge guard."""
+    inset = 0.8
+    zone = pcbnew.ZONE(board)
+    zone.SetLayer(layer)
+    zone.SetNet(net)
+    zone.SetZoneName(name)
+    zone.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
+    zone.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
+    for x, y in ((inset, inset), (BOARD_W - inset, inset),
+                 (BOARD_W - inset, BOARD_H - inset), (inset, BOARD_H - inset)):
+        zone.AppendCorner(pcbnew.VECTOR2I(mm(x), mm(y)), -1)
+    board.Add(zone)
 
 
 # Placement tables (PLACE_BY_CARD) come from revb_place (shared with the mating
@@ -237,6 +326,13 @@ if _sw_ref and _sw_ref in PLACE:
 
 def main():
     board = pcbnew.BOARD()
+    if CARD == "video":
+        board.SetCopperLayerCount(4)
+        board.GetDesignSettings().SetCopperLayerCount(4)
+        # The exact NorComp board-lock holes are tangent to the specified PCB edge;
+        # ordinary routed copper still stays behind the explicit 0.6-mm edge ring.
+        board.GetDesignSettings().m_CopperEdgeClearance = mm(0.30)
+        board.GetDesignSettings().m_TrackMinWidth = mm(0.15)
     outline(board)
     # Edge no-track ring on every board. It used to break the backplane, but that was a
     # ring x locked-column interaction; with the columns retired (D1.34) the backplane
@@ -249,11 +345,15 @@ def main():
         ni = pcbnew.NETINFO_ITEM(board, name)
         board.Add(ni); nets[name] = ni
 
-    def add_fp(ref, fpname, xy, pin_to_net, dnp=False, pad_row_anchor=False):
+    def add_fp(ref, fpname, xy, pin_to_net, dnp=False, pad_row_anchor=False,
+               vga_edge_anchor=False, back_side=False):
         fp = load_fp(fpname)
         board.Add(fp)
         fp.SetReference(ref)
-        (place_pad_row if pad_row_anchor else place)(fp, *xy)
+        if back_side:
+            fp.Flip(fp.GetPosition(), False)
+        (place_vga_edge if vga_edge_anchor else
+         place_pad_row if pad_row_anchor else place)(fp, *xy)
         if dnp:
             try: fp.SetDNP(True)
             except Exception: pass
@@ -261,6 +361,10 @@ def main():
             net = pin_to_net.get(str(pad.GetNumber()))
             if net and net in nets:
                 pad.SetNet(nets[net])
+                if ref == "J_VGA" and net == "GND":
+                    pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
+            if ref == "J_VGA" and str(pad.GetNumber()).isdigit():
+                pad.SetLocalClearance(mm(0.15))
         # Hide per-footprint ref/value silk (they stray onto pads/outlines on this
         # dense card); board-level silk carries the essentials. Adding tidy per-ref
         # designators is cosmetic polish for the visual layout pass.
@@ -279,8 +383,12 @@ def main():
             # and its pins align in vertical columns (D1.29 column-route prerequisite).
             bref = "J_BUS" if ref == "J_BUS" else f"{ref}_BUS"
             eref = "J_EXT" if ref == "J_BUS" else f"{ref}_EXT"
-            add_fp(bref, base_fp, PLACE[bref], base, pad_row_anchor=True)
-            add_fp(eref, ext_fp, PLACE[eref], ext, pad_row_anchor=True)
+            bfp = add_fp(bref, base_fp, PLACE[bref], base, pad_row_anchor=True)
+            efp = add_fp(eref, ext_fp, PLACE[eref], ext, pad_row_anchor=True,
+                         back_side=(CARD != "backplane"))
+            if CARD != "backplane":
+                strip_bus_edge_graphics(bfp)
+                strip_bus_edge_graphics(efp)
         elif typ == "USB_C_PWR":
             # Map logical power pins to the GCT USB4085 THT receptacle's pads (full USB-C
             # pinout): VBUS=A4/A9/B4/B9, GND=A1/A12/B1/B12 + shield, CC1=A5, CC2=B5. The
@@ -304,13 +412,45 @@ def main():
         else:
             fpname = fpmap.get(typ) or fpmap.get(f"HDR_1x{len(pins)}")
             xy = PLACE.get(ref, (50.0, 40.0))
-            add_fp(ref, fpname, xy, pins, dnp=comp.get("dnp", False))
+            add_fp(ref, fpname, xy, pins, dnp=comp.get("dnp", False),
+                   vga_edge_anchor=(CARD == "video" and ref == "J_VGA"),
+                   # These small through-hole decouplers occupy the clear space
+                   # between socket rows on B.Cu. That keeps their VCC legs local
+                   # without consuming the dense front-side signal channels.
+                   back_side=(CARD == "video" and ref in {
+                       "C5", "C7", "C8", "C9", "C10", "C11", "C21"}))
+
+    if CARD == "video":
+        # KiCad's PTH courtyard test has no opposite-face body model: it reports
+        # every B-side capacitor deliberately placed between a front-side socket's
+        # rows as a collision. Retire only those seven front courtyards; the V5
+        # physical checker instead proves side, capacitor-to-pad clearance and
+        # local VCC distance for each explicit U/C pair.
+        for ref in ("U5", "U7", "U8", "U9", "U10", "U11", "U21"):
+            for item in list(next(fp for fp in board.GetFootprints()
+                                  if fp.GetReference() == ref).GraphicalItems()):
+                if item.GetLayer() == pcbnew.F_CrtYd:
+                    item.SetLayer(pcbnew.F_Fab)
+        # Socketed first article: keep an IC reference inside every package body so
+        # hand insertion remains unambiguous even though the library ref fields are
+        # hidden to prevent edge/pad collisions.
+        for fp in board.GetFootprints():
+            ref = fp.GetReference()
+            if not ref.startswith("U"):
+                continue
+            box = fp.GetBoundingBox(False, False)
+            centre = box.GetCenter()
+            angle = 0 if box.GetWidth() >= box.GetHeight() else 90
+            silk(board, ref, pcbnew.ToMM(centre.x), pcbnew.ToMM(centre.y),
+                  size=0.8, angle=angle)
 
     # board-level silk placed in clear gaps (pin-1 marks come from the footprints).
     SILK = {
         "mem": [(f"REVB {CARD.upper()}", 60.0, 49.0, 1.3), ("NO HOT-PLUG", 89.0, 49.0, 1.2)],
         "io":  [(f"REVB {CARD.upper()}", 40.0, 30.0, 1.3), ("NO HOT-PLUG", 40.0, 58.0, 1.1)],
         "cpu": [(f"REVB {CARD.upper()}", 68.0, 46.0, 1.4), ("NO HOT-PLUG", 68.0, 53.0, 1.2)],
+        "video": [("REVB VIDEO 4L", 34.0, 87.0, 1.0),
+                  ("NO HOT-PLUG", 76.0, 87.0, 1.0)],
         # Backplane console labels are board-relative: TX is output from VJUGA,
         # RX is input to VJUGA. The electrical boundary is TTL, never RS-232.
         "backplane": [("REVB BACKPLANE", 3.0, 90.0, 1.0, 90),
@@ -336,10 +476,20 @@ def main():
         nris = emit_power_rails(board)
         print(f"  emitted {ncol} bus-column segments + {nris} power-rail segments (locked)")
 
+    if CARD == "video":
+        emit_video_vga_escapes(board)
+
+    if CARD == "video" and os.environ.get("REVB_NO_ZONES") != "1":
+        add_power_zone(board, nets["GND"], pcbnew.In1_Cu, "VJUGA rev B Video GND plane")
+        add_power_zone(board, nets["VCC5"], pcbnew.In2_Cu, "VJUGA rev B Video VCC5 plane")
+
     outdir = os.path.join(REPO, "fab", "minimal-vga", "revb")
     os.makedirs(outdir, exist_ok=True)
     outpath = os.path.join(outdir, f"{CARD}.kicad_pcb")
     board.Save(outpath)
+    if board.Zones():
+        pcbnew.ZONE_FILLER(board).Fill(board.Zones())
+        board.Save(outpath)
     print(f"wrote {outpath} ({len(list(board.GetFootprints()))} footprints, {len(nets)} nets)")
 
 

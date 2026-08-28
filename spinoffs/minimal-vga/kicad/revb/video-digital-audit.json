@@ -60,7 +60,7 @@
     "BYTE_TICK_act_inputs": 4,
     "H_END_ttl_inputs": 4,
     "V_END_ttl_inputs": 2,
-    "assessment": "within one local oscillator/GAL output load budget; physical trace/stub limits remain R5.V5"
+    "assessment": "within one local oscillator/GAL output load budget; R5.V5 places a 33 ohm series source terminator at oscillator pin 8 and constrains the post-resistor tree"
   },
   "fetch_timing": {
     "fetch_window_dots": 4,

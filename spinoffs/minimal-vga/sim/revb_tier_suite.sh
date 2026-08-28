@@ -54,6 +54,14 @@ spinoffs/minimal-vga/sync/revb_video_lvs_mutation_check.sh
 echo "== rev B: Video decoupling, RGB loads and five-card current (R5.V2) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_power.py --self-test
 
+echo "== rev B: routed Video stack/planes/geometry/critical paths (R5.V5) =="
+if revb_have KICAD_PYTHON; then
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_video_pcb.py --self-test
+  python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py video --total
+else
+  echo "  SKIP  R5.V5 physical gate: pcbnew not found"
+fi
+
 echo "== rev B: per-card unit TBs (BFM) =="
 spinoffs/minimal-vga/sim/revb_card_tb_check.sh
 
