@@ -63,9 +63,9 @@ those tools.
 ## Next action
 
 The 2026-08-28 GOST silkscreen audit corrected all five routed board sources without
-changing their electrical fingerprints. Because silkscreen is fabrication data, the
-previous package hashes are now stale; regenerate R5.J2, repeat R5.J3 render review,
-and issue a new held R5.R1 record before requesting owner release.
+changing their electrical fingerprints. R5.J2 was regenerated, all 42 production
+layers/drills and 10 composites were independently re-rendered for R5.J3, and the
+held R5.R1 record now binds the corrected package hashes.
 
 **R5.0, R5.S1–S3, R5.P1, R5.V1–V6 and R5.J1–J3 are complete.** Follow the
 dependency-ordered tasks in `rev-b-five-board-order-plan.md`. The next

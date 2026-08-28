@@ -31,12 +31,10 @@ MANIFEST = REPO / "spinoffs" / "minimal-vga" / "docs" / "rev-b-five-board-packag
 BOM = HERE / "five-board-bom.json"
 CARDS = ("cpu", "mem", "io", "backplane", "video")
 GRAPHIC_SUFFIXES = (".gtl", ".gbl", ".g1", ".g2", ".gts", ".gbs", ".gto", ".gbo", ".gm1", ".drl")
-INTENTIONALLY_EMPTY = {
-    "cpu-B_Silkscreen.gbo",
-    "mem-B_Silkscreen.gbo",
-    "io-B_Silkscreen.gbo",
-    "backplane-B_Silkscreen.gbo",
-}
+# Every production graphic now carries intentional content.  In particular, the
+# four formerly empty bottom silks contain orientation/service cues and must not
+# silently regress to blank output.
+INTENTIONALLY_EMPTY: set[str] = set()
 
 
 def sha256(data: bytes) -> str:

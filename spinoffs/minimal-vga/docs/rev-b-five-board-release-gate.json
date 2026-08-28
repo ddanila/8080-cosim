@@ -2,22 +2,22 @@
   "schema": 1,
   "status": "ORDER HOLD",
   "candidate": {
-    "source_revision": "6962a9a4ec6bfa67703112bbc828287d94ebc5b8",
+    "source_revision": "90012621b45a923e8315c0e5ca6a38092b518885",
     "package_manifest": "spinoffs/minimal-vga/docs/rev-b-five-board-package-manifest.json",
-    "package_manifest_sha256": "428230bcafbe374ce8401f15f4ee6671f9ed2db70429160086660584f1d3fb83",
+    "package_manifest_sha256": "955af6c8304c5d61844edf077ad9d2ef3e06b8cce19f01df56ca0e0a7df17a39",
     "jlcpcb_profile_sha256": "71389d73858ecb5950a5eb2066258915e2b87e4176dba02c59e6ebf1302f036a",
     "archives": {
-      "backplane": "8ed116a001f1c575df0355800d52206de8297ae7a64e4c7661400cd625a4deca",
-      "cpu": "b83ee98722bf3035059c192ac25406cf69e41931704c2f4493dca2f8f981e0a0",
-      "io": "a86c1ac422bdfb5dbd4225fde0fc26016438b93e21161c7f6de1e3c487c1589a",
-      "mem": "002ecd84ecfefde6b6ae8fc3b2859b8d4599294e5821dd443b451916e708831e",
-      "video": "05180d8fa2084feec9bfdc4fa5aba89350dc681e643ac5a4e3f239ed69d17dc1"
+      "backplane": "1a642c0b7d5ed282da03ee263d7a66ee00d6ee93394e456dc4799f501a5ea590",
+      "cpu": "2335e88fc54e5d6efa7f8ba48d1bcb814b9d7e9960d581d4506c95aae361389d",
+      "io": "fb29708fab4d1070101ca26f0a053b4d059fbb8956847bb6382f97478417bc19",
+      "mem": "a2c903d130d87b9ea970fe8d9c0408d3751c181eb51a3406a712042874bff7b2",
+      "video": "46e13e63c3b4df4eb05f70c38dd2d810860d6503b36db85feabcace324b5f4ab"
     }
   },
   "evidence": {
     "controlling_plan": "spinoffs/minimal-vga/docs/rev-b-five-board-order-plan.md",
     "preupload_review": "spinoffs/minimal-vga/docs/rev-b-five-board-preupload-review.md",
-    "preupload_review_sha256": "7b5100bf5d79562468e3af87edc37d248ae377abe9912985738410b2457954e9",
+    "preupload_review_sha256": "291901a8abc357d690bc7d40c4740f616e2125aa7d5d999d52e932f70c21e713",
     "bom_contract": "spinoffs/minimal-vga/kicad/revb/five-board-bom.json",
     "jlcpcb_profile": "spinoffs/minimal-vga/kicad/revb/jlcpcb-profile.json"
   },

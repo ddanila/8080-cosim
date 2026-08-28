@@ -40,7 +40,7 @@ or edit production data in the vendor UI.
 |---|---|
 | Upload-gate command result | pending |
 | Release-gate status / owner / timestamp | pending |
-| Source revision | `6962a9a4ec6bfa67703112bbc828287d94ebc5b8` |
+| Source revision | `90012621b45a923e8315c0e5ca6a38092b518885` |
 | Browser/session date | pending |
 | Vendor | JLCPCB |
 | Delivery unit | five separate PCB designs; no panelization |
@@ -57,11 +57,11 @@ local evidence name here.
 
 | Design | Expected size / layers | Exact released ZIP SHA-256 | Uploaded hash | Vendor detection | Preview evidence | Result |
 |---|---|---|---|---|---|---|
-| CPU | 100x70 mm / 2 | `b83ee98722bf3035059c192ac25406cf69e41931704c2f4493dca2f8f981e0a0` | pending | pending | pending | pending |
-| Memory | 100x60 mm / 2 | `002ecd84ecfefde6b6ae8fc3b2859b8d4599294e5821dd443b451916e708831e` | pending | pending | pending | pending |
-| I/O | 100x100 mm / 2 | `a86c1ac422bdfb5dbd4225fde0fc26016438b93e21161c7f6de1e3c487c1589a` | pending | pending | pending | pending |
-| Backplane | 100x100 mm / 2 | `8ed116a001f1c575df0355800d52206de8297ae7a64e4c7661400cd625a4deca` | pending | pending | pending | pending |
-| Video | 100x100 mm / 4 | `05180d8fa2084feec9bfdc4fa5aba89350dc681e643ac5a4e3f239ed69d17dc1` | pending | pending | pending | pending |
+| CPU | 100x70 mm / 2 | `2335e88fc54e5d6efa7f8ba48d1bcb814b9d7e9960d581d4506c95aae361389d` | pending | pending | pending | pending |
+| Memory | 100x60 mm / 2 | `a2c903d130d87b9ea970fe8d9c0408d3751c181eb51a3406a712042874bff7b2` | pending | pending | pending | pending |
+| I/O | 100x100 mm / 2 | `fb29708fab4d1070101ca26f0a053b4d059fbb8956847bb6382f97478417bc19` | pending | pending | pending | pending |
+| Backplane | 100x100 mm / 2 | `1a642c0b7d5ed282da03ee263d7a66ee00d6ee93394e456dc4799f501a5ea590` | pending | pending | pending | pending |
+| Video | 100x100 mm / 4 | `46e13e63c3b4df4eb05f70c38dd2d810860d6503b36db85feabcace324b5f4ab` | pending | pending | pending | pending |
 
 For every preview, inspect rather than infer:
 

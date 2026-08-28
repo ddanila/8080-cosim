@@ -1,6 +1,6 @@
 # VJUGA rev B — five-board silkscreen audit
 
-Status: **PASS / NEW RELEASE CANDIDATE REQUIRED**, 2026-08-28.
+Status: **PASS / RELEASE CANDIDATE REFRESHED / ORDER HOLD**, 2026-08-28.
 
 This audit covers the printable front and bottom silkscreen of CPU, Memory, I/O,
 Backplane, and Video. The typography changes fabrication Gerbers, so the former R5.J2
@@ -66,6 +66,12 @@ bold styling.
   faces, and no text is clipped, crowded against an edge, or covered by solder mask.
 - `export_fab.sh` and `revb_tier_suite.sh` now run the five-card silk contract before
   packaging or release regression.
+- The refreshed five archives produced 42 separately rendered production layers/
+  drills and 10 top/bottom composites. Every silk is nonblank; the montage review
+  found no clipping, pad collision, crowding, translation, or wrong-side cue.
+- The complete rev-B regression passed after the refresh, including both modular
+  decode boots and the real-chip TTL Video `/WAIT` boot against the cosim oracle.
 
-The resulting Gerbers and hashes must be regenerated and independently rendered as a
-new R5.J2/J3 candidate. The existing `ORDER HOLD` remains in force throughout.
+The resulting Gerbers and hashes were regenerated and independently rendered as the
+new R5.J2/J3 candidate recorded in `rev-b-five-board-package-manifest.json` and
+`rev-b-five-board-preupload-review.md`. The existing `ORDER HOLD` remains in force.
