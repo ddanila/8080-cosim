@@ -20,7 +20,7 @@ in `rev-b-five-board-order-plan.md`.
 | **B1 — sim/firmware** | bring-up ROM, minimum-tier twin | ✅ done | `revb_bringup_check.sh`: TX stream == cosim via real 8251 |
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
-| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four boards route DRC 0/0** — cpu A8 closed by the TF.1 sweep (U1 x=41); backplane uses the D1.34 clean-slate freerouting path |
+| **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four boards route DRC 0/0** — R5.J2 refresh freezes CPU U1 x=39 and I/O U6 x=22; backplane uses the D1.34 clean-slate freerouting path |
 | **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | ✅ done | TG.1 mating contract+checker, TG.2 **all 4 route 0/0** at 4 mm offset, TG.3 FreeCAD clearance 4.16 mm + keying D1.32b, TG.4 fab packages + power re-check → historical T1.10 evidence |
 | **Five-board order** | CPU + memory + I/O + backplane + ready VGA card; hardened TTL serial | ⬜ **ORDER HOLD**; R5.J1 vendor profile done, packaging next | `rev-b-five-board-order-plan.md` |
 | **B2 video desk model** | TTL VGA + framebuffer through TI.3 | ✅ done | licensed timing adoption, chip-level twin, crop policy, row-base address generator, cycle-steal `/WAIT`, integrated ekta37 boot, `video.board.json`, completeness, and scoped LVS all guarded |

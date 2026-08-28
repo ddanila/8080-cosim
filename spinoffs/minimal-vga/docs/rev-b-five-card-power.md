@@ -102,14 +102,14 @@ GND bus contact per card, and half the adapter ripple limit.
 
 | Slot / card | routed copper drop | modeled rail trough | margin over 4.50 V |
 |---|---:|---:|---:|
-| 1 / CPU | 78.93 mV | 4.623 V | 123 mV |
-| 2 / Memory | 74.00 mV | 4.628 V | 128 mV |
-| 3 / I/O | 64.43 mV | 4.640 V | 140 mV |
-| 5 / Video | 39.39 mV | 4.649 V | 149 mV |
+| 1 / CPU | 74.03 mV | 4.628 V | 128 mV |
+| 2 / Memory | 69.10 mV | 4.633 V | 133 mV |
+| 3 / I/O | 59.53 mV | 4.645 V | 145 mV |
+| 5 / Video | 34.49 mV | 4.654 V | 154 mV |
 
-The R5.J1-rerouted effective raw-path resistance is 3.554 mOhm and the shared
+The R5.J2 release-source effective raw-path resistance is 3.554 mOhm and the shared
 worst-case input drop is 150.71 mV. At the adapter's unqualified published -5%
-corner the modeled trough would be only 4.473 V; this is why the delivered-unit
+corner the modeled trough would be only 4.478 V; this is why the delivered-unit
 receipt test is mandatory.
 
 ## Machine gate

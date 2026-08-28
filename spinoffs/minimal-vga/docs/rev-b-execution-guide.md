@@ -524,6 +524,13 @@ folded into `gen_revb_pcb.py`; fresh regenerate+route → `--total` 0/0; STEP + 
 regenerated. `REVB_SWEEP_{REF,X,ROT}` env hook in the generator drives the search;
 `FR_ATTEMPTS` env caps route retries for the sweep.
 
+**R5.J2 refresh (2026-08-28):** repeating the clean-source audit after the JLC
+normalization found x=41 returning one ratline. The same sweep selected **U1 x=39,
+rot=90**, which routes 0/0 on bounded attempt 1; I/O similarly moved DNP PIC U6 from
+x=26 to **x=22** to close its lone D4 ratline. The reviewed routed sources for CPU,
+Memory and I/O are now tracked alongside Backplane and Video; archive export does not
+rerun the stochastic layout solver.
+
 **TF.2 — multi-slot connector support in the PCB generator (D1.29 prerequisite).**
 `gen_revb_pcb.py`: the `REVB_BUS_39_10` branch derives refs from the component ref
 (`J_S3` → `J_S3_BUS`/`J_S3_EXT`; a bare `J_BUS` keeps today's names, cards

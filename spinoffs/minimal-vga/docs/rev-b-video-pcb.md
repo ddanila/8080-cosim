@@ -13,7 +13,7 @@ power-input and voltage-drop closure passed R5.V6; the JLCPCB gates remain.
   rows follow the manufacturer drawing. The 39-pin base bus header is front-side,
   the 10-pin extension is back-side, and both right-angle post sets point out of the
   bottom edge.
-- 2,501 routed signal segments and 124 through vias. Ordinary tracks are 0.20 mm;
+- 2,432 routed signal segments and 137 through vias. Ordinary tracks are 0.20 mm;
   exactly seven locked B.Cu segments use 0.15 mm in the `VID_G` and `HSYNC_N` VGA
   necks. Vias are 0.60/0.30 mm diameter/drill. No signal track uses either inner
   plane.
@@ -23,11 +23,14 @@ power-input and voltage-drop closure passed R5.V6; the JLCPCB gates remain.
   minimum adjacent-card clearance. The other bypass parts and 47 uF bulk capacitor
   are front-side.
 - `R_CLK` is a 33 ohm source resistor 6.27 mm from oscillator U1.8. Its pre-resistor
-  `DOTCLK_RAW` route is 6.56 mm; the seven-load `DOTCLK` tree is 184.54 mm over the
+  `DOTCLK_RAW` route is 6.56 mm; the seven-load `DOTCLK` tree is 174.05 mm over the
   continuous return plane.
-- Swapping the package-identical U3 and U22 locations shortened the active pixel
-  chain from 140.79 mm to 59.16 mm: `PIXEL` is 22.68 mm and `VID_PIXEL` is 36.48 mm.
-  The three ACT-to-RGB-resistor routes are 10.76, 8.89 and 14.48 mm.
+- The active pixel chain remains within its audited bounds after the earlier
+  package-identical U3/U22 swap: `PIXEL` is 25.28 mm and `VID_PIXEL` is
+  41.77 mm. The three ACT-to-RGB-resistor routes are 15.84, 11.03 and 14.40 mm.
+- R5.J2 makes the adjacent U22.9/U22.10 `V_END` tie a deterministic 2.54-mm F.Cu
+  under-socket strap. This preserves the exact DRC-clean route intent and prevents
+  the global router from consuming that trivial local channel.
 
 The final clean route completed on FreeRouting attempt 1 with its reported final
 score 949.83. The score is informational; acceptance comes from KiCad 10.0.5 DRC:

@@ -405,6 +405,27 @@ def emit_video_vga_escapes(board):
     ])
 
 
+def emit_video_local_strap(board):
+    """Emit the exact adjacent U22 V_END tie under the socket.
+
+    A clean-source R5.J2 run showed that leaving this trivial 2.54-mm connection
+    stochastic lets FreeRouting consume the channel with HC1 and return one ratline.
+    The previously released DRC-clean route used this same direct F.Cu segment.
+    """
+    fp = next(item for item in board.GetFootprints() if item.GetReference() == "U22")
+    a, b = fp.FindPadByNumber("9"), fp.FindPadByNumber("10")
+    if a.GetNetname() != "V_END" or b.GetNetname() != "V_END":
+        raise RuntimeError("U22 local V_END strap pin contract changed")
+    track = pcbnew.PCB_TRACK(board)
+    track.SetStart(a.GetPosition())
+    track.SetEnd(b.GetPosition())
+    track.SetWidth(mm(0.20))
+    track.SetLayer(pcbnew.F_Cu)
+    track.SetNet(a.GetNet())
+    track.SetLocked(True)
+    board.Add(track)
+
+
 def silk(board, text, x, y, size=1.5, angle=0):
     t = pcbnew.PCB_TEXT(board); t.SetLayer(pcbnew.F_SilkS); t.SetText(text)
     t.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y))); t.SetTextAngleDegrees(angle)
@@ -601,6 +622,7 @@ def main():
         print(f"  emitted {ncol} bus-column segments + {nris} power-rail segments (locked)")
 
     if CARD == "video":
+        emit_video_local_strap(board)
         emit_video_vga_escapes(board)
 
     if CARD == "video" and os.environ.get("REVB_NO_ZONES") != "1":

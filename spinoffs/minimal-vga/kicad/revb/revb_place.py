@@ -41,7 +41,9 @@ _PARTS = {
     "io": {   # 100x100: three well-separated chip rows for 2-layer routing channels
         "U4": (29.0, 14.0, 90),   # 8255 DIP-40
         "U1": (78.0, 14.0, 90),   # 8251 DIP-28
-        "U6": (26.0, 44.0, 90),   # 8259 DIP-28
+        # R5.J2 clean-source sweep: x=26 repeatedly trapped U6.7(D4); x=22 routes
+        # the complete populated+DNP card 0/0 on bounded attempt 1.
+        "U6": (22.0, 44.0, 90),   # 8259 DIP-28
         "U2": (76.0, 44.0, 90),   # GAL16V8 DIP-20
         "U5": (26.0, 72.0, 90),   # 74148 DIP-16
         "U7": (54.0, 70.0, 90),   # 74HC393 baud divider
@@ -53,7 +55,9 @@ _PARTS = {
         "J_KBD": (40.0, 84.0, 90),
     },
     "cpu": {   # 100x70: unbuffered Z80 + osc + diag, wide fan-out channel (D1.21)
-        "U1": (41.0, 22.0, 90),   # Z80 DIP-40 horizontal; x=41 from TF.1 sweep (D1.28) routes A8 0/0
+        # R5.J2 clean-source sweep refresh: x=39 routes 0/0 on bounded attempt 1;
+        # the former x=41 result had become a repeated one-ratline placement.
+        "U1": (39.0, 22.0, 90),   # Z80 DIP-40 horizontal
         "U2": (85.0, 18.0, 0),    # clock osc DIP-14 vertical
         "C1": (66.0, 36.0, 0), "C2": (88.0, 42.0, 0),
         "J_DIAG": (40.0, 46.0, 90),
