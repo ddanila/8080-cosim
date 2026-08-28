@@ -6,6 +6,8 @@
   "font_note": "Local generation dependency; not redistributed. Gerber output contains vector geometry and has no runtime font dependency.",
   "minimum_text_height_mm": 1.5,
   "minimum_stroke_mm": 0.15,
+  "assembly_text_height_mm": 1.6,
+  "assembly_text_thickness_mm": 0.2,
   "board_title_height_mm": 1.8,
   "safety_text_height_mm": 1.5,
   "common_safety_text": "NO HOT-PLUG",

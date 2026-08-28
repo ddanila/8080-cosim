@@ -22,7 +22,7 @@ in `rev-b-five-board-order-plan.md`.
 | **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
 | **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11, TF.1–TF.4) | ✅ done | **all four boards route DRC 0/0** — R5.J2 refresh freezes CPU U1 x=39 and I/O U6 x=22; backplane uses the D1.34 clean-slate freerouting path |
 | **B1-CAD Stage D** | mating contract + FreeCAD proof + fab package (TG.1–TG.4) | ✅ done | TG.1 mating contract+checker, TG.2 **all 4 route 0/0** at 4 mm offset, TG.3 FreeCAD clearance 4.16 mm + keying D1.32b, TG.4 fab packages + power re-check → historical T1.10 evidence |
-| **Five-board order** | CPU + memory + I/O + backplane + ready VGA card; hardened TTL serial | ⬜ **ORDER HOLD**; R5.J3 independent review/quote done, owner release review next | `rev-b-five-board-order-plan.md` |
+| **Five-board order** | CPU + memory + I/O + backplane + ready VGA card; hardened TTL serial | ⬜ **ORDER HOLD**; complete assembly silk awaits human PNG acceptance and R5.J2/J3 package refresh | `rev-b-five-board-order-plan.md` |
 | **B2 video desk model** | TTL VGA + framebuffer through TI.3 | ✅ done | licensed timing adoption, chip-level twin, crop policy, row-base address generator, cycle-steal `/WAIT`, integrated ekta37 boot, `video.board.json`, completeness, and scoped LVS all guarded |
 | **B2 physical card** | exact parts, GALs, full LVS, power, 4-layer PCB/package | ✅ R5.V1–V6 and R5.J1–J3 done; owner release pending | routed source and source-verified package pass DRC 0/0, plane/critical-route guards, independent gerbv review and the live-corrected JLC profile; assembled STEP/clearance plus protected 1.351 A distribution model pass |
 | **B3 / B4** | keyboard+PIC / FDC tiers | ⬜ B3 = populate-only; B4 future | B3 parts are already wired as DNP on the I/O card; no B4 tape-out work yet |
@@ -62,15 +62,17 @@ those tools.
 
 ## Next action
 
-The 2026-08-28 GOST silkscreen audit corrected all five routed board sources without
-changing their electrical fingerprints. R5.J2 was regenerated, all 42 production
-layers/drills and 10 composites were independently re-rendered for R5.J3, and the
-held R5.R1 record now binds the corrected package hashes.
+The 2026-08-28 GOST silkscreen audit now gives every one of the 131 physical
+footprints a same-side reference plus value/role label without changing any
+electrical fingerprint. All five routed boards remain DRC 0/0. Human top/bottom PNG
+review is next; then regenerate R5.J2, repeat the 42-layer/drill plus 10-composite
+R5.J3 review, and issue a new held R5.R1 hash record.
 
-**R5.0, R5.S1–S3, R5.P1, R5.V1–V6 and R5.J1–J3 are complete.** Follow the
+**R5.0, R5.S1–S3, R5.P1, R5.V1–V6 and R5.J1 are complete; R5.J2/J3 need the
+assembly-silk refresh.** Follow the
 dependency-ordered tasks in `rev-b-five-board-order-plan.md`. The next
-dependency-ready work is R5.R1: present the exact hashes, signed independent review
-and dated quote to the owner and retain the machine-checked hold unless explicitly released.
+dependency-ready work is human assembly-silk review, then the R5.J2/J3 refresh.
+Only afterward may R5.R1 present new exact hashes for owner consideration.
 Do not upload the historical four-board packages. Ordering stays on hold until all
 five packages pass R5.R1 and the owner explicitly releases them. The held R5.O1
 upload/DFM/order record and R5.B1 five-card bench log are prepared; they are runbooks,

@@ -1,6 +1,6 @@
 # VJUGA rev B — five-board silkscreen audit
 
-Status: **PASS / RELEASE CANDIDATE REFRESHED / ORDER HOLD**, 2026-08-28.
+Status: **PASS / ASSEMBLY LEGEND REVIEW / NEW RELEASE CANDIDATE REQUIRED / ORDER HOLD**, 2026-08-28.
 
 This audit covers the printable front and bottom silkscreen of CPU, Memory, I/O,
 Backplane, and Video. The typography changes fabrication Gerbers, so the former R5.J2
@@ -24,7 +24,8 @@ The corrected style is machine-readable in `kicad/revb/silkscreen-style.json`:
 |---|---|
 | Typeface | `GOST CAD KK`, Book |
 | Font file SHA-256 | `14f22140e5ac3d581830b903d62d2fdd24392a480ab1284a3cbd16139d6e8d2d` |
-| Ordinary / assembly text | 1.5 mm |
+| Ordinary interface text | 1.5 mm |
+| Ref + value assembly text | 1.6 mm |
 | Board title | 1.8 mm |
 | Safety text | 1.5 mm |
 | Front card orientation | `PIN 1 >`, pointing toward physical bus pad 1 |
@@ -37,33 +38,45 @@ Gerber output, so JLCPCB does not need the font file.
 
 ## Content result
 
-| Board | Visible GOST silk text items | Assembly and safety additions |
-|---|---:|---|
-| CPU | 7 | U1/U2, J_DIAG, consistent title/safety text, two-face pin-1 cue |
-| Memory | 9 | U1/U2/U3, J_NOP/J_OBS, consistent title/safety text, two-face pin-1 cue |
-| I/O | 14 | all seven U refs; U4/U5/U6 and J_KBD explicitly DNP; baud/select labels and two-face pin-1 cue |
-| Backplane | 15 | numbered slots, slot 4 keep-empty and slot 5 Video notices, TTL warning/pinout, title/safety text; U_RST moved to clear bottom silk |
-| Video | 29 | all 23 U refs, VGA pin 1, 4-layer/title/safety text, two-face bus pin-1 cue |
+Every physical footprint now has a same-side assembly marking containing both its
+reference and fitted value or functional role. This includes resistances,
+capacitances, oscillator frequencies, exact logic/device families, connector roles,
+wire-link gauge and all seven first-system DNP positions. The controlled vocabulary
+and exact value spellings are in `kicad/revb/assembly-markings.json`.
 
-The GOST Book face needs 1.5 mm text height to keep its thinnest glyph strokes above
-KiCad's fabrication check. The earlier 1.0–1.2 mm trial was rejected because every
-TrueType label produced `text_thickness` warnings; 1.5 mm clears them without fake
-bold styling.
+| Board | Physical ref+value labels | Total visible GOST text items | Examples |
+|---|---:|---:|---|
+| CPU | 7 | 11 | `U1 Z80`, `U2 2.000MHz`, `C1 100nF`, `J_DIAG DIAG HEADER` |
+| Memory | 10 | 14 | `U1 27C256`, `U2 AS6C1008`, `U3 ATF22V10`, all bypass capacitors |
+| I/O | 19 | 23 | every IC/cap/header; `U4 8255 DNP`, `J_KBD KEYBOARD DNP`, baud clock/select |
+| Backplane | 41 | 54 | every pull-up/value and protected-power/serial part plus all ten slot connectors |
+| Video | 54 | 60 | all 23 ICs, 23 bypass capacitors, RGB resistors, oscillator, VGA and bulk capacitor |
+
+The actual reference `R_BRQ` is printed `R_BRq`: this is the sole case-only display
+override because this installed GOST face's uppercase `Q` contains a sub-0.15-mm
+segment even at oversized text. Lowercase `q` preserves an unambiguous reference at
+the common 1.6-mm height and clears fabrication DRC; the mapping is machine-checked.
+
+The GOST Book face needs at least 1.5 mm text height to keep its thinnest ordinary
+glyph strokes above KiCad's fabrication check. The earlier 1.0–1.2 mm trial was
+rejected because every TrueType label produced `text_thickness` warnings. Assembly
+labels use 1.6 mm for denser values with a little extra visual weight and margin.
 
 ## Verification
 
-- `check_revb_pcb.py` rejects a missing/mixed font, text below 1.5 mm, inconsistent
-  title/safety hierarchy, missing IC/DNP/slot labels, or a wrong-side pin-1 cue.
+- `check_revb_pcb.py` rejects a missing/mixed font, undersized text, inconsistent
+  title/safety hierarchy, any missing/duplicated/wrong-side ref+value or DNP label,
+  missing slot labels, or a wrong-side pin-1 cue.
 - `apply_revb_silkscreen.py` imports only reviewed text from a fresh generator output
   into each routed release board. It refuses footprint-placement differences and
   proves a non-silkscreen fingerprint covering footprints/pads, tracks/vias, zones,
   nets, drills, copper layers, and non-silk drawings is unchanged.
 - All five routed boards pass KiCad total DRC with zero violations and zero
   unconnected items after the transplant.
-- The normal top SVGs and new mirrored `*-bottom.svg` files under `docs/revb-previews/`
-  were inspected at original resolution. Titles form one hierarchy, labels are
-  readable and consistently slanted, pin-1 arrows point toward the connector on both
-  faces, and no text is clipped, crowded against an edge, or covered by solder mask.
+- The normal top SVGs and mirrored `*-bottom.svg` files under `docs/revb-previews/`,
+  plus bare-board top/bottom PNG assembly plots, were inspected at original
+  resolution. Labels are readable, pin-1 arrows point correctly, and no text is
+  clipped, crowded against an edge, crossed by other silk, or covered by solder mask.
 - `export_fab.sh` and `revb_tier_suite.sh` now run the five-card silk contract before
   packaging or release regression.
 - The refreshed five archives produced 42 separately rendered production layers/
@@ -72,6 +85,7 @@ bold styling.
 - The complete rev-B regression passed after the refresh, including both modular
   decode boots and the real-chip TTL Video `/WAIT` boot against the cosim oracle.
 
-The resulting Gerbers and hashes were regenerated and independently rendered as the
-new R5.J2/J3 candidate recorded in `rev-b-five-board-package-manifest.json` and
-`rev-b-five-board-preupload-review.md`. The existing `ORDER HOLD` remains in force.
+This complete assembly legend supersedes the package currently recorded in
+`rev-b-five-board-package-manifest.json`. After human acceptance of the new PNG
+review, R5.J2/J3 must regenerate and independently render all five packages before
+R5.R1 can be reconsidered. The existing `ORDER HOLD` remains in force.

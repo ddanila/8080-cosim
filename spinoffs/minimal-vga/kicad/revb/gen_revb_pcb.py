@@ -10,6 +10,7 @@ import hashlib, json, os, shutil, subprocess, sys
 import pcbnew
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from revb_place import BOARD_W, BOARD_H_BY_CARD, PLACE_BY_CARD  # noqa: E402
+from revb_assembly import display_value, expanded_parts, marking_text  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))   # spinoffs/minimal-vga/kicad/revb
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
@@ -453,14 +454,135 @@ def emit_video_local_strap(board):
     board.Add(track)
 
 
-def silk(board, text, x, y, size=1.5, angle=0, layer=pcbnew.F_SilkS):
+def silk(board, text, x, y, size=1.5, angle=0, layer=pcbnew.F_SilkS,
+         thickness=0.2):
     t = pcbnew.PCB_TEXT(board); t.SetLayer(layer); t.SetText(text)
     t.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y))); t.SetTextAngleDegrees(angle)
-    t.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size))); t.SetTextThickness(mm(0.2))
+    t.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size))); t.SetTextThickness(mm(thickness))
     t.SetFontProp(SILK_FONT)
     if layer == pcbnew.B_SilkS:
         t.SetMirrored(True)
     board.Add(t)
+    return t
+
+
+def emit_assembly_markings(board, parts):
+    """Put a reference plus fitted value/role beside every physical footprint.
+
+    Long IC/connector markings are split over lines and aligned with the package's
+    long axis.  DIP and axial-body labels use the pad-free package interior; small
+    radial/vertical parts use the first pad- and text-clear position around their
+    footprint.  Back-side parts receive B.Silkscreen text on their assembly side.
+    """
+    footprints = {fp.GetReference(): fp for fp in board.GetFootprints()}
+
+    def bounds(item):
+        box = item.GetBoundingBox()
+        pos, size = box.GetPosition(), box.GetSize()
+        return pos.x, pos.y, pos.x + size.x, pos.y + size.y
+
+    def overlaps(a, b, gap_mm=0.20):
+        gap = mm(gap_mm)
+        return not (a[2] + gap <= b[0] or b[2] + gap <= a[0]
+                    or a[3] + gap <= b[1] or b[3] + gap <= a[1])
+
+    def in_board(box):
+        inset = mm(0.8)
+        return (box[0] >= inset and box[1] >= inset
+                and box[2] <= mm(BOARD_W) - inset
+                and box[3] <= mm(BOARD_H) - inset)
+
+    placed = [item for item in board.GetDrawings()
+              if isinstance(item, pcbnew.PCB_TEXT) and item.IsVisible()
+              and item.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS)]
+    graphic_obstacles = [item for fp in board.GetFootprints()
+                         for item in fp.GraphicalItems()
+                         if not isinstance(item, pcbnew.PCB_TEXT)
+                         and item.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS)]
+
+    # Larger bodies first; their natural interiors are the least ambiguous homes.
+    ordered = sorted(parts, key=lambda ref: (
+        0 if ref.startswith("U") else 1,
+        -footprints[ref].GetBoundingBox(False, False).GetArea(), ref))
+    for ref in ordered:
+        fp, part = footprints[ref], parts[ref]
+        fp.SetValue(display_value(ref, part))
+        layer = pcbnew.B_SilkS if fp.GetLayer() == pcbnew.B_Cu else pcbnew.F_SilkS
+        typ = part["type"]
+        body_centre = (ref.startswith("U") and ref != "U_RST") or (
+            ref.startswith(("R", "W")) and not typ.endswith("_VERT"))
+        multiline = ((not body_centre and ref.startswith(("J", "JP")))
+                     or (not body_centre and len(marking_text(ref, part)) > 13))
+        label = marking_text(ref, part, multiline=multiline)
+        box = fp.GetBoundingBox(False, False)
+        centre = box.GetCenter()
+        long_angle = 0 if box.GetWidth() >= box.GetHeight() else 90
+        text = silk(board, label, pcbnew.ToMM(centre.x), pcbnew.ToMM(centre.y),
+                    size=SILK_STYLE["assembly_text_height_mm"],
+                    angle=long_angle if body_centre else 0, layer=layer,
+                    thickness=SILK_STYLE["assembly_text_thickness_mm"])
+
+        candidates = [(centre.x, centre.y, long_angle)] if body_centre else []
+        # Re-evaluate text dimensions after each angle; positions use the
+        # component bbox plus the candidate text's actual rendered extent. A
+        # bounded near-part grid gives dense Video/Backplane labels several clean
+        # alternatives without turning the board into a remote legend table.
+        for angle in (0, 90):
+            text.SetTextAngleDegrees(angle)
+            tb = text.GetBoundingBox()
+            tw, th = tb.GetWidth(), tb.GetHeight()
+            margin = mm(0.5)
+            candidates.extend([
+                (centre.x, box.GetY() - th // 2 - margin, angle),
+                (centre.x, box.GetBottom() + th // 2 + margin, angle),
+                (box.GetX() - tw // 2 - margin, centre.y, angle),
+                (box.GetRight() + tw // 2 + margin, centre.y, angle),
+            ])
+            for radius_mm in (3.0, 5.0, 7.0, 9.0, 12.0, 15.0):
+                radius = mm(radius_mm)
+                for dx, dy in ((-radius, -radius), (0, -radius), (radius, -radius),
+                               (-radius, 0), (radius, 0),
+                               (-radius, radius), (0, radius), (radius, radius)):
+                    candidates.append((centre.x + dx, centre.y + dy, angle))
+            # Last resort remains on the component side and DRC-clean: search the
+            # complete board in nearest-first order. This is mainly needed by the
+            # densely populated Backplane service strip. The review render makes
+            # any association that became too remote a human finding, not a hidden
+            # fabrication compromise.
+            grid = [(mm(x), mm(y)) for y in range(3, int(BOARD_H) - 2, 2)
+                    for x in range(3, int(BOARD_W) - 2, 2)]
+            grid.sort(key=lambda point: (abs(point[0] - centre.x)
+                                         + abs(point[1] - centre.y),
+                                         point[1], point[0]))
+            candidates.extend((x, y, angle) for x, y in grid)
+
+        selected = None
+        for x, y, angle in candidates:
+            text.SetTextAngleDegrees(angle)
+            text.SetTextPos(pcbnew.VECTOR2I(x, y))
+            text_box = bounds(text)
+            if not in_board(text_box):
+                continue
+            copper_layer = pcbnew.B_Cu if layer == pcbnew.B_SilkS else pcbnew.F_Cu
+            if any(pad.IsOnLayer(copper_layer) and overlaps(text_box, bounds(pad), 0.15)
+                   for other in board.GetFootprints() for pad in other.Pads()):
+                continue
+            if any(other.GetLayer() == layer and overlaps(text_box, bounds(other), 0.15)
+                   for other in placed):
+                continue
+            if any(other.GetLayer() == layer and overlaps(text_box, bounds(other), 0.15)
+                   for other in graphic_obstacles):
+                continue
+            selected = (x, y, angle)
+            break
+
+        if selected is None:
+            # Keep the deterministic preferred location. Total DRC and the render
+            # review must reject it if the fallback is not fabrication-safe.
+            selected = candidates[0]
+        text.SetTextAngleDegrees(selected[2])
+        text.SetTextPos(pcbnew.VECTOR2I(selected[0], selected[1]))
+        placed.append(text)
 
 
 def add_power_zone(board, net, layer, name):
@@ -556,9 +678,9 @@ def main():
                     max(size.x, drill.x + mm(0.36)),
                     max(size.y, drill.y + mm(0.36))))
                 pad.SetLocalClearance(mm(0.15))
-        # Hide per-footprint ref/value silk (they stray onto pads/outlines on this
-        # dense card); board-level silk carries the essentials. Adding tidy per-ref
-        # designators is cosmetic polish for the visual layout pass.
+        # Hide library placeholder ref/value fields: their footprint-relative
+        # positions stray onto pads and outlines after rotation. The deterministic
+        # board-level assembly pass below replaces them with checked ref+value text.
         fp.Value().SetVisible(False)
         fp.Reference().SetVisible(False)
         return fp
@@ -592,28 +714,6 @@ def main():
                    back_side=(CARD == "video" and ref in {
                        "C5", "C7", "C8", "C9", "C10", "C11", "C21"}))
 
-    # Socketed first article: keep every IC reference inside its package body so
-    # hand insertion is unambiguous. DNP ICs are called out explicitly and remain
-    # readable on an unpopulated board. This used to be Video-only, leaving the
-    # other four cards without assembly reference designators.
-    dnp_refs = {comp["ref"] for comp in board_spec["chips"] if comp.get("dnp", False)}
-    for fp in board.GetFootprints():
-        ref = fp.GetReference()
-        if not ref.startswith("U"):
-            continue
-        label = f"{ref} DNP" if ref in dnp_refs else ref
-        if CARD == "backplane" and ref == "U_RST":
-            # The three-pad TO-92 footprint has no front-side interior large enough
-            # for legible 1.5-mm GOST text. Put its assembly reference in the clear
-            # bottom-side corridor directly below the part instead.
-            silk(board, label, 70.0, 81.5, size=1.5, layer=pcbnew.B_SilkS)
-            continue
-        box = fp.GetBoundingBox(False, False)
-        centre = box.GetCenter()
-        angle = 0 if box.GetWidth() >= box.GetHeight() else 90
-        silk(board, label, pcbnew.ToMM(centre.x), pcbnew.ToMM(centre.y),
-              size=1.5, angle=angle)
-
     if CARD == "video":
         # KiCad's PTH courtyard test has no opposite-face body model: it reports
         # every B-side capacitor deliberately placed between a front-side socket's
@@ -625,21 +725,16 @@ def main():
                                   if fp.GetReference() == ref).GraphicalItems()):
                 if item.GetLayer() == pcbnew.F_CrtYd:
                     item.SetLayer(pcbnew.F_Fab)
-    # Board-level silk uses one visual grammar on all five designs. Component and
-    # connector labels are deliberately terse; safety and interface labels remain
-    # conspicuous. Coordinates are clear gaps verified by total KiCad DRC and the
-    # committed top-view renders.
+    # Board-level silk uses one visual grammar on all five designs. Safety and
+    # interface labels remain conspicuous; the complete ref+value assembly legend
+    # is emitted separately below from assembly-markings.json.
     SILK = {
         "mem": [(SILK_STYLE["titles"]["mem"], 59.0, 52.0, 1.8),
-                (SILK_STYLE["common_safety_text"], 89.0, 49.0, 1.5),
-                ("J_NOP", 35.0, 42.0, 1.5), ("J_OBS", 75.0, 42.8, 1.5)],
+                (SILK_STYLE["common_safety_text"], 89.0, 49.0, 1.5)],
         "io":  [(SILK_STYLE["titles"]["io"], 40.0, 30.0, 1.8),
-                (SILK_STYLE["common_safety_text"], 40.0, 58.0, 1.5),
-                ("J_KBD DNP", 40.0, 80.0, 1.5),
-                ("JP_BAUD", 77.0, 81.0, 1.5), ("J_IOSEL", 92.0, 79.0, 1.5)],
+                (SILK_STYLE["common_safety_text"], 40.0, 58.0, 1.5)],
         "cpu": [(SILK_STYLE["titles"]["cpu"], 68.0, 46.0, 1.8),
-                (SILK_STYLE["common_safety_text"], 68.0, 53.0, 1.5),
-                ("J_DIAG", 40.0, 41.8, 1.5)],
+                (SILK_STYLE["common_safety_text"], 68.0, 53.0, 1.5)],
         "video": [(SILK_STYLE["titles"]["video"], 34.0, 87.0, 1.8),
                   ("4 LAYER", 34.0, 91.0, 1.5),
                   (SILK_STYLE["common_safety_text"], 76.0, 87.0, 1.5)],
@@ -669,6 +764,12 @@ def main():
         # Viewed from the bottom, physical X is reversed and pad 1 is to the left.
         silk(board, "< PIN 1", 91.5, BOARD_H - 9.0, size=1.5,
               layer=pcbnew.B_SilkS)
+
+    # Assembly contract: every one of the 131 physical footprints has exactly one
+    # ref+value/role marking on the same face as the fitted component. DNP markings
+    # are part of the same label so an optional footprint cannot be populated by
+    # mistake during the first-system build.
+    emit_assembly_markings(board, expanded_parts(board_spec))
 
     # D1.34: the backplane bus routes like any other card — plain freerouting, no
     # locked bus-column pre-routes. The Stage-C column pre-routing (D1.29) was retired when the layout

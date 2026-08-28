@@ -15,6 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 sys.path.insert(0, HERE)
 from revb_place import BOARD_H_BY_CARD  # noqa: E402
+from revb_assembly import expanded_parts, marking_text  # noqa: E402
 
 CARD = sys.argv[1] if len(sys.argv) > 1 else "mem"
 if CARD not in BOARD_H_BY_CARD:
@@ -96,15 +97,29 @@ for label, expected_h in ((STYLE["titles"][CARD], STYLE["board_title_height_mm"]
     elif abs(pcbnew.ToMM(matches[0].GetTextHeight()) - expected_h) > 1e-6:
         fail.append(f"silk {label!r} has inconsistent text height")
 
-# Every IC has a centred board-level assembly label; DNP ICs say so explicitly.
-dnp_refs = {c["ref"] for c in spec["chips"] if c.get("dnp", False)}
-for ref in sorted(r for r in fps if r.startswith("U")):
-    label = f"{ref} DNP" if ref in dnp_refs else ref
-    if len(by_text.get(label, [])) != 1:
-        fail.append(f"assembly silk label {label!r} missing or duplicated")
+# Every physical footprint has one exact reference + fitted value/role label on
+# its assembly side. Whitespace is normalized so a compact multiline rendering
+# and a one-line contract spelling compare identically.
+def normalized(text):
+    return " ".join(text.split())
 
-if CARD == "io" and len(by_text.get("J_KBD DNP", [])) != 1:
-    fail.append("assembly silk label 'J_KBD DNP' missing or duplicated")
+
+by_normalized = {}
+for item in board_texts:
+    by_normalized.setdefault(normalized(item.GetText()), []).append(item)
+assembly_parts = expanded_parts(spec)
+for ref, part in sorted(assembly_parts.items()):
+    label = normalized(marking_text(ref, part))
+    matches = by_normalized.get(label, [])
+    if len(matches) != 1:
+        fail.append(f"assembly silk label {label!r} occurs {len(matches)} times, expected once")
+        continue
+    expected_layer = pcbnew.B_SilkS if fps[ref].GetLayer() == pcbnew.B_Cu else pcbnew.F_SilkS
+    if matches[0].GetLayer() != expected_layer:
+        fail.append(f"assembly silk label {label!r} is not on its component side")
+    if abs(pcbnew.ToMM(matches[0].GetTextHeight())
+           - STYLE["assembly_text_height_mm"]) > 1e-6:
+        fail.append(f"assembly silk label {label!r} has inconsistent text height")
 
 if CARD != "backplane":
     front_pin1 = by_text.get("PIN 1 >", [])
