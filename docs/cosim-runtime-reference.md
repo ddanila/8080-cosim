@@ -230,6 +230,13 @@ by default. This is intentionally much narrower than a complete bus trace: it
 was added to prove that a CP/M native disk workspace was overwriting service
 code and, after its first relocation, the resident NetDisk cache.
 
+Every checkpoint also records a cumulative `watch_write_count` and the
+address, value, PC, and emulated cycle of the previous and last watched writes.
+These bounded fields make short intervals that occur entirely between two
+host checkpoints observable without relying on stdio flush timing. They are
+zero when no watched write has occurred and do not alter the existing textual
+watch log.
+
 ## Interactive console (`JUKU_CONSOLE_PTY`)
 
 `JUKU_CONSOLE_PTY=auto` creates a PTY and prints its slave path; a device path

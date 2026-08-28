@@ -186,6 +186,15 @@ static int           io_trace = 0;
 static int           bank_trace = 1;
 static int           watch_address = -1;
 static int           watch_address_end = -1;
+static unsigned long watch_write_count = 0;
+static uint16_t      watch_write_previous_address = 0;
+static uint8_t       watch_write_previous_value = 0;
+static uint16_t      watch_write_previous_pc = 0;
+static unsigned long watch_write_previous_cycle = 0;
+static uint16_t      watch_write_last_address = 0;
+static uint8_t       watch_write_last_value = 0;
+static uint16_t      watch_write_last_pc = 0;
+static unsigned long watch_write_last_cycle = 0;
 static int           ram_fault_enabled = 0;
 static uint16_t      ram_fault_addr = 0;
 static uint8_t       ram_fault_stuck_low = 0;
@@ -1223,9 +1232,19 @@ static uint8_t kbd_portb(const i8080* cpu) {
 static void wb(void* u, uint16_t a, uint8_t v) {
   rom_read_burst_count = 0;
   if (watch_address >= 0 && a >= (uint16_t)watch_address &&
-      a <= (uint16_t)watch_address_end)
+      a <= (uint16_t)watch_address_end) {
+    watch_write_previous_address = watch_write_last_address;
+    watch_write_previous_value = watch_write_last_value;
+    watch_write_previous_pc = watch_write_last_pc;
+    watch_write_previous_cycle = watch_write_last_cycle;
+    watch_write_last_address = a;
+    watch_write_last_value = v;
+    watch_write_last_pc = u ? ((i8080*)u)->pc : 0;
+    watch_write_last_cycle = u ? ((i8080*)u)->cyc : 0;
+    watch_write_count++;
     fprintf(stderr, "[WATCH] MW %04X=%02X pc=%04X cyc=%lu\n",
             a, v, u ? ((i8080*)u)->pc : 0, u ? ((i8080*)u)->cyc : 0);
+  }
   trace_bus_event("MW", a, v);
   unsigned idx = 0;
   int ov = overlay(a, &idx);
@@ -1503,6 +1522,22 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "tpa_measurement_armed=%d\n", tpa_measurement_armed);
   fprintf(state_out, "tpa_measurement_frozen=%d\n", tpa_measurement_frozen);
   fprintf(state_out, "vram_writes=%lu\n", g_vw);
+  fprintf(state_out, "watch_write_count=%lu\n", watch_write_count);
+  fprintf(state_out, "watch_write_previous_address=%04X\n",
+          watch_write_previous_address);
+  fprintf(state_out, "watch_write_previous_value=%02X\n",
+          watch_write_previous_value);
+  fprintf(state_out, "watch_write_previous_pc=%04X\n",
+          watch_write_previous_pc);
+  fprintf(state_out, "watch_write_previous_cycle=%lu\n",
+          watch_write_previous_cycle);
+  fprintf(state_out, "watch_write_last_address=%04X\n",
+          watch_write_last_address);
+  fprintf(state_out, "watch_write_last_value=%02X\n",
+          watch_write_last_value);
+  fprintf(state_out, "watch_write_last_pc=%04X\n", watch_write_last_pc);
+  fprintf(state_out, "watch_write_last_cycle=%lu\n",
+          watch_write_last_cycle);
   fprintf(state_out, "mode=%d\n", mode);
   fprintf(state_out, "portc=%02X\n", portc);
   fprintf(state_out, "video_pof_released=%u\n", (portc & 0x80u) ? 0u : 1u);

@@ -178,6 +178,7 @@ jobs:
             tests/jukuravi_d0_alive_test.py \
             tests/jukuravi_d0_cpu_test.py \
             tests/jukuravi_d0_usart_local_test.py \
+            tests/cosim_watch_checkpoint_test.py \
             tests/fdc_cross_model_test.py \
             tests/build_inta_bus_rom.py \
             tests/i8080_vm80a_diff_test.py \
@@ -296,3 +297,19 @@ jobs:
 
       - name: Check rev B board connectivity + netlist completeness
         run: python3 scripts/check_revb_boards.py --completeness
+
+  watch-checkpoint:
+    name: Watch checkpoint (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build cosim trace
+        run: >-
+          cc -O2 -Wall -Wextra -I cosim -o /tmp/cosim-watch-trace
+          cosim/trace.c cosim/i8080.c cosim/juk_disk.c cosim/juku_fdc.c
+      - name: Check atomic watched-write checkpoint state
+        run: python3 tests/cosim_watch_checkpoint_test.py /tmp/cosim-watch-trace
