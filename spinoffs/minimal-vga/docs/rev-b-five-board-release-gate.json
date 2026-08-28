@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "ORDER HOLD",
+  "candidate": {
+    "source_revision": "6962a9a4ec6bfa67703112bbc828287d94ebc5b8",
+    "package_manifest": "spinoffs/minimal-vga/docs/rev-b-five-board-package-manifest.json",
+    "package_manifest_sha256": "428230bcafbe374ce8401f15f4ee6671f9ed2db70429160086660584f1d3fb83",
+    "jlcpcb_profile_sha256": "71389d73858ecb5950a5eb2066258915e2b87e4176dba02c59e6ebf1302f036a",
+    "archives": {
+      "backplane": "8ed116a001f1c575df0355800d52206de8297ae7a64e4c7661400cd625a4deca",
+      "cpu": "b83ee98722bf3035059c192ac25406cf69e41931704c2f4493dca2f8f981e0a0",
+      "io": "a86c1ac422bdfb5dbd4225fde0fc26016438b93e21161c7f6de1e3c487c1589a",
+      "mem": "002ecd84ecfefde6b6ae8fc3b2859b8d4599294e5821dd443b451916e708831e",
+      "video": "05180d8fa2084feec9bfdc4fa5aba89350dc681e643ac5a4e3f239ed69d17dc1"
+    }
+  },
+  "evidence": {
+    "controlling_plan": "spinoffs/minimal-vga/docs/rev-b-five-board-order-plan.md",
+    "preupload_review": "spinoffs/minimal-vga/docs/rev-b-five-board-preupload-review.md",
+    "preupload_review_sha256": "7b5100bf5d79562468e3af87edc37d248ae377abe9912985738410b2457954e9",
+    "bom_contract": "spinoffs/minimal-vga/kicad/revb/five-board-bom.json",
+    "jlcpcb_profile": "spinoffs/minimal-vga/kicad/revb/jlcpcb-profile.json"
+  },
+  "technical_gates": {
+    "R5.S1_serial_path": "PASS",
+    "R5.S2_serial_electrical": "PASS",
+    "R5.S3_serial_c10": "PASS",
+    "R5.P1_programmable_logic": "PASS",
+    "R5.V1_video_connectivity": "PASS",
+    "R5.V2_video_power_rgb": "PASS",
+    "R5.V3_video_gals": "PASS",
+    "R5.V4_exact_parts": "PASS",
+    "R5.V5_video_pcb": "PASS",
+    "R5.V6_system_physical_power": "PASS",
+    "R5.J1_jlcpcb_profile": "PASS",
+    "R5.J2_five_archives": "PASS",
+    "R5.J3_independent_review_quote": "PASS"
+  },
+  "owner_authorization": null,
+  "release_policy": {
+    "required_status": "RELEASED FOR UPLOAD",
+    "required_authorization_text": "RELEASE EXACT R5.R1 HASHES FOR JLCPCB UPLOAD",
+    "scope": "Upload the five exact archive hashes in this record for vendor preview; it is not permission to accept DFM changes or place the order without completing R5.O1 review.",
+    "note": "Only an explicit owner instruction may populate owner_authorization and change status. Technical PASS alone must remain ORDER HOLD."
+  }
+}

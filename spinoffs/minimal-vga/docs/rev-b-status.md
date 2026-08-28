@@ -34,6 +34,7 @@ commons guard, board connectivity + **D1.18 completeness** (all six card specs),
 serial contract/electrical/C10 gates, five reproducible GALs, five-card mating,
 exact Video parts/footprints/power, routed stack/plane/critical-path negative controls,
 assembled R5.V6 mechanics/protected-power solve, JLCPCB R5.J1 profile/negative controls,
+hash-bound R5.R1 technical-pass/owner-hold enforcement,
 mem/io/video scoped LVS,
 per-card BFM TBs +
 negative control, bus-conflict + refresh-drive assertions, ekta37 banner boot (both
@@ -64,7 +65,7 @@ those tools.
 **R5.0, R5.S1–S3, R5.P1, R5.V1–V6 and R5.J1–J3 are complete.** Follow the
 dependency-ordered tasks in `rev-b-five-board-order-plan.md`. The next
 dependency-ready work is R5.R1: present the exact hashes, signed independent review
-and dated quote to the owner and retain the hold unless explicitly released.
+and dated quote to the owner and retain the machine-checked hold unless explicitly released.
 Do not upload the historical four-board packages. Ordering stays on hold until all
 five packages pass R5.R1 and the owner explicitly releases them.
 

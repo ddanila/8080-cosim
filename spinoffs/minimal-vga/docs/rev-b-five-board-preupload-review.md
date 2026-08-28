@@ -110,4 +110,6 @@ point where dimensions and layers are automatically analysed.
 
 R5.J3 is therefore complete. The next gate is R5.R1: present this evidence to
 the owner and retain `ORDER HOLD` unless the owner explicitly releases these
-exact hashes for upload.
+exact hashes for upload. The hash-bound state and authorization schema are frozen
+in `rev-b-five-board-release-gate.json` and enforced by
+`kicad/revb/check_revb_release_gate.py`.

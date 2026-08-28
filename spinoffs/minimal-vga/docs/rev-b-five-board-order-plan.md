@@ -71,7 +71,7 @@ the change; a prose assertion is not a pass.
 | **R5.J1 — DONE 2026-08-28** | Encode a JLCPCB rule profile and preflight checks for both the four 2-layer boards and the 4-layer Video board. The audit removed the optional USB4085 power path rather than relying on a vendor exception. | R5.V5 | `jlcpcb-profile.json` and `check_revb_jlcpcb.py --self-test` cover stack-up/layers, outline, drills/slots, annular rings, clearances, silk, masks, filenames and archive contents; seven negative fixtures fail. Fresh backplane generation/routes DRC 0/0 on attempt 1. |
 | **R5.J2 — DONE 2026-08-28** | Regenerate all five fabrication ZIPs in one release run. Emit a manifest with source revision, tool versions, board dimensions/layers, file list and SHA-256 per archive. | R5.P1, R5.S3, R5.V6, R5.J1 | `export_fab.sh` validates the five reviewed routed sources and emits five safe archives in one command. The source-verified manifest records revision `6962a9a4`, dimensions, layers, tools, exact members and hashes; each package contains Gerber/Excellon production data only. |
 | **R5.J3 — DONE 2026-08-28** | Perform an independent pre-upload review and obtain a fresh live JLCPCB quote. Check every Gerber/drill rendering separately; reconcile the five designs with BOM quantities and programmed-device count. | R5.J2 | Signed review renders 42 individual layers/drills plus 10 composites with no unresolved finding; reconciles 131 footprints, 7 DNP and 6 programmed devices; and records a no-upload five-design web quote of $38.50 before combined shipping/tax, 5 copies each, 2-day 2L and 3–4-day 4L build times, exact options and no visible form warning. |
-| **R5.R1** | Hold the final release review. | R5.J3 | All gates below are green, exact package hashes are recorded, and the owner explicitly changes `ORDER HOLD` to `RELEASED FOR UPLOAD`. |
+| **R5.R1** | Hold the final release review. | R5.J3 | All gates below are green, exact package hashes are recorded, the owner explicitly changes `ORDER HOLD` to `RELEASED FOR UPLOAD`, and `check_revb_release_gate.py --require-released --package-root fab/minimal-vga/revb/package` passes. |
 | **R5.O1** | Upload the five independent designs, inspect JLCPCB's generated production files, resolve rather than silently accept DFM edits, and place the order. | R5.R1 | Order ID, accepted production-file screenshots/results, options, quantities and uploaded hashes are in a new five-board order record. |
 | **R5.B1** | After delivery, inspect and assemble in stages: bare backplane, CPU clock/reset, NOP free-run, Memory, I/O+serial, then Video. | R5.O1 | Each stage records current, rails, logic evidence and failures before the next card is inserted; final gate is EKTA boot with VGA plus bidirectional C10 serial. |
 
@@ -164,6 +164,25 @@ R5.R1 cannot pass until all of the following are true:
       review, first-system BOM/programming reconciliation and current no-upload
       JLCPCB quote pass; combined checkout price and upload-derived warnings remain R5.O1.
 - **PENDING:** The owner explicitly authorizes upload after seeing the final evidence.
+
+The machine-readable hold is `rev-b-five-board-release-gate.json`. The ordinary
+checker succeeds only as `TECHNICAL PASS / ORDER HOLD`, proving that the evidence
+and exact five archive hashes agree while authorization is absent:
+
+```sh
+spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py \
+  --self-test --package-root fab/minimal-vga/revb/package
+```
+
+Before any upload, the stricter command below must pass. It deliberately exits 3
+while held and cannot pass merely because the technical gates are green: it requires
+an explicit owner identity, ISO timestamp, exact authorization phrase and a second
+copy of all five hashes, plus matching `RELEASED FOR UPLOAD` state in this plan.
+
+```sh
+spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py \
+  --require-released --package-root fab/minimal-vga/revb/package
+```
 
 Until then, the correct next action is R5.R1, not an order and not a partial
 four-board upload.

@@ -67,6 +67,9 @@ else
   echo "  SKIP  R5.V5/R5.V6/R5.J1 physical gates: pcbnew not found"
 fi
 
+echo "== rev B: hash-bound final release hold (R5.R1) =="
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py --self-test
+
 echo "== rev B: per-card unit TBs (BFM) =="
 spinoffs/minimal-vga/sim/revb_card_tb_check.sh
 
