@@ -67,7 +67,7 @@
       "F_Silkscreen.gto", "B_Silkscreen.gbo", "Edge_Cuts.gm1",
       "job.gbrjob", "drl"
     ],
-    "four_layer_additional_suffixes": ["In1_Cu.g2", "In2_Cu.g3"],
+    "four_layer_additional_suffixes": ["In1_Cu.g1", "In2_Cu.g2"],
     "single_top_directory": true,
     "forbidden_extensions": [
       ".step", ".stp", ".kicad_pcb", ".kicad_pro", ".pdf", ".svg",
