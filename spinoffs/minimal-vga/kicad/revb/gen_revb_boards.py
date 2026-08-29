@@ -74,21 +74,32 @@ USART_8251 = {
     "16":"BAUDCLK","17":"GND","18":"DTR_N_NC","19":"SYNDET_NC","20":"GND","21":"TX","22":"TXEMPTY_NC",
     "23":"RTS_N_NC","24":"CLK","25":"IO_RESET","26":"VCC5","27":"D0","28":"D1",
 }
-# ATF16V8/GAL16V8 DIP-20 I/O glue (D1.16 + D1.26): IORQ_N + A2..A7 -> chip selects;
-# inverts bus RESET_N to the active-HIGH IO_RESET (8251/8255); inverts the 8259 INT
-# (active-HIGH) to the open-drain bus INT_N; and gates M1_N+IORQ_N to INTA_N for the
-# 8259. Complex mode makes pins 12/19 output-only, so M1_N/PIC_INT use dedicated
-# array-input pins 9/11; RD_N/WR_N are not inputs to any select equation.
-GAL16V8_IOSEL = {
+# ATF22V10 replacement I/O glue (R5.I1/I4). Every peripheral select is M1-qualified;
+# WR_N creates the positive-edge POST clock at the end of a selected write.
+GAL22V10_IOSEL = {
     "1":"IORQ_N","2":"A2","3":"A3","4":"A4","5":"A5","6":"A6","7":"A7","8":"RESET_N",
-    "9":"M1_N","10":"GND","11":"PIC_INT","12":"PIC_CS_N","13":"PPI_CS_N","14":"UART_CS_N",
-    "15":"IO_RESET","16":"INT_N","17":"INTA_N","18":"GND","19":"IO_GAL_SPARE_OUT_NC","20":"VCC5",
+    "9":"M1_N","10":"WR_N","11":"PIC_INT","12":"GND","13":"GND","14":"PIC_CS_N",
+    "15":"PPI_CS_N","16":"UART_CS_N","17":"PIT_CS_N","18":"POST_CLK","19":"IO_RESET",
+    "20":"INT_N","21":"INTA_N","22":"IO_GAL_SPARE1_NC","23":"IO_GAL_SPARE2_NC","24":"VCC5",
 }
+PIT_8253 = {
+    "1":"D7","2":"D6","3":"D5","4":"D4","5":"D3","6":"D2","7":"D1","8":"D0",
+    "9":"PIT_CLK0","10":"PIT_BAUD","11":"VCC5","12":"GND","13":"PIT_SOUND",
+    "14":"VCC5","15":"CLK","16":"VCC5","17":"PIT_OUT2_TP","18":"GND",
+    "19":"A0","20":"A1","21":"PIT_CS_N","22":"RD_N","23":"WR_N","24":"VCC5",
+}
+ACT_273_POST = {
+    "1":"RESET_N","2":"POST_Q0","3":"D0","4":"D1","5":"POST_Q1","6":"POST_Q2",
+    "7":"D2","8":"D3","9":"POST_Q3","10":"GND","11":"POST_CLK","12":"POST_Q4",
+    "13":"D4","14":"D5","15":"POST_Q5","16":"POST_Q6","17":"D6","18":"D7",
+    "19":"POST_Q7","20":"VCC5",
+}
+NPN_2N3904 = {"1":"GND", "2":"SOUND_BASE", "3":"SOUND_LOW"}
 # ECS-2200B-049 half-can oscillator: 4.9152 MHz drives a 74HC393 divider. /16 is
 # 307.2 kHz (19,200 x16); /32 is 153.6 kHz (9,600 x16), selected at JP_BAUD.
 OSC_BAUD = {"1":"OSC_EN_NC","4":"GND","5":"BAUD_MASTER","8":"VCC5"}
 TTL_393_BAUD = {
-    "1":"BAUD_MASTER", "2":"GND", "3":"BAUD_DIV2_NC", "4":"BAUD_DIV4_NC",
+    "1":"BAUD_MASTER", "2":"GND", "3":"BAUD_DIV2_NC", "4":"PIT_CLK0",
     "5":"BAUD_DIV8_NC", "6":"BAUD_19200", "7":"GND", "8":"BAUD_DIV256_NC",
     "9":"BAUD_DIV128_NC", "10":"BAUD_DIV64_NC", "11":"BAUD_9600",
     "12":"GND", "13":"BAUD_19200", "14":"VCC5",
@@ -163,8 +174,10 @@ SRAM_FB = {"1":"FB_PIN1_NC","2":"GND","3":"GND","4":"SA12","5":"SA7","6":"SA6","
 CHIP_TYPES = {
     "Z80_DIP40": Z80, "EPROM_27C256": ROM_27C256, "SRAM_AS6C1008": SRAM_128K,
     "GAL22V10": GAL22V10, "USART_8251": USART_8251,
-    "GAL16V8_IOSEL": GAL16V8_IOSEL, "OSC_BAUD": OSC_BAUD,
+    "GAL22V10_IOSEL": GAL22V10_IOSEL, "OSC_BAUD": OSC_BAUD,
     "TTL_393_BAUD": TTL_393_BAUD, "HCT125_CONSOLE": HCT125_CONSOLE,
+    "PIT_8253": PIT_8253, "ACT_273_POST": ACT_273_POST,
+    "NPN_2N3904": NPN_2N3904,
     "OSC_CPU": OSC_CPU,
     "PPI_8255": PPI_8255, "ENC_74148": ENC_74148, "PIC_8259": PIC_8259,
     "GAL22V10_HDEC": GAL22V10_HDEC, "GAL22V10_VDEC": GAL22V10_VDEC,
@@ -174,17 +187,16 @@ CHIP_TYPES = {
 # Refs footprinted but Do-Not-Populate in the current tier (D1.26/D1.7): fully wired
 # so a later tier is populate-only. Emitted as "dnp": true in board.json; excluded
 # from LVS instance maps; still subject to D1.18 net completeness.
-DNP_REFS = {
-    "io": {"U4", "U5", "U6", "J_KBD"},   # 8255, 74148, 8259, keyboard header (B3)
-}
+DNP_REFS = {}
 
 # per-card populated ICs: (ref, type)
 CARD_CHIPS = {
     "cpu":  [("U1", "Z80_DIP40"), ("U2", "OSC_CPU")],   # unbuffered (D1.21); U2 = clock osc
     "mem":  [("U1", "EPROM_27C256"), ("U2", "SRAM_AS6C1008"), ("U3", "GAL22V10")],
-    "io":   [("U1", "USART_8251"), ("U2", "GAL16V8_IOSEL"), ("U3", "OSC_BAUD"),
+    "io":   [("U1", "USART_8251"), ("U2", "GAL22V10_IOSEL"), ("U3", "OSC_BAUD"),
              ("U7", "TTL_393_BAUD"),
-             ("U4", "PPI_8255"), ("U5", "ENC_74148"), ("U6", "PIC_8259")],   # U4-U6 DNP (B3)
+             ("U4", "PPI_8255"), ("U5", "ENC_74148"), ("U6", "PIC_8259"),
+             ("U8", "PIT_8253"), ("U9", "ACT_273_POST")],
     "backplane": [],
     # LVS'd video logic (distinct types); the repeated 74xx are in CARD_EXTRAS.
     "video": [("U5", "GAL22V10_HDEC"), ("U6", "GAL22V10_VDEC"), ("U7", "GAL22V10_CTRL"),
@@ -213,11 +225,24 @@ CARD_EXTRAS = {
     ],
     "io": [
         cap("C1"), cap("C2"), cap("C3"), cap("C4"), cap("C5"), cap("C6"), cap("C7"),
-        comp("JP_BAUD", "HDR_1x3", {"1": "BAUD_19200", "2": "BAUDCLK", "3": "BAUD_9600"}),
+        cap("C8"), cap("C9"),
+        comp("JP_BAUD", "HDR_1x3", {"1": "BAUD_19200", "2": "BAUD_DIRECT", "3": "BAUD_9600"}),
+        comp("JP_CLK_SRC", "HDR_1x3", {"1": "PIT_BAUD", "2": "BAUDCLK", "3": "BAUD_DIRECT"}),
         # I/O-select observability (S9): also gives the B3-deferred PPI/PIC selects a
         # scope point so they are provisioned, not dangling, in B1.
         header("J_IOSEL", {"1": "UART_CS_N", "2": "PPI_CS_N", "3": "PIC_CS_N",
-                           "4": "IO_RESET", "5": "GND"}),
+                           "4": "PIT_CS_N", "5": "POST_CLK", "6": "IO_RESET", "7": "GND"}),
+        header("J_PIT_TP", {"1": "PIT_CLK0", "2": "PIT_BAUD", "3": "PIT_SOUND",
+                            "4": "PIT_OUT2_TP", "5": "GND"}),
+        comp("Q1", "NPN_2N3904", dict(NPN_2N3904)),
+        comp("BZ1", "PIEZO_12MM", {"1": "VCC5", "2": "SOUND_LOW"}),
+        comp("J_SOUND", "HDR_1x2", {"1": "VCC5", "2": "SOUND_LOW"}),
+        comp("R_SOUND_BASE", "R_4K7_VERT", {"1": "PIT_SOUND", "2": "SOUND_BASE"}),
+        comp("R_SOUND_PD", "R_100K_VERT", {"1": "SOUND_BASE", "2": "GND"}),
+        *[comp(f"R_POST{i}", "R_2K2_VERT", {"1": f"POST_Q{i}", "2": f"POST_LED{i}_A"})
+          for i in range(8)],
+        *[comp(f"D_POST{i}", "LED_GREEN", {"1": "GND", "2": f"POST_LED{i}_A"})
+          for i in range(8)],
         # Keyboard connector (B3): 8 columns (8255 PA) + 8 rows (into the 74148) + GND.
         header("J_KBD", {"1": "KBD_COL0", "2": "KBD_COL1", "3": "KBD_COL2", "4": "KBD_COL3",
                          "5": "KBD_COL4", "6": "KBD_COL5", "7": "KBD_COL6", "8": "KBD_COL7",
@@ -238,7 +263,7 @@ CARD_EXTRAS = {
         # its fixed 0.40/0.70-mm lands do not meet JLCPCB's published 2-layer PTH annular
         # minimum.  The separate USB-TTL console remains data-only.
         comp("J_PWR", "BARREL_5A", {"1": "PWR_RAW", "2": "GND_BUS"}),
-        comp("F_MAIN", "PTC_2A5", {"1": "PWR_RAW", "2": "VCC_BUS"}),
+        comp("F_MAIN", "PTC_3A", {"1": "PWR_RAW", "2": "VCC_BUS"}),
         comp("D_REV", "SCHOTTKY_5A", {"1": "VCC_BUS", "2": "GND_BUS"}),
         # Explicit 22-AWG tinned-copper links join the protected high-current bus
         # rails to the low-current backplane support rails without creating a second

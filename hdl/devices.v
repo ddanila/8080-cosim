@@ -1002,6 +1002,13 @@ module pit_8253 #(
                       else if (count[0] <= 1) begin out_r[0] <= 0; count[0] <= reload[0]; end
                       else count[0] <= count[0] - 1'b1;
                   end
+            3'd3: if (gate0 && running[0]) begin
+                // Mode 3 decrements by two.  For the even divisors used by
+                // VJUGA (4 for baud, 5102 for sound), each half-cycle is N/2
+                // input clocks and the full OUT period is exactly N clocks.
+                if (count[0] <= 2) begin count[0] <= reload[0]; out_r[0] <= ~out_r[0]; end
+                else count[0] <= count[0] - 2;
+            end
             default: if (gate0 && running[0]) begin
                 if (count[0] <= 1) begin count[0] <= reload[0]; out_r[0] <= ~out_r[0]; end
                 else count[0] <= count[0] - 1'b1;
@@ -1024,6 +1031,10 @@ module pit_8253 #(
                       else if (count[1] <= 1) begin out_r[1] <= 0; count[1] <= reload[1]; end
                       else count[1] <= count[1] - 1'b1;
                   end
+            3'd3: if (gate1 && running[1]) begin
+                if (count[1] <= 2) begin count[1] <= reload[1]; out_r[1] <= ~out_r[1]; end
+                else count[1] <= count[1] - 2;
+            end
             default: if (gate1 && running[1]) begin
                 if (count[1] <= 1) begin count[1] <= reload[1]; out_r[1] <= ~out_r[1]; end
                 else count[1] <= count[1] - 1'b1;
@@ -1046,6 +1057,10 @@ module pit_8253 #(
                       else if (count[2] <= 1) begin out_r[2] <= 0; count[2] <= reload[2]; end
                       else count[2] <= count[2] - 1'b1;
                   end
+            3'd3: if (gate2 && running[2]) begin
+                if (count[2] <= 2) begin count[2] <= reload[2]; out_r[2] <= ~out_r[2]; end
+                else count[2] <= count[2] - 2;
+            end
             default: if (gate2 && running[2]) begin
                 if (count[2] <= 1) begin count[2] <= reload[2]; out_r[2] <= ~out_r[2]; end
                 else count[2] <= count[2] - 1'b1;

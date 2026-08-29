@@ -287,7 +287,7 @@
     },
     {
       "ref": "F_MAIN",
-      "type": "PTC_2A5",
+      "type": "PTC_3A",
       "pins": {
         "1": "PWR_RAW",
         "2": "VCC_BUS"

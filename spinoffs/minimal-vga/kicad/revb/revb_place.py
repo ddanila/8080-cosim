@@ -38,21 +38,30 @@ _PARTS = {
         "C1": (34.0, 10.0, 0), "C2": (64.0, 10.0, 0), "C3": (92.0, 10.0, 0),  # C1 clear of the 600mil U1
         "J_OBS": (75.0, 47.0, 90), "J_NOP": (40.0, 47.0, 90),
     },
-    "io": {   # 100x100: three well-separated chip rows for 2-layer routing channels
-        "U4": (29.0, 14.0, 90),   # 8255 DIP-40
-        "U1": (78.0, 14.0, 90),   # 8251 DIP-28
-        # R5.J2 clean-source sweep: x=26 repeatedly trapped U6.7(D4); x=22 routes
-        # the complete populated+DNP card 0/0 on bounded attempt 1.
-        "U6": (22.0, 44.0, 90),   # 8259 DIP-28
-        "U2": (76.0, 44.0, 90),   # GAL16V8 DIP-20
-        "U5": (26.0, 72.0, 90),   # 74148 DIP-16
-        "U7": (54.0, 70.0, 90),   # 74HC393 baud divider
-        "U3": (86.5, 68.0, 0),    # 4.9152 MHz full-can oscillator
-        "C1": (55.0, 28.0, 0), "C2": (55.0, 58.0, 0), "C3": (95.0, 28.0, 0),
-        "C4": (65.0, 58.0, 0), "C5": (78.0, 78.0, 0),
-        "C6": (50.0, 44.0, 0), "C7": (68.0, 82.0, 0),
-        "J_IOSEL": (92.0, 84.0, 90), "JP_BAUD": (77.0, 86.0, 90),
-        "J_KBD": (40.0, 84.0, 90),
+    "io": {   # R5.I5: expanded D57/POST card, four signal-flow bands
+        "U4": (28.0, 12.0, 90), "U1": (78.0, 12.0, 90),
+        "U6": (18.5, 33.0, 90), "U8": (52.5, 33.0, 90), "U2": (83.5, 33.0, 90),
+        "U5": (12.0, 56.0, 90), "U7": (34.0, 56.0, 90),
+        "U9": (58.0, 56.0, 90), "U3": (86.0, 56.0, 0),
+        # Front-side decouplers preserve the 16-mm card-stack envelope.  The
+        # lower row sits in the measured channel between the second and third
+        # socket bands; C1/C4 share the inter-package channel in the top band.
+        "C1": (67.0, 22.5, 0), "C2": (76.0, 22.5, 0), "C3": (84.0, 45.0, 0),
+        "C4": (43.0, 22.5, 0), "C5": (4.0, 48.0, 0), "C6": (35.0, 22.5, 0),
+        "C7": (26.0, 48.0, 0), "C8": (64.0, 48.0, 0), "C9": (48.0, 48.0, 0),
+        "D_POST0": (4.0, 70.0, 0), "D_POST1": (12.0, 70.0, 0),
+        "D_POST2": (20.0, 70.0, 0), "D_POST3": (28.0, 70.0, 0),
+        "D_POST4": (36.0, 70.0, 0), "D_POST5": (44.0, 70.0, 0),
+        "D_POST6": (52.0, 70.0, 0), "D_POST7": (60.0, 70.0, 0),
+        "R_POST0": (4.0, 78.0, 0), "R_POST1": (11.0, 78.0, 0),
+        "R_POST2": (18.0, 78.0, 0), "R_POST3": (25.0, 78.0, 0),
+        "R_POST4": (32.0, 78.0, 0), "R_POST5": (39.0, 78.0, 0),
+        "R_POST6": (46.0, 78.0, 0), "R_POST7": (53.0, 78.0, 0),
+        "BZ1": (69.5, 69.0, 0), "Q1": (82.0, 67.0, 0),
+        "R_SOUND_BASE": (82.0, 73.0, 0), "R_SOUND_PD": (88.0, 73.0, 0),
+        "J_SOUND": (74.0, 80.0, 0), "J_PIT_TP": (92.0, 78.0, 90),
+        "J_KBD": (40.0, 86.0, 90), "J_IOSEL": (80.0, 88.0, 90),
+        "JP_BAUD": (84.0, 82.0, 90), "JP_CLK_SRC": (94.0, 86.0, 90),
     },
     "cpu": {   # 100x70: unbuffered Z80 + osc + diag, wide fan-out channel (D1.21)
         # R5.J2 clean-source sweep refresh: x=39 routes 0/0 on bounded attempt 1;
@@ -142,7 +151,7 @@ def backplane_place():
     # J_PWR uses an origin-at-edge placement in gen_revb_pcb.py.  At 180 degrees
     # the opening faces the top edge and the complete body remains on the board.
     p["J_PWR"]  = (47.5, 98.4, 180)
-    # Vertical MF-R250: pad 1 (raw) is above pad 2 (VCC5), so the raw route
+    # Vertical MF-R300: pad 1 (raw) is above pad 2 (VCC5), so the raw route
     # terminates before the 2-mm VCC5 spine continues down the same X coordinate.
     p["F_MAIN"] = (55.08, 89.0, 90)
     p["D_REV"]  = (65.0, yr1, 0)

@@ -24,7 +24,11 @@ SYNC = HERE.parents[1] / "sync"
 # maps every populated digital package; its oscillator is part of the clock chain.
 INSTANCES = {
     "mem": {"U1": "U_ROM", "U2": "U_SRAM", "U3": "U_DEC"},
-    "io":  {"U1": "U_UART", "U2": "U_IOSEL"},   # 8251 + I/O-select GAL (populated)
+    "io":  {
+        "U1": "U_UART", "U2": "U_IOSEL", "U3": "U_BAUD_OSC",
+        "U4": "U_PPI", "U5": "U_KENC", "U6": "U_PIC", "U7": "U_BAUD_DIV",
+        "U8": "U_PIT", "U9": "U_POST",
+    },
     "video": {
         "U1": "U_OSC", "U2": "U_HC_LO", "U3": "U_HC_VC", "U4": "U_VC_HI",
         "U5": "U_HDEC", "U6": "U_VDEC", "U7": "U_CTRL",

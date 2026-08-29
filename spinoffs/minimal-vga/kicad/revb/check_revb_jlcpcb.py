@@ -197,8 +197,9 @@ def board_errors(board, card, profile):
                 required = pth_recommended
                 if card == "video" and fp.GetReference() == "J_VGA" and pad.GetNumber().isdigit():
                     required = geom["video_exact_vga_signal_ring_mm"]
-                elif card == "backplane" and fp.GetReference() == "U_RST":
-                    required = geom["backplane_exact_to92_ring_mm"]
+                elif ((card == "backplane" and fp.GetReference() == "U_RST") or
+                      (card == "io" and fp.GetReference() == "Q1")):
+                    required = geom["exact_inline_to92_ring_mm"]
                 if ring + 1e-6 < max(required, pth_absolute):
                     errors.append(f"{fp.GetReference()}.{pad.GetNumber()} PTH ring {ring:.3f} mm "
                                   f"below {max(required, pth_absolute):.3f} mm")

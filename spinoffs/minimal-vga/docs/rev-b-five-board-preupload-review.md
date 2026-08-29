@@ -1,7 +1,7 @@
 # VJUGA rev B — R5.J3 independent pre-upload review
 
-Status: **PASS / ORDER HOLD** on 2026-08-28. Reviewer: **Codex**.
-Review signature: `Codex / 2026-08-28 / package source 90012621`.
+Status: **PASS / ORDER HOLD** on 2026-08-29. Reviewer: **Codex**.
+Review signature: `Codex / 2026-08-29 / package source 5f0a523b`.
 
 This review covers the five independent bare-PCB release archives only. It does
 not authorize upload, add an item to a vendor cart, or place an order. The owner
@@ -12,8 +12,11 @@ must still perform R5.R1 and explicitly change `ORDER HOLD` before any upload.
 `kicad/revb/review_revb_release.py --self-test` reads the ZIP contents rather
 than the export directories and renders them with gerbv 2.10.0-2build1. The
 reviewed candidate uses source revision
-`90012621b45a923e8315c0e5ca6a38092b518885` and JLC profile SHA-256
-`71389d73858ecb5950a5eb2066258915e2b87e4176dba02c59e6ebf1302f036a`.
+`5f0a523b2e0bc176f58bb22856b27ce8c165701e` and JLC profile SHA-256
+`2a226e62af3dc4d52e046a2a64fc28cb0c936c7f7aa5861f6519fad3787fc872`.
+The manifest additionally binds each current routed PCB by SHA-256, so the
+release identity includes the working source bytes rather than relying on the Git
+base alone.
 The typography/content findings and immutable font identity are recorded in
 `rev-b-silkscreen-audit.md`.
 
@@ -38,10 +41,10 @@ Visual checklist:
 - [x] Every visible silk text item uses the pinned `GOST CAD KK` Book face from
       the recorded font file; title, ordinary-label and safety-label sizing is
       consistent across all five boards.
-- [x] Top legends are legible and retain revision, assembly references, DNP,
+- [x] Top legends are legible and retain revision, assembly references/values,
       slot, orientation, voltage and no-hot-plug markings.
 - [x] All five bottom legends render nonblank. CPU, Memory, I/O and Video carry
-      mirrored pin-1 cues; Backplane carries the underside `U_RST` service cue.
+      mirrored pin-1 cues; Backplane carries `U_RST TOP 1:RST 2:5V 3:GND`.
 - [x] Mirrored bottom composites have the expected fabrication-view orientation.
 - [x] No unresolved visual finding remains.
 
@@ -58,21 +61,25 @@ connectivity descriptions.
 |---|---:|---:|---:|
 | CPU | 7 | 7 | 0 |
 | Memory | 10 | 10 | 0 |
-| I/O | 19 | 12 | 7 |
+| I/O | 46 | 46 | 0 |
 | Backplane | 41 | 41 | 0 |
 | Video | 54 | 54 | 0 |
-| **Total** | **131** | **124** | **7** |
+| **Total** | **158** | **158** | **0** |
 
-The seven DNP footprints are I/O `U4`, `U5`, `U6`, `C4`, `C5`, `C6` and
-`J_KBD`, reserved for B3. The first system needs **six programmed devices**:
+The C10-capable first system now populates the former I/O DNP set: `U4`, `U5`,
+`U6`, `C4`, `C5`, `C6` and `J_KBD`. The first system needs **six fitted
+programmed devices**:
 Memory `U1` 27C256, Memory `U3` and I/O `U2` GALs, and Video `U5`/`U6`/`U7`
 GALs. All six artifact sizes and SHA-256 values match the contract. Thus the
 five reproducible JEDECs are necessary but not sufficient: the physical
-27C256 image is the sixth programmed artifact.
+27C256 image is the sixth fitted programmed artifact. The separately verified
+NETC10/VJUGA and DIAG/VJUGA images remain programming media fitted one at a time,
+as recorded in the bench log and three-ROM manifest.
 
 ## Dated JLCPCB pre-upload quote
 
-Captured at `2026-08-28T07:40:54+03:00` with Google Chrome 151 from the
+Captured at `2026-08-29T01:43:45+03:00` with Google Chrome 151 in a fresh
+headless profile from the
 [official JLCPCB instant quote](https://cart.jlcpcb.com/quote/), without a file
 upload, cart mutation or login. Each row is five copies of one independent
 single-PCB design: FR-4 TG135, 1.6 mm, green mask, white silk, lead-free HASL,
@@ -80,9 +87,9 @@ single-PCB design: FR-4 TG135, 1.6 mm, green mask, white silk, lead-free HASL,
 vendor mark, and production-file confirmation **Yes**. The four-layer quote
 uses its 0.5 oz inner copper and no controlled impedance.
 
-This same-day quote snapshot is retained after the silk-only correction because
-board dimensions, layer counts and every fabrication selection are unchanged;
-the corrected archives and renders were regenerated and reviewed independently.
+The session changed dimensions and fabrication options only. It performed no file
+upload, login, `SAVE TO CART`, or cart mutation. The fresh quote reproduced the
+prior day's values and displayed no configuration warning for these selections.
 
 | Design | Size | Layers | Via covering | Qty | Web fabrication | Standard build |
 |---|---:|---:|---|---:|---:|---:|
@@ -100,7 +107,7 @@ Production-file confirmation contributes $1.04 per design and is included above.
 
 The $38.50 subtotal is a dated web estimate, not a payable total. It excludes
 combined shipping, tax, coupons and exchange-rate movement. The page showed a
-standalone DHL estimate of $28.67 for each separately evaluated row; those
+standalone DHL estimate of $28.82 for each separately evaluated row; those
 standalone estimates must not be added together or treated as the combined-cart
 shipping quote. Actual detected dimensions/layers, DFM warnings, combined
 shipping and the payable total remain R5.O1 upload/checkout evidence after owner
@@ -111,11 +118,11 @@ point where dimensions and layers are automatically analysed.
 
 | Design | ZIP bytes | SHA-256 |
 |---|---:|---|
-| CPU | 26,975 | `2335e88fc54e5d6efa7f8ba48d1bcb814b9d7e9960d581d4506c95aae361389d` |
-| Memory | 33,740 | `a2c903d130d87b9ea970fe8d9c0408d3751c181eb51a3406a712042874bff7b2` |
-| I/O | 48,709 | `fb29708fab4d1070101ca26f0a053b4d059fbb8956847bb6382f97478417bc19` |
-| Backplane | 64,047 | `1a642c0b7d5ed282da03ee263d7a66ee00d6ee93394e456dc4799f501a5ea590` |
-| Video | 437,926 | `46e13e63c3b4df4eb05f70c38dd2d810860d6503b36db85feabcace324b5f4ab` |
+| CPU | 47,759 | `abb9db95173d30fd5aeae7bce8d5a52cbdeba84bc2771722746e5d3e19b7b325` |
+| Memory | 65,229 | `741aebf2a7d87e5473fc2b7efbb0cef343034239f63dcde41153034471c7bf70` |
+| I/O | 236,336 | `a3cc2f2509c28799542e99a12279eafa25754f91c5ae601e28b99dcb05883a4f` |
+| Backplane | 220,515 | `c6d15a55cd56c5f1114bb831fbf57868b0c37204fab162ca6ace45322fe4456d` |
+| Video | 589,084 | `44b3a8df5d3e5d1ebb3258ed6151151502c898ec342761c041381842a8483b44` |
 
 R5.J3 is therefore complete. The next gate is R5.R1: present this evidence to
 the owner and retain `ORDER HOLD` unless the owner explicitly releases these

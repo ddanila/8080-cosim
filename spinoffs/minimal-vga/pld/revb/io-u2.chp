@@ -1,25 +1,29 @@
 
 
-                                GAL16V8
+                                GAL22V10
 
                           -------\___/-------
-                    IORQn |  1           20 | VCC
+                    IORQn |  1           24 | VCC
                           |                 |
-                       A2 |  2           19 | NC
+                       A2 |  2           23 | NC
                           |                 |
-                       A3 |  3           18 | GND0
+                       A3 |  3           22 | NC
                           |                 |
-                       A4 |  4           17 | INTAn
+                       A4 |  4           21 | INTAn
                           |                 |
-                       A5 |  5           16 | INTn
+                       A5 |  5           20 | INTn
                           |                 |
-                       A6 |  6           15 | IORESET
+                       A6 |  6           19 | IORESET
                           |                 |
-                       A7 |  7           14 | UARTCSn
+                       A7 |  7           18 | POSTCLK
                           |                 |
-                   RESETn |  8           13 | PPICSn
+                   RESETn |  8           17 | PITCSn
                           |                 |
-                      M1n |  9           12 | PICCSn
+                      M1n |  9           16 | UARTCSn
                           |                 |
-                      GND | 10           11 | PICINT
+                      WRn | 10           15 | PPICSn
+                          |                 |
+                   PICINT | 11           14 | PICCSn
+                          |                 |
+                      GND | 12           13 | GND0
                           -------------------

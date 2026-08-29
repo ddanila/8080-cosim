@@ -38,7 +38,9 @@ run mem PASS REVB-MEM-CARD-TB \
   -Prevb_mem_card_tb.rom_file="\"$TMP/memtest.hex\"" \
   "$ROOT/hdl/vendor/vm80a.v" "$ROOT/hdl/devices.v" \
   "$REVB/revb_mem_card.v" "$REVB/revb_mem_card_tb.v"
-run io PASS REVB-IO-CARD-TB "$REVB/revb_io_card.v" "$REVB/revb_io_card_tb.v"
+run io PASS REVB-IO-CARD-TB \
+  "$ROOT/hdl/vendor/vm80a.v" "$ROOT/hdl/devices.v" \
+  "$REVB/revb_io_card.v" "$REVB/revb_io_card_tb.v"
 run video PASS REVB-VIDEO-CARD-TB "$REVB/revb_video_card.v" "$REVB/revb_video_card_tb.v"
 run cpu PASS REVB-CPU-CARD-TB \
   "$TV/tv80_alu.v" "$TV/tv80_reg.v" "$TV/tv80_mcode.v" "$TV/tv80_core.v" "$TV/tv80s.v" \

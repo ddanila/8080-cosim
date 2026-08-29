@@ -1,0 +1,1734 @@
+{
+  "schema": 1,
+  "role": "DIAG/VJUGA",
+  "image_bytes": 16384,
+  "sha256": "f0d9e36f03e706d49e514999849e3277527f1b391bac475fa841eb97d63120a4",
+  "whole_image_additive8": 0,
+  "ram_range": "4000h-D6FFh",
+  "stack_ready_address": 135,
+  "first_stack_instruction": {
+    "address": 135,
+    "mnemonic": "LXI SP",
+    "bytes": [
+      49,
+      128,
+      215
+    ]
+  },
+  "early_forbidden_instructions": [],
+  "labels": {
+    "start": 0,
+    "rom_loop": 17,
+    "data_write_a5": 45,
+    "data_read_a5": 56,
+    "data_write_5a": 73,
+    "data_read_5a": 84,
+    "address_write": 107,
+    "address_read": 119,
+    "stack_ready": 135,
+    "tone_delay": 183,
+    "vga_pattern": 286,
+    "frame_wait": 295,
+    "ready_loop": 321,
+    "rom_fail": 324,
+    "ram_data_fail": 331,
+    "ram_address_fail": 338,
+    "early_halt": 342,
+    "pit_fail": 346,
+    "usart_fail": 353,
+    "late_halt": 360,
+    "puts": 364,
+    "puts_done": 376,
+    "putc": 377,
+    "putc_wait": 378,
+    "msg_serial": 389,
+    "msg_io": 406,
+    "msg_vga": 421,
+    "msg_ready": 440
+  },
+  "instruction_trace": [
+    {
+      "address": 0,
+      "mnemonic": "DI",
+      "bytes": [
+        243
+      ]
+    },
+    {
+      "address": 1,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        16
+      ]
+    },
+    {
+      "address": 3,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 5,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        32
+      ]
+    },
+    {
+      "address": 7,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 9,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        0
+      ]
+    },
+    {
+      "address": 12,
+      "mnemonic": "LXI B",
+      "bytes": [
+        1,
+        0,
+        64
+      ]
+    },
+    {
+      "address": 15,
+      "mnemonic": "XRA A",
+      "bytes": [
+        175
+      ]
+    },
+    {
+      "address": 16,
+      "mnemonic": "MOV D,A",
+      "bytes": [
+        87
+      ]
+    },
+    {
+      "address": 17,
+      "mnemonic": "MOV A,D",
+      "bytes": [
+        122
+      ]
+    },
+    {
+      "address": 18,
+      "mnemonic": "ADD M",
+      "bytes": [
+        134
+      ]
+    },
+    {
+      "address": 19,
+      "mnemonic": "MOV D,A",
+      "bytes": [
+        87
+      ]
+    },
+    {
+      "address": 20,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 21,
+      "mnemonic": "DCX B",
+      "bytes": [
+        11
+      ]
+    },
+    {
+      "address": 22,
+      "mnemonic": "MOV A,B",
+      "bytes": [
+        120
+      ]
+    },
+    {
+      "address": 23,
+      "mnemonic": "ORA C",
+      "bytes": [
+        177
+      ]
+    },
+    {
+      "address": 24,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        17,
+        0
+      ]
+    },
+    {
+      "address": 27,
+      "mnemonic": "MOV A,D",
+      "bytes": [
+        122
+      ]
+    },
+    {
+      "address": 28,
+      "mnemonic": "ORA A",
+      "bytes": [
+        183
+      ]
+    },
+    {
+      "address": 29,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        68,
+        1
+      ]
+    },
+    {
+      "address": 32,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        33
+      ]
+    },
+    {
+      "address": 34,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 36,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        48
+      ]
+    },
+    {
+      "address": 38,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 40,
+      "mnemonic": "MVI B",
+      "bytes": [
+        6,
+        165
+      ]
+    },
+    {
+      "address": 42,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        64
+      ]
+    },
+    {
+      "address": 45,
+      "mnemonic": "MOV M,B",
+      "bytes": [
+        112
+      ]
+    },
+    {
+      "address": 46,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 47,
+      "mnemonic": "MOV A,H",
+      "bytes": [
+        124
+      ]
+    },
+    {
+      "address": 48,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        215
+      ]
+    },
+    {
+      "address": 50,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        45,
+        0
+      ]
+    },
+    {
+      "address": 53,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        64
+      ]
+    },
+    {
+      "address": 56,
+      "mnemonic": "MOV A,M",
+      "bytes": [
+        126
+      ]
+    },
+    {
+      "address": 57,
+      "mnemonic": "CMP B",
+      "bytes": [
+        184
+      ]
+    },
+    {
+      "address": 58,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        75,
+        1
+      ]
+    },
+    {
+      "address": 61,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 62,
+      "mnemonic": "MOV A,H",
+      "bytes": [
+        124
+      ]
+    },
+    {
+      "address": 63,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        215
+      ]
+    },
+    {
+      "address": 65,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        56,
+        0
+      ]
+    },
+    {
+      "address": 68,
+      "mnemonic": "MVI B",
+      "bytes": [
+        6,
+        90
+      ]
+    },
+    {
+      "address": 70,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        64
+      ]
+    },
+    {
+      "address": 73,
+      "mnemonic": "MOV M,B",
+      "bytes": [
+        112
+      ]
+    },
+    {
+      "address": 74,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 75,
+      "mnemonic": "MOV A,H",
+      "bytes": [
+        124
+      ]
+    },
+    {
+      "address": 76,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        215
+      ]
+    },
+    {
+      "address": 78,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        73,
+        0
+      ]
+    },
+    {
+      "address": 81,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        64
+      ]
+    },
+    {
+      "address": 84,
+      "mnemonic": "MOV A,M",
+      "bytes": [
+        126
+      ]
+    },
+    {
+      "address": 85,
+      "mnemonic": "CMP B",
+      "bytes": [
+        184
+      ]
+    },
+    {
+      "address": 86,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        75,
+        1
+      ]
+    },
+    {
+      "address": 89,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 90,
+      "mnemonic": "MOV A,H",
+      "bytes": [
+        124
+      ]
+    },
+    {
+      "address": 91,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        215
+      ]
+    },
+    {
+      "address": 93,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        84,
+        0
+      ]
+    },
+    {
+      "address": 96,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        49
+      ]
+    },
+    {
+      "address": 98,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 100,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        64
+      ]
+    },
+    {
+      "address": 102,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 104,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        64
+      ]
+    },
+    {
+      "address": 107,
+      "mnemonic": "MOV A,L",
+      "bytes": [
+        125
+      ]
+    },
+    {
+      "address": 108,
+      "mnemonic": "MOV M,A",
+      "bytes": [
+        119
+      ]
+    },
+    {
+      "address": 109,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 110,
+      "mnemonic": "MOV A,H",
+      "bytes": [
+        124
+      ]
+    },
+    {
+      "address": 111,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        215
+      ]
+    },
+    {
+      "address": 113,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        107,
+        0
+      ]
+    },
+    {
+      "address": 116,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        64
+      ]
+    },
+    {
+      "address": 119,
+      "mnemonic": "MOV A,M",
+      "bytes": [
+        126
+      ]
+    },
+    {
+      "address": 120,
+      "mnemonic": "CMP L",
+      "bytes": [
+        189
+      ]
+    },
+    {
+      "address": 121,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        82,
+        1
+      ]
+    },
+    {
+      "address": 124,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 125,
+      "mnemonic": "MOV A,H",
+      "bytes": [
+        124
+      ]
+    },
+    {
+      "address": 126,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        215
+      ]
+    },
+    {
+      "address": 128,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        119,
+        0
+      ]
+    },
+    {
+      "address": 131,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        65
+      ]
+    },
+    {
+      "address": 133,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 135,
+      "mnemonic": "LXI SP",
+      "bytes": [
+        49,
+        128,
+        215
+      ]
+    },
+    {
+      "address": 138,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        80
+      ]
+    },
+    {
+      "address": 140,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 142,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        21
+      ]
+    },
+    {
+      "address": 144,
+      "mnemonic": "OUT 1B",
+      "bytes": [
+        211,
+        27
+      ]
+    },
+    {
+      "address": 146,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        4
+      ]
+    },
+    {
+      "address": 148,
+      "mnemonic": "OUT 18",
+      "bytes": [
+        211,
+        24
+      ]
+    },
+    {
+      "address": 150,
+      "mnemonic": "XRA A",
+      "bytes": [
+        175
+      ]
+    },
+    {
+      "address": 151,
+      "mnemonic": "OUT 1B",
+      "bytes": [
+        211,
+        27
+      ]
+    },
+    {
+      "address": 153,
+      "mnemonic": "IN 18",
+      "bytes": [
+        219,
+        24
+      ]
+    },
+    {
+      "address": 155,
+      "mnemonic": "ORA A",
+      "bytes": [
+        183
+      ]
+    },
+    {
+      "address": 156,
+      "mnemonic": "JZ",
+      "bytes": [
+        202,
+        90,
+        1
+      ]
+    },
+    {
+      "address": 159,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        5
+      ]
+    },
+    {
+      "address": 161,
+      "mnemonic": "JNC",
+      "bytes": [
+        210,
+        90,
+        1
+      ]
+    },
+    {
+      "address": 164,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        81
+      ]
+    },
+    {
+      "address": 166,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 168,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        118
+      ]
+    },
+    {
+      "address": 170,
+      "mnemonic": "OUT 1B",
+      "bytes": [
+        211,
+        27
+      ]
+    },
+    {
+      "address": 172,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        238
+      ]
+    },
+    {
+      "address": 174,
+      "mnemonic": "OUT 19",
+      "bytes": [
+        211,
+        25
+      ]
+    },
+    {
+      "address": 176,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        19
+      ]
+    },
+    {
+      "address": 178,
+      "mnemonic": "OUT 19",
+      "bytes": [
+        211,
+        25
+      ]
+    },
+    {
+      "address": 180,
+      "mnemonic": "LXI B",
+      "bytes": [
+        1,
+        224,
+        46
+      ]
+    },
+    {
+      "address": 183,
+      "mnemonic": "DCX B",
+      "bytes": [
+        11
+      ]
+    },
+    {
+      "address": 184,
+      "mnemonic": "MOV A,B",
+      "bytes": [
+        120
+      ]
+    },
+    {
+      "address": 185,
+      "mnemonic": "ORA C",
+      "bytes": [
+        177
+      ]
+    },
+    {
+      "address": 186,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        183,
+        0
+      ]
+    },
+    {
+      "address": 189,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        80
+      ]
+    },
+    {
+      "address": 191,
+      "mnemonic": "OUT 1B",
+      "bytes": [
+        211,
+        27
+      ]
+    },
+    {
+      "address": 193,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        1
+      ]
+    },
+    {
+      "address": 195,
+      "mnemonic": "OUT 19",
+      "bytes": [
+        211,
+        25
+      ]
+    },
+    {
+      "address": 197,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        96
+      ]
+    },
+    {
+      "address": 199,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 201,
+      "mnemonic": "XRA A",
+      "bytes": [
+        175
+      ]
+    },
+    {
+      "address": 202,
+      "mnemonic": "OUT 09",
+      "bytes": [
+        211,
+        9
+      ]
+    },
+    {
+      "address": 204,
+      "mnemonic": "OUT 09",
+      "bytes": [
+        211,
+        9
+      ]
+    },
+    {
+      "address": 206,
+      "mnemonic": "OUT 09",
+      "bytes": [
+        211,
+        9
+      ]
+    },
+    {
+      "address": 208,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        64
+      ]
+    },
+    {
+      "address": 210,
+      "mnemonic": "OUT 09",
+      "bytes": [
+        211,
+        9
+      ]
+    },
+    {
+      "address": 212,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        78
+      ]
+    },
+    {
+      "address": 214,
+      "mnemonic": "OUT 09",
+      "bytes": [
+        211,
+        9
+      ]
+    },
+    {
+      "address": 216,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        55
+      ]
+    },
+    {
+      "address": 218,
+      "mnemonic": "OUT 09",
+      "bytes": [
+        211,
+        9
+      ]
+    },
+    {
+      "address": 220,
+      "mnemonic": "IN 09",
+      "bytes": [
+        219,
+        9
+      ]
+    },
+    {
+      "address": 222,
+      "mnemonic": "CPI",
+      "bytes": [
+        254,
+        5
+      ]
+    },
+    {
+      "address": 224,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        97,
+        1
+      ]
+    },
+    {
+      "address": 227,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        97
+      ]
+    },
+    {
+      "address": 229,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 231,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        133,
+        1
+      ]
+    },
+    {
+      "address": 234,
+      "mnemonic": "CALL",
+      "bytes": [
+        205,
+        108,
+        1
+      ]
+    },
+    {
+      "address": 237,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        112
+      ]
+    },
+    {
+      "address": 239,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 241,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        155
+      ]
+    },
+    {
+      "address": 243,
+      "mnemonic": "OUT 0F",
+      "bytes": [
+        211,
+        15
+      ]
+    },
+    {
+      "address": 245,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        130
+      ]
+    },
+    {
+      "address": 247,
+      "mnemonic": "OUT 07",
+      "bytes": [
+        211,
+        7
+      ]
+    },
+    {
+      "address": 249,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        14
+      ]
+    },
+    {
+      "address": 251,
+      "mnemonic": "OUT 07",
+      "bytes": [
+        211,
+        7
+      ]
+    },
+    {
+      "address": 253,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        214
+      ]
+    },
+    {
+      "address": 255,
+      "mnemonic": "OUT 00",
+      "bytes": [
+        211,
+        0
+      ]
+    },
+    {
+      "address": 257,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        254
+      ]
+    },
+    {
+      "address": 259,
+      "mnemonic": "OUT 01",
+      "bytes": [
+        211,
+        1
+      ]
+    },
+    {
+      "address": 261,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        255
+      ]
+    },
+    {
+      "address": 263,
+      "mnemonic": "OUT 01",
+      "bytes": [
+        211,
+        1
+      ]
+    },
+    {
+      "address": 265,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        113
+      ]
+    },
+    {
+      "address": 267,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 269,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        150,
+        1
+      ]
+    },
+    {
+      "address": 272,
+      "mnemonic": "CALL",
+      "bytes": [
+        205,
+        108,
+        1
+      ]
+    },
+    {
+      "address": 275,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        128
+      ]
+    },
+    {
+      "address": 277,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 279,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        0,
+        216
+      ]
+    },
+    {
+      "address": 282,
+      "mnemonic": "MVI B",
+      "bytes": [
+        6,
+        40
+      ]
+    },
+    {
+      "address": 284,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        170
+      ]
+    },
+    {
+      "address": 286,
+      "mnemonic": "MOV M,A",
+      "bytes": [
+        119
+      ]
+    },
+    {
+      "address": 287,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 288,
+      "mnemonic": "DCR B",
+      "bytes": [
+        5
+      ]
+    },
+    {
+      "address": 289,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        30,
+        1
+      ]
+    },
+    {
+      "address": 292,
+      "mnemonic": "LXI B",
+      "bytes": [
+        1,
+        32,
+        78
+      ]
+    },
+    {
+      "address": 295,
+      "mnemonic": "DCX B",
+      "bytes": [
+        11
+      ]
+    },
+    {
+      "address": 296,
+      "mnemonic": "MOV A,B",
+      "bytes": [
+        120
+      ]
+    },
+    {
+      "address": 297,
+      "mnemonic": "ORA C",
+      "bytes": [
+        177
+      ]
+    },
+    {
+      "address": 298,
+      "mnemonic": "JNZ",
+      "bytes": [
+        194,
+        39,
+        1
+      ]
+    },
+    {
+      "address": 301,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        129
+      ]
+    },
+    {
+      "address": 303,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 305,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        165,
+        1
+      ]
+    },
+    {
+      "address": 308,
+      "mnemonic": "CALL",
+      "bytes": [
+        205,
+        108,
+        1
+      ]
+    },
+    {
+      "address": 311,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        255
+      ]
+    },
+    {
+      "address": 313,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 315,
+      "mnemonic": "LXI H",
+      "bytes": [
+        33,
+        184,
+        1
+      ]
+    },
+    {
+      "address": 318,
+      "mnemonic": "CALL",
+      "bytes": [
+        205,
+        108,
+        1
+      ]
+    },
+    {
+      "address": 321,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        65,
+        1
+      ]
+    },
+    {
+      "address": 324,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        47
+      ]
+    },
+    {
+      "address": 326,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 328,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        86,
+        1
+      ]
+    },
+    {
+      "address": 331,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        63
+      ]
+    },
+    {
+      "address": 333,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 335,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        86,
+        1
+      ]
+    },
+    {
+      "address": 338,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        79
+      ]
+    },
+    {
+      "address": 340,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 342,
+      "mnemonic": "HLT",
+      "bytes": [
+        118
+      ]
+    },
+    {
+      "address": 343,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        86,
+        1
+      ]
+    },
+    {
+      "address": 346,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        95
+      ]
+    },
+    {
+      "address": 348,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 350,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        104,
+        1
+      ]
+    },
+    {
+      "address": 353,
+      "mnemonic": "MVI A",
+      "bytes": [
+        62,
+        111
+      ]
+    },
+    {
+      "address": 355,
+      "mnemonic": "OUT 20",
+      "bytes": [
+        211,
+        32
+      ]
+    },
+    {
+      "address": 357,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        104,
+        1
+      ]
+    },
+    {
+      "address": 360,
+      "mnemonic": "HLT",
+      "bytes": [
+        118
+      ]
+    },
+    {
+      "address": 361,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        104,
+        1
+      ]
+    },
+    {
+      "address": 364,
+      "mnemonic": "MOV A,M",
+      "bytes": [
+        126
+      ]
+    },
+    {
+      "address": 365,
+      "mnemonic": "ORA A",
+      "bytes": [
+        183
+      ]
+    },
+    {
+      "address": 366,
+      "mnemonic": "JZ",
+      "bytes": [
+        202,
+        120,
+        1
+      ]
+    },
+    {
+      "address": 369,
+      "mnemonic": "CALL",
+      "bytes": [
+        205,
+        121,
+        1
+      ]
+    },
+    {
+      "address": 372,
+      "mnemonic": "INX H",
+      "bytes": [
+        35
+      ]
+    },
+    {
+      "address": 373,
+      "mnemonic": "JMP",
+      "bytes": [
+        195,
+        108,
+        1
+      ]
+    },
+    {
+      "address": 376,
+      "mnemonic": "RET",
+      "bytes": [
+        201
+      ]
+    },
+    {
+      "address": 377,
+      "mnemonic": "PUSH PSW",
+      "bytes": [
+        245
+      ]
+    },
+    {
+      "address": 378,
+      "mnemonic": "IN 09",
+      "bytes": [
+        219,
+        9
+      ]
+    },
+    {
+      "address": 380,
+      "mnemonic": "ANI",
+      "bytes": [
+        230,
+        1
+      ]
+    },
+    {
+      "address": 382,
+      "mnemonic": "JZ",
+      "bytes": [
+        202,
+        122,
+        1
+      ]
+    },
+    {
+      "address": 385,
+      "mnemonic": "POP PSW",
+      "bytes": [
+        241
+      ]
+    },
+    {
+      "address": 386,
+      "mnemonic": "OUT 08",
+      "bytes": [
+        211,
+        8
+      ]
+    },
+    {
+      "address": 388,
+      "mnemonic": "RET",
+      "bytes": [
+        201
+      ]
+    },
+    {
+      "address": 389,
+      "mnemonic": "DB",
+      "bytes": [
+        68,
+        53,
+        55,
+        32,
+        85,
+        83,
+        65,
+        82,
+        84,
+        32,
+        80,
+        65,
+        83,
+        83,
+        13,
+        10,
+        0
+      ]
+    },
+    {
+      "address": 406,
+      "mnemonic": "DB",
+      "bytes": [
+        80,
+        80,
+        73,
+        32,
+        80,
+        73,
+        67,
+        32,
+        80,
+        65,
+        83,
+        83,
+        13,
+        10,
+        0
+      ]
+    },
+    {
+      "address": 421,
+      "mnemonic": "DB",
+      "bytes": [
+        86,
+        71,
+        65,
+        32,
+        80,
+        65,
+        84,
+        84,
+        69,
+        82,
+        78,
+        32,
+        80,
+        65,
+        83,
+        83,
+        13,
+        10,
+        0
+      ]
+    },
+    {
+      "address": 440,
+      "mnemonic": "DB",
+      "bytes": [
+        68,
+        73,
+        65,
+        71,
+        32,
+        82,
+        69,
+        65,
+        68,
+        89,
+        13,
+        10,
+        0
+      ]
+    }
+  ],
+  "expected_post_sequence": [
+    "10",
+    "20",
+    "21",
+    "30",
+    "31",
+    "40",
+    "41",
+    "50",
+    "51",
+    "60",
+    "61",
+    "70",
+    "71",
+    "80",
+    "81",
+    "FF"
+  ]
+}

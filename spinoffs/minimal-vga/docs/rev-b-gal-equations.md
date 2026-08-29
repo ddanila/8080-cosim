@@ -1,11 +1,11 @@
 # VJUGA rev B — five-GAL release contract
 
-Status: **R5.P1 + R5.V3 implemented and reproducibly compiled 2026-08-28**.
+Status: **R5.P1 + R5.V3 + R5.I4 implemented and reproducibly compiled 2026-08-29**.
 
 The authoritative sources and generated programming artifacts are in
-`pld/revb/`. The selected first-article identities are Microchip
-`ATF22V10C-15PU` for Memory U3 and Video U5/U6/U7, and `ATF16V8B-15PU` for I/O
-U2. Their generic GAL22V10/GAL16V8 JEDEC maps are
+`pld/revb/`. The selected first-article identity is Microchip
+`ATF22V10C-15PU` for Memory U3, expanded I/O U2, and Video U5/U6/U7. Their
+generic GAL22V10 JEDEC maps are
 compiled by pinned Galette 0.3.0 revision
 `af529870729b1da8794b002cd522f5bf2d53f230` with Rust 1.85.0.
 
@@ -41,28 +41,28 @@ image is duplicated into both halves of `ekta37_z80-27c256.bin`: mode-0 reads
 the lower copy, while D800–FFFF reads physical 5800–7FFF and obtains the intended
 source 1800–3FFF bytes from the upper copy.
 
-## I/O U2 — complex-mode-safe pinout
+## I/O U2 — expanded D57/POST pinout
 
 | Pin | Signal | Dir | Pin | Signal | Dir |
 |---:|---|---|---:|---|---|
-| 1 | `IORQ_N` | in | 11 | `PIC_INT` | in |
-| 2–7 | A2–A7 | in | 12 | `PIC_CS_N` | out |
-| 8 | `RESET_N` | in | 13 | `PPI_CS_N` | out |
-| 9 | `M1_N` | in | 14 | `UART_CS_N` | out |
-| 10 | GND | power | 15 | `IO_RESET` | out |
-|  |  |  | 16 | `INT_N` | open-drain output |
-|  |  |  | 17 | `INTA_N` | out |
-|  |  |  | 18–19 | NC | I/O/output |
-|  |  |  | 20 | VCC | power |
+| 1 | `IORQ_N` | in | 13 | GND (unused input) | defined |
+| 2–7 | A2–A7 | in | 14 | `PIC_CS_N` | out |
+| 8 | `RESET_N` | in | 15 | `PPI_CS_N` | out |
+| 9 | `M1_N` | in | 16 | `UART_CS_N` | out |
+| 10 | `WR_N` | in | 17 | `PIT_CS_N` | out |
+| 11 | `PIC_INT` | in | 18 | `POST_CLK` | out |
+| 12 | GND | power | 19 | `IO_RESET` | out |
+|  |  |  | 20 | `INT_N` | open-drain output |
+|  |  |  | 21 | `INTA_N` | out |
+|  |  |  | 22–23 | NC | spare output |
+|  |  |  | 24 | VCC | power |
 
-The earlier board draft put `PIC_INT` on pin 19. That cannot compile in
-ATF16V8 complex mode because pins 12 and 19 are output-only. U2 does not need
-RD/WR to form any equation, so `M1_N` and `PIC_INT` now use dedicated array
-inputs 9 and 11. `INT_N` drives zero only while `PIC_INT` is asserted and is
-otherwise high impedance, preserving the backplane's wired-OR interrupt rule.
-The select windows are PIC 00–03, PPI 04–07 and UART 08–0B; peripheral A0/A1
-choose registers inside each four-port window. `IO_RESET` is active-high and
-`INTA_N` asserts only while both `M1_N` and `IORQ_N` are low.
+R5.I4 replaces the earlier ATF16V8 implementation so PIT select and an
+independent positive-edge POST write clock fit without external decode glue.
+All selects require `M1_N=1`; `POST_CLK` is low only during an ordinary write to
+20h–23h and latches on write completion. `INT_N` drives zero only while
+`PIC_INT` is asserted and is otherwise high impedance. The select windows are
+PIC 00–03, PPI 04–07, UART 08–0B, PIT 18–1B and POST 20–23.
 
 ## Video U5/U6/U7 — timing, frame divider and arbitration
 
@@ -109,7 +109,7 @@ and JEDEC checksum. The checked release values are:
 | Device | JEDEC SHA-256 | QF | JEDEC checksum |
 |---|---|---:|---|
 | Memory U3 | `dbbe74d99400718f2d743b7e02a33291dc1efac68805ea0dd75830b84d06d363` | 5892 | 6806 |
-| I/O U2 | `703412427efff890ebfc0e7d430b4a7cf016f3abdc9ad2f90bc3d9aac980e6e7` | 2194 | 3676 |
+| I/O U2 | `1874454ca6a44e79fec89f99e97495094c0cdac56ff1ff4b4be866a94f30008e` | 5892 | 7FAF |
 | Video H-decode U5 | `224e88c3c76a585ed1893665e7333883a6d0fbfebc9dd4bcef8b1d5d43045153` | 5892 | 81ED |
 | Video V-decode U6 | `4884fb645b412a51159560886341c17630aff165e492e08ed0008ed32305675f` | 5892 | 1DA2 |
 | Video control U7 | `0668bcd86c9e7bb59e3e4b99576794c14ac3a676086a89bffd20a260ca3a5d95` | 5892 | 8809 |
@@ -121,8 +121,8 @@ Memory and I/O oracles, and exhausts the Video equations and registered state.
 
 ## Programming and readback
 
-1. Remove the GAL from VJUGA and select the exact target (`ATF22V10C` or
-   `ATF16V8B`) in a programmer that explicitly supports it. Never program
+1. Remove the GAL from VJUGA and select the exact target (`ATF22V10C`) in a
+   programmer that explicitly supports it. Never program
    in-circuit.
 2. Match board/reference and file exactly: Memory U3 `memory-u3.jed`, I/O U2
    `io-u2.jed`, Video U5 `video-hdec-u5.jed`, Video U6 `video-vdec-u6.jed`, or
@@ -142,6 +142,5 @@ bench decode checks.
 ## Primary sources
 
 - [Microchip ATF22V10C product/datasheet](https://www.microchip.com/en-us/product/atf22v10c)
-- [Microchip ATF16V8B product/datasheet](https://www.microchip.com/en-us/product/ATF16V8B)
 - [Galette source and file-format documentation](https://github.com/simon-frankau/galette)
 - [Rustup manual installation and archive checksums](https://rust-lang.github.io/rustup/devel/installation/other.html)

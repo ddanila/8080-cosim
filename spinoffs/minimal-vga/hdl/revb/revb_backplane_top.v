@@ -14,9 +14,15 @@ module revb_backplane_top #(
     parameter DECODE_MODE   = 0,
     parameter VIDEO_PRESENT = 1,   // 0 = minimum tier (no Video card)
     parameter VIDEO_TTL     = 0,   // 1 = chip-level TTL video card (B2), asserts /WAIT
-    parameter USART_REAL    = 0    // 1 = real 8251 on the I/O card (bring-up twin)
+    parameter USART_REAL    = 0,   // 1 = real 8251 on the I/O card (bring-up twin)
+    parameter PIT_REAL      = 1,
+    parameter IO_CLK_SOURCE = 1,   // 0=/16 recovery, 1=PIT normal, 2=/32 recovery
+    parameter RAM_FAULT     = 0,
+    parameter BAD_PIT_TAP   = 0,
+    parameter POST_ALIAS_FAULT = 0
 ) (
     input  wire clk,
+    input  wire baud_master,       // 4.9152 MHz U3 clock
     input  wire dot_clk,           // 25.175 MHz scanout clock (only used when VIDEO_TTL)
     input  wire reset_n
 );
@@ -49,7 +55,8 @@ module revb_backplane_top #(
         .A(A), .m1_n(m1_n), .mreq_n(mreq_n), .iorq_n(iorq_n),
         .rd_n(rd_n), .wr_n(wr_n), .rfsh_n(rfsh_n), .halt_n(halt_n), .busak_n(busak_n));
 
-    revb_mem_card #(.rom_file(rom_file), .DECODE_MODE(DECODE_MODE)) U_MEM (
+    revb_mem_card #(.rom_file(rom_file), .DECODE_MODE(DECODE_MODE),
+                    .RAM_FAULT(RAM_FAULT)) U_MEM (
         .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
         .mreq_n(mreq_n), .rd_n(rd_n), .wr_n(wr_n),
         .MODE0(MODE0), .MODE1(MODE1), .D_out(mem_do), .D_oe(mem_oe));
@@ -78,9 +85,12 @@ module revb_backplane_top #(
       end
     endgenerate
 
-    revb_io_card #(.USART_REAL(USART_REAL)) U_IO (
-        .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
-        .iorq_n(iorq_n), .rd_n(rd_n), .wr_n(wr_n),
+    revb_io_card #(.USART_REAL(USART_REAL), .PIT_REAL(PIT_REAL),
+                   .CLK_SOURCE(IO_CLK_SOURCE), .BAD_PIT_TAP(BAD_PIT_TAP),
+                   .POST_ALIAS_FAULT(POST_ALIAS_FAULT)) U_IO (
+        .clk(clk), .baud_master(baud_master), .reset_n(reset_n), .A(A), .D_in(D),
+        .m1_n(m1_n), .iorq_n(iorq_n), .rd_n(rd_n), .wr_n(wr_n),
+        .uart_rxd(1'b1), .uart_txd(),
         .D_out(io_do), .D_oe(io_oe), .MODE0(MODE0), .MODE1(MODE1));
 
     // Passive bus-conflict assertion (never two drivers on D0-D7).

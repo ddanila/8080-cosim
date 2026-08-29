@@ -13,6 +13,7 @@ import hashlib
 import json
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -32,6 +33,13 @@ EXPECTED_GATES = {
     "R5.V5_video_pcb",
     "R5.V6_system_physical_power",
     "R5.J1_jlcpcb_profile",
+    "R5.I1_io_contract",
+    "R5.I2_io_twin",
+    "R5.I3_rom_set",
+    "R5.I4_io_implementation",
+    "R5.I5_io_pcb",
+    "R5.I6_rom_system",
+    "R5.I7_system_requalification",
     "R5.J2_five_archives",
     "R5.J3_independent_review_quote",
 }
@@ -101,6 +109,13 @@ def verify(record: dict, package_root: Path | None = None) -> list[str]:
         errors.append("candidate profile hash differs from manifest")
     if "ORDER HOLD" not in manifest.get("status", ""):
         errors.append("package manifest no longer identifies an ORDER HOLD candidate")
+    for card in EXPECTED_CARDS:
+        source = REPO / "fab" / "minimal-vga" / "revb" / f"{card}.kicad_pcb"
+        wanted = manifest.get("cards", {}).get(card, {}).get("source_pcb_sha256")
+        if not source.is_file():
+            errors.append(f"{card}: current routed PCB source is missing")
+        elif digest(source) != wanted:
+            errors.append(f"{card}: current routed PCB source differs from package manifest")
 
     if package_root is not None:
         package_root = package_root.resolve()
@@ -178,6 +193,27 @@ def self_test(record: dict) -> list[str]:
     mutated["candidate"]["package_manifest_sha256"] = "f" * 64
     if not any("manifest hash differs" in error for error in verify(mutated)):
         failures.append("stale manifest hash mutation was accepted")
+    baseline_manifest = copy.deepcopy(json.loads(repo_path(
+        record["candidate"]["package_manifest"]).read_text()))
+    for card in EXPECTED_CARDS:
+        baseline_manifest["cards"][card]["source_pcb_sha256"] = digest(
+            REPO / "fab" / "minimal-vga" / "revb" / f"{card}.kicad_pcb")
+    with tempfile.NamedTemporaryFile("w", suffix=".json", dir=REPO, delete=False) as handle:
+        json.dump(baseline_manifest, handle)
+        baseline_path = Path(handle.name)
+    try:
+        baseline = copy.deepcopy(record)
+        baseline["candidate"]["package_manifest"] = str(baseline_path.relative_to(REPO))
+        baseline["candidate"]["package_manifest_sha256"] = digest(baseline_path)
+        if any("current routed PCB source differs" in error for error in verify(baseline)):
+            failures.append("current-source baseline could not be established")
+        baseline_manifest["cards"]["io"]["source_pcb_sha256"] = "0" * 64
+        baseline_path.write_text(json.dumps(baseline_manifest))
+        baseline["candidate"]["package_manifest_sha256"] = digest(baseline_path)
+        if not any("io: current routed PCB source differs" in error for error in verify(baseline)):
+            failures.append("stale source-PCB hash mutation was accepted")
+    finally:
+        baseline_path.unlink()
     return failures
 
 
@@ -186,12 +222,22 @@ def main() -> int:
     parser.add_argument("--package-root", type=Path)
     parser.add_argument("--require-released", action="store_true")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--self-test-only", action="store_true")
     args = parser.parse_args()
     try:
         record = json.loads(RECORD_PATH.read_text())
     except (OSError, json.JSONDecodeError) as exc:
         print(f"R5.R1 release gate FAILED: {exc}")
         return 1
+    if args.self_test_only:
+        failures = self_test(record)
+        if failures:
+            print("R5.R1 release-gate negative controls FAILED:")
+            for failure in failures:
+                print(f"- {failure}")
+            return 1
+        print("R5.R1 release-gate negative controls PASS: stale archive, manifest, source PCB and unauthorized-release mutations rejected")
+        return 0
     errors = verify(record, args.package_root)
     if args.self_test:
         errors.extend(f"self-test: {error}" for error in self_test(record))

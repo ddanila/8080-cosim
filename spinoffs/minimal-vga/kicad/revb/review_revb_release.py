@@ -337,13 +337,30 @@ def main() -> int:
     parser.add_argument("--package-root", type=Path, default=DEFAULT_PACKAGE)
     parser.add_argument("--render-root", type=Path, default=DEFAULT_RENDER)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--bom-only", action="store_true",
+                        help="check routed sources, BOM and programmed artifacts only")
     args = parser.parse_args()
     contract = json.loads(BOM.read_text())
     errors, bom_result = verify_bom(contract)
-    render_errors, render_result = verify_and_render(args.package_root, args.render_root)
-    errors.extend(render_errors)
+    render_result: dict = {}
+    if not args.bom_only:
+        render_errors, render_result = verify_and_render(args.package_root, args.render_root)
+        errors.extend(render_errors)
     if args.self_test:
         errors.extend(f"self-test: {failure}" for failure in self_test(contract))
+    if args.bom_only:
+        if errors:
+            print("R5.I7 BOM/programming review FAILED:")
+            for error in errors:
+                print(f"- {error}")
+            return 1
+        totals = bom_result["totals"]
+        print(f"R5.I7 BOM/programming review PASS: {totals['physical_footprints']} footprints "
+              f"({totals['populated_footprints']} populated, {totals['dnp_footprints']} DNP); "
+              f"{len(bom_result['programmed_devices'])} programmed devices")
+        if args.self_test:
+            print("R5.I7 BOM negative controls PASS")
+        return 0
     result = {
         "schema": 1,
         "status": "PASS" if not errors else "FAIL",
@@ -365,9 +382,11 @@ def main() -> int:
         return 1
     layer_count = sum(len(card["layers"]) for card in render_result["cards"].values())
     composite_count = sum(len(card["composites"]) for card in render_result["cards"].values())
+    totals = bom_result["totals"]
     print(f"R5.J3 independent release review PASS: {layer_count} separate layers/drills + "
-          f"{composite_count} composites rendered; 131 footprints (124 populated, 7 DNP); "
-          "6 programmed devices (5 GAL + 1 ROM)")
+          f"{composite_count} composites rendered; {totals['physical_footprints']} footprints "
+          f"({totals['populated_footprints']} populated, {totals['dnp_footprints']} DNP); "
+          f"{len(bom_result['programmed_devices'])} programmed devices")
     if args.self_test:
         print("R5.J3 negative controls PASS: footprint count, artifact hash and programmed-DNP mutations rejected")
     print(f"wrote {result_path}")

@@ -44,3 +44,8 @@ def marking_text(ref, part, multiline=False):
     if part.get("dnp"):
         text += f"{separator}DNP"
     return text
+
+
+def marking_placement(card, ref):
+    """Return an optional reviewed assembly-label placement."""
+    return CONTRACT.get("placements_by_card", {}).get(card, {}).get(ref)

@@ -5,15 +5,17 @@
 module revb_io_card_tb;
     reg clk = 0; reg [15:0] bA; reg [7:0] bD;
     reg bMREQ_n = 1, bIORQ_n = 1, bRD_n = 1, bWR_n = 1;
-    reg reset_n = 0;
+    reg reset_n = 0, baud_master = 0;
     wire [7:0] cD; wire cOE, cMODE0, cMODE1;
     wire [7:0] bDout = cOE ? cD : 8'hFF;
     integer errors = 0;
     always #5 clk = ~clk;
+    always #11 baud_master = ~baud_master;
 
     revb_io_card dut (
-        .clk(clk), .reset_n(reset_n), .A(bA), .D_in(bD),
-        .iorq_n(bIORQ_n), .rd_n(bRD_n), .wr_n(bWR_n),
+        .clk(clk), .baud_master(baud_master), .reset_n(reset_n), .A(bA), .D_in(bD),
+        .m1_n(1'b1), .iorq_n(bIORQ_n), .rd_n(bRD_n), .wr_n(bWR_n),
+        .uart_rxd(1'b1), .uart_txd(),
         .D_out(cD), .D_oe(cOE), .MODE0(cMODE0), .MODE1(cMODE1));
 
     `include "revb_bus_bfm.vh"

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "R5.J3 first-system BOM/programming reconciliation; ORDER HOLD",
+  "status": "R5.I7 expanded first-system BOM/programming reconciliation; ORDER HOLD",
   "scope": "One assembled CPU, Memory, I/O, Backplane and Video first-article system; bare-PCB vendor quantity is quoted separately.",
   "boards": {
     "cpu": {
@@ -20,17 +20,9 @@
     "io": {
       "first_system_pcbs": 1,
       "quote_quantity_candidate": 5,
-      "physical_footprints": 19,
-      "populated_footprints": 12,
-      "dnp_refs": [
-        "C4",
-        "C5",
-        "C6",
-        "J_KBD",
-        "U4",
-        "U5",
-        "U6"
-      ]
+      "physical_footprints": 46,
+      "populated_footprints": 46,
+      "dnp_refs": []
     },
     "backplane": {
       "first_system_pcbs": 1,
@@ -50,9 +42,9 @@
   "totals": {
     "board_designs": 5,
     "first_system_pcbs": 5,
-    "physical_footprints": 131,
-    "populated_footprints": 124,
-    "dnp_footprints": 7,
+    "physical_footprints": 158,
+    "populated_footprints": 158,
+    "dnp_footprints": 0,
     "programmed_devices": 6,
     "jedec_devices": 5,
     "rom_devices": 1
@@ -79,11 +71,11 @@
     {
       "board": "io",
       "ref": "U2",
-      "device": "ATF16V8 I/O-select GAL",
+      "device": "ATF22V10C-15PU expanded I/O-select GAL",
       "format": "JEDEC",
       "artifact": "spinoffs/minimal-vga/pld/revb/io-u2.jed",
-      "bytes": 722,
-      "sha256": "703412427efff890ebfc0e7d430b4a7cf016f3abdc9ad2f90bc3d9aac980e6e7"
+      "bytes": 1385,
+      "sha256": "1874454ca6a44e79fec89f99e97495094c0cdac56ff1ff4b4be866a94f30008e"
     },
     {
       "board": "video",
@@ -114,7 +106,7 @@
     }
   ],
   "notes": [
-    "I/O U4/U5/U6, their local C4/C5/C6 bypass capacitors, and J_KBD are B3 DNP for the first system.",
+    "The C10-capable first system populates I/O U4/U5/U6, C4/C5/C6 and J_KBD; the former UART-only DNP list is retired.",
     "The six programmed devices are five GALs plus one 27C256; a five-GAL build alone is not a complete programming kit.",
     "This is a hand-assembly reconciliation contract, not a JLCPCB PCBA BOM or permission to populate surplus boards."
   ]

@@ -1,21 +1,21 @@
 {
-  "status": "R5.V6 frozen system-level mechanical and power contract",
+  "status": "R5.I7 requalified system-level mechanical and power contract",
   "board_stack": {
     "slot_pitch_mm": 16.0,
     "slot_assignment": {
       "1": {"card": "cpu", "current_ma": 250},
       "2": {"card": "mem", "current_ma": 235},
-      "3": {"card": "io", "current_ma": 150},
+      "3": {"card": "io", "current_ma": 454},
       "4": {"card": "empty", "current_ma": 0},
       "5": {"card": "video", "current_ma": 686}
     },
     "backplane_local_current_ma": 30,
-    "total_current_ma": 1351,
+    "total_current_ma": 1655,
     "minimum_adjacent_clearance_mm": 3.0,
     "card_step_envelopes_mm": {
       "cpu": {"z_min": -1.705, "z_max": 10.135},
       "mem": {"z_min": -1.705, "z_max": 10.135},
-      "io": {"z_min": -1.705, "z_max": 10.135},
+      "io": {"z_min": -2.625, "z_max": 13.195},
       "video": {"z_min": -3.185, "z_max": 7.895}
     },
     "video_slot": 5,
@@ -35,9 +35,9 @@
     "overload": "110-150 percent rated power, hiccup, automatic recovery",
     "plug": "P1J, 2.1 mm ID / 5.5 mm OD / 11 mm, center positive",
     "datasheet": "https://www.meanwell.com/Upload/PDF/GST25A/GST25A-SPEC.PDF",
-    "receipt_test_load_a": 1.351,
-    "receipt_test_minimum_v_at_1_351a": 4.90,
-    "receipt_test_note": "The published plus/minus 5 percent envelope is broader than a conservative TTL distribution corner. Qualify the delivered unit at the plug with a 1.351 A electronic load; reject it for this build below 4.90 V average or above 80 mV peak-to-peak."
+    "receipt_test_load_a": 1.655,
+    "receipt_test_minimum_v_at_load": 4.90,
+    "receipt_test_note": "The published plus/minus 5 percent envelope is broader than a conservative TTL distribution corner. Qualify the delivered unit at the plug with a 1.655 A electronic load; reject it for this build below 4.90 V average or above 80 mV peak-to-peak."
   },
   "normal_input": {
     "connector_ref": "J_PWR",
@@ -49,12 +49,12 @@
     "connector_datasheet": "https://www.we-online.com/components/products/datasheet/694106301002.pdf",
     "connector_pinout": {"1": "PWR_RAW", "2": "GND_BUS", "3": "NC detection contact"},
     "fuse_ref": "F_MAIN",
-    "fuse_mpn": "Bourns MF-R250",
-    "fuse_hold_a_23c": 2.50,
-    "fuse_hold_a_40c": 2.08,
-    "fuse_hold_a_70c": 1.53,
-    "fuse_trip_a_23c": 5.00,
-    "fuse_resistance_ohm_max_initial": 0.048,
+    "fuse_mpn": "Bourns MF-R300",
+    "fuse_hold_a_23c": 3.00,
+    "fuse_hold_a_40c": 2.49,
+    "fuse_hold_a_70c": 1.83,
+    "fuse_trip_a_23c": 6.00,
+    "fuse_resistance_ohm_max_initial": 0.050,
     "fuse_datasheet": "https://bourns.com/docs/product-datasheets/mf-r.pdf",
     "reverse_protection_ref": "D_REV",
     "reverse_protection_mpn": "Vishay SB560-E3/54",

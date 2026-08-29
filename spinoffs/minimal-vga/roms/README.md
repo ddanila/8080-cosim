@@ -1,10 +1,22 @@
 # VJUGA ROM images
 
-For the rev-B 27C256 programming image, run `build_revb_rom.py`. It duplicates
-the verified 16 KiB image into both halves so the direct A0–A14 wiring also maps
-the D800–FFFF overlay correctly. The resulting
-`ekta37_z80-27c256.bin` is 32768 bytes with SHA-256
-`e06dc0ee989d33049ad60c5a182df4d3da8814f206fd19c4f500603c772d9b2f`.
+Run `build_revb_rom.py` for the complete first-article set. Every 27C256 image
+duplicates its verified 16 KiB member into both halves so direct A0–A14 wiring
+also maps the D800–FFFF overlay correctly. `revb-rom-set.json` is the authority
+for provenance, hashes and the program/readback procedure:
+
+| Label | File | SHA-256 |
+|---|---|---|
+| EKTA3.7/VJUGA | `ekta37_z80-27c256.bin` | `e06dc0ee989d33049ad60c5a182df4d3da8814f206fd19c4f500603c772d9b2f` |
+| NETC10/VJUGA | `netc10_vjuga-27c256.bin` | `6e84664b4513c1c3f8f2f717bbee5ed15495225636f1b2f2fe8de8924a889f3f` |
+| DIAG/VJUGA | `diag_vjuga-27c256.bin` | `c220bf654711d8dda13e1e980763c11e00821b38bbdd55bd65c85a2b27f138a7` |
+
+NETC10 is byte-identical to the reproducibly assembled C10 16 KiB source: its
+canonical `zmac -8` instruction set needs no opcode substitutions, and its real
+D57 mode-2/count-four sequence is retained. DIAG's builder and instruction map
+prove that stack/helpers are absent until ROM, RAM-data and RAM-address pass.
+`check_revb_rom_set.py` executes the diagnostic under cosim and enforces ordered
+POST LEDs, PIT tone, USART text and framebuffer-pattern evidence.
 
 ## `ekta37_z80.bin` — Z80-executable Juku boot ROM (derived)
 

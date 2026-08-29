@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "status": "R5.I1 frozen D57/POST electrical contract",
+  "rail_v": 5.0,
+  "io_cycle": {
+    "selected_when": {"IORQ_N": 0, "M1_N": 1},
+    "interrupt_ack_when": {"IORQ_N": 0, "M1_N": 0},
+    "address_bits_decoded": [7, 6, 5, 4, 3, 2],
+    "register_bits": [1, 0]
+  },
+  "io_map": [
+    {"name": "PIC", "registers": "00h-01h", "decoded": "00h-03h", "state": "implemented"},
+    {"name": "PPI0", "registers": "04h-07h", "decoded": "04h-07h", "state": "implemented"},
+    {"name": "USART", "registers": "08h-09h", "decoded": "08h-0Bh", "state": "implemented"},
+    {"name": "PPI1", "registers": "0Ch-0Fh", "decoded": "0Ch-0Fh", "state": "reserved"},
+    {"name": "D54_D55", "registers": "10h-17h", "decoded": "10h-17h", "state": "reserved-original-video"},
+    {"name": "D57", "registers": "18h-1Bh", "decoded": "18h-1Bh", "state": "implemented"},
+    {"name": "FDC", "registers": "1Ch-1Fh", "decoded": "1Ch-1Fh", "state": "reserved"},
+    {"name": "POST", "registers": "20h", "decoded": "20h-23h", "state": "implemented-write-only"}
+  ],
+  "timer": {
+    "function": "Intel 8253 register/count/latch compatible",
+    "preferred_first_fit": "Renesas ID82C54",
+    "accepted_alternatives": ["KR580VI53", "Intel P8253-5", "other bench-proven 5 V 8253/82C54 after recorded substitution"],
+    "footprint": "Package_DIP:DIP-24_W15.24mm",
+    "socket": "24-pin 600-mil turned-pin DIP socket",
+    "datasheet": "https://sapr.asvcorp.ru/datasheets/64/05/00000000564.pdf",
+    "pins": {
+      "1": "D7", "2": "D6", "3": "D5", "4": "D4", "5": "D3", "6": "D2",
+      "7": "D1", "8": "D0", "9": "PIT_CLK0", "10": "PIT_BAUD", "11": "VCC5",
+      "12": "GND", "13": "PIT_SOUND", "14": "VCC5", "15": "CLK",
+      "16": "VCC5", "17": "PIT_OUT2_TP", "18": "GND", "19": "A0", "20": "A1",
+      "21": "PIT_CS_N", "22": "RD_N", "23": "WR_N", "24": "VCC5"
+    },
+    "channels": [
+      {"channel": 0, "clock_net": "PIT_CLK0", "clock_hz": 1228800, "gate_net": "VCC5", "output_net": "PIT_BAUD", "required_count": 4, "purpose": "8251 x16 clock"},
+      {"channel": 1, "clock_net": "CLK", "clock_hz": 2000000, "gate_net": "VCC5", "output_net": "PIT_SOUND", "purpose": "C9/C10 sound and diagnostic tones"},
+      {"channel": 2, "clock_net": "GND", "clock_hz": 0, "gate_net": "VCC5", "output_net": "PIT_OUT2_TP", "purpose": "defined-unused; original SYNC B is replaced by autonomous VGA"}
+    ],
+    "decoupling": {"value": "100 nF", "required_local_count": 1}
+  },
+  "baud_tree": {
+    "master_hz": 4915200,
+    "divider_part": "SN74HC393N",
+    "pit_input_divisor": 4,
+    "direct_19200_divisor": 16,
+    "direct_9600_divisor": 32,
+    "usart_oversample": 16,
+    "jumpers": {
+      "JP_BAUD": {"pins": {"1": "BAUD_19200", "2": "BAUD_DIRECT", "3": "BAUD_9600"}, "default_shunt": "1-2", "role": "direct recovery rate"},
+      "JP_CLK_SRC": {"pins": {"1": "PIT_BAUD", "2": "BAUDCLK", "3": "BAUD_DIRECT"}, "default_shunt": "1-2", "role": "PIT normal versus direct recovery"}
+    }
+  },
+  "decode_gal": {
+    "part": "ATF22V10C-15PU",
+    "footprint": "Package_DIP:DIP-24_W7.62mm",
+    "datasheet": "https://www.microchip.com/content/dam/mchp/documents/OTH/ProductDocuments/DataSheets/doc0735.pdf",
+    "pins": {
+      "1": "IORQ_N", "2": "A2", "3": "A3", "4": "A4", "5": "A5", "6": "A6",
+      "7": "A7", "8": "RESET_N", "9": "M1_N", "10": "WR_N", "11": "PIC_INT",
+      "12": "GND", "13": "GND", "14": "PIC_CS_N", "15": "PPI_CS_N",
+      "16": "UART_CS_N", "17": "PIT_CS_N", "18": "POST_CLK", "19": "IO_RESET",
+      "20": "INT_N", "21": "INTA_N", "22": "IO_GAL_SPARE1_NC",
+      "23": "IO_GAL_SPARE2_NC", "24": "VCC5"
+    },
+    "used_inputs": 11,
+    "used_outputs": 8,
+    "rules": {
+      "selects_require_M1_high": true,
+      "POST_CLK": "high except during selected write to 20h-23h; rising edge at write completion",
+      "INT_N": "open-drain low only while PIC_INT is high",
+      "INTA_N": "low only when IORQ_N and M1_N are both low"
+    }
+  },
+  "post": {
+    "port": "20h",
+    "decoded": "20h-23h",
+    "read_behavior": "no device drives the data bus",
+    "latch_part": "CD74ACT273E",
+    "latch_footprint": "Package_DIP:DIP-20_W7.62mm",
+    "latch_datasheet": "https://www.ti.com/product/CD74ACT273/part-details/CD74ACT273E",
+    "latch_pins": {
+      "1": "RESET_N", "2": "POST_Q0", "3": "D0", "4": "D1", "5": "POST_Q1",
+      "6": "POST_Q2", "7": "D2", "8": "D3", "9": "POST_Q3", "10": "GND",
+      "11": "POST_CLK", "12": "POST_Q4", "13": "D4", "14": "D5", "15": "POST_Q5",
+      "16": "POST_Q6", "17": "D6", "18": "D7", "19": "POST_Q7", "20": "VCC5"
+    },
+    "reset": "RESET_N directly clears active-low CLR",
+    "led_part": "Kingbright WP710A10LGD",
+    "led_datasheet": "https://www.kingbrightusa.com/product.asp?catalog_name=LED&product_id=WP710A10LGD",
+    "led_count": 8,
+    "led_active": "high",
+    "led_resistor_ohm": 2200,
+    "led_vf_min_v": 1.8,
+    "rail_max_v": 5.5,
+    "labels": ["7", "6", "5", "4", "3", "2", "1", "0"],
+    "codes": {
+      "low_nibble": {"0": "entered", "1": "passed", "F": "failed"},
+      "ready": "FF",
+      "stages": {"1": "reset-entry", "2": "ROM", "3": "RAM-data", "4": "RAM-address", "5": "D57", "6": "USART", "7": "PPI-PIC", "8": "VGA-frame"}
+    }
+  },
+  "sound": {
+    "transducer_part": "Same Sky CPT-1207-5LTH-T",
+    "transducer_type": "externally driven piezo transducer",
+    "datasheet": "https://www.sameskydevices.com/product/resource/cpt-1207-5lth-t.pdf",
+    "driver": "2N3904 low-side switch",
+    "driver_datasheet": "https://www.onsemi.com/pdf/datasheet/2n3904-d.pdf",
+    "base_resistor_ohm": 4700,
+    "base_pulldown_ohm": 100000,
+    "rated_voltage_vpp": 5.0,
+    "rated_current_ma": 2.0,
+    "connector": "optional 1x2 passive-transducer header in parallel with fitted transducer"
+  },
+  "power_allowance_ma": {
+    "previous_io_card": 150,
+    "timer_and_decode": 190,
+    "post_latch_leds": 30,
+    "ppi_pic_encoder_population": 80,
+    "sound_and_margin": 4,
+    "added": 304,
+    "revised_io_card": 454,
+    "previous_five_card": 1351,
+    "revised_five_card": 1655,
+    "qualified_supply": 2000,
+    "headroom": 345
+  }
+}

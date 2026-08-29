@@ -27,26 +27,26 @@
       "sha256": "b7bb1d2098543a7633b2eaf6ffee0ef58e37f19d2828306be9eb640f6e13c2ed"
     },
     "io-u2.pld": {
-      "bytes": 648,
-      "sha256": "dadd427589fc906090efb939668a16f15aaf41a6bedf9bad159a08a39039f077"
+      "bytes": 961,
+      "sha256": "9f23dd8bc79150d477142fa78beeba88eef704cc1cccb4b334ff8171084fdc4d"
     },
     "io-u2.jed": {
-      "bytes": 722,
-      "sha256": "703412427efff890ebfc0e7d430b4a7cf016f3abdc9ad2f90bc3d9aac980e6e7",
-      "qf": 2194,
-      "jedec_checksum": "3676"
+      "bytes": 1385,
+      "sha256": "1874454ca6a44e79fec89f99e97495094c0cdac56ff1ff4b4be866a94f30008e",
+      "qf": 5892,
+      "jedec_checksum": "7FAF"
     },
     "io-u2.pin": {
-      "bytes": 578,
-      "sha256": "99ef3cd9dbd60b6fc29e268ef137930c1252d9e5971627626f1010599781b59c"
+      "bytes": 690,
+      "sha256": "0152ed34f075e6df6b5c356f7ba598132a292d02b1250e22d935760eeb0f04b1"
     },
     "io-u2.fus": {
-      "bytes": 3210,
-      "sha256": "ccb68e9d1749a7f3066fed8ea7f87e16578f5419c6bf0335583b4bb852af8ea8"
+      "bytes": 8320,
+      "sha256": "ac2bd5f192a10c93aa15bc41d9bcca41d070f366ce6010588b4aebd4e517c116"
     },
     "io-u2.chp": {
-      "bytes": 1069,
-      "sha256": "f6e3a0bf8095d5bd0e74204197cd793c31a1f072174e0a7dcc3287d662410276"
+      "bytes": 1265,
+      "sha256": "151c4753007591b18828ec2d43dd082c3c9538499e2b242ff9b5f134cd3aef1a"
     },
     "video-hdec-u5.pld": {
       "bytes": 1579,

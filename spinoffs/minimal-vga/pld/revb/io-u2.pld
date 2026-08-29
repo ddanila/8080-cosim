@@ -1,14 +1,19 @@
-GAL16V8
+GAL22V10
 VJIOR5
 
-IORQn A2 A3 A4 A5 A6 A7 RESETn M1n GND
-PICINT PICCSn PPICSn UARTCSn IORESET INTn INTAn GND0 NC VCC
+IORQn A2 A3 A4 A5 A6 A7 RESETn M1n WRn PICINT GND
+GND0 PICCSn PPICSn UARTCSn PITCSn POSTCLK IORESET INTn INTAn NC NC VCC
 
-; Four-port decode granularity follows the available A2-A7 inputs. Peripheral
-; A0/A1 pins select registers inside each window.
-/PICCSn  = /IORQn * /A7 * /A6 * /A5 * /A4 * /A3 * /A2
-/PPICSn  = /IORQn * /A7 * /A6 * /A5 * /A4 * /A3 *  A2
-/UARTCSn = /IORQn * /A7 * /A6 * /A5 * /A4 *  A3 * /A2
+; Four-port granularity uses A2-A7. M1 must be high for every peripheral
+; select, excluding the Z80 interrupt-acknowledge cycle.
+/PICCSn  = /IORQn * M1n * /A7 * /A6 * /A5 * /A4 * /A3 * /A2
+/PPICSn  = /IORQn * M1n * /A7 * /A6 * /A5 * /A4 * /A3 *  A2
+/UARTCSn = /IORQn * M1n * /A7 * /A6 * /A5 * /A4 *  A3 * /A2
+/PITCSn  = /IORQn * M1n * /A7 * /A6 * /A5 *  A4 *  A3 * /A2
+
+; ACT273 clocks at the end of a write to 20h-23h: low during the selected
+; active-low write pulse, positive edge when WR_N/IORQ_N is released.
+POSTCLK = IORQn + /M1n + WRn + A7 + A6 + /A5 + A4 + A3 + A2
 
 IORESET = /RESETn
 
@@ -20,4 +25,4 @@ INTn.E = PICINT
 
 DESCRIPTION
 
-VJUGA rev B I/O-card U2 selects, reset polarity, INTA and open-drain INT.
+VJUGA rev B I/O U2: M1-qualified PIC/PPI/USART/D57, POST clock, reset and IRQ.

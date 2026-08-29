@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""R5.V6 five-board mechanical/power gate.
+"""R5.I7 five-board mechanical/power requalification gate.
 
 Run with KiCad's Python (the repository env resolves it):
 
@@ -24,7 +24,7 @@ try:
     import numpy as np
     import pcbnew
 except Exception as exc:  # pragma: no cover - exercised on non-CAD hosts
-    print(f"R5.V6 system physical: required KiCad Python/numpy unavailable: {exc}")
+    print(f"R5.I7 system physical: required KiCad Python/numpy unavailable: {exc}")
     raise SystemExit(2)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -210,7 +210,7 @@ def audit(board, contract, quiet=False):
 
     expected_footprints = {
         "J_PWR": "BarrelJack_Wuerth_6941xx301002",
-        "F_MAIN": "Fuse_Bourns_MF-R250",
+        "F_MAIN": "Fuse_Bourns_MF-R300",
         "D_REV": "D_DO-201AD_P5.08mm_Vertical_AnodeUp",
         "W_VCC": "WireLink_22AWG_P5.08mm",
         "W_GND": "WireLink_22AWG_P5.08mm",
@@ -287,7 +287,7 @@ def audit(board, contract, quiet=False):
         amps = item["current_ma"] / 1000.0
         copper_drop = vcc["drops"][vkey] + gnd["drops"][gkey]
         contact_drop = 2.0 * dist["bus_contact_resistance_ohm_max_each_credited"] * amps
-        trough = (supply["receipt_test_minimum_v_at_1_351a"] - ripple_half
+        trough = (supply["receipt_test_minimum_v_at_load"] - ripple_half
                   - shared_drop - copper_drop - contact_drop)
         margin = trough - dist["minimum_logic_rail_v"]
         worst_margin = min(worst_margin, margin)
@@ -318,11 +318,11 @@ def audit(board, contract, quiet=False):
               "raw_resistance_ohm": raw_r}
     if not quiet:
         if fails:
-            print(f"R5.V6 system physical: {len(fails)} violation(s) -> FAIL")
+            print(f"R5.I7 system physical: {len(fails)} violation(s) -> FAIL")
             for failure in fails:
                 print(f"    {failure}")
         else:
-            print("R5.V6 system physical OK")
+            print("R5.I7 system physical OK")
             for note in notes:
                 print(f"    {note}")
             for slot, row in sorted(slot_results.items()):
@@ -358,7 +358,7 @@ def self_test(contract):
         return False
 
     low_supply = copy.deepcopy(contract)
-    low_supply["supply"]["receipt_test_minimum_v_at_1_351a"] = 4.60
+    low_supply["supply"]["receipt_test_minimum_v_at_load"] = 4.60
     if not audit(pcbnew.LoadBoard(PCB), low_supply, quiet=True)["fails"]:
         print("self-test failed: low delivered-unit voltage was accepted")
         return False
@@ -368,7 +368,7 @@ def self_test(contract):
     if not audit(pcbnew.LoadBoard(PCB), stale_budget, quiet=True)["fails"]:
         print("self-test failed: stale total-current row was accepted")
         return False
-    print("R5.V6 negative controls OK: narrow bus, narrow raw path, 12-mm pitch, "
+    print("R5.I7 negative controls OK: narrow bus, narrow raw path, 12-mm pitch, "
           "low supply and stale current total all rejected")
     return True
 

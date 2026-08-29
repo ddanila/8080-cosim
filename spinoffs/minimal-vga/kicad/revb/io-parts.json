@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "checked_on": "2026-08-29",
+  "status": "R5.I7 exact expanded-I/O first-article parts; ORDER HOLD",
+  "policy": "These exact devices define the first-article electrical/package contract. Socketed pin-compatible vintage alternatives require programmer/bench qualification and a recorded substitution; distributor quantities are dated snapshots, not purchase authorization.",
+  "parts": {
+    "usart": {
+      "refs": ["U1"],
+      "type": "USART_8251",
+      "manufacturer": "Rochester Electronics",
+      "mpn": "MD8251A/B",
+      "footprint": "Package_DIP:DIP-28_W15.24mm",
+      "package": {"pins": 28, "row_spacing_mm": 15.24},
+      "lifecycle": "Rochester Active",
+      "availability_snapshot": "DigiKey Marketplace/Rochester: 3300 in stock",
+      "order_source": "https://www.digikey.com/en/products/detail/rochester-electronics-llc/MD8251A-B/15641804",
+      "datasheet": "https://www.rxelectronics.ro/datasheet/1a/md8251a-bxa.pdf"
+    },
+    "ppi": {
+      "refs": ["U4"],
+      "type": "PPI_8255",
+      "manufacturer": "Rochester Electronics",
+      "mpn": "MD82C55A/B",
+      "footprint": "Package_DIP:DIP-40_W15.24mm",
+      "package": {"pins": 40, "row_spacing_mm": 15.24},
+      "lifecycle": "Rochester Active",
+      "order_source": "https://www.rocelec.com/search?q=MD82C55A%2FB",
+      "datasheet": "https://www.renesas.com/en/document/dst/82c55a-datasheet"
+    },
+    "keyboard_encoder": {
+      "refs": ["U5"],
+      "type": "ENC_74148",
+      "manufacturer": "Texas Instruments",
+      "mpn": "SN74LS148N",
+      "footprint": "Package_DIP:DIP-16_W7.62mm",
+      "package": {"pins": 16, "row_spacing_mm": 7.62},
+      "lifecycle": "Active",
+      "order_source": "https://www.ti.com/product/SN74LS148/part-details/SN74LS148N",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74ls148.pdf"
+    },
+    "pic": {
+      "refs": ["U6"],
+      "type": "PIC_8259",
+      "manufacturer": "Rochester Electronics",
+      "mpn": "MD82C59A/B",
+      "footprint": "Package_DIP:DIP-28_W15.24mm",
+      "package": {"pins": 28, "row_spacing_mm": 15.24},
+      "lifecycle": "Rochester Active",
+      "availability_snapshot": "Rochester: 814 in stock",
+      "order_source": "https://www.rocelec.com/part/01t4w00000PPjN2AAL-MD82C59AB",
+      "datasheet": "https://www.renesas.com/en/document/dst/82c59a-datasheet"
+    },
+    "pit": {
+      "refs": ["U8"],
+      "type": "PIT_8253",
+      "manufacturer": "Renesas Electronics",
+      "mpn": "ID82C54",
+      "footprint": "Package_DIP:DIP-24_W15.24mm",
+      "package": {"pins": 24, "row_spacing_mm": 15.24, "socketed": true},
+      "supply_v": [4.5, 5.5],
+      "maximum_clock_mhz": 8,
+      "maximum_supply_current_ma": 10,
+      "lifecycle": "Active",
+      "availability_snapshot": "Renesas authorized channels: DigiKey 71, Mouser 63, Avnet 3571",
+      "order_source": "https://www.renesas.com/en/products/82c54/part-details/id82c54",
+      "datasheet": "https://www.renesas.com/en/document/dst/82c54-datasheet"
+    },
+    "decode_gal": {
+      "refs": ["U2"],
+      "type": "GAL22V10_IOSEL",
+      "manufacturer": "Microchip Technology",
+      "mpn": "ATF22V10C-15PU",
+      "footprint": "Package_DIP:DIP-24_W7.62mm",
+      "package": {"pins": 24, "row_spacing_mm": 7.62},
+      "lifecycle": "In Production",
+      "order_source": "https://www.microchip.com/en-us/product/atf22v10c",
+      "datasheet": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0735.pdf"
+    },
+    "post_latch": {
+      "refs": ["U9"],
+      "type": "ACT_273_POST",
+      "manufacturer": "Texas Instruments",
+      "mpn": "CD74ACT273E",
+      "footprint": "Package_DIP:DIP-20_W7.62mm",
+      "package": {"pins": 20, "row_spacing_mm": 7.62},
+      "lifecycle": "Active",
+      "availability_snapshot": "DigiKey: 856 in stock",
+      "order_source": "https://www.ti.com/product/CD74ACT273/part-details/CD74ACT273E",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/cd74ac273.pdf"
+    },
+    "post_leds": {
+      "refs": ["D_POST0", "D_POST1", "D_POST2", "D_POST3", "D_POST4", "D_POST5", "D_POST6", "D_POST7"],
+      "type": "LED_GREEN",
+      "manufacturer": "Kingbright",
+      "mpn": "WP710A10LGD",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "quantity": 8,
+      "availability_snapshot": "Kingbright authorized inventory snapshot: DigiKey 49413",
+      "order_source": "https://www.kingbrightusa.com/distyPNInv.asp?match=1&sltSearch=distyInv&txtPartNo=WP710A10LGD",
+      "datasheet": "https://www.kingbrightusa.com/images/catalog/SPEC/WP710A10LGD.pdf"
+    },
+    "sound_transducer": {
+      "refs": ["BZ1"],
+      "type": "PIEZO_12MM",
+      "manufacturer": "Same Sky",
+      "mpn": "CPT-1207-5LTH-T",
+      "footprint": "Buzzer_Beeper:Buzzer_12x9.5RM7.6",
+      "rated_vpp": 5,
+      "rated_current_ma": 2,
+      "lifecycle": "Active",
+      "availability_snapshot": "DigiKey: 1965 in stock",
+      "order_source": "https://www.digikey.com/en/products/detail/same-sky-formerly-cui-devices/CPT-1207-5LTH-T/29292285",
+      "datasheet": "https://www.sameskydevices.com/product/resource/cpt-1207-5lth-t.pdf"
+    },
+    "sound_transistor": {
+      "refs": ["Q1"],
+      "type": "NPN_2N3904",
+      "manufacturer": "onsemi",
+      "mpn": "P2N3904ABU",
+      "footprint": "Package_TO_SOT_THT:TO-92_Inline",
+      "pin_order": {"1": "emitter", "2": "base", "3": "collector"},
+      "datasheet": "https://www.onsemi.com/pdf/datasheet/p2n3904a-d.pdf"
+    }
+  }
+}

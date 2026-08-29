@@ -9,12 +9,17 @@ module revb_bringup_tb;
     parameter rom_file     = "revb_bringup.hex";
     parameter tx_log       = "revb_tx.bin";
     parameter expect_bytes = 47;
-    reg clk = 0, reset_n = 0;
+    reg clk = 0, reset_n = 0, dot_clk = 0, baud_master = 0;
     always #10 clk = ~clk;
+    always #2 dot_clk = ~dot_clk;
+    always #101.7 baud_master = ~baud_master;
 
+    // Historical bring-up ROM does not program D57, so retain direct /16 only
+    // for this recovery-path regression. NETC10/DIAG acceptance uses PIT normal.
     revb_backplane_top #(.rom_file(rom_file), .DECODE_MODE(1),
-                         .VIDEO_PRESENT(0), .USART_REAL(1), .vw_limit(0))
-        dut (.clk(clk), .reset_n(reset_n));
+                         .VIDEO_PRESENT(0), .USART_REAL(1), .PIT_REAL(1),
+                         .IO_CLK_SOURCE(0), .vw_limit(0))
+        dut (.clk(clk), .baud_master(baud_master), .dot_clk(dot_clk), .reset_n(reset_n));
 
     integer fo, n = 0;
     reg prev = 1'b0;

@@ -34,13 +34,13 @@ the recorded hash. Reject the changed preview, return to R5.J2/J3/R1, generate a
 review a new candidate, and obtain a new exact-hash release. Never silently accept
 or edit production data in the vendor UI.
 
-## Released candidate and session identity
+## Held release candidate and session identity
 
 | Field | Recorded value |
 |---|---|
 | Upload-gate command result | pending |
 | Release-gate status / owner / timestamp | pending |
-| Source revision | `90012621b45a923e8315c0e5ca6a38092b518885` |
+| Source revision | `5f0a523b2e0bc176f58bb22856b27ce8c165701e` |
 | Browser/session date | pending |
 | Vendor | JLCPCB |
 | Delivery unit | five separate PCB designs; no panelization |
@@ -57,11 +57,11 @@ local evidence name here.
 
 | Design | Expected size / layers | Exact released ZIP SHA-256 | Uploaded hash | Vendor detection | Preview evidence | Result |
 |---|---|---|---|---|---|---|
-| CPU | 100x70 mm / 2 | `2335e88fc54e5d6efa7f8ba48d1bcb814b9d7e9960d581d4506c95aae361389d` | pending | pending | pending | pending |
-| Memory | 100x60 mm / 2 | `a2c903d130d87b9ea970fe8d9c0408d3751c181eb51a3406a712042874bff7b2` | pending | pending | pending | pending |
-| I/O | 100x100 mm / 2 | `fb29708fab4d1070101ca26f0a053b4d059fbb8956847bb6382f97478417bc19` | pending | pending | pending | pending |
-| Backplane | 100x100 mm / 2 | `1a642c0b7d5ed282da03ee263d7a66ee00d6ee93394e456dc4799f501a5ea590` | pending | pending | pending | pending |
-| Video | 100x100 mm / 4 | `46e13e63c3b4df4eb05f70c38dd2d810860d6503b36db85feabcace324b5f4ab` | pending | pending | pending | pending |
+| CPU | 100x70 mm / 2 | `abb9db95173d30fd5aeae7bce8d5a52cbdeba84bc2771722746e5d3e19b7b325` | pending | pending | pending | pending |
+| Memory | 100x60 mm / 2 | `741aebf2a7d87e5473fc2b7efbb0cef343034239f63dcde41153034471c7bf70` | pending | pending | pending | pending |
+| I/O | 100x100 mm / 2 | `a3cc2f2509c28799542e99a12279eafa25754f91c5ae601e28b99dcb05883a4f` | pending | pending | pending | pending |
+| Backplane | 100x100 mm / 2 | `c6d15a55cd56c5f1114bb831fbf57868b0c37204fab162ca6ace45322fe4456d` | pending | pending | pending | pending |
+| Video | 100x100 mm / 4 | `44b3a8df5d3e5d1ebb3258ed6151151502c898ec342761c041381842a8483b44` | pending | pending | pending | pending |
 
 For every preview, inspect rather than infer:
 

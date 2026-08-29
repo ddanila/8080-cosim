@@ -93,7 +93,7 @@ def main() -> int:
         return 1
     suffix = " + negative controls" if "--self-test" in sys.argv else ""
     print("REVB-VIDEO-POWER: PASS 23/23 decouplers, 47 uF bulk, "
-          "0.606..0.688 V RGB, 1351 mA/2 A budget" + suffix)
+          "0.606..0.688 V RGB, 1655 mA/2 A design budget" + suffix)
     return 0
 
 

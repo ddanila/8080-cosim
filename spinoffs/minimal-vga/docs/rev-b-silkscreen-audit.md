@@ -1,6 +1,6 @@
 # VJUGA rev B — five-board silkscreen audit
 
-Status: **PASS / ASSEMBLY LEGEND REVIEW / NEW RELEASE CANDIDATE REQUIRED / ORDER HOLD**, 2026-08-28.
+Status: **PASS / CURRENT CANDIDATE REVIEWED / ORDER HOLD**, 2026-08-29.
 
 This audit covers the printable front and bottom silkscreen of CPU, Memory, I/O,
 Backplane, and Video. The typography changes fabrication Gerbers, so the former R5.J2
@@ -41,15 +41,16 @@ Gerber output, so JLCPCB does not need the font file.
 Every physical footprint now has a same-side assembly marking containing both its
 reference and fitted value or functional role. This includes resistances,
 capacitances, oscillator frequencies, exact logic/device families, connector roles,
-wire-link gauge and all seven first-system DNP positions. The controlled vocabulary
+wire-link gauge and the seven former staged-DNP positions now fitted in the
+C10-capable first system. The controlled vocabulary
 and exact value spellings are in `kicad/revb/assembly-markings.json`.
 
 | Board | Physical ref+value labels | Total visible GOST text items | Examples |
 |---|---:|---:|---|
 | CPU | 7 | 11 | `U1 Z80`, `U2 2.000MHz`, `C1 100nF`, `J_DIAG DIAG HEADER` |
 | Memory | 10 | 14 | `U1 27C256`, `U2 AS6C1008`, `U3 ATF22V10`, all bypass capacitors |
-| I/O | 19 | 23 | every IC/cap/header; `U4 8255 DNP`, `J_KBD KEYBOARD DNP`, baud clock/select |
-| Backplane | 41 | 54 | every pull-up/value and protected-power/serial part plus all ten slot connectors |
+| I/O | 46 | 51 | every fitted IC, capacitor, resistor, connector, jumper, test point and POST indicator; compact functional values distinguish PIT, POST, clock and sound parts |
+| Backplane | 41 | 55 | every pull-up/value and protected-power/serial part plus all ten slot connectors and the bottom `U_RST` pinout cue |
 | Video | 54 | 60 | all 23 ICs, 23 bypass capacitors, RGB resistors, oscillator, VGA and bulk capacitor |
 
 The actual reference `R_BRQ` is printed `R_BRq`: this is the sole case-only display
@@ -65,7 +66,7 @@ labels use 1.6 mm for denser values with a little extra visual weight and margin
 ## Verification
 
 - `check_revb_pcb.py` rejects a missing/mixed font, undersized text, inconsistent
-  title/safety hierarchy, any missing/duplicated/wrong-side ref+value or DNP label,
+  title/safety hierarchy, any missing/duplicated/wrong-side ref+value or declared DNP label,
   missing slot labels, or a wrong-side pin-1 cue.
 - `apply_revb_silkscreen.py` imports only reviewed text from a fresh generator output
   into each routed release board. It refuses footprint-placement differences and
@@ -85,7 +86,8 @@ labels use 1.6 mm for denser values with a little extra visual weight and margin
 - The complete rev-B regression passed after the refresh, including both modular
   decode boots and the real-chip TTL Video `/WAIT` boot against the cosim oracle.
 
-This complete assembly legend supersedes the package currently recorded in
-`rev-b-five-board-package-manifest.json`. After human acceptance of the new PNG
-review, R5.J2/J3 must regenerate and independently render all five packages before
-R5.R1 can be reconsidered. The existing `ORDER HOLD` remains in force.
+This complete assembly legend is present in the current package recorded in
+`rev-b-five-board-package-manifest.json`. R5.J2/J3 regenerated and independently
+rendered all five archives after the final I/O and backplane silk corrections.
+R5.R1 may now be reviewed, but the existing `ORDER HOLD` remains in force until
+the owner explicitly authorizes the exact recorded hashes for upload.

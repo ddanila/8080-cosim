@@ -39,8 +39,11 @@ def main() -> int:
     expect(errors, io["U7"]["pins"]["6"], "BAUD_19200", "74HC393 /16 output")
     expect(errors, io["U7"]["pins"]["11"], "BAUD_9600", "74HC393 /32 output")
     expect(errors, io["JP_BAUD"]["pins"],
-           {"1": "BAUD_19200", "2": "BAUDCLK", "3": "BAUD_9600"},
-           "JP_BAUD pinout")
+           {"1": "BAUD_19200", "2": "BAUD_DIRECT", "3": "BAUD_9600"},
+           "JP_BAUD direct-recovery-rate pinout")
+    expect(errors, io["JP_CLK_SRC"]["pins"],
+           {"1": "PIT_BAUD", "2": "BAUDCLK", "3": "BAUD_DIRECT"},
+           "JP_CLK_SRC PIT/direct pinout")
 
     expect(errors, bp["J_TTL"]["pins"],
            {"1": "VCC_SENSE", "2": "BOARD_TX", "3": "BOARD_RX", "4": "GND"},

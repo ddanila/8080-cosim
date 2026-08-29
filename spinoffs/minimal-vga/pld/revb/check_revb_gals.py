@@ -22,7 +22,8 @@ ALIASES = {
     "io-u2": {
         "IORQn": "IORQ_N", "RESETn": "RESET_N", "M1n": "M1_N",
         "PICINT": "PIC_INT", "PICCSn": "PIC_CS_N", "PPICSn": "PPI_CS_N",
-        "UARTCSn": "UART_CS_N", "IORESET": "IO_RESET", "INTn": "INT_N",
+        "UARTCSn": "UART_CS_N", "PITCSn": "PIT_CS_N", "POSTCLK": "POST_CLK",
+        "WRn": "WR_N", "IORESET": "IO_RESET", "INTn": "INT_N",
         "INTAn": "INTA_N", "GND": "GND", "GND0": "GND", "VCC": "VCC5",
     },
     "video-hdec-u5": {
@@ -111,7 +112,7 @@ def check_pins(base: str, device: str, pins: list[str]) -> None:
     board = json.loads((REVB / f"{board_name}.board.json").read_text())
     part = next(part for part in board["chips"] if part["ref"] == ref)
     expected_device = {
-        "memory-u3": "GAL22V10", "io-u2": "GAL16V8_IOSEL",
+        "memory-u3": "GAL22V10", "io-u2": "GAL22V10_IOSEL",
         "video-hdec-u5": "GAL22V10_HDEC", "video-vdec-u6": "GAL22V10_VDEC",
         "video-ctrl-u7": "GAL22V10_CTRL",
     }[base]
@@ -125,8 +126,9 @@ def check_pins(base: str, device: str, pins: list[str]) -> None:
             expected = aliases.get(pld_name, pld_name)
             assert expected == board_name, (base, number, pld_name, board_name)
     if base == "io-u2":
-        assert pins[17] == "GND0", "unused complex-mode I/O pin 18 must not float"
-        assert pins[18] == "NC", "ATF16V8 complex-mode pin 19 must not be an input"
+        assert device == "GAL22V10"
+        assert pins[12] == "GND0", "unused ATF22V10 pin 13 input must not float"
+        assert pins[21:23] == ["NC", "NC"], "unused ATF22V10 I/O pins must be NC"
 
 
 def check_memory(assignments: dict[str, str]) -> None:
@@ -164,16 +166,21 @@ def check_memory(assignments: dict[str, str]) -> None:
 
 def check_io(assignments: dict[str, str]) -> None:
     for iorq_n in (False, True):
-        for port in range(256):
-            env = {"IORQn": iorq_n, "RESETn": True, "M1n": True,
-                   "PICINT": False,
-                   **{f"A{bit}": bool(port & (1 << bit)) for bit in range(2, 8)}}
-            for name, window in (("PICCSn", 0x00), ("PPICSn", 0x04),
-                                 ("UARTCSn", 0x08)):
-                selected = not iorq_n and (port & 0xFC) == window
-                assert physical(assignments, name, env) == (not selected), (
-                    name, iorq_n, hex(port))
-    env = {"IORQn": True, "RESETn": True, "M1n": True, "PICINT": False,
+        for m1_n in (False, True):
+            for wr_n in (False, True):
+                for port in range(256):
+                    env = {"IORQn": iorq_n, "RESETn": True, "M1n": m1_n,
+                           "WRn": wr_n, "PICINT": False,
+                           **{f"A{bit}": bool(port & (1 << bit)) for bit in range(2, 8)}}
+                    for name, window in (("PICCSn", 0x00), ("PPICSn", 0x04),
+                                         ("UARTCSn", 0x08), ("PITCSn", 0x18)):
+                        selected = not iorq_n and m1_n and (port & 0xFC) == window
+                        assert physical(assignments, name, env) == (not selected), (
+                            name, iorq_n, m1_n, hex(port))
+                    post_low = not iorq_n and m1_n and not wr_n and (port & 0xFC) == 0x20
+                    assert physical(assignments, "POSTCLK", env) == (not post_low), (
+                        "POSTCLK", iorq_n, m1_n, wr_n, hex(port))
+    env = {"IORQn": True, "RESETn": True, "M1n": True, "WRn": True, "PICINT": False,
            **{f"A{bit}": False for bit in range(2, 8)}}
     for reset_n in (False, True):
         assert physical(assignments, "IORESET", env | {"RESETn": reset_n}) == (not reset_n)
@@ -184,6 +191,22 @@ def check_io(assignments: dict[str, str]) -> None:
     assert eval_sop(assignments["INTn.T"], env) is False
     for pic_int in (False, True):
         assert eval_sop(assignments["INTn.E"], env | {"PICINT": pic_int}) == pic_int
+
+
+def check_io_mutations(assignments: dict[str, str]) -> None:
+    mutations = {
+        "PIT address A2 polarity": ("/PITCSn", "/IORQn * M1n * /A7 * /A6 * /A5 * A4 * A3 * A2"),
+        "POST clock fixed-low polarity": ("POSTCLK", "GND"),
+        "PIC select missing M1 exclusion": ("/PICCSn", "/IORQn * /A7 * /A6 * /A5 * /A4 * /A3 * /A2"),
+    }
+    for label, (name, expression) in mutations.items():
+        changed = dict(assignments)
+        changed[name] = expression
+        try:
+            check_io(changed)
+        except AssertionError:
+            continue
+        raise AssertionError(f"I/O equation mutation escaped: {label}")
 
 
 def counter_env(prefix: str, value: int) -> dict[str, bool]:
@@ -306,8 +329,10 @@ def main() -> int:
         device, pins, assignments = source(base)
         check_pins(base, device, pins)
         check(assignments)
+        if base == "io-u2":
+            check_io_mutations(assignments)
     check_manifest()
-    print("REVB-GAL-CHECK: PASS memory/I-O decode plus exact Video timing, /6 tick, arbitration, pins and artifacts")
+    print("REVB-GAL-CHECK: PASS memory/I-O decode plus I/O address/M1/POST-polarity mutations, exact Video timing, /6 tick, arbitration, pins and artifacts")
     return 0
 
 

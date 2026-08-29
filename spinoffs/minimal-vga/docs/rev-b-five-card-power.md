@@ -1,6 +1,6 @@
-# VJUGA rev B five-card power and VGA output — R5.V2
+# VJUGA rev B five-card power and VGA output — R5.V2 / R5.I7
 
-Status: **PASS / R5.V6 SYSTEM MODEL FROZEN** on 2026-08-28. The desk budget,
+Status: **PASS / R5.I7 SYSTEM MODEL FROZEN** on 2026-08-29. The desk budget,
 routed-board voltage drop, exact normal supply, protected inputs and assembled
 clearance are now one machine-checked contract.
 
@@ -44,7 +44,7 @@ Video has three. RGB assumes all three channels continuously high.
 |---|---:|
 | CPU complete card | 250 mA |
 | Memory complete card | 235 mA |
-| I/O UART tier, B3 parts DNP | 150 mA |
+| I/O complete C10 tier, including D57, POST and sound | 454 mA |
 | Backplane/reset/console/pulls | 30 mA |
 | Video oscillator (`ECS-100A-251.7`, 25.175 MHz band maximum) | 70 mA |
 | Video 3 x ATF22V10 | 375 mA |
@@ -60,9 +60,10 @@ Video has three. RGB assumes all three channels continuously high.
 | Video three RGB loads | 28 mA |
 | Video card allowance | 30 mA |
 | **Video subtotal** | **686 mA** |
-| **Five-card total** | **1351 mA** |
+| **Five-card total** | **1655 mA** |
 
-A regulated 5 V, 2 A supply leaves 649 mA (32.45%) planning headroom. The production
+A regulated 5 V, 2 A design limit leaves 345 mA (17.25%) planning headroom. The exact
+4 A adapter therefore has 2.345 A of nameplate headroom. The production
 backplane has no USB power branch and must not be presented as USB-powered. First
 power-up still uses a current limit and staged card insertion.
 
@@ -74,8 +75,9 @@ was conservatively raised by 40 mA rather than preserving the obsolete placehold
 
 Normal operation uses a center-positive **Mean Well GST25A05-P1J**, rated 5 V/4 A,
 through exact Wurth `694106301002` barrel jack `J_PWR` (5 A). `F_MAIN` is a Bourns
-MF-R250 in series between `PWR_RAW` and `VCC_BUS`; it holds 1.53 A even at 70 C, above
-the 1.351 A frozen load. `D_REV` is a 5 A Vishay SB560 crowbar after that fuse,
+MF-R300 in series between `PWR_RAW` and `VCC_BUS`; it holds 3.00 A at 23 C, 2.49 A at
+40 C and 1.83 A at 70 C, all above the 1.655 A frozen load. Its 6 A nominal trip
+retains useful fault separation from the 4 A adapter. `D_REV` is a 5 A Vishay SB560 crowbar after that fuse,
 cathode to `VCC_BUS` and anode to `GND_BUS`. A reversed center contact therefore
 becomes a protected fault instead of reverse rail voltage.
 
@@ -88,7 +90,7 @@ logic rails.
 
 The selected adapter publishes a broad +/-5% voltage tolerance, so its nameplate
 alone is insufficient for this conservative TTL corner. Receipt acceptance is an
-electronic-load test at **1.351 A**: at the plug, require at least **4.90 V average**
+electronic-load test at **1.655 A**: at the plug, require at least **4.90 V average**
 and no more than **80 mV peak-to-peak** ripple. A delivered unit that misses either
 limit is not qualified for this machine.
 
@@ -102,14 +104,14 @@ GND bus contact per card, and half the adapter ripple limit.
 
 | Slot / card | routed copper drop | modeled rail trough | margin over 4.50 V |
 |---|---:|---:|---:|
-| 1 / CPU | 74.03 mV | 4.628 V | 128 mV |
-| 2 / Memory | 69.10 mV | 4.633 V | 133 mV |
-| 3 / I/O | 59.53 mV | 4.645 V | 145 mV |
-| 5 / Video | 34.49 mV | 4.654 V | 154 mV |
+| 1 / CPU | 90.40 mV | 4.574 V | 74 mV |
+| 2 / Memory | 85.48 mV | 4.580 V | 80 mV |
+| 3 / I/O | 75.96 mV | 4.582 V | 82 mV |
+| 5 / Video | 38.85 mV | 4.613 V | 113 mV |
 
-The R5.J2 release-source effective raw-path resistance is 3.554 mOhm and the shared
-worst-case input drop is 150.71 mV. At the adapter's unqualified published -5%
-corner the modeled trough would be only 4.478 V; this is why the delivered-unit
+The routed effective raw-path resistance is 3.554 mOhm and the shared worst-case
+input drop is 187.93 mV. At the adapter's unqualified published -5% corner the
+modeled trough would be only 4.424 V; this is why the delivered-unit
 receipt test is mandatory.
 
 ## Machine gate

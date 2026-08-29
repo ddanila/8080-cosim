@@ -8,7 +8,8 @@
 `default_nettype none
 module revb_mem_card #(
     parameter rom_file    = "ekta37_z80.hex",
-    parameter DECODE_MODE = 0    // 0 = Mode B (D6 РТ4), 1 = Mode A (GAL-internal)
+    parameter DECODE_MODE = 0,   // 0 = Mode B (D6 РТ4), 1 = Mode A (GAL-internal)
+    parameter RAM_FAULT   = 0    // R5.I6 mutation: invert D0 at 4000h on reads
 ) (
     input  wire        clk,
     input  wire        reset_n,
@@ -63,7 +64,7 @@ module revb_mem_card #(
     always @* begin
         if (is_rom)       D_out = rom[rom_idx(A)];
         else if (is_cart) D_out = 8'hFF;          // empty cartridge
-        else              D_out = sram[A];
+        else              D_out = sram[A] ^ ((RAM_FAULT && A == 16'h4000) ? 8'h01 : 8'h00);
     end
 
     // Writes: RAM only, and never into the Video card's window.

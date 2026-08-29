@@ -29,6 +29,7 @@ CAND = {
     "DIP16": ["Package_DIP:DIP-16_W7.62mm"],
     "DIP20": ["Package_DIP:DIP-20_W7.62mm"],
     "DIP24": ["Package_DIP:DIP-24_W7.62mm", "Package_DIP:DIP-24_W15.24mm"],
+    "DIP24_WIDE": ["Package_DIP:DIP-24_W15.24mm"],
     "DIP28": ["Package_DIP:DIP-28_W15.24mm", "Package_DIP:DIP-28_W7.62mm"],
     "DIP32": ["Package_DIP:DIP-32_W15.24mm", "Package_DIP:DIP-32_W7.62mm"],
     "DIP40": ["Package_DIP:DIP-40_W15.24mm", "Package_DIP:DIP-40_W7.62mm"],
@@ -45,13 +46,14 @@ CAND = {
     "LED5": ["LED_THT:LED_D5.0mm"],
     "SW_PUSH6": ["Button_Switch_THT:SW_PUSH_1P1T_6x3.5mm_H4.3_APEM_MJTP1243"],
     "TO92": ["Package_TO_SOT_THT:TO-92_Inline"],
+    "BUZZER12": ["Buzzer_Beeper:Buzzer_12x9.5RM7.6"],
     # USB4085 is a FULLY through-hole USB-C receptacle (USB4125 was SMD — wrong for a
     # hand-soldered THT board).
     "USB_C_THT": ["Connector_USB:USB_C_Receptacle_GCT_USB4085"],
     "PIN_2x2": ["Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical"],
     "CP_RADIAL": ["Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"],
     "PTC_RADIAL": ["VJUGA:Fuse_Bourns_MF-R110"],
-    "PTC_RADIAL_2A5": ["VJUGA:Fuse_Bourns_MF-R250"],
+    "PTC_RADIAL_3A": ["VJUGA:Fuse_Bourns_MF-R300"],
     "BARREL_WUERTH_5A": ["Connector_BarrelJack:BarrelJack_Wuerth_6941xx301002"],
     "D_DO201_VERT": ["Diode_THT:D_DO-201AD_P5.08mm_Vertical_AnodeUp"],
     "WIRE_LINK_22AWG": ["VJUGA:WireLink_22AWG_P5.08mm"],
@@ -63,8 +65,10 @@ TYPE_KINDS = {
                         else ["PIN_1x39_RA", "PIN_1x10_RA"]),
     "Z80_DIP40": ["DIP40"],
     "EPROM_27C256": ["DIP28"], "SRAM_AS6C1008": ["DIP32"], "GAL22V10": ["DIP24"],
-    "USART_8251": ["DIP28"], "GAL16V8_IOSEL": ["DIP20"], "OSC_BAUD": ["OSC8"],
+    "USART_8251": ["DIP28"], "GAL22V10_IOSEL": ["DIP24"], "OSC_BAUD": ["OSC8"],
     "TTL_393_BAUD": ["DIP14"], "HCT125_CONSOLE": ["DIP14"],
+    "PIT_8253": ["DIP24_WIDE"], "ACT_273_POST": ["DIP20"],
+    "NPN_2N3904": ["TO92"], "PIEZO_12MM": ["BUZZER12"],
     "OSC_CPU": ["OSC14"], "PPI_8255": ["DIP40"], "ENC_74148": ["DIP16"],
     "PIC_8259": ["DIP28"],
     "C_100N": ["C_DISC"],
@@ -72,10 +76,12 @@ TYPE_KINDS = {
     "USB_C_PWR": ["USB_C_THT"], "R_5K1": ["R_AXIAL"], "R_10K": ["R_AXIAL"],
     "R_4K7": ["R_AXIAL"], "R_2K2": ["R_AXIAL"], "SUPERVISOR_3": ["TO92"],
     "R_1K_VERT": ["R_VERT"], "R_1K8_VERT": ["R_VERT"],
-    "R_10K_VERT": ["R_VERT"], "D_1N4148_VERT": ["D_DO35_VERT"],
+    "R_10K_VERT": ["R_VERT"], "R_2K2_VERT": ["R_VERT"],
+    "R_4K7_VERT": ["R_VERT"], "R_100K_VERT": ["R_VERT"],
+    "D_1N4148_VERT": ["D_DO35_VERT"], "LED_GREEN": ["LED5"],
     "SW_PUSH": ["SW_PUSH6"], "LED": ["LED5"], "JMP_2x2": ["PIN_2x2"],
     "C_ELEC_47U": ["CP_RADIAL"], "PTC_1A": ["PTC_RADIAL"],
-    "PTC_2A5": ["PTC_RADIAL_2A5"], "BARREL_5A": ["BARREL_WUERTH_5A"],
+    "PTC_3A": ["PTC_RADIAL_3A"], "BARREL_5A": ["BARREL_WUERTH_5A"],
     "SCHOTTKY_3A": ["D_DO201_VERT"], "SCHOTTKY_5A": ["D_DO201_VERT"],
     "WIRE_LINK_22AWG": ["WIRE_LINK_22AWG"],
     # Video card (R5.V4): every physical package is explicit, including the exact
@@ -100,7 +106,9 @@ PKG_WIDTH = {
     "SRAM_AS6C1008": "W15.24mm",   # AS6C1008 DIP-32, 600 mil
     "GAL22V10": "W7.62mm",         # GAL22V10/ATF22V10 DIP-24, 300 mil skinny
     "USART_8251": "W15.24mm",      # 8251A/82C51 DIP-28, 600 mil
-    "GAL16V8_IOSEL": "W7.62mm",    # GAL16V8/ATF16V8 DIP-20, 300 mil
+    "GAL22V10_IOSEL": "W7.62mm",   # ATF22V10 DIP-24, 300 mil
+    "PIT_8253": "W15.24mm",        # 8253/82C54 DIP-24, 600 mil
+    "ACT_273_POST": "W7.62mm",     # CD74ACT273E DIP-20, 300 mil
     "PPI_8255": "W15.24mm",        # 8255A/82C55 DIP-40, 600 mil
     "ENC_74148": "W7.62mm",        # 74HC148 DIP-16, 300 mil
     "PIC_8259": "W15.24mm",        # 8259A/82C59 DIP-28, 600 mil
@@ -136,7 +144,7 @@ PKG_PHYS = {
                     (2, 0.70, 5.00, "5mm disc ceramic, 5.08mm pitch")),
     "C_ELEC_47U": (2,  0.60, 2.50, "6.3mm radial electrolytic, 2.5mm pitch"),
     "PTC_1A":     (2,  0.70, 5.10, "Bourns MF-R110: 5.1mm lead pitch, 0.51mm leads (mf_r.pdf)"),
-    "PTC_2A5":    (2,  1.00, 5.10, "Bourns MF-R250: 5.1mm pitch, 0.81mm leads (mf-r.pdf)"),
+    "PTC_3A":     (2,  0.70, 5.10, "Bourns MF-R300: 5.1mm pitch, 0.51mm leads (mf-r.pdf)"),
     "BARREL_5A":  (3,  0.80, 4.80, "Wurth 694106301002: three blade terminals; "
                                             "4.8mm switched-contact X offset"),
     "SCHOTTKY_3A": (2, 1.32, 5.08, "Vishay 1N5822 DO-201AD, 1.32mm maximum lead; vertical"),
@@ -147,6 +155,11 @@ PKG_PHYS = {
     "R_1K8_VERT": (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
     "R_10K_VERT": (2,  0.70, 2.54, "DIN0207 vertical, 2.54mm pad pitch"),
     "D_1N4148_VERT": (2, 0.70, 2.54, "1N4148 DO-35 vertical, 2.54mm pad pitch"),
+    "R_2K2_VERT": (2, 0.70, 2.54, "DIN0207 vertical POST LED limiter"),
+    "R_4K7_VERT": (2, 0.70, 2.54, "DIN0207 vertical sound base resistor"),
+    "R_100K_VERT": (2, 0.70, 2.54, "DIN0207 vertical sound base pulldown"),
+    "LED_GREEN": (2, 0.80, 2.54, "Kingbright WP710A10LGD 5mm THT LED"),
+    "PIEZO_12MM": (2, 0.70, 7.60, "Same Sky CPT-1207-5LTH-T 12mm transducer, 7.6mm pitch"),
     "OSC_25M175": (4, 0.80, 15.24, "ECS-100A-251.7 full DIP-14 can: pins 1/7/8/14; "
                                            "7.62mm row spacing checked by R5.V4 gate"),
     "DSUB15HD": (15, 0.70, 0.762, "NorComp 200-015-213L537: 15 x 0.70mm signal PTH, "

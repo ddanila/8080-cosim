@@ -17,7 +17,7 @@
   "current_budget_ma": {
     "cpu": 250,
     "memory": 235,
-    "io": 150,
+    "io": 454,
     "backplane": 30,
     "video": {
       "oscillator": 70,
@@ -35,10 +35,10 @@
       "card_allowance": 30,
       "subtotal": 686
     },
-    "five_card_total": 1351,
+    "five_card_total": 1655,
     "qualified_supply_ma": 2000,
-    "supply_headroom_ma": 649,
-    "supply_headroom_percent": 32.45,
+    "supply_headroom_ma": 345,
+    "supply_headroom_percent": 17.25,
     "usb_polyfuse_hold_ma": 1100,
     "usb_branch_qualified_for_five_cards": false
   },

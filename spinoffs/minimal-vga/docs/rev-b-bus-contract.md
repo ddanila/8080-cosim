@@ -194,15 +194,16 @@ budget. Details and machine-checked arithmetic are in `rev-b-five-card-power.md`
 |---|---:|
 | CPU | 250 mA |
 | Memory | 235 mA |
-| I/O (UART tier, B3 parts DNP) | 150 mA |
+| I/O (complete C10 tier, D57/POST/sound fitted) | 454 mA |
 | Backplane | 30 mA |
 | Video | 686 mA |
-| **Five-card total** | **1351 mA** |
+| **Five-card total** | **1655 mA** |
 
-The required supply is regulated 5 V rated at least 2 A: 649 mA/32.45% planning
-headroom remains. Operation is frozen to the receipt-tested Mean Well GST25A05-P1J
-through the fused/reverse-crowbar-protected barrel input. The routed R5.V6 model gives
-a 4.628 V minimum slot trough at 1.351 A. R5.J1 removed the optional USB4085 power
+The required supply is regulated 5 V rated at least 2 A: 345 mA/17.25% planning
+headroom remains at that design limit, while the selected 4 A adapter retains 2.345 A.
+Operation is frozen to the receipt-tested Mean Well GST25A05-P1J through the
+MF-R300 fused/reverse-crowbar-protected barrel input. The routed R5.I7 model gives
+a 4.574 V minimum slot trough at 1.655 A. R5.J1 removed the optional USB4085 power
 path because its fixed PTH lands fall below JLCPCB's published 2-layer annular-ring
 minimum; the USB-TTL console is data-only. Exact protection and receipt-test limits are in
 `rev-b-five-card-power.md`; the old ~712 mA number is historical evidence only.

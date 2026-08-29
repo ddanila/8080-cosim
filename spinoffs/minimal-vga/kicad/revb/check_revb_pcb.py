@@ -128,6 +128,10 @@ if CARD != "backplane":
         fail.append("front PIN 1 cue must point right toward card-bus pad 1")
     if len(back_pin1) != 1 or back_pin1[0].GetLayer() != pcbnew.B_SilkS:
         fail.append("bottom PIN 1 cue must point left toward mirrored card-bus pad 1")
+else:
+    reset_cue = by_text.get("U_RST TOP 1:RST 2:5V 3:GND", [])
+    if len(reset_cue) != 1 or reset_cue[0].GetLayer() != pcbnew.B_SilkS:
+        fail.append("backplane bottom silk must carry the U_RST service pinout")
 
 if fail:
     print(f"{CARD} PCB content check FAILED:")

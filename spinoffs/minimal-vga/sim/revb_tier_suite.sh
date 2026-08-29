@@ -28,6 +28,27 @@ python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_electrical.py
 echo "== rev B: bidirectional 8251 console + C10 transaction (R5.S3) =="
 spinoffs/minimal-vga/sim/revb_serial_console_check.sh
 
+echo "== rev B: D57/POST contract and hardware twin (R5.I1/R5.I2) =="
+spinoffs/minimal-vga/sim/revb_io_expansion_check.sh
+
+echo "== rev B: expanded I/O GAL/netlist/pin closure (R5.I4) =="
+spinoffs/minimal-vga/pld/revb/build_revb_gals.sh
+python3 spinoffs/minimal-vga/kicad/revb/check_revb_io_board_expansion.py --self-test
+
+echo "== rev B: reproducible EKTA/NETC10/DIAG 27C256 set (R5.I3) =="
+python3 spinoffs/minimal-vga/roms/check_revb_rom_set.py
+
+echo "== rev B: complete GOST-labelled routed I/O card (R5.I5) =="
+if revb_have KICAD_PYTHON; then
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_io_pcb.py --self-test
+  python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py io --total
+else
+  echo "  SKIP  R5.I5 physical gate: pcbnew not found"
+fi
+
+echo "== rev B: integrated three-ROM system and recovery modes (R5.I6) =="
+spinoffs/minimal-vga/sim/revb_rom_system_check.sh
+
 echo "== rev B: mechanical mating contract (TG.1/D1.31; pure python, no CAD tools) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_mating.py
 
@@ -71,6 +92,9 @@ else
   echo "  SKIP  R5.V5/R5.V6/R5.J1 physical gates: pcbnew not found"
 fi
 
+echo "== rev B: exact five-card requalification and release-source guards (R5.I7/J2/J3) =="
+spinoffs/minimal-vga/kicad/revb/revb_i7_release_check.sh
+
 echo "== rev B: hash-bound final release hold (R5.R1) =="
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py --self-test
 
@@ -79,9 +103,6 @@ spinoffs/minimal-vga/sim/revb_card_tb_check.sh
 
 echo "== rev B: bus-conflict assertion =="
 spinoffs/minimal-vga/sim/revb_bus_assert_check.sh
-
-echo "== rev B: modular backplane boots ekta37 byte-identical to cosim (banner) =="
-spinoffs/minimal-vga/sim/revb_boot_check.sh
 
 echo "== rev B: minimum-tier bring-up ROM TX stream == cosim (real 8251, no Video) =="
 spinoffs/minimal-vga/sim/revb_bringup_check.sh

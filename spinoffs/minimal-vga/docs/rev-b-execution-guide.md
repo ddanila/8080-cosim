@@ -701,7 +701,8 @@ pad-count expectation or a too-small drill must FAIL) — same discipline as PKG
 **TH.3 — input power conditioning (D1.35).**
 > Historical four-board implementation. R5.V6 supersedes the direct/unfused
 > `J_PWR` wording below: the five-board input is an exact barrel jack through
-> MF-R250, with an SB560 reverse crowbar. R5.J1 further supersedes the USB branch:
+> MF-R300 (R5.I7's 1.655 A expanded-system correction), with an SB560 reverse
+> crowbar. R5.J1 further supersedes the USB branch:
 > the exact USB4085 annular ring is below JLCPCB's 2-layer absolute, so production
 > omits it and the USB-TTL console remains data-only.
 

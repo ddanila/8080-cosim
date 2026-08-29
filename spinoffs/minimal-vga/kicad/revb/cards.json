@@ -197,7 +197,7 @@
     "_tier": "standalone (B2); absent in B1 minimum tier"
   },
   "io": {
-    "role": "8251 UART (B1) + 8255 + PIC (B3)",
+    "role": "8251 UART + real D57 PIT + 8255/PIC + independent POST",
     "drives": [
       "MODE0",
       "MODE1"
@@ -240,19 +240,21 @@
     "owns_io": [
       "0x00-0x01",
       "0x04-0x07",
-      "0x08-0x0B"
+      "0x08-0x0B",
+      "0x18-0x1B",
+      "0x20-0x23"
     ],
     "populated": [
       "8251-class USART",
-      "GAL16V8 I/O-select GAL",
-      "local baud oscillator"
+      "ATF22V10 I/O-select GAL",
+      "local baud oscillator and divider",
+      "8253/82C54-compatible D57 PIT",
+      "82C55 PPI and keyboard encoder/header",
+      "8259-class PIC",
+      "eight-bit retained POST display",
+      "channel-1 sound driver and passive transducer"
     ],
-    "dnp": [
-      "82C55 PPI (B3)",
-      "8259-class PIC (B3)",
-      "74148 keyboard encoder (B3)",
-      "keyboard connector (B3)"
-    ],
+    "dnp": [],
     "hdl": "revb_io_card.v"
   },
   "fdc": {

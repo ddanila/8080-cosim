@@ -10,7 +10,8 @@ import hashlib, json, os, shutil, subprocess, sys
 import pcbnew
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from revb_place import BOARD_W, BOARD_H_BY_CARD, PLACE_BY_CARD  # noqa: E402
-from revb_assembly import display_value, expanded_parts, marking_text  # noqa: E402
+from revb_assembly import (display_value, expanded_parts, marking_placement,
+                           marking_text)  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))   # spinoffs/minimal-vga/kicad/revb
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
@@ -298,7 +299,7 @@ def emit_power_rails(board):
 def emit_backplane_power_spines(board):
     """Emit the R5.V6 high-current path before autorouting.
 
-    The base connector alone is rated for the complete 1.351-A desk budget, so a
+    The base connector alone is rated for the complete 1.655-A desk budget, so a
     2.0-mm VCC_BUS spine and a 2.0-mm GND_BUS spine run directly through its power pads in
     all five slots.  VCC_BUS uses F.Cu and GND_BUS uses B.Cu, allowing ordinary bus signals
     to cross on the other layer.  The normal-input fuse and jack are tied directly to
@@ -511,8 +512,10 @@ def emit_assembly_markings(board, parts):
         typ = part["type"]
         body_centre = (ref.startswith("U") and ref != "U_RST") or (
             ref.startswith(("R", "W")) and not typ.endswith("_VERT"))
-        multiline = ((not body_centre and ref.startswith(("J", "JP")))
-                     or (not body_centre and len(marking_text(ref, part)) > 13))
+        reviewed = marking_placement(CARD, ref)
+        multiline = (reviewed.get("multiline", False) if reviewed else
+                     ((not body_centre and ref.startswith(("J", "JP")))
+                      or (not body_centre and len(marking_text(ref, part)) > 13)))
         label = marking_text(ref, part, multiline=multiline)
         box = fp.GetBoundingBox(False, False)
         centre = box.GetCenter()
@@ -522,7 +525,12 @@ def emit_assembly_markings(board, parts):
                     angle=long_angle if body_centre else 0, layer=layer,
                     thickness=SILK_STYLE["assembly_text_thickness_mm"])
 
-        candidates = [(centre.x, centre.y, long_angle)] if body_centre else []
+        candidates = []
+        if reviewed:
+            candidates.append((mm(reviewed["x"]), mm(reviewed["y"]),
+                               reviewed.get("angle", 0)))
+        if body_centre:
+            candidates.append((centre.x, centre.y, long_angle))
         # Re-evaluate text dimensions after each angle; positions use the
         # component bbox plus the candidate text's actual rendered extent. A
         # bounded near-part grid gives dense Video/Backplane labels several clean
@@ -668,11 +676,21 @@ def main():
                 if (isinstance(item, pcbnew.PCB_TEXT) and item.IsVisible()
                         and item.GetText() == "1"):
                     item.SetTextPos(pcbnew.VECTOR2I(mm(45.428), mm(5.0)))
+        for pad in fp.Pads():
             if ref == "U_RST" and pad.HasHole():
                 # DS1813's exact inline TO-92 pitch is only 1.27 mm. Increase the
                 # stock footprint from 0.15 to JLCPCB's 0.18-mm 2-layer absolute ring;
                 # the recommended 0.25-mm ring cannot fit that exact pitch. Production
                 # confirmation is mandatory for this explicitly audited exception.
+                size, drill = pad.GetSize(), pad.GetDrillSize()
+                pad.SetSize(pcbnew.VECTOR2I(
+                    max(size.x, drill.x + mm(0.36)),
+                    max(size.y, drill.y + mm(0.36))))
+                pad.SetLocalClearance(mm(0.15))
+            elif ref == "Q1" and pad.HasHole():
+                # This library TO-92 is also the exact 1.27-mm inline pattern.
+                # Raise it to JLCPCB's audited 0.18-mm absolute ring; a 0.25-mm
+                # pad would violate clearance between adjacent transistor leads.
                 size, drill = pad.GetSize(), pad.GetDrillSize()
                 pad.SetSize(pcbnew.VECTOR2I(
                     max(size.x, drill.x + mm(0.36)),
@@ -731,8 +749,8 @@ def main():
     SILK = {
         "mem": [(SILK_STYLE["titles"]["mem"], 59.0, 52.0, 1.8),
                 (SILK_STYLE["common_safety_text"], 89.0, 49.0, 1.5)],
-        "io":  [(SILK_STYLE["titles"]["io"], 40.0, 30.0, 1.8),
-                (SILK_STYLE["common_safety_text"], 40.0, 58.0, 1.5)],
+        "io":  [(SILK_STYLE["titles"]["io"], 18.0, 44.0, 1.8),
+                (SILK_STYLE["common_safety_text"], 50.0, 44.0, 1.5)],
         "cpu": [(SILK_STYLE["titles"]["cpu"], 68.0, 46.0, 1.8),
                 (SILK_STYLE["common_safety_text"], 68.0, 53.0, 1.5)],
         "video": [(SILK_STYLE["titles"]["video"], 34.0, 87.0, 1.8),
@@ -763,6 +781,11 @@ def main():
         silk(board, "PIN 1 >", 91.5, BOARD_H - 9.0, size=1.5)
         # Viewed from the bottom, physical X is reversed and pad 1 is to the left.
         silk(board, "< PIN 1", 91.5, BOARD_H - 9.0, size=1.5,
+              layer=pcbnew.B_SilkS)
+    else:
+        # The backplane has no card-edge orientation cue. Keep its bottom Gerber
+        # intentionally nonblank with a useful reset-supervisor service pinout.
+        silk(board, "U_RST TOP 1:RST 2:5V 3:GND", 50.0, 52.0, size=1.5,
               layer=pcbnew.B_SilkS)
 
     # Assembly contract: every one of the 131 physical footprints has exactly one

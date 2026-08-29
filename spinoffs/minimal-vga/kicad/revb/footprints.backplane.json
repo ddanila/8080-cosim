@@ -4,7 +4,7 @@
     "Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical"
   ],
   "BARREL_5A": "Connector_BarrelJack:BarrelJack_Wuerth_6941xx301002",
-  "PTC_2A5": "VJUGA:Fuse_Bourns_MF-R250",
+  "PTC_3A": "VJUGA:Fuse_Bourns_MF-R300",
   "SCHOTTKY_5A": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_AnodeUp",
   "WIRE_LINK_22AWG": "VJUGA:WireLink_22AWG_P5.08mm",
   "C_ELEC_47U": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",

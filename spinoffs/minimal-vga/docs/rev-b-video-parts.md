@@ -71,8 +71,9 @@ asymmetric right-angle body would otherwise move the mating row several millimet
 ## Power correction and machine gate
 
 `ECS-100A-251.7` may draw 70 mA in its 25.175 MHz band. The former 30 mA placeholder is
-therefore retired: Video is 686 mA, the five-card ceiling is 1351 mA, and a regulated
-2 A supply retains 649 mA / 32.45% headroom. USB remains unqualified for the full system.
+therefore retired: Video remains 686 mA. R5.I7 subsequently raises the complete
+five-card ceiling to 1655 mA for the expanded I/O card, leaving 345 mA / 17.25%
+headroom against the 2 A design limit. USB remains unqualified for the full system.
 
 Run:
 

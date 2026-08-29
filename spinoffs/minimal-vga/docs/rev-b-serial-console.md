@@ -22,12 +22,18 @@ channel, and 3–4 to connect the protected board-RX channel to bus RX. Remove b
 to isolate the external connector. With both fitted, a temporary `J_TTL` 2–3
 link is an 8251 external loopback; remove power before changing shunts.
 
-`JP_BAUD` is on the I/O card:
+Two selectors are on the I/O card. `JP_CLK_SRC` 1–2 is the normal setting: it
+connects D57 channel 0 (`PIT_BAUD`) to the 8251 clock. `JP_CLK_SRC` 2–3 selects
+the direct recovery clock chosen by `JP_BAUD`:
 
-| Shunt | 8251 TxC/RxC | Console setting |
+| `JP_BAUD` shunt | Direct-recovery TxC/RxC | Console setting |
 |---|---:|---|
-| 1–2 (default) | 307.2 kHz | 19,200 baud, 8N1, x16 clock |
+| 1–2 (default direct rate) | 307.2 kHz | 19,200 baud, 8N1, x16 clock |
 | 2–3 | 153.6 kHz | 9,600 baud, 8N1, x16 clock |
+
+In normal operation NETC10 programs the PIT from 1.2288 MHz with count four,
+also yielding 307.2 kHz and 19,200 baud. `JP_BAUD` has no effect while
+`JP_CLK_SRC` remains in its normal PIT position.
 
 ## Exact circuit
 
@@ -53,7 +59,7 @@ link is an 8251 external loopback; remove power before changing shunts.
   board toward the header. An adapter voltage therefore reverse-biases the diode
   instead of back-powering VJUGA. Treat the pin as sense-only.
 - `C_CON` and the I/O card's new counter capacitor provide 100 nF at each added
-  IC. The I/O card now carries one 100 nF capacitor per fitted-or-DNP IC.
+  IC. The I/O card now carries one 100 nF capacitor per fitted IC.
 
 Exact order identities for this circuit are `SN74HCT125N`, `SN74HC393N`,
 `ECS-2200B-049`, Vishay `1N4148-TAP`, and Yageo DIN0207

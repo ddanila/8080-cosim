@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "status": "R5.I3 reproducible three-ROM set",
+  "eprom": "27C256, 32768 bytes, A14 selects identical 16 KiB halves",
+  "images": {
+    "EKTA3.7/VJUGA": {
+      "source": "roms/ekta37.bin",
+      "source_sha256": "fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27",
+      "derived_16k": "spinoffs/minimal-vga/roms/ekta37_z80.bin",
+      "derived_16k_sha256": "343ef2e6f0e5358bdc52cab7117f54ec583c0dc754499f5518ff8933bbc7befa",
+      "z80_changes": {
+        "000A": [
+          26,
+          226
+        ],
+        "0021": [
+          8,
+          0
+        ],
+        "0024": [
+          16,
+          0
+        ],
+        "0026": [
+          32,
+          0
+        ]
+      },
+      "output": "spinoffs/minimal-vga/roms/ekta37_z80-27c256.bin",
+      "bytes": 32768,
+      "sha256": "e06dc0ee989d33049ad60c5a182df4d3da8814f206fd19c4f500603c772d9b2f",
+      "duplication": "two byte-identical 16384-byte halves"
+    },
+    "NETC10/VJUGA": {
+      "source": "spinoffs/jukuravi/network-rom/juku-network-rom-abi1.4-c10.bin",
+      "source_sha256": "fbf9baaad9027a5335e3549da3a396eb999bbaae1a1f3f5f6e2f36798848a6bc",
+      "derived_16k": "spinoffs/minimal-vga/roms/netc10_vjuga.bin",
+      "derived_16k_sha256": "fbf9baaad9027a5335e3549da3a396eb999bbaae1a1f3f5f6e2f36798848a6bc",
+      "z80_changes": {},
+      "z80_basis": "C10 is reproducibly assembled with zmac -8 from canonical 8080-subset source; native-Z80 system regression is the execution guard",
+      "pit_policy": "unchanged: D57 channel-0 mode-2/count-4 initialization retained",
+      "output": "spinoffs/minimal-vga/roms/netc10_vjuga-27c256.bin",
+      "bytes": 32768,
+      "sha256": "6e84664b4513c1c3f8f2f717bbee5ed15495225636f1b2f2fe8de8924a889f3f",
+      "duplication": "two byte-identical 16384-byte halves"
+    },
+    "DIAG/VJUGA": {
+      "source": "spinoffs/minimal-vga/roms/revb-diag/build_diag.py",
+      "derived_16k": "spinoffs/minimal-vga/roms/diag_vjuga.bin",
+      "derived_16k_sha256": "f0d9e36f03e706d49e514999849e3277527f1b391bac475fa841eb97d63120a4",
+      "map": "spinoffs/minimal-vga/roms/diag_vjuga.map.json",
+      "stack_ready_address": 135,
+      "early_forbidden_instructions": [],
+      "expected_post_sequence": [
+        "10",
+        "20",
+        "21",
+        "30",
+        "31",
+        "40",
+        "41",
+        "50",
+        "51",
+        "60",
+        "61",
+        "70",
+        "71",
+        "80",
+        "81",
+        "FF"
+      ],
+      "output": "spinoffs/minimal-vga/roms/diag_vjuga-27c256.bin",
+      "bytes": 32768,
+      "sha256": "c220bf654711d8dda13e1e980763c11e00821b38bbdd55bd65c85a2b27f138a7",
+      "duplication": "two byte-identical 16384-byte halves"
+    }
+  },
+  "immutable_comparison": {
+    "C9": "spinoffs/jukuravi/network-rom/juku-network-rom-abi1.4-c9.bin",
+    "sha256": "352417fafcf1ceaef40b8d39916acdaee6de03d914eafe2b54185ccbabe35530",
+    "modified": false
+  },
+  "build": "python3 spinoffs/minimal-vga/roms/build_revb_rom.py",
+  "check": "python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check",
+  "program_and_readback": [
+    "select the exact 27C256 device and its established Willem adapter/DIP settings",
+    "load the named 32768-byte artifact; do not split it into D15/D16 files",
+    "program once and accept the programmer's full verify",
+    "read the device back to a fresh file and compare its SHA-256 to this manifest before labelling",
+    "label by role: EKTA3.7/VJUGA, NETC10/VJUGA, or DIAG/VJUGA"
+  ]
+}
