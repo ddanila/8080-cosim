@@ -47,11 +47,16 @@ C10_OUTPUT = HERE / "juku-network-rom-abi1.4-c10.bin"
 C10_D15_OUTPUT = HERE / "juku-network-rom-abi1.4-c10-d15.bin"
 C10_D16_OUTPUT = HERE / "juku-network-rom-abi1.4-c10-d16.bin"
 C10_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.4-c10.json"
+C11_OUTPUT = HERE / "juku-network-rom-abi1.4-c11.bin"
+C11_D15_OUTPUT = HERE / "juku-network-rom-abi1.4-c11-d15.bin"
+C11_D16_OUTPUT = HERE / "juku-network-rom-abi1.4-c11-d16.bin"
+C11_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.4-c11.json"
 
 LOWER_SIZE = 0x1800
 RESIDENT_SIZE = 0x2800
 GATE_STORED = 0x1000
 HELP_STORED = 0x1400
+CHECKER_STORED = 0x1500
 CORE_STORED = 0x0F00
 EMBEDDED_EXTENSION_STORED = 0x0600
 EMBEDDED_EXTENSION_BYTES = 361
@@ -64,6 +69,7 @@ SUCCESSOR_CANDIDATE = "network-first-abi1.2-c7-modified-raw-simulator"
 C8_CANDIDATE = "network-first-abi1.3-c8-resident-host-simulator"
 C9_CANDIDATE = "network-first-abi1.4-c9-bounded-host-simulator"
 C10_CANDIDATE = "network-first-abi1.4-c10-pof-release-candidate"
+C11_CANDIDATE = "network-first-abi1.4-c11-post-raster-candidate"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -92,8 +98,11 @@ def build(*, abi_selftest: bool = False,
           c8: bool = False,
           c9: bool = False,
           c10: bool = False,
+          c11: bool = False,
           host_selftest: bool = False,
           selftest_locale: int = 1) -> tuple[bytes, dict[str, object]]:
+    if c11:
+        c10 = True
     if c10:
         c9 = True
     if c9:
@@ -137,6 +146,8 @@ def build(*, abi_selftest: bool = False,
         selftest_defines += ("ROM_ABI_C9",)
     if c10:
         selftest_defines += ("ROM_ABI_C10",)
+    if c11:
+        selftest_defines += ("ROM_ABI_C11",)
     if host_selftest:
         selftest_defines += ("ABI_HOST_SELFTEST",)
     selftest_defines += ((
@@ -169,7 +180,14 @@ def build(*, abi_selftest: bool = False,
             HERE / "ram-helper.asm", temporary / "helper-c5.cim", (COMMON,),
             ("ROM_ABI_LOCALE",),
         )
-        helper = helper_c5 if locale else helper_c4
+        helper_c11 = assemble(
+            HERE / "ram-helper.asm", temporary / "helper-c11.cim", (COMMON,),
+            ("ROM_ABI_LOCALE", "ROM_ABI_C10", "ROM_ABI_C11"),
+        )
+        helper = helper_c11 if c11 else (helper_c5 if locale else helper_c4)
+        checker = assemble(
+            HERE / "checker-helper.asm", temporary / "checker.cim", (),
+        )
         embedded_extension = assemble(
             ROOT / "third_party" / "juku-common" / "transport" /
             "fastboot-extension.asm",
@@ -250,8 +268,13 @@ def build(*, abi_selftest: bool = False,
             raise ValueError(
                 f"RAM gate is {len(gate)} bytes, expected {expected_gate_bytes}"
             )
-        if len(helper_c4) > 0x80 or len(helper_c5) > 0x80:
+        if len(helper_c4) > 0x80 or len(helper_c5) > 0x80 or \
+                len(helper_c11) > 0x80:
             raise ValueError(f"RAM helper is {len(helper)} bytes; envelope is 128")
+        if len(checker) > 0x80:
+            raise ValueError(
+                f"POST checker helper is {len(checker)} bytes; envelope is 128"
+            )
 
         generated = HERE / "network-rom-generated.inc"
         expected_generated = (
@@ -270,6 +293,7 @@ def build(*, abi_selftest: bool = False,
             ".else\n"
             f"JROMHELPERBYTES equ {len(helper_c4)}\n"
             ".endif\n"
+            f"JROMCHECKERBYTES equ {len(checker)}\n"
             ".ifdef ROM_ABI_EXTENDED\n"
             f"JROMCOREBYTES equ {len(core) if extended else 128}\n"
             f"JROMEMBEDEXTBYTES equ {EMBEDDED_EXTENSION_BYTES}\n"
@@ -285,6 +309,7 @@ def build(*, abi_selftest: bool = False,
             f"EMBEDSTORED equ 0{EMBEDDED_EXTENSION_STORED:04x}h\n"
             f"GATESTORED equ 0{GATE_STORED:04x}h\n"
             f"HELPSTORED equ 0{HELP_STORED:04x}h\n"
+            f"CHECKERSTORED equ 0{CHECKER_STORED:04x}h\n"
         )
         if generated.read_text() != expected_generated:
             raise ValueError("network-rom-generated.inc is stale")
@@ -327,6 +352,11 @@ def build(*, abi_selftest: bool = False,
         lower[CORE_STORED:CORE_STORED + len(core)] = core
         lower[GATE_STORED:GATE_STORED + len(gate)] = gate
         lower[HELP_STORED:HELP_STORED + len(helper)] = helper
+        if c11:
+            checker_end = CHECKER_STORED + len(checker)
+            if checker_end > LOWER_SIZE:
+                raise ValueError("C11 POST checker helper overlaps resident ROM")
+            lower[CHECKER_STORED:checker_end] = checker
         lower[0x3F] = (-sum(lower) - sum(resident)) & 0xFF
         image = bytes(lower) + resident
         if sum(image) & 0xFF:
@@ -355,8 +385,9 @@ def build(*, abi_selftest: bool = False,
             "cpu", "ram-data", "ram-address", "complete-rom", "pit-usart",
         ],
         "hardware_init": [
-            ("ppi0-82-pc7-high-then-low" if c10 else
-             "ppi0-82-pc7-high"),
+            ("ppi0-82-checker-pc7-high-then-low" if c11 else
+             ("ppi0-82-pc7-high-then-low" if c10 else
+              "ppi0-82-pc7-high")),
             "ppi1-9b", "stock-raster-refresh",
             "pic-d6-fe-masked", "d57-ch0-mode2-count4", "d11-8n1",
         ],
@@ -401,22 +432,25 @@ def build(*, abi_selftest: bool = False,
             "get_info": "FF47",
         },
         "candidate": (
-            (C10_CANDIDATE if c10 else
+            (C11_CANDIDATE if c11 else
+             (C10_CANDIDATE if c10 else
              (C9_CANDIDATE if c9 else
              (C8_CANDIDATE if c8 else
-             (SUCCESSOR_CANDIDATE if successor else EXTENDED_CANDIDATE))
+             (SUCCESSOR_CANDIDATE if successor else EXTENDED_CANDIDATE)))
             ))
             if extended else
             (LOCALE_CANDIDATE if locale else CANDIDATE)
         ),
         "status": (
-            (("desk-qualified POF-release successor; physical acceptance "
+            (("deterministic POST/raster simulator candidate; C10 remains immutable"
+              if c11 else
+              ("desk-qualified POF-release successor; physical acceptance "
               "pending"
               if c10 else
               ("bounded-host simulator/HDL candidate; physical programming "
               "not authorized; C8 remains immutable"
               if c9 else
-              "resident-host simulator successor; C7 remains immutable"))
+              "resident-host simulator successor; C7 remains immutable")))
              if c8 else
              ("modified-raw simulator successor; C6 remains immutable"
               if successor else
@@ -547,6 +581,16 @@ def build(*, abi_selftest: bool = False,
                 "CS00000 C9 live 0E write restored local video 2026-08-27"
             ),
         }
+    if c11:
+        metadata["checker_helper_bytes"] = len(checker)
+        metadata["video_enable"].update({
+            "release_after": "deterministic-320x241-checkerboard",
+            "checkerboard": "8x8-full-raster",
+        })
+        metadata["console"]["physical_raster_clear_bytes"] = {
+            "00": 9640, "01": 9640, "10": 9648, "11": 9600,
+            "implementation_envelope": 9648,
+        }
     return image, metadata
 
 
@@ -561,6 +605,7 @@ def main() -> int:
     c8_image, c8_metadata = build(c8=True)
     c9_image, c9_metadata = build(c9=True)
     c10_image, c10_metadata = build(c10=True)
+    c11_image, c11_metadata = build(c11=True)
     expected = (
         (OUTPUT, image),
         (D15_OUTPUT, image[:0x2000]),
@@ -597,6 +642,11 @@ def main() -> int:
         (C10_D16_OUTPUT, c10_image[0x2000:]),
         (C10_METADATA_OUTPUT,
          (json.dumps(c10_metadata, indent=2) + "\n").encode()),
+        (C11_OUTPUT, c11_image),
+        (C11_D15_OUTPUT, c11_image[:0x2000]),
+        (C11_D16_OUTPUT, c11_image[0x2000:]),
+        (C11_METADATA_OUTPUT,
+         (json.dumps(c11_metadata, indent=2) + "\n").encode()),
     )
     if args.check:
         for path, data in expected:

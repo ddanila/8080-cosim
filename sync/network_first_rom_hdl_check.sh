@@ -45,6 +45,15 @@ image, _ = build_network_rom.build(c10=True, abi_selftest=True)
 Path(sys.argv[1]).write_text("\n".join(f"{byte:02x}" for byte in image) + "\n")
 PY
 
+PYTHONPATH=spinoffs/jukuravi/network-rom python3 - "$tmp/network-rom-c11-abi.hex" <<'PY'
+from pathlib import Path
+import sys
+import build_network_rom
+
+image, _ = build_network_rom.build(c11=True, abi_selftest=True)
+Path(sys.argv[1]).write_text("\n".join(f"{byte:02x}" for byte in image) + "\n")
+PY
+
 PYTHONPATH=spinoffs/jukuravi/network-rom python3 - "$tmp/network-rom-netdisk.hex" <<'PY'
 from pathlib import Path
 import sys
@@ -87,6 +96,14 @@ fi
 
 output=$(vvp "$tmp/network-first-rom-abi-tb" \
   +rom="$tmp/network-rom-c10-abi.hex" +pof_release)
+printf '%s\n' "$output"
+grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
+if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then
+  exit 1
+fi
+
+output=$(vvp "$tmp/network-first-rom-abi-tb" \
+  +rom="$tmp/network-rom-c11-abi.hex" +pof_release)
 printf '%s\n' "$output"
 grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
 if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then

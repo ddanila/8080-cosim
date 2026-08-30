@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **C10 / ABI 1.4 POF FIX DESK-QUALIFIED AND READY TO PROGRAM; PHYSICAL ACCEPTANCE PENDING**
+Status: **C11 / ABI 1.4 POST RASTER FIX DESK-QUALIFIED AND READY TO PROGRAM; PHYSICAL ACCEPTANCE PENDING**
 
 This is the from-scratch network-only successor to the EktaSoft monitor ROM.
 Reset performs a bounded POST, acquires an identity-independent host at the
@@ -63,6 +63,13 @@ line is deliberately additive:
   HDL POF gate, local/remote CP/M, production native-host/replacement, and
   reproducible package gates pass. The named pair is ready to program;
   CS00000 local-video and full physical acceptance remain next.
+- C11 / ABI 1.4 preserves C10 and its exact CP/M system, Fastboot, and adapter.
+  Before releasing POF it constructs a deterministic 8x8 checkerboard across
+  the complete stock 320x241 boot raster. Console initialization then clears
+  a safe 9,648-byte physical-raster envelope, covering mode 0's extra scanline
+  while retaining the 9,600-byte text surface. All four S21 geometries, local
+  and remote CP/M, native-host/replacement, package, and reproducibility gates
+  pass. Focused physical confirmation of the checker and bottom line remains.
 
 ## Build and test
 
@@ -75,7 +82,7 @@ sync/network_first_rom_hdl_check.sh
 python3 tests/janet_disk_server_test.py
 ```
 
-The ABI gate rebuilds the images, executes C4 through C10 against the practical
+The ABI gate rebuilds the images, executes C4 through C11 against the practical
 C-model twin, and checks exact manifests, fixed vectors, stack guards,
 interrupt ownership, overlay protection, all S21 geometries, locale pixels,
 keyboard behavior, cursor phases, and resident serial activity.  The focused
@@ -83,13 +90,14 @@ HDL gate retains the exact C4 reset/POST, call-gate, framebuffer, keyboard,
 serial, and one-record NetDisk boundary; full CP/M, recovery, and long-soak
 coverage remains in the faster C-model oracle.
 
-The matching C8 rollback and C9/C10 system/TPA/local/N4 gates are run from
+The matching C8 rollback and C9/C10/C11 system/TPA/local/N4 gates are run from
 `cpm-plus-juku`:
 
 ```sh
 make c8-check
 make c9-check
 make c10-check
+make c11-check
 ```
 
 The native production-host and reconnect gate is:
@@ -97,6 +105,7 @@ The native production-host and reconnect gate is:
 ```sh
 sync/jukuhost_c9_cosim_check.sh
 sync/jukuhost_c10_cosim_check.sh
+sync/jukuhost_c11_cosim_check.sh
 ```
 
 The deterministic, explicitly non-physical package is produced from
@@ -107,6 +116,9 @@ separate decision.
 The burn-ready C10 package, its independent reproducibility check, and the
 programming/acceptance worksheet are produced from `cpm-plus-juku` with
 `make c10-release-candidate`.
+
+The C11 burn-ready package and focused visual worksheet are produced with
+`make c11-release-candidate`.
 
 From `cpm-plus-juku`, the complete C6 release gate is:
 
@@ -133,6 +145,8 @@ slot, manifests, hashes, and the complete ROM/RAM/vector map.
   bounded-host simulator/HDL candidate.
 - `juku-network-rom-abi1.4-c10{,-d15,-d16}.bin` and JSON: C10 / ABI 1.4
   POF-release candidate ready for physical programming.
+- `juku-network-rom-abi1.4-c11{,-d15,-d16}.bin` and JSON: C11 / ABI 1.4
+  deterministic POST/checker and complete-raster-clear candidate.
 
 These named releases are immutable. In particular, rebuilding a modified
 scanner under the C6 filenames is not a C6 update: the fitted combined image
@@ -157,6 +171,10 @@ The C10 combined, D15-low and D16-high hashes are respectively
 `fbf9baaad9027a5335e3549da3a396eb999bbaae1a1f3f5f6e2f36798848a6bc`,
 `a8e54e8ffac5b2654ba23f3dbff8acee17dd857d05f3654fa0fa9d23fdd58c7c`,
 and `e4c423a0d3bf2dea6ff69170787f67d6c481a07b246727625906293e5aea618e`.
+The C11 combined, D15-low and D16-high hashes are respectively
+`49af4137be8cab2a487ccec0ac264e964b75f6699ebea8baf0f1a29d1ce292dc`,
+`4040833d71fe9029d9cf5bc261b76b57edb87528d1d624e6b003fb2208bf2187`,
+and `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must
 reproduce the 16 KiB image exactly.  The generated JSON is the machine-readable
@@ -190,6 +208,8 @@ investigation and bounded transport hardening, is collected in
 [`docs/network-rom-c9-plan.md`](../../../docs/network-rom-c9-plan.md).
 The proved physical-video defect and focused successor scope are collected in
 [`docs/network-rom-c10-plan.md`](../../../docs/network-rom-c10-plan.md).
+The C11 programming and focused visual acceptance procedure is in
+`cpm-plus-juku/docs/c11-physical-acceptance-worksheet.md`.
 
 ## Resident ABI
 

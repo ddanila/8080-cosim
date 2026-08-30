@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Boot the C8/C9/C10 ROM and CP/M Plus using the native production host."""
+"""Boot the C8/C9/C10/C11 ROM and CP/M Plus using the production host."""
 
 from __future__ import annotations
 
@@ -17,14 +17,14 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 CPM = Path(os.environ.get("CPM_PLUS_JUKU_ROOT", ROOT.parent / "cpm-plus-juku"))
 RELEASE = os.environ.get("JUKUHOST_ROM_RELEASE", "c8").lower()
-if RELEASE not in ("c8", "c9", "c10"):
+if RELEASE not in ("c8", "c9", "c10", "c11"):
     raise SystemExit(f"unsupported JUKUHOST_ROM_RELEASE={RELEASE!r}")
-ROM_ABI = "1.4" if RELEASE in ("c9", "c10") else "1.3"
+ROM_ABI = "1.4" if RELEASE in ("c9", "c10", "c11") else "1.3"
 ROM = ROOT / f"spinoffs/jukuravi/network-rom/juku-network-rom-abi{ROM_ABI}-{RELEASE}.bin"
 SYSTEM = CPM / f"out/cpm-plus-juku-network-rom-{RELEASE}-system.bin"
 FASTBOOT = CPM / f"out/cpm-plus-juku-network-rom-{RELEASE}-fastboot-v16.bin"
 VOLUME = CPM / (f"out/cpm-plus-juku-{RELEASE}-full.img"
-                if RELEASE in ("c9", "c10") else
+                if RELEASE in ("c9", "c10", "c11") else
                 "out/cpm-plus-juku-full.img")
 DRIVE_B = CPM / "out/cpm-plus-juku-apps.juk"
 HOST = ROOT / "build/jukuhost"
@@ -174,9 +174,9 @@ def main() -> int:
             JUKU_REALTIME_HZ="1700000",
             JUKU_TRACE_BANK="1",
             JUKU_DISABLE_SETTLE="1",
-            # C8 needs bit 0 for autoboot. C9/C10 reserve it and must boot
+            # C8 needs bit 0 for autoboot. C9/C10/C11 reserve it and must boot
             # with the same 80x24 selection while it is clear.
-            JUKU_S21_CONFIG="0x06" if RELEASE in ("c9", "c10") else "0x07",
+            JUKU_S21_CONFIG="0x06" if RELEASE in ("c9", "c10", "c11") else "0x07",
             JUKU_CHECKPOINT_PREFIX=str(checkpoint),
         )
         if reset_during_stream:
@@ -227,7 +227,7 @@ def main() -> int:
                 ) from error
             require(b"DIR" in directory or b"COM" in directory,
                     f"DIR produced no directory text: {directory!r}")
-            if RELEASE in ("c9", "c10"):
+            if RELEASE in ("c9", "c10", "c11"):
                 os.write(console_master, b"STATUS\r")
                 # STATUS 1.4 is deliberately verbose and C9 sends it through
                 # the bounded, per-character production N4 path. Keep enough
@@ -243,11 +243,11 @@ def main() -> int:
                         b"N4 state flags: 0F" in status and
                         b"N4 failure reason: none" in status,
                         f"{RELEASE.upper()} status telemetry differs: {status!r}")
-                if RELEASE == "c10":
+                if RELEASE in ("c10", "c11"):
                     require(
                         b"PPI0 Port C: 01" in status and
                         b"POF: released (picture enabled)" in status,
-                        f"C10 video-enable telemetry differs: {status!r}",
+                        f"{RELEASE.upper()} video-enable telemetry differs: {status!r}",
                     )
                 os.write(console_master, b"VER\r")
                 version = read_until(console_master, b"A>", 30.0)
@@ -261,11 +261,11 @@ def main() -> int:
                 diagnostic = read_until(console_master, b"A>", 60.0)
                 require(b"CPU: PASS" in diagnostic,
                         f"{RELEASE.upper()} DIAG CPU differs: {diagnostic!r}")
-                if RELEASE == "c10":
+                if RELEASE in ("c10", "c11"):
                     os.write(console_master, b"DIAG VIDEO\r")
                     video = read_until(console_master, b"A>", 60.0)
                     require(b"Video enable/console state: PASS" in video,
-                            f"C10 DIAG VIDEO differs: {video!r}")
+                            f"{RELEASE.upper()} DIAG VIDEO differs: {video!r}")
                 os.write(console_master, b"DIR B:\r")
                 drive_b = read_paged(console_master, 45.0)
                 require(b"README" in drive_b or b"DIAG" in drive_b,
@@ -289,7 +289,7 @@ def main() -> int:
                 host.wait(timeout=5.0)
                 require(host.returncode == 0,
                         f"first host exit={host.returncode}")
-                if RELEASE in ("c9", "c10"):
+                if RELEASE in ("c9", "c10", "c11"):
                     # Ensure at least one bounded target poll observes host
                     # loss before the stateless replacement appears.
                     time.sleep(0.5)
@@ -314,7 +314,7 @@ def main() -> int:
                 resumed = read_until(console_master, b"A>", 30.0)
                 require(b"VER" in resumed,
                         f"replacement host did not resume console: {resumed!r}")
-                if RELEASE in ("c9", "c10"):
+                if RELEASE in ("c9", "c10", "c11"):
                     os.write(console_master, b"STATUS\r")
                     recovered = read_until(console_master, b"A>", 60.0)
                     require(
@@ -360,7 +360,7 @@ def main() -> int:
                     "request evidence contains no disk read")
             require(any(record["operation"] == 0x21 for record in requests),
                     "request evidence contains no N4 console output")
-            if RELEASE in ("c9", "c10"):
+            if RELEASE in ("c9", "c10", "c11"):
                 for operation, description in (
                     (0x15, "NetDisk-v3 write"), (0x22, "time fetch"),
                     (0x24, "status publication"),

@@ -890,8 +890,13 @@ rom_unavailable:
 
 .ifdef ROM_ABI_HOSTSERVICES
 .ifdef ROM_ABI_C10
+.ifdef ROM_ABI_C11
+build_identity:
+        db      'JukuNet C11 ROM ABI 1.4 deterministic POST raster 2026-08-29',0
+.else
 build_identity:
         db      'JukuNet C10 ROM ABI 1.4 physical POF release 2026-08-27',0
+.endif
 .else
 .ifdef ROM_ABI_C9
 build_identity:

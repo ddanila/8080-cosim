@@ -110,6 +110,17 @@ boot_start:
         ; EKTA 3.7 raises PC7/POF while the picture is unsafe during POST,
         ; then releases it before installing the screen console. C9 omitted
         ; this BSR reset and produced valid sync with every pixel suppressed.
+.ifdef ROM_ABI_C11
+        ; C11 makes the previously incidental power-up pattern deterministic.
+        ; Fill every byte fetched by the stock 320x241 boot raster before POF
+        ; is released, so the checkerboard is a useful video-path indication
+        ; and never contains uninitialized pixels.
+        lxi     d,CHECKERSTORED
+        lxi     h,0d400h
+        lxi     b,JROMCHECKERBYTES
+        call    copy_bytes
+        call    0d400h
+.endif
         mvi     a,00eh
         out     PPI0CONTROL
         in      MODEPORT
