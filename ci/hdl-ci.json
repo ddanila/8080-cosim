@@ -1,0 +1,355 @@
+{
+  "version": 1,
+  "jobs": {
+    "lvs": {
+      "entrypoints": [
+        "sync/check.sh",
+        "spinoffs/minimal-vga/sync/revb_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_dram_timing_lvs.sh",
+        "spinoffs/minimal-vga/sync/rev_a_ppi_lvs.sh"
+      ]
+    },
+    "fdc": {
+      "entrypoints": [
+        "sync/juk_disk_check.sh",
+        "sync/ekdos_fdc_probe.py",
+        "sync/ekdos_jbasic_command_probe.py",
+        "sync/ekdos_timing_reference.py",
+        "scripts/report_juku_top_fdc_alignment.py",
+        "sync/juku_top_fdc_prompt_check.sh",
+        "sync/ekdos_checkpoint_reference.py",
+        "sync/ekdos_ioseq_reference.py",
+        "sync/juku_top_checkpoint_load_check.py",
+        "sync/juku_top_checkpoint_resume_probe.py",
+        "sync/fdc_check.sh",
+        "sync/kp12_check.sh"
+      ]
+    },
+    "jukuravi-d0": {
+      "entrypoints": [
+        "sync/jukuravi_d0_check.sh"
+      ]
+    },
+    "network-rom": {
+      "entrypoints": [
+        "sync/network_first_rom_abi_check.sh",
+        "sync/network_first_rom_hdl_check.sh"
+      ]
+    },
+    "jukuravi-regression": {
+      "entrypoints": [
+        "sync/jukuravi_t28_check.sh",
+        "sync/jukuravi_t29_check.sh",
+        "sync/jukuravi_t30_check.sh",
+        "sync/jukuravi_t31_check.sh",
+        "sync/jukuravi_t32_check.sh",
+        "sync/ekta4401_check.sh"
+      ]
+    },
+    "subsystems": {
+      "entrypoints": [
+        "sync/i8080_check.sh",
+        "sync/i8080_vm80a_diff_check.sh",
+        "sync/inta_bus_check.sh",
+        "sync/basic_cart_check.sh",
+        "sync/prom_fallback_check.sh",
+        "sync/d2_ready_path_check.sh",
+        "scripts/report_d6_runtime_path.py",
+        "scripts/validate_rt4_dump.py",
+        "scripts/validate_re3_dump.py",
+        "sync/beeper_check.sh",
+        "sync/serial_check.sh",
+        "sync/ie7_check.sh",
+        "sync/d96_check.sh",
+        "sync/ie10_check.sh",
+        "sync/ag3_check.sh",
+        "sync/juku_top_periph_bus_check.sh",
+        "sync/jmon33_hdl_probe.sh",
+        "sync/jmon33_interrupt_probe.py",
+        "sync/jmon33_ready_probe.py",
+        "sync/jmon33_command_probe.py",
+        "sync/jmon33_idle_command_probe.py",
+        "sync/juku_top_jbasic_prompt_check.sh",
+        "sync/ir16_check.sh",
+        "sync/kp14_check.sh",
+        "sync/video_timing_check.sh",
+        "sync/video_readout_check.sh",
+        "scripts/report_video_physical_probes.py",
+        "scripts/report_video_pit_timing.py"
+      ]
+    },
+    "minimal-vga": {
+      "entrypoints": [
+        "spinoffs/minimal-vga/sim/u24_dram_timing_check.sh",
+        "spinoffs/minimal-vga/sim/vjuga_boot_check.sh",
+        "spinoffs/minimal-vga/sim/revb_tier_suite.sh",
+        "spinoffs/minimal-vga/kicad/check_rev_a_physical.py"
+      ]
+    },
+    "revb-ttl-boot": {
+      "entrypoints": [
+        "spinoffs/minimal-vga/sim/revb_boot_check.sh"
+      ]
+    },
+    "boot": {
+      "entrypoints": [
+        "sync/boot_check.sh"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "name": "ci-control",
+      "exact": [
+        ".github/workflows/hdl.yml",
+        "ci/__init__.py",
+        "ci/hdl-ci.json",
+        "ci/select_hdl_jobs.py",
+        "ci/check_hdl_ci.py",
+        "ci/test_select_hdl_jobs.py"
+      ],
+      "jobs": ["*"]
+    },
+    {
+      "name": "shared-machine-model",
+      "prefixes": [
+        "hdl/",
+        "cosim/",
+        "roms/"
+      ],
+      "exact": [
+        "ref/juku-machine-facts.json"
+      ],
+      "jobs": ["*"]
+    },
+    {
+      "name": "fdc-media",
+      "prefixes": [
+        "media/disks/",
+        "media/system/"
+      ],
+      "jobs": ["fdc", "boot"]
+    },
+    {
+      "name": "main-board-shared-model",
+      "exact": [
+        "kicad/juku.board.json",
+        "sync/check.sh",
+        "sync/map.json",
+        "sync/netlist_from_board.py",
+        "sync/netlist_from_kicad.py"
+      ],
+      "jobs": ["*"]
+    },
+    {
+      "name": "fdc-guards",
+      "prefixes": [
+        "sync/ekdos_",
+        "sync/fdc_",
+        "sync/juk_disk_",
+        "sync/juku_top_fdc_",
+        "sync/juku_top_checkpoint_load_",
+        "sync/juku_top_checkpoint_resume_",
+        "sync/kp12_",
+        "tests/fdc_",
+        "tests/juk_disk_",
+        "tests/cosim_usart_pty_",
+        "scripts/report_juku_top_fdc_",
+        "docs/juku-top-fdc-",
+        "docs/ekdos-",
+        "docs/fdc-"
+      ],
+      "jobs": ["fdc", "boot"]
+    },
+    {
+      "name": "network-rom-tests",
+      "prefixes": [
+        "tests/network_first_rom_",
+        "tests/janet_",
+        "sync/janet_",
+        "host/",
+        "tools/janet_",
+        "tools/jukuhost_",
+        "tools/netboot_"
+      ],
+      "jobs": ["network-rom"]
+    },
+    {
+      "name": "jukuravi-d0",
+      "prefixes": [
+        "sync/jukuravi_d0_",
+        "tests/jukuravi_d0_",
+        "spinoffs/jukuravi/firmware/",
+        "spinoffs/jukuravi/nano/"
+      ],
+      "jobs": ["jukuravi-d0"]
+    },
+    {
+      "name": "jukuravi-product",
+      "prefixes": [
+        "spinoffs/jukuravi/firmware/",
+        "spinoffs/jukuravi/network-rom/",
+        "spinoffs/jukuravi/remix/",
+        "spinoffs/jukuravi/nano/"
+      ],
+      "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression"]
+    },
+    {
+      "name": "jukuravi-network-rom",
+      "prefixes": [
+        "sync/network_first_rom_",
+        "spinoffs/jukuravi/network-rom/"
+      ],
+      "jobs": ["network-rom"]
+    },
+    {
+      "name": "jukuravi-regression",
+      "prefixes": [
+        "sync/jukuravi_t",
+        "sync/jukuravi_vm80a_",
+        "sync/ekta4401_",
+        "tests/jukuravi_t",
+        "tests/ekta4401_",
+        "tests/ekta4402_",
+        "spinoffs/jukuravi/remix/"
+      ],
+      "jobs": ["jukuravi-regression"]
+    },
+    {
+      "name": "jukuravi-shared",
+      "prefixes": [
+        "spinoffs/jukuravi/tools/",
+        "sync/jukuravi_jukupoly_",
+        "tests/jukuravi_jukupoly_",
+        "third_party/juku-common",
+        "third_party/zmac"
+      ],
+      "exact": [
+        "spinoffs/jukuravi/host.py",
+        "spinoffs/jukuravi/protocol.py",
+        "spinoffs/jukuravi/raster.py",
+        "spinoffs/jukuravi/raster_retention.py",
+        "spinoffs/jukuravi/render_jukupoly_wav.sh"
+      ],
+      "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression"]
+    },
+    {
+      "name": "outside-hdl-suite",
+      "prefixes": [
+        "fab/",
+        "docs/machines/",
+        ".github/smoke-kit/",
+        "spinoffs/jukuravi/sessions/",
+        "spinoffs/minimal-vga/docs/",
+        "sync/jukuhost_",
+        "tests/jukuhost_",
+        "tests/juku_run_host_",
+        "tests/machine_profiles_",
+        "tests/python_host_retirement_",
+        "tests/fixtures/jukuhost",
+        "tests/fixtures/legacy_janet_",
+        "tests/cosim_watch_checkpoint_",
+        "tests/cosim_realtime_",
+        "tests/cosim_usart_overrun_"
+      ],
+      "exact": [
+        "tests/fixtures/__init__.py"
+      ],
+      "jobs": []
+    },
+    {
+      "name": "documentation-only",
+      "suffixes": [".md"],
+      "exclude_exact": [
+        "docs/video-physical-probes.md",
+        "docs/video-pit-timing.md"
+      ],
+      "exclusive": true,
+      "jobs": []
+    },
+    {
+      "name": "subsystem-guards",
+      "prefixes": [
+        "sync/i8080_",
+        "sync/inta_",
+        "sync/basic_cart_",
+        "sync/prom_fallback_",
+        "sync/d2_ready_",
+        "sync/beeper_",
+        "sync/serial_",
+        "sync/ie7_",
+        "sync/d96_",
+        "sync/ie10_",
+        "sync/ag3_",
+        "sync/juku_top_periph_",
+        "sync/jmon33_",
+        "sync/juku_top_jbasic_",
+        "sync/ir16_",
+        "sync/kp14_",
+        "sync/video_",
+        "tests/i8080_",
+        "tests/build_inta_",
+        "scripts/report_d6_",
+        "scripts/validate_rt4_",
+        "scripts/validate_re3_",
+        "scripts/report_video_",
+        "scripts/report_keyboard_",
+        "docs/video-",
+        "docs/d6-runtime-"
+      ],
+      "jobs": ["subsystems"]
+    },
+    {
+      "name": "minimal-vga-lvs",
+      "prefixes": [
+        "spinoffs/minimal-vga/kicad/revb/",
+        "spinoffs/minimal-vga/sync/",
+        "spinoffs/minimal-vga/hdl/rev_a_"
+      ],
+      "jobs": ["lvs", "minimal-vga", "revb-ttl-boot"]
+    },
+    {
+      "name": "minimal-vga-model",
+      "prefixes": [
+        "spinoffs/minimal-vga/hdl/u24_dram_timing",
+        "spinoffs/minimal-vga/hdl/vjuga_juku",
+        "spinoffs/minimal-vga/sim/u24_dram_timing_",
+        "spinoffs/minimal-vga/sim/vjuga_"
+      ],
+      "jobs": ["minimal-vga"]
+    },
+    {
+      "name": "revb-model",
+      "prefixes": [
+        "spinoffs/minimal-vga/hdl/revb/",
+        "spinoffs/minimal-vga/pld/revb/",
+        "spinoffs/minimal-vga/roms/",
+        "spinoffs/minimal-vga/sim/check_revb_",
+        "spinoffs/minimal-vga/sim/revb_",
+        "spinoffs/minimal-vga/roms/revb-bringup/"
+      ],
+      "jobs": ["minimal-vga", "revb-ttl-boot"]
+    },
+    {
+      "name": "minimal-vga-shared",
+      "prefixes": [
+        "spinoffs/minimal-vga/external/tv80"
+      ],
+      "exact": [
+        "spinoffs/minimal-vga/roms/ekta37_z80.bin",
+        "spinoffs/minimal-vga/kicad/rev-a-physical.board.json",
+        "spinoffs/minimal-vga/kicad/check_rev_a_physical.py",
+        "scripts/check_spinoff_commons.py",
+        "scripts/check_revb_boards.py"
+      ],
+      "jobs": ["lvs", "minimal-vga", "revb-ttl-boot"]
+    }
+  ]
+}

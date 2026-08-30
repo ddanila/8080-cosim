@@ -15,7 +15,7 @@ python3 scripts/report_automatic_completion_audit.py
 
 ## Active unchecked work
 
-There are 15 unchecked items across 4 tracked project-plan
+There are 8 unchecked items across 3 tracked project-plan
 documents. Every one now requires evidence, hardware, purchasing, fabrication,
 or owner authorization.
 
@@ -24,12 +24,11 @@ or owner authorization.
 | `PLAN.md` | 6 |
 | `docs/crt-cvbs-simulation-plan.md` | 1 |
 | `docs/factory-drawing-exploitation-plan.md` | 1 |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | 7 |
 
 | Plan item | Tasks | Why automation must stop | Required next input |
 | --- | ---: | --- | --- |
 | P0 physical connectivity and reroute | 1 | Remaining endpoints are hidden, contradictory under powered behavior, or continuity-only | owner continuity and powered captures from `docs/owner-measurement-shortlist.md` |
-| Main-board release and order | 8 | The verified zero-open package is intentionally held by physical-connectivity and sourcing gates | closed P0 evidence, explicit release, vendor upload, and payment |
+| Main-board release and order | 1 | The verified zero-open package is intentionally held by physical-connectivity and sourcing gates | closed P0 evidence, explicit release, vendor upload, and payment |
 | Functional parts kit | 1 | No purchase is authorized and seller stock cannot establish fitted historical truth | procurement choice, purchase, receipt, and physical testing |
 | Tier 1, 2, and 3 bring-up | 3 | These milestones require a fabricated and assembled physical replica | board, parts, instruments, staged power-up, and surviving-machine comparison |
 | Physical framebuffer readout | 1 | D41/shared-DRAM slot timing, `SHIFT_G`, `TIMING_TAG17`, and `D34_SIG` are not evidence-complete | continuity/drawing closure and captured timing; no guessed serializer schedule |
@@ -47,13 +46,6 @@ or owner authorization.
 | `PLAN.md` | Replica completes Tier 3. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
 | `docs/crt-cvbs-simulation-plan.md` | Replace the simulation-only framebuffer read port only after the | `framebuffer` | `docs/video-slot-timing-audit.md` (physical video-slot schedule pending); `docs/crt-cvbs-simulation-plan.md` (implementation explicitly evidence-gated) |
 | `docs/factory-drawing-exploitation-plan.md` | After Stage 1.2, decide what to share on juku3000 #25 (the MAME | `community` | `docs/factory-drawing-exploitation-plan.md` (external publication is owner-gated) |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | Dimensions and two copper layers match the table; no vendor auto-scaling. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | Board outline is one closed rectangle; no cutouts were inferred from drawings. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | Top/bottom copper, mask and silk are assigned to the correct sides. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | Plated drill hits appear at every DIP/header/socket pad and via. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | Backplane USB4085 area retains 0.15 mm minimum clearance; no DFM edit accepted silently. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | No paste, adhesive, courtyard, fab, user or assembly layer was uploaded. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
-| `spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md` | Surface finish, copper weight, solder-mask color and shipping choice are recorded. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
 
 The 42 unchecked boxes in the order, order-evidence, parts-inventory,
 and first-article documents are operator templates. They deliberately remain
@@ -73,7 +65,7 @@ repository implementation backlog.
 
 ## Guard
 
-This writer found active unchecked tasks in 4 tracked Markdown file(s).
+This writer found active unchecked tasks in 3 tracked Markdown file(s).
 Any new unchecked task outside the four operator templates must have an exact
 classification and all cited evidence markers must exist, otherwise generation
 fails closed. `scripts/check_documentation_consistency.py` runs this writer in

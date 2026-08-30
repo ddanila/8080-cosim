@@ -7,8 +7,9 @@ name: CI (HDL — LVS + behavioral boot)
 # instead (see .githooks/pre-push); this keeps the HDL CI to the boot regression.
 #
 # The behavioral guards are split across independent jobs that run in parallel.
-# Wall clock is the slowest job (b2-video, ~7 min) rather than the sum (~26 min).
-# The set of guards executed is unchanged; only their scheduling is.
+# A fail-open dependency selector runs only lanes affected by an isolated change;
+# shared, unknown, CI-control, scheduled, and tag changes run the complete suite.
+# A nightly full sentinel preserves coverage independently of path selection.
 #
 # Jukuravi paths are listed individually rather than as spinoffs/jukuravi/**:
 # that glob also covered sessions/ (captured serial-log bytes) and the prose docs,
@@ -16,7 +17,21 @@ name: CI (HDL — LVS + behavioral boot)
 
 on:
   workflow_dispatch:
+    inputs:
+      scope:
+        description: Suite scope
+        type: choice
+        options:
+          - full
+          - changed
+        default: full
+  schedule:
+    - cron: '23 3 * * *'
   push:
+    branches:
+      - '**'
+    tags:
+      - '*'
     paths:
       - 'hdl/**'
       - 'cosim/**'
@@ -29,6 +44,8 @@ on:
       - 'spinoffs/jukuravi/raster_retention.py'
       - 'spinoffs/jukuravi/remix/**'
       - 'spinoffs/jukuravi/nano/**'
+      - 'spinoffs/jukuravi/tools/**'
+      - 'spinoffs/jukuravi/render_jukupoly_wav.sh'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -63,7 +80,15 @@ on:
       - 'spinoffs/minimal-vga/hdl/rev_a_*_lvs.v'
       - 'spinoffs/minimal-vga/sync/rev_a_*_lvs.sh'
       - 'spinoffs/minimal-vga/sync/rev_a_*_map.json'
+      - 'ci/__init__.py'
+      - 'ci/hdl-ci.json'
+      - 'ci/select_hdl_jobs.py'
+      - 'ci/check_hdl_ci.py'
+      - 'ci/test_select_hdl_jobs.py'
       - '.github/workflows/hdl.yml'
+      - '!**/*.md'
+      - 'docs/video-physical-probes.md'
+      - 'docs/video-pit-timing.md'
   pull_request:
     paths:
       - 'hdl/**'
@@ -77,6 +102,8 @@ on:
       - 'spinoffs/jukuravi/raster_retention.py'
       - 'spinoffs/jukuravi/remix/**'
       - 'spinoffs/jukuravi/nano/**'
+      - 'spinoffs/jukuravi/tools/**'
+      - 'spinoffs/jukuravi/render_jukupoly_wav.sh'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -111,62 +138,105 @@ on:
       - 'spinoffs/minimal-vga/hdl/rev_a_*_lvs.v'
       - 'spinoffs/minimal-vga/sync/rev_a_*_lvs.sh'
       - 'spinoffs/minimal-vga/sync/rev_a_*_map.json'
+      - 'ci/__init__.py'
+      - 'ci/hdl-ci.json'
+      - 'ci/select_hdl_jobs.py'
+      - 'ci/check_hdl_ci.py'
+      - 'ci/test_select_hdl_jobs.py'
       - '.github/workflows/hdl.yml'
+      - '!**/*.md'
+      - 'docs/video-physical-probes.md'
+      - 'docs/video-pit-timing.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
-  # Resolves how much of the suite this change can possibly affect. This is an
-  # allow list of *confined* scopes and it fails safe: unless every changed file
-  # sits inside one known-isolated area, scope is "all" and every job runs. A
-  # shared change (hdl/**, cosim/**, sync/**, ...) therefore always runs
-  # everything -- which matters, because the minimal-vga sims compile the shared
-  # hdl/devices.v, hdl/juku_top.v and hdl/vendor/ sources.
+  # Resolves the affected lanes from the checked-in dependency table. Unknown
+  # paths and an unavailable diff fail open to every lane. The manifest validator
+  # also proves that each expensive workflow entrypoint has an owning lane and
+  # that changing the entrypoint selects that lane.
   changes:
     runs-on: ubuntu-latest
     outputs:
-      scope: ${{ steps.scope.outputs.scope }}
+      run_full: ${{ steps.selector.outputs.run_full }}
+      run_lvs: ${{ steps.selector.outputs.run_lvs }}
+      run_fdc: ${{ steps.selector.outputs.run_fdc }}
+      run_jukuravi_d0: ${{ steps.selector.outputs.run_jukuravi_d0 }}
+      run_network_rom: ${{ steps.selector.outputs.run_network_rom }}
+      run_jukuravi_regression: ${{ steps.selector.outputs.run_jukuravi_regression }}
+      run_subsystems: ${{ steps.selector.outputs.run_subsystems }}
+      run_minimal_vga: ${{ steps.selector.outputs.run_minimal_vga }}
+      run_revb_ttl_boot: ${{ steps.selector.outputs.run_revb_ttl_boot }}
+      run_boot: ${{ steps.selector.outputs.run_boot }}
+      selection_json: ${{ steps.selector.outputs.selection_json }}
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Resolve changed scope
-        id: scope
+      - name: Validate CI coverage manifest
+        run: |
+          python3 ci/check_hdl_ci.py
+          python3 -m unittest -v ci.test_select_hdl_jobs
+
+      - name: Resolve affected lanes
+        id: selector
         env:
           EVENT: ${{ github.event_name }}
           BEFORE: ${{ github.event.before }}
           BASE_REF: ${{ github.base_ref }}
+          FORCE_FULL: ${{ github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -u
-          scope=all
-          files=""
+          set -euo pipefail
+          files_file=$(mktemp)
+          trap 'rm -f "$files_file"' EXIT
           case "$EVENT" in
             pull_request)
               git fetch --no-tags --depth=1 origin "$BASE_REF" >/dev/null 2>&1 || true
-              files=$(git diff --name-only "origin/$BASE_REF...HEAD" 2>/dev/null || true)
+              git diff --name-only "origin/$BASE_REF...HEAD" >"$files_file" 2>/dev/null || true
               ;;
             push)
               case "$BEFORE" in
                 ''|0000000000000000000000000000000000000000) ;;
-                *) files=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" 2>/dev/null || true) ;;
+                *) git diff --name-only "$BEFORE" "$GITHUB_SHA" >"$files_file" 2>/dev/null || true ;;
               esac
               ;;
+            workflow_dispatch)
+              git diff --name-only "HEAD^" HEAD >"$files_file" 2>/dev/null || true
+              ;;
           esac
-          if [ -n "$files" ]; then
-            if ! printf '%s\n' "$files" | grep -qvE '^(spinoffs/jukuravi/|tests/jukuravi)'; then
-              scope=jukuravi
-            elif ! printf '%s\n' "$files" | grep -qvE '^spinoffs/minimal-vga/'; then
-              scope=minimal-vga
+
+          selector_args=(
+            --paths-file "$files_file"
+            --github-output "$GITHUB_OUTPUT"
+            --step-summary "$GITHUB_STEP_SUMMARY"
+          )
+          skip_full=false
+          if [ "$EVENT" = "schedule" ]; then
+            previous_full_sha=$(gh api \
+              "repos/$GITHUB_REPOSITORY/actions/workflows/hdl.yml/runs?event=schedule&status=success&per_page=1" \
+              --jq '.workflow_runs[0].head_sha // ""' 2>/dev/null || true)
+            if [ -n "$previous_full_sha" ] && [ "$previous_full_sha" = "$GITHUB_SHA" ]; then
+              skip_full=true
             fi
           fi
-          echo "scope=$scope" >> "$GITHUB_OUTPUT"
-          echo "resolved scope: $scope"
-          printf '%s\n' "$files" | sed 's/^/  changed: /'
+          if [ "$skip_full" = "true" ]; then
+            selector_args+=(--skip-all)
+          elif [ "$FORCE_FULL" = "true" ]; then
+            selector_args+=(--force-full)
+          fi
+          python3 ci/select_hdl_jobs.py "${selector_args[@]}"
 
   lvs:
+    needs: changes
+    if: needs.changes.outputs.run_lvs == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -222,7 +292,7 @@ jobs:
   # bridge test.
   fdc:
     needs: changes
-    if: needs.changes.outputs.scope == 'all'
+    if: needs.changes.outputs.run_fdc == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -267,7 +337,7 @@ jobs:
 
   jukuravi-d0:
     needs: changes
-    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'jukuravi'
+    if: needs.changes.outputs.run_jukuravi_d0 == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -287,7 +357,7 @@ jobs:
 
   network-rom:
     needs: changes
-    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'jukuravi'
+    if: needs.changes.outputs.run_network_rom == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -311,7 +381,7 @@ jobs:
   # inside the suite's critical path, so wiring them up costs no wall clock.
   jukuravi-regression:
     needs: changes
-    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'jukuravi'
+    if: needs.changes.outputs.run_jukuravi_regression == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -354,7 +424,7 @@ jobs:
 
   subsystems:
     needs: changes
-    if: needs.changes.outputs.scope == 'all'
+    if: needs.changes.outputs.run_subsystems == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -431,7 +501,7 @@ jobs:
 
   minimal-vga:
     needs: changes
-    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'minimal-vga'
+    if: needs.changes.outputs.run_minimal_vga == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -458,7 +528,7 @@ jobs:
   # decode-mode boots, so it gets its own job instead of serializing them.
   revb-ttl-boot:
     needs: changes
-    if: needs.changes.outputs.scope == 'all' || needs.changes.outputs.scope == 'minimal-vga'
+    if: needs.changes.outputs.run_revb_ttl_boot == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -480,7 +550,7 @@ jobs:
   # (the schematic structure executing the firmware) cannot silently regress.
   boot:
     needs: changes
-    if: needs.changes.outputs.scope == 'all'
+    if: needs.changes.outputs.run_boot == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -492,3 +562,84 @@ jobs:
       # pre-split workflow, where the freshness step ran before boot_check.sh.
       - name: Run boot regression check
         run: ./sync/boot_check.sh
+
+  results:
+    if: always()
+    needs:
+      - changes
+      - lvs
+      - fdc
+      - jukuravi-d0
+      - network-rom
+      - jukuravi-regression
+      - subsystems
+      - minimal-vga
+      - revb-ttl-boot
+      - boot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify selected-lane results
+        env:
+          SELECTION_JSON: ${{ needs.changes.outputs.selection_json }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          errors = []
+          try:
+              selection = json.loads(os.environ["SELECTION_JSON"])
+          except (KeyError, json.JSONDecodeError) as exc:
+              selection = {"jobs": {}}
+              errors.append(f"selection output is unavailable: {exc}")
+          needs = json.loads(os.environ["NEEDS_JSON"])
+
+          rows = []
+          expected_jobs = {
+              "lvs",
+              "fdc",
+              "jukuravi-d0",
+              "network-rom",
+              "jukuravi-regression",
+              "subsystems",
+              "minimal-vga",
+              "revb-ttl-boot",
+              "boot",
+          }
+          selected_jobs = selection.get("jobs", {})
+          if set(selected_jobs) != expected_jobs:
+              errors.append(
+                  "selection lane set differs from the results contract: "
+                  f"expected {sorted(expected_jobs)}, got {sorted(selected_jobs)}"
+              )
+          if needs.get("changes", {}).get("result") != "success":
+              errors.append(
+                  f"selector job ended as {needs.get('changes', {}).get('result', 'missing')}"
+              )
+          for job in sorted(expected_jobs):
+              selected = selected_jobs.get(job, False)
+              result = needs.get(job, {}).get("result", "missing")
+              rows.append((job, selected, result))
+              if selected and result != "success":
+                  errors.append(f"selected lane {job} ended as {result}")
+              if not selected and result != "skipped":
+                  errors.append(f"unselected lane {job} unexpectedly ended as {result}")
+
+          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          with summary.open("a", encoding="utf-8") as handle:
+              handle.write("## HDL CI results\n\n")
+              handle.write("| Lane | Selected | Result |\n|---|---|---|\n")
+              for job, selected, result in rows:
+                  handle.write(
+                      f"| `{job}` | {'yes' if selected else 'no'} | `{result}` |\n"
+                  )
+              if errors:
+                  handle.write("\n### Contract violations\n\n")
+                  for error in errors:
+                      handle.write(f"- {error}\n")
+
+          if errors:
+              raise SystemExit("; ".join(errors))
+          PY

@@ -114,13 +114,6 @@ CLASSIFICATIONS = {
     ("PLAN.md", "Replica completes Tier 3."): "bringup",
     ("docs/crt-cvbs-simulation-plan.md", "Replace the simulation-only framebuffer read port only after the"): "framebuffer",
     ("docs/factory-drawing-exploitation-plan.md", "After Stage 1.2, decide what to share on juku3000 #25 (the MAME"): "community",
-    ("spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md", "Dimensions and two copper layers match the table; no vendor auto-scaling."): "release",
-    ("spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md", "Board outline is one closed rectangle; no cutouts were inferred from drawings."): "release",
-    ("spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md", "Top/bottom copper, mask and silk are assigned to the correct sides."): "release",
-    ("spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md", "Plated drill hits appear at every DIP/header/socket pad and via."): "release",
-    ("spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md", "Backplane USB4085 area retains 0.15 mm minimum clearance; no DFM edit accepted silently."): "release",
-    ("spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md", "No paste, adhesive, courtyard, fab, user or assembly layer was uploaded."): "release",
-    ("spinoffs/minimal-vga/docs/rev-b-b1-bench-log.md", "Surface finish, copper weight, solder-mask color and shipping choice are recorded."): "release",
 }
 
 
