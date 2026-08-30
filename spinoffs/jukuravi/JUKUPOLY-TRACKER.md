@@ -52,12 +52,20 @@ Each variable-size row begins with a duration byte and flags byte:
 | `01h`, `02h`, `04h` | tone 1, 2, or 3 packet |
 | `08h` | signed channel-1 slide delta |
 | `10h` | absolute pointer to a percussion descriptor |
+| `20h` | optional MOD-effect packet |
+| `40h` | end of compiled pattern; advance the order list |
 | `80h` | end of score |
 
 A nonzero tone packet holds a 15-bit phase increment with legato in bit 15,
 followed by an envelope-speed mask and a mode/target-volume byte.  A zero phase
 increment silences the channel and has no envelope word.  Percussion
 descriptors hold a PCM pointer and duration in frames.
+
+The optional MOD-effect packet starts with channel masks for absolute volume,
+signed volume slide, signed phase-step slide, and target portamento.  Its
+payload updates only the selected channels, and the slide state persists until
+a later row replaces it.  This ABI-v2 path is assembled only for scores that
+request it, so the original Canyon and Suspense player images remain unchanged.
 
 The JSON-to-score compiler exposes the QChan24-style fields as follows:
 
@@ -144,11 +152,63 @@ credited compiled arrangements and an importer locked to the exact source
 MIDI hash; the original composition and game assets remain the property of
 their respective rights holders.
 
+## TDK “The Robots” MOD adaptation
+
+`TDK60.COM` and `TDKROBOT.COM` adapt the four-channel ProTracker module
+**“The Robots”** by **Mark Knight / T.D.K.** ([Mod Archive module
+59396][tdk-mod]).  It is a tracker arrangement of Kraftwerk's song, whose
+[credited writers][robots-credit] are **Ralf Hütter, Florian Schneider, and
+Karl Bartos**.  The Juku work retains both levels of credit; it does not claim
+ownership or a new license for the composition, arrangement, or sampled
+material.
+
+The exact inspected 356,298-byte module is deliberately not committed.  Its
+hashes are:
+
+- SHA-256 `c9d89b05ed00ba80a93ec5f3c6448a40d925d0b65ad1eba3beb27234c7878c3e`;
+- MD5 `d1b288d964ac4f7acb3216d0d9dfab77`.
+
+The importer maps MOD channels 1, 2, and 4 to Juku tone channels 1–3.  Channel
+3 of the MOD supplies most percussion.  The source uses only effects that are
+practical in the frame-rate part of the 8080 player: `1xx`/`2xx` pitch slide,
+`3xx` target portamento, `9xx` sample offset, `Axy` volume slide, `Cxx`
+absolute volume, and `Fxx` speed.  It contains no arpeggio, vibrato, tremolo,
+pattern jump, or pattern break.  Speed changes are compiled into row lengths;
+the other effects use the ABI-v2 state described above.
+
+The common synthesized kick, snare, and hat stand in for source samples 1, 2,
+and 13.  Two pieces of real module PCM also fit:
+
+- the complete 7,384-byte source sample 6, resampled and normalized to about
+  one second of unpacked 4-bit PCM;
+- the first 167 ms after source sample 3's `95B` offset, followed by a 20 ms
+  click-suppressing ramp.
+
+The several roughly four-second voice/effect samples would exceed the CP/M
+transient program area and are omitted.  Pattern-order reuse is what makes the
+complete score possible: the 66 source order positions compile into 45
+state-correct pattern variants.  The full image is 38,591 bytes and loads only
+through `97BEh`, leaving 1,087 bytes before the renderer/test stack at `9BFEh`.
+
+The one-minute image contains 436 compiled rows and 3,000 nominal 50 Hz
+frames.  The full image contains 2,880 stored rows, expands through its order
+list to 25,728 frames (8:34.56 nominal).  ABI-v2 frame work is heavier than the
+original player, so this score uses 139 samples per frame and phase increments
+calibrated for a 6.94 kHz effective rate.  The one-minute image completes in
+60.266 seconds and the full image in 8:36.10 under the 1.70 MHz cycle model,
+within 0.45% and 0.30% of the source clock respectively.  Both pass complete,
+rather than windowed, simulations; physical CS00000 listening remains to be
+done.
+
+[tdk-mod]: https://modarchive.org/index.php?request=view_by_moduleid&query=59396
+[robots-credit]: https://www.easysong.com/search/songs/song-copyright-holder-information.aspx?s=2287555
+
 ## Reproduce
 
 Source and generated files:
 
 - `firmware/jukupoly-player-0100.asm` — strict-8080 runtime;
+- `tools/render_jukupoly_wav.c` — calibrated cycle-model Mode-0 WAV renderer;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
 - `firmware/jukupoly-song-generated.inc` — generated row/PCM bank;
@@ -158,8 +218,14 @@ Source and generated files:
 - `firmware/suspense.com` — physically qualified one-minute CP/M image;
 - `firmware/jukupoly-suspense-full.json` — generated 2:44 reduction;
 - `firmware/suspfull.com` — prepared full-song CP/M image;
+- `firmware/import_jukupoly_mod.py` — hash-locked four-channel MOD importer;
+- `firmware/jukupoly-tdk-robots-60s.json` — one-minute generated score;
+- `firmware/tdk60.com` — one-minute MOD adaptation;
+- `firmware/jukupoly-tdk-robots.json` — pattern-reused full score;
+- `firmware/tdkrobot.com` — complete MOD adaptation;
 - `tests/jukuravi_jukupoly_test.c` — manifest-driven cycle regression;
-- `tests/jukuravi_jukupoly_suspense_test.c` — bounded-window regression.
+- `tests/jukuravi_jukupoly_suspense_test.c` — bounded-window regression;
+- `tests/jukuravi_jukupoly_mod_test.c` — full-order/effect/PCM regression.
 
 Build or verify everything with:
 
@@ -177,6 +243,18 @@ python3 spinoffs/jukuravi/firmware/import_jukupoly_suspense.py \
 python3 spinoffs/jukuravi/firmware/import_jukupoly_suspense.py \
   /path/to/M_E1M5.mid spinoffs/jukuravi/firmware/jukupoly-suspense-full.json \
   --seconds 164
+```
+
+If the hash-matching TDK module is available, regenerate the one-minute and
+complete adaptations with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/import_jukupoly_mod.py \
+  /path/to/tdk-the_robots.mod \
+  spinoffs/jukuravi/firmware/jukupoly-tdk-robots-60s.json --seconds 60
+python3 spinoffs/jukuravi/firmware/import_jukupoly_mod.py \
+  /path/to/tdk-the_robots.mod \
+  spinoffs/jukuravi/firmware/jukupoly-tdk-robots.json
 ```
 
 The qualified result is:
@@ -205,6 +283,34 @@ JUKUPOLY: checked suspfull.com bytes=10701 rows=1316 drums=3 pcm=1152
 JUKUPOLY-SUSPENSE: PASS window=128.000-137.000s sample=7121.9Hz
 tones=3 drum-samples=2160 pulses=5053
 ```
+
+The MOD regression traverses both complete generated order lists and observes
+live volume slides, pitch slides, target portamento (in the full score), and a
+51-frame real-PCM descriptor:
+
+```text
+JUKUPOLY-MOD: PASS bytes=12812 frames=3000 tones=3 volume-slide=1
+pitch-slide=1 porta=0 pcm-frames=51 writes=66759
+JUKUPOLY-MOD: PASS bytes=38591 frames=25728 tones=3 volume-slide=1
+pitch-slide=1 porta=1 pcm-frames=51 writes=460217
+```
+
+Render the exact one-minute or full-song transient through the calibrated C
+cycle model with:
+
+```sh
+spinoffs/jukuravi/render_jukupoly_wav.sh \
+  spinoffs/jukuravi/firmware/suspense.com /tmp/suspense.wav
+spinoffs/jukuravi/render_jukupoly_wav.sh \
+  spinoffs/jukuravi/firmware/suspfull.com /tmp/suspfull.wav
+spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 600 \
+  spinoffs/jukuravi/firmware/tdkrobot.com /tmp/tdk-robots.wav
+```
+
+The WAV is a timing-calibrated digital/acoustic reference, not a fitted model
+of the CS00000 transistor driver, speaker, or enclosure.  See
+[`JUKUPOLY.md`](JUKUPOLY.md#cycle-model-wav-rendering) for its exact timing and
+filter boundary.
 
 ## Physical qualification
 

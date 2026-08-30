@@ -17,6 +17,16 @@ python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
   --generated spinoffs/jukuravi/firmware/jukupoly-suspense-full-generated.inc \
   --output spinoffs/jukuravi/firmware/suspfull.com \
   --check
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-tdk-robots-60s.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-tdk-robots-60s-generated.inc \
+  --output spinoffs/jukuravi/firmware/tdk60.com \
+  --check
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-tdk-robots.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-tdk-robots-generated.inc \
+  --output spinoffs/jukuravi/firmware/tdkrobot.com \
+  --check
 cc -std=c11 -O2 -Wall -Wextra -Werror \
   -o "$TMP/jukuravi_jukupoly_test" \
   tests/jukuravi_jukupoly_test.c cosim/i8080.c
@@ -28,3 +38,10 @@ cc -std=c11 -O2 -Wall -Wextra -Werror \
   spinoffs/jukuravi/firmware/suspense.com
 "$TMP/jukuravi_jukupoly_suspense_test" \
   spinoffs/jukuravi/firmware/suspfull.com 6400
+cc -std=c11 -O2 -Wall -Wextra -Werror \
+  -o "$TMP/jukuravi_jukupoly_mod_test" \
+  tests/jukuravi_jukupoly_mod_test.c cosim/i8080.c
+"$TMP/jukuravi_jukupoly_mod_test" \
+  spinoffs/jukuravi/firmware/tdk60.com 3000
+"$TMP/jukuravi_jukupoly_mod_test" \
+  spinoffs/jukuravi/firmware/tdkrobot.com 25728

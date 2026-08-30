@@ -1,0 +1,5310 @@
+{
+  "schema": "jukupoly-song-v1",
+  "title": "The Robots (TDK, JukuPoly adaptation)",
+  "composer": "Ralf H\u00fctter, Florian Schneider, Karl Bartos",
+  "tracker_arranger": "Mark Knight / T.D.K.",
+  "juku_arrangement": "MOD channels 1, 2, and 4 as tones; channel 3 and selected short samples as concurrent PCM",
+  "source": {
+    "name": "tdk-the_robots.mod / The Robots",
+    "tracker_arrangement_credit": "Mark Knight / T.D.K.",
+    "underlying_song": "The Robots by Kraftwerk",
+    "songwriters": "Ralf H\u00fctter, Florian Schneider, Karl Bartos",
+    "url": "https://modarchive.org/index.php?request=view_by_moduleid&query=59396",
+    "download_sha256": "c9d89b05ed00ba80a93ec5f3c6448a40d925d0b65ad1eba3beb27234c7878c3e",
+    "download_md5": "d1b288d964ac4f7acb3216d0d9dfab77",
+    "license": "No new license asserted for the composition, tracker arrangement, or samples."
+  },
+  "sample_rate_hz": 6940,
+  "frame_samples": 139,
+  "mod_effects": true,
+  "defaults": {
+    "tone1": {
+      "volume": 12,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone2": {
+      "volume": 12,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone3": {
+      "volume": 12,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    }
+  },
+  "sample_bank": {
+    "4": {
+      "encoding": "base64-u4",
+      "name": "MOD sample 6, period 480, normalized short effect",
+      "data": "CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICQgICAkICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAkICAgICQgICAgJCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIBwYGBwkLDA0MCggHBgUFBQYHCAkKCgoKCQgIBwYGBgcHCAkKCgoKCQkHBgYGBwcICQoKCgoJCAcHBgYGBwgICQkKCgoJCAgHBgYGBwgJCgoKCgkJCAcGBgYHBwgJCgoKCQgIBwYGBgYHCAkKCgoKCQgHBgYGBgcICQoKCgoJCAgHBgYGBwgJCgoLCgkJCAcGBgYHCAkJCgoKCQgHBgYGBgcICQoKCgoJCAgGBgYGBggJCgoKCgkIBwYGBgYHCAkKCwoKCQgHBgYGBgcICQoKCgoJCAcGBgYGBwgJCgoKCQgHBwYGBgcICQkKCgoJCAcGBgYGBwkJCgoKCgkIBwYGBgcICQoKCgoJCAcGBgYHBwgJCgoKCQgHBwYGBgcICQoKCgoJBwYGBgYHCAkKCgoKCQgHBgYGBwgJCgoKCgkIBwYGBgcHCQoKCgoJCAcGBQUGBwgKCgoKCQgHBgUGBgcICQoKCgoIBwYFBgYHCQkKCgoJCQgHBgYHCAkKCgoKCQgHBgYGBgcICQoKCgkIBwYGBgcICQoKCgoIBwcFBQYHCAkKCgoJCAcGBgYHBwkKCgsKCQgHBgUGBwgJCgsKCgkHBgUFBgcICQoLCgkIBwYGBgcICQoKCgkJCAcGBgYHCAkKCgoJCAcGBgYHCAkKCwoKCQgGBQYHBwkKCgoJCQcGBQYGCAkKCgoKCQgHBgYGBwgJCgoKCQgHBgYGBwgJCgsKCQgHBgYGBwgJCgoKCggHBgUGBwgJCgoKCQgHBgYGBwgJCgsKCgkHBgYGBgcJCgoKCQgHBgUGBwgJCgoKCggHBgYGBwkJCgsKCQgHBgYGBwgJCgoKCAcGBgYGCAkKCwoKCAcGBQUGCAkKCgoJCAcGBgYHCAoKCwoJCAcGBgYICQoLCwoJBwYFBgcICQoLCgkIBwUFBgcJCgoKCgkHBgUGBwgJCgoKCQgHBgYGBwkKCwoJCAcGBgYHCQoKCwoJCAYGBgYICQoKCgkIBgUFBggJCgsKCggHBgUGBwkKCgoKCAcGBQYHCAoKCwoJCAYFBQcICgsLCgkIBgYGBggJCgsKCQgGBgUGCAkKCgoJCAYFBQYICQoLCgkHBgYFBggJCgsKCQgGBQYHCAkKCwoJCAYGBgcICgsLCgkHBgUFBwgJCgoKCQcGBQYHCAoLCwoIBwYFBgcJCgoLCQgHBQUGCAkKCwoJCAYGBgcICgsLCgkHBgUGBwkKCgsKCAcFBQYICQoLCgkIBgUGBwgKCwoKCAcGBQYICQoLCgkHBgUFBwgKCwsKCQcGBQYICQoLCgkIBgUFBwgKCwoKCAYFBQYICQoLCgkHBgUFBwkKCgoJCAYFBgcICgoLCggHBgUGCAoLCwoJBwYFBgcJCwsKCQcGBQYHCQoLCgkIBgUFBwgKCwoKCAYFBQYICgsKCggHBQUGCAoLCwoJBwUFBggKCwsKCQcGBQYICQsLCgkHBQUGCAkKCwoJBwUFBggJCgsKCAYFBQYICgsLCggHBQUHCAoLCwoIBgUFBwkKCwsKCAYFBQcJCgsLCQcGBQYHCQoLCgkHBgUGBwkLCwoIBwUFBggKCwsKCAYFBQYICgsKCQgGBQYHCQsLCgkHBgUGCAkKCgoIBgUFBwkKCwoJBwYFBggKCwsKCAYFBQYICgsKCQgGBQYHCQsLCggHBQYHCQoLCwkIBgUGCAoKCwoIBgUFBwgKCwoJBwYFBggJCgsKCAYFBgcJCgsKCAcFBQcJCgsKCQcGBQYICgsLCggGBQYICgsLCggGBQUHCQoLCgkHBQUGCAoLCwkHBgUGCAoLCwoIBQUGBwkLCwoIBgUGBwkLCwoIBgYGBwkKCwoIBgUFBwkKCwoIBwUGBwkKCwoIBwUFBwkKCwoIBgUFBwkKCwoIBwUFBwkKCwoIBgUFBwkLCwoJBwUFBwkLCwoIBwUFBwkLCwoIBgUGBwkKCwoIBgUGBwkKCgkHBgUGCAkLCgkHBgUHCQoLCgkHBQUHCQsLCggGBQYHCQsLCQcFBQYICgsLCQcFBQYICgsKCQcFBgcJCgsKCAYFBggKCwsJBwUFBggKCwoJBgUGCAoLCwoIBgUGCAoLCgkHBQUHCQsLCggGBQYICgsLCQcFBQcJCgoKCAYFBggKCwoJBwUFBwkLCwoIBgUGCAoLCwkHBQYHCQsLCggGBQcJCgsKCAYEBQcJDAwLCQcGBwgJCAcFBAQGCQsMCwkGBQUHCQoJCAYGBgkLDAwKCAUEBggJCgoIBwYICQsLCggFBAUHCgsLCggGBgcJCgkIBgQFBwkLDAoIBgUGCAkKCAcGBgcKDAwLCAYEBQcJCwoJBwcHCQoLCQcEAwUHCgwMCggHBwgKCgkHBQQGCAsNDAoHBQUHCAkJCAYFBwkLDAsJBgQFBggKCgkHBgcJCwsKCAUDBAcJCwsKCAcHCQoKCAYEBAYJCwwLCQcFBggJCQgGBQUICwwMCwgFBAUICQoJBwYHCQsMCwgFAwQGCQsLCggHBwkKCgkGBAQGCQsMCwkHBgcICQkIBQUGCQsMDAkGBQUHCQoJCAYGCAoMCwkGBAQGCQsLCQcGBwkLCwkGBAQGCQwMCwgGBQcJCgkHBQUHCQwMCggFBAYICgoJBwYHCQsLCgcFBAYJCwsKBwYGCAoKCQcFBQcKDAwKBwUFBwkKCggGBQcKCwsJBgQFBwkLCgkGBgcJCwoIBQQFCAsMCwgGBQcJCgkIBgYHCgwMCgcEBQcJCwoIBwYICgsKCAUEBQgLDAsIBgYICgoJBgUFBwoMDAoGBAUHCQoJBwYHCQwMCgcEBAYJCwsJBwcICQoKBwUDBQkMDAsIBgYHCQkIBgUGCQsNCwgFBAUICgoIBwcICwwLCAUDBQgLDAsIBgcJCgoIBQQFCQwNCwgGBQcICQgGBQYJDA0LBwQDBQgKCgkHBwkLCwkGBAQGCgwMCgcGBwkKCAYEBQgLDQwJBgQGCAkJCAYHCQsMCgcEAwYJCwsJBwcICgoIBgQEBwsNDAkGBQcJCQgGBQcJDAwKBwQEBwkKCQcGBwoLCwgFBAUJCwwKBwYHCQoJBwQFCAsNCwgFBQYJCgkHBQYJDAwJBgQFCAoLCgcGBwkKCQcFBQgLDAsIBQUHCgoJBwYHCQsLCAUEBgkLCwkGBggKCwkGBAYJCwwJBgUGCAoKCAUGCAsMCgcEBAcKDAoHBgcJCgkHBAUICwwLCAUFCAoJCAYGCAsMCgcEBAcKCwoHBwgKCwkGBAQICw0LCAUGCAoJBwUGCQwNCgYEBAcKCwkHBwkLCwkFAwUIDAwKBwYICQkIBQQHCw0MCQYEBQgJCQcHCAsMCgYDAwcKDAsIBggKCggFAwUJDQ0KBgUGCAkIBgYICw0LCAQDBgkLCggHCAoKCAUDBQkMDAoHBQcJCQcGBggMDQsHBAQHCgoJBwcJCwsHBAMGCg0LCAYHCQoJBgQGCg0NCQUEBgkKCQYGCAsMCQUDBQkLCwkGBgkKCQcFBgkMDAoGBAYJCgkGBggLDAkFAwUJDAsIBgYJCgkHBQYJDAwJBQQHCgsJBgYICwsIBQQGCgwLBwUHCQoJBgUHCwwLBwQFCAoKCAYHCgsJBgQFCQwMCAUFCAoJBwUHCgwLCAQEBwoLCQYHCQsKBgMECAwMCgYFBwkJBwUGCg0MCAQEBgoLCQcHCgsKBgMECQwMCQYGCAkIBgUHCw0MBwMEBwoKCAYICwwJBAMFCg0MCAYHCQkHBQUJDA0KBQQGCQoJBwcKDAoGAwQIDAwJBgcJCggFBAcLDQsHBAUICgkGBwkMCwcDAwcLDAoHBwkKCAUEBwsNCwcEBQgKCQcHCgwLBwMECAsLCQcHCQoIBQUIDA0KBgQGCQoIBgcKDAoGAwUJDAsHBgcJCgcFBgoNDAcEBQgLCgcGCAsLCAQECAwMCAYGCQoIBgYJDAwIBAQICwsIBgcKCggEBAgMDAgFBQgKCQYGCAsMCAQECAsLCAUHCgoIBQUJDAwIBQUICwoHBgkLCwcEBQkMCwgFBwkJBwUGCg0LBwQGCQoJBgcKDAkFAwYLDQoHBggJCAUFCQwNCQQEBwoKCAcJCwoGAwQJDQwIBgcJCAYFCAwNCgUDBgoLCQcICwoGAwQJDQ0JBQYICQcFBwsNCgUDBQoLCQcICgoHBAUJDQwIBQYJCQcGCAwNCQQDBwsLCAcICgkGAwYLDQsGBQcKCQYFCQwLBwMFCQwKBwYJCgkFBAgMDAkFBQgKCAYHCgwJBAMHCwwIBgcJCQcFBwsMCQQECAsKBwYJCwkGBAcMDAkFBgkKCAYHCgwJBQQIDAsHBQgKCgcFCAsMCAQFCQsJBgcKCwgEBQkMCwcFBwoJBgYJDAsHBAUKDAkGBwkKBwUGCw0JBQMGCQkHBwsNCgUDBwsLCAYHCQgFBQkNDQgEBQgKCAYICwoGAwYMDQoGBggJBwUHCw0JBAQICwoHBwkKBgMECg0MBwYHCQgGBwsMCQQDBwsLCQgKCgcDBAkNCwYEBwkJBwgLDQkDAgcLCwcGCAkIBQYLDgsFAwYKCgcICwsIBAUJDQoGBQgJBwUIDAwIBAUJCwkGBwoKBgQHDAwJBQYJCQcFCAwLBgQHCwsIBggKCAUFCQ0LBgQICwkHBwoKBwQGCw0JBQYJCgcGCAsKBgQIDAsHBQgKCAUGCgwJBQUJCwkFBwoKBgQHDAwIBQcKCQYGCgwJBAUJDAoHBwkJBQQIDAwGBAcLCwgICgoGAwUKDQoFBgkJBwYJDAkEAwcMCwcICgoGBAcMDAcEBgkKCAgMDAcDBAkMCQcICQgGBwwOCgMCBwoJCAkLCQUECQ0LBgQHCQcGCQ0MBgMGCgoHBgkJBgUIDQ0IBAUICAcICwwHBAcMDAgFBwgGBQcNDQgEBgoKBwcJCQYEBwwNCQUHCgkGBwoLBwQHDAwIBggJBgQHCwsHBQgLCgcHCgkFAwgMCwcGCQoIBggLCQQECQ0KBwcKCQYGCQsIBAYKDAgGCQoHBAYLCwcFCAsKBgcLCgUECAwKBwcJCgcGCgwIAwUKDAkHCQoHBAcMDAcDBwsKBwgKCQQECQwKBgYJCQYHCwsHAwYLCwgHCQkFBAkNCwUECAoICAoLBgIFDA0IBgcJBwYJDAoEAwkMCQcJCgYEBwwMBwUHCggHCgwIAwQKDQkHCAkHBgkNCgQDCAwKCAkKBgQHDAsGBAgLCQcKCwcDBQoMCAcJCgcGCQwJBAQJCggICgoGBAkNCQQFCgsICAsKBQQIDAkFBwsKBwgLCgUECAsJBwkLCAUHCwkFBAkLCAcKCwcECAwJBAUKCwgICgoFAwgMCQUHCwoHCAsJBAQJDAkHCQoHBQkMCAMFCgsJCQoJBAUKDQgEBwoJCAoLBwMGCwsHBgkJBwcLCwUDBwsKCAkKBgQIDQoFBAgKCQkLCQMECg0JBQgJBwcLDAcCBgsLCAgKCAQHDAsFBAgLCQkLCgQDCQ0JBQcJCAcLDAcCBgwLBwgJCAUIDAoFBQkLCAgLCQQFCwwHBQgKCAcKCwUDCQ0KBggJBwYKCwcEBwwKBggKBwUIDAoFBgoJBggKBwQHDAsGBgkJBggLCAQHDAwGBQkJBgcLCgUGCwsGBQkJBggMCwYFCgoHBgkIBQgNDAUECAkHCAoIBQcMCwUECAkHCQwJBAYLCwYFCAgGCg4KAwUKCgcICQcGCg4JAwUJCQgKCwYFCQ0JBAYJCAgMDAUDCAwIBggJBwgNCwQCCAsICAoIBQgMCgQECQoICwsGAwgMCQUHCggIDAsEAggMCQcJCQYIDAkDBAoLCAkKBwQIDAgEBwsJCAoJBAQKDAcGCQkHCQsHAwcMCgYICgcGCgsGBQoMCAcJCAUHDAkFBwsKBwgJBgYLDAYECQoHBwoIBQkMCQUHCggGCgoFBgsLBgYJCQcJDAcDCAwJBggJBwgMCQQFCwsHCAkGBgsLBgQJCwgJCgYDCA0LBgUHCgoJBgYHCgsJBgYICgoIBgYJCwoIBgYICgoHBgcKCgkGBQcKCwkHBgcJCggGBgkLCggGBggKCQcGBwoKCAYFBwoKCQcHCAkJBwYHCgsKBwYHCQkJBwcJCgkHBQYJCgoIBwcICQcGBwkKCggGBggJCQgICQkJBwYHCAkKCAcICQgHBgcJCgoIBgcICQgHCAkKCQcGBgkKCQgHCAkIBwYICgsJBwYHCQkIBwgKCgkGBQcJCwkHBwkKCQYGCAoLCQYGCAoJBwYICgoIBgUICwoIBgcKCggGBgkLCgcFBwkKCQYGCQsKBwUHCgsJBgYICgkHBgcKCwgGBgkKCQcGBwoKCAYGCQoJBwYICgoIBwcJCggGBggKCggHBwkJCAcHCQoJBwYICQoIBwgJCQcGBwkKCQcGCAkJCAcJCQkHBgcJCgkIBwgJCAcHCQoKCAYHCAkIBwgJCggGBggKCQgHCAkIBwYICgoIBgYICQgHCAkKCQYFCAoKCAcICQkHBQcLDAkGBQgKCQcHCQoJBgQHCgsJBgcJCQgGBwoMCQYFBwoKCAcICgkGBQcKCwkGBgkKCAYHCgsJBgUICgoHBggKCQcGCAsKCAYHCQkIBwgKCggGBgkKCQcHCAkIBgcJCwkHBggJCQcHCAkIBgcICgkIBwgJCAcHCAoJBwYICgoIBwgJCQcGCAoJBwcICgkHBwgJCAcGCAoJBwcICQkHBwkKCQYGCAoJBwcJCgkGBgkLCQcGCAoJBwcJCgkGBQkLCgcGCAkIBgcKCwkFBQgKCQcHCQoIBgYKDAkGBQgKCAYHCgsIBQYJCwkGBwkJBwUHCwsIBgYJCggHCAoKBgUHCwoIBggJCAYHCQsJBgYICgkHCAkJBwYHCgsIBgcICQcHCQoJBgYICgoICAkJBwYICgoIBwcICQcHCQoIBgYICgkICAkJBwYICgoHBggJCQgICQkHBgcJCggHCAkJBwcJCgkGBggKCQcICgoHBggKCQcGCAoIBgcKCggFBwoKBwYICgkGBgkLCQYGCQoIBgcKCgcGCQsJBgYJCggGBwoKBwYICwoGBQgKCAYICgoHBggKCQYFCAoIBgcKCggGBwoJBwcJCggGCAoKCAYHCQgHCAoKBwYICgoIBwgIBwYICgoHBggJCQcICQgGBgkLCgcHCAgHBwkKCAYGCQoJCAgJBwUHCgsIBgcJCQcICgkHBQcKCggHCQkHBggLCQYGCQoIBwkKCQUGCQsJBgcJCQYHCgsIBAYKCgcHCQoHBQgLCgYFCAoJBwgKCQYGCQsIBgcKCQcHCgoHBQcKCgcHCQoHBQgKCQYGCQoIBwkKCAYHCgoHBggKCAcICgkGBgkKCAYICggHCAkJBwcJCggHCAkIBwgJCQcHCAkIBwgJCAYHCgoHBwgJCAcJCggFBwoKCAcICQcHCQoIBgcJCggICQkHBggKCQYHCQkHCAoKBgQICwkHCAoJBgcKCgYECAoJBwgKCAUHCgoHBQgKCAcJCwgFBgoKCAcJCQcGCgsIBAYKCggICgkGBgoLBwUHCgkHCQoIBQYJCgcHCQoHBwkKCAUHCQkHCAoJBgcKCgcGCAkICAkJBwYICgkHBwkJBwgKCQYGCAkIBwkJBwcJCggGCAkIBwgKCAYICgkHBwkJBwgKCQYGCQoHBgkKCAcJCgcGCAoJBwgKCQYICgkGBgkKBwcJCQYGCgsHBQgKCAcJCgcFCAsJBgcKCQYICgkFBgoKBwcJCQYHCgoGBQkKCAcJCQYGCgsIBQgKCAcJCQcGCQsJBgcJBwcJCggGBwoJBwgIBwYJCwkGBwkIBwkJBwYICwkGBwkIBwkKCAYICgkHCAkHBgkLCAYHCQgHCAkHBgkLCAYICQgHCQoHBgkKCAYICQcHCgoHBggKCAcICQcHCgoHBgkJBwcJCQcHCgkGBgkJBwcKCQcHCgkGBwkJBwkKCAYICggGCAoIBwkJBwYJCgcGCQoHBwoJBgYJCgcICggGCAoIBgcKCQgICQYGCQsHBgkKCAgJCAYHCgoHBwkIBggKBwUICgkHCAgGBwoKBgYJCggICQcGCAsJBggJCAcJCQYGCgoIBwgIBwkKCAUICgkHCAgHBwoKBgYJCQcICQcGCQsIBggJCAgKCQYHCgoHBwkIBwkKBwYJCgcHCQgHCAoIBggKCAcJCQgHCAgICAgICQgICAgICQgICAgJCAgICAgJCAgICAgICAgICAkICAgICAgICAgICQkIBwcICQgICAgICAgIBwgJCQkIBwgICQgICAgJCQgHBwgJCQgICAgJCAcHCAkJCAcHCAkICAcICQkIBwcICQkIBwgICQgHBwgJCQkHBwcJCQgHCAkJCAcHBwkJCQgHCAkJCAcHCQkJCAcHCAkICAgICQkIBwcICQkIBwgJCAgHCAkJCQgHCAgJCAgHCAkIBwcICAkICAgICAgIBwgJCQgICAgICAgICAgJCAcICAkICAgICAgICAgICQgICAgJCAgICAgICAgICQkICAgICQgICAgJCQgHCAgJCAgHCAkICAcICQkIBwcICQkHBwgJCQgHBwgJCQgHCAkJCAcICQkIBwcICQkIBwgJCQgHBwkJCAcHCAkJCAcICQkIBwcICQkIBwgJCQcHCAkJCAcHCAkICAgICQgHBwgJCQgICAgJCAcICQkIBwcICQkICAgICAgHCAgJCAgICAgICAgJCQgHBwgJCAgICAgICAcICAkICAgICAgICAkJCAcICAgICAgICQgHBwgJCQgICAgICAgICQgHBwgJCQgICAkICAcICQkIBwcICQgHCAkJCAcHCAkIBwcICQgHBwgJCAcHCAkJCAcICQkHBwgJCQgHCAkJCAcICQkIBwcJCQgHBwgJCAcICQkIBwcICQgHBwgJCAcHCAkJCAcICQgIBwgJCAcHCAkJCAcICAgICAgJCAcHCAkICAgICAgHCAkJCQgICAgICAgJCAgHCAgJCAgICAgICAgJCAgICAgICAgJCAgHBwgJCAgICAgHBwgJCQgHCAkICAgJCQgHBwgJCQgHCAgIBwgJCQgHBwkJCAcICQkHBwgJCQgHCAkIBwcJCQgHBwgJCAcICQkHBwgICAgICAgICAcHBwcHBwcHBwcHBwcHBwcHBwYGBgYGBgYGBgYGBgYGBgYGBQUFBQUFBQUFBQUFBQUFBQUEBAQEBAQEBAQEBAQEBAQEBAQDAwMDAwMDAwMDAwMDAwMDAwICAgICAgICAgICAgICAgICAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAA"
+    },
+    "5": {
+      "encoding": "base64-u4",
+      "name": "First 167 ms of MOD sample 3 tail selected by effect 95B",
+      "data": "CAkJCQkKCgkJCQkICAgICAgICAgICAgJCQkJCQgICQsGBAkMDAYECAgHCQkGAwMPCgYEBw0KCAgJBwgMDQwCCAwNCQMHCQgJCQcFBAsNCAUFCg0KCQoIBwoMDAMGCwwKAgYICQgICAUDBQ0JBQQGDQkICAgHCQwNBgUJDQ0IBQkJCAgJBwUEDAsHBAQPCwkJCQgICgwLBAcLDAsCBggIBwgHBQQJDAgFBAkNCAcICQgJCwwHBgoNDQMGCQkICAgHBQYLCwYFBg4KCQgJCAgKCwcECAsMBgQICQgHCAcFBAgLBwQEDAoHBwcICAkLCwYHCw0MBgcKCggICAcFCA0JBgUKDAkICQkICAoLCAUJCwsFBQgJCAcHBgUFCgkGBQUKCgcHCAkICQsKAwgLDAgFCAkJCAgIBwYHDAgGBQoMCQgICQgICQoFBgoLCgcGCQkIBwcHBQUNCAYFBwsIBwcICAgJCgoFCQwMCQYJCgkHCAgHBgsKBwUGCQsICAkJCQkJCgQICgsJAwcJCQcHBwYGBwoHBQUHCwcGBwgJCAkKBQcJCwwHBwoKCQgICAcHCwkHBgYNCQgICQkICAkIBggKCwoECAkJCAcHBwYJCQcFBQoJBwYHCAgICQkHCAoLDAUICgoJBwgIBwgJCAcGBwsJCAgJCgkICQcGCAoKBwYICQgHBwcHBggIBwYGCwkHBgcJCAgJCAcICgoKBwgKCgkHCAgHCAoIBwYJCggICAkJCAgICAcJCgoGBggJCAYHBwcHCAgGBgYICAcGBwkICAgIBwkKCwgICQoKCAcICAcICQgHBwkKCAgICgkICAgHBwkKCQcHCAkIBwcHBwYJBwYGCAkHBwcICAgICAgHCQoKCQgJCgkICAgIBwkJCAcHCQkICAkKCQgICAYICQkJBggJCQcHBwcHBwgHBgYHCQcGBwgJCAgICAgJCgoJCAkKCQgICAgHCQgIBwcKCAgICQoJCAgIBwgJCQkHCAgIBwcHBwcHBwcHBwgIBwcHCAgICAgICAkJCggJCQoJBwgICAgICAgHCAkICAgJCgkICAgHCAkJCAgICAgHBwgHBwcHBwcHCAgHBwcJCAgICAgICQkJCQkJCQkHCAgICAgICAgICQgICAkKCQgICAgICQkICAgICAcICAcHBwcHBwcIBwcHBwgICAgICAgJCQkJCQkJCQgICAgICAgICAgICAgJCgkJCAgICAgICQgICAgIBwgIBwcHBwYEBwwIBwsIAwgJBQYOCQkNCQUJCAUMCwgKDQMFCQYFCgwJDA0GCAkFBA8ICQ0KAwgHBAgLCQoMCQIIBQMHDQkLDQYGCAUEDgoKDQ0ICAgFBgkKCw0MBQgGAwYMCAwNCggJBgQIBwgMDQkKCAQEBwYJDAoICQYDBQcFCQsJCAoGBQgFBwsMCA8LBwYIBQcLCggLCQUHCgMICwkIDgkHCQUECAoHCwwIBwoHBAgIBQkKBggKAwYJBwYOCggKCgUHCQcHDgoJDAsDCAgGCQwICQsFBQgHBQoNCQsMBwUIBgUMCgkLDAIHCAUGCggICgkGBwYEBQwICgwJBQgHBgoLCgwNCAgIBgUICAkLCggICAgICAgICAgHBwcHBwcHBwcHBwcHBwcHBwcGBgYGBgYGBgYGBgYGBgYGBgUFBQUFBQUFBQUFBQUFBQUFBAQEBAQEBAQEBAQEBAQEBAQEAwMDAwMDAwMDAwMDAwMDAwMCAgICAgICAgICAgICAgICAgEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAA=="
+    }
+  },
+  "notes": "Hash-locked ProTracker import. Effects 1xx/2xx/3xx, 9xx, Axy, Cxx, and Fxx are compiled; the actual one-second MOD sample 6 and the first 167 ms of the sample-3 tail selected by 95B are retained as 4-bit PCM. Long 4-second voice/effect samples are omitted to remain inside the CP/M TPA.",
+  "import_stats": {
+    "volume_set": 287,
+    "volume_slide": 192,
+    "pitch_slide": 5,
+    "tone_portamento": 0,
+    "sample_offset": 0,
+    "speed": 7,
+    "pcm_short": 8,
+    "pcm_tail": 0
+  },
+  "duration_frames": 3000,
+  "patterns": [
+    [
+      {
+        "frames": 12,
+        "tone1": {
+          "phase_step": 1126,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 4,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "pitch_slide": {
+            "tone1": -5
+          }
+        }
+      },
+      {
+        "frames": 12,
+        "effects": {
+          "pitch_slide": {
+            "tone1": 0
+          }
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12,
+        "tone2": {
+          "note": "---"
+        },
+        "tone3": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 4,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "pitch_slide": {
+            "tone2": -5
+          }
+        }
+      },
+      {
+        "frames": 12,
+        "effects": {
+          "pitch_slide": {
+            "tone2": 0
+          }
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12,
+        "tone1": {
+          "note": "---"
+        },
+        "tone2": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 4,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "pitch_slide": {
+            "tone1": -5
+          }
+        }
+      },
+      {
+        "frames": 12,
+        "effects": {
+          "pitch_slide": {
+            "tone1": 0
+          }
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 4,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12,
+        "tone2": {
+          "phase_step": 1126,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1126,
+          "volume": 9,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12,
+        "tone2": {
+          "note": "---"
+        },
+        "tone3": {
+          "note": "---"
+        },
+        "effects": {
+          "pitch_slide": {
+            "tone2": -5
+          }
+        }
+      },
+      {
+        "frames": 12,
+        "effects": {
+          "pitch_slide": {
+            "tone2": 0
+          }
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12,
+        "effects": {
+          "pitch_slide": {
+            "tone2": 5
+          }
+        }
+      },
+      {
+        "frames": 12,
+        "effects": {
+          "pitch_slide": {
+            "tone2": 0
+          }
+        }
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 12
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          },
+          "volume_slide": {
+            "tone2": -1
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2543,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2543,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 3401,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 3401,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2023,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1605,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2023,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1605,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1802,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1802,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2694,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2694,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1701,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1347,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1701,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1347,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 1512,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "tone3": {
+          "phase_step": 1134,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 1512,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone2": {
+          "phase_step": 2267,
+          "volume": 16,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_set": {
+            "tone3": 4
+          }
+        }
+      },
+      {
+        "frames": 6,
+        "tone3": {
+          "phase_step": 2267,
+          "volume": 4,
+          "envelope_speed": 8,
+          "envelope_mode": "hold"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        },
+        "effects": {
+          "volume_slide": {
+            "tone2": 0
+          }
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "tone1": {
+          "note": "---"
+        },
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 3,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 1,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      },
+      {
+        "frames": 6,
+        "percussion": {
+          "sample": 2,
+          "volume": 4,
+          "filter": 9,
+          "offset": 1
+        }
+      }
+    ]
+  ],
+  "order": [
+    0
+  ]
+}

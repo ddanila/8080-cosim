@@ -95,6 +95,38 @@ is [`firmware/three-voice.com`](firmware/three-voice.com), and the cycle
 regression is
 [`../../tests/jukuravi_three_voice_test.c`](../../tests/jukuravi_three_voice_test.c).
 
+## Cycle-model WAV rendering
+
+`tools/render_jukupoly_wav.c` executes a self-contained JukuPoly CP/M
+transient in the same 8080 core and turns its timestamped D57 channel-1 Mode-0
+writes into 16-bit mono PCM.  The default 1.70 MHz effective CPU rate is the
+same calibrated approximation used by the cycle regressions; D57 remains at
+its independently sourced 2 MHz rate.  Each active-low interval is integrated
+over the exact extent of an output sample, so an impulse shorter than one WAV
+sample retains its proportional energy rather than being lost.  Retriggered
+or overlapping intervals are merged.
+
+Produce a 96 kHz reference WAV with:
+
+```sh
+spinoffs/jukuravi/render_jukupoly_wav.sh \
+  spinoffs/jukuravi/firmware/three-voice.com /tmp/three-voice.wav
+```
+
+The default 20 Hz DC blocker converts the unipolar electrical impulses into a
+playback-safe acoustic reference.  `--dc-block 0` retains the raw, idle-zero
+pin-pulse representation.  `--cpu-hz`, `--pit-hz`, and `--sample-rate` expose
+the timing assumptions for comparison experiments.  The renderer deliberately
+does not claim an analogue model of R90/VT1/VD4/R91/R48, the speaker unit, or
+its enclosure; its pulse edges also inherit up to one 2 MHz PIT tick of
+CPU-to-PIT phase uncertainty from the effective-rate cycle model.
+
+The deterministic three-voice rendering guard is:
+
+```sh
+sync/jukuravi_wav_check.sh
+```
+
 ## Physical qualification
 
 Both images ran on CS00000 with the C10 JukuNet ROM, Fastboot V16, NetDisk v3

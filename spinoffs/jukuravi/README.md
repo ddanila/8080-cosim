@@ -44,6 +44,13 @@ The same engine's one-minute, credited arrangement of Robert Prince's DOOM
 E1M5 theme “Suspense” also passed physical listening on CS00000.  A 10,701-byte
 full 2:44 reduction subsequently completed a cold-boot physical run and
 returned cleanly to CP/M.
+The next cycle-qualified result imports Mark Knight / T.D.K.'s four-channel
+ProTracker arrangement of Kraftwerk's “The Robots.”  The optional player path
+adds the source tune's volume and pitch slides, target portamento, sample
+offset, absolute volume, and speed changes; pattern-order reuse fits the full
+8:34 score and two retained PCM fragments into a 38,591-byte CP/M transient.
+Its calibrated full-score simulation finishes in 8:36.10 and returns cleanly;
+physical CS00000 listening remains pending.
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0

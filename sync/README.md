@@ -84,6 +84,9 @@ sync/video_timing_check.sh
 sync/video_readout_check.sh
 sync/jukuravi_d0_check.sh
 sync/jukuravi_nano_check.sh
+sync/jukuravi_three_voice_check.sh
+sync/jukuravi_jukupoly_check.sh
+sync/jukuravi_wav_check.sh
 sync/beeper_check.sh
 sync/serial_check.sh
 sync/ie7_check.sh
@@ -103,7 +106,11 @@ memory/I/O bus-event agreement between `juku_top` and the C emulator
 (`cosim_check.sh`, cosim-referenced), focused end-to-end `CD low high` interrupt
 acknowledge agreement (`inta_bus_check.sh`), raw disk geometry, and a generated C/HDL
 FDC differential over deterministic command/event vectors with isolated writable
-images. That differential includes exact read/write DRQ boundaries, normal/deleted
+images.  The three JukuPoly guards build and cycle-qualify the simple chord and
+compiled-pattern player, then render the chord's D57 Mode-0 writes into a
+deterministic 16-bit WAV whose format, duration, pulse level, and staggered
+voice entrances are checked without committing generated audio.
+That FDC differential includes exact read/write DRQ boundaries, normal/deleted
 single and multiple writes, Read Address, and complete Read/Write Track streams.
 The bounded WD1793
 subset also includes Type-I physical-head,

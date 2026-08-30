@@ -16,6 +16,8 @@ FLAG_TONE2      equ     002h
 FLAG_TONE3      equ     004h
 FLAG_SLIDE      equ     008h
 FLAG_DRUM       equ     010h
+FLAG_FX         equ     020h
+FLAG_PATTERN     equ     040h
 FLAG_END        equ     080h
 
 ENV_ATTACK      equ     0
@@ -34,7 +36,10 @@ start:
 
         lxi     b,0
         lxi     d,0
+        if      @@1
+        else
         lxi     sp,0
+        endif
         xra     a
         sta     env_counter
         sta     row_frames
@@ -42,8 +47,33 @@ start:
         sta     ch1_volume
         sta     ch2_volume
         sta     ch3_volume
+        if      @@1
+        sta     ch1_volume_delta
+        sta     ch2_volume_delta
+        sta     ch3_volume_delta
+        lxi     h,0
+        shld    ch1_pitch_delta
+        shld    ch2_pitch_delta
+        shld    ch3_pitch_delta
+        shld    ch1_porta_target
+        shld    ch2_porta_target
+        shld    ch3_porta_target
+        shld    ch1_porta_rate
+        shld    ch2_porta_rate
+        shld    ch3_porta_rate
+        endif
+        if      @@1
+        lxi     h,jukupoly_song_order
+        shld    order_pointer
+        call    advance_pattern
+        lxi     d,0                     ; loader used DE before first frame
+        else
         lxi     h,jukupoly_song_rows
         shld    song_pointer
+        endif
+        if      @@1
+        lxi     sp,0
+        endif
         jmp     frame_tick
 
 ; The hot path.  BC, DE, and SP hold tone increments; each LXI H immediate is
@@ -124,6 +154,10 @@ frame_tick:
         lda     row_frames
         ora     a
         jz      parse_row
+        if      @@1
+        call    update_mod_effects
+        lda     row_frames
+        endif
         dcr     a
         sta     row_frames
         jmp     prepare_frame
@@ -137,6 +171,11 @@ parse_row:
         sta     row_flags
         ani     FLAG_END
         jnz     finished
+        if      @@1
+        lda     row_flags
+        ani     FLAG_PATTERN
+        jnz     parse_pattern_end
+        endif
         mov     a,c
         dcr     a                       ; current frame is duration frame 1
         sta     row_frames
@@ -159,8 +198,40 @@ parsed_tone1:
         lda     row_flags
         ani     FLAG_DRUM
         cnz     parse_drum
+        if      @@1
+        lda     row_flags
+        ani     FLAG_FX
+        cnz     parse_fx
+        endif
         lhld    song_cursor
         shld    song_pointer
+
+        if      @@1
+        jmp     prepare_frame
+parse_pattern_end:
+        call    advance_pattern
+        jc      finished
+        jmp     parse_row
+
+advance_pattern:
+        lhld    order_pointer
+        mov     e,m
+        inx     h
+        mov     d,m
+        inx     h
+        shld    order_pointer
+        mov     a,d
+        ora     e
+        jz      pattern_order_end
+        mov     h,d
+        mov     l,e
+        shld    song_pointer
+        ora     a                       ; clear carry
+        ret
+pattern_order_end:
+        stc
+        ret
+        endif
 
 prepare_frame:
         lda     ch1_volume
@@ -221,7 +292,18 @@ parse_tone1:
         sta     ch1_env_mode
         lda     parse_legato
         ora     a
+        if      @@1
+        jz      tone1_retrigger
+        lda     ch1_env_mode
+        cpi     3
         rnz
+        lda     ch1_target
+        sta     ch1_volume
+        ret
+tone1_retrigger:
+        else
+        rnz
+        endif
         lxi     h,0
         shld    phase1+1
         lda     ch1_env_mode
@@ -280,7 +362,18 @@ parse_tone2:
         sta     ch2_env_mode
         lda     parse_legato
         ora     a
+        if      @@1
+        jz      tone2_retrigger
+        lda     ch2_env_mode
+        cpi     3
         rnz
+        lda     ch2_target
+        sta     ch2_volume
+        ret
+tone2_retrigger:
+        else
+        rnz
+        endif
         lxi     h,0
         shld    phase2+1
         lda     ch2_env_mode
@@ -339,7 +432,18 @@ parse_tone3:
         sta     ch3_env_mode
         lda     parse_legato
         ora     a
+        if      @@1
+        jz      tone3_retrigger
+        lda     ch3_env_mode
+        cpi     3
         rnz
+        lda     ch3_target
+        sta     ch3_volume
+        ret
+tone3_retrigger:
+        else
+        rnz
+        endif
         lxi     h,0
         shld    phase3+1
         lda     ch3_env_mode
@@ -404,6 +508,295 @@ drum_silence:
         lxi     h,jukupoly_silence
         shld    drum_mix+1
         ret
+
+        if      @@1
+; Optional ABI-v2 tracker effects.  The packet begins with four channel masks:
+; absolute volume, signed volume delta, signed phase-step delta, and target
+; portamento.  Payloads then follow in channel order.  Effect state persists
+; until a later packet explicitly replaces it; the MOD importer emits stops at
+; every row boundary where an effect ceases.
+parse_fx:
+        lhld    song_cursor
+        mov     a,m
+        sta     fx_vset_mask
+        inx     h
+        mov     a,m
+        sta     fx_vslide_mask
+        inx     h
+        mov     a,m
+        sta     fx_pslide_mask
+        inx     h
+        mov     a,m
+        sta     fx_porta_mask
+        inx     h
+        shld    song_cursor
+
+        lda     fx_vset_mask
+        ani     1
+        jz      fx_vset2
+        call    fx_read_byte
+        sta     ch1_volume
+fx_vset2:
+        lda     fx_vset_mask
+        ani     2
+        jz      fx_vset3
+        call    fx_read_byte
+        sta     ch2_volume
+fx_vset3:
+        lda     fx_vset_mask
+        ani     4
+        jz      fx_vslide1
+        call    fx_read_byte
+        sta     ch3_volume
+
+fx_vslide1:
+        lda     fx_vslide_mask
+        ani     1
+        jz      fx_vslide2
+        call    fx_read_byte
+        sta     ch1_volume_delta
+fx_vslide2:
+        lda     fx_vslide_mask
+        ani     2
+        jz      fx_vslide3
+        call    fx_read_byte
+        sta     ch2_volume_delta
+fx_vslide3:
+        lda     fx_vslide_mask
+        ani     4
+        jz      fx_pslide1
+        call    fx_read_byte
+        sta     ch3_volume_delta
+
+fx_pslide1:
+        lda     fx_pslide_mask
+        ani     1
+        jz      fx_pslide2
+        call    fx_read_word
+        xchg
+        shld    ch1_pitch_delta
+        lxi     h,0
+        shld    ch1_porta_target
+fx_pslide2:
+        lda     fx_pslide_mask
+        ani     2
+        jz      fx_pslide3
+        call    fx_read_word
+        xchg
+        shld    ch2_pitch_delta
+        lxi     h,0
+        shld    ch2_porta_target
+fx_pslide3:
+        lda     fx_pslide_mask
+        ani     4
+        jz      fx_porta1
+        call    fx_read_word
+        xchg
+        shld    ch3_pitch_delta
+        lxi     h,0
+        shld    ch3_porta_target
+
+fx_porta1:
+        lda     fx_porta_mask
+        ani     1
+        jz      fx_porta2
+        call    fx_read_word
+        xchg
+        shld    ch1_porta_target
+        call    fx_read_word
+        xchg
+        shld    ch1_porta_rate
+        lxi     h,0
+        shld    ch1_pitch_delta
+fx_porta2:
+        lda     fx_porta_mask
+        ani     2
+        jz      fx_porta3
+        call    fx_read_word
+        xchg
+        shld    ch2_porta_target
+        call    fx_read_word
+        xchg
+        shld    ch2_porta_rate
+        lxi     h,0
+        shld    ch2_pitch_delta
+fx_porta3:
+        lda     fx_porta_mask
+        ani     4
+        rz
+        call    fx_read_word
+        xchg
+        shld    ch3_porta_target
+        call    fx_read_word
+        xchg
+        shld    ch3_porta_rate
+        lxi     h,0
+        shld    ch3_pitch_delta
+        ret
+
+fx_read_byte:
+        lhld    song_cursor
+        mov     a,m
+        inx     h
+        shld    song_cursor
+        ret
+
+; Return the little-endian word in DE.
+fx_read_word:
+        lhld    song_cursor
+        mov     e,m
+        inx     h
+        mov     d,m
+        inx     h
+        shld    song_cursor
+        ret
+
+update_mod_effects:
+        lxi     h,ch1_volume
+        lda     ch1_volume_delta
+        call    apply_volume_delta
+        lxi     h,ch2_volume
+        lda     ch2_volume_delta
+        call    apply_volume_delta
+        lxi     h,ch3_volume
+        lda     ch3_volume_delta
+        call    apply_volume_delta
+        call    update_pitch1
+        call    update_pitch2
+        call    update_pitch3
+        ret
+
+; HL points to a 0..15 current volume and A is a signed per-frame delta.
+apply_volume_delta:
+        ora     a
+        rz
+        mov     b,a
+        jm      volume_delta_down
+        mov     a,m
+        add     b
+        cpi     010h
+        jc      volume_delta_store
+        mvi     a,00fh
+volume_delta_store:
+        mov     m,a
+        ret
+volume_delta_down:
+        mov     a,m
+        add     b
+        jc      volume_delta_store
+        xra     a
+        mov     m,a
+        ret
+
+update_pitch1:
+        lhld    ch1_porta_target
+        mov     b,h
+        mov     c,l
+        lhld    ch1_porta_rate
+        shld    pitch_rate_arg
+        lhld    ch1_pitch_delta
+        xchg
+        lhld    ch1_step
+        call    apply_pitch_effect
+        shld    ch1_step
+        ora     a
+        rz
+        lxi     h,0
+        shld    ch1_porta_target
+        shld    ch1_porta_rate
+        ret
+update_pitch2:
+        lhld    ch2_porta_target
+        mov     b,h
+        mov     c,l
+        lhld    ch2_porta_rate
+        shld    pitch_rate_arg
+        lhld    ch2_pitch_delta
+        xchg
+        lhld    ch2_step
+        call    apply_pitch_effect
+        shld    ch2_step
+        ora     a
+        rz
+        lxi     h,0
+        shld    ch2_porta_target
+        shld    ch2_porta_rate
+        ret
+update_pitch3:
+        lhld    ch3_porta_target
+        mov     b,h
+        mov     c,l
+        lhld    ch3_porta_rate
+        shld    pitch_rate_arg
+        lhld    ch3_pitch_delta
+        xchg
+        lhld    ch3_step
+        call    apply_pitch_effect
+        shld    ch3_step
+        ora     a
+        rz
+        lxi     h,0
+        shld    ch3_porta_target
+        shld    ch3_porta_rate
+        ret
+
+; HL=current step, DE=signed free-slide delta, BC=portamento target.  A=1 on
+; target arrival so the caller can stop the portamento, otherwise A=0.
+apply_pitch_effect:
+        mov     a,b
+        ora     c
+        jnz     pitch_has_target
+        dad     d
+        xra     a
+        ret
+pitch_has_target:
+        mov     a,h
+        cmp     b
+        jc      pitch_below_target
+        jnz     pitch_above_target
+        mov     a,l
+        cmp     c
+        jc      pitch_below_target
+        jz      pitch_reached
+pitch_above_target:
+        xchg
+        lhld    pitch_rate_arg
+        xchg
+        mov     a,l
+        sub     e
+        mov     l,a
+        mov     a,h
+        sbb     d
+        mov     h,a
+        mov     a,h
+        cmp     b
+        jc      pitch_reached
+        jnz     pitch_not_reached
+        mov     a,l
+        cmp     c
+        jc      pitch_reached
+        jmp     pitch_not_reached
+pitch_below_target:
+        xchg
+        lhld    pitch_rate_arg
+        xchg
+        dad     d
+        mov     a,h
+        cmp     b
+        jc      pitch_not_reached
+        jnz     pitch_reached
+        mov     a,l
+        cmp     c
+        jnc     pitch_reached
+pitch_not_reached:
+        xra     a
+        ret
+pitch_reached:
+        mov     h,b
+        mov     l,c
+        mvi     a,1
+        ret
+        endif
 
 update_slide:
         lhld    ch1_step
@@ -470,6 +863,10 @@ song_pointer:
         dw      0
 song_cursor:
         dw      0
+        if      @@1
+order_pointer:
+        dw      0
+        endif
 row_frames:
         db      0
 row_flags:
@@ -516,6 +913,43 @@ ch3_env_mode:
 ch3_step:
         dw      0
 
+        if      @@1
+fx_vset_mask:
+        db      0
+fx_vslide_mask:
+        db      0
+fx_pslide_mask:
+        db      0
+fx_porta_mask:
+        db      0
+ch1_volume_delta:
+        db      0
+ch2_volume_delta:
+        db      0
+ch3_volume_delta:
+        db      0
+ch1_pitch_delta:
+        dw      0
+ch2_pitch_delta:
+        dw      0
+ch3_pitch_delta:
+        dw      0
+ch1_porta_target:
+        dw      0
+ch2_porta_target:
+        dw      0
+ch3_porta_target:
+        dw      0
+ch1_porta_rate:
+        dw      0
+ch2_porta_rate:
+        dw      0
+ch3_porta_rate:
+        dw      0
+pitch_rate_arg:
+        dw      0
+        endif
+
 ; The test locates this table by its magic rather than depending on a listing.
 test_manifest:
         db      'J','P','O','L',1
@@ -532,6 +966,17 @@ test_manifest:
         dw      slide_delta
         dw      row_frames
         dw      jukupoly_song_rows
+        if      @@1
+        dw      ch1_volume_delta
+        dw      ch2_volume_delta
+        dw      ch3_volume_delta
+        dw      ch1_pitch_delta
+        dw      ch2_pitch_delta
+        dw      ch3_pitch_delta
+        dw      ch1_porta_target
+        dw      ch2_porta_target
+        dw      ch3_porta_target
+        endif
 
         include "jukupoly-song-generated.inc"
 
