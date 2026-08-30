@@ -1,0 +1,37 @@
+00000001 INFO  start version=0.3.1-m6 port=/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+00000001 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000001 INFO  phase=artifact-validation
+00000001 INFO  phase=serial-open requested=19200 8N1 flow=none
+00000027 INFO  serial applied=19200 8N1 flow=none
+00000027 INFO  phase=fastboot
+00003036 WARN  V16 ready marker missed; probing resident stream scanner
+00008005 WARN  V16 final reply not seen; no resend, NetDisk will confirm
+00008015 INFO  phase=netdisk
+00008015 INFO  serving A: writable+journal, 19200 baud 8O1, N3
+00008517 INFO  host-service op=26 name=capability-query seq=01 status=0
+00009704 INFO  disk op=14 seq=01 drive=0 track=2 sector=1 status=0
+00009946 INFO  disk op=14 seq=02 drive=0 track=2 sector=17 status=0
+00010097 INFO  disk op=14 seq=03 drive=0 track=2 sector=33 status=0
+00010248 INFO  disk op=14 seq=04 drive=0 track=2 sector=13 status=0
+00010986 INFO  disk op=14 seq=05 drive=0 track=2 sector=29 status=0
+00011703 INFO  disk op=14 seq=06 drive=0 track=3 sector=1 status=0
+00012419 INFO  disk op=14 seq=07 drive=0 track=3 sector=17 status=0
+00012728 INFO  disk op=14 seq=08 drive=0 track=3 sector=33 status=0
+00013312 INFO  disk op=14 seq=09 drive=0 track=2 sector=3 status=0
+00014638 INFO  disk op=14 seq=0A drive=0 track=38 sector=29 status=0
+00015352 INFO  disk op=14 seq=0B drive=0 track=39 sector=1 status=0
+00016066 INFO  disk op=14 seq=0C drive=0 track=39 sector=17 status=0
+00016780 INFO  disk op=14 seq=0D drive=0 track=39 sector=33 status=0
+00017494 INFO  disk op=14 seq=0E drive=0 track=39 sector=13 status=0
+00018208 INFO  disk op=14 seq=0F drive=0 track=39 sector=29 status=0
+00018923 INFO  disk op=14 seq=10 drive=0 track=40 sector=1 status=0
+00019637 INFO  disk op=14 seq=11 drive=0 track=40 sector=17 status=0
+00020351 INFO  disk op=14 seq=12 drive=0 track=40 sector=33 status=0
+00020995 INFO  disk op=14 seq=13 drive=0 track=40 sector=13 status=0
+00021283 INFO  disk op=14 seq=14 drive=0 track=40 sector=29 status=0
+00181635 INFO  disk op=14 seq=15 drive=0 track=2 sector=29 status=0
+00182352 INFO  disk op=14 seq=16 drive=0 track=3 sector=1 status=0
+00183069 INFO  disk op=14 seq=17 drive=0 track=3 sector=17 status=0
+00183377 INFO  disk op=14 seq=18 drive=0 track=3 sector=33 status=0
+00183627 INFO  phase=stopped
+00183627 INFO  stop exit=0 rx=931 tx=27895 requests=102 reads=24 records=192 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0

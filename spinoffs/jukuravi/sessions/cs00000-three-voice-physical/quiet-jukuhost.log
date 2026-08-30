@@ -1,0 +1,27 @@
+00000000 INFO  start version=0.3.1-m6 port=/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+00000000 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=19200 8N1 flow=none
+00000027 INFO  serial applied=19200 8N1 flow=none
+00000027 INFO  phase=fastboot
+00003036 WARN  V16 ready marker missed; probing resident stream scanner
+00008005 WARN  V16 final reply not seen; no resend, NetDisk will confirm
+00008015 INFO  phase=netdisk
+00008015 INFO  serving A: writable+journal, 19200 baud 8O1, N3
+00008516 INFO  host-service op=26 name=capability-query seq=01 status=0
+00009667 INFO  disk op=14 seq=01 drive=0 track=2 sector=1 status=0
+00009902 INFO  disk op=14 seq=02 drive=0 track=2 sector=17 status=0
+00010053 INFO  disk op=14 seq=03 drive=0 track=2 sector=33 status=0
+00010204 INFO  disk op=14 seq=04 drive=0 track=2 sector=13 status=0
+00010941 INFO  disk op=14 seq=05 drive=0 track=2 sector=29 status=0
+00011658 INFO  disk op=14 seq=06 drive=0 track=3 sector=1 status=0
+00012374 INFO  disk op=14 seq=07 drive=0 track=3 sector=17 status=0
+00012683 INFO  disk op=14 seq=08 drive=0 track=3 sector=33 status=0
+00013230 INFO  disk op=14 seq=09 drive=0 track=2 sector=3 status=0
+00013981 INFO  disk op=14 seq=0A drive=0 track=36 sector=29 status=0
+00023365 INFO  disk op=14 seq=0B drive=0 track=2 sector=29 status=0
+00024082 INFO  disk op=14 seq=0C drive=0 track=3 sector=1 status=0
+00024798 INFO  disk op=14 seq=0D drive=0 track=3 sector=17 status=0
+00025107 INFO  disk op=14 seq=0E drive=0 track=3 sector=33 status=0
+00025306 INFO  phase=stopped
+00025306 INFO  stop exit=0 rx=751 tx=17093 requests=82 reads=14 records=112 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0

@@ -1,0 +1,29 @@
+00000001 INFO  start version=0.3.1-m6 port=/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+00000001 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000001 INFO  phase=artifact-validation
+00000001 INFO  phase=serial-open requested=19200 8O1 flow=none
+00000016 INFO  serial applied=19200 8O1 flow=none
+00000016 INFO  phase=netdisk
+00000016 INFO  serving A: writable+journal, 19200 baud 8O1, N3
+00001092 INFO  disk op=14 seq=19 drive=0 track=4 sector=29 status=0
+00001554 INFO  disk op=14 seq=1A drive=0 track=2 sector=3 status=0
+00001870 INFO  disk op=14 seq=1B drive=0 track=2 sector=19 status=0
+00002021 INFO  disk op=14 seq=1C drive=0 track=2 sector=35 status=0
+00002318 INFO  disk op=14 seq=1D drive=0 track=2 sector=15 status=0
+00002828 INFO  disk op=14 seq=1E drive=0 track=2 sector=3 status=0
+00003549 INFO  disk op=14 seq=1F drive=0 track=2 sector=29 status=0
+00004266 INFO  disk op=14 seq=20 drive=0 track=3 sector=1 status=0
+00004983 INFO  disk op=14 seq=21 drive=0 track=3 sector=17 status=0
+00005292 INFO  disk op=14 seq=22 drive=0 track=3 sector=33 status=0
+00006307 INFO  disk op=14 seq=23 drive=0 track=2 sector=3 status=0
+00007043 INFO  disk op=14 seq=24 drive=0 track=36 sector=29 status=0
+00007577 INFO  disk op=14 seq=25 drive=0 track=37 sector=1 status=0
+00008161 INFO  disk op=14 seq=26 drive=0 track=37 sector=17 status=0
+00008646 INFO  disk op=14 seq=27 drive=0 track=37 sector=33 status=0
+00008849 INFO  disk op=14 seq=28 drive=0 track=37 sector=13 status=0
+00016700 INFO  disk op=14 seq=29 drive=0 track=2 sector=29 status=0
+00017417 INFO  disk op=14 seq=2A drive=0 track=3 sector=1 status=0
+00018133 INFO  disk op=14 seq=2B drive=0 track=3 sector=17 status=0
+00018442 INFO  disk op=14 seq=2C drive=0 track=3 sector=33 status=0
+00018644 INFO  phase=stopped
+00018644 INFO  stop exit=0 rx=756 tx=13316 requests=84 reads=20 records=160 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0

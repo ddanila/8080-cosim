@@ -1,0 +1,9733 @@
+{
+  "schema": "jukupoly-song-v1",
+  "title": "Suspense (JukuPoly full-song arrangement)",
+  "composer": "Robert (Bobby) Prince",
+  "arrangement": "Three-tone pin-pulse reduction for JukuPoly",
+  "source": {
+    "name": "DOOM E1M5 / M_E1M5.mid",
+    "credit": "Music by Robert Prince; DOOM developed and published by id Software",
+    "url": "https://www.vgmpf.com/Wiki/images/4/46/Doom_%28DOS%29.zip",
+    "download_sha256": "ae1d9201e623310ba16a317ff93f1fecd5d42b4efd24212bc2476080d23ea7ec"
+  },
+  "sample_rate_hz": 7200,
+  "frame_samples": 144,
+  "defaults": {
+    "tone1": {
+      "volume": 11,
+      "envelope_speed": 1,
+      "envelope_mode": "decay"
+    },
+    "tone2": {
+      "volume": 14,
+      "envelope_speed": 4,
+      "envelope_mode": "hold"
+    },
+    "tone3": {
+      "volume": 10,
+      "envelope_speed": 1,
+      "envelope_mode": "decay"
+    }
+  },
+  "notes": "Original 0:00-2:44 structure at 120 BPM. Bass Strings is raised one octave for the Juku speaker. Tone 3 follows String Bounce 2 until 1:28, String Bounce 3 until 2:08, then String Bounce 4; the source layers these voices. Fret Noise, Reverse Cymbal, and Floor Tom are approximated with samples 2, 3, and 1. The source MIDI is not required by the normal build.",
+  "rows": [
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A2"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A#2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "E4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "E4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A2"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "E4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A#2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "E4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 3,
+        "filter": 5,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "G4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "G4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 3,
+        "filter": 5,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A2"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "G4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A#2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "G4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 3,
+        "filter": 5,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 3,
+        "filter": 5,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 3,
+        "filter": 5,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A2"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A#2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 2,
+        "filter": 4,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "A2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "G2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "F2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "E2"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 3,
+        "filter": 5,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone2": {
+        "note": "D2"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "D4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "E5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone3": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    }
+  ]
+}

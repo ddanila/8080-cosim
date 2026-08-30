@@ -1,0 +1,28 @@
+00000000 INFO  start version=0.3.1-m6 port=/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+00000000 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=19200 8O1 flow=none
+00000015 INFO  serial applied=19200 8O1 flow=none
+00000016 INFO  phase=netdisk
+00000016 INFO  serving A: writable+journal, 19200 baud 8O1, N3
+00001375 INFO  disk op=14 seq=2D drive=0 track=4 sector=29 status=0
+00001856 INFO  disk op=14 seq=2E drive=0 track=2 sector=3 status=0
+00002174 INFO  disk op=14 seq=2F drive=0 track=2 sector=19 status=0
+00002325 INFO  disk op=14 seq=30 drive=0 track=2 sector=35 status=0
+00002622 INFO  disk op=14 seq=31 drive=0 track=2 sector=15 status=0
+00003152 INFO  disk op=14 seq=32 drive=0 track=2 sector=3 status=0
+00003874 INFO  disk op=14 seq=33 drive=0 track=2 sector=29 status=0
+00004591 INFO  disk op=14 seq=34 drive=0 track=3 sector=1 status=0
+00005307 INFO  disk op=14 seq=35 drive=0 track=3 sector=17 status=0
+00005616 INFO  disk op=14 seq=36 drive=0 track=3 sector=33 status=0
+00006852 INFO  disk op=14 seq=37 drive=0 track=2 sector=3 status=0
+00007590 INFO  disk op=14 seq=38 drive=0 track=38 sector=1 status=0
+00008303 INFO  disk op=14 seq=39 drive=0 track=38 sector=17 status=0
+00009017 INFO  disk op=14 seq=3A drive=0 track=38 sector=33 status=0
+00009549 INFO  disk op=14 seq=3B drive=0 track=38 sector=13 status=0
+00068519 INFO  disk op=14 seq=3C drive=0 track=2 sector=29 status=0
+00069235 INFO  disk op=14 seq=3D drive=0 track=3 sector=1 status=0
+00069952 INFO  disk op=14 seq=3E drive=0 track=3 sector=17 status=0
+00070261 INFO  disk op=14 seq=3F drive=0 track=3 sector=33 status=0
+00070560 INFO  phase=stopped
+00070560 INFO  stop exit=0 rx=1036 tx=14020 requests=115 reads=19 records=152 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0

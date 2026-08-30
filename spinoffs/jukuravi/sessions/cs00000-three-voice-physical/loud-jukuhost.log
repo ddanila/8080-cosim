@@ -1,0 +1,19 @@
+00000000 INFO  start version=0.3.1-m6 port=/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+00000000 INFO  platform=Linux timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=19200 8O1 flow=none
+00000016 INFO  serial applied=19200 8O1 flow=none
+00000016 INFO  phase=netdisk
+00000016 INFO  serving A: writable+journal, 19200 baud 8O1, N3
+00001065 INFO  disk op=14 seq=0F drive=0 track=2 sector=3 status=0
+00001381 INFO  disk op=14 seq=10 drive=0 track=2 sector=19 status=0
+00001532 INFO  disk op=14 seq=11 drive=0 track=2 sector=35 status=0
+00001829 INFO  disk op=14 seq=12 drive=0 track=2 sector=15 status=0
+00002337 INFO  disk op=14 seq=13 drive=0 track=2 sector=3 status=0
+00002581 INFO  disk op=14 seq=14 drive=0 track=36 sector=29 status=0
+00011987 INFO  disk op=14 seq=15 drive=0 track=2 sector=29 status=0
+00012704 INFO  disk op=14 seq=16 drive=0 track=3 sector=1 status=0
+00013421 INFO  disk op=14 seq=17 drive=0 track=3 sector=17 status=0
+00013730 INFO  disk op=14 seq=18 drive=0 track=3 sector=33 status=0
+00013930 INFO  phase=stopped
+00013930 INFO  stop exit=0 rx=450 tx=5668 requests=50 reads=10 records=80 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0

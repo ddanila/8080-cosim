@@ -995,6 +995,52 @@ speaker-PIT writes, and bounds every simulated note-onset interval against the
 The timing reference is the published Deep Purple guitar TAB:
 <https://www.deeppurple50.com/sites/g/files/g2000016886/files/2024-01/Smoke%20on%20the%20Water%20-%20Guitar%20TAB%5B21%5D.pdf>.
 
+### JukuPoly three-voice pin-pulse demo
+
+`three-voice.com` is a 163-byte strict-8080 CP/M transient that synthesizes
+A3, C-sharp4, and E4 concurrently through D57 channel 1.  It uses three 16-bit
+phase accumulators and mode-0 hardware-timed speaker pulses, averaging 10.97
+kHz in the cycle regression at Juku's measured effective RAM speed.  The first
+voice runs alone for two seconds, the second joins for two seconds, and all
+three run together for five seconds before the program silences the PIT and
+returns to CP/M.
+
+Build and verify it with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_three_voice.py
+bash sync/jukuravi_three_voice_check.sh
+```
+
+The design, timing limits, loudness revision, CS00000 physical result, and raw
+evidence are documented in [`../JUKUPOLY.md`](../JUKUPOLY.md).
+
+`jukupoly.com` extends that proof into a compiled-pattern player with three
+tone channels and concurrent unpacked 4-bit percussion.  Its JSON score exposes
+note, detune, legato, volume, attack/decay/hold envelope, channel-1 slide,
+sample, percussion-volume, filter, and sample-offset fields.  The included
+40-row demonstration is a credited hand reduction of George Stone's 1991
+Windows MIDI demo “Trip Through the Grand Canyon”; no source MIDI is included
+or needed at build time.
+
+Build and verify the 4,327-byte player, generated score/PCM include, and
+manifest-driven cycle test with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py
+bash sync/jukuravi_jukupoly_check.sh
+```
+
+The design, complete attribution record, and CS00000 physical result are in
+[`../JUKUPOLY-TRACKER.md`](../JUKUPOLY-TRACKER.md).
+
+`suspense.com` and `suspfull.com` are credited 1:00 and 2:44 arrangements
+of Robert Prince's “Suspense” from DOOM E1M5.  The former passed a CS00000
+listening run; the latter subsequently passed a complete 2:44 CS00000 run.
+Their score JSON is reproducibly imported from an exact, hash-locked original
+MIDI without committing that source file.  `sync/jukuravi_jukupoly_check.sh`
+builds and runs bounded cycle windows for both arrangements.
+
 ## Stage D2 checkpoint: chunked RAM loader
 
 `diag-d2-loader.bin` is the cumulative version-9 image. It preserves every D0

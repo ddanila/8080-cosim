@@ -31,6 +31,20 @@ verified, fitted in CS00015, and passed every monitor-independent physical
 item. Display/cursor observation remains pending; see the CP/M Plus
 [`C6 qualification record`](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
 
+[`JUKUPOLY.md`](JUKUPOLY.md) records the 2026-08-29 JukuPoly result: a
+163-byte strict-8080 CP/M transient synthesizing a physically confirmed
+three-voice A-major chord through the unmodified CS00000 speaker at an average
+cycle-model sample rate of 10.97 kHz.  It includes the mode-0 PIT technique,
+source and regression paths, loudness revision, and retained physical evidence.
+The follow-on [`compiled-pattern player`](JUKUPOLY-TRACKER.md) adds envelopes,
+legato, detune, slide, and genuinely concurrent sample percussion; its credited
+`CANYON.MID` reduction is cycle-qualified at 7.186 kHz and passed a CS00000
+physical listening run on 2026-08-30.
+The same engine's one-minute, credited arrangement of Robert Prince's DOOM
+E1M5 theme “Suspense” also passed physical listening on CS00000.  A 10,701-byte
+full 2:44 reduction subsequently completed a cold-boot physical run and
+returned cleanly to CP/M.
+
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0
 counts. T34 is the first clock-safe D55 functional-path image. Neither
