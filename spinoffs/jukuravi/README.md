@@ -51,6 +51,22 @@ offset, absolute volume, and speed changes; pattern-order reuse fits the full
 8:34 score and two retained PCM fragments into a 38,591-byte CP/M transient.
 Its calibrated full-score simulation finishes in 8:36.10 and returns cleanly;
 physical CS00000 listening remains pending.
+A general two-operator YM3812/YMF262 VGM/VGZ reducer now also reconstructs OPL
+key events, detects variable-pitch instruments and simultaneous chords,
+collapses stereo/unison voices to three Juku tones, and maps fixed-pitch
+signatures to percussion.  Its Robert Prince DOOM reductions “At Doom's Gate”
+and “The Demons from Adrian's Pen” occupy respectively 12,886 and 17,255 bytes;
+both pass full cycle regressions and return cleanly to CP/M.  An audit prompted
+by the Supaplex main theme fixed the original linear interpretation of OPL's
+documented 0.75 dB total-level steps.  OpenSupaplex's named AdLib tracker
+resource also supplied exact, non-heuristic mappings for 988 closed hi-hats,
+264 snares, and 488 bass drums.  The resulting 21,332-byte, five-minute
+Supaplex image and both level-corrected DOOM renders passed subjective A/B
+listening review on 2026-08-31.
+A companion AY/YM VGM reducer maps the three native PSG channels directly to
+raw Juku phase increments, retaining tuning finer than tracker notes.  Its
+first result is Hisayoshi Ogura's 1986 Arkanoid arcade “Ending”: an approved
+18.390-second, three-tone render in a 2,513-byte CP/M transient.
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0

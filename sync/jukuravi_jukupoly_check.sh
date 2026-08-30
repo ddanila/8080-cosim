@@ -6,6 +6,7 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 cd "$ROOT"
+python3 tests/jukuravi_jukupoly_vgz_import_test.py
 python3 spinoffs/jukuravi/firmware/build_jukupoly.py --check
 python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
   --song spinoffs/jukuravi/firmware/jukupoly-suspense.json \
@@ -27,6 +28,26 @@ python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
   --generated spinoffs/jukuravi/firmware/jukupoly-tdk-robots-generated.inc \
   --output spinoffs/jukuravi/firmware/tdkrobot.com \
   --check
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz-generated.inc \
+  --output spinoffs/jukuravi/firmware/doomgate.com \
+  --check
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-demons-vgz.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-demons-vgz-generated.inc \
+  --output spinoffs/jukuravi/firmware/demons.com \
+  --check
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz-generated.inc \
+  --output spinoffs/jukuravi/firmware/supaplex.com \
+  --check
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz-generated.inc \
+  --output spinoffs/jukuravi/firmware/arkanoid.com \
+  --check
 cc -std=c11 -O2 -Wall -Wextra -Werror \
   -o "$TMP/jukuravi_jukupoly_test" \
   tests/jukuravi_jukupoly_test.c cosim/i8080.c
@@ -45,3 +66,14 @@ cc -std=c11 -O2 -Wall -Wextra -Werror \
   spinoffs/jukuravi/firmware/tdk60.com 3000
 "$TMP/jukuravi_jukupoly_mod_test" \
   spinoffs/jukuravi/firmware/tdkrobot.com 25728
+cc -std=c11 -O2 -Wall -Wextra -Werror \
+  -o "$TMP/jukuravi_jukupoly_vgz_test" \
+  tests/jukuravi_jukupoly_vgz_test.c cosim/i8080.c
+"$TMP/jukuravi_jukupoly_vgz_test" \
+  spinoffs/jukuravi/firmware/doomgate.com 4826 96 98
+"$TMP/jukuravi_jukupoly_vgz_test" \
+  spinoffs/jukuravi/firmware/demons.com 7776 156 159
+"$TMP/jukuravi_jukupoly_vgz_test" \
+  spinoffs/jukuravi/firmware/supaplex.com 15240 305 308
+"$TMP/jukuravi_jukupoly_vgz_test" \
+  spinoffs/jukuravi/firmware/arkanoid.com 920 18 19 0

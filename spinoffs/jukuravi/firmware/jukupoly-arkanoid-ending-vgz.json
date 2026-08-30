@@ -1,0 +1,2429 @@
+{
+  "schema": "jukupoly-song-v1",
+  "title": "Ending (YM2149/VGZ JukuPoly reduction)",
+  "composer": "Hisayoshi Ogura",
+  "arrangement": "Automatic AY-family reduction: three PSG tone periods to three raw Juku phase steps; PSG noise gates to synthesized percussion",
+  "source": {
+    "name": "04 Ending.vgz",
+    "format": "gzip-compressed VGM",
+    "compressed_sha256": "909b71ae07cf968bde9f6e63091be1d280e98b8d1de21825e88fe7e92de04c19",
+    "vgm_sha256": "13ab3b7b43c08309fc43711584177fdac1359b94a8b1c38011c248e9e55357a5",
+    "vgm_version": "1.51",
+    "chip": "YM2149",
+    "chip_clock_hz": 1500000,
+    "effective_clock_hz": 750000,
+    "chip_flags": 1,
+    "gd3": {
+      "track_en": "Ending",
+      "game_en": "Arkanoid",
+      "game_jp": "\u30a2\u30eb\u30ab\u30ce\u30a4\u30c9",
+      "system_en": "Arcade Machine",
+      "system_jp": "\u30a2\u30fc\u30b1\u30fc\u30c9\u30de\u30b7\u30fc\u30f3",
+      "author_en": "Hisayoshi Ogura",
+      "author_jp": "\u5c0f\u5009 \u4e45\u4f73",
+      "date": "1986",
+      "creator": "Sonic of 8!"
+    },
+    "license": "No new license asserted for the composition or source recording."
+  },
+  "sample_rate_hz": 7120,
+  "frame_samples": 143,
+  "defaults": {
+    "tone1": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone2": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone3": {
+      "volume": 16,
+      "envelope_speed": 8,
+      "envelope_mode": "decay"
+    }
+  },
+  "conversion": {
+    "policy": "finite VGM stream only; never follow the loop back",
+    "total_vgm_samples": 811011,
+    "duration_seconds": 18.390272108843536,
+    "loop_start_sample": 89889,
+    "loop_samples": 721122,
+    "duration_frames": 920,
+    "source_tone_channels_peak": 3,
+    "three_tone_frames": 557,
+    "envelope_retriggers": 156,
+    "percussion_hits": {},
+    "frequency_hz_min": 36.70712607674236,
+    "frequency_hz_max": 442.2169811320755
+  },
+  "notes": "This is a register-level musical reduction, not AY/YM waveform emulation. Raw tone periods preserve source tuning and detuning.",
+  "rows": [
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2147,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2168,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 15,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 15,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2697,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2748,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2147,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2168,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 1705,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1719,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2147,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2168,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 15,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 15,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2697,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2748,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2147,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2168,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2410,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2451,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2697,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2731,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2410,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2451,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2147,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2168,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2410,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2451,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 3220,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 3269,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2410,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2451,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 3596,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 3656,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 3220,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 3269,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2410,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2451,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2697,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2748,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "phase_step": 4032,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 4070,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 3596,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 3656,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 3220,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 3269,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2410,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2451,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2697,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2748,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1432,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1431,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 1351,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 1353,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2147,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2168,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 15,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 15,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 902,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 1805,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 1828,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 903,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "phase_step": 2697,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2748,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 2026,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone2": {
+        "phase_step": 2045,
+        "volume": 14,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "phase_step": 803,
+        "volume": 16,
+        "envelope_speed": 8,
+        "envelope_mode": "decay"
+      }
+    }
+  ]
+}

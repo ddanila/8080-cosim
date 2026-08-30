@@ -130,6 +130,8 @@ reference is the original `M_E1M5.mid` preserved from the OS/2 port in the
 
 [doom-rip]: https://www.vgmpf.com/Wiki/index.php/Doom_(DOS)#Game_Rip
 [doom-vgmrips]: https://vgmrips.net/packs/pack/doom-pc
+[ym3812-manual]: https://c64.xentax.com/media/Yamaha_YM3812_Application_Manual.pdf
+[opensupaplex-adlib]: https://github.com/sergiou87/open-supaplex/blob/master/resources/audio/music-adlib.xm
 
 The first minute is unusually well matched to JukuPoly.  The original MIDI
 starts `String Bounce` at 0:00, adds `Bass Strings` at 0:08, and adds `String
@@ -151,6 +153,169 @@ No DOOM MIDI or VGM data is committed.  The repository retains only the
 credited compiled arrangements and an importer locked to the exact source
 MIDI hash; the original composition and game assets remain the property of
 their respective rights holders.
+
+## Two-operator OPL VGM/VGZ conversion
+
+### “At Doom's Gate”
+
+`DOOMGATE.COM` is an automatic reduction of **“At Doom's Gate”**, DOOM E1M1
+music composed by **Robert (Bobby) Prince**, from a YMF262/OPL3 VGZ capture.
+The source's GD3 record identifies the game as DOOM, system as IBM PC/AT,
+original file as `D_E1M1`, and VGM creator as NewRisingSun.  The exact source
+is not committed:
+
+- 31,414-byte VGZ SHA-256:
+  `87c6620af71c04a73dd51bec06f7e849fb54a827373de9a1bf33173d7344109a`;
+- 94,252-byte decompressed VGM SHA-256:
+  `915176f25be1fb1f78c2caa613fe509e7fd52976439c5412ae5ccc0d1b971f6e`.
+
+The VGM header and command stream agree on 4,256,232 samples at 44.1 kHz, or
+96.513 seconds.  Its loop command points to byte `0581h`, after the time-zero
+chip initialization but still at sample zero, and declares the same 4,256,232
+samples as its loop length.  Thus the finite VGM stream is already exactly one
+musical pass; following its loop pointer would merely repeat that 1:36.513
+pass.  The converter deliberately stops at the VGM end command.
+
+`import_jukupoly_vgz.py` accepts an uncompressed VGM or gzip-compressed VGZ,
+parses sample-accurate waits and either YM3812/OPL2 or YMF262/OPL3 register
+writes, and reconstructs all 9 or 18 two-operator channels.  It groups key-ons
+by their OPL operator/register signature.  Instruments used at four or more
+pitches and exact simultaneous three-pitch chords become melodic; fixed-pitch
+and rare signatures become kick, snare/tom, or hat/cymbal reductions.  Exact
+signature overrides are available when the register stream alone cannot
+distinguish a deliberately narrow-pitch instrument from percussion.  Identical
+stereo/unison pitches are collapsed, persistent notes retain their Juku channel
+where possible, and key-on retriggers retain the riff's gating.  The current
+boundary intentionally rejects OPL3 four-operator and hardware-rhythm modes
+rather than pretending to convert them.
+
+The converter originally treated the six-bit OPL total-level field as linear.
+The [Yamaha YM3812 Application Manual][ym3812-manual] specifies logarithmic
+attenuation in 0.75 dB steps, up to 47.25 dB.  The corrected reducer converts
+that attenuation to linear amplitude before quantizing it to Juku's volume
+range; for parallel connection mode it follows the manual's sum of both
+operators and caps the result at Juku full scale.  A regression locks the
+known TL values and chord classification.  The correction changes level only
+for the two DOOM scores: their notes, drum identities, hit counts, and timing
+remain identical.  Corrected renders of both DOOM scores and Supaplex passed
+subjective A/B listening review on 2026-08-31.
+
+This source contains three automatically recognized variable-pitch signatures.
+They peak at five simultaneously allocated OPL voices, but duplicate-pitch
+collapse normally leaves three or fewer useful notes.  Only 66 of 4,826 Juku
+frames contain more than three distinct candidates and require a ranked
+three-note choice.  OPL waveforms, FM modulation, feedback, stereo, and chip
+envelopes cannot survive a three-pulse beeper reduction; the result preserves
+notes, gates, approximate register volume, and percussion timing rather than
+YMF262 timbre.
+
+The generated score has 1,375 rows and seven compiled percussion descriptors.
+`DOOMGATE.COM` is 12,886 bytes.  A 143-sample frame and phase steps calibrated
+for 7.12 kHz make its complete cycle-model run 96.872 seconds—0.37% longer
+than the 96.513-second VGM pass—after which it silences D57 and returns cleanly
+to CP/M.  Its corrected render passed subjective listening review on
+2026-08-31.  Physical CS00000 listening remains pending.
+
+### “The Demons from Adrian's Pen”
+
+`DEMONS.COM` applies the same automatic reducer to **“The Demons from Adrian's
+Pen”**, Robert Prince's DOOM E2M2 music.  Its GD3 record identifies the game as
+DOOM, system as IBM PC/AT, original file as `D_E2M2`, level as E2M2
+“Containment Area,” year as 1993, and VGM creator as NewRisingSun.  The exact
+source is not committed:
+
+- 44,276-byte VGZ SHA-256:
+  `5883ddd0b0ea3f22eb98a5dd83339a5b96fe20b0e82ed811db49e922fc818376`;
+- 138,313-byte decompressed VGM SHA-256:
+  `fdbdf8e4a6285b1bc48b602d462c302011623a33a31c4bf2728def85de29f45c`.
+
+The command stream contains 6,858,540 samples, or 155.522 seconds
+(2:35.522), and declares its loop at sample zero with exactly the same loop
+length.  The finite stream is therefore one complete pass; following the loop
+would only repeat it.
+
+This busier source has four recognized melodic signatures and peaks at eight
+simultaneously allocated OPL voices.  After duplicate-pitch collapse, 354 of
+7,776 Juku frames still have more than three candidates and need the ranked
+three-note reduction.  The generated score has 2,041 rows and eight compiled
+percussion descriptors.  `DEMONS.COM` is 17,255 bytes.  Its complete calibrated
+cycle-model run takes 157.028 seconds, 0.97% longer than the VGM pass, then
+silences D57 and returns cleanly to CP/M.  Its corrected render passed
+subjective listening review on 2026-08-31.  Physical CS00000 listening remains
+pending.
+
+### Supaplex main theme
+
+`SUPAPLEX.COM` reduces the **Supaplex main theme**, composed by **David
+Whittaker**, from a YM3812/OPL2 VGZ capture.  The source's GD3 record identifies
+the game as Supaplex, the system as IBM PC/AT, and whitequark as VGM creator.
+The exact source is not committed:
+
+- 8,088-byte VGZ SHA-256:
+  `6ebffd8be6674f1567b51b4b9fd7438abfe29009636c77dd29167086857d6f2b`;
+- 74,417-byte decompressed VGM SHA-256:
+  `b5f01e7eb9dfe89665333d9a6ce0c548e5a1bf6eb73895ac96b01863d2f3b974`.
+
+The command stream contains 13,441,856 samples, or 304.804 seconds, and has no
+VGM loop.  Five signatures are melodic.  They peak at four simultaneously
+active OPL voices, but duplicate-pitch collapse leaves no frame with more than
+three distinct Juku candidates.
+
+The first automatic reduction exposed two independent classification errors.
+A 408-key-on synth signature appears as synchronous pitched harmony across
+three OPL channels but uses only three distinct pitches, so the original
+four-pitch rule called it percussion.  More importantly, all three real drum
+patches are played at the same OPL pitch; pitch thresholds therefore collapsed
+them into one synthetic drum sound.  The maintained, 1:1
+[OpenSupaplex AdLib tracker resource][opensupaplex-adlib] independently names
+its corresponding instruments “Closed Hi-Hat,” “Snare,” and “Bass Drum.”  Its
+event totals match the VGM exactly: 988, 264, and 488 respectively.  The score
+therefore records one explicit melodic signature and three audited percussion
+signature mappings rather than attempting a timbre guess.
+
+The corrected OPL level conversion is especially audible here.  The hi-hat's
+carrier TL of 6 becomes Juku editor volume 10 and percussion level 2, the
+snare's TL of 3 becomes 13 and level 3, and the unattenuated bass drum remains
+16 and level 4.  The resulting score has 2,142 rows, exactly 988 hi-hats, 264
+snares, and 488 bass drums.  `SUPAPLEX.COM` is 21,332 bytes with three compiled
+percussion descriptors.  Its full cycle-model run takes 305.572 seconds,
+silences D57, and returns cleanly to CP/M.  The corrected render received the
+operator assessment “sounds much better” on 2026-08-31.  Physical CS00000
+listening remains pending.
+
+## AY/YM VGM/VGZ conversion and Arkanoid “Ending”
+
+`ARKANOID.COM` is an automatic reduction of **“Ending”** from the 1986
+Arkanoid arcade soundtrack, composed by **Hisayoshi Ogura** (小倉 久佳).  The
+recognizable score contains Arkanoid's main-theme material.  Its GD3 record
+identifies a YM2149 register capture for an arcade machine and credits the VGM
+conversion to Sonic of 8!.  The exact source is not committed:
+
+- 818-byte VGZ SHA-256:
+  `909b71ae07cf968bde9f6e63091be1d280e98b8d1de21825e88fe7e92de04c19`;
+- 4,162-byte decompressed VGM SHA-256:
+  `13ab3b7b43c08309fc43711584177fdac1359b94a8b1c38011c248e9e55357a5`.
+
+The VGM stream contains 811,011 samples, or 18.390 seconds.  Its loop begins
+at sample 89,889 after a 2.038-second intro and spans the remaining 721,122
+samples, or 16.352 seconds.  Stopping at the end command therefore retains the
+intro and exactly one loop pass.
+
+`import_jukupoly_ay_vgz.py` parses AY-family register writes and sample-accurate
+VGM waits.  This source declares a 1.5 MHz YM2149 with its `/SEL` divider flag,
+giving a 750 kHz effective clock.  Each of its three native tone periods maps
+directly to a Juku phase increment instead of being rounded to a tracker note;
+this preserves the close detuning and audible beating of the doubled lead.
+Hardware-envelope retriggers become Juku decay retriggers.  The generic path
+can reduce AY noise gates to percussion, although this capture keeps noise
+disabled and needs none.
+
+The generated score has 170 rows and 920 frames, including 557 frames with all
+three tones active and 156 envelope retriggers.  `ARKANOID.COM` is only 2,513
+bytes and contains no PCM bank.  Its complete calibrated cycle-model run takes
+18.416 seconds, then silences D57 and returns cleanly to CP/M.  The rendered
+reduction passed subjective listening review on 2026-08-30.  Physical CS00000
+listening remains pending.
 
 ## TDK “The Robots” MOD adaptation
 
@@ -223,9 +388,21 @@ Source and generated files:
 - `firmware/tdk60.com` — one-minute MOD adaptation;
 - `firmware/jukupoly-tdk-robots.json` — pattern-reused full score;
 - `firmware/tdkrobot.com` — complete MOD adaptation;
+- `firmware/import_jukupoly_vgz.py` — general two-operator OPL2/OPL3 VGM/VGZ reducer;
+- `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
+- `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
+- `firmware/jukupoly-demons-vgz.json` — generated one-pass E2M2 reduction;
+- `firmware/demons.com` — complete 2:36 E2M2 CP/M image;
+- `firmware/jukupoly-supaplex-main-vgz.json` — audited full Supaplex reduction;
+- `firmware/supaplex.com` — complete 5:05 Supaplex CP/M image;
+- `firmware/import_jukupoly_ay_vgz.py` — AY/YM three-tone VGM/VGZ reducer;
+- `firmware/jukupoly-arkanoid-ending-vgz.json` — generated Arkanoid reduction;
+- `firmware/arkanoid.com` — complete 18.4-second Arkanoid CP/M image;
 - `tests/jukuravi_jukupoly_test.c` — manifest-driven cycle regression;
 - `tests/jukuravi_jukupoly_suspense_test.c` — bounded-window regression;
-- `tests/jukuravi_jukupoly_mod_test.c` — full-order/effect/PCM regression.
+- `tests/jukuravi_jukupoly_mod_test.c` — full-order/effect/PCM regression;
+- `tests/jukuravi_jukupoly_vgz_import_test.py` — OPL level/classification regression;
+- `tests/jukuravi_jukupoly_vgz_test.c` — complete VGM-reduction regression.
 
 Build or verify everything with:
 
@@ -255,6 +432,47 @@ python3 spinoffs/jukuravi/firmware/import_jukupoly_mod.py \
 python3 spinoffs/jukuravi/firmware/import_jukupoly_mod.py \
   /path/to/tdk-the_robots.mod \
   spinoffs/jukuravi/firmware/jukupoly-tdk-robots.json
+```
+
+Convert a supported one-pass YM3812 or YMF262 VGM/VGZ and build its CP/M image
+with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/import_jukupoly_vgz.py \
+  /path/to/source.vgz spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz.json
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz-generated.inc \
+  --output spinoffs/jukuravi/firmware/doomgate.com
+```
+
+For the exact Supaplex source above, preserve the independently audited narrow-
+pitch synth and drum identities with explicit signature mappings:
+
+```sh
+python3 spinoffs/jukuravi/firmware/import_jukupoly_vgz.py \
+  '/path/to/01 Main Theme.vgz' \
+  spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz.json \
+  --melodic-signature b43be9c081e8 \
+  --percussion-signature d2e3fbb1ef11=1 \
+  --percussion-signature 0abd18bd72b2=2 \
+  --percussion-signature 6236af03ec23=3
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz-generated.inc \
+  --output spinoffs/jukuravi/firmware/supaplex.com
+```
+
+Convert a supported AY/YM VGM/VGZ with:
+
+```sh
+python3 spinoffs/jukuravi/firmware/import_jukupoly_ay_vgz.py \
+  /path/to/source.vgz \
+  spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz.json
+python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
+  --song spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz.json \
+  --generated spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz-generated.inc \
+  --output spinoffs/jukuravi/firmware/arkanoid.com
 ```
 
 The qualified result is:
@@ -295,6 +513,20 @@ JUKUPOLY-MOD: PASS bytes=38591 frames=25728 tones=3 volume-slide=1
 pitch-slide=1 porta=1 pcm-frames=51 writes=460217
 ```
 
+The VGM/VGZ regressions execute all complete, non-repeated register-score
+reductions:
+
+```text
+JUKUPOLY-VGZ: PASS bytes=12886 frames=4826 duration=96.872s tones=3
+simultaneous=91377 drum-samples=182182 writes=55927
+JUKUPOLY-VGZ: PASS bytes=17255 frames=7776 duration=157.028s tones=3
+simultaneous=245817 drum-samples=199771 writes=139256
+JUKUPOLY-VGZ: PASS bytes=21332 frames=15240 duration=305.572s tones=3
+simultaneous=696410 drum-samples=533676 writes=198786
+JUKUPOLY-VGZ: PASS bytes=2513 frames=920 duration=18.416s tones=3
+simultaneous=79651 drum-samples=0 writes=8122
+```
+
 Render the exact one-minute or full-song transient through the calibrated C
 cycle model with:
 
@@ -305,6 +537,14 @@ spinoffs/jukuravi/render_jukupoly_wav.sh \
   spinoffs/jukuravi/firmware/suspfull.com /tmp/suspfull.wav
 spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 600 \
   spinoffs/jukuravi/firmware/tdkrobot.com /tmp/tdk-robots.wav
+spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 110 \
+  spinoffs/jukuravi/firmware/doomgate.com /tmp/doomgate.wav
+spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 175 \
+  spinoffs/jukuravi/firmware/demons.com /tmp/demons.wav
+spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 320 \
+  spinoffs/jukuravi/firmware/supaplex.com /tmp/supaplex.wav
+spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 25 \
+  spinoffs/jukuravi/firmware/arkanoid.com /tmp/arkanoid.wav
 ```
 
 The WAV is a timing-calibrated digital/acoustic reference, not a fitted model
