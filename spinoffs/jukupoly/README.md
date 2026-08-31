@@ -513,6 +513,7 @@ Source and generated files:
 - `tools/report_opl_voices.py` — deterministic whole-pack M2 evidence report;
 - `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
+- `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
 - `firmware/jukupoly-song-generated.inc` — generated row/PCM bank;

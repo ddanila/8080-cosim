@@ -493,6 +493,13 @@ If G2 fails, first replace expensive envelope math with precomputed masks or
 piecewise segments.  If that fails G5, retain v1 conversion for the affected
 track and stop this milestone rather than crossing the 10% sample-rate limit.
 
+Progress on 2026-09-01: the implementation contract is recorded in
+[`JPS2-ENVELOPE-DESIGN.md`](JPS2-ENVELOPE-DESIGN.md).  It fixes the v2 header,
+one-byte-per-note envelope extension, already-fitted 4-bit levels/rate codes,
+15-byte total channel-state growth, key-off release semantics, and a dispatch
+scheme in which v1 retains its exact frame routines.  Target implementation
+and measurement remain pending; this design alone does not satisfy M3.
+
 ### M4: tremolo
 
 Add the shared tremolo phase and per-voice effective depth.
