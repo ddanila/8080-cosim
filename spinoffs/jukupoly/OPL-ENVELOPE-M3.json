@@ -1,0 +1,110 @@
+{
+  "cpu_hz": 1700000,
+  "enhanced_player": {
+    "build": "library ABI v1+v2 (-P2=1 -P4=1)",
+    "bytes": 4537,
+    "declared_state_region_bytes": 49,
+    "end_address_exclusive": "0x12b9",
+    "sample_loop_bytes": 64,
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f",
+    "song_window_margin_bytes": 1351
+  },
+  "frozen_baseline": {
+    "doomgate_floor_hz": 6401.146221,
+    "path": "OPL-BASELINE.json",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f"
+  },
+  "gates": {
+    "frozen_v1_profile_exact": true,
+    "player_below_song_window": true,
+    "sample_loop_hash_exact": true,
+    "v2_jps_below_soft_limit": true,
+    "v2_music_clock_within_one_percent": true,
+    "v2_sample_rate_above_floor": true,
+    "v2_uses_explicit_guarded_batch": true
+  },
+  "schema": "jukupoly-opl-envelope-m3-report-v1",
+  "v1_compatibility_profile": {
+    "com_bytes": 4537,
+    "duration_seconds": 97.030466,
+    "effective_sample_hz": 7112.38469,
+    "frame_cycles": {
+      "count": 4826,
+      "max": 37253,
+      "mean": 34179.816,
+      "min": 33574,
+      "p99": 36276
+    },
+    "frame_samples": 143,
+    "frames": 4826,
+    "idle_boundary_cycles": {
+      "count": 3451,
+      "max": 1167,
+      "mean": 874.194,
+      "min": 814,
+      "p99": 989
+    },
+    "jps_bytes": 12110,
+    "keyboard_polls": 4827,
+    "label": "enhanced-player-v1-doomgate",
+    "music_frame_hz": 49.736956,
+    "mutated_player_bytes": 60,
+    "pit_writes": 55927,
+    "row_boundary_cycles": {
+      "count": 1375,
+      "max": 2525,
+      "mean": 1573.452,
+      "min": 1227,
+      "p99": 2486
+    },
+    "sample_loop_cycles": {
+      "count": 685292,
+      "max": 276,
+      "mean": 231.518,
+      "min": 229,
+      "p99": 262
+    }
+  },
+  "v2_sample_rate_floor_hz": 6401.146221,
+  "v2_stress_profile": {
+    "com_bytes": 4537,
+    "duration_seconds": 0.920771,
+    "effective_sample_hz": 7044.095391,
+    "frame_cycles": {
+      "count": 46,
+      "max": 42670,
+      "mean": 34028.5,
+      "min": 33417,
+      "p99": 42670
+    },
+    "frame_samples": 141,
+    "frames": 46,
+    "idle_boundary_cycles": {
+      "count": 43,
+      "max": 1523,
+      "mean": 1127.977,
+      "min": 930,
+      "p99": 1523
+    },
+    "jps_bytes": 330,
+    "keyboard_polls": 47,
+    "label": "three-envelope-percussion-stress",
+    "music_frame_hz": 49.958123,
+    "mutated_player_bytes": 80,
+    "pit_writes": 595,
+    "row_boundary_cycles": {
+      "count": 3,
+      "max": 8586,
+      "mean": 4094.667,
+      "min": 1709,
+      "p99": 8586
+    },
+    "sample_loop_cycles": {
+      "count": 6440,
+      "max": 269,
+      "mean": 231.966,
+      "min": 229,
+      "p99": 262
+    }
+  }
+}

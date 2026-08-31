@@ -1,0 +1,62 @@
+{
+  "schema": "jukupoly-song-v2",
+  "title": "Synthetic JPS v2 envelope execution fixture",
+  "sample_rate_hz": 7040,
+  "frame_samples": 141,
+  "rows": [
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "A3",
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 8,
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "release_period_frames": 1,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "note": "C4",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 6,
+          "attack_period_frames": 1,
+          "decay_period_frames": 2,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
+        }
+      },
+      "tone3": {
+        "note": "E4",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 10,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 4,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 4,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 30,
+      "tone3": {
+        "note": "---"
+      }
+    }
+  ]
+}

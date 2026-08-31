@@ -42,6 +42,9 @@ library_menu:
         call    library_load_song
         ora     a
         jnz     library_menu
+        if      @@4
+        call    envelope_dispatch_init
+        endif
         call    player_start
         lda     player_aborted
         ora     a
@@ -217,6 +220,9 @@ library_load_eof:
         call    BDOS
         call    library_restore_dma
         call    library_verify_song
+        if      @@4
+        ora     a                       ; verifier returns status in A
+        endif
         rnz
         xra     a
         ret
@@ -251,14 +257,37 @@ library_verify_song:
         cpi     'S'
         jnz     library_bad_song
         lda     SONG_LOAD+3
+        if      @@4
+        sta     verified_song_version
+        cpi     1
+        jz      library_verify_v1_flags
+        cpi     2
+        jnz     library_bad_song
+        lda     SONG_LOAD+7
+        cpi     1                       ; JPS v2: envelope capability only
+        jnz     library_bad_song
+        lda     SONG_LOAD+6
+        cpi     129                     ; measured 10% iteration boundary
+        jc      library_bad_song
+        cpi     JUKUPOLY_FRAME_SAMPLES+1
+        jnc     library_bad_song
+        jmp     library_verify_size
+library_verify_v1_flags:
+        lda     SONG_LOAD+7
+        ora     a
+        jnz     library_bad_song
+library_verify_common:
+        else
         cpi     1
         jnz     library_bad_song
         lda     SONG_LOAD+7
         ora     a                       ; reserved/flags must be ABI-v1 zero
         jnz     library_bad_song
+        endif
         lda     SONG_LOAD+6
         cpi     JUKUPOLY_FRAME_SAMPLES
         jnz     library_bad_song
+library_verify_size:
         lhld    SONG_LOAD+4
         mov     a,h
         ora     l
@@ -266,8 +295,253 @@ library_verify_song:
         mov     a,h
         cpi     080h                    ; maximum 32767 bytes
         jnc     library_bad_song
+        if      @@4
+        lda     verified_song_version
+        cpi     2
+        jz      library_verify_v2
+        endif
         xra     a
         ret
+
+        if      @@4
+; Validate every variable-length JPS v2 packet before player_start touches the
+; PIT.  The exact image size is authoritative; CP/M's final 128-byte record may
+; contain padding and must not make an out-of-range pointer appear safe.
+library_verify_v2:
+        lhld    SONG_LOAD+4
+        lxi     d,SONG_LOAD
+        dad     d
+        jc      library_bad_song
+        shld    verified_song_end
+
+        ; The fixed header is 16 bytes and its reserved word must be zero.
+        lxi     h,SONG_LOAD+16
+        lxi     b,0
+        call    library_v2_range
+        jc      library_bad_song
+        lhld    verified_song_end
+        xchg
+        lhld    load_pointer
+        mov     a,h
+        cmp     d
+        jc      library_bad_song
+        jnz     library_v2_loaded
+        mov     a,l
+        cmp     e
+        jc      library_bad_song
+library_v2_loaded:
+        lhld    SONG_LOAD+14
+        mov     a,h
+        ora     l
+        jnz     library_bad_song
+
+        ; Both entry pointers must describe complete objects inside the image.
+        lhld    SONG_LOAD+12            ; silence buffer
+        mvi     b,0
+        lda     SONG_LOAD+6
+        mov     c,a
+        call    library_v2_range
+        jc      library_bad_song
+        lhld    SONG_LOAD+10            ; first row
+        lxi     b,2
+        call    library_v2_range
+        jc      library_bad_song
+        lhld    SONG_LOAD+10
+        shld    verified_cursor
+
+library_v2_row:
+        mvi     a,2
+        call    library_v2_take
+        jc      library_bad_song
+        mov     a,m
+        sta     verified_duration
+        inx     h
+        mov     a,m
+        sta     verified_row_flags
+        ani     FLAG_FX+FLAG_PATTERN
+        jnz     library_bad_song        ; unsupported in the v2 capability
+        lda     verified_row_flags
+        ani     FLAG_END
+        jz      library_v2_non_end
+        lda     verified_row_flags
+        cpi     FLAG_END                ; end marker has no other packets
+        jnz     library_bad_song
+        lda     verified_duration
+        ora     a
+        jnz     library_bad_song
+        xra     a
+        ret
+
+library_v2_non_end:
+        lda     verified_duration
+        ora     a
+        jz      library_bad_song
+        lda     verified_row_flags
+        ani     FLAG_TONE1
+        jz      library_v2_tone2
+        call    library_v2_tone
+        jc      library_bad_song
+library_v2_tone2:
+        lda     verified_row_flags
+        ani     FLAG_TONE2
+        jz      library_v2_tone3
+        call    library_v2_tone
+        jc      library_bad_song
+library_v2_tone3:
+        lda     verified_row_flags
+        ani     FLAG_TONE3
+        jz      library_v2_slide
+        call    library_v2_tone
+        jc      library_bad_song
+library_v2_slide:
+        lda     verified_row_flags
+        ani     FLAG_SLIDE
+        jz      library_v2_drum
+        mvi     a,2
+        call    library_v2_take
+        jc      library_bad_song
+library_v2_drum:
+        lda     verified_row_flags
+        ani     FLAG_DRUM
+        jz      library_v2_row
+        call    library_v2_drum_packet
+        jc      library_bad_song
+        jmp     library_v2_row
+
+; Consume one tone packet.  A zero 15-bit phase step is key-off and has no
+; envelope bytes; a note-on has three bytes whose upper six flag bits are
+; reserved.  Carry reports malformed/truncated data to the preflight scanner.
+library_v2_tone:
+        mvi     a,2
+        call    library_v2_take
+        rc
+        mov     e,m
+        inx     h
+        mov     d,m
+        mov     a,d
+        ani     07fh
+        ora     e
+        jnz     library_v2_tone_on
+        mov     a,d                     ; reject legato bit on a zero step
+        ora     a
+        rz
+        stc
+        ret
+library_v2_tone_on:
+        mvi     a,3
+        call    library_v2_take
+        rc
+        mov     a,m                     ; peak must be nonzero
+        mov     b,a
+        ani     0f0h
+        jz      library_v2_invalid
+        rrc
+        rrc
+        rrc
+        rrc
+        mov     c,a                     ; C=peak, B low nibble=sustain
+        mov     a,b
+        ani     00fh
+        cmp     c
+        jc      library_v2_levels_ok
+        jnz     library_v2_invalid      ; sustain must not exceed peak
+library_v2_levels_ok:
+        inx     h
+        inx     h
+        mov     a,m
+        ani     0fch
+        rz
+        stc
+        ret
+
+; Validate a descriptor and all PCM bytes reached through it.  This is done
+; once before playback, so even a corrupt frame count cannot walk beyond JPS.
+library_v2_drum_packet:
+        mvi     a,2
+        call    library_v2_take
+        rc
+        mov     e,m
+        inx     h
+        mov     d,m
+        xchg
+        shld    verified_descriptor
+        lxi     b,3
+        call    library_v2_range
+        rc
+        lhld    verified_descriptor
+        mov     e,m
+        inx     h
+        mov     d,m
+        inx     h
+        mov     a,m
+        ora     a
+        jz      library_v2_invalid
+        sta     verified_drum_frames
+        xchg
+        shld    verified_pcm
+        lda     SONG_LOAD+6
+        mov     e,a
+        mvi     d,0
+        lxi     h,0
+        lda     verified_drum_frames
+        mov     b,a
+library_v2_pcm_size:
+        dad     d
+        dcr     b
+        jnz     library_v2_pcm_size
+        mov     b,h
+        mov     c,l
+        lhld    verified_pcm
+        jmp     library_v2_range
+library_v2_invalid:
+        stc
+        ret
+
+; A=byte count.  Return HL=old cursor and advance it, or carry on overflow.
+library_v2_take:
+        mvi     b,0
+        mov     c,a
+        lhld    verified_cursor
+        shld    verified_take_start
+        call    library_v2_range
+        rc
+        lhld    verified_take_start
+        dad     b
+        shld    verified_cursor
+        lhld    verified_take_start
+        ora     a                       ; clear carry
+        ret
+
+; HL=start, BC=length.  Carry if [start,start+length) leaves the declared JPS
+; image or starts inside its 16-byte header.
+library_v2_range:
+        shld    verified_range_start
+        dad     b
+        jc      library_v2_invalid
+        shld    verified_range_end
+        lhld    verified_range_start
+        mov     a,h
+        cpi     SONG_LOAD SHR 8
+        jc      library_v2_invalid
+        jnz     library_v2_range_end
+        mov     a,l
+        cpi     010h
+        jc      library_v2_invalid
+library_v2_range_end:
+        lhld    verified_range_end
+        xchg
+        lhld    verified_song_end
+        mov     a,h
+        cmp     d
+        jc      library_v2_invalid
+        jnz     library_v2_range_ok
+        mov     a,l
+        cmp     e
+        jc      library_v2_invalid
+library_v2_range_ok:
+        ora     a                       ; clear carry
+        ret
+        endif
 library_bad_song:
         lxi     d,library_invalid
         call    library_print
@@ -424,6 +698,19 @@ input_value:    db      0
 display_record: dw      0
 load_pointer:   dw      SONG_LOAD
 print_pointer:  dw      0
+        if      @@4
+verified_song_version: db 0
+verified_duration: db 0
+verified_row_flags: db 0
+verified_drum_frames: db 0
+verified_song_end: dw 0
+verified_cursor: dw 0
+verified_take_start: dw 0
+verified_range_start: dw 0
+verified_range_end: dw 0
+verified_descriptor: dw 0
+verified_pcm: dw 0
+        endif
 
 song_fcb:
         db      2                       ; songs live on the library's B: disk

@@ -13,6 +13,15 @@
 #define MAX_OUTPUT 32768
 #define MAX_INSTRUCTIONS 30000000UL
 
+typedef enum {
+  INVALID_NONE,
+  INVALID_FLAGS,
+  INVALID_LEVELS,
+  INVALID_TRUNCATED,
+  INVALID_DESCRIPTOR,
+  INVALID_PCM,
+} invalid_kind;
+
 typedef struct {
   uint8_t memory[65536];
   uint8_t *song;
@@ -180,27 +189,87 @@ static uint8_t *read_file(const char *path, size_t *size) {
   return data;
 }
 
+static invalid_kind invalid_argument(const char *value) {
+  if (!strcmp(value, "invalid-flags"))
+    return INVALID_FLAGS;
+  if (!strcmp(value, "invalid-levels"))
+    return INVALID_LEVELS;
+  if (!strcmp(value, "invalid-truncated"))
+    return INVALID_TRUNCATED;
+  if (!strcmp(value, "invalid-descriptor"))
+    return INVALID_DESCRIPTOR;
+  if (!strcmp(value, "invalid-pcm"))
+    return INVALID_PCM;
+  return INVALID_NONE;
+}
+
+static void corrupt_v2_fixture(uint8_t *song, size_t size, invalid_kind kind) {
+  size_t rows = word(song, 10) - SONG_ADDRESS;
+  if (size < 32 || rows + 19 >= size || song[3] != 2 ||
+      song[rows + 1] != 0x17) {
+    fprintf(stderr, "v2 fixture layout changed; cannot apply corruption\n");
+    exit(2);
+  }
+  switch (kind) {
+    case INVALID_FLAGS:
+      song[rows + 6] |= 0x04;  /* reserved first-tone envelope flag */
+      break;
+    case INVALID_LEVELS:
+      song[rows + 4] = 0x4a;  /* sustain exceeds peak */
+      break;
+    case INVALID_TRUNCATED: {
+      uint16_t declared = (uint16_t)(rows + 6);
+      song[4] = (uint8_t)declared;
+      song[5] = (uint8_t)(declared >> 8);
+      break;
+    }
+    case INVALID_DESCRIPTOR:
+      song[rows + 17] = 0xff;  /* descriptor follows three 5-byte tones */
+      song[rows + 18] = 0xff;
+      break;
+    case INVALID_PCM: {
+      uint16_t descriptor = word(song, (uint16_t)(rows + 17));
+      size_t offset = descriptor - SONG_ADDRESS;
+      if (offset + 3 > size) {
+        fprintf(stderr, "v2 fixture drum descriptor is out of range\n");
+        exit(2);
+      }
+      song[offset + 2] = 0xff;  /* PCM length exceeds declared image */
+      break;
+    }
+    case INVALID_NONE:
+      break;
+  }
+}
+
 int main(int argc, char **argv) {
+  invalid_kind invalid = argc == 4 ? invalid_argument(argv[3]) : INVALID_NONE;
   if (argc < 3 || argc > 4 ||
-      (argc == 4 && strcmp(argv[3], "abort") != 0 &&
+      (argc == 4 && strcmp(argv[3], "abort") != 0 && !invalid &&
        (atoi(argv[3]) < 1 || atoi(argv[3]) > 44))) {
-    fprintf(stderr, "usage: %s JUKEBOX.COM SONG.JPS [abort|TRACK]\n", argv[0]);
+    fprintf(stderr, "usage: %s JUKEBOX.COM SONG.JPS "
+        "[abort|TRACK|invalid-flags|invalid-truncated|invalid-descriptor|"
+        "invalid-levels|invalid-pcm]\n", argv[0]);
     return 2;
   }
   fixture f = {0};
   f.selected_track = 1;
   if (argc == 4 && strcmp(argv[3], "abort") == 0)
     f.abort_after = 5;
-  else if (argc == 4)
+  else if (argc == 4 && !invalid)
     f.selected_track = atoi(argv[3]);
   size_t com_size;
   uint8_t *com = read_file(argv[1], &com_size);
   f.song = read_file(argv[2], &f.song_size);
+  int envelope_fixture = f.song_size >= 4 && f.song[3] == 2;
   if (com_size >= SONG_ADDRESS - COM_ADDRESS || f.song_size > 0x8000 ||
-      f.song_size < 16 || memcmp(f.song, "JPS\1", 4) != 0) {
+      f.song_size < 16 || memcmp(f.song, "JPS", 3) != 0 ||
+      (f.song[3] != 1 && f.song[3] != 2)) {
     fprintf(stderr, "invalid library fixture sizes or JPS header\n");
     return 2;
   }
+  if (invalid)
+    corrupt_v2_fixture(f.song, f.song_size, invalid);
   memcpy(&f.memory[COM_ADDRESS], com, com_size);
   free(com);
   f.memory[0] = 0x76;
@@ -249,27 +318,35 @@ int main(int argc, char **argv) {
       return 1;
     }
   }
-  const char *result = f.abort_after ? "Track stopped" : "Track finished";
+  const char *result = invalid ? "Invalid or incompatible JPS song file"
+      : f.abort_after ? "Track stopped" : "Track finished";
   if (!strstr(f.output, result)) {
     fprintf(stderr, "library output lacks %s\n--- output ---\n%s\n",
         result, f.output);
     return 1;
   }
   if (!cpu.halted || cpu.pc != 1 || cpu.sp != STACK_RETURN + 2 || !cpu.iff ||
-      f.invalid_port || f.pit_writes < (f.abort_after ? 10 : 100) || !f.opened ||
-      (f.abort_after ? f.keyboard_polls != f.abort_after + 3
-                     : f.keyboard_polls < 300) ||
+      f.invalid_port || (invalid ? f.pit_writes != 0 || f.keyboard_polls != 0
+                                : f.pit_writes <
+                                  (f.abort_after || envelope_fixture ? 10 : 100)) ||
+      !f.opened ||
+      (!invalid &&
+       (f.abort_after ? f.keyboard_polls != f.abort_after + 3
+                      : f.keyboard_polls <
+                        (envelope_fixture ? 16 : 300))) ||
       f.input[f.input_at]) {
     fprintf(stderr,
         "library did not finish cleanly: halted=%d pc=%04x sp=%04x iff=%d "
         "ports=%zu key-polls=%zu invalid=%d input=%s instructions=%lu\n",
         cpu.halted, cpu.pc, cpu.sp, cpu.iff, f.pit_writes,
         f.keyboard_polls, f.invalid_port, f.input + f.input_at, instructions);
+    fprintf(stderr, "--- output ---\n%s\n", f.output);
     return 1;
   }
   printf("JUKUPOLY-LIBRARY: PASS mode=%s com=%zu jps=%zu pit-writes=%zu "
          "key-polls=%zu output=%zu\n",
-      f.abort_after ? "abort" : "complete", com_size, f.song_size,
+      invalid ? "invalid-preflight" : f.abort_after ? "abort" : "complete",
+      com_size, f.song_size,
       f.pit_writes, f.keyboard_polls, f.output_at);
   free(f.song);
   return 0;

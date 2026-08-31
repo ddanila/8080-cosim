@@ -91,6 +91,7 @@ def build_player(output: Path) -> None:
             "--zmac",
             "-8",
             "-P2=1",
+            "-P4=1",
             f"-I{HERE}",
             "-o",
             str(image),

@@ -1,0 +1,27 @@
+{
+  "schema": "jukupoly-song-v1",
+  "title": "Synthetic JPS v1 library compatibility fixture",
+  "sample_rate_hz": 7120,
+  "frame_samples": 143,
+  "defaults": {
+    "tone1": {
+      "volume": 12,
+      "envelope_speed": 3,
+      "envelope_mode": "hold"
+    }
+  },
+  "rows": [
+    {
+      "frames": 200,
+      "tone1": {
+        "note": "A3"
+      }
+    },
+    {
+      "frames": 200,
+      "tone1": {
+        "note": "---"
+      }
+    }
+  ]
+}

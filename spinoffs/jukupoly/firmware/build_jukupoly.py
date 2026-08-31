@@ -248,10 +248,17 @@ def compile_song(song: dict) -> tuple[str, dict]:
     enhanced_envelopes = schema == "jukupoly-song-v2"
     sample_rate = check_range("sample_rate_hz", song["sample_rate_hz"], 4000, 12000)
     frame_samples = check_range("frame_samples", song["frame_samples"], 64, 255)
+    if enhanced_envelopes and not 129 <= frame_samples <= 143:
+        raise SongError(
+            "JPS v2 frame_samples must be 129..143 to remain inside the "
+            "measured 10% iteration-count guard"
+        )
     rows = song.get("rows")
     patterns = song.get("patterns")
     pattern_order = song.get("order")
     pattern_mode = patterns is not None or pattern_order is not None
+    if enhanced_envelopes and pattern_mode:
+        raise SongError("jukupoly-song-v2 envelope ABI cannot use patterns")
     if pattern_mode:
         if not isinstance(patterns, list) or not patterns or not all(
                 isinstance(pattern, list) and pattern for pattern in patterns):
@@ -513,7 +520,8 @@ def compile_song(song: dict) -> tuple[str, dict]:
     return text, metadata
 
 
-def assemble(generated: str, mod_effects: bool = False) -> bytes:
+def assemble(generated: str, mod_effects: bool = False,
+             enhanced_envelopes: bool = False) -> bytes:
     with tempfile.TemporaryDirectory(prefix="jukupoly.") as name:
         directory = Path(name)
         image = directory / "jukupoly.cim"
@@ -521,12 +529,20 @@ def assemble(generated: str, mod_effects: bool = False) -> bytes:
         include = directory / DEFAULT_GENERATED.name
         source.write_bytes(SOURCE.read_bytes())
         include.write_text(generated)
+        if enhanced_envelopes:
+            envelope_include = HERE / "jukupoly-envelope-v2.inc"
+            (directory / envelope_include.name).write_bytes(
+                envelope_include.read_bytes()
+            )
         command = [
             str(executable()), "--nmnv", "--zmac", "-8",
             f"-I{directory}", "-o", str(image), str(source),
         ]
         if mod_effects:
             command.insert(4, "-P1=1")
+        if enhanced_envelopes:
+            command.insert(4, "-P4=1")
+            command.insert(4, "-P3=1")
         subprocess.run(
             command,
             check=True,
@@ -606,7 +622,9 @@ def main() -> int:
     else:
         args.generated.write_text(generated)
 
-    image = assemble(generated, metadata["mod_effects"])
+    image = assemble(
+        generated, metadata["mod_effects"], metadata["enhanced_envelopes"],
+    )
     song_image = (assemble_song_file(generated, metadata)
                   if args.song_output is not None else None)
     if args.check:

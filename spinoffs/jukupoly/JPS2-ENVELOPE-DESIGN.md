@@ -1,8 +1,10 @@
 # JPS v2 envelope vertical-slice contract
 
-Status: M3 implementation contract, 2026-09-01.  This is deliberately limited
-to fitted amplitude envelopes.  Tremolo, vibrato, held-key pitch automation,
-four-operator synthesis, and hardware rhythm remain later independent gates.
+Status: M3 target-side synthetic checkpoint implemented, 2026-09-01.  The
+host-side OPL fitter, 30-second Imp's Song comparison, and physical listening
+gate remain pending.  This slice is deliberately limited to fitted amplitude
+envelopes.  Tremolo, vibrato, held-key pitch automation, four-operator
+synthesis, and hardware rhythm remain later independent gates.
 
 ## Compatibility boundary
 
@@ -94,3 +96,38 @@ budget, player end must remain below `1800h`, and JPS files retain the 30 KiB
 soft/32,767-byte hard limits.  If the runtime stage update fails those gates,
 the fallback is host-baked sparse level changes or v1 playback for that track,
 not a larger sample-rate reduction.
+
+## Measured synthetic checkpoint
+
+The separately assembled `-P2=1 -P4=1` library player now implements the
+packet parser and the five-stage target state machine.  The 46-frame fixture
+exercises immediate and timed attack, decay, keyed sustain, non-sustaining
+automatic release, explicit key-off release, concurrent percussion, and
+phase-step removal only after release reaches zero.  The library preflights
+the entire variable row stream plus drum descriptors and PCM extents before
+touching the PIT.  Reserved envelope bits, invalid peak/sustain levels,
+truncated packets, invalid drum descriptors, and oversized PCM all fail with
+zero PIT writes.
+
+[`OPL-ENVELOPE-M3.json`](OPL-ENVELOPE-M3.json) records the reproducible target
+measurements.  The enhanced player is 4,537 bytes, ends at `12B9h`, and leaves
+1,351 bytes before the song load address.  Its persistent player state remains
+49 bytes.  The exact frozen 64-byte sample loop and its SHA-256 are unchanged,
+and an enhanced-player run of the v1 Doomgate fixture matches every frozen v1
+playback metric.
+
+The expanded v2 stress fixture uses 141 samples per frame.  It measures
+7,044.10 samples/s and 49.958 music frames/s, above the selected frozen
+Doomgate comparison floor of 6,401.15 Hz and within 0.084% of the 50 Hz source
+clock.  Its worst complete frame is 42,670 cycles and its largest row boundary
+is 8,586 cycles.  An earlier 16-frame
+fixture made 139 samples appear suitable, but the expanded mixture measured
+50.647 frames/s at that setting.  This demonstrates that the batch count must
+be selected and verified over each converted full song; a short synthetic
+average is not sufficient evidence.
+
+This checkpoint does not complete M3.  The next independent layer is the
+host-side Nuked-OPL envelope fitter and like-for-like v1/reference comparison;
+that real-song comparison supplies the per-song G2 floor which a synthetic
+fixture cannot.  No Doom library track is emitted as JPS v2 yet, so a failed
+real-song fit can still fall back to its unchanged v1 reduction.

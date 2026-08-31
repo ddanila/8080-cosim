@@ -162,9 +162,10 @@ static void free_statistics(statistics *stats) {
 }
 
 int main(int argc, char **argv) {
-  if (argc != 5) {
+  if (argc != 5 && argc != 6) {
     fprintf(stderr,
-        "usage: %s JUKEBOX.COM SONG.JPS PLAYER-START-HEX LABEL\n", argv[0]);
+        "usage: %s JUKEBOX.COM SONG.JPS PLAYER-START-HEX LABEL "
+        "[PREPARE-HEX]\n", argv[0]);
     return 2;
   }
 
@@ -174,13 +175,23 @@ int main(int argc, char **argv) {
     fprintf(stderr, "invalid player entry address: %s\n", argv[3]);
     return 2;
   }
+  unsigned long prepare = 0;
+  if (argc == 6) {
+    end = NULL;
+    prepare = strtoul(argv[5], &end, 16);
+    if (!*argv[5] || *end || prepare < COM_ADDRESS || prepare >= SONG_ADDRESS) {
+      fprintf(stderr, "invalid player prepare address: %s\n", argv[5]);
+      return 2;
+    }
+  }
 
   fixture f = {0};
   size_t song_size;
   uint8_t *com = read_file(argv[1], &f.com_size);
   uint8_t *song = read_file(argv[2], &song_size);
   if (f.com_size >= SONG_ADDRESS - COM_ADDRESS || song_size >= 0x8000 ||
-      song_size < 16 || memcmp(song, "JPS\1", 4) != 0 ||
+      song_size < 16 || memcmp(song, "JPS", 3) != 0 ||
+      (song[3] != 1 && song[3] != 2) ||
       word(song, 4) != song_size) {
     fprintf(stderr, "invalid player or JPS fixture size\n");
     return 2;
@@ -199,6 +210,10 @@ int main(int argc, char **argv) {
   f.memory[0] = 0x76;
   f.memory[STACK_RETURN] = 0;
   f.memory[STACK_RETURN + 1] = 0;
+  if (prepare) {
+    f.memory[STACK_RETURN - 2] = (uint8_t)entry;
+    f.memory[STACK_RETURN - 1] = (uint8_t)(entry >> 8);
+  }
 
   i8080 cpu;
   i8080_init(&cpu);
@@ -207,8 +222,8 @@ int main(int argc, char **argv) {
   cpu.port_in = port_in;
   cpu.port_out = port_out;
   cpu.userdata = &f;
-  cpu.pc = (uint16_t)entry;
-  cpu.sp = STACK_RETURN;
+  cpu.pc = (uint16_t)(prepare ? prepare : entry);
+  cpu.sp = (uint16_t)(prepare ? STACK_RETURN - 2 : STACK_RETURN);
   cpu.iff = 1;
 
   statistics frame = {0}, sample_loop = {0};

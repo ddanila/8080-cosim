@@ -500,6 +500,36 @@ It requires unchanged JPS v1 playback and gives every enhanced fixture its own
 explicit rate floor.  A deliberate JPS v2 sound change must add separate
 old/new evidence rather than overwrite these reference hashes.
 
+## Guarded JPS v2 envelope checkpoint
+
+The separate `-P2=1 -P4=1` library build now accepts both the unchanged JPS v1
+format and the compact envelope-only JPS v2 capability described in
+[`JPS2-ENVELOPE-DESIGN.md`](JPS2-ENVELOPE-DESIGN.md).  Three target-side state
+machines implement fitted attack, decay, keyed sustain, percussive automatic
+release, and key-off tails.  A released voice keeps its phase step until its
+4-bit level reaches zero.  Tremolo, vibrato, live held-note pitch changes, FM
+timbre, four-operator synthesis, and hardware rhythm are not part of this
+checkpoint.
+
+The 46-frame synthetic target regression runs all three envelopes with
+concurrent percussion.  Its 141-sample batch measures 7.044 kHz and 49.958
+music frames/s.  The enhanced player is 4,537 bytes, ends at `12B9h`, and
+leaves 1,351 bytes before songs at `1800h`; the exact frozen 64-byte sample
+loop remains unchanged.  Full measurements and gates are committed in
+[`OPL-ENVELOPE-M3.json`](OPL-ENVELOPE-M3.json).
+
+The enhanced loader validates the complete v2 variable-packet stream, drum
+descriptors, and PCM extents before playback.  Regressions prove that reserved
+packet bits, invalid levels, truncation, an invalid descriptor, and oversized
+PCM are rejected without a single PIT write.  JPS v1 playback through the
+enhanced player still matches the frozen Doomgate profile exactly.
+
+This is a progressive checkpoint, not completed OPL conversion.  The host
+fitter against the pinned oracle, the 30-second Imp's Song comparison, a full
+song size/duration run, and physical CS00000 listening remain pending.  The
+current Doom library therefore continues to emit v1 songs and can retain that
+fallback if a v2 approximation is not useful or affordable.
+
 ## Reproduce
 
 Source and generated files:
@@ -512,8 +542,13 @@ Source and generated files:
 - `tools/jukupoly_opl_oracle.c` — pinned Nuked OPL3 timed-stream bridge;
 - `tools/report_opl_voices.py` — deterministic whole-pack M2 evidence report;
 - `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
+- `tools/report_jukupoly_envelope.py` — guarded M3 target timing/map report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
+- `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
+- `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
+- `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;
+- `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
 - `firmware/jukupoly-song-generated.inc` — generated row/PCM bank;
@@ -549,6 +584,7 @@ Source and generated files:
 - `tests/jukupoly_opl_oracle_test.py` — pinned oracle agreement and isolation regression;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
+- `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;
 - `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
 - `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
 - `tests/jukupoly_library_test.py` — native two-sided track-order regression;
@@ -561,6 +597,7 @@ python3 spinoffs/jukupoly/firmware/build_jukupoly.py
 bash sync/jukupoly_check.sh
 bash sync/jukupoly_library_check.sh
 bash sync/jukupoly_baseline_check.sh
+bash sync/jukupoly_envelope_check.sh
 ```
 
 Build the complete DOOM library (requires `cpmtools`) with:

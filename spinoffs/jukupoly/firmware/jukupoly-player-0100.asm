@@ -60,6 +60,9 @@ player_start:
         sta     ch1_volume
         sta     ch2_volume
         sta     ch3_volume
+        if      @@3
+        call    envelope_dispatch_init
+        endif
         if      @@2
         sta     player_aborted
         endif
@@ -185,10 +188,13 @@ frame_tick:
         inr     a
         sta     env_counter
         lxi     h,ch1_volume
+update_envelope1_call:
         call    update_envelope
         lxi     h,ch2_volume
+update_envelope2_call:
         call    update_envelope
         lxi     h,ch3_volume
+update_envelope3_call:
         call    update_envelope
         call    update_slide
 
@@ -225,13 +231,16 @@ parse_row:
         lda     row_flags
         ani     FLAG_TONE1
         jz      parsed_tone1
+parse_tone1_call:
         call    parse_tone1
 parsed_tone1:
         lda     row_flags
         ani     FLAG_TONE2
+parse_tone2_call:
         cnz     parse_tone2
         lda     row_flags
         ani     FLAG_TONE3
+parse_tone3_call:
         cnz     parse_tone3
         lda     row_flags
         ani     FLAG_SLIDE
@@ -289,6 +298,7 @@ prepare_frame:
         xchg
         lhld    ch3_step
         sphl
+prepare_frame_count:
         mvi     a,JUKUPOLY_FRAME_SAMPLES
         sta     sample_count+1
         jmp     sample_loop
@@ -892,6 +902,10 @@ envelope_decay:
         dcr     m
         ret
 
+        if      @@4
+        include "jukupoly-envelope-v2.inc"
+        endif
+
         if      @@2
 playback_aborted:
         mvi     a,1
@@ -961,6 +975,18 @@ ch1_env_mode:
         db      2
 ch1_step:
         dw      0
+        if      @@4
+ch1_env2_sustain:
+        db      0
+ch1_env2_decay_mask:
+        db      0
+ch1_env2_release_mask:
+        db      0
+ch1_env2_stage:
+        db      0
+ch1_env2_flags:
+        db      0
+        endif
 ch2_volume:
         db      0
 ch2_target:
@@ -971,6 +997,18 @@ ch2_env_mode:
         db      2
 ch2_step:
         dw      0
+        if      @@4
+ch2_env2_sustain:
+        db      0
+ch2_env2_decay_mask:
+        db      0
+ch2_env2_release_mask:
+        db      0
+ch2_env2_stage:
+        db      0
+ch2_env2_flags:
+        db      0
+        endif
 ch3_volume:
         db      0
 ch3_target:
@@ -981,6 +1019,18 @@ ch3_env_mode:
         db      2
 ch3_step:
         dw      0
+        if      @@4
+ch3_env2_sustain:
+        db      0
+ch3_env2_decay_mask:
+        db      0
+ch3_env2_release_mask:
+        db      0
+ch3_env2_stage:
+        db      0
+ch3_env2_flags:
+        db      0
+        endif
 
         if      @@1
 fx_vset_mask:
@@ -1049,6 +1099,20 @@ test_manifest:
         dw      ch1_porta_target
         dw      ch2_porta_target
         dw      ch3_porta_target
+        endif
+        if      @@4
+        dw      ch1_target
+        dw      ch1_env_mask
+        dw      ch1_step
+        dw      ch1_env2_sustain
+        dw      ch1_env2_decay_mask
+        dw      ch1_env2_release_mask
+        dw      ch1_env2_stage
+        dw      ch1_env2_flags
+        dw      ch2_step
+        dw      ch2_env2_stage
+        dw      ch3_step
+        dw      ch3_env2_stage
         endif
 
         if      @@2

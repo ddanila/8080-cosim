@@ -506,8 +506,35 @@ effects, encodes already-resolved peak/sustain levels and three fitted rate
 codes, and assembles the fixed-address `JPS\2` header/capability byte.  The
 synthetic regression checks exact row bytes and malformed inputs.  All v1
 generated sources, binaries, baseline profiles, and WAV guards remain
-unchanged.  The library deliberately still rejects v2 until the separately
-guarded `-P4=1` player slice is implemented.
+unchanged.  At that checkpoint the library deliberately still rejected v2
+until the separately guarded `-P4=1` player slice was implemented.
+
+The target-side synthetic checkpoint is now complete.  The isolated
+`-P2=1 -P4=1` player accepts both v1 and envelope-capability v2 songs, dispatches
+v1 to the frozen routines, and executes attack, decay, keyed sustain,
+non-sustaining automatic release, key-off tails, and delayed phase-step
+clearing for all three channels while percussion remains active.  Its strict
+preflight walks every v2 row, descriptor, and PCM extent before playback; five
+independent corruptions are rejected with zero PIT writes.  The preflight work
+also exposed and corrected a stale-condition-code bug in the enhanced
+loader's verifier return path.
+
+The committed [`OPL-ENVELOPE-M3.json`](OPL-ENVELOPE-M3.json) measures a
+4,537-byte enhanced player ending at `12B9h`, 49 bytes of declared player
+state, an unchanged 64-byte hot-loop hash, and 1,351 bytes of remaining player
+window.  The 46-frame three-envelope-plus-percussion fixture uses an explicit
+141-sample batch and measures 7,044.10 samples/s and 49.958 frames/s; its
+selected frozen Doomgate comparison floor is 6,401.15 Hz.  The worst frame is
+42,670 cycles.  The
+enhanced player's v1 Doomgate timing and audio-event profile remains exactly
+equal to the frozen profile; image size, self-modification bookkeeping, and
+the report label are intentionally compared separately.
+
+This is not M3's exit gate.  Automatic host fitting against the pinned oracle,
+the 30-second Imp's Song old/new/reference comparison, longest affected JPS
+size and duration evidence, and physical CS00000 A/B listening remain pending.
+Until those pass, the Doom library still emits v1 songs and the implemented v2
+path is a synthetic, reversible progressive layer.
 
 ### M4: tremolo
 

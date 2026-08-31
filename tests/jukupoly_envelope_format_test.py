@@ -95,6 +95,27 @@ def check_validation() -> None:
         assert "cannot use MOD effects" in str(exc)
     else:
         raise AssertionError("JPS v2 accepted MOD effects")
+    for frame_samples in (128, 144):
+        candidate = score()
+        candidate["frame_samples"] = frame_samples
+        try:
+            build.compile_song(candidate)
+        except build.SongError as exc:
+            assert "129..143" in str(exc)
+        else:
+            raise AssertionError(
+                f"JPS v2 accepted unsafe frame batch {frame_samples}"
+            )
+    candidate = score()
+    candidate.pop("rows")
+    candidate["patterns"] = [[score()["rows"][0]]]
+    candidate["order"] = [0]
+    try:
+        build.compile_song(candidate)
+    except build.SongError as exc:
+        assert "cannot use patterns" in str(exc)
+    else:
+        raise AssertionError("JPS v2 accepted unsupported pattern dispatch")
 
 
 def main() -> int:
