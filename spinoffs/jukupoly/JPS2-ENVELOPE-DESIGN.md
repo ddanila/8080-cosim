@@ -137,6 +137,15 @@ six levels maximum error.  The largest mismatch is the deliberately exposed
 limit that Juku's linear one-level attack cannot follow Yamaha's accelerating
 attack curve.  The fitted packet passes the strict JPS v2 encoder.
 
+For real-source absolute levels, the pinned oracle additionally exposes each
+operator's post-envelope `eg_out` attenuation and the two-operator connection
+bit at 50 Hz.  `eg_out` already includes the live envelope, TL, KSL, and
+tremolo.  The host converts its 0.1875 dB units to linear amplitude, selects
+the carrier in FM mode or a capped operator sum in additive mode, and
+quantizes that semantic amplitude to 0..15.  This does not claim to reproduce
+waveform, feedback, or FM timbre; isolated PCM/RMS remains a separate shape
+cross-check.
+
 This checkpoint does not complete M3.  The next independent layer is mapping
 real selected logical voices to isolated oracle intervals, then producing the
 like-for-like v1/v2/reference comparison.  That real-song comparison supplies

@@ -590,8 +590,8 @@ Source and generated files:
 - `firmware/tdkrobot.com` — complete MOD adaptation;
 - `firmware/import_jukupoly_vgz.py` — general two-operator OPL2/OPL3 VGM/VGZ reducer;
 - `firmware/opl_trace.py` — lossless timed OPL register/semantic host model;
-- `firmware/opl_oracle.py` — per-channel oracle stream and probe helpers;
-- `firmware/opl_envelope.py` — exact-target compact envelope simulator/fitter;
+- `firmware/opl_oracle.py` — per-channel oracle stream and post-EG probe helpers;
+- `firmware/opl_envelope.py` — exact-target fitter and semantic attenuation mapper;
 - `firmware/opl_voices.py` — keyed-segment and logical-voice evidence model;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;

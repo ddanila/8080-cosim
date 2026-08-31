@@ -571,6 +571,16 @@ accelerating attack while the affordable target state changes by one mixer
 level per eligible frame.  Mapping this primitive to real M2 logical voices
 and the Imp excerpt remains pending.
 
+The pinned-oracle probe now also exports each operator's post-envelope
+`eg_out` attenuation and the channel connection bit.  Unlike raw `TL`, this
+value already includes the running Yamaha envelope, TL, KSL, and tremolo.
+The host maps its documented 0.1875 dB units to linear amplitude, uses the
+carrier alone for FM connection or the capped sum for additive connection,
+then quantizes to Juku's 4-bit range.  This supplies a deterministic absolute
+level policy for the real-song fit without pretending that an OPL waveform
+and the Juku one-bit speaker have identical timbre.  The previous isolated
+PCM/RMS path remains a useful independent shape comparison.
+
 ### M4: tremolo
 
 Add the shared tremolo phase and per-voice effective depth.

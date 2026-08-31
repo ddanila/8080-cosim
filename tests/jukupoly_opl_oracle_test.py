@@ -68,6 +68,11 @@ def check_oracle_agreement(tool: Path) -> None:
         # note, then remains in a release tail after the exact key-off sample.
         assert by_sample[882].carrier_attenuation < by_sample[0].carrier_attenuation
         assert by_sample[1764].carrier_attenuation >= by_sample[882].carrier_attenuation
+        assert by_sample[882].carrier_output_attenuation >= \
+            by_sample[882].carrier_attenuation
+        assert by_sample[882].modulator_output_attenuation >= \
+            by_sample[882].modulator_attenuation
+        assert by_sample[882].connection == timeline.channel(0, 0).connection
 
         # The shared OPL LFOs run independently of note events.  Their oracle
         # phases and tremolo value must progress across our 50 Hz probes.

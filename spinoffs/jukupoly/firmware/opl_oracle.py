@@ -22,6 +22,9 @@ class OracleProbe:
     key: bool
     modulator_attenuation: int
     carrier_attenuation: int
+    modulator_output_attenuation: int
+    carrier_output_attenuation: int
+    connection: int
     modulator_stage: int
     carrier_stage: int
     vibrato_phase: int
@@ -84,6 +87,13 @@ def read_probes(path: Path) -> list[OracleProbe]:
             key=bool(int(row["key"])),
             modulator_attenuation=int(row["modulator_attenuation"]),
             carrier_attenuation=int(row["carrier_attenuation"]),
+            modulator_output_attenuation=int(
+                row["modulator_output_attenuation"]
+            ),
+            carrier_output_attenuation=int(
+                row["carrier_output_attenuation"]
+            ),
+            connection=int(row["connection"]),
             modulator_stage=int(row["modulator_stage"]),
             carrier_stage=int(row["carrier_stage"]),
             vibrato_phase=int(row["vibrato_phase"]),

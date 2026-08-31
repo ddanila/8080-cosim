@@ -100,10 +100,11 @@ static void write_probe(FILE *output, const opl3_chip *chip,
   const opl3_slot *modulator = channel->slotz[0];
   const opl3_slot *carrier = channel->slotz[1];
   fprintf(output,
-      "%" PRIu32 ",%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
+      "%" PRIu32 ",%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
       sample, channel->f_num, channel->block,
       (unsigned)(modulator->key != 0 || carrier->key != 0),
       modulator->eg_rout, carrier->eg_rout,
+      modulator->eg_out, carrier->eg_out, channel->con,
       modulator->eg_gen, carrier->eg_gen,
       chip->vibpos, chip->tremolopos, chip->tremolo);
 }
@@ -133,7 +134,9 @@ int main(int argc, char **argv) {
     return 2;
   }
   fputs("sample,f_number,block,key,modulator_attenuation,"
-        "carrier_attenuation,modulator_stage,carrier_stage,"
+        "carrier_attenuation,modulator_output_attenuation,"
+        "carrier_output_attenuation,connection,"
+        "modulator_stage,carrier_stage,"
         "vibrato_phase,tremolo_phase,tremolo_value\n", probes);
 
   opl3_chip chip;

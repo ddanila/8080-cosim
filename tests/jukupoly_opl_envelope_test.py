@@ -66,6 +66,22 @@ def check_exact_target_fit() -> None:
     assert percussive[0] == 10 and percussive[-1] == 0
 
 
+def check_semantic_attenuation_mapping() -> None:
+    # 32 oracle attenuation units are 6 dB, approximately half amplitude.
+    half = opl_envelope.opl_channel_amplitude(511, 32, 0)
+    assert 0.49 < half < 0.51
+    assert opl_envelope.quantize_opl_channel(
+        (511, 511, 511), (511, 32, 0), (0, 0, 0),
+    ) == (0, 8, 15)
+
+    # Additive connection exposes both operators, but cannot exceed Juku's
+    # single-channel full-scale mixer level.
+    assert opl_envelope.opl_channel_amplitude(32, 32, 1) == 1.0
+    assert opl_envelope.quantize_opl_channel(
+        (32,), (32,), (1,), peak_level=12,
+    ) == (12,)
+
+
 def stretched_oracle_source() -> tuple[list[vgz.RegisterWrite], int]:
     info, writes = vgz.parse_vgm(synthetic.synthetic_opl3_vgm())
     key_off_sample = 20 * opl_oracle.VGM_RATE // 50
@@ -137,6 +153,7 @@ def main() -> int:
     if not tool.is_file():
         raise SystemExit(f"oracle executable is missing: {tool}")
     check_exact_target_fit()
+    check_semantic_attenuation_mapping()
     fitted = check_oracle_fit(tool)
     print("JUKUPOLY-OPL-ENVELOPE: PASS target-exact grid-fit "
           "oracle-rms 50Hz-4bit bounded-error "

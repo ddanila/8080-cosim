@@ -14,6 +14,7 @@ from typing import Sequence
 
 
 RATE_PERIODS = (0, 1, 2, 4, 8, 16, 32, 64)
+OPL_ATTENUATION_DB = 0.1875
 
 OFF = 0
 ATTACK = 1
@@ -45,6 +46,49 @@ class EnvelopeFit:
             "release_period_frames": self.release_period_frames,
             "sustain_while_keyed": self.sustain_while_keyed,
         }
+
+
+def opl_channel_amplitude(modulator_attenuation: int,
+                          carrier_attenuation: int,
+                          connection: int) -> float:
+    """Reduce post-EG OPL attenuation to a waveform-independent amplitude.
+
+    Nuked's ``eg_out`` is in quarter-TL units: one unit is 0.1875 dB.  In FM
+    connection mode only the carrier is a direct channel output; in additive
+    mode both operators contribute.  The sum is capped because Juku has only
+    one 4-bit level per logical voice.  This intentionally models amplitude,
+    not OPL waveform or feedback timbre.
+    """
+    if (not isinstance(modulator_attenuation, int) or
+            not isinstance(carrier_attenuation, int) or
+            modulator_attenuation < 0 or carrier_attenuation < 0):
+        raise ValueError("OPL attenuation must be nonnegative integers")
+    if connection not in (0, 1):
+        raise ValueError("OPL connection must be 0 or 1")
+
+    def amplitude(attenuation: int) -> float:
+        return 10.0 ** (-(attenuation * OPL_ATTENUATION_DB) / 20.0)
+
+    result = amplitude(carrier_attenuation)
+    if connection:
+        result += amplitude(modulator_attenuation)
+    return min(1.0, result)
+
+
+def quantize_opl_channel(modulator_attenuation: Sequence[int],
+                         carrier_attenuation: Sequence[int],
+                         connection: Sequence[int],
+                         *, peak_level: int = 15) -> tuple[int, ...]:
+    """Map a 50 Hz oracle attenuation trace to absolute Juku levels."""
+    if not 1 <= peak_level <= 15:
+        raise ValueError("peak_level must be 1..15")
+    if not (len(modulator_attenuation) == len(carrier_attenuation) ==
+            len(connection)) or not modulator_attenuation:
+        raise ValueError("OPL attenuation traces must have equal nonzero length")
+    return tuple(round(peak_level * opl_channel_amplitude(modulator, carrier,
+                                                          algorithm))
+                 for modulator, carrier, algorithm in zip(
+                     modulator_attenuation, carrier_attenuation, connection))
 
 
 def _check_period(name: str, value: int) -> None:
