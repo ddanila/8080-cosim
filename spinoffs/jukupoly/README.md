@@ -264,6 +264,14 @@ ambiguous continuation edges that adopting them locally would be unsafe for
 chords.  This progressive M2 slice therefore changes neither generated scores
 nor the target player.
 
+The v2 evidence document also collapses the proven layer components and uses
+a global one-to-one boundary match to form provisional logical-voice chains.
+The matching order is explicit and deterministic: patch identity, hardware
+channel continuity, known/small pitch motion, then key gap.  It does not yet
+choose the three Juku voices.  Run `tools/report_opl_voices.py` on one or more
+ZIP packs to get per-track counts, assignment fingerprints, and a complete
+pack fingerprint without copying the copyrighted source streams.
+
 [nuked-opl3]: https://github.com/nukeykt/Nuked-OPL3
 
 The reducer preserves each source note's octave whenever its phase increment
@@ -492,6 +500,7 @@ Source and generated files:
 - `diskdefs` — logical Juku full-disk geometry for cpmtools;
 - `tools/render_jukupoly_wav.c` — calibrated cycle-model Mode-0 WAV renderer;
 - `tools/jukupoly_opl_oracle.c` — pinned Nuked OPL3 timed-stream bridge;
+- `tools/report_opl_voices.py` — deterministic whole-pack M2 evidence report;
 - `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;

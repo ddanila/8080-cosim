@@ -435,6 +435,26 @@ chords.  These edges therefore remain evidence rather than assignments until
 a global, deterministic allocator and onset-regression check exist.  No
 target code, score, sample rate, or sound changes in this slice.
 
+The second analysis-only slice replaces ambiguous edge-by-edge choices with a
+deterministic maximum-cardinality, minimum-cost one-to-one match at each exact
+key boundary.  Cost is lexicographic: retain the complete patch first, retain
+the hardware channel second, prefer known and smaller pitch motion third, and
+then minimize the key gap.  Same-pitch layers are collapsed before matching,
+and their keyed spans must overlap; this prevents adjacent short repetitions
+from being mislabeled as simultaneous layers.  Every accepted continuation
+records the decision fields and human-readable evidence in the v2 voice JSON.
+
+`tools/report_opl_voices.py` makes the two-pack measurement reproducible.  On
+the hash-identified archives above it reduced the 159,398 physical keyed
+segments to 123,347 logical notes, then made 13,151 one-to-one continuation
+assignments forming 110,196 provisional voice chains.  Of those assignments,
+13,028 migrate across an OPL hardware channel and 120 retain a hardware
+channel across a semantic patch change.  The complete report fingerprint is
+`53ebe84878b16e2cc1f42ed3bdc993f493779496bc18826c92116c66c4d02f82`.
+These are still analysis chains, not three-voice Juku allocation: onset
+salience and pack-wide old/new allocation comparison remain required before
+M2's exit gate can pass.
+
 ### M3: JPS v2 envelope-only vertical slice
 
 Add backward-compatible `JPS\2`, key-off release, and compact fitted envelopes.
