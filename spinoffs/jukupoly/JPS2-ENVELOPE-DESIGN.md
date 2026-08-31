@@ -1,10 +1,11 @@
 # JPS v2 envelope vertical-slice contract
 
-Status: M3 target-side synthetic checkpoint implemented, 2026-09-01.  The
-host-side OPL fitter, 30-second Imp's Song comparison, and physical listening
-gate remain pending.  This slice is deliberately limited to fitted amplitude
-envelopes.  Tremolo, vibrato, held-key pitch automation, four-operator
-synthesis, and hardware rhythm remain later independent gates.
+Status: M3 target-side synthetic checkpoint and host fitting primitive
+implemented, 2026-09-01.  Real-song voice extraction/integration, the
+30-second Imp's Song comparison, and physical listening gate remain pending.
+This slice is deliberately limited to fitted amplitude envelopes.  Tremolo,
+vibrato, held-key pitch automation, four-operator synthesis, and hardware
+rhythm remain later independent gates.
 
 ## Compatibility boundary
 
@@ -126,8 +127,19 @@ fixture made 139 samples appear suitable, but the expanded mixture measured
 be selected and verified over each converted full song; a short synthetic
 average is not sufficient evidence.
 
-This checkpoint does not complete M3.  The next independent layer is the
-host-side Nuked-OPL envelope fitter and like-for-like v1/reference comparison;
-that real-song comparison supplies the per-song G2 floor which a synthetic
-fixture cannot.  No Doom library track is emitted as JPS v2 yet, so a failed
-real-song fit can still fall back to its unchanged v1 reduction.
+`opl_envelope.py` is the first host-side fitting primitive.  Its simulator
+matches the 8080 stage ordering and global power-of-two update masks exactly;
+an exhaustive deterministic search recovers target-generated synthetic
+curves with zero error.  For an isolated pinned-Nuked two-operator reference,
+the helper quantizes 20 ms RMS blocks relative to a separately resolved peak
+level and fits a strict packet with 1.375 mixer levels mean absolute error and
+six levels maximum error.  The largest mismatch is the deliberately exposed
+limit that Juku's linear one-level attack cannot follow Yamaha's accelerating
+attack curve.  The fitted packet passes the strict JPS v2 encoder.
+
+This checkpoint does not complete M3.  The next independent layer is mapping
+real selected logical voices to isolated oracle intervals, then producing the
+like-for-like v1/v2/reference comparison.  That real-song comparison supplies
+the per-song G2 floor which a synthetic fixture cannot.  No Doom library track
+is emitted as JPS v2 yet, so a failed real-song fit can still fall back to its
+unchanged v1 reduction.

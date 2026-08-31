@@ -430,8 +430,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Fetch assembler and shared sources
-        run: git submodule update --init third_party/zmac third_party/juku-common
+      - name: Fetch assembler, OPL oracle, and shared sources
+        run: |
+          git submodule update --init third_party/zmac third_party/juku-common
+          git submodule update --init spinoffs/jukupoly/external/Nuked-OPL3
 
       - name: Run JukuPoly engine, budget, song, and WAV guards
         run: |

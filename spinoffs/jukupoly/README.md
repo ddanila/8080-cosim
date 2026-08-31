@@ -525,10 +525,15 @@ PCM are rejected without a single PIT write.  JPS v1 playback through the
 enhanced player still matches the frozen Doomgate profile exactly.
 
 This is a progressive checkpoint, not completed OPL conversion.  The host
-fitter against the pinned oracle, the 30-second Imp's Song comparison, a full
-song size/duration run, and physical CS00000 listening remain pending.  The
-current Doom library therefore continues to emit v1 songs and can retain that
-fallback if a v2 approximation is not useful or affordable.
+fitting primitive now models the exact target state machine and finds the
+least-error representable packet for a 50 Hz/4-bit isolated Nuked-OPL curve.
+Its synthetic oracle guard measures 1.375 mixer levels mean absolute error and
+six levels maximum error; the main residual is an accelerating Yamaha attack
+which the linear Juku stage cannot reproduce.  Mapping real M2 logical voices
+into that fitter, the 30-second Imp's Song comparison, a full-song
+size/duration run, and physical CS00000 listening remain pending.  The current
+Doom library therefore continues to emit v1 songs and can retain that fallback
+if a v2 approximation is not useful or affordable.
 
 ## Reproduce
 
@@ -566,6 +571,7 @@ Source and generated files:
 - `firmware/import_jukupoly_vgz.py` — general two-operator OPL2/OPL3 VGM/VGZ reducer;
 - `firmware/opl_trace.py` — lossless timed OPL register/semantic host model;
 - `firmware/opl_oracle.py` — per-channel oracle stream and probe helpers;
+- `firmware/opl_envelope.py` — exact-target compact envelope simulator/fitter;
 - `firmware/opl_voices.py` — keyed-segment and logical-voice evidence model;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
@@ -582,6 +588,7 @@ Source and generated files:
 - `tests/jukupoly_vgz_import_test.py` — OPL level/classification regression;
 - `tests/jukupoly_opl_trace_test.py` — synthetic envelope/LFO/rhythm/four-op trace fixture;
 - `tests/jukupoly_opl_oracle_test.py` — pinned oracle agreement and isolation regression;
+- `tests/jukupoly_opl_envelope_test.py` — exact-target and oracle-fit regression;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;

@@ -536,6 +536,18 @@ size and duration evidence, and physical CS00000 A/B listening remain pending.
 Until those pass, the Doom library still emits v1 songs and the implemented v2
 path is a synthetic, reversible progressive layer.
 
+The first host-fitting primitive is also complete.  `opl_envelope.py` models
+the target's exact parse/update ordering and global rate-mask phase, then
+performs a deterministic grid fit over only the representable JPS v2 packet
+space.  It recovers target-generated keyed and percussive envelopes exactly.
+An isolated pinned-Nuked reference is reduced to relative 20 ms RMS levels
+while absolute peak loudness remains an independent policy input; its first
+guarded fit has 1.375 levels mean absolute error and six levels maximum error.
+The error is reported rather than disguised: the reference has Yamaha's
+accelerating attack while the affordable target state changes by one mixer
+level per eligible frame.  Mapping this primitive to real M2 logical voices
+and the Imp excerpt remains pending.
+
 ### M4: tremolo
 
 Add the shared tremolo phase and per-voice effective depth.
