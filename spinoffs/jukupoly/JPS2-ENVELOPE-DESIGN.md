@@ -1,8 +1,8 @@
 # JPS v2 envelope vertical-slice contract
 
-Status: M3 target-side synthetic checkpoint and host fitting primitive
-implemented, 2026-09-01.  Real-song voice extraction/integration, the
-30-second Imp's Song comparison, and physical listening gate remain pending.
+Status: M3 target-side synthetic checkpoint, host fitting, and 30-second real
+Imp comparison implemented, 2026-09-01.  Longest-song measurement and the
+physical listening gate remain pending.
 This slice is deliberately limited to fitted amplitude envelopes.  Tremolo,
 vibrato, held-key pitch automation, four-operator synthesis, and hardware
 rhythm remain later independent gates.
@@ -151,9 +151,28 @@ proves that its channel-zero sequence is byte-for-field identical to the
 existing isolated channel-zero probe, allowing one oracle render to feed the
 real 18-channel logical-voice mapper.
 
-This checkpoint does not complete M3.  The next independent layer is mapping
-real selected logical voices to isolated oracle intervals, then producing the
-like-for-like v1/v2/reference comparison.  That real-song comparison supplies
-the per-song G2 floor which a synthetic fixture cannot.  No Doom library track
-is emitted as JPS v2 yet, so a failed real-song fit can still fall back to its
-unchanged v1 reduction.
+## Measured real-song checkpoint
+
+`opl_enhanced.py` now expands the sparse M2 decisions, keeps exact notes and
+logical voices on stable Juku channels, sums the post-EG amplitude of proven
+source layers, fits strict packets, and merges the existing percussion
+timeline.  An excerpt uses complete-source instrument classification but
+bounds emitted events and oracle rendering to the requested duration.
+
+The committed [`OPL-IMP-M3.json`](OPL-IMP-M3.json) compares 30 seconds of The
+Imp's Song.  V1 is tonally silent until frame 706; v2 begins the evidenced F#2
+layer at frame zero, preserves all 13 protected excerpt onsets, and gains two.
+Sixteen selected logical notes fit with 0.601 levels mean absolute error and
+eight levels maximum error.  That maximum belongs to the evolving intro and
+is retained as evidence that one ADSR packet cannot reproduce all mid-note OPL
+changes.  Significant quantized stage directions match.
+
+A 141-sample trial failed the 1% duration guard at 29.495 seconds.  The accepted
+real-song configuration uses 143 samples and a measured 7,170 Hz phase table:
+29.900 seconds, 50.168 frames/s, and 7,174.0 samples/s against a 6,480.8 Hz
+floor.  Its JPS is 1,341 bytes, the player map and hot loop remain unchanged,
+and v1/v2/reference WAV hashes are recorded.
+
+This still does not complete M3.  A longest affected full-song measurement and
+physical CS00000 A/B listening are required before any Doom library default
+changes.  Until then v1 remains the explicit fallback.

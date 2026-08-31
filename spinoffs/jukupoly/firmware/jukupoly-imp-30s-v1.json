@@ -1,0 +1,707 @@
+{
+  "schema": "jukupoly-song-v1",
+  "title": "The Imp's Song (OPL3/VGZ JukuPoly reduction)",
+  "composer": "Robert Prince",
+  "arrangement": "Automatic YMF262 reduction: variable-pitch OPL instruments to three deduplicated tones; fixed-pitch instruments to percussion",
+  "source": {
+    "name": "03 The Imp's Song.vgz",
+    "format": "gzip-compressed VGM",
+    "compressed_sha256": "1d3670f1bd3ccccf6ecd510926101ba6c24fc466c38d37277edfe57c538839cc",
+    "vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16",
+    "vgm_version": "1.51",
+    "chip": "YMF262 (OPL3)",
+    "chip_clock_hz": 14318180,
+    "gd3": {
+      "track_en": "The Imp's Song",
+      "game_en": "Doom",
+      "system_en": "IBM PC/AT",
+      "author_en": "Robert Prince",
+      "date": "1993",
+      "creator": "NewRisingSun",
+      "notes": "Original file: D_E1M2\nE1M2: Nuclear Plant"
+    },
+    "license": "No new license asserted for the composition or source recording."
+  },
+  "sample_rate_hz": 7120,
+  "frame_samples": 143,
+  "defaults": {
+    "tone1": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone2": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone3": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    }
+  },
+  "conversion": {
+    "policy": "finite VGM stream only; never follow the loop back",
+    "total_vgm_samples": 1323000,
+    "duration_seconds": 30.0,
+    "loop_start_sample": 0,
+    "loop_samples": 6946103,
+    "duration_frames": 1500,
+    "opl_instruments": [
+      {
+        "id": "3757930a66cd",
+        "key_ons": 386,
+        "distinct_pitches": 5,
+        "melodic": true
+      },
+      {
+        "id": "a63310a05bc9",
+        "key_ons": 378,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "d2c4ab0fc4b7",
+        "key_ons": 252,
+        "distinct_pitches": 5,
+        "melodic": true
+      },
+      {
+        "id": "f530ee9b528b",
+        "key_ons": 252,
+        "distinct_pitches": 5,
+        "melodic": true
+      },
+      {
+        "id": "22c93b76b58b",
+        "key_ons": 237,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "514d6277991a",
+        "key_ons": 237,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "1c1ccdc75fb6",
+        "key_ons": 173,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "6979581c9a6a",
+        "key_ons": 126,
+        "distinct_pitches": 8,
+        "melodic": true
+      },
+      {
+        "id": "22d015793192",
+        "key_ons": 123,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "a31bfa12865c",
+        "key_ons": 81,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "0f2d3e0ffb94",
+        "key_ons": 78,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "fe35e4ffbf3c",
+        "key_ons": 45,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "93961778049a",
+        "key_ons": 45,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "0283f289d180",
+        "key_ons": 39,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "160bf9088ca2",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "7d90ff460ce1",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "f8fd09178549",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "5db923b308ce",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "0af3f243b687",
+        "key_ons": 18,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "0ac68956cc02",
+        "key_ons": 9,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "09b3c993cdb5",
+        "key_ons": 6,
+        "distinct_pitches": 1,
+        "melodic": false
+      }
+    ],
+    "source_melodic_channels_peak": 2,
+    "selected_distinct_tones_peak": 2,
+    "frames_with_more_than_three_distinct_notes": 0,
+    "percussion_hits": {
+      "1": 7,
+      "3": 33
+    },
+    "melodic_signature_overrides": [],
+    "percussion_signature_overrides": {},
+    "voice_selection_policy": "sustaining-note continuity before newly articulated notes",
+    "pitch_policy": "preserve the source MIDI octave; transpose down only when the 15-bit Juku phase step cannot encode the source note"
+  },
+  "notes": "This is a register-level musical reduction, not YMF262 emulation. OPL timbres, envelopes, stereo, feedback, and modulation are not retained.",
+  "rows": [
+    {
+      "frames": 132,
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 144,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 143,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 12,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 143,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 133,
+      "tone1": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 10,
+      "tone1": {
+        "note": "E2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 132,
+      "tone1": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "E2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 132,
+      "tone2": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 11,
+      "tone1": {
+        "note": "E2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      }
+    },
+    {
+      "frames": 131,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 12,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 11,
+      "tone1": {
+        "note": "E2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 12,
+      "tone1": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      }
+    },
+    {
+      "frames": 10,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 15,
+      "tone1": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 14,
+      "tone1": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "E2",
+        "volume": 7,
+        "envelope_speed": 8,
+        "envelope_mode": "hold"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    }
+  ]
+}

@@ -553,11 +553,11 @@ enhanced player's v1 Doomgate timing and audio-event profile remains exactly
 equal to the frozen profile; image size, self-modification bookkeeping, and
 the report label are intentionally compared separately.
 
-This is not M3's exit gate.  Automatic host fitting against the pinned oracle,
-the 30-second Imp's Song old/new/reference comparison, longest affected JPS
-size and duration evidence, and physical CS00000 A/B listening remain pending.
+At that checkpoint M3's real-song gates were still open.  The 30-second Imp
+old/new/reference comparison is now complete below; longest affected JPS size
+and duration evidence plus physical CS00000 A/B listening remain pending.
 Until those pass, the Doom library still emits v1 songs and the implemented v2
-path is a synthetic, reversible progressive layer.
+path remains a reversible progressive layer.
 
 The first host-fitting primitive is also complete.  `opl_envelope.py` models
 the target's exact parse/update ordering and global rate-mask phase, then
@@ -568,8 +568,7 @@ while absolute peak loudness remains an independent policy input; its first
 guarded fit has 1.375 levels mean absolute error and six levels maximum error.
 The error is reported rather than disguised: the reference has Yamaha's
 accelerating attack while the affordable target state changes by one mixer
-level per eligible frame.  Mapping this primitive to real M2 logical voices
-and the Imp excerpt remains pending.
+level per eligible frame.
 
 The pinned-oracle probe now also exports each operator's post-envelope
 `eg_out` attenuation and the channel connection bit.  Unlike raw `TL`, this
@@ -584,6 +583,39 @@ PCM/RMS path remains a useful independent shape comparison.
 The oracle bridge can emit this probe state for all 18 channels in one pass.
 Its all-channel rows are verified against the existing isolated-channel form,
 so a 30-second real-song fit does not require 18 redundant OPL renders.
+
+The real-song M3 slice is now implemented by `opl_enhanced.py` and the guarded
+importer flags `--seconds`, `--enhanced-envelopes`, and `--opl-oracle`.  It
+uses complete-source instrument classification even for an excerpt, maps the
+M2 allocation to stable target channels, sums only proven logical layers,
+fits post-EG oracle attenuation, and carries the unchanged v1 percussion
+timeline into JPS v2.  Synthetic regressions cover sparse allocation expansion,
+logical-voice channel continuity, key-off, percussion concurrency, probe fit,
+and strict score encoding.
+
+[`OPL-IMP-M3.json`](OPL-IMP-M3.json) is the reproducible 30-second Imp
+comparison.  V1's first tone is frame 706 (14.12 s); v2 begins the evidenced
+four-layer F#2 at frame zero.  All 13 v1-protected excerpt onsets survive and
+two are gained.  Sixteen selected logical notes average 0.601 4-bit mixer
+levels absolute error; the maximum is eight on the intro because its repeated
+mid-note OPL level evolution cannot be represented by one ADSR packet.
+Significant net attack, decay, and release directions match the quantized
+oracle; smaller one-level movements remain reported but are not promoted to
+extra target machinery in M3.
+
+The first real-song build used the synthetic fixture's 141-sample batch and
+was rejected: 30 seconds rendered in 29.495 seconds, outside G2's 1% duration
+limit.  The measured 143-sample build with a 7,170 Hz phase table renders in
+29.900 seconds, at 50.168 frames/s and 7,174.0 samples/s.  Its fixture-specific
+floor is 6,480.8 Hz.  The JPS grows only from 1,290 to 1,341 bytes, the player
+remains 4,537 bytes ending at `12B9h`, and the frozen sample-loop hash remains
+exact.  Target v1/v2 WAV hashes and the pinned-oracle reference WAV hash are
+recorded in the report.
+
+This completes the automatic fitting and 30-second host/C-cosim portion of M3,
+not the complete milestone.  G8 still requires physical CS00000 A/B listening,
+and G5/G2 still require a longest affected full-song v2 measurement before
+library-wide enablement.  V1 remains the default and explicit fallback.
 
 ### M4: tremolo
 

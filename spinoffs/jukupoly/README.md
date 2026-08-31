@@ -545,15 +545,36 @@ PCM are rejected without a single PIT write.  JPS v1 playback through the
 enhanced player still matches the frozen Doomgate profile exactly.
 
 This is a progressive checkpoint, not completed OPL conversion.  The host
-fitting primitive now models the exact target state machine and finds the
-least-error representable packet for a 50 Hz/4-bit isolated Nuked-OPL curve.
-Its synthetic oracle guard measures 1.375 mixer levels mean absolute error and
-six levels maximum error; the main residual is an accelerating Yamaha attack
-which the linear Juku stage cannot reproduce.  Mapping real M2 logical voices
-into that fitter, the 30-second Imp's Song comparison, a full-song
-size/duration run, and physical CS00000 listening remain pending.  The current
-Doom library therefore continues to emit v1 songs and can retain that fallback
-if a v2 approximation is not useful or affordable.
+fitter models the exact target state machine and finds the least-error packet
+for a 50 Hz/4-bit pinned-Nuked curve.  The generic `opl_enhanced.py` path now
+maps M2 logical voices to stable Juku channels, sums proven OPL layers, derives
+absolute amplitude from post-EG attenuation, fits all selected notes, and
+retains the v1 percussion timeline.  `--seconds 30 --enhanced-envelopes
+--opl-oracle TOOL` emits the guarded real-song JPS v2 form.  Instrument
+classification uses the complete source even for an excerpt, while emitted
+events and oracle samples remain bounded to the requested interval.
+
+The committed Imp comparison in [`OPL-IMP-M3.json`](OPL-IMP-M3.json) moves the
+first F#2 tone from v1 frame 706 (14.12 s) to v2 frame zero and retains all 13
+protected excerpt onsets, gaining two, with no regression.  Sixteen selected
+logical notes fit at 0.601 mixer levels mean absolute error; the maximum is
+eight levels on the evolving four-layer intro, an explicitly reported limit
+of reducing repeated mid-note OPL changes to one ADSR packet.  Significant
+attack/decay/release directions match after 4-bit quantization.  The v2 JPS is
+1,341 bytes versus 1,290 for v1.
+
+The first 141-sample real-song attempt was rejected because it rendered 30 s
+in 29.495 s, outside the 1% duration guard.  The measured 143-sample,
+7,170-Hz-table build renders in 29.900 s at 50.168 frames/s and 7,174.0
+samples/s, above its 6,480.8 Hz fixture floor.  The player remains 4,537 bytes
+and the frozen hot-loop hash is unchanged.  Reproducible v1/v2 target WAV
+hashes and the pinned-oracle reference WAV hash are in the report; listening
+copies are under `out/jukupoly-opl-m3-imp-20260901/` locally.
+
+M3 still requires the longest affected full-song size/duration measurement and
+physical CS00000 A/B listening before the Doom library may default to v2.  It
+therefore continues to emit v1 and retains that fallback if the approximation
+is not useful or affordable.
 
 ## Reproduce
 
@@ -568,8 +589,10 @@ Source and generated files:
 - `tools/report_opl_voices.py` — deterministic whole-pack M2 evidence report;
 - `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
 - `tools/report_jukupoly_envelope.py` — guarded M3 target timing/map report;
+- `tools/report_jukupoly_imp_m3.py` — real Imp v1/v2/reference M3 report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
+- `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;
@@ -592,7 +615,10 @@ Source and generated files:
 - `firmware/opl_trace.py` — lossless timed OPL register/semantic host model;
 - `firmware/opl_oracle.py` — per-channel oracle stream and post-EG probe helpers;
 - `firmware/opl_envelope.py` — exact-target fitter and semantic attenuation mapper;
+- `firmware/opl_enhanced.py` — generic M2-to-JPS-v2 real-song reducer;
 - `firmware/opl_voices.py` — keyed-segment and logical-voice evidence model;
+- `firmware/jukupoly-imp-30s-v1.json` — frozen Imp excerpt comparison score;
+- `firmware/jukupoly-imp-30s-v2.json` — guarded fitted Imp excerpt score;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
 - `firmware/jukupoly-demons-vgz.json` — generated one-pass E2M2 reduction;
@@ -609,6 +635,7 @@ Source and generated files:
 - `tests/jukupoly_opl_trace_test.py` — synthetic envelope/LFO/rhythm/four-op trace fixture;
 - `tests/jukupoly_opl_oracle_test.py` — pinned oracle agreement and isolation regression;
 - `tests/jukupoly_opl_envelope_test.py` — exact-target and oracle-fit regression;
+- `tests/jukupoly_opl_enhanced_test.py` — real-score allocation/fitting regression;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;

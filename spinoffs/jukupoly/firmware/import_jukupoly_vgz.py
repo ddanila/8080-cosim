@@ -17,6 +17,8 @@ import hashlib
 import itertools
 import json
 import math
+import subprocess
+import tempfile
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -433,14 +435,23 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
                   compressed_sha: str, vgm_sha: str,
                   melodic_overrides: set[str],
                   percussion_overrides: dict[str, int],
-                  prioritize_articulations: bool = False) -> dict:
+                  prioritize_articulations: bool = False,
+                  classification_source: tuple[
+                      VgmInfo, list[RegisterWrite]
+                  ] | None = None) -> dict:
     if any(write.bank == 1 and write.register == 0x04 and write.value & 0x3F
            for write in writes):
         raise VgmError("four-operator OPL3 channels are not supported")
     if any(write.bank == 0 and write.register == 0xBD and write.value & 0x20
            for write in writes):
         raise VgmError("OPL hardware-rhythm mode is not supported")
-    events, instrument_counts = key_events(writes, info)
+    classification_info, classification_writes = (
+        classification_source if classification_source is not None
+        else (info, writes)
+    )
+    events, instrument_counts = key_events(
+        classification_writes, classification_info,
+    )
     melodic = melodic_signatures(events, instrument_counts)
     known_signatures = {signature_id(signature): signature
                         for signature in instrument_counts}
@@ -662,7 +673,20 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("source", type=Path,
                         help="YM3812/YMF262 .vgm or gzip-compressed .vgz")
-    parser.add_argument("output", type=Path, help="output jukupoly-song-v1 JSON")
+    parser.add_argument("output", type=Path,
+                        help="output JukuPoly score JSON")
+    parser.add_argument(
+        "--seconds", type=float,
+        help="convert only this many seconds from the beginning",
+    )
+    parser.add_argument(
+        "--enhanced-envelopes", action="store_true",
+        help="emit guarded JPS v2 logical voices with fitted OPL envelopes",
+    )
+    parser.add_argument(
+        "--opl-oracle", type=Path,
+        help="pinned jukupoly_opl_oracle executable required by --enhanced-envelopes",
+    )
     parser.add_argument(
         "--melodic-signature", action="append", default=[], metavar="ID",
         help="explicitly retain an identified OPL signature as pitched notes",
@@ -688,6 +712,14 @@ def main() -> int:
               "this does not change the Juku score"),
     )
     args = parser.parse_args()
+    if args.seconds is not None and args.seconds <= 0:
+        parser.error("--seconds must be positive")
+    if args.enhanced_envelopes and args.opl_oracle is None:
+        parser.error("--enhanced-envelopes requires --opl-oracle")
+    if args.opl_oracle is not None and not args.enhanced_envelopes:
+        parser.error("--opl-oracle requires --enhanced-envelopes")
+    if args.opl_oracle is not None and not args.opl_oracle.is_file():
+        parser.error(f"OPL oracle executable is missing: {args.opl_oracle}")
     melodic_overrides: set[str] = set()
     for identifier in args.melodic_signature:
         if (len(identifier) != 12 or
@@ -713,7 +745,18 @@ def main() -> int:
         percussion_overrides[identifier] = sample
     data, compressed_sha = decode_source(args.source)
     info, writes = parse_vgm(data)
+    classification_source = (info, writes)
     vgm_sha = hashlib.sha256(data).hexdigest()
+    if args.seconds is not None:
+        excerpt_samples = min(
+            info.total_samples, round(args.seconds * VGM_RATE),
+        )
+        info = VgmInfo(
+            info.version, info.clock, info.frequency_divider, info.chip,
+            info.banks, excerpt_samples, info.loop_samples,
+            info.loop_start_sample, info.loop_offset, info.gd3,
+        )
+        writes = [write for write in writes if write.sample < excerpt_samples]
     if args.opl_trace_output is not None:
         trace = opl_trace.trace_document(writes, info.banks, info.total_samples)
         trace.update({
@@ -728,18 +771,20 @@ def main() -> int:
         melodic_overrides,
         percussion_overrides,
         args.prioritize_articulations,
+        classification_source,
     )
-    if args.opl_voice_output is not None:
-        melodic_identifiers = {
-            instrument["id"]
-            for instrument in score["conversion"]["opl_instruments"]
-            if instrument["melodic"]
-        }
-        events, _counts = key_events(writes, info)
-        melodic_keys = {
-            (event.start, event.bank, event.channel) for event in events
-            if signature_id(event.signature) in melodic_identifiers
-        }
+    voice_evidence = None
+    melodic_identifiers = {
+        instrument["id"]
+        for instrument in score["conversion"]["opl_instruments"]
+        if instrument["melodic"]
+    }
+    events, _counts = key_events(writes, info)
+    melodic_keys = {
+        (event.start, event.bank, event.channel) for event in events
+        if signature_id(event.signature) in melodic_identifiers
+    }
+    if args.opl_voice_output is not None or args.enhanced_envelopes:
         voice_evidence = opl_voices.voice_document(
             writes, info.banks, info.total_samples, info.clock,
             info.frequency_divider, melodic_keys, score_note_onsets(score),
@@ -751,8 +796,43 @@ def main() -> int:
             "source_name": args.source.name,
             "source_vgm_sha256": vgm_sha,
         })
-        args.opl_voice_output.write_text(
-            json.dumps(voice_evidence, indent=2) + "\n",
+        if args.opl_voice_output is not None:
+            args.opl_voice_output.write_text(
+                json.dumps(voice_evidence, indent=2) + "\n",
+            )
+    if args.enhanced_envelopes:
+        assert args.opl_oracle is not None and voice_evidence is not None
+        import opl_enhanced
+        import opl_oracle
+
+        total_frames = score["conversion"]["duration_frames"]
+        with tempfile.TemporaryDirectory(
+                prefix="jukupoly-opl-envelope-import.") as name:
+            directory = Path(name)
+            stream = directory / "source.jop"
+            pcm = directory / "source.s16le"
+            probes_path = directory / "source.csv"
+            opl_oracle.write_event_stream(
+                stream, writes, info.total_samples,
+            )
+            subprocess.run(
+                [str(args.opl_oracle), str(stream), str(pcm),
+                 str(probes_path), "all"],
+                check=True, stdout=subprocess.PIPE, text=True,
+            )
+            probes = opl_oracle.read_channel_probes(probes_path)
+        segments = opl_voices.reconstruct_segments(
+            writes, info.banks, info.total_samples, info.clock,
+            info.frequency_divider,
+        )
+        relations = opl_voices.candidate_relations(segments)
+        logical_notes = opl_voices.group_layers(segments, relations)
+        allocation = voice_evidence["three_voice_allocation"]
+        fits, fit_report = opl_enhanced.fit_selected_envelopes(
+            segments, logical_notes, allocation, probes, total_frames,
+        )
+        score = opl_enhanced.compile_enhanced_score(
+            score, logical_notes, allocation, fits, total_frames, fit_report,
         )
     args.output.write_text(json.dumps(score, indent=2) + "\n")
     conversion = score["conversion"]
