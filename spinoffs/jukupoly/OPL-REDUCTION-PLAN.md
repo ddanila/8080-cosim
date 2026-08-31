@@ -394,6 +394,15 @@ Exit gate: synthetic fixture results agree with the oracle for key timing,
 pitch, envelope direction, and LFO presence.  This milestone changes no Juku
 output.
 
+Progress on 2026-09-01: the first host-only slice is complete.  `opl_trace.py`
+retains every ordered raw write and decodes operator envelope/LFO flags,
+channel pitch/key/connection/routing, key transitions, global depth/rhythm,
+OPL3 mode, and four-operator pairing.  `--opl-trace-output` exposes this
+without changing conversion output.  A synthetic VGM regression covers both
+operators, live pitch, key-on/off, deep AM/VIB, all rhythm bits, stereo, and
+four-operator state.  The Nuked OPL3 oracle and agreement tests are still
+required before M1 is complete.
+
 ### M2: logical voice reconstruction
 
 Add general layer grouping, cross-channel continuity, and inspectable

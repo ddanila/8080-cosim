@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 IMPORTER = ROOT / "spinoffs/jukupoly/firmware/import_jukupoly_vgz.py"
+sys.path.insert(0, str(IMPORTER.parent))
 SPEC = importlib.util.spec_from_file_location("import_jukupoly_vgz", IMPORTER)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

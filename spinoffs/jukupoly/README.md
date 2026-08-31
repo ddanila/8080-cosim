@@ -233,6 +233,16 @@ where possible, and key-on retriggers retain the riff's gating.  The current
 boundary intentionally rejects OPL3 four-operator and hardware-rhythm modes
 rather than pretending to convert them.
 
+For OPL-aware development, `--opl-trace-output TRACE.json` additionally emits
+a lossless ordered record of every register write without changing the score.
+The host-only `opl_trace.py` model retains the complete raw register file and
+decodes both operators' AM, vibrato, EGT, KSR, multiplier, KSL, TL, AR, DR, SL,
+RR, and waveform fields; channel frequency, block, key, feedback, connection,
+and four stereo routes; key/pitch transitions; and global depth, rhythm,
+OPL3-new-mode, and four-operator state.  Writes at the same VGM timestamp keep
+their source order.  This trace is analysis evidence, not an OPL synthesizer
+and not target-side code.
+
 The reducer preserves each source note's octave whenever its phase increment
 fits the player's 15-bit tone word; only an unencodable note is moved down by
 whole octaves.  An earlier “audible range” rule folded every note below E2 and
@@ -475,6 +485,7 @@ Source and generated files:
 - `firmware/jukupoly-tdk-robots.json` — pattern-reused full score;
 - `firmware/tdkrobot.com` — complete MOD adaptation;
 - `firmware/import_jukupoly_vgz.py` — general two-operator OPL2/OPL3 VGM/VGZ reducer;
+- `firmware/opl_trace.py` — lossless timed OPL register/semantic host model;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
 - `firmware/jukupoly-demons-vgz.json` — generated one-pass E2M2 reduction;
@@ -488,6 +499,7 @@ Source and generated files:
 - `tests/jukupoly_suspense_test.c` — bounded-window regression;
 - `tests/jukupoly_mod_test.c` — full-order/effect/PCM regression;
 - `tests/jukupoly_vgz_import_test.py` — OPL level/classification regression;
+- `tests/jukupoly_opl_trace_test.py` — synthetic envelope/LFO/rhythm/four-op trace fixture;
 - `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
 - `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
 - `tests/jukupoly_library_test.py` — native two-sided track-order regression;

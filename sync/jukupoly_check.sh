@@ -7,6 +7,7 @@ trap 'rm -rf "$TMP"' EXIT
 
 cd "$ROOT"
 python3 tests/jukupoly_vgz_import_test.py
+python3 tests/jukupoly_opl_trace_test.py
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
   --song spinoffs/jukupoly/firmware/jukupoly-suspense.json \

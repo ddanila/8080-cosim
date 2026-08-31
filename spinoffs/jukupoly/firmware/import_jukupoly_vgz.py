@@ -21,6 +21,8 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
+import opl_trace
+
 
 VGM_RATE = 44_100
 # The normal JukuPoly frame path averages about 7.12 kHz at the calibrated
@@ -656,6 +658,11 @@ def main() -> int:
         help=("when source polyphony exceeds three tones, retain newly "
               "articulated notes before already-sustaining notes"),
     )
+    parser.add_argument(
+        "--opl-trace-output", type=Path,
+        help=("also write a lossless timed OPL register/semantic trace for "
+              "host-side analysis; this does not change the Juku score"),
+    )
     args = parser.parse_args()
     melodic_overrides: set[str] = set()
     for identifier in args.melodic_signature:
@@ -682,6 +689,15 @@ def main() -> int:
         percussion_overrides[identifier] = sample
     data, compressed_sha = decode_source(args.source)
     info, writes = parse_vgm(data)
+    if args.opl_trace_output is not None:
+        trace = opl_trace.trace_document(writes, info.banks, info.total_samples)
+        trace.update({
+            "chip": info.chip,
+            "chip_clock_hz": info.clock,
+            "source_name": args.source.name,
+            "source_vgm_sha256": hashlib.sha256(data).hexdigest(),
+        })
+        args.opl_trace_output.write_text(json.dumps(trace, indent=2) + "\n")
     score = compile_score(
         info, writes, args.source, compressed_sha,
         hashlib.sha256(data).hexdigest(),
