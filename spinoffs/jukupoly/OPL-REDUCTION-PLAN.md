@@ -500,6 +500,15 @@ one-byte-per-note envelope extension, already-fitted 4-bit levels/rate codes,
 scheme in which v1 retains its exact frame routines.  Target implementation
 and measurement remain pending; this design alone does not satisfy M3.
 
+The first host-format slice is complete.  `build_jukupoly.py` now validates
+`jukupoly-song-v2`, rejects raw/unknown envelope fields and incompatible MOD
+effects, encodes already-resolved peak/sustain levels and three fitted rate
+codes, and assembles the fixed-address `JPS\2` header/capability byte.  The
+synthetic regression checks exact row bytes and malformed inputs.  All v1
+generated sources, binaries, baseline profiles, and WAV guards remain
+unchanged.  The library deliberately still rejects v2 until the separately
+guarded `-P4=1` player slice is implemented.
+
 ### M4: tremolo
 
 Add the shared tremolo phase and per-voice effective depth.

@@ -9,6 +9,7 @@ cd "$ROOT"
 python3 tests/jukupoly_vgz_import_test.py
 python3 tests/jukupoly_opl_trace_test.py
 python3 tests/jukupoly_opl_voices_test.py
+python3 tests/jukupoly_envelope_format_test.py
 OPL_DIR="spinoffs/jukupoly/external/Nuked-OPL3"
 OPL_COMMIT="765ec962e473aeb767e4cba74ffdc8f588ffbfe8"
 if [[ ! -f "$OPL_DIR/opl3.c" || "$(git -C "$OPL_DIR" rev-parse HEAD)" != "$OPL_COMMIT" ]]; then

@@ -33,9 +33,20 @@ PERCUSSION_FLAG = 0x10
 END_FLAG = 0x80
 MODE_CODES = {"attack": 0, "decay": 1, "hold": 2}
 MOD_SET_MODE = 3
+JPS2_ENVELOPE_CAPABILITY = 0x01
 NOTE_OFF = "---"
 NOTE_RE = re.compile(r"^([A-G])([#b]?)(-?\d+)$")
 NOTE_BASE = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+ENVELOPE_PERIOD_CODES = {
+    0: 0,
+    1: 1,
+    2: 2,
+    4: 3,
+    8: 4,
+    16: 5,
+    32: 6,
+    64: 7,
+}
 
 
 class SongError(ValueError):
@@ -77,6 +88,50 @@ def engine_volume(user_volume: int) -> int:
     """Map editor-facing 1..16 onto the nonzero QChan-style nibble 1..15."""
     check_range("volume", user_volume, 1, 16)
     return max(1, min(15, round(user_volume * 15 / 16)))
+
+
+def encode_opl_envelope(record: object, context: str) -> tuple[int, int, int]:
+    """Encode an already-fitted 50 Hz/4-bit JPS v2 envelope."""
+    if not isinstance(record, dict):
+        raise SongError(f"{context} opl_envelope must be an object")
+    fields = {
+        "peak_level", "sustain_level", "attack_period_frames",
+        "decay_period_frames", "release_period_frames",
+        "sustain_while_keyed",
+    }
+    if set(record) != fields:
+        missing = sorted(fields - set(record))
+        unknown = sorted(set(record) - fields)
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if unknown:
+            details.append("unknown " + ", ".join(unknown))
+        raise SongError(f"{context} opl_envelope: {'; '.join(details)}")
+    peak = check_range(f"{context} envelope peak_level",
+                       record["peak_level"], 1, 15)
+    sustain = check_range(f"{context} envelope sustain_level",
+                          record["sustain_level"], 0, peak)
+    codes: list[int] = []
+    for stage in ("attack", "decay", "release"):
+        value = record[f"{stage}_period_frames"]
+        if not isinstance(value, int) or value not in ENVELOPE_PERIOD_CODES:
+            accepted = ", ".join(str(item) for item in ENVELOPE_PERIOD_CODES)
+            raise SongError(
+                f"{context} envelope {stage}_period_frames must be one of "
+                f"{accepted}, got {value!r}"
+            )
+        codes.append(ENVELOPE_PERIOD_CODES[value])
+    keyed = record["sustain_while_keyed"]
+    if not isinstance(keyed, bool):
+        raise SongError(
+            f"{context} envelope sustain_while_keyed must be boolean"
+        )
+    attack, decay, release = codes
+    levels = peak << 4 | sustain
+    rates = attack | decay << 3 | (release & 0x03) << 6
+    flags = release >> 2 | int(keyed) << 1
+    return levels, rates, flags
 
 
 def decode_sample_bank(song: dict) -> dict[int, list[int]]:
@@ -187,8 +242,10 @@ def asm_hex(value: int, width: int) -> str:
 
 
 def compile_song(song: dict) -> tuple[str, dict]:
-    if song.get("schema") != "jukupoly-song-v1":
-        raise SongError("song schema must be jukupoly-song-v1")
+    schema = song.get("schema")
+    if schema not in ("jukupoly-song-v1", "jukupoly-song-v2"):
+        raise SongError("song schema must be jukupoly-song-v1 or jukupoly-song-v2")
+    enhanced_envelopes = schema == "jukupoly-song-v2"
     sample_rate = check_range("sample_rate_hz", song["sample_rate_hz"], 4000, 12000)
     frame_samples = check_range("frame_samples", song["frame_samples"], 64, 255)
     rows = song.get("rows")
@@ -216,6 +273,8 @@ def compile_song(song: dict) -> tuple[str, dict]:
 
     sample_bank = decode_sample_bank(song)
     mod_effects = bool(song.get("mod_effects", False))
+    if enhanced_envelopes and mod_effects:
+        raise SongError("jukupoly-song-v2 envelope ABI cannot use MOD effects")
     defaults = song.get("defaults", {})
     channel_settings: dict[str, dict] = {}
     for channel in TONE_FLAGS:
@@ -234,6 +293,8 @@ def compile_song(song: dict) -> tuple[str, dict]:
         f"JUKUPOLY_ROW_COUNT    equ     {logical_row_count}",
         "",
     ]
+    if enhanced_envelopes:
+        output.insert(4, "JUKUPOLY_ENHANCED_ENVELOPES equ 1")
     if pattern_mode:
         output.extend([
             "jukupoly_song_order:",
@@ -290,25 +351,37 @@ def compile_song(song: dict) -> tuple[str, dict]:
                 note_comment = note
             if bool(event.get("legato", False)):
                 step |= 0x8000
-            speed = check_range(
-                f"row {row_index} {channel} envelope speed",
-                settings["envelope_speed"], 1, 8,
+            payload.append(
+                f"        dw      {asm_hex(step, 4)}    ; {channel} {note_comment}"
             )
-            mode_name = settings["envelope_mode"]
-            if mode_name == "set":
-                if not mod_effects:
-                    raise SongError("set envelope mode requires mod_effects")
-                mode_code = MOD_SET_MODE
-            elif mode_name in MODE_CODES:
-                mode_code = MODE_CODES[mode_name]
+            if enhanced_envelopes:
+                levels, rates, envelope_flags = encode_opl_envelope(
+                    event.get("opl_envelope"), f"row {row_index} {channel}",
+                )
+                payload.append(
+                    "        db      "
+                    f"{asm_hex(levels, 2)},{asm_hex(rates, 2)},"
+                    f"{asm_hex(envelope_flags, 2)}"
+                )
             else:
-                raise SongError(f"invalid envelope mode {mode_name!r}")
-            mask = (1 << speed) - 1
-            config = mode_code << 4 | engine_volume(settings["volume"])
-            payload.extend([
-                f"        dw      {asm_hex(step, 4)}    ; {channel} {note_comment}",
-                f"        db      {asm_hex(mask, 2)},{asm_hex(config, 2)}",
-            ])
+                speed = check_range(
+                    f"row {row_index} {channel} envelope speed",
+                    settings["envelope_speed"], 1, 8,
+                )
+                mode_name = settings["envelope_mode"]
+                if mode_name == "set":
+                    if not mod_effects:
+                        raise SongError("set envelope mode requires mod_effects")
+                    mode_code = MOD_SET_MODE
+                elif mode_name in MODE_CODES:
+                    mode_code = MODE_CODES[mode_name]
+                else:
+                    raise SongError(f"invalid envelope mode {mode_name!r}")
+                mask = (1 << speed) - 1
+                config = mode_code << 4 | engine_volume(settings["volume"])
+                payload.append(
+                    f"        db      {asm_hex(mask, 2)},{asm_hex(config, 2)}"
+                )
 
         tone1 = row.get("tone1")
         if isinstance(tone1, dict) and ("slide_up" in tone1 or "slide_down" in tone1):
@@ -434,6 +507,7 @@ def compile_song(song: dict) -> tuple[str, dict]:
         "frame_samples": frame_samples,
         "target_sample_hz": sample_rate,
         "mod_effects": mod_effects,
+        "enhanced_envelopes": enhanced_envelopes,
         "score_sha256": hashlib.sha256(text.encode()).hexdigest(),
     }
     return text, metadata
@@ -463,14 +537,14 @@ def assemble(generated: str, mod_effects: bool = False) -> bytes:
 def assemble_song_file(generated: str, metadata: dict) -> bytes:
     """Assemble a relocatable-on-disk score for the reusable library player.
 
-    Version 1 song files are linked for one fixed RAM address.  This keeps the
+    Song files are linked for one fixed RAM address.  This keeps the
     8080 hot path and row packets identical to the standalone player: drum
     descriptors remain direct 16-bit pointers and cost no extra playback
     cycles.  The library loader always places the file at SONG_LOAD_ADDRESS.
     """
     if metadata["mod_effects"] or metadata["patterns"]:
         raise SongError(
-            "JPS v1 supports flat ABI-v1 songs only; effects/pattern orders "
+            "JPS disk songs support flat rows only; effects/pattern orders "
             "need a later library-player ABI"
         )
     with tempfile.TemporaryDirectory(prefix="jukupoly-song.") as name:
@@ -479,13 +553,16 @@ def assemble_song_file(generated: str, metadata: dict) -> bytes:
         source = directory / "song.asm"
         include = directory / DEFAULT_GENERATED.name
         include.write_text(generated)
+        version = 2 if metadata["enhanced_envelopes"] else 1
+        capabilities = JPS2_ENVELOPE_CAPABILITY if version == 2 else 0
         source.write_text(
             "; JukuPoly disk-song wrapper; generated by build_jukupoly.py.\n"
             f"        org     {asm_hex(SONG_LOAD_ADDRESS, 4)}\n"
             "jukupoly_song_image:\n"
-            "        db      'J','P','S',1\n"
+            f"        db      'J','P','S',{version}\n"
             "        dw      jukupoly_song_image_end-jukupoly_song_image\n"
-            f"        db      {asm_hex(metadata['frame_samples'], 2)},00h\n"
+            f"        db      {asm_hex(metadata['frame_samples'], 2)},"
+            f"{asm_hex(capabilities, 2)}\n"
             f"        dw      {asm_hex(metadata['target_sample_hz'], 4)}\n"
             "        dw      jukupoly_song_rows\n"
             "        dw      jukupoly_silence\n"

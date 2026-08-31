@@ -548,6 +548,7 @@ Source and generated files:
 - `tests/jukupoly_opl_trace_test.py` — synthetic envelope/LFO/rhythm/four-op trace fixture;
 - `tests/jukupoly_opl_oracle_test.py` — pinned oracle agreement and isolation regression;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
+- `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
 - `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
 - `tests/jukupoly_library_test.py` — native two-sided track-order regression;
