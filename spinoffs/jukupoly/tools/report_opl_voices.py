@@ -9,6 +9,7 @@ import hashlib
 import json
 import sys
 import zipfile
+from dataclasses import asdict
 from pathlib import Path
 
 
@@ -17,7 +18,16 @@ FIRMWARE = ROOT / "spinoffs" / "jukupoly" / "firmware"
 sys.path.insert(0, str(FIRMWARE))
 
 import import_jukupoly_vgz as vgz  # noqa: E402
+import build_doom_library as doom_library  # noqa: E402
 import opl_voices  # noqa: E402
+
+
+KNOWN_PACKS = {
+    "04ffbf72e47727b3e93c1e99a68311a460b85fc31fd9a1645e3d872231c0e12a":
+        "doom1",
+    "3d255c644e52adc2967df8394086d99d7995da71c4adf83bec0fe3bccc51c365":
+        "doom2",
+}
 
 
 def digest(value: object) -> str:
@@ -27,43 +37,94 @@ def digest(value: object) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def analyze_track(name: str, payload: bytes) -> dict:
+def analyze_track(name: str, payload: bytes,
+                  melodic_overrides: set[str] | None = None,
+                  prioritize_articulations: bool = False) -> dict:
     try:
         data = gzip.decompress(payload)
     except (EOFError, OSError) as exc:
         raise ValueError(f"{name}: invalid VGZ stream: {exc}") from exc
     info, writes = vgz.parse_vgm(data)
-    document = opl_voices.voice_document(
+    overrides = melodic_overrides or set()
+    events, counts = vgz.key_events(writes, info)
+    melodic = vgz.melodic_signatures(events, counts)
+    signatures = {vgz.signature_id(signature): signature for signature in counts}
+    unknown = sorted(overrides - set(signatures))
+    if unknown:
+        raise ValueError(f"{name}: unknown melodic overrides: {unknown}")
+    melodic.update(signatures[identifier] for identifier in overrides)
+    melodic_keys = {
+        (event.start, event.bank, event.channel) for event in events
+        if event.signature in melodic
+    }
+
+    segments = opl_voices.reconstruct_segments(
         writes, info.banks, info.total_samples, info.clock,
         info.frequency_divider,
     )
-    assignments = document["continuation_assignments"]
+    relations = opl_voices.candidate_relations(segments)
+    logical_notes = opl_voices.group_layers(segments, relations)
+    logical_voices, assignments = opl_voices.assign_logical_voices(logical_notes)
+    melodic_notes = opl_voices.melodic_logical_notes(
+        segments, logical_notes, melodic_keys,
+    )
+    score = vgz.compile_score(
+        info, writes, Path(name), hashlib.sha256(payload).hexdigest(),
+        hashlib.sha256(data).hexdigest(), overrides, {},
+        prioritize_articulations,
+    )
+    old_commands = vgz.score_note_onsets(score)
+    source_onsets = {
+        (opl_voices.analysis_frame(note.start),
+         vgz.playable_note(round(note.initial_pitch)))
+        for note in logical_notes
+        if note.identifier in melodic_notes and note.initial_pitch is not None
+    }
+    protected = old_commands & source_onsets
+    allocation = opl_voices.allocate_three_voices(
+        logical_notes, logical_voices, melodic_notes, protected,
+        vgz.playable_note,
+    )
     fingerprint_fields = {
-        "logical_notes": document["logical_notes"],
-        "logical_voices": document["logical_voices"],
-        "continuation_assignments": assignments,
+        "logical_notes": [asdict(note) for note in logical_notes],
+        "logical_voices": [asdict(voice) for voice in logical_voices],
+        "continuation_assignments": [
+            asdict(assignment) for assignment in assignments
+        ],
+        "three_voice_allocation": allocation,
     }
     return {
         "name": name,
         "vgm_sha256": hashlib.sha256(data).hexdigest(),
         "duration_samples": info.total_samples,
-        "segments": len(document["segments"]),
-        "layer_candidates": document["relation_counts"]["layer_candidate"],
-        "logical_notes": len(document["logical_notes"]),
-        "logical_voices": len(document["logical_voices"]),
+        "segments": len(segments),
+        "layer_candidates": sum(
+            relation.kind == "layer_candidate" for relation in relations
+        ),
+        "logical_notes": len(logical_notes),
+        "logical_voices": len(logical_voices),
         "continuation_assignments": len(assignments),
         "semantic_changes": sum(
-            assignment["semantic_changes"] for assignment in assignments
+            assignment.semantic_changes for assignment in assignments
         ),
         "channel_changes": sum(
-            assignment["channel_changes"] for assignment in assignments
+            assignment.channel_changes for assignment in assignments
         ),
+        "source_melodic_onsets": allocation["source_onsets"],
+        "v1_retained_source_onsets": allocation["protected_onsets"],
+        "provisional_retained_source_onsets": allocation["retained_onsets"],
+        "provisional_gained_source_onsets": allocation["gained_onsets"],
+        "provisional_regressed_v1_onsets": allocation[
+            "missed_protected_onsets"
+        ],
         "assignment_sha256": digest(fingerprint_fields),
     }
 
 
 def analyze_archive(path: Path) -> dict:
     payload = path.read_bytes()
+    archive_sha = hashlib.sha256(payload).hexdigest()
+    pack = KNOWN_PACKS.get(archive_sha)
     tracks: list[dict] = []
     try:
         with zipfile.ZipFile(path) as archive:
@@ -73,13 +134,22 @@ def analyze_archive(path: Path) -> dict:
             )
             if not names:
                 raise ValueError(f"{path}: archive contains no VGZ tracks")
-            for name in names:
-                tracks.append(analyze_track(name, archive.read(name)))
+            for track_number, name in enumerate(names, 1):
+                overrides = doom_library.MELODIC_OVERRIDES.get(
+                    (pack, track_number), set(),
+                ) if pack is not None else set()
+                prioritize = (pack, track_number) in (
+                    doom_library.ARTICULATION_PRIORITY
+                ) if pack is not None else False
+                tracks.append(analyze_track(
+                    name, archive.read(name), overrides, prioritize,
+                ))
     except zipfile.BadZipFile as exc:
         raise ValueError(f"{path}: invalid ZIP archive") from exc
     return {
         "name": path.name,
-        "sha256": hashlib.sha256(payload).hexdigest(),
+        "sha256": archive_sha,
+        "known_policy_pack": pack,
         "tracks": tracks,
     }
 
@@ -90,24 +160,34 @@ def report(paths: list[Path]) -> dict:
     count_fields = (
         "segments", "layer_candidates", "logical_notes", "logical_voices",
         "continuation_assignments", "semantic_changes", "channel_changes",
+        "source_melodic_onsets", "v1_retained_source_onsets",
+        "provisional_retained_source_onsets",
+        "provisional_gained_source_onsets",
+        "provisional_regressed_v1_onsets",
     )
     totals = {"tracks": len(tracks)}
     totals.update({
         field: sum(track[field] for track in tracks) for field in count_fields
     })
     result = {
-        "schema": "jukupoly-opl-voice-pack-report-v1",
+        "schema": "jukupoly-opl-voice-pack-report-v2",
         "analysis": {
             "voice_schema": "jukupoly-opl-voice-evidence-v2",
             "policy": (
                 "analysis-only layer collapse and deterministic global "
-                "one-to-one continuation assignment"
+                "one-to-one continuation assignment plus monotonic "
+                "three-voice onset allocation"
             ),
         },
         "archives": archives,
         "totals": totals,
     }
     result["report_sha256"] = digest(result)
+    if totals["provisional_regressed_v1_onsets"]:
+        raise ValueError(
+            "provisional allocator regressed protected v1 source onsets: "
+            f"{totals['provisional_regressed_v1_onsets']}"
+        )
     return result
 
 
@@ -133,6 +213,8 @@ def main() -> int:
         f"tracks={totals['tracks']} segments={totals['segments']} "
         f"notes={totals['logical_notes']} voices={totals['logical_voices']} "
         f"assignments={totals['continuation_assignments']} "
+        f"onsets=+{totals['provisional_gained_source_onsets']}"
+        f"/-{totals['provisional_regressed_v1_onsets']} "
         f"sha256={result['report_sha256']}",
         file=sys.stderr if args.output is None else sys.stdout,
     )

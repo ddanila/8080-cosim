@@ -455,6 +455,30 @@ These are still analysis chains, not three-voice Juku allocation: onset
 salience and pack-wide old/new allocation comparison remain required before
 M2's exit gate can pass.
 
+Final M2 progress on 2026-09-01: **complete**.  The analysis-only three-voice
+allocator ranks the generic evidence in a documented order: v1 compatibility,
+new onset and attack, logical-voice continuity, bass/lead role, logarithmic-TL
+level, sustained-envelope evidence, and remaining duration.  It deduplicates
+equal target pitches and never selects more than three.  “Important onset” for
+the no-regression gate is defined reproducibly as a source logical-note onset
+which the shipping v1 reducer already retained; those onsets rank first, so
+the new policy can add information but cannot silently trade existing musical
+content away.
+
+The v2 pack report proves this over every track in both hash-identified packs:
+75,703 distinct classified melodic source onsets, 53,286 retained by v1,
+69,062 retained by the provisional allocator, 15,776 gained, and **zero** v1
+onset regressions.  The Imp's Song specifically collapses 2,565 keyed segments
+through 1,113 layer relations to 1,764 logical notes; it preserves all 506 v1
+source onsets and adds 6.  Dark Halls preserves all 2,341, and Suspense
+preserves all 1,210 while adding 162.  The full deterministic report fingerprint
+is `213eb7ad4db98535a4d1567cbaed47beee61007dbef8c65db0447988a7e94808`.
+The importer includes every frame decision and its reasons in
+`--opl-voice-output`; the score remains byte-identical with or without that
+option.  No filename, track, or instrument special case was added to the new
+analysis.  M2 changes no target code, JPS data, sample rate, or audio; M3 is
+the first gated target-side vertical slice.
+
 ### M3: JPS v2 envelope-only vertical slice
 
 Add backward-compatible `JPS\2`, key-off release, and compact fitted envelopes.

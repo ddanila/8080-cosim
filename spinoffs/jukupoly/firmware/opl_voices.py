@@ -1,8 +1,9 @@
 """Host-only reconstruction of OPL note segments and voice relationships.
 
-This module deliberately stops short of changing JukuPoly allocation.  It
-turns the exact register timeline into inspectable evidence which later M2
-policy can validate across complete source packs before it affects a score.
+This module deliberately stops short of changing target-side JukuPoly
+allocation.  It turns the exact register timeline into inspectable evidence
+and a provisional host-only allocation which can be validated across complete
+source packs before it affects a score.
 """
 
 from __future__ import annotations
@@ -11,7 +12,7 @@ import hashlib
 import json
 import math
 from dataclasses import asdict, dataclass
-from typing import Iterable, NamedTuple
+from typing import Callable, Iterable, NamedTuple
 
 import opl_trace
 
@@ -38,6 +39,9 @@ class NoteSegment:
     start: int
     end: int
     patch: str
+    level_8bit: int
+    attack_rate: int
+    sustained_envelope: bool
     pitches: tuple[PitchPoint, ...]
 
 
@@ -59,6 +63,9 @@ class LogicalNote:
     channels: tuple[tuple[int, int], ...]
     initial_pitch: float | None
     final_pitch: float | None
+    level_8bit: int
+    attack_rate: int
+    sustained_envelope: bool
 
 
 @dataclass(frozen=True)
@@ -78,6 +85,27 @@ class ContinuationAssignment:
 class LogicalVoice:
     identifier: int
     notes: tuple[int, ...]
+
+
+@dataclass(frozen=True)
+class AllocationChoice:
+    logical_note: int
+    logical_voice: int
+    midi_note: int | None
+    protected_onset: bool
+    new_onset: bool
+    attack_rate: int
+    retained_voice: bool
+    pitch_role: str
+    level_8bit: int
+
+
+@dataclass(frozen=True)
+class AllocationFrame:
+    frame: int
+    active_notes: int
+    selected: tuple[AllocationChoice, ...]
+    dropped_new_onsets: tuple[int, ...]
 
 
 class _MatchCost(NamedTuple):
@@ -111,6 +139,26 @@ def patch_identifier(state: opl_trace.ChannelState) -> str:
     return hashlib.sha256(encoded).hexdigest()[:12]
 
 
+def channel_salience(state: opl_trace.ChannelState) -> tuple[int, int, bool]:
+    """Return bounded level, attack rate, and EGT evidence for allocation.
+
+    OPL TL is logarithmic 0.75 dB attenuation.  In FM mode the carrier is the
+    audible output; in additive mode both operators contribute.  This is a
+    ranking feature, not a claim to reproduce FM timbre.
+    """
+    carrier = 10.0 ** (-(state.carrier.total_level * 0.75) / 20.0)
+    amplitude = carrier
+    attack_rate = state.carrier.attack_rate
+    sustained = state.carrier.envelope_sustain
+    if state.connection:
+        amplitude += 10.0 ** (-(state.modulator.total_level * 0.75) / 20.0)
+        attack_rate = max(attack_rate, state.modulator.attack_rate)
+        sustained = sustained or state.modulator.envelope_sustain
+    return (
+        round(min(1.0, amplitude) * 255), attack_rate, sustained,
+    )
+
+
 def _pitch_point(sample: int, state: opl_trace.ChannelState, clock: int,
                  frequency_divider: int) -> PitchPoint:
     return PitchPoint(
@@ -128,13 +176,18 @@ def reconstruct_segments(writes: Iterable[opl_trace.TimedWrite], banks: int,
                          frequency_divider: int) -> list[NoteSegment]:
     """Reconstruct key spans and all pitch changes made while each key is held."""
     timeline = opl_trace.OplTimeline(banks)
-    active: dict[tuple[int, int], tuple[int, int, str, list[PitchPoint]]] = {}
+    active: dict[
+        tuple[int, int],
+        tuple[int, int, str, int, int, bool, list[PitchPoint]],
+    ] = {}
     segments: list[NoteSegment] = []
 
     def finish(key: tuple[int, int], end: int) -> None:
-        identifier, start, patch, pitches = active.pop(key)
+        (identifier, start, patch, level, attack_rate,
+         sustained, pitches) = active.pop(key)
         segments.append(NoteSegment(
-            identifier, key[0], key[1], start, end, patch, tuple(pitches),
+            identifier, key[0], key[1], start, end, patch, level,
+            attack_rate, sustained, tuple(pitches),
         ))
 
     for write in writes:
@@ -149,9 +202,10 @@ def reconstruct_segments(writes: Iterable[opl_trace.TimedWrite], banks: int,
             # but retaining this guard makes malformed caller input explicit.
             if key in active:
                 finish(key, write.sample)
+            level, attack_rate, sustained = channel_salience(state)
             active[key] = (
                 len(segments) + len(active), write.sample,
-                patch_identifier(state),
+                patch_identifier(state), level, attack_rate, sustained,
                 [_pitch_point(write.sample, state, clock, frequency_divider)],
             )
         elif event.kind == "key_off":
@@ -159,7 +213,7 @@ def reconstruct_segments(writes: Iterable[opl_trace.TimedWrite], banks: int,
                 finish(key, write.sample)
         elif key in active:
             point = _pitch_point(write.sample, state, clock, frequency_divider)
-            pitches = active[key][3]
+            pitches = active[key][6]
             if (point.f_number, point.block) != (
                     pitches[-1].f_number, pitches[-1].block):
                 pitches.append(point)
@@ -171,7 +225,8 @@ def reconstruct_segments(writes: Iterable[opl_trace.TimedWrite], banks: int,
     ))
     return [NoteSegment(
         identifier, segment.bank, segment.channel, segment.start, segment.end,
-        segment.patch, segment.pitches,
+        segment.patch, segment.level_8bit, segment.attack_rate,
+        segment.sustained_envelope, segment.pitches,
     ) for identifier, segment in enumerate(segments)]
 
 
@@ -306,6 +361,11 @@ def group_layers(segments: list[NoteSegment],
                 member.pitches[-1].midi_pitch for member in members
                 if member.pitches
             ),
+            level_8bit=min(255, sum(member.level_8bit for member in members)),
+            attack_rate=max(member.attack_rate for member in members),
+            sustained_envelope=any(
+                member.sustained_envelope for member in members
+            ),
         ))
     return notes
 
@@ -387,8 +447,8 @@ def _minimum_cost_matching(
                 edge(previous_base + left, following_base + right, cost,
                      (old.identifier, new.identifier))
 
-    # The graph is tiny (at most the OPL channel count at one key timestamp),
-    # so Bellman-Ford keeps residual negative edges correct and transparent.
+    # The following side is bounded by the OPL channel count at one exact key
+    # timestamp, so Bellman-Ford keeps residual negative edges transparent.
     while True:
         distance: list[_MatchCost | None] = [None] * len(graph)
         predecessor: list[tuple[int, int] | None] = [None] * len(graph)
@@ -498,9 +558,200 @@ def assign_logical_voices(notes: list[LogicalNote]) -> tuple[
     return voices, assignments
 
 
+def analysis_frame(sample: int) -> int:
+    """Round a VGM sample timestamp to the existing 50 Hz reducer grid."""
+    return (sample + ANALYSIS_FRAME // 2) // ANALYSIS_FRAME
+
+
+def allocate_three_voices(
+        notes: list[LogicalNote], voices: list[LogicalVoice],
+        melodic_notes: set[int],
+        protected_onsets: set[tuple[int, int]] | None = None,
+        pitch_mapper: Callable[[int], int] | None = None,
+) -> dict:
+    """Make an inspectable, monotonic host-only three-voice allocation.
+
+    ``protected_onsets`` is the generic compatibility guard: source onsets
+    already retained by the v1 reducer rank ahead of new opportunities.  The
+    result may add onset coverage but must report any protected miss.
+    """
+    protected = protected_onsets or set()
+    mapper = pitch_mapper or (lambda note: note)
+    voice_for_note = {
+        note: voice.identifier for voice in voices for note in voice.notes
+    }
+    by_identifier = {note.identifier: note for note in notes}
+    midi_for_note = {
+        note.identifier: (
+            None if note.initial_pitch is None else
+            mapper(round(note.initial_pitch))
+        )
+        for note in notes
+    }
+    starts: dict[int, list[int]] = {}
+    ends: dict[int, list[int]] = {}
+    source_onsets: set[tuple[int, int]] = set()
+    for identifier in sorted(melodic_notes):
+        note = by_identifier[identifier]
+        start = analysis_frame(note.start)
+        end = max(start + 1, analysis_frame(note.end))
+        starts.setdefault(start, []).append(identifier)
+        ends.setdefault(end, []).append(identifier)
+        midi = midi_for_note[identifier]
+        if midi is not None:
+            source_onsets.add((start, midi))
+
+    active: set[int] = set()
+    previous_selected: tuple[int, ...] = ()
+    previous_voices: set[int] = set()
+    retained_onsets: set[tuple[int, int]] = set()
+    decisions: list[AllocationFrame] = []
+    if starts or ends:
+        last_frame = max((*starts.keys(), *ends.keys()))
+    else:
+        last_frame = -1
+
+    for frame in range(last_frame + 1):
+        for identifier in ends.get(frame, ()):
+            active.discard(identifier)
+        new_onsets = set(starts.get(frame, ()))
+        active.update(new_onsets)
+        known_midis = [
+            midi_for_note[identifier] for identifier in active
+            if midi_for_note[identifier] is not None
+        ]
+        low = min(known_midis) if known_midis else None
+        high = max(known_midis) if known_midis else None
+
+        def role(midi: int | None) -> str:
+            if midi is None:
+                return "unknown"
+            if midi == low and midi == high:
+                return "bass+lead"
+            if midi == low:
+                return "bass"
+            if midi == high:
+                return "lead"
+            return "middle"
+
+        def rank(identifier: int) -> tuple[int, ...]:
+            note = by_identifier[identifier]
+            midi = midi_for_note[identifier]
+            onset = identifier in new_onsets
+            protected_now = onset and midi is not None and (
+                frame, midi
+            ) in protected
+            pitch_role = role(midi)
+            return (
+                int(protected_now),
+                int(onset),
+                note.attack_rate if onset else 0,
+                int(voice_for_note[identifier] in previous_voices),
+                int(pitch_role != "middle" and pitch_role != "unknown"),
+                note.level_8bit,
+                int(note.sustained_envelope),
+                analysis_frame(note.end) - frame,
+                -identifier,
+            )
+
+        # The target emits one pulse voice per distinct pitch.  When several
+        # logical notes share it, retain the strongest deterministic owner.
+        best_by_midi: dict[int, int] = {}
+        for identifier in sorted(active):
+            midi = midi_for_note[identifier]
+            if midi is None:
+                continue
+            if midi not in best_by_midi or rank(identifier) > rank(
+                    best_by_midi[midi]):
+                best_by_midi[midi] = identifier
+        selected = tuple(sorted(
+            best_by_midi.values(), key=rank, reverse=True,
+        )[:3])
+        selected_set = set(selected)
+        choices: list[AllocationChoice] = []
+        for identifier in selected:
+            note = by_identifier[identifier]
+            midi = midi_for_note[identifier]
+            onset = identifier in new_onsets
+            protected_now = onset and midi is not None and (
+                frame, midi
+            ) in protected
+            choices.append(AllocationChoice(
+                logical_note=identifier,
+                logical_voice=voice_for_note[identifier],
+                midi_note=midi,
+                protected_onset=protected_now,
+                new_onset=onset,
+                attack_rate=note.attack_rate,
+                retained_voice=voice_for_note[identifier] in previous_voices,
+                pitch_role=role(midi),
+                level_8bit=note.level_8bit,
+            ))
+            if onset and midi is not None:
+                retained_onsets.add((frame, midi))
+        dropped = tuple(sorted(new_onsets - selected_set))
+        if new_onsets or dropped or selected != previous_selected:
+            decisions.append(AllocationFrame(
+                frame=frame,
+                active_notes=len(active),
+                selected=tuple(choices),
+                dropped_new_onsets=dropped,
+            ))
+        previous_selected = selected
+        previous_voices = {
+            voice_for_note[identifier] for identifier in selected
+        }
+
+    protected_source = protected & source_onsets
+    missed = protected_source - retained_onsets
+    gained = retained_onsets - protected_source
+    return {
+        "schema": "jukupoly-opl-three-voice-allocation-v1",
+        "status": "analysis-only; does not alter score allocation",
+        "ranking": [
+            "protected v1 source onset",
+            "new source onset",
+            "onset attack rate",
+            "logical-voice continuity",
+            "bass or lead pitch role",
+            "logarithmic-TL level estimate",
+            "sustained-envelope evidence",
+            "remaining keyed duration",
+            "stable logical-note identifier",
+        ],
+        "source_onsets": len(source_onsets),
+        "protected_onsets": len(protected_source),
+        "retained_onsets": len(retained_onsets & source_onsets),
+        "gained_onsets": len(gained & source_onsets),
+        "missed_protected_onsets": len(missed),
+        "source_onset_keys": sorted(source_onsets),
+        "retained_onset_keys": sorted(retained_onsets & source_onsets),
+        "missed_protected_keys": sorted(missed),
+        "frames": [asdict(decision) for decision in decisions],
+    }
+
+
+def melodic_logical_notes(
+        segments: list[NoteSegment], notes: list[LogicalNote],
+        melodic_keys: set[tuple[int, int, int]],
+) -> set[int]:
+    """Map importer-classified (start, bank, channel) keys through layers."""
+    melodic_segments = {
+        segment.identifier for segment in segments
+        if (segment.start, segment.bank, segment.channel) in melodic_keys
+    }
+    return {
+        note.identifier for note in notes
+        if any(member in melodic_segments for member in note.members)
+    }
+
+
 def voice_document(writes: Iterable[opl_trace.TimedWrite], banks: int,
                    total_samples: int, clock: int,
-                   frequency_divider: int) -> dict:
+                   frequency_divider: int,
+                   melodic_keys: set[tuple[int, int, int]] | None = None,
+                   protected_onsets: set[tuple[int, int]] | None = None,
+                   pitch_mapper: Callable[[int], int] | None = None) -> dict:
     segments = reconstruct_segments(
         writes, banks, total_samples, clock, frequency_divider,
     )
@@ -511,7 +762,7 @@ def voice_document(writes: Iterable[opl_trace.TimedWrite], banks: int,
         kind: sum(relation.kind == kind for relation in relations)
         for kind in ("layer_candidate", "continuation_candidate")
     }
-    return {
+    document = {
         "schema": "jukupoly-opl-voice-evidence-v2",
         "status": "analysis-only; candidates do not alter score allocation",
         "analysis_frame_samples": ANALYSIS_FRAME,
@@ -526,3 +777,12 @@ def voice_document(writes: Iterable[opl_trace.TimedWrite], banks: int,
             asdict(assignment) for assignment in assignments
         ],
     }
+    if melodic_keys is not None:
+        melodic_notes = melodic_logical_notes(
+            segments, logical_notes, melodic_keys,
+        )
+        document["three_voice_allocation"] = allocate_three_voices(
+            logical_notes, logical_voices, melodic_notes,
+            protected_onsets, pitch_mapper,
+        )
+    return document

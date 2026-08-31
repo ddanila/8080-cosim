@@ -272,6 +272,16 @@ choose the three Juku voices.  Run `tools/report_opl_voices.py` on one or more
 ZIP packs to get per-track counts, assignment fingerprints, and a complete
 pack fingerprint without copying the copyrighted source streams.
 
+The completed M2 analysis adds a provisional three-voice decision at every
+relevant 50 Hz frame.  Each selected note records whether it is a protected
+v1 onset, a new attack, retained logical-voice ownership, bass/lead role,
+estimated level, and envelope evidence.  Current v1 source onsets are a
+monotonic compatibility set: the provisional allocator may fill otherwise
+lost capacity but may not remove one.  Across the two complete Doom packs it
+retains all 53,286 v1 source onsets and adds 15,776, with no score or player
+change.  `--opl-voice-output` contains the full inspectable decisions;
+`report_opl_voices.py` fails if a protected onset regresses.
+
 [nuked-opl3]: https://github.com/nukeykt/Nuked-OPL3
 
 The reducer preserves each source note's octave whenever its phase increment

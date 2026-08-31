@@ -285,6 +285,24 @@ def note_name(note: int) -> str:
     return f"{names[note % 12]}{note // 12 - 1}"
 
 
+def score_note_onsets(score: dict) -> set[tuple[int, int]]:
+    """Return (50 Hz frame, MIDI note) commands emitted by a score."""
+    numbers = {note_name(note): note for note in range(128)}
+    result: set[tuple[int, int]] = set()
+    frame = 0
+    for row in score["rows"]:
+        for channel in range(1, 4):
+            tone = row.get(f"tone{channel}")
+            if tone is None or tone.get("note") == "---":
+                continue
+            name = tone["note"]
+            if name not in numbers:
+                raise VgmError(f"invalid generated note name: {name!r}")
+            result.add((frame, numbers[name]))
+        frame += row["frames"]
+    return result
+
+
 def signature_id(signature: tuple[int, ...]) -> str:
     return hashlib.sha256(bytes(signature)).hexdigest()[:12]
 
@@ -695,36 +713,47 @@ def main() -> int:
         percussion_overrides[identifier] = sample
     data, compressed_sha = decode_source(args.source)
     info, writes = parse_vgm(data)
+    vgm_sha = hashlib.sha256(data).hexdigest()
     if args.opl_trace_output is not None:
         trace = opl_trace.trace_document(writes, info.banks, info.total_samples)
         trace.update({
             "chip": info.chip,
             "chip_clock_hz": info.clock,
             "source_name": args.source.name,
-            "source_vgm_sha256": hashlib.sha256(data).hexdigest(),
+            "source_vgm_sha256": vgm_sha,
         })
         args.opl_trace_output.write_text(json.dumps(trace, indent=2) + "\n")
+    score = compile_score(
+        info, writes, args.source, compressed_sha, vgm_sha,
+        melodic_overrides,
+        percussion_overrides,
+        args.prioritize_articulations,
+    )
     if args.opl_voice_output is not None:
+        melodic_identifiers = {
+            instrument["id"]
+            for instrument in score["conversion"]["opl_instruments"]
+            if instrument["melodic"]
+        }
+        events, _counts = key_events(writes, info)
+        melodic_keys = {
+            (event.start, event.bank, event.channel) for event in events
+            if signature_id(event.signature) in melodic_identifiers
+        }
         voice_evidence = opl_voices.voice_document(
             writes, info.banks, info.total_samples, info.clock,
-            info.frequency_divider,
+            info.frequency_divider, melodic_keys, score_note_onsets(score),
+            playable_note,
         )
         voice_evidence.update({
             "chip": info.chip,
             "chip_clock_hz": info.clock,
             "source_name": args.source.name,
-            "source_vgm_sha256": hashlib.sha256(data).hexdigest(),
+            "source_vgm_sha256": vgm_sha,
         })
         args.opl_voice_output.write_text(
             json.dumps(voice_evidence, indent=2) + "\n",
         )
-    score = compile_score(
-        info, writes, args.source, compressed_sha,
-        hashlib.sha256(data).hexdigest(),
-        melodic_overrides,
-        percussion_overrides,
-        args.prioritize_articulations,
-    )
     args.output.write_text(json.dumps(score, indent=2) + "\n")
     conversion = score["conversion"]
     print(
