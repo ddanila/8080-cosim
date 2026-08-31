@@ -53,6 +53,14 @@
         "sync/ekta4401_check.sh"
       ]
     },
+    "jukupoly": {
+      "entrypoints": [
+        "sync/jukupoly_three_voice_check.sh",
+        "sync/jukupoly_check.sh",
+        "sync/jukupoly_library_check.sh",
+        "sync/jukupoly_wav_check.sh"
+      ]
+    },
     "subsystems": {
       "entrypoints": [
         "sync/i8080_check.sh",
@@ -223,20 +231,34 @@
       "jobs": ["jukuravi-regression"]
     },
     {
-      "name": "jukuravi-shared",
+      "name": "jukupoly",
       "prefixes": [
-        "spinoffs/jukuravi/tools/",
-        "sync/jukuravi_jukupoly_",
-        "tests/jukuravi_jukupoly_",
+        "spinoffs/jukupoly/firmware/",
+        "spinoffs/jukupoly/tools/",
+        "sync/jukupoly_",
+        "tests/jukupoly_"
+      ],
+      "exact": [
+        "spinoffs/jukupoly/diskdefs",
+        "spinoffs/jukupoly/render_jukupoly_wav.sh"
+      ],
+      "jobs": ["jukupoly"]
+    },
+    {
+      "name": "juku-assembler-shared",
+      "prefixes": [
         "third_party/juku-common",
         "third_party/zmac"
       ],
+      "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression", "jukupoly"]
+    },
+    {
+      "name": "jukuravi-shared",
       "exact": [
         "spinoffs/jukuravi/host.py",
         "spinoffs/jukuravi/protocol.py",
         "spinoffs/jukuravi/raster.py",
-        "spinoffs/jukuravi/raster_retention.py",
-        "spinoffs/jukuravi/render_jukupoly_wav.sh"
+        "spinoffs/jukuravi/raster_retention.py"
       ],
       "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression"]
     },

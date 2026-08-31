@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  printf("JUKURAVI-THREE-VOICE: PASS sample=%.1fHz A3=%.2fHz "
+  printf("JUKUPOLY-THREE-VOICE: PASS sample=%.1fHz A3=%.2fHz "
       "C#4=%.2fHz E4=%.2fHz entrances=%.3f/%.3f/%.3fs outputs=%zu\n",
       sample_rate, a3, cs4, e4,
       seconds_between(first_pulse, voice2_at),

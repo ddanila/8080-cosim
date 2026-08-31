@@ -289,4 +289,5 @@ points.
 | `sync/` | LVS, behavioral comparisons, and subsystem guards |
 | `roms/`, `media/` | Vendored preservation inputs with provenance/checksums |
 | `docs/` | Current specifications and generated evidence reports |
+| `spinoffs/jukupoly/` | Independent Juku CP/M three-tone-plus-percussion music engine, importers, songs, and evidence |
 | `spinoffs/minimal-vga/` | Independent VJUGA experiment; not on the replica critical path |

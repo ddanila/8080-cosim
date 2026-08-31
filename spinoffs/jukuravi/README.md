@@ -31,42 +31,12 @@ verified, fitted in CS00015, and passed every monitor-independent physical
 item. Display/cursor observation remains pending; see the CP/M Plus
 [`C6 qualification record`](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
 
-[`JUKUPOLY.md`](JUKUPOLY.md) records the 2026-08-29 JukuPoly result: a
-163-byte strict-8080 CP/M transient synthesizing a physically confirmed
-three-voice A-major chord through the unmodified CS00000 speaker at an average
-cycle-model sample rate of 10.97 kHz.  It includes the mode-0 PIT technique,
-source and regression paths, loudness revision, and retained physical evidence.
-The follow-on [`compiled-pattern player`](JUKUPOLY-TRACKER.md) adds envelopes,
-legato, detune, slide, and genuinely concurrent sample percussion; its credited
-`CANYON.MID` reduction is cycle-qualified at 7.186 kHz and passed a CS00000
-physical listening run on 2026-08-30.
-The same engine's one-minute, credited arrangement of Robert Prince's DOOM
-E1M5 theme “Suspense” also passed physical listening on CS00000.  A 10,701-byte
-full 2:44 reduction subsequently completed a cold-boot physical run and
-returned cleanly to CP/M.
-The next cycle-qualified result imports Mark Knight / T.D.K.'s four-channel
-ProTracker arrangement of Kraftwerk's “The Robots.”  The optional player path
-adds the source tune's volume and pitch slides, target portamento, sample
-offset, absolute volume, and speed changes; pattern-order reuse fits the full
-8:34 score and two retained PCM fragments into a 38,591-byte CP/M transient.
-Its calibrated full-score simulation finishes in 8:36.10 and returns cleanly;
-physical CS00000 listening remains pending.
-A general two-operator YM3812/YMF262 VGM/VGZ reducer now also reconstructs OPL
-key events, detects variable-pitch instruments and simultaneous chords,
-collapses stereo/unison voices to three Juku tones, and maps fixed-pitch
-signatures to percussion.  Its Robert Prince DOOM reductions “At Doom's Gate”
-and “The Demons from Adrian's Pen” occupy respectively 12,886 and 17,255 bytes;
-both pass full cycle regressions and return cleanly to CP/M.  An audit prompted
-by the Supaplex main theme fixed the original linear interpretation of OPL's
-documented 0.75 dB total-level steps.  OpenSupaplex's named AdLib tracker
-resource also supplied exact, non-heuristic mappings for 988 closed hi-hats,
-264 snares, and 488 bass drums.  The resulting 21,332-byte, five-minute
-Supaplex image and both level-corrected DOOM renders passed subjective A/B
-listening review on 2026-08-31.
-A companion AY/YM VGM reducer maps the three native PSG channels directly to
-raw Juku phase increments, retaining tuning finer than tracker notes.  Its
-first result is Hisayoshi Ogura's 1986 Arkanoid arcade “Ending”: an approved
-18.390-second, three-tone render in a 2,513-byte CP/M transient.
+The three-voice speaker proof was first delivered through this environment,
+but the experiment grew into an independent CP/M music engine.  JukuPoly's
+player, importers, songs, renderer, tests, documentation, and physical evidence
+now live in [`../jukupoly/`](../jukupoly/README.md).  Jukuravi retains no music
+runtime; its historical role was loading and hosting the earliest CS00000
+sessions.
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0

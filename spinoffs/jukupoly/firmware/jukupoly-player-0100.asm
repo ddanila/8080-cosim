@@ -11,6 +11,15 @@
 PITDATA         equ     019h
 PITCTL          equ     01bh
 
+        if      @@2
+KEYCOLPORT      equ     004h
+KEYROWPORT      equ     005h
+SONG_LOAD       equ     01800h
+SONG_ROWS       equ     SONG_LOAD+10
+SONG_SILENCE    equ     SONG_LOAD+12
+JUKUPOLY_FRAME_SAMPLES equ 143
+        endif
+
 FLAG_TONE1      equ     001h
 FLAG_TONE2      equ     002h
 FLAG_TONE3      equ     004h
@@ -24,6 +33,10 @@ ENV_ATTACK      equ     0
 ENV_DECAY       equ     1
 
 start:
+        if      @@2
+        jmp     library_start
+        endif
+player_start:
         di
         lxi     h,0
         dad     sp
@@ -47,6 +60,9 @@ start:
         sta     ch1_volume
         sta     ch2_volume
         sta     ch3_volume
+        if      @@2
+        sta     player_aborted
+        endif
         if      @@1
         sta     ch1_volume_delta
         sta     ch2_volume_delta
@@ -68,8 +84,17 @@ start:
         call    advance_pattern
         lxi     d,0                     ; loader used DE before first frame
         else
+        if      @@2
+        lhld    SONG_ROWS
+        else
         lxi     h,jukupoly_song_rows
+        endif
         shld    song_pointer
+        endif
+        if      @@2
+        lhld    SONG_SILENCE
+        shld    silence_pointer
+        shld    drum_mix+1
         endif
         if      @@1
         lxi     sp,0
@@ -106,7 +131,11 @@ volume3:
         ori     0
 
 drum_mix:
+        if      @@2
+        lxi     h,SONG_LOAD             ; patched from the loaded JPS header
+        else
         lxi     h,jukupoly_silence      ; self-modifying unpacked PCM pointer
+        endif
         ora     m                       ; QChan-style OR mix, still 0..15
         inx     h
         shld    drum_mix+1
@@ -138,6 +167,18 @@ frame_tick:
         shld    ch3_step
         lhld    saved_sp
         sphl
+
+        if      @@2
+        ; Escape is column 3, encoder input 4 (raw low nibble 06h).  Poll only
+        ; this contact at the existing frame boundary: 48 cycles when idle,
+        ; no BIOS/N4 transaction, and no change to the audio-sample hot loop.
+        mvi     a,3
+        out     KEYCOLPORT
+        in      KEYROWPORT
+        ani     00fh
+        cpi     006h
+        jz      playback_aborted
+        endif
 
         call    advance_drum
         lda     env_counter
@@ -505,7 +546,11 @@ advance_drum:
         sta     drum_frames
         rnz
 drum_silence:
+        if      @@2
+        lhld    silence_pointer
+        else
         lxi     h,jukupoly_silence
+        endif
         shld    drum_mix+1
         ret
 
@@ -847,11 +892,29 @@ envelope_decay:
         dcr     m
         ret
 
+        if      @@2
+playback_aborted:
+        mvi     a,1
+        sta     player_aborted
+        endif
 finished:
         mvi     a,050h
         out     PITCTL
         mvi     a,1
         out     PITDATA
+        if      @@2
+        lda     player_aborted
+        ora     a
+        jz      playback_return
+playback_wait_escape_release:
+        mvi     a,3
+        out     KEYCOLPORT
+        in      KEYROWPORT
+        ani     00fh
+        cpi     006h
+        jz      playback_wait_escape_release
+playback_return:
+        endif
         lhld    saved_sp
         sphl
         ei
@@ -879,6 +942,12 @@ drum_frames:
         db      0
 slide_delta:
         dw      0
+        if      @@2
+silence_pointer:
+        dw      SONG_LOAD
+player_aborted:
+        db      0
+        endif
 
 ; Channel layout is deliberately {volume,target,mask,mode,step word}; the first
 ; four bytes are consumed by update_envelope.
@@ -965,7 +1034,11 @@ test_manifest:
         dw      ch3_volume
         dw      slide_delta
         dw      row_frames
+        if      @@2
+        dw      SONG_LOAD
+        else
         dw      jukupoly_song_rows
+        endif
         if      @@1
         dw      ch1_volume_delta
         dw      ch2_volume_delta
@@ -978,6 +1051,10 @@ test_manifest:
         dw      ch3_porta_target
         endif
 
+        if      @@2
+        include "jukupoly-library-shell.inc"
+        else
         include "jukupoly-song-generated.inc"
+        endif
 
         end     start

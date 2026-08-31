@@ -88,7 +88,7 @@ class SelectorTest(unittest.TestCase):
     def test_shared_jukuravi_submodule_selects_all_jukuravi_lanes(self) -> None:
         self.assertEqual(
             self.selected("third_party/juku-common"),
-            {"jukuravi-d0", "network-rom", "jukuravi-regression"},
+            {"jukuravi-d0", "network-rom", "jukuravi-regression", "jukupoly"},
         )
 
     def test_main_board_change_is_full(self) -> None:
@@ -111,6 +111,12 @@ class SelectorTest(unittest.TestCase):
         self.assertEqual(
             self.selected("spinoffs/jukuravi/firmware/build_d0_alive.py"),
             {"jukuravi-d0", "network-rom", "jukuravi-regression"},
+        )
+
+    def test_jukupoly_change_selects_only_jukupoly(self) -> None:
+        self.assertEqual(
+            self.selected("spinoffs/jukupoly/firmware/build_jukupoly.py"),
+            {"jukupoly"},
         )
 
     def test_jukuravi_shared_change_selects_all_jukuravi_lanes(self) -> None:

@@ -1,0 +1,10741 @@
+{
+  "schema": "jukupoly-song-v1",
+  "title": "The Robots / Die Roboter (JukuPoly first-minute arrangement)",
+  "composer": "Ralf Hütter, Florian Schneider, Karl Bartos",
+  "arrangement": "Three-tone pin-pulse reduction for JukuPoly",
+  "source": {
+    "name": "KRAFTWERK.The robot.mid",
+    "credit": "The Robots performed by Kraftwerk; written by Ralf Hütter, Florian Schneider, and Karl Bartos",
+    "url": "https://bitmidi.com/kraftwerk-the-robot-mid",
+    "download_sha256": "74c6e1675ada8d1701433520e3f64b51bc96c8bc387c572e2d211fc0efbbd8d2"
+  },
+  "sample_rate_hz": 7200,
+  "frame_samples": 144,
+  "defaults": {
+    "tone1": {
+      "volume": 12,
+      "envelope_speed": 1,
+      "envelope_mode": "decay"
+    },
+    "tone2": {
+      "volume": 10,
+      "envelope_speed": 1,
+      "envelope_mode": "decay"
+    },
+    "tone3": {
+      "volume": 14,
+      "envelope_speed": 2,
+      "envelope_mode": "decay"
+    }
+  },
+  "notes": "Hash-locked archive MIDI, fixed 120 BPM, reduced through its first minute. The progressive 4/12/20.5/36-second layer entrances become three chord voices, then high line + saw figure + raised bass. Kick, snare, tom, and hat-family events share the three synthesized samples.",
+  "rows": [
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 33,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 9,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 11,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 17,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 10,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 36,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "A4"
+      }
+    },
+    {
+      "frames": 45,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone2": {
+        "note": "A#3"
+      },
+      "tone3": {
+        "note": "F3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#3"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D#4"
+      },
+      "tone2": {
+        "note": "C#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#4"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C5"
+      },
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "C#5"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C#5"
+      },
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C#5"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "D#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C#5"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "F4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "C#4"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 5,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F4"
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 5,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "C#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 5,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "C#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 5,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "A#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F5"
+      },
+      "tone2": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 5,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "A#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 5,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D#4"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 5,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "D#5"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "D#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "F#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "A#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "D#5"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "D#5"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "D#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "D#5"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "D#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "A#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "A#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "D#5"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "A#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "B4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "F#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone3": {
+        "note": "A3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "F#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "B4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone3": {
+        "note": "F#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "F#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "A3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "F#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "D3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "F#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "B5"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "E3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "B4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "F#5"
+      },
+      "tone3": {
+        "note": "A3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "B4"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "B4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D#5"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "B4"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "B3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "B4"
+      }
+    },
+    {
+      "frames": 4,
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "G#3"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 3
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "B3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "B4"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "B3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "G#4"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "B3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "note": "B4"
+      },
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "G#3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 2,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "B3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "B4"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 5,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "B3"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 7,
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "D#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "B3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "B4"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone3": {
+        "note": "D#3"
+      }
+    },
+    {
+      "frames": 1,
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 5,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "G#5"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "C#3"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone2": {
+        "note": "G#4"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "G#3"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "D#5"
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "G#4"
+      },
+      "tone3": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "---"
+      }
+    }
+  ]
+}

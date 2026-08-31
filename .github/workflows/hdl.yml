@@ -44,8 +44,7 @@ on:
       - 'spinoffs/jukuravi/raster_retention.py'
       - 'spinoffs/jukuravi/remix/**'
       - 'spinoffs/jukuravi/nano/**'
-      - 'spinoffs/jukuravi/tools/**'
-      - 'spinoffs/jukuravi/render_jukupoly_wav.sh'
+      - 'spinoffs/jukupoly/**'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -102,8 +101,7 @@ on:
       - 'spinoffs/jukuravi/raster_retention.py'
       - 'spinoffs/jukuravi/remix/**'
       - 'spinoffs/jukuravi/nano/**'
-      - 'spinoffs/jukuravi/tools/**'
-      - 'spinoffs/jukuravi/render_jukupoly_wav.sh'
+      - 'spinoffs/jukupoly/**'
       - 'roms/**'
       - 'sync/**'
       - 'media/disks/**'
@@ -170,6 +168,7 @@ jobs:
       run_jukuravi_d0: ${{ steps.selector.outputs.run_jukuravi_d0 }}
       run_network_rom: ${{ steps.selector.outputs.run_network_rom }}
       run_jukuravi_regression: ${{ steps.selector.outputs.run_jukuravi_regression }}
+      run_jukupoly: ${{ steps.selector.outputs.run_jukupoly }}
       run_subsystems: ${{ steps.selector.outputs.run_subsystems }}
       run_minimal_vga: ${{ steps.selector.outputs.run_minimal_vga }}
       run_revb_ttl_boot: ${{ steps.selector.outputs.run_revb_ttl_boot }}
@@ -422,6 +421,23 @@ jobs:
       - name: Run ekta4401 remix guards
         run: ./sync/ekta4401_check.sh
 
+  jukupoly:
+    needs: changes
+    if: needs.changes.outputs.run_jukupoly == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fetch assembler and shared sources
+        run: git submodule update --init third_party/zmac third_party/juku-common
+
+      - name: Run JukuPoly engine, song, and WAV guards
+        run: |
+          ./sync/jukupoly_three_voice_check.sh
+          ./sync/jukupoly_check.sh
+          ./sync/jukupoly_library_check.sh
+          ./sync/jukupoly_wav_check.sh
+
   subsystems:
     needs: changes
     if: needs.changes.outputs.run_subsystems == 'true'
@@ -572,6 +588,7 @@ jobs:
       - jukuravi-d0
       - network-rom
       - jukuravi-regression
+      - jukupoly
       - subsystems
       - minimal-vga
       - revb-ttl-boot
@@ -603,6 +620,7 @@ jobs:
               "jukuravi-d0",
               "network-rom",
               "jukuravi-regression",
+              "jukupoly",
               "subsystems",
               "minimal-vga",
               "revb-ttl-boot",

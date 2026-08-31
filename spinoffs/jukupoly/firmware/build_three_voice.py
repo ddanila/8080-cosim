@@ -21,7 +21,7 @@ OUTPUT = HERE / "three-voice.com"
 
 
 def build() -> bytes:
-    with tempfile.TemporaryDirectory(prefix="jukuravi-three-voice.") as name:
+    with tempfile.TemporaryDirectory(prefix="jukupoly-three-voice.") as name:
         output = Path(name) / "three-voice.cim"
         subprocess.run(
             [
@@ -54,7 +54,7 @@ def main() -> int:
         OUTPUT.write_bytes(image)
         action = "wrote"
 
-    print(f"JUKURAVI-THREE-VOICE: {action} {OUTPUT.name} bytes={len(image)}")
+    print(f"JUKUPOLY-THREE-VOICE: {action} {OUTPUT.name} bytes={len(image)}")
     return 0
 
 

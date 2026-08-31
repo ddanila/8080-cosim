@@ -25,7 +25,7 @@ def rms(samples: array.array[int], rate: int, start: float, end: float) -> float
 
 def main() -> None:
     if len(sys.argv) != 2:
-        fail("usage: jukuravi_wav_test.py three-voice.wav")
+        fail("usage: jukupoly_wav_test.py three-voice.wav")
     path = Path(sys.argv[1])
     with wave.open(str(path), "rb") as source:
         if source.getnchannels() != 1 or source.getsampwidth() != 2:

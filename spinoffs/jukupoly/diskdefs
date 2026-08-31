@@ -1,0 +1,15 @@
+# Logical, side-major view of a Juku 5.25-inch DSDD CP/M data disk: 80
+# cylinders, two sides, ten 512-byte sectors per side.  Juku's BIOS reserves
+# two logical tracks and uses 197 4K blocks; the final half-block is the
+# historical unallocated "phantom boundary".  build_doom_library.py converts
+# this view to the cylinder-interleaved raw layout used by jukuhost and disks.
+diskdef juku-logical
+  seclen 512
+  tracks 160
+  sectrk 10
+  blocksize 4096
+  maxdir 128
+  skewtab 0,2,4,6,8,1,3,5,7,9
+  boottrk 2
+  os 2.2
+end

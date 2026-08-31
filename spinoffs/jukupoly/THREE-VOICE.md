@@ -78,22 +78,22 @@ counts by the approximately 1.70 MHz effective RAM execution rate measured on
 the Juku.  This is a software/cycle result, not an oscilloscope measurement.
 
 ```text
-JUKURAVI-THREE-VOICE: PASS sample=10968.2Hz A3=219.77Hz
+JUKUPOLY-THREE-VOICE: PASS sample=10968.2Hz A3=219.77Hz
 C#4=276.44Hz E4=328.71Hz entrances=2.001/4.013/9.075s outputs=5485
 ```
 
 Build or verify the committed 163-byte CP/M image with:
 
 ```sh
-python3 spinoffs/jukuravi/firmware/build_three_voice.py
-bash sync/jukuravi_three_voice_check.sh
+python3 spinoffs/jukupoly/firmware/build_three_voice.py
+bash sync/jukupoly_three_voice_check.sh
 ```
 
 The implementation is
 [`firmware/three-voice-0100.asm`](firmware/three-voice-0100.asm), the CP/M image
 is [`firmware/three-voice.com`](firmware/three-voice.com), and the cycle
 regression is
-[`../../tests/jukuravi_three_voice_test.c`](../../tests/jukuravi_three_voice_test.c).
+[`../../tests/jukupoly_three_voice_test.c`](../../tests/jukupoly_three_voice_test.c).
 
 ## Cycle-model WAV rendering
 
@@ -109,8 +109,8 @@ or overlapping intervals are merged.
 Produce a 96 kHz reference WAV with:
 
 ```sh
-spinoffs/jukuravi/render_jukupoly_wav.sh \
-  spinoffs/jukuravi/firmware/three-voice.com /tmp/three-voice.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh \
+  spinoffs/jukupoly/firmware/three-voice.com /tmp/three-voice.wav
 ```
 
 The default 20 Hz DC blocker converts the unipolar electrical impulses into a
@@ -124,7 +124,7 @@ CPU-to-PIT phase uncertainty from the effective-rate cycle model.
 The deterministic three-voice rendering guard is:
 
 ```sh
-sync/jukuravi_wav_check.sh
+sync/jukupoly_wav_check.sh
 ```
 
 ## Physical qualification
@@ -149,7 +149,7 @@ logs, and hashes are retained in
 
 ## Compiled-pattern continuation
 
-[`JUKUPOLY-TRACKER.md`](JUKUPOLY-TRACKER.md) develops the physical proof into
+[`README.md`](README.md) develops the physical proof into
 an editor-independent player: three tonal channels with per-note detune,
 legato, persistent attack/decay/hold envelopes, channel-1 slide, and one
 concurrent filtered-sample percussion channel.  Its first score is a credited

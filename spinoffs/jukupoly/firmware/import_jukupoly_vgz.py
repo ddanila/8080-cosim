@@ -264,10 +264,15 @@ def frequency_note(frequency: float) -> int:
     return round(69 + 12 * math.log2(frequency / 440.0))
 
 
-def folded_note(note: int) -> int:
-    while note < 40:
+def playable_note(note: int) -> int:
+    """Preserve the source octave unless the 15-bit phase step cannot encode it."""
+    def step(value: int) -> int:
+        frequency = 440.0 * 2.0 ** ((value - 69) / 12.0)
+        return round(frequency * 65536.0 / TARGET_RATE)
+
+    while step(note) <= 0:
         note += 12
-    while note > 83:
+    while step(note) >= 0x8000:
         note -= 12
     return note
 
@@ -336,9 +341,6 @@ def melodic_signatures(events: list[KeyEvent], counts: Counter[tuple[int, ...]]
         if (len({event.note for event in group}) >= 3 and
                 len({(event.bank, event.channel) for event in group}) >= 3):
             result.add(signature)
-    if not result:
-        # A useful failure is better than silently turning every note into a drum.
-        raise VgmError("could not identify any variable-pitch OPL instrument")
     return result
 
 
@@ -360,14 +362,17 @@ def editor_volume(registers: list[list[int]], bank: int, channel: int) -> int:
     return max(1, min(16, round(min(1.0, amplitude) * 15) + 1))
 
 
-def choose_candidates(candidates: dict[int, Candidate], previous: list[int | None]
-                      ) -> dict[int, Candidate]:
+def choose_candidates(candidates: dict[int, Candidate], previous: list[int | None],
+                      started: set[int]) -> dict[int, Candidate]:
     if len(candidates) <= 3:
         return candidates
     previous_notes = {note for note in previous if note is not None}
-    best: tuple[tuple[int, int, int], tuple[int, ...]] | None = None
+    best: tuple[tuple[int, int, int, int], tuple[int, ...]] | None = None
     for notes in itertools.combinations(sorted(candidates), 3):
         score = (
+            # A newly articulated note is musical information; retaining a
+            # sustaining voice in its place can erase an entire melody note.
+            sum(note in started for note in notes),
             sum(note in previous_notes for note in notes),
             sum(candidates[note].volume for note in notes),
             max(notes) - min(notes),
@@ -406,7 +411,8 @@ def percussion_for(note: int) -> tuple[int, int, int]:
 def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
                   compressed_sha: str, vgm_sha: str,
                   melodic_overrides: set[str],
-                  percussion_overrides: dict[str, int]) -> dict:
+                  percussion_overrides: dict[str, int],
+                  prioritize_articulations: bool = False) -> dict:
     if any(write.bank == 1 and write.register == 0x04 and write.value & 0x3F
            for write in writes):
         raise VgmError("four-operator OPL3 channels are not supported")
@@ -423,6 +429,14 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
                        ", ".join(unknown_melodic))
     melodic.update(known_signatures[identifier]
                    for identifier in melodic_overrides)
+    if not melodic:
+        # A useful failure is better than silently turning every note into a
+        # drum.  Test this after applying explicit overrides so a fixed-pitch
+        # fanfare or chord can still be imported deliberately.
+        raise VgmError(
+            "could not identify any variable-pitch OPL instrument; "
+            "use --melodic-signature for a known fixed-pitch voice"
+        )
     unknown_overrides = sorted(set(percussion_overrides) - set(known_signatures))
     if unknown_overrides:
         raise VgmError("unknown percussion signature(s): " +
@@ -466,7 +480,7 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
             note = frequency_note(channel_frequency(
                 registers, write.bank, channel, info,
             ))
-            folded = folded_note(note)
+            folded = playable_note(note)
             if signature in melodic:
                 started.add(folded)
             else:
@@ -491,7 +505,7 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
                 signature = instrument_signature(registers, bank, channel)
                 if signature not in melodic:
                     continue
-                note = folded_note(frequency_note(channel_frequency(
+                note = playable_note(frequency_note(channel_frequency(
                     registers, bank, channel, info,
                 )))
                 volume = editor_volume(registers, bank, channel)
@@ -501,7 +515,11 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
         source_polyphony = max(source_polyphony, active_count)
         if len(candidates) > 3:
             dropped_note_frames += 1
-        candidates = choose_candidates(candidates, previous_notes)
+        candidates = choose_candidates(
+            candidates,
+            previous_notes,
+            started if prioritize_articulations else set(),
+        )
         selected_polyphony = max(selected_polyphony, len(candidates))
         assigned = assign_channels(candidates, previous_notes)
 
@@ -601,6 +619,15 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
             "percussion_hits": {str(key): value for key, value in percussion_hits.items()},
             "melodic_signature_overrides": sorted(melodic_overrides),
             "percussion_signature_overrides": percussion_overrides,
+            "voice_selection_policy": (
+                "newly articulated notes before sustaining notes"
+                if prioritize_articulations else
+                "sustaining-note continuity before newly articulated notes"
+            ),
+            "pitch_policy": (
+                "preserve the source MIDI octave; transpose down only when "
+                "the 15-bit Juku phase step cannot encode the source note"
+            ),
         },
         "notes": (
             f"This is a register-level musical reduction, not {info.chip.split()[0]} emulation. "
@@ -623,6 +650,11 @@ def main() -> int:
         "--percussion-signature", action="append", default=[], metavar="ID=SAMPLE",
         help=("map an identified fixed-pitch OPL signature to JukuPoly "
               "percussion sample 1 (kick), 2 (snare), or 3 (hat)"),
+    )
+    parser.add_argument(
+        "--prioritize-articulations", action="store_true",
+        help=("when source polyphony exceeds three tones, retain newly "
+              "articulated notes before already-sustaining notes"),
     )
     args = parser.parse_args()
     melodic_overrides: set[str] = set()
@@ -655,6 +687,7 @@ def main() -> int:
         hashlib.sha256(data).hexdigest(),
         melodic_overrides,
         percussion_overrides,
+        args.prioritize_articulations,
     )
     args.output.write_text(json.dumps(score, indent=2) + "\n")
     conversion = score["conversion"]

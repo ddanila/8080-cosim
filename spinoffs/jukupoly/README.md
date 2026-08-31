@@ -1,11 +1,21 @@
 # JukuPoly compiled-pattern player
 
 This is the editor-independent music engine experiment that follows the
-physical three-tone proof in [`JUKUPOLY.md`](JUKUPOLY.md).  It plays compiled
+physical three-tone proof in [`THREE-VOICE.md`](THREE-VOICE.md).  It plays compiled
 tracker-style rows with three tonal channels and one genuinely concurrent
 percussion channel through the unmodified Juku speaker.
 
+The guarded design for preserving OPL envelopes, tremolo, vibrato, and related
+articulation during VGZ reduction is in
+[`OPL-REDUCTION-PLAN.md`](OPL-REDUCTION-PLAN.md).
+
 Status on 2026-08-30: cycle-model and CS00000 physical-listening qualified.
+
+JukuPoly is a standalone Juku CP/M music experiment within `spinoffs/`.  It
+was developed initially through the Jukuravi upload/host environment, but the
+player, score format, importers, generated music, renderer, regressions, and
+physical evidence live here.  Jukuravi is only a historical delivery tool for
+the earliest runs, not the project namespace or a runtime dependency.
 
 ## Relationship to QChan24
 
@@ -87,6 +97,40 @@ Envelope settings persist in the JSON compiler until changed.  Detune and
 legato affect only the note where they appear.  The engine is independent of
 the JSON representation: another editor or converter only needs to emit the
 documented row packets and sample descriptors.
+
+## Disk library player
+
+The same timing engine can also be built once as `JUKEBOX.COM` and reused for
+many songs.  In this mode a small CP/M shell lists a fixed catalog, accepts
+track numbers, loads the selected `.JPS` song at `1800h`, validates its header,
+and calls the ordinary player entry point.  Playback still uses the exact
+interrupt-disabled hot loop above; only the menu and disk loader are new.
+After the finite VGM pass ends, the engine silences D57 and returns to the
+menu.  A bare Return selects track 01, `L` advances through 11-track catalog
+pages, and `Q` returns to CP/M.  During playback, physical Escape is sampled
+once per approximately 20 ms frame and returns immediately to the menu.  This
+single-column matrix read costs 48 idle-path 8080 cycles at the existing frame
+boundary; it adds nothing to the audio-sample hot loop and deliberately avoids
+the much slower CP/M/N4 console-status path.  This path was physically
+qualified on CS00000 on 2026-08-31: Escape stopped “At Doom's Gate,” the menu
+reported `Track stopped.`, and the operator confirmed that Escape worked.
+
+`build_doom_library.py` converts all 23 DOOM and 21 DOOM II VGZ files from the
+two vgmrips archives into fixed-address ABI-v1 `.JPS` files.  The resulting
+800 KiB native Juku image contains 44 tracks totaling 2:13:28, `JUKEBOX.COM`,
+and an on-disk credits/catalog text.  Music is by Robert Prince; DOOM and DOOM
+II are id Software games; the OPL3 packs were prepared by NewRisingSun and
+distributed by vgmrips.net.  These are three-tone-plus-percussion reductions,
+not OPL3 emulation.
+
+Juku media store side 0 and side 1 of each cylinder next to one another, while
+CP/M and cpmtools view the sides as 160 side-major logical tracks.  The builder
+uses the period full-disk DPB (two reserved tracks, 197 4 KiB blocks, and the
+known final unallocated half-block), applies the ten-sector skew, then converts
+the completed logical image to Juku's cylinder-interleaved native order.  The
+result was booted through CPMish NetDisk mode 2 on 2026-08-31: `B:JUKEBOX`
+listed the catalog, loaded and played track 01 from B:, returned to the menu,
+and quit cleanly to CP/M.
 
 ## Period demo score and credits
 
@@ -188,6 +232,15 @@ stereo/unison pitches are collapsed, persistent notes retain their Juku channel
 where possible, and key-on retriggers retain the riff's gating.  The current
 boundary intentionally rejects OPL3 four-operator and hardware-rhythm modes
 rather than pretending to convert them.
+
+The reducer preserves each source note's octave whenever its phase increment
+fits the player's 15-bit tone word; only an unencodable note is moved down by
+whole octaves.  An earlier “audible range” rule folded every note below E2 and
+above B5 independently.  In “Suspense” this changed the source bass
+D2–E2–F2–G2 into D3–E2–F2–G2, an octave error and interval reversal.  The two
+complete DOOM packs span F0 through B7: every low note is directly encodable,
+and only A#7/B7 require a downward octave.  The corrected policy is locked by
+the importer regression.
 
 The converter originally treated the six-bit OPL total-level field as linear.
 The [Yamaha YM3812 Application Manual][ym3812-manual] specifies logarithmic
@@ -373,6 +426,9 @@ done.
 Source and generated files:
 
 - `firmware/jukupoly-player-0100.asm` — strict-8080 runtime;
+- `firmware/jukupoly-library-shell.inc` — reusable CP/M catalog and JPS loader;
+- `firmware/build_doom_library.py` — two-pack converter and native disk builder;
+- `diskdefs` — logical Juku full-disk geometry for cpmtools;
 - `tools/render_jukupoly_wav.c` — calibrated cycle-model Mode-0 WAV renderer;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
@@ -398,27 +454,43 @@ Source and generated files:
 - `firmware/import_jukupoly_ay_vgz.py` — AY/YM three-tone VGM/VGZ reducer;
 - `firmware/jukupoly-arkanoid-ending-vgz.json` — generated Arkanoid reduction;
 - `firmware/arkanoid.com` — complete 18.4-second Arkanoid CP/M image;
-- `tests/jukuravi_jukupoly_test.c` — manifest-driven cycle regression;
-- `tests/jukuravi_jukupoly_suspense_test.c` — bounded-window regression;
-- `tests/jukuravi_jukupoly_mod_test.c` — full-order/effect/PCM regression;
-- `tests/jukuravi_jukupoly_vgz_import_test.py` — OPL level/classification regression;
-- `tests/jukuravi_jukupoly_vgz_test.c` — complete VGM-reduction regression.
+- `tests/jukupoly_test.c` — manifest-driven cycle regression;
+- `tests/jukupoly_suspense_test.c` — bounded-window regression;
+- `tests/jukupoly_mod_test.c` — full-order/effect/PCM regression;
+- `tests/jukupoly_vgz_import_test.py` — OPL level/classification regression;
+- `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
+- `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
+- `tests/jukupoly_library_test.py` — native two-sided track-order regression.
 
 Build or verify everything with:
 
 ```sh
-python3 spinoffs/jukuravi/firmware/build_jukupoly.py
-bash sync/jukuravi_jukupoly_check.sh
+python3 spinoffs/jukupoly/firmware/build_jukupoly.py
+bash sync/jukupoly_check.sh
+bash sync/jukupoly_library_check.sh
 ```
+
+Build the complete DOOM library (requires `cpmtools`) with:
+
+```sh
+python3 spinoffs/jukupoly/firmware/build_doom_library.py \
+  --doom '/path/to/Doom_(PC).zip' \
+  --doom2 '/path/to/Doom_II_-_Hell_on_Earth_(IBM_PC_AT).zip' \
+  --output-dir out/jukupoly-doom-library
+```
+
+Mount `jukupoly-doom-library.cpm` as native drive B and run `B:JUKEBOX`.
+The output directory also retains the individual `.JPS` files, JSON catalog,
+CP/M directory listing, and `README.TXT` used to construct the image.
 
 If the uncommitted, hash-matching `M_E1M5.mid` is available, regenerate both
 Suspense score files with:
 
 ```sh
-python3 spinoffs/jukuravi/firmware/import_jukupoly_suspense.py \
-  /path/to/M_E1M5.mid spinoffs/jukuravi/firmware/jukupoly-suspense.json
-python3 spinoffs/jukuravi/firmware/import_jukupoly_suspense.py \
-  /path/to/M_E1M5.mid spinoffs/jukuravi/firmware/jukupoly-suspense-full.json \
+python3 spinoffs/jukupoly/firmware/import_jukupoly_suspense.py \
+  /path/to/M_E1M5.mid spinoffs/jukupoly/firmware/jukupoly-suspense.json
+python3 spinoffs/jukupoly/firmware/import_jukupoly_suspense.py \
+  /path/to/M_E1M5.mid spinoffs/jukupoly/firmware/jukupoly-suspense-full.json \
   --seconds 164
 ```
 
@@ -426,53 +498,53 @@ If the hash-matching TDK module is available, regenerate the one-minute and
 complete adaptations with:
 
 ```sh
-python3 spinoffs/jukuravi/firmware/import_jukupoly_mod.py \
+python3 spinoffs/jukupoly/firmware/import_jukupoly_mod.py \
   /path/to/tdk-the_robots.mod \
-  spinoffs/jukuravi/firmware/jukupoly-tdk-robots-60s.json --seconds 60
-python3 spinoffs/jukuravi/firmware/import_jukupoly_mod.py \
+  spinoffs/jukupoly/firmware/jukupoly-tdk-robots-60s.json --seconds 60
+python3 spinoffs/jukupoly/firmware/import_jukupoly_mod.py \
   /path/to/tdk-the_robots.mod \
-  spinoffs/jukuravi/firmware/jukupoly-tdk-robots.json
+  spinoffs/jukupoly/firmware/jukupoly-tdk-robots.json
 ```
 
 Convert a supported one-pass YM3812 or YMF262 VGM/VGZ and build its CP/M image
 with:
 
 ```sh
-python3 spinoffs/jukuravi/firmware/import_jukupoly_vgz.py \
-  /path/to/source.vgz spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz.json
-python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
-  --song spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz.json \
-  --generated spinoffs/jukuravi/firmware/jukupoly-doomgate-vgz-generated.inc \
-  --output spinoffs/jukuravi/firmware/doomgate.com
+python3 spinoffs/jukupoly/firmware/import_jukupoly_vgz.py \
+  /path/to/source.vgz spinoffs/jukupoly/firmware/jukupoly-doomgate-vgz.json
+python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
+  --song spinoffs/jukupoly/firmware/jukupoly-doomgate-vgz.json \
+  --generated spinoffs/jukupoly/firmware/jukupoly-doomgate-vgz-generated.inc \
+  --output spinoffs/jukupoly/firmware/doomgate.com
 ```
 
 For the exact Supaplex source above, preserve the independently audited narrow-
 pitch synth and drum identities with explicit signature mappings:
 
 ```sh
-python3 spinoffs/jukuravi/firmware/import_jukupoly_vgz.py \
+python3 spinoffs/jukupoly/firmware/import_jukupoly_vgz.py \
   '/path/to/01 Main Theme.vgz' \
-  spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz.json \
+  spinoffs/jukupoly/firmware/jukupoly-supaplex-main-vgz.json \
   --melodic-signature b43be9c081e8 \
   --percussion-signature d2e3fbb1ef11=1 \
   --percussion-signature 0abd18bd72b2=2 \
   --percussion-signature 6236af03ec23=3
-python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
-  --song spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz.json \
-  --generated spinoffs/jukuravi/firmware/jukupoly-supaplex-main-vgz-generated.inc \
-  --output spinoffs/jukuravi/firmware/supaplex.com
+python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
+  --song spinoffs/jukupoly/firmware/jukupoly-supaplex-main-vgz.json \
+  --generated spinoffs/jukupoly/firmware/jukupoly-supaplex-main-vgz-generated.inc \
+  --output spinoffs/jukupoly/firmware/supaplex.com
 ```
 
 Convert a supported AY/YM VGM/VGZ with:
 
 ```sh
-python3 spinoffs/jukuravi/firmware/import_jukupoly_ay_vgz.py \
+python3 spinoffs/jukupoly/firmware/import_jukupoly_ay_vgz.py \
   /path/to/source.vgz \
-  spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz.json
-python3 spinoffs/jukuravi/firmware/build_jukupoly.py \
-  --song spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz.json \
-  --generated spinoffs/jukuravi/firmware/jukupoly-arkanoid-ending-vgz-generated.inc \
-  --output spinoffs/jukuravi/firmware/arkanoid.com
+  spinoffs/jukupoly/firmware/jukupoly-arkanoid-ending-vgz.json
+python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
+  --song spinoffs/jukupoly/firmware/jukupoly-arkanoid-ending-vgz.json \
+  --generated spinoffs/jukupoly/firmware/jukupoly-arkanoid-ending-vgz-generated.inc \
+  --output spinoffs/jukupoly/firmware/arkanoid.com
 ```
 
 The qualified result is:
@@ -531,25 +603,25 @@ Render the exact one-minute or full-song transient through the calibrated C
 cycle model with:
 
 ```sh
-spinoffs/jukuravi/render_jukupoly_wav.sh \
-  spinoffs/jukuravi/firmware/suspense.com /tmp/suspense.wav
-spinoffs/jukuravi/render_jukupoly_wav.sh \
-  spinoffs/jukuravi/firmware/suspfull.com /tmp/suspfull.wav
-spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 600 \
-  spinoffs/jukuravi/firmware/tdkrobot.com /tmp/tdk-robots.wav
-spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 110 \
-  spinoffs/jukuravi/firmware/doomgate.com /tmp/doomgate.wav
-spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 175 \
-  spinoffs/jukuravi/firmware/demons.com /tmp/demons.wav
-spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 320 \
-  spinoffs/jukuravi/firmware/supaplex.com /tmp/supaplex.wav
-spinoffs/jukuravi/render_jukupoly_wav.sh --max-seconds 25 \
-  spinoffs/jukuravi/firmware/arkanoid.com /tmp/arkanoid.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh \
+  spinoffs/jukupoly/firmware/suspense.com /tmp/suspense.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh \
+  spinoffs/jukupoly/firmware/suspfull.com /tmp/suspfull.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh --max-seconds 600 \
+  spinoffs/jukupoly/firmware/tdkrobot.com /tmp/tdk-robots.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh --max-seconds 110 \
+  spinoffs/jukupoly/firmware/doomgate.com /tmp/doomgate.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh --max-seconds 175 \
+  spinoffs/jukupoly/firmware/demons.com /tmp/demons.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh --max-seconds 320 \
+  spinoffs/jukupoly/firmware/supaplex.com /tmp/supaplex.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh --max-seconds 25 \
+  spinoffs/jukupoly/firmware/arkanoid.com /tmp/arkanoid.wav
 ```
 
 The WAV is a timing-calibrated digital/acoustic reference, not a fitted model
 of the CS00000 transistor driver, speaker, or enclosure.  See
-[`JUKUPOLY.md`](JUKUPOLY.md#cycle-model-wav-rendering) for its exact timing and
+[`THREE-VOICE.md`](THREE-VOICE.md#cycle-model-wav-rendering) for its exact timing and
 filter boundary.
 
 ## Physical qualification
