@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import opl_trace
+import opl_voices
 
 
 VGM_RATE = 44_100
@@ -663,6 +664,11 @@ def main() -> int:
         help=("also write a lossless timed OPL register/semantic trace for "
               "host-side analysis; this does not change the Juku score"),
     )
+    parser.add_argument(
+        "--opl-voice-output", type=Path,
+        help=("also write host-only keyed-segment and logical-voice evidence; "
+              "this does not change the Juku score"),
+    )
     args = parser.parse_args()
     melodic_overrides: set[str] = set()
     for identifier in args.melodic_signature:
@@ -698,6 +704,20 @@ def main() -> int:
             "source_vgm_sha256": hashlib.sha256(data).hexdigest(),
         })
         args.opl_trace_output.write_text(json.dumps(trace, indent=2) + "\n")
+    if args.opl_voice_output is not None:
+        voice_evidence = opl_voices.voice_document(
+            writes, info.banks, info.total_samples, info.clock,
+            info.frequency_divider,
+        )
+        voice_evidence.update({
+            "chip": info.chip,
+            "chip_clock_hz": info.clock,
+            "source_name": args.source.name,
+            "source_vgm_sha256": hashlib.sha256(data).hexdigest(),
+        })
+        args.opl_voice_output.write_text(
+            json.dumps(voice_evidence, indent=2) + "\n",
+        )
     score = compile_score(
         info, writes, args.source, compressed_sha,
         hashlib.sha256(data).hexdigest(),

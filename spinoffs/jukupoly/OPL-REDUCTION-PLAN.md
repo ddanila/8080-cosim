@@ -416,6 +416,25 @@ Exit gate: no song-specific rule; no pack-wide regression in important note
 onsets; The Imp's Song layers are explained as logical voices rather than
 forced by signature.
 
+Progress on 2026-09-01: the first analysis-only slice is complete, but M2's
+exit gate is **not** yet complete.  `opl_voices.py` reconstructs every keyed
+segment and live pitch point, assigns a complete semantic patch identity, and
+reports high-confidence same-pitch layer candidates plus same-patch
+cross-channel continuation candidates with explicit reasons.  The importer
+exposes this as `--opl-voice-output` without changing score allocation.
+Synthetic guards cover layers, live pitch, channel migration, chord rejection,
+and valid JSON.
+
+The analyzer completed both local Doom pack archives (SHA-256
+`04ffbf72e47727b3e93c1e99a68311a460b85fc31fd9a1645e3d872231c0e12a` and
+`3d255c644e52adc2967df8394086d99d7995da71c4adf83bec0fe3bccc51c365`):
+44 tracks, 159,398 keyed segments, 37,797 layer candidates, and 21,989
+continuation candidates in 10.75 seconds.  The large continuation count is
+evidence that local same-patch adjacency alone is ambiguous, especially for
+chords.  These edges therefore remain evidence rather than assignments until
+a global, deterministic allocator and onset-regression check exist.  No
+target code, score, sample rate, or sound changes in this slice.
+
 ### M3: JPS v2 envelope-only vertical slice
 
 Add backward-compatible `JPS\2`, key-off release, and compact fitted envelopes.

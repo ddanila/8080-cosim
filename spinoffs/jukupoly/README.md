@@ -255,6 +255,15 @@ direction, an audible release tail, LFO progression, modulation changing the
 PCM, and isolated two-operator rendering.  The oracle is compiled and run only
 on the host; neither it nor its state structures enter `JUKEBOX.COM`.
 
+`--opl-voice-output VOICES.json` adds a second analysis-only view.  It
+reconstructs exact key spans and every held-note pitch write, then reports
+same-pitch layer and same-patch cross-channel continuation candidates together
+with the register-semantic evidence for each relation.  Candidate edges are
+not yet logical-voice assignments: a complete two-pack run found enough
+ambiguous continuation edges that adopting them locally would be unsafe for
+chords.  This progressive M2 slice therefore changes neither generated scores
+nor the target player.
+
 [nuked-opl3]: https://github.com/nukeykt/Nuked-OPL3
 
 The reducer preserves each source note's octave whenever its phase increment
@@ -502,6 +511,7 @@ Source and generated files:
 - `firmware/import_jukupoly_vgz.py` — general two-operator OPL2/OPL3 VGM/VGZ reducer;
 - `firmware/opl_trace.py` — lossless timed OPL register/semantic host model;
 - `firmware/opl_oracle.py` — per-channel oracle stream and probe helpers;
+- `firmware/opl_voices.py` — keyed-segment and logical-voice evidence model;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
 - `firmware/jukupoly-demons-vgz.json` — generated one-pass E2M2 reduction;
@@ -517,6 +527,7 @@ Source and generated files:
 - `tests/jukupoly_vgz_import_test.py` — OPL level/classification regression;
 - `tests/jukupoly_opl_trace_test.py` — synthetic envelope/LFO/rhythm/four-op trace fixture;
 - `tests/jukupoly_opl_oracle_test.py` — pinned oracle agreement and isolation regression;
+- `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
 - `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
 - `tests/jukupoly_library_test.py` — native two-sided track-order regression;
