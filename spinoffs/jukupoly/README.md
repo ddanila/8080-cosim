@@ -421,6 +421,34 @@ done.
 [tdk-mod]: https://modarchive.org/index.php?request=view_by_moduleid&query=59396
 [robots-credit]: https://www.easysong.com/search/songs/song-copyright-holder-information.aspx?s=2287555
 
+## OPL feasibility baseline
+
+The guarded [`OPL reduction plan`](OPL-REDUCTION-PLAN.md) starts from a
+machine-generated [`ABI-v1 baseline`](OPL-BASELINE.json), reproduced by
+`tools/report_jukupoly_baseline.py`.  It assembles the reusable library player,
+builds fixed-address JPS images for four committed full-song fixtures, executes
+them directly in the 1.70 MHz cycle model, and records sample-loop, whole-frame,
+idle-boundary, and row-boundary cycle distributions.  It also locks the exact
+sample-loop bytes, player/song/stack margins, observed mutable bytes, and two
+deterministic 48 kHz reference-WAV hashes.
+
+The 2026-09-01 baseline measures 7.070–7.132 kHz across the four songs at 143
+samples per frame.  The 10% OPL budget is applied separately to each song's v1
+rate; the conservative floor across these fixtures is 6.363 kHz.  The 64-byte
+sample loop hashes to
+`ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f`.
+The 3,312-byte library player ends at `0DF0h`, leaving 2,576 bytes before the
+song at `1800h`; the hard 32,767-byte song limit leaves 1,022 bytes before the
+test stack at `9BFEh`.  The largest reproducible committed-source fixture is
+20,556 bytes.  The separately generated 44-track DOOM/DOOM II disk's largest
+song is the 30,071-byte “The Dave D. Taylor Blues,” still below both the 30 KiB
+soft ceiling and 32,767-byte hard limit.
+
+The baseline guard does not demand that future enhanced songs match v1 sound.
+It requires unchanged JPS v1 playback and gives every enhanced fixture its own
+explicit rate floor.  A deliberate JPS v2 sound change must add separate
+old/new evidence rather than overwrite these reference hashes.
+
 ## Reproduce
 
 Source and generated files:
@@ -430,6 +458,8 @@ Source and generated files:
 - `firmware/build_doom_library.py` — two-pack converter and native disk builder;
 - `diskdefs` — logical Juku full-disk geometry for cpmtools;
 - `tools/render_jukupoly_wav.c` — calibrated cycle-model Mode-0 WAV renderer;
+- `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
+- `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
 - `firmware/jukupoly-song-generated.inc` — generated row/PCM bank;
@@ -460,7 +490,8 @@ Source and generated files:
 - `tests/jukupoly_vgz_import_test.py` — OPL level/classification regression;
 - `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
 - `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
-- `tests/jukupoly_library_test.py` — native two-sided track-order regression.
+- `tests/jukupoly_library_test.py` — native two-sided track-order regression;
+- `tests/jukupoly_baseline_test.c` — full-song frame and hot-loop cycle profiler.
 
 Build or verify everything with:
 
@@ -468,6 +499,7 @@ Build or verify everything with:
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py
 bash sync/jukupoly_check.sh
 bash sync/jukupoly_library_check.sh
+bash sync/jukupoly_baseline_check.sh
 ```
 
 Build the complete DOOM library (requires `cpmtools`) with:

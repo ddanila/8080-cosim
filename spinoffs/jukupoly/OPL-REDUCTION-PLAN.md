@@ -376,6 +376,15 @@ one command.
 
 Exit gate: repeatable baseline on CI and current representative songs.
 
+Status on 2026-09-01: **complete**.  The generated
+[`OPL-BASELINE.json`](OPL-BASELINE.json) and
+`sync/jukupoly_baseline_check.sh` cover four complete committed-source songs.
+The library player measures 7.070–7.132 kHz, so each future enhanced fixture
+must remain at or above 90% of its own recorded v1 rate.  The report also locks
+the 64-byte hot-loop hash, observed sample/frame/boundary cycle distributions,
+player and stack margins, JPS sizes, mutable player bytes, and deterministic
+reference-WAV hashes.
+
 ### M1: register trace and oracle
 
 Implement complete timed OPL state and synthetic fixtures; pin Nuked OPL3 and

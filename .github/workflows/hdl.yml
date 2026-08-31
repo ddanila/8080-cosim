@@ -431,11 +431,12 @@ jobs:
       - name: Fetch assembler and shared sources
         run: git submodule update --init third_party/zmac third_party/juku-common
 
-      - name: Run JukuPoly engine, song, and WAV guards
+      - name: Run JukuPoly engine, budget, song, and WAV guards
         run: |
           ./sync/jukupoly_three_voice_check.sh
           ./sync/jukupoly_check.sh
           ./sync/jukupoly_library_check.sh
+          ./sync/jukupoly_baseline_check.sh
           ./sync/jukupoly_wav_check.sh
 
   subsystems:

@@ -58,6 +58,7 @@
         "sync/jukupoly_three_voice_check.sh",
         "sync/jukupoly_check.sh",
         "sync/jukupoly_library_check.sh",
+        "sync/jukupoly_baseline_check.sh",
         "sync/jukupoly_wav_check.sh"
       ]
     },
