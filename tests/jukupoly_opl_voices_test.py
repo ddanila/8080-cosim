@@ -57,7 +57,7 @@ def check_segments_and_relations() -> None:
     document = opl_voices.voice_document(
         writes(), 1, 2646, 14_318_180, 288,
     )
-    assert document["schema"] == "jukupoly-opl-voice-evidence-v2"
+    assert document["schema"] == "jukupoly-opl-voice-evidence-v3"
     assert "do not alter score" in document["status"]
     segments = document["segments"]
     assert len(segments) == 3
@@ -104,6 +104,53 @@ def check_non_layered_chord() -> None:
     # A keyed zero-frequency channel is unusual but must still produce strict
     # JSON rather than Python's non-standard Infinity token.
     assert opl_voices.midi_pitch(0, 0, 14_318_180, 288) is None
+
+
+def check_guarded_sustained_layer_eligibility() -> None:
+    duration = (opl_voices.SUSTAINED_LAYER_MIN_FRAMES *
+                opl_voices.ANALYSIS_FRAME)
+
+    def segment(identifier: int, channel: int, end: int,
+                sustained: bool = True) -> opl_voices.NoteSegment:
+        return opl_voices.NoteSegment(
+            identifier, 0, channel, 0, end, f"patch{channel}", 64, 5,
+            sustained, (opl_voices.PitchPoint(0, 0x200, 4, 42.0),),
+        )
+
+    # The long two-channel pitched layer is admitted without a v1 signature.
+    long_segments = [segment(0, 0, duration), segment(1, 1, duration)]
+    long_notes = opl_voices.group_layers(
+        long_segments, opl_voices.candidate_relations(long_segments),
+    )
+    evidence = opl_voices.melodic_logical_note_evidence(
+        long_segments, long_notes, set(),
+    )
+    assert set(evidence) == {0}
+    assert "OPL sustained-envelope evidence" in evidence[0]
+
+    # One frame below the floor, one channel only, or no EGT sustain remains
+    # excluded.  These are the guards against layered drums and sound effects.
+    short_end = duration - opl_voices.ANALYSIS_FRAME
+    short_segments = [segment(0, 0, short_end), segment(1, 1, short_end)]
+    short_notes = opl_voices.group_layers(
+        short_segments, opl_voices.candidate_relations(short_segments),
+    )
+    assert not opl_voices.melodic_logical_note_evidence(
+        short_segments, short_notes, set(),
+    )
+    single = [segment(0, 0, duration)]
+    single_notes = opl_voices.group_layers(single, [])
+    assert not opl_voices.melodic_logical_note_evidence(
+        single, single_notes, set(),
+    )
+    decaying = [segment(0, 0, duration, False),
+                segment(1, 1, duration, False)]
+    decaying_notes = opl_voices.group_layers(
+        decaying, opl_voices.candidate_relations(decaying),
+    )
+    assert not opl_voices.melodic_logical_note_evidence(
+        decaying, decaying_notes, set(),
+    )
 
 
 def check_analysis_does_not_change_score() -> None:
@@ -271,13 +318,15 @@ def check_monotonic_three_voice_allocation() -> None:
 def main() -> int:
     check_segments_and_relations()
     check_non_layered_chord()
+    check_guarded_sustained_layer_eligibility()
     check_analysis_does_not_change_score()
     check_global_boundary_matching()
     check_pack_report_track()
     check_importer_voice_output_is_non_mutating()
     check_monotonic_three_voice_allocation()
     print("JUKUPOLY-OPL-VOICES: PASS keyed-segments live-pitch layers "
-          "global-continuation chord-rejection monotonic-three-voice "
+          "global-continuation chord-rejection guarded-layer-eligibility "
+          "monotonic-three-voice "
           "inspectable-evidence")
     return 0
 

@@ -282,6 +282,26 @@ retains all 53,286 v1 source onsets and adds 15,776, with no score or player
 change.  `--opl-voice-output` contains the full inspectable decisions;
 `report_opl_voices.py` fails if a protected onset regresses.
 
+The v3 evidence policy closes a blind spot found while preparing the M3 Imp
+fixture.  Four detuned, sustained OPL channels begin at sample zero in “The
+Imp's Song,” but the v1 distinct-pitch signature classifier cannot label an
+evolving patch used for only one keyed pitch.  A logical note may now also be
+tone-eligible when at least two channels have passed the existing strict
+pitch-layer tests, remain keyed for at least 50 analysis frames (one second),
+have a finite pitch, and carry OPL sustained-envelope evidence.  Each reason
+is written to `melodic_eligibility`; short layered percussion, long
+single-channel effects, and non-sustained layers are guarded by regressions
+and remain excluded.  This is a generic register-semantic rule, not an Imp
+track, filename, or patch exception.
+
+The complete two-pack v3 report covers the same 44 tracks and preserves all
+53,286 v1-retained onsets.  It recognizes 156 additional sustained layered
+logical notes, increases eligible source onsets from 75,703 to 75,846, and
+retains 69,140 provisional onsets (15,854 gains and zero regressions).  The
+Imp allocation now starts at frame zero on MIDI F#2, retains all 506 protected
+onsets, and gains 14 instead of six.  The deterministic v3 report fingerprint
+is `26f0e6d09848cbee34755b247057092dd9defea435781a9e5cedbd5acb939b55`.
+
 [nuked-opl3]: https://github.com/nukeykt/Nuked-OPL3
 
 The reducer preserves each source note's octave whenever its phase increment

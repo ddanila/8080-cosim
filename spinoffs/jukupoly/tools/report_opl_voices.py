@@ -65,9 +65,14 @@ def analyze_track(name: str, payload: bytes,
     relations = opl_voices.candidate_relations(segments)
     logical_notes = opl_voices.group_layers(segments, relations)
     logical_voices, assignments = opl_voices.assign_logical_voices(logical_notes)
-    melodic_notes = opl_voices.melodic_logical_notes(
+    melodic_evidence = opl_voices.melodic_logical_note_evidence(
         segments, logical_notes, melodic_keys,
     )
+    melodic_notes = set(melodic_evidence)
+    extended_notes = {
+        identifier for identifier, evidence in melodic_evidence.items()
+        if "member classified melodic by v1 importer" not in evidence
+    }
     score = vgz.compile_score(
         info, writes, Path(name), hashlib.sha256(payload).hexdigest(),
         hashlib.sha256(data).hexdigest(), overrides, {},
@@ -92,6 +97,7 @@ def analyze_track(name: str, payload: bytes,
             asdict(assignment) for assignment in assignments
         ],
         "three_voice_allocation": allocation,
+        "melodic_eligibility": sorted(melodic_evidence.items()),
     }
     return {
         "name": name,
@@ -111,6 +117,7 @@ def analyze_track(name: str, payload: bytes,
             assignment.channel_changes for assignment in assignments
         ),
         "source_melodic_onsets": allocation["source_onsets"],
+        "extended_sustained_layer_notes": len(extended_notes),
         "v1_retained_source_onsets": allocation["protected_onsets"],
         "provisional_retained_source_onsets": allocation["retained_onsets"],
         "provisional_gained_source_onsets": allocation["gained_onsets"],
@@ -161,6 +168,7 @@ def report(paths: list[Path]) -> dict:
         "segments", "layer_candidates", "logical_notes", "logical_voices",
         "continuation_assignments", "semantic_changes", "channel_changes",
         "source_melodic_onsets", "v1_retained_source_onsets",
+        "extended_sustained_layer_notes",
         "provisional_retained_source_onsets",
         "provisional_gained_source_onsets",
         "provisional_regressed_v1_onsets",
@@ -170,9 +178,9 @@ def report(paths: list[Path]) -> dict:
         field: sum(track[field] for track in tracks) for field in count_fields
     })
     result = {
-        "schema": "jukupoly-opl-voice-pack-report-v2",
+        "schema": "jukupoly-opl-voice-pack-report-v3",
         "analysis": {
-            "voice_schema": "jukupoly-opl-voice-evidence-v2",
+            "voice_schema": "jukupoly-opl-voice-evidence-v3",
             "policy": (
                 "analysis-only layer collapse and deterministic global "
                 "one-to-one continuation assignment plus monotonic "

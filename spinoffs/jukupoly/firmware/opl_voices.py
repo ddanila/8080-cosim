@@ -21,6 +21,7 @@ VGM_RATE = 44_100
 ANALYSIS_FRAME = VGM_RATE // 50
 DETUNE_LIMIT_CENTS = 50.0
 CONTOUR_LIMIT_CENTS = 25.0
+SUSTAINED_LAYER_MIN_FRAMES = 50
 
 
 @dataclass(frozen=True)
@@ -731,19 +732,58 @@ def allocate_three_voices(
     }
 
 
-def melodic_logical_notes(
+def melodic_logical_note_evidence(
         segments: list[NoteSegment], notes: list[LogicalNote],
         melodic_keys: set[tuple[int, int, int]],
-) -> set[int]:
-    """Map importer-classified (start, bank, channel) keys through layers."""
+) -> dict[int, tuple[str, ...]]:
+    """Return generic, inspectable evidence that a logical note is melodic.
+
+    The v1 importer remains the primary classifier.  Its distinct-pitch
+    heuristic cannot recognize a long evolving drone whose patch is used for
+    only one keyed pitch, though.  Admit that case only when independently
+    keyed channels already passed the strict layer test, remain keyed for at
+    least one second, have a finite pitch, and explicitly use OPL sustain.
+    This deliberately excludes short layered percussion and single-channel
+    sound effects.
+    """
     melodic_segments = {
         segment.identifier for segment in segments
         if (segment.start, segment.bank, segment.channel) in melodic_keys
     }
-    return {
-        note.identifier for note in notes
-        if any(member in melodic_segments for member in note.members)
-    }
+    result: dict[int, tuple[str, ...]] = {}
+    for note in notes:
+        evidence: list[str] = []
+        if any(member in melodic_segments for member in note.members):
+            evidence.append("member classified melodic by v1 importer")
+        finite_pitch = (
+            note.initial_pitch is not None and
+            math.isfinite(note.initial_pitch)
+        )
+        if (
+            len(note.members) >= 2 and
+            note.end - note.start >=
+                SUSTAINED_LAYER_MIN_FRAMES * ANALYSIS_FRAME and
+            finite_pitch and
+            note.sustained_envelope
+        ):
+            evidence.extend((
+                "two or more channels passed strict pitch-layer tests",
+                f"keyed span is at least {SUSTAINED_LAYER_MIN_FRAMES} "
+                "analysis frames",
+                "finite keyed pitch",
+                "OPL sustained-envelope evidence",
+            ))
+        if evidence:
+            result[note.identifier] = tuple(evidence)
+    return result
+
+
+def melodic_logical_notes(
+        segments: list[NoteSegment], notes: list[LogicalNote],
+        melodic_keys: set[tuple[int, int, int]],
+) -> set[int]:
+    """Compatibility wrapper returning eligible logical-note identifiers."""
+    return set(melodic_logical_note_evidence(segments, notes, melodic_keys))
 
 
 def voice_document(writes: Iterable[opl_trace.TimedWrite], banks: int,
@@ -763,7 +803,7 @@ def voice_document(writes: Iterable[opl_trace.TimedWrite], banks: int,
         for kind in ("layer_candidate", "continuation_candidate")
     }
     document = {
-        "schema": "jukupoly-opl-voice-evidence-v2",
+        "schema": "jukupoly-opl-voice-evidence-v3",
         "status": "analysis-only; candidates do not alter score allocation",
         "analysis_frame_samples": ANALYSIS_FRAME,
         "detune_limit_cents": DETUNE_LIMIT_CENTS,
@@ -778,9 +818,14 @@ def voice_document(writes: Iterable[opl_trace.TimedWrite], banks: int,
         ],
     }
     if melodic_keys is not None:
-        melodic_notes = melodic_logical_notes(
+        melodic_evidence = melodic_logical_note_evidence(
             segments, logical_notes, melodic_keys,
         )
+        melodic_notes = set(melodic_evidence)
+        document["melodic_eligibility"] = [
+            {"logical_note": identifier, "evidence": evidence}
+            for identifier, evidence in sorted(melodic_evidence.items())
+        ]
         document["three_voice_allocation"] = allocate_three_voices(
             logical_notes, logical_voices, melodic_notes,
             protected_onsets, pitch_mapper,

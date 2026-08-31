@@ -479,6 +479,29 @@ option.  No filename, track, or instrument special case was added to the new
 analysis.  M2 changes no target code, JPS data, sample rate, or audio; M3 is
 the first gated target-side vertical slice.
 
+M3 fixture preparation exposed one generic M2 eligibility gap.  The Imp intro
+really begins at sample zero as four detuned, pitch-aligned, sustained OPL
+channels; it was absent only because an evolving patch used at one keyed pitch
+cannot pass v1's distinct-pitch signature heuristic.  Voice-evidence schema
+v3 therefore admits an otherwise unclassified logical note only when all four
+guards hold: at least two channels already passed the strict layer relation,
+the keyed span lasts at least 50 analysis frames (one second), its pitch is
+finite, and OPL `EGT` supplies sustained-envelope evidence.  Eligibility JSON
+records every reason.  Synthetic negative guards exclude a 49-frame layer, a
+single long channel, and a long non-sustained layer; this is not a filename,
+track-number, or patch-signature override.
+
+The v3 two-pack rerun recognizes 156 such logical notes among 44 tracks.  It
+raises eligible source onsets from 75,703 to 75,846 and provisional retained
+onsets from 69,062 to 69,140 while preserving all 53,286 v1 onsets, with zero
+regressions.  The Imp allocation now begins at frame zero on MIDI F#2 and
+preserves all 506 protected Imp onsets.  Its gain rises from six to 14; Dark
+Halls and Suspense retain their preceding onset counts.  The complete report
+fingerprint is
+`26f0e6d09848cbee34755b247057092dd9defea435781a9e5cedbd5acb939b55`.
+This remains host-only evidence: it does not relax G1--G8 or claim that the
+target envelope fit has succeeded.
+
 ### M3: JPS v2 envelope-only vertical slice
 
 Add backward-compatible `JPS\2`, key-off release, and compact fitted envelopes.
