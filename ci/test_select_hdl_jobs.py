@@ -119,6 +119,12 @@ class SelectorTest(unittest.TestCase):
             {"jukupoly"},
         )
 
+    def test_jukupoly_external_change_selects_only_jukupoly(self) -> None:
+        self.assertEqual(
+            self.selected("spinoffs/jukupoly/external/Nuked-OPL3"),
+            {"jukupoly"},
+        )
+
     def test_jukuravi_shared_change_selects_all_jukuravi_lanes(self) -> None:
         self.assertEqual(
             self.selected("spinoffs/jukuravi/protocol.py"),

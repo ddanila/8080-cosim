@@ -347,8 +347,10 @@ jobs:
       # The D0 aggregate also rebuilds the shared mnemonic smoke fixture.
       # Fetch the same assembler and platform sources as the later Jukuravi
       # regression job before starting its parallel fan-out.
-      - name: Fetch assembler and shared sources
-        run: git submodule update --init third_party/zmac third_party/juku-common
+      - name: Fetch assembler, OPL oracle, and shared sources
+        run: |
+          git submodule update --init third_party/zmac third_party/juku-common
+          git submodule update --init spinoffs/jukupoly/external/Nuked-OPL3
 
       # Fans its 31 vvp runs out across the runner's cores; see the script header.
       - name: Run Jukuravi D0 diagnostic guards

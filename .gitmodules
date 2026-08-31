@@ -14,3 +14,6 @@
 [submodule "third_party/zmac"]
 	path = third_party/zmac
 	url = https://github.com/gp48k/zmac.git
+[submodule "spinoffs/jukupoly/external/Nuked-OPL3"]
+	path = spinoffs/jukupoly/external/Nuked-OPL3
+	url = https://github.com/nukeykt/Nuked-OPL3.git

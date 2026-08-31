@@ -235,6 +235,7 @@
       "name": "jukupoly",
       "prefixes": [
         "spinoffs/jukupoly/firmware/",
+        "spinoffs/jukupoly/external/",
         "spinoffs/jukupoly/tools/",
         "sync/jukupoly_",
         "tests/jukupoly_"

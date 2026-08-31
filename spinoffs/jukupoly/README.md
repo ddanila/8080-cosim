@@ -243,6 +243,20 @@ OPL3-new-mode, and four-operator state.  Writes at the same VGM timestamp keep
 their source order.  This trace is analysis evidence, not an OPL synthesizer
 and not target-side code.
 
+The behavioral oracle is unmodified [Nuked OPL3][nuked-opl3], pinned as the
+`external/Nuked-OPL3` submodule at commit
+`765ec962e473aeb767e4cba74ffdc8f588ffbfe8` and used under its
+LGPL-2.1-or-later license.  `tools/jukupoly_opl_oracle.c` accepts the compact
+timed stream emitted by `opl_oracle.py`, renders signed 16-bit stereo PCM at
+the VGM 44.1 kHz clock, and records 50 Hz probes of channel pitch/key,
+operator attenuation/stage, and the shared LFO phases.  The synthetic
+agreement guard checks key and live-pitch timing, envelope attack/release
+direction, an audible release tail, LFO progression, modulation changing the
+PCM, and isolated two-operator rendering.  The oracle is compiled and run only
+on the host; neither it nor its state structures enter `JUKEBOX.COM`.
+
+[nuked-opl3]: https://github.com/nukeykt/Nuked-OPL3
+
 The reducer preserves each source note's octave whenever its phase increment
 fits the player's 15-bit tone word; only an unencodable note is moved down by
 whole octaves.  An earlier “audible range” rule folded every note below E2 and
@@ -468,6 +482,7 @@ Source and generated files:
 - `firmware/build_doom_library.py` — two-pack converter and native disk builder;
 - `diskdefs` — logical Juku full-disk geometry for cpmtools;
 - `tools/render_jukupoly_wav.c` — calibrated cycle-model Mode-0 WAV renderer;
+- `tools/jukupoly_opl_oracle.c` — pinned Nuked OPL3 timed-stream bridge;
 - `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
@@ -486,6 +501,7 @@ Source and generated files:
 - `firmware/tdkrobot.com` — complete MOD adaptation;
 - `firmware/import_jukupoly_vgz.py` — general two-operator OPL2/OPL3 VGM/VGZ reducer;
 - `firmware/opl_trace.py` — lossless timed OPL register/semantic host model;
+- `firmware/opl_oracle.py` — per-channel oracle stream and probe helpers;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
 - `firmware/jukupoly-demons-vgz.json` — generated one-pass E2M2 reduction;
@@ -500,6 +516,7 @@ Source and generated files:
 - `tests/jukupoly_mod_test.c` — full-order/effect/PCM regression;
 - `tests/jukupoly_vgz_import_test.py` — OPL level/classification regression;
 - `tests/jukupoly_opl_trace_test.py` — synthetic envelope/LFO/rhythm/four-op trace fixture;
+- `tests/jukupoly_opl_oracle_test.py` — pinned oracle agreement and isolation regression;
 - `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
 - `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
 - `tests/jukupoly_library_test.py` — native two-sided track-order regression;

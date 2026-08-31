@@ -8,6 +8,17 @@ trap 'rm -rf "$TMP"' EXIT
 cd "$ROOT"
 python3 tests/jukupoly_vgz_import_test.py
 python3 tests/jukupoly_opl_trace_test.py
+OPL_DIR="spinoffs/jukupoly/external/Nuked-OPL3"
+OPL_COMMIT="765ec962e473aeb767e4cba74ffdc8f588ffbfe8"
+if [[ ! -f "$OPL_DIR/opl3.c" || "$(git -C "$OPL_DIR" rev-parse HEAD)" != "$OPL_COMMIT" ]]; then
+  echo "Nuked OPL3 submodule is missing or not at $OPL_COMMIT" >&2
+  exit 1
+fi
+cc -std=c11 -O2 -Wall -Wextra -Werror -I"$OPL_DIR" \
+  -o "$TMP/jukupoly_opl_oracle" \
+  spinoffs/jukupoly/tools/jukupoly_opl_oracle.c "$OPL_DIR/opl3.c"
+JUKUPOLY_OPL_ORACLE="$TMP/jukupoly_opl_oracle" \
+  python3 tests/jukupoly_opl_oracle_test.py
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
   --song spinoffs/jukupoly/firmware/jukupoly-suspense.json \
