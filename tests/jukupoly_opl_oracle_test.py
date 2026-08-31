@@ -92,6 +92,19 @@ def check_oracle_agreement(tool: Path) -> None:
         )
         assert plain_digest != digest
 
+        stream = directory / "all.jop"
+        all_pcm = directory / "all.s16le"
+        all_csv = directory / "all.csv"
+        opl_oracle.write_event_stream(stream, writes, info.total_samples)
+        subprocess.run(
+            [str(tool), str(stream), str(all_pcm), str(all_csv), "all"],
+            check=True, text=True, stdout=subprocess.PIPE,
+        )
+        all_probes = opl_oracle.read_channel_probes(all_csv)
+        assert len(all_probes) == len(probes) * 18
+        channel_zero = [item.probe for item in all_probes if item.channel == 0]
+        assert channel_zero == probes
+
 
 def check_channel_filter() -> None:
     assert opl_oracle.channel_write(vgz.RegisterWrite(0, 0, 0x20, 1), 0, 0)

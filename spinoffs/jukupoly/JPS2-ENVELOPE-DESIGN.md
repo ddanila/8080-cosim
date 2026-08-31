@@ -146,6 +146,11 @@ quantizes that semantic amplitude to 0..15.  This does not claim to reproduce
 waveform, feedback, or FM timbre; isolated PCM/RMS remains a separate shape
 cross-check.
 
+The bridge also has a guarded all-channel probe mode.  A synthetic regression
+proves that its channel-zero sequence is byte-for-field identical to the
+existing isolated channel-zero probe, allowing one oracle render to feed the
+real 18-channel logical-voice mapper.
+
 This checkpoint does not complete M3.  The next independent layer is mapping
 real selected logical voices to isolated oracle intervals, then producing the
 like-for-like v1/v2/reference comparison.  That real-song comparison supplies

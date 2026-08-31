@@ -95,10 +95,13 @@ static timed_write *read_stream(const char *path, uint32_t *total_samples,
 }
 
 static void write_probe(FILE *output, const opl3_chip *chip,
-                        unsigned channel_number, uint32_t sample) {
+                        unsigned channel_number, uint32_t sample,
+                        int include_channel) {
   const opl3_channel *channel = &chip->channel[channel_number];
   const opl3_slot *modulator = channel->slotz[0];
   const opl3_slot *carrier = channel->slotz[1];
+  if (include_channel)
+    fprintf(output, "%u,", channel_number);
   fprintf(output,
       "%" PRIu32 ",%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
       sample, channel->f_num, channel->block,
@@ -117,8 +120,9 @@ int main(int argc, char **argv) {
   }
   char *end = NULL;
   errno = 0;
-  unsigned long channel_number = strtoul(argv[4], &end, 10);
-  if (errno || !*argv[4] || *end || channel_number > 17) {
+  int all_channels = strcmp(argv[4], "all") == 0;
+  unsigned long channel_number = all_channels ? 0 : strtoul(argv[4], &end, 10);
+  if (!all_channels && (errno || !*argv[4] || *end || channel_number > 17)) {
     fprintf(stderr, "invalid OPL channel: %s\n", argv[4]);
     return 2;
   }
@@ -133,6 +137,8 @@ int main(int argc, char **argv) {
     perror(!pcm ? argv[2] : argv[3]);
     return 2;
   }
+  if (all_channels)
+    fputs("channel,", probes);
   fputs("sample,f_number,block,key,modulator_attenuation,"
         "carrier_attenuation,modulator_output_attenuation,"
         "carrier_output_attenuation,connection,"
@@ -155,8 +161,14 @@ int main(int argc, char **argv) {
                     writes[write_at].value);
       write_at++;
     }
-    if (sample % probe_step == 0 || sample == total_samples)
-      write_probe(probes, &chip, (unsigned)channel_number, sample);
+    if (sample % probe_step == 0 || sample == total_samples) {
+      if (all_channels) {
+        for (unsigned channel = 0; channel < 18; channel++)
+          write_probe(probes, &chip, channel, sample, 1);
+      } else {
+        write_probe(probes, &chip, (unsigned)channel_number, sample, 0);
+      }
+    }
     if (sample == total_samples)
       break;
 
@@ -187,9 +199,9 @@ int main(int argc, char **argv) {
   }
   printf("JUKUPOLY-OPL-ORACLE: PASS samples=%" PRIu32
          " writes=%zu nonzero=%zu first=%" PRIu32 " last=%" PRIu32
-         " peak=%u channel=%lu\n",
+         " peak=%u channel=%s\n",
       total_samples, write_count, nonzero, first_nonzero, last_nonzero,
-      peak, channel_number);
+      peak, all_channels ? "all" : argv[4]);
   free(writes);
   return 0;
 }

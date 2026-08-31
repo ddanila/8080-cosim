@@ -581,6 +581,10 @@ level policy for the real-song fit without pretending that an OPL waveform
 and the Juku one-bit speaker have identical timbre.  The previous isolated
 PCM/RMS path remains a useful independent shape comparison.
 
+The oracle bridge can emit this probe state for all 18 channels in one pass.
+Its all-channel rows are verified against the existing isolated-channel form,
+so a 30-second real-song fit does not require 18 redundant OPL renders.
+
 ### M4: tremolo
 
 Add the shared tremolo phase and per-voice effective depth.

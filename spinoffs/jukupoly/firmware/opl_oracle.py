@@ -32,6 +32,12 @@ class OracleProbe:
     tremolo_value: int
 
 
+@dataclass(frozen=True)
+class OracleChannelProbe:
+    channel: int
+    probe: OracleProbe
+
+
 def channel_write(write: opl_trace.TimedWrite, bank: int, channel: int) -> bool:
     """Whether a write affects the selected two-operator channel or globals."""
     if write.bank == 0 and write.register in (0x01, 0x08, 0xBD):
@@ -100,6 +106,44 @@ def read_probes(path: Path) -> list[OracleProbe]:
             tremolo_phase=int(row["tremolo_phase"]),
             tremolo_value=int(row["tremolo_value"]),
         ) for row in rows]
+
+
+def read_channel_probes(path: Path) -> list[OracleChannelProbe]:
+    """Read the oracle's one-pass, all-18-channel probe form."""
+    with path.open(newline="") as source:
+        rows = csv.DictReader(source)
+        expected = ["channel", *OracleProbe.__dataclass_fields__]
+        if rows.fieldnames != expected:
+            raise ValueError(
+                f"unexpected all-channel oracle probe columns: {rows.fieldnames}"
+            )
+        result = []
+        for row in rows:
+            channel = int(row.pop("channel"))
+            if not 0 <= channel < 18:
+                raise ValueError(f"invalid oracle channel: {channel}")
+            probe = OracleProbe(
+                sample=int(row["sample"]),
+                f_number=int(row["f_number"]),
+                block=int(row["block"]),
+                key=bool(int(row["key"])),
+                modulator_attenuation=int(row["modulator_attenuation"]),
+                carrier_attenuation=int(row["carrier_attenuation"]),
+                modulator_output_attenuation=int(
+                    row["modulator_output_attenuation"]
+                ),
+                carrier_output_attenuation=int(
+                    row["carrier_output_attenuation"]
+                ),
+                connection=int(row["connection"]),
+                modulator_stage=int(row["modulator_stage"]),
+                carrier_stage=int(row["carrier_stage"]),
+                vibrato_phase=int(row["vibrato_phase"]),
+                tremolo_phase=int(row["tremolo_phase"]),
+                tremolo_value=int(row["tremolo_value"]),
+            )
+            result.append(OracleChannelProbe(channel, probe))
+        return result
 
 
 def read_pcm(path: Path) -> list[tuple[int, int]]:
