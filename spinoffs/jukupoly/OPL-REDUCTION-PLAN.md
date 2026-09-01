@@ -772,12 +772,17 @@ Across both known DOOM packs, 30,118 of 102,172 melodic key-ons in 30 tracks
 have a conservative direct common-pitch vibrato path.  Another 13,466 have
 VIB only on an FM modulator and are timbre-only; 270 use one-sided additive
 VIB and are a partial two-pitch mixture, so neither class may enable whole-note
-target vibrato.  Nine tracks contain 7,940 coalesced held-key melodic pitch
-events: 6,594 move by 5--50 cents, 1,222 by less than five cents, and 124 by at
-least 50 cents.  This establishes material source use and a guarded semantic
-policy only.  No JPS packet, target state, CPU cycle, or default conversion
-has changed; the next gate is target-allocation survival and a bounded ABI/
-cycle design.
+target vibrato.  After excluding same-timestamp writes which end in key-off or
+retrigger, nine tracks contain 7,264 coalesced held-key melodic pitch events:
+6,034 move by 5--50 cents, 1,176 by less than five cents, and 54 by at least 50
+cents.
+
+The existing M2 allocation selects 21,017 of 22,829 conservative direct-
+vibrato logical notes at some point and retains 6,495 of 7,264 held-pitch
+events at the exact event frame.  Its protected-v1 regression count remains
+zero.  This closes M5's source-prevalence and allocation-survival gates only.
+No JPS packet, target state, CPU cycle, or default conversion has changed; the
+next gate is a bounded ABI/cycle design.
 
 ### M6: pack regression and physical qualification
 

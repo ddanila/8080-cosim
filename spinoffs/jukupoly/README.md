@@ -677,6 +677,7 @@ deltas from an immutable base, so repeated cycles cannot accumulate pitch
 drift.  At the DOOM packs' 14,318,180 Hz OPL clock, the clock-derived shared
 LFO is 6.068835788 Hz and the corresponding 50 Hz 16-bit phase increment is
 7,955.
+
 The oracle probe exports operator VIB enables and both effective F-numbers;
 synthetic tests compare these against the host model exactly.
 
@@ -684,11 +685,17 @@ synthetic tests compare these against the host model exactly.
 gate.  Of 102,172 melodic key-ons, 30,118 in 30 tracks have a conservative
 direct common-pitch path.  It rejects 13,466 FM-modulator-only key-ons as
 timbre effects and 270 one-sided additive key-ons as partial two-pitch
-mixtures.  Separately, nine tracks contain 7,940 coalesced pitch changes while
-a melodic key remains held; most (6,594) move by 5--50 cents.  This establishes
-that M5 is worth investigating, but it adds no JPS capability or 8080 work yet.
-Allocation survival, representation size, cycles, full-song timing, and
-physical listening remain open gates.
+mixtures.  Same-timestamp frequency writes which end in key-off or retrigger
+are excluded because they have no held-note duration.  The resulting nine
+tracks contain 7,264 coalesced melodic changes; most (6,034) move by 5--50
+cents.
+
+The existing M2 three-voice allocation retains 21,017 of 22,829 conservative
+direct-vibrato logical notes at some point and 6,495 of 7,264 held-pitch events
+at the exact event frame, while missing zero protected v1 onsets.  This closes
+the allocation-survival gate and justifies a bounded ABI/cycle design, but it
+still adds no JPS capability or 8080 work.  Representation size, cycles,
+full-song timing, and physical listening remain open gates.
 
 ## Reproduce
 

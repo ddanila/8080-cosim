@@ -55,6 +55,19 @@ def check_held_pitch_coalescing() -> None:
     assert report_opl_pitch.vibrato_path(
         change.signature) == "additive_partial_pitch"
 
+    # A frequency write immediately followed by key-off at the same source
+    # timestamp has no audible held-note duration and must not become a target
+    # pitch command.
+    zero_duration = [
+        vgz.RegisterWrite(0, 0, 0xA0, 0x34),
+        vgz.RegisterWrite(0, 0, 0xB0, 0x32),
+        vgz.RegisterWrite(100, 0, 0xA0, 0x40),
+        vgz.RegisterWrite(100, 0, 0xB0, 0x12),
+    ]
+    assert report_opl_pitch.held_pitch_changes(
+        zero_duration, 1,
+    ) == ([], 0)
+
 
 def main() -> int:
     check_paths()

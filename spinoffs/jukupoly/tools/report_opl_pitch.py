@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import bisect
 import gzip
 import hashlib
 import json
@@ -22,6 +23,7 @@ sys.path.insert(0, str(FIRMWARE))
 import build_doom_library as doom_library  # noqa: E402
 import import_jukupoly_vgz as vgz  # noqa: E402
 import opl_vibrato  # noqa: E402
+import opl_voices  # noqa: E402
 
 
 KNOWN_PACKS = {
@@ -74,8 +76,8 @@ def held_pitch_changes(writes: list[vgz.RegisterWrite], banks: int
     """Coalesce changed A0/B0 writes at one timestamp while key stays held."""
     registers = [[0] * 256 for _ in range(2)]
     active: dict[tuple[int, int], tuple[int, ...]] = {}
-    raw_changes = 0
     pending: dict[tuple[int, int, int], list[object]] = {}
+    transition_groups: set[tuple[int, int, int]] = set()
 
     for write in writes:
         is_a = 0xA0 <= write.register <= 0xA8
@@ -94,11 +96,13 @@ def held_pitch_changes(writes: list[vgz.RegisterWrite], banks: int
         after_key = bool(registers[write.bank][0xB0 + channel] & 0x20)
         after_code = pitch_code(registers, write.bank, channel)
         if not before_key and after_key:
+            transition_groups.add((write.sample, write.bank, channel))
             active[key] = vgz.instrument_signature(
                 registers, write.bank, channel,
             )
             continue
         if before_key and not after_key:
+            transition_groups.add((write.sample, write.bank, channel))
             active.pop(key, None)
             continue
         if not (before_key and after_key and before_code != after_code):
@@ -107,17 +111,23 @@ def held_pitch_changes(writes: list[vgz.RegisterWrite], banks: int
         signature = active.get(key)
         if signature is None:
             raise ValueError("held pitch write has no active signature")
-        raw_changes += 1
         event_key = write.sample, write.bank, channel
         if event_key not in pending:
-            pending[event_key] = [before_code, after_code, signature]
+            pending[event_key] = [before_code, after_code, signature, 1]
         else:
             pending[event_key][1] = after_code
+            pending[event_key][3] = int(pending[event_key][3]) + 1
 
     result = []
-    for (sample, bank, channel), (before, after, signature) in pending.items():
+    raw_changes = 0
+    for event_key, values in pending.items():
+        if event_key in transition_groups:
+            continue
+        sample, bank, channel = event_key
+        before, after, signature, raw_count = values
         if before <= 0 or after <= 0 or before == after:
             continue
+        raw_changes += int(raw_count)
         result.append(HeldPitchChange(
             sample=sample, bank=bank, channel=channel,
             before_code=int(before), after_code=int(after),
@@ -128,7 +138,147 @@ def held_pitch_changes(writes: list[vgz.RegisterWrite], banks: int
     return result, raw_changes
 
 
-def analyze_track(name: str, payload: bytes, overrides: set[str]) -> dict:
+def allocation_survival(
+        info: vgz.VgmInfo, writes: list[vgz.RegisterWrite],
+        events: list[vgz.KeyEvent], melodic: set[tuple[int, ...]],
+        source_name: str, compressed_sha: str, vgm_sha: str,
+        overrides: set[str], prioritize_articulations: bool,
+        changes: list[HeldPitchChange],
+) -> dict:
+    """Measure pitch semantics only while the M2 note owns a target voice."""
+    melodic_keys = {
+        (event.start, event.bank, event.channel) for event in events
+        if event.signature in melodic
+    }
+    segments = opl_voices.reconstruct_segments(
+        writes, info.banks, info.total_samples, info.clock,
+        info.frequency_divider,
+    )
+    relations = opl_voices.candidate_relations(segments)
+    notes = opl_voices.group_layers(segments, relations)
+    voices, _assignments = opl_voices.assign_logical_voices(notes)
+    melodic_notes = opl_voices.melodic_logical_notes(
+        segments, notes, melodic_keys,
+    )
+    score = vgz.compile_score(
+        info, writes, Path(source_name), compressed_sha, vgm_sha,
+        overrides, {}, prioritize_articulations,
+    )
+    old_commands = vgz.score_note_onsets(score)
+    source_onsets = {
+        (opl_voices.analysis_frame(note.start),
+         vgz.playable_note(round(note.initial_pitch)))
+        for note in notes
+        if note.identifier in melodic_notes and note.initial_pitch is not None
+    }
+    allocation = opl_voices.allocate_three_voices(
+        notes, voices, melodic_notes, old_commands & source_onsets,
+        vgz.playable_note,
+    )
+
+    signature_by_key = {
+        (event.start, event.bank, event.channel): event.signature
+        for event in events
+    }
+    segments_by_id = {segment.identifier: segment for segment in segments}
+    note_for_segment = {
+        member: note.identifier for note in notes for member in note.members
+    }
+    logical_paths: dict[int, str] = {}
+    for note in notes:
+        paths = [
+            vibrato_path(signature_by_key[
+                (segments_by_id[member].start,
+                 segments_by_id[member].bank,
+                 segments_by_id[member].channel)
+            ])
+            for member in note.members
+        ]
+        if paths and all(path == "direct_common_pitch" for path in paths):
+            logical_paths[note.identifier] = "direct_common_pitch"
+        elif all(path == "none" for path in paths):
+            logical_paths[note.identifier] = "none"
+        else:
+            logical_paths[note.identifier] = "mixed_or_indirect"
+
+    decisions = allocation["frames"]
+    decision_frames = [item["frame"] for item in decisions]
+    selected_sets = [
+        {choice["logical_note"] for choice in item["selected"]}
+        for item in decisions
+    ]
+
+    def selected_at(frame: int) -> set[int]:
+        position = bisect.bisect_right(decision_frames, frame) - 1
+        return set() if position < 0 else selected_sets[position]
+
+    selected_notes = set().union(*selected_sets) if selected_sets else set()
+    melodic_direct = {
+        identifier for identifier in melodic_notes
+        if logical_paths[identifier] == "direct_common_pitch"
+    }
+    melodic_mixed = {
+        identifier for identifier in melodic_notes
+        if logical_paths[identifier] == "mixed_or_indirect"
+    }
+
+    segments_by_channel: dict[tuple[int, int], list[opl_voices.NoteSegment]] = {}
+    for segment in segments:
+        segments_by_channel.setdefault(
+            (segment.bank, segment.channel), [],
+        ).append(segment)
+    for channel_segments in segments_by_channel.values():
+        channel_segments.sort(key=lambda item: item.start)
+
+    melodic_held = 0
+    selected_held = 0
+    selected_held_magnitudes = []
+    for change in changes:
+        matches = [
+            segment for segment in segments_by_channel.get(
+                (change.bank, change.channel), []
+            )
+            if segment.start <= change.sample < segment.end
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f"held pitch change at sample {change.sample} bank "
+                f"{change.bank} channel {change.channel} maps to "
+                f"{len(matches)} note segments"
+            )
+        logical_note = note_for_segment[matches[0].identifier]
+        if logical_note not in melodic_notes:
+            continue
+        melodic_held += 1
+        frame = opl_voices.analysis_frame(change.sample)
+        if logical_note in selected_at(frame):
+            selected_held += 1
+            selected_held_magnitudes.append(abs(change.cents))
+
+    return {
+        "melodic_logical_notes": len(melodic_notes),
+        "direct_vibrato_logical_notes": len(melodic_direct),
+        "mixed_or_indirect_vibrato_logical_notes": len(melodic_mixed),
+        "selected_direct_vibrato_logical_notes": len(
+            melodic_direct & selected_notes
+        ),
+        "melodic_held_pitch_events": melodic_held,
+        "selected_held_pitch_events": selected_held,
+        "selected_held_under_5_cents": sum(
+            value < 5 for value in selected_held_magnitudes
+        ),
+        "selected_held_5_to_50_cents": sum(
+            5 <= value < 50 for value in selected_held_magnitudes
+        ),
+        "selected_held_at_least_50_cents": sum(
+            value >= 50 for value in selected_held_magnitudes
+        ),
+        "missed_protected_onsets": allocation["missed_protected_onsets"],
+    }
+
+
+def analyze_track(name: str, payload: bytes, overrides: set[str],
+                  prioritize_articulations: bool = False) -> dict:
     data = gzip.decompress(payload)
     info, writes = vgz.parse_vgm(data)
     events, counts = vgz.key_events(writes, info)
@@ -149,9 +299,11 @@ def analyze_track(name: str, payload: bytes, overrides: set[str]) -> dict:
     changes, raw_changes = held_pitch_changes(writes, info.banks)
     melodic_changes = [item for item in changes if item.signature in melodic]
     magnitudes = [abs(item.cents) for item in melodic_changes]
-    return {
+    compressed_sha = hashlib.sha256(payload).hexdigest()
+    vgm_sha = hashlib.sha256(data).hexdigest()
+    result = {
         "name": name,
-        "vgm_sha256": hashlib.sha256(data).hexdigest(),
+        "vgm_sha256": vgm_sha,
         "melodic_keyons": sum(keyed_paths.values()),
         "vibrato_keyons": dict(sorted(keyed_paths.items())),
         "vibrato_signatures": dict(sorted(signature_paths.items())),
@@ -175,6 +327,11 @@ def analyze_track(name: str, payload: bytes, overrides: set[str]) -> dict:
             ),
         },
     }
+    result["allocation_survival"] = allocation_survival(
+        info, writes, events, melodic, name, compressed_sha, vgm_sha,
+        overrides, prioritize_articulations, changes,
+    )
+    return result
 
 
 def analyze_archive(path: Path) -> dict:
@@ -189,8 +346,10 @@ def analyze_archive(path: Path) -> dict:
             overrides = doom_library.MELODIC_OVERRIDES.get(
                 (pack, number), set(),
             ) if pack is not None else set()
+            prioritize = (pack, number) in doom_library.ARTICULATION_PRIORITY \
+                if pack is not None else False
             tracks.append(analyze_track(
-                name, archive.read(name), overrides,
+                name, archive.read(name), overrides, prioritize,
             ))
     return {
         "name": path.name,
@@ -213,6 +372,14 @@ def report(paths: list[Path]) -> dict:
         "down_events_melodic", "under_5_cent_events_melodic",
         "5_to_50_cent_events_melodic", "at_least_50_cent_events_melodic",
     )
+    allocation_names = (
+        "melodic_logical_notes", "direct_vibrato_logical_notes",
+        "mixed_or_indirect_vibrato_logical_notes",
+        "selected_direct_vibrato_logical_notes",
+        "melodic_held_pitch_events", "selected_held_pitch_events",
+        "selected_held_under_5_cents", "selected_held_5_to_50_cents",
+        "selected_held_at_least_50_cents", "missed_protected_onsets",
+    )
     totals = {
         "tracks": len(tracks),
         "melodic_keyons": sum(track["melodic_keyons"] for track in tracks),
@@ -228,6 +395,10 @@ def report(paths: list[Path]) -> dict:
         "held_pitch": {
             name: sum(track["held_pitch"][name] for track in tracks)
             for name in held_names
+        },
+        "allocation_survival": {
+            name: sum(track["allocation_survival"][name] for track in tracks)
+            for name in allocation_names
         },
     }
     totals["tracks_with_direct_vibrato"] = sum(

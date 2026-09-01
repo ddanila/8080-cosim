@@ -25,8 +25,8 @@
             "none": 3
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 71,
-            "coalesced_events_all_channels": 69,
+            "raw_changed_writes_all_channels": 70,
+            "coalesced_events_all_channels": 68,
             "coalesced_events_melodic": 0,
             "up_events_melodic": 0,
             "down_events_melodic": 0,
@@ -34,6 +34,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 53,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 3,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -49,15 +61,27 @@
             "none": 1
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 2224,
-            "coalesced_events_all_channels": 2198,
-            "coalesced_events_melodic": 2198,
-            "up_events_melodic": 1336,
-            "down_events_melodic": 862,
-            "under_5_cent_events_melodic": 474,
-            "5_to_50_cent_events_melodic": 1724,
+            "raw_changed_writes_all_channels": 2188,
+            "coalesced_events_all_channels": 2170,
+            "coalesced_events_melodic": 2170,
+            "up_events_melodic": 1312,
+            "down_events_melodic": 858,
+            "under_5_cent_events_melodic": 464,
+            "5_to_50_cent_events_melodic": 1706,
             "at_least_50_cent_events_melodic": 0,
-            "maximum_absolute_cents_melodic": 37.535
+            "maximum_absolute_cents_melodic": 36.518275
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1170,
+            "direct_vibrato_logical_notes": 908,
+            "mixed_or_indirect_vibrato_logical_notes": 6,
+            "selected_direct_vibrato_logical_notes": 908,
+            "melodic_held_pitch_events": 2170,
+            "selected_held_pitch_events": 1977,
+            "selected_held_under_5_cents": 421,
+            "selected_held_5_to_50_cents": 1556,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -82,6 +106,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 532,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 272,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -106,6 +142,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2341,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 165,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -130,6 +178,18 @@
             "5_to_50_cent_events_melodic": 30,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 31.442118
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1895,
+            "direct_vibrato_logical_notes": 1084,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 1053,
+            "melodic_held_pitch_events": 30,
+            "selected_held_pitch_events": 30,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 30,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -154,6 +214,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1472,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 1472,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -178,6 +250,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 987,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 96,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -202,6 +286,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 870,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 634,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -215,15 +311,27 @@
             "direct_common_pitch": 3
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 322,
-            "coalesced_events_all_channels": 322,
-            "coalesced_events_melodic": 322,
-            "up_events_melodic": 196,
-            "down_events_melodic": 126,
-            "under_5_cent_events_melodic": 74,
-            "5_to_50_cent_events_melodic": 234,
-            "at_least_50_cent_events_melodic": 14,
-            "maximum_absolute_cents_melodic": 101.414481
+            "raw_changed_writes_all_channels": 305,
+            "coalesced_events_all_channels": 305,
+            "coalesced_events_melodic": 305,
+            "up_events_melodic": 193,
+            "down_events_melodic": 112,
+            "under_5_cent_events_melodic": 71,
+            "5_to_50_cent_events_melodic": 233,
+            "at_least_50_cent_events_melodic": 1,
+            "maximum_absolute_cents_melodic": 97.713119
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 191,
+            "direct_vibrato_logical_notes": 191,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 190,
+            "melodic_held_pitch_events": 305,
+            "selected_held_pitch_events": 301,
+            "selected_held_under_5_cents": 71,
+            "selected_held_5_to_50_cents": 229,
+            "selected_held_at_least_50_cents": 1,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -241,15 +349,27 @@
             "none": 1
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 132,
-            "coalesced_events_all_channels": 132,
-            "coalesced_events_melodic": 132,
-            "up_events_melodic": 78,
+            "raw_changed_writes_all_channels": 129,
+            "coalesced_events_all_channels": 129,
+            "coalesced_events_melodic": 129,
+            "up_events_melodic": 75,
             "down_events_melodic": 54,
             "under_5_cent_events_melodic": 14,
-            "5_to_50_cent_events_melodic": 118,
+            "5_to_50_cent_events_melodic": 115,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 44.824097
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2376,
+            "direct_vibrato_logical_notes": 1456,
+            "mixed_or_indirect_vibrato_logical_notes": 384,
+            "selected_direct_vibrato_logical_notes": 1069,
+            "melodic_held_pitch_events": 129,
+            "selected_held_pitch_events": 99,
+            "selected_held_under_5_cents": 14,
+            "selected_held_5_to_50_cents": 85,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -265,15 +385,27 @@
             "none": 2
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 1020,
-            "coalesced_events_all_channels": 999,
-            "coalesced_events_melodic": 999,
-            "up_events_melodic": 550,
-            "down_events_melodic": 449,
-            "under_5_cent_events_melodic": 188,
-            "5_to_50_cent_events_melodic": 792,
+            "raw_changed_writes_all_channels": 1001,
+            "coalesced_events_all_channels": 980,
+            "coalesced_events_melodic": 980,
+            "up_events_melodic": 541,
+            "down_events_melodic": 439,
+            "under_5_cent_events_melodic": 184,
+            "5_to_50_cent_events_melodic": 777,
             "at_least_50_cent_events_melodic": 19,
             "maximum_absolute_cents_melodic": 87.676155
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1957,
+            "direct_vibrato_logical_notes": 646,
+            "mixed_or_indirect_vibrato_logical_notes": 621,
+            "selected_direct_vibrato_logical_notes": 632,
+            "melodic_held_pitch_events": 980,
+            "selected_held_pitch_events": 906,
+            "selected_held_under_5_cents": 164,
+            "selected_held_5_to_50_cents": 724,
+            "selected_held_at_least_50_cents": 18,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -289,8 +421,8 @@
             "none": 3
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 586,
-            "coalesced_events_all_channels": 586,
+            "raw_changed_writes_all_channels": 566,
+            "coalesced_events_all_channels": 566,
             "coalesced_events_melodic": 0,
             "up_events_melodic": 0,
             "down_events_melodic": 0,
@@ -298,6 +430,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1835,
+            "direct_vibrato_logical_notes": 36,
+            "mixed_or_indirect_vibrato_logical_notes": 72,
+            "selected_direct_vibrato_logical_notes": 36,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -322,6 +466,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1357,
+            "direct_vibrato_logical_notes": 1062,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 994,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -348,6 +504,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1368,
+            "direct_vibrato_logical_notes": 1320,
+            "mixed_or_indirect_vibrato_logical_notes": 25,
+            "selected_direct_vibrato_logical_notes": 1145,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -374,6 +542,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1011,
+            "direct_vibrato_logical_notes": 30,
+            "mixed_or_indirect_vibrato_logical_notes": 539,
+            "selected_direct_vibrato_logical_notes": 24,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -398,6 +578,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1097,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 368,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -424,6 +616,18 @@
             "5_to_50_cent_events_melodic": 54,
             "at_least_50_cent_events_melodic": 4,
             "maximum_absolute_cents_melodic": 201.3955
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1689,
+            "direct_vibrato_logical_notes": 605,
+            "mixed_or_indirect_vibrato_logical_notes": 616,
+            "selected_direct_vibrato_logical_notes": 561,
+            "melodic_held_pitch_events": 58,
+            "selected_held_pitch_events": 57,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 54,
+            "selected_held_at_least_50_cents": 3,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -450,6 +654,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1617,
+            "direct_vibrato_logical_notes": 700,
+            "mixed_or_indirect_vibrato_logical_notes": 142,
+            "selected_direct_vibrato_logical_notes": 679,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -472,6 +688,18 @@
             "5_to_50_cent_events_melodic": 93,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 19.985608
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2271,
+            "direct_vibrato_logical_notes": 2262,
+            "mixed_or_indirect_vibrato_logical_notes": 9,
+            "selected_direct_vibrato_logical_notes": 2253,
+            "melodic_held_pitch_events": 131,
+            "selected_held_pitch_events": 131,
+            "selected_held_under_5_cents": 38,
+            "selected_held_5_to_50_cents": 93,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -496,6 +724,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1632,
+            "direct_vibrato_logical_notes": 1088,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 1088,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -522,6 +762,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 3259,
+            "direct_vibrato_logical_notes": 1838,
+            "mixed_or_indirect_vibrato_logical_notes": 400,
+            "selected_direct_vibrato_logical_notes": 1771,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -546,6 +798,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1500,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 1050,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -572,6 +836,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 436,
+            "direct_vibrato_logical_notes": 188,
+            "mixed_or_indirect_vibrato_logical_notes": 60,
+            "selected_direct_vibrato_logical_notes": 119,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         }
       ]
@@ -601,6 +877,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 54,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -627,6 +915,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2879,
+            "direct_vibrato_logical_notes": 980,
+            "mixed_or_indirect_vibrato_logical_notes": 375,
+            "selected_direct_vibrato_logical_notes": 837,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -653,6 +953,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2002,
+            "direct_vibrato_logical_notes": 474,
+            "mixed_or_indirect_vibrato_logical_notes": 240,
+            "selected_direct_vibrato_logical_notes": 474,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -675,6 +987,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 918,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -699,6 +1023,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2066,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 636,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -723,6 +1059,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2172,
+            "direct_vibrato_logical_notes": 467,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 467,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -749,6 +1097,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1974,
+            "direct_vibrato_logical_notes": 446,
+            "mixed_or_indirect_vibrato_logical_notes": 446,
+            "selected_direct_vibrato_logical_notes": 217,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -775,6 +1135,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2212,
+            "direct_vibrato_logical_notes": 84,
+            "mixed_or_indirect_vibrato_logical_notes": 672,
+            "selected_direct_vibrato_logical_notes": 65,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -801,6 +1173,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2140,
+            "direct_vibrato_logical_notes": 234,
+            "mixed_or_indirect_vibrato_logical_notes": 1292,
+            "selected_direct_vibrato_logical_notes": 184,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -816,15 +1200,27 @@
             "none": 22
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 3707,
-            "coalesced_events_all_channels": 3563,
-            "coalesced_events_melodic": 3381,
-            "up_events_melodic": 94,
-            "down_events_melodic": 3287,
-            "under_5_cent_events_melodic": 344,
-            "5_to_50_cent_events_melodic": 2958,
-            "at_least_50_cent_events_melodic": 79,
-            "maximum_absolute_cents_melodic": 382.235422
+            "raw_changed_writes_all_channels": 2972,
+            "coalesced_events_all_channels": 2923,
+            "coalesced_events_melodic": 2779,
+            "up_events_melodic": 38,
+            "down_events_melodic": 2741,
+            "under_5_cent_events_melodic": 316,
+            "5_to_50_cent_events_melodic": 2441,
+            "at_least_50_cent_events_melodic": 22,
+            "maximum_absolute_cents_melodic": 277.004988
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 3356,
+            "direct_vibrato_logical_notes": 1752,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 1708,
+            "melodic_held_pitch_events": 2779,
+            "selected_held_pitch_events": 2435,
+            "selected_held_under_5_cents": 256,
+            "selected_held_5_to_50_cents": 2157,
+            "selected_held_at_least_50_cents": 22,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -851,6 +1247,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 3867,
+            "direct_vibrato_logical_notes": 516,
+            "mixed_or_indirect_vibrato_logical_notes": 327,
+            "selected_direct_vibrato_logical_notes": 483,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -877,6 +1285,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1324,
+            "direct_vibrato_logical_notes": 550,
+            "mixed_or_indirect_vibrato_logical_notes": 154,
+            "selected_direct_vibrato_logical_notes": 491,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -901,6 +1321,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 7358,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 452,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -916,15 +1348,27 @@
             "none": 5
           },
           "held_pitch": {
-            "raw_changed_writes_all_channels": 727,
-            "coalesced_events_all_channels": 689,
-            "coalesced_events_melodic": 689,
-            "up_events_melodic": 411,
-            "down_events_melodic": 278,
-            "under_5_cent_events_melodic": 90,
-            "5_to_50_cent_events_melodic": 591,
+            "raw_changed_writes_all_channels": 720,
+            "coalesced_events_all_channels": 682,
+            "coalesced_events_melodic": 682,
+            "up_events_melodic": 407,
+            "down_events_melodic": 275,
+            "under_5_cent_events_melodic": 89,
+            "5_to_50_cent_events_melodic": 585,
             "at_least_50_cent_events_melodic": 8,
             "maximum_absolute_cents_melodic": 273.633547
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1617,
+            "direct_vibrato_logical_notes": 757,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 706,
+            "melodic_held_pitch_events": 682,
+            "selected_held_pitch_events": 559,
+            "selected_held_under_5_cents": 71,
+            "selected_held_5_to_50_cents": 480,
+            "selected_held_at_least_50_cents": 8,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -949,6 +1393,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 1606,
+            "direct_vibrato_logical_notes": 468,
+            "mixed_or_indirect_vibrato_logical_notes": 336,
+            "selected_direct_vibrato_logical_notes": 402,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -971,6 +1427,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 320,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 4,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -997,6 +1465,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 2862,
+            "direct_vibrato_logical_notes": 320,
+            "mixed_or_indirect_vibrato_logical_notes": 1303,
+            "selected_direct_vibrato_logical_notes": 320,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -1021,6 +1501,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 592,
+            "direct_vibrato_logical_notes": 410,
+            "mixed_or_indirect_vibrato_logical_notes": 148,
+            "selected_direct_vibrato_logical_notes": 410,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -1043,6 +1535,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 143,
+            "direct_vibrato_logical_notes": 0,
+            "mixed_or_indirect_vibrato_logical_notes": 0,
+            "selected_direct_vibrato_logical_notes": 0,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -1069,6 +1573,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 445,
+            "direct_vibrato_logical_notes": 384,
+            "mixed_or_indirect_vibrato_logical_notes": 61,
+            "selected_direct_vibrato_logical_notes": 384,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         },
         {
@@ -1095,6 +1611,18 @@
             "5_to_50_cent_events_melodic": 0,
             "at_least_50_cent_events_melodic": 0,
             "maximum_absolute_cents_melodic": 0.0
+          },
+          "allocation_survival": {
+            "melodic_logical_notes": 4234,
+            "direct_vibrato_logical_notes": 1573,
+            "mixed_or_indirect_vibrato_logical_notes": 2487,
+            "selected_direct_vibrato_logical_notes": 1347,
+            "melodic_held_pitch_events": 0,
+            "selected_held_pitch_events": 0,
+            "selected_held_under_5_cents": 0,
+            "selected_held_5_to_50_cents": 0,
+            "selected_held_at_least_50_cents": 0,
+            "missed_protected_onsets": 0
           }
         }
       ]
@@ -1116,18 +1644,30 @@
       "none": 182
     },
     "held_pitch": {
-      "raw_changed_writes_all_channels": 14233,
-      "coalesced_events_all_channels": 13803,
-      "coalesced_events_melodic": 7940,
-      "up_events_melodic": 2734,
-      "down_events_melodic": 5206,
-      "under_5_cent_events_melodic": 1222,
-      "5_to_50_cent_events_melodic": 6594,
-      "at_least_50_cent_events_melodic": 124,
-      "maximum_absolute_cents_melodic": 382.235422
+      "raw_changed_writes_all_channels": 13395,
+      "coalesced_events_all_channels": 13068,
+      "coalesced_events_melodic": 7264,
+      "up_events_melodic": 2635,
+      "down_events_melodic": 4629,
+      "under_5_cent_events_melodic": 1176,
+      "5_to_50_cent_events_melodic": 6034,
+      "at_least_50_cent_events_melodic": 54,
+      "maximum_absolute_cents_melodic": 277.004988
+    },
+    "allocation_survival": {
+      "melodic_logical_notes": 77057,
+      "direct_vibrato_logical_notes": 22829,
+      "mixed_or_indirect_vibrato_logical_notes": 15867,
+      "selected_direct_vibrato_logical_notes": 21017,
+      "melodic_held_pitch_events": 7264,
+      "selected_held_pitch_events": 6495,
+      "selected_held_under_5_cents": 1035,
+      "selected_held_5_to_50_cents": 5408,
+      "selected_held_at_least_50_cents": 52,
+      "missed_protected_onsets": 0
     },
     "tracks_with_direct_vibrato": 30,
     "tracks_with_melodic_held_pitch": 9
   },
-  "report_sha256": "94a4ffcdc90198d1059dcfea97acd9e91813f39369c96fa7639c072864ae1b50"
+  "report_sha256": "e3d2fb744909026ad5bad001e0e8916f90770eb0e2c3fc035b44da20d6efeb45"
 }
