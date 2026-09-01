@@ -731,6 +731,20 @@ measured rather than inherited from the more expensive synthetic fixture.
 The optional converter path is general and explicit; complete-track and
 physical-listening gates remain open, so it is not the default.
 
+The complete-track M4 gate is now closed by
+[`OPL-TREMOLO-FULL-M4.json`](OPL-TREMOLO-FULL-M4.json).  The full 279.98-second
+“Opening to Hell” conversion selects 592 logical notes and emits 38 shallow
+direct-AM candidates, with maximum depth two, 1,670 source frames changed
+after 4-bit quantization, and 1,734 total squared-error improvement.  The
+controlled envelope and tremolo JPS files are both 10,504 bytes.  At the
+measured 142 samples/frame and 7,100 Hz phase table, the tremolo profile is
+7,059.7 samples/s, 49.716 frames/s, and 281.577 seconds (0.57% long), with a
+43,141-cycle worst frame.  The sample-loop hash, `13FFh` player end, format
+capabilities, and all recorded G1--G5 gates pass.  Automated M4 size, timing,
+and render qualification is complete; physical CS00000 A/B remains open, so
+the feature stays explicitly opt-in and the envelope/v1 paths remain the
+fallback.
+
 ### M5: vibrato and held-note pitch writes
 
 Add the shared vibrato phase, temporary phase-step modulation, and generic

@@ -635,8 +635,8 @@ retain their exact M3 execution profiles.  The synthetic target report
 boundary cycles for three modulated voices.  At 140 samples/frame the result
 is 6,962.7 Hz and 49.734 music frames/s, above the 6,401.1 Hz guard; the player
 ends at `13FFh` with 1,025 bytes left.  Target traces match the host model for
-200 frames.  Real-song rendering and CS00000 listening remain required, so
-general conversion still emits no tremolo by default.
+200 frames.  CS00000 listening remains required, so general conversion still
+emits no tremolo by default.
 
 The next real checkpoint uses the first 66 seconds of “Opening to Hell.”  The
 generic opt-in converter emits tremolo on ten of 61 selected logical notes;
@@ -656,6 +656,18 @@ experimental policy.  `--enhanced-frame-samples` and
 The exhaustive host fitter shares candidate-envelope simulation across all
 four depths; tests prove the result is identical to separate searches.  This
 reduces conversion time only and consumes no target cycles or bytes.
+
+The complete 279.98-second “Opening to Hell” conversion closes M4's long-track
+size and timing gate.  The generic policy selects 592 logical notes and emits
+shallow tremolo for 38 of them; 43 indirect numerical candidates remain
+rejected, and the independently identified note 100 is retained.  The
+controlled envelope-only and tremolo JPS files are both 10,504 bytes, well
+below the 30 KiB soft ceiling.  With the measured 142-sample batch and 7,100 Hz
+phase table, [`OPL-TREMOLO-FULL-M4.json`](OPL-TREMOLO-FULL-M4.json) records
+7,059.7 Hz, 49.716 frames/s, 281.577 seconds (0.57% long), and a 43,141-cycle
+worst frame.  The full target comparison and accurate Nuked WAVs are generated
+under `out/jukupoly-opening-full-tremolo-m4/`.  Automated M4 qualification is
+complete; physical A/B and default enablement remain deliberately open.
 
 ## Reproduce
 
@@ -684,12 +696,14 @@ Source and generated files:
 - `OPL-TREMOLO-CANDIDATE-M4.json` — real joint envelope+tremolo evidence;
 - `OPL-TREMOLO-TARGET-M4.json` — target ABI/map/state/cycle evidence;
 - `OPL-TREMOLO-REAL-M4.json` — 66-second real target/render evidence;
+- `OPL-TREMOLO-FULL-M4.json` — complete-track M4 size/timing/render evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;
 - `firmware/jukupoly-tremolo-v2-test.json` — exact shared-phase/depth fixture;
 - `firmware/jukupoly-opening-66s-tremolo-m4.json` — bounded real M4 fixture;
+- `firmware/jukupoly-opening-full-tremolo-m4.json` — complete-track M4 fixture;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;

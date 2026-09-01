@@ -229,3 +229,21 @@ an exact host-side search optimization: a regression compares every returned
 fit with independent single-transform searches, and the committed real
 candidate report remains byte-identical.  It changes no packet, target code,
 or hardware budget.
+
+The complete-track gate now passes in
+[`OPL-TREMOLO-FULL-M4.json`](OPL-TREMOLO-FULL-M4.json).  Across 279.98 seconds
+of “Opening to Hell,” the generic policy selects 592 logical notes and emits
+38 direct, quantization-surviving, positive-benefit tremolo events.  The
+maximum emitted depth is two levels; 1,670 source frames change after 4-bit
+quantization and the joint fits improve squared error by 1,734.  The
+envelope-only and tremolo JPS files are both 10,504 bytes, so the capability
+adds no song bytes and remains well under G5's 30 KiB soft ceiling.
+
+The measured full-track choice is 142 samples/frame with a 7,100 Hz phase
+table.  C-cosim measures the tremolo player at 7,059.7 samples/s, 49.716 music
+frames/s, and 281.577 seconds versus 279.98 seconds of source (0.57% long).
+Its 43,141-cycle worst frame, unchanged sample-loop hash, `13FFh` player end,
+and identical JPS sizes pass the combined G1--G5 gates.  Full target and exact
+Nuked WAV hashes are committed in the report.  This completes the automated
+M4 gates; CS00000 A/B remains the only M4 acceptance gate, and tremolo remains
+opt-in until it passes.

@@ -29,11 +29,20 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def emitted_notes(fit: dict) -> list[dict]:
+    if "emitted_notes" in fit:
+        return fit["emitted_notes"]
+    return [
+        item for item in fit.get("notes", [])
+        if item["tremolo_analysis"].get("emitted_depth_levels", 0) > 0
+    ]
+
+
 def envelope_only_score(score: dict) -> tuple[dict, int]:
     """Reverse emitted joint fits to their recorded envelope-only baselines."""
     result = copy.deepcopy(score)
     fit = result["conversion"]["enhanced_envelope_fit"]
-    measurements = fit["emitted_notes"]
+    measurements = emitted_notes(fit)
     by_frame: dict[int, list[dict]] = {}
     for item in measurements:
         by_frame.setdefault(item["selected_frame"], []).append(item)
@@ -116,8 +125,9 @@ def generate(score_path: Path, output_dir: Path | None,
         raise ValueError(f"oracle reference is missing: {oracle_reference}")
     old_score, replacements = envelope_only_score(score)
     fit = score["conversion"]["enhanced_envelope_fit"]
-    emitted = fit["emitted_notes"]
+    emitted = emitted_notes(fit)
     source_seconds = score["conversion"]["duration_seconds"]
+    artifact_stem = f"opening-{round(source_seconds)}s"
 
     with tempfile.TemporaryDirectory(prefix="jukupoly-tremolo-real.") as name:
         directory = Path(name)
@@ -138,8 +148,8 @@ def generate(score_path: Path, output_dir: Path | None,
             ]))
 
         profiles = {
-            "envelope": profile(old_jps, "opening-66s-envelope"),
-            "tremolo": profile(new_jps, "opening-66s-tremolo"),
+            "envelope": profile(old_jps, f"{artifact_stem}-envelope"),
+            "tremolo": profile(new_jps, f"{artifact_stem}-tremolo"),
         }
         player_bytes = player.read_bytes()
         old_jps_payload = old_jps.read_bytes()
@@ -149,7 +159,7 @@ def generate(score_path: Path, output_dir: Path | None,
         render_directory.mkdir(parents=True, exist_ok=True)
         wavs = {}
         for label, image in (("envelope", old_com), ("tremolo", new_com)):
-            wav = render_directory / f"opening-66s-{label}.wav"
+            wav = render_directory / f"{artifact_stem}-{label}.wav"
             baseline.run([
                 str(renderer), "--sample-rate", "48000", "--lead", "0",
                 "--tail", "0", str(image), str(wav),
@@ -250,6 +260,9 @@ def generate(score_path: Path, output_dir: Path | None,
         "policy": {
             "selected_logical_notes": fit["selected_logical_notes"],
             "semantic_candidates": fit["tremolo_analysis"]["semantic_candidates"],
+            "rejected_indirect_candidates": fit["tremolo_analysis"].get(
+                "rejected_indirect_candidates", 0,
+            ),
             "emitted_notes": len(emitted),
             "first_tremolo_frame": first_tremolo_frame(score),
             "maximum_depth_levels": max(

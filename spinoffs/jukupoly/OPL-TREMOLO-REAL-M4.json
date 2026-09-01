@@ -51,6 +51,7 @@
       109
     ],
     "maximum_depth_levels": 2,
+    "rejected_indirect_candidates": 0,
     "selected_logical_notes": 61,
     "semantic_candidates": 10,
     "total_source_changed_frames_4bit": 433,
