@@ -1048,6 +1048,15 @@ candidate only: full-song size/timing, interactions with other capabilities,
 and physical CS00000 listening remain required before replacing the v1 Imp
 delivery.
 
+The complete 157.5-second candidate also passes the automated gate.  It emits
+49 extra packets across 20 of 532 notes, leaves zero notes above the delivery
+limit, and produces a 10,293-byte JPS.  C-cosim measures 7,083.9 samples/s,
+49.538 frames/s, 158.970 seconds, and a 42,197-cycle worst frame; the player,
+memory map, sample loop, percussion, and Escape path are unchanged.  The
+compact evidence is committed in
+[`OPL-IMP-REARTICULATION-FULL-M7.json`](OPL-IMP-REARTICULATION-FULL-M7.json).
+Physical listening remains the decisive open gate.
+
 ## Required reporting for every implementation change
 
 Every merge which affects target playback must include:

@@ -913,6 +913,15 @@ the unchanged 4,537-byte player at 7,170.9 samples/s, 50.146 frames/s, and
 experimental candidate pending full-song and physical qualification; the
 library still delivers Imp v1.
 
+The complete-track follow-up in
+[`OPL-IMP-REARTICULATION-FULL-M7.json`](OPL-IMP-REARTICULATION-FULL-M7.json)
+emits 49 extra packets across 20 of 532 notes and produces a 10,293-byte JPS.
+It leaves zero notes above the generic fit guard and measures 7,083.9
+samples/s, 49.538 frames/s, and 158.970 seconds in C-cosim, with a 42,197-cycle
+worst frame and the same frozen sample loop.  Full-song automated size and
+timing therefore pass; physical listening remains open and Imp v1 remains the
+delivered fallback.
+
 ## Reproduce
 
 Source and generated files:
@@ -955,6 +964,8 @@ Source and generated files:
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-REARTICULATION-M7.json` — bounded same-pitch articulation fit,
   timing, size, and unchanged-player evidence;
+- `OPL-IMP-REARTICULATION-FULL-M7.json` — complete-track articulation fit,
+  file-size, and C-cosim timing evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;

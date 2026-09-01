@@ -7,25 +7,31 @@
     "source_onsets": 520
   },
   "delivery": {
-    "enhanced_candidate_qualified": false,
+    "enhanced_candidate_qualified": true,
     "qualified": true,
-    "reason": "one compact ADSR cannot represent renewed keyed rises whose per-note mean error exceeds the two-level delivery limit",
-    "strategy": "unchanged-v1-fit-fallback"
+    "reason": null,
+    "strategy": "enhanced"
   },
   "envelope_fit": {
     "delivery_note_mae_limit": 2.0,
     "direction_mismatches": 0,
     "maximum_error": 14,
-    "mean_absolute_error": 0.655480709438815,
-    "note_measurements_sha256": "8f746fb590d92c2b5a88179f945c83085186c15ef1dd6c8e65d3624ae157eb6b",
-    "rearticulation": null,
+    "mean_absolute_error": 0.6171431040325793,
+    "note_measurements_sha256": "cdbaad76d967065a6847d85d5df3277ddd548f6c6d183322b70af0e9da1bdcca",
+    "rearticulation": {
+      "emitted_packets": 49,
+      "enabled": true,
+      "maximum_packets_per_note": 4,
+      "policy": "re-send a same-pitch non-legato ordinary ADSR packet at each bounded significant keyed rise; no target opcode or sample-loop change",
+      "threshold_levels": 4
+    },
     "selected_logical_notes": 532,
-    "unrepresentable_rearticulation_notes": 12
+    "unrepresentable_rearticulation_notes": 0
   },
   "fixture_sample_rate_floor_hz": 6460.3238661,
   "gates": {
     "no_protected_onset_regression": true,
-    "no_unrepresentable_rearticulations": false,
+    "no_unrepresentable_rearticulations": true,
     "player_below_song_window": true,
     "same_source_vgm": true,
     "sample_loop_hash_exact": true,
@@ -39,7 +45,7 @@
   "host_conversion": {
     "measured_wall_seconds": null,
     "v1_score_sha256": "a3b9f5bf40f9b3f045a3fdff85e05c253aa69de2443edfa8dcc88a0e21368873",
-    "v2_score_sha256": "6a66a4fc99d781bdc8b9acceb428a5c72cc97fc8183f453ba7a4e4f348a37ba0"
+    "v2_score_sha256": "897c928a7c289bcf5f52f8e02c8fbfd881c45b37eca03c0cc0691498844fa6f1"
   },
   "jps": {
     "v1": {
@@ -47,8 +53,8 @@
       "sha256": "0d9f9ab2c94a15726ad6ec497973e3bf84cbda529d9341157a720e9672ba0db5"
     },
     "v2": {
-      "bytes": 9978,
-      "sha256": "57b4d8229969ed95b344c127cb6c4595eb3ef701814013a0befbd52e0ab41d59"
+      "bytes": 10293,
+      "sha256": "ff1e95ffaeab56cc80951c0aa74afa42c4fd5b8e300730dbccef16424ed1012f"
     }
   },
   "player": {
@@ -100,41 +106,41 @@
     },
     "v2": {
       "com_bytes": 4537,
-      "duration_seconds": 158.888331,
-      "effective_sample_hz": 7087.524904,
+      "duration_seconds": 158.969809,
+      "effective_sample_hz": 7083.892271,
       "frame_cycles": {
         "count": 7875,
         "max": 42197,
-        "mean": 34299.703,
+        "mean": 34317.292,
         "min": 33574,
-        "p99": 39491
+        "p99": 39449
       },
       "frame_samples": 143,
       "frames": 7875,
       "idle_boundary_cycles": {
-        "count": 6954,
+        "count": 6909,
         "max": 1858,
-        "mean": 1053.252,
+        "mean": 1060.626,
         "min": 827,
         "p99": 1425
       },
-      "jps_bytes": 9978,
+      "jps_bytes": 10293,
       "keyboard_polls": 7876,
       "label": "full-song-v2",
-      "music_frame_hz": 49.563111,
+      "music_frame_hz": 49.537708,
       "mutated_player_bytes": 80,
-      "pit_writes": 50940,
+      "pit_writes": 50003,
       "row_boundary_cycles": {
-        "count": 921,
+        "count": 966,
         "max": 9096,
-        "mean": 3646.698,
+        "mean": 3648.287,
         "min": 1277,
-        "p99": 6973
+        "p99": 7004
       },
       "sample_loop_cycles": {
         "count": 1118250,
         "max": 269,
-        "mean": 230.375,
+        "mean": 230.348,
         "min": 229,
         "p99": 262
       }
