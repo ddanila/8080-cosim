@@ -92,6 +92,33 @@ def check_timeline_and_rows() -> None:
     assert starts == [(0, "F#2"), (2, "G2"), (4, "---")]
     assert score["rows"][1]["percussion"]["sample"] == 1
 
+    tremolo_score = opl_enhanced.compile_enhanced_score(
+        v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+        {
+            "selected_logical_notes": 2,
+            "notes": [{
+                "logical_note": 0,
+                "tremolo_analysis": {"emitted_depth_levels": 2},
+            }],
+        },
+    )
+    assert tremolo_score["frame_samples"] == 140
+    assert tremolo_score["sample_rate_hz"] == 6970
+    assert tremolo_score["rows"][0]["tone1"]["opl_tremolo_depth"] == 2
+    assert "opl_tremolo_depth" not in tremolo_score["rows"][2]["tone1"]
+    calibrated = opl_enhanced.compile_enhanced_score(
+        v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+        {
+            "notes": [{
+                "logical_note": 0,
+                "tremolo_analysis": {"emitted_depth_levels": 2},
+            }],
+        },
+        target_sample_rate=7100, frame_samples=143,
+    )
+    assert calibrated["sample_rate_hz"] == 7100
+    assert calibrated["frame_samples"] == 143
+
 
 def check_probe_fit() -> None:
     segment = opl_voices.NoteSegment(

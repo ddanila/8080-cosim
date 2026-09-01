@@ -72,6 +72,16 @@ def check_joint_envelope_fit() -> None:
     assert fit.envelope.predicted_levels == reference
     assert fit.envelope.squared_error == 0
     assert fit.squared_error_improvement > 0
+    baseline = opl_tremolo.opl_envelope.fit_envelope(
+        reference, key_off_frame=36, sustain_while_keyed=True,
+        counter_at_onset=8,
+    )
+    reused = opl_tremolo.fit_joint_envelope_tremolo(
+        reference, start_frame=7, key_off_frame=36,
+        sustain_while_keyed=True, counter_at_onset=8,
+        baseline_envelope=baseline,
+    )
+    assert reused == fit
 
 
 def check_bounds() -> None:

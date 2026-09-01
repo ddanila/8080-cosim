@@ -684,6 +684,20 @@ def main() -> int:
         help="emit guarded JPS v2 logical voices with fitted OPL envelopes",
     )
     parser.add_argument(
+        "--enhanced-tremolo", action="store_true",
+        help=("opt in to guarded joint envelope/tremolo fitting and JPS v2 "
+              "capability 03h; requires --enhanced-envelopes"),
+    )
+    parser.add_argument(
+        "--enhanced-frame-samples", type=int, choices=range(129, 144),
+        metavar="129..143",
+        help="measured per-song JPS v2 frame batch",
+    )
+    parser.add_argument(
+        "--enhanced-sample-rate", type=int, metavar="HZ",
+        help="measured per-song phase-step table rate (4000..12000 Hz)",
+    )
+    parser.add_argument(
         "--opl-oracle", type=Path,
         help="pinned jukupoly_opl_oracle executable required by --enhanced-envelopes",
     )
@@ -716,6 +730,15 @@ def main() -> int:
         parser.error("--seconds must be positive")
     if args.enhanced_envelopes and args.opl_oracle is None:
         parser.error("--enhanced-envelopes requires --opl-oracle")
+    if args.enhanced_tremolo and not args.enhanced_envelopes:
+        parser.error("--enhanced-tremolo requires --enhanced-envelopes")
+    if ((args.enhanced_frame_samples is not None or
+         args.enhanced_sample_rate is not None) and
+            not args.enhanced_envelopes):
+        parser.error("enhanced timing overrides require --enhanced-envelopes")
+    if (args.enhanced_sample_rate is not None and
+            not 4000 <= args.enhanced_sample_rate <= 12000):
+        parser.error("--enhanced-sample-rate must be 4000..12000")
     if args.opl_oracle is not None and not args.enhanced_envelopes:
         parser.error("--opl-oracle requires --enhanced-envelopes")
     if args.opl_oracle is not None and not args.opl_oracle.is_file():
@@ -830,9 +853,12 @@ def main() -> int:
         allocation = voice_evidence["three_voice_allocation"]
         fits, fit_report = opl_enhanced.fit_selected_envelopes(
             segments, logical_notes, allocation, probes, total_frames,
+            enable_tremolo=args.enhanced_tremolo,
         )
         score = opl_enhanced.compile_enhanced_score(
             score, logical_notes, allocation, fits, total_frames, fit_report,
+            target_sample_rate=args.enhanced_sample_rate,
+            frame_samples=args.enhanced_frame_samples,
         )
     args.output.write_text(json.dumps(score, indent=2) + "\n")
     conversion = score["conversion"]

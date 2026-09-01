@@ -202,6 +202,23 @@ duration guard, and is less severe than M3's 42,670-cycle synthetic worst
 frame.  Empty, zero-depth, and one-depth configurations also pass with their
 explicitly measured batches/rates.  Capability changes no packet or JPS size.
 
-Steps 1–4 therefore pass.  A real representative old/new/reference render,
-long-track size/duration measurement, and CS00000 A/B remain open; host policy
-continues to default to depth zero.
+Steps 1–4 therefore pass.
+
+The bounded real step also passes in
+[`OPL-TREMOLO-REAL-M4.json`](OPL-TREMOLO-REAL-M4.json).  The generic opt-in
+converter evaluates 61 selected notes in the first 66 seconds of “Opening to
+Hell”; ten have a direct AM path, a surviving 4-bit source change, and positive
+joint-fit improvement.  They include the independently selected logical note
+100.  No track name or instrument override participates in the policy.
+
+The controlled envelope-only and tremolo JPS files are both exactly 2,090
+bytes.  With the per-song measured choice of 143 samples/frame and a 7,100 Hz
+phase table, the tremolo result measures 7,100.2 Hz, 49.652 frames/s, and
+66.463 seconds for 66.000 seconds of source.  Its 40,943-cycle worst frame is
+below the M3 and M4 synthetic worst frames.  Cycle-rendered envelope-only and
+tremolo WAVs differ, and an exact 44.1 kHz Nuked reference hash is recorded.
+
+Step 5 is complete for this bounded representative excerpt.  Complete-track
+size/duration coverage and CS00000 A/B remain open; tremolo is available only
+through explicit `--enhanced-tremolo`, while normal conversion continues to
+default to depth zero.

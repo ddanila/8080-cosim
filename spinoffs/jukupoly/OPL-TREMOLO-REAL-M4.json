@@ -1,0 +1,166 @@
+{
+  "comparison_sample_rate_floor_hz": 6428.9885517,
+  "format": {
+    "envelope_capability": 1,
+    "envelope_jps_bytes": 2090,
+    "frame_samples": 143,
+    "phase_table_hz": 7100,
+    "tremolo_capability": 3,
+    "tremolo_jps_bytes": 2090
+  },
+  "gates": {
+    "both_durations_within_one_percent": true,
+    "both_music_clocks_within_one_percent": true,
+    "capabilities_are_01_and_03": true,
+    "comparison_reverses_every_emitted_note": true,
+    "directions_preserved": true,
+    "every_emitted_note_has_direct_quantized_benefit": true,
+    "generic_emitted_candidates_exist": true,
+    "known_candidate_100_retained": true,
+    "new_jps_below_soft_limit": true,
+    "new_sample_rate_above_comparison_floor": true,
+    "phase_table_rate_matches_measured_within_one_percent": true,
+    "player_below_song_window": true,
+    "sample_loop_hash_exact": true,
+    "target_wavs_differ": true,
+    "zero_packet_and_jps_growth": true
+  },
+  "opl_reference_wav": {
+    "bytes": 11642478,
+    "path_hint": "opening-66s-opl-reference.wav",
+    "sha256": "9204624159b0be0dea6be25f1793e6be54222bacd82dd82d3ebf122512ba9f67"
+  },
+  "player": {
+    "bytes": 4863,
+    "end_address_exclusive": "0x13ff",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f"
+  },
+  "policy": {
+    "emitted_notes": 10,
+    "first_tremolo_frame": 2050,
+    "logical_notes": [
+      51,
+      53,
+      59,
+      66,
+      77,
+      88,
+      89,
+      96,
+      100,
+      109
+    ],
+    "maximum_depth_levels": 2,
+    "selected_logical_notes": 61,
+    "semantic_candidates": 10,
+    "total_source_changed_frames_4bit": 433,
+    "total_squared_error_improvement": 333
+  },
+  "profiles": {
+    "envelope": {
+      "com_bytes": 4863,
+      "duration_seconds": 66.061714,
+      "effective_sample_hz": 7143.320613,
+      "frame_cycles": {
+        "count": 3300,
+        "max": 40353,
+        "mean": 34031.792,
+        "min": 33574,
+        "p99": 36371
+      },
+      "frame_samples": 143,
+      "frames": 3300,
+      "idle_boundary_cycles": {
+        "count": 3167,
+        "max": 1732,
+        "mean": 1107.896,
+        "min": 827,
+        "p99": 1438
+      },
+      "jps_bytes": 2090,
+      "keyboard_polls": 3301,
+      "label": "opening-66s-envelope",
+      "music_frame_hz": 49.953291,
+      "mutated_player_bytes": 89,
+      "pit_writes": 8571,
+      "row_boundary_cycles": {
+        "count": 133,
+        "max": 6757,
+        "mean": 2662.767,
+        "min": 1240,
+        "p99": 6757
+      },
+      "sample_loop_cycles": {
+        "count": 468600,
+        "max": 276,
+        "mean": 229.802,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "tremolo": {
+      "com_bytes": 4863,
+      "duration_seconds": 66.46256,
+      "effective_sample_hz": 7100.238089,
+      "frame_cycles": {
+        "count": 3300,
+        "max": 40943,
+        "mean": 34238.288,
+        "min": 33769,
+        "p99": 36831
+      },
+      "frame_samples": 143,
+      "frames": 3300,
+      "idle_boundary_cycles": {
+        "count": 3167,
+        "max": 1927,
+        "mean": 1311.731,
+        "min": 1022,
+        "p99": 1633
+      },
+      "jps_bytes": 2090,
+      "keyboard_polls": 3301,
+      "label": "opening-66s-tremolo",
+      "music_frame_hz": 49.652015,
+      "mutated_player_bytes": 89,
+      "pit_writes": 8582,
+      "row_boundary_cycles": {
+        "count": 133,
+        "max": 7080,
+        "mean": 2930.015,
+        "min": 1435,
+        "p99": 7080
+      },
+      "sample_loop_cycles": {
+        "count": 468600,
+        "max": 276,
+        "mean": 229.803,
+        "min": 229,
+        "p99": 262
+      }
+    }
+  },
+  "schema": "jukupoly-opl-tremolo-real-m4-report-v1",
+  "source": {
+    "name": "18 Opening to Hell.vgz",
+    "score": "jukupoly-opening-66s-tremolo-m4.json",
+    "score_sha256": "1899eb4de6d724bccb179024a908f7287dca439552a92782e7192174e3c1ca56",
+    "seconds": 66,
+    "vgm_sha256": "63984043441985356bfed7d3fd1d5e7f757958a7e76679e19276d6ef90cb6c0f"
+  },
+  "status": "C-cosim and render gates pass; physical A/B pending",
+  "target_wavs": {
+    "envelope": {
+      "bytes": 6331464,
+      "path_hint": "opening-66s-envelope.wav",
+      "sample_rate_hz": 48000,
+      "sha256": "d07f0ebbb2c1aad9c14ae8fce8338786c7be5edc2c134887e70e73e53cb19af1"
+    },
+    "tremolo": {
+      "bytes": 6369958,
+      "path_hint": "opening-66s-tremolo.wav",
+      "sample_rate_hz": 48000,
+      "sha256": "d9cdc6d68fb6e85ed7bb5cf816475219a4400a15b4b1e33ed556b1597501122a"
+    }
+  }
+}

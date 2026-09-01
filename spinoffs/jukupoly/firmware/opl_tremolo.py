@@ -150,17 +150,20 @@ def fit_joint_envelope_tremolo(
         key_off_frame: int | None, sustain_while_keyed: bool,
         counter_at_onset: int = 1,
         preserve_significant_directions: bool = True,
+        peak_level: int | None = None,
+        baseline_envelope: opl_envelope.EnvelopeFit | None = None,
 ) -> JointEnvelopeTremoloFit:
     """Jointly search the exact envelope packet and bounded tremolo depth."""
     reference = tuple(reference_levels)
-    fits = []
-    for depth in range(MAX_DEPTH + 1):
+    fits = [] if baseline_envelope is None else [(0, baseline_envelope)]
+    for depth in range(0 if baseline_envelope is None else 1, MAX_DEPTH + 1):
         fit = opl_envelope.fit_envelope(
             reference,
             key_off_frame=key_off_frame,
             sustain_while_keyed=sustain_while_keyed,
             counter_at_onset=counter_at_onset,
             preserve_significant_directions=preserve_significant_directions,
+            peak_level=peak_level,
             prediction_transform=lambda levels, selected=depth: (
                 simulate_tremolo(
                     levels, start_frame=start_frame,

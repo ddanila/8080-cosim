@@ -1,0 +1,2262 @@
+{
+  "schema": "jukupoly-song-v2",
+  "title": "Opening to Hell (OPL3/VGZ JukuPoly envelope+tremolo reduction)",
+  "composer": "Robert Prince",
+  "arrangement": "Automatic guarded OPL logical-voice reduction with three tones, fitted 4-bit envelopes, guarded shared tremolo, and concurrent percussion",
+  "source": {
+    "name": "18 Opening to Hell.vgz",
+    "format": "gzip-compressed VGM",
+    "compressed_sha256": "1ac9a5413b8cb3776530eeda2e555edc32854f6ed6a5af06799e650feb3249bc",
+    "vgm_sha256": "63984043441985356bfed7d3fd1d5e7f757958a7e76679e19276d6ef90cb6c0f",
+    "vgm_version": "1.51",
+    "chip": "YMF262 (OPL3)",
+    "chip_clock_hz": 14318180,
+    "gd3": {
+      "track_en": "Opening to Hell",
+      "game_en": "Doom II: Hell on Earth",
+      "system_en": "IBM PC/AT",
+      "author_en": "Robert Prince",
+      "date": "1994",
+      "creator": "NewRisingSun",
+      "notes": "Original file: D_OPENIN"
+    },
+    "license": "No new license asserted for the composition or source recording."
+  },
+  "sample_rate_hz": 7100,
+  "frame_samples": 143,
+  "defaults": {
+    "tone1": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone2": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone3": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    }
+  },
+  "conversion": {
+    "policy": "finite VGM stream only; never follow the loop back",
+    "duration_frames": 3300,
+    "duration_seconds": 66,
+    "source_duration_seconds": 66,
+    "enhanced_voice_schema": "jukupoly-opl-voice-evidence-v3",
+    "enhanced_allocator_schema": "jukupoly-opl-three-voice-allocation-v1",
+    "enhanced_allocation": {
+      "source_onsets": 62,
+      "protected_onsets": 41,
+      "retained_onsets": 62,
+      "gained_onsets": 21,
+      "missed_protected_onsets": 0
+    },
+    "enhanced_limitations": "Envelope plus guarded amplitude-tremolo slice: waveform, feedback, stereo, FM-modulator-only AM timbre, vibrato, and held-key pitch automation are not reproduced",
+    "enhanced_envelope_fit": {
+      "selected_logical_notes": 61,
+      "mean_absolute_error": 0.5612558077763874,
+      "maximum_error": 6,
+      "direction_mismatches": 0,
+      "tremolo_analysis": {
+        "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+        "enabled": true,
+        "semantic_candidates": 10,
+        "emitted_notes": 10,
+        "rejected_indirect_candidates": 0
+      },
+      "emitted_notes": [
+        {
+          "logical_note": 51,
+          "selected_frame": 2050,
+          "source_start_frame": 2050,
+          "source_end_frame": 2099,
+          "reference_frames": 114,
+          "reference_peak": 11,
+          "packet": {
+            "peak_level": 10,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 12,
+            "sustain_level": 8,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1.0087719298245614,
+          "maximum_error": 6,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 8,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -2,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -7,
+              "predicted_delta_levels": -7,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 38,
+            "best_depth_levels": 1,
+            "emitted_depth_levels": 1,
+            "baseline_squared_error": 205,
+            "fitted_squared_error": 203,
+            "squared_error_improvement": 2,
+            "improvement_per_frame": 0.017543859649122806,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 53,
+          "selected_frame": 2100,
+          "source_start_frame": 2100,
+          "source_end_frame": 2149,
+          "reference_frames": 114,
+          "reference_peak": 12,
+          "packet": {
+            "peak_level": 11,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 11,
+            "sustain_level": 8,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.8859649122807017,
+          "maximum_error": 6,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 9,
+              "predicted_delta_levels": 2,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -2,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -8,
+              "predicted_delta_levels": -9,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 47,
+            "best_depth_levels": 2,
+            "emitted_depth_levels": 2,
+            "baseline_squared_error": 204,
+            "fitted_squared_error": 189,
+            "squared_error_improvement": 15,
+            "improvement_per_frame": 0.13157894736842105,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 59,
+          "selected_frame": 2300,
+          "source_start_frame": 2300,
+          "source_end_frame": 2349,
+          "reference_frames": 114,
+          "reference_peak": 12,
+          "packet": {
+            "peak_level": 10,
+            "sustain_level": 10,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 11,
+            "sustain_level": 8,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1.043859649122807,
+          "maximum_error": 5,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 8,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -1,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -8,
+              "predicted_delta_levels": -9,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 44,
+            "best_depth_levels": 2,
+            "emitted_depth_levels": 2,
+            "baseline_squared_error": 203,
+            "fitted_squared_error": 201,
+            "squared_error_improvement": 2,
+            "improvement_per_frame": 0.017543859649122806,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 66,
+          "selected_frame": 2450,
+          "source_start_frame": 2450,
+          "source_end_frame": 2499,
+          "reference_frames": 114,
+          "reference_peak": 13,
+          "packet": {
+            "peak_level": 12,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 16,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 11,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 16,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.8421052631578947,
+          "maximum_error": 6,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 8,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -4,
+              "predicted_delta_levels": -3,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -8,
+              "predicted_delta_levels": -9,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 43,
+            "best_depth_levels": 2,
+            "emitted_depth_levels": 2,
+            "baseline_squared_error": 219,
+            "fitted_squared_error": 196,
+            "squared_error_improvement": 23,
+            "improvement_per_frame": 0.20175438596491227,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 77,
+          "selected_frame": 2750,
+          "source_start_frame": 2750,
+          "source_end_frame": 2799,
+          "reference_frames": 114,
+          "reference_peak": 12,
+          "packet": {
+            "peak_level": 13,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 16,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 11,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 16,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.9122807017543859,
+          "maximum_error": 6,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 7,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -4,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -7,
+              "predicted_delta_levels": -7,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 46,
+            "best_depth_levels": 2,
+            "emitted_depth_levels": 2,
+            "baseline_squared_error": 286,
+            "fitted_squared_error": 206,
+            "squared_error_improvement": 80,
+            "improvement_per_frame": 0.7017543859649122,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 88,
+          "selected_frame": 2900,
+          "source_start_frame": 2900,
+          "source_end_frame": 2949,
+          "reference_frames": 114,
+          "reference_peak": 12,
+          "packet": {
+            "peak_level": 10,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 64,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 12,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.8947368421052632,
+          "maximum_error": 4,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 7,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -1,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -7,
+              "predicted_delta_levels": -8,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 42,
+            "best_depth_levels": 1,
+            "emitted_depth_levels": 1,
+            "baseline_squared_error": 247,
+            "fitted_squared_error": 186,
+            "squared_error_improvement": 61,
+            "improvement_per_frame": 0.5350877192982456,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 89,
+          "selected_frame": 2950,
+          "source_start_frame": 2950,
+          "source_end_frame": 2999,
+          "reference_frames": 114,
+          "reference_peak": 12,
+          "packet": {
+            "peak_level": 11,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 16,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 12,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1,
+          "maximum_error": 5,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 7,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -3,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -8,
+              "predicted_delta_levels": -8,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 43,
+            "best_depth_levels": 1,
+            "emitted_depth_levels": 1,
+            "baseline_squared_error": 246,
+            "fitted_squared_error": 202,
+            "squared_error_improvement": 44,
+            "improvement_per_frame": 0.38596491228070173,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 96,
+          "selected_frame": 3050,
+          "source_start_frame": 3050,
+          "source_end_frame": 3099,
+          "reference_frames": 114,
+          "reference_peak": 12,
+          "packet": {
+            "peak_level": 10,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 12,
+            "sustain_level": 8,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1.1666666666666667,
+          "maximum_error": 4,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 7,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -4,
+              "predicted_delta_levels": -2,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -7,
+              "predicted_delta_levels": -7,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 48,
+            "best_depth_levels": 1,
+            "emitted_depth_levels": 1,
+            "baseline_squared_error": 242,
+            "fitted_squared_error": 233,
+            "squared_error_improvement": 9,
+            "improvement_per_frame": 0.07894736842105263,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 100,
+          "selected_frame": 3100,
+          "source_start_frame": 3100,
+          "source_end_frame": 3149,
+          "reference_frames": 114,
+          "reference_peak": 12,
+          "packet": {
+            "peak_level": 10,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 64,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 12,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.9298245614035088,
+          "maximum_error": 4,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 7,
+              "predicted_delta_levels": 1,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -1,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -8,
+              "predicted_delta_levels": -8,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 53,
+            "best_depth_levels": 1,
+            "emitted_depth_levels": 1,
+            "baseline_squared_error": 222,
+            "fitted_squared_error": 180,
+            "squared_error_improvement": 42,
+            "improvement_per_frame": 0.3684210526315789,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 109,
+          "selected_frame": 3250,
+          "source_start_frame": 3250,
+          "source_end_frame": 3299,
+          "reference_frames": 50,
+          "reference_peak": 11,
+          "packet": {
+            "peak_level": 10,
+            "sustain_level": 10,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 1,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 12,
+            "sustain_level": 9,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 1,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1.04,
+          "maximum_error": 3,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 6,
+              "predicted_delta_levels": 2,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -3,
+              "predicted_delta_levels": -1,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 29,
+            "best_depth_levels": 2,
+            "emitted_depth_levels": 2,
+            "baseline_squared_error": 155,
+            "fitted_squared_error": 100,
+            "squared_error_improvement": 55,
+            "improvement_per_frame": 1.1,
+            "semantic_candidate": true
+          }
+        }
+      ]
+    }
+  },
+  "notes": "This is a guarded envelope/tremolo reduction, not OPL emulation. Every enabled depth has a direct AM path, survives 4-bit source quantization, and improves a joint pinned-Nuked fit.",
+  "rows": [
+    {
+      "frames": 255,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 145
+    },
+    {
+      "frames": 4,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 96,
+      "tone1": {
+        "note": "C3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 1,
+          "attack_period_frames": 64,
+          "decay_period_frames": 0,
+          "release_period_frames": 1,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "note": "C4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 100,
+      "tone2": {
+        "note": "F#3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone3": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 100,
+      "tone2": {
+        "note": "D3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone3": {
+        "note": "D4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 100,
+      "tone2": {
+        "note": "G#3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone3": {
+        "note": "G#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "E3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 1,
+          "attack_period_frames": 32,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "note": "E4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 97,
+      "tone1": {
+        "note": "D3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 1,
+          "attack_period_frames": 32,
+          "decay_period_frames": 0,
+          "release_period_frames": 1,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "note": "D4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 191,
+      "tone2": {
+        "note": "A#3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone3": {
+        "note": "A#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 99,
+      "tone1": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C3",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 1,
+          "attack_period_frames": 64,
+          "decay_period_frames": 0,
+          "release_period_frames": 1,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 49,
+      "tone1": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 16,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 46,
+      "tone1": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 3,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 34,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 7,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 46,
+      "tone1": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 45,
+      "tone2": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 50,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 40,
+      "tone1": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 11,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 9,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 11,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 16,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 28,
+      "tone2": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 11,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 16,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 21,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 39,
+      "tone1": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 34,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 14,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 47,
+      "tone2": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone1": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone1": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 39,
+      "tone1": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone1": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 11,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 2
+      },
+      "tone2": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone1": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 46,
+      "percussion": {
+        "sample": 1,
+        "volume": 3,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 10,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 2
+      }
+    },
+    {
+      "frames": 34,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 7,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 4,
+      "tone1": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 13,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 45,
+      "tone2": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 45,
+      "tone1": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone1": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 16,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 2
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 40,
+      "tone1": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 9,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 28,
+      "tone2": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 21,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 39,
+      "tone1": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 13,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 16,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 2
+      }
+    },
+    {
+      "frames": 34,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 14,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 18,
+      "tone2": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone2": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 64,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 22,
+      "tone1": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 11,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 16,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 37,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 1
+      }
+    },
+    {
+      "frames": 34,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 14,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "F#4",
+        "opl_envelope": {
+          "peak_level": 1,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 43,
+      "tone2": {
+        "note": "A1",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 64,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 1
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 3,
+      "tone2": {
+        "note": "F1",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 8,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 14,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 12,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 49,
+      "tone1": {
+        "note": "E2",
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 45,
+      "tone1": {
+        "note": "C2",
+        "opl_envelope": {
+          "peak_level": 10,
+          "sustain_level": 10,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 1,
+          "sustain_while_keyed": true
+        },
+        "opl_tremolo_depth": 2
+      }
+    },
+    {
+      "frames": 4,
+      "percussion": {
+        "sample": 2,
+        "volume": 1,
+        "filter": 8,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "note": "---"
+      }
+    }
+  ]
+}

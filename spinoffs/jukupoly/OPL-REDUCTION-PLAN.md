@@ -719,6 +719,18 @@ floor.  This completes only the synthetic ABI/map/cycle gate; representative
 render, long-track, default host-policy, and physical-listening gates remain
 open.
 
+The first real target/render gate is also complete for a bounded 66-second
+“Opening to Hell” excerpt.  The opt-in, song-independent policy requires a
+direct AM path, a source AM change which survives 4-bit quantization, and a
+positive joint fit.  It emits ten of 61 selected notes, including the
+previously reported note 100.  [`OPL-TREMOLO-REAL-M4.json`](OPL-TREMOLO-REAL-M4.json)
+records identical 2,090-byte comparison JPS sizes, a 7,100.2 Hz effective
+sample rate, 49.652 frames/s, 0.70% duration error, a 40,943-cycle worst frame,
+and envelope/tremolo/Nuked WAV hashes.  The per-song 143-sample batch is
+measured rather than inherited from the more expensive synthetic fixture.
+The optional converter path is general and explicit; complete-track and
+physical-listening gates remain open, so it is not the default.
+
 ### M5: vibrato and held-note pitch writes
 
 Add the shared vibrato phase, temporary phase-step modulation, and generic

@@ -27,6 +27,7 @@ python3 tests/jukupoly_opl_enhanced_test.py
 python3 tests/jukupoly_opl_tremolo_test.py
 python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_target.py --check
+python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_real.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
   --song spinoffs/jukupoly/firmware/jukupoly-suspense.json \
