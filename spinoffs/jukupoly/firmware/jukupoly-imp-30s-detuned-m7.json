@@ -1,0 +1,2469 @@
+{
+  "schema": "jukupoly-song-v2",
+  "title": "The Imp's Song (OPL3/VGZ JukuPoly envelope+rearticulation+detuned-layers reduction)",
+  "composer": "Robert Prince",
+  "arrangement": "Automatic guarded OPL logical-voice reduction with three tones, fitted 4-bit envelopes, bounded same-pitch re-articulation, source-derived detuned spare layers, and concurrent percussion",
+  "source": {
+    "name": "03 The Imp's Song.vgz",
+    "format": "gzip-compressed VGM",
+    "compressed_sha256": "1d3670f1bd3ccccf6ecd510926101ba6c24fc466c38d37277edfe57c538839cc",
+    "vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16",
+    "vgm_version": "1.51",
+    "chip": "YMF262 (OPL3)",
+    "chip_clock_hz": 14318180,
+    "gd3": {
+      "track_en": "The Imp's Song",
+      "game_en": "Doom",
+      "system_en": "IBM PC/AT",
+      "author_en": "Robert Prince",
+      "date": "1993",
+      "creator": "NewRisingSun",
+      "notes": "Original file: D_E1M2\nE1M2: Nuclear Plant"
+    },
+    "license": "No new license asserted for the composition or source recording."
+  },
+  "sample_rate_hz": 7170,
+  "frame_samples": 143,
+  "defaults": {
+    "tone1": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone2": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    },
+    "tone3": {
+      "volume": 14,
+      "envelope_speed": 8,
+      "envelope_mode": "hold"
+    }
+  },
+  "conversion": {
+    "policy": "finite VGM stream only; never follow the loop back",
+    "total_vgm_samples": 1323000,
+    "duration_seconds": 30.0,
+    "loop_start_sample": 0,
+    "loop_samples": 6946103,
+    "duration_frames": 1500,
+    "opl_instruments": [
+      {
+        "id": "3757930a66cd",
+        "key_ons": 386,
+        "distinct_pitches": 5,
+        "melodic": true
+      },
+      {
+        "id": "a63310a05bc9",
+        "key_ons": 378,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "d2c4ab0fc4b7",
+        "key_ons": 252,
+        "distinct_pitches": 5,
+        "melodic": true
+      },
+      {
+        "id": "f530ee9b528b",
+        "key_ons": 252,
+        "distinct_pitches": 5,
+        "melodic": true
+      },
+      {
+        "id": "22c93b76b58b",
+        "key_ons": 237,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "514d6277991a",
+        "key_ons": 237,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "1c1ccdc75fb6",
+        "key_ons": 173,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "6979581c9a6a",
+        "key_ons": 126,
+        "distinct_pitches": 8,
+        "melodic": true
+      },
+      {
+        "id": "22d015793192",
+        "key_ons": 123,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "a31bfa12865c",
+        "key_ons": 81,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "0f2d3e0ffb94",
+        "key_ons": 78,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "fe35e4ffbf3c",
+        "key_ons": 45,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "93961778049a",
+        "key_ons": 45,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "0283f289d180",
+        "key_ons": 39,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "160bf9088ca2",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "7d90ff460ce1",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "f8fd09178549",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "5db923b308ce",
+        "key_ons": 20,
+        "distinct_pitches": 3,
+        "melodic": false
+      },
+      {
+        "id": "0af3f243b687",
+        "key_ons": 18,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "0ac68956cc02",
+        "key_ons": 9,
+        "distinct_pitches": 1,
+        "melodic": false
+      },
+      {
+        "id": "09b3c993cdb5",
+        "key_ons": 6,
+        "distinct_pitches": 1,
+        "melodic": false
+      }
+    ],
+    "source_melodic_channels_peak": 2,
+    "selected_distinct_tones_peak": 2,
+    "frames_with_more_than_three_distinct_notes": 0,
+    "percussion_hits": {
+      "1": 7,
+      "3": 33
+    },
+    "melodic_signature_overrides": [],
+    "percussion_signature_overrides": {},
+    "voice_selection_policy": "sustaining-note continuity before newly articulated notes",
+    "pitch_policy": "preserve the source MIDI octave; transpose down only when the 15-bit Juku phase step cannot encode the source note",
+    "source_duration_seconds": 30.0,
+    "enhanced_voice_schema": "jukupoly-opl-voice-evidence-v3",
+    "enhanced_allocator_schema": "jukupoly-opl-three-voice-allocation-v1",
+    "enhanced_allocation": {
+      "source_onsets": 15,
+      "protected_onsets": 13,
+      "retained_onsets": 15,
+      "gained_onsets": 2,
+      "missed_protected_onsets": 0
+    },
+    "enhanced_envelope_fit": {
+      "selected_logical_notes": 16,
+      "mean_absolute_error": 0.403901605044886,
+      "sample_weighted_mean_absolute_error": 0.6742209631728046,
+      "single_packet_sample_weighted_mean_absolute_error": 1.4408640226628895,
+      "maximum_error": 7,
+      "direction_mismatches": 0,
+      "unrepresentable_rearticulation_notes": 0,
+      "delivery_note_mae_limit": 2.0,
+      "rearticulation": {
+        "enabled": true,
+        "threshold_levels": 4,
+        "maximum_packets_per_note": 6,
+        "emitted_packets": 6,
+        "policy": "re-send a same-pitch non-legato ordinary ADSR packet at each bounded significant keyed rise; no target opcode or sample-loop change"
+      },
+      "detuned_layer_analysis": {
+        "enabled": true,
+        "target_sample_rate_hz": 7170,
+        "episodes": [
+          {
+            "logical_note": 0,
+            "start_frame": 0,
+            "end_frame": 706,
+            "minimum_spare_voices": 2,
+            "members": [
+              {
+                "segment": 1,
+                "phase_step": 839,
+                "packet": {
+                  "peak_level": 7,
+                  "sustain_level": 0,
+                  "attack_period_frames": 1,
+                  "decay_period_frames": 16,
+                  "release_period_frames": 0,
+                  "sustain_while_keyed": true
+                },
+                "articulation_packets": [
+                  {
+                    "frame_offset": 171,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 348,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 523,
+                    "packet": {
+                      "peak_level": 8,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  }
+                ],
+                "mean_absolute_error": 0.5914396887159533,
+                "maximum_error": 3,
+                "reference_frames": 771,
+                "reference_energy": 1897
+              },
+              {
+                "segment": 0,
+                "phase_step": 845,
+                "packet": {
+                  "peak_level": 7,
+                  "sustain_level": 0,
+                  "attack_period_frames": 1,
+                  "decay_period_frames": 16,
+                  "release_period_frames": 0,
+                  "sustain_while_keyed": true
+                },
+                "articulation_packets": [
+                  {
+                    "frame_offset": 171,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 348,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 523,
+                    "packet": {
+                      "peak_level": 8,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  }
+                ],
+                "mean_absolute_error": 0.5875486381322957,
+                "maximum_error": 3,
+                "reference_frames": 771,
+                "reference_energy": 1878
+              },
+              {
+                "segment": 3,
+                "phase_step": 848,
+                "packet": {
+                  "peak_level": 4,
+                  "sustain_level": 0,
+                  "attack_period_frames": 32,
+                  "decay_period_frames": 8,
+                  "release_period_frames": 0,
+                  "sustain_while_keyed": false
+                },
+                "articulation_packets": [],
+                "mean_absolute_error": 0.16990920881971466,
+                "maximum_error": 2,
+                "reference_frames": 771,
+                "reference_energy": 241
+              }
+            ]
+          }
+        ],
+        "logical_notes": 1,
+        "extra_voices": 2,
+        "member_envelope_fits": 3,
+        "member_sample_weighted_mean_absolute_error": 0.44963251188932124,
+        "member_maximum_error": 3,
+        "member_rearticulation_packets": 6,
+        "rejections": {
+          "noncontiguous_selection": 2
+        },
+        "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; require persistent spare capacity and individually passing envelope fits"
+      },
+      "tremolo_analysis": {
+        "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+        "enabled": false,
+        "semantic_candidates": 1,
+        "emitted_notes": 0,
+        "rejected_indirect_candidates": 1
+      },
+      "notes": [
+        {
+          "logical_note": 0,
+          "selected_frame": 0,
+          "source_start_frame": 0,
+          "source_end_frame": 706,
+          "reference_frames": 771,
+          "reference_peak": 13,
+          "packet": {
+            "peak_level": 14,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 15,
+            "sustain_level": 8,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1.119325551232166,
+          "single_packet_mean_absolute_error": 2.832684824902724,
+          "maximum_error": 7,
+          "significant_rearticulations": 4,
+          "articulation_packets": [
+            {
+              "frame_offset": 88,
+              "packet": {
+                "peak_level": 12,
+                "sustain_level": 0,
+                "attack_period_frames": 1,
+                "decay_period_frames": 8,
+                "release_period_frames": 0,
+                "sustain_while_keyed": true
+              }
+            },
+            {
+              "frame_offset": 170,
+              "packet": {
+                "peak_level": 13,
+                "sustain_level": 0,
+                "attack_period_frames": 1,
+                "decay_period_frames": 16,
+                "release_period_frames": 0,
+                "sustain_while_keyed": true
+              }
+            },
+            {
+              "frame_offset": 348,
+              "packet": {
+                "peak_level": 13,
+                "sustain_level": 0,
+                "attack_period_frames": 1,
+                "decay_period_frames": 16,
+                "release_period_frames": 0,
+                "sustain_while_keyed": true
+              }
+            },
+            {
+              "frame_offset": 524,
+              "packet": {
+                "peak_level": 14,
+                "sustain_level": 0,
+                "attack_period_frames": 1,
+                "decay_period_frames": 16,
+                "release_period_frames": 0,
+                "sustain_while_keyed": true
+              }
+            }
+          ],
+          "detuned_layer_episode": {
+            "logical_note": 0,
+            "start_frame": 0,
+            "end_frame": 706,
+            "minimum_spare_voices": 2,
+            "members": [
+              {
+                "segment": 1,
+                "phase_step": 839,
+                "packet": {
+                  "peak_level": 7,
+                  "sustain_level": 0,
+                  "attack_period_frames": 1,
+                  "decay_period_frames": 16,
+                  "release_period_frames": 0,
+                  "sustain_while_keyed": true
+                },
+                "articulation_packets": [
+                  {
+                    "frame_offset": 171,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 348,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 523,
+                    "packet": {
+                      "peak_level": 8,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  }
+                ],
+                "mean_absolute_error": 0.5914396887159533,
+                "maximum_error": 3,
+                "reference_frames": 771,
+                "reference_energy": 1897
+              },
+              {
+                "segment": 0,
+                "phase_step": 845,
+                "packet": {
+                  "peak_level": 7,
+                  "sustain_level": 0,
+                  "attack_period_frames": 1,
+                  "decay_period_frames": 16,
+                  "release_period_frames": 0,
+                  "sustain_while_keyed": true
+                },
+                "articulation_packets": [
+                  {
+                    "frame_offset": 171,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 348,
+                    "packet": {
+                      "peak_level": 7,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  },
+                  {
+                    "frame_offset": 523,
+                    "packet": {
+                      "peak_level": 8,
+                      "sustain_level": 0,
+                      "attack_period_frames": 2,
+                      "decay_period_frames": 16,
+                      "release_period_frames": 0,
+                      "sustain_while_keyed": true
+                    }
+                  }
+                ],
+                "mean_absolute_error": 0.5875486381322957,
+                "maximum_error": 3,
+                "reference_frames": 771,
+                "reference_energy": 1878
+              },
+              {
+                "segment": 3,
+                "phase_step": 848,
+                "packet": {
+                  "peak_level": 4,
+                  "sustain_level": 0,
+                  "attack_period_frames": 32,
+                  "decay_period_frames": 8,
+                  "release_period_frames": 0,
+                  "sustain_while_keyed": false
+                },
+                "articulation_packets": [],
+                "mean_absolute_error": 0.16990920881971466,
+                "maximum_error": 2,
+                "reference_frames": 771,
+                "reference_energy": 241
+              }
+            ]
+          },
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 13,
+              "predicted_delta_levels": 14,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -13,
+              "predicted_delta_levels": -11,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 198,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 8962,
+            "fitted_squared_error": 8962,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 18,
+          "selected_frame": 706,
+          "source_start_frame": 706,
+          "source_end_frame": 871,
+          "reference_frames": 230,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.21739130434782608,
+          "single_packet_mean_absolute_error": 0.21739130434782608,
+          "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 0,
+              "reference_delta_levels": 5,
+              "predicted_delta_levels": 0,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -4,
+              "predicted_delta_levels": -4,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": -1,
+              "significant": false,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 70,
+            "fitted_squared_error": 70,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 17,
+          "selected_frame": 871,
+          "source_start_frame": 706,
+          "source_end_frame": 1412,
+          "reference_frames": 586,
+          "reference_peak": 13,
+          "packet": {
+            "peak_level": 12,
+            "sustain_level": 0,
+            "attack_period_frames": 2,
+            "decay_period_frames": 16,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 15,
+            "sustain_level": 7,
+            "attack_period_frames": 2,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1.0426621160409557,
+          "single_packet_mean_absolute_error": 2.4829351535836177,
+          "maximum_error": 5,
+          "significant_rearticulations": 2,
+          "articulation_packets": [
+            {
+              "frame_offset": 183,
+              "packet": {
+                "peak_level": 13,
+                "sustain_level": 0,
+                "attack_period_frames": 1,
+                "decay_period_frames": 16,
+                "release_period_frames": 0,
+                "sustain_while_keyed": true
+              }
+            },
+            {
+              "frame_offset": 360,
+              "packet": {
+                "peak_level": 14,
+                "sustain_level": 0,
+                "attack_period_frames": 1,
+                "decay_period_frames": 16,
+                "release_period_frames": 0,
+                "sustain_while_keyed": true
+              }
+            }
+          ],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 11,
+              "predicted_delta_levels": 14,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -13,
+              "predicted_delta_levels": -11,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 160,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 6329,
+            "fitted_squared_error": 6329,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 23,
+          "selected_frame": 872,
+          "source_start_frame": 872,
+          "source_end_frame": 882,
+          "reference_frames": 75,
+          "reference_peak": 6,
+          "packet": {
+            "peak_level": 6,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 4,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 6,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 4,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.14666666666666667,
+          "single_packet_mean_absolute_error": 0.14666666666666667,
+          "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": -1,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -5,
+              "predicted_delta_levels": -5,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 11,
+            "fitted_squared_error": 11,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 24,
+          "selected_frame": 883,
+          "source_start_frame": 883,
+          "source_end_frame": 1049,
+          "reference_frames": 231,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.18614718614718614,
+          "single_packet_mean_absolute_error": 0.18614718614718614,
+          "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -4,
+              "predicted_delta_levels": -4,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": -1,
+              "significant": false,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 43,
+            "fitted_squared_error": 43,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 29,
+          "selected_frame": 1048,
+          "source_start_frame": 1048,
+          "source_end_frame": 1060,
+          "reference_frames": 77,
+          "reference_peak": 6,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.19480519480519481,
+          "single_packet_mean_absolute_error": 0.19480519480519481,
+          "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 0,
+              "reference_delta_levels": 6,
+              "predicted_delta_levels": 0,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": 0,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -5,
+              "predicted_delta_levels": -5,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 35,
+            "fitted_squared_error": 35,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 30,
+          "selected_frame": 1060,
+          "source_start_frame": 1060,
+          "source_end_frame": 1224,
+          "reference_frames": 229,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.20087336244541484,
+          "single_packet_mean_absolute_error": 0.20087336244541484,
+          "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -4,
+              "predicted_delta_levels": -4,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": -1,
+              "significant": false,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 46,
+            "fitted_squared_error": 46,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 35,
+          "selected_frame": 1225,
+          "source_start_frame": 1225,
+          "source_end_frame": 1237,
+          "reference_frames": 77,
+          "reference_peak": 6,
+          "packet": {
+            "peak_level": 6,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 1,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 6,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 1,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.11688311688311688,
+          "single_packet_mean_absolute_error": 0.11688311688311688,
+          "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": -1,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -5,
+              "predicted_delta_levels": -5,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 9,
+            "fitted_squared_error": 9,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 36,
+          "selected_frame": 1236,
+          "source_start_frame": 1236,
+          "source_end_frame": 1399,
+          "reference_frames": 199,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 2,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 2,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.23618090452261306,
+          "single_packet_mean_absolute_error": 0.23618090452261306,
+          "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -4,
+              "predicted_delta_levels": -3,
+              "significant": true,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": -2,
+              "significant": false,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 47,
+            "fitted_squared_error": 47,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 41,
+          "selected_frame": 1401,
+          "source_start_frame": 1401,
+          "source_end_frame": 1412,
+          "reference_frames": 56,
+          "reference_peak": 6,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.26785714285714285,
+          "single_packet_mean_absolute_error": 0.26785714285714285,
+          "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 0,
+              "reference_delta_levels": 6,
+              "predicted_delta_levels": 0,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": 0,
+              "reference_delta_levels": -1,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -5,
+              "predicted_delta_levels": -5,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 35,
+            "fitted_squared_error": 35,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 42,
+          "selected_frame": 1412,
+          "source_start_frame": 1412,
+          "source_end_frame": 1500,
+          "reference_frames": 88,
+          "reference_peak": 13,
+          "packet": {
+            "peak_level": 15,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 15,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 1.7613636363636365,
+          "single_packet_mean_absolute_error": 1.7613636363636365,
+          "maximum_error": 7,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 1,
+              "reference_delta_levels": 13,
+              "predicted_delta_levels": 15,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -10,
+              "predicted_delta_levels": -9,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 38,
+            "best_depth_levels": 1,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 445,
+            "fitted_squared_error": 436,
+            "squared_error_improvement": 9,
+            "improvement_per_frame": 0.10227272727272728,
+            "semantic_candidate": true
+          }
+        },
+        {
+          "logical_note": 45,
+          "selected_frame": 1413,
+          "source_start_frame": 1413,
+          "source_end_frame": 1425,
+          "reference_frames": 67,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 16,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 16,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.11940298507462686,
+          "single_packet_mean_absolute_error": 0.11940298507462686,
+          "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": 0,
+              "predicted": -1,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": -1,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -5,
+              "predicted_delta_levels": -4,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 8,
+            "fitted_squared_error": 8,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 48,
+          "selected_frame": 1435,
+          "source_start_frame": 1435,
+          "source_end_frame": 1450,
+          "reference_frames": 65,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.12307692307692308,
+          "single_packet_mean_absolute_error": 0.12307692307692308,
+          "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -5,
+              "predicted_delta_levels": -5,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 8,
+            "fitted_squared_error": 8,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 52,
+          "selected_frame": 1457,
+          "source_start_frame": 1457,
+          "source_end_frame": 1471,
+          "reference_frames": 43,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.3488372093023256,
+          "single_packet_mean_absolute_error": 0.3488372093023256,
+          "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 0,
+              "reference_delta_levels": 5,
+              "predicted_delta_levels": 0,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -5,
+              "predicted_delta_levels": -5,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 35,
+            "fitted_squared_error": 35,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 54,
+          "selected_frame": 1479,
+          "source_start_frame": 1479,
+          "source_end_frame": 1490,
+          "reference_frames": 21,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.38095238095238093,
+          "single_packet_mean_absolute_error": 0.38095238095238093,
+          "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 1,
+              "predicted": 0,
+              "reference_delta_levels": 5,
+              "predicted_delta_levels": 0,
+              "significant": true,
+              "match": true
+            },
+            "decay": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "release": {
+              "reference": -1,
+              "predicted": -1,
+              "reference_delta_levels": -4,
+              "predicted_delta_levels": -5,
+              "significant": true,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 28,
+            "fitted_squared_error": 28,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        },
+        {
+          "logical_note": 58,
+          "selected_frame": 1491,
+          "source_start_frame": 1491,
+          "source_end_frame": 1500,
+          "reference_frames": 9,
+          "reference_peak": 5,
+          "packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
+          "mean_absolute_error": 0.0,
+          "single_packet_mean_absolute_error": 0.0,
+          "maximum_error": 0,
+          "significant_rearticulations": 0,
+          "articulation_packets": [],
+          "detuned_layer_episode": null,
+          "unrepresentable_rearticulation": false,
+          "directions": {
+            "attack": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            },
+            "decay": {
+              "reference": 0,
+              "predicted": 0,
+              "reference_delta_levels": 0,
+              "predicted_delta_levels": 0,
+              "significant": false,
+              "match": true
+            }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 0,
+            "fitted_squared_error": 0,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
+          }
+        }
+      ]
+    },
+    "enhanced_held_pitch": {
+      "enabled": false,
+      "emitted_legato_packets": 0,
+      "phase_step_generation_hz": null,
+      "policy": "50 Hz source pitch points quantized to target phase steps; emit only changes while the same logical note retains its target channel"
+    },
+    "enhanced_detuned_layers": {
+      "enabled": true,
+      "logical_notes": 1,
+      "extra_voices": 2,
+      "member_rearticulation_packets": 6,
+      "policy": "fixed source-derived phase steps on persistently spare voices; bounded member envelope retriggers use ordinary non-legato ADSR packets"
+    },
+    "enhanced_vibrato": {
+      "enabled": false,
+      "source_lfo_hz": 6.068835788302952,
+      "phase_increment": 7955,
+      "phase_step_generation_hz": null,
+      "selected_channel_frames": 0,
+      "direct_channel_frames": 0,
+      "direct_logical_notes": 0,
+      "emitted_logical_notes": 0,
+      "packets_with_vibrato": 0,
+      "held_setting_updates": 0,
+      "held_disable_updates": 0,
+      "frame_decisions": {},
+      "policy": "emit only when every active audible operator/layer has a direct common-pitch VIB path and resolves to one bounded target delta; update changes through legato packets"
+    },
+    "enhanced_limitations": "Envelope/detuned-layer M7 slice: waveform, feedback, stereo, tremolo, and vibrato are not reproduced; held-key pitch automation is not reproduced"
+  },
+  "notes": "This is a guarded envelope-aware reduction, not OPL emulation. Every packet is fitted from pinned-Nuked post-envelope attenuation. Stable source members with distinct fixed target steps replace a merged logical voice only for episodes with persistent spare capacity; each member has an independent guarded envelope fit.",
+  "rows": [
+    {
+      "frames": 132,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 7,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 845
+      },
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 7,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 839
+      },
+      "tone3": {
+        "opl_envelope": {
+          "peak_level": 4,
+          "sustain_level": 0,
+          "attack_period_frames": 32,
+          "decay_period_frames": 8,
+          "release_period_frames": 0,
+          "sustain_while_keyed": false
+        },
+        "phase_step": 848
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 138,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 7,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 845
+      },
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 7,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 839
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 6,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 137,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 7,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 845
+      },
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 7,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 839
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 12,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 4,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 139,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 8,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 845
+      },
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 8,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "phase_step": 839
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 133,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 1,
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "release_period_frames": 4,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "tone3": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 10,
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 6,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 4,
+          "release_period_frames": 4,
+          "sustain_while_keyed": true
+        },
+        "note": "E2"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 132,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 1,
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        },
+        "note": "E2"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 13,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 132,
+      "tone1": {
+        "note": "---"
+      },
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 1,
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "release_period_frames": 8,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 11,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      },
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 6,
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 6,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        },
+        "note": "E2"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 5,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 14,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 2,
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 131,
+      "tone2": {
+        "note": "---"
+      }
+    },
+    {
+      "frames": 12,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 9,
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 2,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 12,
+          "sustain_level": 0,
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 11,
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        },
+        "note": "E2"
+      },
+      "percussion": {
+        "sample": 3,
+        "volume": 1,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      },
+      "tone2": {
+        "note": "---"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 12,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 0,
+          "attack_period_frames": 0,
+          "decay_period_frames": 16,
+          "release_period_frames": 4,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 10,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 15,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 7,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 14,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 8,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 10,
+      "percussion": {
+        "sample": 3,
+        "volume": 2,
+        "filter": 9,
+        "offset": 1
+      }
+    },
+    {
+      "frames": 1,
+      "tone1": {
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 0,
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "F#2"
+      }
+    },
+    {
+      "frames": 9,
+      "tone2": {
+        "opl_envelope": {
+          "peak_level": 5,
+          "sustain_level": 5,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        },
+        "note": "E2"
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 1,
+        "filter": 7,
+        "offset": 1
+      }
+    }
+  ]
+}

@@ -1105,14 +1105,33 @@ Thirty-three tracks, 5,303 selected logical notes, 58,922 source frames, and
 regression.  Imp alone contributes 9,157 slots over 5,488 frames, with at most
 19.0 cents and 14 target-step units of separation.
 
-This closes source prevalence only.  Emission remains open until a generic
-episode policy proves that a duplicate never displaces a real selected onset,
-uses an exact source-derived phase step, partitions rather than multiplies the
-logical envelope level, and restores the base voice correctly when spare
-capacity changes.  It must then pass full-song size/timing/render and physical
-listening gates.  The existing three-tone sample loop already pays for all
-three accumulators, so a passing host representation should require no new
-per-sample target work.
+The first guarded emission checkpoint is now recorded in
+[`OPL-IMP-DETUNED-M7.json`](OPL-IMP-DETUNED-M7.json).  It never dynamically
+steals a channel: an episode is eligible only when one logical voice remains
+selected contiguously and the required spare capacity persists for the whole
+episode.  It replaces that merged logical voice with at most three strongest
+source members having distinct, fixed target phase steps and independently
+passing oracle-derived envelope fits.  The members use their own measured
+4-bit levels rather than copies of the merged envelope.  At episode end the
+ordinary allocator releases them before assigning later real onsets.
+
+For the first 30 seconds of Imp, the intro logical voice becomes three members
+at phase steps 839, 845, and 848.  Their individual envelopes need six bounded
+ordinary ADSR re-triggers in total, so this checkpoint deliberately composes
+the already guarded re-articulation policy; another later logical voice uses
+the normal two re-triggers.  All protected onsets remain and no selected note
+is left above the two-level delivery limit.  The 1,405-byte JPS runs with the
+unchanged 4,537-byte player and frozen sample loop at 7,159.9 samples/s,
+50.069 frames/s, and 29.958 seconds; its worst frame is 40,690 cycles.  Thus
+the episode policy, target encoding, timing, size, and three-way offline render
+gate pass without a player/state/hot-loop change.
+
+This is still a progressive experiment, not a library promotion.  Complete-
+track conversion and physical CS00000 comparison against both the accepted
+v1 fallback and pinned-Nuked reference remain mandatory.  Tracks lacking a
+contiguous episode, persistent spare capacity, distinct fixed steps, or a
+bounded per-member envelope fit continue unchanged through the ordinary
+logical-voice path.
 
 ## Required reporting for every implementation change
 

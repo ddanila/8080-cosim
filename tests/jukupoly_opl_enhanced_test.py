@@ -114,6 +114,69 @@ def check_timeline_and_rows() -> None:
     }
     assert "rearticulation" in articulated["title"]
 
+    detuned = opl_enhanced.compile_enhanced_score(
+        v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+        {
+            "selected_logical_notes": 2,
+            "notes": [
+                {
+                    "logical_note": 0, "selected_frame": 0,
+                    "articulation_packets": [{
+                        "frame_offset": 1,
+                        "packet": envelope(3).packet(),
+                    }],
+                    "tremolo_analysis": {"emitted_depth_levels": 0},
+                },
+                {
+                    "logical_note": 1, "selected_frame": 2,
+                    "articulation_packets": [{
+                        "frame_offset": 1,
+                        "packet": envelope(8).packet(),
+                    }],
+                    "tremolo_analysis": {"emitted_depth_levels": 0},
+                },
+            ],
+            "detuned_layer_analysis": {"episodes": [{
+                "logical_note": 0, "start_frame": 0, "end_frame": 2,
+                "members": [
+                    {"segment": 10, "phase_step": 777,
+                     "packet": envelope(7).packet(),
+                     "articulation_packets": [{
+                         "frame_offset": 1,
+                         "packet": envelope(5).packet(),
+                     }]},
+                    {"segment": 11, "phase_step": 785,
+                     "packet": envelope(6).packet()},
+                ],
+            }]},
+        },
+    )
+    assert detuned["rows"][0]["tone1"] == {
+        "phase_step": 777, "opl_envelope": envelope(7).packet(),
+    }
+    assert detuned["rows"][0]["tone2"] == {
+        "phase_step": 785, "opl_envelope": envelope(6).packet(),
+    }
+    detuned_frame = 0
+    detuned_events = {}
+    for row in detuned["rows"]:
+        detuned_events[detuned_frame] = row
+        detuned_frame += row["frames"]
+    assert detuned_events[1]["tone1"] == {
+        "phase_step": 777, "opl_envelope": envelope(5).packet(),
+    }
+    assert detuned_events[2]["tone2"] == {"note": "---"}
+    assert detuned_events[3]["tone1"] == {
+        "note": "G2", "opl_envelope": envelope(8).packet(),
+    }
+    assert detuned["conversion"]["enhanced_detuned_layers"][
+        "member_rearticulation_packets"
+    ] == 1
+    assert "detuned-layers" in detuned["title"]
+    assert "detuned-layer M7" in detuned["conversion"][
+        "enhanced_limitations"
+    ]
+
     tremolo_score = opl_enhanced.compile_enhanced_score(
         v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
         {
@@ -281,6 +344,62 @@ def check_probe_fit() -> None:
     assert set(fits) == {0}
     assert report["selected_logical_notes"] == 1
     assert 1 <= fits[0].peak_level <= 15
+
+    layered_segments = [
+        opl_voices.NoteSegment(
+            identifier, 0, identifier, 0, 3 * 882,
+            f"layer{identifier}", 128, 8, True,
+            (opl_voices.PitchPoint(
+                0, 0x200 + identifier, 4, 42.0 + identifier * 0.2,
+            ),),
+        )
+        for identifier in range(2)
+    ]
+    layered_note = opl_voices.LogicalNote(
+        0, 0, 3 * 882, (0, 1), ("layer0", "layer1"),
+        ((0, 0), (0, 1)), 42.0, 42.0, 128, 8, True,
+    )
+    layered_probes = []
+    for channel in range(2):
+        for frame, attenuation in enumerate((32, 32, 32, 64, 128, 511)):
+            layered_probes.append(opl_oracle.OracleChannelProbe(
+                channel,
+                opl_oracle.OracleProbe(
+                    sample=frame * 882, f_number=0x200 + channel,
+                    block=4, key=frame < 3,
+                    modulator_attenuation=0, carrier_attenuation=0,
+                    modulator_output_attenuation=511,
+                    carrier_output_attenuation=attenuation, connection=0,
+                    modulator_am=False, carrier_am=False,
+                    modulator_vibrato=False, carrier_vibrato=False,
+                    modulator_vibrato_f_number=0x200 + channel,
+                    carrier_vibrato_f_number=0x200 + channel,
+                    modulator_stage=0, carrier_stage=0, vibrato_phase=0,
+                    tremolo_phase=0, tremolo_value=0,
+                ),
+            ))
+    _layered_fits, layered_report = opl_enhanced.fit_selected_envelopes(
+        layered_segments, [layered_note], {
+            "schema": "jukupoly-opl-three-voice-allocation-v1",
+            "frames": [
+                {"frame": 0, "selected": [{
+                    "logical_note": 0, "logical_voice": 0,
+                    "midi_note": 42,
+                }]},
+                {"frame": 3, "selected": []},
+            ],
+        }, layered_probes, 6, enable_detuned_layers=True,
+    )
+    detuned = layered_report["detuned_layer_analysis"]
+    assert detuned["logical_notes"] == 1
+    assert detuned["extra_voices"] == 1
+    assert [
+        member["segment"] for member in detuned["episodes"][0]["members"]
+    ] == [0, 1]
+    assert len({
+        member["phase_step"]
+        for member in detuned["episodes"][0]["members"]
+    }) == 2
 
 
 def check_direct_vibrato_score() -> None:
@@ -474,8 +593,8 @@ def main() -> int:
     check_direct_vibrato_score()
     check_timing_recalibration()
     print("JUKUPOLY-OPL-ENHANCED: PASS allocation channel-continuity "
-          "percussion envelope-fit bounded-rearticulation held-pitch-legato "
-          "direct-vibrato v2-score")
+          "percussion envelope-fit bounded-rearticulation detuned-layers "
+          "held-pitch-legato direct-vibrato v2-score")
     return 0
 
 

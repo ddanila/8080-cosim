@@ -34,6 +34,8 @@ class SelectedTone:
     logical_note: int
     logical_voice: int
     midi_note: int
+    layer_member: int | None = None
+    layer_phase_step: int | None = None
 
 
 @dataclass(frozen=True)
@@ -67,8 +69,7 @@ def assign_target_channels(selected: tuple[SelectedTone, ...],
     for channel, old in enumerate(previous):
         if old is None:
             continue
-        match = next((item for item in remaining
-                      if item.logical_note == old.logical_note), None)
+        match = next((item for item in remaining if item == old), None)
         if match is not None:
             result[channel] = match
             remaining.remove(match)
@@ -76,13 +77,18 @@ def assign_target_channels(selected: tuple[SelectedTone, ...],
         if result[channel] is not None or old is None:
             continue
         match = next((item for item in remaining
-                      if item.logical_voice == old.logical_voice), None)
+                      if item.layer_member is None and
+                      old.layer_member is None and
+                      item.logical_voice == old.logical_voice), None)
         if match is not None:
             result[channel] = match
             remaining.remove(match)
     free = [index for index, item in enumerate(result) if item is None]
     for channel, item in zip(free, sorted(
-            remaining, key=lambda tone: (tone.midi_note, tone.logical_note))):
+            remaining, key=lambda tone: (
+                tone.midi_note, tone.logical_note,
+                -1 if tone.layer_member is None else tone.layer_member,
+            ))):
         result[channel] = item
     return tuple(result)
 
@@ -143,12 +149,27 @@ def _logical_level_without_am(
     return round(15 * min(1.0, amplitude))
 
 
+def _segment_level(
+        segment: opl_voices.NoteSegment, frame: int,
+        probes: dict[tuple[int, int], opl_oracle.OracleProbe],
+) -> int:
+    probe = probes[(frame, segment.bank * 9 + segment.channel)]
+    amplitude = opl_envelope.opl_channel_amplitude(
+        probe.modulator_output_attenuation,
+        probe.carrier_output_attenuation,
+        probe.connection,
+    )
+    return round(15 * min(1.0, amplitude))
+
+
 def fit_selected_envelopes(
         segments: list[opl_voices.NoteSegment],
         notes: list[opl_voices.LogicalNote], allocation: dict,
         channel_probes: Iterable[opl_oracle.OracleChannelProbe], frames: int,
         *, enable_tremolo: bool = False,
         enable_rearticulation: bool = False,
+        enable_detuned_layers: bool = False,
+        target_sample_rate: int = ENHANCED_SAMPLE_RATE,
 ) -> tuple[dict[int, opl_envelope.EnvelopeFit], dict]:
     """Fit every logical note selected within the excerpt.
 
@@ -157,10 +178,17 @@ def fit_selected_envelopes(
     """
     timeline = selected_timeline(allocation, frames)
     first_selected: dict[int, int] = {}
+    selected_frames: dict[int, list[int]] = defaultdict(list)
+    spare_by_frame = []
     for frame, selected in enumerate(timeline):
+        spare_by_frame.append(3 - len(selected))
         for item in selected:
             first_selected.setdefault(item.logical_note, frame)
+            selected_frames[item.logical_note].append(frame)
     by_identifier = {note.identifier: note for note in notes}
+    segments_by_identifier = {
+        segment.identifier: segment for segment in segments
+    }
     probe_table = _probe_table(channel_probes)
     channel_starts: dict[tuple[int, int], list[int]] = defaultdict(list)
     for segment in segments:
@@ -176,6 +204,8 @@ def fit_selected_envelopes(
     emitted_rearticulation_packets = 0
     single_packet_absolute_error = 0
     fitted_absolute_error = 0
+    detuned_episodes = []
+    detuned_rejections: Counter[str] = Counter()
     for identifier, selected_frame in sorted(first_selected.items(),
                                               key=lambda item: item[1]):
         note = by_identifier[identifier]
@@ -346,8 +376,194 @@ def fit_selected_envelopes(
         unrepresentable_rearticulation = (
             rearticulations > 0 and
             (not articulation_packets or
-             mean_absolute_error > MAX_DELIVERY_NOTE_MAE)
+            mean_absolute_error > MAX_DELIVERY_NOTE_MAE)
         )
+        detuned_episode = None
+        note_selected_frames = selected_frames[identifier]
+        if (enable_detuned_layers and note_selected_frames and
+                len(note.members) > 1):
+            episode_start = note_selected_frames[0]
+            episode_end = note_selected_frames[-1] + 1
+            contiguous = note_selected_frames == list(range(
+                episode_start, episode_end,
+            ))
+            minimum_spare = min(spare_by_frame[frame]
+                                for frame in note_selected_frames)
+            member_candidates = []
+            if not contiguous:
+                detuned_rejections["noncontiguous_selection"] += 1
+            elif minimum_spare <= 0:
+                detuned_rejections["no_persistent_spare_voice"] += 1
+            else:
+                for member_identifier in note.members:
+                    segment = segments_by_identifier[member_identifier]
+                    member_start = opl_voices.analysis_frame(segment.start)
+                    member_end = opl_voices.analysis_frame(segment.end)
+                    if member_start > episode_start:
+                        detuned_rejections[
+                            "member_not_active_for_episode"
+                        ] += 1
+                        continue
+                    if member_end != episode_end:
+                        detuned_rejections["member_lifetime_mismatch"] += 1
+                        continue
+                    mapped_tone = next(
+                        tone for tone in timeline[episode_start]
+                        if tone.logical_note == identifier
+                    )
+                    octave_offset = (
+                        mapped_tone.midi_note - round(note.initial_pitch)
+                    )
+                    member_steps = {
+                        _midi_phase_step(
+                            pitch_at + octave_offset, target_sample_rate,
+                        )
+                        for frame in range(episode_start, episode_end)
+                        for pitch_at in [_pitch_at_frame(segment, frame)]
+                        if pitch_at is not None
+                    }
+                    if len(member_steps) != 1:
+                        detuned_rejections["member_pitch_not_fixed"] += 1
+                        continue
+                    member_reference = tuple(
+                        _segment_level(segment, frame, probe_table)
+                        for frame in range(episode_start, reference_end + 1)
+                    )
+                    member_key_off = episode_end - episode_start
+                    if not 0 <= member_key_off < len(member_reference):
+                        member_key_off = None
+                    member_fit = opl_envelope.fit_envelope(
+                        member_reference,
+                        key_off_frame=member_key_off,
+                        sustain_while_keyed=segment.sustained_envelope,
+                        counter_at_onset=(episode_start + 1) & 0xFF,
+                        peak_level=(1 if max(member_reference) == 0 else None),
+                        preserve_significant_directions=True,
+                    )
+                    member_rearticulation_frames = (
+                        opl_envelope.significant_rearticulation_frames(
+                            member_reference, member_key_off,
+                        )
+                    )
+                    if any(
+                            offset >= episode_end - episode_start
+                            for offset in member_rearticulation_frames):
+                        detuned_rejections[
+                            "member_rearticulation_after_episode"
+                        ] += 1
+                        continue
+                    member_articulation_packets = []
+                    member_predicted = member_fit.predicted_levels
+                    member_absolute_error = member_fit.absolute_error
+                    member_maximum_error = member_fit.maximum_error
+                    if (member_rearticulation_frames and
+                            len(member_rearticulation_frames) <=
+                            MAX_REARTICULATIONS_PER_NOTE):
+                        boundaries = (
+                            0, *member_rearticulation_frames,
+                            len(member_reference),
+                        )
+                        pieces = []
+                        predicted_parts = []
+                        for piece_index, (begin, end) in enumerate(zip(
+                                boundaries, boundaries[1:])):
+                            piece_reference = member_reference[begin:end]
+                            piece_key_off = (
+                                member_key_off - begin
+                                if member_key_off is not None and
+                                begin <= member_key_off < end else None
+                            )
+                            piece = opl_envelope.fit_envelope(
+                                piece_reference,
+                                key_off_frame=piece_key_off,
+                                sustain_while_keyed=(
+                                    segment.sustained_envelope
+                                ),
+                                counter_at_onset=(
+                                    episode_start + begin + 1
+                                ) & 0xFF,
+                                peak_level=(
+                                    1 if max(piece_reference) == 0 else None
+                                ),
+                                preserve_significant_directions=True,
+                            )
+                            pieces.append(piece)
+                            predicted_parts.extend(piece.predicted_levels)
+                            if piece_index:
+                                member_articulation_packets.append({
+                                    "frame_offset": begin,
+                                    "packet": piece.packet(),
+                                })
+                        member_fit = pieces[0]
+                        member_predicted = tuple(predicted_parts)
+                        member_absolute_error = sum(
+                            abs(expected - actual)
+                            for expected, actual in zip(
+                                member_reference, member_predicted,
+                            )
+                        )
+                        member_maximum_error = max(
+                            abs(expected - actual)
+                            for expected, actual in zip(
+                                member_reference, member_predicted,
+                            )
+                        )
+                    member_directions = opl_envelope.envelope_directions(
+                        member_reference, member_predicted,
+                        member_key_off,
+                    )
+                    member_mae = member_absolute_error / len(member_reference)
+                    member_unrepresented = (
+                        bool(member_rearticulation_frames) and
+                        (not member_articulation_packets or
+                         member_mae > MAX_DELIVERY_NOTE_MAE)
+                    )
+                    if (member_directions["mismatches"] or
+                            member_unrepresented or
+                            member_mae > MAX_DELIVERY_NOTE_MAE):
+                        if member_directions["mismatches"]:
+                            detuned_rejections["member_direction_mismatch"] += 1
+                        if member_unrepresented:
+                            detuned_rejections[
+                                "member_rearticulation"
+                            ] += 1
+                        if member_mae > MAX_DELIVERY_NOTE_MAE:
+                            detuned_rejections["member_fit_error"] += 1
+                        continue
+                    member_candidates.append({
+                        "segment": member_identifier,
+                        "phase_step": next(iter(member_steps)),
+                        "packet": member_fit.packet(),
+                        "articulation_packets": member_articulation_packets,
+                        "mean_absolute_error": member_mae,
+                        "maximum_error": member_maximum_error,
+                        "reference_frames": len(member_reference),
+                        "reference_energy": sum(member_reference),
+                    })
+            by_step = {}
+            for member in member_candidates:
+                old = by_step.get(member["phase_step"])
+                if old is None or member["reference_energy"] > old[
+                        "reference_energy"]:
+                    by_step[member["phase_step"]] = member
+            physical_voices = min(1 + minimum_spare, len(by_step))
+            if physical_voices >= 2:
+                chosen = sorted(
+                    by_step.values(),
+                    key=lambda item: (-item["reference_energy"],
+                                      item["phase_step"], item["segment"]),
+                )[:physical_voices]
+                detuned_episode = {
+                    "logical_note": identifier,
+                    "start_frame": episode_start,
+                    "end_frame": episode_end,
+                    "minimum_spare_voices": minimum_spare,
+                    "members": chosen,
+                }
+                detuned_episodes.append(detuned_episode)
+                unrepresentable_rearticulation = False
+            elif contiguous and minimum_spare > 0 and len(note.members) > 1:
+                detuned_rejections["fewer_than_two_qualified_steps"] += 1
         unrepresentable_rearticulation_notes += int(
             unrepresentable_rearticulation
         )
@@ -369,6 +585,7 @@ def fit_selected_envelopes(
             "maximum_error": maximum_error,
             "significant_rearticulations": rearticulations,
             "articulation_packets": articulation_packets,
+            "detuned_layer_episode": detuned_episode,
             "unrepresentable_rearticulation": (
                 unrepresentable_rearticulation
             ),
@@ -420,6 +637,50 @@ def fit_selected_envelopes(
                 "re-send a same-pitch non-legato ordinary ADSR packet at "
                 "each bounded significant keyed rise; no target opcode or "
                 "sample-loop change"
+            ),
+        },
+        "detuned_layer_analysis": {
+            "enabled": enable_detuned_layers,
+            "target_sample_rate_hz": target_sample_rate,
+            "episodes": detuned_episodes,
+            "logical_notes": len(detuned_episodes),
+            "extra_voices": sum(
+                len(episode["members"]) - 1 for episode in detuned_episodes
+            ),
+            "member_envelope_fits": sum(
+                len(episode["members"]) for episode in detuned_episodes
+            ),
+            "member_sample_weighted_mean_absolute_error": (
+                sum(
+                    member["mean_absolute_error"] *
+                    member["reference_frames"]
+                    for episode in detuned_episodes
+                    for member in episode["members"]
+                ) /
+                sum(
+                    member["reference_frames"]
+                    for episode in detuned_episodes
+                    for member in episode["members"]
+                )
+                if detuned_episodes else 0.0
+            ),
+            "member_maximum_error": max((
+                member["maximum_error"]
+                for episode in detuned_episodes
+                for member in episode["members"]
+            ), default=0),
+            "member_rearticulation_packets": sum(
+                len(member.get("articulation_packets", []))
+                for episode in detuned_episodes
+                for member in episode["members"]
+            ),
+            "rejections": dict(sorted(detuned_rejections.items())),
+            "policy": (
+                "replace one stable selected logical voice for its entire "
+                "contiguous episode with the strongest fixed-pitch member "
+                "layers whose source-derived target steps are distinct; "
+                "require persistent spare capacity and individually passing "
+                "envelope fits"
             ),
         },
         "tremolo_analysis": {
@@ -478,7 +739,7 @@ def _logical_phase_step(
     return step
 
 
-def _midi_phase_step(midi_note: int, sample_rate: int) -> int:
+def _midi_phase_step(midi_note: float, sample_rate: int) -> int:
     frequency = 440.0 * 2.0 ** ((midi_note - 69.0) / 12.0)
     step = round(frequency * 65536.0 / sample_rate)
     if not 0 < step < 0x8000:
@@ -656,6 +917,18 @@ def compile_enhanced_score(
         for item in fit_report.get("notes", [])
         for packet in item.get("articulation_packets", [])
     }
+    detuned_analysis = fit_report.get("detuned_layer_analysis", {})
+    detuned_episodes = detuned_analysis.get("episodes", [])
+    detuned_packets = {
+        (episode["logical_note"], member["segment"]): member["packet"]
+        for episode in detuned_episodes for member in episode["members"]
+    }
+    detuned_articulation_packets = {
+        (episode["start_frame"] + packet["frame_offset"],
+         episode["logical_note"], member["segment"]): packet["packet"]
+        for episode in detuned_episodes for member in episode["members"]
+        for packet in member.get("articulation_packets", [])
+    }
     if enable_vibrato and (
             target_sample_rate is None or frame_samples is None):
         raise ValueError(
@@ -699,8 +972,25 @@ def compile_enhanced_score(
     vibrato_reasons: Counter[str] = Counter()
     direct_vibrato_notes: set[int] = set()
     emitted_vibrato_notes: set[int] = set()
+    emitted_detuned_articulation_packets = 0
     rows: list[dict] = []
     for frame, selected in enumerate(timeline):
+        expanded = []
+        for tone in selected:
+            episode = next((item for item in detuned_episodes if (
+                item["logical_note"] == tone.logical_note and
+                item["start_frame"] <= frame < item["end_frame"]
+            )), None)
+            if episode is None:
+                expanded.append(tone)
+            else:
+                expanded.extend(SelectedTone(
+                    tone.logical_note, tone.logical_voice, tone.midi_note,
+                    member["segment"], member["phase_step"],
+                ) for member in episode["members"])
+        selected = tuple(expanded)
+        if len(selected) > 3:
+            raise ValueError("detuned layer episode exceeds target voices")
         assigned = assign_target_channels(selected, previous)
         if enable_held_pitch:
             assigned_steps = tuple(
@@ -751,10 +1041,16 @@ def compile_enhanced_score(
                 enable_vibrato and old == new and new is not None and
                 old_vibrato != new_vibrato
             )
-            articulation_packet = (
-                None if new is None else
-                articulation_packets.get((frame, new.logical_note))
-            )
+            if new is None:
+                articulation_packet = None
+            elif new.layer_member is not None:
+                articulation_packet = detuned_articulation_packets.get((
+                    frame, new.logical_note, new.layer_member,
+                ))
+            else:
+                articulation_packet = articulation_packets.get((
+                    frame, new.logical_note,
+                ))
             if (old == new and not step_changed and not vibrato_changed and
                     articulation_packet is None):
                 continue
@@ -762,14 +1058,22 @@ def compile_enhanced_score(
             if new is None:
                 row[field] = {"note": "---"}
             else:
+                packet = (
+                    articulation_packet
+                    if articulation_packet is not None else
+                    detuned_packets[(new.logical_note, new.layer_member)]
+                    if new.layer_member is not None else
+                    fits[new.logical_note].packet()
+                )
                 event = {
-                    "opl_envelope": (
-                        articulation_packet
-                        if articulation_packet is not None else
-                        fits[new.logical_note].packet()
-                    ),
+                    "opl_envelope": packet,
                 }
-                if enable_held_pitch or enable_vibrato:
+                if new.layer_phase_step is not None:
+                    event["phase_step"] = new.layer_phase_step
+                    emitted_detuned_articulation_packets += int(
+                        articulation_packet is not None
+                    )
+                elif enable_held_pitch or enable_vibrato:
                     assert new_step is not None
                     event["phase_step"] = new_step
                     if ((step_changed or vibrato_changed) and
@@ -807,6 +1111,8 @@ def compile_enhanced_score(
     reduction_features = "envelope+tremolo" if tremolo_enabled else "envelope"
     if articulation_packets:
         reduction_features += "+rearticulation"
+    if detuned_episodes:
+        reduction_features += "+detuned-layers"
     if enable_held_pitch:
         reduction_features += "+held-pitch"
     if enable_vibrato:
@@ -818,6 +1124,8 @@ def compile_enhanced_score(
     )
     if articulation_packets:
         arrangement_features += ", bounded same-pitch re-articulation"
+    if detuned_episodes:
+        arrangement_features += ", source-derived detuned spare layers"
     if enable_held_pitch:
         arrangement_features += ", held-key pitch automation"
     if enable_vibrato:
@@ -859,6 +1167,22 @@ def compile_enhanced_score(
                 "50 Hz source pitch points quantized to target phase steps; "
                 "emit only changes while the same logical note retains its "
                 "target channel"
+            ),
+        },
+        "enhanced_detuned_layers": {
+            "enabled": bool(detuned_episodes),
+            "logical_notes": len(detuned_episodes),
+            "extra_voices": sum(
+                len(episode["members"]) - 1
+                for episode in detuned_episodes
+            ),
+            "member_rearticulation_packets": (
+                emitted_detuned_articulation_packets
+            ),
+            "policy": (
+                "fixed source-derived phase steps on persistently spare "
+                "voices; bounded member envelope retriggers use ordinary "
+                "non-legato ADSR packets"
             ),
         },
         "enhanced_vibrato": {
@@ -910,6 +1234,15 @@ def compile_enhanced_score(
             " Selected 50 Hz source pitch changes are emitted through the "
             "existing JPS2 legato packet only when their quantized target "
             "phase step changes."
+        )
+    if detuned_episodes:
+        score["conversion"]["enhanced_limitations"] = score["conversion"][
+            "enhanced_limitations"
+        ].replace("Envelope-only M3 slice", "Envelope/detuned-layer M7 slice")
+        score["notes"] += (
+            " Stable source members with distinct fixed target steps replace "
+            "a merged logical voice only for episodes with persistent spare "
+            "capacity; each member has an independent guarded envelope fit."
         )
     if enable_vibrato:
         score["conversion"]["enhanced_limitations"] = score["conversion"][

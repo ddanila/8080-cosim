@@ -948,16 +948,31 @@ any sample.  Those two optional reductions would improve none of these packs,
 so they deliberately add no Juku code or data.  Unsupported future sources
 remain explicitly rejected.
 
-The analysis-only detune report
+The detune opportunity report
 [`OPL-M7-DETUNED-SPARES.json`](OPL-M7-DETUNED-SPARES.json) finds a much more
 promising optional reduction.  Across the same allocation, 33 tracks and
 5,303 selected logical notes have source layers that quantize to distinct
 target phase steps while a physical tone channel is spare, totaling 84,709
 duplicate-voice frame slots.  Imp accounts for 9,157 slots with up to 19.0
-cents of source separation.  No score changes yet: the next gate must preserve
-total envelope level, release duplicates before real onsets, and handle spare-
-capacity transitions without a false re-attack.  If those host rules pass,
-the existing three-accumulator loop adds no per-sample cost.
+cents of source separation.
+
+The first guarded score checkpoint is
+[`OPL-IMP-DETUNED-M7.json`](OPL-IMP-DETUNED-M7.json).  During the contiguous
+Imp intro it replaces one merged logical voice with three independently fitted
+source members at fixed phase steps 839, 845, and 848.  Persistent spare
+capacity is required for the complete episode, so no duplicate can displace a
+real selected onset; all member voices are released through the ordinary
+allocator at the boundary.  Six member-envelope re-triggers compose with the
+existing bounded ADSR policy, while a later non-layered voice uses its normal
+re-triggers.  No song-specific mapping or target opcode was added.
+
+The resulting 1,405-byte JPS passes every 30-second delivery gate under the
+unchanged 4,537-byte player: 7,159.9 samples/s, 50.069 frames/s, 29.958-second
+duration, 40,690 worst-frame cycles, and the exact frozen sample loop.  The
+three selected member fits have sample-weighted mean error below one mixer
+level and maximum error three.  The local comparison render is
+`out/jukupoly-imp-detuned-m7/imp-detuned-reart-30s.wav`.  Full-song and
+physical listening remain open, so the library continues to deliver Imp v1.
 
 ## Reproduce
 
@@ -1017,6 +1032,8 @@ Source and generated files:
   evidence;
 - `OPL-M7-DETUNED-SPARES.json` — pack-wide source demand and capacity evidence
   for optional detuned duplicate voices;
+- `OPL-IMP-DETUNED-M7.json` — guarded Imp detuned-member/re-articulation
+  excerpt, timing, size, and unchanged-player evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
@@ -1081,6 +1098,8 @@ Source and generated files:
 - `firmware/jukupoly-imp-30s-v2.json` — guarded fitted Imp excerpt score;
 - `firmware/jukupoly-imp-30s-rearticulation-m7.json` — opt-in bounded
   same-pitch multi-articulation candidate;
+- `firmware/jukupoly-imp-30s-detuned-m7.json` — guarded detuned spare-member
+  plus bounded re-articulation excerpt candidate;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
 - `firmware/jukupoly-demons-vgz.json` — generated one-pass E2M2 reduction;

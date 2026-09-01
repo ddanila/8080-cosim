@@ -28,6 +28,9 @@ python3 tests/jukupoly_opl_tremolo_test.py
 python3 tests/jukupoly_opl_vibrato_test.py
 python3 tests/jukupoly_opl_pitch_test.py
 python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py --check
+python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py \
+  --v2 spinoffs/jukupoly/firmware/jukupoly-imp-30s-detuned-m7.json \
+  --output spinoffs/jukupoly/OPL-IMP-DETUNED-M7.json --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_target.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_real.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_real.py \

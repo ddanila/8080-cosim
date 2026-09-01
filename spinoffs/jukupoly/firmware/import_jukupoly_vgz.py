@@ -694,6 +694,12 @@ def main() -> int:
               "ADSR packets; requires --enhanced-envelopes"),
     )
     parser.add_argument(
+        "--enhanced-detuned-layers", action="store_true",
+        help=("replace stable selected logical voices with individually "
+              "fitted fixed-pitch source layers only when target voices "
+              "remain spare; requires --enhanced-envelopes"),
+    )
+    parser.add_argument(
         "--enhanced-held-pitch", action="store_true",
         help=("opt in to selected held-key pitch changes through existing "
               "JPS v2 legato packets; requires --enhanced-envelopes"),
@@ -750,6 +756,8 @@ def main() -> int:
         parser.error("--enhanced-tremolo requires --enhanced-envelopes")
     if args.enhanced_rearticulation and not args.enhanced_envelopes:
         parser.error("--enhanced-rearticulation requires --enhanced-envelopes")
+    if args.enhanced_detuned_layers and not args.enhanced_envelopes:
+        parser.error("--enhanced-detuned-layers requires --enhanced-envelopes")
     if args.enhanced_held_pitch and not args.enhanced_envelopes:
         parser.error("--enhanced-held-pitch requires --enhanced-envelopes")
     if args.enhanced_vibrato and not args.enhanced_envelopes:
@@ -770,6 +778,13 @@ def main() -> int:
         parser.error("--enhanced-sample-rate must be 4000..12000")
     if args.opl_oracle is not None and not args.enhanced_envelopes:
         parser.error("--opl-oracle requires --enhanced-envelopes")
+    if args.enhanced_detuned_layers and any((
+            args.enhanced_tremolo, args.enhanced_held_pitch,
+            args.enhanced_vibrato)):
+        parser.error(
+            "--enhanced-detuned-layers cannot yet be combined with tremolo, "
+            "held pitch, or vibrato"
+        )
     if args.opl_oracle is not None and not args.opl_oracle.is_file():
         parser.error(f"OPL oracle executable is missing: {args.opl_oracle}")
     melodic_overrides: set[str] = set()
@@ -884,6 +899,11 @@ def main() -> int:
             segments, logical_notes, allocation, probes, total_frames,
             enable_tremolo=args.enhanced_tremolo,
             enable_rearticulation=args.enhanced_rearticulation,
+            enable_detuned_layers=args.enhanced_detuned_layers,
+            target_sample_rate=(
+                args.enhanced_sample_rate or
+                opl_enhanced.ENHANCED_SAMPLE_RATE
+            ),
         )
         score = opl_enhanced.compile_enhanced_score(
             score, logical_notes, allocation, fits, total_frames, fit_report,
