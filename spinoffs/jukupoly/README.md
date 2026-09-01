@@ -898,7 +898,7 @@ progressive stopping point, not a claim that all 44 songs are enhanced.
 An offline M7 follow-up now tests the smallest hardware-compatible answer to
 the failed Imp shape: re-send the existing same-pitch non-legato ADSR packet
 at a bounded significant rise.  The opt-in host policy requires a fall and
-renewed rise of at least four mixer levels, caps a note at four extra packets,
+renewed rise of at least four mixer levels, caps a note at six extra packets,
 and excludes tremolo-bearing notes.  It introduces no opcode, player byte,
 state byte, or per-sample cycle.
 
@@ -921,6 +921,25 @@ samples/s, 49.538 frames/s, and 158.970 seconds in C-cosim, with a 42,197-cycle
 worst frame and the same frozen sample loop.  Full-song automated size and
 timing therefore pass; physical listening remains open and Imp v1 remains the
 delivered fallback.
+
+The reproducible two-pack discovery report
+[`OPL-M7-PACK-SCAN.json`](OPL-M7-PACK-SCAN.json) applies the bounded policy to
+the opening 30 seconds of all 44 DOOM tracks.  Only Imp and “Nobody Told Me
+About id” emit packets.  The latter needs up to six re-attacks, establishing
+the current general cap from pack evidence; after that bounded change the
+opening scan has zero unrepresented notes.  The report deliberately retains
+35 failures from its one-size `143/7170` timing calibration, because a scan is
+not authority to ship a track without individual timing measurements.
+
+The individually recalibrated “Nobody Told Me About id” excerpt passes, but
+its complete track does not.  The full report
+[`OPL-NOBODY-REARTICULATION-M7.json`](OPL-NOBODY-REARTICULATION-M7.json)
+records 724 extra packets and a 13,297-byte candidate with otherwise valid
+6,912.8 samples/s, 49.732 frames/s, and 179.381-second timing.  Forty-five
+later notes still exceed the error limit and one significant attack direction
+is lost, so the qualified delivery remains its exact 8,311-byte v1 payload.
+This is the intended progressive fallback behavior, not a reason to loosen
+the quality gate or packet bound.
 
 ## Reproduce
 
@@ -958,6 +977,8 @@ Source and generated files:
   render hashes and excerpt timing/concurrency gates;
 - `tools/report_jukupoly_m6_mixed_library.py` — complete 44-song mixed-disk
   hash, capability, and full C-cosim compatibility report;
+- `tools/build_jukupoly_m7_pack_scan.py` — hash-locked, parallel two-pack
+  re-articulation discovery conversion and C-cosim report;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -966,6 +987,10 @@ Source and generated files:
   timing, size, and unchanged-player evidence;
 - `OPL-IMP-REARTICULATION-FULL-M7.json` — complete-track articulation fit,
   file-size, and C-cosim timing evidence;
+- `OPL-M7-PACK-SCAN.json` — all-44-track bounded opening-window discovery
+  evidence;
+- `OPL-NOBODY-REARTICULATION-M7.json` — complete-track rejected-candidate and
+  qualified-v1-fallback evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;

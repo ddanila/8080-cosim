@@ -1032,7 +1032,7 @@ The first M7 experiment addresses the physically rejected Imp envelope without
 adding a target feature.  The opt-in `--enhanced-rearticulation` host path
 finds a renewed keyed rise only after a fall and rise of at least four mixer
 levels (strictly above the target tremolo's maximum depth three), permits at
-most four extra packets per logical note, and re-sends an ordinary same-pitch,
+most six extra packets per logical note, and re-sends an ordinary same-pitch,
 non-legato ADSR packet at each accepted 50 Hz boundary.  It neither changes
 the player nor adds per-sample work.  Tremolo-bearing notes are excluded from
 this first composition rule.
@@ -1056,6 +1056,35 @@ memory map, sample loop, percussion, and Escape path are unchanged.  The
 compact evidence is committed in
 [`OPL-IMP-REARTICULATION-FULL-M7.json`](OPL-IMP-REARTICULATION-FULL-M7.json).
 Physical listening remains the decisive open gate.
+
+Synthetic composition guards also cover collisions with held-pitch and
+runtime-vibrato updates.  When an articulation boundary coincides with either
+setting change, one combined packet carries the new phase data and envelope
+but deliberately omits `legato`, so the envelope really restarts.  Ordinary
+pitch/vibrato-only updates retain their previously qualified legato behavior.
+
+The hash-locked two-pack discovery scan is committed in
+[`OPL-M7-PACK-SCAN.json`](OPL-M7-PACK-SCAN.json).  It converts the first 30
+seconds (or each complete shorter source) of all 44 tracks with the same
+envelope-only policy and profiles every JPS in C-cosim.  Only two tracks emit
+re-articulation: Imp uses six packets, while “Nobody Told Me About id” uses
+124 packets across 42 notes.  The latter evidence justified raising the
+general per-note bound from four to six; the repeated scan then leaves zero
+unrepresented notes in every discovery window.  Thirty-five common-calibration
+timing failures remain explicit and are not delivery failures or silently
+normalized: the scan is candidate discovery, and any promoted track requires
+its own measured timing plus a complete-source pass.
+
+“Nobody Told Me About id” demonstrates that a good opening window is not
+enough.  Its recalibrated `139/6950` excerpt passes at 6,924.6 samples/s,
+49.817 frames/s, and 30.110 seconds, but the complete source is rejected.
+[`OPL-NOBODY-REARTICULATION-M7.json`](OPL-NOBODY-REARTICULATION-M7.json)
+records 1,028 selected notes, 724 extra packets, a 13,297-byte candidate, and
+otherwise passing timing at 6,912.8 samples/s, 49.732 frames/s, and 179.381
+seconds.  Forty-five later notes remain above the per-note error limit and one
+significant attack direction is missed.  Delivery therefore stays the exact
+8,311-byte v1 payload.  The packet cap is not increased again to hide this
+result.
 
 ## Required reporting for every implementation change
 

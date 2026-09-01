@@ -112,7 +112,10 @@ def generate(v1_path: Path, v2_path: Path,
         "v2_jps_below_soft_limit": jps["v2"]["bytes"] < 30 * 1024,
         "v2_jps_below_hard_limit": jps["v2"]["bytes"] < 32_768,
     }
-    quality_gates = {"no_unrepresentable_rearticulations"}
+    quality_gates = {
+        "significant_envelope_directions_match",
+        "no_unrepresentable_rearticulations",
+    }
     technical_gates = {
         key: value for key, value in gates.items()
         if key not in quality_gates
@@ -123,6 +126,9 @@ def generate(v1_path: Path, v2_path: Path,
         )
         raise RuntimeError("full-song M3 gate failure: " + failed)
     enhanced_qualified = all(gates.values())
+    failed_quality = sorted(
+        key for key in quality_gates if not gates[key]
+    )
     return {
         "schema": "jukupoly-opl-full-song-m3-report-v2",
         "source": {
@@ -170,8 +176,7 @@ def generate(v1_path: Path, v2_path: Path,
             ),
             "reason": (
                 None if enhanced_qualified else
-                "one compact ADSR cannot represent renewed keyed rises whose "
-                "per-note mean error exceeds the two-level delivery limit"
+                "enhanced quality gates failed: " + ", ".join(failed_quality)
             ),
         },
     }

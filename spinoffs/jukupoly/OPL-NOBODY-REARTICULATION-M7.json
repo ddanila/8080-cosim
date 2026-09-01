@@ -1,0 +1,156 @@
+{
+  "allocation": {
+    "gained_onsets": 294,
+    "missed_protected_onsets": 0,
+    "protected_onsets": 726,
+    "retained_onsets": 1020,
+    "source_onsets": 1097
+  },
+  "delivery": {
+    "enhanced_candidate_qualified": false,
+    "qualified": true,
+    "reason": "enhanced quality gates failed: no_unrepresentable_rearticulations, significant_envelope_directions_match",
+    "strategy": "unchanged-v1-fit-fallback"
+  },
+  "envelope_fit": {
+    "delivery_note_mae_limit": 2.0,
+    "direction_mismatches": 1,
+    "maximum_error": 9,
+    "mean_absolute_error": 0.7826003722381659,
+    "note_measurements_sha256": "88f7fd0f2089bc5ac1a5251c819e7d01c4ca452fe966202e3679dbf3949e9f71",
+    "rearticulation": {
+      "emitted_packets": 724,
+      "enabled": true,
+      "maximum_packets_per_note": 6,
+      "policy": "re-send a same-pitch non-legato ordinary ADSR packet at each bounded significant keyed rise; no target opcode or sample-loop change",
+      "threshold_levels": 4
+    },
+    "selected_logical_notes": 1028,
+    "unrepresentable_rearticulation_notes": 45
+  },
+  "fixture_sample_rate_floor_hz": 6339.935003400001,
+  "gates": {
+    "no_protected_onset_regression": true,
+    "no_unrepresentable_rearticulations": false,
+    "player_below_song_window": true,
+    "same_source_vgm": true,
+    "sample_loop_hash_exact": true,
+    "significant_envelope_directions_match": false,
+    "v2_duration_within_one_percent": true,
+    "v2_jps_below_hard_limit": true,
+    "v2_jps_below_soft_limit": true,
+    "v2_music_clock_within_one_percent": true,
+    "v2_sample_rate_above_fixture_floor": true
+  },
+  "host_conversion": {
+    "measured_wall_seconds": null,
+    "v1_score_sha256": "3ff965910b2e80f1dbf908136a4ed6c624b416fdb94c20c6f7cefc6353f9ed0d",
+    "v2_score_sha256": "b05f9e2c81b7e656e3d65636d4df3c4637448027471540934fd2e1c26fd35797"
+  },
+  "jps": {
+    "v1": {
+      "bytes": 8311,
+      "sha256": "4789e5f877b27b8a18ef92f24a543d5c1c331cfe19e51343a44d6f5fa308744c"
+    },
+    "v2": {
+      "bytes": 13297,
+      "sha256": "1f3e50cb0357750ac09ef1222eda181a7ce189543defd090096adddb767a562c"
+    }
+  },
+  "player": {
+    "bytes": 4537,
+    "end_address_exclusive": "0x12b9",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f"
+  },
+  "profiles": {
+    "v1": {
+      "com_bytes": 4537,
+      "duration_seconds": 181.095342,
+      "effective_sample_hz": 7044.372226,
+      "frame_cycles": {
+        "count": 8921,
+        "max": 37159,
+        "mean": 34509.818,
+        "min": 33561,
+        "p99": 36193
+      },
+      "frame_samples": 143,
+      "frames": 8921,
+      "idle_boundary_cycles": {
+        "count": 8267,
+        "max": 1144,
+        "mean": 873.626,
+        "min": 814,
+        "p99": 900
+      },
+      "jps_bytes": 8311,
+      "keyboard_polls": 8922,
+      "label": "full-song-v1",
+      "music_frame_hz": 49.261344,
+      "mutated_player_bytes": 60,
+      "pit_writes": 223417,
+      "row_boundary_cycles": {
+        "count": 654,
+        "max": 2486,
+        "mean": 1749.318,
+        "min": 1240,
+        "p99": 2486
+      },
+      "sample_loop_cycles": {
+        "count": 1266782,
+        "max": 276,
+        "mean": 234.765,
+        "min": 229,
+        "p99": 269
+      }
+    },
+    "v2": {
+      "com_bytes": 4537,
+      "duration_seconds": 179.380575,
+      "effective_sample_hz": 6912.78307,
+      "frame_cycles": {
+        "count": 8921,
+        "max": 42733,
+        "mean": 34183.049,
+        "min": 32851,
+        "p99": 40460
+      },
+      "frame_samples": 139,
+      "frames": 8921,
+      "idle_boundary_cycles": {
+        "count": 7941,
+        "max": 2824,
+        "mean": 1234.312,
+        "min": 877,
+        "p99": 2278
+      },
+      "jps_bytes": 13297,
+      "keyboard_polls": 8922,
+      "label": "full-song-v2",
+      "music_frame_hz": 49.732252,
+      "mutated_player_bytes": 80,
+      "pit_writes": 177815,
+      "row_boundary_cycles": {
+        "count": 980,
+        "max": 9610,
+        "mean": 5192.418,
+        "min": 1393,
+        "p99": 9167
+      },
+      "sample_loop_cycles": {
+        "count": 1231098,
+        "max": 276,
+        "mean": 233.923,
+        "min": 229,
+        "p99": 262
+      }
+    }
+  },
+  "schema": "jukupoly-opl-full-song-m3-report-v2",
+  "source": {
+    "duration_seconds": 178.42761904761906,
+    "frames": 8921,
+    "name": "doom1-16 Nobody Told Me About id.vgz",
+    "vgm_sha256": "f97bc508cc2db52edf42d392f8ed771e30692256e4922b89cb8c2879dfdd87cb"
+  }
+}

@@ -180,6 +180,26 @@ def check_timeline_and_rows() -> None:
             "target channel"
         ),
     }
+    articulated_pitch = opl_enhanced.compile_enhanced_score(
+        v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+        {
+            "selected_logical_notes": 2,
+            "notes": [{
+                "logical_note": 0, "selected_frame": 0,
+                "articulation_packets": [{
+                    "frame_offset": 1, "packet": envelope(7).packet(),
+                }],
+                "tremolo_analysis": {"emitted_depth_levels": 0},
+            }],
+        },
+        segments=pitch_segments, enable_held_pitch=True,
+    )
+    articulated_pitch_event = articulated_pitch["rows"][1]["tone1"]
+    assert articulated_pitch_event["phase_step"] != (
+        articulated_pitch["rows"][0]["tone1"]["phase_step"]
+    )
+    assert "legato" not in articulated_pitch_event
+    assert articulated_pitch_event["opl_envelope"] == envelope(7).packet()
     pitch_generated, pitch_metadata = build_jukupoly.compile_song(pitch_score)
     pitch_jps = build_jukupoly.assemble_song_file(
         pitch_generated, pitch_metadata,
@@ -341,6 +361,28 @@ def check_direct_vibrato_score() -> None:
         "mode": "deep", "peak_step_delta": 7,
     }
     assert events[4][1] == {"note": "---"}
+
+    articulated_score = opl_enhanced.compile_enhanced_score(
+        v1, [note], selected, {0: envelope(12)}, 6,
+        {
+            "selected_logical_notes": 1,
+            "notes": [{
+                "logical_note": 0, "selected_frame": 0,
+                "articulation_packets": [{
+                    "frame_offset": 1, "packet": envelope(7).packet(),
+                }],
+                "tremolo_analysis": {"emitted_depth_levels": 0},
+            }],
+        },
+        target_sample_rate=6530, frame_samples=131,
+        segments=[segment], channel_probes=probes,
+        vibrato_depths=depths, enable_vibrato=True,
+    )
+    articulated_event = articulated_score["rows"][1]["tone1"]
+    assert "legato" not in articulated_event
+    assert articulated_event["opl_vibrato"] == {
+        "mode": "deep", "peak_step_delta": 7,
+    }
     analysis = score["conversion"]["enhanced_vibrato"]
     assert analysis["direct_channel_frames"] == 3
     assert analysis["packets_with_vibrato"] == 3

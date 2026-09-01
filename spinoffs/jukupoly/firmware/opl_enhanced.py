@@ -26,7 +26,7 @@ TREMOLO_SAMPLE_RATE = 6_970
 TREMOLO_FRAME_SAMPLES = 140
 MAX_RELEASE_FRAMES = 64
 MAX_DELIVERY_NOTE_MAE = 2.0
-MAX_REARTICULATIONS_PER_NOTE = 4
+MAX_REARTICULATIONS_PER_NOTE = 6
 
 
 @dataclass(frozen=True)
@@ -174,6 +174,8 @@ def fit_selected_envelopes(
     rejected_indirect_tremolo = 0
     unrepresentable_rearticulation_notes = 0
     emitted_rearticulation_packets = 0
+    single_packet_absolute_error = 0
+    fitted_absolute_error = 0
     for identifier, selected_frame in sorted(first_selected.items(),
                                               key=lambda item: item[1]):
         note = by_identifier[identifier]
@@ -225,6 +227,7 @@ def fit_selected_envelopes(
             peak_level=forced_peak,
             preserve_significant_directions=True,
         )
+        single_packet_absolute_error += baseline_fit.absolute_error
         direct_am = any(
             probe_table[(frame, bank * 9 + channel)].carrier_am or
             (probe_table[(frame, bank * 9 + channel)].connection == 1 and
@@ -339,6 +342,7 @@ def fit_selected_envelopes(
         )
         rearticulations = len(rearticulation_frames)
         mean_absolute_error = absolute_error / len(reference)
+        fitted_absolute_error += absolute_error
         unrepresentable_rearticulation = (
             rearticulations > 0 and
             (not articulation_packets or
@@ -359,6 +363,9 @@ def fit_selected_envelopes(
             "packet": fit.packet(),
             "baseline_packet": baseline_fit.packet(),
             "mean_absolute_error": mean_absolute_error,
+            "single_packet_mean_absolute_error": (
+                baseline_fit.absolute_error / len(reference)
+            ),
             "maximum_error": maximum_error,
             "significant_rearticulations": rearticulations,
             "articulation_packets": articulation_packets,
@@ -383,6 +390,16 @@ def fit_selected_envelopes(
         "mean_absolute_error": (
             sum(item["mean_absolute_error"] for item in measurements) /
             len(measurements) if measurements else 0.0
+        ),
+        "sample_weighted_mean_absolute_error": (
+            fitted_absolute_error /
+            sum(item["reference_frames"] for item in measurements)
+            if measurements else 0.0
+        ),
+        "single_packet_sample_weighted_mean_absolute_error": (
+            single_packet_absolute_error /
+            sum(item["reference_frames"] for item in measurements)
+            if measurements else 0.0
         ),
         "maximum_error": max(
             (item["maximum_error"] for item in measurements), default=0,

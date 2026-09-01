@@ -9,7 +9,7 @@
   "delivery": {
     "enhanced_candidate_qualified": false,
     "qualified": true,
-    "reason": "one compact ADSR cannot represent renewed keyed rises whose per-note mean error exceeds the two-level delivery limit",
+    "reason": "enhanced quality gates failed: no_unrepresentable_rearticulations",
     "strategy": "unchanged-v1-fit-fallback"
   },
   "envelope_fit": {
