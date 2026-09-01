@@ -82,6 +82,27 @@ def check_semantic_attenuation_mapping() -> None:
     ) == (12,)
 
 
+def check_direction_priority() -> None:
+    # Pure least squares can flatten a small but significant keyed decay.
+    # The real-song policy ranks preservation of a >=2-level direction first.
+    reference = (0, 14, 12, 12, 12, 12, 12, 12, 12, 12)
+    unconstrained = opl_envelope.fit_envelope(
+        reference, key_off_frame=None, sustain_while_keyed=True,
+    )
+    guarded = opl_envelope.fit_envelope(
+        reference, key_off_frame=None, sustain_while_keyed=True,
+        preserve_significant_directions=True,
+    )
+    before = opl_envelope.envelope_directions(
+        reference, unconstrained.predicted_levels, None,
+    )
+    after = opl_envelope.envelope_directions(
+        reference, guarded.predicted_levels, None,
+    )
+    assert before["mismatches"] == 1
+    assert after["mismatches"] == 0
+
+
 def stretched_oracle_source() -> tuple[list[vgz.RegisterWrite], int]:
     info, writes = vgz.parse_vgm(synthetic.synthetic_opl3_vgm())
     key_off_sample = 20 * opl_oracle.VGM_RATE // 50
@@ -154,6 +175,7 @@ def main() -> int:
         raise SystemExit(f"oracle executable is missing: {tool}")
     check_exact_target_fit()
     check_semantic_attenuation_mapping()
+    check_direction_priority()
     fitted = check_oracle_fit(tool)
     print("JUKUPOLY-OPL-ENVELOPE: PASS target-exact grid-fit "
           "oracle-rms 50Hz-4bit bounded-error "

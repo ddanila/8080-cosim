@@ -199,6 +199,7 @@ def fit_envelope(
     sustain_while_keyed: bool,
     counter_at_onset: int = 1,
     peak_level: int | None = None,
+    preserve_significant_directions: bool = False,
 ) -> EnvelopeFit:
     """Find the deterministic least-squares compact target approximation."""
     reference = tuple(reference_levels)
@@ -218,6 +219,13 @@ def fit_envelope(
         peak_candidates = {peak_level}
     if not peak_candidates:
         peak_candidates.add(1)
+
+    def direction_mismatches(predicted: Sequence[int]) -> int:
+        if not preserve_significant_directions:
+            return 0
+        return envelope_directions(
+            reference, predicted, key_off_frame,
+        )["mismatches"]
 
     best: EnvelopeFit | None = None
     best_score: tuple[int, ...] | None = None
@@ -245,6 +253,7 @@ def fit_envelope(
                         absolute = sum(abs(value) for value in differences)
                         maximum = max(abs(value) for value in differences)
                         score = (
+                            direction_mismatches(predicted),
                             squared, absolute, maximum,
                             RATE_PERIODS.index(attack)
                             + RATE_PERIODS.index(decay)
@@ -263,6 +272,69 @@ def fit_envelope(
                             )
     assert best is not None
     return best
+
+
+def envelope_directions(reference: Sequence[int], predicted: Sequence[int],
+                        key_off_frame: int | None) -> dict:
+    """Compare significant net ADSR directions after 4-bit quantization."""
+    if not reference or len(reference) != len(predicted):
+        raise ValueError("envelope direction traces must have equal nonzero length")
+    if key_off_frame is not None and not 0 <= key_off_frame < len(reference):
+        raise ValueError("key_off_frame must be inside direction traces")
+    keyed_end = key_off_frame if key_off_frame is not None else len(reference) - 1
+    reference_peak_at = max(
+        range(keyed_end + 1), key=lambda index: reference[index],
+    )
+    predicted_peak_at = max(
+        range(keyed_end + 1), key=lambda index: predicted[index],
+    )
+
+    def direction(first: int, last: int) -> int:
+        return (last > first) - (last < first)
+
+    stages = {
+        "attack": (
+            reference[0], reference[reference_peak_at],
+            predicted[0], predicted[predicted_peak_at],
+        ),
+        "decay": (
+            reference[reference_peak_at], reference[keyed_end],
+            predicted[predicted_peak_at], predicted[keyed_end],
+        ),
+    }
+    if key_off_frame is not None and key_off_frame + 1 < len(reference):
+        stages["release"] = (
+            reference[key_off_frame], reference[-1],
+            predicted[key_off_frame], predicted[-1],
+        )
+
+    result = {}
+    mismatches = 0
+    for stage, (reference_start, reference_end,
+                predicted_start, predicted_end) in stages.items():
+        reference_delta = reference_end - reference_start
+        predicted_delta = predicted_end - predicted_start
+        reference_direction = direction(reference_start, reference_end)
+        predicted_direction = direction(predicted_start, predicted_end)
+        significant = abs(reference_delta) >= 2
+        immediate_equivalent = (
+            stage == "attack" and predicted_direction == 0 and
+            reference_peak_at <= 1
+        )
+        match = (
+            not significant or immediate_equivalent or
+            reference_direction == predicted_direction
+        )
+        mismatches += int(not match)
+        result[stage] = {
+            "reference": reference_direction,
+            "predicted": predicted_direction,
+            "reference_delta_levels": reference_delta,
+            "predicted_delta_levels": predicted_delta,
+            "significant": significant,
+            "match": match,
+        }
+    return {"mismatches": mismatches, "stages": result}
 
 
 def quantize_isolated_pcm(

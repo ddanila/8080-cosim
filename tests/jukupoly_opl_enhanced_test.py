@@ -110,6 +110,12 @@ def check_probe_fit() -> None:
             511, attenuation, 0, 0, 0, 0, 0, 0,
         )
         probes.append(opl_oracle.OracleChannelProbe(0, probe))
+    probes.append(opl_oracle.OracleChannelProbe(
+        0, opl_oracle.OracleProbe(
+            6 * 882 + 17, 0x200, 4, False, 0, 0,
+            511, 511, 0, 0, 0, 0, 0, 0,
+        ),
+    ))
     fits, report = opl_enhanced.fit_selected_envelopes(
         [segment], [note], {
             "schema": "jukupoly-opl-three-voice-allocation-v1",

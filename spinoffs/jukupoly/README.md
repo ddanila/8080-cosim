@@ -571,10 +571,25 @@ and the frozen hot-loop hash is unchanged.  Reproducible v1/v2 target WAV
 hashes and the pinned-oracle reference WAV hash are in the report; listening
 copies are under `out/jukupoly-opl-m3-imp-20260901/` locally.
 
-M3 still requires the longest affected full-song size/duration measurement and
-physical CS00000 A/B listening before the Doom library may default to v2.  It
-therefore continues to emit v1 and retains that fallback if the approximation
-is not useful or affordable.
+The full 157.508-second Imp pass is recorded in
+[`OPL-IMP-FULL-M3.json`](OPL-IMP-FULL-M3.json).  It fits 532 selected logical
+notes, retains all 506 protected onsets, and gains 14.  A first unconstrained
+pass exposed ten significant direction mismatches: nine short two-level decays
+which least squares flattened and one release too slow to move inside its
+observed tail.  The generic real-song fitter now ranks preservation of net
+changes of at least two mixer levels ahead of squared error.  The guarded pass
+has zero such mismatches, 0.654 levels mean error, and 14 levels maximum error;
+the latter remains reported rather than weakening the direction guard.
+
+The full v2 JPS is 9,978 bytes versus 8,537 for v1.  It measures 7,088.0
+samples/s against a 6,460.3 Hz fixture floor, 49.566 frames/s, and 158.878 s
+against the 157.508 s source, within the 1% duration gate.  The host conversion
+takes 274 seconds with the exhaustive fitter; this does not spend target CPU
+or memory.  The exact player map and hot-loop hash remain unchanged.
+
+M3 now requires only physical CS00000 A/B listening before the Doom library
+may default to v2.  It therefore continues to emit v1 and retains that fallback
+if the approximation is not useful on hardware.
 
 ## Reproduce
 
@@ -590,9 +605,11 @@ Source and generated files:
 - `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
 - `tools/report_jukupoly_envelope.py` — guarded M3 target timing/map report;
 - `tools/report_jukupoly_imp_m3.py` — real Imp v1/v2/reference M3 report;
+- `tools/report_jukupoly_full_m3.py` — compact full-song M3 feasibility report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
+- `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;

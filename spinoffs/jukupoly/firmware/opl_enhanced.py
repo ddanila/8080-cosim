@@ -76,8 +76,16 @@ def assign_target_channels(selected: tuple[SelectedTone, ...],
 def _probe_table(probes: Iterable[opl_oracle.OracleChannelProbe]
                  ) -> dict[tuple[int, int], opl_oracle.OracleProbe]:
     result = {}
-    for item in probes:
+    items = list(probes)
+    final_sample = max(item.probe.sample for item in items)
+    for item in items:
         if item.probe.sample % opl_voices.ANALYSIS_FRAME:
+            # The bridge deliberately appends one exact end-of-stream probe.
+            # A finite VGM need not end on a 20 ms boundary; this sentinel is
+            # outside the emitted frame timeline and may be ignored.  Any
+            # earlier off-grid row still indicates malformed oracle evidence.
+            if item.probe.sample == final_sample:
+                continue
             raise ValueError("oracle probe is off the 50 Hz analysis grid")
         key = (item.probe.sample // opl_voices.ANALYSIS_FRAME, item.channel)
         if key in result:
@@ -172,78 +180,14 @@ def fit_selected_envelopes(
             sustain_while_keyed=note.sustained_envelope,
             counter_at_onset=(selected_frame + 1) & 0xFF,
             peak_level=forced_peak,
+            preserve_significant_directions=True,
         )
         fits[identifier] = fit
-        keyed_end = (key_off_frame if key_off_frame is not None
-                     else len(reference) - 1)
-        reference_peak_at = max(
-            range(keyed_end + 1), key=lambda index: reference[index],
+        direction_result = opl_envelope.envelope_directions(
+            reference, fit.predicted_levels, key_off_frame,
         )
-        predicted_peak_at = max(
-            range(keyed_end + 1), key=lambda index: fit.predicted_levels[index],
-        )
-
-        def direction(first: int, last: int) -> int:
-            return (last > first) - (last < first)
-
-        directions = {
-            "attack": {
-                "reference": direction(reference[0], reference[reference_peak_at]),
-                "predicted": direction(
-                    fit.predicted_levels[0],
-                    fit.predicted_levels[predicted_peak_at],
-                ),
-            },
-            "decay": {
-                "reference": direction(reference[reference_peak_at],
-                                       reference[keyed_end]),
-                "predicted": direction(
-                    fit.predicted_levels[predicted_peak_at],
-                    fit.predicted_levels[keyed_end],
-                ),
-            },
-        }
-        if key_off_frame is not None and key_off_frame + 1 < len(reference):
-            directions["release"] = {
-                "reference": direction(reference[key_off_frame], reference[-1]),
-                "predicted": direction(
-                    fit.predicted_levels[key_off_frame],
-                    fit.predicted_levels[-1],
-                ),
-            }
-        for stage, values in directions.items():
-            if stage == "attack":
-                reference_delta = reference[reference_peak_at] - reference[0]
-                predicted_delta = (
-                    fit.predicted_levels[predicted_peak_at] -
-                    fit.predicted_levels[0]
-                )
-                immediate_equivalent = (
-                    values["predicted"] == 0 and reference_peak_at <= 1
-                )
-            elif stage == "decay":
-                reference_delta = reference[keyed_end] - reference[reference_peak_at]
-                predicted_delta = (
-                    fit.predicted_levels[keyed_end] -
-                    fit.predicted_levels[predicted_peak_at]
-                )
-                immediate_equivalent = False
-            else:
-                assert key_off_frame is not None
-                reference_delta = reference[-1] - reference[key_off_frame]
-                predicted_delta = (
-                    fit.predicted_levels[-1] -
-                    fit.predicted_levels[key_off_frame]
-                )
-                immediate_equivalent = False
-            values["reference_delta_levels"] = reference_delta
-            values["predicted_delta_levels"] = predicted_delta
-            values["significant"] = abs(reference_delta) >= 2
-            values["match"] = (
-                not values["significant"] or immediate_equivalent or
-                values["reference"] == values["predicted"]
-            )
-            direction_mismatches += int(not values["match"])
+        directions = direction_result["stages"]
+        direction_mismatches += direction_result["mismatches"]
         measurements.append({
             "logical_note": identifier,
             "selected_frame": selected_frame,
@@ -328,9 +272,11 @@ def compile_enhanced_score(
         "rows": rows,
     })
     score["conversion"] = dict(v1_score["conversion"])
+    source_duration = score["conversion"]["duration_seconds"]
     score["conversion"].update({
         "duration_frames": frames,
         "duration_seconds": frames / 50,
+        "source_duration_seconds": source_duration,
         "enhanced_voice_schema": "jukupoly-opl-voice-evidence-v3",
         "enhanced_allocator_schema": allocation["schema"],
         "enhanced_allocation": {

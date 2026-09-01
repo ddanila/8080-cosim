@@ -1,0 +1,140 @@
+{
+  "allocation": {
+    "gained_onsets": 14,
+    "missed_protected_onsets": 0,
+    "protected_onsets": 506,
+    "retained_onsets": 520,
+    "source_onsets": 520
+  },
+  "envelope_fit": {
+    "direction_mismatches": 0,
+    "maximum_error": 14,
+    "mean_absolute_error": 0.6541433133056858,
+    "note_measurements_sha256": "52c47a48553007cfe11d86fea7ed0289682e954e8aba6c184c30788bc3ac943d",
+    "selected_logical_notes": 532
+  },
+  "fixture_sample_rate_floor_hz": 6460.3238661,
+  "gates": {
+    "no_protected_onset_regression": true,
+    "player_below_song_window": true,
+    "same_source_vgm": true,
+    "sample_loop_hash_exact": true,
+    "significant_envelope_directions_match": true,
+    "v2_duration_within_one_percent": true,
+    "v2_jps_below_hard_limit": true,
+    "v2_jps_below_soft_limit": true,
+    "v2_music_clock_within_one_percent": true,
+    "v2_sample_rate_above_fixture_floor": true
+  },
+  "host_conversion": {
+    "measured_wall_seconds": 274.19,
+    "v1_score_sha256": "a3b9f5bf40f9b3f045a3fdff85e05c253aa69de2443edfa8dcc88a0e21368873",
+    "v2_score_sha256": "ee9504426a1fd0979cb37c59e4950b3c03020c8a170ca0b93700c8c76d172df7"
+  },
+  "jps": {
+    "v1": {
+      "bytes": 8537,
+      "sha256": "0d9f9ab2c94a15726ad6ec497973e3bf84cbda529d9341157a720e9672ba0db5"
+    },
+    "v2": {
+      "bytes": 9978,
+      "sha256": "8874576bbb09c107f8b51487c4aec6e86516aada2fdaeedab7080fd229e80b21"
+    }
+  },
+  "player": {
+    "bytes": 4537,
+    "end_address_exclusive": "0x12b9",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f"
+  },
+  "profiles": {
+    "v1": {
+      "com_bytes": 4537,
+      "duration_seconds": 156.882615,
+      "effective_sample_hz": 7178.137629,
+      "frame_cycles": {
+        "count": 7875,
+        "max": 35733,
+        "mean": 33866.723,
+        "min": 33561,
+        "p99": 35441
+      },
+      "frame_samples": 143,
+      "frames": 7875,
+      "idle_boundary_cycles": {
+        "count": 6957,
+        "max": 1144,
+        "mean": 902.517,
+        "min": 814,
+        "p99": 1094
+      },
+      "jps_bytes": 8537,
+      "keyboard_polls": 7876,
+      "label": "full-song-v1",
+      "music_frame_hz": 50.196767,
+      "mutated_player_bytes": 60,
+      "pit_writes": 37540,
+      "row_boundary_cycles": {
+        "count": 918,
+        "max": 2180,
+        "mean": 1571.241,
+        "min": 1227,
+        "p99": 2091
+      },
+      "sample_loop_cycles": {
+        "count": 1118250,
+        "max": 269,
+        "mean": 229.977,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "v2": {
+      "com_bytes": 4537,
+      "duration_seconds": 158.877676,
+      "effective_sample_hz": 7088.00021,
+      "frame_cycles": {
+        "count": 7875,
+        "max": 42197,
+        "mean": 34297.403,
+        "min": 33574,
+        "p99": 39449
+      },
+      "frame_samples": 143,
+      "frames": 7875,
+      "idle_boundary_cycles": {
+        "count": 6954,
+        "max": 1858,
+        "mean": 1052.254,
+        "min": 827,
+        "p99": 1425
+      },
+      "jps_bytes": 9978,
+      "keyboard_polls": 7876,
+      "label": "full-song-v2",
+      "music_frame_hz": 49.566435,
+      "mutated_player_bytes": 80,
+      "pit_writes": 50716,
+      "row_boundary_cycles": {
+        "count": 921,
+        "max": 9096,
+        "mean": 3642.738,
+        "min": 1277,
+        "p99": 6953
+      },
+      "sample_loop_cycles": {
+        "count": 1118250,
+        "max": 269,
+        "mean": 230.37,
+        "min": 229,
+        "p99": 262
+      }
+    }
+  },
+  "schema": "jukupoly-opl-full-song-m3-report-v1",
+  "source": {
+    "duration_seconds": 157.5080045351474,
+    "frames": 7875,
+    "name": "03 The Imp's Song.vgz",
+    "vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16"
+  }
+}

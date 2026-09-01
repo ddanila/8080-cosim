@@ -612,10 +612,28 @@ remains 4,537 bytes ending at `12B9h`, and the frozen sample-loop hash remains
 exact.  Target v1/v2 WAV hashes and the pinned-oracle reference WAV hash are
 recorded in the report.
 
-This completes the automatic fitting and 30-second host/C-cosim portion of M3,
-not the complete milestone.  G8 still requires physical CS00000 A/B listening,
-and G5/G2 still require a longest affected full-song v2 measurement before
-library-wide enablement.  V1 remains the default and explicit fallback.
+The longest affected full-song check is now also complete.  An initial Imp
+pass found ten significant direction mismatches among 532 selected notes:
+nine two-level keyed decays which unconstrained least squares flattened, and
+one release too slow to move inside its observed tail.  The real-song fitter
+now ranks preservation of net attack/decay/release changes of at least two
+4-bit levels ahead of squared error.  Sub-two-level motion remains a reported
+approximation and does not acquire extra target machinery.  The guarded pass
+has zero significant direction mismatches, 0.654 levels mean absolute error,
+and 14 levels maximum error.
+
+[`OPL-IMP-FULL-M3.json`](OPL-IMP-FULL-M3.json) records the complete
+157.508-second source pass: all 506 protected onsets retained, 14 gained,
+9,978-byte v2 JPS versus 8,537-byte v1, 7,088.0 samples/s versus a 6,460.3 Hz
+floor, 49.566 frames/s, and 158.878 seconds rendered duration.  The 0.87%
+duration error passes G2; the player map and frozen sample loop remain exact.
+The exhaustive host fit takes 274 seconds, which is a tooling-performance cost
+and consumes no target budget.
+
+This completes the automated host, C-cosim, full-song size, and duration
+portions of M3, not the milestone's physical acceptance.  G8 still requires
+CS00000 A/B listening before library-wide enablement.  V1 remains the default
+and explicit fallback.
 
 ### M4: tremolo
 

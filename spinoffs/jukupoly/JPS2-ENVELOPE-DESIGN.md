@@ -1,8 +1,8 @@
 # JPS v2 envelope vertical-slice contract
 
-Status: M3 target-side synthetic checkpoint, host fitting, and 30-second real
-Imp comparison implemented, 2026-09-01.  Longest-song measurement and the
-physical listening gate remain pending.
+Status: M3 target-side synthetic checkpoint, host fitting, 30-second real Imp
+comparison, and full-song measurement implemented, 2026-09-01.  The physical
+listening gate remains pending.
 This slice is deliberately limited to fitted amplitude envelopes.  Tremolo,
 vibrato, held-key pitch automation, four-operator synthesis, and hardware
 rhythm remain later independent gates.
@@ -173,6 +173,14 @@ real-song configuration uses 143 samples and a measured 7,170 Hz phase table:
 floor.  Its JPS is 1,341 bytes, the player map and hot loop remain unchanged,
 and v1/v2/reference WAV hashes are recorded.
 
-This still does not complete M3.  A longest affected full-song measurement and
-physical CS00000 A/B listening are required before any Doom library default
-changes.  Until then v1 remains the explicit fallback.
+The full 157.508-second Imp result is committed in
+[`OPL-IMP-FULL-M3.json`](OPL-IMP-FULL-M3.json).  The generic fitter prioritizes
+significant (at least two-level) stage directions before least-squares error;
+this corrects ten flattened/too-slow full-song fits without changing target
+code.  All 506 protected onsets survive, the 9,978-byte v2 JPS is below the
+soft ceiling, and C-cosim measures 7,088.0 samples/s, 49.566 frames/s, and
+158.878 seconds against a 157.508-second source.  Every automated gate passes.
+
+This still does not complete M3.  Physical CS00000 A/B listening is required
+before any Doom library default changes.  Until then v1 remains the explicit
+fallback.
