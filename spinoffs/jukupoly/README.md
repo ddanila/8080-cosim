@@ -669,6 +669,27 @@ worst frame.  The full target comparison and accurate Nuked WAVs are generated
 under `out/jukupoly-opening-full-tremolo-m4/`.  Automated M4 qualification is
 complete; physical A/B and default enablement remain deliberately open.
 
+## Pitch and vibrato host evidence
+
+M5 begins without changing the target player.  `opl_vibrato.py` implements the
+pinned Nuked eight-step F-number contour and derives temporary Juku phase-step
+deltas from an immutable base, so repeated cycles cannot accumulate pitch
+drift.  At the DOOM packs' 14,318,180 Hz OPL clock, the clock-derived shared
+LFO is 6.068835788 Hz and the corresponding 50 Hz 16-bit phase increment is
+7,955.
+The oracle probe exports operator VIB enables and both effective F-numbers;
+synthetic tests compare these against the host model exactly.
+
+[`OPL-PITCH-M5.json`](OPL-PITCH-M5.json) records the first two-pack semantic
+gate.  Of 102,172 melodic key-ons, 30,118 in 30 tracks have a conservative
+direct common-pitch path.  It rejects 13,466 FM-modulator-only key-ons as
+timbre effects and 270 one-sided additive key-ons as partial two-pitch
+mixtures.  Separately, nine tracks contain 7,940 coalesced pitch changes while
+a melodic key remains held; most (6,594) move by 5--50 cents.  This establishes
+that M5 is worth investigating, but it adds no JPS capability or 8080 work yet.
+Allocation survival, representation size, cycles, full-song timing, and
+physical listening remain open gates.
+
 ## Reproduce
 
 Source and generated files:
@@ -688,6 +709,7 @@ Source and generated files:
 - `tools/report_opl_tremolo_candidate.py` — reproducible joint-fit M4 candidate;
 - `tools/report_jukupoly_tremolo_target.py` — synthetic M4 target budget report;
 - `tools/report_jukupoly_tremolo_real.py` — real M4 old/new/reference report;
+- `tools/report_opl_pitch.py` — two-pack M5 vibrato/held-pitch semantic report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
@@ -697,6 +719,7 @@ Source and generated files:
 - `OPL-TREMOLO-TARGET-M4.json` — target ABI/map/state/cycle evidence;
 - `OPL-TREMOLO-REAL-M4.json` — 66-second real target/render evidence;
 - `OPL-TREMOLO-FULL-M4.json` — complete-track M4 size/timing/render evidence;
+- `OPL-PITCH-M5.json` — committed two-pack vibrato and held-pitch evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
@@ -725,6 +748,7 @@ Source and generated files:
 - `firmware/opl_envelope.py` — exact-target fitter and semantic attenuation mapper;
 - `firmware/opl_enhanced.py` — generic M2-to-JPS-v2 real-song reducer;
 - `firmware/opl_tremolo.py` — bounded shared-phase M4 host model/fitter;
+- `firmware/opl_vibrato.py` — exact source-shape and bounded M5 step model;
 - `firmware/opl_voices.py` — keyed-segment and logical-voice evidence model;
 - `firmware/jukupoly-imp-30s-v1.json` — frozen Imp excerpt comparison score;
 - `firmware/jukupoly-imp-30s-v2.json` — guarded fitted Imp excerpt score;
@@ -746,6 +770,8 @@ Source and generated files:
 - `tests/jukupoly_opl_envelope_test.py` — exact-target and oracle-fit regression;
 - `tests/jukupoly_opl_enhanced_test.py` — real-score allocation/fitting regression;
 - `tests/jukupoly_opl_tremolo_test.py` — fractional-rate/depth/false-AM guard;
+- `tests/jukupoly_opl_vibrato_test.py` — exact rate/shape/range/no-drift guard;
+- `tests/jukupoly_opl_pitch_test.py` — conservative path and held-write guard;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;

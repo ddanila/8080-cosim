@@ -94,6 +94,23 @@ static timed_write *read_stream(const char *path, uint32_t *total_samples,
   return writes;
 }
 
+static uint16_t vibrato_f_number(const opl3_slot *slot) {
+  int f_number = slot->channel->f_num;
+  if (slot->reg_vib) {
+    int range = (f_number >> 7) & 7;
+    uint8_t position = slot->chip->vibpos;
+    if (!(position & 3))
+      range = 0;
+    else if (position & 1)
+      range >>= 1;
+    range >>= slot->chip->vibshift;
+    if (position & 4)
+      range = -range;
+    f_number += range;
+  }
+  return (uint16_t)f_number;
+}
+
 static void write_probe(FILE *output, const opl3_chip *chip,
                         unsigned channel_number, uint32_t sample,
                         int include_channel) {
@@ -103,13 +120,15 @@ static void write_probe(FILE *output, const opl3_chip *chip,
   if (include_channel)
     fprintf(output, "%u,", channel_number);
   fprintf(output,
-      "%" PRIu32 ",%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
+      "%" PRIu32 ",%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
       sample, channel->f_num, channel->block,
       (unsigned)(modulator->key != 0 || carrier->key != 0),
       modulator->eg_rout, carrier->eg_rout,
       modulator->eg_out, carrier->eg_out, channel->con,
       (unsigned)(modulator->trem == &chip->tremolo),
       (unsigned)(carrier->trem == &chip->tremolo),
+      modulator->reg_vib, carrier->reg_vib,
+      vibrato_f_number(modulator), vibrato_f_number(carrier),
       modulator->eg_gen, carrier->eg_gen,
       chip->vibpos, chip->tremolopos, chip->tremolo);
 }
@@ -146,6 +165,8 @@ int main(int argc, char **argv) {
         "carrier_attenuation,modulator_output_attenuation,"
         "carrier_output_attenuation,connection,"
         "modulator_am,carrier_am,"
+        "modulator_vibrato,carrier_vibrato,"
+        "modulator_vibrato_f_number,carrier_vibrato_f_number,"
         "modulator_stage,carrier_stage,"
         "vibrato_phase,tremolo_phase,tremolo_value\n", probes);
 

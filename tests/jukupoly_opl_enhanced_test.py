@@ -133,14 +133,30 @@ def check_probe_fit() -> None:
     probes = []
     for frame, attenuation in enumerate(levels):
         probe = opl_oracle.OracleProbe(
-            frame * 882, 0x200, 4, frame < 3, 0, 0,
-            511, attenuation, 0, False, False, 0, 0, 0, 0, 0,
+            sample=frame * 882, f_number=0x200, block=4, key=frame < 3,
+            modulator_attenuation=0, carrier_attenuation=0,
+            modulator_output_attenuation=511,
+            carrier_output_attenuation=attenuation, connection=0,
+            modulator_am=False, carrier_am=False,
+            modulator_vibrato=False, carrier_vibrato=False,
+            modulator_vibrato_f_number=0x200,
+            carrier_vibrato_f_number=0x200,
+            modulator_stage=0, carrier_stage=0, vibrato_phase=0,
+            tremolo_phase=0, tremolo_value=0,
         )
         probes.append(opl_oracle.OracleChannelProbe(0, probe))
     probes.append(opl_oracle.OracleChannelProbe(
         0, opl_oracle.OracleProbe(
-            6 * 882 + 17, 0x200, 4, False, 0, 0,
-            511, 511, 0, False, False, 0, 0, 0, 0, 0,
+            sample=6 * 882 + 17, f_number=0x200, block=4, key=False,
+            modulator_attenuation=0, carrier_attenuation=0,
+            modulator_output_attenuation=511,
+            carrier_output_attenuation=511, connection=0,
+            modulator_am=False, carrier_am=False,
+            modulator_vibrato=False, carrier_vibrato=False,
+            modulator_vibrato_f_number=0x200,
+            carrier_vibrato_f_number=0x200,
+            modulator_stage=0, carrier_stage=0, vibrato_phase=0,
+            tremolo_phase=0, tremolo_value=0,
         ),
     ))
     fits, report = opl_enhanced.fit_selected_envelopes(

@@ -1,0 +1,1133 @@
+{
+  "schema": "jukupoly-opl-pitch-pack-report-v1",
+  "policy": "target vibrato is eligible only when carrier pitch is direct and not mixed with an unmodulated additive operator; FM-modulator-only VIB is timbre-only, and one-sided additive VIB is partial pitch",
+  "source_vibrato": {
+    "shape": "Nuked eight-step 0,+half,+full,+half,0,-half,-full,-half",
+    "doom_opl_clock_hz": 14318180,
+    "opl_divider": 288,
+    "clock_derived_lfo_hz": 6.068835788,
+    "target_50hz_phase_increment": 7955
+  },
+  "archives": [
+    {
+      "name": "Doom_(PC).zip",
+      "sha256": "04ffbf72e47727b3e93c1e99a68311a460b85fc31fd9a1645e3d872231c0e12a",
+      "known_policy_pack": "doom1",
+      "tracks": [
+        {
+          "name": "01 Title Screen.vgz",
+          "vgm_sha256": "241060dc4ac0bf03e39758829fe25f3f5622145a06b32724451bdb0715cd76fd",
+          "melodic_keyons": 72,
+          "vibrato_keyons": {
+            "none": 72
+          },
+          "vibrato_signatures": {
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 71,
+            "coalesced_events_all_channels": 69,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "02 At Doom's Gate.vgz",
+          "vgm_sha256": "915176f25be1fb1f78c2caa613fe509e7fd52976439c5412ae5ccc0d1b971f6e",
+          "melodic_keyons": 1630,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1368,
+            "none": 262
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "none": 1
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 2224,
+            "coalesced_events_all_channels": 2198,
+            "coalesced_events_melodic": 2198,
+            "up_events_melodic": 1336,
+            "down_events_melodic": 862,
+            "under_5_cent_events_melodic": 474,
+            "5_to_50_cent_events_melodic": 1724,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 37.535
+          }
+        },
+        {
+          "name": "03 The Imp's Song.vgz",
+          "vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16",
+          "melodic_keyons": 1016,
+          "vibrato_keyons": {
+            "fm_modulator_only": 252,
+            "none": 764
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 1,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "04 Dark Halls.vgz",
+          "vgm_sha256": "07daee82902f0586f9ff76576311a06f2c762ef3e1caf41d34ab7d1dd03627f1",
+          "melodic_keyons": 2341,
+          "vibrato_keyons": {
+            "additive_partial_pitch": 165,
+            "none": 2176
+          },
+          "vibrato_signatures": {
+            "additive_partial_pitch": 1,
+            "none": 1
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "05 Kitchen Ace (and Taking Names).vgz",
+          "vgm_sha256": "cb8b7b1df363829bb3c362e6343be314d1f48df1d489ba8449ca7f3cec44dde0",
+          "melodic_keyons": 2166,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1084,
+            "none": 1082
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 30,
+            "coalesced_events_all_channels": 30,
+            "coalesced_events_melodic": 30,
+            "up_events_melodic": 2,
+            "down_events_melodic": 28,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 30,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 31.442118
+          }
+        },
+        {
+          "name": "06 Suspense.vgz",
+          "vgm_sha256": "c883b1d1ff419298786330c59d8a21f9a1b0f2399b77407c1a21260ef3145cd0",
+          "melodic_keyons": 2944,
+          "vibrato_keyons": {
+            "fm_modulator_only": 1472,
+            "none": 1472
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 1,
+            "none": 1
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "07 On the Hunt.vgz",
+          "vgm_sha256": "e99fa613217c31653c4131474a224026a8f1aedd05fe94f75376a8ce9c25b3a6",
+          "melodic_keyons": 1464,
+          "vibrato_keyons": {
+            "fm_modulator_only": 96,
+            "none": 1368
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 1,
+            "none": 5
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "08 Demons on the Prey.vgz",
+          "vgm_sha256": "15f82e7a9ac98dfcf414fd143077d96d9ae16bc3a67fc06af2bd041fe373e2ce",
+          "melodic_keyons": 1504,
+          "vibrato_keyons": {
+            "fm_modulator_only": 634,
+            "none": 870
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 2,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "09 Sign of Evil.vgz",
+          "vgm_sha256": "1998deaee0d6812717f8d21a7e08fc0070cde4413524c8b43de9d486e1d45cbd",
+          "melodic_keyons": 301,
+          "vibrato_keyons": {
+            "direct_common_pitch": 301
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 322,
+            "coalesced_events_all_channels": 322,
+            "coalesced_events_melodic": 322,
+            "up_events_melodic": 196,
+            "down_events_melodic": 126,
+            "under_5_cent_events_melodic": 74,
+            "5_to_50_cent_events_melodic": 234,
+            "at_least_50_cent_events_melodic": 14,
+            "maximum_absolute_cents_melodic": 101.414481
+          }
+        },
+        {
+          "name": "10 Hiding the Secrets.vgz",
+          "vgm_sha256": "bcabf99dc12d7feabd64f06ffcb0441d35b4758e914bedf7d886d92eec57517b",
+          "melodic_keyons": 2620,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1700,
+            "fm_modulator_only": 384,
+            "none": 536
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 4,
+            "fm_modulator_only": 1,
+            "none": 1
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 132,
+            "coalesced_events_all_channels": 132,
+            "coalesced_events_melodic": 132,
+            "up_events_melodic": 78,
+            "down_events_melodic": 54,
+            "under_5_cent_events_melodic": 14,
+            "5_to_50_cent_events_melodic": 118,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 44.824097
+          }
+        },
+        {
+          "name": "11 I Sawed the Demons.vgz",
+          "vgm_sha256": "2498665e2660e4dadeab123cebdae5edef8f6a88e0126dcde3fb7951079c4b98",
+          "melodic_keyons": 2580,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1269,
+            "none": 1311
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "none": 2
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 1020,
+            "coalesced_events_all_channels": 999,
+            "coalesced_events_melodic": 999,
+            "up_events_melodic": 550,
+            "down_events_melodic": 449,
+            "under_5_cent_events_melodic": 188,
+            "5_to_50_cent_events_melodic": 792,
+            "at_least_50_cent_events_melodic": 19,
+            "maximum_absolute_cents_melodic": 87.676155
+          }
+        },
+        {
+          "name": "12 The Demons from Adrian's Pen.vgz",
+          "vgm_sha256": "fdbdf8e4a6285b1bc48b602d462c302011623a33a31c4bf2728def85de29f45c",
+          "melodic_keyons": 2882,
+          "vibrato_keyons": {
+            "direct_common_pitch": 36,
+            "none": 2846
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 586,
+            "coalesced_events_all_channels": 586,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "13 They're Going to Get You.vgz",
+          "vgm_sha256": "872bde1ffa3b5da9740856188d296057e7cfc06a4091b8c65d10e985645ad805",
+          "melodic_keyons": 2418,
+          "vibrato_keyons": {
+            "direct_common_pitch": 2124,
+            "none": 294
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "none": 1
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "14 Sinister.vgz",
+          "vgm_sha256": "28af80da7cd9c0027bdcdeaebc5c42a0df20ef233b203637b28ac18aa05bd0c3",
+          "melodic_keyons": 1753,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1680,
+            "fm_modulator_only": 25,
+            "none": 48
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 3,
+            "fm_modulator_only": 1,
+            "none": 2
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "15 Waltz of the Demons.vgz",
+          "vgm_sha256": "71f9f6891a449dd597c89835113ebfd0d72e50f560c41d50d7b8111b10ab63fe",
+          "melodic_keyons": 1550,
+          "vibrato_keyons": {
+            "direct_common_pitch": 48,
+            "fm_modulator_only": 521,
+            "none": 981
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "fm_modulator_only": 1,
+            "none": 4
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "16 Nobody Told Me About id.vgz",
+          "vgm_sha256": "f97bc508cc2db52edf42d392f8ed771e30692256e4922b89cb8c2879dfdd87cb",
+          "melodic_keyons": 2047,
+          "vibrato_keyons": {
+            "fm_modulator_only": 368,
+            "none": 1679
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 1,
+            "none": 4
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "17 Untitled.vgz",
+          "vgm_sha256": "6db6d0d986b8426bc035975274e4f03a2692ea5f0b70623c224b68efa927e47c",
+          "melodic_keyons": 2169,
+          "vibrato_keyons": {
+            "direct_common_pitch": 605,
+            "fm_modulator_only": 616,
+            "none": 948
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 2,
+            "none": 4
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 61,
+            "coalesced_events_all_channels": 58,
+            "coalesced_events_melodic": 58,
+            "up_events_melodic": 4,
+            "down_events_melodic": 54,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 54,
+            "at_least_50_cent_events_melodic": 4,
+            "maximum_absolute_cents_melodic": 201.3955
+          }
+        },
+        {
+          "name": "18 Donna to the Rescue.vgz",
+          "vgm_sha256": "b19a7248fbca666e094af5e47b2556685c1053df81b1c75caadea88c6cbf2b4e",
+          "melodic_keyons": 2474,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1344,
+            "fm_modulator_only": 142,
+            "none": 988
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 1,
+            "none": 4
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "19 Deep into the Code.vgz",
+          "vgm_sha256": "a03044dfe8c6a65cd93ca88686c3eca369c5791993698aee4abc2b011a60d711",
+          "melodic_keyons": 3855,
+          "vibrato_keyons": {
+            "direct_common_pitch": 3855
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 131,
+            "coalesced_events_all_channels": 131,
+            "coalesced_events_melodic": 131,
+            "up_events_melodic": 63,
+            "down_events_melodic": 68,
+            "under_5_cent_events_melodic": 38,
+            "5_to_50_cent_events_melodic": 93,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 19.985608
+          }
+        },
+        {
+          "name": "20 Facing the Spider.vgz",
+          "vgm_sha256": "f49289831cc57ec9045ecbc6730008b5a54711b5efa426024399f1cbc9d49073",
+          "melodic_keyons": 1632,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1088,
+            "none": 544
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "none": 1
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "21 Intermission from Doom.vgz",
+          "vgm_sha256": "6f7336343acd54de38fd95376c0aa64211df9cbdd8cf91316a658ab20bfb3e72",
+          "melodic_keyons": 3665,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1838,
+            "fm_modulator_only": 400,
+            "none": 1427
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 1,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "22 The End of Doom.vgz",
+          "vgm_sha256": "6553493ab795acd96ee372b0ea6c7197d440f6529b82d4ef54b48054535d4ce2",
+          "melodic_keyons": 2560,
+          "vibrato_keyons": {
+            "fm_modulator_only": 1054,
+            "none": 1506
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 2,
+            "none": 5
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "23 Sweet Little Dead Bunny.vgz",
+          "vgm_sha256": "cf823f7803c06e615f721bde3a63c6fca76f8d41060c458b683f2512f52d5646",
+          "melodic_keyons": 496,
+          "vibrato_keyons": {
+            "direct_common_pitch": 189,
+            "fm_modulator_only": 59,
+            "none": 248
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 3,
+            "fm_modulator_only": 1,
+            "none": 5
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 507,
+            "coalesced_events_all_channels": 479,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Doom_II_-_Hell_on_Earth_(IBM_PC_AT).zip",
+      "sha256": "3d255c644e52adc2967df8394086d99d7995da71c4adf83bec0fe3bccc51c365",
+      "known_policy_pack": "doom2",
+      "tracks": [
+        {
+          "name": "01 Title Music.vgz",
+          "vgm_sha256": "eba84b21b483c2814e18e774ea99d707e2c302f1288578cbcb85aa5bd80900ea",
+          "melodic_keyons": 98,
+          "vibrato_keyons": {
+            "none": 98
+          },
+          "vibrato_signatures": {
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "02 Running From Evil.vgz",
+          "vgm_sha256": "04fb0a28bf9e19baf26be4e7251cdb59283fb15608a05f176a5acbc0d37545f3",
+          "melodic_keyons": 2892,
+          "vibrato_keyons": {
+            "direct_common_pitch": 992,
+            "fm_modulator_only": 372,
+            "none": 1528
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 1,
+            "none": 5
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "03 Intermission Music.vgz",
+          "vgm_sha256": "dcf10649d6c42b699cfba395c958f9e908d2c0ef242231c73ffb4aeea05bd8da",
+          "melodic_keyons": 3268,
+          "vibrato_keyons": {
+            "direct_common_pitch": 948,
+            "fm_modulator_only": 240,
+            "none": 2080
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 1,
+            "none": 11
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "04 The Healer Stalks.vgz",
+          "vgm_sha256": "25749a3a30d622a81dd603c958f81827da6f13e34c17becf610c789ac9e60750",
+          "melodic_keyons": 1207,
+          "vibrato_keyons": {
+            "none": 1207
+          },
+          "vibrato_signatures": {
+            "none": 6
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "05 Countdown to Death.vgz",
+          "vgm_sha256": "cba4150cebee49dcbdb1e21ccbe62e48fdeee838abd651279130cb4243578c3b",
+          "melodic_keyons": 2702,
+          "vibrato_keyons": {
+            "fm_modulator_only": 636,
+            "none": 2066
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 1,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "06 Between Levels.vgz",
+          "vgm_sha256": "9f4f77208faeb0bcfc1be733296ecb086be73039c4909f27626a75b73286c3d1",
+          "melodic_keyons": 2172,
+          "vibrato_keyons": {
+            "direct_common_pitch": 467,
+            "none": 1705
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "none": 2
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "07 DOOM.vgz",
+          "vgm_sha256": "a8d8d6802bab73eb1d42f63c8d26bd8ac1cb3086d242bd1e9934ffe6aa06553f",
+          "melodic_keyons": 2629,
+          "vibrato_keyons": {
+            "direct_common_pitch": 446,
+            "fm_modulator_only": 446,
+            "none": 1737
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "fm_modulator_only": 1,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 595,
+            "coalesced_events_all_channels": 578,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "08 In the Dark.vgz",
+          "vgm_sha256": "3b1cbac867761078a557cd8f406489f3a653b21c8be165d7524142ab2659e265",
+          "melodic_keyons": 2296,
+          "vibrato_keyons": {
+            "direct_common_pitch": 168,
+            "fm_modulator_only": 672,
+            "none": 1456
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 1,
+            "none": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "09 Shawn's Got the Shotgun.vgz",
+          "vgm_sha256": "09ec5b12496ed2e92b454e1f4dd2197272f19214041404246fe7d64275d1141e",
+          "melodic_keyons": 3791,
+          "vibrato_keyons": {
+            "direct_common_pitch": 632,
+            "fm_modulator_only": 929,
+            "none": 2230
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "fm_modulator_only": 2,
+            "none": 9
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "10 The Dave D. Taylor Blues.vgz",
+          "vgm_sha256": "4ba54dde8525b7faca413650ce43d071ed6201e80804ea052c7d5437990f17da",
+          "melodic_keyons": 3762,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1752,
+            "none": 2010
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 3,
+            "none": 22
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 3707,
+            "coalesced_events_all_channels": 3563,
+            "coalesced_events_melodic": 3381,
+            "up_events_melodic": 94,
+            "down_events_melodic": 3287,
+            "under_5_cent_events_melodic": 344,
+            "5_to_50_cent_events_melodic": 2958,
+            "at_least_50_cent_events_melodic": 79,
+            "maximum_absolute_cents_melodic": 382.235422
+          }
+        },
+        {
+          "name": "11 Into Sandy's City.vgz",
+          "vgm_sha256": "88731521febb7b4288e5aa6739f582066a4392f8d82ff3bcba1d978c83fc3bef",
+          "melodic_keyons": 3863,
+          "vibrato_keyons": {
+            "direct_common_pitch": 516,
+            "fm_modulator_only": 316,
+            "none": 3031
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 1,
+            "none": 15
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "12 The Demon's Dead.vgz",
+          "vgm_sha256": "946f75ba89e557359a65d98973849f775d738a56e65a01b65a8324fdcce14186",
+          "melodic_keyons": 1535,
+          "vibrato_keyons": {
+            "direct_common_pitch": 582,
+            "fm_modulator_only": 149,
+            "none": 804
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 4,
+            "fm_modulator_only": 2,
+            "none": 8
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "13 Waiting for Romero to Play.vgz",
+          "vgm_sha256": "e88960f1726ae24da49bcc094caa46901863b96408969dff1858758491afcefc",
+          "melodic_keyons": 7684,
+          "vibrato_keyons": {
+            "fm_modulator_only": 452,
+            "none": 7232
+          },
+          "vibrato_signatures": {
+            "fm_modulator_only": 2,
+            "none": 4
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "14 Message for the Archvile.vgz",
+          "vgm_sha256": "ab7389b7aed07cf68487292a753910b1cb1b7ba94689fc826fed6bec531a0698",
+          "melodic_keyons": 1673,
+          "vibrato_keyons": {
+            "direct_common_pitch": 757,
+            "none": 916
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "none": 5
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 727,
+            "coalesced_events_all_channels": 689,
+            "coalesced_events_melodic": 689,
+            "up_events_melodic": 411,
+            "down_events_melodic": 278,
+            "under_5_cent_events_melodic": 90,
+            "5_to_50_cent_events_melodic": 591,
+            "at_least_50_cent_events_melodic": 8,
+            "maximum_absolute_cents_melodic": 273.633547
+          }
+        },
+        {
+          "name": "15 Bye Bye American Pie.vgz",
+          "vgm_sha256": "e7dc0c141c58ea43ed1062834a48692e324f2785345850d5de0d05fc94a1dbdf",
+          "melodic_keyons": 1943,
+          "vibrato_keyons": {
+            "direct_common_pitch": 804,
+            "none": 1139
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "none": 2
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 199,
+            "coalesced_events_all_channels": 199,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "16 Adrian's Asleep.vgz",
+          "vgm_sha256": "8dcd40b458366a3afb4f1215b8d0c347bfec5211c583e22b0ad1c18d62677c8b",
+          "melodic_keyons": 321,
+          "vibrato_keyons": {
+            "none": 321
+          },
+          "vibrato_signatures": {
+            "none": 2
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "17 Getting Too Tense.vgz",
+          "vgm_sha256": "f09d1b02b339e64ccc32369398b33f73d1db46dbdbaa9a9b4f29fe1902f755dd",
+          "melodic_keyons": 6337,
+          "vibrato_keyons": {
+            "direct_common_pitch": 940,
+            "fm_modulator_only": 683,
+            "none": 4714
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 2,
+            "fm_modulator_only": 2,
+            "none": 9
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "18 Opening to Hell.vgz",
+          "vgm_sha256": "63984043441985356bfed7d3fd1d5e7f757958a7e76679e19276d6ef90cb6c0f",
+          "melodic_keyons": 733,
+          "vibrato_keyons": {
+            "additive_partial_pitch": 105,
+            "direct_common_pitch": 628
+          },
+          "vibrato_signatures": {
+            "additive_partial_pitch": 1,
+            "direct_common_pitch": 3
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 3921,
+            "coalesced_events_all_channels": 3770,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "19 Evil Incarnate.vgz",
+          "vgm_sha256": "a95f069c9bd40faed047baff40f932b3900b69717df3c58e94087419a346b3af",
+          "melodic_keyons": 192,
+          "vibrato_keyons": {
+            "none": 192
+          },
+          "vibrato_signatures": {
+            "none": 4
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "20 The Ultimate Challenge.vgz",
+          "vgm_sha256": "5ba4863b4d651201808d1a3eb212e2aadca447b9af7332a56a9639fe51a22c8e",
+          "melodic_keyons": 506,
+          "vibrato_keyons": {
+            "direct_common_pitch": 384,
+            "fm_modulator_only": 61,
+            "none": 61
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 1,
+            "fm_modulator_only": 1,
+            "none": 1
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        },
+        {
+          "name": "21 Endgame Music.vgz",
+          "vgm_sha256": "7c25131fd53f3c0433b56b52ec60b08d7f4ff721b5587e1eae85ed3ea5d3c2e1",
+          "melodic_keyons": 6429,
+          "vibrato_keyons": {
+            "direct_common_pitch": 1573,
+            "fm_modulator_only": 2487,
+            "none": 2369
+          },
+          "vibrato_signatures": {
+            "direct_common_pitch": 4,
+            "fm_modulator_only": 2,
+            "none": 6
+          },
+          "held_pitch": {
+            "raw_changed_writes_all_channels": 0,
+            "coalesced_events_all_channels": 0,
+            "coalesced_events_melodic": 0,
+            "up_events_melodic": 0,
+            "down_events_melodic": 0,
+            "under_5_cent_events_melodic": 0,
+            "5_to_50_cent_events_melodic": 0,
+            "at_least_50_cent_events_melodic": 0,
+            "maximum_absolute_cents_melodic": 0.0
+          }
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tracks": 44,
+    "melodic_keyons": 102172,
+    "vibrato_keyons": {
+      "direct_common_pitch": 30118,
+      "additive_partial_pitch": 270,
+      "fm_modulator_only": 13466,
+      "none": 58318
+    },
+    "vibrato_signatures": {
+      "direct_common_pitch": 63,
+      "additive_partial_pitch": 2,
+      "fm_modulator_only": 33,
+      "none": 182
+    },
+    "held_pitch": {
+      "raw_changed_writes_all_channels": 14233,
+      "coalesced_events_all_channels": 13803,
+      "coalesced_events_melodic": 7940,
+      "up_events_melodic": 2734,
+      "down_events_melodic": 5206,
+      "under_5_cent_events_melodic": 1222,
+      "5_to_50_cent_events_melodic": 6594,
+      "at_least_50_cent_events_melodic": 124,
+      "maximum_absolute_cents_melodic": 382.235422
+    },
+    "tracks_with_direct_vibrato": 30,
+    "tracks_with_melodic_held_pitch": 9
+  },
+  "report_sha256": "94a4ffcdc90198d1059dcfea97acd9e91813f39369c96fa7639c072864ae1b50"
+}

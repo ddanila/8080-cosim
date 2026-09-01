@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT / "tests"))
 import import_jukupoly_vgz as vgz  # noqa: E402
 import jukupoly_opl_trace_test as synthetic  # noqa: E402
 import opl_oracle  # noqa: E402
+import opl_vibrato  # noqa: E402
 
 
 def render(tool: Path, writes: list, total_samples: int,
@@ -75,6 +76,14 @@ def check_oracle_agreement(tool: Path) -> None:
         assert by_sample[882].connection == timeline.channel(0, 0).connection
         assert by_sample[882].modulator_am == timeline.channel(0, 0).modulator.am
         assert by_sample[882].carrier_am == timeline.channel(0, 0).carrier.am
+        assert by_sample[882].modulator_vibrato
+        assert not by_sample[882].carrier_vibrato
+        for probe in probes:
+            expected = probe.f_number + opl_vibrato.opl_f_number_delta(
+                probe.f_number, probe.vibrato_phase, deep=True,
+            )
+            assert probe.modulator_vibrato_f_number == expected
+            assert probe.carrier_vibrato_f_number == probe.f_number
 
         # The shared OPL LFOs run independently of note events.  Their oracle
         # phases and tremolo value must progress across our 50 Hz probes.
@@ -134,7 +143,7 @@ def main() -> int:
     check_channel_filter()
     check_oracle_agreement(tool)
     print("JUKUPOLY-OPL-ORACLE: PASS pinned-nuked key-pitch-envelope-lfo "
-          "release-tail channel-isolation")
+          "exact-vibrato-fnum release-tail channel-isolation")
     return 0
 
 

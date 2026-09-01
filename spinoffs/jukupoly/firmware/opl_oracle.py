@@ -27,6 +27,10 @@ class OracleProbe:
     connection: int
     modulator_am: bool
     carrier_am: bool
+    modulator_vibrato: bool
+    carrier_vibrato: bool
+    modulator_vibrato_f_number: int
+    carrier_vibrato_f_number: int
     modulator_stage: int
     carrier_stage: int
     vibrato_phase: int
@@ -104,6 +108,14 @@ def read_probes(path: Path) -> list[OracleProbe]:
             connection=int(row["connection"]),
             modulator_am=bool(int(row["modulator_am"])),
             carrier_am=bool(int(row["carrier_am"])),
+            modulator_vibrato=bool(int(row["modulator_vibrato"])),
+            carrier_vibrato=bool(int(row["carrier_vibrato"])),
+            modulator_vibrato_f_number=int(
+                row["modulator_vibrato_f_number"]
+            ),
+            carrier_vibrato_f_number=int(
+                row["carrier_vibrato_f_number"]
+            ),
             modulator_stage=int(row["modulator_stage"]),
             carrier_stage=int(row["carrier_stage"]),
             vibrato_phase=int(row["vibrato_phase"]),
@@ -142,6 +154,14 @@ def read_channel_probes(path: Path) -> list[OracleChannelProbe]:
                 connection=int(row["connection"]),
                 modulator_am=bool(int(row["modulator_am"])),
                 carrier_am=bool(int(row["carrier_am"])),
+                modulator_vibrato=bool(int(row["modulator_vibrato"])),
+                carrier_vibrato=bool(int(row["carrier_vibrato"])),
+                modulator_vibrato_f_number=int(
+                    row["modulator_vibrato_f_number"]
+                ),
+                carrier_vibrato_f_number=int(
+                    row["carrier_vibrato_f_number"]
+                ),
                 modulator_stage=int(row["modulator_stage"]),
                 carrier_stage=int(row["carrier_stage"]),
                 vibrato_phase=int(row["vibrato_phase"]),

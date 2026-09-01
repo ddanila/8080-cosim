@@ -69,10 +69,13 @@ overrides for that song.
 The Yamaha YMF262 provides two- and four-operator synthesis, operator envelope
 generators, selectable waveforms, feedback and connection modes, rhythm mode,
 and shared low-frequency oscillators for amplitude and frequency modulation.
-The datasheet gives approximately 3.7 Hz for tremolo and 6.4 Hz for vibrato.
-`EGT` selects sustained versus percussive envelope behavior, while `KSR`
-changes envelope rate with pitch.  `TL` is logarithmic attenuation, not linear
-volume.
+The datasheet gives approximately 3.7 Hz for tremolo and a nominal 6.4 Hz for
+vibrato.  The pinned core's exact eight-step counter at the DOOM pack's
+14,318,180 Hz clock and divide-by-288 native rate is 6.068835788 Hz; target
+timing uses that measured source behavior rather than the rounded manual
+figure.  `EGT` selects sustained versus percussive envelope behavior, while
+`KSR` changes envelope rate with pitch.  `TL` is logarithmic attenuation, not
+linear volume.
 
 VGM files preserve timed YM3812/YMF262 register writes.  The importer must
 therefore interpret a register timeline, including writes made while a note is
@@ -339,7 +342,8 @@ note.  At the frame boundary, the player selects a signed delta and forms the
 temporary step used for the next sample batch.  It must retain an unmodulated
 base step so vibrato cannot accumulate into pitch drift.
 
-The 6.4 Hz source LFO has about 7.8 target frames per cycle.  This is coarse
+The pinned DOOM source LFO is 6.068835788 Hz, or about 8.24 target frames per
+cycle at 50 Hz.  Its 16-bit target phase increment is 7,955.  This is coarse
 but representable.  Runtime multiplication by the current phase step is not
 allowed; if the precomputed-delta update misses G2, use a still smaller table
 or host-baked sparse pitch automation.
@@ -756,6 +760,24 @@ underflow, no high-note 15-bit overflow, and all cycle/size gates pass.
 If G2 fails, reduce table/update complexity or emit sparse precomputed pitch
 changes.  A measured sample-count reduction is permitted only while the
 combined enhanced player remains at or above 90% of the baseline rate.
+
+First host-only M5 evidence is recorded in
+[`OPL-PITCH-M5.json`](OPL-PITCH-M5.json).  `opl_vibrato.py` reproduces Nuked's
+eight-position F-number deviations exactly and derives every temporary target
+step from an immutable base, preventing cumulative pitch drift.  The oracle
+now exposes each operator's VIB enable and effective post-vibrato F-number;
+the synthetic regression agrees at every 50 Hz probe.
+
+Across both known DOOM packs, 30,118 of 102,172 melodic key-ons in 30 tracks
+have a conservative direct common-pitch vibrato path.  Another 13,466 have
+VIB only on an FM modulator and are timbre-only; 270 use one-sided additive
+VIB and are a partial two-pitch mixture, so neither class may enable whole-note
+target vibrato.  Nine tracks contain 7,940 coalesced held-key melodic pitch
+events: 6,594 move by 5--50 cents, 1,222 by less than five cents, and 124 by at
+least 50 cents.  This establishes material source use and a guarded semantic
+policy only.  No JPS packet, target state, CPU cycle, or default conversion
+has changed; the next gate is target-allocation survival and a bounded ABI/
+cycle design.
 
 ### M6: pack regression and physical qualification
 
