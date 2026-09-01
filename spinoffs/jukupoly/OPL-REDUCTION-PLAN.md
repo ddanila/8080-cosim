@@ -1086,6 +1086,15 @@ significant attack direction is missed.  Delivery therefore stays the exact
 8,311-byte v1 payload.  The packet cap is not increased again to hide this
 result.
 
+The separate exact mode audit
+[`OPL-M7-MODES.json`](OPL-M7-MODES.json) closes two other M7 branches for the
+current source packs.  All 44 tracks enable OPL3 new mode, but none writes a
+nonzero four-operator pairing mask and none enables hardware rhythm for even
+one source sample.  Four-operator collapse and hardware-drum mapping therefore
+have zero pack benefit and receive no target code.  The importer continues to
+recognize and reject those modes honestly for future sources; this is a
+source-scoped no-demand result, not a claim of general support.
+
 ## Required reporting for every implementation change
 
 Every merge which affects target playback must include:

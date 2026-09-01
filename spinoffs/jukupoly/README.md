@@ -941,6 +941,13 @@ is lost, so the qualified delivery remains its exact 8,311-byte v1 payload.
 This is the intended progressive fallback behavior, not a reason to loosen
 the quality gate or packet bound.
 
+[`OPL-M7-MODES.json`](OPL-M7-MODES.json) audits every timed register stream
+for the remaining structural OPL modes.  All 44 tracks enable ordinary OPL3
+new mode, while zero tracks enable a four-operator pair or hardware rhythm for
+any sample.  Those two optional reductions would improve none of these packs,
+so they deliberately add no Juku code or data.  Unsupported future sources
+remain explicitly rejected.
+
 ## Reproduce
 
 Source and generated files:
@@ -979,6 +986,8 @@ Source and generated files:
   hash, capability, and full C-cosim compatibility report;
 - `tools/build_jukupoly_m7_pack_scan.py` — hash-locked, parallel two-pack
   re-articulation discovery conversion and C-cosim report;
+- `tools/report_opl_modes.py` — exact two-pack OPL3/four-operator/hardware-
+  rhythm state-duration audit;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -991,6 +1000,8 @@ Source and generated files:
   evidence;
 - `OPL-NOBODY-REARTICULATION-M7.json` — complete-track rejected-candidate and
   qualified-v1-fallback evidence;
+- `OPL-M7-MODES.json` — pack-wide four-operator and hardware-rhythm no-demand
+  evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
