@@ -1,0 +1,173 @@
+{
+  "allocation": {
+    "gained_onsets": 14,
+    "missed_protected_onsets": 0,
+    "protected_onsets": 506,
+    "retained_onsets": 520,
+    "source_onsets": 520
+  },
+  "delivery": {
+    "enhanced_candidate_qualified": true,
+    "qualified": true,
+    "reason": null,
+    "strategy": "enhanced"
+  },
+  "envelope_fit": {
+    "delivery_note_mae_limit": 2.0,
+    "detuned_layers": {
+      "episode_measurements_sha256": "c911cbd800eefffa630bb55c2e8c24df620d262f740e7bc217530fabcf1bbd15",
+      "extra_voices": 217,
+      "logical_notes": 216,
+      "member_envelope_fits": 433,
+      "member_maximum_error": 5,
+      "member_rearticulation_packets": 6,
+      "member_sample_weighted_mean_absolute_error": 0.3221727515583259,
+      "rejections": {
+        "fewer_than_two_qualified_steps": 2,
+        "member_lifetime_mismatch": 7,
+        "no_persistent_spare_voice": 30,
+        "noncontiguous_selection": 19,
+        "overlapping_episode_capacity": 5
+      },
+      "target_sample_rate_hz": 7050
+    },
+    "direction_mismatches": 0,
+    "maximum_error": 14,
+    "mean_absolute_error": 0.6171431040325793,
+    "note_measurements_sha256": "c76072c7350dde9b740468062564c7028b75e76d11280f9cad51752fdec008c2",
+    "rearticulation": {
+      "emitted_packets": 49,
+      "enabled": true,
+      "maximum_packets_per_note": 6,
+      "policy": "re-send a same-pitch non-legato ordinary ADSR packet at each bounded significant keyed rise; no target opcode or sample-loop change",
+      "threshold_levels": 4
+    },
+    "selected_logical_notes": 532,
+    "unrepresentable_rearticulation_notes": 0
+  },
+  "fixture_sample_rate_floor_hz": 6460.3238661,
+  "gates": {
+    "no_protected_onset_regression": true,
+    "no_unrepresentable_rearticulations": true,
+    "player_below_song_window": true,
+    "same_source_vgm": true,
+    "sample_loop_hash_exact": true,
+    "significant_envelope_directions_match": true,
+    "v2_duration_within_one_percent": true,
+    "v2_jps_below_hard_limit": true,
+    "v2_jps_below_soft_limit": true,
+    "v2_music_clock_within_one_percent": true,
+    "v2_sample_rate_above_fixture_floor": true
+  },
+  "host_conversion": {
+    "measured_wall_seconds": null,
+    "v1_score_sha256": "a3b9f5bf40f9b3f045a3fdff85e05c253aa69de2443edfa8dcc88a0e21368873",
+    "v2_score_sha256": "d2dabcf475ae66fddb47b995cb3e26c7184c52933992fa3490a57a755d96f481"
+  },
+  "jps": {
+    "v1": {
+      "bytes": 8537,
+      "sha256": "0d9f9ab2c94a15726ad6ec497973e3bf84cbda529d9341157a720e9672ba0db5"
+    },
+    "v2": {
+      "bytes": 11692,
+      "sha256": "5763f33412634455913d3963220bb1d9f128b748ef98589ca2a8500d5d4ac3a4"
+    }
+  },
+  "player": {
+    "bytes": 4537,
+    "end_address_exclusive": "0x12b9",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f"
+  },
+  "profiles": {
+    "v1": {
+      "com_bytes": 4537,
+      "duration_seconds": 156.882615,
+      "effective_sample_hz": 7178.137629,
+      "frame_cycles": {
+        "count": 7875,
+        "max": 35733,
+        "mean": 33866.723,
+        "min": 33561,
+        "p99": 35441
+      },
+      "frame_samples": 143,
+      "frames": 7875,
+      "idle_boundary_cycles": {
+        "count": 6957,
+        "max": 1144,
+        "mean": 902.517,
+        "min": 814,
+        "p99": 1094
+      },
+      "jps_bytes": 8537,
+      "keyboard_polls": 7876,
+      "label": "full-song-v1",
+      "music_frame_hz": 50.196767,
+      "mutated_player_bytes": 60,
+      "pit_writes": 37540,
+      "row_boundary_cycles": {
+        "count": 918,
+        "max": 2180,
+        "mean": 1571.241,
+        "min": 1227,
+        "p99": 2091
+      },
+      "sample_loop_cycles": {
+        "count": 1118250,
+        "max": 269,
+        "mean": 229.977,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "v2": {
+      "com_bytes": 4537,
+      "duration_seconds": 157.517678,
+      "effective_sample_hz": 7049.208777,
+      "frame_cycles": {
+        "count": 7875,
+        "max": 42597,
+        "mean": 34003.816,
+        "min": 33116,
+        "p99": 41075
+      },
+      "frame_samples": 141,
+      "frames": 7875,
+      "idle_boundary_cycles": {
+        "count": 6910,
+        "max": 2265,
+        "mean": 1099.255,
+        "min": 827,
+        "p99": 1690
+      },
+      "jps_bytes": 11692,
+      "keyboard_polls": 7876,
+      "label": "full-song-v2",
+      "music_frame_hz": 49.994388,
+      "mutated_player_bytes": 80,
+      "pit_writes": 56127,
+      "row_boundary_cycles": {
+        "count": 965,
+        "max": 9980,
+        "mean": 4328.564,
+        "min": 1277,
+        "p99": 9556
+      },
+      "sample_loop_cycles": {
+        "count": 1102500,
+        "max": 276,
+        "mean": 230.566,
+        "min": 229,
+        "p99": 262
+      }
+    }
+  },
+  "schema": "jukupoly-opl-full-song-m3-report-v2",
+  "source": {
+    "duration_seconds": 157.5080045351474,
+    "frames": 7875,
+    "name": "03 The Imp's Song.vgz",
+    "vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16"
+  }
+}

@@ -354,7 +354,7 @@
         "rejections": {
           "noncontiguous_selection": 2
         },
-        "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; require persistent spare capacity and individually passing envelope fits"
+        "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; require persistent spare capacity and individually passing envelope fits; reserve spare capacity in deterministic first-selected-note order across overlapping episodes"
       },
       "tremolo_analysis": {
         "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",

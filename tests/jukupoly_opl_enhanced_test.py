@@ -353,14 +353,14 @@ def check_probe_fit() -> None:
                 0, 0x200 + identifier, 4, 42.0 + identifier * 0.2,
             ),),
         )
-        for identifier in range(2)
+        for identifier in range(4)
     ]
     layered_note = opl_voices.LogicalNote(
         0, 0, 3 * 882, (0, 1), ("layer0", "layer1"),
         ((0, 0), (0, 1)), 42.0, 42.0, 128, 8, True,
     )
     layered_probes = []
-    for channel in range(2):
+    for channel in range(4):
         for frame, attenuation in enumerate((32, 32, 32, 64, 128, 511)):
             layered_probes.append(opl_oracle.OracleChannelProbe(
                 channel,
@@ -400,6 +400,29 @@ def check_probe_fit() -> None:
         member["phase_step"]
         for member in detuned["episodes"][0]["members"]
     }) == 2
+
+    second_layered_note = opl_voices.LogicalNote(
+        1, 0, 3 * 882, (2, 3), ("layer2", "layer3"),
+        ((0, 2), (0, 3)), 42.4, 42.4, 128, 8, True,
+    )
+    _overlap_fits, overlap_report = opl_enhanced.fit_selected_envelopes(
+        layered_segments, [layered_note, second_layered_note], {
+            "schema": "jukupoly-opl-three-voice-allocation-v1",
+            "frames": [
+                {"frame": 0, "selected": [
+                    {"logical_note": 0, "logical_voice": 0,
+                     "midi_note": 42},
+                    {"logical_note": 1, "logical_voice": 1,
+                     "midi_note": 47},
+                ]},
+                {"frame": 3, "selected": []},
+            ],
+        }, layered_probes, 6, enable_detuned_layers=True,
+    )
+    overlap = overlap_report["detuned_layer_analysis"]
+    assert overlap["logical_notes"] == 1
+    assert overlap["extra_voices"] == 1
+    assert overlap["rejections"]["overlapping_episode_capacity"] == 1
 
 
 def check_direct_vibrato_score() -> None:

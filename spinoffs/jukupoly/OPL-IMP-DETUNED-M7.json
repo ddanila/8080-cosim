@@ -151,7 +151,7 @@
       "member_maximum_error": 3,
       "member_rearticulation_packets": 6,
       "member_sample_weighted_mean_absolute_error": 0.44963251188932124,
-      "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; require persistent spare capacity and individually passing envelope fits",
+      "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; require persistent spare capacity and individually passing envelope fits; reserve spare capacity in deterministic first-selected-note order across overlapping episodes",
       "rejections": {
         "noncontiguous_selection": 2
       },

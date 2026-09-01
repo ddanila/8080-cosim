@@ -50,6 +50,7 @@ def generate(v1_path: Path, v2_path: Path,
     if v1["source"]["vgm_sha256"] != v2["source"]["vgm_sha256"]:
         raise ValueError("scores do not identify the same source VGM")
     fit = v2["conversion"]["enhanced_envelope_fit"]
+    detuned = fit.get("detuned_layer_analysis", {})
     allocation = v2["conversion"]["enhanced_allocation"]
     source_seconds = v2["conversion"].get(
         "source_duration_seconds",
@@ -162,7 +163,19 @@ def generate(v1_path: Path, v2_path: Path,
             "delivery_note_mae_limit": fit.get("delivery_note_mae_limit"),
             "rearticulation": fit.get("rearticulation"),
             "note_measurements_sha256": digest(fit["notes"]),
-        },
+        } | ({
+            "detuned_layers": {
+                key: detuned[key] for key in (
+                    "target_sample_rate_hz", "logical_notes",
+                    "extra_voices", "member_envelope_fits",
+                    "member_sample_weighted_mean_absolute_error",
+                    "member_maximum_error",
+                    "member_rearticulation_packets", "rejections",
+                )
+            } | {
+                "episode_measurements_sha256": digest(detuned["episodes"]),
+            },
+        } if detuned.get("enabled") else {}),
         "jps": jps,
         "profiles": profiles,
         "fixture_sample_rate_floor_hz": floor,

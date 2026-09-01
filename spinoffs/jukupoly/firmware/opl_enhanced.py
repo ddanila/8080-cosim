@@ -205,6 +205,7 @@ def fit_selected_envelopes(
     single_packet_absolute_error = 0
     fitted_absolute_error = 0
     detuned_episodes = []
+    detuned_spare_used = [0] * frames
     detuned_rejections: Counter[str] = Counter()
     for identifier, selected_frame in sorted(first_selected.items(),
                                               key=lambda item: item[1]):
@@ -546,7 +547,11 @@ def fit_selected_envelopes(
                 if old is None or member["reference_energy"] > old[
                         "reference_energy"]:
                     by_step[member["phase_step"]] = member
-            physical_voices = min(1 + minimum_spare, len(by_step))
+            available_spare = min(
+                spare_by_frame[frame] - detuned_spare_used[frame]
+                for frame in note_selected_frames
+            )
+            physical_voices = min(1 + available_spare, len(by_step))
             if physical_voices >= 2:
                 chosen = sorted(
                     by_step.values(),
@@ -557,13 +562,20 @@ def fit_selected_envelopes(
                     "logical_note": identifier,
                     "start_frame": episode_start,
                     "end_frame": episode_end,
-                    "minimum_spare_voices": minimum_spare,
+                    "minimum_spare_voices": available_spare,
                     "members": chosen,
                 }
                 detuned_episodes.append(detuned_episode)
+                for frame in note_selected_frames:
+                    detuned_spare_used[frame] += physical_voices - 1
                 unrepresentable_rearticulation = False
             elif contiguous and minimum_spare > 0 and len(note.members) > 1:
-                detuned_rejections["fewer_than_two_qualified_steps"] += 1
+                reason = (
+                    "overlapping_episode_capacity"
+                    if available_spare <= 0 and len(by_step) >= 2 else
+                    "fewer_than_two_qualified_steps"
+                )
+                detuned_rejections[reason] += 1
         unrepresentable_rearticulation_notes += int(
             unrepresentable_rearticulation
         )
@@ -680,7 +692,8 @@ def fit_selected_envelopes(
                 "contiguous episode with the strongest fixed-pitch member "
                 "layers whose source-derived target steps are distinct; "
                 "require persistent spare capacity and individually passing "
-                "envelope fits"
+                "envelope fits; reserve spare capacity in deterministic "
+                "first-selected-note order across overlapping episodes"
             ),
         },
         "tremolo_analysis": {

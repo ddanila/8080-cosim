@@ -1133,6 +1133,34 @@ contiguous episode, persistent spare capacity, distinct fixed steps, or a
 bounded per-member envelope fit continue unchanged through the ordinary
 logical-voice path.
 
+The complete-track gate is now closed offline by
+[`OPL-IMP-DETUNED-FULL-M7.json`](OPL-IMP-DETUNED-FULL-M7.json).  The first
+attempt exposed overlapping valid episodes which had independently counted
+the same spare channel; the compiler's hard three-voice assertion rejected
+that score.  The generic fitter now maintains a per-frame reservation ledger
+in first-selected-note order.  A later episode is reduced or rejected when
+its remaining capacity is insufficient, and a synthetic collision regression
+pins that behavior.  Five full-song opportunities are conservatively reported
+as `overlapping_episode_capacity` instead of exceeding the hardware.
+
+The accepted full score contains 216 episodes, 217 extra voice reservations,
+and 433 independently fitted members.  Their sample-weighted mean envelope
+error is 0.322 levels, maximum error is five, and six member re-triggers are
+required.  All 506 protected onsets remain, with zero significant direction
+mismatch and zero unrepresentable selected note.  Initial `143/7170` timing
+was honestly rejected at 49.329 frames/s and 159.642 seconds.  Exact source-
+derived regeneration at `141/7050` produces an 11,692-byte JPS and measures
+7,049.2 samples/s, 49.994 frames/s, 157.518 seconds, and a 42,597-cycle worst
+frame.  The unchanged 4,537-byte player, frozen sample loop, memory limits,
+percussion path, and 7,876 Escape polls all pass.  A complete C-cosim render is
+retained locally at
+`out/jukupoly-imp-detuned-m7/imp-detuned-reart-full.wav`.
+
+Physical comparison is still mandatory before replacing Imp v1 in the mixed
+library.  In particular, independent source-member pulse trains can restore
+beating and separate fades but cannot reproduce OPL waveform/FM timbre; the
+speaker is the decisive check that this added structure is an improvement.
+
 ## Required reporting for every implementation change
 
 Every merge which affects target playback must include:

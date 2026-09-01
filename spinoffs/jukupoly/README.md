@@ -974,6 +974,23 @@ level and maximum error three.  The local comparison render is
 `out/jukupoly-imp-detuned-m7/imp-detuned-reart-30s.wav`.  Full-song and
 physical listening remain open, so the library continues to deliver Imp v1.
 
+The complete candidate is recorded compactly in
+[`OPL-IMP-DETUNED-FULL-M7.json`](OPL-IMP-DETUNED-FULL-M7.json).  A global
+per-frame reservation ledger fixes an overlap found by the full conversion:
+episodes are considered in deterministic first-onset order, and later ones
+are reduced or rejected rather than sharing a physical channel already
+reserved by an earlier layer.  The compiler retains a separate hard
+three-tone assertion, and a synthetic two-episode collision is covered.
+
+Across the full Imp source, 216 episodes reserve 217 extra voices and fit 433
+members at 0.322 sample-weighted mean envelope error.  All 506 protected
+onsets and all envelope quality gates pass.  The exact `141/7050` score is
+11,692 bytes and runs at 7,049.2 samples/s, 49.994 frames/s, and 157.518
+seconds, with a 42,597-cycle worst frame and the unchanged 4,537-byte player.
+The complete local render is
+`out/jukupoly-imp-detuned-m7/imp-detuned-reart-full.wav`.  This closes the
+offline gate only; Imp v1 remains in the library until physical A/B listening.
+
 ## Reproduce
 
 Source and generated files:
@@ -1034,6 +1051,8 @@ Source and generated files:
   for optional detuned duplicate voices;
 - `OPL-IMP-DETUNED-M7.json` — guarded Imp detuned-member/re-articulation
   excerpt, timing, size, and unchanged-player evidence;
+- `OPL-IMP-DETUNED-FULL-M7.json` — complete Imp detuned-member candidate,
+  overlap arbitration, size, and full C-cosim timing evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
