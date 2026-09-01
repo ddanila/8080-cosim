@@ -107,6 +107,14 @@ def check_oracle_agreement(tool: Path) -> None:
         channel_zero = [item.probe for item in all_probes if item.channel == 0]
         assert channel_zero == probes
 
+        discard_csv = directory / "discard.csv"
+        discarded = subprocess.run(
+            [str(tool), str(stream), "-", str(discard_csv), "all"],
+            check=True, text=True, stdout=subprocess.PIPE,
+        )
+        assert "nonzero=" in discarded.stdout
+        assert opl_oracle.read_channel_probes(discard_csv) == all_probes
+
 
 def check_channel_filter() -> None:
     assert opl_oracle.channel_write(vgz.RegisterWrite(0, 0, 0x20, 1), 0, 0)

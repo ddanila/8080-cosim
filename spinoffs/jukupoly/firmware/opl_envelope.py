@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Callable, Sequence
 
 
 RATE_PERIODS = (0, 1, 2, 4, 8, 16, 32, 64)
@@ -200,6 +200,9 @@ def fit_envelope(
     counter_at_onset: int = 1,
     peak_level: int | None = None,
     preserve_significant_directions: bool = False,
+    prediction_transform: Callable[
+        [tuple[int, ...]], tuple[int, ...]
+    ] | None = None,
 ) -> EnvelopeFit:
     """Find the deterministic least-squares compact target approximation."""
     reference = tuple(reference_levels)
@@ -234,7 +237,7 @@ def fit_envelope(
             for attack in RATE_PERIODS:
                 for decay in RATE_PERIODS:
                     for release in RATE_PERIODS:
-                        predicted = simulate_envelope(
+                        envelope_prediction = simulate_envelope(
                             len(reference),
                             key_off_frame=key_off_frame,
                             peak_level=peak,
@@ -245,6 +248,17 @@ def fit_envelope(
                             sustain_while_keyed=sustain_while_keyed,
                             counter_at_onset=counter_at_onset,
                         )
+                        predicted = (
+                            prediction_transform(envelope_prediction)
+                            if prediction_transform is not None
+                            else envelope_prediction
+                        )
+                        if len(predicted) != len(reference) or any(
+                                not isinstance(level, int) or
+                                not 0 <= level <= 15 for level in predicted):
+                            raise ValueError(
+                                "prediction_transform returned invalid levels"
+                            )
                         differences = tuple(
                             actual - expected
                             for actual, expected in zip(predicted, reference)

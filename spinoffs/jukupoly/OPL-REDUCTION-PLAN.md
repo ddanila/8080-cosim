@@ -677,6 +677,33 @@ its source has no direct AM path.  The Imp result is too small by itself to
 justify player code; the next gate is quantized-oracle benefit on representative
 direct-AM tracks, followed by a bounded ABI/cycle experiment if warranted.
 
+The v2 pack report now includes that exact quantized-oracle gate.  For each
+active melodic physical channel it analytically removes Nuked's live tremolo
+attenuation from `eg_out`, independently quantizes the with/without forms to
+four bits, and discards PCM output.  Across both packs, 69,978 of 405,454
+direct-AM channel-frames change, totaling 70,188 mixer levels with maximum
+depth two.  All 232,212 FM-modulator-only channel-frames change by exactly zero.
+Every one of the 27 direct-AM tracks has at least one surviving frame.  The v2
+report fingerprint is
+`e8e2b5e69bf62f80619242b09411e7b8c55b4fbe08616f2ac6641bab07525ab0`.
+
+Sequential fitting was then rejected as an M4 decision method: the envelope
+can absorb average AM attenuation into its sustain level, making a later
+attenuation-only LFO appear useless.  `fit_joint_envelope_tremolo` searches the
+same strict envelope packet space jointly with depths zero through three.
+The pinned synthetic fixture recovers its exact envelope and depth.
+[`OPL-TREMOLO-CANDIDATE-M4.json`](OPL-TREMOLO-CANDIDATE-M4.json) records a
+real “Opening to Hell” candidate at 62.0 seconds: source AM changes 53 of 114
+reference frames by one level, and joint depth one reduces squared error from
+222 to 180 while preserving significant stage directions.  Mean absolute
+error rises from 0.842 to 0.930 while maximum error falls from five to four;
+all three metrics are retained so the improvement is not overstated.
+
+This is enough evidence for a reversible target ABI/cycle experiment, not for
+default enablement.  M4 target work must fit the combined envelope+tremolo 10%
+budget, retain an off path with no per-frame cost for v1 and non-AM v2 songs,
+and undergo physical A/B before the host candidate policy is accepted.
+
 ### M5: vibrato and held-note pitch writes
 
 Add the shared vibrato phase, temporary phase-step modulation, and generic

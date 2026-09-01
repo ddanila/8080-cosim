@@ -54,6 +54,26 @@ def check_inaudible_modulator_does_not_become_volume_lfo() -> None:
     assert fit.squared_error_improvement == 0
 
 
+def check_joint_envelope_fit() -> None:
+    envelope = opl_tremolo.opl_envelope.simulate_envelope(
+        48, key_off_frame=36, peak_level=12, sustain_level=8,
+        attack_period_frames=1, decay_period_frames=4,
+        release_period_frames=2, sustain_while_keyed=True,
+        counter_at_onset=8,
+    )
+    reference = opl_tremolo.simulate_tremolo(
+        envelope, start_frame=7, depth_levels=2,
+    )
+    fit = opl_tremolo.fit_joint_envelope_tremolo(
+        reference, start_frame=7, key_off_frame=36,
+        sustain_while_keyed=True, counter_at_onset=8,
+    )
+    assert fit.depth_levels == 2
+    assert fit.envelope.predicted_levels == reference
+    assert fit.envelope.squared_error == 0
+    assert fit.squared_error_improvement > 0
+
+
 def check_bounds() -> None:
     try:
         opl_tremolo.simulate_tremolo(
@@ -64,11 +84,23 @@ def check_bounds() -> None:
     else:
         raise AssertionError("out-of-range tremolo depth accepted")
 
+    # AM on an indirect FM modulator cannot change the semantic carrier level.
+    assert opl_tremolo.quantized_oracle_am_effect(
+        40, 32, 0, True, False, 8,
+    ) == opl_tremolo.quantized_oracle_am_effect(
+        32, 32, 0, False, False, 0,
+    )
+    without, with_am = opl_tremolo.quantized_oracle_am_effect(
+        32, 32, 0, False, True, 8,
+    )
+    assert without >= with_am
+
 
 def main() -> int:
     check_shared_phase_and_rate()
     check_exact_quantized_fit()
     check_inaudible_modulator_does_not_become_volume_lfo()
+    check_joint_envelope_fit()
     check_bounds()
     print("JUKUPOLY-OPL-TREMOLO: PASS shared-phase fixed-rate exact-fit "
           "bounded-depth inaudible-modulator-guard")

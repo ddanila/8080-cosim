@@ -1,0 +1,59 @@
+{
+  "schema": "jukupoly-opl-tremolo-candidate-report-v1",
+  "source": {
+    "name": "18 Opening to Hell.vgz",
+    "vgm_sha256": "63984043441985356bfed7d3fd1d5e7f757958a7e76679e19276d6ef90cb6c0f",
+    "score_sha256": "9bc7d62f6fb262c79cd434322bf384d69f705682ccf65f65bfa55a6ef25e2512",
+    "probe_sha256": "90cd47e7fa4b0d5101ce6d02afab33fc3da49133f19f911f1158bc636fc277b4"
+  },
+  "logical_note": 100,
+  "selected_frame": 3100,
+  "selected_seconds": 62.0,
+  "reference_frames": 114,
+  "channels": [
+    [
+      1,
+      2
+    ]
+  ],
+  "source_quantized_am": {
+    "changed_frames": 53,
+    "attenuation_levels": 53,
+    "maximum_delta_levels": 1
+  },
+  "baseline_envelope": {
+    "packet": {
+      "peak_level": 12,
+      "sustain_level": 0,
+      "attack_period_frames": 1,
+      "decay_period_frames": 8,
+      "release_period_frames": 8,
+      "sustain_while_keyed": true
+    },
+    "squared_error": 222,
+    "mean_absolute_error": 0.8421052631578947,
+    "maximum_error": 5
+  },
+  "joint_fit": {
+    "depth_levels": 1,
+    "packet": {
+      "peak_level": 10,
+      "sustain_level": 0,
+      "attack_period_frames": 0,
+      "decay_period_frames": 64,
+      "release_period_frames": 8,
+      "sustain_while_keyed": true
+    },
+    "squared_error": 180,
+    "squared_error_improvement": 42,
+    "improvement_per_frame": 0.3684210526315789,
+    "mean_absolute_error": 0.9298245614035088,
+    "maximum_error": 4
+  },
+  "gates": {
+    "source_am_survives_4bit": true,
+    "joint_fit_selects_tremolo": true,
+    "joint_fit_improves_squared_error": true,
+    "significant_directions_preserved": true
+  }
+}

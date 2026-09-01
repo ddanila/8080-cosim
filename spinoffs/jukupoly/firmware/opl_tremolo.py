@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
+import opl_envelope
+
 
 TARGET_FRAME_MILLIHZ = 50_000
 OPL_TREMOLO_MILLIHZ = 3_700
@@ -32,6 +34,18 @@ class TremoloFit:
     @property
     def squared_error_improvement(self) -> int:
         return self.baseline_squared_error - self.squared_error
+
+
+@dataclass(frozen=True)
+class JointEnvelopeTremoloFit:
+    depth_levels: int
+    envelope: opl_envelope.EnvelopeFit
+    baseline_envelope: opl_envelope.EnvelopeFit
+
+    @property
+    def squared_error_improvement(self) -> int:
+        return (self.baseline_envelope.squared_error -
+                self.envelope.squared_error)
 
 
 def phase_at_frame(frame: int) -> int:
@@ -100,3 +114,64 @@ def fit_tremolo(reference_levels: Sequence[int],
             )
     assert best is not None
     return best
+
+
+def quantized_oracle_am_effect(
+        modulator_output_attenuation: int,
+        carrier_output_attenuation: int,
+        connection: int,
+        modulator_am: bool,
+        carrier_am: bool,
+        tremolo_attenuation: int,
+        *, peak_level: int = 15,
+) -> tuple[int, int]:
+    """Return (without AM, with AM) levels from one exact oracle probe."""
+    if tremolo_attenuation < 0:
+        raise ValueError("tremolo attenuation must be nonnegative")
+    base_modulator = modulator_output_attenuation - (
+        tremolo_attenuation if modulator_am else 0
+    )
+    base_carrier = carrier_output_attenuation - (
+        tremolo_attenuation if carrier_am else 0
+    )
+    if base_modulator < 0 or base_carrier < 0:
+        raise ValueError("tremolo exceeds oracle output attenuation")
+    with_am = round(peak_level * opl_envelope.opl_channel_amplitude(
+        modulator_output_attenuation, carrier_output_attenuation, connection,
+    ))
+    without_am = round(peak_level * opl_envelope.opl_channel_amplitude(
+        base_modulator, base_carrier, connection,
+    ))
+    return without_am, with_am
+
+
+def fit_joint_envelope_tremolo(
+        reference_levels: Sequence[int], *, start_frame: int,
+        key_off_frame: int | None, sustain_while_keyed: bool,
+        counter_at_onset: int = 1,
+        preserve_significant_directions: bool = True,
+) -> JointEnvelopeTremoloFit:
+    """Jointly search the exact envelope packet and bounded tremolo depth."""
+    reference = tuple(reference_levels)
+    fits = []
+    for depth in range(MAX_DEPTH + 1):
+        fit = opl_envelope.fit_envelope(
+            reference,
+            key_off_frame=key_off_frame,
+            sustain_while_keyed=sustain_while_keyed,
+            counter_at_onset=counter_at_onset,
+            preserve_significant_directions=preserve_significant_directions,
+            prediction_transform=lambda levels, selected=depth: (
+                simulate_tremolo(
+                    levels, start_frame=start_frame,
+                    depth_levels=selected,
+                )
+            ),
+        )
+        fits.append((depth, fit))
+    baseline = fits[0][1]
+    depth, fit = min(fits, key=lambda item: (
+        item[1].squared_error, item[1].absolute_error,
+        item[1].maximum_error, item[0],
+    ))
+    return JointEnvelopeTremoloFit(depth, fit, baseline)

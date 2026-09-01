@@ -1,5 +1,5 @@
 {
-  "schema": "jukupoly-opl-tremolo-pack-report-v1",
+  "schema": "jukupoly-opl-tremolo-pack-report-v2",
   "policy": "AM on the carrier or an additive modulator is direct amplitude evidence; AM only on an FM modulator is timbre-only and cannot enable Juku volume tremolo without separate oracle evidence",
   "archives": [
     {
@@ -16,7 +16,8 @@
           "no_am_keyons": 72,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "02 At Doom's Gate.vgz",
@@ -27,7 +28,8 @@
           "no_am_keyons": 1630,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "03 The Imp's Song.vgz",
@@ -38,7 +40,8 @@
           "no_am_keyons": 1016,
           "melodic_signatures": 4,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "04 Dark Halls.vgz",
@@ -49,7 +52,13 @@
           "no_am_keyons": 2176,
           "melodic_signatures": 2,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 29423,
+            "direct_changed_frames": 5387,
+            "direct_attenuation_levels": 5395,
+            "direct_maximum_delta": 2
+          }
         },
         {
           "name": "05 Kitchen Ace (and Taking Names).vgz",
@@ -60,7 +69,8 @@
           "no_am_keyons": 2166,
           "melodic_signatures": 5,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "06 Suspense.vgz",
@@ -71,7 +81,17 @@
           "no_am_keyons": 0,
           "melodic_signatures": 2,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 18229,
+            "direct_changed_frames": 2757,
+            "direct_attenuation_levels": 2757,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 18232,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "07 On the Hunt.vgz",
@@ -82,7 +102,8 @@
           "no_am_keyons": 1464,
           "melodic_signatures": 6,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "08 Demons on the Prey.vgz",
@@ -93,7 +114,17 @@
           "no_am_keyons": 480,
           "melodic_signatures": 5,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 9155,
+            "direct_changed_frames": 1776,
+            "direct_attenuation_levels": 1776,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 9155,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "09 Sign of Evil.vgz",
@@ -104,7 +135,8 @@
           "no_am_keyons": 301,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "10 Hiding the Secrets.vgz",
@@ -115,7 +147,17 @@
           "no_am_keyons": 1656,
           "melodic_signatures": 6,
           "direct_am_signatures": 2,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 5612,
+            "direct_changed_frames": 1182,
+            "direct_attenuation_levels": 1182,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 5069,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "11 I Sawed the Demons.vgz",
@@ -126,7 +168,8 @@
           "no_am_keyons": 2580,
           "melodic_signatures": 4,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "12 The Demons from Adrian's Pen.vgz",
@@ -137,7 +180,13 @@
           "no_am_keyons": 2238,
           "melodic_signatures": 4,
           "direct_am_signatures": 2,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 6230,
+            "direct_changed_frames": 242,
+            "direct_attenuation_levels": 242,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "13 They're Going to Get You.vgz",
@@ -148,7 +197,8 @@
           "no_am_keyons": 2418,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "14 Sinister.vgz",
@@ -159,7 +209,17 @@
           "no_am_keyons": 480,
           "melodic_signatures": 6,
           "direct_am_signatures": 3,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 33360,
+            "direct_changed_frames": 7564,
+            "direct_attenuation_levels": 7564,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 20399,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "15 Waltz of the Demons.vgz",
@@ -170,7 +230,17 @@
           "no_am_keyons": 460,
           "melodic_signatures": 6,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 4937,
+            "direct_changed_frames": 509,
+            "direct_attenuation_levels": 509,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 5087,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "16 Nobody Told Me About id.vgz",
@@ -181,7 +251,8 @@
           "no_am_keyons": 2047,
           "melodic_signatures": 5,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "17 Untitled.vgz",
@@ -192,7 +263,17 @@
           "no_am_keyons": 1073,
           "melodic_signatures": 8,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 1978,
+            "direct_changed_frames": 187,
+            "direct_attenuation_levels": 187,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 3528,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "18 Donna to the Rescue.vgz",
@@ -203,7 +284,8 @@
           "no_am_keyons": 2474,
           "melodic_signatures": 7,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "19 Deep into the Code.vgz",
@@ -214,7 +296,8 @@
           "no_am_keyons": 3855,
           "melodic_signatures": 2,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "20 Facing the Spider.vgz",
@@ -225,7 +308,8 @@
           "no_am_keyons": 1632,
           "melodic_signatures": 2,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "21 Intermission from Doom.vgz",
@@ -236,7 +320,13 @@
           "no_am_keyons": 3471,
           "melodic_signatures": 6,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 1416,
+            "direct_changed_frames": 347,
+            "direct_attenuation_levels": 347,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "22 The End of Doom.vgz",
@@ -247,7 +337,17 @@
           "no_am_keyons": 42,
           "melodic_signatures": 7,
           "direct_am_signatures": 4,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "fm_modulator_only_channel_frames": 17578,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0,
+            "direct_channel_frames": 26404,
+            "direct_changed_frames": 5289,
+            "direct_attenuation_levels": 5289,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "23 Sweet Little Dead Bunny.vgz",
@@ -258,7 +358,17 @@
           "no_am_keyons": 346,
           "melodic_signatures": 9,
           "direct_am_signatures": 3,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 4666,
+            "direct_changed_frames": 451,
+            "direct_attenuation_levels": 451,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 4218,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         }
       ]
     },
@@ -276,7 +386,8 @@
           "no_am_keyons": 98,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "02 Running From Evil.vgz",
@@ -287,7 +398,17 @@
           "no_am_keyons": 2148,
           "melodic_signatures": 8,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 27965,
+            "direct_changed_frames": 3846,
+            "direct_attenuation_levels": 3846,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 27965,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "03 Intermission Music.vgz",
@@ -298,7 +419,17 @@
           "no_am_keyons": 2511,
           "melodic_signatures": 14,
           "direct_am_signatures": 3,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 6162,
+            "direct_changed_frames": 484,
+            "direct_attenuation_levels": 484,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 2218,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "04 The Healer Stalks.vgz",
@@ -309,7 +440,13 @@
           "no_am_keyons": 940,
           "melodic_signatures": 6,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 5458,
+            "direct_changed_frames": 864,
+            "direct_attenuation_levels": 864,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "05 Countdown to Death.vgz",
@@ -320,7 +457,17 @@
           "no_am_keyons": 1228,
           "melodic_signatures": 4,
           "direct_am_signatures": 2,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "fm_modulator_only_channel_frames": 24127,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0,
+            "direct_channel_frames": 31400,
+            "direct_changed_frames": 5125,
+            "direct_attenuation_levels": 5125,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "06 Between Levels.vgz",
@@ -331,7 +478,8 @@
           "no_am_keyons": 2172,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "07 DOOM.vgz",
@@ -342,7 +490,17 @@
           "no_am_keyons": 450,
           "melodic_signatures": 5,
           "direct_am_signatures": 3,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "fm_modulator_only_channel_frames": 8552,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0,
+            "direct_channel_frames": 30089,
+            "direct_changed_frames": 2173,
+            "direct_attenuation_levels": 2173,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "08 In the Dark.vgz",
@@ -353,7 +511,13 @@
           "no_am_keyons": 700,
           "melodic_signatures": 6,
           "direct_am_signatures": 5,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 27152,
+            "direct_changed_frames": 10202,
+            "direct_attenuation_levels": 10202,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "09 Shawn's Got the Shotgun.vgz",
@@ -364,7 +528,13 @@
           "no_am_keyons": 3219,
           "melodic_signatures": 12,
           "direct_am_signatures": 2,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 10748,
+            "direct_changed_frames": 366,
+            "direct_attenuation_levels": 366,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "10 The Dave D. Taylor Blues.vgz",
@@ -375,7 +545,17 @@
           "no_am_keyons": 2464,
           "melodic_signatures": 25,
           "direct_am_signatures": 17,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 3742,
+            "direct_changed_frames": 29,
+            "direct_attenuation_levels": 29,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 1061,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "11 Into Sandy's City.vgz",
@@ -386,7 +566,17 @@
           "no_am_keyons": 2278,
           "melodic_signatures": 18,
           "direct_am_signatures": 13,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "fm_modulator_only_channel_frames": 12531,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0,
+            "direct_channel_frames": 4330,
+            "direct_changed_frames": 499,
+            "direct_attenuation_levels": 499,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "12 The Demon's Dead.vgz",
@@ -397,7 +587,17 @@
           "no_am_keyons": 939,
           "melodic_signatures": 14,
           "direct_am_signatures": 4,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "fm_modulator_only_channel_frames": 18660,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0,
+            "direct_channel_frames": 33857,
+            "direct_changed_frames": 7134,
+            "direct_attenuation_levels": 7134,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "13 Waiting for Romero to Play.vgz",
@@ -408,7 +608,17 @@
           "no_am_keyons": 6780,
           "melodic_signatures": 6,
           "direct_am_signatures": 3,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 36315,
+            "direct_changed_frames": 3537,
+            "direct_attenuation_levels": 3537,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 6689,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "14 Message for the Archvile.vgz",
@@ -419,7 +629,17 @@
           "no_am_keyons": 813,
           "melodic_signatures": 7,
           "direct_am_signatures": 3,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 4069,
+            "direct_changed_frames": 560,
+            "direct_attenuation_levels": 560,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 3223,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "15 Bye Bye American Pie.vgz",
@@ -430,7 +650,8 @@
           "no_am_keyons": 1943,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "16 Adrian's Asleep.vgz",
@@ -441,7 +662,8 @@
           "no_am_keyons": 321,
           "melodic_signatures": 2,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {}
         },
         {
           "name": "17 Getting Too Tense.vgz",
@@ -452,7 +674,17 @@
           "no_am_keyons": 4691,
           "melodic_signatures": 13,
           "direct_am_signatures": 3,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 13177,
+            "direct_changed_frames": 1477,
+            "direct_attenuation_levels": 1477,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 5629,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "18 Opening to Hell.vgz",
@@ -463,7 +695,17 @@
           "no_am_keyons": 139,
           "melodic_signatures": 4,
           "direct_am_signatures": 1,
-          "fm_modulator_only_am_signatures": 2
+          "fm_modulator_only_am_signatures": 2,
+          "oracle_4bit_am": {
+            "fm_modulator_only_channel_frames": 15324,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0,
+            "direct_channel_frames": 5183,
+            "direct_changed_frames": 2899,
+            "direct_attenuation_levels": 3101,
+            "direct_maximum_delta": 2
+          }
         },
         {
           "name": "19 Evil Incarnate.vgz",
@@ -474,7 +716,13 @@
           "no_am_keyons": 98,
           "melodic_signatures": 4,
           "direct_am_signatures": 2,
-          "fm_modulator_only_am_signatures": 0
+          "fm_modulator_only_am_signatures": 0,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 5688,
+            "direct_changed_frames": 817,
+            "direct_attenuation_levels": 817,
+            "direct_maximum_delta": 1
+          }
         },
         {
           "name": "20 The Ultimate Challenge.vgz",
@@ -485,7 +733,13 @@
           "no_am_keyons": 122,
           "melodic_signatures": 3,
           "direct_am_signatures": 0,
-          "fm_modulator_only_am_signatures": 1
+          "fm_modulator_only_am_signatures": 1,
+          "oracle_4bit_am": {
+            "fm_modulator_only_channel_frames": 3037,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         },
         {
           "name": "21 Endgame Music.vgz",
@@ -496,7 +750,17 @@
           "no_am_keyons": 1198,
           "melodic_signatures": 12,
           "direct_am_signatures": 6,
-          "fm_modulator_only_am_signatures": 3
+          "fm_modulator_only_am_signatures": 3,
+          "oracle_4bit_am": {
+            "direct_channel_frames": 18709,
+            "direct_changed_frames": 4275,
+            "direct_attenuation_levels": 4275,
+            "direct_maximum_delta": 1,
+            "fm_modulator_only_channel_frames": 19930,
+            "fm_modulator_only_changed_frames": 0,
+            "fm_modulator_only_attenuation_levels": 0,
+            "fm_modulator_only_maximum_delta": 0
+          }
         }
       ]
     }
@@ -511,7 +775,19 @@
     "direct_am_signatures": 89,
     "fm_modulator_only_am_signatures": 33,
     "tracks_with_direct_am": 27,
-    "tracks_with_fm_modulator_only_am": 21
+    "tracks_with_fm_modulator_only_am": 21,
+    "oracle_4bit_am": {
+      "direct_channel_frames": 405454,
+      "direct_changed_frames": 69978,
+      "direct_attenuation_levels": 70188,
+      "fm_modulator_only_channel_frames": 232212,
+      "fm_modulator_only_changed_frames": 0,
+      "fm_modulator_only_attenuation_levels": 0,
+      "direct_maximum_delta": 2,
+      "fm_modulator_only_maximum_delta": 0
+    },
+    "tracks_with_quantized_direct_am": 27
   },
-  "report_sha256": "c8924b6aca4fed55983d9fc9d98130c05be485180b1a90ed5f0262af0d80ff7a"
+  "oracle_policy": "pinned-Nuked post-EG AM attenuation removed analytically at 50 Hz, then both forms quantized independently to 4-bit levels; counts are active melodic physical-channel frames, not yet M2 target allocation",
+  "report_sha256": "e8e2b5e69bf62f80619242b09411e7b8c55b4fbe08616f2ac6641bab07525ab0"
 }

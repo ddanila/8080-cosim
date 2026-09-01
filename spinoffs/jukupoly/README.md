@@ -613,6 +613,21 @@ candidate is rejected by the direct-path guard.  This is not enough to spend
 target cycles yet.  Representative direct-AM tracks must show useful
 quantized benefit before a JPS/8080 tremolo experiment begins.
 
+The v2 pack report performs the stronger test by removing Nuked's exact live
+AM attenuation and independently quantizing with/without-AM amplitudes.  AM
+changes 69,978 of 405,454 direct channel-frames, by at most two mixer levels;
+all 232,212 modulator-only channel-frames remain identical.  Thus the effect
+survives the speaker's level resolution, but only shallowly.
+
+Envelope and tremolo must be fitted jointly: a sequential fit can hide average
+AM inside the sustain level.  The guarded joint search recovers exact synthetic
+fixtures.  The real representative report
+[`OPL-TREMOLO-CANDIDATE-M4.json`](OPL-TREMOLO-CANDIDATE-M4.json) selects depth
+one for an “Opening to Hell” note at 62 seconds: 53 of 114 frames change in the
+source and squared error falls 222→180.  Mean absolute error rises 0.842→0.930
+while maximum error falls 5→4, so this is evidence for a reversible target
+experiment, not yet evidence for default enablement.
+
 ## Reproduce
 
 Source and generated files:
@@ -629,11 +644,13 @@ Source and generated files:
 - `tools/report_jukupoly_imp_m3.py` — real Imp v1/v2/reference M3 report;
 - `tools/report_jukupoly_full_m3.py` — compact full-song M3 feasibility report;
 - `tools/report_opl_tremolo.py` — direct versus FM-modulator-only AM pack report;
+- `tools/report_opl_tremolo_candidate.py` — reproducible joint-fit M4 candidate;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
-- `OPL-TREMOLO-M4.json` — committed two-pack M4 semantic prevalence report;
+- `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
+- `OPL-TREMOLO-CANDIDATE-M4.json` — real joint envelope+tremolo evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;

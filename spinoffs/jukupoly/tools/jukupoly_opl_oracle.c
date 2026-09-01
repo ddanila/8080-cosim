@@ -133,10 +133,11 @@ int main(int argc, char **argv) {
   size_t write_count;
   timed_write *writes = read_stream(
       argv[1], &total_samples, &sample_rate, &write_count);
-  FILE *pcm = fopen(argv[2], "wb");
+  int discard_pcm = strcmp(argv[2], "-") == 0;
+  FILE *pcm = discard_pcm ? NULL : fopen(argv[2], "wb");
   FILE *probes = fopen(argv[3], "w");
-  if (!pcm || !probes) {
-    perror(!pcm ? argv[2] : argv[3]);
+  if ((!discard_pcm && !pcm) || !probes) {
+    perror(!discard_pcm && !pcm ? argv[2] : argv[3]);
     return 2;
   }
   if (all_channels)
@@ -177,7 +178,8 @@ int main(int argc, char **argv) {
 
     int16_t output[2];
     OPL3_GenerateResampled(&chip, output);
-    if (!write_i16le(pcm, output[0]) || !write_i16le(pcm, output[1])) {
+    if (!discard_pcm &&
+        (!write_i16le(pcm, output[0]) || !write_i16le(pcm, output[1]))) {
       fprintf(stderr, "cannot write oracle PCM\n");
       return 2;
     }
@@ -196,7 +198,8 @@ int main(int argc, char **argv) {
     }
   }
 
-  if (write_at != write_count || fclose(pcm) || fclose(probes)) {
+  if (write_at != write_count || (!discard_pcm && fclose(pcm)) ||
+      fclose(probes)) {
     fprintf(stderr, "oracle stream did not finish cleanly\n");
     return 2;
   }
