@@ -2,7 +2,7 @@
   "aggregate_gates": {
     "capability_distribution_exact": true,
     "catalog_has_44_tracks": true,
-    "delivery_counts_are_5_enhanced_39_v1": true,
+    "delivery_counts_are_4_enhanced_40_v1": true,
     "disk_is_exact_juku_size": true,
     "disk_player_matches_qualified_combined_build": true,
     "every_song_gate_passes": true,
@@ -10,17 +10,16 @@
   },
   "library": {
     "capability_counts": {
-      "0": 39,
-      "1": 1,
+      "0": 40,
       "3": 3,
       "5": 1
     },
-    "catalog_sha256": "9e43da8fe470fcddce8a43e4965eaa450b67b7d4191eb718eb9e89771c86a410",
+    "catalog_sha256": "3c1a5b4f314e096a8a6263aa3205e7f59c40ca97a827a8d3aab59a2164090f73",
     "disk_bytes": 819200,
     "disk_name": "jukupoly-doom-library.cpm",
-    "disk_sha256": "6f61b809f4b5ac1450215742bd0162fcb1900c66c3b358cfe2000c84fabf350c",
+    "disk_sha256": "af0f44865952ca02cfae3b310b35a356d679a507566f41f8028e0f1680015bf9",
     "path_hint": "jukupoly-doom-library-m6-mixed",
-    "song_bytes": 631888
+    "song_bytes": 630447
   },
   "player": {
     "bytes": 5632,
@@ -31,11 +30,11 @@
   },
   "remaining_gates": [
     "convert and qualify additional pack tracks where feasible",
-    "physical CS00000 A/B before normal enablement"
+    "optionally smoke the corrected exact disk on CS00000; its unchanged player and four enhanced payloads ran on the prior hash-identified disk"
   ],
   "schema": "jukupoly-opl-m6-mixed-library-v1",
   "shared_sample_rate_floor_hz": 6401.146221,
-  "status": "complete 44-track mixed disk and C-cosim compatibility gates pass; broader enhancement conversion and physical A/B remain open",
+  "status": "complete 44-track mixed disk and C-cosim compatibility gates pass; physical execution of the unchanged player and four enhanced payloads is recorded on the prior hash-identified disk",
   "tracks": [
     {
       "capability": 0,
@@ -160,62 +159,58 @@
       "title": "At Doom's Gate"
     },
     {
-      "capability": 1,
-      "delivery_mode": "enhanced-replacement",
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
       "filename": "D1T03.JPS",
       "gates": {
         "catalog_capability_matches": true,
         "catalog_hash_matches": true,
         "catalog_size_matches": true,
         "complete_c_cosim": true,
-        "enhanced_duration_within_one_percent": true,
-        "enhanced_music_clock_within_one_percent": true,
-        "enhanced_phase_table_within_one_percent": true,
-        "enhanced_rate_above_shared_floor": true,
-        "replacement_manifest_matches": true
+        "unchanged_v1_delivery": true
       },
       "global_track": 3,
-      "jps_bytes": 9978,
-      "jps_sha256": "1b0a6f753fe9df7bdaac57852d4bb50e39ff87b0954b7e0ed66c1eaa8a7935d5",
+      "jps_bytes": 8537,
+      "jps_sha256": "0d9f9ab2c94a15726ad6ec497973e3bf84cbda529d9341157a720e9672ba0db5",
       "local_track": 3,
       "pack": "doom1",
       "profile": {
         "com_bytes": 5632,
-        "duration_seconds": 158.882064,
-        "effective_sample_hz": 7087.804469,
+        "duration_seconds": 156.882615,
+        "effective_sample_hz": 7178.137629,
         "frame_cycles": {
           "count": 7875,
-          "max": 42197,
-          "mean": 34298.35,
-          "min": 33574,
-          "p99": 39449
+          "max": 35733,
+          "mean": 33866.723,
+          "min": 33561,
+          "p99": 35441
         },
         "frame_samples": 143,
         "frames": 7875,
         "idle_boundary_cycles": {
-          "count": 6954,
-          "max": 1858,
-          "mean": 1052.254,
-          "min": 827,
-          "p99": 1425
+          "count": 6957,
+          "max": 1144,
+          "mean": 902.517,
+          "min": 814,
+          "p99": 1094
         },
-        "jps_bytes": 9978,
+        "jps_bytes": 8537,
         "keyboard_polls": 7876,
         "label": "doom1-03",
-        "music_frame_hz": 49.565066,
-        "mutated_player_bytes": 101,
-        "pit_writes": 50938,
+        "music_frame_hz": 50.196767,
+        "mutated_player_bytes": 81,
+        "pit_writes": 37540,
         "row_boundary_cycles": {
-          "count": 921,
-          "max": 9096,
-          "mean": 3642.738,
-          "min": 1277,
-          "p99": 6953
+          "count": 918,
+          "max": 2180,
+          "mean": 1571.241,
+          "min": 1227,
+          "p99": 2091
         },
         "sample_loop_cycles": {
           "count": 1118250,
           "max": 269,
-          "mean": 230.375,
+          "mean": 229.977,
           "min": 229,
           "p99": 262
         }

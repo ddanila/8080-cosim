@@ -165,7 +165,9 @@ layer at frame zero, preserves all 13 protected excerpt onsets, and gains two.
 Sixteen selected logical notes fit with 0.601 levels mean absolute error and
 eight levels maximum error.  That maximum belongs to the evolving intro and
 is retained as evidence that one ADSR packet cannot reproduce all mid-note OPL
-changes.  Significant quantized stage directions match.
+changes.  Significant quantized stage directions match, but two notes contain
+renewed keyed rises and exceed the two-level per-note mean-error delivery
+limit, so the candidate now selects unchanged v1.
 
 A 141-sample trial failed the 1% duration guard at 29.495 seconds.  The accepted
 real-song configuration uses 143 samples and a measured 7,170 Hz phase table:
@@ -178,9 +180,12 @@ The full 157.508-second Imp result is committed in
 significant (at least two-level) stage directions before least-squares error;
 this corrects ten flattened/too-slow full-song fits without changing target
 code.  All 506 protected onsets survive, the 9,978-byte v2 JPS is below the
-soft ceiling, and C-cosim measures 7,088.0 samples/s, 49.566 frames/s, and
-158.878 seconds against a 157.508-second source.  Every automated gate passes.
+soft ceiling, and C-cosim measures 7,087.5 samples/s, 49.563 frames/s, and
+158.888 seconds against a 157.508-second source.  Twelve notes fail the later
+generic re-articulation/error gate despite the timing and direction checks.
 
-This still does not complete M3.  Physical CS00000 A/B listening is required
-before any Doom library default changes.  Until then v1 remains the explicit
-fallback.
+Physical CS00000 listening confirmed the issue: the low lead entered at once
+but stayed nearly constant instead of fading like the OPL source.  M3 therefore
+closes as a negative result for the one-ADSR representation, with unchanged v1
+as the qualified fallback.  A later multi-articulation design must satisfy the
+same generic gate and target cycle/size limits.

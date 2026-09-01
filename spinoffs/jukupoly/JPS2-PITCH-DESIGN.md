@@ -232,7 +232,10 @@ adds no target code or state.  The initial 143-sample profile failed duration
 and music-clock gates at 100.296 seconds and 48.118 Hz.  The fully regenerated
 137-sample/6,850 Hz version measures 6,859.2 samples/s, 50.067 Hz, and 96.391
 seconds versus 96.513 seconds, with a 43,380-cycle maximum frame.  All
-automated gates in `OPL-PITCH-REAL-M5.json` pass; physical A/B remains pending.
+automated gates in `OPL-PITCH-REAL-M5.json` pass.  The later runtime-vibrato
+At Doom's Gate payload completed on physical CS00000 on 2026-09-01 and was
+assessed as “sounds decent”; host-baked pitch remains a separately qualified
+fallback rather than inheriting that listening result.
 
 This is an accepted progressive stopping point, not evidence that runtime
 vibrato will fit.  Steps 3--7 and all combined capability-`07h` guards remain

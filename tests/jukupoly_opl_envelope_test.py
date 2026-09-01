@@ -122,6 +122,38 @@ def check_direction_priority() -> None:
     assert before["mismatches"] == 1
     assert after["mismatches"] == 0
 
+    # The sample at key_off_frame is already in release.  A prediction which
+    # stays flat throughout the keyed interval must not pass the decay gate
+    # simply because its immediate release drops to zero at key-off.
+    released_reference = (0, 12, 10, 8, 6, 4, 2, 1, 0, 0)
+    flat_until_release = (0, 12, 12, 12, 12, 12, 12, 12, 0, 0)
+    boundary = opl_envelope.envelope_directions(
+        released_reference, flat_until_release, 8,
+    )
+    assert boundary["stages"]["decay"] == {
+        "reference": -1,
+        "predicted": 0,
+        "reference_delta_levels": -11,
+        "predicted_delta_levels": 0,
+        "significant": True,
+        "match": False,
+    }
+    assert boundary["mismatches"] == 1
+
+    # Ordinary ADSR motion and target-depth tremolo are representable; a
+    # renewed four-level rise after a four-level fall is not.
+    assert opl_envelope.significant_rearticulations(
+        (0, 4, 8, 12, 10, 8, 7, 8, 10, 9, 8), None,
+    ) == 0
+    assert opl_envelope.significant_rearticulations(
+        (0, 4, 8, 12, 10, 8, 7, 8, 10, 12, 9, 5, 1), None,
+    ) == 1
+    # A rise after key-off belongs to release/replacement state and cannot
+    # condemn the keyed envelope.
+    assert opl_envelope.significant_rearticulations(
+        (0, 5, 10, 6, 2, 6, 10), 5,
+    ) == 0
+
 
 def check_exact_fit_cache() -> None:
     reference = (0, 4, 8, 8, 7, 6, 5, 4, 3, 2, 1, 0)

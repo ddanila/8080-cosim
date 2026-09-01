@@ -21,7 +21,7 @@ FIRMWARE = SPINOFF / "firmware"
 DEFAULT_LIBRARY = ROOT / "out" / "jukupoly-doom-library-m6-mixed"
 DEFAULT_REPORT = SPINOFF / "OPL-M6-MIXED-LIBRARY.json"
 DELIVERY_MANIFEST = SPINOFF / "M6-REPRESENTATIVE-DELIVERY.json"
-EXPECTED_CAPABILITIES = {0: 39, 1: 1, 3: 3, 5: 1}
+EXPECTED_CAPABILITIES = {0: 40, 3: 3, 5: 1}
 sys.path.insert(0, str(FIRMWARE))
 
 import build_doom_library as library  # noqa: E402
@@ -148,9 +148,9 @@ def generate(directory: Path) -> dict:
 
     aggregate = {
         "catalog_has_44_tracks": len(records) == 44,
-        "delivery_counts_are_5_enhanced_39_v1": (
-            catalog["delivery"]["enhanced_replacements"] == 5 and
-            catalog["delivery"]["unchanged_v1"] == 39
+        "delivery_counts_are_4_enhanced_40_v1": (
+            catalog["delivery"]["enhanced_replacements"] == 4 and
+            catalog["delivery"]["unchanged_v1"] == 40
         ),
         "capability_distribution_exact": (
             dict(capability_counts) == EXPECTED_CAPABILITIES
@@ -170,7 +170,8 @@ def generate(directory: Path) -> dict:
         "schema": "jukupoly-opl-m6-mixed-library-v1",
         "status": (
             "complete 44-track mixed disk and C-cosim compatibility gates "
-            "pass; broader enhancement conversion and physical A/B remain open"
+            "pass; physical execution of the unchanged player and four "
+            "enhanced payloads is recorded on the prior hash-identified disk"
         ),
         "library": {
             "path_hint": directory.name,
@@ -197,7 +198,9 @@ def generate(directory: Path) -> dict:
         "aggregate_gates": aggregate,
         "remaining_gates": [
             "convert and qualify additional pack tracks where feasible",
-            "physical CS00000 A/B before normal enablement",
+            "optionally smoke the corrected exact disk on CS00000; its "
+            "unchanged player and four enhanced payloads ran on the prior "
+            "hash-identified disk",
         ],
     }
 

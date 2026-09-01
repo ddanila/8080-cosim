@@ -90,6 +90,9 @@ def generate(v1_path: Path, v2_path: Path,
         "significant_envelope_directions_match": (
             fit["direction_mismatches"] == 0
         ),
+        "no_unrepresentable_rearticulations": (
+            fit.get("unrepresentable_rearticulation_notes", 0) == 0
+        ),
         "sample_loop_hash_exact": (
             loop_hash == frozen["player"]["sample_loop_sha256"]
         ),
@@ -109,11 +112,19 @@ def generate(v1_path: Path, v2_path: Path,
         "v2_jps_below_soft_limit": jps["v2"]["bytes"] < 30 * 1024,
         "v2_jps_below_hard_limit": jps["v2"]["bytes"] < 32_768,
     }
-    if not all(gates.values()):
-        failed = ", ".join(key for key, value in gates.items() if not value)
+    quality_gates = {"no_unrepresentable_rearticulations"}
+    technical_gates = {
+        key: value for key, value in gates.items()
+        if key not in quality_gates
+    }
+    if not all(technical_gates.values()):
+        failed = ", ".join(
+            key for key, value in technical_gates.items() if not value
+        )
         raise RuntimeError("full-song M3 gate failure: " + failed)
+    enhanced_qualified = all(gates.values())
     return {
-        "schema": "jukupoly-opl-full-song-m3-report-v1",
+        "schema": "jukupoly-opl-full-song-m3-report-v2",
         "source": {
             "name": v2["source"]["name"],
             "vgm_sha256": v2["source"]["vgm_sha256"],
@@ -138,11 +149,30 @@ def generate(v1_path: Path, v2_path: Path,
                 "selected_logical_notes", "mean_absolute_error",
                 "maximum_error", "direction_mismatches",
             )
-        } | {"note_measurements_sha256": digest(fit["notes"])},
+        } | {
+            "unrepresentable_rearticulation_notes": fit.get(
+                "unrepresentable_rearticulation_notes", 0,
+            ),
+            "delivery_note_mae_limit": fit.get("delivery_note_mae_limit"),
+            "note_measurements_sha256": digest(fit["notes"]),
+        },
         "jps": jps,
         "profiles": profiles,
         "fixture_sample_rate_floor_hz": floor,
         "gates": gates,
+        "delivery": {
+            "enhanced_candidate_qualified": enhanced_qualified,
+            "qualified": True,
+            "strategy": (
+                "enhanced" if enhanced_qualified else
+                "unchanged-v1-fit-fallback"
+            ),
+            "reason": (
+                None if enhanced_qualified else
+                "one compact ADSR cannot represent renewed keyed rises whose "
+                "per-note mean error exceeds the two-level delivery limit"
+            ),
+        },
     }
 
 
@@ -163,7 +193,8 @@ def main() -> int:
         f"JUKUPOLY-FULL-M3: wrote {args.output} "
         f"jps={result['jps']['v2']['bytes']} "
         f"sample={profile['effective_sample_hz']:.1f}Hz "
-        f"duration={profile['duration_seconds']:.3f}s"
+        f"duration={profile['duration_seconds']:.3f}s "
+        f"delivery={result['delivery']['strategy']}"
     )
     return 0
 

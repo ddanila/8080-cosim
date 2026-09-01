@@ -558,10 +558,12 @@ The committed Imp comparison in [`OPL-IMP-M3.json`](OPL-IMP-M3.json) moves the
 first F#2 tone from v1 frame 706 (14.12 s) to v2 frame zero and retains all 13
 protected excerpt onsets, gaining two, with no regression.  Sixteen selected
 logical notes fit at 0.601 mixer levels mean absolute error; the maximum is
-eight levels on the evolving four-layer intro, an explicitly reported limit
-of reducing repeated mid-note OPL changes to one ADSR packet.  Significant
-attack/decay/release directions match after 4-bit quantization.  The v2 JPS is
-1,341 bytes versus 1,290 for v1.
+eight levels on the evolving four-layer intro.  Two notes have significant
+renewed keyed rises and more than two levels per-note mean error, so the new
+generic delivery gate rejects this compact-ADSR candidate.  Significant
+attack/decay/release directions still match after 4-bit quantization; that
+weaker fact is no longer mistaken for a useful fit.  The experimental v2 JPS
+is 1,341 bytes versus 1,290 for v1, while delivery remains unchanged v1.
 
 The first 141-sample real-song attempt was rejected because it rendered 30 s
 in 29.495 s, outside the 1% duration guard.  The measured 143-sample,
@@ -578,18 +580,29 @@ pass exposed ten significant direction mismatches: nine short two-level decays
 which least squares flattened and one release too slow to move inside its
 observed tail.  The generic real-song fitter now ranks preservation of net
 changes of at least two mixer levels ahead of squared error.  The guarded pass
-has zero such mismatches, 0.654 levels mean error, and 14 levels maximum error;
-the latter remains reported rather than weakening the direction guard.
+has zero such mismatches, 0.655 levels mean error, and 14 levels maximum error.
+Twelve notes nevertheless fail the re-articulation/error gate, which is the
+reason the enhanced full-song candidate is not delivered.
 
-The full v2 JPS is 9,978 bytes versus 8,537 for v1.  It measures 7,088.0
-samples/s against a 6,460.3 Hz fixture floor, 49.566 frames/s, and 158.878 s
+The full v2 JPS is 9,978 bytes versus 8,537 for v1.  It measures 7,087.5
+samples/s against a 6,460.3 Hz fixture floor, 49.563 frames/s, and 158.888 s
 against the 157.508 s source, within the 1% duration gate.  The host conversion
-takes 274 seconds with the exhaustive fitter; this does not spend target CPU
-or memory.  The exact player map and hot-loop hash remain unchanged.
+consumes no target CPU or memory.  The exact player map and hot-loop hash remain
+unchanged.
 
-M3 now requires only physical CS00000 A/B listening before the Doom library
-may default to v2.  It therefore continues to emit v1 and retains that fallback
-if the approximation is not useful on hardware.
+Physical CS00000 listening on 2026-09-01 confirmed the limitation: the low
+lead entered immediately, but sounded constant in volume instead of fading
+quickly like the OPL source.  M3 therefore closes as a useful negative result
+for this one-ADSR reduction and retains the qualified unchanged-v1 fallback.
+Any future Imp enhancement must first pass the same generic fit gate using a
+bounded multi-articulation representation.
+
+The audit also corrected the generic direction diagnostic: the oracle sample
+at `key_off_frame` already belongs to release and must not be included in the
+keyed decay interval.  A focused regression now proves that a flat held
+envelope followed by an immediate release is not mislabeled as keyed decay.
+This changes qualification metadata only; no target hot-loop instruction or
+runtime cost changed.
 
 ## Tremolo evidence and synthetic target slice
 
@@ -827,19 +840,23 @@ guarded search for the M6 pack run.
 The first M6 representative conversion/profile now covers the complete Imp,
 Dark Halls, Suspense, and rhythm-heavy Dave D. Taylor Blues streams.  The
 committed [`OPL-M6-REPRESENTATIVE-PROFILE.json`](OPL-M6-REPRESENTATIVE-PROFILE.json)
-records three fully passing enhanced tracks: Imp at 7,087.8 samples/s and
-49.565 frames/s, Dark Halls at 6,854.0/50.029, and Suspense at
-6,858.5/50.062.  Their JPS files are 9,978, 20,151, and 12,969 bytes; Dark
-Halls and Suspense conservatively emit six and 29 tremolo notes.  All retain
-every protected onset, percussion, Escape polling, and the frozen sample
-loop.
+records two fully passing enhanced tracks: Dark Halls at 6,854.0 samples/s and
+50.029 frames/s, and Suspense at 6,858.5/50.062.  Their JPS files are 20,151
+and 12,969 bytes and conservatively emit six and 29 tremolo notes.  Both retain
+every protected onset, percussion, Escape polling, and the frozen sample loop.
+
+The Imp candidate retains all onsets and meets the target timing/size limits,
+but 12 of its 532 fitted logical notes contain significant renewed keyed
+articulation that one ADSR approximates with more than two levels mean error.
+It therefore receives the 8,537-byte unchanged-v1 fit fallback.  This is a
+generic signal-shape guard, not an Imp-specific exception.
 
 Dave Taylor is the intended useful failure: its enhanced candidate is 40,983
 bytes, above the 32,767-byte hard limit, while the unchanged v1 track remains
 30,071 bytes.  The report therefore selects v1 as a generic hard-size
 fallback; it does not weaken G5 or add a track-specific converter exception.
 At that profile checkpoint the render/reference and physical gates remained
-open.
+open; their later results are recorded below.
 
 The representative render gate is now committed in
 [`OPL-M6-REPRESENTATIVE-RENDERS.json`](OPL-M6-REPRESENTATIVE-RENDERS.json).
@@ -851,19 +868,32 @@ distinct.  The twelve listening files are generated under
 `out/jukupoly-m6-representative/renders/` and remain untracked.  The complete
 two-pack disk and physical A/B gates remain open.
 
-A complete progressive mixed disk is now built from the same evidence.  The
+A complete guarded mixed disk is now built from the same evidence.  The
 generic optional replacement manifest verifies each qualified payload before
 substitution and leaves the ordinary builder unchanged when omitted.  The
-disk contains At Doom's Gate as capability `05h`, Imp as `01h`, Dark Halls,
-Suspense, and Opening to Hell as `03h`, plus 39 unchanged v1 tracks.  Its
+disk contains At Doom's Gate as capability `05h` and Dark Halls, Suspense,
+and Opening to Hell as `03h`, plus 40 unchanged v1 tracks including Imp.  Its
 combined player is 5,632 bytes and supports the union capability `07h`.
 
 [`OPL-M6-MIXED-LIBRARY.json`](OPL-M6-MIXED-LIBRARY.json) records an exact
-819,200-byte disk with SHA-256 `6f61b809...f350c` and 631,888 song bytes.  All
+819,200-byte disk with SHA-256 `af0f4486...0015bf9` and 630,447 song bytes.  All
 44 catalog songs complete full C-cosim playback under that player; catalog
 hashes, capability distribution, enhanced timing/rate gates, Escape polling,
-and the frozen loop all pass.  This is a bootable mixed fallback milestone,
-not complete enhancement of all 44 songs, and still requires physical A/B.
+and the frozen loop all pass.  Its exact distribution is `00h:40, 03h:3,
+05h:1`.
+
+The preceding five-enhanced disk was then exercised on physical CS00000.  At
+Doom's Gate sounded decent; Dark Halls and Suspense were acceptable but hard
+to assess precisely; Opening to Hell and the unchanged-v1 Kitchen Ace control
+completed without an operator present.  The Imp low lead entered immediately
+but failed listening because its volume remained nearly constant instead of
+fading like the OPL reference.  Escape, quit, and return to CP/M all worked,
+with zero host retries, resets, writes, or UART errors.  Exact tested/corrected
+disk hashes and the listening matrix are in
+[`sessions/cs00000-jukupoly-m6-physical/`](sessions/cs00000-jukupoly-m6-physical/README.md).
+The corrected disk changes only Imp back to v1; its player and other four
+enhanced payloads are byte-identical to the physical run.  This is a usable
+progressive stopping point, not a claim that all 44 songs are enhanced.
 
 ## Reproduce
 
@@ -1193,6 +1223,14 @@ same machine.  It remained stable through the later layer transitions and
 returned to CP/M 170.108 seconds after the command.  The operator assessed it
 as “works very good.”  Exact full-song evidence and hashes are retained in
 [`sessions/cs00000-jukupoly-suspense-full-physical/`](sessions/cs00000-jukupoly-suspense-full-physical/README.md).
+
+The guarded M6 mixed DOOM library was physically exercised on 2026-09-01.
+Four enhanced tracks, one unchanged-v1 control, Escape, library quit, and the
+clean CP/M return executed on CS00000.  The session also supplied the decisive
+negative result for the Imp compact-envelope candidate, which now selects a
+generic fit fallback.  The listening matrix, exact tested and corrected disk
+hashes, host statistics, and raw-capture hashes are retained in
+[`sessions/cs00000-jukupoly-m6-physical/`](sessions/cs00000-jukupoly-m6-physical/README.md).
 
 ## Five-tone feasibility
 

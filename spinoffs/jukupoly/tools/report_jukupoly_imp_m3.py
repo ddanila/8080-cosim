@@ -112,6 +112,9 @@ def generate(v1_path: Path, v2_path: Path,
             allocation["missed_protected_onsets"] == 0
         ),
         "envelope_directions_match": fit["direction_mismatches"] == 0,
+        "no_unrepresentable_rearticulations": (
+            fit.get("unrepresentable_rearticulation_notes", 0) == 0
+        ),
         "sample_loop_hash_exact": (
             loop_hash == frozen["player"]["sample_loop_sha256"]
         ),
@@ -130,9 +133,31 @@ def generate(v1_path: Path, v2_path: Path,
         ),
         "v2_jps_below_soft_limit": profiles["v2"]["jps_bytes"] < 30 * 1024,
     }
-    if not all(gates.values()):
-        failed = ", ".join(key for key, value in gates.items() if not value)
+    quality_gates = {"no_unrepresentable_rearticulations"}
+    technical_gates = {
+        key: value for key, value in gates.items()
+        if key not in quality_gates
+    }
+    if not all(technical_gates.values()):
+        failed = ", ".join(
+            key for key, value in technical_gates.items() if not value
+        )
         raise RuntimeError("Imp M3 gate failure: " + failed)
+
+    enhanced_qualified = all(gates.values())
+    delivery = {
+        "enhanced_candidate_qualified": enhanced_qualified,
+        "qualified": True,
+        "strategy": (
+            "enhanced" if enhanced_qualified else
+            "unchanged-v1-fit-fallback"
+        ),
+        "reason": (
+            None if enhanced_qualified else
+            "one compact ADSR cannot represent renewed keyed rises whose "
+            "per-note mean error exceeds the two-level delivery limit"
+        ),
+    }
 
     reference = None
     if oracle_reference is not None:
@@ -142,7 +167,7 @@ def generate(v1_path: Path, v2_path: Path,
             "sha256": sha256(oracle_reference),
         }
     return {
-        "schema": "jukupoly-opl-imp-m3-report-v1",
+        "schema": "jukupoly-opl-imp-m3-report-v2",
         "source": {
             "name": v2_score["source"]["name"],
             "vgm_sha256": v2_score["source"]["vgm_sha256"],
@@ -166,6 +191,7 @@ def generate(v1_path: Path, v2_path: Path,
         "target_wavs": wavs,
         "opl_reference_wav": reference,
         "gates": gates,
+        "delivery": delivery,
     }
 
 
@@ -199,7 +225,8 @@ def main() -> int:
         f"first={result['first_tone_frame']['v1']}->"
         f"{result['first_tone_frame']['v2']} "
         f"sample={result['profiles']['v2']['effective_sample_hz']:.1f}Hz "
-        f"duration={result['profiles']['v2']['duration_seconds']:.3f}s"
+        f"duration={result['profiles']['v2']['duration_seconds']:.3f}s "
+        f"delivery={result['delivery']['strategy']}"
     )
     return 0
 

@@ -187,6 +187,7 @@
     "percussion_signature_overrides": {},
     "voice_selection_policy": "sustaining-note continuity before newly articulated notes",
     "pitch_policy": "preserve the source MIDI octave; transpose down only when the 15-bit Juku phase step cannot encode the source note",
+    "source_duration_seconds": 30.0,
     "enhanced_voice_schema": "jukupoly-opl-voice-evidence-v3",
     "enhanced_allocator_schema": "jukupoly-opl-three-voice-allocation-v1",
     "enhanced_allocation": {
@@ -201,6 +202,15 @@
       "mean_absolute_error": 0.6010036244957122,
       "maximum_error": 8,
       "direction_mismatches": 0,
+      "unrepresentable_rearticulation_notes": 2,
+      "delivery_note_mae_limit": 2.0,
+      "tremolo_analysis": {
+        "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+        "enabled": false,
+        "semantic_candidates": 1,
+        "emitted_notes": 0,
+        "rejected_indirect_candidates": 1
+      },
       "notes": [
         {
           "logical_note": 0,
@@ -217,8 +227,18 @@
             "release_period_frames": 0,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 15,
+            "sustain_level": 8,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 2.832684824902724,
           "maximum_error": 8,
+          "significant_rearticulations": 4,
+          "unrepresentable_rearticulation": true,
           "directions": {
             "attack": {
               "reference": 1,
@@ -232,7 +252,7 @@
               "reference": -1,
               "predicted": -1,
               "reference_delta_levels": -13,
-              "predicted_delta_levels": -15,
+              "predicted_delta_levels": -7,
               "significant": true,
               "match": true
             },
@@ -244,6 +264,17 @@
               "significant": false,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 198,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 8962,
+            "fitted_squared_error": 8962,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -261,8 +292,18 @@
             "release_period_frames": 4,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.21739130434782608,
           "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 1,
@@ -288,6 +329,17 @@
               "significant": false,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 70,
+            "fitted_squared_error": 70,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -305,8 +357,18 @@
             "release_period_frames": 0,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 15,
+            "sustain_level": 7,
+            "attack_period_frames": 2,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 2.4829351535836177,
           "maximum_error": 7,
+          "significant_rearticulations": 2,
+          "unrepresentable_rearticulation": true,
           "directions": {
             "attack": {
               "reference": 1,
@@ -320,7 +382,7 @@
               "reference": -1,
               "predicted": -1,
               "reference_delta_levels": -13,
-              "predicted_delta_levels": -15,
+              "predicted_delta_levels": -8,
               "significant": true,
               "match": true
             },
@@ -332,6 +394,17 @@
               "significant": false,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 160,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 6329,
+            "fitted_squared_error": 6329,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -349,8 +422,18 @@
             "release_period_frames": 4,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 6,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 4,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.14666666666666667,
           "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -376,6 +459,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 11,
+            "fitted_squared_error": 11,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -393,8 +487,18 @@
             "release_period_frames": 8,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.18614718614718614,
           "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -420,6 +524,17 @@
               "significant": false,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 43,
+            "fitted_squared_error": 43,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -437,8 +552,18 @@
             "release_period_frames": 2,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.19480519480519481,
           "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 1,
@@ -464,6 +589,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 35,
+            "fitted_squared_error": 35,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -481,8 +617,18 @@
             "release_period_frames": 8,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 1,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 8,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.20087336244541484,
           "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -508,6 +654,17 @@
               "significant": false,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 46,
+            "fitted_squared_error": 46,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -525,8 +682,18 @@
             "release_period_frames": 2,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 6,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 1,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.11688311688311688,
           "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -552,6 +719,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 9,
+            "fitted_squared_error": 9,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -569,8 +747,18 @@
             "release_period_frames": 2,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 2,
+            "attack_period_frames": 0,
+            "decay_period_frames": 32,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.23618090452261306,
           "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -596,6 +784,17 @@
               "significant": false,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 47,
+            "fitted_squared_error": 47,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -613,8 +812,18 @@
             "release_period_frames": 2,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.26785714285714285,
           "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 1,
@@ -640,6 +849,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 35,
+            "fitted_squared_error": 35,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -657,8 +877,18 @@
             "release_period_frames": 0,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 15,
+            "sustain_level": 0,
+            "attack_period_frames": 1,
+            "decay_period_frames": 8,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 1.7613636363636365,
           "maximum_error": 7,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 1,
@@ -676,6 +906,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": true,
+            "source_changed_frames_4bit": 38,
+            "best_depth_levels": 1,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 445,
+            "fitted_squared_error": 436,
+            "squared_error_improvement": 9,
+            "improvement_per_frame": 0.10227272727272728,
+            "semantic_candidate": true
           }
         },
         {
@@ -693,8 +934,18 @@
             "release_period_frames": 4,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 0,
+            "attack_period_frames": 0,
+            "decay_period_frames": 16,
+            "release_period_frames": 4,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.11940298507462686,
           "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -720,6 +971,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 8,
+            "fitted_squared_error": 8,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -737,8 +999,18 @@
             "release_period_frames": 2,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.12307692307692308,
           "maximum_error": 1,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -764,6 +1036,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 8,
+            "fitted_squared_error": 8,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -781,8 +1064,18 @@
             "release_period_frames": 2,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.3488372093023256,
           "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 1,
@@ -808,6 +1101,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 35,
+            "fitted_squared_error": 35,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -825,8 +1129,18 @@
             "release_period_frames": 2,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 2,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.38095238095238093,
           "maximum_error": 5,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 1,
@@ -852,6 +1166,17 @@
               "significant": true,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 28,
+            "fitted_squared_error": 28,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -869,8 +1194,18 @@
             "release_period_frames": 0,
             "sustain_while_keyed": true
           },
+          "baseline_packet": {
+            "peak_level": 5,
+            "sustain_level": 5,
+            "attack_period_frames": 0,
+            "decay_period_frames": 0,
+            "release_period_frames": 0,
+            "sustain_while_keyed": true
+          },
           "mean_absolute_error": 0.0,
           "maximum_error": 0,
+          "significant_rearticulations": 0,
+          "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
               "reference": 0,
@@ -888,18 +1223,49 @@
               "significant": false,
               "match": true
             }
+          },
+          "tremolo_analysis": {
+            "directly_audible_am_path": false,
+            "source_changed_frames_4bit": 0,
+            "best_depth_levels": 0,
+            "emitted_depth_levels": 0,
+            "baseline_squared_error": 0,
+            "fitted_squared_error": 0,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         }
       ]
     },
-    "enhanced_limitations": "Envelope-only M3 slice: waveform, feedback, stereo, tremolo, vibrato, and held-key pitch automation are not reproduced"
+    "enhanced_held_pitch": {
+      "enabled": false,
+      "emitted_legato_packets": 0,
+      "phase_step_generation_hz": null,
+      "policy": "50 Hz source pitch points quantized to target phase steps; emit only changes while the same logical note retains its target channel"
+    },
+    "enhanced_vibrato": {
+      "enabled": false,
+      "source_lfo_hz": 6.068835788302952,
+      "phase_increment": 7955,
+      "phase_step_generation_hz": null,
+      "selected_channel_frames": 0,
+      "direct_channel_frames": 0,
+      "direct_logical_notes": 0,
+      "emitted_logical_notes": 0,
+      "packets_with_vibrato": 0,
+      "held_setting_updates": 0,
+      "held_disable_updates": 0,
+      "frame_decisions": {},
+      "policy": "emit only when every active audible operator/layer has a direct common-pitch VIB path and resolves to one bounded target delta; update changes through legato packets"
+    },
+    "enhanced_limitations": "Envelope-only M3 slice: waveform, feedback, stereo, tremolo, and vibrato are not reproduced; held-key pitch automation is not reproduced"
   },
   "notes": "This is a guarded envelope-aware reduction, not OPL emulation. Every packet is fitted from pinned-Nuked post-envelope attenuation.",
   "rows": [
     {
       "frames": 132,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 8,
@@ -907,7 +1273,8 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       },
       "percussion": {
         "sample": 1,
@@ -1063,7 +1430,6 @@
     {
       "frames": 133,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 1,
@@ -1071,7 +1437,8 @@
           "decay_period_frames": 32,
           "release_period_frames": 4,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       },
       "percussion": {
         "sample": 1,
@@ -1110,7 +1477,6 @@
     {
       "frames": 1,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 7,
@@ -1118,13 +1484,13 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
       "frames": 10,
       "tone2": {
-        "note": "E2",
         "opl_envelope": {
           "peak_level": 6,
           "sustain_level": 5,
@@ -1132,7 +1498,8 @@
           "decay_period_frames": 4,
           "release_period_frames": 4,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "E2"
       },
       "percussion": {
         "sample": 3,
@@ -1150,7 +1517,6 @@
     {
       "frames": 132,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 1,
@@ -1158,7 +1524,8 @@
           "decay_period_frames": 32,
           "release_period_frames": 8,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
@@ -1191,7 +1558,6 @@
     {
       "frames": 1,
       "tone2": {
-        "note": "E2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 5,
@@ -1199,7 +1565,8 @@
           "decay_period_frames": 0,
           "release_period_frames": 2,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "E2"
       },
       "percussion": {
         "sample": 3,
@@ -1211,7 +1578,6 @@
     {
       "frames": 11,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 7,
@@ -1219,7 +1585,8 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
@@ -1228,7 +1595,6 @@
         "note": "---"
       },
       "tone2": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 1,
@@ -1236,7 +1602,8 @@
           "decay_period_frames": 32,
           "release_period_frames": 8,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
@@ -1269,7 +1636,6 @@
     {
       "frames": 1,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 7,
@@ -1277,7 +1643,8 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       },
       "tone2": {
         "note": "---"
@@ -1286,7 +1653,6 @@
     {
       "frames": 11,
       "tone2": {
-        "note": "E2",
         "opl_envelope": {
           "peak_level": 6,
           "sustain_level": 5,
@@ -1294,7 +1660,8 @@
           "decay_period_frames": 1,
           "release_period_frames": 2,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "E2"
       },
       "percussion": {
         "sample": 3,
@@ -1306,7 +1673,6 @@
     {
       "frames": 1,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 2,
@@ -1314,7 +1680,8 @@
           "decay_period_frames": 32,
           "release_period_frames": 2,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
@@ -1353,7 +1720,6 @@
     {
       "frames": 2,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 7,
@@ -1361,13 +1727,13 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
       "frames": 11,
       "tone2": {
-        "note": "E2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 5,
@@ -1375,7 +1741,8 @@
           "decay_period_frames": 0,
           "release_period_frames": 2,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "E2"
       },
       "percussion": {
         "sample": 3,
@@ -1387,7 +1754,6 @@
     {
       "frames": 1,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 0,
@@ -1395,7 +1761,8 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       },
       "tone2": {
         "note": "---"
@@ -1410,7 +1777,6 @@
     {
       "frames": 12,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 0,
@@ -1418,13 +1784,13 @@
           "decay_period_frames": 16,
           "release_period_frames": 4,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
       "frames": 10,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 0,
@@ -1432,13 +1798,13 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
       "frames": 15,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 5,
@@ -1446,7 +1812,8 @@
           "decay_period_frames": 0,
           "release_period_frames": 2,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       },
       "percussion": {
         "sample": 1,
@@ -1458,7 +1825,6 @@
     {
       "frames": 7,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 0,
@@ -1466,13 +1832,13 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
       "frames": 14,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 5,
@@ -1480,7 +1846,8 @@
           "decay_period_frames": 0,
           "release_period_frames": 2,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       },
       "percussion": {
         "sample": 1,
@@ -1492,7 +1859,6 @@
     {
       "frames": 8,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 0,
@@ -1500,13 +1866,13 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
       "frames": 1,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 5,
@@ -1514,7 +1880,8 @@
           "decay_period_frames": 0,
           "release_period_frames": 2,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       },
       "percussion": {
         "sample": 1,
@@ -1535,7 +1902,6 @@
     {
       "frames": 1,
       "tone1": {
-        "note": "F#2",
         "opl_envelope": {
           "peak_level": 15,
           "sustain_level": 0,
@@ -1543,13 +1909,13 @@
           "decay_period_frames": 8,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "F#2"
       }
     },
     {
       "frames": 9,
       "tone2": {
-        "note": "E2",
         "opl_envelope": {
           "peak_level": 5,
           "sustain_level": 5,
@@ -1557,7 +1923,8 @@
           "decay_period_frames": 0,
           "release_period_frames": 0,
           "sustain_while_keyed": true
-        }
+        },
+        "note": "E2"
       },
       "percussion": {
         "sample": 1,

@@ -25,6 +25,7 @@ ENHANCED_FRAME_SAMPLES = 143
 TREMOLO_SAMPLE_RATE = 6_970
 TREMOLO_FRAME_SAMPLES = 140
 MAX_RELEASE_FRAMES = 64
+MAX_DELIVERY_NOTE_MAE = 2.0
 
 
 @dataclass(frozen=True)
@@ -169,6 +170,7 @@ def fit_selected_envelopes(
     tremolo_candidates = 0
     emitted_tremolo = 0
     rejected_indirect_tremolo = 0
+    unrepresentable_rearticulation_notes = 0
     for identifier, selected_frame in sorted(first_selected.items(),
                                               key=lambda item: item[1]):
         note = by_identifier[identifier]
@@ -283,6 +285,17 @@ def fit_selected_envelopes(
         direction_result = opl_envelope.envelope_directions(
             reference, fit.predicted_levels, key_off_frame,
         )
+        rearticulations = opl_envelope.significant_rearticulations(
+            reference, key_off_frame,
+        )
+        mean_absolute_error = fit.absolute_error / len(reference)
+        unrepresentable_rearticulation = (
+            rearticulations > 0 and
+            mean_absolute_error > MAX_DELIVERY_NOTE_MAE
+        )
+        unrepresentable_rearticulation_notes += int(
+            unrepresentable_rearticulation
+        )
         directions = direction_result["stages"]
         direction_mismatches += direction_result["mismatches"]
         measurements.append({
@@ -294,8 +307,12 @@ def fit_selected_envelopes(
             "reference_peak": peak,
             "packet": fit.packet(),
             "baseline_packet": baseline_fit.packet(),
-            "mean_absolute_error": fit.absolute_error / len(reference),
+            "mean_absolute_error": mean_absolute_error,
             "maximum_error": fit.maximum_error,
+            "significant_rearticulations": rearticulations,
+            "unrepresentable_rearticulation": (
+                unrepresentable_rearticulation
+            ),
             "directions": directions,
             "tremolo_analysis": {
                 "directly_audible_am_path": direct_am,
@@ -319,6 +336,10 @@ def fit_selected_envelopes(
             (item["maximum_error"] for item in measurements), default=0,
         ),
         "direction_mismatches": direction_mismatches,
+        "unrepresentable_rearticulation_notes": (
+            unrepresentable_rearticulation_notes
+        ),
+        "delivery_note_mae_limit": MAX_DELIVERY_NOTE_MAE,
         "tremolo_analysis": {
             "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
             "enabled": enable_tremolo,

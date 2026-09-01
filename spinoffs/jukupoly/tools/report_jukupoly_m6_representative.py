@@ -140,7 +140,6 @@ def generate(work: Path) -> dict:
                 new_song, new_payload, new_metadata = compile_jps(
                     directory, item.label + "-enhanced", enhanced,
                 )
-                (songs / f"{item.label}.jps").write_bytes(new_payload)
                 new_profile = profile(
                     profiler, new_player, new_song,
                     new_symbols["player_start"], item.label + "-enhanced",
@@ -161,6 +160,11 @@ def generate(work: Path) -> dict:
                 ),
                 "no_protected_onset_regression": (
                     allocation["missed_protected_onsets"] == 0
+                ),
+                "no_unrepresentable_rearticulations": (
+                    envelope.get(
+                        "unrepresentable_rearticulation_notes", 0,
+                    ) == 0
                 ),
                 "jps_compiles_below_hard_limit": (
                     new_payload is not None and len(new_payload) < 0x8000
@@ -201,30 +205,50 @@ def generate(work: Path) -> dict:
                 old_metadata["descriptors"] > 0 and
                 old_profile["keyboard_polls"] >= old_profile["frames"]
             )
+            fit_fallback = (
+                not enhanced_passed and rejected is None and
+                not gates["no_unrepresentable_rearticulations"] and
+                all(value for key, value in gates.items()
+                    if key != "no_unrepresentable_rearticulations") and
+                len(old_payload) < 30 * 1024 and
+                old_metadata["descriptors"] > 0 and
+                old_profile["keyboard_polls"] >= old_profile["frames"]
+            )
+            qualified_fallback = size_fallback or fit_fallback
             delivery = {
                 "mode": (
                     "enhanced" if enhanced_passed else
                     "unchanged-v1-size-fallback" if size_fallback else
+                    "unchanged-v1-fit-fallback" if fit_fallback else
                     "unqualified"
                 ),
-                "qualified": enhanced_passed or size_fallback,
+                "qualified": enhanced_passed or qualified_fallback,
                 "reason": (
                     None if enhanced_passed else
                     rejected if size_fallback else
+                    "one or more selected logical notes contain significant "
+                    "renewed keyed articulation which one compact ADSR fits "
+                    "with more than the two-level mean-error limit"
+                    if fit_fallback else
                     "one or more enhanced gates failed without a qualified "
-                    "hard-size fallback"
+                    "fallback"
                 ),
                 "jps_bytes": (
                     len(new_payload) if enhanced_passed else
-                    len(old_payload) if size_fallback else None
+                    len(old_payload) if qualified_fallback else None
                 ),
                 "jps_sha256": (
                     hashlib.sha256(new_payload).hexdigest()
                     if enhanced_passed and new_payload is not None else
                     hashlib.sha256(old_payload).hexdigest()
-                    if size_fallback else None
+                    if qualified_fallback else None
                 ),
             }
+            if enhanced_passed:
+                assert new_payload is not None
+                (songs / f"{item.label}.jps").write_bytes(new_payload)
+            elif qualified_fallback:
+                (songs / f"{item.label}.jps").write_bytes(old_payload)
             records.append({
                 "label": item.label,
                 "source": {
@@ -244,6 +268,8 @@ def generate(work: Path) -> dict:
                     key: envelope[key] for key in (
                         "selected_logical_notes", "mean_absolute_error",
                         "maximum_error", "direction_mismatches",
+                        "unrepresentable_rearticulation_notes",
+                        "delivery_note_mae_limit",
                         "tremolo_analysis",
                     )
                 },
@@ -305,8 +331,7 @@ def generate(work: Path) -> dict:
         "schema": "jukupoly-opl-m6-representative-profile-v1",
         "status": (
             "representative host conversion and complete C-cosim profile; "
-            "failed calibrations remain explicit and renders/physical A/B "
-            "are still open"
+            "two enhanced tracks and two qualified unchanged-v1 fallbacks"
         ),
         "selection": (
             "Imp, Dark Halls, and Suspense are named by M6; Dave D. Taylor "
@@ -330,10 +355,9 @@ def generate(work: Path) -> dict:
         "tracks": records,
         "aggregate_gates": aggregate,
         "remaining_gates": [
-            "resolve only measured per-capability timing failures",
-            "old/new/pinned-Nuked excerpts for all four tracks",
-            "complete two-pack enhanced build",
-            "physical CS00000 A/B before normal enablement",
+            "qualify a multi-articulation representation before reconsidering "
+            "the Imp enhanced candidate",
+            "convert and qualify additional pack tracks where feasible",
         ],
     }
 

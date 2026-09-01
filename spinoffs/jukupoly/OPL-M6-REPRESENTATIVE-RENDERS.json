@@ -25,7 +25,7 @@
     {
       "enhanced_score": {
         "name": "doom1-03-imp-30s.json",
-        "sha256": "00aa215c0a72b5d3eeae71a4e494fa04a33e8c76c9e0886755585e27a131ff4a"
+        "sha256": "a216ee0c7bd5ea2f5dbfaa67d9a81c453f525c21cad96d472dd30561a0ad7d3f"
       },
       "format": {
         "enhanced_capability": 1,
@@ -160,7 +160,7 @@
     {
       "enhanced_score": {
         "name": "doom1-04-dark-halls-30s.json",
-        "sha256": "8e84c1510238accbb792ae72caac30dc1e9b4b6224d64bb1f527d68bc0071ba3"
+        "sha256": "f62790b666ae45378129f987c3a7e94e9b35dea2519a966575363121ac395236"
       },
       "format": {
         "enhanced_capability": 1,
@@ -295,7 +295,7 @@
     {
       "enhanced_score": {
         "name": "doom1-06-suspense-30s.json",
-        "sha256": "4954404dadc767620c287fca7ec0e9403daff7aba0565b07496df2210b3a48d3"
+        "sha256": "c3d328ef3f8f2b97ebafa50bc1c292d59f3688193b6248239776c0c1accb5907"
       },
       "format": {
         "enhanced_capability": 3,
@@ -430,7 +430,7 @@
     {
       "enhanced_score": {
         "name": "doom2-10-dave-taylor-30s.json",
-        "sha256": "a8d9da6181d0f7a97cb991f6092777ba2f37e81d4539838f74cd8a53fb6a314d"
+        "sha256": "954734a224545b67feb48e69b850f1d262ee6305d0e08c4d0983f3fe3d86ae26"
       },
       "format": {
         "enhanced_capability": 5,

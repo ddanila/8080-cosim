@@ -6,16 +6,25 @@
     "retained_onsets": 520,
     "source_onsets": 520
   },
+  "delivery": {
+    "enhanced_candidate_qualified": false,
+    "qualified": true,
+    "reason": "one compact ADSR cannot represent renewed keyed rises whose per-note mean error exceeds the two-level delivery limit",
+    "strategy": "unchanged-v1-fit-fallback"
+  },
   "envelope_fit": {
+    "delivery_note_mae_limit": 2.0,
     "direction_mismatches": 0,
     "maximum_error": 14,
-    "mean_absolute_error": 0.6541433133056858,
-    "note_measurements_sha256": "52c47a48553007cfe11d86fea7ed0289682e954e8aba6c184c30788bc3ac943d",
-    "selected_logical_notes": 532
+    "mean_absolute_error": 0.655480709438815,
+    "note_measurements_sha256": "8f746fb590d92c2b5a88179f945c83085186c15ef1dd6c8e65d3624ae157eb6b",
+    "selected_logical_notes": 532,
+    "unrepresentable_rearticulation_notes": 12
   },
   "fixture_sample_rate_floor_hz": 6460.3238661,
   "gates": {
     "no_protected_onset_regression": true,
+    "no_unrepresentable_rearticulations": false,
     "player_below_song_window": true,
     "same_source_vgm": true,
     "sample_loop_hash_exact": true,
@@ -27,9 +36,9 @@
     "v2_sample_rate_above_fixture_floor": true
   },
   "host_conversion": {
-    "measured_wall_seconds": 274.19,
+    "measured_wall_seconds": null,
     "v1_score_sha256": "a3b9f5bf40f9b3f045a3fdff85e05c253aa69de2443edfa8dcc88a0e21368873",
-    "v2_score_sha256": "ee9504426a1fd0979cb37c59e4950b3c03020c8a170ca0b93700c8c76d172df7"
+    "v2_score_sha256": "6a66a4fc99d781bdc8b9acceb428a5c72cc97fc8183f453ba7a4e4f348a37ba0"
   },
   "jps": {
     "v1": {
@@ -38,7 +47,7 @@
     },
     "v2": {
       "bytes": 9978,
-      "sha256": "8874576bbb09c107f8b51487c4aec6e86516aada2fdaeedab7080fd229e80b21"
+      "sha256": "57b4d8229969ed95b344c127cb6c4595eb3ef701814013a0befbd52e0ab41d59"
     }
   },
   "player": {
@@ -90,47 +99,47 @@
     },
     "v2": {
       "com_bytes": 4537,
-      "duration_seconds": 158.877676,
-      "effective_sample_hz": 7088.00021,
+      "duration_seconds": 158.888331,
+      "effective_sample_hz": 7087.524904,
       "frame_cycles": {
         "count": 7875,
         "max": 42197,
-        "mean": 34297.403,
+        "mean": 34299.703,
         "min": 33574,
-        "p99": 39449
+        "p99": 39491
       },
       "frame_samples": 143,
       "frames": 7875,
       "idle_boundary_cycles": {
         "count": 6954,
         "max": 1858,
-        "mean": 1052.254,
+        "mean": 1053.252,
         "min": 827,
         "p99": 1425
       },
       "jps_bytes": 9978,
       "keyboard_polls": 7876,
       "label": "full-song-v2",
-      "music_frame_hz": 49.566435,
+      "music_frame_hz": 49.563111,
       "mutated_player_bytes": 80,
-      "pit_writes": 50716,
+      "pit_writes": 50940,
       "row_boundary_cycles": {
         "count": 921,
         "max": 9096,
-        "mean": 3642.738,
+        "mean": 3646.698,
         "min": 1277,
-        "p99": 6953
+        "p99": 6973
       },
       "sample_loop_cycles": {
         "count": 1118250,
         "max": 269,
-        "mean": 230.37,
+        "mean": 230.375,
         "min": 229,
         "p99": 262
       }
     }
   },
-  "schema": "jukupoly-opl-full-song-m3-report-v1",
+  "schema": "jukupoly-opl-full-song-m3-report-v2",
   "source": {
     "duration_seconds": 157.5080045351474,
     "frames": 7875,

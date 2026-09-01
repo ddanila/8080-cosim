@@ -22,6 +22,7 @@ ATTACK = 1
 DECAY = 2
 HOLD = 3
 RELEASE = 4
+SIGNIFICANT_REARTICULATION_LEVELS = 4
 
 
 @dataclass(frozen=True)
@@ -372,7 +373,14 @@ def envelope_directions(reference: Sequence[int], predicted: Sequence[int],
         raise ValueError("envelope direction traces must have equal nonzero length")
     if key_off_frame is not None and not 0 <= key_off_frame < len(reference):
         raise ValueError("key_off_frame must be inside direction traces")
-    keyed_end = key_off_frame if key_off_frame is not None else len(reference) - 1
+    # `simulate_envelope` applies key-off while producing the sample at
+    # `key_off_frame`, so that sample belongs to release, not to the keyed
+    # decay interval.  Including it here lets an otherwise flat held envelope
+    # masquerade as a decay merely because an immediate release reaches zero.
+    keyed_end = (
+        max(0, key_off_frame - 1)
+        if key_off_frame is not None else len(reference) - 1
+    )
     reference_peak_at = max(
         range(keyed_end + 1), key=lambda index: reference[index],
     )
@@ -426,6 +434,52 @@ def envelope_directions(reference: Sequence[int], predicted: Sequence[int],
             "match": match,
         }
     return {"mismatches": mismatches, "stages": result}
+
+
+def significant_rearticulations(
+    levels: Sequence[int], key_off_frame: int | None, *,
+    threshold: int = SIGNIFICANT_REARTICULATION_LEVELS,
+) -> int:
+    """Count keyed rises which one compact ADSR cannot represent.
+
+    A JPS2 envelope can attack once and then only hold or fall.  Some OPL
+    logical voices combine same-pitch layers whose attacks are staggered, or
+    change audible operator parameters while the key remains held.  Once the
+    source has fallen by ``threshold`` levels, a renewed rise by the same
+    amount is therefore a distinct articulation which a single fitted packet
+    cannot reproduce.  The four-level default is deliberately above the
+    largest three-level target tremolo depth.
+    """
+    values = tuple(levels)
+    if not values or any(
+            not isinstance(level, int) or not 0 <= level <= 15
+            for level in values):
+        raise ValueError("envelope levels must be a nonempty 0..15 sequence")
+    if key_off_frame is not None and not 0 <= key_off_frame < len(values):
+        raise ValueError("key_off_frame must be inside envelope levels")
+    if not isinstance(threshold, int) or not 1 <= threshold <= 15:
+        raise ValueError("rearticulation threshold must be 1..15")
+
+    keyed = values[:key_off_frame] if key_off_frame is not None else values
+    if len(keyed) < 3:
+        return 0
+    peak = keyed[0]
+    trough = keyed[0]
+    waiting_for_rise = False
+    count = 0
+    for level in keyed[1:]:
+        if waiting_for_rise:
+            trough = min(trough, level)
+            if level - trough >= threshold:
+                count += 1
+                peak = level
+                waiting_for_rise = False
+        else:
+            peak = max(peak, level)
+            if peak - level >= threshold:
+                trough = level
+                waiting_for_rise = True
+    return count
 
 
 def quantize_isolated_pcm(

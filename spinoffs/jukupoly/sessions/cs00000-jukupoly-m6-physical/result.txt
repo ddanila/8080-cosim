@@ -1,0 +1,10 @@
+JUKUPOLY-M6-PHYSICAL: PARTIAL PASS
+
+Boot, catalog, playback, Escape, quit, and CP/M return paths completed cleanly.
+02 passed subjective listening. 04 and 06 were acceptable/inconclusive.
+41 and the v1 control 05 executed cleanly without operator assessment.
+03 failed subjective enhanced-fit qualification because its low lead did not
+fade like the OPL source. The generic re-articulation/error guard now selects
+the unchanged-v1 fallback for 03.
+
+jukuhost stop: exit=0 rx=172554 tx=210939 requests=19171 reads=116 records=928 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0

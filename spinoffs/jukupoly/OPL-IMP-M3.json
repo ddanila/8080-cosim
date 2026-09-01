@@ -6,12 +6,27 @@
     "retained_onsets": 15,
     "source_onsets": 15
   },
+  "delivery": {
+    "enhanced_candidate_qualified": false,
+    "qualified": true,
+    "reason": "one compact ADSR cannot represent renewed keyed rises whose per-note mean error exceeds the two-level delivery limit",
+    "strategy": "unchanged-v1-fit-fallback"
+  },
   "envelope_fit": {
+    "delivery_note_mae_limit": 2.0,
     "direction_mismatches": 0,
     "maximum_error": 8,
     "mean_absolute_error": 0.6010036244957122,
     "notes": [
       {
+        "baseline_packet": {
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "peak_level": 15,
+          "release_period_frames": 0,
+          "sustain_level": 8,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -24,7 +39,7 @@
           "decay": {
             "match": true,
             "predicted": -1,
-            "predicted_delta_levels": -15,
+            "predicted_delta_levels": -7,
             "reference": -1,
             "reference_delta_levels": -13,
             "significant": true
@@ -52,10 +67,31 @@
         "reference_frames": 771,
         "reference_peak": 13,
         "selected_frame": 0,
+        "significant_rearticulations": 4,
         "source_end_frame": 706,
-        "source_start_frame": 0
+        "source_start_frame": 0,
+        "tremolo_analysis": {
+          "baseline_squared_error": 8962,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 8962,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 198,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": true
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 4,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -96,10 +132,31 @@
         "reference_frames": 230,
         "reference_peak": 5,
         "selected_frame": 706,
+        "significant_rearticulations": 0,
         "source_end_frame": 871,
-        "source_start_frame": 706
+        "source_start_frame": 706,
+        "tremolo_analysis": {
+          "baseline_squared_error": 70,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 70,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 2,
+          "decay_period_frames": 8,
+          "peak_level": 15,
+          "release_period_frames": 0,
+          "sustain_level": 7,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -112,7 +169,7 @@
           "decay": {
             "match": true,
             "predicted": -1,
-            "predicted_delta_levels": -15,
+            "predicted_delta_levels": -8,
             "reference": -1,
             "reference_delta_levels": -13,
             "significant": true
@@ -140,10 +197,31 @@
         "reference_frames": 586,
         "reference_peak": 13,
         "selected_frame": 871,
+        "significant_rearticulations": 2,
         "source_end_frame": 1412,
-        "source_start_frame": 706
+        "source_start_frame": 706,
+        "tremolo_analysis": {
+          "baseline_squared_error": 6329,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 6329,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 160,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": true
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 4,
+          "peak_level": 6,
+          "release_period_frames": 4,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -184,10 +262,31 @@
         "reference_frames": 75,
         "reference_peak": 6,
         "selected_frame": 872,
+        "significant_rearticulations": 0,
         "source_end_frame": 882,
-        "source_start_frame": 872
+        "source_start_frame": 872,
+        "tremolo_analysis": {
+          "baseline_squared_error": 11,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 11,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 8,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -228,10 +327,31 @@
         "reference_frames": 231,
         "reference_peak": 5,
         "selected_frame": 883,
+        "significant_rearticulations": 0,
         "source_end_frame": 1049,
-        "source_start_frame": 883
+        "source_start_frame": 883,
+        "tremolo_analysis": {
+          "baseline_squared_error": 43,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 43,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -272,10 +392,31 @@
         "reference_frames": 77,
         "reference_peak": 6,
         "selected_frame": 1048,
+        "significant_rearticulations": 0,
         "source_end_frame": 1060,
-        "source_start_frame": 1048
+        "source_start_frame": 1048,
+        "tremolo_analysis": {
+          "baseline_squared_error": 35,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 35,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 8,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -316,10 +457,31 @@
         "reference_frames": 229,
         "reference_peak": 5,
         "selected_frame": 1060,
+        "significant_rearticulations": 0,
         "source_end_frame": 1224,
-        "source_start_frame": 1060
+        "source_start_frame": 1060,
+        "tremolo_analysis": {
+          "baseline_squared_error": 46,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 46,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "peak_level": 6,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -360,10 +522,31 @@
         "reference_frames": 77,
         "reference_peak": 6,
         "selected_frame": 1225,
+        "significant_rearticulations": 0,
         "source_end_frame": 1237,
-        "source_start_frame": 1225
+        "source_start_frame": 1225,
+        "tremolo_analysis": {
+          "baseline_squared_error": 9,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 9,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 2,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -404,10 +587,31 @@
         "reference_frames": 199,
         "reference_peak": 5,
         "selected_frame": 1236,
+        "significant_rearticulations": 0,
         "source_end_frame": 1399,
-        "source_start_frame": 1236
+        "source_start_frame": 1236,
+        "tremolo_analysis": {
+          "baseline_squared_error": 47,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 47,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -448,10 +652,31 @@
         "reference_frames": 56,
         "reference_peak": 6,
         "selected_frame": 1401,
+        "significant_rearticulations": 0,
         "source_end_frame": 1412,
-        "source_start_frame": 1401
+        "source_start_frame": 1401,
+        "tremolo_analysis": {
+          "baseline_squared_error": 35,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 35,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "peak_level": 15,
+          "release_period_frames": 0,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -484,10 +709,31 @@
         "reference_frames": 88,
         "reference_peak": 13,
         "selected_frame": 1412,
+        "significant_rearticulations": 0,
         "source_end_frame": 1500,
-        "source_start_frame": 1412
+        "source_start_frame": 1412,
+        "tremolo_analysis": {
+          "baseline_squared_error": 445,
+          "best_depth_levels": 1,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 436,
+          "improvement_per_frame": 0.10227272727272728,
+          "semantic_candidate": true,
+          "source_changed_frames_4bit": 38,
+          "squared_error_improvement": 9
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 16,
+          "peak_level": 5,
+          "release_period_frames": 4,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -528,10 +774,31 @@
         "reference_frames": 67,
         "reference_peak": 5,
         "selected_frame": 1413,
+        "significant_rearticulations": 0,
         "source_end_frame": 1425,
-        "source_start_frame": 1413
+        "source_start_frame": 1413,
+        "tremolo_analysis": {
+          "baseline_squared_error": 8,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 8,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -572,10 +839,31 @@
         "reference_frames": 65,
         "reference_peak": 5,
         "selected_frame": 1435,
+        "significant_rearticulations": 0,
         "source_end_frame": 1450,
-        "source_start_frame": 1435
+        "source_start_frame": 1435,
+        "tremolo_analysis": {
+          "baseline_squared_error": 8,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 8,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -616,10 +904,31 @@
         "reference_frames": 43,
         "reference_peak": 5,
         "selected_frame": 1457,
+        "significant_rearticulations": 0,
         "source_end_frame": 1471,
-        "source_start_frame": 1457
+        "source_start_frame": 1457,
+        "tremolo_analysis": {
+          "baseline_squared_error": 35,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 35,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -660,10 +969,31 @@
         "reference_frames": 21,
         "reference_peak": 5,
         "selected_frame": 1479,
+        "significant_rearticulations": 0,
         "source_end_frame": 1490,
-        "source_start_frame": 1479
+        "source_start_frame": 1479,
+        "tremolo_analysis": {
+          "baseline_squared_error": 28,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 28,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       },
       {
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 0,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
         "directions": {
           "attack": {
             "match": true,
@@ -696,11 +1026,32 @@
         "reference_frames": 9,
         "reference_peak": 5,
         "selected_frame": 1491,
+        "significant_rearticulations": 0,
         "source_end_frame": 1500,
-        "source_start_frame": 1491
+        "source_start_frame": 1491,
+        "tremolo_analysis": {
+          "baseline_squared_error": 0,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 0,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
       }
     ],
-    "selected_logical_notes": 16
+    "selected_logical_notes": 16,
+    "tremolo_analysis": {
+      "emitted_notes": 0,
+      "enabled": false,
+      "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+      "rejected_indirect_candidates": 1,
+      "semantic_candidates": 1
+    },
+    "unrepresentable_rearticulation_notes": 2
   },
   "first_tone_frame": {
     "v1": 706,
@@ -710,6 +1061,7 @@
   "gates": {
     "envelope_directions_match": true,
     "no_protected_onset_regression": true,
+    "no_unrepresentable_rearticulations": false,
     "player_below_song_window": true,
     "same_source_vgm": true,
     "sample_loop_hash_exact": true,
@@ -723,7 +1075,7 @@
   },
   "opl_reference_wav": {
     "bytes": 5292078,
-    "path_hint": "imp-30s-opl-reference.wav",
+    "path_hint": "doom1-03-imp-opl-30s.wav",
     "sha256": "cacb205922811ff9293d0f6a30c156c7dbe99db1de47b8887476f5e6da5f6ee1"
   },
   "player": {
@@ -815,7 +1167,7 @@
       }
     }
   },
-  "schema": "jukupoly-opl-imp-m3-report-v1",
+  "schema": "jukupoly-opl-imp-m3-report-v2",
   "source": {
     "excerpt_seconds": 30.0,
     "name": "03 The Imp's Song.vgz",
