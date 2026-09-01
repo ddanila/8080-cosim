@@ -156,22 +156,25 @@ def fit_joint_envelope_tremolo(
     """Jointly search the exact envelope packet and bounded tremolo depth."""
     reference = tuple(reference_levels)
     fits = [] if baseline_envelope is None else [(0, baseline_envelope)]
-    for depth in range(0 if baseline_envelope is None else 1, MAX_DEPTH + 1):
-        fit = opl_envelope.fit_envelope(
-            reference,
-            key_off_frame=key_off_frame,
-            sustain_while_keyed=sustain_while_keyed,
-            counter_at_onset=counter_at_onset,
-            preserve_significant_directions=preserve_significant_directions,
-            peak_level=peak_level,
-            prediction_transform=lambda levels, selected=depth: (
-                simulate_tremolo(
-                    levels, start_frame=start_frame,
-                    depth_levels=selected,
-                )
-            ),
+    depths = tuple(range(
+        0 if baseline_envelope is None else 1, MAX_DEPTH + 1,
+    ))
+    transforms = tuple(
+        lambda levels, selected=depth: simulate_tremolo(
+            levels, start_frame=start_frame, depth_levels=selected,
         )
-        fits.append((depth, fit))
+        for depth in depths
+    )
+    variant_fits = opl_envelope.fit_envelope_variants(
+        reference,
+        key_off_frame=key_off_frame,
+        sustain_while_keyed=sustain_while_keyed,
+        counter_at_onset=counter_at_onset,
+        preserve_significant_directions=preserve_significant_directions,
+        peak_level=peak_level,
+        prediction_transforms=transforms,
+    )
+    fits.extend(zip(depths, variant_fits))
     baseline = fits[0][1]
     depth, fit = min(fits, key=lambda item: (
         item[1].squared_error, item[1].absolute_error,

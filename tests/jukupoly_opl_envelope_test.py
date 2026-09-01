@@ -104,6 +104,33 @@ def check_direction_priority() -> None:
     assert after["mismatches"] == 0
 
 
+def check_multi_transform_fit() -> None:
+    reference = (0, 7, 7, 6, 6, 5, 4, 3, 2, 1, 0, 0)
+    transforms = tuple(
+        lambda levels, amount=amount: tuple(
+            max(0, level - amount) for level in levels
+        )
+        for amount in range(3)
+    )
+    common = {
+        "key_off_frame": 8,
+        "sustain_while_keyed": True,
+        "counter_at_onset": 3,
+        "peak_level": 7,
+        "preserve_significant_directions": True,
+    }
+    together = opl_envelope.fit_envelope_variants(
+        reference, prediction_transforms=transforms, **common,
+    )
+    separate = tuple(
+        opl_envelope.fit_envelope(
+            reference, prediction_transform=transform, **common,
+        )
+        for transform in transforms
+    )
+    assert together == separate
+
+
 def stretched_oracle_source() -> tuple[list[vgz.RegisterWrite], int]:
     info, writes = vgz.parse_vgm(synthetic.synthetic_opl3_vgm())
     key_off_sample = 20 * opl_oracle.VGM_RATE // 50
@@ -248,6 +275,7 @@ def main() -> int:
     check_exact_target_fit()
     check_semantic_attenuation_mapping()
     check_direction_priority()
+    check_multi_transform_fit()
     fitted = check_oracle_fit(tool)
     check_oracle_tremolo_semantics(tool)
     print("JUKUPOLY-OPL-ENVELOPE: PASS target-exact grid-fit "

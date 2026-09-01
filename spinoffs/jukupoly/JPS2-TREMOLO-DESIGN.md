@@ -222,3 +222,10 @@ Step 5 is complete for this bounded representative excerpt.  Complete-track
 size/duration coverage and CS00000 A/B remain open; tremolo is available only
 through explicit `--enhanced-tremolo`, while normal conversion continues to
 default to depth zero.
+
+For complete-track tooling, `fit_envelope_variants` evaluates all tremolo
+depth transforms while generating each candidate envelope only once.  This is
+an exact host-side search optimization: a regression compares every returned
+fit with independent single-transform searches, and the committed real
+candidate report remains byte-identical.  It changes no packet, target code,
+or hardware budget.

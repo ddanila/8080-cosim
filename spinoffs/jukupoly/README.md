@@ -653,6 +653,9 @@ render gate, not the CS00000 gate.
 experimental policy.  `--enhanced-frame-samples` and
 `--enhanced-sample-rate` record the measured per-song timing choice; omitting
 `--enhanced-tremolo` retains the envelope-only default.
+The exhaustive host fitter shares candidate-envelope simulation across all
+four depths; tests prove the result is identical to separate searches.  This
+reduces conversion time only and consumes no target cycles or bytes.
 
 ## Reproduce
 
