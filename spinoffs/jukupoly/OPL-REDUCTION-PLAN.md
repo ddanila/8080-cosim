@@ -1161,6 +1161,35 @@ library.  In particular, independent source-member pulse trains can restore
 beating and separate fades but cannot reproduce OPL waveform/FM timbre; the
 speaker is the decisive check that this added structure is an improvement.
 
+The short oracle-derived attack-sample branch now has a structural upper-bound
+audit in [`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json).  It deliberately
+does not synthesize or emit PCM yet.  The existing target has one PCM lane and
+a new descriptor replaces a still-playing tail, so an attack must not overlap
+an existing kick/snare/hat, another attack tail, or a second selected onset.
+Moreover PCM has no pitch control: an honest pitched attack needs a distinct
+sample for every source patch plus folded target note, from only 96 custom
+sample IDs.  The projection accounts for raw u4 bytes, descriptors, row
+pointers, row splits, and the 32,767-byte JPS limit while retaining all
+protected tone onsets.
+
+At the shortest useful bound of one 50 Hz frame (20 ms), only 16,515 of 36,326
+selected onset frames across the two packs are schedulable without replacing
+percussion, or 45.46%.  Seven tracks exceed the hard file limit and nine need
+more than 96 patch/pitch samples.  Extending attacks to 40/60 ms reduces
+coverage to 39.08/33.72% and makes 11/15 tracks exceed the hard limit.  Imp is
+a particularly poor target: 594 drum triggers leave only 47 of 395 onset
+frames (11.90%) available even for 20 ms, although its small projected file
+would fit.  This cannot address its characteristic low lead as broadly as the
+detuned-envelope candidate.
+
+Therefore M7 adds no generic attack-PCM emission or target feature at this
+checkpoint.  A later track-specific *selection* may still be justified for a
+source with high collision-free coverage and enough IDs/memory, but it must
+first fit an isolated oracle residual against the already-playing tone;
+copying the whole OPL attack on top of that tone would double rather than
+restore energy.  The present report is an explicit capacity/collision
+fallback, not a claim that all attack timbre is impossible.
+
 ## Required reporting for every implementation change
 
 Every merge which affects target playback must include:

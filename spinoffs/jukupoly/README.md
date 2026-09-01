@@ -991,6 +991,20 @@ The complete local render is
 `out/jukupoly-imp-detuned-m7/imp-detuned-reart-full.wav`.  This closes the
 offline gate only; Imp v1 remains in the library until physical A/B listening.
 
+[`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json) records why generic melodic
+attack samples stop at analysis for now.  The existing single PCM lane cannot
+overlap a drum or another attack, and fixed-rate PCM needs a separate sample
+for each source patch/target-pitch identity.  Even a one-frame (20 ms) upper
+bound covers only 16,515 of 36,326 selected onset frames across both packs;
+seven tracks exceed the hard JPS size and nine exceed the 96 custom-sample-ID
+limit.  Imp offers only 47 of 395 onset frames (11.9%) because its percussion
+occupies the rest.  Longer 40/60 ms attacks reduce pack coverage to 39.1/33.7%.
+
+No PCM was guessed or emitted and no player code changed.  A future selective
+experiment must first prove an isolated oracle *residual* over the simultaneous
+tone on a track with adequate collision-free coverage; simply layering the
+whole OPL attack would duplicate its energy.
+
 ## Reproduce
 
 Source and generated files:
@@ -1033,6 +1047,8 @@ Source and generated files:
   rhythm state-duration audit;
 - `tools/report_opl_detuned_spares.py` — pack-wide selected-layer versus spare-
   voice phase-step opportunity audit;
+- `tools/report_opl_attack_pcm.py` — pack-wide melodic-attack PCM structural
+  scheduling, sample-identity, and memory feasibility audit;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -1053,6 +1069,8 @@ Source and generated files:
   excerpt, timing, size, and unchanged-player evidence;
 - `OPL-IMP-DETUNED-FULL-M7.json` — complete Imp detuned-member candidate,
   overlap arbitration, size, and full C-cosim timing evidence;
+- `OPL-M7-ATTACK-PCM.json` — two-pack single-PCM-lane collision, sample-ID,
+  and projected file-size upper bound for short melodic attacks;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
