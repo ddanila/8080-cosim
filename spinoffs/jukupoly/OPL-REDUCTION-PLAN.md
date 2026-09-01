@@ -1028,6 +1028,26 @@ attack samples, four-operator collapse, and hardware-rhythm mapping.  Each is
 a separate experiment with the same gates.  Failure is an acceptable outcome;
 the documented supported subset remains honest.
 
+The first M7 experiment addresses the physically rejected Imp envelope without
+adding a target feature.  The opt-in `--enhanced-rearticulation` host path
+finds a renewed keyed rise only after a fall and rise of at least four mixer
+levels (strictly above the target tremolo's maximum depth three), permits at
+most four extra packets per logical note, and re-sends an ordinary same-pitch,
+non-legato ADSR packet at each accepted 50 Hz boundary.  It neither changes
+the player nor adds per-sample work.  Tremolo-bearing notes are excluded from
+this first composition rule.
+
+[`OPL-IMP-REARTICULATION-M7.json`](OPL-IMP-REARTICULATION-M7.json) records the
+first 30-second candidate.  Six extra packets across two logical notes reduce
+mean envelope error from 0.601 to 0.404 levels and maximum error from eight to
+seven; the intro note falls from 2.833 to 1.119 mean error.  All 13 protected
+onsets remain, the JPS is 1,383 bytes, and the unchanged 4,537-byte player
+measures 7,170.9 samples/s, 50.146 frames/s, and 29.913 seconds.  The frozen
+sample-loop hash and every automated delivery gate pass.  This is an offline
+candidate only: full-song size/timing, interactions with other capabilities,
+and physical CS00000 listening remain required before replacing the v1 Imp
+delivery.
+
 ## Required reporting for every implementation change
 
 Every merge which affects target playback must include:

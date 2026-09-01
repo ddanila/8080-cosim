@@ -95,6 +95,25 @@ def check_timeline_and_rows() -> None:
     assert starts == [(0, "F#2"), (2, "G2"), (4, "---")]
     assert score["rows"][1]["percussion"]["sample"] == 1
 
+    second_packet = envelope(7).packet()
+    articulated = opl_enhanced.compile_enhanced_score(
+        v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+        {
+            "selected_logical_notes": 2,
+            "notes": [{
+                "logical_note": 0, "selected_frame": 0,
+                "articulation_packets": [{
+                    "frame_offset": 1, "packet": second_packet,
+                }],
+                "tremolo_analysis": {"emitted_depth_levels": 0},
+            }],
+        },
+    )
+    assert articulated["rows"][1]["tone1"] == {
+        "note": "F#2", "opl_envelope": second_packet,
+    }
+    assert "rearticulation" in articulated["title"]
+
     tremolo_score = opl_enhanced.compile_enhanced_score(
         v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
         {
@@ -413,7 +432,8 @@ def main() -> int:
     check_direct_vibrato_score()
     check_timing_recalibration()
     print("JUKUPOLY-OPL-ENHANCED: PASS allocation channel-continuity "
-          "percussion envelope-fit held-pitch-legato direct-vibrato v2-score")
+          "percussion envelope-fit bounded-rearticulation held-pitch-legato "
+          "direct-vibrato v2-score")
     return 0
 
 

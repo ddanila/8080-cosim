@@ -1,0 +1,1279 @@
+{
+  "allocation": {
+    "gained_onsets": 2,
+    "missed_protected_onsets": 0,
+    "protected_onsets": 13,
+    "retained_onsets": 15,
+    "source_onsets": 15
+  },
+  "delivery": {
+    "enhanced_candidate_qualified": true,
+    "qualified": true,
+    "reason": null,
+    "strategy": "enhanced"
+  },
+  "envelope_fit": {
+    "delivery_note_mae_limit": 2.0,
+    "direction_mismatches": 0,
+    "maximum_error": 7,
+    "mean_absolute_error": 0.403901605044886,
+    "notes": [
+      {
+        "articulation_packets": [
+          {
+            "frame_offset": 88,
+            "packet": {
+              "attack_period_frames": 1,
+              "decay_period_frames": 8,
+              "peak_level": 12,
+              "release_period_frames": 0,
+              "sustain_level": 0,
+              "sustain_while_keyed": true
+            }
+          },
+          {
+            "frame_offset": 170,
+            "packet": {
+              "attack_period_frames": 1,
+              "decay_period_frames": 16,
+              "peak_level": 13,
+              "release_period_frames": 0,
+              "sustain_level": 0,
+              "sustain_while_keyed": true
+            }
+          },
+          {
+            "frame_offset": 348,
+            "packet": {
+              "attack_period_frames": 1,
+              "decay_period_frames": 16,
+              "peak_level": 13,
+              "release_period_frames": 0,
+              "sustain_level": 0,
+              "sustain_while_keyed": true
+            }
+          },
+          {
+            "frame_offset": 524,
+            "packet": {
+              "attack_period_frames": 1,
+              "decay_period_frames": 16,
+              "peak_level": 14,
+              "release_period_frames": 0,
+              "sustain_level": 0,
+              "sustain_while_keyed": true
+            }
+          }
+        ],
+        "baseline_packet": {
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "peak_level": 15,
+          "release_period_frames": 0,
+          "sustain_level": 8,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 1,
+            "predicted_delta_levels": 14,
+            "reference": 1,
+            "reference_delta_levels": 13,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -11,
+            "reference": -1,
+            "reference_delta_levels": -13,
+            "significant": true
+          },
+          "release": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          }
+        },
+        "logical_note": 0,
+        "maximum_error": 7,
+        "mean_absolute_error": 1.119325551232166,
+        "packet": {
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "peak_level": 14,
+          "release_period_frames": 0,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 771,
+        "reference_peak": 13,
+        "selected_frame": 0,
+        "significant_rearticulations": 4,
+        "source_end_frame": 706,
+        "source_start_frame": 0,
+        "tremolo_analysis": {
+          "baseline_squared_error": 8962,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 8962,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 198,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 4,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 1,
+            "reference_delta_levels": 5,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -4,
+            "reference": -1,
+            "reference_delta_levels": -4,
+            "significant": true
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -1,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          }
+        },
+        "logical_note": 18,
+        "maximum_error": 5,
+        "mean_absolute_error": 0.21739130434782608,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 4,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 230,
+        "reference_peak": 5,
+        "selected_frame": 706,
+        "significant_rearticulations": 0,
+        "source_end_frame": 871,
+        "source_start_frame": 706,
+        "tremolo_analysis": {
+          "baseline_squared_error": 70,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 70,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [
+          {
+            "frame_offset": 183,
+            "packet": {
+              "attack_period_frames": 1,
+              "decay_period_frames": 16,
+              "peak_level": 13,
+              "release_period_frames": 0,
+              "sustain_level": 0,
+              "sustain_while_keyed": true
+            }
+          },
+          {
+            "frame_offset": 360,
+            "packet": {
+              "attack_period_frames": 1,
+              "decay_period_frames": 16,
+              "peak_level": 14,
+              "release_period_frames": 0,
+              "sustain_level": 0,
+              "sustain_while_keyed": true
+            }
+          }
+        ],
+        "baseline_packet": {
+          "attack_period_frames": 2,
+          "decay_period_frames": 8,
+          "peak_level": 15,
+          "release_period_frames": 0,
+          "sustain_level": 7,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 1,
+            "predicted_delta_levels": 14,
+            "reference": 1,
+            "reference_delta_levels": 11,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -11,
+            "reference": -1,
+            "reference_delta_levels": -13,
+            "significant": true
+          },
+          "release": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          }
+        },
+        "logical_note": 17,
+        "maximum_error": 5,
+        "mean_absolute_error": 1.0426621160409557,
+        "packet": {
+          "attack_period_frames": 2,
+          "decay_period_frames": 16,
+          "peak_level": 12,
+          "release_period_frames": 0,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 586,
+        "reference_peak": 13,
+        "selected_frame": 871,
+        "significant_rearticulations": 2,
+        "source_end_frame": 1412,
+        "source_start_frame": 706,
+        "tremolo_analysis": {
+          "baseline_squared_error": 6329,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 6329,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 160,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 4,
+          "peak_level": 6,
+          "release_period_frames": 4,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -1,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -5,
+            "reference": -1,
+            "reference_delta_levels": -5,
+            "significant": true
+          }
+        },
+        "logical_note": 23,
+        "maximum_error": 1,
+        "mean_absolute_error": 0.14666666666666667,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 4,
+          "peak_level": 6,
+          "release_period_frames": 4,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 75,
+        "reference_peak": 6,
+        "selected_frame": 872,
+        "significant_rearticulations": 0,
+        "source_end_frame": 882,
+        "source_start_frame": 872,
+        "tremolo_analysis": {
+          "baseline_squared_error": 11,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 11,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 8,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -4,
+            "reference": -1,
+            "reference_delta_levels": -4,
+            "significant": true
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -1,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          }
+        },
+        "logical_note": 24,
+        "maximum_error": 1,
+        "mean_absolute_error": 0.18614718614718614,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 8,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 231,
+        "reference_peak": 5,
+        "selected_frame": 883,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1049,
+        "source_start_frame": 883,
+        "tremolo_analysis": {
+          "baseline_squared_error": 43,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 43,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 1,
+            "reference_delta_levels": 6,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -5,
+            "reference": -1,
+            "reference_delta_levels": -5,
+            "significant": true
+          }
+        },
+        "logical_note": 29,
+        "maximum_error": 5,
+        "mean_absolute_error": 0.19480519480519481,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 77,
+        "reference_peak": 6,
+        "selected_frame": 1048,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1060,
+        "source_start_frame": 1048,
+        "tremolo_analysis": {
+          "baseline_squared_error": 35,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 35,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 8,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -4,
+            "reference": -1,
+            "reference_delta_levels": -4,
+            "significant": true
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -1,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          }
+        },
+        "logical_note": 30,
+        "maximum_error": 1,
+        "mean_absolute_error": 0.20087336244541484,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 8,
+          "sustain_level": 1,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 229,
+        "reference_peak": 5,
+        "selected_frame": 1060,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1224,
+        "source_start_frame": 1060,
+        "tremolo_analysis": {
+          "baseline_squared_error": 46,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 46,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "peak_level": 6,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -1,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -5,
+            "reference": -1,
+            "reference_delta_levels": -5,
+            "significant": true
+          }
+        },
+        "logical_note": 35,
+        "maximum_error": 1,
+        "mean_absolute_error": 0.11688311688311688,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "peak_level": 6,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 77,
+        "reference_peak": 6,
+        "selected_frame": 1225,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1237,
+        "source_start_frame": 1225,
+        "tremolo_analysis": {
+          "baseline_squared_error": 9,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 9,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 2,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -3,
+            "reference": -1,
+            "reference_delta_levels": -4,
+            "significant": true
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -2,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          }
+        },
+        "logical_note": 36,
+        "maximum_error": 1,
+        "mean_absolute_error": 0.23618090452261306,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 32,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 2,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 199,
+        "reference_peak": 5,
+        "selected_frame": 1236,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1399,
+        "source_start_frame": 1236,
+        "tremolo_analysis": {
+          "baseline_squared_error": 47,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 47,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 1,
+            "reference_delta_levels": 6,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": -1,
+            "reference_delta_levels": -1,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -5,
+            "reference": -1,
+            "reference_delta_levels": -5,
+            "significant": true
+          }
+        },
+        "logical_note": 41,
+        "maximum_error": 5,
+        "mean_absolute_error": 0.26785714285714285,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 56,
+        "reference_peak": 6,
+        "selected_frame": 1401,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1412,
+        "source_start_frame": 1401,
+        "tremolo_analysis": {
+          "baseline_squared_error": 35,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 35,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "peak_level": 15,
+          "release_period_frames": 0,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 1,
+            "predicted_delta_levels": 15,
+            "reference": 1,
+            "reference_delta_levels": 13,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -9,
+            "reference": -1,
+            "reference_delta_levels": -10,
+            "significant": true
+          }
+        },
+        "logical_note": 42,
+        "maximum_error": 7,
+        "mean_absolute_error": 1.7613636363636365,
+        "packet": {
+          "attack_period_frames": 1,
+          "decay_period_frames": 8,
+          "peak_level": 15,
+          "release_period_frames": 0,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 88,
+        "reference_peak": 13,
+        "selected_frame": 1412,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1500,
+        "source_start_frame": 1412,
+        "tremolo_analysis": {
+          "baseline_squared_error": 445,
+          "best_depth_levels": 1,
+          "directly_audible_am_path": true,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 436,
+          "improvement_per_frame": 0.10227272727272728,
+          "semantic_candidate": true,
+          "source_changed_frames_4bit": 38,
+          "squared_error_improvement": 9
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 16,
+          "peak_level": 5,
+          "release_period_frames": 4,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -1,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -4,
+            "reference": -1,
+            "reference_delta_levels": -5,
+            "significant": true
+          }
+        },
+        "logical_note": 45,
+        "maximum_error": 1,
+        "mean_absolute_error": 0.11940298507462686,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 16,
+          "peak_level": 5,
+          "release_period_frames": 4,
+          "sustain_level": 0,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 67,
+        "reference_peak": 5,
+        "selected_frame": 1413,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1425,
+        "source_start_frame": 1413,
+        "tremolo_analysis": {
+          "baseline_squared_error": 8,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 8,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -5,
+            "reference": -1,
+            "reference_delta_levels": -5,
+            "significant": true
+          }
+        },
+        "logical_note": 48,
+        "maximum_error": 1,
+        "mean_absolute_error": 0.12307692307692308,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 65,
+        "reference_peak": 5,
+        "selected_frame": 1435,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1450,
+        "source_start_frame": 1435,
+        "tremolo_analysis": {
+          "baseline_squared_error": 8,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 8,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 1,
+            "reference_delta_levels": 5,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -5,
+            "reference": -1,
+            "reference_delta_levels": -5,
+            "significant": true
+          }
+        },
+        "logical_note": 52,
+        "maximum_error": 5,
+        "mean_absolute_error": 0.3488372093023256,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 43,
+        "reference_peak": 5,
+        "selected_frame": 1457,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1471,
+        "source_start_frame": 1457,
+        "tremolo_analysis": {
+          "baseline_squared_error": 35,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 35,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 1,
+            "reference_delta_levels": 5,
+            "significant": true
+          },
+          "decay": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "release": {
+            "match": true,
+            "predicted": -1,
+            "predicted_delta_levels": -5,
+            "reference": -1,
+            "reference_delta_levels": -4,
+            "significant": true
+          }
+        },
+        "logical_note": 54,
+        "maximum_error": 5,
+        "mean_absolute_error": 0.38095238095238093,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 2,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 21,
+        "reference_peak": 5,
+        "selected_frame": 1479,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1490,
+        "source_start_frame": 1479,
+        "tremolo_analysis": {
+          "baseline_squared_error": 28,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 28,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      },
+      {
+        "articulation_packets": [],
+        "baseline_packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 0,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "directions": {
+          "attack": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          },
+          "decay": {
+            "match": true,
+            "predicted": 0,
+            "predicted_delta_levels": 0,
+            "reference": 0,
+            "reference_delta_levels": 0,
+            "significant": false
+          }
+        },
+        "logical_note": 58,
+        "maximum_error": 0,
+        "mean_absolute_error": 0.0,
+        "packet": {
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "peak_level": 5,
+          "release_period_frames": 0,
+          "sustain_level": 5,
+          "sustain_while_keyed": true
+        },
+        "reference_frames": 9,
+        "reference_peak": 5,
+        "selected_frame": 1491,
+        "significant_rearticulations": 0,
+        "source_end_frame": 1500,
+        "source_start_frame": 1491,
+        "tremolo_analysis": {
+          "baseline_squared_error": 0,
+          "best_depth_levels": 0,
+          "directly_audible_am_path": false,
+          "emitted_depth_levels": 0,
+          "fitted_squared_error": 0,
+          "improvement_per_frame": 0.0,
+          "semantic_candidate": false,
+          "source_changed_frames_4bit": 0,
+          "squared_error_improvement": 0
+        },
+        "unrepresentable_rearticulation": false
+      }
+    ],
+    "rearticulation": {
+      "emitted_packets": 6,
+      "enabled": true,
+      "maximum_packets_per_note": 4,
+      "policy": "re-send a same-pitch non-legato ordinary ADSR packet at each bounded significant keyed rise; no target opcode or sample-loop change",
+      "threshold_levels": 4
+    },
+    "selected_logical_notes": 16,
+    "tremolo_analysis": {
+      "emitted_notes": 0,
+      "enabled": false,
+      "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+      "rejected_indirect_candidates": 1,
+      "semantic_candidates": 1
+    },
+    "unrepresentable_rearticulation_notes": 0
+  },
+  "first_tone_frame": {
+    "v1": 706,
+    "v2": 0
+  },
+  "fixture_sample_rate_floor_hz": 6480.8316792,
+  "gates": {
+    "envelope_directions_match": true,
+    "no_protected_onset_regression": true,
+    "no_unrepresentable_rearticulations": true,
+    "player_below_song_window": true,
+    "same_source_vgm": true,
+    "sample_loop_hash_exact": true,
+    "v1_first_tone_at_14_12_seconds": true,
+    "v2_duration_within_one_percent": true,
+    "v2_intro_envelope_not_constant": true,
+    "v2_intro_tone_at_frame_zero": true,
+    "v2_jps_below_soft_limit": true,
+    "v2_music_clock_within_one_percent": true,
+    "v2_sample_rate_above_fixture_floor": true
+  },
+  "opl_reference_wav": {
+    "bytes": 5292078,
+    "path_hint": "doom1-03-imp-opl-30s.wav",
+    "sha256": "cacb205922811ff9293d0f6a30c156c7dbe99db1de47b8887476f5e6da5f6ee1"
+  },
+  "player": {
+    "bytes": 4537,
+    "end_address_exclusive": "0x12b9",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f"
+  },
+  "profiles": {
+    "v1": {
+      "com_bytes": 4537,
+      "duration_seconds": 29.787844,
+      "effective_sample_hz": 7200.924088,
+      "frame_cycles": {
+        "count": 1500,
+        "max": 35581,
+        "mean": 33759.556,
+        "min": 33561,
+        "p99": 35295
+      },
+      "frame_samples": 143,
+      "frames": 1500,
+      "idle_boundary_cycles": {
+        "count": 1446,
+        "max": 1144,
+        "mean": 938.676,
+        "min": 814,
+        "p99": 1094
+      },
+      "jps_bytes": 1290,
+      "keyboard_polls": 1501,
+      "label": "imp-30s-v1",
+      "music_frame_hz": 50.356113,
+      "mutated_player_bytes": 57,
+      "pit_writes": 2845,
+      "row_boundary_cycles": {
+        "count": 54,
+        "max": 1735,
+        "mean": 1441.519,
+        "min": 1240,
+        "p99": 1735
+      },
+      "sample_loop_cycles": {
+        "count": 213000,
+        "max": 262,
+        "mean": 229.393,
+        "min": 229,
+        "p99": 255
+      }
+    },
+    "v2": {
+      "com_bytes": 4537,
+      "duration_seconds": 29.912767,
+      "effective_sample_hz": 7170.851148,
+      "frame_cycles": {
+        "count": 1500,
+        "max": 38209,
+        "mean": 33901.136,
+        "min": 33638,
+        "p99": 36505
+      },
+      "frame_samples": 143,
+      "frames": 1500,
+      "idle_boundary_cycles": {
+        "count": 1440,
+        "max": 1482,
+        "mean": 1003.428,
+        "min": 864,
+        "p99": 1257
+      },
+      "jps_bytes": 1383,
+      "keyboard_polls": 1501,
+      "label": "imp-30s-v2",
+      "music_frame_hz": 50.145812,
+      "mutated_player_bytes": 74,
+      "pit_writes": 4320,
+      "row_boundary_cycles": {
+        "count": 60,
+        "max": 4388,
+        "mean": 2562.3,
+        "min": 1290,
+        "p99": 4388
+      },
+      "sample_loop_cycles": {
+        "count": 213000,
+        "max": 269,
+        "mean": 229.616,
+        "min": 229,
+        "p99": 262
+      }
+    }
+  },
+  "schema": "jukupoly-opl-imp-m3-report-v2",
+  "source": {
+    "excerpt_seconds": 30.0,
+    "name": "03 The Imp's Song.vgz",
+    "vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16"
+  },
+  "target_wavs": {
+    "v1": {
+      "bytes": 2854912,
+      "sample_rate_hz": 48000,
+      "sha256": "b465bad72be38562fe08b2370281a2f01865055015a2fc8ff8d33fdaf6e6fea6"
+    },
+    "v2": {
+      "bytes": 2866940,
+      "sample_rate_hz": 48000,
+      "sha256": "06da345f78e5a78040a8e209840045e75fa3b3c3bc137489d4829c2be2654369"
+    }
+  }
+}

@@ -148,6 +148,9 @@ def check_direction_priority() -> None:
     assert opl_envelope.significant_rearticulations(
         (0, 4, 8, 12, 10, 8, 7, 8, 10, 12, 9, 5, 1), None,
     ) == 1
+    assert opl_envelope.significant_rearticulation_frames(
+        (0, 4, 8, 12, 10, 8, 7, 8, 10, 12, 9, 5, 1), None,
+    ) == (7,)
     # A rise after key-off belongs to release/replacement state and cannot
     # condemn the keyed envelope.
     assert opl_envelope.significant_rearticulations(

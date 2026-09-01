@@ -26,6 +26,7 @@ TREMOLO_SAMPLE_RATE = 6_970
 TREMOLO_FRAME_SAMPLES = 140
 MAX_RELEASE_FRAMES = 64
 MAX_DELIVERY_NOTE_MAE = 2.0
+MAX_REARTICULATIONS_PER_NOTE = 4
 
 
 @dataclass(frozen=True)
@@ -147,6 +148,7 @@ def fit_selected_envelopes(
         notes: list[opl_voices.LogicalNote], allocation: dict,
         channel_probes: Iterable[opl_oracle.OracleChannelProbe], frames: int,
         *, enable_tremolo: bool = False,
+        enable_rearticulation: bool = False,
 ) -> tuple[dict[int, opl_envelope.EnvelopeFit], dict]:
     """Fit every logical note selected within the excerpt.
 
@@ -171,6 +173,7 @@ def fit_selected_envelopes(
     emitted_tremolo = 0
     rejected_indirect_tremolo = 0
     unrepresentable_rearticulation_notes = 0
+    emitted_rearticulation_packets = 0
     for identifier, selected_frame in sorted(first_selected.items(),
                                               key=lambda item: item[1]):
         note = by_identifier[identifier]
@@ -281,17 +284,65 @@ def fit_selected_envelopes(
         )
         emitted_tremolo += int(emitted_depth > 0)
         fit = fitted_envelope if emitted_depth else baseline_fit
-        fits[identifier] = fit
-        direction_result = opl_envelope.envelope_directions(
-            reference, fit.predicted_levels, key_off_frame,
-        )
-        rearticulations = opl_envelope.significant_rearticulations(
+        rearticulation_frames = opl_envelope.significant_rearticulation_frames(
             reference, key_off_frame,
         )
-        mean_absolute_error = fit.absolute_error / len(reference)
+        articulation_packets = []
+        predicted = fit.predicted_levels
+        absolute_error = fit.absolute_error
+        maximum_error = fit.maximum_error
+        if (
+            enable_rearticulation and rearticulation_frames and
+            len(rearticulation_frames) <= MAX_REARTICULATIONS_PER_NOTE and
+            emitted_depth == 0
+        ):
+            boundaries = (0, *rearticulation_frames, len(reference))
+            pieces = []
+            predicted_parts = []
+            for piece_index, (begin, end) in enumerate(zip(
+                    boundaries, boundaries[1:])):
+                piece_reference = reference[begin:end]
+                piece_key_off = (
+                    key_off_frame - begin
+                    if key_off_frame is not None and
+                    begin <= key_off_frame < end else None
+                )
+                piece = opl_envelope.fit_envelope(
+                    piece_reference,
+                    key_off_frame=piece_key_off,
+                    sustain_while_keyed=note.sustained_envelope,
+                    counter_at_onset=(selected_frame + begin + 1) & 0xFF,
+                    peak_level=(1 if max(piece_reference) == 0 else None),
+                    preserve_significant_directions=True,
+                )
+                pieces.append(piece)
+                predicted_parts.extend(piece.predicted_levels)
+                if piece_index:
+                    articulation_packets.append({
+                        "frame_offset": begin,
+                        "packet": piece.packet(),
+                    })
+            fit = pieces[0]
+            predicted = tuple(predicted_parts)
+            absolute_error = sum(
+                abs(expected - actual)
+                for expected, actual in zip(reference, predicted)
+            )
+            maximum_error = max(
+                abs(expected - actual)
+                for expected, actual in zip(reference, predicted)
+            )
+            emitted_rearticulation_packets += len(articulation_packets)
+        fits[identifier] = fit
+        direction_result = opl_envelope.envelope_directions(
+            reference, predicted, key_off_frame,
+        )
+        rearticulations = len(rearticulation_frames)
+        mean_absolute_error = absolute_error / len(reference)
         unrepresentable_rearticulation = (
             rearticulations > 0 and
-            mean_absolute_error > MAX_DELIVERY_NOTE_MAE
+            (not articulation_packets or
+             mean_absolute_error > MAX_DELIVERY_NOTE_MAE)
         )
         unrepresentable_rearticulation_notes += int(
             unrepresentable_rearticulation
@@ -308,8 +359,9 @@ def fit_selected_envelopes(
             "packet": fit.packet(),
             "baseline_packet": baseline_fit.packet(),
             "mean_absolute_error": mean_absolute_error,
-            "maximum_error": fit.maximum_error,
+            "maximum_error": maximum_error,
             "significant_rearticulations": rearticulations,
+            "articulation_packets": articulation_packets,
             "unrepresentable_rearticulation": (
                 unrepresentable_rearticulation
             ),
@@ -340,6 +392,19 @@ def fit_selected_envelopes(
             unrepresentable_rearticulation_notes
         ),
         "delivery_note_mae_limit": MAX_DELIVERY_NOTE_MAE,
+        "rearticulation": {
+            "enabled": enable_rearticulation,
+            "threshold_levels": (
+                opl_envelope.SIGNIFICANT_REARTICULATION_LEVELS
+            ),
+            "maximum_packets_per_note": MAX_REARTICULATIONS_PER_NOTE,
+            "emitted_packets": emitted_rearticulation_packets,
+            "policy": (
+                "re-send a same-pitch non-legato ordinary ADSR packet at "
+                "each bounded significant keyed rise; no target opcode or "
+                "sample-loop change"
+            ),
+        },
         "tremolo_analysis": {
             "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
             "enabled": enable_tremolo,
@@ -568,6 +633,12 @@ def compile_enhanced_score(
         for item in fit_report.get("notes", [])
     }
     tremolo_enabled = any(tremolo_depths.values())
+    articulation_packets = {
+        (item["selected_frame"] + packet["frame_offset"],
+         item["logical_note"]): packet["packet"]
+        for item in fit_report.get("notes", [])
+        for packet in item.get("articulation_packets", [])
+    }
     if enable_vibrato and (
             target_sample_rate is None or frame_samples is None):
         raise ValueError(
@@ -663,19 +734,29 @@ def compile_enhanced_score(
                 enable_vibrato and old == new and new is not None and
                 old_vibrato != new_vibrato
             )
-            if old == new and not step_changed and not vibrato_changed:
+            articulation_packet = (
+                None if new is None else
+                articulation_packets.get((frame, new.logical_note))
+            )
+            if (old == new and not step_changed and not vibrato_changed and
+                    articulation_packet is None):
                 continue
             field = f"tone{channel}"
             if new is None:
                 row[field] = {"note": "---"}
             else:
                 event = {
-                    "opl_envelope": fits[new.logical_note].packet(),
+                    "opl_envelope": (
+                        articulation_packet
+                        if articulation_packet is not None else
+                        fits[new.logical_note].packet()
+                    ),
                 }
                 if enable_held_pitch or enable_vibrato:
                     assert new_step is not None
                     event["phase_step"] = new_step
-                    if step_changed or vibrato_changed:
+                    if ((step_changed or vibrato_changed) and
+                            articulation_packet is None):
                         event["legato"] = True
                     if step_changed:
                         held_pitch_packets += 1
@@ -707,6 +788,8 @@ def compile_enhanced_score(
 
     score = dict(v1_score)
     reduction_features = "envelope+tremolo" if tremolo_enabled else "envelope"
+    if articulation_packets:
+        reduction_features += "+rearticulation"
     if enable_held_pitch:
         reduction_features += "+held-pitch"
     if enable_vibrato:
@@ -716,6 +799,8 @@ def compile_enhanced_score(
         "fitted 4-bit envelopes, guarded shared tremolo"
         if tremolo_enabled else "fitted 4-bit envelopes"
     )
+    if articulation_packets:
+        arrangement_features += ", bounded same-pitch re-articulation"
     if enable_held_pitch:
         arrangement_features += ", held-key pitch automation"
     if enable_vibrato:

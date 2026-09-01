@@ -689,6 +689,11 @@ def main() -> int:
               "capability 03h; requires --enhanced-envelopes"),
     )
     parser.add_argument(
+        "--enhanced-rearticulation", action="store_true",
+        help=("split bounded multi-lobed keyed volume into repeated ordinary "
+              "ADSR packets; requires --enhanced-envelopes"),
+    )
+    parser.add_argument(
         "--enhanced-held-pitch", action="store_true",
         help=("opt in to selected held-key pitch changes through existing "
               "JPS v2 legato packets; requires --enhanced-envelopes"),
@@ -743,6 +748,8 @@ def main() -> int:
         parser.error("--enhanced-envelopes requires --opl-oracle")
     if args.enhanced_tremolo and not args.enhanced_envelopes:
         parser.error("--enhanced-tremolo requires --enhanced-envelopes")
+    if args.enhanced_rearticulation and not args.enhanced_envelopes:
+        parser.error("--enhanced-rearticulation requires --enhanced-envelopes")
     if args.enhanced_held_pitch and not args.enhanced_envelopes:
         parser.error("--enhanced-held-pitch requires --enhanced-envelopes")
     if args.enhanced_vibrato and not args.enhanced_envelopes:
@@ -876,6 +883,7 @@ def main() -> int:
         fits, fit_report = opl_enhanced.fit_selected_envelopes(
             segments, logical_notes, allocation, probes, total_frames,
             enable_tremolo=args.enhanced_tremolo,
+            enable_rearticulation=args.enhanced_rearticulation,
         )
         score = opl_enhanced.compile_enhanced_score(
             score, logical_notes, allocation, fits, total_frames, fit_report,

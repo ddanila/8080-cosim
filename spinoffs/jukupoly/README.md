@@ -895,6 +895,24 @@ The corrected disk changes only Imp back to v1; its player and other four
 enhanced payloads are byte-identical to the physical run.  This is a usable
 progressive stopping point, not a claim that all 44 songs are enhanced.
 
+An offline M7 follow-up now tests the smallest hardware-compatible answer to
+the failed Imp shape: re-send the existing same-pitch non-legato ADSR packet
+at a bounded significant rise.  The opt-in host policy requires a fall and
+renewed rise of at least four mixer levels, caps a note at four extra packets,
+and excludes tremolo-bearing notes.  It introduces no opcode, player byte,
+state byte, or per-sample cycle.
+
+The committed 30-second result in
+[`OPL-IMP-REARTICULATION-M7.json`](OPL-IMP-REARTICULATION-M7.json) emits six
+extra packets across two logical notes.  Mean envelope error improves from
+0.601 to 0.404 levels; the intro improves from 2.833 to 1.119, leaving zero
+notes above the re-articulation delivery guard.  Its 1,383-byte JPS runs under
+the unchanged 4,537-byte player at 7,170.9 samples/s, 50.146 frames/s, and
+29.913 seconds with the frozen loop hash exact.  A local listening render is
+`out/jukupoly-imp-rearticulation-m7/imp-reart.wav`.  This remains an
+experimental candidate pending full-song and physical qualification; the
+library still delivers Imp v1.
+
 ## Reproduce
 
 Source and generated files:
@@ -935,6 +953,8 @@ Source and generated files:
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
+- `OPL-IMP-REARTICULATION-M7.json` — bounded same-pitch articulation fit,
+  timing, size, and unchanged-player evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
@@ -997,6 +1017,8 @@ Source and generated files:
 - `firmware/opl_voices.py` — keyed-segment and logical-voice evidence model;
 - `firmware/jukupoly-imp-30s-v1.json` — frozen Imp excerpt comparison score;
 - `firmware/jukupoly-imp-30s-v2.json` — guarded fitted Imp excerpt score;
+- `firmware/jukupoly-imp-30s-rearticulation-m7.json` — opt-in bounded
+  same-pitch multi-articulation candidate;
 - `firmware/jukupoly-doomgate-vgz.json` — generated one-pass E1M1 reduction;
 - `firmware/doomgate.com` — complete 1:37 E1M1 CP/M image;
 - `firmware/jukupoly-demons-vgz.json` — generated one-pass E2M2 reduction;

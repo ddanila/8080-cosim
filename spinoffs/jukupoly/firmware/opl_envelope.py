@@ -482,6 +482,43 @@ def significant_rearticulations(
     return count
 
 
+def significant_rearticulation_frames(
+    levels: Sequence[int], key_off_frame: int | None, *,
+    threshold: int = SIGNIFICANT_REARTICULATION_LEVELS,
+) -> tuple[int, ...]:
+    """Return the first rising frame of each significant keyed re-attack."""
+    values = tuple(levels)
+    # Reuse the public validation and keep both diagnostics definitionally
+    # aligned even when no re-articulation exists.
+    significant_rearticulations(values, key_off_frame, threshold=threshold)
+    keyed = values[:key_off_frame] if key_off_frame is not None else values
+    if len(keyed) < 3:
+        return ()
+    peak = keyed[0]
+    trough = keyed[0]
+    rise_start: int | None = None
+    waiting_for_rise = False
+    result = []
+    for index, level in enumerate(keyed[1:], 1):
+        if waiting_for_rise:
+            if level < trough:
+                trough = level
+                rise_start = None
+            elif level > trough and rise_start is None:
+                rise_start = index
+            if level - trough >= threshold:
+                result.append(rise_start if rise_start is not None else index)
+                peak = level
+                waiting_for_rise = False
+                rise_start = None
+        else:
+            peak = max(peak, level)
+            if peak - level >= threshold:
+                trough = level
+                waiting_for_rise = True
+    return tuple(result)
+
+
 def quantize_isolated_pcm(
     pcm: Sequence[tuple[int, int]],
     *,
