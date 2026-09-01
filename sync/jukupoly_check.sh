@@ -24,6 +24,7 @@ JUKUPOLY_OPL_ORACLE="$TMP/jukupoly_opl_oracle" \
 JUKUPOLY_OPL_ORACLE="$TMP/jukupoly_opl_oracle" \
 python3 tests/jukupoly_opl_envelope_test.py
 python3 tests/jukupoly_opl_enhanced_test.py
+python3 tests/jukupoly_opl_tremolo_test.py
 python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py \

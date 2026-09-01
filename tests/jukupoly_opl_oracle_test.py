@@ -73,6 +73,8 @@ def check_oracle_agreement(tool: Path) -> None:
         assert by_sample[882].modulator_output_attenuation >= \
             by_sample[882].modulator_attenuation
         assert by_sample[882].connection == timeline.channel(0, 0).connection
+        assert by_sample[882].modulator_am == timeline.channel(0, 0).modulator.am
+        assert by_sample[882].carrier_am == timeline.channel(0, 0).carrier.am
 
         # The shared OPL LFOs run independently of note events.  Their oracle
         # phases and tremolo value must progress across our 50 Hz probes.

@@ -591,6 +591,28 @@ M3 now requires only physical CS00000 A/B listening before the Doom library
 may default to v2.  It therefore continues to emit v1 and retains that fallback
 if the approximation is not useful on hardware.
 
+## Host-only tremolo evidence
+
+M4 currently changes no JPS packet or target player.  `opl_tremolo.py` models
+a shared 3.7 Hz, 16-step attenuation triangle with a fractional phase
+accumulator and only four possible depths: off or one through three mixer
+levels.  Tests lock the 37-cycle/10-second rate, exact quantized fitting, and
+the rule that depth zero wins a tie.
+
+The oracle probe now reports both operators' AM-enable state.  Carrier AM and
+additive-modulator AM are direct amplitude evidence; AM only on an FM
+modulator is a timbre effect and cannot enable Juku volume tremolo.  A
+pinned-Nuked test proves this distinction.  The complete two-pack report
+[`OPL-TREMOLO-M4.json`](OPL-TREMOLO-M4.json) finds 20,772 direct-AM melodic
+key-ons in 27 tracks and 12,071 modulator-only key-ons which must be rejected
+without separate output evidence.
+
+The 30-second Imp analysis finds only one valid depth-one candidate, with a
+small 9-point squared-error improvement over 88 frames; another numerical
+candidate is rejected by the direct-path guard.  This is not enough to spend
+target cycles yet.  Representative direct-AM tracks must show useful
+quantized benefit before a JPS/8080 tremolo experiment begins.
+
 ## Reproduce
 
 Source and generated files:
@@ -606,10 +628,12 @@ Source and generated files:
 - `tools/report_jukupoly_envelope.py` — guarded M3 target timing/map report;
 - `tools/report_jukupoly_imp_m3.py` — real Imp v1/v2/reference M3 report;
 - `tools/report_jukupoly_full_m3.py` — compact full-song M3 feasibility report;
+- `tools/report_opl_tremolo.py` — direct versus FM-modulator-only AM pack report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
+- `OPL-TREMOLO-M4.json` — committed two-pack M4 semantic prevalence report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;
@@ -633,6 +657,7 @@ Source and generated files:
 - `firmware/opl_oracle.py` — per-channel oracle stream and post-EG probe helpers;
 - `firmware/opl_envelope.py` — exact-target fitter and semantic attenuation mapper;
 - `firmware/opl_enhanced.py` — generic M2-to-JPS-v2 real-song reducer;
+- `firmware/opl_tremolo.py` — bounded shared-phase M4 host model/fitter;
 - `firmware/opl_voices.py` — keyed-segment and logical-voice evidence model;
 - `firmware/jukupoly-imp-30s-v1.json` — frozen Imp excerpt comparison score;
 - `firmware/jukupoly-imp-30s-v2.json` — guarded fitted Imp excerpt score;
@@ -653,6 +678,7 @@ Source and generated files:
 - `tests/jukupoly_opl_oracle_test.py` — pinned oracle agreement and isolation regression;
 - `tests/jukupoly_opl_envelope_test.py` — exact-target and oracle-fit regression;
 - `tests/jukupoly_opl_enhanced_test.py` — real-score allocation/fitting regression;
+- `tests/jukupoly_opl_tremolo_test.py` — fractional-rate/depth/false-AM guard;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;

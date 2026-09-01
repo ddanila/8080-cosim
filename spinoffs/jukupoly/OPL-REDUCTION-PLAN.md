@@ -645,6 +645,38 @@ false large modulation when only an inaudible modulator has AM enabled.
 If G2 fails, omit sub-quantization tremolo and use compact host-baked changes
 only where audible and affordable.
 
+First host-only progress on 2026-09-01: `opl_tremolo.py` implements a bounded
+shared 16-step attenuation triangle with a 16-bit phase accumulator.  Its
+4,850-unit increment produces 37.0 cycles in ten seconds at the 50 Hz target
+clock, rather than rounding 3.7 Hz to an incorrect integer frame period.  The
+only representable depths are zero through three 4-bit mixer levels, and depth
+zero wins equal-error fits.  Synthetic guards recover an exact depth-three
+curve and reject an inaudible-modulator false positive.
+
+The pinned oracle now exposes each operator's actual AM-enable state as well
+as post-EG attenuation.  A direct target-amplitude candidate requires carrier
+AM, or modulator AM in additive connection mode, plus measured improvement in
+the quantized oracle fit.  AM only on an FM modulator is timbre evidence, not
+permission to invent square-wave volume modulation.  A pinned-Nuked test
+proves carrier AM produces a fitted nonzero depth while otherwise identical
+FM-modulator-only AM leaves the semantic carrier trace unchanged and fits
+depth zero.
+
+[`OPL-TREMOLO-M4.json`](OPL-TREMOLO-M4.json) records the complete two-pack
+semantic scan: 102,172 melodic key-ons, of which 20,772 in 27 tracks have a
+direct AM path, 12,071 have only an FM-modulator path, and 69,329 have none.
+There are 89 direct-AM melodic signatures and 33 modulator-only signatures;
+the deterministic fingerprint is
+`c8924b6aca4fed55983d9fc9d98130c05be485180b1a90ed5f0262af0d80ff7a`.
+This prevalence justifies continuing M4 but does not enable target tremolo.
+
+On the 30-second Imp fixture only one of 16 selected notes is a semantically
+valid depth-one candidate, improving squared error by nine over 88 frames
+(0.10 per frame).  A second mathematical depth-one fit is rejected because
+its source has no direct AM path.  The Imp result is too small by itself to
+justify player code; the next gate is quantized-oracle benefit on representative
+direct-AM tracks, followed by a bounded ABI/cycle experiment if warranted.
+
 ### M5: vibrato and held-note pitch writes
 
 Add the shared vibrato phase, temporary phase-step modulation, and generic

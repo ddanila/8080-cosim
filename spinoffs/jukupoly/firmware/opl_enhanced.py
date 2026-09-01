@@ -9,6 +9,7 @@ from typing import Iterable
 import import_jukupoly_vgz as vgz
 import opl_envelope
 import opl_oracle
+import opl_tremolo
 import opl_voices
 
 
@@ -131,6 +132,8 @@ def fit_selected_envelopes(
     fits: dict[int, opl_envelope.EnvelopeFit] = {}
     measurements = []
     direction_mismatches = 0
+    tremolo_candidates = 0
+    rejected_indirect_tremolo = 0
     for identifier, selected_frame in sorted(first_selected.items(),
                                               key=lambda item: item[1]):
         note = by_identifier[identifier]
@@ -188,6 +191,25 @@ def fit_selected_envelopes(
         )
         directions = direction_result["stages"]
         direction_mismatches += direction_result["mismatches"]
+        direct_am = any(
+            probe_table[(frame, bank * 9 + channel)].carrier_am or
+            (probe_table[(frame, bank * 9 + channel)].connection == 1 and
+             probe_table[(frame, bank * 9 + channel)].modulator_am)
+            for frame in range(selected_frame, reference_end + 1)
+            for bank, channel in note.channels
+        )
+        tremolo = opl_tremolo.fit_tremolo(
+            reference, fit.predicted_levels, start_frame=selected_frame,
+        )
+        semantic_candidate = (
+            direct_am and tremolo.depth_levels > 0 and
+            tremolo.squared_error_improvement > 0
+        )
+        tremolo_candidates += int(semantic_candidate)
+        rejected_indirect_tremolo += int(
+            not direct_am and tremolo.depth_levels > 0 and
+            tremolo.squared_error_improvement > 0
+        )
         measurements.append({
             "logical_note": identifier,
             "selected_frame": selected_frame,
@@ -199,6 +221,19 @@ def fit_selected_envelopes(
             "mean_absolute_error": fit.absolute_error / len(reference),
             "maximum_error": fit.maximum_error,
             "directions": directions,
+            "tremolo_analysis": {
+                "directly_audible_am_path": direct_am,
+                "best_depth_levels": tremolo.depth_levels,
+                "baseline_squared_error": tremolo.baseline_squared_error,
+                "fitted_squared_error": tremolo.squared_error,
+                "squared_error_improvement": (
+                    tremolo.squared_error_improvement
+                ),
+                "improvement_per_frame": (
+                    tremolo.squared_error_improvement / len(reference)
+                ),
+                "semantic_candidate": semantic_candidate,
+            },
         })
     return fits, {
         "selected_logical_notes": len(fits),
@@ -210,6 +245,11 @@ def fit_selected_envelopes(
             (item["maximum_error"] for item in measurements), default=0,
         ),
         "direction_mismatches": direction_mismatches,
+        "tremolo_analysis": {
+            "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+            "semantic_candidates": tremolo_candidates,
+            "rejected_indirect_candidates": rejected_indirect_tremolo,
+        },
         "notes": measurements,
     }
 

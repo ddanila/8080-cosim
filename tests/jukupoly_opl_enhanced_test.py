@@ -107,13 +107,13 @@ def check_probe_fit() -> None:
     for frame, attenuation in enumerate(levels):
         probe = opl_oracle.OracleProbe(
             frame * 882, 0x200, 4, frame < 3, 0, 0,
-            511, attenuation, 0, 0, 0, 0, 0, 0,
+            511, attenuation, 0, False, False, 0, 0, 0, 0, 0,
         )
         probes.append(opl_oracle.OracleChannelProbe(0, probe))
     probes.append(opl_oracle.OracleChannelProbe(
         0, opl_oracle.OracleProbe(
             6 * 882 + 17, 0x200, 4, False, 0, 0,
-            511, 511, 0, 0, 0, 0, 0, 0,
+            511, 511, 0, False, False, 0, 0, 0, 0, 0,
         ),
     ))
     fits, report = opl_enhanced.fit_selected_envelopes(

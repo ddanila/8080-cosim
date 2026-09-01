@@ -20,6 +20,7 @@ import build_jukupoly  # noqa: E402
 import jukupoly_opl_trace_test as synthetic  # noqa: E402
 import opl_envelope  # noqa: E402
 import opl_oracle  # noqa: E402
+import opl_tremolo  # noqa: E402
 
 
 def check_exact_target_fit() -> None:
@@ -166,6 +167,77 @@ def check_oracle_fit(tool: Path) -> opl_envelope.EnvelopeFit:
         return fitted
 
 
+def tremolo_oracle_source(mode: str) -> tuple[list[vgz.RegisterWrite], int]:
+    if mode not in ("none", "carrier", "fm_modulator"):
+        raise ValueError(mode)
+    writes, _old_total = stretched_oracle_source()
+    key_off_sample = 200 * opl_oracle.VGM_RATE // 50
+    result = []
+    for write in writes:
+        sample = write.sample
+        value = write.value
+        if write.bank == 0 and write.register == 0xBD:
+            value = value & 0x1F | 0x80  # deep AM, hardware rhythm disabled
+        elif write.bank == 0 and write.register in (0x20, 0x23):
+            value &= 0x7F
+            if ((mode == "carrier" and write.register == 0x23) or
+                    (mode == "fm_modulator" and write.register == 0x20)):
+                value |= 0x80
+        elif write.bank == 0 and write.register == 0xC0:
+            value = 0xF0  # FM connection: modulator is not a direct output
+        if (write.bank == 0 and write.register == 0xB0 and
+                not write.value & 0x20):
+            sample = key_off_sample
+        result.append(vgz.RegisterWrite(
+            sample, write.bank, write.register, value,
+        ))
+    result.sort(key=lambda write: write.sample)
+    return result, 240 * opl_oracle.VGM_RATE // 50
+
+
+def check_oracle_tremolo_semantics(tool: Path) -> None:
+    traces = {}
+    with tempfile.TemporaryDirectory(prefix="jukupoly-tremolo-oracle.") as name:
+        directory = Path(name)
+        for mode in ("none", "carrier", "fm_modulator"):
+            writes, total_samples = tremolo_oracle_source(mode)
+            stream = directory / f"{mode}.jop"
+            pcm = directory / f"{mode}.s16le"
+            csv = directory / f"{mode}.csv"
+            opl_oracle.write_event_stream(
+                stream, writes, total_samples, selected_channel=(0, 0),
+            )
+            subprocess.run(
+                [str(tool), str(stream), str(pcm), str(csv), "0"],
+                check=True, stdout=subprocess.PIPE, text=True,
+            )
+            probes = opl_oracle.read_probes(csv)[50:200]
+            traces[mode] = opl_envelope.quantize_opl_channel(
+                tuple(item.modulator_output_attenuation for item in probes),
+                tuple(item.carrier_output_attenuation for item in probes),
+                tuple(item.connection for item in probes),
+            )
+            if mode == "carrier":
+                assert all(item.carrier_am for item in probes)
+            elif mode == "fm_modulator":
+                assert all(item.modulator_am and not item.carrier_am
+                           for item in probes)
+
+    direct = opl_tremolo.fit_tremolo(
+        traces["carrier"], traces["none"], start_frame=50,
+    )
+    assert direct.depth_levels > 0
+    assert direct.squared_error_improvement > 0
+
+    # AM on an FM modulator changes timbre but not the semantic carrier
+    # amplitude.  It must never become a large Juku volume LFO.
+    assert traces["fm_modulator"] == traces["none"]
+    indirect = opl_tremolo.fit_tremolo(
+        traces["fm_modulator"], traces["none"], start_frame=50,
+    )
+    assert indirect.depth_levels == 0
+
+
 def main() -> int:
     value = os.environ.get("JUKUPOLY_OPL_ORACLE")
     if not value:
@@ -177,6 +249,7 @@ def main() -> int:
     check_semantic_attenuation_mapping()
     check_direction_priority()
     fitted = check_oracle_fit(tool)
+    check_oracle_tremolo_semantics(tool)
     print("JUKUPOLY-OPL-ENVELOPE: PASS target-exact grid-fit "
           "oracle-rms 50Hz-4bit bounded-error "
           f"fit={fitted.packet()} mae={fitted.absolute_error / 48:.3f} "
