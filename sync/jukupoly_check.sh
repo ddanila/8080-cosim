@@ -37,6 +37,9 @@ python3 spinoffs/jukupoly/tools/report_jukupoly_pitch_real.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_vibrato_parser.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_vibrato_target.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_vibrato_real.py --check
+python3 spinoffs/jukupoly/tools/report_jukupoly_vibrato_real.py \
+  --score spinoffs/jukupoly/firmware/jukupoly-doomgate-full-vibrato-m5.json \
+  --output spinoffs/jukupoly/OPL-VIBRATO-FULL-M5.json --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
   --song spinoffs/jukupoly/firmware/jukupoly-suspense.json \

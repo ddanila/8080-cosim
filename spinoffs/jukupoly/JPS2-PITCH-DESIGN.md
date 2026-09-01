@@ -358,7 +358,16 @@ and the frozen sample loop remain present.  The independently calibrated
 seconds; both target WAV hashes differ, and the pinned-Nuked 30-second WAV hash
 is recorded for listening comparison.
 
-This evidence does not enable the normal assembler.  Complete-track and pack
-regression plus physical CS00000 A/B remain step 7.  If either fails, the
-capability-`01h` envelope control and qualified host-baked held pitch remain
-the accepted result.
+The identical generic policy also passes the complete 96.520-second source.
+[`OPL-VIBRATO-FULL-M5.json`](OPL-VIBRATO-FULL-M5.json) records 908 emitted
+logical notes, 1,018 vibrato packets, 520 held-setting updates, all 1,080
+source onsets retained, and no protected-onset regression.  Its 18,133-byte
+JPS is below the 30 KiB soft limit.  At the same 133-sample/6,650 Hz
+calibration, it measures 6,605.7 samples/s, 49.667 frames/s, 97.167 seconds,
+a 6.029 Hz LFO, and a 44,481-cycle worst frame.  The frozen loop, percussion,
+and Escape polling remain present.
+
+This evidence does not enable the normal assembler.  Complete-track
+automation has passed, but pack regression plus physical CS00000 A/B remain
+step 7.  If either fails, the capability-`01h` envelope control and qualified
+host-baked held pitch remain the accepted result.

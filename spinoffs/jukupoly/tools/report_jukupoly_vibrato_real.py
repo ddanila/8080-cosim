@@ -169,6 +169,10 @@ def generate(score_path: Path, output_dir: Path | None,
     analysis = score["conversion"]["enhanced_vibrato"]
     allocation = score["conversion"]["enhanced_allocation"]
     source_seconds = score["conversion"]["duration_seconds"]
+    artifact_stem = f"doomgate-{round(source_seconds)}s"
+    qualification_scope = (
+        "complete-track" if source_seconds >= 60 else "bounded real"
+    )
 
     with tempfile.TemporaryDirectory(
             prefix="jukupoly-vibrato-real-report.") as name:
@@ -199,10 +203,10 @@ def generate(score_path: Path, output_dir: Path | None,
 
         profiles = {
             "envelope_control": profile(
-                control_song, "doomgate-30s-envelope-control",
+                control_song, f"{artifact_stem}-envelope-control",
             ),
             "vibrato": profile(
-                vibrato_song, "doomgate-30s-vibrato",
+                vibrato_song, f"{artifact_stem}-vibrato",
             ),
         }
         player_payload = player.read_bytes()
@@ -214,7 +218,7 @@ def generate(score_path: Path, output_dir: Path | None,
         for label, image in (
                 ("envelope_control", control_image),
                 ("vibrato", vibrato_image)):
-            wav = render_directory / f"doomgate-30s-{label}.wav"
+            wav = render_directory / f"{artifact_stem}-{label}.wav"
             baseline.run([
                 str(renderer), "--sample-rate", "48000", "--lead", "0",
                 "--tail", "0", str(image), str(wav),
@@ -348,8 +352,8 @@ def generate(score_path: Path, output_dir: Path | None,
     return {
         "schema": "jukupoly-opl-vibrato-real-m5-report-v1",
         "status": (
-            "bounded real C-cosim and render gates pass; normal target build "
-            "and physical CS00000 A/B remain guarded"
+            f"{qualification_scope} C-cosim and render gates pass; normal "
+            "target build and physical CS00000 A/B remain guarded"
         ),
         "source": {
             "score": score_path.name,

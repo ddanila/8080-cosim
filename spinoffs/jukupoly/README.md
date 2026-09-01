@@ -796,9 +796,23 @@ active.  A separately calibrated capability-`01h` envelope control measures
 reference hash are recorded under `out/jukupoly-doomgate-30s-vibrato-m5/`.
 
 Normal target assembly is still refused.  This checkpoint qualifies one
-bounded real render, not complete-track or pack-wide support; physical
-CS00000 A/B is also still required.  Failure there leaves envelope playback
-and the already-qualified host-baked pitch path intact.
+bounded real render; physical CS00000 A/B is also still required.  Failure
+there leaves envelope playback and the already-qualified host-baked pitch
+path intact.
+
+The same generic policy now passes the complete 96.520-second track in
+[`OPL-VIBRATO-FULL-M5.json`](OPL-VIBRATO-FULL-M5.json).  It emits 908 logical
+notes through 1,018 vibrato packets, including 520 held-setting updates, while
+retaining all 1,080 source onsets and missing no protected onset.  The
+capability-`05h` JPS is 18,133 bytes, below G5's 30 KiB soft ceiling.  At the
+same 133-sample/6,650 Hz calibration, C-cosim measures 6,605.7 samples/s,
+49.667 frames/s, 97.167 seconds, a 6.029 Hz LFO, and a 44,481-cycle worst
+frame.  The frozen sample loop, percussion, and 4,827 Escape polls remain.
+
+This closes the complete-track automated gate, not M6: pack-wide regression,
+normal target enablement, and physical CS00000 A/B remain deliberately open.
+The full target/control WAV pair and pinned-Nuked reference live under the
+untracked `out/jukupoly-doomgate-full-vibrato-m5/` directory.
 
 ## Reproduce
 
@@ -842,6 +856,7 @@ Source and generated files:
 - `OPL-VIBRATO-PARSER-M5.json` — committed parser/state-only M5 target report;
 - `OPL-VIBRATO-TARGET-M5.json` — committed synthetic runtime-vibrato report;
 - `OPL-VIBRATO-REAL-M5.json` — committed bounded real runtime-vibrato report;
+- `OPL-VIBRATO-FULL-M5.json` — committed complete-track runtime-vibrato report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;
@@ -860,6 +875,8 @@ Source and generated files:
   fixture at the shared 10% iteration-count boundary;
 - `firmware/jukupoly-doomgate-30s-vibrato-m5.json` — guarded real M5 direct-
   vibrato excerpt with complete host evidence;
+- `firmware/jukupoly-doomgate-full-vibrato-m5.json` — guarded complete-track
+  M5 direct-vibrato fixture;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;

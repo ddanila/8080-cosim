@@ -889,9 +889,19 @@ LFO, and a 43,628-cycle worst row.  It remains above the shared 6,401.1 Hz
 floor with the frozen sample loop, percussion fetching, and Escape polling.
 The 139-sample/6,970 Hz envelope control, target WAV pair, and pinned-Nuked
 reference hash are also recorded.  This closes M5 step 6's bounded automated
-gate only: complete-track/pack regression, normal target enablement, and
-physical CS00000 A/B remain open, with the earlier host-baked pitch and
-envelope paths as explicit fallbacks.
+gate only, with the earlier host-baked pitch and envelope paths as explicit
+fallbacks.
+
+The same generic conversion now passes the complete 96.520-second source in
+[`OPL-VIBRATO-FULL-M5.json`](OPL-VIBRATO-FULL-M5.json): 908 emitted logical
+notes, 1,018 vibrato packets, 520 held-setting updates, every one of 1,080
+source onsets retained, and no missed protected onset.  Its 18,133-byte JPS is
+below G5's soft ceiling.  The 133-sample/6,650 Hz runtime measures 6,605.7
+samples/s, 49.667 frames/s, 97.167 seconds, a 6.029 Hz LFO, and a 44,481-cycle
+worst frame.  The frozen sample loop, percussion fetch, and 4,827 Escape polls
+remain present.  This closes the complete-track automated portion only:
+pack-wide regression, normal target enablement, and physical CS00000 A/B
+remain open gates.
 
 ### M6: pack regression and physical qualification
 
