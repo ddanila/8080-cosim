@@ -31,6 +31,7 @@ python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py \
   --v2 spinoffs/jukupoly/firmware/jukupoly-imp-30s-detuned-m7.json \
   --output spinoffs/jukupoly/OPL-IMP-DETUNED-M7.json --check
+python3 spinoffs/jukupoly/tools/report_opl_plan_status.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_target.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_real.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_real.py \

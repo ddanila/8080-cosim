@@ -1205,6 +1205,16 @@ copying the whole OPL attack on top of that tone would double rather than
 restore energy.  The present report is an explicit capacity/collision
 fallback, not a claim that all attack timbre is impossible.
 
+The cross-milestone completion audit is generated as
+[`OPL-PLAN-STATUS.json`](OPL-PLAN-STATUS.json).  It verifies the frozen loop
+across M3--M7 reports, every automated delivery gate, the `1700h` maximum
+player end, 30,071-byte largest delivered JPS, exact `40/3/1` capability
+distribution, all 44-track scans, generic-reducer title-literal guard, and the
+recorded M3--M6 physical evidence.  Its automated status is `pass`; G3, G8,
+and M7 point to the single remaining required action, the prepared Imp
+physical A/B.  Older milestone reports retain their historically accurate
+“pending” strings, while this audit records which later evidence closed them.
+
 ## Required reporting for every implementation change
 
 Every merge which affects target playback must include:

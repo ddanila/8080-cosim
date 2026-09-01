@@ -1016,6 +1016,12 @@ experiment must first prove an isolated oracle *residual* over the simultaneous
 tone on a track with adequate collision-free coverage; simply layering the
 whole OPL attack would duplicate its energy.
 
+[`OPL-PLAN-STATUS.json`](OPL-PLAN-STATUS.json) is the reproducible
+cross-milestone audit.  It checks the committed G0--G8 evidence rather than
+inferring completion from narrative text: all automated gates pass, fallbacks
+remain explicit, and the only required open action is the hash-locked M7 Imp
+physical A/B.
+
 ## Reproduce
 
 Source and generated files:
@@ -1062,6 +1068,8 @@ Source and generated files:
   scheduling, sample-identity, and memory feasibility audit;
 - `tools/build_jukupoly_imp_m7_ab.py` — deterministic three-way Imp physical
   A/B COM and native CP/M disk builder with file round-trip verification;
+- `tools/report_opl_plan_status.py` — cross-report G0--G8/M0--M7 completion
+  audit and exact remaining-action verifier;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -1086,6 +1094,8 @@ Source and generated files:
   and projected file-size upper bound for short melodic attacks;
 - `OPL-IMP-M7-PHYSICAL-AB.json` — exact Imp v1/re-articulation/detuned physical
   comparison payload hashes and listening protocol;
+- `OPL-PLAN-STATUS.json` — authoritative cross-milestone automated status and
+  physical-gate boundary;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
