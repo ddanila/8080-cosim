@@ -2,7 +2,7 @@
   "aggregate_gates": {
     "capability_distribution_exact": true,
     "catalog_has_44_tracks": true,
-    "delivery_counts_are_4_enhanced_40_v1": true,
+    "delivery_counts_are_5_enhanced_39_v1": true,
     "disk_is_exact_juku_size": true,
     "disk_player_matches_qualified_combined_build": true,
     "every_song_gate_passes": true,
@@ -10,17 +10,17 @@
   },
   "library": {
     "capability_counts": {
-      "0": 40,
+      "0": 39,
       "1": 1,
-      "3": 2,
+      "3": 3,
       "5": 1
     },
-    "catalog_sha256": "682788cdc7c83beb38db8f0a514e1d5d5c1d91c5b5a63fd375dc7ef7cab25dfa",
+    "catalog_sha256": "9e43da8fe470fcddce8a43e4965eaa450b67b7d4191eb718eb9e89771c86a410",
     "disk_bytes": 819200,
     "disk_name": "jukupoly-doom-library.cpm",
-    "disk_sha256": "9d0bfe9b60ea96f824d66c0b3d05554f58041c75be3e3e2edd4ac5af7ad2f07d",
+    "disk_sha256": "6f61b809f4b5ac1450215742bd0162fcb1900c66c3b358cfe2000c84fabf350c",
     "path_hint": "jukupoly-doom-library-m6-mixed",
-    "song_bytes": 630986
+    "song_bytes": 631888
   },
   "player": {
     "bytes": 5632,
@@ -2414,58 +2414,62 @@
       "title": "Getting Too Tense"
     },
     {
-      "capability": 0,
-      "delivery_mode": "unchanged-v1",
+      "capability": 3,
+      "delivery_mode": "enhanced-replacement",
       "filename": "D2T18.JPS",
       "gates": {
         "catalog_capability_matches": true,
         "catalog_hash_matches": true,
         "catalog_size_matches": true,
         "complete_c_cosim": true,
-        "unchanged_v1_delivery": true
+        "enhanced_duration_within_one_percent": true,
+        "enhanced_music_clock_within_one_percent": true,
+        "enhanced_phase_table_within_one_percent": true,
+        "enhanced_rate_above_shared_floor": true,
+        "replacement_manifest_matches": true
       },
       "global_track": 41,
-      "jps_bytes": 9602,
-      "jps_sha256": "c3b47f226ecc0b9f80412f05dcc370b75572db79a1d158b6526d7bd60fffc967",
+      "jps_bytes": 10504,
+      "jps_sha256": "7272b329cd09fae907418d83ad35a5ad14ecf36be26c6e8a5bd6c3c37b47fbf8",
       "local_track": 18,
       "pack": "doom2",
       "profile": {
         "com_bytes": 5632,
-        "duration_seconds": 278.92247,
-        "effective_sample_hz": 7177.109108,
+        "duration_seconds": 281.576957,
+        "effective_sample_hz": 7059.732518,
         "frame_cycles": {
           "count": 13999,
-          "max": 36754,
-          "mean": 33871.576,
-          "min": 33574,
-          "p99": 35622
+          "max": 43141,
+          "mean": 34193.93,
+          "min": 33540,
+          "p99": 40150
         },
-        "frame_samples": 143,
+        "frame_samples": 142,
         "frames": 13999,
         "idle_boundary_cycles": {
-          "count": 12912,
-          "max": 1167,
-          "mean": 878.251,
-          "min": 814,
-          "p99": 1094
+          "count": 12888,
+          "max": 2281,
+          "mean": 1315.58,
+          "min": 1009,
+          "p99": 1949
         },
-        "jps_bytes": 9602,
+        "jps_bytes": 10504,
         "keyboard_polls": 14000,
         "label": "doom2-18",
-        "music_frame_hz": 50.189574,
-        "mutated_player_bytes": 81,
-        "pit_writes": 91358,
+        "music_frame_hz": 49.716426,
+        "mutated_player_bytes": 101,
+        "pit_writes": 90438,
         "row_boundary_cycles": {
-          "count": 1087,
-          "max": 2753,
-          "mean": 1501.099,
-          "min": 1144,
-          "p99": 2486
+          "count": 1111,
+          "max": 9344,
+          "mean": 3161.246,
+          "min": 1435,
+          "p99": 9241
         },
         "sample_loop_cycles": {
-          "count": 1987858,
+          "count": 1973859,
           "max": 276,
-          "mean": 230.388,
+          "mean": 230.503,
           "min": 229,
           "p99": 262
         }

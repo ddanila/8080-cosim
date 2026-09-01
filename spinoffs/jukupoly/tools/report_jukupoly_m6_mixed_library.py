@@ -21,7 +21,7 @@ FIRMWARE = SPINOFF / "firmware"
 DEFAULT_LIBRARY = ROOT / "out" / "jukupoly-doom-library-m6-mixed"
 DEFAULT_REPORT = SPINOFF / "OPL-M6-MIXED-LIBRARY.json"
 DELIVERY_MANIFEST = SPINOFF / "M6-REPRESENTATIVE-DELIVERY.json"
-EXPECTED_CAPABILITIES = {0: 40, 1: 1, 3: 2, 5: 1}
+EXPECTED_CAPABILITIES = {0: 39, 1: 1, 3: 3, 5: 1}
 sys.path.insert(0, str(FIRMWARE))
 
 import build_doom_library as library  # noqa: E402
@@ -148,9 +148,9 @@ def generate(directory: Path) -> dict:
 
     aggregate = {
         "catalog_has_44_tracks": len(records) == 44,
-        "delivery_counts_are_4_enhanced_40_v1": (
-            catalog["delivery"]["enhanced_replacements"] == 4 and
-            catalog["delivery"]["unchanged_v1"] == 40
+        "delivery_counts_are_5_enhanced_39_v1": (
+            catalog["delivery"]["enhanced_replacements"] == 5 and
+            catalog["delivery"]["unchanged_v1"] == 39
         ),
         "capability_distribution_exact": (
             dict(capability_counts) == EXPECTED_CAPABILITIES

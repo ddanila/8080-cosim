@@ -982,18 +982,19 @@ replacement-manifest path in `build_doom_library.py` validates every JPS2
 payload's size, SHA-256, header, capability, source name, pack, and track
 number before replacing a v1 delivery; the default 44-track v1 build is
 unchanged.  [`M6-REPRESENTATIVE-DELIVERY.json`](M6-REPRESENTATIVE-DELIVERY.json)
-selects the four already qualified full tracks: At Doom's Gate (`05h`), Imp
-(`01h`), Dark Halls and Suspense (`03h`).  The resulting capability-`07h`
-player is 5,632 bytes, and 40 other tracks remain ordinary v1 fallbacks.
+selects five already qualified full tracks: At Doom's Gate (`05h`), Imp
+(`01h`), Dark Halls, Suspense, and Opening to Hell (`03h`).  The resulting
+capability-`07h` player is 5,632 bytes, and 39 other tracks remain ordinary v1
+fallbacks.
 
 [`OPL-M6-MIXED-LIBRARY.json`](OPL-M6-MIXED-LIBRARY.json) records the complete
-800 KiB disk (`9d0bfe9b...2f07d`), 630,986 song bytes, and exact capability
-distribution `00h:40, 01h:1, 03h:2, 05h:1`.  Every one of the 44 on-disk JPS
+800 KiB disk (`6f61b809...f350c`), 631,888 song bytes, and exact capability
+distribution `00h:39, 01h:1, 03h:3, 05h:1`.  Every one of the 44 on-disk JPS
 files completes a full C-cosim run under the combined player, every catalog
-size/hash/capability matches, all four enhanced full-song timing/rate gates
+size/hash/capability matches, all five enhanced full-song timing/rate gates
 pass, and the hot-loop hash remains exact.  This proves a usable mixed-library
 stopping point and cross-version loader compatibility.  It does not claim
-complete enhanced conversion of the remaining 40 tracks; broader conversion
+complete enhanced conversion of the remaining 39 tracks; broader conversion
 where feasible and physical CS00000 A/B remain open.
 
 ### M7: optional timbral and unsupported-mode reductions

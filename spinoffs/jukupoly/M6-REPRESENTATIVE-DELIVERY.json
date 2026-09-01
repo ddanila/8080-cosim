@@ -1,6 +1,7 @@
 {
   "schema": "jukupoly-library-replacements-v1",
   "source_reports": [
+    "OPL-TREMOLO-FULL-M4.json",
     "OPL-VIBRATO-FULL-M5.json",
     "OPL-M6-REPRESENTATIVE-PROFILE.json"
   ],
@@ -39,6 +40,15 @@
       "payload": "doom1-06-suspense.jps",
       "bytes": 12969,
       "sha256": "cb497609b9581453f09bef1699689ebcb4a41cc5b20655e39138bbbeea9b0cf5",
+      "capability": 3
+    },
+    {
+      "pack": "doom2",
+      "local_track": 18,
+      "source_name": "18 Opening to Hell.vgz",
+      "payload": "doom2-18-opening.jps",
+      "bytes": 10504,
+      "sha256": "7272b329cd09fae907418d83ad35a5ad14ecf36be26c6e8a5bd6c3c37b47fbf8",
       "capability": 3
     }
   ]

@@ -854,12 +854,12 @@ two-pack disk and physical A/B gates remain open.
 A complete progressive mixed disk is now built from the same evidence.  The
 generic optional replacement manifest verifies each qualified payload before
 substitution and leaves the ordinary builder unchanged when omitted.  The
-disk contains At Doom's Gate as capability `05h`, Imp as `01h`, Dark Halls
-and Suspense as `03h`, plus 40 unchanged v1 tracks.  Its combined player is
-5,632 bytes and supports the union capability `07h`.
+disk contains At Doom's Gate as capability `05h`, Imp as `01h`, Dark Halls,
+Suspense, and Opening to Hell as `03h`, plus 39 unchanged v1 tracks.  Its
+combined player is 5,632 bytes and supports the union capability `07h`.
 
 [`OPL-M6-MIXED-LIBRARY.json`](OPL-M6-MIXED-LIBRARY.json) records an exact
-819,200-byte disk with SHA-256 `9d0bfe9b...2f07d` and 630,986 song bytes.  All
+819,200-byte disk with SHA-256 `6f61b809...f350c` and 631,888 song bytes.  All
 44 catalog songs complete full C-cosim playback under that player; catalog
 hashes, capability distribution, enhanced timing/rate gates, Escape polling,
 and the frozen loop all pass.  This is a bootable mixed fallback milestone,

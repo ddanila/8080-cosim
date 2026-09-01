@@ -29,6 +29,7 @@ DEFAULT_LIBRARY = ROOT / "out" / "jukupoly-doom-library-m6-mixed"
 DEFAULT_LIBRARY_REPORT = SPINOFF / "OPL-M6-MIXED-LIBRARY.json"
 DELIVERY_MANIFEST = SPINOFF / "M6-REPRESENTATIVE-DELIVERY.json"
 DOOMGATE_SCORE = FIRMWARE / "jukupoly-doomgate-full-vibrato-m5.json"
+OPENING_SCORE = FIRMWARE / "jukupoly-opening-full-tremolo-m4.json"
 ARCHIVE_HASHES = {
     "doom1": "04ffbf72e47727b3e93c1e99a68311a460b85fc31fd9a1645e3d872231c0e12a",
     "doom2": "3d255c644e52adc2967df8394086d99d7995da71c4adf83bec0fe3bccc51c365",
@@ -128,20 +129,32 @@ def convert(item: Conversion, sources: Path, scores: Path,
     return result.stdout.strip()
 
 
-def materialize_committed_doomgate(work: Path) -> Path:
-    score = json.loads(DOOMGATE_SCORE.read_text())
-    generated, metadata = build.compile_song(score)
-    payload = build.assemble_song_file(generated, metadata)
-    expected = (
-        18_133,
-        "01765553e4330f71cdbf5507367e8ee95cf5dee7d2d5fb5b5e52a86e3ab72079",
+def materialize_committed_deliveries(work: Path) -> list[Path]:
+    specifications = (
+        (
+            DOOMGATE_SCORE, "doom1-02-doomgate.jps", 18_133,
+            "01765553e4330f71cdbf5507367e8ee95cf5dee7d2d5fb5b5e52a86e3ab72079",
+        ),
+        (
+            OPENING_SCORE, "doom2-18-opening.jps", 10_504,
+            "7272b329cd09fae907418d83ad35a5ad14ecf36be26c6e8a5bd6c3c37b47fbf8",
+        ),
     )
-    if (len(payload), hashlib.sha256(payload).hexdigest()) != expected:
-        raise ValueError("committed Doomgate delivery payload is stale")
-    destination = work / "songs" / "doom1-02-doomgate.jps"
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_bytes(payload)
-    return destination
+    destinations = []
+    for score_path, filename, expected_bytes, expected_hash in specifications:
+        score = json.loads(score_path.read_text())
+        generated, metadata = build.compile_song(score)
+        payload = build.assemble_song_file(generated, metadata)
+        if (len(payload), hashlib.sha256(payload).hexdigest()) != (
+                expected_bytes, expected_hash):
+            raise ValueError(
+                f"committed delivery payload is stale: {score_path.name}"
+            )
+        destination = work / "songs" / filename
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(payload)
+        destinations.append(destination)
+    return destinations
 
 
 def main() -> int:
@@ -200,7 +213,7 @@ def main() -> int:
             sys.executable, str(REPORTER), "--work", str(work),
             "--output", str(args.report_output.resolve()),
         ], cwd=ROOT, check=True)
-        materialize_committed_doomgate(work)
+        materialize_committed_deliveries(work)
         subprocess.run([
             sys.executable, str(RENDER_REPORTER), "--work", str(work),
             "--opl-oracle", str(oracle),
