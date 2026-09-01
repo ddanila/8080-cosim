@@ -710,6 +710,32 @@ standalone target assembly is explicitly blocked, and the current M4 library
 player rejects the new capability with zero PIT writes.  This is format
 evidence only; no new player claims support yet.
 
+The independently useful held-pitch slice is now implemented behind
+`--enhanced-held-pitch`.  It derives every selected logical note's raw phase
+step from the declared target sample rate and emits an existing JPS2 legato
+packet only when the same note remains on the same target channel and its
+quantized step changes.  The generated metadata records the rate used for
+phase-step generation, preventing a timing-only calibration from silently
+detuning the score.  Normal enhanced conversion is unchanged unless the flag
+is supplied.
+
+[`OPL-PITCH-REAL-M5.json`](OPL-PITCH-REAL-M5.json) qualifies the complete
+96.513-second “At Doom's Gate” conversion against a fixed-pitch control.  The
+generic policy emits 566 held-key packets while retaining all 1,080 source
+onsets and missing zero protected onsets.  The JPS grows from 14,073 to 17,215
+bytes, remains below 30 KiB, and still advertises capability `01h`: this slice
+adds zero player bytes and zero target-state bytes.  At 137 samples per frame
+and a correctly regenerated 6,850 Hz phase table, C-cosim measures 6,859.2
+samples/s, 50.067 frames/s, 96.391 seconds (0.13% short), and a 43,380-cycle
+worst frame.  The frozen sample-loop hash remains exact.
+
+The first 143-sample calibration was rejected rather than rationalized: it
+measured 48.118 frames/s and 100.296 seconds, 3.92% long.  Reducing the batch
+to 137 stays above the combined 6,401.1 Hz floor and restores timing without
+changing the player.  Automated full-track size, timing, and render gates now
+pass; physical CS00000 A/B and runtime vibrato remain open, so held pitch is
+still opt-in.
+
 ## Reproduce
 
 Source and generated files:
@@ -730,6 +756,8 @@ Source and generated files:
 - `tools/report_jukupoly_tremolo_target.py` — synthetic M4 target budget report;
 - `tools/report_jukupoly_tremolo_real.py` — real M4 old/new/reference report;
 - `tools/report_opl_pitch.py` — two-pack M5 vibrato/held-pitch semantic report;
+- `tools/report_jukupoly_pitch_real.py` — complete-track held-pitch control,
+  timing, size, and WAV report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
@@ -740,6 +768,7 @@ Source and generated files:
 - `OPL-TREMOLO-REAL-M4.json` — 66-second real target/render evidence;
 - `OPL-TREMOLO-FULL-M4.json` — complete-track M4 size/timing/render evidence;
 - `OPL-PITCH-M5.json` — committed two-pack vibrato and held-pitch evidence;
+- `OPL-PITCH-REAL-M5.json` — committed complete-track host-baked pitch report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;
@@ -748,6 +777,8 @@ Source and generated files:
 - `firmware/jukupoly-tremolo-v2-test.json` — exact shared-phase/depth fixture;
 - `firmware/jukupoly-opening-66s-tremolo-m4.json` — bounded real M4 fixture;
 - `firmware/jukupoly-opening-full-tremolo-m4.json` — complete-track M4 fixture;
+- `firmware/jukupoly-doomgate-held-pitch-m5.json` — compact complete-track M5
+  held-pitch fixture;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;

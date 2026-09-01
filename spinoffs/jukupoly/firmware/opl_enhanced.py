@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Iterable
@@ -333,11 +334,46 @@ def _percussion_timeline(score: dict, frames: int) -> dict[int, dict]:
     return result
 
 
+def _pitch_at_frame(segment: opl_voices.NoteSegment, frame: int
+                    ) -> float | None:
+    result = None
+    for point in segment.pitches:
+        if opl_voices.analysis_frame(point.sample) > frame:
+            break
+        result = point.midi_pitch
+    return result
+
+
+def _logical_phase_step(
+        note: opl_voices.LogicalNote,
+        segments: dict[int, opl_voices.NoteSegment], frame: int,
+        mapped_midi: int, sample_rate: int,
+) -> int:
+    pitches = [
+        _pitch_at_frame(segments[identifier], frame)
+        for identifier in note.members
+    ]
+    finite = [pitch for pitch in pitches
+              if pitch is not None and math.isfinite(pitch)]
+    if not finite or note.initial_pitch is None:
+        raise ValueError("selected held-pitch note has no finite source pitch")
+    source_pitch = sum(finite) / len(finite)
+    octave_offset = mapped_midi - round(note.initial_pitch)
+    target_pitch = source_pitch + octave_offset
+    frequency = 440.0 * 2.0 ** ((target_pitch - 69.0) / 12.0)
+    step = round(frequency * 65536.0 / sample_rate)
+    if not 0 < step < 0x8000:
+        raise ValueError("held-pitch phase step exceeds target range")
+    return step
+
+
 def compile_enhanced_score(
         v1_score: dict, notes: list[opl_voices.LogicalNote], allocation: dict,
         fits: dict[int, opl_envelope.EnvelopeFit], frames: int,
         fit_report: dict, *, target_sample_rate: int | None = None,
         frame_samples: int | None = None,
+        segments: list[opl_voices.NoteSegment] | None = None,
+        enable_held_pitch: bool = False,
 ) -> dict:
     """Serialize selected logical voices as generic JPS v2 score rows."""
     tremolo_depths = {
@@ -360,24 +396,51 @@ def compile_enhanced_score(
         raise ValueError("enhanced target_sample_rate must be 4000..12000")
     if not 129 <= frame_samples <= 143:
         raise ValueError("enhanced frame_samples must be 129..143")
+    if enable_held_pitch and segments is None:
+        raise ValueError("held-pitch conversion requires source segments")
+    by_note = {note.identifier: note for note in notes}
+    by_segment = {
+        segment.identifier: segment for segment in (segments or [])
+    }
     timeline = selected_timeline(allocation, frames)
     percussion = _percussion_timeline(v1_score, frames)
     previous: tuple[SelectedTone | None, ...] = (None, None, None)
+    previous_steps: tuple[int | None, ...] = (None, None, None)
+    held_pitch_packets = 0
     rows: list[dict] = []
     for frame, selected in enumerate(timeline):
         assigned = assign_target_channels(selected, previous)
+        assigned_steps = tuple(
+            None if tone is None else _logical_phase_step(
+                by_note[tone.logical_note], by_segment, frame,
+                tone.midi_note, target_sample_rate,
+            )
+            for tone in assigned
+        ) if enable_held_pitch else (None, None, None)
         row: dict = {}
-        for channel, (old, new) in enumerate(zip(previous, assigned), 1):
-            if old == new:
+        for channel, (old, new, old_step, new_step) in enumerate(zip(
+                previous, assigned, previous_steps, assigned_steps), 1):
+            step_changed = (
+                enable_held_pitch and old == new and new is not None and
+                old_step != new_step
+            )
+            if old == new and not step_changed:
                 continue
             field = f"tone{channel}"
             if new is None:
                 row[field] = {"note": "---"}
             else:
                 event = {
-                    "note": vgz.note_name(new.midi_note),
                     "opl_envelope": fits[new.logical_note].packet(),
                 }
+                if enable_held_pitch:
+                    assert new_step is not None
+                    event["phase_step"] = new_step
+                    if step_changed:
+                        event["legato"] = True
+                        held_pitch_packets += 1
+                else:
+                    event["note"] = vgz.note_name(new.midi_note)
                 depth = tremolo_depths.get(new.logical_note, 0)
                 if depth:
                     event["opl_tremolo_depth"] = depth
@@ -389,23 +452,26 @@ def compile_enhanced_score(
         else:
             rows.append({"frames": 1, **row})
         previous = assigned
+        previous_steps = assigned_steps
 
     score = dict(v1_score)
-    reduction_name = (
-        " JukuPoly envelope+tremolo reduction)" if tremolo_enabled else
-        " JukuPoly envelope reduction)"
+    reduction_features = "envelope+tremolo" if tremolo_enabled else "envelope"
+    if enable_held_pitch:
+        reduction_features += "+held-pitch"
+    reduction_name = f" JukuPoly {reduction_features} reduction)"
+    arrangement_features = (
+        "fitted 4-bit envelopes, guarded shared tremolo"
+        if tremolo_enabled else "fitted 4-bit envelopes"
     )
+    if enable_held_pitch:
+        arrangement_features += ", held-key pitch automation"
     score.update({
         "schema": "jukupoly-song-v2",
         "title": v1_score["title"].replace(" JukuPoly reduction)",
                                                    reduction_name),
         "arrangement": (
             "Automatic guarded OPL logical-voice reduction with three tones, "
-            "fitted 4-bit envelopes, guarded shared tremolo, and concurrent "
-            "percussion"
-            if tremolo_enabled else
-            "Automatic guarded OPL logical-voice reduction with three tones, "
-            "fitted 4-bit envelopes, and concurrent percussion"
+            f"{arrangement_features}, and concurrent percussion"
         ),
         "sample_rate_hz": target_sample_rate,
         "frame_samples": frame_samples,
@@ -426,13 +492,31 @@ def compile_enhanced_score(
             )
         },
         "enhanced_envelope_fit": fit_report,
+        "enhanced_held_pitch": {
+            "enabled": enable_held_pitch,
+            "emitted_legato_packets": held_pitch_packets,
+            "phase_step_generation_hz": (
+                target_sample_rate if enable_held_pitch else None
+            ),
+            "policy": (
+                "50 Hz source pitch points quantized to target phase steps; "
+                "emit only changes while the same logical note retains its "
+                "target channel"
+            ),
+        },
         "enhanced_limitations": (
             "Envelope plus guarded amplitude-tremolo slice: waveform, "
-            "feedback, stereo, FM-modulator-only AM timbre, vibrato, and "
-            "held-key pitch automation are not reproduced"
+            "feedback, stereo, FM-modulator-only AM timbre, and vibrato are "
+            "not reproduced" + (
+                "" if enable_held_pitch else
+                "; held-key pitch automation is not reproduced"
+            )
             if tremolo_enabled else
             "Envelope-only M3 slice: waveform, feedback, stereo, tremolo, "
-            "vibrato, and held-key pitch automation are not reproduced"
+            "and vibrato are not reproduced" + (
+                "" if enable_held_pitch else
+                "; held-key pitch automation is not reproduced"
+            )
         ),
     })
     score["notes"] = (
@@ -443,4 +527,10 @@ def compile_enhanced_score(
         "This is a guarded envelope-aware reduction, not OPL emulation. "
         "Every packet is fitted from pinned-Nuked post-envelope attenuation."
     )
+    if enable_held_pitch:
+        score["notes"] += (
+            " Selected 50 Hz source pitch changes are emitted through the "
+            "existing JPS2 legato packet only when their quantized target "
+            "phase step changes."
+        )
     return score

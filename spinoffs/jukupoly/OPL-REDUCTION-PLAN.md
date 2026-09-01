@@ -799,8 +799,28 @@ plus and minus its peak delta stays in `1..7FFFh`, and rejects malformed or
 mis-capabilitied fields.  Omitted vibrato and capability `03h` remain byte-
 identical.  Standalone target assembly is deliberately refused, and the M4
 library player rejects capability `05h` before any PIT write.  This completes
-only the reversible format/rejection gate; held-pitch emission and target
-runtime remain next.
+only the reversible format/rejection gate; runtime vibrato remains separate.
+
+The host-baked held-pitch stopping point is now implemented and qualified on
+the complete 96.513-second “At Doom's Gate” source.  The opt-in generic policy
+emits 566 existing legato packets only for target-step changes while a logical
+note retains its target channel.  It retains all 1,080 source onsets, misses
+zero protected onsets, grows the fixed-pitch control from 14,073 to 17,215
+JPS bytes, and continues to use capability `01h` and the unchanged 4,537-byte
+M3 player.  [`OPL-PITCH-REAL-M5.json`](OPL-PITCH-REAL-M5.json) records zero
+new target code/state and an exact frozen sample-loop hash.
+
+The first 143-sample attempt was correctly rejected: it measured 48.118 Hz
+music timing and 100.296 seconds, 3.92% longer than the source.  The guarded
+fallback regenerates both score steps and metadata for 137 samples/frame and
+a 6,850 Hz phase table; it measures 6,859.2 samples/s, 50.067 frames/s,
+96.391 seconds (0.13% short), and a 43,380-cycle worst frame, above the shared
+6,401.1 Hz floor.  A regression requires the recorded phase-step generation
+rate to equal the declared table rate, specifically guarding against a
+metadata-only calibration which would detune the whole track.  Automated
+held-pitch size/timing/render gates pass; physical A/B remains open and the
+feature stays opt-in.  This independently useful result remains valid even if
+the later runtime-vibrato experiment fails.
 
 ### M6: pack regression and physical qualification
 

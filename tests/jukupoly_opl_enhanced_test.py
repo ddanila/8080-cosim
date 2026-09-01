@@ -15,6 +15,7 @@ import opl_enhanced  # noqa: E402
 import opl_envelope  # noqa: E402
 import opl_oracle  # noqa: E402
 import opl_voices  # noqa: E402
+import build_jukupoly  # noqa: E402
 
 
 def allocation() -> dict:
@@ -119,6 +120,75 @@ def check_timeline_and_rows() -> None:
     assert calibrated["sample_rate_hz"] == 7100
     assert calibrated["frame_samples"] == 143
 
+    pitch_segments = [
+        opl_voices.NoteSegment(
+            0, 0, 0, 0, 2 * 882, "patch0", 128, 8, True,
+            (
+                opl_voices.PitchPoint(0, 0x200, 4, 42.0),
+                opl_voices.PitchPoint(882, 0x208, 4, 42.25),
+            ),
+        ),
+        opl_voices.NoteSegment(
+            1, 0, 1, 2 * 882, 4 * 882, "patch1", 128, 8, True,
+            (opl_voices.PitchPoint(2 * 882, 0x210, 4, 43.0),),
+        ),
+    ]
+    pitch_score = opl_enhanced.compile_enhanced_score(
+        v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+        {"selected_logical_notes": 2}, segments=pitch_segments,
+        enable_held_pitch=True,
+    )
+    events = []
+    frame = 0
+    for row in pitch_score["rows"]:
+        if "tone1" in row:
+            events.append((frame, row["tone1"]))
+        frame += row["frames"]
+    assert [frame for frame, _event in events] == [0, 1, 2, 4]
+    assert "phase_step" in events[0][1] and "note" not in events[0][1]
+    assert events[1][1]["legato"] is True
+    assert events[1][1]["phase_step"] != events[0][1]["phase_step"]
+    assert "legato" not in events[2][1]
+    assert pitch_score["conversion"]["enhanced_held_pitch"] == {
+        "enabled": True,
+        "emitted_legato_packets": 1,
+        "phase_step_generation_hz": 7170,
+        "policy": (
+            "50 Hz source pitch points quantized to target phase steps; "
+            "emit only changes while the same logical note retains its "
+            "target channel"
+        ),
+    }
+    pitch_generated, pitch_metadata = build_jukupoly.compile_song(pitch_score)
+    pitch_jps = build_jukupoly.assemble_song_file(
+        pitch_generated, pitch_metadata,
+    )
+    assert pitch_jps[7] == build_jukupoly.JPS2_ENVELOPE_CAPABILITY
+    assert not pitch_metadata["enhanced_vibrato"]
+
+    calibrated_pitch = opl_enhanced.compile_enhanced_score(
+        v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+        {"selected_logical_notes": 2}, segments=pitch_segments,
+        enable_held_pitch=True, target_sample_rate=6850, frame_samples=137,
+    )
+    calibrated_step = calibrated_pitch["rows"][0]["tone1"]["phase_step"]
+    source_frequency = 440.0 * 2.0 ** ((42.0 - 69.0) / 12.0)
+    assert calibrated_step == round(source_frequency * 65536.0 / 6850)
+    assert calibrated_step > events[0][1]["phase_step"]
+    assert calibrated_pitch["conversion"]["enhanced_held_pitch"][
+        "phase_step_generation_hz"
+    ] == calibrated_pitch["sample_rate_hz"]
+
+    try:
+        opl_enhanced.compile_enhanced_score(
+            v1, notes, allocation(), {0: envelope(12), 1: envelope(9)}, 6,
+            {"selected_logical_notes": 2}, enable_held_pitch=True,
+        )
+    except ValueError as exc:
+        assert "requires source segments" in str(exc)
+    else:
+        raise AssertionError("held pitch accepted without source segments")
+
 
 def check_probe_fit() -> None:
     segment = opl_voices.NoteSegment(
@@ -176,7 +246,7 @@ def main() -> int:
     check_timeline_and_rows()
     check_probe_fit()
     print("JUKUPOLY-OPL-ENHANCED: PASS allocation channel-continuity "
-          "percussion envelope-fit v2-score")
+          "percussion envelope-fit held-pitch-legato v2-score")
     return 0
 
 

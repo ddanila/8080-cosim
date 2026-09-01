@@ -689,6 +689,11 @@ def main() -> int:
               "capability 03h; requires --enhanced-envelopes"),
     )
     parser.add_argument(
+        "--enhanced-held-pitch", action="store_true",
+        help=("opt in to selected held-key pitch changes through existing "
+              "JPS v2 legato packets; requires --enhanced-envelopes"),
+    )
+    parser.add_argument(
         "--enhanced-frame-samples", type=int, choices=range(129, 144),
         metavar="129..143",
         help="measured per-song JPS v2 frame batch",
@@ -732,6 +737,8 @@ def main() -> int:
         parser.error("--enhanced-envelopes requires --opl-oracle")
     if args.enhanced_tremolo and not args.enhanced_envelopes:
         parser.error("--enhanced-tremolo requires --enhanced-envelopes")
+    if args.enhanced_held_pitch and not args.enhanced_envelopes:
+        parser.error("--enhanced-held-pitch requires --enhanced-envelopes")
     if ((args.enhanced_frame_samples is not None or
          args.enhanced_sample_rate is not None) and
             not args.enhanced_envelopes):
@@ -859,6 +866,8 @@ def main() -> int:
             score, logical_notes, allocation, fits, total_frames, fit_report,
             target_sample_rate=args.enhanced_sample_rate,
             frame_samples=args.enhanced_frame_samples,
+            segments=segments,
+            enable_held_pitch=args.enhanced_held_pitch,
         )
     args.output.write_text(json.dumps(score, indent=2) + "\n")
     conversion = score["conversion"]

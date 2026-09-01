@@ -210,3 +210,28 @@ reserved mode values through strict source validation, and both underflow and
 overflow boundaries.  The M4 library player rejects proposed capability
 `05h` with zero PIT writes and zero keyboard polls.  Thus the host ABI is
 reversible and cannot accidentally run on an older player.
+
+## Host-baked held-pitch checkpoint
+
+Guarded implementation step 2 is complete without accepting capability bit 2.
+`--enhanced-held-pitch` evaluates the selected logical source contour at the
+50 Hz reducer grid, maps it through the allocator's target octave, and emits a
+normal raw-step JPS2 legato packet only when the same logical note retains its
+channel and its quantized phase step changes.  Onsets also use raw steps from
+the same calculation.  The score records `phase_step_generation_hz`, which
+must equal `sample_rate_hz`; tests independently calculate an expected step
+at both 7,170 and 6,850 Hz.  This guard exists because reducing only the frame
+batch and metadata would preserve timing while detuning every stored step.
+
+The complete “At Doom's Gate” fixture emits 566 such packets.  Its 17,215-byte
+JPS remains below G5, and the fixed-pitch control is 14,073 bytes.  Both use
+capability `01h` and the existing 4,537-byte envelope player, so this slice
+adds no target code or state.  The initial 143-sample profile failed duration
+and music-clock gates at 100.296 seconds and 48.118 Hz.  The fully regenerated
+137-sample/6,850 Hz version measures 6,859.2 samples/s, 50.067 Hz, and 96.391
+seconds versus 96.513 seconds, with a 43,380-cycle maximum frame.  All
+automated gates in `OPL-PITCH-REAL-M5.json` pass; physical A/B remains pending.
+
+This is an accepted progressive stopping point, not evidence that runtime
+vibrato will fit.  Steps 3--7 and all combined capability-`07h` guards remain
+in force independently.
