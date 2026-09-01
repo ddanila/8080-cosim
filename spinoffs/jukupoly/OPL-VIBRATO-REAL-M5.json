@@ -1,0 +1,188 @@
+{
+  "allocation": {
+    "gained_onsets": 2,
+    "missed_protected_onsets": 0,
+    "protected_onsets": 280,
+    "retained_onsets": 282,
+    "source_onsets": 282
+  },
+  "format": {
+    "control_capability": 1,
+    "control_frame_samples": 139,
+    "control_jps_bytes": 5894,
+    "control_phase_table_hz": 6970,
+    "jps_growth_over_calibrated_control": 1171,
+    "removed_control_updates": 156,
+    "vibrato_capability": 5,
+    "vibrato_frame_samples": 133,
+    "vibrato_jps_bytes": 7065,
+    "vibrato_phase_table_hz": 6650
+  },
+  "gates": {
+    "capabilities_are_01_and_05": true,
+    "control_duration_within_one_percent": true,
+    "control_music_clock_within_one_percent": true,
+    "control_phase_table_matches_within_one_percent": true,
+    "control_removes_every_setting_only_update": true,
+    "every_packet_delta_and_bounds_safe": true,
+    "generic_direct_candidates_emitted": true,
+    "no_protected_onset_regression": true,
+    "normal_target_build_remains_guarded": true,
+    "percussion_and_escape_remain_concurrent": true,
+    "phase_steps_generated_at_declared_rate": true,
+    "player_below_song_window": true,
+    "runtime_duration_within_one_percent": true,
+    "runtime_jps_below_soft_limit": true,
+    "runtime_lfo_rate_within_one_percent": true,
+    "runtime_music_clock_within_one_percent": true,
+    "runtime_phase_table_matches_within_one_percent": true,
+    "runtime_sample_rate_above_shared_floor": true,
+    "sample_loop_hash_exact": true,
+    "target_wavs_differ": true
+  },
+  "measured_vibrato_lfo_hz": 6.075917958221435,
+  "opl_reference_wav": {
+    "bytes": 5292078,
+    "path_hint": "doomgate-30s-opl-reference.wav",
+    "sha256": "b5a5e894d4aa63cc9f7de7aeca1e728a3de1158f96abf153f056da342b711f4f"
+  },
+  "player": {
+    "bytes": 5255,
+    "declared_state_bytes": 54,
+    "end_address_exclusive": "0x1587",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f",
+    "song_window_margin_bytes": 633
+  },
+  "policy": {
+    "direct_channel_frames": 1455,
+    "direct_logical_notes": 251,
+    "emitted_logical_notes": 251,
+    "enabled": true,
+    "frame_decisions": {
+      "direct": 1455,
+      "no_active_member": 138,
+      "no_direct_vibrato": 213
+    },
+    "held_disable_updates": 0,
+    "held_setting_updates": 156,
+    "packets_with_vibrato": 289,
+    "phase_increment": 7955,
+    "phase_step_generation_hz": 6650,
+    "policy": "emit only when every active audible operator/layer has a direct common-pitch VIB path and resolves to one bounded target delta; update changes through legato packets",
+    "selected_channel_frames": 1806,
+    "source_lfo_hz": 6.068835788302952
+  },
+  "profiles": {
+    "envelope_control": {
+      "com_bytes": 5255,
+      "duration_seconds": 29.908775,
+      "effective_sample_hz": 6971.198183,
+      "frame_cycles": {
+        "count": 1500,
+        "max": 42829,
+        "mean": 33896.612,
+        "min": 32807,
+        "p99": 39481
+      },
+      "frame_samples": 139,
+      "frames": 1500,
+      "idle_boundary_cycles": {
+        "count": 1078,
+        "max": 2071,
+        "mean": 1102.048,
+        "min": 864,
+        "p99": 1616
+      },
+      "jps_bytes": 5894,
+      "keyboard_polls": 1501,
+      "label": "doomgate-30s-envelope-control",
+      "music_frame_hz": 50.152505,
+      "mutated_player_bytes": 95,
+      "pit_writes": 14715,
+      "row_boundary_cycles": {
+        "count": 422,
+        "max": 9699,
+        "mean": 3422.185,
+        "min": 1290,
+        "p99": 7240
+      },
+      "sample_loop_cycles": {
+        "count": 207000,
+        "max": 276,
+        "mean": 231.231,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "vibrato": {
+      "com_bytes": 5255,
+      "duration_seconds": 29.966748,
+      "effective_sample_hz": 6657.379117,
+      "frame_cycles": {
+        "count": 1500,
+        "max": 43628,
+        "mean": 33962.314,
+        "min": 32310,
+        "p99": 39881
+      },
+      "frame_samples": 133,
+      "frames": 1500,
+      "idle_boundary_cycles": {
+        "count": 964,
+        "max": 3181,
+        "mean": 2195.674,
+        "min": 1754,
+        "p99": 2785
+      },
+      "jps_bytes": 7065,
+      "keyboard_polls": 1501,
+      "label": "doomgate-30s-vibrato",
+      "music_frame_hz": 50.055482,
+      "mutated_player_bytes": 96,
+      "pit_writes": 14659,
+      "row_boundary_cycles": {
+        "count": 536,
+        "max": 11846,
+        "mean": 4993.248,
+        "min": 2405,
+        "p99": 9105
+      },
+      "sample_loop_cycles": {
+        "count": 198000,
+        "max": 276,
+        "mean": 231.339,
+        "min": 229,
+        "p99": 262
+      }
+    }
+  },
+  "runtime_boundary": {
+    "fallback": "envelope control plus qualified host-baked pitch",
+    "normal_build_enabled": false,
+    "physical_ab_passed": false
+  },
+  "schema": "jukupoly-opl-vibrato-real-m5-report-v1",
+  "shared_sample_rate_floor_hz": 6401.146221,
+  "source": {
+    "name": "02 At Doom's Gate.vgz",
+    "score": "jukupoly-doomgate-30s-vibrato-m5.json",
+    "score_sha256": "eba8af46bace203a18869d45144635b3b9e7392c1a98f95673cda6200b5267ca",
+    "seconds": 30.0,
+    "vgm_sha256": "915176f25be1fb1f78c2caa613fe509e7fd52976439c5412ae5ccc0d1b971f6e"
+  },
+  "status": "bounded real C-cosim and render gates pass; normal target build and physical CS00000 A/B remain guarded",
+  "target_wavs": {
+    "envelope_control": {
+      "bytes": 2866612,
+      "path_hint": "doomgate-30s-envelope_control.wav",
+      "sample_rate_hz": 48000,
+      "sha256": "b9fb5ba31f45ad0e65fcaaf2e0626c728fa0c8e7af81c2a523e23f25d609e983"
+    },
+    "vibrato": {
+      "bytes": 2872226,
+      "path_hint": "doomgate-30s-vibrato.wav",
+      "sample_rate_hz": 48000,
+      "sha256": "7323082b05b58b32948e0fbc1973c6d650e5060cb399a3c210065bbedbfcf7f4"
+    }
+  }
+}

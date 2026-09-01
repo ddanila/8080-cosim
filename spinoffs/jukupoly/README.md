@@ -776,6 +776,30 @@ refuses to assemble capability bit 2, so existing v1, envelope, tremolo, and
 host-baked held-pitch paths remain the usable fallbacks.  A representative
 real-song conversion/render and physical CS00000 A/B are the next gates.
 
+The first of those real-song gates now passes on a 30-second “At Doom's Gate”
+excerpt.  `--enhanced-vibrato` is deliberately generic and requires both
+measured timing overrides: every active audible operator/layer must have a
+direct common-pitch VIB path and resolve to the same bounded target delta.
+Mixed, indirect, inconsistent, sub-step, and unsafe paths are reported and
+omitted; a changed setting on a retained note becomes an ordinary legato
+packet.  No filename, track number, or instrument identifier participates in
+the decision.
+
+[`OPL-VIBRATO-REAL-M5.json`](OPL-VIBRATO-REAL-M5.json) records 251 emitted
+logical notes, 289 vibrato packets, 156 held-setting updates, and zero missed
+protected onsets.  The 7,065-byte capability-`05h` JPS uses 133 samples/frame
+and a phase table regenerated at 6,650 Hz; C-cosim measures 6,657.4 samples/s,
+50.055 frames/s, 29.967 seconds, a 6.076 Hz LFO, and a 43,628-cycle worst row.
+That stays above the shared 6,401.1 Hz floor with percussion and Escape still
+active.  A separately calibrated capability-`01h` envelope control measures
+6,971.2 samples/s and 50.153 frames/s.  Distinct target WAVs and a pinned-Nuked
+reference hash are recorded under `out/jukupoly-doomgate-30s-vibrato-m5/`.
+
+Normal target assembly is still refused.  This checkpoint qualifies one
+bounded real render, not complete-track or pack-wide support; physical
+CS00000 A/B is also still required.  Failure there leaves envelope playback
+and the already-qualified host-baked pitch path intact.
+
 ## Reproduce
 
 Source and generated files:
@@ -802,6 +826,8 @@ Source and generated files:
   `05h`/`07h` parser, preflight, map, state, and compatibility report;
 - `tools/report_jukupoly_vibrato_target.py` — synthetic M5 temporary-step,
   no-drift, combined-cycle, map, timing, and compatibility report;
+- `tools/report_jukupoly_vibrato_real.py` — bounded real capability-`05h`
+  control, size, C-cosim timing, target-WAV, and oracle-reference report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
@@ -815,6 +841,7 @@ Source and generated files:
 - `OPL-PITCH-REAL-M5.json` — committed complete-track host-baked pitch report;
 - `OPL-VIBRATO-PARSER-M5.json` — committed parser/state-only M5 target report;
 - `OPL-VIBRATO-TARGET-M5.json` — committed synthetic runtime-vibrato report;
+- `OPL-VIBRATO-REAL-M5.json` — committed bounded real runtime-vibrato report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;
@@ -831,6 +858,8 @@ Source and generated files:
   percussion, and timing stress fixture;
 - `firmware/jukupoly-vibrato-tremolo-v2-test.json` — combined M4+M5 stress
   fixture at the shared 10% iteration-count boundary;
+- `firmware/jukupoly-doomgate-30s-vibrato-m5.json` — guarded real M5 direct-
+  vibrato excerpt with complete host evidence;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;

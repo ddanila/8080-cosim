@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from typing import Iterable
 
@@ -11,6 +11,7 @@ import import_jukupoly_vgz as vgz
 import opl_envelope
 import opl_oracle
 import opl_tremolo
+import opl_vibrato
 import opl_voices
 
 
@@ -30,6 +31,12 @@ class SelectedTone:
     logical_note: int
     logical_voice: int
     midi_note: int
+
+
+@dataclass(frozen=True)
+class TargetVibrato:
+    mode: str
+    peak_step_delta: int
 
 
 def selected_timeline(allocation: dict, frames: int
@@ -367,6 +374,111 @@ def _logical_phase_step(
     return step
 
 
+def _midi_phase_step(midi_note: int, sample_rate: int) -> int:
+    frequency = 440.0 * 2.0 ** ((midi_note - 69.0) / 12.0)
+    step = round(frequency * 65536.0 / sample_rate)
+    if not 0 < step < 0x8000:
+        raise ValueError("mapped MIDI phase step exceeds target range")
+    return step
+
+
+def vibrato_depth_timeline(writes: Iterable[vgz.RegisterWrite], frames: int
+                            ) -> tuple[bool, ...]:
+    """Sample OPL global vibrato depth after exact-frame register writes."""
+    if frames < 0:
+        raise ValueError("vibrato depth frame count must be nonnegative")
+    ordered = list(writes)
+    if any(ordered[index].sample > ordered[index + 1].sample
+           for index in range(len(ordered) - 1)):
+        raise ValueError("OPL writes are not in timestamp order")
+    index = 0
+    deep = False
+    result = []
+    for frame in range(frames):
+        sample = frame * opl_voices.ANALYSIS_FRAME
+        while index < len(ordered) and ordered[index].sample <= sample:
+            write = ordered[index]
+            if write.bank == 0 and write.register == 0xBD:
+                deep = bool(write.value & 0x40)
+            index += 1
+        result.append(deep)
+    return tuple(result)
+
+
+def _target_vibrato(
+        note: opl_voices.LogicalNote,
+        segments: dict[int, opl_voices.NoteSegment], frame: int,
+        base_step: int,
+        probes: dict[tuple[int, int], opl_oracle.OracleProbe],
+        deep: bool,
+) -> tuple[TargetVibrato | None, str]:
+    """Resolve one conservative direct common-pitch target setting."""
+    sample = frame * opl_voices.ANALYSIS_FRAME
+    active = [
+        segments[identifier] for identifier in note.members
+        if segments[identifier].start <= sample < segments[identifier].end
+    ]
+    if not active:
+        return None, "no_active_member"
+    source = []
+    for segment in active:
+        probe = probes[(frame, segment.bank * 9 + segment.channel)]
+        if not probe.key:
+            raise ValueError("oracle key state disagrees with active segment")
+        expected_delta = opl_vibrato.opl_f_number_delta(
+            probe.f_number, probe.vibrato_phase, deep=deep,
+        )
+        expected_modulator = probe.f_number + (
+            expected_delta if probe.modulator_vibrato else 0
+        )
+        expected_carrier = probe.f_number + (
+            expected_delta if probe.carrier_vibrato else 0
+        )
+        if (
+            probe.modulator_vibrato_f_number != expected_modulator or
+            probe.carrier_vibrato_f_number != expected_carrier
+        ):
+            raise ValueError(
+                "oracle vibrato contour disagrees with the pinned host model"
+            )
+        if probe.connection:
+            enabled = (probe.modulator_vibrato, probe.carrier_vibrato)
+            path = "direct" if all(enabled) else (
+                "none" if not any(enabled) else "mixed_or_indirect"
+            )
+        elif probe.carrier_vibrato:
+            path = "direct"
+        elif probe.modulator_vibrato:
+            path = "mixed_or_indirect"
+        else:
+            path = "none"
+        source.append((path, probe.f_number))
+    paths = {path for path, _f_number in source}
+    if paths == {"none"}:
+        return None, "no_direct_vibrato"
+    if paths != {"direct"}:
+        return None, "mixed_or_indirect"
+
+    deltas = []
+    for _path, f_number in source:
+        if not f_number:
+            return None, "zero_f_number"
+        delta = opl_vibrato.target_step_delta(
+            base_step, f_number, 2, deep=deep,
+        )
+        deltas.append(delta)
+    if len(set(deltas)) != 1:
+        return None, "layer_delta_mismatch"
+    delta = deltas[0]
+    if delta == 0:
+        return None, "sub_step"
+    if not 1 <= delta <= 256:
+        return None, "delta_out_of_range"
+    if base_step - delta <= 0 or base_step + delta >= 0x8000:
+        return None, "target_bounds"
+    return TargetVibrato("deep" if deep else "shallow", delta), "direct"
+
+
 def compile_enhanced_score(
         v1_score: dict, notes: list[opl_voices.LogicalNote], allocation: dict,
         fits: dict[int, opl_envelope.EnvelopeFit], frames: int,
@@ -374,6 +486,9 @@ def compile_enhanced_score(
         frame_samples: int | None = None,
         segments: list[opl_voices.NoteSegment] | None = None,
         enable_held_pitch: bool = False,
+        channel_probes: Iterable[opl_oracle.OracleChannelProbe] | None = None,
+        vibrato_depths: tuple[bool, ...] | None = None,
+        enable_vibrato: bool = False,
 ) -> dict:
     """Serialize selected logical voices as generic JPS v2 score rows."""
     tremolo_depths = {
@@ -383,6 +498,12 @@ def compile_enhanced_score(
         for item in fit_report.get("notes", [])
     }
     tremolo_enabled = any(tremolo_depths.values())
+    if enable_vibrato and (
+            target_sample_rate is None or frame_samples is None):
+        raise ValueError(
+            "runtime vibrato requires measured sample-rate and frame-sample "
+            "overrides"
+        )
     if target_sample_rate is None:
         target_sample_rate = (
             TREMOLO_SAMPLE_RATE if tremolo_enabled else ENHANCED_SAMPLE_RATE
@@ -396,35 +517,83 @@ def compile_enhanced_score(
         raise ValueError("enhanced target_sample_rate must be 4000..12000")
     if not 129 <= frame_samples <= 143:
         raise ValueError("enhanced frame_samples must be 129..143")
-    if enable_held_pitch and segments is None:
-        raise ValueError("held-pitch conversion requires source segments")
+    if (enable_held_pitch or enable_vibrato) and segments is None:
+        raise ValueError("pitch conversion requires source segments")
+    if enable_vibrato and channel_probes is None:
+        raise ValueError("runtime vibrato requires OPL channel probes")
+    if enable_vibrato and (
+            vibrato_depths is None or len(vibrato_depths) != frames):
+        raise ValueError("runtime vibrato requires one depth value per frame")
     by_note = {note.identifier: note for note in notes}
     by_segment = {
         segment.identifier: segment for segment in (segments or [])
     }
+    probe_table = _probe_table(channel_probes or ()) if enable_vibrato else {}
     timeline = selected_timeline(allocation, frames)
     percussion = _percussion_timeline(v1_score, frames)
     previous: tuple[SelectedTone | None, ...] = (None, None, None)
     previous_steps: tuple[int | None, ...] = (None, None, None)
+    previous_vibrato: tuple[TargetVibrato | None, ...] = (None, None, None)
     held_pitch_packets = 0
+    vibrato_setting_packets = 0
+    vibrato_update_packets = 0
+    vibrato_disable_packets = 0
+    vibrato_reasons: Counter[str] = Counter()
+    direct_vibrato_notes: set[int] = set()
+    emitted_vibrato_notes: set[int] = set()
     rows: list[dict] = []
     for frame, selected in enumerate(timeline):
         assigned = assign_target_channels(selected, previous)
-        assigned_steps = tuple(
-            None if tone is None else _logical_phase_step(
-                by_note[tone.logical_note], by_segment, frame,
-                tone.midi_note, target_sample_rate,
+        if enable_held_pitch:
+            assigned_steps = tuple(
+                None if tone is None else _logical_phase_step(
+                    by_note[tone.logical_note], by_segment, frame,
+                    tone.midi_note, target_sample_rate,
+                )
+                for tone in assigned
             )
-            for tone in assigned
-        ) if enable_held_pitch else (None, None, None)
+        elif enable_vibrato:
+            assigned_steps = tuple(
+                None if tone is None else _midi_phase_step(
+                    tone.midi_note, target_sample_rate,
+                )
+                for tone in assigned
+            )
+        else:
+            assigned_steps = (None, None, None)
+        assigned_vibrato: tuple[TargetVibrato | None, ...]
+        if enable_vibrato:
+            settings = []
+            assert vibrato_depths is not None
+            for tone, step in zip(assigned, assigned_steps):
+                if tone is None or step is None:
+                    settings.append(None)
+                    continue
+                setting, reason = _target_vibrato(
+                    by_note[tone.logical_note], by_segment, frame, step,
+                    probe_table, vibrato_depths[frame],
+                )
+                vibrato_reasons[reason] += 1
+                if reason == "direct":
+                    direct_vibrato_notes.add(tone.logical_note)
+                settings.append(setting)
+            assigned_vibrato = tuple(settings)
+        else:
+            assigned_vibrato = (None, None, None)
         row: dict = {}
-        for channel, (old, new, old_step, new_step) in enumerate(zip(
-                previous, assigned, previous_steps, assigned_steps), 1):
+        for channel, (old, new, old_step, new_step,
+                      old_vibrato, new_vibrato) in enumerate(zip(
+                previous, assigned, previous_steps, assigned_steps,
+                previous_vibrato, assigned_vibrato), 1):
             step_changed = (
                 enable_held_pitch and old == new and new is not None and
                 old_step != new_step
             )
-            if old == new and not step_changed:
+            vibrato_changed = (
+                enable_vibrato and old == new and new is not None and
+                old_vibrato != new_vibrato
+            )
+            if old == new and not step_changed and not vibrato_changed:
                 continue
             field = f"tone{channel}"
             if new is None:
@@ -433,17 +602,28 @@ def compile_enhanced_score(
                 event = {
                     "opl_envelope": fits[new.logical_note].packet(),
                 }
-                if enable_held_pitch:
+                if enable_held_pitch or enable_vibrato:
                     assert new_step is not None
                     event["phase_step"] = new_step
-                    if step_changed:
+                    if step_changed or vibrato_changed:
                         event["legato"] = True
+                    if step_changed:
                         held_pitch_packets += 1
                 else:
                     event["note"] = vgz.note_name(new.midi_note)
                 depth = tremolo_depths.get(new.logical_note, 0)
                 if depth:
                     event["opl_tremolo_depth"] = depth
+                if new_vibrato is not None:
+                    event["opl_vibrato"] = {
+                        "mode": new_vibrato.mode,
+                        "peak_step_delta": new_vibrato.peak_step_delta,
+                    }
+                    vibrato_setting_packets += 1
+                    emitted_vibrato_notes.add(new.logical_note)
+                if vibrato_changed:
+                    vibrato_update_packets += 1
+                    vibrato_disable_packets += int(new_vibrato is None)
                 row[field] = event
         if frame in percussion:
             row["percussion"] = percussion[frame]
@@ -453,11 +633,14 @@ def compile_enhanced_score(
             rows.append({"frames": 1, **row})
         previous = assigned
         previous_steps = assigned_steps
+        previous_vibrato = assigned_vibrato
 
     score = dict(v1_score)
     reduction_features = "envelope+tremolo" if tremolo_enabled else "envelope"
     if enable_held_pitch:
         reduction_features += "+held-pitch"
+    if enable_vibrato:
+        reduction_features += "+vibrato"
     reduction_name = f" JukuPoly {reduction_features} reduction)"
     arrangement_features = (
         "fitted 4-bit envelopes, guarded shared tremolo"
@@ -465,6 +648,8 @@ def compile_enhanced_score(
     )
     if enable_held_pitch:
         arrangement_features += ", held-key pitch automation"
+    if enable_vibrato:
+        arrangement_features += ", guarded direct-pitch vibrato"
     score.update({
         "schema": "jukupoly-song-v2",
         "title": v1_score["title"].replace(" JukuPoly reduction)",
@@ -504,6 +689,27 @@ def compile_enhanced_score(
                 "target channel"
             ),
         },
+        "enhanced_vibrato": {
+            "enabled": enable_vibrato,
+            "source_lfo_hz": opl_vibrato.lfo_hz(),
+            "phase_increment": opl_vibrato.PHASE_INCREMENT,
+            "phase_step_generation_hz": (
+                target_sample_rate if enable_vibrato else None
+            ),
+            "selected_channel_frames": sum(vibrato_reasons.values()),
+            "direct_channel_frames": vibrato_reasons["direct"],
+            "direct_logical_notes": len(direct_vibrato_notes),
+            "emitted_logical_notes": len(emitted_vibrato_notes),
+            "packets_with_vibrato": vibrato_setting_packets,
+            "held_setting_updates": vibrato_update_packets,
+            "held_disable_updates": vibrato_disable_packets,
+            "frame_decisions": dict(sorted(vibrato_reasons.items())),
+            "policy": (
+                "emit only when every active audible operator/layer has a "
+                "direct common-pitch VIB path and resolves to one bounded "
+                "target delta; update changes through legato packets"
+            ),
+        },
         "enhanced_limitations": (
             "Envelope plus guarded amplitude-tremolo slice: waveform, "
             "feedback, stereo, FM-modulator-only AM timbre, and vibrato are "
@@ -532,5 +738,17 @@ def compile_enhanced_score(
             " Selected 50 Hz source pitch changes are emitted through the "
             "existing JPS2 legato packet only when their quantized target "
             "phase step changes."
+        )
+    if enable_vibrato:
+        score["conversion"]["enhanced_limitations"] = score["conversion"][
+            "enhanced_limitations"
+        ].replace(
+            "and vibrato are not reproduced",
+            "and mixed/indirect vibrato are not reproduced",
+        )
+        score["notes"] += (
+            " Direct common-pitch OPL vibrato is reduced to the bounded "
+            "shared target LFO; mixed, indirect, sub-step, and inconsistent "
+            "layer paths are reported and omitted."
         )
     return score

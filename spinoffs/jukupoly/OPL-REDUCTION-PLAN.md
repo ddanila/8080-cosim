@@ -869,6 +869,30 @@ representative real-song rendering and physical CS00000 A/B remain open, the
 normal assembler still refuses capability bit 2, and host-baked held pitch is
 the recorded fallback if either later gate fails.
 
+The first bounded real-song runtime gate is now complete on a 30-second “At
+Doom's Gate” excerpt.  The opt-in `--enhanced-vibrato` policy has no track or
+instrument special cases: on each selected frame it requires every active
+audible operator and logical layer to carry a direct common-pitch VIB path,
+requires every layer to resolve to the same bounded target delta, omits
+sub-step/mixed/indirect cases, and emits a legato packet whenever the setting
+changes while the note remains assigned.  It also requires explicit measured
+frame/sample-rate overrides so an uncalibrated conversion cannot silently
+enter the experiment.
+
+[`OPL-VIBRATO-REAL-M5.json`](OPL-VIBRATO-REAL-M5.json) records 251 emitted
+logical notes, 289 vibrato packets, 156 held-setting updates, all 280 protected
+onsets retained, and zero unsafe deltas.  The capability-`05h` JPS is 7,065
+bytes versus a separately calibrated 5,894-byte capability-`01h` envelope
+control.  At 133 samples/frame and a phase table regenerated at 6,650 Hz, the
+runtime measures 6,657.4 samples/s, 50.055 frames/s, 29.967 seconds, a 6.076 Hz
+LFO, and a 43,628-cycle worst row.  It remains above the shared 6,401.1 Hz
+floor with the frozen sample loop, percussion fetching, and Escape polling.
+The 139-sample/6,970 Hz envelope control, target WAV pair, and pinned-Nuked
+reference hash are also recorded.  This closes M5 step 6's bounded automated
+gate only: complete-track/pack regression, normal target enablement, and
+physical CS00000 A/B remain open, with the earlier host-baked pitch and
+envelope paths as explicit fallbacks.
+
 ### M6: pack regression and physical qualification
 
 Build the complete DOOM library and generate old Juku, new Juku, and accurate

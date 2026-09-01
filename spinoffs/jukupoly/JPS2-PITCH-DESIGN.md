@@ -313,3 +313,52 @@ conversion/render, complete-track/pack regression, and physical CS00000
 listening—remain open.  If any fails, the qualified host-baked held-pitch path
 and capability `03h` remain the stopping points; the 129-sample guard may not
 be reduced further.
+
+## Bounded real-song checkpoint
+
+Guarded implementation step 6 now passes on the first 30 seconds of “At
+Doom's Gate.”  The new host option is still score generation only:
+`--enhanced-vibrato` requires envelopes, the pinned all-channel oracle, and
+explicit `--enhanced-frame-samples` plus `--enhanced-sample-rate` values from
+a measured profile.  The reducer applies no source-name or instrument-ID
+rule.  For each selected logical note and frame it classifies the currently
+audible OPL operators, accepts only a direct common-pitch VIB path on every
+active layer, derives each layer's target delta from the immutable mapped
+phase step and current OPL F-number, and requires all layers to agree.  Zero,
+mixed/indirect, inconsistent, out-of-range, and bound-violating decisions are
+reported and omitted.
+
+The score carries the resolved shallow/deep mode and `1..256` peak delta.
+When depth, operator VIB, source F-number, or quantized delta changes while a
+logical note retains its target channel, a normal JPS2 legato packet replaces
+the setting without resetting phase or envelope.  The score records
+`phase_step_generation_hz`, and the real report requires it to equal the
+declared phase-table rate; this is the same protection against metadata-only
+detuning used by held pitch.
+
+[`OPL-VIBRATO-REAL-M5.json`](OPL-VIBRATO-REAL-M5.json) records 1,806 selected
+channel-frames: 1,455 are direct, 213 have no direct VIB, and 138 rounded
+allocation frames have no currently active source member.  The generic policy
+emits 251 logical notes through
+289 vibrato packets, including 156 held-setting updates.  All 280 protected
+onsets are retained and every serialized delta passes the exact 15-bit bounds.
+Removing vibrato and all 156 now-redundant update packets produces a controlled
+5,894-byte capability-`01h` score; the runtime score is 7,065 bytes with
+capability `05h`, still well below G5.
+
+The rejected initial 131-sample/6,530 Hz calibration ran at 50.738 frames/s
+and 29.564 seconds and did not match its phase table within 1%.  A timing-only
+sweep selected 133 samples, after which the entire score—base steps and
+vibrato deltas included—was regenerated from source at 6,650 Hz.  The accepted
+profile measures 6,657.4 samples/s, 50.055 frames/s, 29.967 seconds, a 6.076
+Hz target LFO, and a 43,628-cycle worst row.  The shared floor is 6,401.1 Hz.
+Percussion fetching, 1,501 Escape polls, the 5,255-byte/54-state runtime map,
+and the frozen sample loop remain present.  The independently calibrated
+139-sample/6,970 Hz envelope control measures 50.153 frames/s and 29.909
+seconds; both target WAV hashes differ, and the pinned-Nuked 30-second WAV hash
+is recorded for listening comparison.
+
+This evidence does not enable the normal assembler.  Complete-track and pack
+regression plus physical CS00000 A/B remain step 7.  If either fails, the
+capability-`01h` envelope control and qualified host-baked held pitch remain
+the accepted result.

@@ -16,6 +16,7 @@ import opl_envelope  # noqa: E402
 import opl_oracle  # noqa: E402
 import opl_voices  # noqa: E402
 import build_jukupoly  # noqa: E402
+import import_jukupoly_vgz as vgz  # noqa: E402
 
 
 def allocation() -> dict:
@@ -242,11 +243,127 @@ def check_probe_fit() -> None:
     assert 1 <= fits[0].peak_level <= 15
 
 
+def check_direct_vibrato_score() -> None:
+    segment = opl_voices.NoteSegment(
+        0, 0, 0, 0, 4 * 882, "patch", 128, 8, True,
+        (opl_voices.PitchPoint(0, 0x200, 4, 42.0),),
+    )
+    note = opl_voices.LogicalNote(
+        0, 0, 4 * 882, (0,), ("patch",), ((0, 0),), 42.0, 42.0,
+        128, 8, True,
+    )
+    selected = {
+        "schema": "jukupoly-opl-three-voice-allocation-v1",
+        "source_onsets": 1, "protected_onsets": 1,
+        "retained_onsets": 1, "gained_onsets": 0,
+        "missed_protected_onsets": 0,
+        "frames": [
+            {"frame": 0, "selected": [{
+                "logical_note": 0, "logical_voice": 0, "midi_note": 42,
+            }]},
+            {"frame": 4, "selected": []},
+        ],
+    }
+    carrier_vibrato = (True, True, False, True, False, False)
+    modulator_vibrato = (False, False, True, False, False, False)
+    probes = []
+    for frame in range(6):
+        delta = (0, 2, 4, 2, 0, -2)[frame]
+        probe = opl_oracle.OracleProbe(
+            sample=frame * 882, f_number=0x200, block=4, key=frame < 4,
+            modulator_attenuation=0, carrier_attenuation=0,
+            modulator_output_attenuation=511,
+            carrier_output_attenuation=0, connection=0,
+            modulator_am=False, carrier_am=False,
+            modulator_vibrato=modulator_vibrato[frame],
+            carrier_vibrato=carrier_vibrato[frame],
+            modulator_vibrato_f_number=(
+                0x200 + delta if modulator_vibrato[frame] else 0x200
+            ),
+            carrier_vibrato_f_number=(
+                0x200 + delta if carrier_vibrato[frame] else 0x200
+            ),
+            modulator_stage=0, carrier_stage=0, vibrato_phase=frame,
+            tremolo_phase=0, tremolo_value=0,
+        )
+        probes.append(opl_oracle.OracleChannelProbe(0, probe))
+    v1 = {
+        "schema": "jukupoly-song-v1",
+        "title": "Synthetic (OPL2/VGZ JukuPoly reduction)",
+        "conversion": {"duration_frames": 6, "duration_seconds": 0.12},
+        "rows": [{"frames": 6}],
+    }
+    depths = (False, True, True, True, True, True)
+    score = opl_enhanced.compile_enhanced_score(
+        v1, [note], selected, {0: envelope(12)}, 6,
+        {"selected_logical_notes": 1},
+        target_sample_rate=6530, frame_samples=131,
+        segments=[segment], channel_probes=probes,
+        vibrato_depths=depths, enable_vibrato=True,
+    )
+    events = []
+    frame = 0
+    for row in score["rows"]:
+        if "tone1" in row:
+            events.append((frame, row["tone1"]))
+        frame += row["frames"]
+    assert [item[0] for item in events] == [0, 1, 2, 3, 4]
+    assert events[0][1]["opl_vibrato"] == {
+        "mode": "shallow", "peak_step_delta": 4,
+    }
+    assert events[1][1]["opl_vibrato"] == {
+        "mode": "deep", "peak_step_delta": 7,
+    }
+    assert events[1][1]["legato"] is True
+    assert "opl_vibrato" not in events[2][1]
+    assert events[2][1]["legato"] is True
+    assert events[3][1]["opl_vibrato"] == {
+        "mode": "deep", "peak_step_delta": 7,
+    }
+    assert events[4][1] == {"note": "---"}
+    analysis = score["conversion"]["enhanced_vibrato"]
+    assert analysis["direct_channel_frames"] == 3
+    assert analysis["packets_with_vibrato"] == 3
+    assert analysis["held_setting_updates"] == 3
+    assert analysis["held_disable_updates"] == 1
+    assert analysis["frame_decisions"] == {
+        "direct": 3, "mixed_or_indirect": 1,
+    }
+    generated, metadata = build_jukupoly.compile_song(score)
+    payload = build_jukupoly.assemble_song_file(generated, metadata)
+    assert payload[7] == (
+        build_jukupoly.JPS2_ENVELOPE_CAPABILITY |
+        build_jukupoly.JPS2_PITCH_CAPABILITY
+    )
+    assert metadata["enhanced_vibrato"]
+
+    writes = [
+        vgz.RegisterWrite(0, 0, 0xBD, 0),
+        vgz.RegisterWrite(882, 0, 0xBD, 0x40),
+        vgz.RegisterWrite(1764, 0, 0xBD, 0),
+    ]
+    assert opl_enhanced.vibrato_depth_timeline(writes, 4) == (
+        False, True, False, False,
+    )
+    try:
+        opl_enhanced.compile_enhanced_score(
+            v1, [note], selected, {0: envelope(12)}, 6,
+            {"selected_logical_notes": 1}, segments=[segment],
+            channel_probes=probes, vibrato_depths=depths,
+            enable_vibrato=True,
+        )
+    except ValueError as exc:
+        assert "requires measured" in str(exc)
+    else:
+        raise AssertionError("runtime vibrato accepted without calibration")
+
+
 def main() -> int:
     check_timeline_and_rows()
     check_probe_fit()
+    check_direct_vibrato_score()
     print("JUKUPOLY-OPL-ENHANCED: PASS allocation channel-continuity "
-          "percussion envelope-fit held-pitch-legato v2-score")
+          "percussion envelope-fit held-pitch-legato direct-vibrato v2-score")
     return 0
 
 

@@ -694,6 +694,12 @@ def main() -> int:
               "JPS v2 legato packets; requires --enhanced-envelopes"),
     )
     parser.add_argument(
+        "--enhanced-vibrato", action="store_true",
+        help=("experimentally emit conservative direct-pitch OPL vibrato as "
+              "JPS v2 capability 05h/07h; requires enhanced envelopes and "
+              "both measured timing overrides"),
+    )
+    parser.add_argument(
         "--enhanced-frame-samples", type=int, choices=range(129, 144),
         metavar="129..143",
         help="measured per-song JPS v2 frame batch",
@@ -739,6 +745,15 @@ def main() -> int:
         parser.error("--enhanced-tremolo requires --enhanced-envelopes")
     if args.enhanced_held_pitch and not args.enhanced_envelopes:
         parser.error("--enhanced-held-pitch requires --enhanced-envelopes")
+    if args.enhanced_vibrato and not args.enhanced_envelopes:
+        parser.error("--enhanced-vibrato requires --enhanced-envelopes")
+    if args.enhanced_vibrato and (
+            args.enhanced_frame_samples is None or
+            args.enhanced_sample_rate is None):
+        parser.error(
+            "--enhanced-vibrato requires --enhanced-frame-samples and "
+            "--enhanced-sample-rate from a measured target profile"
+        )
     if ((args.enhanced_frame_samples is not None or
          args.enhanced_sample_rate is not None) and
             not args.enhanced_envelopes):
@@ -868,6 +883,11 @@ def main() -> int:
             frame_samples=args.enhanced_frame_samples,
             segments=segments,
             enable_held_pitch=args.enhanced_held_pitch,
+            channel_probes=probes,
+            vibrato_depths=opl_enhanced.vibrato_depth_timeline(
+                writes, total_frames,
+            ),
+            enable_vibrato=args.enhanced_vibrato,
         )
     args.output.write_text(json.dumps(score, indent=2) + "\n")
     conversion = score["conversion"]
