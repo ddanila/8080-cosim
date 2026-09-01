@@ -18,8 +18,10 @@ SPINOFF = ROOT / "spinoffs" / "jukupoly"
 FIRMWARE = SPINOFF / "firmware"
 IMPORTER = FIRMWARE / "import_jukupoly_vgz.py"
 REPORTER = SPINOFF / "tools" / "report_jukupoly_m6_representative.py"
+RENDER_REPORTER = SPINOFF / "tools" / "report_jukupoly_m6_renders.py"
 DEFAULT_WORK = ROOT / "out" / "jukupoly-m6-representative"
 DEFAULT_REPORT = SPINOFF / "OPL-M6-REPRESENTATIVE-PROFILE.json"
+DEFAULT_RENDER_REPORT = SPINOFF / "OPL-M6-REPRESENTATIVE-RENDERS.json"
 ARCHIVE_HASHES = {
     "doom1": "04ffbf72e47727b3e93c1e99a68311a460b85fc31fd9a1645e3d872231c0e12a",
     "doom2": "3d255c644e52adc2967df8394086d99d7995da71c4adf83bec0fe3bccc51c365",
@@ -36,6 +38,7 @@ class Conversion:
     tremolo: bool = False
     vibrato: bool = False
     prioritize_articulations: bool = False
+    seconds: int | None = None
 
 
 CONVERSIONS = (
@@ -44,17 +47,34 @@ CONVERSIONS = (
         143, 7100,
     ),
     Conversion(
+        "doom1", "03 The Imp's Song.vgz", "doom1-03-imp-30s.json",
+        143, 7170, seconds=30,
+    ),
+    Conversion(
         "doom1", "04 Dark Halls.vgz", "doom1-04-dark-halls.json",
         137, 6850, tremolo=True, prioritize_articulations=True,
+    ),
+    Conversion(
+        "doom1", "04 Dark Halls.vgz", "doom1-04-dark-halls-30s.json",
+        138, 6950, tremolo=True, prioritize_articulations=True, seconds=30,
     ),
     Conversion(
         "doom1", "06 Suspense.vgz", "doom1-06-suspense.json",
         137, 6850, tremolo=True,
     ),
     Conversion(
+        "doom1", "06 Suspense.vgz", "doom1-06-suspense-30s.json",
+        139, 6980, tremolo=True, seconds=30,
+    ),
+    Conversion(
         "doom2", "10 The Dave D. Taylor Blues.vgz",
         "doom2-10-dave-taylor.json", 129, 6450,
         tremolo=True, vibrato=True,
+    ),
+    Conversion(
+        "doom2", "10 The Dave D. Taylor Blues.vgz",
+        "doom2-10-dave-taylor-30s.json", 135, 6750,
+        tremolo=True, vibrato=True, seconds=30,
     ),
 )
 
@@ -90,6 +110,8 @@ def convert(item: Conversion, sources: Path, scores: Path,
         command.append("--enhanced-vibrato")
     if item.prioritize_articulations:
         command.append("--prioritize-articulations")
+    if item.seconds is not None:
+        command.extend(("--seconds", str(item.seconds)))
     result = subprocess.run(
         command, cwd=ROOT, check=True, text=True, stdout=subprocess.PIPE,
     )
@@ -103,6 +125,9 @@ def main() -> int:
     parser.add_argument("--opl-oracle", type=Path, required=True)
     parser.add_argument("--work", type=Path, default=DEFAULT_WORK)
     parser.add_argument("--report-output", type=Path, default=DEFAULT_REPORT)
+    parser.add_argument(
+        "--render-report-output", type=Path, default=DEFAULT_RENDER_REPORT,
+    )
     parser.add_argument("--jobs", type=int, default=4)
     args = parser.parse_args()
     archives = {"doom1": args.doom.resolve(), "doom2": args.doom2.resolve()}
@@ -145,11 +170,17 @@ def main() -> int:
             sys.executable, str(REPORTER), "--work", str(work),
             "--output", str(args.report_output.resolve()),
         ], cwd=ROOT, check=True)
+        subprocess.run([
+            sys.executable, str(RENDER_REPORTER), "--work", str(work),
+            "--opl-oracle", str(oracle),
+            "--output", str(args.render_report_output.resolve()),
+        ], cwd=ROOT, check=True)
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:
         parser.error(str(exc))
     print(
         f"JUKUPOLY-M6-BUILD: PASS work={work} "
-        f"report={args.report_output.resolve()}"
+        f"report={args.report_output.resolve()} "
+        f"renders={args.render_report_output.resolve()}"
     )
     return 0
 

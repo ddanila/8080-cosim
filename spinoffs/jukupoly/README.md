@@ -838,7 +838,18 @@ Dave Taylor is the intended useful failure: its enhanced candidate is 40,983
 bytes, above the 32,767-byte hard limit, while the unchanged v1 track remains
 30,071 bytes.  The report therefore selects v1 as a generic hard-size
 fallback; it does not weaken G5 or add a track-specific converter exception.
-The representative render/reference and physical gates remain open.
+At that profile checkpoint the render/reference and physical gates remained
+open.
+
+The representative render gate is now committed in
+[`OPL-M6-REPRESENTATIVE-RENDERS.json`](OPL-M6-REPRESENTATIVE-RENDERS.json).
+Separate source-aware 1,500-frame scores use measured settings `143/7170`,
+`138/6950`, `139/6980`, and `135/6750`; their C-cosim clocks are all within
+1%, and effective rates range from 6,760.4 to 7,174.0 samples/s.  For every
+track the v1, enhanced, and exact first-30-second pinned-Nuked WAV hashes are
+distinct.  The twelve listening files are generated under
+`out/jukupoly-m6-representative/renders/` and remain untracked.  The complete
+two-pack disk and physical A/B gates remain open.
 
 ## Reproduce
 
@@ -872,6 +883,8 @@ Source and generated files:
   size, envelope error, full C-cosim timing, and delivery report;
 - `tools/build_jukupoly_m6_representative.py` — hash-locked, parallel rebuild
   of the four exact-oracle M6 inputs and their committed profile;
+- `tools/report_jukupoly_m6_renders.py` — exact 30-second v1/enhanced/Nuked
+  render hashes and excerpt timing/concurrency gates;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -890,6 +903,7 @@ Source and generated files:
 - `OPL-VIBRATO-REAL-M5.json` — committed bounded real runtime-vibrato report;
 - `OPL-VIBRATO-FULL-M5.json` — committed complete-track runtime-vibrato report;
 - `OPL-M6-REPRESENTATIVE-PROFILE.json` — committed first M6 four-track profile;
+- `OPL-M6-REPRESENTATIVE-RENDERS.json` — committed M6 three-way excerpt report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;

@@ -959,6 +959,24 @@ This is a successful progressive stopping point, not M6 completion: the four
 old/new/reference excerpts, complete two-pack enhanced/fallback build, and
 physical A/B remain open.
 
+The excerpt gate is now closed by
+[`OPL-M6-REPRESENTATIVE-RENDERS.json`](OPL-M6-REPRESENTATIVE-RENDERS.json).
+Each track is independently converted for its first 1,500 frames rather than
+blindly inheriting a full-song calibration.  Initial inherited calibrations
+were rejected at 50.720--50.938 frames/s for Dark Halls/Suspense and a 1.03%
+phase-table mismatch for Imp.  The source-derived accepted settings are Imp
+`143/7170`, Dark Halls `138/6950`, Suspense `139/6980`, and Dave Taylor
+`135/6750`.
+
+Their complete C-cosim excerpt profiles measure respectively 7,174.0,
+6,952.4, 6,984.9, and 6,760.4 samples/s and 50.168, 50.380, 50.251, and
+50.077 frames/s.  Every 30-second enhanced JPS is below 5 KiB, every timing,
+shared-rate, percussion-descriptor, Escape, and frozen-loop gate passes, and
+each v1/enhanced/pinned-Nuked WAV triple has three distinct committed hashes.
+The WAVs remain under `out/jukupoly-m6-representative/renders/` for listening.
+M6 still requires the complete two-pack enhanced/fallback disk and physical
+CS00000 A/B before normal enablement.
+
 ### M7: optional timbral and unsupported-mode reductions
 
 Only after M6, investigate detuned spare-voice layers, short oracle-derived
