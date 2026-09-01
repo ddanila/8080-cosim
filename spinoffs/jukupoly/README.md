@@ -652,6 +652,7 @@ Source and generated files:
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
 - `OPL-TREMOLO-CANDIDATE-M4.json` — real joint envelope+tremolo evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
+- `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;

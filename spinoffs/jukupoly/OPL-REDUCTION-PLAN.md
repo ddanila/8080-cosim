@@ -703,6 +703,8 @@ This is enough evidence for a reversible target ABI/cycle experiment, not for
 default enablement.  M4 target work must fit the combined envelope+tremolo 10%
 budget, retain an off path with no per-frame cost for v1 and non-AM v2 songs,
 and undergo physical A/B before the host candidate policy is accepted.
+The byte/state/cycle contract and explicit rollback points are recorded in
+[`JPS2-TREMOLO-DESIGN.md`](JPS2-TREMOLO-DESIGN.md).
 
 ### M5: vibrato and held-note pitch writes
 
