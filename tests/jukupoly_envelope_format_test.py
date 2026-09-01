@@ -45,6 +45,7 @@ def check_encoding() -> None:
     assert build.encode_opl_envelope(ENVELOPE, "fixture") == (0xF8, 0xD0, 0x02)
     generated, metadata = build.compile_song(score())
     assert metadata["enhanced_envelopes"]
+    assert not metadata["enhanced_vibrato"]
     assert not metadata["mod_effects"] and not metadata["patterns"]
     assert "JUKUPOLY_ENHANCED_ENVELOPES equ 1" in generated
     image = build.assemble_song_file(generated, metadata)
@@ -86,6 +87,57 @@ def check_encoding() -> None:
     assert build.assemble(
         tremolo_generated, enhanced_envelopes=True, enhanced_tremolo=True,
     )
+
+    vibrato = score()
+    vibrato["rows"][0]["tone1"]["opl_vibrato"] = {
+        "mode": "shallow", "peak_step_delta": 256,
+    }
+    vibrato_generated, vibrato_metadata = build.compile_song(vibrato)
+    assert vibrato_metadata["enhanced_vibrato"]
+    assert not vibrato_metadata["enhanced_tremolo"]
+    vibrato_image = build.assemble_song_file(
+        vibrato_generated, vibrato_metadata,
+    )
+    assert vibrato_image[6:8] == bytes((
+        143,
+        build.JPS2_ENVELOPE_CAPABILITY | build.JPS2_PITCH_CAPABILITY,
+    ))
+    vibrato_rows = (
+        int.from_bytes(vibrato_image[10:12], "little") -
+        build.SONG_LOAD_ADDRESS
+    )
+    assert vibrato_image[vibrato_rows + 6:vibrato_rows + 8] == bytes((
+        0x12, 0xFF,
+    ))
+    try:
+        build.assemble(
+            vibrato_generated, enhanced_envelopes=True,
+            enhanced_vibrato=True,
+        )
+    except build.SongError as exc:
+        assert "not implemented" in str(exc)
+    else:
+        raise AssertionError("host-only pitch capability assembled a target")
+
+    combined = copy.deepcopy(vibrato)
+    combined["rows"][0]["tone1"]["opl_tremolo_depth"] = 1
+    combined["rows"][0]["tone1"]["opl_vibrato"]["mode"] = "deep"
+    combined_generated, combined_metadata = build.compile_song(combined)
+    combined_image = build.assemble_song_file(
+        combined_generated, combined_metadata,
+    )
+    assert combined_image[7] == (
+        build.JPS2_ENVELOPE_CAPABILITY |
+        build.JPS2_TREMOLO_CAPABILITY |
+        build.JPS2_PITCH_CAPABILITY
+    )
+    combined_rows = (
+        int.from_bytes(combined_image[10:12], "little") -
+        build.SONG_LOAD_ADDRESS
+    )
+    assert combined_image[combined_rows + 6:combined_rows + 8] == bytes((
+        0x26, 0xFF,
+    ))
 
 
 def rejected(record: dict, expected: str) -> None:
@@ -174,11 +226,74 @@ def check_validation() -> None:
     else:
         raise AssertionError("key-off accepted tremolo depth")
 
+    invalid_vibrato = (
+        None,
+        True,
+        "deep",
+        {},
+        {"mode": "off", "peak_step_delta": 1},
+        {"mode": "deep"},
+        {"mode": "deep", "peak_step_delta": 1, "rate": 6},
+        {"mode": "deep", "peak_step_delta": 0},
+        {"mode": "deep", "peak_step_delta": 257},
+        {"mode": "deep", "peak_step_delta": True},
+    )
+    for record in invalid_vibrato:
+        candidate = score()
+        candidate["rows"][0]["tone1"]["opl_vibrato"] = record
+        try:
+            build.compile_song(candidate)
+        except build.SongError as exc:
+            assert "vibrato" in str(exc), str(exc)
+        else:
+            raise AssertionError(f"invalid vibrato accepted: {record!r}")
+
+    candidate = score()
+    candidate["schema"] = "jukupoly-song-v1"
+    candidate["rows"][0]["tone1"]["opl_vibrato"] = {
+        "mode": "deep", "peak_step_delta": 1,
+    }
+    try:
+        build.compile_song(candidate)
+    except build.SongError as exc:
+        assert "requires jukupoly-song-v2" in str(exc), str(exc)
+    else:
+        raise AssertionError("JPS v1 accepted vibrato")
+
+    candidate = score()
+    candidate["rows"][1]["tone1"]["opl_vibrato"] = {
+        "mode": "deep", "peak_step_delta": 1,
+    }
+    try:
+        build.compile_song(candidate)
+    except build.SongError as exc:
+        assert "key-off cannot carry" in str(exc), str(exc)
+    else:
+        raise AssertionError("key-off accepted vibrato")
+
+    for phase_step, delta, expected in (
+        (100, 100, "underflows"),
+        (0x7F80, 128, "overflows"),
+    ):
+        candidate = score()
+        event = candidate["rows"][0]["tone1"]
+        event.pop("note")
+        event["phase_step"] = phase_step
+        event["opl_vibrato"] = {
+            "mode": "deep", "peak_step_delta": delta,
+        }
+        try:
+            build.compile_song(candidate)
+        except build.SongError as exc:
+            assert expected in str(exc), str(exc)
+        else:
+            raise AssertionError(f"unsafe vibrato {expected} accepted")
+
 
 def main() -> int:
     check_encoding()
     check_validation()
-    print("JUKUPOLY-ENVELOPE-FORMAT: PASS jps2-header five-byte-tone "
+    print("JUKUPOLY-ENVELOPE-FORMAT: PASS jps2-header conditional-vibrato "
           "resolved-levels resolved-rates strict-capability tremolo-bits")
     return 0
 

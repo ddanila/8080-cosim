@@ -193,3 +193,20 @@ measurements pass.
 The successful result is the largest measured subset the Juku can afford.
 Nothing in this contract requires runtime vibrato to succeed merely because
 the source analysis did.
+
+## Host-format checkpoint
+
+Step 1 is implemented without target support.  `build_jukupoly.py` validates
+the exact `opl_vibrato` object, encodes shallow/deep modes in packet bits 4--5,
+appends `peak_step_delta - 1` only for nonzero modes, and advertises capability
+`05h` or `07h`.  It rejects unsafe low/high base-step bounds, malformed
+objects, vibrato on key-off, and vibrato in JPS v1.  A request to assemble a
+standalone pitch-capable target fails explicitly because no target slice
+exists yet; host code can build the guarded JPS image for format tests.
+
+Omitted vibrato preserves the exact capability-`01h` image, and existing
+tremolo retains capability `03h`.  Tests cover delta 256, combined `07h`,
+reserved mode values through strict source validation, and both underflow and
+overflow boundaries.  The M4 library player rejects proposed capability
+`05h` with zero PIT writes and zero keyboard polls.  Thus the host ABI is
+reversible and cannot accidentally run on an older player.

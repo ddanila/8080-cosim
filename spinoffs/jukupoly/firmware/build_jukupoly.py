@@ -35,6 +35,7 @@ MODE_CODES = {"attack": 0, "decay": 1, "hold": 2}
 MOD_SET_MODE = 3
 JPS2_ENVELOPE_CAPABILITY = 0x01
 JPS2_TREMOLO_CAPABILITY = 0x02
+JPS2_PITCH_CAPABILITY = 0x04
 NOTE_OFF = "---"
 NOTE_RE = re.compile(r"^([A-G])([#b]?)(-?\d+)$")
 NOTE_BASE = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
@@ -133,6 +134,38 @@ def encode_opl_envelope(record: object, context: str) -> tuple[int, int, int]:
     rates = attack | decay << 3 | (release & 0x03) << 6
     flags = release >> 2 | int(keyed) << 1
     return levels, rates, flags
+
+
+def encode_opl_vibrato(record: object, context: str) -> tuple[int, int]:
+    """Encode resolved M5 mode and conditional peak-step-delta byte."""
+    if not isinstance(record, dict):
+        raise SongError(f"{context} opl_vibrato must be an object")
+    fields = {"mode", "peak_step_delta"}
+    if set(record) != fields:
+        missing = sorted(fields - set(record))
+        unknown = sorted(set(record) - fields)
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if unknown:
+            details.append("unknown " + ", ".join(unknown))
+        raise SongError(f"{context} opl_vibrato: {'; '.join(details)}")
+    modes = {"shallow": 1, "deep": 2}
+    mode_name = record["mode"]
+    if not isinstance(mode_name, str) or mode_name not in modes:
+        raise SongError(
+            f"{context} vibrato mode must be shallow or deep, "
+            f"got {mode_name!r}"
+        )
+    delta = record["peak_step_delta"]
+    if isinstance(delta, bool):
+        raise SongError(
+            f"{context} vibrato peak_step_delta must be 1..256, got {delta!r}"
+        )
+    delta = check_range(
+        f"{context} vibrato peak_step_delta", delta, 1, 256,
+    )
+    return modes[mode_name], delta - 1
 
 
 def decode_sample_bank(song: dict) -> dict[int, list[int]]:
@@ -248,6 +281,7 @@ def compile_song(song: dict) -> tuple[str, dict]:
         raise SongError("song schema must be jukupoly-song-v1 or jukupoly-song-v2")
     enhanced_envelopes = schema == "jukupoly-song-v2"
     enhanced_tremolo = False
+    enhanced_vibrato = False
     sample_rate = check_range("sample_rate_hz", song["sample_rate_hz"], 4000, 12000)
     frame_samples = check_range("frame_samples", song["frame_samples"], 64, 255)
     if enhanced_envelopes and not 129 <= frame_samples <= 143:
@@ -346,11 +380,21 @@ def compile_song(song: dict) -> tuple[str, dict]:
                     f"row {row_index} {channel} opl_tremolo_depth requires "
                     "jukupoly-song-v2"
                 )
+            if "opl_vibrato" in event and not enhanced_envelopes:
+                raise SongError(
+                    f"row {row_index} {channel} opl_vibrato requires "
+                    "jukupoly-song-v2"
+                )
             if note is None and raw_step is None:
                 if "opl_tremolo_depth" in event:
                     raise SongError(
                         f"row {row_index} {channel} opl_tremolo_depth "
                         "requires a nonzero tone packet"
+                    )
+                if "opl_vibrato" in event:
+                    raise SongError(
+                        f"row {row_index} {channel} opl_vibrato requires "
+                        "a nonzero tone packet"
                     )
                 continue
             flags |= flag
@@ -359,6 +403,11 @@ def compile_song(song: dict) -> tuple[str, dict]:
                     raise SongError(
                         f"row {row_index} {channel} key-off cannot carry "
                         "opl_tremolo_depth"
+                    )
+                if "opl_vibrato" in event:
+                    raise SongError(
+                        f"row {row_index} {channel} key-off cannot carry "
+                        "opl_vibrato"
                     )
                 payload.append("        dw      0000h")
                 continue
@@ -394,11 +443,35 @@ def compile_song(song: dict) -> tuple[str, dict]:
                 )
                 enhanced_tremolo |= depth > 0
                 envelope_flags |= depth << 2
-                payload.append(
-                    "        db      "
+                if "opl_vibrato" in event:
+                    vibrato_mode, encoded_delta = encode_opl_vibrato(
+                        event["opl_vibrato"],
+                        f"row {row_index} {channel}",
+                    )
+                else:
+                    vibrato_mode, encoded_delta = 0, None
+                if encoded_delta is not None:
+                    peak_delta = encoded_delta + 1
+                    base_step = step & 0x7FFF
+                    if base_step - peak_delta <= 0:
+                        raise SongError(
+                            f"row {row_index} {channel} vibrato underflows "
+                            "the positive phase-step range"
+                        )
+                    if base_step + peak_delta >= 0x8000:
+                        raise SongError(
+                            f"row {row_index} {channel} vibrato overflows "
+                            "the 15-bit phase-step range"
+                        )
+                    enhanced_vibrato = True
+                    envelope_flags |= vibrato_mode << 4
+                packet = (
                     f"{asm_hex(levels, 2)},{asm_hex(rates, 2)},"
                     f"{asm_hex(envelope_flags, 2)}"
                 )
+                if encoded_delta is not None:
+                    packet += f",{asm_hex(encoded_delta, 2)}"
+                payload.append("        db      " + packet)
             else:
                 speed = check_range(
                     f"row {row_index} {channel} envelope speed",
@@ -545,6 +618,7 @@ def compile_song(song: dict) -> tuple[str, dict]:
         "mod_effects": mod_effects,
         "enhanced_envelopes": enhanced_envelopes,
         "enhanced_tremolo": enhanced_tremolo,
+        "enhanced_vibrato": enhanced_vibrato,
         "score_sha256": hashlib.sha256(text.encode()).hexdigest(),
     }
     return text, metadata
@@ -552,9 +626,14 @@ def compile_song(song: dict) -> tuple[str, dict]:
 
 def assemble(generated: str, mod_effects: bool = False,
              enhanced_envelopes: bool = False,
-             enhanced_tremolo: bool = False) -> bytes:
+             enhanced_tremolo: bool = False,
+             enhanced_vibrato: bool = False) -> bytes:
     if enhanced_tremolo and not enhanced_envelopes:
         raise SongError("target tremolo requires enhanced envelopes")
+    if enhanced_vibrato:
+        raise SongError(
+            "target pitch/vibrato is not implemented; build a JPS image only"
+        )
     with tempfile.TemporaryDirectory(prefix="jukupoly.") as name:
         directory = Path(name)
         image = directory / "jukupoly.cim"
@@ -607,7 +686,8 @@ def assemble_song_file(generated: str, metadata: dict) -> bytes:
         version = 2 if metadata["enhanced_envelopes"] else 1
         capabilities = (
             JPS2_ENVELOPE_CAPABILITY |
-            (JPS2_TREMOLO_CAPABILITY if metadata["enhanced_tremolo"] else 0)
+            (JPS2_TREMOLO_CAPABILITY if metadata["enhanced_tremolo"] else 0) |
+            (JPS2_PITCH_CAPABILITY if metadata["enhanced_vibrato"] else 0)
         ) if version == 2 else 0
         source.write_text(
             "; JukuPoly disk-song wrapper; generated by build_jukupoly.py.\n"
@@ -662,7 +742,7 @@ def main() -> int:
 
     image = assemble(
         generated, metadata["mod_effects"], metadata["enhanced_envelopes"],
-        metadata["enhanced_tremolo"],
+        metadata["enhanced_tremolo"], metadata["enhanced_vibrato"],
     )
     song_image = (assemble_song_file(generated, metadata)
                   if args.song_output is not None else None)

@@ -703,6 +703,13 @@ existing JPS2 legato packets for held-note pitch and therefore needs no new
 8080 code.  Runtime vibrato remains a later conditional-byte experiment with
 explicit map, combined-cycle, file-size, and rollback gates.
 
+The first host-format slice is implemented: strict score validation emits
+capability `05h`/`07h`, mode bits, and one conditional `delta-1` byte while
+proving both 15-bit phase-step bounds.  Omitted vibrato remains byte-identical,
+standalone target assembly is explicitly blocked, and the current M4 library
+player rejects the new capability with zero PIT writes.  This is format
+evidence only; no new player claims support yet.
+
 ## Reproduce
 
 Source and generated files:

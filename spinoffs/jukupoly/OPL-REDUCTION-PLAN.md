@@ -793,6 +793,15 @@ two-byte shared phase, exact low/high preflight, and a combined M4+M5 cycle
 gate.  This is a reversible design checkpoint; no capability or assembler
 implementation is accepted yet.
 
+The host-format portion is now implemented.  The compiler emits the
+conditional `delta-1` byte and capabilities `05h`/`07h`, proves each base step
+plus and minus its peak delta stays in `1..7FFFh`, and rejects malformed or
+mis-capabilitied fields.  Omitted vibrato and capability `03h` remain byte-
+identical.  Standalone target assembly is deliberately refused, and the M4
+library player rejects capability `05h` before any PIT write.  This completes
+only the reversible format/rejection gate; held-pitch emission and target
+runtime remain next.
+
 ### M6: pack regression and physical qualification
 
 Build the complete DOOM library and generate old Juku, new Juku, and accurate

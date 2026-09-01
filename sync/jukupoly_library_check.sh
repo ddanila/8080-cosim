@@ -52,6 +52,8 @@ done
   invalid-capability
 "$TMP/jukupoly_library_test" "$TMP/JUKEBOX-TREMOLO.cim" \
   "$TMP/ENVELOPE.JPS" invalid-flags
+"$TMP/jukupoly_library_test" "$TMP/JUKEBOX-TREMOLO.cim" \
+  "$TMP/ENVELOPE.JPS" invalid-pitch-capability
 "$TMP/jukupoly_library_test" "$TMP/JUKEBOX-TREMOLO.cim" "$TMP/TREMOLO.JPS"
 "$TMP/jukupoly_envelope_test" "$TMP/envelope.com"
 "$TMP/jukupoly_tremolo_test" "$TMP/tremolo.com"
