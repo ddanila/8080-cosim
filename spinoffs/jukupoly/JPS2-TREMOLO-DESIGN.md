@@ -181,6 +181,27 @@ rejects depth bits under capability `01h` before any PIT write.
 The 200-frame three-channel target fixture exercises depths one, two, and
 three concurrently.  C-cosim compares every prepared mixer immediate with the
 host table, verifies the final 16-bit phase exactly, and confirms that all
-unmodulated envelope bases remain at level 15.  This completes functional
-semantics only.  Map, state, cycle, sample-rate, duration, representative
-render, and physical gates remain open.
+unmodulated envelope bases remain at level 15.
+
+[`OPL-TREMOLO-TARGET-M4.json`](OPL-TREMOLO-TARGET-M4.json) completes the
+synthetic map and timing gates.  The experimental library player is 4,863
+bytes, grows 326 bytes over M3, ends at `13FFh`, and leaves 1,025 bytes before
+the song window.  Declared state is exactly 51 bytes and the frozen 64-byte
+sample-loop hash remains unchanged.  Both the v1 Doomgate execution profile
+and the capability-`01h` envelope profile are cycle-identical to their M3
+counterparts.
+
+Against the same three active constant-envelope voices, enabling capability
+`03h` costs 195 boundary cycles at depth zero, 258 with one modulated voice,
+and 374 with all three modulated.  The measured maximum is below the guarded
+450-cycle estimate.  The selected three-depth configuration uses 140 samples
+per frame and a measured 6,970 Hz phase table; C-cosim produces 6,962.7 Hz,
+49.734 music frames/s, 4.021 seconds for a 4.000-second score, and a 42,135
+cycle worst frame.  This exceeds the 6,401.1 Hz floor, stays inside the 1%
+duration guard, and is less severe than M3's 42,670-cycle synthetic worst
+frame.  Empty, zero-depth, and one-depth configurations also pass with their
+explicitly measured batches/rates.  Capability changes no packet or JPS size.
+
+Steps 1–4 therefore pass.  A real representative old/new/reference render,
+long-track size/duration measurement, and CS00000 A/B remain open; host policy
+continues to default to depth zero.

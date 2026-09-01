@@ -1,0 +1,455 @@
+{
+  "cpu_hz": 1700000,
+  "experimental_player": {
+    "build": "library ABI v1+v2 tremolo (-P2=1 -P4=1 -P5=1)",
+    "bytes": 4863,
+    "declared_state_region_bytes": 51,
+    "end_address_exclusive": "0x13ff",
+    "growth_from_envelope_player_bytes": 326,
+    "sample_loop_bytes": 64,
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f",
+    "song_window_margin_bytes": 1025
+  },
+  "fixture": {
+    "depths": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "disabled_and_enabled_jps_bytes": 176,
+    "frame_samples": 141,
+    "frames": 200,
+    "phase_increment": 4850,
+    "selected_batches_and_phase_table_rates": {
+      "enabled_empty": {
+        "frame_samples": 143,
+        "phase_table_hz": 7160
+      },
+      "enabled_one": {
+        "frame_samples": 141,
+        "phase_table_hz": 6990
+      },
+      "enabled_zero": {
+        "frame_samples": 141,
+        "phase_table_hz": 7000
+      },
+      "selected_three": {
+        "frame_samples": 140,
+        "phase_table_hz": 6970
+      }
+    },
+    "target_trace_test": "JUKUPOLY-TREMOLO: PASS frames=200 phase=cd10 depths=1/2/3 envelope-base=15 prepared-exact pit-writes=3133"
+  },
+  "frozen_baseline": {
+    "envelope_path": "OPL-ENVELOPE-M3.json",
+    "path": "OPL-BASELINE.json",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f",
+    "sample_rate_floor_hz": 6401.146221
+  },
+  "gates": {
+    "declared_state_is_51_bytes": true,
+    "enabled_music_clocks_within_one_percent": true,
+    "enabled_sample_rates_above_floor": true,
+    "p5_cap1_profile_exact": true,
+    "p5_v1_profile_exact": true,
+    "phase_table_rates_match_measured_within_one_percent": true,
+    "player_below_song_window": true,
+    "sample_loop_hash_exact": true,
+    "target_trace_exact": true,
+    "zero_packet_growth": true
+  },
+  "incremental_boundary_cycles_from_cap1_zero": {
+    "enabled_one": {
+      "max": 258,
+      "mean": 258.0,
+      "min": 258,
+      "p99": 258
+    },
+    "enabled_three": {
+      "max": 374,
+      "mean": 374.0,
+      "min": 374,
+      "p99": 374
+    },
+    "enabled_zero": {
+      "max": 195,
+      "mean": 195.0,
+      "min": 195,
+      "p99": 195
+    }
+  },
+  "profiles": {
+    "disabled_zero": {
+      "com_bytes": 4863,
+      "duration_seconds": 4.004388,
+      "effective_sample_hz": 7042.274211,
+      "frame_cycles": {
+        "count": 200,
+        "max": 41798,
+        "mean": 34037.3,
+        "min": 33899,
+        "p99": 34069
+      },
+      "frame_samples": 141,
+      "frames": 200,
+      "idle_boundary_cycles": {
+        "count": 199,
+        "max": 1186,
+        "mean": 1186.0,
+        "min": 1186,
+        "p99": 1186
+      },
+      "jps_bytes": 176,
+      "keyboard_polls": 201,
+      "label": "p5-cap1-zero",
+      "music_frame_hz": 49.945207,
+      "mutated_player_bytes": 89,
+      "pit_writes": 3147,
+      "row_boundary_cycles": {
+        "count": 1,
+        "max": 9066,
+        "mean": 9066.0,
+        "min": 9066,
+        "p99": 9066
+      },
+      "sample_loop_cycles": {
+        "count": 28000,
+        "max": 276,
+        "mean": 232.71,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "enabled_empty": {
+      "com_bytes": 4863,
+      "duration_seconds": 3.991157,
+      "effective_sample_hz": 7165.841779,
+      "frame_cycles": {
+        "count": 200,
+        "max": 34078,
+        "mean": 33924.835,
+        "min": 33769,
+        "p99": 34078
+      },
+      "frame_samples": 143,
+      "frames": 200,
+      "idle_boundary_cycles": {
+        "count": 199,
+        "max": 1331,
+        "mean": 1177.276,
+        "min": 1022,
+        "p99": 1331
+      },
+      "jps_bytes": 163,
+      "keyboard_polls": 201,
+      "label": "p5-cap3-empty",
+      "music_frame_hz": 50.110782,
+      "mutated_player_bytes": 59,
+      "pit_writes": 4,
+      "row_boundary_cycles": {
+        "count": 1,
+        "max": 1289,
+        "mean": 1289.0,
+        "min": 1289,
+        "p99": 1289
+      },
+      "sample_loop_cycles": {
+        "count": 28400,
+        "max": 229,
+        "mean": 229.0,
+        "min": 229,
+        "p99": 229
+      }
+    },
+    "enabled_one": {
+      "com_bytes": 4863,
+      "duration_seconds": 4.035028,
+      "effective_sample_hz": 6988.799698,
+      "frame_cycles": {
+        "count": 200,
+        "max": 42222,
+        "mean": 34297.735,
+        "min": 34150,
+        "p99": 34327
+      },
+      "frame_samples": 141,
+      "frames": 200,
+      "idle_boundary_cycles": {
+        "count": 199,
+        "max": 1444,
+        "mean": 1444.0,
+        "min": 1444,
+        "p99": 1444
+      },
+      "jps_bytes": 176,
+      "keyboard_polls": 201,
+      "label": "p5-cap3-one",
+      "music_frame_hz": 49.565955,
+      "mutated_player_bytes": 89,
+      "pit_writes": 3157,
+      "row_boundary_cycles": {
+        "count": 1,
+        "max": 9516,
+        "mean": 9516.0,
+        "min": 9516,
+        "p99": 9516
+      },
+      "sample_loop_cycles": {
+        "count": 28000,
+        "max": 269,
+        "mean": 232.723,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "enabled_three": {
+      "com_bytes": 4863,
+      "duration_seconds": 4.048213,
+      "effective_sample_hz": 6966.03672,
+      "frame_cycles": {
+        "count": 200,
+        "max": 42416,
+        "mean": 34409.81,
+        "min": 34266,
+        "p99": 34443
+      },
+      "frame_samples": 141,
+      "frames": 200,
+      "idle_boundary_cycles": {
+        "count": 199,
+        "max": 1560,
+        "mean": 1560.0,
+        "min": 1560,
+        "p99": 1560
+      },
+      "jps_bytes": 176,
+      "keyboard_polls": 201,
+      "label": "p5-cap3-three",
+      "music_frame_hz": 49.404516,
+      "mutated_player_bytes": 89,
+      "pit_writes": 3133,
+      "row_boundary_cycles": {
+        "count": 1,
+        "max": 9632,
+        "mean": 9632.0,
+        "min": 9632,
+        "p99": 9632
+      },
+      "sample_loop_cycles": {
+        "count": 28000,
+        "max": 276,
+        "mean": 232.693,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "enabled_zero": {
+      "com_bytes": 4863,
+      "duration_seconds": 4.027442,
+      "effective_sample_hz": 7001.962419,
+      "frame_cycles": {
+        "count": 200,
+        "max": 42185,
+        "mean": 34233.26,
+        "min": 34094,
+        "p99": 34264
+      },
+      "frame_samples": 141,
+      "frames": 200,
+      "idle_boundary_cycles": {
+        "count": 199,
+        "max": 1381,
+        "mean": 1381.0,
+        "min": 1381,
+        "p99": 1381
+      },
+      "jps_bytes": 176,
+      "keyboard_polls": 201,
+      "label": "p5-cap3-zero",
+      "music_frame_hz": 49.659308,
+      "mutated_player_bytes": 89,
+      "pit_writes": 3147,
+      "row_boundary_cycles": {
+        "count": 1,
+        "max": 9453,
+        "mean": 9453.0,
+        "min": 9453,
+        "p99": 9453
+      },
+      "sample_loop_cycles": {
+        "count": 28000,
+        "max": 276,
+        "mean": 232.71,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "p4_envelope": {
+      "com_bytes": 4537,
+      "duration_seconds": 0.920771,
+      "effective_sample_hz": 7044.095391,
+      "frame_cycles": {
+        "count": 46,
+        "max": 42670,
+        "mean": 34028.5,
+        "min": 33417,
+        "p99": 42670
+      },
+      "frame_samples": 141,
+      "frames": 46,
+      "idle_boundary_cycles": {
+        "count": 43,
+        "max": 1523,
+        "mean": 1127.977,
+        "min": 930,
+        "p99": 1523
+      },
+      "jps_bytes": 330,
+      "keyboard_polls": 47,
+      "label": "p4-envelope",
+      "music_frame_hz": 49.958123,
+      "mutated_player_bytes": 80,
+      "pit_writes": 595,
+      "row_boundary_cycles": {
+        "count": 3,
+        "max": 8586,
+        "mean": 4094.667,
+        "min": 1709,
+        "p99": 8586
+      },
+      "sample_loop_cycles": {
+        "count": 6440,
+        "max": 269,
+        "mean": 231.966,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "p5_envelope": {
+      "com_bytes": 4863,
+      "duration_seconds": 0.920771,
+      "effective_sample_hz": 7044.095391,
+      "frame_cycles": {
+        "count": 46,
+        "max": 42670,
+        "mean": 34028.5,
+        "min": 33417,
+        "p99": 42670
+      },
+      "frame_samples": 141,
+      "frames": 46,
+      "idle_boundary_cycles": {
+        "count": 43,
+        "max": 1523,
+        "mean": 1127.977,
+        "min": 930,
+        "p99": 1523
+      },
+      "jps_bytes": 330,
+      "keyboard_polls": 47,
+      "label": "p5-envelope",
+      "music_frame_hz": 49.958123,
+      "mutated_player_bytes": 89,
+      "pit_writes": 595,
+      "row_boundary_cycles": {
+        "count": 3,
+        "max": 8586,
+        "mean": 4094.667,
+        "min": 1709,
+        "p99": 8586
+      },
+      "sample_loop_cycles": {
+        "count": 6440,
+        "max": 269,
+        "mean": 231.966,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "p5_v1_doomgate": {
+      "com_bytes": 4863,
+      "duration_seconds": 97.030466,
+      "effective_sample_hz": 7112.38469,
+      "frame_cycles": {
+        "count": 4826,
+        "max": 37253,
+        "mean": 34179.816,
+        "min": 33574,
+        "p99": 36276
+      },
+      "frame_samples": 143,
+      "frames": 4826,
+      "idle_boundary_cycles": {
+        "count": 3451,
+        "max": 1167,
+        "mean": 874.194,
+        "min": 814,
+        "p99": 989
+      },
+      "jps_bytes": 12110,
+      "keyboard_polls": 4827,
+      "label": "p5-v1-doomgate",
+      "music_frame_hz": 49.736956,
+      "mutated_player_bytes": 69,
+      "pit_writes": 55927,
+      "row_boundary_cycles": {
+        "count": 1375,
+        "max": 2525,
+        "mean": 1573.452,
+        "min": 1227,
+        "p99": 2486
+      },
+      "sample_loop_cycles": {
+        "count": 685292,
+        "max": 276,
+        "mean": 231.518,
+        "min": 229,
+        "p99": 262
+      }
+    },
+    "selected_three": {
+      "com_bytes": 4863,
+      "duration_seconds": 4.02142,
+      "effective_sample_hz": 6962.714663,
+      "frame_cycles": {
+        "count": 200,
+        "max": 42135,
+        "mean": 34182.07,
+        "min": 34037,
+        "p99": 34214
+      },
+      "frame_samples": 140,
+      "frames": 200,
+      "idle_boundary_cycles": {
+        "count": 199,
+        "max": 1560,
+        "mean": 1560.0,
+        "min": 1560,
+        "p99": 1560
+      },
+      "jps_bytes": 175,
+      "keyboard_polls": 201,
+      "label": "p5-cap3-three-selected",
+      "music_frame_hz": 49.733676,
+      "mutated_player_bytes": 89,
+      "pit_writes": 3140,
+      "row_boundary_cycles": {
+        "count": 1,
+        "max": 9632,
+        "mean": 9632.0,
+        "min": 9632,
+        "p99": 9632
+      },
+      "sample_loop_cycles": {
+        "count": 27800,
+        "max": 269,
+        "mean": 232.726,
+        "min": 229,
+        "p99": 262
+      }
+    }
+  },
+  "schema": "jukupoly-opl-tremolo-target-m4-report-v1",
+  "status": "synthetic target gates pass; real render and physical A/B pending"
+}

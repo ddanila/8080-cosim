@@ -591,10 +591,9 @@ M3 now requires only physical CS00000 A/B listening before the Doom library
 may default to v2.  It therefore continues to emit v1 and retains that fallback
 if the approximation is not useful on hardware.
 
-## Host-only tremolo evidence
+## Tremolo evidence and synthetic target slice
 
-M4 currently changes no JPS packet or target player.  `opl_tremolo.py` models
-a shared 3.7 Hz, 16-step attenuation triangle with a fractional phase
+`opl_tremolo.py` models a shared 3.7 Hz, 16-step attenuation triangle with a fractional phase
 accumulator and only four possible depths: off or one through three mixer
 levels.  Tests lock the 37-cycle/10-second rate, exact quantized fitting, and
 the rule that depth zero wins a tie.
@@ -628,6 +627,17 @@ source and squared error falls 222→180.  Mean absolute error rises 0.842→0.9
 while maximum error falls 5→4, so this is evidence for a reversible target
 experiment, not yet evidence for default enablement.
 
+That reversible experiment is now implemented behind a separate `-P5=1`
+build and JPS v2 capability `03h`.  Depth occupies two formerly reserved tone
+packet bits, the packet stays five bytes, and the disabled v1/envelope paths
+retain their exact M3 execution profiles.  The synthetic target report
+[`OPL-TREMOLO-TARGET-M4.json`](OPL-TREMOLO-TARGET-M4.json) measures 374 added
+boundary cycles for three modulated voices.  At 140 samples/frame the result
+is 6,962.7 Hz and 49.734 music frames/s, above the 6,401.1 Hz guard; the player
+ends at `13FFh` with 1,025 bytes left.  Target traces match the host model for
+200 frames.  Real-song rendering and CS00000 listening remain required, so
+general conversion still emits no tremolo by default.
+
 ## Reproduce
 
 Source and generated files:
@@ -645,12 +655,14 @@ Source and generated files:
 - `tools/report_jukupoly_full_m3.py` — compact full-song M3 feasibility report;
 - `tools/report_opl_tremolo.py` — direct versus FM-modulator-only AM pack report;
 - `tools/report_opl_tremolo_candidate.py` — reproducible joint-fit M4 candidate;
+- `tools/report_jukupoly_tremolo_target.py` — synthetic M4 target budget report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
 - `OPL-TREMOLO-CANDIDATE-M4.json` — real joint envelope+tremolo evidence;
+- `OPL-TREMOLO-TARGET-M4.json` — target ABI/map/state/cycle evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;

@@ -706,6 +706,19 @@ and undergo physical A/B before the host candidate policy is accepted.
 The byte/state/cycle contract and explicit rollback points are recorded in
 [`JPS2-TREMOLO-DESIGN.md`](JPS2-TREMOLO-DESIGN.md).
 
+The reversible `-P5=1` target slice now passes its synthetic gates.  The
+five-byte tone packet does not grow; depth uses two reserved bits, per-channel
+depth reuses existing state, and only a two-byte shared phase is added.
+[`OPL-TREMOLO-TARGET-M4.json`](OPL-TREMOLO-TARGET-M4.json) records a
+cycle-identical v1 and capability-`01h` off path, the unchanged hot-loop hash,
+a 4,863-byte player ending at `13FFh`, 51 state bytes, and 195/258/374 added
+boundary cycles for zero/one/three active depths.  The selected three-depth
+fixture uses 140 samples per frame and measures 6,962.7 Hz, 49.734 frames/s,
+0.54% duration error, and a 42,135-cycle worst frame against the 6,401.1 Hz
+floor.  This completes only the synthetic ABI/map/cycle gate; representative
+render, long-track, default host-policy, and physical-listening gates remain
+open.
+
 ### M5: vibrato and held-note pitch writes
 
 Add the shared vibrato phase, temporary phase-step modulation, and generic

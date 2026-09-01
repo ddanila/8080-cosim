@@ -35,6 +35,12 @@ envelope_dispatch_init:
         sta     prepare_frame
         lxi     h,ch1_volume
         shld    prepare_frame+1
+        mvi     a,0fch                  ; capability 01h reserved-bit mask
+        sta     env2_reserved_mask+1
+        mvi     a,03ah                  ; restore LDA env2_work_flags
+        sta     env2_load_work_flags
+        lxi     h,env2_work_flags
+        shld    env2_load_work_flags+1
         endif
         lxi     h,parse_tone1
         shld    parse_tone1_call+1
@@ -73,6 +79,12 @@ envelope_dispatch_init:
         cpi     3
         rnz
         endif
+        mvi     a,0f0h                  ; bits 2-3 are depth under cap 03h
+        sta     env2_reserved_mask+1
+        mvi     a,0cdh                  ; CALL depth-aware flag loader
+        sta     env2_load_work_flags
+        lxi     h,env2_load_tremolo_flags
+        shld    env2_load_work_flags+1
         mvi     a,0c3h                  ; patch to JMP prepare_frame_tremolo
         sta     prepare_frame
         lxi     h,prepare_frame_tremolo
@@ -146,11 +158,8 @@ parse_tone_v2:
         ; Reserved packet bits are a bounded runtime guard.  A malformed song
         ; stops instead of desynchronizing the variable row stream.
         lda     env2_packet_flags
-        if      @@5
-        ani     0f0h
-        else
+env2_reserved_mask:
         ani     0fch
-        endif
         jnz     env2_invalid_packet
 
         ; Peak becomes the current-stage target; sustain is persistent state.
@@ -181,19 +190,6 @@ parse_tone_v2:
         ori     ENV2_KEY_SUSTAIN
         sta     env2_work_flags
 env2_no_key_sustain:
-        if      @@5
-        ; Packet depth 0..3 becomes a 16-byte table-page offset in the
-        ; otherwise-unused upper half of the existing internal flags byte.
-        lda     env2_packet_flags
-        ani     00ch
-        rlc
-        rlc
-        mov     b,a
-        lda     env2_work_flags
-        ora     b
-        sta     env2_work_flags
-        endif
-
         lda     env2_rates
         ani     7
         call    env2_decode_rate
@@ -243,6 +239,7 @@ env2_release_not_immediate:
         lda     env2_rate_mask_temp
         mvi     c,ENV2_RELEASE_MASK
         call    env2_store_offset
+env2_load_work_flags:
         lda     env2_work_flags
         mvi     c,ENV2_FLAGS
         call    env2_store_offset
@@ -507,6 +504,18 @@ env2_finish:
         ret
 
         if      @@5
+; Used only when env2_load_work_flags has been patched from LDA to CALL.
+; Return A=low internal envelope flags plus the 16-byte tremolo-table offset.
+env2_load_tremolo_flags:
+        lda     env2_packet_flags
+        ani     00ch
+        rlc
+        rlc
+        mov     b,a
+        lda     env2_work_flags
+        ora     b
+        ret
+
 ; M4 amplitude-only tremolo.  This is reached only after prepare_frame's
 ; original three-byte LDA has been patched to a JMP for capability 03h.
 ; chN_volume remains the envelope's unmodulated state; only the ORI immediates
