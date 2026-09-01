@@ -1161,6 +1161,21 @@ library.  In particular, independent source-member pulse trains can restore
 beating and separate fades but cannot reproduce OPL waveform/FM timbre; the
 speaker is the decisive check that this added structure is an improvement.
 
+That physical gate now has one exact reproducible A/B medium rather than three
+ad-hoc host loads.  [`OPL-IMP-M7-PHYSICAL-AB.json`](OPL-IMP-M7-PHYSICAL-AB.json)
+pins the score and COM hashes for `IMPV1.COM`, `IMPREAR.COM`, and `IMPDET.COM`,
+their common source VGM, the on-disk listening order, and a native 800 KiB
+image at SHA-256 `7fa29b3e...b302dfa`.  The builder round-trips every CP/M file
+before converting the logical image to Juku cylinder order.  All exact COMs
+also complete the cycle renderer in 29.738, 29.863, and 29.909 seconds.
+
+The disk is retained at
+`out/jukupoly-imp-m7-physical-ab/jukupoly-imp-m7-physical-ab.cpm`.  Its protocol
+keeps the volume fixed, plays unchanged v1 first, then bounded merged-voice
+re-articulation, then source-member detuning, and records lead onset/fade,
+beating or roughness, percussion balance, Escape, and CP/M return.  This is
+preparation only; no physical result is claimed while CS00000 is off.
+
 The short oracle-derived attack-sample branch now has a structural upper-bound
 audit in [`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json).  It deliberately
 does not synthesize or emit PCM yet.  The existing target has one PCM lane and

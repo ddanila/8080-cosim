@@ -991,6 +991,17 @@ The complete local render is
 `out/jukupoly-imp-detuned-m7/imp-detuned-reart-full.wav`.  This closes the
 offline gate only; Imp v1 remains in the library until physical A/B listening.
 
+The exact listening medium is prepared by
+`tools/build_jukupoly_imp_m7_ab.py` and recorded in
+[`OPL-IMP-M7-PHYSICAL-AB.json`](OPL-IMP-M7-PHYSICAL-AB.json).  Its native Juku
+disk hash is `7fa29b3e...b302dfa`; `IMPV1`, `IMPREAR`, and `IMPDET` are built
+from the three committed 30-second scores and round-trip through the CP/M
+filesystem byte-for-byte.  Their cycle-rendered durations are 29.738, 29.863,
+and 29.909 seconds.  The image is
+`out/jukupoly-imp-m7-physical-ab/jukupoly-imp-m7-physical-ab.cpm` and includes
+the fixed-volume listening order and assessment checklist in `README.TXT`.
+It is prepared evidence, not a physical pass.
+
 [`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json) records why generic melodic
 attack samples stop at analysis for now.  The existing single PCM lane cannot
 overlap a drum or another attack, and fixed-rate PCM needs a separate sample
@@ -1049,6 +1060,8 @@ Source and generated files:
   voice phase-step opportunity audit;
 - `tools/report_opl_attack_pcm.py` — pack-wide melodic-attack PCM structural
   scheduling, sample-identity, and memory feasibility audit;
+- `tools/build_jukupoly_imp_m7_ab.py` — deterministic three-way Imp physical
+  A/B COM and native CP/M disk builder with file round-trip verification;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -1071,6 +1084,8 @@ Source and generated files:
   overlap arbitration, size, and full C-cosim timing evidence;
 - `OPL-M7-ATTACK-PCM.json` — two-pack single-PCM-lane collision, sample-ID,
   and projected file-size upper bound for short melodic attacks;
+- `OPL-IMP-M7-PHYSICAL-AB.json` — exact Imp v1/re-articulation/detuned physical
+  comparison payload hashes and listening protocol;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;

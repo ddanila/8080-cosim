@@ -1,0 +1,79 @@
+{
+  "disk": {
+    "bytes": 819200,
+    "cpm_round_trip_verified": true,
+    "directory_sha256": "45987f221e3efbde6b7e55578c80ce692bfe15d15dd72f7e9067af99ebac767a",
+    "filename": "jukupoly-imp-m7-physical-ab.cpm",
+    "format": "Juku native cylinder-interleaved 800 KiB",
+    "readme_sha256": "71898cb30f1b91158e96f584386ba452e83cba0c86e07d77aee435099f70802b",
+    "sha256": "7fa29b3edee6c910f7d1da3a0da24d85001c89065389136125f3ae019b302dfa"
+  },
+  "files": [
+    {
+      "bytes": 2066,
+      "description": "Control: the low lead first appears at 14.12 seconds.",
+      "duration_frames": 1500,
+      "filename": "IMPV1.COM",
+      "first_tone_frame": 706,
+      "frame_samples": 143,
+      "pcm_bytes": 858,
+      "rows": 54,
+      "schema": "jukupoly-song-v1",
+      "score": "jukupoly-imp-30s-v1.json",
+      "score_sha256": "3c9fa25f20f003856020897f673b1f98a3ccf2747bce453246c3d9761d9fd17c",
+      "sha256": "88953020023cbf2181076d3a6551bf76bf30943aa4d921fa86a5b56dad346d49",
+      "strategy": "unchanged-v1",
+      "target_sample_hz": 7120
+    },
+    {
+      "bytes": 2896,
+      "description": "Immediate merged low lead with bounded ADSR re-triggers.",
+      "duration_frames": 1500,
+      "filename": "IMPREAR.COM",
+      "first_tone_frame": 0,
+      "frame_samples": 143,
+      "pcm_bytes": 858,
+      "rows": 60,
+      "schema": "jukupoly-song-v2",
+      "score": "jukupoly-imp-30s-rearticulation-m7.json",
+      "score_sha256": "af9a68085af852148948200fa022699cb663d88cde151164a4b6ddf83da4346e",
+      "sha256": "70c56946708411faf0b3203936609b41ed212a5c706e8155c472e6d780ae235f",
+      "strategy": "bounded-rearticulation",
+      "target_sample_hz": 7170
+    },
+    {
+      "bytes": 2918,
+      "description": "Immediate three-member low lead at source-derived phase steps.",
+      "duration_frames": 1500,
+      "filename": "IMPDET.COM",
+      "first_tone_frame": 0,
+      "frame_samples": 143,
+      "pcm_bytes": 858,
+      "rows": 59,
+      "schema": "jukupoly-song-v2",
+      "score": "jukupoly-imp-30s-detuned-m7.json",
+      "score_sha256": "f83473f45bbba8dc2be09b4b9ab8916fe17731ca643457078acd89b760e70055",
+      "sha256": "f5d26007aa667f20b39b33c042b27ae99170ba01e27fbdc4fa91ab3021ceb208",
+      "strategy": "detuned-source-members",
+      "target_sample_hz": 7170
+    }
+  ],
+  "physical_protocol": {
+    "listen_for": [
+      "low-lead onset",
+      "low-lead fade",
+      "beating or roughness",
+      "percussion balance",
+      "Escape and CP/M return"
+    ],
+    "order": [
+      "IMPV1",
+      "IMPREAR",
+      "IMPDET"
+    ],
+    "promotion_rule": "keep unchanged-v1 unless a source-derived candidate is clearly preferable and all three programs return cleanly",
+    "same_volume": true
+  },
+  "schema": "jukupoly-imp-m7-physical-ab-v1",
+  "source_vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16"
+}
