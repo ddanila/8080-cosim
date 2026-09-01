@@ -782,7 +782,16 @@ vibrato logical notes at some point and retains 6,495 of 7,264 held-pitch
 events at the exact event frame.  Its protected-v1 regression count remains
 zero.  This closes M5's source-prevalence and allocation-survival gates only.
 No JPS packet, target state, CPU cycle, or default conversion has changed; the
-next gate is a bounded ABI/cycle design.
+next gate is guarded host encoding followed by a bounded target experiment.
+
+That proposed contract is now recorded in
+[`JPS2-PITCH-DESIGN.md`](JPS2-PITCH-DESIGN.md).  Held pitch is deliberately
+first because existing JPS2 legato packets can replace the immutable base step
+without any new target code.  Runtime vibrato is a separate proposed
+capability with one conditional `delta-1` byte, three channel delta bytes, a
+two-byte shared phase, exact low/high preflight, and a combined M4+M5 cycle
+gate.  This is a reversible design checkpoint; no capability or assembler
+implementation is accepted yet.
 
 ### M6: pack regression and physical qualification
 

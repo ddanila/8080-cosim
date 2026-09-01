@@ -697,6 +697,12 @@ the allocation-survival gate and justifies a bounded ABI/cycle design, but it
 still adds no JPS capability or 8080 work.  Representation size, cycles,
 full-song timing, and physical listening remain open gates.
 
+The reversible packet/state/cycle proposal is recorded in
+[`JPS2-PITCH-DESIGN.md`](JPS2-PITCH-DESIGN.md).  Its cheapest first slice uses
+existing JPS2 legato packets for held-note pitch and therefore needs no new
+8080 code.  Runtime vibrato remains a later conditional-byte experiment with
+explicit map, combined-cycle, file-size, and rollback gates.
+
 ## Reproduce
 
 Source and generated files:
@@ -729,6 +735,7 @@ Source and generated files:
 - `OPL-PITCH-M5.json` — committed two-pack vibrato and held-pitch evidence;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
+- `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;
 - `firmware/jukupoly-tremolo-v2-test.json` — exact shared-phase/depth fixture;
