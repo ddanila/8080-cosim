@@ -655,6 +655,7 @@ Source and generated files:
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `firmware/jukupoly-envelope-v2.inc` — isolated 8080 v2 parser/state machine;
 - `firmware/jukupoly-envelope-v2-test.json` — three-envelope target fixture;
+- `firmware/jukupoly-tremolo-v2-test.json` — exact shared-phase/depth fixture;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
@@ -700,6 +701,7 @@ Source and generated files:
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;
+- `tests/jukupoly_tremolo_test.c` — v2 shared-phase target execution regression;
 - `tests/jukupoly_vgz_test.c` — complete VGM-reduction regression;
 - `tests/jukupoly_library_test.c` — menu, BDOS loading, playback, and return regression;
 - `tests/jukupoly_library_test.py` — native two-sided track-order regression;

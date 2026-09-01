@@ -1,0 +1,47 @@
+{
+  "schema": "jukupoly-song-v2",
+  "title": "Synthetic JPS v2 shared tremolo execution fixture",
+  "sample_rate_hz": 7040,
+  "frame_samples": 141,
+  "rows": [
+    {
+      "frames": 200,
+      "tone1": {
+        "note": "A3",
+        "opl_tremolo_depth": 1,
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "note": "C4",
+        "opl_tremolo_depth": 2,
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone3": {
+        "note": "E4",
+        "opl_tremolo_depth": 3,
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      }
+    }
+  ]
+}

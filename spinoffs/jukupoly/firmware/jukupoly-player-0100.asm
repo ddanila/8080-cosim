@@ -291,6 +291,7 @@ prepare_frame:
         lda     ch3_volume
         sta     volume3+1
 
+prepare_frame_steps:
         lhld    ch1_step
         mov     b,h
         mov     c,l
@@ -1032,6 +1033,12 @@ ch3_env2_flags:
         db      0
         endif
 
+        if      @@5
+; Shared M4 phase; per-channel table-page offsets live in ENV2_FLAGS bits 4-5.
+tremolo_phase:
+        dw      0
+        endif
+
         if      @@1
 fx_vset_mask:
         db      0
@@ -1113,6 +1120,24 @@ test_manifest:
         dw      ch2_env2_stage
         dw      ch3_step
         dw      ch3_env2_stage
+        endif
+
+        if      @@5
+tremolo_test_manifest:
+        db      'J','T','R','E',1
+        dw      sample_loop
+        dw      frame_tick
+        dw      volume1+1
+        dw      volume2+1
+        dw      volume3+1
+        dw      ch1_volume
+        dw      ch2_volume
+        dw      ch3_volume
+        dw      ch1_env2_flags
+        dw      ch2_env2_flags
+        dw      ch3_env2_flags
+        dw      tremolo_phase
+        dw      prepare_frame
         endif
 
         if      @@2

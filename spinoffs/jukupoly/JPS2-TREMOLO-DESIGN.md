@@ -168,3 +168,19 @@ This slice has independent acceptable stopping points:
 
 The success condition is therefore the best measured subset the hardware can
 support—not completion of every OPL feature named in the wider plan.
+
+## Synthetic implementation checkpoint
+
+Steps 1–3 are implemented in the separate `-P5=1` build.  The strict host
+encoder retains byte-identical capability `01h` output for omitted or zero
+depth, emits capability `03h` without growing a tone packet, and rejects bad
+depth types/ranges and depth on a key-off.  Library preflight proves that the
+M3 player rejects capability `03h`, while the M4 player accepts it and still
+rejects depth bits under capability `01h` before any PIT write.
+
+The 200-frame three-channel target fixture exercises depths one, two, and
+three concurrently.  C-cosim compares every prepared mixer immediate with the
+host table, verifies the final 16-bit phase exactly, and confirms that all
+unmodulated envelope bases remain at level 15.  This completes functional
+semantics only.  Map, state, cycle, sample-rate, duration, representative
+render, and physical gates remain open.

@@ -20,6 +20,7 @@ typedef enum {
   INVALID_TRUNCATED,
   INVALID_DESCRIPTOR,
   INVALID_PCM,
+  INVALID_CAPABILITY,
 } invalid_kind;
 
 typedef struct {
@@ -200,6 +201,8 @@ static invalid_kind invalid_argument(const char *value) {
     return INVALID_DESCRIPTOR;
   if (!strcmp(value, "invalid-pcm"))
     return INVALID_PCM;
+  if (!strcmp(value, "invalid-capability"))
+    return INVALID_CAPABILITY;
   return INVALID_NONE;
 }
 
@@ -237,6 +240,9 @@ static void corrupt_v2_fixture(uint8_t *song, size_t size, invalid_kind kind) {
       song[offset + 2] = 0xff;  /* PCM length exceeds declared image */
       break;
     }
+    case INVALID_CAPABILITY:
+      song[7] = 3;  /* envelope-only player must reject tremolo capability */
+      break;
     case INVALID_NONE:
       break;
   }
@@ -249,7 +255,7 @@ int main(int argc, char **argv) {
        (atoi(argv[3]) < 1 || atoi(argv[3]) > 44))) {
     fprintf(stderr, "usage: %s JUKEBOX.COM SONG.JPS "
         "[abort|TRACK|invalid-flags|invalid-truncated|invalid-descriptor|"
-        "invalid-levels|invalid-pcm]\n", argv[0]);
+        "invalid-levels|invalid-pcm|invalid-capability]\n", argv[0]);
     return 2;
   }
   fixture f = {0};

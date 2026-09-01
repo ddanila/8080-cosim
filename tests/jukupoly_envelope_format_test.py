@@ -59,6 +59,34 @@ def check_encoding() -> None:
     )
     assert image[rows + 7:rows + 11] == bytes((8, 1, 0, 0))
 
+    zero = score()
+    zero["rows"][0]["tone1"]["opl_tremolo_depth"] = 0
+    zero_generated, zero_metadata = build.compile_song(zero)
+    assert not zero_metadata["enhanced_tremolo"]
+    assert build.assemble_song_file(
+        zero_generated, zero_metadata,
+    ) == image
+
+    tremolo = score()
+    tremolo["rows"][0]["tone1"]["opl_tremolo_depth"] = 1
+    tremolo_generated, tremolo_metadata = build.compile_song(tremolo)
+    assert tremolo_metadata["enhanced_tremolo"]
+    tremolo_image = build.assemble_song_file(
+        tremolo_generated, tremolo_metadata,
+    )
+    assert tremolo_image[6:8] == bytes((
+        143,
+        build.JPS2_ENVELOPE_CAPABILITY | build.JPS2_TREMOLO_CAPABILITY,
+    ))
+    tremolo_rows = (
+        int.from_bytes(tremolo_image[10:12], "little") -
+        build.SONG_LOAD_ADDRESS
+    )
+    assert tremolo_image[tremolo_rows + 6] == 0x06
+    assert build.assemble(
+        tremolo_generated, enhanced_envelopes=True, enhanced_tremolo=True,
+    )
+
 
 def rejected(record: dict, expected: str) -> None:
     candidate = score()
@@ -117,12 +145,41 @@ def check_validation() -> None:
     else:
         raise AssertionError("JPS v2 accepted unsupported pattern dispatch")
 
+    for depth in (-1, 4, True, "1"):
+        candidate = score()
+        candidate["rows"][0]["tone1"]["opl_tremolo_depth"] = depth
+        try:
+            build.compile_song(candidate)
+        except build.SongError as exc:
+            assert "opl_tremolo_depth" in str(exc), str(exc)
+        else:
+            raise AssertionError(f"invalid tremolo depth accepted: {depth!r}")
+
+    candidate = score()
+    candidate["schema"] = "jukupoly-song-v1"
+    candidate["rows"][0]["tone1"]["opl_tremolo_depth"] = 1
+    try:
+        build.compile_song(candidate)
+    except build.SongError as exc:
+        assert "requires jukupoly-song-v2" in str(exc), str(exc)
+    else:
+        raise AssertionError("JPS v1 accepted tremolo depth")
+
+    candidate = score()
+    candidate["rows"][1]["tone1"]["opl_tremolo_depth"] = 1
+    try:
+        build.compile_song(candidate)
+    except build.SongError as exc:
+        assert "key-off cannot carry" in str(exc), str(exc)
+    else:
+        raise AssertionError("key-off accepted tremolo depth")
+
 
 def main() -> int:
     check_encoding()
     check_validation()
     print("JUKUPOLY-ENVELOPE-FORMAT: PASS jps2-header five-byte-tone "
-          "resolved-levels resolved-rates strict-capability")
+          "resolved-levels resolved-rates strict-capability tremolo-bits")
     return 0
 
 

@@ -264,8 +264,16 @@ library_verify_song:
         cpi     2
         jnz     library_bad_song
         lda     SONG_LOAD+7
+        if      @@5
+        cpi     1
+        jz      library_verify_v2_samples
+        cpi     3                       ; envelope plus tremolo
+        jnz     library_bad_song
+library_verify_v2_samples:
+        else
         cpi     1                       ; JPS v2: envelope capability only
         jnz     library_bad_song
+        endif
         lda     SONG_LOAD+6
         cpi     129                     ; measured 10% iteration boundary
         jc      library_bad_song
@@ -449,10 +457,24 @@ library_v2_levels_ok:
         inx     h
         inx     h
         mov     a,m
+        if      @@5
+        ani     0f0h
+        jnz     library_v2_invalid
+        lda     SONG_LOAD+7
+        cpi     3
+        jz      library_v2_tone_flags_ok
+        mov     a,m
+        ani     00ch
+        jnz     library_v2_invalid
+library_v2_tone_flags_ok:
+        ora     a                       ; clear carry
+        ret
+        else
         ani     0fch
         rz
         stc
         ret
+        endif
 
 ; Validate a descriptor and all PCM bytes reached through it.  This is done
 ; once before playback, so even a corrupt frame count cannot walk beyond JPS.

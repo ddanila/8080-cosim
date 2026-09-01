@@ -28,6 +28,14 @@ envelope_dispatch_init:
         sta     ch1_env2_stage
         sta     ch2_env2_stage
         sta     ch3_env2_stage
+        if      @@5
+        sta     tremolo_phase
+        sta     tremolo_phase+1
+        mvi     a,03ah                  ; restore LDA ch1_volume
+        sta     prepare_frame
+        lxi     h,ch1_volume
+        shld    prepare_frame+1
+        endif
         lxi     h,parse_tone1
         shld    parse_tone1_call+1
         lxi     h,parse_tone2
@@ -59,6 +67,17 @@ envelope_dispatch_init:
         shld    update_envelope1_call+1
         shld    update_envelope2_call+1
         shld    update_envelope3_call+1
+        if      @@5
+        if      @@2
+        lda     SONG_LOAD+7
+        cpi     3
+        rnz
+        endif
+        mvi     a,0c3h                  ; patch to JMP prepare_frame_tremolo
+        sta     prepare_frame
+        lxi     h,prepare_frame_tremolo
+        shld    prepare_frame+1
+        endif
         ret
 
 parse_tone1_v2:
@@ -127,7 +146,11 @@ parse_tone_v2:
         ; Reserved packet bits are a bounded runtime guard.  A malformed song
         ; stops instead of desynchronizing the variable row stream.
         lda     env2_packet_flags
+        if      @@5
+        ani     0f0h
+        else
         ani     0fch
+        endif
         jnz     env2_invalid_packet
 
         ; Peak becomes the current-stage target; sustain is persistent state.
@@ -158,6 +181,18 @@ parse_tone_v2:
         ori     ENV2_KEY_SUSTAIN
         sta     env2_work_flags
 env2_no_key_sustain:
+        if      @@5
+        ; Packet depth 0..3 becomes a 16-byte table-page offset in the
+        ; otherwise-unused upper half of the existing internal flags byte.
+        lda     env2_packet_flags
+        ani     00ch
+        rlc
+        rlc
+        mov     b,a
+        lda     env2_work_flags
+        ora     b
+        sta     env2_work_flags
+        endif
 
         lda     env2_rates
         ani     7
@@ -470,6 +505,92 @@ env2_finish:
         mov     m,a                     ; stage off at offset 9
         pop     h
         ret
+
+        if      @@5
+; M4 amplitude-only tremolo.  This is reached only after prepare_frame's
+; original three-byte LDA has been patched to a JMP for capability 03h.
+; chN_volume remains the envelope's unmodulated state; only the ORI immediates
+; for the next sample batch receive the clamped attenuation.
+prepare_frame_tremolo:
+        lhld    tremolo_phase
+        mov     a,h
+        rrc
+        rrc
+        rrc
+        rrc
+        ani     00fh
+        mov     c,a                     ; shared table index for this frame
+        lxi     d,012f2h
+        dad     d
+        shld    tremolo_phase
+
+        lda     ch1_env2_flags
+        ani     030h
+        jz      tremolo_copy1
+        ora     c
+        mov     e,a
+        mvi     d,0
+        lxi     h,tremolo_tables
+        dad     d
+        lda     ch1_volume
+        sub     m
+        jnc     tremolo_store1
+        xra     a
+tremolo_store1:
+        sta     volume1+1
+        jmp     tremolo_channel2
+tremolo_copy1:
+        lda     ch1_volume
+        sta     volume1+1
+
+tremolo_channel2:
+        lda     ch2_env2_flags
+        ani     030h
+        jz      tremolo_copy2
+        ora     c
+        mov     e,a
+        mvi     d,0
+        lxi     h,tremolo_tables
+        dad     d
+        lda     ch2_volume
+        sub     m
+        jnc     tremolo_store2
+        xra     a
+tremolo_store2:
+        sta     volume2+1
+        jmp     tremolo_channel3
+tremolo_copy2:
+        lda     ch2_volume
+        sta     volume2+1
+
+tremolo_channel3:
+        lda     ch3_env2_flags
+        ani     030h
+        jz      tremolo_copy3
+        ora     c
+        mov     e,a
+        mvi     d,0
+        lxi     h,tremolo_tables
+        dad     d
+        lda     ch3_volume
+        sub     m
+        jnc     tremolo_store3
+        xra     a
+tremolo_store3:
+        sta     volume3+1
+        jmp     prepare_frame_steps
+tremolo_copy3:
+        lda     ch3_volume
+        sta     volume3+1
+        jmp     prepare_frame_steps
+
+; Exact opl_tremolo.TABLES rows for depths 0, 1, 2, and 3.
+tremolo_tables:
+        db      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+        db      0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0
+        db      0,0,1,1,1,1,2,2,2,2,1,1,1,1,0,0
+        db      0,0,1,1,2,2,3,3,3,3,2,2,1,1,0,0
+        endif
 
 env2_channel_pointer:
         dw      0
