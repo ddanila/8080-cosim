@@ -27,6 +27,7 @@ log=JUKUHOST.LOG
 capture=JUKUHOST.CAP
 console=/dev/pts/7
 network_rom=yes
+recover_session=yes
 timeout=120
 disk_timeout=0
 boot_restarts=3
@@ -84,8 +85,11 @@ Boot selection is explicit:
 - `[fastboot]` with `network_rom=no` (the default) selects stock-assisted JF15:
   one 128-byte core through Janet at 9,600/8O1, then its checked extension and
   compressed system at 19,200/8N1;
-- `[fastboot]` with `network_rom=yes` selects direct JF16 from the JukuNet C8
-  ROM at 19,200/8N1.
+- `[fastboot]` with `network_rom=yes` selects direct JF16 from a JukuNet ROM at
+  19,200/8N1;
+- `network_rom=yes` plus `recover_session=yes` selects C11 passive discovery:
+  the host listens at 19,200/8O1 until a checked C11 boot beacon or a complete
+  NetDisk request identifies the live target state.
 
 `network_rom=yes` therefore requires a system and a JF16 Fastboot artifact;
 stock-assisted mode requires an exact JF15 artifact. A fallback is optional,
@@ -93,6 +97,16 @@ but its system and Fastboot identities form one inseparable slot: if either
 primary artifact is absent or fails its size/SHA-256 identity, both fallback
 artifacts are selected. A JF1–JF14 fallback still fails validation; fallback
 does not weaken the protocol boundary or switch direct/stock mode.
+
+`recover_session=yes` requires C11, JF16, NetDisk at exactly 19,200 baud, and a
+normal disk-serving run. It is deliberately receive-only until target state is
+known, so a silent CP/M music player is not disturbed. A checked C11 beacon
+during NetDisk triggers a complete V16 reboot; a replacement host recognizes
+an already-running CP/M from its next checked request. Named serial-device loss
+is retried in bounded `reconnect_timeout` windows while recovery remains armed;
+a configured console PTY is likewise awaited before boot and reopened after a
+loss.
+See [`c11-session-recovery.md`](c11-session-recovery.md).
 
 `boot_restarts` bounds complete bootstrap retransmissions after an explicit
 target-reset indication; zero disables them. A V16 body is never resent merely

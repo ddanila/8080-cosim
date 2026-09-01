@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **C11 / ABI 1.4 POST RASTER FIX DESK-QUALIFIED AND READY TO PROGRAM; PHYSICAL ACCEPTANCE PENDING**
+Status: **C11 / ABI 1.4 POST RASTER AND SESSION RECOVERY DESK-QUALIFIED; PHYSICAL ACCEPTANCE PENDING**
 
 This is the from-scratch network-only successor to the EktaSoft monitor ROM.
 Reset performs a bounded POST, acquires an identity-independent host at the
@@ -69,7 +69,12 @@ line is deliberately additive:
   a safe 9,648-byte physical-raster envelope, covering mode 0's extra scanline
   while retaining the 9,600-byte text surface. All four S21 geometries, local
   and remote CP/M, native-host/replacement, package, and reproducibility gates
-  pass. Focused physical confirmation of the checker and bottom line remains.
+  pass. Its C11-only boot loader also periodically emits a checked discovery
+  beacon at NetDisk's 19,200/8O1 before returning to V16's 8N1 scanner. The
+  production host can therefore distinguish a waiting loader from an already
+  running CP/M, attach without a resume flag, and recover a reset seen during
+  NetDisk. Focused physical confirmation of the checker, bottom line, and
+  recovery pair remains. See `docs/c11-session-recovery.md`.
 
 ## Build and test
 
@@ -171,9 +176,9 @@ The C10 combined, D15-low and D16-high hashes are respectively
 `fbf9baaad9027a5335e3549da3a396eb999bbaae1a1f3f5f6e2f36798848a6bc`,
 `a8e54e8ffac5b2654ba23f3dbff8acee17dd857d05f3654fa0fa9d23fdd58c7c`,
 and `e4c423a0d3bf2dea6ff69170787f67d6c481a07b246727625906293e5aea618e`.
-The C11 combined, D15-low and D16-high hashes are respectively
-`49af4137be8cab2a487ccec0ac264e964b75f6699ebea8baf0f1a29d1ce292dc`,
-`4040833d71fe9029d9cf5bc261b76b57edb87528d1d624e6b003fb2208bf2187`,
+The recovery C11 combined, D15-low and D16-high hashes are respectively
+`b93428bb33cd7e31c2d9b2b84aa07ea17edda76c9d53ab73b3cb8687e8d53dfd`,
+`a94e8fa2911fd3f7e715c6086d237b45fe630e71e8e14786bdcce435d99a8134`,
 and `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must

@@ -22,6 +22,9 @@ history.
   stock PC7/POF release, full-Port-C/visibility guards, truthful video
   diagnostics, preserved C9 transport, deterministic burn pair, and the
   remaining attended display acceptance.
+- `c11-session-recovery.md` — C11 checked 8O1 discovery beacon, passive host
+  boot/NetDisk state machine, reset/reconnect matrix, bounded failure policy,
+  and superseded-versus-current programming hashes.
 - `portable-c-host-plan.md` — subordinate implementation and qualification plan
   for a Linux-first portable C Janet/Fastboot/NetDisk/N4 host, an Open Watcom
   Windows 95 build, headless Wine-to-simulator automation, and eventual

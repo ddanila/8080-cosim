@@ -147,6 +147,16 @@ def main() -> int:
     discard_ready = os.environ.get("JUKUHOST_C8_DISCARD_READY") == "1"
     replace_host = os.environ.get("JUKUHOST_C8_REPLACE_HOST") == "1"
     reset_during_stream = os.environ.get("JUKUHOST_C8_TARGET_RESET") == "1"
+    recover_session = os.environ.get("JUKUHOST_C11_RECOVER") == "1"
+    netdisk_reset = os.environ.get("JUKUHOST_C11_NETDISK_RESET") == "1"
+    late_host = os.environ.get("JUKUHOST_C11_LATE_HOST") == "1"
+    require(not recover_session or RELEASE == "c11",
+            "session recovery requires the C11 discovery beacon")
+    require(not netdisk_reset or recover_session,
+            "NetDisk reset fixture requires C11 session recovery")
+    require(not late_host or recover_session,
+            "late-host fixture requires C11 session recovery")
+    disk_timeout = "240" if netdisk_reset else "120"
     with tempfile.TemporaryDirectory(prefix="jukuhost-c8-cosim.") as name:
         temp = Path(name)
         trace = temp / "trace"
@@ -181,13 +191,30 @@ def main() -> int:
         )
         if reset_during_stream:
             environment["JUKU_RESET_AFTER_USART_RX"] = "900"
+        elif netdisk_reset:
+            # The exact C11 V16 transfer is under 8 KiB.  This boundary fires
+            # after CP/M has entered NetDisk and begun consuming disk replies,
+            # but before the initial command workload is complete.
+            environment["JUKU_RESET_AFTER_USART_RX"] = "7785"
         simulator_stderr = (temp / "simulator.stderr").open("wb")
         simulator = subprocess.Popen(
             [str(trace), str(ROM), "1000000000000", "0", "100000"],
             cwd=temp, env=environment, stdout=subprocess.DEVNULL,
             stderr=simulator_stderr,
         )
-        if discard_ready:
+        if late_host:
+            beacon = b"JB\x0b\x01\x02"
+            time.sleep(0.8)
+            first_interval = bytearray()
+            while select.select([serial_master], [], [], 0.05)[0]:
+                first_interval.extend(os.read(serial_master, 4096))
+            time.sleep(1.8)
+            second_interval = bytearray()
+            while select.select([serial_master], [], [], 0.05)[0]:
+                second_interval.extend(os.read(serial_master, 4096))
+            require(beacon in first_interval and beacon in second_interval,
+                    "C11 did not repeat its checked discovery beacon")
+        elif discard_ready:
             time.sleep(0.5)
             discarded = bytearray()
             while select.select([serial_master], [], [], 0.05)[0]:
@@ -201,9 +228,11 @@ def main() -> int:
             "--writable", "--disk-protocol", "3",
             "--disk-baud", "19200", "--read-ahead", "3",
             "--console-pty", os.ttyname(console_slave), "--timeout", "30",
-            "--disk-timeout", "120", "--log", str(temp / "host.log"),
+            "--disk-timeout", disk_timeout, "--log", str(temp / "host.log"),
             "--capture", str(temp / "host.cap"), "--verbose",
         ]
+        if recover_session:
+            host_command.append("--recover-session")
         host = subprocess.Popen(
             host_command, cwd=ROOT, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, text=True, pass_fds=(serial_master,))
@@ -272,16 +301,31 @@ def main() -> int:
                         f"{RELEASE.upper()} native B: directory differs: {drive_b!r}")
                 copy_name = f"{RELEASE.upper()}COPY.TXT".encode()
                 os.write(console_master, b"PIP " + copy_name + b"=README.TXT\r")
-                copied = read_until(console_master, b"A>", 60.0)
+                try:
+                    copied = read_until(console_master, b"A>", 60.0)
+                except AssertionError as error:
+                    raise AssertionError(
+                        f"{error}{failure_evidence(temp, host, simulator)}"
+                    ) from error
                 require(b"PIP " + copy_name + b"=README.TXT" in copied and
                         b"Bdos Err" not in copied,
                         f"{RELEASE.upper()} write exercise differs: {copied!r}")
                 os.write(console_master, b"ERA " + copy_name + b"\r")
-                erased = read_until(console_master, b"A>", 30.0)
+                try:
+                    erased = read_until(console_master, b"A>", 30.0)
+                except AssertionError as error:
+                    raise AssertionError(
+                        f"{error}{failure_evidence(temp, host, simulator)}"
+                    ) from error
                 require(b"ERA " + copy_name in erased,
                         f"{RELEASE.upper()} write cleanup differs: {erased!r}")
                 os.write(console_master, b"WBOOT\r")
-                warm = read_until(console_master, b"A>", 45.0)
+                try:
+                    warm = read_until(console_master, b"A>", 45.0)
+                except AssertionError as error:
+                    raise AssertionError(
+                        f"{error}{failure_evidence(temp, host, simulator)}"
+                    ) from error
                 require(b"CP/M" in warm or b"A>" in warm,
                         f"{RELEASE.upper()} warm boot differs: {warm!r}")
             if replace_host:
@@ -293,16 +337,32 @@ def main() -> int:
                     # Ensure at least one bounded target poll observes host
                     # loss before the stateless replacement appears.
                     time.sleep(0.5)
-                reconnect_command = [
-                    str(HOST), "--serial-fd", str(serial_master),
-                    "--volume", str(volume), "--drive-b", str(DRIVE_B),
-                    "--resume-disk", "--writable",
-                    "--disk-protocol", "3", "--disk-baud", "19200",
-                    "--read-ahead", "3", "--console-pty",
-                    os.ttyname(console_slave), "--disk-timeout", "120",
-                    "--log", str(temp / "host-reconnect.log"),
-                    "--capture", str(temp / "host-reconnect.cap"), "--verbose",
-                ]
+                if recover_session:
+                    reconnect_command = [
+                        str(HOST), "--serial-fd", str(serial_master),
+                        "--system", str(SYSTEM), "--fast-stage", str(FASTBOOT),
+                        "--network-rom", "--recover-session",
+                        "--volume", str(volume), "--drive-b", str(DRIVE_B),
+                        "--writable", "--disk-protocol", "3",
+                        "--disk-baud", "19200", "--read-ahead", "3",
+                        "--console-pty", os.ttyname(console_slave),
+                        "--disk-timeout", disk_timeout,
+                        "--log", str(temp / "host-reconnect.log"),
+                        "--capture", str(temp / "host-reconnect.cap"),
+                        "--verbose",
+                    ]
+                else:
+                    reconnect_command = [
+                        str(HOST), "--serial-fd", str(serial_master),
+                        "--volume", str(volume), "--drive-b", str(DRIVE_B),
+                        "--resume-disk", "--writable",
+                        "--disk-protocol", "3", "--disk-baud", "19200",
+                        "--read-ahead", "3", "--console-pty",
+                        os.ttyname(console_slave), "--disk-timeout", disk_timeout,
+                        "--log", str(temp / "host-reconnect.log"),
+                        "--capture", str(temp / "host-reconnect.cap"),
+                        "--verbose",
+                    ]
                 host = subprocess.Popen(
                     reconnect_command, cwd=ROOT, stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT, text=True,
@@ -336,6 +396,14 @@ def main() -> int:
             if reset_during_stream:
                 require("boot-restarts=1" in log and "target-resets=1" in log,
                         f"target-reset recovery evidence differs: {log}")
+            if recover_session:
+                require("phase=discover serial=19200 8O1 passive" in log and
+                        "C11 boot beacon received" in log,
+                        f"C11 discovery evidence differs: {log}")
+            if netdisk_reset:
+                require("boot beacon received during NetDisk" in log and
+                        "target reset during NetDisk; restarting V16" in log,
+                        f"C11 NetDisk reset evidence differs: {log}")
             require((temp / "host.cap").stat().st_size > 100,
                     "capture is unexpectedly small")
             converted = subprocess.run([
@@ -396,6 +464,12 @@ def main() -> int:
         additions.append("host replacement")
     if reset_during_stream:
         additions.append("target-reset recovery")
+    if recover_session:
+        additions.append("passive session discovery")
+    if netdisk_reset:
+        additions.append("NetDisk-reset recovery")
+    if late_host:
+        additions.append("periodic late-host beacon")
     detail = "" if not additions else " + " + " + ".join(additions)
     print(
         f"JUKUHOST-{RELEASE.upper()}-COSIM-TEST: PASS "

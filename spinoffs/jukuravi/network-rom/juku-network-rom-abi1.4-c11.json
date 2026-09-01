@@ -1,16 +1,16 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "49af4137be8cab2a487ccec0ac264e964b75f6699ebea8baf0f1a29d1ce292dc",
-  "d15_sha256": "4040833d71fe9029d9cf5bc261b76b57edb87528d1d624e6b003fb2208bf2187",
+  "image_sha256": "b93428bb33cd7e31c2d9b2b84aa07ea17edda76c9d53ab73b3cb8687e8d53dfd",
+  "d15_sha256": "a94e8fa2911fd3f7e715c6086d237b45fe630e71e8e14786bdcce435d99a8134",
   "d16_sha256": "ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581",
   "boot_code_bytes": 1124,
   "gate_bytes": 219,
   "helper_bytes": 128,
   "fastboot_core_bytes": 128,
   "fastboot_extension_bytes": 0,
-  "embedded_fastboot_extension_bytes": 361,
-  "embedded_fastboot_extension_sha256": "ba33317e33ca7d27532d5b315df0ead8a6deba1412ca152ddad58345f44f2f29",
+  "embedded_fastboot_extension_bytes": 456,
+  "embedded_fastboot_extension_sha256": "326cacb6538360218257595fc11edeaf6c6a51b4279fdc39be23f1f73daf5a5d",
   "embedded_fastboot_extension_file_offset": "0600",
   "fastboot_protocol": 16,
   "quick_post": [
@@ -107,7 +107,7 @@
     "host_services": "FF5C"
   },
   "candidate": "network-first-abi1.4-c11-post-raster-candidate",
-  "status": "deterministic POST/raster simulator candidate; C10 remains immutable",
+  "status": "deterministic POST/raster/recovery simulator candidate; C10 remains immutable",
   "key_remap_pairs": 4,
   "netdisk_cache": {
     "records_per_drive": 8,
@@ -198,5 +198,13 @@
     "release_after": "deterministic-320x241-checkerboard",
     "checkerboard": "8x8-full-raster"
   },
-  "checker_helper_bytes": 47
+  "checker_helper_bytes": 47,
+  "boot_discovery": {
+    "framing": "19200-8O1",
+    "frame": "4A 42 0B 01 02",
+    "copies_per_interval": 2,
+    "idle_interval": "approximately 1 second at 1.7 MHz",
+    "fastboot_framing": "19200-8N1",
+    "scope": "idle JZ scanner only; payload receive remains blocking"
+  }
 }

@@ -97,6 +97,7 @@ static int test_configuration(void)
         "capture=JUKUHOST.CAP\n"
         "console=/dev/pts/7\n"
         "network_rom=yes\n"
+        "recover_session=yes\n"
         "timeout=90\n"
         "disk_timeout=0\n"
         "boot_restarts=4\n"
@@ -146,6 +147,7 @@ static int test_configuration(void)
     const char *network_line;
     CHECK(jh_config_parse(valid, sizeof(valid) - 1u, &config, &error) == JH_OK);
     CHECK(strcmp(config.port, "/dev/ttyS0") == 0 && config.network_rom == 1 &&
+          config.recover_session == 1 &&
           config.timeout_seconds == 90u && config.disk_timeout_seconds == 0u &&
           config.boot_restarts == 4u &&
           config.reconnect_timeout_seconds == 12u &&
@@ -158,14 +160,15 @@ static int test_configuration(void)
           config.disk_b.mode == JH_CONFIG_MEDIA_READ_ONLY &&
           memcmp(config.system.sha256, config.disk_a.sha256,
                  JH_SHA256_SIZE) == 0);
-    network_line = strstr(valid, "network_rom=yes\n");
+    network_line = strstr(valid, "network_rom=yes\nrecover_session=yes\n");
     CHECK(network_line != NULL);
     memcpy(stock_fast, valid, (size_t)(network_line - valid));
     strcpy(stock_fast + (network_line - valid),
-           network_line + strlen("network_rom=yes\n"));
+           network_line + strlen("network_rom=yes\nrecover_session=yes\n"));
     CHECK(jh_config_parse(stock_fast, strlen(stock_fast), &config, &error) ==
           JH_OK);
-    CHECK(config.have_fastboot && !config.network_rom);
+    CHECK(config.have_fastboot && !config.network_rom &&
+          !config.recover_session);
     CHECK(jh_sha256_parse(hash, config.system.sha256) == JH_OK);
     CHECK(jh_config_parse(duplicate, sizeof(duplicate) - 1u,
                           &config, &error) == JH_ERR_FORMAT && error.line == 3u);

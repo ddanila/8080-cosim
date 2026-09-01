@@ -292,9 +292,84 @@ def main() -> int:
                 missing.stdout), missing.stdout
         assert "No such file or directory" in missing.stdout, missing.stdout
         assert "phase=serial-open" not in missing.stdout, missing.stdout
+
+        # Recovery mode must not abandon a valid boot merely because its PTY
+        # relay starts later. Prove the preflight waits, then continues as
+        # soon as the named endpoint appears. No beacon is sent, so the host
+        # must then remain passively in discovery.
+        recover_serial_master, recover_serial_slave = pty.openpty()
+        recover_console_master, recover_console_slave = pty.openpty()
+        for descriptor in (
+                recover_serial_master, recover_serial_slave,
+                recover_console_master, recover_console_slave):
+            tty.setraw(descriptor)
+        delayed_console = temp / "delayed-console"
+        dummy_system = temp / "dummy-system.bin"
+        dummy_fast = temp / "dummy-fast.jf16"
+        dummy_system.write_bytes(b"invalid")
+        dummy_fast.write_bytes(b"invalid")
+        waiting = subprocess.Popen([
+            str(HOST), "--serial-fd", str(recover_serial_master),
+            "--system", str(dummy_system), "--fast-stage", str(dummy_fast),
+            "--network-rom", "--recover-session",
+            "--volume", str(volume), "--console-pty", str(delayed_console),
+            "--disk-timeout", "1",
+        ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+           stderr=subprocess.STDOUT, pass_fds=(recover_serial_master,))
+        try:
+            wait_log(waiting, f"console PTY {delayed_console} unavailable")
+            assert waiting.poll() is None
+            delayed_console.symlink_to(os.ttyname(recover_console_slave))
+            wait_log(waiting, "phase=discover serial=19200 8O1 passive")
+            waiting.send_signal(signal.SIGINT)
+            waiting.wait(timeout=5.0)
+            assert waiting.returncode == 0
+        finally:
+            if waiting.poll() is None:
+                waiting.kill()
+                waiting.wait()
+            for descriptor in (
+                    recover_serial_master, recover_serial_slave,
+                    recover_console_master, recover_console_slave):
+                os.close(descriptor)
+
+        # The named serial endpoint may also appear after the host. Recovery
+        # mode keeps reopening it, then returns to passive discovery rather
+        # than assuming either boot or NetDisk state.
+        late_serial_master, late_serial_slave = pty.openpty()
+        late_console_master, late_console_slave = pty.openpty()
+        for descriptor in (
+                late_serial_master, late_serial_slave,
+                late_console_master, late_console_slave):
+            tty.setraw(descriptor)
+        delayed_serial = temp / "delayed-serial"
+        reopening = subprocess.Popen([
+            str(HOST), "--serial", str(delayed_serial),
+            "--system", str(dummy_system), "--fast-stage", str(dummy_fast),
+            "--network-rom", "--recover-session",
+            "--volume", str(volume),
+            "--console-pty", os.ttyname(late_console_slave),
+            "--reconnect-timeout", "1", "--disk-timeout", "1",
+        ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+           stderr=subprocess.STDOUT)
+        try:
+            wait_log(reopening, "serial link lost")
+            delayed_serial.symlink_to(os.ttyname(late_serial_slave))
+            wait_log(reopening, "phase=discover serial=19200 8O1 passive")
+            reopening.send_signal(signal.SIGINT)
+            reopening.wait(timeout=5.0)
+            assert reopening.returncode == 0
+        finally:
+            if reopening.poll() is None:
+                reopening.kill()
+                reopening.wait()
+            for descriptor in (
+                    late_serial_master, late_serial_slave,
+                    late_console_master, late_console_slave):
+                os.close(descriptor)
     print("JUKUHOST-LINUX-PTY-TEST: PASS "
           "(N3/N4 + B: + duplicate + journal recovery + capture events + "
-          "console diagnostics)")
+          "console/serial diagnostics and recovery)")
     return 0
 
 

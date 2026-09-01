@@ -10,7 +10,7 @@
 #include <string.h>
 #include <time.h>
 
-#define HOST_VERSION "0.3.1-m6"
+#define HOST_VERSION "0.3.1-m7"
 #define STOCK_TURN_GUARD_MS 10u
 #define V15_EXTENSION_GUARD_MS 20u
 #define V15_PROBE_REPLY_MS 25u
@@ -26,7 +26,11 @@ enum exit_code {
 };
 
 enum run_result {
-    RUN_TARGET_RESET = 100
+    RUN_TARGET_RESET = 100,
+    RUN_REDISCOVER = 101,
+    RUN_DISCOVER_BOOT = 102,
+    RUN_DISCOVER_DISK = 103,
+    RUN_REOPEN_CONSOLE = 104
 };
 
 struct options {
@@ -57,6 +61,7 @@ struct options {
     uint32_t read_ahead;
     uint32_t reply_guard_ms;
     int direct_fastboot;
+    int recover_session;
     int resume_disk;
     int boot_only;
     int writable;
@@ -74,6 +79,7 @@ struct host_context {
     FILE *log_file;
     FILE *capture_file;
     uint64_t started_ms;
+    uint64_t disk_started_ms;
     unsigned long rx_bytes;
     unsigned long tx_bytes;
     unsigned long requests;
@@ -135,6 +141,7 @@ static void usage(FILE *file)
         "  --fast-stage FILE       stock-assisted JF15 or network-ROM JF16\n"
         "  --network-rom           C8/C9 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
+        "  --recover-session       C11 passive boot/NetDisk auto-recovery\n"
         "  --resume-disk           attach to an already running system\n"
         "  --boot-only             stop after a successful bootstrap\n"
         "  --timeout SECONDS       boot deadline (default 120)\n"
@@ -238,6 +245,8 @@ static int parse_options(int argc, char **argv, struct options *options)
         } else if (strcmp(argument, "--network-rom") == 0 ||
                 strcmp(argument, "--direct-fastboot") == 0) {
             options->direct_fastboot = 1;
+        } else if (strcmp(argument, "--recover-session") == 0) {
+            options->recover_session = 1;
         } else if (strcmp(argument, "--resume-disk") == 0) {
             options->resume_disk = 1;
         } else if (strcmp(argument, "--boot-only") == 0) {
@@ -293,6 +302,7 @@ static int parse_options(int argc, char **argv, struct options *options)
                 options->volume != NULL || options->drive_b != NULL ||
                 options->console_pty != NULL || options->log != NULL ||
                 options->capture != NULL || options->direct_fastboot ||
+                options->recover_session ||
                 options->resume_disk || options->boot_only ||
                 options->writable || options->verbose) {
             return -1;
@@ -304,6 +314,9 @@ static int parse_options(int argc, char **argv, struct options *options)
             (!options->resume_disk && options->system == NULL)) return -1;
     if (options->resume_disk && options->boot_only) return -1;
     if (options->direct_fastboot && options->fast_stage == NULL) return -1;
+    if (options->recover_session && (!options->direct_fastboot ||
+            options->resume_disk || options->boot_only ||
+            options->disk_baud != 19200u)) return -1;
     if (options->console_pty != NULL && options->disk_protocol != 3u) return -1;
     return 0;
 }
@@ -458,6 +471,7 @@ static int configure_from_file(const char *path, struct options *options,
     options->read_ahead = config->read_ahead;
     options->reply_guard_ms = config->reply_guard_ms;
     options->direct_fastboot = config->network_rom;
+    options->recover_session = config->recover_session;
     options->writable = config->disk_a.mode != JH_CONFIG_MEDIA_READ_ONLY;
     return 0;
 }
@@ -904,6 +918,117 @@ static int wait_fast_frame(struct host_context *host,
     return 0;
 }
 
+static int is_c11_boot_beacon(uint8_t kind, uint8_t first, uint8_t second)
+{
+    return kind == (uint8_t)'B' && first == 11u && second == 1u;
+}
+
+static size_t request_wire_length(const struct jh_n3_request *request)
+{
+    if (request->operation == JH_N4_CONSOLE_OUT_BLOCK) {
+        return 6u + request->payload_length;
+    }
+    return 9u + request->payload_length;
+}
+
+/* C11 discovery is deliberately receive-only.  A checked JB/11 frame means
+ * the ROM loader is waiting at V16; a complete checked JD request means CP/M
+ * is already running.  The first request is put back byte-for-byte so the
+ * ordinary NetDisk service, including duplicate handling, remains the sole
+ * owner of request semantics. */
+static int discover_c11_target(struct host_context *host)
+{
+    struct jh_fast_parser boot_parser;
+    struct jh_n3_parser disk_parser;
+    struct jh_n3_request request;
+    uint8_t incoming[256];
+    uint8_t kind = 0u;
+    uint8_t first = 0u;
+    uint8_t second = 0u;
+    uint64_t next_wait_log = jh_platform_milliseconds() + 5000u;
+    host->pending_length = 0u;
+    host->pending_offset = 0u;
+    jh_fast_parser_init(&boot_parser);
+    jh_n3_parser_init(&disk_parser);
+    host_log(host, "INFO", "phase=discover serial=19200 8O1 passive");
+    for (;;) {
+        int received;
+        size_t index;
+        if (jh_platform_stop_requested()) return EXIT_CLEAN;
+        received = host_read(host, incoming, sizeof(incoming), 50u);
+        if (received < 0) return EXIT_SERIAL;
+        for (index = 0u; index < (size_t)received; ++index) {
+            int disk_was_idle = disk_parser.length == 0u;
+            int boot_result = JH_NEED_MORE;
+            int disk_result;
+            if (disk_was_idle || boot_parser.length != 0u) {
+                boot_result = jh_fast_parser_push(
+                    &boot_parser, incoming[index], &kind, &first, &second);
+            }
+            disk_result = jh_n3_parser_push(
+                &disk_parser, incoming[index], &request);
+            if (boot_result == JH_FRAME &&
+                    is_c11_boot_beacon(kind, first, second)) {
+                host->pending_length = 0u;
+                host->pending_offset = 0u;
+                host_log(host, "INFO",
+                         "C11 boot beacon received; target is awaiting V16");
+                return RUN_DISCOVER_BOOT;
+            }
+            if (disk_result == JH_FRAME) {
+                size_t frame_length = request_wire_length(&request);
+                /* Prepend in reverse order because host_push_back itself
+                 * prepends to any bytes already queued. */
+                host_push_back(host, incoming + index + 1u,
+                               (size_t)received - index - 1u);
+                host_push_back(host, disk_parser.bytes, frame_length);
+                host_log(host, "INFO",
+                         "checked NetDisk request received; CP/M is already running");
+                return RUN_DISCOVER_DISK;
+            }
+        }
+        if (jh_platform_milliseconds() >= next_wait_log) {
+            host_log(host, "INFO", "waiting passively for C11 or NetDisk");
+            next_wait_log = jh_platform_milliseconds() + 5000u;
+        }
+        jh_platform_idle();
+    }
+}
+
+static int recover_c11_serial(struct host_context *host)
+{
+    if (host->options.serial == NULL ||
+            host->options.reconnect_timeout_seconds == 0u ||
+            host->capture_error || host->log_error) return -1;
+    while (!jh_platform_stop_requested()) {
+        if (reconnect_serial(host, 19200u, 'O') == 0) return 0;
+        host_log(host, "WARN",
+                 "C11 recovery remains armed; retrying serial discovery");
+    }
+    return 0;
+}
+
+static int wait_c11_console(struct host_context *host)
+{
+    uint64_t next_wait_log = 0u;
+    if (host->options.console_pty == NULL) return 0;
+    while (!jh_platform_stop_requested()) {
+        struct jh_platform_console probe;
+        if (jh_platform_console_open(
+                &probe, host->options.console_pty) == 0) {
+            jh_platform_console_close(&probe);
+            return 0;
+        }
+        if (jh_platform_milliseconds() >= next_wait_log) {
+            host_log(host, "WARN", "console PTY %s unavailable: %s; waiting",
+                     host->options.console_pty, strerror(errno));
+            next_wait_log = jh_platform_milliseconds() + 5000u;
+        }
+        jh_platform_sleep(250u);
+    }
+    return 0;
+}
+
 static int fast_probe_raw(struct host_context *host, uint8_t first,
                           uint8_t second, uint8_t acknowledgement,
                           uint64_t deadline, unsigned maximum,
@@ -1307,24 +1432,24 @@ static int persist_write(struct host_context *host, struct jh_media *media,
 
 static int run_disk(struct host_context *host,
                     struct jh_platform_media *volume,
-                    struct jh_platform_media *drive_b_file)
+                    struct jh_platform_media *drive_b_file,
+                    int synchronized, int recover_session)
 {
     struct jh_media drive_a;
     struct jh_media drive_b;
     struct jh_service service;
     struct jh_n3_parser parser;
+    struct jh_fast_parser boot_parser;
     struct jh_n3_request request;
     struct jh_service_event event;
     uint8_t incoming[4096];
     uint8_t time_encoded[5];
     uint8_t ready_marker[4] = {'N', 'R', 'N', '3'};
     char journal_path[1024];
-    uint64_t started = jh_platform_milliseconds();
-    uint64_t next_ready = started;
+    uint64_t next_ready = jh_platform_milliseconds();
     time_t clock_offset = 0;
     struct jh_platform_console console;
     int console_open = 0;
-    int synchronized = host->options.resume_disk;
     uint32_t write_sequence = 1u;
     int result;
     if (host->options.console_pty != NULL) ready_marker[3] = '4';
@@ -1357,11 +1482,15 @@ static int run_disk(struct host_context *host,
         if (jh_platform_console_open(&console, host->options.console_pty) != 0) {
             host_log(host, "ERROR", "cannot open console PTY %s: %s",
                      host->options.console_pty, strerror(errno));
-            return EXIT_SERIAL;
+            return recover_session ? RUN_REOPEN_CONSOLE : EXIT_SERIAL;
         }
         console_open = 1;
     }
     jh_n3_parser_init(&parser);
+    jh_fast_parser_init(&boot_parser);
+    if (host->disk_started_ms == 0u) {
+        host->disk_started_ms = jh_platform_milliseconds();
+    }
     host_log(host, "INFO", "serving A: %s, %lu baud 8O1, N%lu%s",
         host->options.writable ? "writable+journal" : "read-only",
         (unsigned long)host->options.disk_baud,
@@ -1369,7 +1498,7 @@ static int run_disk(struct host_context *host,
         drive_b_file != NULL ? ", read-only native B:" : "");
     while (!jh_platform_stop_requested() &&
             (host->options.disk_timeout_seconds == 0u ||
-             jh_platform_milliseconds() - started <
+             jh_platform_milliseconds() - host->disk_started_ms <
                 (uint64_t)host->options.disk_timeout_seconds * 1000u)) {
         uint64_t now = jh_platform_milliseconds();
         int received;
@@ -1386,7 +1515,12 @@ static int run_disk(struct host_context *host,
                     result = EXIT_SERIAL;
                     goto done;
                 }
+                if (recover_session) {
+                    result = RUN_REDISCOVER;
+                    goto done;
+                }
                 jh_n3_parser_init(&parser);
+                jh_fast_parser_init(&boot_parser);
                 synchronized = 0;
                 next_ready = jh_platform_milliseconds();
                 continue;
@@ -1396,6 +1530,12 @@ static int run_disk(struct host_context *host,
         if (console_open) {
             int console_received = jh_platform_console_read(
                 &console, incoming, 256u);
+            if (console_received < 0) {
+                host_log(host, "WARN", "console PTY %s disconnected: %s",
+                         host->options.console_pty, strerror(errno));
+                result = recover_session ? RUN_REOPEN_CONSOLE : EXIT_SERIAL;
+                goto done;
+            }
             if (console_received > 0 && jh_service_console_input(
                     &service, incoming, (size_t)console_received) != JH_OK) {
                 host_log(host, "WARN", "N4 input queue full; input deferred");
@@ -1409,13 +1549,38 @@ static int run_disk(struct host_context *host,
                 result = EXIT_SERIAL;
                 goto done;
             }
+            if (recover_session) {
+                result = RUN_REDISCOVER;
+                goto done;
+            }
             jh_n3_parser_init(&parser);
+            jh_fast_parser_init(&boot_parser);
             synchronized = 0;
             next_ready = jh_platform_milliseconds();
             continue;
         }
         for (index = 0u; index < (size_t)received; ++index) {
+            int parser_was_idle = parser.length == 0u;
+            int boot_parsed = JH_NEED_MORE;
+            uint8_t boot_kind = 0u;
+            uint8_t boot_first = 0u;
+            uint8_t boot_second = 0u;
+            if (recover_session &&
+                    (parser_was_idle || boot_parser.length != 0u)) {
+                boot_parsed = jh_fast_parser_push(
+                    &boot_parser, incoming[index], &boot_kind,
+                    &boot_first, &boot_second);
+            }
             int parsed = jh_n3_parser_push(&parser, incoming[index], &request);
+            if (boot_parsed == JH_FRAME && is_c11_boot_beacon(
+                    boot_kind, boot_first, boot_second)) {
+                host->pending_length = 0u;
+                host->pending_offset = 0u;
+                host_log(host, "WARN",
+                         "C11 boot beacon received during NetDisk; target reset detected");
+                result = RUN_TARGET_RESET;
+                goto done;
+            }
             if (parsed == JH_ERR_CHECKSUM || parsed == JH_ERR_UNSUPPORTED ||
                     parsed == JH_ERR_RANGE) {
                 ++host->retries;
@@ -1456,7 +1621,12 @@ static int run_disk(struct host_context *host,
                     result = EXIT_SERIAL;
                     goto done;
                 }
+                if (recover_session) {
+                    result = RUN_REDISCOVER;
+                    goto done;
+                }
                 jh_n3_parser_init(&parser);
+                jh_fast_parser_init(&boot_parser);
                 synchronized = 0;
                 next_ready = jh_platform_milliseconds();
                 recovered = 1;
@@ -1465,7 +1635,9 @@ static int run_disk(struct host_context *host,
             if (event.console_output_length != 0u && console_open &&
                     jh_platform_console_write(&console, event.console_output,
                                               event.console_output_length) != 0) {
-                result = EXIT_SERIAL;
+                host_log(host, "WARN", "console PTY %s write failed: %s",
+                         host->options.console_pty, strerror(errno));
+                result = recover_session ? RUN_REOPEN_CONSOLE : EXIT_SERIAL;
                 goto done;
             }
             if (event.time_set_requested) {
@@ -1684,17 +1856,27 @@ int main(int argc, char **argv)
         result = EXIT_EVIDENCE;
         goto cleanup;
     }
+    jh_platform_install_signals();
     if (host.options.console_pty != NULL) {
         struct jh_platform_console console_probe;
         if (jh_platform_console_open(
                 &console_probe, host.options.console_pty) != 0) {
-            host_log(&host, "ERROR", "cannot open console PTY %s: %s",
-                     host.options.console_pty, strerror(errno));
-            result = EXIT_SERIAL;
-            goto cleanup;
+            if (host.options.recover_session) {
+                if (wait_c11_console(&host) != 0) {
+                    result = EXIT_SERIAL;
+                    goto cleanup;
+                }
+            } else {
+                host_log(&host, "ERROR", "cannot open console PTY %s: %s",
+                         host.options.console_pty, strerror(errno));
+                result = EXIT_SERIAL;
+                goto cleanup;
+            }
+        } else {
+            jh_platform_console_close(&console_probe);
         }
-        jh_platform_console_close(&console_probe);
     }
+    if (jh_platform_stop_requested()) goto cleanup;
     if (!host.options.boot_only && open_disk_media(
             &host, &volume, &drive_b, &have_drive_b) != 0) {
         result = EXIT_ARTIFACT;
@@ -1707,11 +1889,12 @@ int main(int argc, char **argv)
         result = EXIT_ARTIFACT;
         goto cleanup;
     }
-    jh_platform_install_signals();
     {
-        unsigned initial_baud = host.options.resume_disk ?
+        unsigned initial_baud = host.options.recover_session ? 19200u :
+            host.options.resume_disk ?
             host.options.disk_baud : host.options.direct_fastboot ? 19200u : 9600u;
-        char initial_parity = host.options.direct_fastboot ? 'N' : 'O';
+        char initial_parity = host.options.recover_session ? 'O' :
+            host.options.direct_fastboot ? 'N' : 'O';
         host_log(&host, "INFO", "phase=serial-open requested=%u 8%c1 flow=none",
                  initial_baud, initial_parity);
         int opened = host.options.serial_fd >= 0 ?
@@ -1721,10 +1904,13 @@ int main(int argc, char **argv)
             jh_platform_serial_open(&host.serial, host.options.serial,
                                  initial_baud, initial_parity);
         if (opened != 0) {
-            host_log(&host, "ERROR", "cannot configure serial: %s",
-                     strerror(errno));
-            result = EXIT_SERIAL;
-            goto cleanup;
+            if (!host.options.recover_session ||
+                    recover_c11_serial(&host) != 0) {
+                host_log(&host, "ERROR", "cannot configure serial: %s",
+                         strerror(errno));
+                result = EXIT_SERIAL;
+                goto cleanup;
+            }
         }
     }
     host_log(&host, "INFO", "serial applied=%u 8%c1 flow=none",
@@ -1732,6 +1918,115 @@ int main(int argc, char **argv)
     if (host.serial.base_port != 0u) {
         host_log(&host, "INFO", "serial hardware base=%04X fifo-depth=%u",
                  host.serial.base_port, host.serial.fifo_depth);
+    }
+    if (host.options.recover_session) {
+        int state = RUN_REDISCOVER;
+        int disk_synchronized = 0;
+        for (;;) {
+            if (jh_platform_stop_requested()) {
+                result = EXIT_CLEAN;
+                goto cleanup;
+            }
+            if (state == RUN_REDISCOVER) {
+                if (host.serial.baud != 19200u || host.serial.parity != 'O') {
+                    if (jh_platform_serial_configure(
+                            &host.serial, 19200u, 'O') != 0) {
+                        result = EXIT_SERIAL;
+                    } else {
+                        result = discover_c11_target(&host);
+                    }
+                } else {
+                    result = discover_c11_target(&host);
+                }
+                if (result == EXIT_SERIAL) {
+                    if (recover_c11_serial(&host) != 0) goto cleanup;
+                    state = RUN_REDISCOVER;
+                    continue;
+                }
+                if (result == EXIT_CLEAN) goto cleanup;
+                if (result == RUN_DISCOVER_DISK) {
+                    state = RUN_DISCOVER_DISK;
+                    disk_synchronized = 1;
+                    continue;
+                }
+                if (result != RUN_DISCOVER_BOOT) goto cleanup;
+                state = RUN_DISCOVER_BOOT;
+            }
+            if (state == RUN_DISCOVER_BOOT) {
+                if (jh_platform_serial_configure(
+                        &host.serial, 19200u, 'N') != 0) {
+                    result = EXIT_SERIAL;
+                } else {
+                    host_log(&host, "INFO", "phase=fastboot");
+                    result = run_fastboot(
+                        &host, fast_stage, fast_stage_length,
+                        system, system_length);
+                }
+                if (result == EXIT_CLEAN) {
+                    if (jh_platform_serial_configure(
+                            &host.serial, 19200u, 'O') != 0) {
+                        result = EXIT_SERIAL;
+                    } else {
+                        state = RUN_DISCOVER_DISK;
+                        disk_synchronized = 0;
+                        continue;
+                    }
+                }
+                if (result == RUN_TARGET_RESET || result == EXIT_PROTOCOL) {
+                    ++host.target_reset_count;
+                    ++host.boot_restart_count;
+                    host_log(&host, "WARN",
+                        "C11 bootstrap did not reach NetDisk; rediscovering "
+                        "without a restart limit (attempt %lu)",
+                        host.boot_restart_count);
+                    if (jh_platform_serial_configure(
+                            &host.serial, 19200u, 'O') != 0) {
+                        result = EXIT_SERIAL;
+                    } else {
+                        state = RUN_REDISCOVER;
+                        continue;
+                    }
+                }
+                if (result == EXIT_SERIAL) {
+                    if (recover_c11_serial(&host) != 0) goto cleanup;
+                    state = RUN_REDISCOVER;
+                    continue;
+                }
+                goto cleanup;
+            }
+            if (state == RUN_DISCOVER_DISK) {
+                host_log(&host, "INFO", "phase=netdisk");
+                result = run_disk(
+                    &host, &volume, have_drive_b ? &drive_b : NULL,
+                    disk_synchronized, 1);
+                if (result == RUN_TARGET_RESET) {
+                    ++host.target_reset_count;
+                    ++host.boot_restart_count;
+                    host_log(&host, "WARN",
+                             "target reset during NetDisk; restarting V16");
+                    state = RUN_DISCOVER_BOOT;
+                    continue;
+                }
+                if (result == RUN_REDISCOVER) {
+                    state = RUN_REDISCOVER;
+                    continue;
+                }
+                if (result == RUN_REOPEN_CONSOLE) {
+                    if (wait_c11_console(&host) != 0) {
+                        result = EXIT_SERIAL;
+                        goto cleanup;
+                    }
+                    state = RUN_REDISCOVER;
+                    continue;
+                }
+                if (result == EXIT_SERIAL) {
+                    if (recover_c11_serial(&host) != 0) goto cleanup;
+                    state = RUN_REDISCOVER;
+                    continue;
+                }
+                goto cleanup;
+            }
+        }
     }
     if (!host.options.resume_disk) {
         const char *boot_phase = host.options.direct_fastboot ? "fastboot" :
@@ -1786,7 +2081,8 @@ int main(int argc, char **argv)
         goto cleanup;
     }
     host_log(&host, "INFO", "phase=netdisk");
-    result = run_disk(&host, &volume, have_drive_b ? &drive_b : NULL);
+    result = run_disk(&host, &volume, have_drive_b ? &drive_b : NULL,
+                      host.options.resume_disk, 0);
 cleanup:
     if (result == EXIT_CLEAN && (host.log_error || host.capture_error)) {
         result = EXIT_EVIDENCE;

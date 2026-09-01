@@ -60,6 +60,7 @@ CHECKER_STORED = 0x1500
 CORE_STORED = 0x0F00
 EMBEDDED_EXTENSION_STORED = 0x0600
 EMBEDDED_EXTENSION_BYTES = 361
+C11_EMBEDDED_EXTENSION_BYTES = 456
 EXTENSION_BYTES = 267
 LOCALE_EXTENSION_BYTES = 307
 CANDIDATE = "network-first-abi1-cs00015-c4"
@@ -198,13 +199,19 @@ def build(*, abi_selftest: bool = False,
                 "FASTBOOT_STREAM_ACK", "FASTBOOT_CPM3",
                 "FASTBOOT_CPM3_ROM", "FASTBOOT_BOOT_RECORD",
                 "FASTBOOT_V16",
-            ) + (("FASTBOOT_CPM3_C8",) if c8 else ()),
+            ) + (("FASTBOOT_CPM3_C8",) if c8 else ()) +
+            (("FASTBOOT_C11_DISCOVERY",) if c11 else ()),
         ) if extended else b""
-        if extended and len(embedded_extension) != EMBEDDED_EXTENSION_BYTES:
+        expected_embedded_extension_bytes = (
+            C11_EMBEDDED_EXTENSION_BYTES if c11 else
+            EMBEDDED_EXTENSION_BYTES
+        )
+        if extended and len(embedded_extension) != \
+                expected_embedded_extension_bytes:
             raise ValueError(
                 "V16 embedded extension is "
                 f"{len(embedded_extension)} bytes; expected "
-                f"{EMBEDDED_EXTENSION_BYTES}"
+                f"{expected_embedded_extension_bytes}"
             )
         core_defines = (
             "FASTBOOT_8N1", "FASTBOOT_ZX0", "FASTBOOT_STREAM",
@@ -296,7 +303,11 @@ def build(*, abi_selftest: bool = False,
             f"JROMCHECKERBYTES equ {len(checker)}\n"
             ".ifdef ROM_ABI_EXTENDED\n"
             f"JROMCOREBYTES equ {len(core) if extended else 128}\n"
+            ".ifdef ROM_ABI_C11\n"
+            f"JROMEMBEDEXTBYTES equ {C11_EMBEDDED_EXTENSION_BYTES}\n"
+            ".else\n"
             f"JROMEMBEDEXTBYTES equ {EMBEDDED_EXTENSION_BYTES}\n"
+            ".endif\n"
             ".else\n"
             "JROMCOREBYTES equ 141\n"
             ".endif\n"
@@ -442,7 +453,8 @@ def build(*, abi_selftest: bool = False,
             (LOCALE_CANDIDATE if locale else CANDIDATE)
         ),
         "status": (
-            (("deterministic POST/raster simulator candidate; C10 remains immutable"
+            (("deterministic POST/raster/recovery simulator candidate; "
+              "C10 remains immutable"
               if c11 else
               ("desk-qualified POF-release successor; physical acceptance "
               "pending"
@@ -590,6 +602,14 @@ def build(*, abi_selftest: bool = False,
         metadata["console"]["physical_raster_clear_bytes"] = {
             "00": 9640, "01": 9640, "10": 9648, "11": 9600,
             "implementation_envelope": 9648,
+        }
+        metadata["boot_discovery"] = {
+            "framing": "19200-8O1",
+            "frame": "4A 42 0B 01 02",
+            "copies_per_interval": 2,
+            "idle_interval": "approximately 1 second at 1.7 MHz",
+            "fastboot_framing": "19200-8N1",
+            "scope": "idle JZ scanner only; payload receive remains blocking",
         }
     return image, metadata
 

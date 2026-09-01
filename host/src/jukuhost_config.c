@@ -236,6 +236,10 @@ static int parse_host(struct jh_host_config *config, unsigned *seen,
         if (set_once(seen, 16u) != JH_OK) return JH_ERR_FORMAT;
         return parse_bool(value, &config->network_rom);
     }
+    if (text_equal(key, "recover_session")) {
+        if (set_once(seen, 512u) != JH_OK) return JH_ERR_FORMAT;
+        return parse_bool(value, &config->recover_session);
+    }
     if (text_equal(key, "timeout")) {
         if (set_once(seen, 32u) != JH_OK) return JH_ERR_FORMAT;
         return parse_unsigned_value(value, 1u, 86400u,
@@ -321,6 +325,7 @@ static int validate(struct jh_host_config *config,
     if (state->fastboot != 0u && state->fastboot != 7u) return JH_ERR_FORMAT;
     config->have_fastboot = state->fastboot == 7u;
     if (config->network_rom && !config->have_fastboot) return JH_ERR_FORMAT;
+    if (config->recover_session && !config->network_rom) return JH_ERR_FORMAT;
     if ((state->fallback_system == 0u) !=
             (state->fallback_fastboot == 0u) ||
             (state->fallback_system != 0u &&
@@ -345,6 +350,9 @@ static int validate(struct jh_host_config *config,
         return JH_ERR_UNSUPPORTED;
     }
     if (config->console[0] != '\0' && config->disk_protocol != 3u) {
+        return JH_ERR_FORMAT;
+    }
+    if (config->recover_session && config->disk_baud != 19200u) {
         return JH_ERR_FORMAT;
     }
     return JH_OK;

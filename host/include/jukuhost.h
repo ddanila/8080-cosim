@@ -145,6 +145,7 @@ struct jh_host_config {
     uint32_t read_ahead;
     uint32_t reply_guard_ms;
     int network_rom;
+    int recover_session;
     int have_fastboot;
     int have_fallback;
 };
