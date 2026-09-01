@@ -1355,6 +1355,8 @@ static int run_disk(struct host_context *host,
     console.ready_ms = 0u;
     if (host->options.console_pty != NULL) {
         if (jh_platform_console_open(&console, host->options.console_pty) != 0) {
+            host_log(host, "ERROR", "cannot open console PTY %s: %s",
+                     host->options.console_pty, strerror(errno));
             return EXIT_SERIAL;
         }
         console_open = 1;
@@ -1681,6 +1683,17 @@ int main(int argc, char **argv)
     if (host.log_error || host.capture_error) {
         result = EXIT_EVIDENCE;
         goto cleanup;
+    }
+    if (host.options.console_pty != NULL) {
+        struct jh_platform_console console_probe;
+        if (jh_platform_console_open(
+                &console_probe, host.options.console_pty) != 0) {
+            host_log(&host, "ERROR", "cannot open console PTY %s: %s",
+                     host.options.console_pty, strerror(errno));
+            result = EXIT_SERIAL;
+            goto cleanup;
+        }
+        jh_platform_console_close(&console_probe);
     }
     if (!host.options.boot_only && open_disk_media(
             &host, &volume, &drive_b, &have_drive_b) != 0) {

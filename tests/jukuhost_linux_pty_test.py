@@ -270,8 +270,31 @@ def main() -> int:
         assert volume.read_bytes()[:RECORD] == b"\xA5" * RECORD
         assert not journal_path.exists()
         assert "stop exit=0" in recovery_log.read_text()
+
+        # A console path is an already-created PTY, not a path for jukuhost
+        # to create.  Keep an invalid path actionable: this used to collapse
+        # into only phase=failed / exit=4 after an otherwise successful boot.
+        missing_master, missing_slave = pty.openpty()
+        tty.setraw(missing_master)
+        tty.setraw(missing_slave)
+        missing_console = temp / "missing-console"
+        missing = subprocess.run([
+            str(HOST), "--serial", os.ttyname(missing_slave),
+            "--volume", str(volume), "--resume-disk",
+            "--console-pty", str(missing_console),
+            "--disk-timeout", "1",
+        ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+           stderr=subprocess.STDOUT, check=False)
+        os.close(missing_master)
+        os.close(missing_slave)
+        assert missing.returncode == 4, missing.stdout
+        assert (f"cannot open console PTY {missing_console}:" in
+                missing.stdout), missing.stdout
+        assert "No such file or directory" in missing.stdout, missing.stdout
+        assert "phase=serial-open" not in missing.stdout, missing.stdout
     print("JUKUHOST-LINUX-PTY-TEST: PASS "
-          "(N3/N4 + B: + duplicate + journal recovery + capture events)")
+          "(N3/N4 + B: + duplicate + journal recovery + capture events + "
+          "console diagnostics)")
     return 0
 
 

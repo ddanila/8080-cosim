@@ -1094,6 +1094,9 @@ Source and generated files:
   and projected file-size upper bound for short melodic attacks;
 - `OPL-IMP-M7-PHYSICAL-AB.json` — exact Imp v1/re-articulation/detuned physical
   comparison payload hashes and listening protocol;
+- `sessions/cs00000-jukupoly-m7-physical/` — partial physical Imp comparison,
+  late-ready/console-preflight diagnosis, v1 listening result, and the isolated
+  re-articulation target failure which keeps M7 unqualified;
 - `OPL-PLAN-STATUS.json` — authoritative cross-milestone automated status and
   physical-gate boundary;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;

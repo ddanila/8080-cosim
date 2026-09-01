@@ -1174,7 +1174,17 @@ The disk is retained at
 keeps the volume fixed, plays unchanged v1 first, then bounded merged-voice
 re-articulation, then source-member detuning, and records lead onset/fade,
 beating or roughness, percussion balance, Escape, and CP/M return.  This is
-preparation only; no physical result is claimed while CS00000 is off.
+no longer preparation only, but the first physical run remains incomplete.
+[`sessions/cs00000-jukupoly-m7-physical/README.md`](sessions/cs00000-jukupoly-m7-physical/README.md)
+records two clean v1 runs and confirms the missing intro lead plus acceptable
+early ticking/percussion.  The re-articulation COM then failed to return and
+the physical screen showed garbage, despite that exact hash still returning
+cleanly in the instruction-level 8080 test.  The detuned candidate was not
+run.  Imp therefore remains v1 and the physical gate stays open pending a
+cold-boot isolated `IMPREAR` reproduction.  The same session also proved that
+C10's late-ready recovery booted CP/M; the apparent boot failure was a missing
+console PTY endpoint, for which `jukuhost` now performs a pre-bootstrap check
+and emits an explicit path/error diagnostic.
 
 The short oracle-derived attack-sample branch now has a structural upper-bound
 audit in [`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json).  It deliberately
