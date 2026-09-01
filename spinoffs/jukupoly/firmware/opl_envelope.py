@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Callable, Sequence
 
 
@@ -205,6 +206,18 @@ def fit_envelope(
     ] | None = None,
 ) -> EnvelopeFit:
     """Find the deterministic least-squares compact target approximation."""
+    if not 0 <= counter_at_onset <= 255:
+        raise ValueError("counter_at_onset must be 0..255")
+    if prediction_transform is None:
+        # Every target update period is a power of two no larger than 64, so
+        # only the low six counter bits can affect a prediction.  Complete
+        # pack sources repeat many identical quantized note envelopes; cache
+        # their exact exhaustive result without changing the search.
+        return _fit_envelope_cached(
+            tuple(reference_levels), key_off_frame, sustain_while_keyed,
+            counter_at_onset & 0x3F, peak_level,
+            preserve_significant_directions,
+        )
     return fit_envelope_variants(
         reference_levels,
         key_off_frame=key_off_frame,
@@ -213,6 +226,23 @@ def fit_envelope(
         peak_level=peak_level,
         preserve_significant_directions=preserve_significant_directions,
         prediction_transforms=(prediction_transform,),
+    )[0]
+
+
+@lru_cache(maxsize=8192)
+def _fit_envelope_cached(
+        reference_levels: tuple[int, ...], key_off_frame: int | None,
+        sustain_while_keyed: bool, counter_at_onset: int,
+        peak_level: int | None, preserve_significant_directions: bool,
+) -> EnvelopeFit:
+    return fit_envelope_variants(
+        reference_levels,
+        key_off_frame=key_off_frame,
+        sustain_while_keyed=sustain_while_keyed,
+        counter_at_onset=counter_at_onset,
+        peak_level=peak_level,
+        preserve_significant_directions=preserve_significant_directions,
+        prediction_transforms=(None,),
     )[0]
 
 

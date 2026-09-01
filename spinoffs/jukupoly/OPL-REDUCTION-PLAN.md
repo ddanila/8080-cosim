@@ -910,8 +910,11 @@ score tuple as their deterministic tie-break.  A representative 68-frame fit
 dropped from about 0.50--0.57 seconds to 0.28--0.29 seconds.  Regenerating the
 30-second runtime-vibrato fixture produced the exact committed
 `eba8af46...5267ca` SHA-256, and regressions pin two ambiguous-trace packet
-choices.  This is host tooling only; it changes neither target bytes nor any
-feasibility allowance.
+choices.  A bounded 8,192-result cache also reuses only complete identical
+reference/search keys; counters are normalized to their semantically complete
+low six bits only after the original `0..255` validation.  The cache-enabled
+regeneration has the same exact hash.  This is host tooling only; it changes
+neither target bytes nor any feasibility allowance.
 
 ### M6: pack regression and physical qualification
 
@@ -923,6 +926,38 @@ error after quantization, file sizes, cycles, and duration.
 Exit gate: complete C-cosim runs, no new special cases, and CS00000 A/B
 confirmation.  Keep old renders and disk image available for comparison until
 qualification is recorded.
+
+The first M6 representative profile is now recorded in
+[`OPL-M6-REPRESENTATIVE-PROFILE.json`](OPL-M6-REPRESENTATIVE-PROFILE.json).
+Neither source pack sets OPL hardware-rhythm mode, so the rhythm-heavy
+representative is “The Dave D. Taylor Blues,” whose 2,030 percussion rows are
+the largest v1 count in the 44-track library.  The selected set otherwise
+follows the named Imp, Dark Halls, and Suspense requirement.  All four exact
+oracle conversions retain every protected onset and use no new source,
+instrument, or track-specific conversion rule.
+
+The first generic calibrations were rejected rather than normalized away.
+Under the combined 5,632-byte player, Imp measured 50.928 frames/s at
+139 samples/frame, while Dark Halls and Suspense measured only 48.389 and
+48.426 frames/s at 142.  Because these three scores contain symbolic notes and
+no held-pitch/vibrato phase steps, the guarded timing-only tool could safely
+regenerate their note tables.  It explicitly refuses every explicit-step,
+held-pitch, or vibrato score.  The accepted settings/results are:
+
+- Imp: `143/7100`, 7,087.8 samples/s, 49.565 frames/s, 158.882 seconds,
+  9,978-byte capability `01h` JPS;
+- Dark Halls: `137/6850`, 6,854.0 samples/s, 50.029 frames/s, 272.002 seconds,
+  20,151-byte capability `03h` JPS with six tremolo notes;
+- Suspense: `137/6850`, 6,858.5 samples/s, 50.062 frames/s, 172.426 seconds,
+  12,969-byte capability `03h` JPS with 29 tremolo notes.
+
+All three pass the shared rate, 1% table/clock/duration, 30 KiB, frozen-loop,
+percussion, and Escape gates.  The Dave Taylor capability-`07h` candidate is
+40,983 bytes and is correctly rejected by the 32,767-byte hard library limit;
+its existing 30,071-byte v1 JPS is retained as the explicit size fallback.
+This is a successful progressive stopping point, not M6 completion: the four
+old/new/reference excerpts, complete two-pack enhanced/fallback build, and
+physical A/B remain open.
 
 ### M7: optional timbral and unsupported-mode reductions
 

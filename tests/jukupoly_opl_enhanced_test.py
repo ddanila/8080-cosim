@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import copy
 import sys
 from pathlib import Path
 
@@ -358,10 +359,59 @@ def check_direct_vibrato_score() -> None:
         raise AssertionError("runtime vibrato accepted without calibration")
 
 
+def check_timing_recalibration() -> None:
+    score = {
+        "schema": "jukupoly-song-v2",
+        "sample_rate_hz": 7100,
+        "frame_samples": 142,
+        "rows": [{
+            "frames": 2,
+            "tone1": {"note": "C4", "opl_envelope": {
+                "peak_level": 12, "sustain_level": 8,
+                "attack_period_frames": 1, "decay_period_frames": 2,
+                "release_period_frames": 4, "sustain_while_keyed": True,
+            }},
+        }],
+        "conversion": {
+            "enhanced_held_pitch": {"enabled": False},
+            "enhanced_vibrato": {"enabled": False},
+        },
+    }
+    calibrated = opl_enhanced.recalibrate_note_score(
+        score, sample_rate=6850, frame_samples=137,
+    )
+    assert score["sample_rate_hz"] == 7100 and score["frame_samples"] == 142
+    assert calibrated["sample_rate_hz"] == 6850
+    assert calibrated["frame_samples"] == 137
+    assert calibrated["rows"] == score["rows"]
+    assert calibrated["conversion"]["timing_recalibration"] == {
+        "source_sample_rate_hz": 7100,
+        "source_frame_samples": 142,
+        "sample_rate_hz": 6850,
+        "frame_samples": 137,
+        "policy": (
+            "measured C-cosim timing-only adjustment; all pitches remain "
+            "symbolic and are regenerated at the declared phase-table rate"
+        ),
+    }
+    unsafe = copy.deepcopy(score)
+    unsafe["rows"][0]["tone1"].pop("note")
+    unsafe["rows"][0]["tone1"]["phase_step"] = 1234
+    try:
+        opl_enhanced.recalibrate_note_score(
+            unsafe, sample_rate=6850, frame_samples=137,
+        )
+    except ValueError as exc:
+        assert "source-aware" in str(exc)
+    else:
+        raise AssertionError("explicit phase step accepted timing-only change")
+
+
 def main() -> int:
     check_timeline_and_rows()
     check_probe_fit()
     check_direct_vibrato_score()
+    check_timing_recalibration()
     print("JUKUPOLY-OPL-ENHANCED: PASS allocation channel-continuity "
           "percussion envelope-fit held-pitch-legato direct-vibrato v2-score")
     return 0

@@ -123,6 +123,32 @@ def check_direction_priority() -> None:
     assert after["mismatches"] == 0
 
 
+def check_exact_fit_cache() -> None:
+    reference = (0, 4, 8, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+    opl_envelope._fit_envelope_cached.cache_clear()
+    first = opl_envelope.fit_envelope(
+        reference, key_off_frame=8, sustain_while_keyed=True,
+        counter_at_onset=17, preserve_significant_directions=True,
+    )
+    before = opl_envelope._fit_envelope_cached.cache_info()
+    repeated_phase = opl_envelope.fit_envelope(
+        reference, key_off_frame=8, sustain_while_keyed=True,
+        counter_at_onset=81, preserve_significant_directions=True,
+    )
+    after = opl_envelope._fit_envelope_cached.cache_info()
+    assert repeated_phase == first
+    assert after.hits == before.hits + 1
+    try:
+        opl_envelope.fit_envelope(
+            reference, key_off_frame=8, sustain_while_keyed=True,
+            counter_at_onset=256,
+        )
+    except ValueError as exc:
+        assert "counter_at_onset" in str(exc)
+    else:
+        raise AssertionError("out-of-range counter entered the fit cache")
+
+
 def check_multi_transform_fit() -> None:
     reference = (0, 7, 7, 6, 6, 5, 4, 3, 2, 1, 0, 0)
     transforms = tuple(
@@ -294,6 +320,7 @@ def main() -> int:
     check_exact_target_fit()
     check_semantic_attenuation_mapping()
     check_direction_priority()
+    check_exact_fit_cache()
     check_multi_transform_fit()
     fitted = check_oracle_fit(tool)
     check_oracle_tremolo_semantics(tool)

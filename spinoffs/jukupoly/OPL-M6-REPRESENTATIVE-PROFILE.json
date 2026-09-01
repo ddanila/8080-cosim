@@ -1,0 +1,636 @@
+{
+  "aggregate_gates": {
+    "all_percussion_and_escape_paths_present": false,
+    "all_runtime_sample_rates_pass": false,
+    "all_runtime_timing_passes": false,
+    "all_scores_below_soft_limit": false,
+    "all_scores_compile_below_hard_limit": false,
+    "all_sources_match": true,
+    "all_tracks_have_qualified_delivery": true,
+    "no_protected_onset_regressions": true,
+    "sample_loop_hash_exact": true
+  },
+  "player": {
+    "bytes": 5632,
+    "declared_state_bytes": 56,
+    "end_address_exclusive": "0x1700",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f",
+    "song_window_margin_bytes": 256
+  },
+  "remaining_gates": [
+    "resolve only measured per-capability timing failures",
+    "old/new/pinned-Nuked excerpts for all four tracks",
+    "complete two-pack enhanced build",
+    "physical CS00000 A/B before normal enablement"
+  ],
+  "schema": "jukupoly-opl-m6-representative-profile-v1",
+  "selection": "Imp, Dark Halls, and Suspense are named by M6; Dave D. Taylor Blues has the highest v1 percussion-row count (2030) across both source packs",
+  "shared_sample_rate_floor_hz": 6401.146221,
+  "status": "representative host conversion and complete C-cosim profile; failed calibrations remain explicit and renders/physical A/B are still open",
+  "tracks": [
+    {
+      "allocation": {
+        "gained_onsets": 14,
+        "missed_protected_onsets": 0,
+        "protected_onsets": 506,
+        "retained_onsets": 520,
+        "source_onsets": 520
+      },
+      "delivery": {
+        "jps_bytes": 9978,
+        "jps_sha256": "1b0a6f753fe9df7bdaac57852d4bb50e39ff87b0954b7e0ed66c1eaa8a7935d5",
+        "mode": "enhanced",
+        "qualified": true,
+        "reason": null
+      },
+      "enhanced_score": {
+        "bytes": 1424095,
+        "frame_samples": 143,
+        "name": "doom1-03-imp.json",
+        "phase_table_hz": 7100,
+        "sha256": "ba4328d0d8d5cc9f6ce4d64962235250a1fe4e326c4cb47601628333a0c65d77"
+      },
+      "envelope_fit": {
+        "direction_mismatches": 0,
+        "maximum_error": 14,
+        "mean_absolute_error": 0.6541433133056858,
+        "selected_logical_notes": 532,
+        "tremolo_analysis": {
+          "emitted_notes": 0,
+          "enabled": false,
+          "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+          "rejected_indirect_candidates": 54,
+          "semantic_candidates": 3
+        }
+      },
+      "format": {
+        "enhanced_capability": 1,
+        "enhanced_jps_bytes": 9978,
+        "enhanced_jps_sha256": "1b0a6f753fe9df7bdaac57852d4bb50e39ff87b0954b7e0ed66c1eaa8a7935d5",
+        "enhanced_rejection": null,
+        "v1_jps_bytes": 8537,
+        "v1_jps_sha256": "0d9f9ab2c94a15726ad6ec497973e3bf84cbda529d9341157a720e9672ba0db5"
+      },
+      "gates": {
+        "duration_within_one_percent": true,
+        "jps_below_soft_limit": true,
+        "jps_compiles_below_hard_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "percussion_and_escape_remain_concurrent": true,
+        "phase_table_matches_within_one_percent": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "label": "doom1-03-imp",
+      "profiles": {
+        "enhanced": {
+          "com_bytes": 5632,
+          "duration_seconds": 158.882064,
+          "effective_sample_hz": 7087.804469,
+          "frame_cycles": {
+            "count": 7875,
+            "max": 42197,
+            "mean": 34298.35,
+            "min": 33574,
+            "p99": 39449
+          },
+          "frame_samples": 143,
+          "frames": 7875,
+          "idle_boundary_cycles": {
+            "count": 6954,
+            "max": 1858,
+            "mean": 1052.254,
+            "min": 827,
+            "p99": 1425
+          },
+          "jps_bytes": 9978,
+          "keyboard_polls": 7876,
+          "label": "doom1-03-imp-enhanced",
+          "music_frame_hz": 49.565066,
+          "mutated_player_bytes": 101,
+          "pit_writes": 50938,
+          "row_boundary_cycles": {
+            "count": 921,
+            "max": 9096,
+            "mean": 3642.738,
+            "min": 1277,
+            "p99": 6953
+          },
+          "sample_loop_cycles": {
+            "count": 1118250,
+            "max": 269,
+            "mean": 230.375,
+            "min": 229,
+            "p99": 262
+          }
+        },
+        "v1": {
+          "com_bytes": 3312,
+          "duration_seconds": 156.882615,
+          "effective_sample_hz": 7178.137629,
+          "frame_cycles": {
+            "count": 7875,
+            "max": 35733,
+            "mean": 33866.723,
+            "min": 33561,
+            "p99": 35441
+          },
+          "frame_samples": 143,
+          "frames": 7875,
+          "idle_boundary_cycles": {
+            "count": 6957,
+            "max": 1144,
+            "mean": 902.517,
+            "min": 814,
+            "p99": 1094
+          },
+          "jps_bytes": 8537,
+          "keyboard_polls": 7876,
+          "label": "doom1-03-imp-v1",
+          "music_frame_hz": 50.196767,
+          "mutated_player_bytes": 44,
+          "pit_writes": 37540,
+          "row_boundary_cycles": {
+            "count": 918,
+            "max": 2180,
+            "mean": 1571.241,
+            "min": 1227,
+            "p99": 2091
+          },
+          "sample_loop_cycles": {
+            "count": 1118250,
+            "max": 269,
+            "mean": 229.977,
+            "min": 229,
+            "p99": 262
+          }
+        }
+      },
+      "source": {
+        "name": "03 The Imp's Song.vgz",
+        "seconds": 157.5080045351474,
+        "sha256": "1d3670f1bd3ccccf6ecd510926101ba6c24fc466c38d37277edfe57c538839cc"
+      },
+      "vibrato": {
+        "direct_channel_frames": 0,
+        "direct_logical_notes": 0,
+        "emitted_logical_notes": 0,
+        "enabled": false,
+        "frame_decisions": {},
+        "held_disable_updates": 0,
+        "held_setting_updates": 0,
+        "packets_with_vibrato": 0,
+        "phase_increment": 7955,
+        "phase_step_generation_hz": null,
+        "policy": "emit only when every active audible operator/layer has a direct common-pitch VIB path and resolves to one bounded target delta; update changes through legato packets",
+        "selected_channel_frames": 0,
+        "source_lfo_hz": 6.068835788302952
+      }
+    },
+    {
+      "allocation": {
+        "gained_onsets": 0,
+        "missed_protected_onsets": 0,
+        "protected_onsets": 2341,
+        "retained_onsets": 2341,
+        "source_onsets": 2341
+      },
+      "delivery": {
+        "jps_bytes": 20151,
+        "jps_sha256": "57d9862c3b772411963e38e888de3d526c4eb554a77e255f10ee11bf99cf432a",
+        "mode": "enhanced",
+        "qualified": true,
+        "reason": null
+      },
+      "enhanced_score": {
+        "bytes": 5651830,
+        "frame_samples": 137,
+        "name": "doom1-04-dark-halls.json",
+        "phase_table_hz": 6850,
+        "sha256": "3a42f587b489e9861fcd9c5bc513b8f54760237074f149dd7ca3e0ff79c5a5e2"
+      },
+      "envelope_fit": {
+        "direction_mismatches": 0,
+        "maximum_error": 5,
+        "mean_absolute_error": 0.0629506680860809,
+        "selected_logical_notes": 2341,
+        "tremolo_analysis": {
+          "emitted_notes": 6,
+          "enabled": true,
+          "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+          "rejected_indirect_candidates": 18,
+          "semantic_candidates": 6
+        }
+      },
+      "format": {
+        "enhanced_capability": 3,
+        "enhanced_jps_bytes": 20151,
+        "enhanced_jps_sha256": "57d9862c3b772411963e38e888de3d526c4eb554a77e255f10ee11bf99cf432a",
+        "enhanced_rejection": null,
+        "v1_jps_bytes": 17882,
+        "v1_jps_sha256": "f76a3f1735bc290d09d96b9f0d9e37c55df9be34857710b9e5518e4c5482781f"
+      },
+      "gates": {
+        "duration_within_one_percent": true,
+        "jps_below_soft_limit": true,
+        "jps_compiles_below_hard_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "percussion_and_escape_remain_concurrent": true,
+        "phase_table_matches_within_one_percent": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "label": "doom1-04-dark-halls",
+      "profiles": {
+        "enhanced": {
+          "com_bytes": 5632,
+          "duration_seconds": 272.001652,
+          "effective_sample_hz": 6853.98779,
+          "frame_cycles": {
+            "count": 13608,
+            "max": 41794,
+            "mean": 33980.218,
+            "min": 32531,
+            "p99": 37956
+          },
+          "frame_samples": 137,
+          "frames": 13608,
+          "idle_boundary_cycles": {
+            "count": 11423,
+            "max": 2269,
+            "mean": 1248.479,
+            "min": 1059,
+            "p99": 1774
+          },
+          "jps_bytes": 20151,
+          "keyboard_polls": 13609,
+          "label": "doom1-04-dark-halls-enhanced",
+          "music_frame_hz": 50.029108,
+          "mutated_player_bytes": 101,
+          "pit_writes": 369593,
+          "row_boundary_cycles": {
+            "count": 2185,
+            "max": 9212,
+            "mean": 4164.001,
+            "min": 1748,
+            "p99": 8609
+          },
+          "sample_loop_cycles": {
+            "count": 1850688,
+            "max": 276,
+            "mean": 235.499,
+            "min": 229,
+            "p99": 269
+          }
+        },
+        "v1": {
+          "com_bytes": 3312,
+          "duration_seconds": 277.146948,
+          "effective_sample_hz": 7021.343776,
+          "frame_cycles": {
+            "count": 13608,
+            "max": 37138,
+            "mean": 34623.002,
+            "min": 33710,
+            "p99": 36421
+          },
+          "frame_samples": 143,
+          "frames": 13608,
+          "idle_boundary_cycles": {
+            "count": 11423,
+            "max": 1167,
+            "mean": 881.736,
+            "min": 864,
+            "p99": 1055
+          },
+          "jps_bytes": 17882,
+          "keyboard_polls": 13609,
+          "label": "doom1-04-dark-halls-v1",
+          "music_frame_hz": 49.100306,
+          "mutated_player_bytes": 44,
+          "pit_writes": 362896,
+          "row_boundary_cycles": {
+            "count": 2185,
+            "max": 2753,
+            "mean": 1662.524,
+            "min": 1277,
+            "p99": 2486
+          },
+          "sample_loop_cycles": {
+            "count": 1932336,
+            "max": 276,
+            "mean": 235.091,
+            "min": 229,
+            "p99": 262
+          }
+        }
+      },
+      "source": {
+        "name": "04 Dark Halls.vgz",
+        "seconds": 272.1553514739229,
+        "sha256": "ef49e29081f002b140cd270a7add18753eb472dde1c3bb239da8bbe8f7cf2807"
+      },
+      "vibrato": {
+        "direct_channel_frames": 0,
+        "direct_logical_notes": 0,
+        "emitted_logical_notes": 0,
+        "enabled": false,
+        "frame_decisions": {},
+        "held_disable_updates": 0,
+        "held_setting_updates": 0,
+        "packets_with_vibrato": 0,
+        "phase_increment": 7955,
+        "phase_step_generation_hz": null,
+        "policy": "emit only when every active audible operator/layer has a direct common-pitch VIB path and resolves to one bounded target delta; update changes through legato packets",
+        "selected_channel_frames": 0,
+        "source_lfo_hz": 6.068835788302952
+      }
+    },
+    {
+      "allocation": {
+        "gained_onsets": 162,
+        "missed_protected_onsets": 0,
+        "protected_onsets": 1210,
+        "retained_onsets": 1372,
+        "source_onsets": 1472
+      },
+      "delivery": {
+        "jps_bytes": 12969,
+        "jps_sha256": "cb497609b9581453f09bef1699689ebcb4a41cc5b20655e39138bbbeea9b0cf5",
+        "mode": "enhanced",
+        "qualified": true,
+        "reason": null
+      },
+      "enhanced_score": {
+        "bytes": 3456850,
+        "frame_samples": 137,
+        "name": "doom1-06-suspense.json",
+        "phase_table_hz": 6850,
+        "sha256": "65ba2a9ca0ffc3fb4f6bfb0ed0feb62f802d258f6967421132035018ee1d2b0d"
+      },
+      "envelope_fit": {
+        "direction_mismatches": 0,
+        "maximum_error": 14,
+        "mean_absolute_error": 0.06948336795701363,
+        "selected_logical_notes": 1442,
+        "tremolo_analysis": {
+          "emitted_notes": 29,
+          "enabled": true,
+          "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+          "rejected_indirect_candidates": 0,
+          "semantic_candidates": 29
+        }
+      },
+      "format": {
+        "enhanced_capability": 3,
+        "enhanced_jps_bytes": 12969,
+        "enhanced_jps_sha256": "cb497609b9581453f09bef1699689ebcb4a41cc5b20655e39138bbbeea9b0cf5",
+        "enhanced_rejection": null,
+        "v1_jps_bytes": 10812,
+        "v1_jps_sha256": "e639e10b36c4533f26b028f26d286ad40d5183316508b99ebd9c4b6fa467eff1"
+      },
+      "gates": {
+        "duration_within_one_percent": true,
+        "jps_below_soft_limit": true,
+        "jps_compiles_below_hard_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "percussion_and_escape_remain_concurrent": true,
+        "phase_table_matches_within_one_percent": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "label": "doom1-06-suspense",
+      "profiles": {
+        "enhanced": {
+          "com_bytes": 5632,
+          "duration_seconds": 172.425742,
+          "effective_sample_hz": 6858.51189,
+          "frame_cycles": {
+            "count": 8632,
+            "max": 42005,
+            "mean": 33957.804,
+            "min": 32395,
+            "p99": 40129
+          },
+          "frame_samples": 137,
+          "frames": 8632,
+          "idle_boundary_cycles": {
+            "count": 7235,
+            "max": 3019,
+            "mean": 1442.918,
+            "min": 1022,
+            "p99": 3019
+          },
+          "jps_bytes": 12969,
+          "keyboard_polls": 8633,
+          "label": "doom1-06-suspense-enhanced",
+          "music_frame_hz": 50.062131,
+          "mutated_player_bytes": 101,
+          "pit_writes": 163625,
+          "row_boundary_cycles": {
+            "count": 1397,
+            "max": 9405,
+            "mean": 4407.684,
+            "min": 1744,
+            "p99": 8902
+          },
+          "sample_loop_cycles": {
+            "count": 1173952,
+            "max": 276,
+            "mean": 233.855,
+            "min": 229,
+            "p99": 269
+          }
+        },
+        "v1": {
+          "com_bytes": 3312,
+          "duration_seconds": 174.639148,
+          "effective_sample_hz": 7068.151767,
+          "frame_cycles": {
+            "count": 8632,
+            "max": 37564,
+            "mean": 34393.715,
+            "min": 33574,
+            "p99": 36344
+          },
+          "frame_samples": 143,
+          "frames": 8632,
+          "idle_boundary_cycles": {
+            "count": 7240,
+            "max": 1144,
+            "mean": 887.018,
+            "min": 814,
+            "p99": 1055
+          },
+          "jps_bytes": 10812,
+          "keyboard_polls": 8633,
+          "label": "doom1-06-suspense-v1",
+          "music_frame_hz": 49.427635,
+          "mutated_player_bytes": 44,
+          "pit_writes": 162869,
+          "row_boundary_cycles": {
+            "count": 1392,
+            "max": 2486,
+            "mean": 1640.683,
+            "min": 1240,
+            "p99": 2340
+          },
+          "sample_loop_cycles": {
+            "count": 1225744,
+            "max": 276,
+            "mean": 233.458,
+            "min": 229,
+            "p99": 269
+          }
+        }
+      },
+      "source": {
+        "name": "06 Suspense.vgz",
+        "seconds": 172.63526077097507,
+        "sha256": "50dce89e22c6cdd824b72a8a32e7d0db2f25a20f51a30f81c872e74c13abae61"
+      },
+      "vibrato": {
+        "direct_channel_frames": 0,
+        "direct_logical_notes": 0,
+        "emitted_logical_notes": 0,
+        "enabled": false,
+        "frame_decisions": {},
+        "held_disable_updates": 0,
+        "held_setting_updates": 0,
+        "packets_with_vibrato": 0,
+        "phase_increment": 7955,
+        "phase_step_generation_hz": null,
+        "policy": "emit only when every active audible operator/layer has a direct common-pitch VIB path and resolves to one bounded target delta; update changes through legato packets",
+        "selected_channel_frames": 0,
+        "source_lfo_hz": 6.068835788302952
+      }
+    },
+    {
+      "allocation": {
+        "gained_onsets": 601,
+        "missed_protected_onsets": 0,
+        "protected_onsets": 2600,
+        "retained_onsets": 3201,
+        "source_onsets": 3345
+      },
+      "delivery": {
+        "jps_bytes": 30071,
+        "jps_sha256": "667e1d82e99636449f921735df781a3b3172355e6082cc0c351a50b6cb7372ca",
+        "mode": "unchanged-v1-size-fallback",
+        "qualified": true,
+        "reason": "JPS image is 40983 bytes; library limit is 32767"
+      },
+      "enhanced_score": {
+        "bytes": 8509091,
+        "frame_samples": 129,
+        "name": "doom2-10-dave-taylor.json",
+        "phase_table_hz": 6450,
+        "sha256": "2f61907dc42c3761a8ab7fa3244f05ea34c005a1e46b7427b82358e9c01ad744"
+      },
+      "envelope_fit": {
+        "direction_mismatches": 1,
+        "maximum_error": 11,
+        "mean_absolute_error": 0.05499725876243481,
+        "selected_logical_notes": 3265,
+        "tremolo_analysis": {
+          "emitted_notes": 16,
+          "enabled": true,
+          "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
+          "rejected_indirect_candidates": 64,
+          "semantic_candidates": 16
+        }
+      },
+      "format": {
+        "enhanced_capability": null,
+        "enhanced_jps_bytes": null,
+        "enhanced_jps_sha256": null,
+        "enhanced_rejection": "JPS image is 40983 bytes; library limit is 32767",
+        "v1_jps_bytes": 30071,
+        "v1_jps_sha256": "667e1d82e99636449f921735df781a3b3172355e6082cc0c351a50b6cb7372ca"
+      },
+      "gates": {
+        "duration_within_one_percent": false,
+        "jps_below_soft_limit": false,
+        "jps_compiles_below_hard_limit": false,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "percussion_and_escape_remain_concurrent": false,
+        "phase_table_matches_within_one_percent": false,
+        "sample_rate_above_shared_floor": false,
+        "source_hash_matches": true
+      },
+      "label": "doom2-10-dave-taylor",
+      "profiles": {
+        "enhanced": null,
+        "v1": {
+          "com_bytes": 3312,
+          "duration_seconds": 303.919849,
+          "effective_sample_hz": 7073.308994,
+          "frame_cycles": {
+            "count": 15033,
+            "max": 37733,
+            "mean": 34368.639,
+            "min": 33561,
+            "p99": 36546
+          },
+          "frame_samples": 143,
+          "frames": 15033,
+          "idle_boundary_cycles": {
+            "count": 10896,
+            "max": 1167,
+            "mean": 864.808,
+            "min": 814,
+            "p99": 1078
+          },
+          "jps_bytes": 30071,
+          "keyboard_polls": 15034,
+          "label": "doom2-10-dave-taylor-v1",
+          "music_frame_hz": 49.463699,
+          "mutated_player_bytes": 44,
+          "pit_writes": 266689,
+          "row_boundary_cycles": {
+            "count": 4137,
+            "max": 2703,
+            "mean": 1576.305,
+            "min": 1227,
+            "p99": 2486
+          },
+          "sample_loop_cycles": {
+            "count": 2134686,
+            "max": 276,
+            "mean": 232.926,
+            "min": 229,
+            "p99": 262
+          }
+        }
+      },
+      "source": {
+        "name": "10 The Dave D. Taylor Blues.vgz",
+        "seconds": 300.6672108843537,
+        "sha256": "4d9813740918f89dd64e72dd7eb516cbd3174efd600f7007b36c4ba492896d47"
+      },
+      "vibrato": {
+        "direct_channel_frames": 9861,
+        "direct_logical_notes": 1699,
+        "emitted_logical_notes": 1699,
+        "enabled": true,
+        "frame_decisions": {
+          "direct": 9861,
+          "no_active_member": 1450,
+          "no_direct_vibrato": 11827
+        },
+        "held_disable_updates": 0,
+        "held_setting_updates": 818,
+        "packets_with_vibrato": 1814,
+        "phase_increment": 7955,
+        "phase_step_generation_hz": 6450,
+        "policy": "emit only when every active audible operator/layer has a direct common-pitch VIB path and resolves to one bounded target delta; update changes through legato packets",
+        "selected_channel_frames": 23138,
+        "source_lfo_hz": 6.068835788302952
+      }
+    }
+  ]
+}

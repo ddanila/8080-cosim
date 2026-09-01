@@ -817,9 +817,28 @@ untracked `out/jukupoly-doomgate-full-vibrato-m5/` directory.
 The exact envelope fitter now deduplicates parameter tuples only after they
 produce an identical simulated 4-bit trace, retaining the exhaustive search's
 full deterministic tie-break.  This roughly halves a representative fit's
-host time, while regeneration of the 30-second enhanced score remains
-byte-identical.  It changes no conversion policy or target runtime behavior;
-it prepares the same guarded search for the M6 pack run.
+host time.  A bounded exact-result cache additionally reuses only complete
+reference/search keys and the target counter's sufficient low six bits;
+out-of-range counters are rejected before lookup.  Cache-enabled regeneration
+of the 30-second enhanced score remains byte-identical.  Neither optimization
+changes conversion policy or target runtime behavior; they prepare the same
+guarded search for the M6 pack run.
+
+The first M6 representative conversion/profile now covers the complete Imp,
+Dark Halls, Suspense, and rhythm-heavy Dave D. Taylor Blues streams.  The
+committed [`OPL-M6-REPRESENTATIVE-PROFILE.json`](OPL-M6-REPRESENTATIVE-PROFILE.json)
+records three fully passing enhanced tracks: Imp at 7,087.8 samples/s and
+49.565 frames/s, Dark Halls at 6,854.0/50.029, and Suspense at
+6,858.5/50.062.  Their JPS files are 9,978, 20,151, and 12,969 bytes; Dark
+Halls and Suspense conservatively emit six and 29 tremolo notes.  All retain
+every protected onset, percussion, Escape polling, and the frozen sample
+loop.
+
+Dave Taylor is the intended useful failure: its enhanced candidate is 40,983
+bytes, above the 32,767-byte hard limit, while the unchanged v1 track remains
+30,071 bytes.  The report therefore selects v1 as a generic hard-size
+fallback; it does not weaken G5 or add a track-specific converter exception.
+The representative render/reference and physical gates remain open.
 
 ## Reproduce
 
@@ -849,6 +868,12 @@ Source and generated files:
   no-drift, combined-cycle, map, timing, and compatibility report;
 - `tools/report_jukupoly_vibrato_real.py` — bounded real capability-`05h`
   control, size, C-cosim timing, target-WAV, and oracle-reference report;
+- `tools/report_jukupoly_m6_representative.py` — four-track enhanced/fallback
+  size, envelope error, full C-cosim timing, and delivery report;
+- `tools/build_jukupoly_m6_representative.py` — hash-locked, parallel rebuild
+  of the four exact-oracle M6 inputs and their committed profile;
+- `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
+  score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
@@ -864,6 +889,7 @@ Source and generated files:
 - `OPL-VIBRATO-TARGET-M5.json` — committed synthetic runtime-vibrato report;
 - `OPL-VIBRATO-REAL-M5.json` — committed bounded real runtime-vibrato report;
 - `OPL-VIBRATO-FULL-M5.json` — committed complete-track runtime-vibrato report;
+- `OPL-M6-REPRESENTATIVE-PROFILE.json` — committed first M6 four-track profile;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;
