@@ -752,6 +752,30 @@ asserts that the shared phase stays zero: normal target assembly remains
 refused until the separate exact LFO/temporary-step and combined-cycle gates
 pass.
 
+That next target experiment now passes its synthetic gates behind the
+additional `-P7=1` define.  It computes the OPL-shaped
+`0,+half,+full,+half,0,-half,-full,-half` offsets once per music frame from an
+immutable channel base, advances the shared `1F13h` phase only after all three
+temporary steps are ready, and leaves the sample loop byte-for-byte frozen.
+The execution trace also preloads stale prior-song bases and proves that song
+initialization clears them before the first row.
+
+[`OPL-VIBRATO-TARGET-M5.json`](OPL-VIBRATO-TARGET-M5.json) records a 5,255-byte
+pitch-only experimental player with 633 bytes of song-window margin, and a
+5,632-byte combined tremolo+vibrato player ending at `1700h` with 256 bytes of
+margin.  Declared state remains 54/56 bytes.  Matched controls show about
+1,359 added boundary cycles per frame.  The high-step three-voice fixture with
+percussion and Escape polling measures 6,532.9 samples/s and 49.869 frames/s
+at 131 samples/frame; the combined tremolo-depth-1/2/3 fixture measures
+6,455.4 samples/s and 50.042 frames/s at the accepted 129-sample boundary.
+Both stay above the shared 6,401.1 Hz floor, with 42,713 and 42,696-cycle
+worst rows respectively.
+
+This is deliberately not normal playback support yet.  The compiler still
+refuses to assemble capability bit 2, so existing v1, envelope, tremolo, and
+host-baked held-pitch paths remain the usable fallbacks.  A representative
+real-song conversion/render and physical CS00000 A/B are the next gates.
+
 ## Reproduce
 
 Source and generated files:
@@ -776,6 +800,8 @@ Source and generated files:
   timing, size, and WAV report;
 - `tools/report_jukupoly_vibrato_parser.py` — experimental capability
   `05h`/`07h` parser, preflight, map, state, and compatibility report;
+- `tools/report_jukupoly_vibrato_target.py` — synthetic M5 temporary-step,
+  no-drift, combined-cycle, map, timing, and compatibility report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
@@ -788,6 +814,7 @@ Source and generated files:
 - `OPL-PITCH-M5.json` — committed two-pack vibrato and held-pitch evidence;
 - `OPL-PITCH-REAL-M5.json` — committed complete-track host-baked pitch report;
 - `OPL-VIBRATO-PARSER-M5.json` — committed parser/state-only M5 target report;
+- `OPL-VIBRATO-TARGET-M5.json` — committed synthetic runtime-vibrato report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;
@@ -800,6 +827,10 @@ Source and generated files:
   held-pitch fixture;
 - `firmware/jukupoly-vibrato-parser-v2-test.json` — conditional-byte and
   release-state M5 parser fixture;
+- `firmware/jukupoly-vibrato-v2-test.json` — three-channel runtime-vibrato,
+  percussion, and timing stress fixture;
+- `firmware/jukupoly-vibrato-tremolo-v2-test.json` — combined M4+M5 stress
+  fixture at the shared 10% iteration-count boundary;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
@@ -847,6 +878,8 @@ Source and generated files:
 - `tests/jukupoly_opl_pitch_test.py` — conservative path and held-write guard;
 - `tests/jukupoly_vibrato_parser_test.c` — exact parser state/legato/release
   target trace;
+- `tests/jukupoly_vibrato_test.c` — exact temporary-step, shared-phase,
+  release, immutable-base, and cross-song initialization target trace;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;

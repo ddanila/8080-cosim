@@ -35,6 +35,7 @@ python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_real.py \
   --output spinoffs/jukupoly/OPL-TREMOLO-FULL-M4.json --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_pitch_real.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_vibrato_parser.py --check
+python3 spinoffs/jukupoly/tools/report_jukupoly_vibrato_target.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py --check
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py \
   --song spinoffs/jukupoly/firmware/jukupoly-suspense.json \

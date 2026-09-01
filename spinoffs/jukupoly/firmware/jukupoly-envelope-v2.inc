@@ -43,6 +43,27 @@ envelope_dispatch_init:
         lxi     h,env2_work_flags
         shld    env2_load_work_flags+1
         endif
+        if      @@7
+        mvi     a,060h                  ; restore MOV H,B / MOV L,C / SHLD
+        sta     frame_tick
+        mvi     a,069h
+        sta     frame_tick+1
+        mvi     a,022h
+        sta     frame_tick+2
+        lxi     h,0                     ; discard bases left by a prior song
+        shld    ch1_step
+        shld    ch2_step
+        shld    ch3_step
+        mvi     a,03ah                  ; restore LDA ch1_volume
+        sta     prepare_frame
+        lxi     h,ch1_volume
+        shld    prepare_frame+1
+        if      @@5
+        lxi     h,prepare_frame_steps
+        shld    tremolo_finish_active+1
+        shld    tremolo_finish_copy+1
+        endif
+        endif
         if      @@6
         xra     a
         sta     vibrato_phase
@@ -138,6 +159,13 @@ env2_no_tremolo_init:
         jmp     env2_store_pitch_loader
 env2_pitch_without_tremolo:
         endif
+        else
+        if      @@5
+        mvi     a,0c0h                  ; standalone combined parser
+        sta     env2_pitch_reserved_mask+1
+        lxi     h,env2_load_combined_flags
+        jmp     env2_store_pitch_loader
+        endif
         endif
         mvi     a,0cch                  ; cap 05h: tremolo and reserved bits
         sta     env2_pitch_reserved_mask+1
@@ -146,6 +174,36 @@ env2_store_pitch_loader:
         mvi     a,0cdh                  ; CALL feature-aware flag loader
         sta     env2_load_work_flags
         shld    env2_load_work_flags+1
+        if      @@7
+        mvi     a,0c3h                  ; preserve immutable chN_step bases
+        sta     frame_tick
+        lxi     h,frame_tick_base_saved
+        shld    frame_tick+1
+        if      @@2
+        lda     SONG_LOAD+7
+        ani     2
+        jz      env2_enable_vibrato_prepare
+        if      @@5
+        lxi     h,prepare_frame_vibrato_steps
+        shld    tremolo_finish_active+1
+        shld    tremolo_finish_copy+1
+        jmp     env2_vibrato_runtime_ready
+        endif
+env2_enable_vibrato_prepare:
+        else
+        if      @@5
+        lxi     h,prepare_frame_vibrato_steps
+        shld    tremolo_finish_active+1
+        shld    tremolo_finish_copy+1
+        jmp     env2_vibrato_runtime_ready
+        endif
+        endif
+        mvi     a,0c3h                  ; patch to JMP prepare_frame_vibrato
+        sta     prepare_frame
+        lxi     h,prepare_frame_vibrato
+        shld    prepare_frame+1
+env2_vibrato_runtime_ready:
+        endif
 env2_no_vibrato_init:
         endif
         ret
@@ -802,10 +860,12 @@ tremolo_channel3:
         xra     a
 tremolo_store3:
         sta     volume3+1
+tremolo_finish_active:
         jmp     prepare_frame_steps
 tremolo_copy3:
         lda     ch3_volume
         sta     volume3+1
+tremolo_finish_copy:
         jmp     prepare_frame_steps
 
 ; Exact opl_tremolo.TABLES rows for depths 0, 1, 2, and 3.
@@ -814,6 +874,127 @@ tremolo_tables:
         db      0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0
         db      0,0,1,1,1,1,2,2,2,2,1,1,1,1,0,0
         db      0,0,1,1,2,2,3,3,3,3,2,2,1,1,0,0
+        endif
+
+        if      @@7
+; M5 runtime step.  The first frame consults phase zero; the shared phase is
+; advanced only after all three temporary steps have been derived.  Base
+; chN_step words are never modified.
+prepare_frame_vibrato:
+        lda     ch1_volume
+        sta     volume1+1
+        lda     ch2_volume
+        sta     volume2+1
+        lda     ch3_volume
+        sta     volume3+1
+
+prepare_frame_vibrato_steps:
+        call    vibrato_step1
+        push    h
+        call    vibrato_step2
+        push    h
+        call    vibrato_step3
+        push    h
+        lhld    vibrato_phase
+        lxi     d,01f13h                ; 7955 at the nominal 50 Hz clock
+        dad     d
+        shld    vibrato_phase
+        pop     h                       ; temporary channel 3 step
+        pop     d                       ; temporary channel 2 step
+        pop     b                       ; temporary channel 1 step
+        sphl
+        jmp     prepare_frame_count
+
+vibrato_step1:
+        lxi     h,ch1_volume
+        jmp     vibrato_channel_step
+vibrato_step2:
+        lxi     h,ch2_volume
+        jmp     vibrato_channel_step
+vibrato_step3:
+        lxi     h,ch3_volume
+
+; HL=channel base; return HL=temporary step.  BC/DE are scratch.  The encoded
+; state is delta-1, so INR C plus an explicit wrap maps 00h..FFh to 1..256.
+vibrato_channel_step:
+        push    h
+        lxi     d,ENV2_FLAGS
+        dad     d
+        mov     a,m
+        ani     040h
+        pop     h
+        jz      vibrato_load_base
+        push    h
+        lxi     d,ENV2_VIBRATO_DELTA
+        dad     d
+        mov     c,m
+        pop     h
+        lxi     d,4
+        dad     d
+        mov     e,m
+        inx     h
+        mov     d,m
+        xchg                           ; HL=immutable base step
+        mov     a,h
+        ora     l
+        rz                              ; inactive release has no modulation
+        mvi     b,0
+        inr     c
+        jnz     vibrato_magnitude_ready
+        inr     b                       ; encoded FFh means magnitude 0100h
+vibrato_magnitude_ready:
+        lda     vibrato_phase+1
+        rlc
+        rlc
+        rlc
+        ani     7                       ; phase >> 13
+        mov     e,a
+        ora     a
+        rz                              ; position 0: zero
+        cpi     4
+        rz                              ; position 4: zero
+        cpi     2
+        jz      vibrato_add
+        cpi     6
+        jz      vibrato_subtract
+
+        ; Positions 1/3/5/7 use floor(peak_delta/2).
+        mov     a,b
+        ora     a
+        jz      vibrato_half_low
+        mvi     b,0
+        mvi     c,080h                  ; half of 256
+        jmp     vibrato_half_ready
+vibrato_half_low:
+        mov     a,c
+        ora     a                       ; clear carry before RAR
+        rar
+        mov     c,a
+vibrato_half_ready:
+        mov     a,e
+        ani     4
+        jz      vibrato_add
+
+vibrato_subtract:
+        mov     a,c
+        cma
+        mov     c,a
+        mov     a,b
+        cma
+        mov     b,a
+        inx     b
+vibrato_add:
+        dad     b
+        ret
+
+vibrato_load_base:
+        lxi     d,4
+        dad     d
+        mov     e,m
+        inx     h
+        mov     d,m
+        xchg
+        ret
         endif
 
 env2_channel_pointer:

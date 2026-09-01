@@ -1,10 +1,11 @@
 # JPS v2 pitch and vibrato vertical-slice contract
 
 Status: guarded M5 implementation, 2026-09-01.  Source semantics,
-three-voice allocation survival, host-baked pitch, and an experimental
-parser/state-only target are measured; this document does not yet accept a
-runtime pitch capability.  Capability `01h` envelopes, experimental
-capability `03h` envelope+tremolo, and JPS v1 remain independent fallbacks.
+three-voice allocation survival, host-baked pitch, and experimental parser
+and synthetic runtime targets are measured; normal conversion does not yet
+accept the runtime pitch capability.  Capability `01h` envelopes,
+experimental capability `03h` envelope+tremolo, host-baked pitch, and JPS v1
+remain independent fallbacks.
 
 ## Scope and evidence
 
@@ -264,3 +265,51 @@ applied.  The normal assembler continues to reject a vibrato target request.
 Therefore this checkpoint proves synchronization, safety, and bounded state
 only; step 4's exact eight-position runtime trace is still required before
 capability bit 2 can claim playback support.
+
+## Synthetic runtime target checkpoint
+
+Guarded implementation steps 4 and 5 now pass behind the additional `-P7=1`
+define.  The frame preparation routine calculates three temporary steps from
+the existing immutable `chN_step` words, uses only bounded shifts/branches and
+16-bit addition or subtraction, advances the shared phase by `1F13h`, and
+then lends the temporary channel-3 step through SP to the unchanged sample
+loop.  The next frame jumps over the normal temporary-step writeback before
+restoring the real stack, preventing cumulative drift.  No multiply, divide,
+or sample-loop instruction was added.
+
+Initialization explicitly clears all three base words before the first row.
+The target test seeds them with stale prior-song values, proving that reuse of
+the library player cannot leak a previous track into a new track whose first
+row omits a channel.  Separate capability-`05h` and combined-`07h` traces
+compare every temporary BC/DE/SP step over 18 frames, including deltas 1 and
+256, all eight shape positions, legato base replacement, release retention
+and clearing, phase advancement, and immutable bases.  Symmetric positive and
+negative magnitudes sum to zero for every representable delta 1..256.
+
+[`OPL-VIBRATO-TARGET-M5.json`](OPL-VIBRATO-TARGET-M5.json) records the
+reproducible map and timing evidence.  The `-P6=1 -P7=1` player is 5,255 bytes,
+ends at `1587h`, declares 54 state bytes, and leaves 633 bytes before `1800h`.
+Adding M4 tremolo produces a 5,632-byte player ending at `1700h`, with exactly
+56 state bytes and 256 bytes left.  V1, capability `01h`, and capability
+`03h` paths are execution-identical to matched P4/P5 controls, and every
+sample-loop hash remains frozen.
+
+The matched three-channel runtime cost is about 1,359 boundary cycles per
+frame.  This exceeds the preliminary 900-cycle orientation estimate, which
+was explicitly not an acceptance limit, but the authoritative combined G2
+measurement passes.  The pitch-only high-step/percussion fixture selects
+131 samples/frame and a 6,530 Hz table, measuring 6,532.9 samples/s, 49.869
+frames/s, and 4.010 seconds over 200 frames.  The more expensive combined
+three-depth tremolo plus three-vibrato fixture selects the minimum permitted
+129 samples/frame and a 6,450 Hz table, measuring 6,455.4 samples/s, 50.042
+frames/s, and 3.997 seconds.  Worst rows are 42,713 and 42,696 cycles; both
+fixtures retain concurrent percussion fetching and Escape polling and remain
+above the shared 6,401.1 Hz floor.
+
+This is synthetic runtime acceptance only.  `build_jukupoly.py` continues to
+refuse runtime-vibrato target assembly, so capability bit 2 cannot enter the
+normal player accidentally.  Steps 6 and 7—representative real-song
+conversion/render, complete-track/pack regression, and physical CS00000
+listening—remain open.  If any fails, the qualified host-baked held-pitch path
+and capability `03h` remain the stopping points; the 129-sample guard may not
+be reduced further.

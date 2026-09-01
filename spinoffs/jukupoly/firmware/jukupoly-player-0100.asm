@@ -168,6 +168,7 @@ frame_tick:
         lxi     h,0
         dad     sp
         shld    ch3_step
+frame_tick_base_saved:
         lhld    saved_sp
         sphl
 
@@ -1183,6 +1184,24 @@ vibrato_parser_test_manifest:
         dw      verified_tone_flags
         dw      verified_tone_step
         dw      verified_song_end
+        endif
+
+        if      @@7
+vibrato_runtime_test_manifest:
+        db      'J','V','I','B',1
+        dw      ch1_step
+        dw      ch2_step
+        dw      ch3_step
+        dw      ch1_env2_flags
+        dw      ch2_env2_flags
+        dw      ch3_env2_flags
+        dw      ch1_vibrato_delta
+        dw      ch2_vibrato_delta
+        dw      ch3_vibrato_delta
+        dw      vibrato_phase
+        dw      sample_loop
+        dw      frame_tick
+        dw      prepare_frame
         endif
         endif
 

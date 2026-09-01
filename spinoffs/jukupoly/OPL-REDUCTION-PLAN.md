@@ -839,6 +839,36 @@ semantics.  This is not runtime acceptance: the phase remains inactive,
 temporary steps are not applied, and the normal build still refuses
 capability bit 2.  M5 step 4 is the next independent gate.
 
+The separately gated `-P7=1` runtime experiment now completes M5 steps 4 and
+5 on synthetic fixtures without enabling the normal converter.  It derives
+all three temporary phase steps from immutable bases before advancing the
+shared `1F13h` phase, implements the exact symmetric eight-position shape with
+bounded adds/subtracts, and keeps every instruction outside the frozen sample
+loop.  A reuse guard seeds prior-song base steps and proves initialization
+clears them before the first row; the 18-frame traces for both capability
+`05h` and combined `07h` cover deltas 1/256, legato replacement, release, and
+nonaccumulating bases.
+
+[`OPL-VIBRATO-TARGET-M5.json`](OPL-VIBRATO-TARGET-M5.json) records a 5,255-byte
+pitch runtime ending at `1587h` with 54 state bytes, and a 5,632-byte combined
+M4+M5 runtime ending at `1700h` with exactly 56 state bytes and 256 bytes of
+song-window margin.  JPS v1 and capabilities `01h`/`03h` remain execution-
+identical and every hot-loop hash is exact.  The measured runtime boundary
+cost is about 1,359 cycles/frame over matched controls, exceeding the earlier
+900-cycle orientation estimate but not the authoritative G2 budget.
+
+The deliberately expensive three-high-step-voice plus percussion fixture
+selects 131 samples/frame and a 6,530 Hz phase table for capability `05h`; it
+measures 6,532.9 samples/s, 49.869 frames/s, 4.010 seconds, and a 42,713-cycle
+worst row.  Combined tremolo depths 1/2/3 plus all three vibratos require the
+allowed 129-sample boundary and a 6,450 Hz table; they measure 6,455.4
+samples/s, 50.042 frames/s, 3.997 seconds, and a 42,696-cycle worst row.  Both
+remain above the shared 6,401.1 Hz floor and retain percussion fetching and
+Escape polling.  This closes only the synthetic runtime/map/cycle gate:
+representative real-song rendering and physical CS00000 A/B remain open, the
+normal assembler still refuses capability bit 2, and host-baked held pitch is
+the recorded fallback if either later gate fails.
+
 ### M6: pack regression and physical qualification
 
 Build the complete DOOM library and generate old Juku, new Juku, and accurate

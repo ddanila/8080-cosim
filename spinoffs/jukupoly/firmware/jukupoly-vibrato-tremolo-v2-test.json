@@ -1,0 +1,56 @@
+{
+  "schema": "jukupoly-song-v2",
+  "title": "Synthetic JPS v2 combined tremolo and runtime vibrato stress fixture",
+  "sample_rate_hz": 6450,
+  "frame_samples": 129,
+  "rows": [
+    {
+      "frames": 200,
+      "tone1": {
+        "phase_step": 4096,
+        "opl_tremolo_depth": 1,
+        "opl_vibrato": {"mode": "shallow", "peak_step_delta": 1},
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "phase_step": 8192,
+        "opl_tremolo_depth": 2,
+        "opl_vibrato": {"mode": "deep", "peak_step_delta": 128},
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone3": {
+        "phase_step": 12288,
+        "opl_tremolo_depth": 3,
+        "opl_vibrato": {"mode": "deep", "peak_step_delta": 256},
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "percussion": {
+        "sample": 1,
+        "volume": 4,
+        "filter": 9,
+        "offset": 1
+      }
+    }
+  ]
+}
