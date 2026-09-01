@@ -1095,6 +1095,25 @@ have zero pack benefit and receive no target code.  The importer continues to
 recognize and reject those modes honestly for future sources; this is a
 source-scoped no-demand result, not a claim of general support.
 
+Detuned spare-voice restoration, in contrast, has substantial source demand.
+[`OPL-M7-DETUNED-SPARES.json`](OPL-M7-DETUNED-SPARES.json) reconstructs the
+same protected three-voice allocation for both packs and counts a candidate
+only when a selected proven layer quantizes to a phase step distinct from the
+logical base at 7,170 Hz while one of the three physical voices is unused.
+Thirty-three tracks, 5,303 selected logical notes, 58,922 source frames, and
+84,709 duplicate-voice frame slots qualify, with zero protected-onset
+regression.  Imp alone contributes 9,157 slots over 5,488 frames, with at most
+19.0 cents and 14 target-step units of separation.
+
+This closes source prevalence only.  Emission remains open until a generic
+episode policy proves that a duplicate never displaces a real selected onset,
+uses an exact source-derived phase step, partitions rather than multiplies the
+logical envelope level, and restores the base voice correctly when spare
+capacity changes.  It must then pass full-song size/timing/render and physical
+listening gates.  The existing three-tone sample loop already pays for all
+three accumulators, so a passing host representation should require no new
+per-sample target work.
+
 ## Required reporting for every implementation change
 
 Every merge which affects target playback must include:

@@ -948,6 +948,17 @@ any sample.  Those two optional reductions would improve none of these packs,
 so they deliberately add no Juku code or data.  Unsupported future sources
 remain explicitly rejected.
 
+The analysis-only detune report
+[`OPL-M7-DETUNED-SPARES.json`](OPL-M7-DETUNED-SPARES.json) finds a much more
+promising optional reduction.  Across the same allocation, 33 tracks and
+5,303 selected logical notes have source layers that quantize to distinct
+target phase steps while a physical tone channel is spare, totaling 84,709
+duplicate-voice frame slots.  Imp accounts for 9,157 slots with up to 19.0
+cents of source separation.  No score changes yet: the next gate must preserve
+total envelope level, release duplicates before real onsets, and handle spare-
+capacity transitions without a false re-attack.  If those host rules pass,
+the existing three-accumulator loop adds no per-sample cost.
+
 ## Reproduce
 
 Source and generated files:
@@ -988,6 +999,8 @@ Source and generated files:
   re-articulation discovery conversion and C-cosim report;
 - `tools/report_opl_modes.py` — exact two-pack OPL3/four-operator/hardware-
   rhythm state-duration audit;
+- `tools/report_opl_detuned_spares.py` — pack-wide selected-layer versus spare-
+  voice phase-step opportunity audit;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -1002,6 +1015,8 @@ Source and generated files:
   qualified-v1-fallback evidence;
 - `OPL-M7-MODES.json` — pack-wide four-operator and hardware-rhythm no-demand
   evidence;
+- `OPL-M7-DETUNED-SPARES.json` — pack-wide source demand and capacity evidence
+  for optional detuned duplicate voices;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
 - `OPL-IMP-FULL-M3.json` — committed full-song size/timing/fit evidence;
 - `OPL-TREMOLO-M4.json` — committed two-pack semantic and exact-oracle M4 report;
