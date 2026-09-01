@@ -987,6 +987,10 @@ ch1_env2_stage:
         db      0
 ch1_env2_flags:
         db      0
+        if      @@6
+ch1_vibrato_delta:
+        db      0
+        endif
         endif
 ch2_volume:
         db      0
@@ -1009,6 +1013,10 @@ ch2_env2_stage:
         db      0
 ch2_env2_flags:
         db      0
+        if      @@6
+ch2_vibrato_delta:
+        db      0
+        endif
         endif
 ch3_volume:
         db      0
@@ -1031,11 +1039,22 @@ ch3_env2_stage:
         db      0
 ch3_env2_flags:
         db      0
+        if      @@6
+ch3_vibrato_delta:
+        db      0
+        endif
         endif
 
         if      @@5
 ; Shared M4 phase; per-channel table-page offsets live in ENV2_FLAGS bits 4-5.
 tremolo_phase:
+        dw      0
+        endif
+
+        if      @@6
+; Shared M5 phase.  The parser-only checkpoint records it but does not yet
+; advance or apply it; runtime qualification is a separate guarded slice.
+vibrato_phase:
         dw      0
         endif
 
@@ -1138,6 +1157,33 @@ tremolo_test_manifest:
         dw      ch3_env2_flags
         dw      tremolo_phase
         dw      prepare_frame
+        endif
+
+        if      @@6
+vibrato_parser_test_manifest:
+        db      'J','V','P','R',1
+        dw      ch1_step
+        dw      ch2_step
+        dw      ch3_step
+        dw      ch1_env2_flags
+        dw      ch2_env2_flags
+        dw      ch3_env2_flags
+        dw      ch1_vibrato_delta
+        dw      ch2_vibrato_delta
+        dw      ch3_vibrato_delta
+        dw      vibrato_phase
+        dw      sample_loop
+        dw      frame_tick
+        dw      env2_invalid_packet
+        dw      song_pointer
+        dw      song_cursor
+        if      @@2
+        dw      library_bad_song
+        dw      verified_cursor
+        dw      verified_tone_flags
+        dw      verified_tone_step
+        dw      verified_song_end
+        endif
         endif
 
         if      @@2

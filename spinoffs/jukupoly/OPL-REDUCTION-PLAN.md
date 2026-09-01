@@ -822,6 +822,23 @@ held-pitch size/timing/render gates pass; physical A/B remains open and the
 feature stays opt-in.  This independently useful result remains valid even if
 the later runtime-vibrato experiment fails.
 
+The next reversible checkpoint implements only M5's experimental parser,
+preflight, and bounded state under `-P6=1`.  A separate pitch packet path
+preserves exact JPS v1 and capability-`01h`/`03h` execution profiles.  It
+validates the conditional byte, advertised feature bits, mode, and both
+15-bit bounds before I/O.  Synthetic corruptions for mode 3, underflow,
+overflow, a missing delta, and unadvertised pitch/tremolo all stop with zero
+PIT writes and zero keyboard polls.
+
+[`OPL-VIBRATO-PARSER-M5.json`](OPL-VIBRATO-PARSER-M5.json) records 4,993 bytes
+and 54 state bytes for pitch-only, and 5,349 bytes with exactly 56 state bytes
+for the combined M4+M5 parser.  The latter ends at `15E5h`, still below
+`1800h`, with 539 bytes of margin; all sample-loop hashes remain exact.  Its
+trace covers deltas 1/256, legato replacement, mode disable, and release
+semantics.  This is not runtime acceptance: the phase remains inactive,
+temporary steps are not applied, and the normal build still refuses
+capability bit 2.  M5 step 4 is the next independent gate.
+
 ### M6: pack regression and physical qualification
 
 Build the complete DOOM library and generate old Juku, new Juku, and accurate

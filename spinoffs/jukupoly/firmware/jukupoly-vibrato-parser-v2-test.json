@@ -1,0 +1,92 @@
+{
+  "schema": "jukupoly-song-v2",
+  "title": "Synthetic JPS v2 conditional vibrato parser fixture",
+  "sample_rate_hz": 6900,
+  "frame_samples": 138,
+  "rows": [
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 4096,
+        "opl_vibrato": {"mode": "shallow", "peak_step_delta": 1},
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {
+        "phase_step": 8192,
+        "opl_vibrato": {"mode": "deep", "peak_step_delta": 256},
+        "opl_envelope": {
+          "peak_level": 14,
+          "sustain_level": 12,
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "release_period_frames": 0,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone3": {
+        "phase_step": 12288,
+        "opl_envelope": {
+          "peak_level": 13,
+          "sustain_level": 10,
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {
+        "phase_step": 4100,
+        "legato": true,
+        "opl_vibrato": {"mode": "deep", "peak_step_delta": 7},
+        "opl_envelope": {
+          "peak_level": 15,
+          "sustain_level": 15,
+          "attack_period_frames": 0,
+          "decay_period_frames": 0,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        }
+      },
+      "tone2": {"note": "---"},
+      "tone3": {
+        "phase_step": 12288,
+        "legato": true,
+        "opl_vibrato": {"mode": "deep", "peak_step_delta": 16},
+        "opl_envelope": {
+          "peak_level": 13,
+          "sustain_level": 10,
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        }
+      }
+    },
+    {
+      "frames": 6,
+      "tone1": {"note": "---"},
+      "tone3": {
+        "phase_step": 12288,
+        "legato": true,
+        "opl_envelope": {
+          "peak_level": 13,
+          "sustain_level": 10,
+          "attack_period_frames": 0,
+          "decay_period_frames": 1,
+          "release_period_frames": 2,
+          "sustain_while_keyed": true
+        }
+      }
+    }
+  ]
+}

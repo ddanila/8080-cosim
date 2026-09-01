@@ -264,6 +264,19 @@ library_verify_song:
         cpi     2
         jnz     library_bad_song
         lda     SONG_LOAD+7
+        if      @@6
+        cpi     1
+        jz      library_verify_v2_samples
+        cpi     5                       ; envelope plus pitch/vibrato
+        jz      library_verify_v2_samples
+        if      @@5
+        cpi     3                       ; envelope plus tremolo
+        jz      library_verify_v2_samples
+        cpi     7                       ; all guarded enhanced capabilities
+        endif
+        jnz     library_bad_song
+library_verify_v2_samples:
+        else
         if      @@5
         cpi     1
         jz      library_verify_v2_samples
@@ -273,6 +286,7 @@ library_verify_v2_samples:
         else
         cpi     1                       ; JPS v2: envelope capability only
         jnz     library_bad_song
+        endif
         endif
         lda     SONG_LOAD+6
         cpi     129                     ; measured 10% iteration boundary
@@ -436,6 +450,13 @@ library_v2_tone:
         stc
         ret
 library_v2_tone_on:
+        if      @@6
+        mov     a,d
+        ani     07fh
+        mov     h,a
+        mov     l,e
+        shld    verified_tone_step
+        endif
         mvi     a,3
         call    library_v2_take
         rc
@@ -457,6 +478,63 @@ library_v2_levels_ok:
         inx     h
         inx     h
         mov     a,m
+        if      @@6
+        sta     verified_tone_flags
+        ani     0c0h                    ; packet bits 6-7 are always reserved
+        jnz     library_v2_invalid
+        lda     verified_tone_flags
+        ani     030h
+        cpi     030h                    ; mode 3 is invalid
+        jz      library_v2_invalid
+
+        ; Feature bits may appear only when their header capability does.
+        lda     SONG_LOAD+7
+        ani     2
+        jnz     library_v2_tremolo_flags_ok
+        lda     verified_tone_flags
+        ani     00ch
+        jnz     library_v2_invalid
+library_v2_tremolo_flags_ok:
+        lda     SONG_LOAD+7
+        ani     4
+        jnz     library_v2_pitch_capability
+        lda     verified_tone_flags
+        ani     030h
+        jnz     library_v2_invalid
+        ora     a                       ; clear carry: fixed-size packet
+        ret
+
+library_v2_pitch_capability:
+        lda     verified_tone_flags
+        ani     030h
+        jz      library_v2_tone_flags_ok
+        mvi     a,1                     ; consume conditional delta-minus-one
+        call    library_v2_take
+        rc
+        mov     c,m
+        mvi     b,0
+        inx     b                       ; BC=1..256 peak step delta
+
+        ; The runtime may add or subtract BC without clipping only when
+        ; base>delta and base+delta remains below the 15-bit ceiling.
+        lhld    verified_tone_step
+        mov     a,h
+        cmp     b
+        jc      library_v2_invalid
+        jnz     library_v2_lower_bound_ok
+        mov     a,l
+        cmp     c
+        jc      library_v2_invalid
+        jz      library_v2_invalid
+library_v2_lower_bound_ok:
+        dad     b
+        mov     a,h
+        ani     080h
+        jnz     library_v2_invalid
+library_v2_tone_flags_ok:
+        ora     a                       ; clear carry
+        ret
+        else
         if      @@5
         ani     0f0h
         jnz     library_v2_invalid
@@ -474,6 +552,7 @@ library_v2_tone_flags_ok:
         rz
         stc
         ret
+        endif
         endif
 
 ; Validate a descriptor and all PCM bytes reached through it.  This is done
@@ -725,6 +804,10 @@ verified_song_version: db 0
 verified_duration: db 0
 verified_row_flags: db 0
 verified_drum_frames: db 0
+        if      @@6
+verified_tone_flags: db 0
+verified_tone_step: dw 0
+        endif
 verified_song_end: dw 0
 verified_cursor: dw 0
 verified_take_start: dw 0

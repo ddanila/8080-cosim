@@ -736,6 +736,22 @@ changing the player.  Automated full-track size, timing, and render gates now
 pass; physical CS00000 A/B and runtime vibrato remain open, so held pitch is
 still opt-in.
 
+The next experimental `-P6=1` checkpoint implements only the variable-length
+vibrato parser, library preflight, and bounded state.  It does not yet modulate
+a sample batch.  [`OPL-VIBRATO-PARSER-M5.json`](OPL-VIBRATO-PARSER-M5.json)
+records a 4,993-byte pitch-only player with 54 state bytes and a 5,349-byte
+combined parser with exactly 56 state bytes; both end below `1800h`, and the
+combined build retains 539 bytes of margin.  V1, capability `01h`, and the M4
+`03h` path remain execution-identical, with the frozen sample loop unchanged.
+
+The preflight accepts valid `05h`/`07h` conditional packets and rejects mode
+3, missing delta bytes, unadvertised feature fields, and both 15-bit bounds
+before any PIT or keyboard I/O.  A target trace covers delta values 1 and 256,
+legato replacement, disable, and release clearing/retention.  The trace also
+asserts that the shared phase stays zero: normal target assembly remains
+refused until the separate exact LFO/temporary-step and combined-cycle gates
+pass.
+
 ## Reproduce
 
 Source and generated files:
@@ -758,6 +774,8 @@ Source and generated files:
 - `tools/report_opl_pitch.py` — two-pack M5 vibrato/held-pitch semantic report;
 - `tools/report_jukupoly_pitch_real.py` — complete-track held-pitch control,
   timing, size, and WAV report;
+- `tools/report_jukupoly_vibrato_parser.py` — experimental capability
+  `05h`/`07h` parser, preflight, map, state, and compatibility report;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
 - `OPL-ENVELOPE-M3.json` — committed synthetic v2 timing/memory evidence;
 - `OPL-IMP-M3.json` — committed 30-second real-song fit/timing/WAV evidence;
@@ -769,6 +787,7 @@ Source and generated files:
 - `OPL-TREMOLO-FULL-M4.json` — complete-track M4 size/timing/render evidence;
 - `OPL-PITCH-M5.json` — committed two-pack vibrato and held-pitch evidence;
 - `OPL-PITCH-REAL-M5.json` — committed complete-track host-baked pitch report;
+- `OPL-VIBRATO-PARSER-M5.json` — committed parser/state-only M5 target report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;
@@ -779,6 +798,8 @@ Source and generated files:
 - `firmware/jukupoly-opening-full-tremolo-m4.json` — complete-track M4 fixture;
 - `firmware/jukupoly-doomgate-held-pitch-m5.json` — compact complete-track M5
   held-pitch fixture;
+- `firmware/jukupoly-vibrato-parser-v2-test.json` — conditional-byte and
+  release-state M5 parser fixture;
 - `firmware/jukupoly-library-v1-test.json` — compact v1 loader fixture;
 - `firmware/jukupoly-canyon-demo.json` — credited human-readable score;
 - `firmware/build_jukupoly.py` — score, envelope, and percussion compiler;
@@ -824,6 +845,8 @@ Source and generated files:
 - `tests/jukupoly_opl_tremolo_test.py` — fractional-rate/depth/false-AM guard;
 - `tests/jukupoly_opl_vibrato_test.py` — exact rate/shape/range/no-drift guard;
 - `tests/jukupoly_opl_pitch_test.py` — conservative path and held-write guard;
+- `tests/jukupoly_vibrato_parser_test.c` — exact parser state/legato/release
+  target trace;
 - `tests/jukupoly_opl_voices_test.py` — layer/continuation evidence regression;
 - `tests/jukupoly_envelope_format_test.py` — strict JPS v2 envelope packet regression;
 - `tests/jukupoly_envelope_test.c` — v2 stage-transition execution regression;

@@ -22,6 +22,12 @@ typedef enum {
   INVALID_PCM,
   INVALID_CAPABILITY,
   INVALID_PITCH_CAPABILITY,
+  INVALID_VIBRATO_MODE,
+  INVALID_VIBRATO_UNDERFLOW,
+  INVALID_VIBRATO_OVERFLOW,
+  INVALID_VIBRATO_MISSING_DELTA,
+  INVALID_VIBRATO_UNADVERTISED,
+  INVALID_TREMOLO_UNADVERTISED,
 } invalid_kind;
 
 typedef struct {
@@ -37,6 +43,11 @@ typedef struct {
   uint8_t keyboard_column;
   int invalid_port, opened, selected_track;
 } fixture;
+
+typedef struct {
+  uint16_t bad_song, cursor, tone_flags, tone_step, song_end;
+  int present;
+} vibrato_debug;
 
 static uint8_t read_byte(void *opaque, uint16_t address) {
   return ((fixture *)opaque)->memory[address];
@@ -72,6 +83,25 @@ static void port_out(void *opaque, uint8_t port, uint8_t value) {
 
 static uint16_t word(const uint8_t *memory, uint16_t address) {
   return memory[address] | (uint16_t)memory[(uint16_t)(address + 1)] << 8;
+}
+
+static vibrato_debug locate_vibrato_debug(const fixture *f, size_t size) {
+  static const uint8_t magic[] = {'J', 'V', 'P', 'R', 1};
+  vibrato_debug result = {0};
+  for (uint16_t address = COM_ADDRESS;
+       address + sizeof(magic) + 40 <= COM_ADDRESS + size; address++) {
+    if (memcmp(&f->memory[address], magic, sizeof(magic)) != 0)
+      continue;
+    uint16_t at = (uint16_t)(address + sizeof(magic) + 30);
+    result.bad_song = word(f->memory, at); at += 2;
+    result.cursor = word(f->memory, at); at += 2;
+    result.tone_flags = word(f->memory, at); at += 2;
+    result.tone_step = word(f->memory, at); at += 2;
+    result.song_end = word(f->memory, at);
+    result.present = 1;
+    break;
+  }
+  return result;
 }
 
 static void emit(fixture *f, uint8_t value) {
@@ -206,11 +236,60 @@ static invalid_kind invalid_argument(const char *value) {
     return INVALID_CAPABILITY;
   if (!strcmp(value, "invalid-pitch-capability"))
     return INVALID_PITCH_CAPABILITY;
+  if (!strcmp(value, "invalid-vibrato-mode"))
+    return INVALID_VIBRATO_MODE;
+  if (!strcmp(value, "invalid-vibrato-underflow"))
+    return INVALID_VIBRATO_UNDERFLOW;
+  if (!strcmp(value, "invalid-vibrato-overflow"))
+    return INVALID_VIBRATO_OVERFLOW;
+  if (!strcmp(value, "invalid-vibrato-missing-delta"))
+    return INVALID_VIBRATO_MISSING_DELTA;
+  if (!strcmp(value, "invalid-vibrato-unadvertised"))
+    return INVALID_VIBRATO_UNADVERTISED;
+  if (!strcmp(value, "invalid-tremolo-unadvertised"))
+    return INVALID_TREMOLO_UNADVERTISED;
   return INVALID_NONE;
 }
 
 static void corrupt_v2_fixture(uint8_t *song, size_t size, invalid_kind kind) {
   size_t rows = word(song, 10) - SONG_ADDRESS;
+  if (kind >= INVALID_VIBRATO_MODE) {
+    if (size < 64 || rows + 25 >= size || song[3] != 2 ||
+        song[7] != 5 || song[rows + 1] != 0x07) {
+      fprintf(stderr,
+          "vibrato fixture layout changed; cannot apply corruption\n");
+      exit(2);
+    }
+    switch (kind) {
+      case INVALID_VIBRATO_MODE:
+        song[rows + 6] = (uint8_t)((song[rows + 6] & ~0x30) | 0x30);
+        break;
+      case INVALID_VIBRATO_UNDERFLOW:
+        song[rows + 2] = 1;
+        song[rows + 3] = 0;
+        song[rows + 7] = 0;   /* delta 1: base-delta must stay positive */
+        break;
+      case INVALID_VIBRATO_OVERFLOW:
+        song[rows + 8] = 0xff;
+        song[rows + 9] = 0x7f;
+        song[rows + 13] = 0xff; /* delta 256 crosses 8000h */
+        break;
+      case INVALID_VIBRATO_MISSING_DELTA:
+        /* Tone 3 has no conditional byte; claiming mode 1 must desynchronize
+           the bounded scanner and be rejected before playback. */
+        song[rows + 18] |= 0x10;
+        break;
+      case INVALID_VIBRATO_UNADVERTISED:
+        song[7] = 1;
+        break;
+      case INVALID_TREMOLO_UNADVERTISED:
+        song[rows + 6] |= 0x04;
+        break;
+      default:
+        break;
+    }
+    return;
+  }
   if (size < 32 || rows + 19 >= size || song[3] != 2 ||
       song[rows + 1] != 0x17) {
     fprintf(stderr, "v2 fixture layout changed; cannot apply corruption\n");
@@ -249,6 +328,13 @@ static void corrupt_v2_fixture(uint8_t *song, size_t size, invalid_kind kind) {
     case INVALID_PITCH_CAPABILITY:
       song[7] = 5;  /* M4 player must reject proposed M5 capability */
       break;
+    case INVALID_VIBRATO_MODE:
+    case INVALID_VIBRATO_UNDERFLOW:
+    case INVALID_VIBRATO_OVERFLOW:
+    case INVALID_VIBRATO_MISSING_DELTA:
+    case INVALID_VIBRATO_UNADVERTISED:
+    case INVALID_TREMOLO_UNADVERTISED:
+      break;  /* handled by the dedicated fixture branch above */
     case INVALID_NONE:
       break;
   }
@@ -262,7 +348,10 @@ int main(int argc, char **argv) {
     fprintf(stderr, "usage: %s JUKEBOX.COM SONG.JPS "
         "[abort|TRACK|invalid-flags|invalid-truncated|invalid-descriptor|"
         "invalid-levels|invalid-pcm|invalid-capability|"
-        "invalid-pitch-capability]\n", argv[0]);
+        "invalid-pitch-capability|invalid-vibrato-mode|"
+        "invalid-vibrato-underflow|invalid-vibrato-overflow|"
+        "invalid-vibrato-missing-delta|invalid-vibrato-unadvertised|"
+        "invalid-tremolo-unadvertised]\n", argv[0]);
     return 2;
   }
   fixture f = {0};
@@ -284,6 +373,7 @@ int main(int argc, char **argv) {
   if (invalid)
     corrupt_v2_fixture(f.song, f.song_size, invalid);
   memcpy(&f.memory[COM_ADDRESS], com, com_size);
+  vibrato_debug debug = locate_vibrato_debug(&f, com_size);
   free(com);
   f.memory[0] = 0x76;
   f.memory[1] = 0x00;           /* page-zero WBOOT target = F000h */
@@ -309,6 +399,14 @@ int main(int argc, char **argv) {
   unsigned long instructions;
   for (instructions = 0;
        !cpu.halted && instructions < MAX_INSTRUCTIONS; instructions++) {
+    if (!invalid && debug.present && cpu.pc == debug.bad_song) {
+      fprintf(stderr,
+          "unexpected vibrato preflight rejection: cursor=%04x "
+          "flags=%02x step=%04x end=%04x\n",
+          word(f.memory, debug.cursor), f.memory[debug.tone_flags],
+          word(f.memory, debug.tone_step), word(f.memory, debug.song_end));
+      return 1;
+    }
     if (cpu.pc == 5)
       emulate_bdos(&cpu, &f);
     else if (cpu.pc == BIOS_CONIN || cpu.pc == BIOS_CONOUT)

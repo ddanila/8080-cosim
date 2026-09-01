@@ -7,6 +7,7 @@ ENV2_DECAY_MASK equ     7
 ENV2_RELEASE_MASK equ   8
 ENV2_STAGE      equ     9
 ENV2_FLAGS      equ     10
+ENV2_VIBRATO_DELTA equ  11
 
 ENV2_OFF        equ     0
 ENV2_ATTACK     equ     1
@@ -36,6 +37,20 @@ envelope_dispatch_init:
         lxi     h,ch1_volume
         shld    prepare_frame+1
         mvi     a,0fch                  ; capability 01h reserved-bit mask
+        sta     env2_reserved_mask+1
+        mvi     a,03ah                  ; restore LDA env2_work_flags
+        sta     env2_load_work_flags
+        lxi     h,env2_work_flags
+        shld    env2_load_work_flags+1
+        endif
+        if      @@6
+        xra     a
+        sta     vibrato_phase
+        sta     vibrato_phase+1
+        sta     ch1_vibrato_delta
+        sta     ch2_vibrato_delta
+        sta     ch3_vibrato_delta
+        mvi     a,0fch                  ; restore capability 01h parser mask
         sta     env2_reserved_mask+1
         mvi     a,03ah                  ; restore LDA env2_work_flags
         sta     env2_load_work_flags
@@ -76,8 +91,13 @@ envelope_dispatch_init:
         if      @@5
         if      @@2
         lda     SONG_LOAD+7
+        if      @@6
+        ani     2
+        jz      env2_no_tremolo_init
+        else
         cpi     3
         rnz
+        endif
         endif
         mvi     a,0f0h                  ; bits 2-3 are depth under cap 03h
         sta     env2_reserved_mask+1
@@ -89,6 +109,44 @@ envelope_dispatch_init:
         sta     prepare_frame
         lxi     h,prepare_frame_tremolo
         shld    prepare_frame+1
+env2_no_tremolo_init:
+        endif
+        if      @@6
+        if      @@2
+        lda     SONG_LOAD+7
+        ani     4
+        jz      env2_no_vibrato_init
+        endif
+        lxi     h,parse_tone1_v2_pitch
+        shld    parse_tone1_call+1
+        lxi     h,parse_tone2_v2_pitch
+        shld    parse_tone2_call+1
+        lxi     h,parse_tone3_v2_pitch
+        shld    parse_tone3_call+1
+        lxi     h,update_envelope_v2_pitch
+        shld    update_envelope1_call+1
+        shld    update_envelope2_call+1
+        shld    update_envelope3_call+1
+        if      @@2
+        if      @@5
+        lda     SONG_LOAD+7
+        ani     2
+        jz      env2_pitch_without_tremolo
+        mvi     a,0c0h                  ; combined: only bits 6-7 reserved
+        sta     env2_pitch_reserved_mask+1
+        lxi     h,env2_load_combined_flags
+        jmp     env2_store_pitch_loader
+env2_pitch_without_tremolo:
+        endif
+        endif
+        mvi     a,0cch                  ; cap 05h: tremolo and reserved bits
+        sta     env2_pitch_reserved_mask+1
+        lxi     h,env2_load_pitch_flags
+env2_store_pitch_loader:
+        mvi     a,0cdh                  ; CALL feature-aware flag loader
+        sta     env2_load_work_flags
+        shld    env2_load_work_flags+1
+env2_no_vibrato_init:
         endif
         ret
 
@@ -161,6 +219,8 @@ parse_tone_v2:
 env2_reserved_mask:
         ani     0fch
         jnz     env2_invalid_packet
+
+env2_packet_valid:
 
         ; Peak becomes the current-stage target; sustain is persistent state.
         lda     env2_levels
@@ -291,6 +351,100 @@ env2_key_off_current:
         lhld    env2_channel_pointer
         jmp     env2_enter_release
 
+        if      @@6
+; Capability-bit-2 parser.  It deliberately has a separate entry path, so
+; capability 01h/03h songs retain the already-qualified parser instruction
+; stream.  The envelope body after validation remains shared.
+parse_tone1_v2_pitch:
+        lxi     h,ch1_volume
+        shld    env2_channel_pointer
+        lxi     h,phase1+1
+        shld    env2_phase_pointer
+        jmp     parse_tone_v2_pitch
+
+parse_tone2_v2_pitch:
+        lxi     h,ch2_volume
+        shld    env2_channel_pointer
+        lxi     h,phase2+1
+        shld    env2_phase_pointer
+        jmp     parse_tone_v2_pitch
+
+parse_tone3_v2_pitch:
+        lxi     h,ch3_volume
+        shld    env2_channel_pointer
+        lxi     h,phase3+1
+        shld    env2_phase_pointer
+
+parse_tone_v2_pitch:
+        lhld    song_cursor
+        mov     e,m
+        inx     h
+        mov     d,m
+        inx     h
+        shld    song_cursor
+        mov     a,d
+        ani     080h
+        sta     parse_legato
+        mov     a,d
+        ani     07fh
+        mov     d,a
+        ora     e
+        jz      env2_key_off_current_pitch
+        xchg
+        shld    env2_step_word
+
+        lhld    env2_channel_pointer
+        lxi     d,4
+        dad     d
+        xchg
+        lhld    env2_step_word
+        mov     a,l
+        stax    d
+        inx     d
+        mov     a,h
+        stax    d
+
+        lhld    song_cursor
+        mov     a,m
+        sta     env2_levels
+        inx     h
+        mov     a,m
+        sta     env2_rates
+        inx     h
+        mov     a,m
+        sta     env2_packet_flags
+        inx     h
+        shld    song_cursor
+
+        lda     env2_packet_flags
+env2_pitch_reserved_mask:
+        ani     0cch
+        jnz     env2_invalid_packet
+        lda     env2_packet_flags
+        ani     030h
+        cpi     030h                    ; mode 3 is always invalid
+        jz      env2_invalid_packet
+        ora     a
+        jz      env2_pitch_disabled
+        lhld    song_cursor
+        mov     a,m                    ; serialized peak delta minus one
+        inx     h
+        shld    song_cursor
+        mvi     c,ENV2_VIBRATO_DELTA
+        call    env2_store_offset
+        jmp     env2_packet_valid
+env2_pitch_disabled:
+        xra     a
+        mvi     c,ENV2_VIBRATO_DELTA
+        call    env2_store_offset
+        jmp     env2_packet_valid
+
+env2_key_off_current_pitch:
+        lhld    env2_channel_pointer
+        call    env2_enter_release
+        jmp     env2_clear_finished_pitch
+        endif
+
 env2_invalid_packet:
         if      @@2
         jmp     playback_aborted
@@ -354,6 +508,31 @@ update_envelope_v2:
         cpi     ENV2_RELEASE
         jz      env2_update_release
         ret                             ; off or keyed sustain
+
+        if      @@6
+; Capability 01h/03h keeps update_envelope_v2 byte- and cycle-identical.
+; Pitch songs use this wrapper so stale mode/delta state is cleared as soon as
+; a release (including an immediate key-off) has zeroed the immutable base.
+update_envelope_v2_pitch:
+        call    update_envelope_v2
+env2_clear_finished_pitch:
+        push    h
+        lxi     d,4
+        dad     d
+        mov     a,m
+        inx     h
+        ora     m
+        pop     h
+        rnz
+        push    h
+        lxi     d,ENV2_FLAGS
+        dad     d
+        mvi     m,0
+        inx     h
+        mvi     m,0
+        pop     h
+        ret
+        endif
 
 env2_update_attack:
         mov     a,m
@@ -515,7 +694,43 @@ env2_load_tremolo_flags:
         lda     env2_work_flags
         ora     b
         ret
+        endif
 
+        if      @@6
+; Capability 05h: mode bits have already been validated by the pitch parser.
+; The serialized shallow/deep distinction is resolved into peak_step_delta on
+; the host, so target state needs only one enable bit plus the encoded delta.
+env2_load_pitch_flags:
+        lda     env2_packet_flags
+        ani     030h
+        jz      env2_pitch_flags_off
+        mvi     b,040h
+        jmp     env2_merge_feature_flags
+env2_pitch_flags_off:
+        mvi     b,0
+env2_merge_feature_flags:
+        lda     env2_work_flags
+        ora     b
+        ret
+
+        if      @@5
+env2_load_combined_flags:
+        lda     env2_packet_flags
+        ani     00ch
+        rlc
+        rlc
+        mov     b,a
+        lda     env2_packet_flags
+        ani     030h
+        jz      env2_merge_feature_flags
+        mov     a,b
+        ori     040h
+        mov     b,a
+        jmp     env2_merge_feature_flags
+        endif
+        endif
+
+        if      @@5
 ; M4 amplitude-only tremolo.  This is reached only after prepare_frame's
 ; original three-byte LDA has been patched to a JMP for capability 03h.
 ; chN_volume remains the envelope's unmodulated state; only the ORI immediates

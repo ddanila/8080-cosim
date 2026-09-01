@@ -1,9 +1,10 @@
 # JPS v2 pitch and vibrato vertical-slice contract
 
-Status: guarded M5 design, 2026-09-01.  Source semantics and three-voice
-allocation survival are measured; this document does not accept a new target
-capability.  Capability `01h` envelopes, experimental capability `03h`
-envelope+tremolo, and JPS v1 remain independent fallbacks.
+Status: guarded M5 implementation, 2026-09-01.  Source semantics,
+three-voice allocation survival, host-baked pitch, and an experimental
+parser/state-only target are measured; this document does not yet accept a
+runtime pitch capability.  Capability `01h` envelopes, experimental
+capability `03h` envelope+tremolo, and JPS v1 remain independent fallbacks.
 
 ## Scope and evidence
 
@@ -235,3 +236,31 @@ automated gates in `OPL-PITCH-REAL-M5.json` pass; physical A/B remains pending.
 This is an accepted progressive stopping point, not evidence that runtime
 vibrato will fit.  Steps 3--7 and all combined capability-`07h` guards remain
 in force independently.
+
+## Parser/state target checkpoint
+
+Guarded implementation step 3 now passes in a separate `-P6=1` experimental
+build.  Capability `05h` uses a distinct variable-length parser so the
+qualified `01h`/`03h` packet path remains byte- and cycle-identical.  The
+library preflight accepts only exact capability combinations, consumes the
+conditional delta byte, rejects mode 3 and unadvertised tremolo/vibrato bits,
+and proves `base-delta > 0` and `base+delta < 8000h` before touching the PIT.
+Missing conditional bytes, both bound failures, and all capability mismatches
+are exercised with zero PIT writes and zero keyboard polls.
+
+[`OPL-VIBRATO-PARSER-M5.json`](OPL-VIBRATO-PARSER-M5.json) records a 4,993-byte
+pitch-parser player ending at `1481h`, with 54 declared state bytes and 895
+bytes left before the song window.  The combined `-P5=1 -P6=1` parser is 5,349
+bytes, ends at `15E5h`, leaves 539 bytes, and has exactly the proposed 56 state
+bytes.  Every build retains the frozen sample-loop hash.  JPS v1, capability
+`01h`, and combined-build capability `03h` execution profiles are exact
+matches for their already-qualified P4/P5 players.
+
+The synthetic target trace covers encoded deltas 1 and 256, a legato base and
+delta replacement, enabling/disabling vibrato on a held note, immediate
+release clearing, and a non-immediate release which retains its mode.  The
+shared phase deliberately remains zero and temporary steps are not yet
+applied.  The normal assembler continues to reject a vibrato target request.
+Therefore this checkpoint proves synchronization, safety, and bounded state
+only; step 4's exact eight-position runtime trace is still required before
+capability bit 2 can claim playback support.
