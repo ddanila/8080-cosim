@@ -903,6 +903,16 @@ remain present.  This closes the complete-track automated portion only:
 pack-wide regression, normal target enablement, and physical CS00000 A/B
 remain open gates.
 
+Before starting the pack run, the exact host envelope search was made cheaper
+without narrowing its candidate space.  Parameter tuples which simulate to an
+identical 4-bit trace are now scored once, retaining the original complete
+score tuple as their deterministic tie-break.  A representative 68-frame fit
+dropped from about 0.50--0.57 seconds to 0.28--0.29 seconds.  Regenerating the
+30-second runtime-vibrato fixture produced the exact committed
+`eba8af46...5267ca` SHA-256, and regressions pin two ambiguous-trace packet
+choices.  This is host tooling only; it changes neither target bytes nor any
+feasibility allowance.
+
 ### M6: pack regression and physical qualification
 
 Build the complete DOOM library and generate old Juku, new Juku, and accurate

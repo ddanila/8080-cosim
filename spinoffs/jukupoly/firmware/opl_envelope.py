@@ -260,10 +260,21 @@ def fit_envelope_variants(
     best: list[EnvelopeFit | None] = [None] * len(transforms)
     best_score: list[tuple[int, ...] | None] = [None] * len(transforms)
     for peak in sorted(peak_candidates):
+        # Many parameter tuples collapse to the same short 4-bit trace (for
+        # example, every release rate is irrelevant after an immediate
+        # release has already reached zero).  Scoring those duplicates is the
+        # dominant cost on complete packs.  Keep the tuple which would win the
+        # existing deterministic parameter tie-break, then score each exact
+        # prediction once.  This changes neither the candidate set nor the
+        # selected fit.
+        predictions: dict[
+            tuple[int, ...],
+            tuple[tuple[int, ...], int, int, int, int],
+        ] = {}
         for sustain in range(peak + 1):
-            for attack in RATE_PERIODS:
-                for decay in RATE_PERIODS:
-                    for release in RATE_PERIODS:
+            for attack_index, attack in enumerate(RATE_PERIODS):
+                for decay_index, decay in enumerate(RATE_PERIODS):
+                    for release_index, release in enumerate(RATE_PERIODS):
                         envelope_prediction = simulate_envelope(
                             len(reference),
                             key_off_frame=key_off_frame,
@@ -275,49 +286,51 @@ def fit_envelope_variants(
                             sustain_while_keyed=sustain_while_keyed,
                             counter_at_onset=counter_at_onset,
                         )
-                        for variant, transform in enumerate(transforms):
-                            predicted = (
-                                transform(envelope_prediction)
-                                if transform is not None else
-                                envelope_prediction
+                        parameter_order = (
+                            attack_index + decay_index + release_index,
+                            sustain, attack_index, decay_index, release_index,
+                        )
+                        previous = predictions.get(envelope_prediction)
+                        if previous is None or parameter_order < previous[0]:
+                            predictions[envelope_prediction] = (
+                                parameter_order, sustain, attack, decay,
+                                release,
                             )
-                            if len(predicted) != len(reference) or any(
-                                    not isinstance(level, int) or
-                                    not 0 <= level <= 15
-                                    for level in predicted):
-                                raise ValueError(
-                                    "prediction_transform returned invalid "
-                                    "levels"
-                                )
-                            differences = tuple(
-                                actual - expected for actual, expected in zip(
-                                    predicted, reference,
-                                )
-                            )
-                            squared = sum(
-                                value * value for value in differences
-                            )
-                            absolute = sum(abs(value) for value in differences)
-                            maximum = max(abs(value) for value in differences)
-                            score = (
-                                direction_mismatches(predicted),
-                                squared, absolute, maximum,
-                                RATE_PERIODS.index(attack)
-                                + RATE_PERIODS.index(decay)
-                                + RATE_PERIODS.index(release),
-                                peak, sustain,
-                                RATE_PERIODS.index(attack),
-                                RATE_PERIODS.index(decay),
-                                RATE_PERIODS.index(release),
-                            )
-                            if (best_score[variant] is None or
-                                    score < best_score[variant]):
-                                best_score[variant] = score
-                                best[variant] = EnvelopeFit(
-                                    peak, sustain, attack, decay, release,
-                                    sustain_while_keyed, predicted,
-                                    squared, absolute, maximum,
-                                )
+        for envelope_prediction, candidate in predictions.items():
+            parameter_order, sustain, attack, decay, release = candidate
+            for variant, transform in enumerate(transforms):
+                predicted = (
+                    transform(envelope_prediction)
+                    if transform is not None else envelope_prediction
+                )
+                if len(predicted) != len(reference) or any(
+                        not isinstance(level, int) or not 0 <= level <= 15
+                        for level in predicted):
+                    raise ValueError(
+                        "prediction_transform returned invalid levels"
+                    )
+                differences = tuple(
+                    actual - expected for actual, expected in zip(
+                        predicted, reference,
+                    )
+                )
+                squared = sum(value * value for value in differences)
+                absolute = sum(abs(value) for value in differences)
+                maximum = max(abs(value) for value in differences)
+                score = (
+                    direction_mismatches(predicted),
+                    squared, absolute, maximum,
+                    parameter_order[0], peak, sustain,
+                    parameter_order[2], parameter_order[3],
+                    parameter_order[4],
+                )
+                if best_score[variant] is None or score < best_score[variant]:
+                    best_score[variant] = score
+                    best[variant] = EnvelopeFit(
+                        peak, sustain, attack, decay, release,
+                        sustain_while_keyed, predicted,
+                        squared, absolute, maximum,
+                    )
     assert all(item is not None for item in best)
     return tuple(item for item in best if item is not None)
 

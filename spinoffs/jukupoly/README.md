@@ -814,6 +814,13 @@ normal target enablement, and physical CS00000 A/B remain deliberately open.
 The full target/control WAV pair and pinned-Nuked reference live under the
 untracked `out/jukupoly-doomgate-full-vibrato-m5/` directory.
 
+The exact envelope fitter now deduplicates parameter tuples only after they
+produce an identical simulated 4-bit trace, retaining the exhaustive search's
+full deterministic tie-break.  This roughly halves a representative fit's
+host time, while regeneration of the 30-second enhanced score remains
+byte-identical.  It changes no conversion policy or target runtime behavior;
+it prepares the same guarded search for the M6 pack run.
+
 ## Reproduce
 
 Source and generated files:

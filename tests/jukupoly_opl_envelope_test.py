@@ -43,6 +43,17 @@ def check_exact_target_fit() -> None:
     )
     assert fitted.predicted_levels == expected
     assert not fitted.squared_error and not fitted.maximum_error
+    # Several packets can collapse to this exact short trace.  The optimized
+    # fitter must retain the original exhaustive search's deterministic
+    # parameter tie-break, including the lowest equivalent sustain level.
+    assert fitted.packet() == {
+        "peak_level": 12,
+        "sustain_level": 0,
+        "attack_period_frames": 2,
+        "decay_period_frames": 4,
+        "release_period_frames": 2,
+        "sustain_while_keyed": True,
+    }
     assert set(fitted.packet()) == {
         "peak_level", "sustain_level", "attack_period_frames",
         "decay_period_frames", "release_period_frames",
@@ -64,6 +75,14 @@ def check_exact_target_fit() -> None:
         percussive, key_off_frame=None, sustain_while_keyed=False,
     )
     assert fitted.predicted_levels == percussive
+    assert fitted.packet() == {
+        "peak_level": 10,
+        "sustain_level": 3,
+        "attack_period_frames": 0,
+        "decay_period_frames": 1,
+        "release_period_frames": 2,
+        "sustain_while_keyed": False,
+    }
     assert percussive[0] == 10 and percussive[-1] == 0
 
 
