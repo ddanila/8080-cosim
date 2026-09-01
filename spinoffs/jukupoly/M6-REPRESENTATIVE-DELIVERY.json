@@ -1,0 +1,45 @@
+{
+  "schema": "jukupoly-library-replacements-v1",
+  "source_reports": [
+    "OPL-VIBRATO-FULL-M5.json",
+    "OPL-M6-REPRESENTATIVE-PROFILE.json"
+  ],
+  "tracks": [
+    {
+      "pack": "doom1",
+      "local_track": 2,
+      "source_name": "02 At Doom's Gate.vgz",
+      "payload": "doom1-02-doomgate.jps",
+      "bytes": 18133,
+      "sha256": "01765553e4330f71cdbf5507367e8ee95cf5dee7d2d5fb5b5e52a86e3ab72079",
+      "capability": 5
+    },
+    {
+      "pack": "doom1",
+      "local_track": 3,
+      "source_name": "03 The Imp's Song.vgz",
+      "payload": "doom1-03-imp.jps",
+      "bytes": 9978,
+      "sha256": "1b0a6f753fe9df7bdaac57852d4bb50e39ff87b0954b7e0ed66c1eaa8a7935d5",
+      "capability": 1
+    },
+    {
+      "pack": "doom1",
+      "local_track": 4,
+      "source_name": "04 Dark Halls.vgz",
+      "payload": "doom1-04-dark-halls.jps",
+      "bytes": 20151,
+      "sha256": "57d9862c3b772411963e38e888de3d526c4eb554a77e255f10ee11bf99cf432a",
+      "capability": 3
+    },
+    {
+      "pack": "doom1",
+      "local_track": 6,
+      "source_name": "06 Suspense.vgz",
+      "payload": "doom1-06-suspense.jps",
+      "bytes": 12969,
+      "sha256": "cb497609b9581453f09bef1699689ebcb4a41cc5b20655e39138bbbeea9b0cf5",
+      "capability": 3
+    }
+  ]
+}

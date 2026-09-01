@@ -82,7 +82,7 @@ def compile_track(source: Path, overrides: set[str],
     return payload, score
 
 
-def build_player(output: Path) -> None:
+def build_player(output: Path, capabilities: int = 0) -> None:
     with tempfile.TemporaryDirectory(prefix="jukupoly-library-player.") as name:
         image = Path(name) / "jukebox.cim"
         command = [
@@ -92,11 +92,14 @@ def build_player(output: Path) -> None:
             "-8",
             "-P2=1",
             "-P4=1",
-            f"-I{HERE}",
-            "-o",
-            str(image),
-            str(PLAYER_SOURCE),
         ]
+        if capabilities & build_jukupoly.JPS2_TREMOLO_CAPABILITY:
+            command.append("-P5=1")
+        if capabilities & build_jukupoly.JPS2_PITCH_CAPABILITY:
+            command.extend(("-P6=1", "-P7=1"))
+        command.extend((
+            f"-I{HERE}", "-o", str(image), str(PLAYER_SOURCE),
+        ))
         subprocess.run(command, check=True)
         output.write_bytes(image.read_bytes())
     if output.stat().st_size >= build_jukupoly.SONG_LOAD_ADDRESS - 0x100:
@@ -105,7 +108,8 @@ def build_player(output: Path) -> None:
         )
 
 
-def readme_text(catalog: list[dict], archives: list[dict]) -> str:
+def readme_text(catalog: list[dict], archives: list[dict],
+                enhanced_tracks: int = 0) -> str:
     lines = [
         "JukuPoly DOOM music library",
         "===========================",
@@ -124,6 +128,23 @@ def readme_text(catalog: list[dict], archives: list[dict]) -> str:
         "",
         "Source archives:",
     ]
+    if enhanced_tracks:
+        limitation = lines.index(
+            "Timbres, stereo, feedback, modulation, and exact envelopes are not retained."
+        )
+        lines[limitation] = (
+            "JPS1 fallbacks omit exact envelopes; JPS2 tracks retain only the "
+            "guarded approximations recorded in their reports."
+        )
+        player_note = lines.index(
+            "The player follows each VGM command stream once and never repeats its loop."
+        )
+        lines[player_note:player_note] = [
+            "",
+            f"This experimental disk contains {enhanced_tracks} guarded JPS2 tracks;",
+            "the remaining tracks retain their unchanged JPS1 fallback.",
+            "See catalog.json for the delivery mode and capability of each track.",
+        ]
     lines.extend(f"  {item['name']}  SHA-256 {item['sha256']}" for item in archives)
     lines.extend(["", "Catalog:"])
     for item in catalog:
@@ -156,6 +177,55 @@ def logical_to_native(source: Path, destination: Path) -> None:
     destination.write_bytes(native)
 
 
+def load_replacements(manifest_path: Path | None,
+                      payload_directory: Path | None
+                      ) -> tuple[dict[tuple[str, int], dict], int]:
+    if manifest_path is None and payload_directory is None:
+        return {}, 0
+    if manifest_path is None or payload_directory is None:
+        raise ValueError(
+            "replacement manifest and payload directory must be supplied together"
+        )
+    document = json.loads(manifest_path.read_text())
+    if document.get("schema") != "jukupoly-library-replacements-v1":
+        raise ValueError("unsupported replacement manifest schema")
+    records = document.get("tracks")
+    if not isinstance(records, list) or not records:
+        raise ValueError("replacement manifest tracks must be a nonempty list")
+    result = {}
+    capabilities = 0
+    for index, record in enumerate(records):
+        fields = {
+            "pack", "local_track", "source_name", "payload", "bytes",
+            "sha256", "capability",
+        }
+        if not isinstance(record, dict) or set(record) != fields:
+            raise ValueError(f"invalid replacement record {index}")
+        pack = record["pack"]
+        local_track = record["local_track"]
+        if pack not in EXPECTED_TRACKS or not isinstance(local_track, int) or not (
+                1 <= local_track <= EXPECTED_TRACKS[pack]):
+            raise ValueError(f"invalid replacement target {pack}/{local_track}")
+        key = (pack, local_track)
+        if key in result:
+            raise ValueError(f"duplicate replacement target {pack}/{local_track}")
+        capability = record["capability"]
+        if (not isinstance(capability, int) or capability & ~0x07 or
+                not capability & build_jukupoly.JPS2_ENVELOPE_CAPABILITY):
+            raise ValueError(f"invalid replacement capability for {pack}/{local_track}")
+        payload = payload_directory / record["payload"]
+        if not payload.is_file():
+            raise ValueError(f"replacement payload is missing: {payload}")
+        data = payload.read_bytes()
+        if (len(data) != record["bytes"] or sha256(payload) != record["sha256"] or
+                len(data) < 16 or data[:4] != b"JPS\2" or
+                data[7] != capability):
+            raise ValueError(f"replacement payload mismatch: {payload}")
+        result[key] = {**record, "path": payload, "data": data}
+        capabilities |= capability
+    return result, capabilities
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--doom", type=Path, required=True,
@@ -164,6 +234,8 @@ def main() -> int:
                         help="vgmrips Doom_II...zip")
     parser.add_argument("--output-dir", type=Path,
                         default=ROOT / "out" / "jukupoly-doom-library")
+    parser.add_argument("--replacement-manifest", type=Path)
+    parser.add_argument("--replacement-dir", type=Path)
     args = parser.parse_args()
     for path in (args.doom, args.doom2):
         if not path.is_file():
@@ -175,8 +247,14 @@ def main() -> int:
     output = args.output_dir.resolve()
     songs = output / "songs"
     songs.mkdir(parents=True, exist_ok=True)
+    try:
+        replacements, replacement_capabilities = load_replacements(
+            args.replacement_manifest, args.replacement_dir,
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        parser.error(str(exc))
     player = output / "JUKEBOX.COM"
-    build_player(player)
+    build_player(player, replacement_capabilities)
 
     archive_specs = (
         ("doom1", args.doom.resolve()),
@@ -206,6 +284,19 @@ def main() -> int:
                 payload, score = compile_track(
                     source, overrides, prioritize_articulations,
                 )
+                replacement = replacements.get((pack, local_track))
+                if replacement is not None:
+                    if replacement["source_name"] != source_name:
+                        raise SystemExit(
+                            f"replacement source mismatch for {pack}/{local_track}: "
+                            f"{replacement['source_name']} != {source_name}"
+                        )
+                    payload = replacement["data"]
+                    delivery_mode = "enhanced-replacement"
+                    capability = replacement["capability"]
+                else:
+                    delivery_mode = "unchanged-v1"
+                    capability = 0
                 game = 1 if pack == "doom1" else 2
                 cpm_name = f"D{game}T{local_track:02d}.JPS"
                 song_path = songs / cpm_name
@@ -226,10 +317,15 @@ def main() -> int:
                     "source_sha256": score["source"]["compressed_sha256"],
                     "melodic_signature_overrides": sorted(overrides),
                     "voice_selection_policy": conversion["voice_selection_policy"],
+                    "delivery_mode": delivery_mode,
+                    "capability": capability,
+                    "payload_sha256": hashlib.sha256(payload).hexdigest(),
                 })
 
     readme = output / "README.TXT"
-    readme.write_text(readme_text(catalog, archive_records), newline="")
+    readme.write_text(
+        readme_text(catalog, archive_records, len(replacements)), newline="",
+    )
     manifest = {
         "schema": "jukupoly-doom-library-v1",
         "player": {
@@ -239,6 +335,15 @@ def main() -> int:
             "song_load_address": build_jukupoly.SONG_LOAD_ADDRESS,
         },
         "archives": archive_records,
+        "delivery": {
+            "enhanced_replacements": len(replacements),
+            "unchanged_v1": len(catalog) - len(replacements),
+            "player_capabilities": replacement_capabilities,
+            "replacement_manifest": (
+                None if args.replacement_manifest is None else
+                args.replacement_manifest.name
+            ),
+        },
         "tracks": catalog,
     }
     (output / "catalog.json").write_text(json.dumps(manifest, indent=2) + "\n")

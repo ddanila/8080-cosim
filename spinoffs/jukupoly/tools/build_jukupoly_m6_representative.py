@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import hashlib
+import json
 import subprocess
 import sys
 import zipfile
@@ -19,13 +20,22 @@ FIRMWARE = SPINOFF / "firmware"
 IMPORTER = FIRMWARE / "import_jukupoly_vgz.py"
 REPORTER = SPINOFF / "tools" / "report_jukupoly_m6_representative.py"
 RENDER_REPORTER = SPINOFF / "tools" / "report_jukupoly_m6_renders.py"
+LIBRARY_BUILDER = FIRMWARE / "build_doom_library.py"
+LIBRARY_REPORTER = SPINOFF / "tools" / "report_jukupoly_m6_mixed_library.py"
 DEFAULT_WORK = ROOT / "out" / "jukupoly-m6-representative"
 DEFAULT_REPORT = SPINOFF / "OPL-M6-REPRESENTATIVE-PROFILE.json"
 DEFAULT_RENDER_REPORT = SPINOFF / "OPL-M6-REPRESENTATIVE-RENDERS.json"
+DEFAULT_LIBRARY = ROOT / "out" / "jukupoly-doom-library-m6-mixed"
+DEFAULT_LIBRARY_REPORT = SPINOFF / "OPL-M6-MIXED-LIBRARY.json"
+DELIVERY_MANIFEST = SPINOFF / "M6-REPRESENTATIVE-DELIVERY.json"
+DOOMGATE_SCORE = FIRMWARE / "jukupoly-doomgate-full-vibrato-m5.json"
 ARCHIVE_HASHES = {
     "doom1": "04ffbf72e47727b3e93c1e99a68311a460b85fc31fd9a1645e3d872231c0e12a",
     "doom2": "3d255c644e52adc2967df8394086d99d7995da71c4adf83bec0fe3bccc51c365",
 }
+sys.path.insert(0, str(FIRMWARE))
+
+import build_jukupoly as build  # noqa: E402
 
 
 @dataclass(frozen=True)
@@ -118,6 +128,22 @@ def convert(item: Conversion, sources: Path, scores: Path,
     return result.stdout.strip()
 
 
+def materialize_committed_doomgate(work: Path) -> Path:
+    score = json.loads(DOOMGATE_SCORE.read_text())
+    generated, metadata = build.compile_song(score)
+    payload = build.assemble_song_file(generated, metadata)
+    expected = (
+        18_133,
+        "01765553e4330f71cdbf5507367e8ee95cf5dee7d2d5fb5b5e52a86e3ab72079",
+    )
+    if (len(payload), hashlib.sha256(payload).hexdigest()) != expected:
+        raise ValueError("committed Doomgate delivery payload is stale")
+    destination = work / "songs" / "doom1-02-doomgate.jps"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(payload)
+    return destination
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--doom", type=Path, required=True)
@@ -127,6 +153,10 @@ def main() -> int:
     parser.add_argument("--report-output", type=Path, default=DEFAULT_REPORT)
     parser.add_argument(
         "--render-report-output", type=Path, default=DEFAULT_RENDER_REPORT,
+    )
+    parser.add_argument("--library-output", type=Path, default=DEFAULT_LIBRARY)
+    parser.add_argument(
+        "--library-report-output", type=Path, default=DEFAULT_LIBRARY_REPORT,
     )
     parser.add_argument("--jobs", type=int, default=4)
     args = parser.parse_args()
@@ -170,17 +200,33 @@ def main() -> int:
             sys.executable, str(REPORTER), "--work", str(work),
             "--output", str(args.report_output.resolve()),
         ], cwd=ROOT, check=True)
+        materialize_committed_doomgate(work)
         subprocess.run([
             sys.executable, str(RENDER_REPORTER), "--work", str(work),
             "--opl-oracle", str(oracle),
             "--output", str(args.render_report_output.resolve()),
+        ], cwd=ROOT, check=True)
+        library_output = args.library_output.resolve()
+        subprocess.run([
+            sys.executable, str(LIBRARY_BUILDER),
+            "--doom", str(archives["doom1"]),
+            "--doom2", str(archives["doom2"]),
+            "--replacement-manifest", str(DELIVERY_MANIFEST),
+            "--replacement-dir", str(work / "songs"),
+            "--output-dir", str(library_output),
+        ], cwd=ROOT, check=True)
+        subprocess.run([
+            sys.executable, str(LIBRARY_REPORTER),
+            "--library", str(library_output),
+            "--output", str(args.library_report_output.resolve()),
         ], cwd=ROOT, check=True)
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:
         parser.error(str(exc))
     print(
         f"JUKUPOLY-M6-BUILD: PASS work={work} "
         f"report={args.report_output.resolve()} "
-        f"renders={args.render_report_output.resolve()}"
+        f"renders={args.render_report_output.resolve()} "
+        f"library={args.library_report_output.resolve()}"
     )
     return 0
 

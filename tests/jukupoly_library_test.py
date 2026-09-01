@@ -6,6 +6,7 @@ from __future__ import annotations
 import sys
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 
@@ -15,6 +16,36 @@ import build_doom_library as library  # noqa: E402
 
 
 class JukuDiskLayoutTest(unittest.TestCase):
+    def test_replacement_manifest_is_strict_and_hash_checked(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="jukupoly-replacements.") as name:
+            directory = Path(name)
+            payload = directory / "track.jps"
+            data = bytearray(16)
+            data[:4] = b"JPS\2"
+            data[4:6] = (16).to_bytes(2, "little")
+            data[7] = 3
+            payload.write_bytes(data)
+            manifest = directory / "manifest.json"
+            manifest.write_text(json.dumps({
+                "schema": "jukupoly-library-replacements-v1",
+                "tracks": [{
+                    "pack": "doom1", "local_track": 3,
+                    "source_name": "03 The Imp's Song.vgz",
+                    "payload": payload.name, "bytes": len(data),
+                    "sha256": library.sha256(payload), "capability": 3,
+                }],
+            }))
+            records, capabilities = library.load_replacements(
+                manifest, directory,
+            )
+            self.assertEqual(capabilities, 3)
+            self.assertEqual(records[("doom1", 3)]["data"], bytes(data))
+            document = json.loads(manifest.read_text())
+            document["tracks"][0]["sha256"] = "0" * 64
+            manifest.write_text(json.dumps(document))
+            with self.assertRaisesRegex(ValueError, "payload mismatch"):
+                library.load_replacements(manifest, directory)
+
     def test_source_confirmed_articulation_priority_is_scoped(self) -> None:
         self.assertEqual(
             library.ARTICULATION_PRIORITY,

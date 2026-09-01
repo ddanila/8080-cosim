@@ -851,6 +851,20 @@ distinct.  The twelve listening files are generated under
 `out/jukupoly-m6-representative/renders/` and remain untracked.  The complete
 two-pack disk and physical A/B gates remain open.
 
+A complete progressive mixed disk is now built from the same evidence.  The
+generic optional replacement manifest verifies each qualified payload before
+substitution and leaves the ordinary builder unchanged when omitted.  The
+disk contains At Doom's Gate as capability `05h`, Imp as `01h`, Dark Halls
+and Suspense as `03h`, plus 40 unchanged v1 tracks.  Its combined player is
+5,632 bytes and supports the union capability `07h`.
+
+[`OPL-M6-MIXED-LIBRARY.json`](OPL-M6-MIXED-LIBRARY.json) records an exact
+819,200-byte disk with SHA-256 `9d0bfe9b...2f07d` and 630,986 song bytes.  All
+44 catalog songs complete full C-cosim playback under that player; catalog
+hashes, capability distribution, enhanced timing/rate gates, Escape polling,
+and the frozen loop all pass.  This is a bootable mixed fallback milestone,
+not complete enhancement of all 44 songs, and still requires physical A/B.
+
 ## Reproduce
 
 Source and generated files:
@@ -885,6 +899,8 @@ Source and generated files:
   of the four exact-oracle M6 inputs and their committed profile;
 - `tools/report_jukupoly_m6_renders.py` — exact 30-second v1/enhanced/Nuked
   render hashes and excerpt timing/concurrency gates;
+- `tools/report_jukupoly_m6_mixed_library.py` — complete 44-song mixed-disk
+  hash, capability, and full C-cosim compatibility report;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
   score recalibration which refuses every explicit phase step;
 - `OPL-BASELINE.json` — committed pre-OPL timing/memory/WAV evidence;
@@ -904,6 +920,8 @@ Source and generated files:
 - `OPL-VIBRATO-FULL-M5.json` — committed complete-track runtime-vibrato report;
 - `OPL-M6-REPRESENTATIVE-PROFILE.json` — committed first M6 four-track profile;
 - `OPL-M6-REPRESENTATIVE-RENDERS.json` — committed M6 three-way excerpt report;
+- `M6-REPRESENTATIVE-DELIVERY.json` — hash-locked qualified JPS2 replacements;
+- `OPL-M6-MIXED-LIBRARY.json` — committed 44-track mixed-disk C-cosim report;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;

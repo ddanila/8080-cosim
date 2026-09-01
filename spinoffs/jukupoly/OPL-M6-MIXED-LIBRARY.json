@@ -1,0 +1,2653 @@
+{
+  "aggregate_gates": {
+    "capability_distribution_exact": true,
+    "catalog_has_44_tracks": true,
+    "delivery_counts_are_4_enhanced_40_v1": true,
+    "disk_is_exact_juku_size": true,
+    "disk_player_matches_qualified_combined_build": true,
+    "every_song_gate_passes": true,
+    "sample_loop_hash_exact": true
+  },
+  "library": {
+    "capability_counts": {
+      "0": 40,
+      "1": 1,
+      "3": 2,
+      "5": 1
+    },
+    "catalog_sha256": "682788cdc7c83beb38db8f0a514e1d5d5c1d91c5b5a63fd375dc7ef7cab25dfa",
+    "disk_bytes": 819200,
+    "disk_name": "jukupoly-doom-library.cpm",
+    "disk_sha256": "9d0bfe9b60ea96f824d66c0b3d05554f58041c75be3e3e2edd4ac5af7ad2f07d",
+    "path_hint": "jukupoly-doom-library-m6-mixed",
+    "song_bytes": 630986
+  },
+  "player": {
+    "bytes": 5632,
+    "end_address_exclusive": "0x1700",
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f",
+    "sha256": "7594041132cc3f676bef0c167f6a28f223d513a3e6ba1317bb5eaaa5e68734f1",
+    "song_window_margin_bytes": 256
+  },
+  "remaining_gates": [
+    "convert and qualify additional pack tracks where feasible",
+    "physical CS00000 A/B before normal enablement"
+  ],
+  "schema": "jukupoly-opl-m6-mixed-library-v1",
+  "shared_sample_rate_floor_hz": 6401.146221,
+  "status": "complete 44-track mixed disk and C-cosim compatibility gates pass; broader enhancement conversion and physical A/B remain open",
+  "tracks": [
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T01.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 1,
+      "jps_bytes": 2714,
+      "jps_sha256": "4b3511f9dbb446cb8d396f24e58d6010222157fd56bf7762de54d2fcebed0322",
+      "local_track": 1,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 6.84207,
+        "effective_sample_hz": 7189.637054,
+        "frame_cycles": {
+          "count": 344,
+          "max": 36116,
+          "mean": 33812.555,
+          "min": 33574,
+          "p99": 34863
+        },
+        "frame_samples": 143,
+        "frames": 344,
+        "idle_boundary_cycles": {
+          "count": 294,
+          "max": 1094,
+          "mean": 884.241,
+          "min": 814,
+          "p99": 966
+        },
+        "jps_bytes": 2714,
+        "keyboard_polls": 345,
+        "label": "doom1-01",
+        "music_frame_hz": 50.277182,
+        "mutated_player_bytes": 78,
+        "pit_writes": 616,
+        "row_boundary_cycles": {
+          "count": 50,
+          "max": 2041,
+          "mean": 1742.88,
+          "min": 1329,
+          "p99": 2041
+        },
+        "sample_loop_cycles": {
+          "count": 48848,
+          "max": 262,
+          "mean": 229.398,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Title Screen"
+    },
+    {
+      "capability": 5,
+      "delivery_mode": "enhanced-replacement",
+      "filename": "D1T02.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "enhanced_duration_within_one_percent": true,
+        "enhanced_music_clock_within_one_percent": true,
+        "enhanced_phase_table_within_one_percent": true,
+        "enhanced_rate_above_shared_floor": true,
+        "replacement_manifest_matches": true
+      },
+      "global_track": 2,
+      "jps_bytes": 18133,
+      "jps_sha256": "01765553e4330f71cdbf5507367e8ee95cf5dee7d2d5fb5b5e52a86e3ab72079",
+      "local_track": 2,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 97.167121,
+        "effective_sample_hz": 6605.711851,
+        "frame_cycles": {
+          "count": 4826,
+          "max": 44481,
+          "mean": 34227.954,
+          "min": 32310,
+          "p99": 40771
+        },
+        "frame_samples": 133,
+        "frames": 4826,
+        "idle_boundary_cycles": {
+          "count": 3048,
+          "max": 3185,
+          "mean": 2224.091,
+          "min": 1754,
+          "p99": 2819
+        },
+        "jps_bytes": 18133,
+        "keyboard_polls": 4827,
+        "label": "doom1-02",
+        "music_frame_hz": 49.667006,
+        "mutated_player_bytes": 102,
+        "pit_writes": 62621,
+        "row_boundary_cycles": {
+          "count": 1778,
+          "max": 12139,
+          "mean": 5315.461,
+          "min": 2337,
+          "p99": 10978
+        },
+        "sample_loop_cycles": {
+          "count": 637032,
+          "max": 276,
+          "mean": 232.076,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "At Doom's Gate"
+    },
+    {
+      "capability": 1,
+      "delivery_mode": "enhanced-replacement",
+      "filename": "D1T03.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "enhanced_duration_within_one_percent": true,
+        "enhanced_music_clock_within_one_percent": true,
+        "enhanced_phase_table_within_one_percent": true,
+        "enhanced_rate_above_shared_floor": true,
+        "replacement_manifest_matches": true
+      },
+      "global_track": 3,
+      "jps_bytes": 9978,
+      "jps_sha256": "1b0a6f753fe9df7bdaac57852d4bb50e39ff87b0954b7e0ed66c1eaa8a7935d5",
+      "local_track": 3,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 158.882064,
+        "effective_sample_hz": 7087.804469,
+        "frame_cycles": {
+          "count": 7875,
+          "max": 42197,
+          "mean": 34298.35,
+          "min": 33574,
+          "p99": 39449
+        },
+        "frame_samples": 143,
+        "frames": 7875,
+        "idle_boundary_cycles": {
+          "count": 6954,
+          "max": 1858,
+          "mean": 1052.254,
+          "min": 827,
+          "p99": 1425
+        },
+        "jps_bytes": 9978,
+        "keyboard_polls": 7876,
+        "label": "doom1-03",
+        "music_frame_hz": 49.565066,
+        "mutated_player_bytes": 101,
+        "pit_writes": 50938,
+        "row_boundary_cycles": {
+          "count": 921,
+          "max": 9096,
+          "mean": 3642.738,
+          "min": 1277,
+          "p99": 6953
+        },
+        "sample_loop_cycles": {
+          "count": 1118250,
+          "max": 269,
+          "mean": 230.375,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "The Imp's Song"
+    },
+    {
+      "capability": 3,
+      "delivery_mode": "enhanced-replacement",
+      "filename": "D1T04.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "enhanced_duration_within_one_percent": true,
+        "enhanced_music_clock_within_one_percent": true,
+        "enhanced_phase_table_within_one_percent": true,
+        "enhanced_rate_above_shared_floor": true,
+        "replacement_manifest_matches": true
+      },
+      "global_track": 4,
+      "jps_bytes": 20151,
+      "jps_sha256": "57d9862c3b772411963e38e888de3d526c4eb554a77e255f10ee11bf99cf432a",
+      "local_track": 4,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 272.001652,
+        "effective_sample_hz": 6853.98779,
+        "frame_cycles": {
+          "count": 13608,
+          "max": 41794,
+          "mean": 33980.218,
+          "min": 32531,
+          "p99": 37956
+        },
+        "frame_samples": 137,
+        "frames": 13608,
+        "idle_boundary_cycles": {
+          "count": 11423,
+          "max": 2269,
+          "mean": 1248.479,
+          "min": 1059,
+          "p99": 1774
+        },
+        "jps_bytes": 20151,
+        "keyboard_polls": 13609,
+        "label": "doom1-04",
+        "music_frame_hz": 50.029108,
+        "mutated_player_bytes": 101,
+        "pit_writes": 369593,
+        "row_boundary_cycles": {
+          "count": 2185,
+          "max": 9212,
+          "mean": 4164.001,
+          "min": 1748,
+          "p99": 8609
+        },
+        "sample_loop_cycles": {
+          "count": 1850688,
+          "max": 276,
+          "mean": 235.499,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Dark Halls"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T05.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 5,
+      "jps_bytes": 18037,
+      "jps_sha256": "98490100aaf0c678943d8ca778f676b1829b0960f1e3119bbd05530b40f12647",
+      "local_track": 5,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 173.860679,
+        "effective_sample_hz": 7113.782187,
+        "frame_cycles": {
+          "count": 8649,
+          "max": 36831,
+          "mean": 34173.101,
+          "min": 33561,
+          "p99": 36645
+        },
+        "frame_samples": 143,
+        "frames": 8649,
+        "idle_boundary_cycles": {
+          "count": 6717,
+          "max": 1167,
+          "mean": 854.374,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 18037,
+        "keyboard_polls": 8650,
+        "label": "doom1-05",
+        "music_frame_hz": 49.746729,
+        "mutated_player_bytes": 81,
+        "pit_writes": 108945,
+        "row_boundary_cycles": {
+          "count": 1932,
+          "max": 2703,
+          "mean": 1706.256,
+          "min": 1227,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1228158,
+          "max": 276,
+          "mean": 231.67,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Kitchen Ace (and Taking Names)"
+    },
+    {
+      "capability": 3,
+      "delivery_mode": "enhanced-replacement",
+      "filename": "D1T06.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "enhanced_duration_within_one_percent": true,
+        "enhanced_music_clock_within_one_percent": true,
+        "enhanced_phase_table_within_one_percent": true,
+        "enhanced_rate_above_shared_floor": true,
+        "replacement_manifest_matches": true
+      },
+      "global_track": 6,
+      "jps_bytes": 12969,
+      "jps_sha256": "cb497609b9581453f09bef1699689ebcb4a41cc5b20655e39138bbbeea9b0cf5",
+      "local_track": 6,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 172.425742,
+        "effective_sample_hz": 6858.51189,
+        "frame_cycles": {
+          "count": 8632,
+          "max": 42005,
+          "mean": 33957.804,
+          "min": 32395,
+          "p99": 40129
+        },
+        "frame_samples": 137,
+        "frames": 8632,
+        "idle_boundary_cycles": {
+          "count": 7235,
+          "max": 3019,
+          "mean": 1442.918,
+          "min": 1022,
+          "p99": 3019
+        },
+        "jps_bytes": 12969,
+        "keyboard_polls": 8633,
+        "label": "doom1-06",
+        "music_frame_hz": 50.062131,
+        "mutated_player_bytes": 101,
+        "pit_writes": 163625,
+        "row_boundary_cycles": {
+          "count": 1397,
+          "max": 9405,
+          "mean": 4407.684,
+          "min": 1744,
+          "p99": 8902
+        },
+        "sample_loop_cycles": {
+          "count": 1173952,
+          "max": 276,
+          "mean": 233.855,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Suspense"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T07.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 7,
+      "jps_bytes": 9637,
+      "jps_sha256": "c6a188ca52f69c2dc34f7b3ed0770b39c4cb962c81ddc6a3e2291be25127c7fd",
+      "local_track": 7,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 87.164696,
+        "effective_sample_hz": 7034.774731,
+        "frame_cycles": {
+          "count": 4288,
+          "max": 37255,
+          "mean": 34556.899,
+          "min": 33561,
+          "p99": 36704
+        },
+        "frame_samples": 143,
+        "frames": 4288,
+        "idle_boundary_cycles": {
+          "count": 3585,
+          "max": 1167,
+          "mean": 884.569,
+          "min": 814,
+          "p99": 1117
+        },
+        "jps_bytes": 9637,
+        "keyboard_polls": 4289,
+        "label": "doom1-07",
+        "music_frame_hz": 49.194229,
+        "mutated_player_bytes": 81,
+        "pit_writes": 104668,
+        "row_boundary_cycles": {
+          "count": 703,
+          "max": 2703,
+          "mean": 1764.825,
+          "min": 1227,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 608896,
+          "max": 276,
+          "mean": 234.449,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "On the Hunt"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T08.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 8,
+      "jps_bytes": 9657,
+      "jps_sha256": "b190c2cdd2ea2b307bd4dbc792735c35bf1c5b193cb9c929ea50c9703497dc11",
+      "local_track": 8,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 151.536462,
+        "effective_sample_hz": 7136.955576,
+        "frame_cycles": {
+          "count": 7563,
+          "max": 37716,
+          "mean": 34062.143,
+          "min": 33574,
+          "p99": 36293
+        },
+        "frame_samples": 143,
+        "frames": 7563,
+        "idle_boundary_cycles": {
+          "count": 6378,
+          "max": 1144,
+          "mean": 872.354,
+          "min": 814,
+          "p99": 1055
+        },
+        "jps_bytes": 9657,
+        "keyboard_polls": 7564,
+        "label": "doom1-08",
+        "music_frame_hz": 49.90878,
+        "mutated_player_bytes": 81,
+        "pit_writes": 83895,
+        "row_boundary_cycles": {
+          "count": 1185,
+          "max": 2340,
+          "mean": 1532.837,
+          "min": 1240,
+          "p99": 2067
+        },
+        "sample_loop_cycles": {
+          "count": 1073946,
+          "max": 276,
+          "mean": 231.379,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Demons on the Prey"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T09.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 9,
+      "jps_bytes": 5163,
+      "jps_sha256": "bb1c0029a18ae198d1bab56098332c5e07b590176001492cdc24cad60e7618ca",
+      "local_track": 9,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 155.626831,
+        "effective_sample_hz": 7010.018721,
+        "frame_cycles": {
+          "count": 7629,
+          "max": 37178,
+          "mean": 34678.937,
+          "min": 33561,
+          "p99": 36256
+        },
+        "frame_samples": 143,
+        "frames": 7629,
+        "idle_boundary_cycles": {
+          "count": 7168,
+          "max": 1144,
+          "mean": 882.71,
+          "min": 814,
+          "p99": 1094
+        },
+        "jps_bytes": 5163,
+        "keyboard_polls": 7630,
+        "label": "doom1-09",
+        "music_frame_hz": 49.02111,
+        "mutated_player_bytes": 81,
+        "pit_writes": 235326,
+        "row_boundary_cycles": {
+          "count": 461,
+          "max": 2486,
+          "mean": 1416.336,
+          "min": 1240,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1083318,
+          "max": 276,
+          "mean": 236.116,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Sign of Evil"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T10.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 10,
+      "jps_bytes": 14274,
+      "jps_sha256": "61a6f94d58bd0905e3a3ccf0fe1adc93fe48007f9ccfe3469698037ffb9215dc",
+      "local_track": 10,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 142.985834,
+        "effective_sample_hz": 7040.697495,
+        "frame_cycles": {
+          "count": 7040,
+          "max": 37621,
+          "mean": 34527.829,
+          "min": 33561,
+          "p99": 36891
+        },
+        "frame_samples": 143,
+        "frames": 7040,
+        "idle_boundary_cycles": {
+          "count": 6026,
+          "max": 1167,
+          "mean": 869.591,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 14274,
+        "keyboard_polls": 7041,
+        "label": "doom1-10",
+        "music_frame_hz": 49.235647,
+        "mutated_player_bytes": 81,
+        "pit_writes": 163424,
+        "row_boundary_cycles": {
+          "count": 1014,
+          "max": 2703,
+          "mean": 1970.767,
+          "min": 1227,
+          "p99": 2509
+        },
+        "sample_loop_cycles": {
+          "count": 999680,
+          "max": 276,
+          "mean": 234.271,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Hiding the Secrets"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T11.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 11,
+      "jps_bytes": 21587,
+      "jps_sha256": "8e7c63ecc06e4abb3fcb42b8edfa33fed96fd932f5da8bbe2528d6eedeec5f0e",
+      "local_track": 11,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 156.283122,
+        "effective_sample_hz": 7081.231725,
+        "frame_cycles": {
+          "count": 7739,
+          "max": 37410,
+          "mean": 34330.186,
+          "min": 33561,
+          "p99": 36529
+        },
+        "frame_samples": 143,
+        "frames": 7739,
+        "idle_boundary_cycles": {
+          "count": 5383,
+          "max": 1167,
+          "mean": 857.341,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 21587,
+        "keyboard_polls": 7740,
+        "label": "doom1-11",
+        "music_frame_hz": 49.519103,
+        "mutated_player_bytes": 81,
+        "pit_writes": 119983,
+        "row_boundary_cycles": {
+          "count": 2356,
+          "max": 2726,
+          "mean": 1647.999,
+          "min": 1227,
+          "p99": 2459
+        },
+        "sample_loop_cycles": {
+          "count": 1098938,
+          "max": 276,
+          "mean": 232.398,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "I Sawed the Demons"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T12.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 12,
+      "jps_bytes": 17639,
+      "jps_sha256": "364ce081926ed7e70706c126ffde5c73d64d47d502fb4f2e120c7f9fbca7f4c6",
+      "local_track": 12,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 158.439819,
+        "effective_sample_hz": 7018.23572,
+        "frame_cycles": {
+          "count": 7776,
+          "max": 37838,
+          "mean": 34638.335,
+          "min": 33574,
+          "p99": 37443
+        },
+        "frame_samples": 143,
+        "frames": 7776,
+        "idle_boundary_cycles": {
+          "count": 5582,
+          "max": 1144,
+          "mean": 867.642,
+          "min": 814,
+          "p99": 1055
+        },
+        "jps_bytes": 17639,
+        "keyboard_polls": 7777,
+        "label": "doom1-12",
+        "music_frame_hz": 49.078571,
+        "mutated_player_bytes": 81,
+        "pit_writes": 191325,
+        "row_boundary_cycles": {
+          "count": 2194,
+          "max": 2486,
+          "mean": 1589.974,
+          "min": 1277,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1104192,
+          "max": 276,
+          "mean": 234.712,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "The Demons from Adrian's Pen"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T13.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 13,
+      "jps_bytes": 8534,
+      "jps_sha256": "7e1a45171e399b40ef20c7c58238317f2eaf4f0156c7ea36eb8e192fcd8b534c",
+      "local_track": 13,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 256.727122,
+        "effective_sample_hz": 7041.184365,
+        "frame_cycles": {
+          "count": 12641,
+          "max": 36972,
+          "mean": 34525.442,
+          "min": 33574,
+          "p99": 36211
+        },
+        "frame_samples": 143,
+        "frames": 12641,
+        "idle_boundary_cycles": {
+          "count": 11742,
+          "max": 1144,
+          "mean": 881.784,
+          "min": 827,
+          "p99": 1005
+        },
+        "jps_bytes": 8534,
+        "keyboard_polls": 12642,
+        "label": "doom1-13",
+        "music_frame_hz": 49.239052,
+        "mutated_player_bytes": 81,
+        "pit_writes": 312836,
+        "row_boundary_cycles": {
+          "count": 899,
+          "max": 2436,
+          "mean": 1798.605,
+          "min": 1331,
+          "p99": 2340
+        },
+        "sample_loop_cycles": {
+          "count": 1795022,
+          "max": 276,
+          "mean": 234.813,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "They're Going to Get You"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T14.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 14,
+      "jps_bytes": 8548,
+      "jps_sha256": "939707d3a0b6e280c973939b5832ae0f7a279ebbc7c0fd4a42d7b72c89d50b76",
+      "local_track": 14,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 179.523821,
+        "effective_sample_hz": 7106.037493,
+        "frame_cycles": {
+          "count": 8921,
+          "max": 36801,
+          "mean": 34210.346,
+          "min": 33673,
+          "p99": 35986
+        },
+        "frame_samples": 143,
+        "frames": 8921,
+        "idle_boundary_cycles": {
+          "count": 8115,
+          "max": 1167,
+          "mean": 881.009,
+          "min": 827,
+          "p99": 1055
+        },
+        "jps_bytes": 8548,
+        "keyboard_polls": 8922,
+        "label": "doom1-14",
+        "music_frame_hz": 49.69257,
+        "mutated_player_bytes": 81,
+        "pit_writes": 143941,
+        "row_boundary_cycles": {
+          "count": 806,
+          "max": 2486,
+          "mean": 1573.654,
+          "min": 1277,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1266782,
+          "max": 276,
+          "mean": 232.643,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Sinister"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T15.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 15,
+      "jps_bytes": 10000,
+      "jps_sha256": "41c6d47eb15da5754a8c984d40c4ee009cc06ff973a1cb3c783b0bb79df95a86",
+      "local_track": 15,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 106.812078,
+        "effective_sample_hz": 7074.218727,
+        "frame_cycles": {
+          "count": 5284,
+          "max": 39056,
+          "mean": 34364.219,
+          "min": 33574,
+          "p99": 36382
+        },
+        "frame_samples": 143,
+        "frames": 5284,
+        "idle_boundary_cycles": {
+          "count": 3651,
+          "max": 1144,
+          "mean": 855.28,
+          "min": 814,
+          "p99": 1055
+        },
+        "jps_bytes": 10000,
+        "keyboard_polls": 5285,
+        "label": "doom1-15",
+        "music_frame_hz": 49.470061,
+        "mutated_player_bytes": 81,
+        "pit_writes": 90564,
+        "row_boundary_cycles": {
+          "count": 1633,
+          "max": 2091,
+          "mean": 1466.416,
+          "min": 1281,
+          "p99": 1945
+        },
+        "sample_loop_cycles": {
+          "count": 750328,
+          "max": 276,
+          "mean": 233.011,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Waltz of the Demons"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T16.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 16,
+      "jps_bytes": 8311,
+      "jps_sha256": "4789e5f877b27b8a18ef92f24a543d5c1c331cfe19e51343a44d6f5fa308744c",
+      "local_track": 16,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 181.095342,
+        "effective_sample_hz": 7044.372226,
+        "frame_cycles": {
+          "count": 8921,
+          "max": 37159,
+          "mean": 34509.818,
+          "min": 33561,
+          "p99": 36193
+        },
+        "frame_samples": 143,
+        "frames": 8921,
+        "idle_boundary_cycles": {
+          "count": 8267,
+          "max": 1144,
+          "mean": 873.626,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 8311,
+        "keyboard_polls": 8922,
+        "label": "doom1-16",
+        "music_frame_hz": 49.261344,
+        "mutated_player_bytes": 81,
+        "pit_writes": 223417,
+        "row_boundary_cycles": {
+          "count": 654,
+          "max": 2486,
+          "mean": 1749.318,
+          "min": 1240,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1266782,
+          "max": 276,
+          "mean": 234.765,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Nobody Told Me About id"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T17.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 17,
+      "jps_bytes": 14721,
+      "jps_sha256": "451867aaa396d5be80b67fccc5c8da1a1dc085a28044ffcfaf0b3431e1dd7c14",
+      "local_track": 17,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 97.932082,
+        "effective_sample_hz": 7057.125545,
+        "frame_cycles": {
+          "count": 4833,
+          "max": 37795,
+          "mean": 34447.453,
+          "min": 33561,
+          "p99": 37022
+        },
+        "frame_samples": 143,
+        "frames": 4833,
+        "idle_boundary_cycles": {
+          "count": 3051,
+          "max": 1167,
+          "mean": 862.808,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 14721,
+        "keyboard_polls": 4834,
+        "label": "doom1-17",
+        "music_frame_hz": 49.350528,
+        "mutated_player_bytes": 81,
+        "pit_writes": 84426,
+        "row_boundary_cycles": {
+          "count": 1782,
+          "max": 2703,
+          "mean": 1612.764,
+          "min": 1227,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 686286,
+          "max": 276,
+          "mean": 232.926,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Untitled"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T18.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 18,
+      "jps_bytes": 15222,
+      "jps_sha256": "f9c4792b7a9766223dad55b89899ec7d074f5860e05f6744e4ed84b1fb7dd286",
+      "local_track": 18,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 120.987116,
+        "effective_sample_hz": 7040.84062,
+        "frame_cycles": {
+          "count": 5957,
+          "max": 37409,
+          "mean": 34527.127,
+          "min": 33561,
+          "p99": 36772
+        },
+        "frame_samples": 143,
+        "frames": 5957,
+        "idle_boundary_cycles": {
+          "count": 4410,
+          "max": 1167,
+          "mean": 864.579,
+          "min": 814,
+          "p99": 966
+        },
+        "jps_bytes": 15222,
+        "keyboard_polls": 5958,
+        "label": "doom1-18",
+        "music_frame_hz": 49.236648,
+        "mutated_player_bytes": 81,
+        "pit_writes": 131477,
+        "row_boundary_cycles": {
+          "count": 1547,
+          "max": 2703,
+          "mean": 1704.016,
+          "min": 1227,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 845894,
+          "max": 276,
+          "mean": 233.882,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Donna to the Rescue"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T19.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 19,
+      "jps_bytes": 21291,
+      "jps_sha256": "6f925004299427fd3be8080ff2210d826d7462d6bdafe8f8db17906ddd412cff",
+      "local_track": 19,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 124.097596,
+        "effective_sample_hz": 7053.343698,
+        "frame_cycles": {
+          "count": 6121,
+          "max": 37215,
+          "mean": 34465.923,
+          "min": 33574,
+          "p99": 36593
+        },
+        "frame_samples": 143,
+        "frames": 6121,
+        "idle_boundary_cycles": {
+          "count": 3653,
+          "max": 1167,
+          "mean": 880.728,
+          "min": 827,
+          "p99": 989
+        },
+        "jps_bytes": 21291,
+        "keyboard_polls": 6122,
+        "label": "doom1-19",
+        "music_frame_hz": 49.324082,
+        "mutated_player_bytes": 81,
+        "pit_writes": 101597,
+        "row_boundary_cycles": {
+          "count": 2468,
+          "max": 2703,
+          "mean": 1690.686,
+          "min": 1240,
+          "p99": 2459
+        },
+        "sample_loop_cycles": {
+          "count": 869182,
+          "max": 276,
+          "mean": 232.54,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Deep into the Code"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T20.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 20,
+      "jps_bytes": 16723,
+      "jps_sha256": "c48517fbf26e2429fdb3caebb6a929b4965461df37527cc60e832188c478a05c",
+      "local_track": 20,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 96.877471,
+        "effective_sample_hz": 7085.238618,
+        "frame_cycles": {
+          "count": 4800,
+          "max": 36691,
+          "mean": 34310.771,
+          "min": 33561,
+          "p99": 36460
+        },
+        "frame_samples": 143,
+        "frames": 4800,
+        "idle_boundary_cycles": {
+          "count": 3381,
+          "max": 1167,
+          "mean": 874.143,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 16723,
+        "keyboard_polls": 4801,
+        "label": "doom1-20",
+        "music_frame_hz": 49.547123,
+        "mutated_player_bytes": 81,
+        "pit_writes": 63454,
+        "row_boundary_cycles": {
+          "count": 1419,
+          "max": 2509,
+          "mean": 1859.902,
+          "min": 1144,
+          "p99": 2459
+        },
+        "sample_loop_cycles": {
+          "count": 681600,
+          "max": 276,
+          "mean": 231.771,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Facing the Spider"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T21.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 21,
+      "jps_bytes": 25335,
+      "jps_sha256": "b6125ab6286bf30e1c15cbea300596a763d56e8a8db309b375b1d92efe6add70",
+      "local_track": 21,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 203.837835,
+        "effective_sample_hz": 7111.491358,
+        "frame_cycles": {
+          "count": 10137,
+          "max": 36966,
+          "mean": 34184.11,
+          "min": 33561,
+          "p99": 36624
+        },
+        "frame_samples": 143,
+        "frames": 10137,
+        "idle_boundary_cycles": {
+          "count": 7660,
+          "max": 1167,
+          "mean": 860.938,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 25335,
+        "keyboard_polls": 10138,
+        "label": "doom1-21",
+        "music_frame_hz": 49.730709,
+        "mutated_player_bytes": 81,
+        "pit_writes": 115625,
+        "row_boundary_cycles": {
+          "count": 2477,
+          "max": 2594,
+          "mean": 1778.333,
+          "min": 1240,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1439454,
+          "max": 276,
+          "mean": 231.464,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Intermission from Doom"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T22.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 22,
+      "jps_bytes": 9709,
+      "jps_sha256": "c8f8da479cb83e3f9ce90d8821a45da2d42c02c090936a51b2f2a794cac1f8a5",
+      "local_track": 22,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 194.167731,
+        "effective_sample_hz": 7069.439354,
+        "frame_cycles": {
+          "count": 9599,
+          "max": 37091,
+          "mean": 34387.451,
+          "min": 33660,
+          "p99": 36185
+        },
+        "frame_samples": 143,
+        "frames": 9599,
+        "idle_boundary_cycles": {
+          "count": 8402,
+          "max": 1167,
+          "mean": 877.947,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 9709,
+        "keyboard_polls": 9600,
+        "label": "doom1-22",
+        "music_frame_hz": 49.436639,
+        "mutated_player_bytes": 81,
+        "pit_writes": 201413,
+        "row_boundary_cycles": {
+          "count": 1197,
+          "max": 2776,
+          "mean": 1522.642,
+          "min": 1240,
+          "p99": 2509
+        },
+        "sample_loop_cycles": {
+          "count": 1363058,
+          "max": 276,
+          "mean": 233.774,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "The End of Doom"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D1T23.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 23,
+      "jps_bytes": 5525,
+      "jps_sha256": "f4f31f861966a949c38edc3116bb2723fedd65b7d45963b3992f1ef52214cd80",
+      "local_track": 23,
+      "pack": "doom1",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 62.864583,
+        "effective_sample_hz": 7051.66533,
+        "frame_cycles": {
+          "count": 3100,
+          "max": 37070,
+          "mean": 34474.126,
+          "min": 33574,
+          "p99": 36207
+        },
+        "frame_samples": 143,
+        "frames": 3100,
+        "idle_boundary_cycles": {
+          "count": 2764,
+          "max": 1167,
+          "mean": 873.768,
+          "min": 814,
+          "p99": 1055
+        },
+        "jps_bytes": 5525,
+        "keyboard_polls": 3101,
+        "label": "doom1-23",
+        "music_frame_hz": 49.312345,
+        "mutated_player_bytes": 81,
+        "pit_writes": 73668,
+        "row_boundary_cycles": {
+          "count": 336,
+          "max": 2509,
+          "mean": 1519.86,
+          "min": 1144,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 440200,
+          "max": 276,
+          "mean": 234.481,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Sweet Little Dead Bunny"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T01.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 24,
+      "jps_bytes": 4889,
+      "jps_sha256": "d0c41dda2042160871c4a41029a92b4e3ed5f944b330cdb462a0fdfaab914b9c",
+      "local_track": 1,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 11.650185,
+        "effective_sample_hz": 6984.180762,
+        "frame_cycles": {
+          "count": 569,
+          "max": 38415,
+          "mean": 34807.232,
+          "min": 33561,
+          "p99": 38293
+        },
+        "frame_samples": 143,
+        "frames": 569,
+        "idle_boundary_cycles": {
+          "count": 488,
+          "max": 1144,
+          "mean": 867.953,
+          "min": 814,
+          "p99": 966
+        },
+        "jps_bytes": 4889,
+        "keyboard_polls": 570,
+        "label": "doom2-01",
+        "music_frame_hz": 48.840425,
+        "mutated_player_bytes": 81,
+        "pit_writes": 18529,
+        "row_boundary_cycles": {
+          "count": 81,
+          "max": 2525,
+          "mean": 1586.802,
+          "min": 1240,
+          "p99": 2525
+        },
+        "sample_loop_cycles": {
+          "count": 80798,
+          "max": 276,
+          "mean": 236.658,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Title Music"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T02.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 25,
+      "jps_bytes": 16151,
+      "jps_sha256": "b66f3769342c8169d5705d7cd213a36149d10bbd7103783f160327f6f41e8bbe",
+      "local_track": 2,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 236.699446,
+        "effective_sample_hz": 6979.648786,
+        "frame_cycles": {
+          "count": 11553,
+          "max": 37354,
+          "mean": 34829.833,
+          "min": 33561,
+          "p99": 36406
+        },
+        "frame_samples": 143,
+        "frames": 11553,
+        "idle_boundary_cycles": {
+          "count": 9431,
+          "max": 1167,
+          "mean": 873.38,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 16151,
+        "keyboard_polls": 11554,
+        "label": "doom2-02",
+        "music_frame_hz": 48.808733,
+        "mutated_player_bytes": 81,
+        "pit_writes": 384202,
+        "row_boundary_cycles": {
+          "count": 2122,
+          "max": 2614,
+          "mean": 1473.352,
+          "min": 1240,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1640526,
+          "max": 276,
+          "mean": 236.688,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Running From Evil"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T03.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 26,
+      "jps_bytes": 12237,
+      "jps_sha256": "5abf2e6a2cf2a36c3cc2ca93ed9b9898b5da40b04ff8d285a67579f0f4ecdd89",
+      "local_track": 3,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 174.238838,
+        "effective_sample_hz": 7094.239221,
+        "frame_cycles": {
+          "count": 8644,
+          "max": 37172,
+          "mean": 34267.24,
+          "min": 33677,
+          "p99": 36695
+        },
+        "frame_samples": 143,
+        "frames": 8644,
+        "idle_boundary_cycles": {
+          "count": 7675,
+          "max": 1167,
+          "mean": 877.966,
+          "min": 864,
+          "p99": 900
+        },
+        "jps_bytes": 12237,
+        "keyboard_polls": 8645,
+        "label": "doom2-03",
+        "music_frame_hz": 49.610064,
+        "mutated_player_bytes": 81,
+        "pit_writes": 146709,
+        "row_boundary_cycles": {
+          "count": 969,
+          "max": 2753,
+          "mean": 1789.482,
+          "min": 1277,
+          "p99": 2509
+        },
+        "sample_loop_cycles": {
+          "count": 1227448,
+          "max": 276,
+          "mean": 232.781,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Intermission Music"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T04.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 27,
+      "jps_bytes": 16340,
+      "jps_sha256": "dd84dbdca2f2d1146d7937242a86854d3d219bffdbbbd809518348cfa5f33684",
+      "local_track": 4,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 292.702786,
+        "effective_sample_hz": 7149.443398,
+        "frame_cycles": {
+          "count": 14634,
+          "max": 37337,
+          "mean": 34002.647,
+          "min": 33561,
+          "p99": 36218
+        },
+        "frame_samples": 143,
+        "frames": 14634,
+        "idle_boundary_cycles": {
+          "count": 12330,
+          "max": 1167,
+          "mean": 857.984,
+          "min": 814,
+          "p99": 1055
+        },
+        "jps_bytes": 16340,
+        "keyboard_polls": 14635,
+        "label": "doom2-04",
+        "music_frame_hz": 49.996108,
+        "mutated_player_bytes": 81,
+        "pit_writes": 149825,
+        "row_boundary_cycles": {
+          "count": 2304,
+          "max": 2614,
+          "mean": 1447.166,
+          "min": 1227,
+          "p99": 2436
+        },
+        "sample_loop_cycles": {
+          "count": 2078028,
+          "max": 276,
+          "mean": 231.137,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "The Healer Stalks"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T05.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 28,
+      "jps_bytes": 10859,
+      "jps_sha256": "95dad9c3efc05f040c5832e05eccfbe7f092fd5e11d03ada50834c917ce88c6e",
+      "local_track": 5,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 232.757856,
+        "effective_sample_hz": 7079.413022,
+        "frame_cycles": {
+          "count": 11523,
+          "max": 37318,
+          "mean": 34339.005,
+          "min": 33574,
+          "p99": 36713
+        },
+        "frame_samples": 143,
+        "frames": 11523,
+        "idle_boundary_cycles": {
+          "count": 10153,
+          "max": 1167,
+          "mean": 870.892,
+          "min": 827,
+          "p99": 916
+        },
+        "jps_bytes": 10859,
+        "keyboard_polls": 11524,
+        "label": "doom2-05",
+        "music_frame_hz": 49.506385,
+        "mutated_player_bytes": 81,
+        "pit_writes": 218693,
+        "row_boundary_cycles": {
+          "count": 1370,
+          "max": 2607,
+          "mean": 1662.263,
+          "min": 1281,
+          "p99": 2436
+        },
+        "sample_loop_cycles": {
+          "count": 1636266,
+          "max": 276,
+          "mean": 233.383,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Countdown to Death"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T06.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 29,
+      "jps_bytes": 22526,
+      "jps_sha256": "0a9afea9bc64baacdcdf979a2c2f3286d6dc388317f775e59d5eb71ecf7ad638",
+      "local_track": 6,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 156.920979,
+        "effective_sample_hz": 7054.270298,
+        "frame_cycles": {
+          "count": 7741,
+          "max": 37416,
+          "mean": 34461.396,
+          "min": 33561,
+          "p99": 36913
+        },
+        "frame_samples": 143,
+        "frames": 7741,
+        "idle_boundary_cycles": {
+          "count": 5347,
+          "max": 1167,
+          "mean": 892.362,
+          "min": 814,
+          "p99": 1094
+        },
+        "jps_bytes": 22526,
+        "keyboard_polls": 7742,
+        "label": "doom2-06",
+        "music_frame_hz": 49.330562,
+        "mutated_player_bytes": 81,
+        "pit_writes": 144495,
+        "row_boundary_cycles": {
+          "count": 2394,
+          "max": 2703,
+          "mean": 1770.392,
+          "min": 1227,
+          "p99": 2436
+        },
+        "sample_loop_cycles": {
+          "count": 1099222,
+          "max": 276,
+          "mean": 232.862,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Between Levels"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T07.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 30,
+      "jps_bytes": 15887,
+      "jps_sha256": "e2c6bf9c57d563822d7e9801edd9e065ffb6e75c8911f57a876b5d69f9eeb005",
+      "local_track": 7,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 261.69131,
+        "effective_sample_hz": 7093.953559,
+        "frame_cycles": {
+          "count": 12982,
+          "max": 37490,
+          "mean": 34268.62,
+          "min": 33561,
+          "p99": 36348
+        },
+        "frame_samples": 143,
+        "frames": 12982,
+        "idle_boundary_cycles": {
+          "count": 11346,
+          "max": 1167,
+          "mean": 880.037,
+          "min": 814,
+          "p99": 966
+        },
+        "jps_bytes": 15887,
+        "keyboard_polls": 12983,
+        "label": "doom2-07",
+        "music_frame_hz": 49.608067,
+        "mutated_player_bytes": 81,
+        "pit_writes": 217081,
+        "row_boundary_cycles": {
+          "count": 1636,
+          "max": 2486,
+          "mean": 1638.908,
+          "min": 1240,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1843444,
+          "max": 276,
+          "mean": 232.808,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "DOOM"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T08.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 31,
+      "jps_bytes": 19310,
+      "jps_sha256": "fe829e2b3f48767f44e5890d0645a73823e48f9d496fc604c331b878af9ffd68",
+      "local_track": 8,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 419.061041,
+        "effective_sample_hz": 7148.958518,
+        "frame_cycles": {
+          "count": 20950,
+          "max": 37325,
+          "mean": 34004.953,
+          "min": 33561,
+          "p99": 36631
+        },
+        "frame_samples": 143,
+        "frames": 20950,
+        "idle_boundary_cycles": {
+          "count": 18933,
+          "max": 1167,
+          "mean": 860.566,
+          "min": 814,
+          "p99": 966
+        },
+        "jps_bytes": 19310,
+        "keyboard_polls": 20951,
+        "label": "doom2-08",
+        "music_frame_hz": 49.992717,
+        "mutated_player_bytes": 81,
+        "pit_writes": 217913,
+        "row_boundary_cycles": {
+          "count": 2017,
+          "max": 2703,
+          "mean": 1734.101,
+          "min": 1227,
+          "p99": 2436
+        },
+        "sample_loop_cycles": {
+          "count": 2974900,
+          "max": 276,
+          "mean": 231.201,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "In the Dark"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T09.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 32,
+      "jps_bytes": 15605,
+      "jps_sha256": "a79a5acc44ff46291d12f2a3a413dce22c9f0061b71739cb7e8b6ac625b91116",
+      "local_track": 9,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 260.761945,
+        "effective_sample_hz": 7118.139888,
+        "frame_cycles": {
+          "count": 12980,
+          "max": 36980,
+          "mean": 34152.181,
+          "min": 33803,
+          "p99": 36589
+        },
+        "frame_samples": 143,
+        "frames": 12980,
+        "idle_boundary_cycles": {
+          "count": 11456,
+          "max": 1167,
+          "mean": 878.624,
+          "min": 827,
+          "p99": 966
+        },
+        "jps_bytes": 15605,
+        "keyboard_polls": 12981,
+        "label": "doom2-09",
+        "music_frame_hz": 49.777202,
+        "mutated_player_bytes": 81,
+        "pit_writes": 175943,
+        "row_boundary_cycles": {
+          "count": 1524,
+          "max": 2753,
+          "mean": 1690.731,
+          "min": 1277,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1843160,
+          "max": 276,
+          "mean": 232.025,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Shawn's Got the Shotgun"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T10.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 33,
+      "jps_bytes": 30071,
+      "jps_sha256": "667e1d82e99636449f921735df781a3b3172355e6082cc0c351a50b6cb7372ca",
+      "local_track": 10,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 303.919849,
+        "effective_sample_hz": 7073.308994,
+        "frame_cycles": {
+          "count": 15033,
+          "max": 37733,
+          "mean": 34368.639,
+          "min": 33561,
+          "p99": 36546
+        },
+        "frame_samples": 143,
+        "frames": 15033,
+        "idle_boundary_cycles": {
+          "count": 10896,
+          "max": 1167,
+          "mean": 864.808,
+          "min": 814,
+          "p99": 1078
+        },
+        "jps_bytes": 30071,
+        "keyboard_polls": 15034,
+        "label": "doom2-10",
+        "music_frame_hz": 49.463699,
+        "mutated_player_bytes": 81,
+        "pit_writes": 266689,
+        "row_boundary_cycles": {
+          "count": 4137,
+          "max": 2703,
+          "mean": 1576.305,
+          "min": 1227,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 2134686,
+          "max": 276,
+          "mean": 232.926,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "The Dave D. Taylor Blues"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T11.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 34,
+      "jps_bytes": 28333,
+      "jps_sha256": "517d9e4789b60cd42cb3653a58853d4c866b73603be1feff7863c4077b28fde7",
+      "local_track": 11,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 281.588503,
+        "effective_sample_hz": 7109.157438,
+        "frame_cycles": {
+          "count": 13999,
+          "max": 37137,
+          "mean": 34195.332,
+          "min": 33561,
+          "p99": 36800
+        },
+        "frame_samples": 143,
+        "frames": 13999,
+        "idle_boundary_cycles": {
+          "count": 10734,
+          "max": 1167,
+          "mean": 865.404,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 28333,
+        "keyboard_polls": 14000,
+        "label": "doom2-11",
+        "music_frame_hz": 49.714388,
+        "mutated_player_bytes": 81,
+        "pit_writes": 175509,
+        "row_boundary_cycles": {
+          "count": 3265,
+          "max": 2740,
+          "mean": 1649.402,
+          "min": 1227,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1987858,
+          "max": 276,
+          "mean": 231.797,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Into Sandy's City"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T12.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 35,
+      "jps_bytes": 8360,
+      "jps_sha256": "239cbeb7e5f2d34dbe0d618df4c19584f8d43916c484d8ad8af7928d87547fc6",
+      "local_track": 12,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 267.205815,
+        "effective_sample_hz": 7066.893353,
+        "frame_cycles": {
+          "count": 13205,
+          "max": 36701,
+          "mean": 34399.84,
+          "min": 33888,
+          "p99": 35916
+        },
+        "frame_samples": 143,
+        "frames": 13205,
+        "idle_boundary_cycles": {
+          "count": 12475,
+          "max": 1167,
+          "mean": 877.656,
+          "min": 864,
+          "p99": 900
+        },
+        "jps_bytes": 8360,
+        "keyboard_polls": 13206,
+        "label": "doom2-12",
+        "music_frame_hz": 49.418835,
+        "mutated_player_bytes": 81,
+        "pit_writes": 292452,
+        "row_boundary_cycles": {
+          "count": 730,
+          "max": 2753,
+          "mean": 1590.653,
+          "min": 1277,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1875110,
+          "max": 276,
+          "mean": 234.144,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "The Demon's Dead"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T13.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 36,
+      "jps_bytes": 18927,
+      "jps_sha256": "e2dcb1539d0738b9ba1acb449f173c45f1b53e924b3ded3bf7f92cced48abf26",
+      "local_track": 13,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 310.912997,
+        "effective_sample_hz": 7064.153061,
+        "frame_cycles": {
+          "count": 15359,
+          "max": 36890,
+          "mean": 34413.184,
+          "min": 33574,
+          "p99": 35766
+        },
+        "frame_samples": 143,
+        "frames": 15359,
+        "idle_boundary_cycles": {
+          "count": 12632,
+          "max": 1144,
+          "mean": 879.165,
+          "min": 827,
+          "p99": 966
+        },
+        "jps_bytes": 18927,
+        "keyboard_polls": 15360,
+        "label": "doom2-13",
+        "music_frame_hz": 49.399672,
+        "mutated_player_bytes": 81,
+        "pit_writes": 300318,
+        "row_boundary_cycles": {
+          "count": 2727,
+          "max": 2486,
+          "mean": 1624.928,
+          "min": 1281,
+          "p99": 2340
+        },
+        "sample_loop_cycles": {
+          "count": 2180978,
+          "max": 276,
+          "mean": 233.551,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Waiting for Romero to Play"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T14.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 37,
+      "jps_bytes": 17717,
+      "jps_sha256": "c26707c2f9311acec61f6fe693f47c4bef479518e724156dab20b1a2a53b90e7",
+      "local_track": 14,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 281.628817,
+        "effective_sample_hz": 7112.201872,
+        "frame_cycles": {
+          "count": 14007,
+          "max": 37464,
+          "mean": 34180.695,
+          "min": 33561,
+          "p99": 36159
+        },
+        "frame_samples": 143,
+        "frames": 14007,
+        "idle_boundary_cycles": {
+          "count": 11775,
+          "max": 1167,
+          "mean": 873.97,
+          "min": 814,
+          "p99": 1094
+        },
+        "jps_bytes": 17717,
+        "keyboard_polls": 14008,
+        "label": "doom2-14",
+        "music_frame_hz": 49.735677,
+        "mutated_player_bytes": 81,
+        "pit_writes": 194596,
+        "row_boundary_cycles": {
+          "count": 2232,
+          "max": 2703,
+          "mean": 1587.24,
+          "min": 1240,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1988994,
+          "max": 276,
+          "mean": 232.125,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Message for the Archvile"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T15.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 38,
+      "jps_bytes": 12262,
+      "jps_sha256": "f283228705e98ae55db3a634d1d6854dac26442b3f59373c06a79a802ced0692",
+      "local_track": 15,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 99.513503,
+        "effective_sample_hz": 7105.920092,
+        "frame_cycles": {
+          "count": 4945,
+          "max": 37018,
+          "mean": 34210.911,
+          "min": 33574,
+          "p99": 36763
+        },
+        "frame_samples": 143,
+        "frames": 4945,
+        "idle_boundary_cycles": {
+          "count": 3693,
+          "max": 1167,
+          "mean": 862.873,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 12262,
+        "keyboard_polls": 4946,
+        "label": "doom2-15",
+        "music_frame_hz": 49.691749,
+        "mutated_player_bytes": 81,
+        "pit_writes": 60004,
+        "row_boundary_cycles": {
+          "count": 1252,
+          "max": 2753,
+          "mean": 1741.978,
+          "min": 1240,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 702190,
+          "max": 276,
+          "mean": 231.649,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Bye Bye American Pie"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T16.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 39,
+      "jps_bytes": 6503,
+      "jps_sha256": "6bc511d95b2d90ebcab00f580f07b718cf76c9ab29d138192feedc707fdf6ac7",
+      "local_track": 16,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 115.085952,
+        "effective_sample_hz": 7155.842943,
+        "frame_cycles": {
+          "count": 5759,
+          "max": 37621,
+          "mean": 33972.238,
+          "min": 33561,
+          "p99": 36059
+        },
+        "frame_samples": 143,
+        "frames": 5759,
+        "idle_boundary_cycles": {
+          "count": 5089,
+          "max": 1167,
+          "mean": 899.758,
+          "min": 814,
+          "p99": 1055
+        },
+        "jps_bytes": 6503,
+        "keyboard_polls": 5760,
+        "label": "doom2-16",
+        "music_frame_hz": 50.04086,
+        "mutated_player_bytes": 81,
+        "pit_writes": 47185,
+        "row_boundary_cycles": {
+          "count": 670,
+          "max": 2525,
+          "mean": 1527.607,
+          "min": 1240,
+          "p99": 2436
+        },
+        "sample_loop_cycles": {
+          "count": 817778,
+          "max": 276,
+          "mean": 230.772,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Adrian's Asleep"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T17.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 40,
+      "jps_bytes": 23791,
+      "jps_sha256": "e64c26692224b1a86a2f8552a532f370b3d8ded9d643deedbfd59f0dc8956e70",
+      "local_track": 17,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 292.140111,
+        "effective_sample_hz": 7010.492314,
+        "frame_cycles": {
+          "count": 14322,
+          "max": 37987,
+          "mean": 34676.595,
+          "min": 33574,
+          "p99": 37260
+        },
+        "frame_samples": 143,
+        "frames": 14322,
+        "idle_boundary_cycles": {
+          "count": 11196,
+          "max": 1167,
+          "mean": 875.88,
+          "min": 827,
+          "p99": 1055
+        },
+        "jps_bytes": 23791,
+        "keyboard_polls": 14323,
+        "label": "doom2-17",
+        "music_frame_hz": 49.024422,
+        "mutated_player_bytes": 81,
+        "pit_writes": 395829,
+        "row_boundary_cycles": {
+          "count": 3126,
+          "max": 2703,
+          "mean": 1637.94,
+          "min": 1281,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 2033724,
+          "max": 276,
+          "mean": 235.209,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Getting Too Tense"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T18.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 41,
+      "jps_bytes": 9602,
+      "jps_sha256": "c3b47f226ecc0b9f80412f05dcc370b75572db79a1d158b6526d7bd60fffc967",
+      "local_track": 18,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 278.92247,
+        "effective_sample_hz": 7177.109108,
+        "frame_cycles": {
+          "count": 13999,
+          "max": 36754,
+          "mean": 33871.576,
+          "min": 33574,
+          "p99": 35622
+        },
+        "frame_samples": 143,
+        "frames": 13999,
+        "idle_boundary_cycles": {
+          "count": 12912,
+          "max": 1167,
+          "mean": 878.251,
+          "min": 814,
+          "p99": 1094
+        },
+        "jps_bytes": 9602,
+        "keyboard_polls": 14000,
+        "label": "doom2-18",
+        "music_frame_hz": 50.189574,
+        "mutated_player_bytes": 81,
+        "pit_writes": 91358,
+        "row_boundary_cycles": {
+          "count": 1087,
+          "max": 2753,
+          "mean": 1501.099,
+          "min": 1144,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 1987858,
+          "max": 276,
+          "mean": 230.388,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Opening to Hell"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T19.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 42,
+      "jps_bytes": 4791,
+      "jps_sha256": "b92a52825f9aba059fc6ae1219e6539ae9c6018de7ac6a267d532066de633a8a",
+      "local_track": 19,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 71.596222,
+        "effective_sample_hz": 7100.444455,
+        "frame_cycles": {
+          "count": 3555,
+          "max": 35900,
+          "mean": 34237.293,
+          "min": 33574,
+          "p99": 35634
+        },
+        "frame_samples": 143,
+        "frames": 3555,
+        "idle_boundary_cycles": {
+          "count": 3044,
+          "max": 1167,
+          "mean": 893.924,
+          "min": 814,
+          "p99": 1117
+        },
+        "jps_bytes": 4791,
+        "keyboard_polls": 3556,
+        "label": "doom2-19",
+        "music_frame_hz": 49.653458,
+        "mutated_player_bytes": 81,
+        "pit_writes": 63363,
+        "row_boundary_cycles": {
+          "count": 511,
+          "max": 2664,
+          "mean": 1420.211,
+          "min": 1240,
+          "p99": 2509
+        },
+        "sample_loop_cycles": {
+          "count": 504810,
+          "max": 276,
+          "mean": 232.649,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "Evil Incarnate"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T20.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 43,
+      "jps_bytes": 5313,
+      "jps_sha256": "a291d0d2b6824e1ee31b873f9c62df9bdecda9380f20baf3837842e466536553",
+      "local_track": 20,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 80.007842,
+        "effective_sample_hz": 6974.14138,
+        "frame_cycles": {
+          "count": 3902,
+          "max": 37001,
+          "mean": 34857.338,
+          "min": 33574,
+          "p99": 36771
+        },
+        "frame_samples": 143,
+        "frames": 3902,
+        "idle_boundary_cycles": {
+          "count": 3231,
+          "max": 1167,
+          "mean": 929.257,
+          "min": 814,
+          "p99": 1117
+        },
+        "jps_bytes": 5313,
+        "keyboard_polls": 3903,
+        "label": "doom2-20",
+        "music_frame_hz": 48.770219,
+        "mutated_player_bytes": 78,
+        "pit_writes": 134443,
+        "row_boundary_cycles": {
+          "count": 671,
+          "max": 2180,
+          "mean": 1591.41,
+          "min": 1227,
+          "p99": 2180
+        },
+        "sample_loop_cycles": {
+          "count": 554084,
+          "max": 269,
+          "mean": 236.477,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "title": "The Ultimate Challenge"
+    },
+    {
+      "capability": 0,
+      "delivery_mode": "unchanged-v1",
+      "filename": "D2T21.JPS",
+      "gates": {
+        "catalog_capability_matches": true,
+        "catalog_hash_matches": true,
+        "catalog_size_matches": true,
+        "complete_c_cosim": true,
+        "unchanged_v1_delivery": true
+      },
+      "global_track": 44,
+      "jps_bytes": 27654,
+      "jps_sha256": "bf160971a29b3a8efd7019f8970cdcf812cd155c7115dd8b960e44855946b9b2",
+      "local_track": 21,
+      "pack": "doom2",
+      "profile": {
+        "com_bytes": 5632,
+        "duration_seconds": 292.714881,
+        "effective_sample_hz": 7044.114026,
+        "frame_cycles": {
+          "count": 14419,
+          "max": 37469,
+          "mean": 34511.082,
+          "min": 33574,
+          "p99": 36762
+        },
+        "frame_samples": 143,
+        "frames": 14419,
+        "idle_boundary_cycles": {
+          "count": 11247,
+          "max": 1167,
+          "mean": 865.006,
+          "min": 814,
+          "p99": 900
+        },
+        "jps_bytes": 27654,
+        "keyboard_polls": 14420,
+        "label": "doom2-21",
+        "music_frame_hz": 49.259539,
+        "mutated_player_bytes": 81,
+        "pit_writes": 320398,
+        "row_boundary_cycles": {
+          "count": 3172,
+          "max": 2703,
+          "mean": 1675.296,
+          "min": 1227,
+          "p99": 2486
+        },
+        "sample_loop_cycles": {
+          "count": 2047498,
+          "max": 276,
+          "mean": 234.054,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "title": "Endgame Music"
+    }
+  ]
+}
