@@ -1,4 +1,14 @@
 {
+  "cycle_qualification": {
+    "cpu_hz": 1700000,
+    "gates": {
+      "all_full_runs_polled_keyboard": true,
+      "all_injected_escapes_accepted": true,
+      "all_injected_escapes_returned_promptly": true
+    },
+    "injected_escape_at_seconds": 1.0,
+    "pit_hz": 2000000
+  },
   "disk": {
     "bytes": 819200,
     "cpm_round_trip_verified": true,
@@ -6,13 +16,31 @@
     "filename": "jukupoly-imp-m7-physical-ab.cpm",
     "format": "Juku native cylinder-interleaved 800 KiB",
     "readme_sha256": "71898cb30f1b91158e96f584386ba452e83cba0c86e07d77aee435099f70802b",
-    "sha256": "7fa29b3edee6c910f7d1da3a0da24d85001c89065389136125f3ae019b302dfa"
+    "sha256": "00c7c66b20a1d567271f93e66b16f239d4d9f58ccb2bad3972c6e6e702c87870"
   },
   "files": [
     {
-      "bytes": 2066,
+      "bytes": 2108,
+      "cycle_qualification": {
+        "full": {
+          "escape": "not-injected",
+          "keyboard_polls": 1501,
+          "pit_writes": 2845,
+          "pulse_intervals": 2843,
+          "run_seconds": 29.783
+        },
+        "injected_escape": {
+          "escape": "accepted",
+          "keyboard_polls": 53,
+          "pit_writes": 19,
+          "pulse_intervals": 17,
+          "run_seconds": 1.012
+        }
+      },
       "description": "Control: the low lead first appears at 14.12 seconds.",
       "duration_frames": 1500,
+      "escape_poll_sites": 2,
+      "escape_polling_enabled": true,
       "filename": "IMPV1.COM",
       "first_tone_frame": 706,
       "frame_samples": 143,
@@ -21,14 +49,33 @@
       "schema": "jukupoly-song-v1",
       "score": "jukupoly-imp-30s-v1.json",
       "score_sha256": "3c9fa25f20f003856020897f673b1f98a3ccf2747bce453246c3d9761d9fd17c",
-      "sha256": "88953020023cbf2181076d3a6551bf76bf30943aa4d921fa86a5b56dad346d49",
+      "sha256": "e21e72e229bee7f036ff4c49c24c9d41a854632e4ed26d52db9911a6cbcd7f6e",
+      "standalone_player": true,
       "strategy": "unchanged-v1",
       "target_sample_hz": 7120
     },
     {
-      "bytes": 2896,
+      "bytes": 2938,
+      "cycle_qualification": {
+        "full": {
+          "escape": "not-injected",
+          "keyboard_polls": 1501,
+          "pit_writes": 4320,
+          "pulse_intervals": 4318,
+          "run_seconds": 29.909
+        },
+        "injected_escape": {
+          "escape": "accepted",
+          "keyboard_polls": 53,
+          "pit_writes": 112,
+          "pulse_intervals": 110,
+          "run_seconds": 1.017
+        }
+      },
       "description": "Immediate merged low lead with bounded ADSR re-triggers.",
       "duration_frames": 1500,
+      "escape_poll_sites": 2,
+      "escape_polling_enabled": true,
       "filename": "IMPREAR.COM",
       "first_tone_frame": 0,
       "frame_samples": 143,
@@ -36,29 +83,50 @@
       "rows": 60,
       "schema": "jukupoly-song-v2",
       "score": "jukupoly-imp-30s-rearticulation-m7.json",
-      "score_sha256": "af9a68085af852148948200fa022699cb663d88cde151164a4b6ddf83da4346e",
-      "sha256": "70c56946708411faf0b3203936609b41ed212a5c706e8155c472e6d780ae235f",
+      "score_sha256": "980dcdd71ec4f0a2a096a98b37dcca13be34e9ea7cdf6f4e75d17bd0fb391988",
+      "sha256": "9c2b41c401aded5ce5234bb98185708ccddb8c7e10324a327d00c2d9940e9b2f",
+      "standalone_player": true,
       "strategy": "bounded-rearticulation",
       "target_sample_hz": 7170
     },
     {
-      "bytes": 2918,
+      "bytes": 2973,
+      "cycle_qualification": {
+        "full": {
+          "escape": "not-injected",
+          "keyboard_polls": 1501,
+          "pit_writes": 5407,
+          "pulse_intervals": 5405,
+          "run_seconds": 29.962
+        },
+        "injected_escape": {
+          "escape": "accepted",
+          "keyboard_polls": 52,
+          "pit_writes": 235,
+          "pulse_intervals": 233,
+          "run_seconds": 1.0
+        }
+      },
       "description": "Immediate three-member low lead at source-derived phase steps.",
       "duration_frames": 1500,
+      "escape_poll_sites": 2,
+      "escape_polling_enabled": true,
       "filename": "IMPDET.COM",
       "first_tone_frame": 0,
       "frame_samples": 143,
       "pcm_bytes": 858,
-      "rows": 59,
+      "rows": 63,
       "schema": "jukupoly-song-v2",
       "score": "jukupoly-imp-30s-detuned-m7.json",
-      "score_sha256": "f83473f45bbba8dc2be09b4b9ab8916fe17731ca643457078acd89b760e70055",
-      "sha256": "f5d26007aa667f20b39b33c042b27ae99170ba01e27fbdc4fa91ab3021ceb208",
+      "score_sha256": "340508eed12cec9d7e2e5ffcef464fe22de6de61132a3ba8b605457c40641d1e",
+      "sha256": "3b00a278d00304bf8130d0281f2f44ca1d98d442a635a787c5ad53272ebf2b5f",
+      "standalone_player": true,
       "strategy": "detuned-source-members",
       "target_sample_hz": 7170
     }
   ],
   "physical_protocol": {
+    "escape_polling": "standalone player build option -P8=1",
     "listen_for": [
       "low-lead onset",
       "low-lead fade",
@@ -74,6 +142,6 @@
     "promotion_rule": "keep unchanged-v1 unless a source-derived candidate is clearly preferable and all three programs return cleanly",
     "same_volume": true
   },
-  "schema": "jukupoly-imp-m7-physical-ab-v1",
+  "schema": "jukupoly-imp-m7-physical-ab-v2",
   "source_vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16"
 }

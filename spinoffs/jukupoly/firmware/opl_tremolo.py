@@ -176,8 +176,101 @@ def fit_joint_envelope_tremolo(
     )
     fits.extend(zip(depths, variant_fits))
     baseline = fits[0][1]
-    depth, fit = min(fits, key=lambda item: (
-        item[1].squared_error, item[1].absolute_error,
-        item[1].maximum_error, item[0],
-    ))
+
+    def score(item: tuple[int, opl_envelope.EnvelopeFit]) -> tuple[int, ...]:
+        depth, fit = item
+        mismatches = (
+            opl_envelope.envelope_directions(
+                reference, fit.predicted_levels, key_off_frame,
+            )["mismatches"]
+            if preserve_significant_directions else 0
+        )
+        return (
+            mismatches, fit.squared_error, fit.absolute_error,
+            fit.maximum_error, depth,
+        )
+
+    depth, fit = min(fits, key=score)
     return JointEnvelopeTremoloFit(depth, fit, baseline)
+
+
+def fit_target_envelope_tremolo(
+        reference_levels: Sequence[int], *, start_frame: int,
+        key_off_frame: int | None, source_sustain_while_keyed: bool,
+        allow_alternate_sustain_mode: bool,
+        counter_at_onset: int = 1,
+        preserve_significant_directions: bool = True,
+        peak_level: int | None = None,
+) -> JointEnvelopeTremoloFit:
+    """Jointly search tremolo and every permitted target envelope shape.
+
+    The no-tremolo baseline is selected across the same permitted target
+    state machines.  It remains the improvement baseline even when a
+    different state machine wins only after tremolo is added.  Source EGT is
+    the final exact-error tie preference, matching ``fit_target_envelope``.
+    """
+    if not isinstance(source_sustain_while_keyed, bool):
+        raise ValueError("source_sustain_while_keyed must be boolean")
+    if not isinstance(allow_alternate_sustain_mode, bool):
+        raise ValueError("allow_alternate_sustain_mode must be boolean")
+    reference = tuple(reference_levels)
+    baseline = opl_envelope.fit_target_envelope(
+        reference,
+        key_off_frame=key_off_frame,
+        source_sustain_while_keyed=source_sustain_while_keyed,
+        allow_alternate_sustain_mode=allow_alternate_sustain_mode,
+        counter_at_onset=counter_at_onset,
+        peak_level=peak_level,
+        preserve_significant_directions=preserve_significant_directions,
+    )
+    modes = (
+        (source_sustain_while_keyed,
+         not source_sustain_while_keyed)
+        if allow_alternate_sustain_mode else
+        (source_sustain_while_keyed,)
+    )
+    candidates = []
+    for mode in modes:
+        mode_baseline = (
+            baseline if baseline.sustain_while_keyed == mode else
+            opl_envelope.fit_envelope(
+                reference,
+                key_off_frame=key_off_frame,
+                sustain_while_keyed=mode,
+                counter_at_onset=counter_at_onset,
+                peak_level=peak_level,
+                preserve_significant_directions=(
+                    preserve_significant_directions
+                ),
+            )
+        )
+        candidates.append(fit_joint_envelope_tremolo(
+            reference,
+            start_frame=start_frame,
+            key_off_frame=key_off_frame,
+            sustain_while_keyed=mode,
+            counter_at_onset=counter_at_onset,
+            preserve_significant_directions=preserve_significant_directions,
+            peak_level=peak_level,
+            baseline_envelope=mode_baseline,
+        ))
+    def score(candidate: JointEnvelopeTremoloFit) -> tuple[int, ...]:
+        mismatches = (
+            opl_envelope.envelope_directions(
+                reference, candidate.envelope.predicted_levels,
+                key_off_frame,
+            )["mismatches"]
+            if preserve_significant_directions else 0
+        )
+        return (
+            mismatches, candidate.envelope.squared_error,
+            candidate.envelope.absolute_error,
+            candidate.envelope.maximum_error, candidate.depth_levels,
+            int(candidate.envelope.sustain_while_keyed !=
+                source_sustain_while_keyed),
+        )
+
+    selected = min(candidates, key=score)
+    return JointEnvelopeTremoloFit(
+        selected.depth_levels, selected.envelope, baseline,
+    )

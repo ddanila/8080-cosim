@@ -230,6 +230,59 @@ def fit_envelope(
     )[0]
 
 
+def fit_target_envelope(
+    reference_levels: Sequence[int],
+    *,
+    key_off_frame: int | None,
+    source_sustain_while_keyed: bool,
+    allow_alternate_sustain_mode: bool,
+    counter_at_onset: int = 1,
+    peak_level: int | None = None,
+    preserve_significant_directions: bool = False,
+) -> EnvelopeFit:
+    """Fit target shape while treating source EGT as a tie preference.
+
+    OPL's EGT bit describes operator state, not the best two-slope reduction
+    for a one-bit pulse-width speaker.  A source sustained operator can still
+    audibly form a plateau followed by a fast fall to a near-silent sustain
+    level.  When explicitly enabled, evaluate both target state machines and
+    select the lower-error shape; preserve the source mode on an exact tie.
+    """
+    if not isinstance(source_sustain_while_keyed, bool):
+        raise ValueError("source_sustain_while_keyed must be boolean")
+    if not isinstance(allow_alternate_sustain_mode, bool):
+        raise ValueError("allow_alternate_sustain_mode must be boolean")
+    modes = (
+        (source_sustain_while_keyed,
+         not source_sustain_while_keyed)
+        if allow_alternate_sustain_mode else
+        (source_sustain_while_keyed,)
+    )
+    candidates = tuple(fit_envelope(
+        reference_levels,
+        key_off_frame=key_off_frame,
+        sustain_while_keyed=mode,
+        counter_at_onset=counter_at_onset,
+        peak_level=peak_level,
+        preserve_significant_directions=preserve_significant_directions,
+    ) for mode in modes)
+
+    def score(candidate: EnvelopeFit) -> tuple[int, int, int, int, int]:
+        mismatches = (
+            envelope_directions(
+                reference_levels, candidate.predicted_levels, key_off_frame,
+            )["mismatches"]
+            if preserve_significant_directions else 0
+        )
+        return (
+            mismatches, candidate.squared_error, candidate.absolute_error,
+            candidate.maximum_error,
+            int(candidate.sustain_while_keyed != source_sustain_while_keyed),
+        )
+
+    return min(candidates, key=score)
+
+
 @lru_cache(maxsize=8192)
 def _fit_envelope_cached(
         reference_levels: tuple[int, ...], key_off_frame: int | None,

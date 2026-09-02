@@ -1,0 +1,188 @@
+{
+  "cycle_qualification": {
+    "cpu_hz": 1700000,
+    "gates": {
+      "all_full_runs_polled_keyboard": true,
+      "all_injected_escapes_accepted": true,
+      "all_injected_escapes_returned_promptly": true
+    },
+    "injected_escape_at_seconds": 1.0,
+    "pit_hz": 2000000
+  },
+  "disk": {
+    "bytes": 819200,
+    "cpm_round_trip_verified": true,
+    "directory_sha256": "42eed612365c3b4affd9dcfd36e0e7135e84e37aed120f712122be2e1f19d3c2",
+    "filename": "jukupoly-imp-target-shape-ab.cpm",
+    "format": "Juku native cylinder-interleaved 800 KiB",
+    "readme_sha256": "1898ef9f116598371abe24e5721abc79527f977fe05939f0b76dd56486380cff",
+    "sha256": "f092375387b9047ab0739e3a6fa8d62b82bc495e8f24a595af29704e8253affd"
+  },
+  "files": [
+    {
+      "bytes": 2938,
+      "cycle_qualification": {
+        "full": {
+          "escape": "not-injected",
+          "keyboard_polls": 1501,
+          "pit_writes": 4320,
+          "pulse_intervals": 4318,
+          "run_seconds": 29.909
+        },
+        "injected_escape": {
+          "escape": "accepted",
+          "keyboard_polls": 53,
+          "pit_writes": 112,
+          "pulse_intervals": 110,
+          "run_seconds": 1.017
+        }
+      },
+      "description": "Control: merged lead; target sustain mode copied from source EGT.",
+      "duration_frames": 1500,
+      "escape_poll_sites": 2,
+      "escape_polling_enabled": true,
+      "filename": "REAROLD.COM",
+      "first_tone_frame": 0,
+      "frame_samples": 143,
+      "pcm_bytes": 858,
+      "rows": 60,
+      "schema": "jukupoly-song-v2",
+      "score": "jukupoly-imp-30s-rearticulation-m7.json",
+      "score_sha256": "980dcdd71ec4f0a2a096a98b37dcca13be34e9ea7cdf6f4e75d17bd0fb391988",
+      "sha256": "9c2b41c401aded5ce5234bb98185708ccddb8c7e10324a327d00c2d9940e9b2f",
+      "standalone_player": true,
+      "strategy": "source-egt-rearticulation",
+      "target_sample_hz": 7170
+    },
+    {
+      "bytes": 2938,
+      "cycle_qualification": {
+        "full": {
+          "escape": "not-injected",
+          "keyboard_polls": 1501,
+          "pit_writes": 4374,
+          "pulse_intervals": 4372,
+          "run_seconds": 29.903
+        },
+        "injected_escape": {
+          "escape": "accepted",
+          "keyboard_polls": 53,
+          "pit_writes": 112,
+          "pulse_intervals": 110,
+          "run_seconds": 1.017
+        }
+      },
+      "description": "Same lead; target sustain mode selected by oracle envelope shape.",
+      "duration_frames": 1500,
+      "escape_poll_sites": 2,
+      "escape_polling_enabled": true,
+      "filename": "REARNEW.COM",
+      "first_tone_frame": 0,
+      "frame_samples": 143,
+      "pcm_bytes": 858,
+      "rows": 60,
+      "schema": "jukupoly-song-v2",
+      "score": "jukupoly-imp-30s-rearticulation-target-shape-m7.json",
+      "score_sha256": "7a955a2a0bccbb8e1fc15122a285fbb8aeac14ca65e7bf77f2664cf6aeec22cd",
+      "sha256": "1da769b4734d84e0078522105944422b859792f263a40b6c0f5d42adfd79fc63",
+      "standalone_player": true,
+      "strategy": "target-shape-rearticulation",
+      "target_sample_hz": 7170
+    },
+    {
+      "bytes": 2973,
+      "cycle_qualification": {
+        "full": {
+          "escape": "not-injected",
+          "keyboard_polls": 1501,
+          "pit_writes": 5407,
+          "pulse_intervals": 5405,
+          "run_seconds": 29.962
+        },
+        "injected_escape": {
+          "escape": "accepted",
+          "keyboard_polls": 52,
+          "pit_writes": 235,
+          "pulse_intervals": 233,
+          "run_seconds": 1.0
+        }
+      },
+      "description": "Control: source-member detuning with source-EGT target envelopes.",
+      "duration_frames": 1500,
+      "escape_poll_sites": 2,
+      "escape_polling_enabled": true,
+      "filename": "DETOLD.COM",
+      "first_tone_frame": 0,
+      "frame_samples": 143,
+      "pcm_bytes": 858,
+      "rows": 63,
+      "schema": "jukupoly-song-v2",
+      "score": "jukupoly-imp-30s-detuned-m7.json",
+      "score_sha256": "340508eed12cec9d7e2e5ffcef464fe22de6de61132a3ba8b605457c40641d1e",
+      "sha256": "3b00a278d00304bf8130d0281f2f44ca1d98d442a635a787c5ad53272ebf2b5f",
+      "standalone_player": true,
+      "strategy": "source-egt-detuned-members",
+      "target_sample_hz": 7170
+    },
+    {
+      "bytes": 2973,
+      "cycle_qualification": {
+        "full": {
+          "escape": "not-injected",
+          "keyboard_polls": 1501,
+          "pit_writes": 5305,
+          "pulse_intervals": 5303,
+          "run_seconds": 29.948
+        },
+        "injected_escape": {
+          "escape": "accepted",
+          "keyboard_polls": 53,
+          "pit_writes": 240,
+          "pulse_intervals": 238,
+          "run_seconds": 1.019
+        }
+      },
+      "description": "Source-member detuning with oracle-selected target envelopes.",
+      "duration_frames": 1500,
+      "escape_poll_sites": 2,
+      "escape_polling_enabled": true,
+      "filename": "DETNEW.COM",
+      "first_tone_frame": 0,
+      "frame_samples": 143,
+      "pcm_bytes": 858,
+      "rows": 63,
+      "schema": "jukupoly-song-v2",
+      "score": "jukupoly-imp-30s-detuned-target-shape-m7.json",
+      "score_sha256": "64e4ec89dc5a4aa84adf3b87d5d0ffc97ddd2dd32c5ba603234f248697de1e1d",
+      "sha256": "46de7a92156dd8fa8128fa7f6a9aa5af0aacccaeaa003c49bd54922aa62bcabc",
+      "standalone_player": true,
+      "strategy": "target-shape-detuned-members",
+      "target_sample_hz": 7170
+    }
+  ],
+  "independent_pcm_audit": {
+    "all_gates_pass": true,
+    "path": "OPL-IMP-TARGET-SHAPE-M7.json",
+    "sha256": "a2157a49dcb1724e04a33b617381367e9b9a2f6d09323b5ccced9aaebc570765"
+  },
+  "physical_protocol": {
+    "escape_polling": "standalone player build option -P8=1",
+    "listen_for": [
+      "low-lead onset",
+      "low-lead fade",
+      "beating or roughness",
+      "percussion balance",
+      "Escape and CP/M return"
+    ],
+    "order": [
+      "REAROLD",
+      "REARNEW",
+      "DETOLD",
+      "DETNEW"
+    ],
+    "promotion_rule": "promote target-shape fitting only when each NEW candidate has a clearly more OPL-like fade than its OLD control and all four programs return cleanly",
+    "same_volume": true
+  },
+  "schema": "jukupoly-imp-target-shape-physical-ab-v1",
+  "source_vgm_sha256": "601c83652b950d8f2978baef35b8fb7db1aba8d5d2e30decd2535dccf56adb16"
+}

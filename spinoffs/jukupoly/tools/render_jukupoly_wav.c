@@ -25,8 +25,12 @@ typedef struct {
   size_t pulse_count;
   size_t pulse_capacity;
   size_t pit_writes;
+  size_t keyboard_polls;
   int mode0_lsb;
   int pending_control;
+  uint8_t keyboard_column;
+  int escape_triggered;
+  double escape_at_seconds;
   double pending_control_time;
   int allocation_failed;
 } fixture;
@@ -39,6 +43,7 @@ typedef struct {
   double tail_seconds;
   double dc_block_hz;
   double max_seconds;
+  double escape_at_seconds;
   unsigned sample_rate;
   const char *input_path;
   const char *output_path;
@@ -61,6 +66,7 @@ static void usage(FILE *stream, const char *program) {
       "  --dc-block HZ     first-order acoustic DC blocker; 0 disables\n"
       "                    it (default 20)\n"
       "  --max-seconds N   abort a non-returning transient (default 300)\n"
+      "  --escape-at N     inject one physical Escape contact after N seconds\n"
       "  --help            show this help\n",
       program);
 }
@@ -97,6 +103,7 @@ static int parse_options(int argc, char **argv, options *result) {
       .tail_seconds = 0.25,
       .dc_block_hz = 20.0,
       .max_seconds = 300.0,
+      .escape_at_seconds = -1.0,
       .sample_rate = 96000,
   };
 
@@ -136,6 +143,9 @@ static int parse_options(int argc, char **argv, options *result) {
           goto invalid_value;
       } else if (!strcmp(arg, "--max-seconds")) {
         if (!parse_double(value, 0.01, 86400.0, &result->max_seconds))
+          goto invalid_value;
+      } else if (!strcmp(arg, "--escape-at")) {
+        if (!parse_double(value, 0.0, 86400.0, &result->escape_at_seconds))
           goto invalid_value;
       } else {
         fprintf(stderr, "unknown option: %s\n", arg);
@@ -179,8 +189,15 @@ static void write_byte(void *opaque, uint16_t address, uint8_t value) {
 }
 
 static uint8_t port_in(void *opaque, uint8_t port) {
-  (void)opaque;
-  (void)port;
+  fixture *f = opaque;
+  if (port == 0x05 && f->keyboard_column == 3) {
+    f->keyboard_polls++;
+    if (f->escape_at_seconds >= 0.0 && !f->escape_triggered &&
+        f->cpu.cyc / f->cpu_hz >= f->escape_at_seconds) {
+      f->escape_triggered = 1;
+      return 0x06;
+    }
+  }
   return 0xff;
 }
 
@@ -215,6 +232,11 @@ static void append_pulse(fixture *f, double start, double end) {
 static void port_out(void *opaque, uint8_t port, uint8_t value) {
   fixture *f = opaque;
   double now = f->cpu.cyc / f->cpu_hz;
+
+  if (port == 0x04) {
+    f->keyboard_column = value;
+    return;
+  }
 
   if (port == 0x1b) {
     /* D57 channel 1, LSB-only, binary Mode 0. The control write takes OUT1
@@ -259,6 +281,7 @@ static int load_and_run(fixture *f, const options *opts, double *run_seconds) {
   f->memory[STACK_RETURN + 1] = 0;
   f->cpu_hz = opts->cpu_hz;
   f->pit_hz = opts->pit_hz;
+  f->escape_at_seconds = opts->escape_at_seconds;
 
   i8080_init(&f->cpu);
   f->cpu.read_byte = read_byte;
@@ -287,6 +310,10 @@ static int load_and_run(fixture *f, const options *opts, double *run_seconds) {
   }
   if (!f->pulse_count || f->pit_writes < 2) {
     fprintf(stderr, "transient emitted no D57 channel-1 Mode-0 pulses\n");
+    return 0;
+  }
+  if (opts->escape_at_seconds >= 0.0 && !f->escape_triggered) {
+    fprintf(stderr, "transient returned without accepting injected Escape\n");
     return 0;
   }
   *run_seconds = f->cpu.cyc / opts->cpu_hz;
@@ -437,9 +464,12 @@ int main(int argc, char **argv) {
   }
 
   printf("JUKUPOLY-WAV: PASS run=%.3fs wav=%.3fs cpu=%.0fHz pit=%.0fHz "
-         "rate=%uHz writes=%zu intervals=%zu peak=%.3f output=%s\n",
+         "rate=%uHz writes=%zu intervals=%zu keyboard_polls=%zu escape=%s "
+         "peak=%.3f output=%s\n",
       run_seconds, wav_seconds, opts.cpu_hz, opts.pit_hz, opts.sample_rate,
-      f.pit_writes, f.pulse_count, peak, opts.output_path);
+      f.pit_writes, f.pulse_count, f.keyboard_polls,
+      f.escape_triggered ? "accepted" : "not-injected", peak,
+      opts.output_path);
   free(f.pulses);
   return 0;
 }

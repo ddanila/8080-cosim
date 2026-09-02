@@ -82,6 +82,66 @@ def check_joint_envelope_fit() -> None:
         baseline_envelope=baseline,
     )
     assert reused == fit
+    target_wrapper = opl_tremolo.fit_target_envelope_tremolo(
+        reference, start_frame=7, key_off_frame=36,
+        source_sustain_while_keyed=True,
+        allow_alternate_sustain_mode=False, counter_at_onset=8,
+    )
+    assert target_wrapper == fit
+
+
+def check_joint_target_shape_fit() -> None:
+    # Source EGT is sustained, but the target's existing two-slope automatic
+    # release is the exact reduction.  Joint tremolo fitting must search that
+    # alternate target state rather than either rejecting the combination or
+    # forcing the source-semantic state back into the result.
+    envelope = opl_tremolo.opl_envelope.simulate_envelope(
+        88, key_off_frame=None, peak_level=12, sustain_level=11,
+        attack_period_frames=1, decay_period_frames=64,
+        release_period_frames=2, sustain_while_keyed=False,
+        counter_at_onset=1,
+    )
+    reference = opl_tremolo.simulate_tremolo(
+        envelope, start_frame=0, depth_levels=2,
+    )
+    semantic = opl_tremolo.fit_target_envelope_tremolo(
+        reference, start_frame=0, key_off_frame=None,
+        source_sustain_while_keyed=True,
+        allow_alternate_sustain_mode=False,
+    )
+    shaped = opl_tremolo.fit_target_envelope_tremolo(
+        reference, start_frame=0, key_off_frame=None,
+        source_sustain_while_keyed=True,
+        allow_alternate_sustain_mode=True,
+    )
+    assert semantic.envelope.squared_error > 0
+    assert shaped.depth_levels == 2
+    assert shaped.envelope.sustain_while_keyed is False
+    assert shaped.envelope.predicted_levels == reference
+    assert shaped.envelope.squared_error == 0
+    assert shaped.squared_error_improvement > 0
+
+
+def check_joint_direction_priority() -> None:
+    # Regression found by a deterministic bounded-trace search.  Selecting
+    # tremolo depth by least squares alone chooses depth 1 with one significant
+    # release-direction mismatch (31 squared error).  The converter-wide
+    # direction guard must prefer depth 2 with no mismatch (35 squared error).
+    reference = (
+        2, 2, 4, 4, 4, 2, 0, 2, 2, 2, 2, 2,
+        3, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 3,
+    )
+    fitted = opl_tremolo.fit_joint_envelope_tremolo(
+        reference, start_frame=14, key_off_frame=20,
+        sustain_while_keyed=True, counter_at_onset=15,
+        preserve_significant_directions=True,
+    )
+    directions = opl_tremolo.opl_envelope.envelope_directions(
+        reference, fitted.envelope.predicted_levels, 20,
+    )
+    assert fitted.depth_levels == 2
+    assert fitted.envelope.squared_error == 35
+    assert directions["mismatches"] == 0
 
 
 def check_bounds() -> None:
@@ -111,9 +171,11 @@ def main() -> int:
     check_exact_quantized_fit()
     check_inaudible_modulator_does_not_become_volume_lfo()
     check_joint_envelope_fit()
+    check_joint_target_shape_fit()
+    check_joint_direction_priority()
     check_bounds()
     print("JUKUPOLY-OPL-TREMOLO: PASS shared-phase fixed-rate exact-fit "
-          "bounded-depth inaudible-modulator-guard")
+          "bounded-depth direction-priority inaudible-modulator-guard")
     return 0
 
 

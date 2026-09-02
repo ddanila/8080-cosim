@@ -8,6 +8,8 @@ percussion channel through the unmodified Juku speaker.
 The guarded design for preserving OPL envelopes, tremolo, vibrato, and related
 articulation during VGZ reduction is in
 [`OPL-REDUCTION-PLAN.md`](OPL-REDUCTION-PLAN.md).
+The systematic source-versus-target diagnostic workflow is in
+[`OPL-VOICE-DIFFERENTIAL.md`](OPL-VOICE-DIFFERENTIAL.md).
 
 Status on 2026-08-30: cycle-model and CS00000 physical-listening qualified.
 
@@ -994,13 +996,72 @@ offline gate only; Imp v1 remains in the library until physical A/B listening.
 The exact listening medium is prepared by
 `tools/build_jukupoly_imp_m7_ab.py` and recorded in
 [`OPL-IMP-M7-PHYSICAL-AB.json`](OPL-IMP-M7-PHYSICAL-AB.json).  Its native Juku
-disk hash is `7fa29b3e...b302dfa`; `IMPV1`, `IMPREAR`, and `IMPDET` are built
+disk hash is `00c7c66b...2c87870`; `IMPV1`, `IMPREAR`, and `IMPDET` are built
 from the three committed 30-second scores and round-trip through the CP/M
-filesystem byte-for-byte.  Their cycle-rendered durations are 29.738, 29.863,
-and 29.909 seconds.  The image is
+filesystem byte-for-byte.  A standalone-only `-P8=1` option preserves the
+physical Escape poll without selecting the `-P2=1` JPS library ABI.  The
+builder verifies two emitted poll sites per COM, uninterrupted cycle-rendered
+returns at 29.783, 29.909, and 29.962 seconds, and injected-Escape returns at
+1.012, 1.017, and 1.000 seconds.  The image is
 `out/jukupoly-imp-m7-physical-ab/jukupoly-imp-m7-physical-ab.cpm` and includes
 the fixed-volume listening order and assessment checklist in `README.TXT`.
 It is prepared evidence, not a physical pass.
+
+Listening to the host renders then exposed a real converter policy error: both
+M7 candidates faded more slowly than the exact OPL reference because source
+operator `EGT` had been copied directly into the target sustain-state choice.
+The opt-in `--enhanced-target-envelope-shape` path now searches both existing
+Juku envelope state machines against one oracle trace and uses source `EGT`
+only as an exact-tie preference.  It adds no target opcode or sample-loop work.
+The same search now composes with joint tremolo fitting; disabling target-shape
+selection reproduces the frozen M4 real and full reports exactly.
+
+[`OPL-IMP-TARGET-SHAPE-M7.json`](OPL-IMP-TARGET-SHAPE-M7.json) independently
+re-renders isolated Nuked-OPL PCM so the fitter cannot validate itself.  On
+the merged intro lobe, equal-step channel-0/2 composite, and detuned channel 1,
+PCM/RMS mean absolute errors fall `1.920 -> 1.409`, `0.779 -> 0.593`, and
+`0.556 -> 0.333`; all three
+also reduce squared error without increasing maximum error.  The corrected
+scores remain candidates rather than silently changing the mixed library.
+
+[`OPL-TARGET-SHAPE-PACK-SCAN-M7.json`](OPL-TARGET-SHAPE-PACK-SCAN-M7.json)
+extends the check across all 44 pack openings: aggregate absolute error falls
+10.40%, squared error falls 5.86%, 39 tracks improve, four tie, and one has a
+small absolute-error increase under the existing squared-error-first policy.
+The worst sample-rate change is -0.370%, far below the allowed 10% reduction.
+
+`tools/build_jukupoly_imp_m7_ab.py --target-shape` builds their exact physical
+OLD/NEW medium, pinned by
+[`OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json`](OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json).
+`REAROLD`, `REARNEW`, `DETOLD`, and `DETNEW` all complete in C-cosim, poll the
+keyboard throughout, accept injected Escape, and round-trip through the CP/M
+disk.  Physical speaker comparison remains the promotion gate.
+
+The first physical target-shape attempt reproduced the earlier standalone
+enhanced-player crash from a clean C10 boot.  Full C10/CP/M cosim then
+reproduced it and isolated the cause: standalone startup lent `SP=0000h` to
+tone 3 before calling `envelope_dispatch_init`, so the call stack wrapped into
+Juku's write-protected `D800h..FFFFh` high-ROM overlay.  The flat-RAM audio
+harness had hidden the lost return-address write.  Initialization now runs on
+the real caller stack before the loan; a high-ROM-write-protected regression
+pins the boundary, and the repaired COM naturally warm-boots and accepts a
+subsequent B: `DIR` in the full system. That repaired-startup disk was
+`aea4ec65...098e56d2`; the equal-step envelope-grouping correction now
+supersedes it with `f0923753...253affd`. Physical listening still remains
+open.
+
+Whole-song listening also hid a separate host allocation error in the Imp
+intro. The isolated-voice differential proved that its apparent single
+F-sharp is four OPL members: channels 0 and 2 have the same target phase step
+but complementary envelopes. Keeping only the strongest member per step
+discarded channel 2 and made the target fall completely silent during several
+source lobes. Equal-step members are now summed and envelope-fitted on the
+host as one target voice. After a two-pass host-only phase-rate calibration,
+the isolated cycle render improves from `2.99/54.22 dB` median/p90 contour
+error and `0.557` correlation to `0.97/6.17 dB` and `0.832`; worst measured
+pitch error is `0.969` cents. See
+[`OPL-VOICE-DIFFERENTIAL.md`](OPL-VOICE-DIFFERENTIAL.md) for the reproducible
+register isolation, renders, limitations, and eventual physical protocol.
 
 [`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json) records why generic melodic
 attack samples stop at analysis for now.  The existing single PCM lane cannot
@@ -1020,7 +1081,7 @@ whole OPL attack would duplicate its energy.
 cross-milestone audit.  It checks the committed G0--G8 evidence rather than
 inferring completion from narrative text: all automated gates pass, fallbacks
 remain explicit, and the only required open action is the hash-locked M7 Imp
-physical A/B.
+target-shape physical A/B.
 
 ## Reproduce
 
@@ -1056,6 +1117,9 @@ Source and generated files:
   of the four exact-oracle M6 inputs and their committed profile;
 - `tools/report_jukupoly_m6_renders.py` — exact 30-second v1/enhanced/Nuked
   render hashes and excerpt timing/concurrency gates;
+- `tools/compare_jukupoly_opl_voice.py` — isolate one logical OPL note, render
+  its exact source members and cycle-exact Juku reduction, and emit semantic
+  plus normalized-envelope comparison evidence;
 - `tools/report_jukupoly_m6_mixed_library.py` — complete 44-song mixed-disk
   hash, capability, and full C-cosim compatibility report;
 - `tools/build_jukupoly_m7_pack_scan.py` — hash-locked, parallel two-pack
@@ -1068,6 +1132,9 @@ Source and generated files:
   scheduling, sample-identity, and memory feasibility audit;
 - `tools/build_jukupoly_imp_m7_ab.py` — deterministic three-way Imp physical
   A/B COM and native CP/M disk builder with file round-trip verification;
+  `--target-shape` builds the four-program old/new decay comparison;
+- `tools/report_jukupoly_imp_target_shape.py` — exact isolated-OPL PCM/RMS
+  cross-check for the Imp target-envelope shape candidates;
 - `tools/report_opl_plan_status.py` — cross-report G0--G8/M0--M7 completion
   audit and exact remaining-action verifier;
 - `tools/recalibrate_jukupoly_enhanced.py` — guarded timing-only symbolic-note
@@ -1094,6 +1161,12 @@ Source and generated files:
   and projected file-size upper bound for short melodic attacks;
 - `OPL-IMP-M7-PHYSICAL-AB.json` — exact Imp v1/re-articulation/detuned physical
   comparison payload hashes and listening protocol;
+- `OPL-IMP-TARGET-SHAPE-M7.json` — independent exact-OPL PCM/RMS comparison of
+  old and corrected intro envelope traces;
+- `OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json` — exact four-program old/new target-
+  envelope physical disk, cycle, Escape, and listening protocol;
+- `OPL-TARGET-SHAPE-PACK-SCAN-M7.json` — all-44-opening old/new envelope-error
+  and target timing comparison for the opt-in shape policy;
 - `sessions/cs00000-jukupoly-m7-physical/` — partial physical Imp comparison,
   late-ready/console-preflight diagnosis, v1 listening result, and the isolated
   re-articulation target failure which keeps M7 unqualified;

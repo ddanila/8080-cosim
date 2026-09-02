@@ -50,10 +50,64 @@ memory write.  If it fails alone, the target-vs-emulator boundary is already
 isolated.  Keep Imp v1 in the library and do not run `IMPDET` until this is
 resolved.
 
-The comparison disk README claims Escape support, but these three standalone
-COM builds do not enable the library player's keyboard-polling build option.
-The queued remote Escape consequently provides no standalone-player evidence;
-this packaging/documentation mismatch must be corrected before the retest.
+The comparison disk used in this historical run claimed Escape support, but
+its three standalone COM builds did not contain the library player's keyboard
+poll.  The queued remote Escape consequently provides no standalone-player
+evidence.  That medium was superseded by a standalone `-P8=1` build which
+asserted both emitted poll sites and cycle-tested all normal and injected-
+Escape returns.  The first such disk was SHA-256
+`55c99c0ba265dc06d9e45a6d721a79032959c0daa92527775982900d12c1b1ee`.
+
+## 2026-09-02 cold retest and root cause
+
+CS00000 cold-booted C10/CP/M Plus with the four-way target-shape disk SHA-256
+`20dd4ec7aea589df1fbf94a5c503705a7724fbdf7b51e2f57670aa9c805ac4ef`.
+`B:REAROLD.COM` SHA-256
+`4a843f92b7cc490f04b601a1ada36e3cd76f8b6f2bdf2d1ecb0548ad4d9b3a50`
+again failed to return: the screen became striped and the machine stopped
+servicing CP/M.  The host had loaded the complete COM with zero disk retries
+or UART errors and saw no request after the final load at 66.443 seconds.
+It was stopped 116 seconds later.  This reproduced the prior failure from a
+clean boot and made the comparison result invalid; it was not an envelope-
+quality verdict.
+
+The same old COM then reproduced the failure under the complete C10 ROM,
+CP/M, bank map, N4, and NetDisk cosim.  Its post-failure checkpoint wandered
+at `PC=00AAh`, `SP=FFFEh` with interrupts disabled, after repeatedly crossing
+the transient and PIT code.  This ruled out a CS00000 hardware fault and
+exposed the lightweight audio harness's false assumption.
+
+The standalone JPS-v2 startup set `SP=0000h` for tone channel 3 and only then
+executed `CALL envelope_dispatch_init`.  The call therefore tried to push its
+return address at `FFFEh`.  Flat-RAM tests accepted that write; real Juku mode
+1 and the full-system cosim map the write-protected high BIOS ROM at
+`D800h..FFFFh`, so `RET` consumed ROM bytes and entered garbage.  Library JPS
+playback was unaffected because its dispatcher is initialized before
+`player_start`.
+
+The dispatcher call now runs while the caller's real stack is still active,
+before `SP` is lent to tone 3.  The hot loop, per-frame work, and score bytes
+are unchanged.  The focused envelope execution regression now models the
+write-protected high-ROM overlay, so the old ordering fails instead of being
+masked by flat RAM.  The repaired `REAROLD` completed under the same full C10
+system, caused the expected A: warm-boot/CCP reads, and accepted a subsequent
+B: `DIR`; the host recorded 22 reads, zero retries, zero boot restarts, and
+zero UART errors.
+
+The repaired-startup three-way disk was SHA-256
+`3e79d3cf2bbab4a9855f830a88f87ff44fd3660cddd753a02d5bdf6caf2005b8`.
+The repaired-startup OLD/NEW target-shape disk was SHA-256
+`aea4ec6549a3b7f4b383c8efa95fce953b375eb854aa1b06a7a93520098e56d2`.
+Physical listening of the latter remains pending; no broken standalone image
+should be used for that gate.
+
+The later host-side equal-phase member grouping correction changes the music
+payloads without changing this startup fix. Its current three-way disk is
+SHA-256
+`00c7c66b20a1d567271f93e66b16f239d4d9f58ccb2bad3972c6e6e702c87870`;
+its current OLD/NEW disk is SHA-256
+`f092375387b9047ab0739e3a6fa8d62b82bc495e8f24a595af29704e8253affd`.
+These newest images have not yet been run on CS00000.
 
 ## Retained local evidence
 
@@ -75,3 +129,13 @@ recovered CP/M service, both v1 loads, and the `IMPREAR` load/failure.
 `jukuhost-clean.log`/`host-clean.cap` are the final no-target run stopped after
 the operator powered CS00000 off.
 
+The 2026-09-02 physical log and wire capture remain untracked under
+`out/jukupoly-targetshape-physical-20260902-01/`:
+
+```text
+4d25dea2e0ae90eb9cbec9e9ea6c0ac7678e96b6d5e9cfaedb83fc8166d4c3b5  jukuhost.log
+977927aa428e05b37837e0b9fc867ab6cc358149c4b699817adba69b5ab9f1d2  host.cap
+```
+
+The paired broken/fixed full-system checkpoints and host evidence remain
+untracked under `out/jukupoly-targetshape-diagnosis-20260902/`.

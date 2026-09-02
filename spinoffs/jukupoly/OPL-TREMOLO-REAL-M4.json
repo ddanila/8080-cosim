@@ -25,11 +25,7 @@
     "target_wavs_differ": true,
     "zero_packet_and_jps_growth": true
   },
-  "opl_reference_wav": {
-    "bytes": 11642478,
-    "path_hint": "opening-66s-opl-reference.wav",
-    "sha256": "9204624159b0be0dea6be25f1793e6be54222bacd82dd82d3ebf122512ba9f67"
-  },
+  "opl_reference_wav": null,
   "player": {
     "bytes": 4863,
     "end_address_exclusive": "0x13ff",
@@ -155,13 +151,13 @@
       "bytes": 6331464,
       "path_hint": "opening-66s-envelope.wav",
       "sample_rate_hz": 48000,
-      "sha256": "d07f0ebbb2c1aad9c14ae8fce8338786c7be5edc2c134887e70e73e53cb19af1"
+      "sha256": "46c31f87b56a20a238671074f077ffa0416f52dc89ab193330dfa77041b6495c"
     },
     "tremolo": {
       "bytes": 6369958,
       "path_hint": "opening-66s-tremolo.wav",
       "sample_rate_hz": 48000,
-      "sha256": "d9cdc6d68fb6e85ed7bb5cf816475219a4400a15b4b1e33ed556b1597501122a"
+      "sha256": "45a720163ec1af650e472ea029ff965db89e65e855be5ce11be0fe4b38214622"
     }
   }
 }

@@ -24,6 +24,76 @@
             {
               "articulation_packets": [
                 {
+                  "frame_offset": 86,
+                  "packet": {
+                    "attack_period_frames": 2,
+                    "decay_period_frames": 16,
+                    "peak_level": 6,
+                    "release_period_frames": 0,
+                    "sustain_level": 0,
+                    "sustain_while_keyed": true
+                  }
+                },
+                {
+                  "frame_offset": 173,
+                  "packet": {
+                    "attack_period_frames": 1,
+                    "decay_period_frames": 64,
+                    "peak_level": 7,
+                    "release_period_frames": 0,
+                    "sustain_level": 0,
+                    "sustain_while_keyed": true
+                  }
+                },
+                {
+                  "frame_offset": 350,
+                  "packet": {
+                    "attack_period_frames": 2,
+                    "decay_period_frames": 32,
+                    "peak_level": 7,
+                    "release_period_frames": 0,
+                    "sustain_level": 5,
+                    "sustain_while_keyed": true
+                  }
+                },
+                {
+                  "frame_offset": 524,
+                  "packet": {
+                    "attack_period_frames": 2,
+                    "decay_period_frames": 32,
+                    "peak_level": 8,
+                    "release_period_frames": 0,
+                    "sustain_level": 0,
+                    "sustain_while_keyed": true
+                  }
+                }
+              ],
+              "maximum_error": 4,
+              "mean_absolute_error": 0.9286640726329443,
+              "packet": {
+                "attack_period_frames": 1,
+                "decay_period_frames": 16,
+                "peak_level": 7,
+                "release_period_frames": 0,
+                "sustain_level": 0,
+                "sustain_while_keyed": true
+              },
+              "phase_step": 845,
+              "reference_energy": 3508,
+              "reference_frames": 771,
+              "segment": 0,
+              "source_channels": [
+                0,
+                2
+              ],
+              "source_segments": [
+                0,
+                2
+              ]
+            },
+            {
+              "articulation_packets": [
+                {
                   "frame_offset": 171,
                   "packet": {
                     "attack_period_frames": 2,
@@ -70,58 +140,13 @@
               "phase_step": 839,
               "reference_energy": 1897,
               "reference_frames": 771,
-              "segment": 1
-            },
-            {
-              "articulation_packets": [
-                {
-                  "frame_offset": 171,
-                  "packet": {
-                    "attack_period_frames": 2,
-                    "decay_period_frames": 16,
-                    "peak_level": 7,
-                    "release_period_frames": 0,
-                    "sustain_level": 0,
-                    "sustain_while_keyed": true
-                  }
-                },
-                {
-                  "frame_offset": 348,
-                  "packet": {
-                    "attack_period_frames": 2,
-                    "decay_period_frames": 16,
-                    "peak_level": 7,
-                    "release_period_frames": 0,
-                    "sustain_level": 0,
-                    "sustain_while_keyed": true
-                  }
-                },
-                {
-                  "frame_offset": 523,
-                  "packet": {
-                    "attack_period_frames": 2,
-                    "decay_period_frames": 16,
-                    "peak_level": 8,
-                    "release_period_frames": 0,
-                    "sustain_level": 0,
-                    "sustain_while_keyed": true
-                  }
-                }
+              "segment": 1,
+              "source_channels": [
+                1
               ],
-              "maximum_error": 3,
-              "mean_absolute_error": 0.5875486381322957,
-              "packet": {
-                "attack_period_frames": 1,
-                "decay_period_frames": 16,
-                "peak_level": 7,
-                "release_period_frames": 0,
-                "sustain_level": 0,
-                "sustain_while_keyed": true
-              },
-              "phase_step": 845,
-              "reference_energy": 1878,
-              "reference_frames": 771,
-              "segment": 0
+              "source_segments": [
+                1
+              ]
             },
             {
               "articulation_packets": [],
@@ -138,7 +163,13 @@
               "phase_step": 848,
               "reference_energy": 241,
               "reference_frames": 771,
-              "segment": 3
+              "segment": 3,
+              "source_channels": [
+                3
+              ],
+              "source_segments": [
+                3
+              ]
             }
           ],
           "minimum_spare_voices": 2,
@@ -148,13 +179,14 @@
       "extra_voices": 2,
       "logical_notes": 1,
       "member_envelope_fits": 3,
-      "member_maximum_error": 3,
-      "member_rearticulation_packets": 6,
-      "member_sample_weighted_mean_absolute_error": 0.44963251188932124,
-      "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; require persistent spare capacity and individually passing envelope fits; reserve spare capacity in deterministic first-selected-note order across overlapping episodes",
+      "member_maximum_error": 4,
+      "member_rearticulation_packets": 7,
+      "member_sample_weighted_mean_absolute_error": 0.5633376567228707,
+      "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; members quantizing to one phase step are summed and fitted as one host-side composite envelope; require persistent spare capacity and individually passing envelope fits; reserve spare capacity in deterministic first-selected-note order across overlapping episodes",
       "rejections": {
         "noncontiguous_selection": 2
       },
+      "source_members_merged": 4,
       "target_sample_rate_hz": 7170
     },
     "direction_mismatches": 0,
@@ -223,6 +255,76 @@
             {
               "articulation_packets": [
                 {
+                  "frame_offset": 86,
+                  "packet": {
+                    "attack_period_frames": 2,
+                    "decay_period_frames": 16,
+                    "peak_level": 6,
+                    "release_period_frames": 0,
+                    "sustain_level": 0,
+                    "sustain_while_keyed": true
+                  }
+                },
+                {
+                  "frame_offset": 173,
+                  "packet": {
+                    "attack_period_frames": 1,
+                    "decay_period_frames": 64,
+                    "peak_level": 7,
+                    "release_period_frames": 0,
+                    "sustain_level": 0,
+                    "sustain_while_keyed": true
+                  }
+                },
+                {
+                  "frame_offset": 350,
+                  "packet": {
+                    "attack_period_frames": 2,
+                    "decay_period_frames": 32,
+                    "peak_level": 7,
+                    "release_period_frames": 0,
+                    "sustain_level": 5,
+                    "sustain_while_keyed": true
+                  }
+                },
+                {
+                  "frame_offset": 524,
+                  "packet": {
+                    "attack_period_frames": 2,
+                    "decay_period_frames": 32,
+                    "peak_level": 8,
+                    "release_period_frames": 0,
+                    "sustain_level": 0,
+                    "sustain_while_keyed": true
+                  }
+                }
+              ],
+              "maximum_error": 4,
+              "mean_absolute_error": 0.9286640726329443,
+              "packet": {
+                "attack_period_frames": 1,
+                "decay_period_frames": 16,
+                "peak_level": 7,
+                "release_period_frames": 0,
+                "sustain_level": 0,
+                "sustain_while_keyed": true
+              },
+              "phase_step": 845,
+              "reference_energy": 3508,
+              "reference_frames": 771,
+              "segment": 0,
+              "source_channels": [
+                0,
+                2
+              ],
+              "source_segments": [
+                0,
+                2
+              ]
+            },
+            {
+              "articulation_packets": [
+                {
                   "frame_offset": 171,
                   "packet": {
                     "attack_period_frames": 2,
@@ -269,58 +371,13 @@
               "phase_step": 839,
               "reference_energy": 1897,
               "reference_frames": 771,
-              "segment": 1
-            },
-            {
-              "articulation_packets": [
-                {
-                  "frame_offset": 171,
-                  "packet": {
-                    "attack_period_frames": 2,
-                    "decay_period_frames": 16,
-                    "peak_level": 7,
-                    "release_period_frames": 0,
-                    "sustain_level": 0,
-                    "sustain_while_keyed": true
-                  }
-                },
-                {
-                  "frame_offset": 348,
-                  "packet": {
-                    "attack_period_frames": 2,
-                    "decay_period_frames": 16,
-                    "peak_level": 7,
-                    "release_period_frames": 0,
-                    "sustain_level": 0,
-                    "sustain_while_keyed": true
-                  }
-                },
-                {
-                  "frame_offset": 523,
-                  "packet": {
-                    "attack_period_frames": 2,
-                    "decay_period_frames": 16,
-                    "peak_level": 8,
-                    "release_period_frames": 0,
-                    "sustain_level": 0,
-                    "sustain_while_keyed": true
-                  }
-                }
+              "segment": 1,
+              "source_channels": [
+                1
               ],
-              "maximum_error": 3,
-              "mean_absolute_error": 0.5875486381322957,
-              "packet": {
-                "attack_period_frames": 1,
-                "decay_period_frames": 16,
-                "peak_level": 7,
-                "release_period_frames": 0,
-                "sustain_level": 0,
-                "sustain_while_keyed": true
-              },
-              "phase_step": 845,
-              "reference_energy": 1878,
-              "reference_frames": 771,
-              "segment": 0
+              "source_segments": [
+                1
+              ]
             },
             {
               "articulation_packets": [],
@@ -337,7 +394,13 @@
               "phase_step": 848,
               "reference_energy": 241,
               "reference_frames": 771,
-              "segment": 3
+              "segment": 3,
+              "source_channels": [
+                3
+              ],
+              "source_segments": [
+                3
+              ]
             }
           ],
           "minimum_spare_voices": 2,
@@ -1438,6 +1501,10 @@
     "sample_weighted_mean_absolute_error": 0.6742209631728046,
     "selected_logical_notes": 16,
     "single_packet_sample_weighted_mean_absolute_error": 1.4408640226628895,
+    "target_shape_fit": {
+      "enabled": false,
+      "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+    },
     "tremolo_analysis": {
       "emitted_notes": 0,
       "enabled": false,
@@ -1467,11 +1534,7 @@
     "v2_music_clock_within_one_percent": true,
     "v2_sample_rate_above_fixture_floor": true
   },
-  "opl_reference_wav": {
-    "bytes": 5292078,
-    "path_hint": "doom1-03-imp-opl-30s.wav",
-    "sha256": "cacb205922811ff9293d0f6a30c156c7dbe99db1de47b8887476f5e6da5f6ee1"
-  },
+  "opl_reference_wav": null,
   "player": {
     "bytes": 4537,
     "end_address_exclusive": "0x12b9",
@@ -1521,41 +1584,41 @@
     },
     "v2": {
       "com_bytes": 4537,
-      "duration_seconds": 29.958444,
-      "effective_sample_hz": 7159.91789,
+      "duration_seconds": 29.965685,
+      "effective_sample_hz": 7158.187844,
       "frame_cycles": {
         "count": 1500,
         "max": 40690,
-        "mean": 33952.903,
-        "min": 33671,
-        "p99": 37055
+        "mean": 33961.109,
+        "min": 33730,
+        "p99": 36736
       },
       "frame_samples": 143,
       "frames": 1500,
       "idle_boundary_cycles": {
-        "count": 1441,
+        "count": 1437,
         "max": 1778,
-        "mean": 1029.48,
+        "mean": 1028.189,
         "min": 877,
-        "p99": 1396
+        "p99": 1379
       },
-      "jps_bytes": 1405,
+      "jps_bytes": 1418,
       "keyboard_polls": 1501,
       "label": "imp-30s-v2",
-      "music_frame_hz": 50.069356,
+      "music_frame_hz": 50.057258,
       "mutated_player_bytes": 80,
-      "pit_writes": 4984,
+      "pit_writes": 5407,
       "row_boundary_cycles": {
-        "count": 59,
+        "count": 63,
         "max": 7766,
-        "mean": 2787.78,
+        "mean": 2726.508,
         "min": 1290,
         "p99": 7766
       },
       "sample_loop_cycles": {
         "count": 213000,
-        "max": 276,
-        "mean": 229.749,
+        "max": 269,
+        "mean": 229.799,
         "min": 229,
         "p99": 262
       }
@@ -1574,9 +1637,9 @@
       "sha256": "b465bad72be38562fe08b2370281a2f01865055015a2fc8ff8d33fdaf6e6fea6"
     },
     "v2": {
-      "bytes": 2871330,
+      "bytes": 2872026,
       "sample_rate_hz": 48000,
-      "sha256": "a99989c688504e67907e299250dc660fcfeebe001c1f1f2a5d89c8d00116c743"
+      "sha256": "574c93161e5abfd9d98469c3890c4d14c53cb366948ce9432f8a4c1978de7b79"
     }
   }
 }

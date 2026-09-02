@@ -627,7 +627,8 @@ def compile_song(song: dict) -> tuple[str, dict]:
 def assemble(generated: str, mod_effects: bool = False,
              enhanced_envelopes: bool = False,
              enhanced_tremolo: bool = False,
-             enhanced_vibrato: bool = False) -> bytes:
+             enhanced_vibrato: bool = False,
+             escape_polling: bool = False) -> bytes:
     if enhanced_tremolo and not enhanced_envelopes:
         raise SongError("target tremolo requires enhanced envelopes")
     if enhanced_vibrato:
@@ -657,6 +658,8 @@ def assemble(generated: str, mod_effects: bool = False,
             command.insert(4, "-P3=1")
         if enhanced_tremolo:
             command.insert(4, "-P5=1")
+        if escape_polling:
+            command.insert(4, "-P8=1")
         subprocess.run(
             command,
             check=True,

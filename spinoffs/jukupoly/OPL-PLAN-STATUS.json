@@ -24,8 +24,12 @@
       "sha256": "832d65b876f9936e876082737627ea100662aa98378ce210bcba3b5430871b2c"
     },
     {
-      "path": "OPL-IMP-M7-PHYSICAL-AB.json",
-      "sha256": "5293c6fd7d39a340f643cd806b1929e599cc1b7e81675f4813331420d9194f4b"
+      "path": "OPL-IMP-TARGET-SHAPE-M7.json",
+      "sha256": "a2157a49dcb1724e04a33b617381367e9b9a2f6d09323b5ccced9aaebc570765"
+    },
+    {
+      "path": "OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json",
+      "sha256": "77aae74505224d0e53c8b2f9d891c9595ea3f2d5b50a13c5b35834798dcd4d82"
     },
     {
       "path": "OPL-M6-MIXED-LIBRARY.json",
@@ -52,8 +56,12 @@
       "sha256": "2931341befdf07136e3b1ef2244befdd809f16213e531de738540cd2c09c2edc"
     },
     {
+      "path": "OPL-TARGET-SHAPE-PACK-SCAN-M7.json",
+      "sha256": "a902ec2586b1fa2db28f1e3ed6945a2e67cd00794b413e3c385880f629bbcd71"
+    },
+    {
       "path": "OPL-TREMOLO-FULL-M4.json",
-      "sha256": "5763b38397d2026820ef93d075b25c46f92de4ef7e47aae295740a02521668c6"
+      "sha256": "f106f09c35abfb1e91235ef58ed18b0e122723f19490d29a4036da87de37e186"
     },
     {
       "path": "OPL-TREMOLO-TARGET-M4.json",
@@ -61,7 +69,7 @@
     },
     {
       "path": "OPL-VIBRATO-FULL-M5.json",
-      "sha256": "5e5e7a87b4f3f4a54af8ac26f8b0282d4c1c864ab6779b3ded1e607218e33bda"
+      "sha256": "9e97f5be48156b0960192c8c9bb98a5223d2799f6beb736dca2a8de6833463f2"
     },
     {
       "path": "sessions/cs00000-jukupoly-m6-physical/result.txt",
@@ -103,9 +111,11 @@
     {
       "evidence": [
         "OPL-IMP-DETUNED-FULL-M7.json",
-        "OPL-IMP-M7-PHYSICAL-AB.json"
+        "OPL-IMP-TARGET-SHAPE-M7.json",
+        "OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json",
+        "OPL-TARGET-SHAPE-PACK-SCAN-M7.json"
       ],
-      "finding": "percussion and Escape remain measured; M7 iteration change still requires the prepared physical A/B",
+      "finding": "percussion and Escape remain measured; independently PCM-qualified target-shape iteration still requires physical A/B",
       "id": "G3",
       "status": "physical-pending"
     },
@@ -140,7 +150,8 @@
         "OPL-M7-PACK-SCAN.json",
         "OPL-M7-MODES.json",
         "OPL-M7-DETUNED-SPARES.json",
-        "OPL-M7-ATTACK-PCM.json"
+        "OPL-M7-ATTACK-PCM.json",
+        "OPL-TARGET-SHAPE-PACK-SCAN-M7.json"
       ],
       "finding": "44-track audits complete and enhanced reducers contain no track-title string literal",
       "id": "G7",
@@ -149,9 +160,9 @@
     {
       "evidence": [
         "sessions/cs00000-jukupoly-m6-physical/result.txt",
-        "OPL-IMP-M7-PHYSICAL-AB.json"
+        "OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json"
       ],
-      "finding": "M3 fallback and delivered M4/M5/M6 payloads have physical evidence; the M7 Imp candidate does not",
+      "finding": "M3 fallback and delivered M4/M5/M6 payloads have physical evidence; the corrected M7 Imp target-shape candidates do not",
       "id": "G8",
       "status": "physical-pending"
     }
@@ -193,7 +204,7 @@
       "status": "qualified-progressive"
     },
     {
-      "finding": "full detuned Imp passes offline; modes and attack PCM have documented no-demand/capacity fallbacks",
+      "finding": "full detuned Imp and corrected target-envelope shape pass offline; modes and attack PCM retain documented fallbacks",
       "id": "M7",
       "status": "physical-pending"
     }
@@ -201,16 +212,16 @@
   "overall_status": "physical-qualification-pending",
   "plan": {
     "path": "OPL-REDUCTION-PLAN.md",
-    "sha256": "2dce59940e4a4465d59965f0538d7c1dfce1ab35786a324af8faf631844c1c65"
+    "sha256": "0f592e8a26d86861c2fddfacee5d9dca6c3b37f45925e9d5db347e6a9d99c16e"
   },
   "remaining_required_actions": [
     {
-      "action": "boot the hash-locked comparison disk on CS00000, run IMPV1, IMPREAR, and IMPDET at one volume, record sound assessment, Escape behavior, and CP/M return",
-      "id": "M7-IMP-PHYSICAL-AB",
-      "prepared_evidence": "OPL-IMP-M7-PHYSICAL-AB.json",
+      "action": "cold-boot the hash-locked target-shape comparison disk on CS00000; run REAROLD/REARNEW and DETOLD/DETNEW at one volume and record fade preference, Escape behavior, and CP/M return",
+      "id": "M7-IMP-TARGET-SHAPE-PHYSICAL-AB",
+      "prepared_evidence": "OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json",
       "requires_external_state": "powered physical CS00000 and operator"
     }
   ],
-  "report_sha256": "c3a5204b35449abd786125f9ce85a5dd421839774af1c2a776313e93ceb0fbd6",
+  "report_sha256": "99c5de093adc95db095484b7a29d899bd4eff144d38d693d5d9e2b3ab370d82f",
   "schema": "jukupoly-opl-plan-status-v1"
 }

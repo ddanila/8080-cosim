@@ -694,6 +694,12 @@ def main() -> int:
               "ADSR packets; requires --enhanced-envelopes"),
     )
     parser.add_argument(
+        "--enhanced-target-envelope-shape", action="store_true",
+        help=("allow the target sustain/automatic-release mode with lower "
+              "oracle error, preserving source EGT mode on ties; requires "
+              "--enhanced-envelopes"),
+    )
+    parser.add_argument(
         "--enhanced-detuned-layers", action="store_true",
         help=("replace stable selected logical voices with individually "
               "fitted fixed-pitch source layers only when target voices "
@@ -756,6 +762,10 @@ def main() -> int:
         parser.error("--enhanced-tremolo requires --enhanced-envelopes")
     if args.enhanced_rearticulation and not args.enhanced_envelopes:
         parser.error("--enhanced-rearticulation requires --enhanced-envelopes")
+    if args.enhanced_target_envelope_shape and not args.enhanced_envelopes:
+        parser.error(
+            "--enhanced-target-envelope-shape requires --enhanced-envelopes"
+        )
     if args.enhanced_detuned_layers and not args.enhanced_envelopes:
         parser.error("--enhanced-detuned-layers requires --enhanced-envelopes")
     if args.enhanced_held_pitch and not args.enhanced_envelopes:
@@ -900,6 +910,7 @@ def main() -> int:
             enable_tremolo=args.enhanced_tremolo,
             enable_rearticulation=args.enhanced_rearticulation,
             enable_detuned_layers=args.enhanced_detuned_layers,
+            enable_target_shape_fit=args.enhanced_target_envelope_shape,
             target_sample_rate=(
                 args.enhanced_sample_rate or
                 opl_enhanced.ENHANCED_SAMPLE_RATE

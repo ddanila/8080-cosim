@@ -162,6 +162,22 @@ def _segment_level(
     return round(15 * min(1.0, amplitude))
 
 
+def _segment_group_level(
+        segments: Iterable[opl_voices.NoteSegment], frame: int,
+        probes: dict[tuple[int, int], opl_oracle.OracleProbe],
+) -> int:
+    """Quantize the combined direct amplitude of equal-step OPL members."""
+    amplitude = 0.0
+    for segment in segments:
+        probe = probes[(frame, segment.bank * 9 + segment.channel)]
+        amplitude += opl_envelope.opl_channel_amplitude(
+            probe.modulator_output_attenuation,
+            probe.carrier_output_attenuation,
+            probe.connection,
+        )
+    return round(15 * min(1.0, amplitude))
+
+
 def fit_selected_envelopes(
         segments: list[opl_voices.NoteSegment],
         notes: list[opl_voices.LogicalNote], allocation: dict,
@@ -169,6 +185,7 @@ def fit_selected_envelopes(
         *, enable_tremolo: bool = False,
         enable_rearticulation: bool = False,
         enable_detuned_layers: bool = False,
+        enable_target_shape_fit: bool = False,
         target_sample_rate: int = ENHANCED_SAMPLE_RATE,
 ) -> tuple[dict[int, opl_envelope.EnvelopeFit], dict]:
     """Fit every logical note selected within the excerpt.
@@ -250,10 +267,11 @@ def fit_selected_envelopes(
             forced_peak = None
         if key_off_frame is not None and key_off_frame >= len(reference):
             key_off_frame = len(reference) - 1
-        baseline_fit = opl_envelope.fit_envelope(
+        baseline_fit = opl_envelope.fit_target_envelope(
             reference,
             key_off_frame=key_off_frame,
-            sustain_while_keyed=note.sustained_envelope,
+            source_sustain_while_keyed=note.sustained_envelope,
+            allow_alternate_sustain_mode=enable_target_shape_fit,
             counter_at_onset=(selected_frame + 1) & 0xFF,
             peak_level=forced_peak,
             preserve_significant_directions=True,
@@ -275,14 +293,14 @@ def fit_selected_envelopes(
             )
         )
         if direct_am and enable_tremolo:
-            joint = opl_tremolo.fit_joint_envelope_tremolo(
+            joint = opl_tremolo.fit_target_envelope_tremolo(
                 reference, start_frame=selected_frame,
                 key_off_frame=key_off_frame,
-                sustain_while_keyed=note.sustained_envelope,
+                source_sustain_while_keyed=note.sustained_envelope,
+                allow_alternate_sustain_mode=enable_target_shape_fit,
                 counter_at_onset=(selected_frame + 1) & 0xFF,
                 preserve_significant_directions=True,
                 peak_level=forced_peak,
-                baseline_envelope=baseline_fit,
             )
             fitted_depth = joint.depth_levels
             fitted_envelope = joint.envelope
@@ -341,10 +359,11 @@ def fit_selected_envelopes(
                     if key_off_frame is not None and
                     begin <= key_off_frame < end else None
                 )
-                piece = opl_envelope.fit_envelope(
+                piece = opl_envelope.fit_target_envelope(
                     piece_reference,
                     key_off_frame=piece_key_off,
-                    sustain_while_keyed=note.sustained_envelope,
+                    source_sustain_while_keyed=note.sustained_envelope,
+                    allow_alternate_sustain_mode=enable_target_shape_fit,
                     counter_at_onset=(selected_frame + begin + 1) & 0xFF,
                     peak_level=(1 if max(piece_reference) == 0 else None),
                     preserve_significant_directions=True,
@@ -426,127 +445,140 @@ def fit_selected_envelopes(
                     if len(member_steps) != 1:
                         detuned_rejections["member_pitch_not_fixed"] += 1
                         continue
-                    member_reference = tuple(
-                        _segment_level(segment, frame, probe_table)
-                        for frame in range(episode_start, reference_end + 1)
-                    )
-                    member_key_off = episode_end - episode_start
-                    if not 0 <= member_key_off < len(member_reference):
-                        member_key_off = None
-                    member_fit = opl_envelope.fit_envelope(
-                        member_reference,
-                        key_off_frame=member_key_off,
-                        sustain_while_keyed=segment.sustained_envelope,
-                        counter_at_onset=(episode_start + 1) & 0xFF,
-                        peak_level=(1 if max(member_reference) == 0 else None),
-                        preserve_significant_directions=True,
-                    )
-                    member_rearticulation_frames = (
-                        opl_envelope.significant_rearticulation_frames(
-                            member_reference, member_key_off,
-                        )
-                    )
-                    if any(
-                            offset >= episode_end - episode_start
-                            for offset in member_rearticulation_frames):
-                        detuned_rejections[
-                            "member_rearticulation_after_episode"
-                        ] += 1
-                        continue
-                    member_articulation_packets = []
-                    member_predicted = member_fit.predicted_levels
-                    member_absolute_error = member_fit.absolute_error
-                    member_maximum_error = member_fit.maximum_error
-                    if (member_rearticulation_frames and
-                            len(member_rearticulation_frames) <=
-                            MAX_REARTICULATIONS_PER_NOTE):
-                        boundaries = (
-                            0, *member_rearticulation_frames,
-                            len(member_reference),
-                        )
-                        pieces = []
-                        predicted_parts = []
-                        for piece_index, (begin, end) in enumerate(zip(
-                                boundaries, boundaries[1:])):
-                            piece_reference = member_reference[begin:end]
-                            piece_key_off = (
-                                member_key_off - begin
-                                if member_key_off is not None and
-                                begin <= member_key_off < end else None
-                            )
-                            piece = opl_envelope.fit_envelope(
-                                piece_reference,
-                                key_off_frame=piece_key_off,
-                                sustain_while_keyed=(
-                                    segment.sustained_envelope
-                                ),
-                                counter_at_onset=(
-                                    episode_start + begin + 1
-                                ) & 0xFF,
-                                peak_level=(
-                                    1 if max(piece_reference) == 0 else None
-                                ),
-                                preserve_significant_directions=True,
-                            )
-                            pieces.append(piece)
-                            predicted_parts.extend(piece.predicted_levels)
-                            if piece_index:
-                                member_articulation_packets.append({
-                                    "frame_offset": begin,
-                                    "packet": piece.packet(),
-                                })
-                        member_fit = pieces[0]
-                        member_predicted = tuple(predicted_parts)
-                        member_absolute_error = sum(
-                            abs(expected - actual)
-                            for expected, actual in zip(
-                                member_reference, member_predicted,
-                            )
-                        )
-                        member_maximum_error = max(
-                            abs(expected - actual)
-                            for expected, actual in zip(
-                                member_reference, member_predicted,
-                            )
-                        )
-                    member_directions = opl_envelope.envelope_directions(
-                        member_reference, member_predicted,
-                        member_key_off,
-                    )
-                    member_mae = member_absolute_error / len(member_reference)
-                    member_unrepresented = (
-                        bool(member_rearticulation_frames) and
-                        (not member_articulation_packets or
-                         member_mae > MAX_DELIVERY_NOTE_MAE)
-                    )
-                    if (member_directions["mismatches"] or
-                            member_unrepresented or
-                            member_mae > MAX_DELIVERY_NOTE_MAE):
-                        if member_directions["mismatches"]:
-                            detuned_rejections["member_direction_mismatch"] += 1
-                        if member_unrepresented:
-                            detuned_rejections[
-                                "member_rearticulation"
-                            ] += 1
-                        if member_mae > MAX_DELIVERY_NOTE_MAE:
-                            detuned_rejections["member_fit_error"] += 1
-                        continue
                     member_candidates.append({
                         "segment": member_identifier,
                         "phase_step": next(iter(member_steps)),
-                        "packet": member_fit.packet(),
-                        "articulation_packets": member_articulation_packets,
-                        "mean_absolute_error": member_mae,
-                        "maximum_error": member_maximum_error,
-                        "reference_frames": len(member_reference),
-                        "reference_energy": sum(member_reference),
                     })
-            by_step = {}
+            grouped_candidates: dict[int, list[int]] = defaultdict(list)
             for member in member_candidates:
-                old = by_step.get(member["phase_step"])
-                if old is None or member["reference_energy"] > old[
-                        "reference_energy"]:
-                    by_step[member["phase_step"]] = member
+                grouped_candidates[member["phase_step"]].append(
+                    member["segment"]
+                )
+            by_step = {}
+            for phase_step, member_identifiers in sorted(
+                    grouped_candidates.items()):
+                group = [segments_by_identifier[item]
+                         for item in sorted(member_identifiers)]
+                member_reference = tuple(
+                    _segment_group_level(group, frame, probe_table)
+                    for frame in range(episode_start, reference_end + 1)
+                )
+                member_key_off = episode_end - episode_start
+                if not 0 <= member_key_off < len(member_reference):
+                    member_key_off = None
+                sustained = any(item.sustained_envelope for item in group)
+                member_fit = opl_envelope.fit_target_envelope(
+                    member_reference,
+                    key_off_frame=member_key_off,
+                    source_sustain_while_keyed=sustained,
+                    allow_alternate_sustain_mode=enable_target_shape_fit,
+                    counter_at_onset=(episode_start + 1) & 0xFF,
+                    peak_level=(1 if max(member_reference) == 0 else None),
+                    preserve_significant_directions=True,
+                )
+                member_rearticulation_frames = (
+                    opl_envelope.significant_rearticulation_frames(
+                        member_reference, member_key_off,
+                    )
+                )
+                if any(
+                        offset >= episode_end - episode_start
+                        for offset in member_rearticulation_frames):
+                    detuned_rejections[
+                        "member_rearticulation_after_episode"
+                    ] += 1
+                    continue
+                member_articulation_packets = []
+                member_predicted = member_fit.predicted_levels
+                member_absolute_error = member_fit.absolute_error
+                member_maximum_error = member_fit.maximum_error
+                if (member_rearticulation_frames and
+                        len(member_rearticulation_frames) <=
+                        MAX_REARTICULATIONS_PER_NOTE):
+                    boundaries = (
+                        0, *member_rearticulation_frames,
+                        len(member_reference),
+                    )
+                    pieces = []
+                    predicted_parts = []
+                    for piece_index, (begin, end) in enumerate(zip(
+                            boundaries, boundaries[1:])):
+                        piece_reference = member_reference[begin:end]
+                        piece_key_off = (
+                            member_key_off - begin
+                            if member_key_off is not None and
+                            begin <= member_key_off < end else None
+                        )
+                        piece = opl_envelope.fit_target_envelope(
+                            piece_reference,
+                            key_off_frame=piece_key_off,
+                            source_sustain_while_keyed=sustained,
+                            allow_alternate_sustain_mode=(
+                                enable_target_shape_fit
+                            ),
+                            counter_at_onset=(
+                                episode_start + begin + 1
+                            ) & 0xFF,
+                            peak_level=(
+                                1 if max(piece_reference) == 0 else None
+                            ),
+                            preserve_significant_directions=True,
+                        )
+                        pieces.append(piece)
+                        predicted_parts.extend(piece.predicted_levels)
+                        if piece_index:
+                            member_articulation_packets.append({
+                                "frame_offset": begin,
+                                "packet": piece.packet(),
+                            })
+                    member_fit = pieces[0]
+                    member_predicted = tuple(predicted_parts)
+                    member_absolute_error = sum(
+                        abs(expected - actual)
+                        for expected, actual in zip(
+                            member_reference, member_predicted,
+                        )
+                    )
+                    member_maximum_error = max(
+                        abs(expected - actual)
+                        for expected, actual in zip(
+                            member_reference, member_predicted,
+                        )
+                    )
+                member_directions = opl_envelope.envelope_directions(
+                    member_reference, member_predicted, member_key_off,
+                )
+                member_mae = member_absolute_error / len(member_reference)
+                member_unrepresented = (
+                    bool(member_rearticulation_frames) and
+                    (not member_articulation_packets or
+                     member_mae > MAX_DELIVERY_NOTE_MAE)
+                )
+                if (member_directions["mismatches"] or
+                        member_unrepresented or
+                        member_mae > MAX_DELIVERY_NOTE_MAE):
+                    if member_directions["mismatches"]:
+                        detuned_rejections["member_direction_mismatch"] += 1
+                    if member_unrepresented:
+                        detuned_rejections["member_rearticulation"] += 1
+                    if member_mae > MAX_DELIVERY_NOTE_MAE:
+                        detuned_rejections["member_fit_error"] += 1
+                    continue
+                representative = min(member_identifiers)
+                by_step[phase_step] = {
+                    "segment": representative,
+                    "source_segments": sorted(member_identifiers),
+                    "source_channels": sorted(
+                        item.bank * 9 + item.channel for item in group
+                    ),
+                    "phase_step": phase_step,
+                    "packet": member_fit.packet(),
+                    "articulation_packets": member_articulation_packets,
+                    "mean_absolute_error": member_mae,
+                    "maximum_error": member_maximum_error,
+                    "reference_frames": len(member_reference),
+                    "reference_energy": sum(member_reference),
+                }
             available_spare = min(
                 spare_by_frame[frame] - detuned_spare_used[frame]
                 for frame in note_selected_frames
@@ -638,6 +670,14 @@ def fit_selected_envelopes(
             unrepresentable_rearticulation_notes
         ),
         "delivery_note_mae_limit": MAX_DELIVERY_NOTE_MAE,
+        "target_shape_fit": {
+            "enabled": enable_target_shape_fit,
+            "policy": (
+                "evaluate both target sustain state machines against the "
+                "same oracle-derived 4-bit trace; prefer source EGT mode on "
+                "an exact error tie"
+            ),
+        },
         "rearticulation": {
             "enabled": enable_rearticulation,
             "threshold_levels": (
@@ -661,6 +701,11 @@ def fit_selected_envelopes(
             ),
             "member_envelope_fits": sum(
                 len(episode["members"]) for episode in detuned_episodes
+            ),
+            "source_members_merged": sum(
+                len(member.get("source_segments", [member["segment"]]))
+                for episode in detuned_episodes
+                for member in episode["members"]
             ),
             "member_sample_weighted_mean_absolute_error": (
                 sum(
@@ -691,6 +736,8 @@ def fit_selected_envelopes(
                 "replace one stable selected logical voice for its entire "
                 "contiguous episode with the strongest fixed-pitch member "
                 "layers whose source-derived target steps are distinct; "
+                "members quantizing to one phase step are summed and fitted "
+                "as one host-side composite envelope; "
                 "require persistent spare capacity and individually passing "
                 "envelope fits; reserve spare capacity in deterministic "
                 "first-selected-note order across overlapping episodes"
@@ -1122,6 +1169,11 @@ def compile_enhanced_score(
 
     score = dict(v1_score)
     reduction_features = "envelope+tremolo" if tremolo_enabled else "envelope"
+    target_shape_enabled = fit_report.get("target_shape_fit", {}).get(
+        "enabled", False,
+    )
+    if target_shape_enabled:
+        reduction_features += "+target-shape"
     if articulation_packets:
         reduction_features += "+rearticulation"
     if detuned_episodes:
@@ -1135,6 +1187,8 @@ def compile_enhanced_score(
         "fitted 4-bit envelopes, guarded shared tremolo"
         if tremolo_enabled else "fitted 4-bit envelopes"
     )
+    if target_shape_enabled:
+        arrangement_features += ", oracle-selected target envelope shape"
     if articulation_packets:
         arrangement_features += ", bounded same-pitch re-articulation"
     if detuned_episodes:

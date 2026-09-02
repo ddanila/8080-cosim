@@ -1073,11 +1073,7 @@
     "v2_music_clock_within_one_percent": true,
     "v2_sample_rate_above_fixture_floor": true
   },
-  "opl_reference_wav": {
-    "bytes": 5292078,
-    "path_hint": "doom1-03-imp-opl-30s.wav",
-    "sha256": "cacb205922811ff9293d0f6a30c156c7dbe99db1de47b8887476f5e6da5f6ee1"
-  },
+  "opl_reference_wav": null,
   "player": {
     "bytes": 4537,
     "end_address_exclusive": "0x12b9",
@@ -1182,7 +1178,7 @@
     "v2": {
       "bytes": 2865670,
       "sample_rate_hz": 48000,
-      "sha256": "94fd0d04b5d6efdce7f2337050011e1dea1aeae0a7148d2f10068328cd9b6ed0"
+      "sha256": "34b3f6d78b45cb8e50041f332e5e5ce14baddf929a9592c095515bfee425930a"
     }
   }
 }

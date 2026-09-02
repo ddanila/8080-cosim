@@ -41,11 +41,7 @@
     "target_wavs_differ": true
   },
   "measured_vibrato_lfo_hz": 6.028763316802978,
-  "opl_reference_wav": {
-    "bytes": 17025006,
-    "path_hint": "doomgate-97s-opl-reference.wav",
-    "sha256": "fb3d7ed3505794120597a9d06e74eead108e271b4b0d4c7c2c395e34f87fc881"
-  },
+  "opl_reference_wav": null,
   "player": {
     "bytes": 5255,
     "declared_state_bytes": 54,
@@ -177,13 +173,13 @@
       "bytes": 9288700,
       "path_hint": "doomgate-97s-envelope_control.wav",
       "sample_rate_hz": 48000,
-      "sha256": "c99212e737888c845f1299d2662f56229e2d42d4592add30a2255265d6155c4c"
+      "sha256": "05556595dfee6e6d66c249f9b9d3071ea3d585a5c997adab68cc4b956ced177d"
     },
     "vibrato": {
       "bytes": 9312986,
       "path_hint": "doomgate-97s-vibrato.wav",
       "sample_rate_hz": 48000,
-      "sha256": "15974e362da34fe4fcb5700b72e3e0b86fcd87fe4e998e1ad2a6185f298e63e4"
+      "sha256": "ebe1815abb4319df6c4d902d9fde5b81161dc17ef76e71dc76250b42de14ea44"
     }
   }
 }

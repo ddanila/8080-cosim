@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import dataclasses
 import sys
 from pathlib import Path
 
@@ -343,25 +344,54 @@ def check_probe_fit() -> None:
     )
     assert set(fits) == {0}
     assert report["selected_logical_notes"] == 1
+    assert report["target_shape_fit"]["enabled"] is False
     assert 1 <= fits[0].peak_level <= 15
+
+    # The two guarded host features must compose.  Marking the carrier as a
+    # direct AM path forces the joint envelope+tremolo fitter to run even
+    # though zero oracle AM attenuation correctly results in no emitted LFO.
+    am_probes = [
+        opl_oracle.OracleChannelProbe(
+            item.channel, dataclasses.replace(
+                item.probe, carrier_am=True,
+            ),
+        )
+        for item in probes
+    ]
+    _combined_fits, combined_report = opl_enhanced.fit_selected_envelopes(
+        [segment], [note], {
+            "schema": "jukupoly-opl-three-voice-allocation-v1",
+            "frames": [{"frame": 0, "selected": [{
+                "logical_note": 0, "logical_voice": 0, "midi_note": 42,
+            }]}],
+        }, am_probes, 6,
+        enable_tremolo=True, enable_target_shape_fit=True,
+    )
+    assert combined_report["target_shape_fit"]["enabled"] is True
+    assert combined_report["tremolo_analysis"]["enabled"] is True
 
     layered_segments = [
         opl_voices.NoteSegment(
             identifier, 0, identifier, 0, 3 * 882,
             f"layer{identifier}", 128, 8, True,
             (opl_voices.PitchPoint(
-                0, 0x200 + identifier, 4, 42.0 + identifier * 0.2,
+                0, 0x200 + identifier, 4,
+                42.0 if identifier == 4 else 42.0 + identifier * 0.2,
             ),),
         )
-        for identifier in range(4)
+        for identifier in range(5)
     ]
     layered_note = opl_voices.LogicalNote(
-        0, 0, 3 * 882, (0, 1), ("layer0", "layer1"),
-        ((0, 0), (0, 1)), 42.0, 42.0, 128, 8, True,
+        0, 0, 3 * 882, (0, 1, 4), ("layer0", "layer1", "layer4"),
+        ((0, 0), (0, 1), (0, 4)), 42.0, 42.0, 128, 8, True,
     )
     layered_probes = []
-    for channel in range(4):
-        for frame, attenuation in enumerate((32, 32, 32, 64, 128, 511)):
+    for channel in range(5):
+        attenuation_trace = (
+            (511, 511, 511, 511, 511, 511)
+            if channel == 4 else (32, 32, 32, 64, 128, 511)
+        )
+        for frame, attenuation in enumerate(attenuation_trace):
             layered_probes.append(opl_oracle.OracleChannelProbe(
                 channel,
                 opl_oracle.OracleProbe(
@@ -396,6 +426,13 @@ def check_probe_fit() -> None:
     assert [
         member["segment"] for member in detuned["episodes"][0]["members"]
     ] == [0, 1]
+    by_segment = {
+        member["segment"]: member
+        for member in detuned["episodes"][0]["members"]
+    }
+    assert by_segment[0]["source_segments"] == [0, 4]
+    assert by_segment[0]["source_channels"] == [0, 4]
+    assert detuned["source_members_merged"] == 3
     assert len({
         member["phase_step"]
         for member in detuned["episodes"][0]["members"]

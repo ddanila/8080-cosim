@@ -143,13 +143,13 @@
       "bytes": 9164858,
       "path_hint": "doomgate-97s-fixed_pitch.wav",
       "sample_rate_hz": 48000,
-      "sha256": "aa705ffb907faec076b1f618d22665fb627fc54a23d01196cd850b2888bf3c49"
+      "sha256": "3784bf06b8628a2b275427dfa2e5bd97d1009cf5cfe0e7442515ab7fba06ffbf"
     },
     "held_pitch": {
       "bytes": 9238400,
       "path_hint": "doomgate-97s-held_pitch.wav",
       "sample_rate_hz": 48000,
-      "sha256": "d71a0a38b98aec63c78d9db4d6539d5a9200daffd4742007205516bb99b67f3f"
+      "sha256": "198a6352d37b06972e608e473c2324051a3aedb92bbc6e8accfafec9343f5c2a"
     }
   }
 }

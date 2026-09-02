@@ -44,6 +44,109 @@ class OracleChannelProbe:
     probe: OracleProbe
 
 
+@dataclass(frozen=True)
+class IsolatedWrite:
+    """A rebased register write produced by :func:`isolate_note_writes`."""
+
+    sample: int
+    bank: int
+    register: int
+    value: int
+
+
+def _write_channel(write: opl_trace.TimedWrite) -> tuple[int, int] | None:
+    if 0xA0 <= write.register <= 0xA8:
+        return write.bank, write.register - 0xA0
+    if 0xB0 <= write.register <= 0xB8:
+        return write.bank, write.register - 0xB0
+    if 0xC0 <= write.register <= 0xC8:
+        return write.bank, write.register - 0xC0
+    decoded = opl_trace.operator_address(write.register)
+    return None if decoded is None else (write.bank, decoded[1])
+
+
+def isolate_note_writes(
+        writes: Iterable[opl_trace.TimedWrite],
+        spans: Iterable[tuple[int, int, int, int]],
+        window_start: int, window_end: int,
+) -> list[IsolatedWrite]:
+    """Extract exact OPL state for selected keyed spans.
+
+    ``spans`` contains ``(bank, channel, start, end)`` tuples in original VGM
+    sample time.  All operator, frequency, feedback/connection, waveform and
+    LFO-depth writes for those physical channels are retained.  B0 key bits
+    are admitted only while a selected span is active, and BD hardware-rhythm
+    trigger bits are cleared, so the resulting stream contains no unrelated
+    notes or percussion.
+
+    Writes before ``window_start`` are collapsed into a state-prime at sample
+    zero with keys off.  This makes late-song excerpts reproducible without
+    replaying the whole composition or restarting an envelope in mid-note.
+    Callers should therefore choose a window no later than the selected onset.
+    """
+    ordered = list(writes)
+    selected_spans = tuple(spans)
+    if window_start < 0 or window_end <= window_start:
+        raise ValueError("invalid isolated OPL window")
+    if any(
+            not (0 <= bank <= 1 and 0 <= channel < 9 and
+                 window_start <= start < end <= window_end)
+            for bank, channel, start, end in selected_spans):
+        raise ValueError("selected OPL span is outside the isolation window")
+    channels = {(bank, channel) for bank, channel, _start, _end
+                in selected_spans}
+    if not channels:
+        raise ValueError("no OPL spans selected")
+    by_channel: dict[tuple[int, int], list[tuple[int, int]]] = {}
+    for bank, channel, start, end in selected_spans:
+        by_channel.setdefault((bank, channel), []).append((start, end))
+
+    def relevant(write: opl_trace.TimedWrite) -> bool:
+        return (
+            (write.bank == 0 and write.register in (0x01, 0x08, 0xBD)) or
+            (write.bank == 1 and write.register in (0x04, 0x05)) or
+            _write_channel(write) in channels
+        )
+
+    def isolated_value(write: opl_trace.TimedWrite, *, prime: bool) -> int:
+        if write.bank == 0 and write.register == 0xBD:
+            # Preserve global AM/vibrato depth but never leak rhythm voices.
+            return write.value & 0xC0
+        target = _write_channel(write)
+        if target in channels and 0xB0 <= write.register <= 0xB8:
+            keyed = not prime and any(
+                start <= write.sample < end
+                for start, end in by_channel[target]
+            )
+            return (write.value | 0x20) if keyed and write.value & 0x20 \
+                else (write.value & ~0x20)
+        return write.value
+
+    previous_sample = -1
+    primed: dict[tuple[int, int], tuple[int, IsolatedWrite]] = {}
+    live: list[tuple[int, IsolatedWrite]] = []
+    for sequence, write in enumerate(ordered):
+        if write.sample < previous_sample:
+            raise ValueError("OPL writes are not in timestamp order")
+        previous_sample = write.sample
+        if not relevant(write) or write.sample >= window_end:
+            continue
+        if write.sample < window_start:
+            value = isolated_value(write, prime=True)
+            primed[(write.bank, write.register)] = (
+                sequence, IsolatedWrite(0, write.bank, write.register, value),
+            )
+        else:
+            value = isolated_value(write, prime=False)
+            live.append((sequence, IsolatedWrite(
+                write.sample - window_start, write.bank,
+                write.register, value,
+            )))
+    return [item for _sequence, item in sorted(primed.values())] + [
+        item for _sequence, item in live
+    ]
+
+
 def channel_write(write: opl_trace.TimedWrite, bank: int, channel: int) -> bool:
     """Whether a write affects the selected two-operator channel or globals."""
     if write.bank == 0 and write.register in (0x01, 0x08, 0xBD):

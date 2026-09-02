@@ -1,0 +1,3424 @@
+{
+  "archives": {
+    "doom1": {
+      "sha256": "04ffbf72e47727b3e93c1e99a68311a460b85fc31fd9a1645e3d872231c0e12a",
+      "tracks": 23
+    },
+    "doom2": {
+      "sha256": "3d255c644e52adc2967df8394086d99d7995da71c4adf83bec0fe3bccc51c365",
+      "tracks": 21
+    }
+  },
+  "player": {
+    "bytes": 4537,
+    "end_address_exclusive": "0x12b9",
+    "sample_loop_hash_exact": true,
+    "sample_loop_sha256": "ccadb651e327f99e9fe8b54282a2d70d14609ff02d2b9fb1724708d26e42993f"
+  },
+  "schema": "jukupoly-opl-target-shape-pack-scan-v1",
+  "scope": "first 30 seconds (or complete shorter source), envelope-only bounded re-articulation, target sustain-mode shape selection; candidate discovery, not delivery",
+  "summary": {
+    "all_tracks_pass": false,
+    "emitted_packets": 130,
+    "failed_gate_counts": {
+      "duration_within_one_percent": 34,
+      "music_clock_within_one_percent": 34
+    },
+    "tracks": 44,
+    "tracks_with_emitted_rearticulation": 2,
+    "unrepresentable_notes": 0
+  },
+  "target_shape_fit": {
+    "enabled": true,
+    "policy": "evaluate both existing target sustain state machines against the same oracle-derived 4-bit trace; retain the source OPL EGT mode on an exact fit tie",
+    "target_runtime_cost": "no new player code or per-sample work; selecting an existing automatic-release state can change data-dependent 50 Hz envelope-update work and must retain the ordinary timing gates",
+    "two_pack_comparison": {
+      "baseline_report": {
+        "path": "OPL-M7-PACK-SCAN.json",
+        "sha256": "3a62940217883fe05fda864ef26a488f9946be2b20025a9ff9412dc306a0c612"
+      },
+      "baseline_squared_error": {
+        "fraction_reduced": 0.058591619046145155,
+        "source_semantic": 258467,
+        "target_shape": 243323
+      },
+      "changed_baseline_modes": {
+        "automatic_release_to_sustain": 258,
+        "sustain_to_automatic_release": 644
+      },
+      "reference_frames": 441072,
+      "sample_weighted_mean_absolute_error": {
+        "fraction_reduced": 0.10397182833676423,
+        "source_semantic": 0.2169691116189647,
+        "target_shape": 0.19441043639133748
+      },
+      "source_semantic_absolute_error": 95699,
+      "target_shape_absolute_error": 85749,
+      "timing": {
+        "baseline_failed_gate_counts": {
+          "duration_within_one_percent": 35,
+          "music_clock_within_one_percent": 35
+        },
+        "best_sample_rate_fraction_change": 0.003242187568711863,
+        "mean_sample_rate_fraction_change": -0.00015898129556745432,
+        "target_shape_failed_gate_counts": {
+          "duration_within_one_percent": 34,
+          "music_clock_within_one_percent": 34
+        },
+        "worst_sample_rate_fraction_change": -0.0037016049997582456
+      },
+      "tracks": {
+        "equal_absolute_error": 4,
+        "improved_absolute_error": 39,
+        "increased_absolute_error": 1,
+        "largest_absolute_error_increase": 26
+      }
+    }
+  },
+  "tracks": [
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.20349251603706345,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2909,
+      "jps_sha256": "d77963bcec6ce14c13607b26a3caa7c952206f9437494191c1832c95cf07afb9",
+      "label": "doom1-01",
+      "local_track": 1,
+      "maximum_error": 15,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 7.045353,
+        "effective_sample_hz": 6982.191015,
+        "frame_cycles": {
+          "count": 344,
+          "max": 42049,
+          "mean": 34817.151,
+          "min": 33862,
+          "p99": 39969
+        },
+        "frame_samples": 143,
+        "frames": 344,
+        "idle_boundary_cycles": {
+          "count": 295,
+          "max": 2149,
+          "mean": 1081.932,
+          "min": 877,
+          "p99": 1889
+        },
+        "jps_bytes": 2909,
+        "keyboard_polls": 345,
+        "label": "doom1-01",
+        "music_frame_hz": 48.826511,
+        "mutated_player_bytes": 80,
+        "pit_writes": 2801,
+        "row_boundary_cycles": {
+          "count": 49,
+          "max": 7986,
+          "mean": 6129.51,
+          "min": 1566,
+          "p99": 7986
+        },
+        "sample_loop_cycles": {
+          "count": 48848,
+          "max": 269,
+          "mean": 230.889,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "3aaf9fa06be21c06154b35fb857044fe7b6d4ec0819b59ecd48342957699c946",
+      "selected_logical_notes": 53,
+      "single_packet_sample_weighted_mae": 0.20349251603706345,
+      "source_name": "01 Title Screen.vgz",
+      "source_seconds": 6.885124716553288,
+      "source_sha256": "faa33ba67248f0a5e4a62ba47f895fe38a0d83731b15275f6033df9062ed5035",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.45885286783042395,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 5978,
+      "jps_sha256": "9f38253324d5185a40721140429d50db55e8a98776b5ac014e5c19bc57b3197e",
+      "label": "doom1-02",
+      "local_track": 2,
+      "maximum_error": 14,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 7,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.731188,
+        "effective_sample_hz": 6979.8798,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43693,
+          "mean": 34828.68,
+          "min": 33723,
+          "p99": 40552
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1078,
+          "max": 2071,
+          "mean": 1111.567,
+          "min": 864,
+          "p99": 1616
+        },
+        "jps_bytes": 5978,
+        "keyboard_polls": 1501,
+        "label": "doom1-02",
+        "music_frame_hz": 48.810348,
+        "mutated_player_bytes": 80,
+        "pit_writes": 14772,
+        "row_boundary_cycles": {
+          "count": 422,
+          "max": 9699,
+          "mean": 3451.422,
+          "min": 1290,
+          "p99": 7240
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.174,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "39d3adb9df56f7b6bb4da002da08ff09c69e8f0c0f055a8911def64d9fe9fdd9",
+      "selected_logical_notes": 298,
+      "single_packet_sample_weighted_mae": 0.45885286783042395,
+      "source_name": "02 At Doom's Gate.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "87c6620af71c04a73dd51bec06f7e849fb54a827373de9a1bf33173d7344109a",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 2,
+      "articulated_sample_weighted_mae": 0.5524079320113314,
+      "emitted_rearticulation_packets": 6,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 1383,
+      "jps_sha256": "f05d3d915086c79dc9a799b70a99d11ea2ad2ad4dc5f4353879be8b59b263fb0",
+      "label": "doom1-03",
+      "local_track": 3,
+      "maximum_error": 7,
+      "notes_with_significant_rearticulation": 2,
+      "pack": "doom1",
+      "percussion_descriptors": 3,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 29.907447,
+        "effective_sample_hz": 7172.126714,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 38209,
+          "mean": 33895.107,
+          "min": 33574,
+          "p99": 36504
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1440,
+          "max": 1525,
+          "mean": 996.163,
+          "min": 827,
+          "p99": 1298
+        },
+        "jps_bytes": 1383,
+        "keyboard_polls": 1501,
+        "label": "doom1-03",
+        "music_frame_hz": 50.154732,
+        "mutated_player_bytes": 74,
+        "pit_writes": 4374,
+        "row_boundary_cycles": {
+          "count": 60,
+          "max": 4334,
+          "mean": 2556.35,
+          "min": 1240,
+          "p99": 4334
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 229.624,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "a13c690a3fb2aa197efd97e7b54dc94e8f2932dbe51fb6017e5257cb28717d99",
+      "selected_logical_notes": 16,
+      "single_packet_sample_weighted_mae": 1.4189093484419264,
+      "source_name": "03 The Imp's Song.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "1d3670f1bd3ccccf6ecd510926101ba6c24fc466c38d37277edfe57c538839cc",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.0713625628914673,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 3015,
+      "jps_sha256": "6eda67751c3f6e7f78e6e1d7c962453ee55e61a0fb99d37cd28ff11bb1e88a0f",
+      "label": "doom1-04",
+      "local_track": 4,
+      "maximum_error": 3,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 2,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.785754,
+        "effective_sample_hz": 6967.50852,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 41586,
+          "mean": 34890.521,
+          "min": 33710,
+          "p99": 38482
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1260,
+          "max": 1813,
+          "mean": 1066.79,
+          "min": 864,
+          "p99": 1596
+        },
+        "jps_bytes": 3015,
+        "keyboard_polls": 1501,
+        "label": "doom1-04",
+        "music_frame_hz": 48.723836,
+        "mutated_player_bytes": 80,
+        "pit_writes": 29059,
+        "row_boundary_cycles": {
+          "count": 240,
+          "max": 8416,
+          "mean": 3791.554,
+          "min": 3341,
+          "p99": 6617
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 233.487,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "1f869fa1b9f432d92a5619a2d481cd1d300ea46e7d4320dc8fd034cc779f2b10",
+      "selected_logical_notes": 253,
+      "single_packet_sample_weighted_mae": 0.0713625628914673,
+      "source_name": "04 Dark Halls.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "ef49e29081f002b140cd270a7add18753eb472dde1c3bb239da8bbe8f7cf2807",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.1149650959860384,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 4555,
+      "jps_sha256": "63bfff7bd7b56cdeaf341c0a23239a2a60d12d9cbf93ee4292e8f012913aa0f8",
+      "label": "doom1-05",
+      "local_track": 5,
+      "maximum_error": 5,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 7,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.684171,
+        "effective_sample_hz": 6990.575003,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43440,
+          "mean": 34775.394,
+          "min": 33780,
+          "p99": 42911
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1280,
+          "max": 3021,
+          "mean": 1086.61,
+          "min": 864,
+          "p99": 2071
+        },
+        "jps_bytes": 4555,
+        "keyboard_polls": 1501,
+        "label": "doom1-05",
+        "music_frame_hz": 48.88514,
+        "mutated_player_bytes": 80,
+        "pit_writes": 22665,
+        "row_boundary_cycles": {
+          "count": 220,
+          "max": 9617,
+          "mean": 4414.582,
+          "min": 1290,
+          "p99": 9335
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 232.17,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "672e5c5b7a6e0ace6090ed0d14611c97fe29882c2014b62d150d99bb7fc19901",
+      "selected_logical_notes": 246,
+      "single_packet_sample_weighted_mae": 0.1149650959860384,
+      "source_name": "05 Kitchen Ace (and Taking Names).vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "89c3c07a2305809b0ed0a448dfcaafa2361e89929b8b397a7fdbef5a6e507e93",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.13385826771653545,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 1541,
+      "jps_sha256": "61d37b7a5d6cdcc83d6638535111868b14435d7688670e4a5916da8772dcf896",
+      "label": "doom1-06",
+      "local_track": 6,
+      "maximum_error": 9,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 0,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.473925,
+        "effective_sample_hz": 7038.804554,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 38786,
+          "mean": 34537.115,
+          "min": 33574,
+          "p99": 36679
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1260,
+          "max": 2028,
+          "mean": 1129.566,
+          "min": 827,
+          "p99": 1767
+        },
+        "jps_bytes": 1541,
+        "keyboard_polls": 1501,
+        "label": "doom1-06",
+        "music_frame_hz": 49.222409,
+        "mutated_player_bytes": 74,
+        "pit_writes": 17286,
+        "row_boundary_cycles": {
+          "count": 240,
+          "max": 5836,
+          "mean": 2770.975,
+          "min": 1666,
+          "p99": 5765
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 231.783,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "80ea43a246dd6a3dbe8a0059899119c4d4e31d53c236ceb67ad852f0c8e76134",
+      "selected_logical_notes": 132,
+      "single_packet_sample_weighted_mae": 0.13385826771653545,
+      "source_name": "06 Suspense.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "50dce89e22c6cdd824b72a8a32e7d0db2f25a20f51a30f81c872e74c13abae61",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.37302083333333336,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 5567,
+      "jps_sha256": "b9b2dbdd32cccada9e6c339861a175edf9259cd0e55cdb0356b4a0f36a2c7191",
+      "label": "doom1-07",
+      "local_track": 7,
+      "maximum_error": 10,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 7,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.773588,
+        "effective_sample_hz": 6970.263021,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43464,
+          "mean": 34876.733,
+          "min": 33561,
+          "p99": 42571
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1259,
+          "max": 1978,
+          "mean": 1043.841,
+          "min": 814,
+          "p99": 1814
+        },
+        "jps_bytes": 5567,
+        "keyboard_polls": 1501,
+        "label": "doom1-07",
+        "music_frame_hz": 48.743098,
+        "mutated_player_bytes": 80,
+        "pit_writes": 30088,
+        "row_boundary_cycles": {
+          "count": 241,
+          "max": 9396,
+          "mean": 3842.548,
+          "min": 1227,
+          "p99": 9330
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 233.457,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "584e0635966f26483ddadaf6ec2d4602f3af0068171a7ba5fd7198d3db7b6088",
+      "selected_logical_notes": 215,
+      "single_packet_sample_weighted_mae": 0.37302083333333336,
+      "source_name": "07 On the Hunt.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "0e3cbdc00f8f7619dff716f44361f4172428eebe7ab1d96b8003cf57ca881413",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.3477455219271155,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 3226,
+      "jps_sha256": "ce7d34663338f10424c7af67b65fdcdb47081cc58bdc5132d5cfb78040e0d6d0",
+      "label": "doom1-08",
+      "local_track": 8,
+      "maximum_error": 13,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 5,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.308333,
+        "effective_sample_hz": 7077.261571,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 38764,
+          "mean": 34349.444,
+          "min": 33694,
+          "p99": 38373
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1374,
+          "max": 2265,
+          "mean": 1105.941,
+          "min": 864,
+          "p99": 1732
+        },
+        "jps_bytes": 3226,
+        "keyboard_polls": 1501,
+        "label": "doom1-08",
+        "music_frame_hz": 49.49134,
+        "mutated_player_bytes": 80,
+        "pit_writes": 15130,
+        "row_boundary_cycles": {
+          "count": 126,
+          "max": 5982,
+          "mean": 3206.397,
+          "min": 1290,
+          "p99": 5950
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 231.238,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "fe62b67528353620a739d54c996cf57137c8db7a90a886626705086668a88272",
+      "selected_logical_notes": 91,
+      "single_packet_sample_weighted_mae": 0.3477455219271155,
+      "source_name": "08 Demons on the Prey.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "aab361692ea7ffc27d2292cba974b95bfe218cf3ee52b38fbff52e8a39f996ea",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.14260679079956187,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 1987,
+      "jps_sha256": "8a0eb8760beeb3df0cc31ccefb981b7e40e117d3b7b14c9ddc88eb7f1af3bbaa",
+      "label": "doom1-09",
+      "local_track": 9,
+      "maximum_error": 6,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.258851,
+        "effective_sample_hz": 7088.834892,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 41872,
+          "mean": 34293.365,
+          "min": 33561,
+          "p99": 36186
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1467,
+          "max": 3085,
+          "mean": 933.888,
+          "min": 814,
+          "p99": 1319
+        },
+        "jps_bytes": 1987,
+        "keyboard_polls": 1501,
+        "label": "doom1-09",
+        "music_frame_hz": 49.572272,
+        "mutated_player_bytes": 80,
+        "pit_writes": 24809,
+        "row_boundary_cycles": {
+          "count": 33,
+          "max": 8193,
+          "mean": 2858.909,
+          "min": 1240,
+          "p99": 8193
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 232.991,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "2531e65445221930bff4f00cb764769ad08e1bb6420860529971e04786cffd35",
+      "selected_logical_notes": 23,
+      "single_packet_sample_weighted_mae": 0.14260679079956187,
+      "source_name": "09 Sign of Evil.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "371ee5a8bbf27c062ddf920e706cac227fe063c2da8ac32f73568988457bbd6b",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.18538688450192875,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 5943,
+      "jps_sha256": "54398987f31e5523c6e2db38f9e8181a58cf9521d8f120b5d88eb6ccbf61bb1a",
+      "label": "doom1-10",
+      "local_track": 10,
+      "maximum_error": 6,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 9,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.903969,
+        "effective_sample_hz": 6940.855951,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43432,
+          "mean": 35024.499,
+          "min": 33780,
+          "p99": 42582
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1297,
+          "max": 2324,
+          "mean": 1094.663,
+          "min": 864,
+          "p99": 1864
+        },
+        "jps_bytes": 5943,
+        "keyboard_polls": 1501,
+        "label": "doom1-10",
+        "music_frame_hz": 48.537454,
+        "mutated_player_bytes": 80,
+        "pit_writes": 25437,
+        "row_boundary_cycles": {
+          "count": 203,
+          "max": 9325,
+          "mean": 5739.296,
+          "min": 1277,
+          "p99": 9220
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 232.882,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "96be45047f7ff96dc5c068072b6d16ce6225c41be2195d468d9b6f59dd0738cb",
+      "selected_logical_notes": 349,
+      "single_packet_sample_weighted_mae": 0.18538688450192875,
+      "source_name": "10 Hiding the Secrets.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "47069f9c73e65f40e3f53961918ae909ff5d01f081068c9783f84f1a3ac9e366",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.08771551724137931,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 6574,
+      "jps_sha256": "2ec5d737060e1199f70f575343d00e183468b3b6b8d01aa3ce639085ee373973",
+      "label": "doom1-11",
+      "local_track": 11,
+      "maximum_error": 7,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 9,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.739658,
+        "effective_sample_hz": 6977.956699,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 42622,
+          "mean": 34838.279,
+          "min": 33767,
+          "p99": 40875
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1141,
+          "max": 2301,
+          "mean": 1194.397,
+          "min": 864,
+          "p99": 1807
+        },
+        "jps_bytes": 6574,
+        "keyboard_polls": 1501,
+        "label": "doom1-11",
+        "music_frame_hz": 48.7969,
+        "mutated_player_bytes": 80,
+        "pit_writes": 17264,
+        "row_boundary_cycles": {
+          "count": 359,
+          "max": 9295,
+          "mean": 3488.298,
+          "min": 1428,
+          "p99": 8817
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.439,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "6fb53d33e23ef98e725e8fb598c40dc041c056f399ba8b539ac7a9ebe8970947",
+      "selected_logical_notes": 249,
+      "single_packet_sample_weighted_mae": 0.08771551724137931,
+      "source_name": "11 I Sawed the Demons.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "a263a575c5cffa027e3d82f3df7739aeb3c0bc2cf518c80f040861eee4d76bc0",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.09371573175875159,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 4706,
+      "jps_sha256": "f6508b42807a0ec6062cc49c651c6892a281bda4216b255775d21305f2155244",
+      "label": "doom1-12",
+      "local_track": 12,
+      "maximum_error": 13,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.715475,
+        "effective_sample_hz": 6983.450458,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 44258,
+          "mean": 34810.872,
+          "min": 33677,
+          "p99": 42688
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1162,
+          "max": 2574,
+          "mean": 1118.082,
+          "min": 877,
+          "p99": 2265
+        },
+        "jps_bytes": 4706,
+        "keyboard_polls": 1501,
+        "label": "doom1-12",
+        "music_frame_hz": 48.835318,
+        "mutated_player_bytes": 80,
+        "pit_writes": 11498,
+        "row_boundary_cycles": {
+          "count": 338,
+          "max": 9532,
+          "mean": 3781.34,
+          "min": 1566,
+          "p99": 9386
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.422,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "288c1a9d109d22cb35fdb5ec2bf04ca423059046f37cfb6f09653eda0c7c4644",
+      "selected_logical_notes": 243,
+      "single_packet_sample_weighted_mae": 0.09371573175875159,
+      "source_name": "12 The Demons from Adrian's Pen.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "5883ddd0b0ea3f22eb98a5dd83339a5b96fe20b0e82ed811db49e922fc818376",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.01815598358067572,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 974,
+      "jps_sha256": "9643eb9dbf727e695bacb67d46427452d673362acba26063665777531879dedc",
+      "label": "doom1-13",
+      "local_track": 13,
+      "maximum_error": 1,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 1,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.235015,
+        "effective_sample_hz": 7094.423538,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 38684,
+          "mean": 34266.35,
+          "min": 33574,
+          "p99": 38531
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1405,
+          "max": 2278,
+          "mean": 1100.376,
+          "min": 827,
+          "p99": 1732
+        },
+        "jps_bytes": 974,
+        "keyboard_polls": 1501,
+        "label": "doom1-13",
+        "music_frame_hz": 49.611353,
+        "mutated_player_bytes": 74,
+        "pit_writes": 12204,
+        "row_boundary_cycles": {
+          "count": 95,
+          "max": 5818,
+          "mean": 3391.358,
+          "min": 1524,
+          "p99": 5818
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 230.918,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "e8bf928ea22b652e199a39196e73a5c6af27946765faf79f5342ad65a316e66e",
+      "selected_logical_notes": 81,
+      "single_packet_sample_weighted_mae": 0.01815598358067572,
+      "source_name": "13 They're Going to Get You.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "a1e627bf5860a558859620c7149a3f8259dae53f60cb938ce1b20fca5d23dd45",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.16993143976493633,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 3089,
+      "jps_sha256": "2d361fc254f8ad2d8c9caebba2ead9838aaece1dac9811e0d240bd6ed46978f7",
+      "label": "doom1-14",
+      "local_track": 14,
+      "maximum_error": 6,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.395326,
+        "effective_sample_hz": 7057.005958,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 41518,
+          "mean": 34448.037,
+          "min": 33690,
+          "p99": 39509
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1398,
+          "max": 2278,
+          "mean": 1165.778,
+          "min": 877,
+          "p99": 1732
+        },
+        "jps_bytes": 3089,
+        "keyboard_polls": 1501,
+        "label": "doom1-14",
+        "music_frame_hz": 49.349692,
+        "mutated_player_bytes": 80,
+        "pit_writes": 13526,
+        "row_boundary_cycles": {
+          "count": 102,
+          "max": 8382,
+          "mean": 4540.863,
+          "min": 1496,
+          "p99": 7013
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.142,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "6320d0e59b6acfbc4b2dc559d2c2d9698883033dab99dbfee29a74ee81bf24f3",
+      "selected_logical_notes": 127,
+      "single_packet_sample_weighted_mae": 0.16993143976493633,
+      "source_name": "14 Sinister.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "cc1d740dffbff7fc590557474b58c94aba73a00dc25278aaf8a0173e81da6074",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.04458068422646079,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 3735,
+      "jps_sha256": "9b706fe7fe97f8d4a75d65ac20f4c584f373a947767119e35d8ca230a799f0fa",
+      "label": "doom1-15",
+      "local_track": 15,
+      "maximum_error": 4,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 2,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.800468,
+        "effective_sample_hz": 6964.179975,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 44320,
+          "mean": 34907.197,
+          "min": 33574,
+          "p99": 40073
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1069,
+          "max": 2467,
+          "mean": 1197.468,
+          "min": 827,
+          "p99": 2173
+        },
+        "jps_bytes": 3735,
+        "keyboard_polls": 1501,
+        "label": "doom1-15",
+        "music_frame_hz": 48.700559,
+        "mutated_player_bytes": 80,
+        "pit_writes": 19131,
+        "row_boundary_cycles": {
+          "count": 431,
+          "max": 9782,
+          "mean": 3026.48,
+          "min": 1428,
+          "p99": 7495
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 232.059,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "a8482680dc0077d65905630c02e1a7954f0c2e611600b7ab0b42a4b8e176f179",
+      "selected_logical_notes": 250,
+      "single_packet_sample_weighted_mae": 0.04458068422646079,
+      "source_name": "15 Waltz of the Demons.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "ca6dcdac2da02a5dc8058cd8ff72a5bc35dc7916616154f4aad76d65bbd79fe2",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 42,
+      "articulated_sample_weighted_mae": 0.5731841123546193,
+      "emitted_rearticulation_packets": 124,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 1387,
+      "jps_sha256": "82c647388c1be8276104741d2aee1ba9ffa3fdd1e66fd97052f197744c1df9f3",
+      "label": "doom1-16",
+      "local_track": 16,
+      "maximum_error": 8,
+      "notes_with_significant_rearticulation": 42,
+      "pack": "doom1",
+      "percussion_descriptors": 0,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.817066,
+        "effective_sample_hz": 6960.428898,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 42501,
+          "mean": 34926.009,
+          "min": 33574,
+          "p99": 41155
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1403,
+          "max": 3085,
+          "mean": 1252.009,
+          "min": 827,
+          "p99": 2452
+        },
+        "jps_bytes": 1387,
+        "keyboard_polls": 1501,
+        "label": "doom1-16",
+        "music_frame_hz": 48.674328,
+        "mutated_player_bytes": 80,
+        "pit_writes": 26695,
+        "row_boundary_cycles": {
+          "count": 97,
+          "max": 9541,
+          "mean": 6208.062,
+          "min": 3870,
+          "p99": 9541
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 233.248,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "a55f8d434050c315ec859e05101a09e9f5aadc185e58c593cfd33f717eca0b17",
+      "selected_logical_notes": 83,
+      "single_packet_sample_weighted_mae": 0.9718016238753566,
+      "source_name": "16 Nobody Told Me About id.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "b551e878eb1a14d2d3953d534a2f987cc097140ec1ee9512ae1ec727ba64c198",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.2186651862817666,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 7027,
+      "jps_sha256": "7912077a152fbc4e17034de63432995234778eca2f93b14bd729e5f7eb5ad9c6",
+      "label": "doom1-17",
+      "local_track": 17,
+      "maximum_error": 9,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 6,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.254523,
+        "effective_sample_hz": 6863.006689,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43967,
+          "mean": 35421.793,
+          "min": 33780,
+          "p99": 43145
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 924,
+          "max": 2155,
+          "mean": 1155.961,
+          "min": 864,
+          "p99": 1817
+        },
+        "jps_bytes": 7027,
+        "keyboard_polls": 1501,
+        "label": "doom1-17",
+        "music_frame_hz": 47.993054,
+        "mutated_player_bytes": 80,
+        "pit_writes": 20335,
+        "row_boundary_cycles": {
+          "count": 576,
+          "max": 9425,
+          "mean": 3997.873,
+          "min": 1277,
+          "p99": 9308
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.996,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "2129181e472497a093b6e90c1726d1334e402997c61fffc49abfcc645ff9b423",
+      "selected_logical_notes": 502,
+      "single_packet_sample_weighted_mae": 0.2186651862817666,
+      "source_name": "17 Untitled.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "73cdc2fb25126e3edc4aea969a357312198eea1445e612fd7f1b8b837f355690",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.15441838142660028,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 6426,
+      "jps_sha256": "6d8543f11c0dc6ddaa42856ecfaddd4d02352a6c96a7bba8b946135260908657",
+      "label": "doom1-18",
+      "local_track": 18,
+      "maximum_error": 12,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 8,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.964528,
+        "effective_sample_hz": 6927.281515,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43986,
+          "mean": 35093.131,
+          "min": 33780,
+          "p99": 41152
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1123,
+          "max": 2452,
+          "mean": 1192.57,
+          "min": 864,
+          "p99": 2027
+        },
+        "jps_bytes": 6426,
+        "keyboard_polls": 1501,
+        "label": "doom1-18",
+        "music_frame_hz": 48.442528,
+        "mutated_player_bytes": 80,
+        "pit_writes": 17739,
+        "row_boundary_cycles": {
+          "count": 377,
+          "max": 9340,
+          "mean": 4290.838,
+          "min": 1277,
+          "p99": 8898
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.627,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "262f753278b60817a4b489b250d09dd3ccd56b89b7cdece6b24a726743d60624",
+      "selected_logical_notes": 370,
+      "single_packet_sample_weighted_mae": 0.15441838142660028,
+      "source_name": "18 Donna to the Rescue.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "8f1fe5529b8b8e379cf3aa96a992c83c84110f132f001eabce28bda414737d96",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.3144698577379549,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 6607,
+      "jps_sha256": "13ff2c2f8755c31dc13992038bb1c08f4f53728613d140651b25beead9eeeb33",
+      "label": "doom1-19",
+      "local_track": 19,
+      "maximum_error": 12,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.122054,
+        "effective_sample_hz": 6892.218592,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43037,
+          "mean": 35271.661,
+          "min": 33780,
+          "p99": 40988
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 976,
+          "max": 2475,
+          "mean": 1127.278,
+          "min": 864,
+          "p99": 2349
+        },
+        "jps_bytes": 6607,
+        "keyboard_polls": 1501,
+        "label": "doom1-19",
+        "music_frame_hz": 48.197333,
+        "mutated_player_bytes": 80,
+        "pit_writes": 17325,
+        "row_boundary_cycles": {
+          "count": 524,
+          "max": 9544,
+          "mean": 4105.006,
+          "min": 1290,
+          "p99": 8832
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.513,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "5eb71d2827016f9b42d32f1347f47f0b10c411d790458b5e995874d277eb52e5",
+      "selected_logical_notes": 480,
+      "single_packet_sample_weighted_mae": 0.3144698577379549,
+      "source_name": "19 Deep into the Code.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "8ce1af61dd12102072191b374ef428c0a734b7c97669e03d4debcade9c937bbb",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.13064966121960941,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 7084,
+      "jps_sha256": "88492b5a8144d86a460fd02a066d16cfbdc3fef40fdf0a6de2deb5648f3b0dea",
+      "label": "doom1-20",
+      "local_track": 20,
+      "maximum_error": 7,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 8,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.137991,
+        "effective_sample_hz": 6888.691014,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43391,
+          "mean": 35289.723,
+          "min": 33767,
+          "p99": 42637
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1138,
+          "max": 3085,
+          "mean": 1161.534,
+          "min": 864,
+          "p99": 2747
+        },
+        "jps_bytes": 7084,
+        "keyboard_polls": 1501,
+        "label": "doom1-20",
+        "music_frame_hz": 48.172664,
+        "mutated_player_bytes": 80,
+        "pit_writes": 19767,
+        "row_boundary_cycles": {
+          "count": 362,
+          "max": 9779,
+          "mean": 5194.436,
+          "min": 1290,
+          "p99": 9373
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.862,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "49cdb458c04ab9c153d0190dcc9cb875003a5dfe0a4a77ccf800e2a89d031664",
+      "selected_logical_notes": 465,
+      "single_packet_sample_weighted_mae": 0.13064966121960941,
+      "source_name": "20 Facing the Spider.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "4ed2c5151b49f73ff42a7567fc220d296a3b0fe6156f6ced8ae1027e28749fb4",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.3542388331814038,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 7451,
+      "jps_sha256": "6a927cf32e06936b6a2a2fe514cf43505521419b9c907e0855face462b6b45f8",
+      "label": "doom1-21",
+      "local_track": 21,
+      "maximum_error": 11,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 9,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.040935,
+        "effective_sample_hz": 6910.230057,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43464,
+          "mean": 35179.726,
+          "min": 33850,
+          "p99": 42417
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1123,
+          "max": 2203,
+          "mean": 1123.228,
+          "min": 864,
+          "p99": 1820
+        },
+        "jps_bytes": 7451,
+        "keyboard_polls": 1501,
+        "label": "doom1-21",
+        "music_frame_hz": 48.323287,
+        "mutated_player_bytes": 80,
+        "pit_writes": 18026,
+        "row_boundary_cycles": {
+          "count": 377,
+          "max": 9450,
+          "mean": 4832.167,
+          "min": 1277,
+          "p99": 9302
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.648,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "a9b2349b2102b65ed7ee403bf8166c9ff74d4b4b60b02f2b876f42da2669a074",
+      "selected_logical_notes": 452,
+      "single_packet_sample_weighted_mae": 0.3542388331814038,
+      "source_name": "21 Intermission from Doom.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "985619acc8e69560f8155d8fe623f393c8b46682c5328094c57ea428e97fa378",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.08935529578462628,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 1106,
+      "jps_sha256": "b322daab88a5c5961396ce5e26356192bcde9faa1fa55384bf6bedae3c73e127",
+      "label": "doom1-22",
+      "local_track": 22,
+      "maximum_error": 3,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 0,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.217802,
+        "effective_sample_hz": 7098.464729,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 40674,
+          "mean": 34246.842,
+          "min": 33574,
+          "p99": 38425
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1384,
+          "max": 2175,
+          "mean": 973.389,
+          "min": 827,
+          "p99": 1875
+        },
+        "jps_bytes": 1106,
+        "keyboard_polls": 1501,
+        "label": "doom1-22",
+        "music_frame_hz": 49.639613,
+        "mutated_player_bytes": 80,
+        "pit_writes": 13490,
+        "row_boundary_cycles": {
+          "count": 116,
+          "max": 7465,
+          "mean": 3874.44,
+          "min": 1524,
+          "p99": 7432
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.122,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "08a368b26f89c3d9c8daa7728ce9a48a6d064aad7a580933814803e8b22f0912",
+      "selected_logical_notes": 103,
+      "single_packet_sample_weighted_mae": 0.08935529578462628,
+      "source_name": "22 The End of Doom.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "15d945a39b1ab738d8e31ad69bf52c4e780d2574168bf6f05885cfa8e6d3fa23",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.12884124553343543,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 5119,
+      "jps_sha256": "a360c848b55c3eb846337de3fd1e893a133c60fdd88c62984c957f0c937db60c",
+      "label": "doom1-23",
+      "local_track": 23,
+      "maximum_error": 4,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom1",
+      "percussion_descriptors": 9,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.911524,
+        "effective_sample_hz": 6939.159754,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 44324,
+          "mean": 35033.06,
+          "min": 33780,
+          "p99": 41970
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1299,
+          "max": 2313,
+          "mean": 1129.634,
+          "min": 877,
+          "p99": 1790
+        },
+        "jps_bytes": 5119,
+        "keyboard_polls": 1501,
+        "label": "doom1-23",
+        "music_frame_hz": 48.525593,
+        "mutated_player_bytes": 80,
+        "pit_writes": 35001,
+        "row_boundary_cycles": {
+          "count": 201,
+          "max": 9567,
+          "mean": 3949.338,
+          "min": 1393,
+          "p99": 9221
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 234.444,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "2c462af51af39b063de4380323d627742375b0dfd13d47c2881e38b7edeb43f0",
+      "selected_logical_notes": 157,
+      "single_packet_sample_weighted_mae": 0.12884124553343543,
+      "source_name": "23 Sweet Little Dead Bunny.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "657c591431d16e06cb4da1a9d5f9775bb0a7f7cb785615e1b1daecc382ed1e89",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.41926477431363424,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 4944,
+      "jps_sha256": "c9c650b3d1013ba344e0e58b843b069ac94493e12b96eb6c32b1ce0ec7d3e84c",
+      "label": "doom2-01",
+      "local_track": 1,
+      "maximum_error": 7,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 9,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 12.058576,
+        "effective_sample_hz": 6747.645891,
+        "frame_cycles": {
+          "count": 569,
+          "max": 42646,
+          "mean": 36027.38,
+          "min": 33561,
+          "p99": 42110
+        },
+        "frame_samples": 143,
+        "frames": 569,
+        "idle_boundary_cycles": {
+          "count": 488,
+          "max": 1925,
+          "mean": 1048.559,
+          "min": 814,
+          "p99": 1796
+        },
+        "jps_bytes": 4944,
+        "keyboard_polls": 570,
+        "label": "doom2-01",
+        "music_frame_hz": 47.186335,
+        "mutated_player_bytes": 80,
+        "pit_writes": 31558,
+        "row_boundary_cycles": {
+          "count": 81,
+          "max": 8869,
+          "mean": 3322.654,
+          "min": 1380,
+          "p99": 8869
+        },
+        "sample_loop_cycles": {
+          "count": 80798,
+          "max": 276,
+          "mean": 242.352,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "ed6227d02582796150f181924f3a15817a9f566a353220fd7a3f7c96db5fdd80",
+      "selected_logical_notes": 53,
+      "single_packet_sample_weighted_mae": 0.41926477431363424,
+      "source_name": "01 Title Music.vgz",
+      "source_seconds": 11.370476190476191,
+      "source_sha256": "4abae391fcfb42ff66118b210230212b9f79700896b5a846d3d6a3ad4babf489",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.20924820398664373,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 6596,
+      "jps_sha256": "dfb19a8846fbd1e6146e4bc39139c916c7da4b844a2d41b1914289521cfd8bd1",
+      "label": "doom2-02",
+      "local_track": 2,
+      "maximum_error": 13,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 10,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.929963,
+        "effective_sample_hz": 6935.022858,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43812,
+          "mean": 35053.958,
+          "min": 33657,
+          "p99": 42276
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1094,
+          "max": 2278,
+          "mean": 1163.541,
+          "min": 864,
+          "p99": 1732
+        },
+        "jps_bytes": 6596,
+        "keyboard_polls": 1501,
+        "label": "doom2-02",
+        "music_frame_hz": 48.496663,
+        "mutated_player_bytes": 80,
+        "pit_writes": 28076,
+        "row_boundary_cycles": {
+          "count": 406,
+          "max": 9852,
+          "mean": 3259.015,
+          "min": 1393,
+          "p99": 9790
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 233.029,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "c7d446bcda1411c27228a3ed23a8ecf13214d295fa8b8e16a02043d5241a03c6",
+      "selected_logical_notes": 210,
+      "single_packet_sample_weighted_mae": 0.20924820398664373,
+      "source_name": "02 Running From Evil.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "62fec3ea84c87405e092472b3989c7e6b35b00d4be5958b0c73d08f0139d1c5a",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.3089171974522293,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 6180,
+      "jps_sha256": "da69ce219697c88c046a4477ffffde16866710edbb992714a50d341bbb9e59e8",
+      "label": "doom2-03",
+      "local_track": 3,
+      "maximum_error": 6,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 8,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.020668,
+        "effective_sample_hz": 6914.74479,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 44199,
+          "mean": 35156.757,
+          "min": 33697,
+          "p99": 43110
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1279,
+          "max": 2278,
+          "mean": 1185.745,
+          "min": 864,
+          "p99": 1790
+        },
+        "jps_bytes": 6180,
+        "keyboard_polls": 1501,
+        "label": "doom2-03",
+        "music_frame_hz": 48.354859,
+        "mutated_player_bytes": 80,
+        "pit_writes": 27390,
+        "row_boundary_cycles": {
+          "count": 221,
+          "max": 9785,
+          "mean": 5517.851,
+          "min": 1277,
+          "p99": 9531
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 233.103,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "a1163c13ac8564e0ca28870b21387915e46c9b3e645c8337e9684aa9128168b4",
+      "selected_logical_notes": 305,
+      "single_packet_sample_weighted_mae": 0.3089171974522293,
+      "source_name": "03 Intermission Music.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "f4447a522409efc5beaea3f44ae173418f2137c168be06e672ff6191234a5d10",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.06420878210439106,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2629,
+      "jps_sha256": "bdcd54772a81b5c22dba476b095626eb836c5fa6f5dfe2fb913edd5e4fda7fd4",
+      "label": "doom2-04",
+      "local_track": 4,
+      "maximum_error": 3,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.098676,
+        "effective_sample_hz": 7126.559349,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43154,
+          "mean": 34111.833,
+          "min": 33574,
+          "p99": 36959
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1296,
+          "max": 2301,
+          "mean": 1035.351,
+          "min": 814,
+          "p99": 1438
+        },
+        "jps_bytes": 2629,
+        "keyboard_polls": 1501,
+        "label": "doom2-04",
+        "music_frame_hz": 49.836079,
+        "mutated_player_bytes": 80,
+        "pit_writes": 10846,
+        "row_boundary_cycles": {
+          "count": 204,
+          "max": 9346,
+          "mean": 1953.069,
+          "min": 1240,
+          "p99": 8558
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 230.439,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "fd4944c24370d7c13c272ef0f9cb857221c5d377ad5e12a12fb099f55ecf4377",
+      "selected_logical_notes": 38,
+      "single_packet_sample_weighted_mae": 0.06420878210439106,
+      "source_name": "04 The Healer Stalks.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "fdfd0468c2e14367304cb3af0332e08bffd1b3cbd2b70192046de03b8344f045",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.12941176470588237,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2906,
+      "jps_sha256": "f3685e448627e549b459d1d74e0d1ec13e0d6c8a4a1cfb4f311a94f08dae4f54",
+      "label": "doom2-05",
+      "local_track": 5,
+      "maximum_error": 5,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 1,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.880129,
+        "effective_sample_hz": 6946.214413,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 42963,
+          "mean": 34997.48,
+          "min": 33574,
+          "p99": 41889
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1215,
+          "max": 2278,
+          "mean": 1100.423,
+          "min": 827,
+          "p99": 1773
+        },
+        "jps_bytes": 2906,
+        "keyboard_polls": 1501,
+        "label": "doom2-05",
+        "music_frame_hz": 48.574926,
+        "mutated_player_bytes": 80,
+        "pit_writes": 21955,
+        "row_boundary_cycles": {
+          "count": 285,
+          "max": 9418,
+          "mean": 4607.926,
+          "min": 1563,
+          "p99": 8637
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 232.397,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "9bd2109a3169395b08db1bc14e9a6a0e23ccf470c7a371dfa7057daea9bcc8e6",
+      "selected_logical_notes": 249,
+      "single_packet_sample_weighted_mae": 0.12941176470588237,
+      "source_name": "05 Countdown to Death.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "28716de289ffc0d8ad53802c4a3955918bb5df8029db4edca361906848982955",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.16045845272206305,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 4395,
+      "jps_sha256": "f9d004a985c20b63386625e4330528cecac554a86e0a011410499c428e9ae25b",
+      "label": "doom2-06",
+      "local_track": 6,
+      "maximum_error": 5,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 5,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.520309,
+        "effective_sample_hz": 7028.106993,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 40774,
+          "mean": 34589.684,
+          "min": 33561,
+          "p99": 38235
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1068,
+          "max": 1754,
+          "mean": 1058.9,
+          "min": 814,
+          "p99": 1525
+        },
+        "jps_bytes": 4395,
+        "keyboard_polls": 1501,
+        "label": "doom2-06",
+        "music_frame_hz": 49.147601,
+        "mutated_player_bytes": 74,
+        "pit_writes": 19800,
+        "row_boundary_cycles": {
+          "count": 432,
+          "max": 6801,
+          "mean": 2529.009,
+          "min": 1240,
+          "p99": 4388
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 231.533,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "0f8252a97be435e1e1b008fe839c02c78fd93689e592621549ee61cc873fe504",
+      "selected_logical_notes": 157,
+      "single_packet_sample_weighted_mae": 0.16045845272206305,
+      "source_name": "06 Between Levels.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "d0928e835cd4224742e4865ebb470f1e6314a8ff97afac096b1d1652ea1feeb7",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.5195488721804511,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2538,
+      "jps_sha256": "81506a6366f26d718a1ec73f8ca9202eebfa219a499a6849c037e00f58389c77",
+      "label": "doom2-07",
+      "local_track": 7,
+      "maximum_error": 7,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 5,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 29.895092,
+        "effective_sample_hz": 7175.090871,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 39417,
+          "mean": 33881.104,
+          "min": 33574,
+          "p99": 36277
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1478,
+          "max": 1438,
+          "mean": 1040.419,
+          "min": 814,
+          "p99": 1276
+        },
+        "jps_bytes": 2538,
+        "keyboard_polls": 1501,
+        "label": "doom2-07",
+        "music_frame_hz": 50.175461,
+        "mutated_player_bytes": 74,
+        "pit_writes": 2627,
+        "row_boundary_cycles": {
+          "count": 22,
+          "max": 6514,
+          "mean": 3903.955,
+          "min": 1240,
+          "p99": 6514
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 262,
+          "mean": 229.361,
+          "min": 229,
+          "p99": 255
+        }
+      },
+      "score_sha256": "23723e24005daed0e5308746e0692e20bb6a869557ee00f302322123ef5b648b",
+      "selected_logical_notes": 19,
+      "single_packet_sample_weighted_mae": 0.5195488721804511,
+      "source_name": "07 DOOM.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "7a58b54a6d5116ef4db5d5b49c5a1945a8f7566c538eb6c3042135e8ad1c9975",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.2083644510828977,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2679,
+      "jps_sha256": "4e1f43b0431b47049ccd33e9cb9ad48fd907e608c088468f41340df9fb8ff273",
+      "label": "doom2-08",
+      "local_track": 8,
+      "maximum_error": 6,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 6,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.207834,
+        "effective_sample_hz": 7100.80714,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 40967,
+          "mean": 34235.545,
+          "min": 33574,
+          "p99": 39961
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1370,
+          "max": 2452,
+          "mean": 1114.724,
+          "min": 827,
+          "p99": 2175
+        },
+        "jps_bytes": 2679,
+        "keyboard_polls": 1501,
+        "label": "doom2-08",
+        "music_frame_hz": 49.655994,
+        "mutated_player_bytes": 80,
+        "pit_writes": 8874,
+        "row_boundary_cycles": {
+          "count": 130,
+          "max": 6938,
+          "mean": 3481.785,
+          "min": 1290,
+          "p99": 6924
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 230.185,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "c095bd95155ed9d9a30a68be41734246dd1d1b461c3b8abd764ffb5424e5a3d7",
+      "selected_logical_notes": 98,
+      "single_packet_sample_weighted_mae": 0.2083644510828977,
+      "source_name": "08 In the Dark.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "f4be446643781c3149d1da02271adf589df75f6b264ac42e381a605e5e8ece04",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.31680719505340077,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 4479,
+      "jps_sha256": "087fbfaed1db494f95eb988f1216fda18ff4b3f0c55e134b3ea81c304b37e904",
+      "label": "doom2-09",
+      "local_track": 9,
+      "maximum_error": 13,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 6,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.476142,
+        "effective_sample_hz": 7038.292364,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 41044,
+          "mean": 34539.628,
+          "min": 33855,
+          "p99": 39996
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1301,
+          "max": 2158,
+          "mean": 1132.222,
+          "min": 877,
+          "p99": 1548
+        },
+        "jps_bytes": 4479,
+        "keyboard_polls": 1501,
+        "label": "doom2-09",
+        "music_frame_hz": 49.218828,
+        "mutated_player_bytes": 80,
+        "pit_writes": 16379,
+        "row_boundary_cycles": {
+          "count": 199,
+          "max": 7249,
+          "mean": 3506.457,
+          "min": 1393,
+          "p99": 7178
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.417,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "65cecdab5913273d4c097b339041c6b7ce3445952b259b8b10837615cf9c26a3",
+      "selected_logical_notes": 121,
+      "single_packet_sample_weighted_mae": 0.31680719505340077,
+      "source_name": "09 Shawn's Got the Shotgun.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "3fa1883fd841328ace0f4b978710ff95d98a6e168fa0cfaf10e4a3ef9f8fc6cf",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.028595071717543216,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 4724,
+      "jps_sha256": "91fe95d95610c56a0f1c97c465251b4793a7c36652a7f5c6f643afab592ae9f9",
+      "label": "doom2-10",
+      "local_track": 10,
+      "maximum_error": 7,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 6,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.639006,
+        "effective_sample_hz": 7000.879886,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43120,
+          "mean": 34724.207,
+          "min": 33574,
+          "p99": 42197
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1113,
+          "max": 1801,
+          "mean": 1083.761,
+          "min": 827,
+          "p99": 1682
+        },
+        "jps_bytes": 4724,
+        "keyboard_polls": 1501,
+        "label": "doom2-10",
+        "music_frame_hz": 48.957202,
+        "mutated_player_bytes": 80,
+        "pit_writes": 12520,
+        "row_boundary_cycles": {
+          "count": 387,
+          "max": 9833,
+          "mean": 3381.762,
+          "min": 1240,
+          "p99": 9361
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.112,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "5643b93add4c55fdcad8adb4fb9d65f916cc451c70d81f5119fe248370ab611a",
+      "selected_logical_notes": 252,
+      "single_packet_sample_weighted_mae": 0.028595071717543216,
+      "source_name": "10 The Dave D. Taylor Blues.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "4d9813740918f89dd64e72dd7eb516cbd3174efd600f7007b36c4ba492896d47",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.12896373843119405,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 6856,
+      "jps_sha256": "eabd44b57da1e251c28e41498511a2f3f4e6a4fc2c2d607b95bcaf901b77a077",
+      "label": "doom2-11",
+      "local_track": 11,
+      "maximum_error": 6,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 5,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.238436,
+        "effective_sample_hz": 6866.540846,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43942,
+          "mean": 35403.561,
+          "min": 33810,
+          "p99": 42902
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1154,
+          "max": 2824,
+          "mean": 1169.345,
+          "min": 864,
+          "p99": 2278
+        },
+        "jps_bytes": 6856,
+        "keyboard_polls": 1501,
+        "label": "doom2-11",
+        "music_frame_hz": 48.017768,
+        "mutated_player_bytes": 80,
+        "pit_writes": 16811,
+        "row_boundary_cycles": {
+          "count": 346,
+          "max": 10581,
+          "mean": 5986.624,
+          "min": 1519,
+          "p99": 9690
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.645,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "40cfc3b3703ad25c15b809d3f84b6976a1def0185448d8e8f76b6e4159ec087b",
+      "selected_logical_notes": 355,
+      "single_packet_sample_weighted_mae": 0.12896373843119405,
+      "source_name": "11 Into Sandy's City.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "2149aeec47d0ff4f0b77a0e7a148b63bd4b46dbccfd02af7ee65ec20b98ef7fb",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.10551279060726226,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2369,
+      "jps_sha256": "b7c2cbaa9828582703f4babce05c887b6a82d2d3b3ce72545c0ca356a857e199",
+      "label": "doom2-12",
+      "local_track": 12,
+      "maximum_error": 10,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 3,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.721381,
+        "effective_sample_hz": 6982.107958,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 42832,
+          "mean": 34817.565,
+          "min": 34205,
+          "p99": 40459
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1405,
+          "max": 2313,
+          "mean": 1074.107,
+          "min": 917,
+          "p99": 1481
+        },
+        "jps_bytes": 2369,
+        "keyboard_polls": 1501,
+        "label": "doom2-12",
+        "music_frame_hz": 48.82593,
+        "mutated_player_bytes": 80,
+        "pit_writes": 33767,
+        "row_boundary_cycles": {
+          "count": 95,
+          "max": 9416,
+          "mean": 4854.568,
+          "min": 1446,
+          "p99": 9416
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 234.298,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "47abafbd40edac71a4f01f10c6d9c8e98c629a1248bd48710bec20d2019cfb68",
+      "selected_logical_notes": 116,
+      "single_packet_sample_weighted_mae": 0.10551279060726226,
+      "source_name": "12 The Demon's Dead.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "facc8df322678d0c3fea2924ca2abfe33fb1ab59dc4a7b9e4b516b7f02320539",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.037522191833405306,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 4209,
+      "jps_sha256": "5c088364ec5ae94c62c76a885a95006e7cda74a53ab77f5af926c06eb1589b34",
+      "label": "doom2-13",
+      "local_track": 13,
+      "maximum_error": 3,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 0,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.126552,
+        "effective_sample_hz": 6891.222697,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 42502,
+          "mean": 35276.759,
+          "min": 33697,
+          "p99": 41282
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 973,
+          "max": 2278,
+          "mean": 1136.772,
+          "min": 877,
+          "p99": 2175
+        },
+        "jps_bytes": 4209,
+        "keyboard_polls": 1501,
+        "label": "doom2-13",
+        "music_frame_hz": 48.190369,
+        "mutated_player_bytes": 80,
+        "pit_writes": 11027,
+        "row_boundary_cycles": {
+          "count": 527,
+          "max": 9418,
+          "mean": 4251.992,
+          "min": 1993,
+          "p99": 8594
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.094,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "68b7a266483958c4c63a0c69dfa5777ef28fb4e9d2c804f240643414701aeda5",
+      "selected_logical_notes": 403,
+      "single_packet_sample_weighted_mae": 0.037522191833405306,
+      "source_name": "13 Waiting for Romero to Play.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "4005e5d0d0abbfeab157b590a4e9490d862d1378fa81fe9d3d194787d75de5a3",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.036839950880065496,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2830,
+      "jps_sha256": "dfcc030eeca89defa84ece8847eabded05d5a62fb3e5ec9b786a263397a6eb7d",
+      "label": "doom2-14",
+      "local_track": 14,
+      "maximum_error": 3,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 29.918561,
+        "effective_sample_hz": 7169.462419,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 37166,
+          "mean": 33907.703,
+          "min": 33561,
+          "p99": 36742
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1380,
+          "max": 1755,
+          "mean": 1004.84,
+          "min": 814,
+          "p99": 1425
+        },
+        "jps_bytes": 2830,
+        "keyboard_polls": 1501,
+        "label": "doom2-14",
+        "music_frame_hz": 50.136101,
+        "mutated_player_bytes": 68,
+        "pit_writes": 3031,
+        "row_boundary_cycles": {
+          "count": 120,
+          "max": 4249,
+          "mean": 2246.0,
+          "min": 1240,
+          "p99": 4170
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 262,
+          "mean": 229.398,
+          "min": 229,
+          "p99": 255
+        }
+      },
+      "score_sha256": "614b3be35609ca2281f39b18266a81d2702aae651c2706948f205accd5008bdf",
+      "selected_logical_notes": 35,
+      "single_packet_sample_weighted_mae": 0.036839950880065496,
+      "source_name": "14 Message for the Archvile.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "bf81557b6b9d4c8efc7703aff75fa30ea22eb3d2c1f8080e0fd3eb4b7e4e3760",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.11443812233285917,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 5944,
+      "jps_sha256": "20ca4de428726e789f5785d3e32e03995ec71511ec2720500edbe0bb4869597d",
+      "label": "doom2-15",
+      "local_track": 15,
+      "maximum_error": 11,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 6,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.192615,
+        "effective_sample_hz": 6876.627754,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 43814,
+          "mean": 35351.63,
+          "min": 33677,
+          "p99": 43258
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1138,
+          "max": 2388,
+          "mean": 1189.394,
+          "min": 864,
+          "p99": 2352
+        },
+        "jps_bytes": 5944,
+        "keyboard_polls": 1501,
+        "label": "doom2-15",
+        "music_frame_hz": 48.088306,
+        "mutated_player_bytes": 80,
+        "pit_writes": 19302,
+        "row_boundary_cycles": {
+          "count": 362,
+          "max": 9501,
+          "mean": 5352.202,
+          "min": 1290,
+          "p99": 9457
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 231.881,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "e8d307f50521e5aab5e31e9c61739db562a6c47d40089f53e5ba5d5236479268",
+      "selected_logical_notes": 433,
+      "single_packet_sample_weighted_mae": 0.11443812233285917,
+      "source_name": "15 Bye Bye American Pie.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "a272d6851cc46effcb8e16545b7b6d0d088ef20cc23ee3ea3f756e31cc35ccba",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.01605965012905076,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2920,
+      "jps_sha256": "8b475ec3351086b83eaa66844549100cc73a96e429b6a1aca28ae0129c1f04d1",
+      "label": "doom2-16",
+      "local_track": 16,
+      "maximum_error": 1,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.567294,
+        "effective_sample_hz": 7017.304154,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 41271,
+          "mean": 34642.933,
+          "min": 34123,
+          "p99": 38579
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1326,
+          "max": 1652,
+          "mean": 1142.017,
+          "min": 967,
+          "p99": 1438
+        },
+        "jps_bytes": 2920,
+        "keyboard_polls": 1501,
+        "label": "doom2-16",
+        "music_frame_hz": 49.072057,
+        "mutated_player_bytes": 80,
+        "pit_writes": 11679,
+        "row_boundary_cycles": {
+          "count": 174,
+          "max": 6678,
+          "mean": 2624.339,
+          "min": 1393,
+          "p99": 6206
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 233.078,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "5b1ccfb329c85915c3ff72ba162edfbdbfa7c13e944037abfda24848f0d35d81",
+      "selected_logical_notes": 65,
+      "single_packet_sample_weighted_mae": 0.01605965012905076,
+      "source_name": "16 Adrian's Asleep.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "a161de9d3cbc3c3144b2a901831a87c02632a59cd2cb9d31945e2a9a8afbf0a3",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.20345207491737055,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2994,
+      "jps_sha256": "b0001171b850674fe3532b2864b85ded9cc1a243f0c76f0eeba63ddeaefb92f1",
+      "label": "doom2-17",
+      "local_track": 17,
+      "maximum_error": 4,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 2,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.952376,
+        "effective_sample_hz": 6930.001003,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 44685,
+          "mean": 35079.36,
+          "min": 33645,
+          "p99": 44271
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1204,
+          "max": 2300,
+          "mean": 1100.312,
+          "min": 864,
+          "p99": 1754
+        },
+        "jps_bytes": 2994,
+        "keyboard_polls": 1501,
+        "label": "doom2-17",
+        "music_frame_hz": 48.461545,
+        "mutated_player_bytes": 80,
+        "pit_writes": 34410,
+        "row_boundary_cycles": {
+          "count": 296,
+          "max": 9600,
+          "mean": 3541.007,
+          "min": 1554,
+          "p99": 9461
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 234.248,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "6e47397078e4c5992ce5fb3684bb94cd385c54a057ab88786e38ce03535fe9e3",
+      "selected_logical_notes": 219,
+      "single_packet_sample_weighted_mae": 0.20345207491737055,
+      "source_name": "17 Getting Too Tense.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "157cb821b571dd031b3248fe6c49184da214669366fec1f9ca61c3926f5e3567",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.08775757575757576,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 1513,
+      "jps_sha256": "fb0e4c562b10f9da287355d939105fc45cab049227291dd6d7655fab2b4ef62c",
+      "label": "doom2-18",
+      "local_track": 18,
+      "maximum_error": 5,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 3,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.010692,
+        "effective_sample_hz": 7147.452564,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 40353,
+          "mean": 34012.118,
+          "min": 33574,
+          "p99": 35636
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1472,
+          "max": 1732,
+          "mean": 1112.327,
+          "min": 827,
+          "p99": 1244
+        },
+        "jps_bytes": 1513,
+        "keyboard_polls": 1501,
+        "label": "doom2-18",
+        "music_frame_hz": 49.982186,
+        "mutated_player_bytes": 80,
+        "pit_writes": 2857,
+        "row_boundary_cycles": {
+          "count": 28,
+          "max": 6757,
+          "mean": 3397.357,
+          "min": 1240,
+          "p99": 6757
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 229.771,
+          "min": 229,
+          "p99": 255
+        }
+      },
+      "score_sha256": "6253e9ab1bf04dadb6336468ed31385baaee1ffe24692e76d7f9c35d40664190",
+      "selected_logical_notes": 20,
+      "single_packet_sample_weighted_mae": 0.08775757575757576,
+      "source_name": "18 Opening to Hell.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "1ac9a5413b8cb3776530eeda2e555edc32854f6ed6a5af06799e650feb3249bc",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.6103859250851306,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": true,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": true,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 3196,
+      "jps_sha256": "1f3c45f0da939ef19146eee58eb71ce633ece7ca17bd0314f9c318c7ac6b0648",
+      "label": "doom2-19",
+      "local_track": 19,
+      "maximum_error": 15,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 4,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.261709,
+        "effective_sample_hz": 7088.165347,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 41873,
+          "mean": 34296.604,
+          "min": 33574,
+          "p99": 36250
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1296,
+          "max": 1925,
+          "mean": 1000.114,
+          "min": 814,
+          "p99": 1525
+        },
+        "jps_bytes": 3196,
+        "keyboard_polls": 1501,
+        "label": "doom2-19",
+        "music_frame_hz": 49.56759,
+        "mutated_player_bytes": 80,
+        "pit_writes": 22647,
+        "row_boundary_cycles": {
+          "count": 204,
+          "max": 8801,
+          "mean": 1896.123,
+          "min": 1240,
+          "p99": 8765
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 232.0,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "a092576029e68ea63ffdaab38836c88daebc9ef87026c15113ce54114a1f7b60",
+      "selected_logical_notes": 41,
+      "single_packet_sample_weighted_mae": 0.6103859250851306,
+      "source_name": "19 Evil Incarnate.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "6f8da6f36f4f41fe5a0ba40464f08bb66ba8662cead621a823299431d9e07b9a",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.17936565803864382,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 2358,
+      "jps_sha256": "f50ee16539e45878027a6a2dba5c31c7f19003b2e50c8e4dfc45ef867c5d243f",
+      "label": "doom2-20",
+      "local_track": 20,
+      "maximum_error": 14,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 2,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 30.641325,
+        "effective_sample_hz": 7000.350085,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 40813,
+          "mean": 34726.835,
+          "min": 33574,
+          "p99": 38072
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1282,
+          "max": 1826,
+          "mean": 1062.64,
+          "min": 814,
+          "p99": 1732
+        },
+        "jps_bytes": 2358,
+        "keyboard_polls": 1501,
+        "label": "doom2-20",
+        "music_frame_hz": 48.953497,
+        "mutated_player_bytes": 74,
+        "pit_writes": 34882,
+        "row_boundary_cycles": {
+          "count": 218,
+          "max": 6556,
+          "mean": 2527.303,
+          "min": 1227,
+          "p99": 6485
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 269,
+          "mean": 233.924,
+          "min": 229,
+          "p99": 262
+        }
+      },
+      "score_sha256": "2c38e9d2bf10856c294baaa8fe18e3542204378fae4fe2bca5cd4537be7d8112",
+      "selected_logical_notes": 101,
+      "single_packet_sample_weighted_mae": 0.17936565803864382,
+      "source_name": "20 The Ultimate Challenge.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "3a78d05e614d8d8857d5e7596bc1e5cd16080f4eb198c5b95fb35cc550a9b576",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    },
+    {
+      "articulated_notes": 0,
+      "articulated_sample_weighted_mae": 0.6213363705391041,
+      "emitted_rearticulation_packets": 0,
+      "gates": {
+        "duration_within_one_percent": false,
+        "escape_polling_present": true,
+        "jps_below_hard_limit": true,
+        "jps_below_soft_limit": true,
+        "music_clock_within_one_percent": false,
+        "no_protected_onset_regression": true,
+        "no_unrepresentable_rearticulations": true,
+        "sample_rate_above_shared_floor": true,
+        "source_hash_matches": true
+      },
+      "jps_bytes": 3589,
+      "jps_sha256": "d4e7cf7a35c5f843a2b7fdb7b0bd72d03e329ff24ea94b10d863b8f71968ecda",
+      "label": "doom2-21",
+      "local_track": 21,
+      "maximum_error": 6,
+      "notes_with_significant_rearticulation": 0,
+      "pack": "doom2",
+      "percussion_descriptors": 0,
+      "profile": {
+        "com_bytes": 4537,
+        "duration_seconds": 31.223287,
+        "effective_sample_hz": 6869.872464,
+        "frame_cycles": {
+          "count": 1500,
+          "max": 41205,
+          "mean": 35386.392,
+          "min": 34027,
+          "p99": 40977
+        },
+        "frame_samples": 143,
+        "frames": 1500,
+        "idle_boundary_cycles": {
+          "count": 1146,
+          "max": 2313,
+          "mean": 1155.599,
+          "min": 877,
+          "p99": 1802
+        },
+        "jps_bytes": 3589,
+        "keyboard_polls": 1501,
+        "label": "doom2-21",
+        "music_frame_hz": 48.041066,
+        "mutated_player_bytes": 80,
+        "pit_writes": 27504,
+        "row_boundary_cycles": {
+          "count": 354,
+          "max": 8346,
+          "mean": 4769.119,
+          "min": 1656,
+          "p99": 8215
+        },
+        "sample_loop_cycles": {
+          "count": 213000,
+          "max": 276,
+          "mean": 233.418,
+          "min": 229,
+          "p99": 269
+        }
+      },
+      "score_sha256": "0a3dd224ae6b53f606fee4ebb0e5751a7202c944d58339331d3c968c2341a001",
+      "selected_logical_notes": 371,
+      "single_packet_sample_weighted_mae": 0.6213363705391041,
+      "source_name": "21 Endgame Music.vgz",
+      "source_seconds": 30.0,
+      "source_sha256": "61411dbf03d13d06ba3cc14418cc744951a87c14488e59a7e86d7376adae70e6",
+      "target_shape_fit": {
+        "enabled": true,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
+      "unrepresentable_rearticulation_notes": 0
+    }
+  ]
+}

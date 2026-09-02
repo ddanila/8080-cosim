@@ -28,6 +28,11 @@ static uint8_t read_byte(void *opaque, uint16_t address) {
 }
 
 static void write_byte(void *opaque, uint16_t address, uint8_t value) {
+  /* Mode-1 Juku maps the high BIOS ROM at D800h-FFFFh.  Keep that overlay
+   * write-protected so a standalone player cannot accidentally use wrapped
+   * SP=0000h as a call stack; the flat-RAM fixture previously hid that bug. */
+  if (address >= 0xd800)
+    return;
   ((fixture *)opaque)->memory[address] = value;
 }
 

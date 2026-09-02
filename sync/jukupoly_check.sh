@@ -20,7 +20,8 @@ cc -std=c11 -O2 -Wall -Wextra -Werror -I"$OPL_DIR" \
   -o "$TMP/jukupoly_opl_oracle" \
   spinoffs/jukupoly/tools/jukupoly_opl_oracle.c "$OPL_DIR/opl3.c"
 JUKUPOLY_OPL_ORACLE="$TMP/jukupoly_opl_oracle" \
-  python3 tests/jukupoly_opl_oracle_test.py
+python3 tests/jukupoly_opl_oracle_test.py
+python3 tests/jukupoly_opl_voice_compare_test.py
 JUKUPOLY_OPL_ORACLE="$TMP/jukupoly_opl_oracle" \
 python3 tests/jukupoly_opl_envelope_test.py
 python3 tests/jukupoly_opl_enhanced_test.py
@@ -31,6 +32,10 @@ python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_imp_m3.py \
   --v2 spinoffs/jukupoly/firmware/jukupoly-imp-30s-detuned-m7.json \
   --output spinoffs/jukupoly/OPL-IMP-DETUNED-M7.json --check
+python3 spinoffs/jukupoly/tools/build_jukupoly_imp_m7_ab.py \
+  --target-shape \
+  --report spinoffs/jukupoly/OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json \
+  --check
 python3 spinoffs/jukupoly/tools/report_opl_plan_status.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_target.py --check
 python3 spinoffs/jukupoly/tools/report_jukupoly_tremolo_real.py --check

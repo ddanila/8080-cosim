@@ -211,6 +211,47 @@ def check_multi_transform_fit() -> None:
     assert together == separate
 
 
+def check_target_shape_mode() -> None:
+    # A sustained source operator can still have an audible plateau followed
+    # by a fast fall.  The target's existing automatic-release state machine
+    # is an exact two-slope representation; source EGT mode is not.
+    reference = opl_envelope.simulate_envelope(
+        88, key_off_frame=None, peak_level=12, sustain_level=11,
+        attack_period_frames=1, decay_period_frames=64,
+        release_period_frames=2, sustain_while_keyed=False,
+    )
+    semantic_only = opl_envelope.fit_target_envelope(
+        reference, key_off_frame=None, source_sustain_while_keyed=True,
+        allow_alternate_sustain_mode=False,
+        preserve_significant_directions=True,
+    )
+    shaped = opl_envelope.fit_target_envelope(
+        reference, key_off_frame=None, source_sustain_while_keyed=True,
+        allow_alternate_sustain_mode=True,
+        preserve_significant_directions=True,
+    )
+    assert semantic_only.sustain_while_keyed is True
+    assert semantic_only.squared_error > 0
+    assert shaped.packet() == {
+        "peak_level": 12,
+        "sustain_level": 11,
+        "attack_period_frames": 1,
+        "decay_period_frames": 64,
+        "release_period_frames": 2,
+        "sustain_while_keyed": False,
+    }
+    assert shaped.predicted_levels == reference
+
+    # When both target state machines are indistinguishable over the observed
+    # interval, retain the source semantic mode rather than changing it merely
+    # because the alternate was also evaluated.
+    tied = opl_envelope.fit_target_envelope(
+        (8,) * 10, key_off_frame=None, source_sustain_while_keyed=True,
+        allow_alternate_sustain_mode=True,
+    )
+    assert tied.sustain_while_keyed is True
+
+
 def stretched_oracle_source() -> tuple[list[vgz.RegisterWrite], int]:
     info, writes = vgz.parse_vgm(synthetic.synthetic_opl3_vgm())
     key_off_sample = 20 * opl_oracle.VGM_RATE // 50
@@ -357,6 +398,7 @@ def main() -> int:
     check_direction_priority()
     check_exact_fit_cache()
     check_multi_transform_fit()
+    check_target_shape_mode()
     fitted = check_oracle_fit(tool)
     check_oracle_tremolo_semantics(tool)
     print("JUKUPOLY-OPL-ENVELOPE: PASS target-exact grid-fit "

@@ -200,16 +200,36 @@
     "enhanced_envelope_fit": {
       "selected_logical_notes": 16,
       "mean_absolute_error": 0.403901605044886,
+      "sample_weighted_mean_absolute_error": 0.6742209631728046,
+      "single_packet_sample_weighted_mean_absolute_error": 1.4408640226628895,
       "maximum_error": 7,
       "direction_mismatches": 0,
       "unrepresentable_rearticulation_notes": 0,
       "delivery_note_mae_limit": 2.0,
+      "target_shape_fit": {
+        "enabled": false,
+        "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
+      },
       "rearticulation": {
         "enabled": true,
         "threshold_levels": 4,
-        "maximum_packets_per_note": 4,
+        "maximum_packets_per_note": 6,
         "emitted_packets": 6,
         "policy": "re-send a same-pitch non-legato ordinary ADSR packet at each bounded significant keyed rise; no target opcode or sample-loop change"
+      },
+      "detuned_layer_analysis": {
+        "enabled": false,
+        "target_sample_rate_hz": 7170,
+        "episodes": [],
+        "logical_notes": 0,
+        "extra_voices": 0,
+        "member_envelope_fits": 0,
+        "source_members_merged": 0,
+        "member_sample_weighted_mean_absolute_error": 0.0,
+        "member_maximum_error": 0,
+        "member_rearticulation_packets": 0,
+        "rejections": {},
+        "policy": "replace one stable selected logical voice for its entire contiguous episode with the strongest fixed-pitch member layers whose source-derived target steps are distinct; members quantizing to one phase step are summed and fitted as one host-side composite envelope; require persistent spare capacity and individually passing envelope fits; reserve spare capacity in deterministic first-selected-note order across overlapping episodes"
       },
       "tremolo_analysis": {
         "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
@@ -243,6 +263,7 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 1.119325551232166,
+          "single_packet_mean_absolute_error": 2.832684824902724,
           "maximum_error": 7,
           "significant_rearticulations": 4,
           "articulation_packets": [
@@ -291,6 +312,7 @@
               }
             }
           ],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -354,9 +376,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.21739130434782608,
+          "single_packet_mean_absolute_error": 0.21739130434782608,
           "maximum_error": 5,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -420,6 +444,7 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 1.0426621160409557,
+          "single_packet_mean_absolute_error": 2.4829351535836177,
           "maximum_error": 5,
           "significant_rearticulations": 2,
           "articulation_packets": [
@@ -446,6 +471,7 @@
               }
             }
           ],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -509,9 +535,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.14666666666666667,
+          "single_packet_mean_absolute_error": 0.14666666666666667,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -575,9 +603,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.18614718614718614,
+          "single_packet_mean_absolute_error": 0.18614718614718614,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -641,9 +671,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.19480519480519481,
+          "single_packet_mean_absolute_error": 0.19480519480519481,
           "maximum_error": 5,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -707,9 +739,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.20087336244541484,
+          "single_packet_mean_absolute_error": 0.20087336244541484,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -773,9 +807,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.11688311688311688,
+          "single_packet_mean_absolute_error": 0.11688311688311688,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -839,9 +875,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.23618090452261306,
+          "single_packet_mean_absolute_error": 0.23618090452261306,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -905,9 +943,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.26785714285714285,
+          "single_packet_mean_absolute_error": 0.26785714285714285,
           "maximum_error": 5,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -971,9 +1011,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 1.7613636363636365,
+          "single_packet_mean_absolute_error": 1.7613636363636365,
           "maximum_error": 7,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -1029,9 +1071,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.11940298507462686,
+          "single_packet_mean_absolute_error": 0.11940298507462686,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -1095,9 +1139,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.12307692307692308,
+          "single_packet_mean_absolute_error": 0.12307692307692308,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -1161,9 +1207,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.3488372093023256,
+          "single_packet_mean_absolute_error": 0.3488372093023256,
           "maximum_error": 5,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -1227,9 +1275,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.38095238095238093,
+          "single_packet_mean_absolute_error": 0.38095238095238093,
           "maximum_error": 5,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -1293,9 +1343,11 @@
             "sustain_while_keyed": true
           },
           "mean_absolute_error": 0.0,
+          "single_packet_mean_absolute_error": 0.0,
           "maximum_error": 0,
           "significant_rearticulations": 0,
           "articulation_packets": [],
+          "detuned_layer_episode": null,
           "unrepresentable_rearticulation": false,
           "directions": {
             "attack": {
@@ -1334,6 +1386,13 @@
       "emitted_legato_packets": 0,
       "phase_step_generation_hz": null,
       "policy": "50 Hz source pitch points quantized to target phase steps; emit only changes while the same logical note retains its target channel"
+    },
+    "enhanced_detuned_layers": {
+      "enabled": false,
+      "logical_notes": 0,
+      "extra_voices": 0,
+      "member_rearticulation_packets": 0,
+      "policy": "fixed source-derived phase steps on persistently spare voices; bounded member envelope retriggers use ordinary non-legato ADSR packets"
     },
     "enhanced_vibrato": {
       "enabled": false,

@@ -66,7 +66,10 @@ def extract(pack: str, archive: Path, destination: Path) -> list[dict]:
     return result
 
 
-def convert(item: dict, scores: Path, oracle: Path) -> str:
+def convert(
+        item: dict, scores: Path, oracle: Path,
+        enable_target_shape_fit: bool,
+) -> str:
     output = scores / f"{item['label']}.json"
     command = [
         sys.executable, str(IMPORTER), str(item["path"]), str(output),
@@ -79,13 +82,17 @@ def convert(item: dict, scores: Path, oracle: Path) -> str:
         command.extend(("--melodic-signature", identifier))
     if (item["pack"], item["local_track"]) in ARTICULATION_PRIORITY:
         command.append("--prioritize-articulations")
+    if enable_target_shape_fit:
+        command.append("--enhanced-target-envelope-shape")
     completed = subprocess.run(
         command, cwd=ROOT, check=True, text=True, stdout=subprocess.PIPE,
     )
     return completed.stdout.strip()
 
 
-def report(items: list[dict], work: Path) -> dict:
+def report(
+        items: list[dict], work: Path, enable_target_shape_fit: bool,
+) -> dict:
     frozen = json.loads(baseline.BASELINE.read_text())
     floor = json.loads((SPINOFF / "OPL-ENVELOPE-M3.json").read_text())[
         "v2_sample_rate_floor_hz"
@@ -135,7 +142,7 @@ def report(items: list[dict], work: Path) -> dict:
                 "escape_polling_present":
                 profile["keyboard_polls"] >= profile["frames"],
             }
-            records.append({
+            record = {
                 "label": item["label"], "pack": item["pack"],
                 "local_track": item["local_track"],
                 "source_name": item["source_name"],
@@ -162,16 +169,154 @@ def report(items: list[dict], work: Path) -> dict:
                 "jps_sha256": hashlib.sha256(payload).hexdigest(),
                 "profile": profile,
                 "gates": gates,
-            })
+            }
+            if enable_target_shape_fit:
+                record["target_shape_fit"] = fit["target_shape_fit"]
+            records.append(record)
     beneficial = [
         item for item in records
         if item["emitted_rearticulation_packets"] > 0
     ]
-    return {
-        "schema": "jukupoly-opl-m7-pack-scan-v1",
+    target_shape_comparison = None
+    if enable_target_shape_fit:
+        baseline_report = json.loads(DEFAULT_REPORT.read_text())
+        baseline_records = {
+            item["label"]: item for item in baseline_report["tracks"]
+        }
+        old_absolute = 0
+        new_absolute = 0
+        reference_frames = 0
+        old_baseline_squared = 0
+        new_baseline_squared = 0
+        track_changes = []
+        changed_modes = Counter()
+        timing_changes = []
+        for item, record in zip(items, records):
+            old_path = DEFAULT_WORK / "scores" / f"{item['label']}.json"
+            if not old_path.is_file():
+                raise ValueError(
+                    f"missing source-semantic comparison score: {old_path}"
+                )
+            old_fit = json.loads(old_path.read_text())["conversion"][
+                "enhanced_envelope_fit"
+            ]
+            new_fit = json.loads(
+                (work / "scores" / f"{item['label']}.json").read_text()
+            )["conversion"]["enhanced_envelope_fit"]
+            if len(old_fit["notes"]) != len(new_fit["notes"]):
+                raise ValueError(
+                    f"target shape changed selected notes: {item['label']}"
+                )
+            track_frames = sum(
+                note["reference_frames"] for note in old_fit["notes"]
+            )
+            old_track_absolute = round(
+                old_fit["sample_weighted_mean_absolute_error"] *
+                track_frames
+            )
+            new_track_absolute = round(
+                new_fit["sample_weighted_mean_absolute_error"] *
+                track_frames
+            )
+            reference_frames += track_frames
+            old_absolute += old_track_absolute
+            new_absolute += new_track_absolute
+            track_changes.append(new_track_absolute - old_track_absolute)
+            for old_note, new_note in zip(
+                    old_fit["notes"], new_fit["notes"]):
+                if old_note["logical_note"] != new_note["logical_note"]:
+                    raise ValueError(
+                        f"target shape reordered notes: {item['label']}"
+                    )
+                old_mode = old_note["baseline_packet"][
+                    "sustain_while_keyed"
+                ]
+                new_mode = new_note["baseline_packet"][
+                    "sustain_while_keyed"
+                ]
+                if old_mode != new_mode:
+                    changed_modes[
+                        "sustain_to_automatic_release"
+                        if old_mode else
+                        "automatic_release_to_sustain"
+                    ] += 1
+                old_baseline_squared += old_note["tremolo_analysis"][
+                    "baseline_squared_error"
+                ]
+                new_baseline_squared += new_note["tremolo_analysis"][
+                    "baseline_squared_error"
+                ]
+            old_profile = baseline_records[item["label"]]["profile"]
+            new_profile = record["profile"]
+            timing_changes.append(
+                new_profile["effective_sample_hz"] /
+                old_profile["effective_sample_hz"] - 1.0
+            )
+        target_shape_comparison = {
+            "baseline_report": {
+                "path": DEFAULT_REPORT.name,
+                "sha256": sha256(DEFAULT_REPORT),
+            },
+            "reference_frames": reference_frames,
+            "source_semantic_absolute_error": old_absolute,
+            "target_shape_absolute_error": new_absolute,
+            "sample_weighted_mean_absolute_error": {
+                "source_semantic": old_absolute / reference_frames,
+                "target_shape": new_absolute / reference_frames,
+                "fraction_reduced": (
+                    (old_absolute - new_absolute) / old_absolute
+                ),
+            },
+            "baseline_squared_error": {
+                "source_semantic": old_baseline_squared,
+                "target_shape": new_baseline_squared,
+                "fraction_reduced": (
+                    (old_baseline_squared - new_baseline_squared) /
+                    old_baseline_squared
+                ),
+            },
+            "tracks": {
+                "improved_absolute_error": sum(
+                    change < 0 for change in track_changes
+                ),
+                "equal_absolute_error": sum(
+                    change == 0 for change in track_changes
+                ),
+                "increased_absolute_error": sum(
+                    change > 0 for change in track_changes
+                ),
+                "largest_absolute_error_increase": max(track_changes),
+            },
+            "changed_baseline_modes": dict(sorted(changed_modes.items())),
+            "timing": {
+                "mean_sample_rate_fraction_change": (
+                    sum(timing_changes) / len(timing_changes)
+                ),
+                "worst_sample_rate_fraction_change": min(timing_changes),
+                "best_sample_rate_fraction_change": max(timing_changes),
+                "baseline_failed_gate_counts": baseline_report["summary"][
+                    "failed_gate_counts"
+                ],
+                "target_shape_failed_gate_counts": dict(sorted(Counter(
+                    key for item in records
+                    for key, value in item["gates"].items() if not value
+                ).items())),
+            },
+        }
+    result = {
+        "schema": (
+            "jukupoly-opl-target-shape-pack-scan-v1"
+            if enable_target_shape_fit else
+            "jukupoly-opl-m7-pack-scan-v1"
+        ),
         "scope": (
             "first 30 seconds (or complete shorter source), envelope-only "
-            "bounded re-articulation; candidate discovery, not delivery"
+            "bounded re-articulation"
+            + (
+                ", target sustain-mode shape selection"
+                if enable_target_shape_fit else ""
+            )
+            + "; candidate discovery, not delivery"
         ),
         "archives": {
             pack: {"sha256": ARCHIVE_HASHES[pack],
@@ -207,6 +352,22 @@ def report(items: list[dict], work: Path) -> dict:
         },
         "tracks": records,
     }
+    if enable_target_shape_fit:
+        result["target_shape_fit"] = {
+            "enabled": True,
+            "policy": (
+                "evaluate both existing target sustain state machines "
+                "against the same oracle-derived 4-bit trace; retain the "
+                "source OPL EGT mode on an exact fit tie"
+            ),
+            "target_runtime_cost": (
+                "no new player code or per-sample work; selecting an existing "
+                "automatic-release state can change data-dependent 50 Hz "
+                "envelope-update work and must retain the ordinary timing gates"
+            ),
+            "two_pack_comparison": target_shape_comparison,
+        }
+    return result
 
 
 def main() -> int:
@@ -217,6 +378,15 @@ def main() -> int:
     parser.add_argument("--work", type=Path, default=DEFAULT_WORK)
     parser.add_argument("--output", type=Path, default=DEFAULT_REPORT)
     parser.add_argument("--jobs", type=int, default=8)
+    parser.add_argument(
+        "--target-shape", action="store_true",
+        help=("experimentally allow oracle-selected target sustain mode; "
+              "default scan remains byte-for-byte reproducible"),
+    )
+    parser.add_argument(
+        "--report-only", action="store_true",
+        help="reuse already generated score files and rewrite the report",
+    )
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     archives = {"doom1": args.doom.resolve(), "doom2": args.doom2.resolve()}
@@ -236,16 +406,18 @@ def main() -> int:
         items = []
         for pack, archive in archives.items():
             items.extend(extract(pack, archive, sources))
-        if not args.check:
+        if not args.check and not args.report_only:
             with concurrent.futures.ThreadPoolExecutor(
                     max_workers=args.jobs) as executor:
                 futures = [
-                    executor.submit(convert, item, scores, oracle)
+                    executor.submit(
+                        convert, item, scores, oracle, args.target_shape,
+                    )
                     for item in items
                 ]
                 for future in concurrent.futures.as_completed(futures):
                     print(future.result())
-        result = report(items, work)
+        result = report(items, work, args.target_shape)
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:
         parser.error(str(exc))
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"

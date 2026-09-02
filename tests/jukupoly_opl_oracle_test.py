@@ -133,6 +133,36 @@ def check_channel_filter() -> None:
     assert opl_oracle.channel_write(vgz.RegisterWrite(0, 1, 0x05, 1), 0, 0)
 
 
+def check_note_isolation() -> None:
+    writes = [
+        vgz.RegisterWrite(0, 0, 0x01, 0x20),
+        vgz.RegisterWrite(1, 0, 0x20, 0x11),
+        vgz.RegisterWrite(2, 0, 0x21, 0x22),
+        vgz.RegisterWrite(3, 0, 0xA0, 0x34),
+        vgz.RegisterWrite(4, 0, 0xB0, 0x24),  # old selected-channel note
+        vgz.RegisterWrite(8, 0, 0xBD, 0xFF),
+        vgz.RegisterWrite(10, 0, 0xB0, 0x04),
+        vgz.RegisterWrite(12, 0, 0x40, 0x05),
+        vgz.RegisterWrite(15, 0, 0xB0, 0x25),  # selected key-on
+        vgz.RegisterWrite(18, 0, 0xA0, 0x40),
+        vgz.RegisterWrite(20, 0, 0xB0, 0x05),  # selected key-off
+        vgz.RegisterWrite(22, 0, 0xB0, 0x25),  # unrelated later note
+    ]
+    isolated = opl_oracle.isolate_note_writes(
+        writes, [(0, 0, 15, 20)], 10, 30,
+    )
+    assert all(write.register != 0x21 for write in isolated)
+    assert isolated[0] == opl_oracle.IsolatedWrite(0, 0, 0x01, 0x20)
+    assert opl_oracle.IsolatedWrite(0, 0, 0xA0, 0x34) in isolated
+    assert opl_oracle.IsolatedWrite(0, 0, 0xB0, 0x04) in isolated
+    assert opl_oracle.IsolatedWrite(0, 0, 0xBD, 0xC0) in isolated
+    keyed = [write for write in isolated
+             if write.register == 0xB0 and write.value & 0x20]
+    assert keyed == [opl_oracle.IsolatedWrite(5, 0, 0xB0, 0x25)]
+    assert opl_oracle.IsolatedWrite(10, 0, 0xB0, 0x05) in isolated
+    assert opl_oracle.IsolatedWrite(12, 0, 0xB0, 0x05) in isolated
+
+
 def main() -> int:
     value = os.environ.get("JUKUPOLY_OPL_ORACLE")
     if not value:
@@ -141,6 +171,7 @@ def main() -> int:
     if not tool.is_file():
         raise SystemExit(f"oracle executable is missing: {tool}")
     check_channel_filter()
+    check_note_isolation()
     check_oracle_agreement(tool)
     print("JUKUPOLY-OPL-ORACLE: PASS pinned-nuked key-pitch-envelope-lfo "
           "exact-vibrato-fnum release-tail channel-isolation")

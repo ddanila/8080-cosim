@@ -1165,9 +1165,13 @@ That physical gate now has one exact reproducible A/B medium rather than three
 ad-hoc host loads.  [`OPL-IMP-M7-PHYSICAL-AB.json`](OPL-IMP-M7-PHYSICAL-AB.json)
 pins the score and COM hashes for `IMPV1.COM`, `IMPREAR.COM`, and `IMPDET.COM`,
 their common source VGM, the on-disk listening order, and a native 800 KiB
-image at SHA-256 `7fa29b3e...b302dfa`.  The builder round-trips every CP/M file
-before converting the logical image to Juku cylinder order.  All exact COMs
-also complete the cycle renderer in 29.738, 29.863, and 29.909 seconds.
+image at SHA-256 `00c7c66b...2c87870`. The builder round-trips every CP/M file
+before converting the logical image to Juku cylinder order.  A separate
+standalone `-P8=1` flag now enables the same physical Escape polling without
+selecting the `-P2=1` JPS library ABI.  The builder asserts both emitted poll
+sites and executes each exact COM both to normal completion (29.783, 29.909,
+and 29.962 seconds) and with Escape injected after one second (returning at
+1.012, 1.017, and 1.000 seconds).
 
 The disk is retained at
 `out/jukupoly-imp-m7-physical-ab/jukupoly-imp-m7-physical-ab.cpm`.  Its protocol
@@ -1178,13 +1182,101 @@ no longer preparation only, but the first physical run remains incomplete.
 [`sessions/cs00000-jukupoly-m7-physical/README.md`](sessions/cs00000-jukupoly-m7-physical/README.md)
 records two clean v1 runs and confirms the missing intro lead plus acceptable
 early ticking/percussion.  The re-articulation COM then failed to return and
-the physical screen showed garbage, despite that exact hash still returning
-cleanly in the instruction-level 8080 test.  The detuned candidate was not
-run.  Imp therefore remains v1 and the physical gate stays open pending a
-cold-boot isolated `IMPREAR` reproduction.  The same session also proved that
+the physical screen showed garbage, despite that original exact hash still
+returning cleanly in the instruction-level 8080 test.  The detuned candidate
+was not run.  The original comparison disk also omitted standalone keyboard
+polling while claiming Escape support; the rebuilt medium above corrects that
+packaging error and its automated normal/abort paths pass.  Imp therefore
+remains v1 and the physical gate stays open pending a cold-boot isolated
+`IMPREAR` reproduction.  The same session also proved that
 C10's late-ready recovery booted CP/M; the apparent boot failure was a missing
 console PTY endpoint, for which `jukuhost` now performs a pre-bootstrap check
 and emits an explicit path/error diagnostic.
+
+Subsequent host-render listening rejected the unchanged-v1 control for its
+missing intro and identified a slower-than-OPL fade in both M7 candidates.
+This was not treated as a subjective tuning request.  The fitter had copied
+source OPL `EGT` directly into the target sustain-state choice, even though
+`EGT` describes an OPL operator and not the best reduction into Juku's two
+existing envelope state machines.  The guarded
+`--enhanced-target-envelope-shape` experiment now fits both target modes
+against the same oracle trace and retains source `EGT` on an exact tie.  It
+adds no opcode, player code, or per-sample work; choosing the already existing
+automatic-release state can still change bounded 50 Hz frame work, so all
+ordinary timing gates remain mandatory.
+
+The policy also composes with M4 rather than creating a mutually exclusive
+converter mode.  Joint envelope+tremolo fitting evaluates every permitted
+target sustain state, compares improvement against the best no-tremolo target
+shape, and keeps source `EGT` as the final exact-error tie preference.  An
+exact synthetic two-slope-plus-tremolo regression and the unchanged frozen M4
+real/full reports guard both the new combination and old default behavior.
+The final cross-depth/cross-shape selection also retains the existing
+significant-stage-direction priority; a fixed regression covers the case where
+least squares alone would reverse the observed release direction.
+
+[`OPL-IMP-TARGET-SHAPE-M7.json`](OPL-IMP-TARGET-SHAPE-M7.json) supplies an
+independent check rather than validating the choice only with the attenuation
+model which selected it.  It re-renders the hash-locked source through pinned
+Nuked OPL with channels 0--3 isolated, derives the absolute 4-bit peak from
+post-EG attenuation, derives relative shape from 20 ms PCM/RMS blocks, and
+compares the exact old/new target traces.  Mean absolute error falls
+1.920 to 1.409 levels for the merged first lobe, 0.779 to 0.593 for the
+equal-step channel-0/2 composite, and 0.556 to 0.333 for detuned channel 1.
+Squared error also falls and
+maximum error does not increase in all three comparisons.  The two corrected
+30-second score artifacts are committed separately from the delivered
+library.
+
+The broader opt-in experiment is pinned by
+[`OPL-TARGET-SHAPE-PACK-SCAN-M7.json`](OPL-TARGET-SHAPE-PACK-SCAN-M7.json).
+Across 441,072 fitted reference frames from all 44 Doom/Doom II openings,
+sample-weighted absolute error falls 10.40% and baseline squared error falls
+5.86%; 39 tracks improve absolute error, four tie, and one increases by only
+26 accumulated 4-bit levels because squared error remains the fitter's primary
+objective.  The worst measured sample-rate change is -0.370%, well inside the
+explicit 10% reduction budget, and the candidate scan has one fewer timing-
+gate failure than its source-semantic control.  This is broad offline evidence,
+not permission to enable the policy by default before speaker qualification.
+
+The corresponding physical medium is recorded by
+[`OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json`](OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json).
+It contains `REAROLD/REARNEW` and `DETOLD/DETNEW`, keeps one listening volume,
+round-trips every file through CP/M, and checks both uninterrupted completion
+and injected Escape for all four programs.  The native disk SHA-256 is
+`f0923753...253affd`. This closes reproduction, independent-source, file,
+cycle, and abort-path gates only.  The new policy remains opt-in and Imp stays
+unchanged in the jukebox until the NEW fades are clearly preferable on the
+physical speaker.
+
+The first cold C10 run of the predecessor target-shape disk reproduced the
+standalone enhanced-player failure before a useful OLD/NEW judgment could be
+made.  It was not a target-envelope failure: the exact old COM also failed in
+the complete C10/CP/M cosim.  Standalone startup had executed `LXI SP,0000h`
+for tone channel 3 before `CALL envelope_dispatch_init`; the wrapped call
+stack was writable in the flat-RAM audio harness but lies behind Juku's
+write-protected high-ROM overlay.  Moving the dispatcher call ahead of the SP
+loan leaves the hot loop and score unchanged.  A focused high-ROM regression
+now rejects the old ordering, and the repaired COM returns through CP/M and
+accepts a following B: `DIR` in full-system cosim.  The failed physical image
+is superseded first by the repaired `aea4ec65...` disk and then by the
+equal-step grouping `f0923753...` disk above, whose listening gate remains
+open.
+
+The later isolated-voice differential in
+[`OPL-VOICE-DIFFERENTIAL.md`](OPL-VOICE-DIFFERENTIAL.md) replaces ambiguous
+whole-song diagnosis with one exact logical-note experiment. It exposed a
+separate M7 allocation defect: multiple OPL members may quantize to one target
+phase step while carrying complementary envelopes. Discarding all but the
+highest-total-energy member created real silent gaps. Equal-step members are
+now combined and fitted on the host before at most three distinct phase groups
+are emitted. This adds score metadata and packets only; it adds no opcode,
+sample-loop instruction, or target-side OPL work. A two-pass host-only phase
+calibration accounts for the isolated score's lighter frame overhead. The Imp
+intro's normalized rendered contour improves from `2.99/54.22 dB` median/p90
+error and `0.557` correlation to `0.97/6.17 dB` and `0.832`, with `0.969`
+cents worst measured pitch error. These are offline gates; physical speaker
+judgment remains required.
 
 The short oracle-derived attack-sample branch now has a structural upper-bound
 audit in [`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json).  It deliberately
@@ -1222,7 +1314,7 @@ player end, 30,071-byte largest delivered JPS, exact `40/3/1` capability
 distribution, all 44-track scans, generic-reducer title-literal guard, and the
 recorded M3--M6 physical evidence.  Its automated status is `pass`; G3, G8,
 and M7 point to the single remaining required action, the prepared Imp
-physical A/B.  Older milestone reports retain their historically accurate
+target-shape physical A/B.  Older milestone reports retain their historically accurate
 “pending” strings, while this audit records which later evidence closed them.
 
 ## Required reporting for every implementation change

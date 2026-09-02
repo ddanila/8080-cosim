@@ -1,8 +1,8 @@
 {
   "schema": "jukupoly-song-v2",
-  "title": "The Imp's Song (OPL3/VGZ JukuPoly envelope+rearticulation+detuned-layers reduction)",
+  "title": "The Imp's Song (OPL3/VGZ JukuPoly envelope+target-shape+rearticulation+detuned-layers reduction)",
   "composer": "Robert Prince",
-  "arrangement": "Automatic guarded OPL logical-voice reduction with three tones, fitted 4-bit envelopes, bounded same-pitch re-articulation, source-derived detuned spare layers, and concurrent percussion",
+  "arrangement": "Automatic guarded OPL logical-voice reduction with three tones, fitted 4-bit envelopes, oracle-selected target envelope shape, bounded same-pitch re-articulation, source-derived detuned spare layers, and concurrent percussion",
   "source": {
     "name": "03 The Imp's Song.vgz",
     "format": "gzip-compressed VGM",
@@ -199,15 +199,15 @@
     },
     "enhanced_envelope_fit": {
       "selected_logical_notes": 16,
-      "mean_absolute_error": 0.403901605044886,
-      "sample_weighted_mean_absolute_error": 0.6742209631728046,
-      "single_packet_sample_weighted_mean_absolute_error": 1.4408640226628895,
+      "mean_absolute_error": 0.3355099603933372,
+      "sample_weighted_mean_absolute_error": 0.5524079320113314,
+      "single_packet_sample_weighted_mean_absolute_error": 1.4189093484419264,
       "maximum_error": 7,
       "direction_mismatches": 0,
       "unrepresentable_rearticulation_notes": 0,
       "delivery_note_mae_limit": 2.0,
       "target_shape_fit": {
-        "enabled": false,
+        "enabled": true,
         "policy": "evaluate both target sustain state machines against the same oracle-derived 4-bit trace; prefer source EGT mode on an exact error tie"
       },
       "rearticulation": {
@@ -239,61 +239,61 @@
                 ],
                 "phase_step": 845,
                 "packet": {
-                  "peak_level": 7,
-                  "sustain_level": 0,
+                  "peak_level": 6,
+                  "sustain_level": 5,
                   "attack_period_frames": 1,
-                  "decay_period_frames": 16,
-                  "release_period_frames": 0,
-                  "sustain_while_keyed": true
+                  "decay_period_frames": 64,
+                  "release_period_frames": 4,
+                  "sustain_while_keyed": false
                 },
                 "articulation_packets": [
                   {
                     "frame_offset": 86,
                     "packet": {
                       "peak_level": 6,
-                      "sustain_level": 0,
+                      "sustain_level": 6,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 8,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 173,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 0,
+                      "sustain_level": 4,
                       "attack_period_frames": 1,
                       "decay_period_frames": 64,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "release_period_frames": 8,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 350,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 5,
+                      "sustain_level": 4,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 32,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 64,
+                      "release_period_frames": 2,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 524,
                     "packet": {
-                      "peak_level": 8,
-                      "sustain_level": 0,
+                      "peak_level": 7,
+                      "sustain_level": 5,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 32,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 64,
+                      "release_period_frames": 16,
+                      "sustain_while_keyed": false
                     }
                   }
                 ],
-                "mean_absolute_error": 0.9286640726329443,
-                "maximum_error": 4,
+                "mean_absolute_error": 0.6874189364461738,
+                "maximum_error": 3,
                 "reference_frames": 771,
                 "reference_energy": 3508
               },
@@ -307,50 +307,50 @@
                 ],
                 "phase_step": 839,
                 "packet": {
-                  "peak_level": 7,
-                  "sustain_level": 0,
+                  "peak_level": 6,
+                  "sustain_level": 5,
                   "attack_period_frames": 1,
-                  "decay_period_frames": 16,
-                  "release_period_frames": 0,
-                  "sustain_while_keyed": true
+                  "decay_period_frames": 64,
+                  "release_period_frames": 4,
+                  "sustain_while_keyed": false
                 },
                 "articulation_packets": [
                   {
                     "frame_offset": 171,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 0,
+                      "sustain_level": 4,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 2,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 348,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 0,
+                      "sustain_level": 5,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 8,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 523,
                     "packet": {
-                      "peak_level": 8,
-                      "sustain_level": 0,
+                      "peak_level": 7,
+                      "sustain_level": 4,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 4,
+                      "sustain_while_keyed": false
                     }
                   }
                 ],
-                "mean_absolute_error": 0.5914396887159533,
-                "maximum_error": 3,
+                "mean_absolute_error": 0.23865110246433205,
+                "maximum_error": 2,
                 "reference_frames": 771,
                 "reference_energy": 1897
               },
@@ -384,8 +384,8 @@
         "extra_voices": 2,
         "member_envelope_fits": 3,
         "source_members_merged": 4,
-        "member_sample_weighted_mean_absolute_error": 0.5633376567228707,
-        "member_maximum_error": 4,
+        "member_sample_weighted_mean_absolute_error": 0.3653264159100735,
+        "member_maximum_error": 3,
         "member_rearticulation_packets": 7,
         "rejections": {
           "noncontiguous_selection": 2
@@ -395,7 +395,7 @@
       "tremolo_analysis": {
         "model": "shared 3.7 Hz 16-step phase; 0..3 level attenuation",
         "enabled": false,
-        "semantic_candidates": 1,
+        "semantic_candidates": 0,
         "emitted_notes": 0,
         "rejected_indirect_candidates": 1
       },
@@ -408,12 +408,12 @@
           "reference_frames": 771,
           "reference_peak": 13,
           "packet": {
-            "peak_level": 14,
-            "sustain_level": 0,
+            "peak_level": 12,
+            "sustain_level": 11,
             "attack_period_frames": 1,
-            "decay_period_frames": 8,
-            "release_period_frames": 0,
-            "sustain_while_keyed": true
+            "decay_period_frames": 64,
+            "release_period_frames": 2,
+            "sustain_while_keyed": false
           },
           "baseline_packet": {
             "peak_level": 15,
@@ -423,7 +423,7 @@
             "release_period_frames": 0,
             "sustain_while_keyed": true
           },
-          "mean_absolute_error": 1.119325551232166,
+          "mean_absolute_error": 0.8495460440985733,
           "single_packet_mean_absolute_error": 2.832684824902724,
           "maximum_error": 7,
           "significant_rearticulations": 4,
@@ -431,45 +431,45 @@
             {
               "frame_offset": 88,
               "packet": {
-                "peak_level": 12,
-                "sustain_level": 0,
+                "peak_level": 11,
+                "sustain_level": 11,
                 "attack_period_frames": 1,
-                "decay_period_frames": 8,
-                "release_period_frames": 0,
-                "sustain_while_keyed": true
+                "decay_period_frames": 32,
+                "release_period_frames": 4,
+                "sustain_while_keyed": false
               }
             },
             {
               "frame_offset": 170,
               "packet": {
                 "peak_level": 13,
-                "sustain_level": 0,
+                "sustain_level": 4,
                 "attack_period_frames": 1,
                 "decay_period_frames": 16,
-                "release_period_frames": 0,
-                "sustain_while_keyed": true
+                "release_period_frames": 8,
+                "sustain_while_keyed": false
               }
             },
             {
               "frame_offset": 348,
               "packet": {
                 "peak_level": 13,
-                "sustain_level": 0,
+                "sustain_level": 3,
                 "attack_period_frames": 1,
                 "decay_period_frames": 16,
-                "release_period_frames": 0,
-                "sustain_while_keyed": true
+                "release_period_frames": 8,
+                "sustain_while_keyed": false
               }
             },
             {
               "frame_offset": 524,
               "packet": {
                 "peak_level": 14,
-                "sustain_level": 0,
+                "sustain_level": 4,
                 "attack_period_frames": 1,
                 "decay_period_frames": 16,
-                "release_period_frames": 0,
-                "sustain_while_keyed": true
+                "release_period_frames": 2,
+                "sustain_while_keyed": false
               }
             }
           ],
@@ -491,61 +491,61 @@
                 ],
                 "phase_step": 845,
                 "packet": {
-                  "peak_level": 7,
-                  "sustain_level": 0,
+                  "peak_level": 6,
+                  "sustain_level": 5,
                   "attack_period_frames": 1,
-                  "decay_period_frames": 16,
-                  "release_period_frames": 0,
-                  "sustain_while_keyed": true
+                  "decay_period_frames": 64,
+                  "release_period_frames": 4,
+                  "sustain_while_keyed": false
                 },
                 "articulation_packets": [
                   {
                     "frame_offset": 86,
                     "packet": {
                       "peak_level": 6,
-                      "sustain_level": 0,
+                      "sustain_level": 6,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 8,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 173,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 0,
+                      "sustain_level": 4,
                       "attack_period_frames": 1,
                       "decay_period_frames": 64,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "release_period_frames": 8,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 350,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 5,
+                      "sustain_level": 4,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 32,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 64,
+                      "release_period_frames": 2,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 524,
                     "packet": {
-                      "peak_level": 8,
-                      "sustain_level": 0,
+                      "peak_level": 7,
+                      "sustain_level": 5,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 32,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 64,
+                      "release_period_frames": 16,
+                      "sustain_while_keyed": false
                     }
                   }
                 ],
-                "mean_absolute_error": 0.9286640726329443,
-                "maximum_error": 4,
+                "mean_absolute_error": 0.6874189364461738,
+                "maximum_error": 3,
                 "reference_frames": 771,
                 "reference_energy": 3508
               },
@@ -559,50 +559,50 @@
                 ],
                 "phase_step": 839,
                 "packet": {
-                  "peak_level": 7,
-                  "sustain_level": 0,
+                  "peak_level": 6,
+                  "sustain_level": 5,
                   "attack_period_frames": 1,
-                  "decay_period_frames": 16,
-                  "release_period_frames": 0,
-                  "sustain_while_keyed": true
+                  "decay_period_frames": 64,
+                  "release_period_frames": 4,
+                  "sustain_while_keyed": false
                 },
                 "articulation_packets": [
                   {
                     "frame_offset": 171,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 0,
+                      "sustain_level": 4,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 2,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 348,
                     "packet": {
                       "peak_level": 7,
-                      "sustain_level": 0,
+                      "sustain_level": 5,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 8,
+                      "sustain_while_keyed": false
                     }
                   },
                   {
                     "frame_offset": 523,
                     "packet": {
-                      "peak_level": 8,
-                      "sustain_level": 0,
+                      "peak_level": 7,
+                      "sustain_level": 4,
                       "attack_period_frames": 2,
-                      "decay_period_frames": 16,
-                      "release_period_frames": 0,
-                      "sustain_while_keyed": true
+                      "decay_period_frames": 32,
+                      "release_period_frames": 4,
+                      "sustain_while_keyed": false
                     }
                   }
                 ],
-                "mean_absolute_error": 0.5914396887159533,
-                "maximum_error": 3,
+                "mean_absolute_error": 0.23865110246433205,
+                "maximum_error": 2,
                 "reference_frames": 771,
                 "reference_energy": 1897
               },
@@ -645,7 +645,7 @@
               "reference": -1,
               "predicted": -1,
               "reference_delta_levels": -13,
-              "predicted_delta_levels": -11,
+              "predicted_delta_levels": -14,
               "significant": true,
               "match": true
             },
@@ -747,11 +747,11 @@
           "reference_peak": 13,
           "packet": {
             "peak_level": 12,
-            "sustain_level": 0,
+            "sustain_level": 4,
             "attack_period_frames": 2,
             "decay_period_frames": 16,
-            "release_period_frames": 0,
-            "sustain_while_keyed": true
+            "release_period_frames": 8,
+            "sustain_while_keyed": false
           },
           "baseline_packet": {
             "peak_level": 15,
@@ -761,7 +761,7 @@
             "release_period_frames": 0,
             "sustain_while_keyed": true
           },
-          "mean_absolute_error": 1.0426621160409557,
+          "mean_absolute_error": 0.9163822525597269,
           "single_packet_mean_absolute_error": 2.4829351535836177,
           "maximum_error": 5,
           "significant_rearticulations": 2,
@@ -769,23 +769,23 @@
             {
               "frame_offset": 183,
               "packet": {
-                "peak_level": 13,
-                "sustain_level": 0,
+                "peak_level": 14,
+                "sustain_level": 5,
                 "attack_period_frames": 1,
                 "decay_period_frames": 16,
-                "release_period_frames": 0,
-                "sustain_while_keyed": true
+                "release_period_frames": 8,
+                "sustain_while_keyed": false
               }
             },
             {
               "frame_offset": 360,
               "packet": {
                 "peak_level": 14,
-                "sustain_level": 0,
+                "sustain_level": 4,
                 "attack_period_frames": 1,
                 "decay_period_frames": 16,
-                "release_period_frames": 0,
-                "sustain_while_keyed": true
+                "release_period_frames": 2,
+                "sustain_while_keyed": false
               }
             }
           ],
@@ -804,7 +804,7 @@
               "reference": -1,
               "predicted": -1,
               "reference_delta_levels": -13,
-              "predicted_delta_levels": -11,
+              "predicted_delta_levels": -14,
               "significant": true,
               "match": true
             },
@@ -1177,23 +1177,23 @@
           "reference_frames": 199,
           "reference_peak": 5,
           "packet": {
-            "peak_level": 5,
+            "peak_level": 4,
             "sustain_level": 2,
             "attack_period_frames": 0,
-            "decay_period_frames": 32,
-            "release_period_frames": 2,
-            "sustain_while_keyed": true
+            "decay_period_frames": 64,
+            "release_period_frames": 32,
+            "sustain_while_keyed": false
           },
           "baseline_packet": {
-            "peak_level": 5,
+            "peak_level": 4,
             "sustain_level": 2,
             "attack_period_frames": 0,
-            "decay_period_frames": 32,
-            "release_period_frames": 2,
-            "sustain_while_keyed": true
+            "decay_period_frames": 64,
+            "release_period_frames": 32,
+            "sustain_while_keyed": false
           },
-          "mean_absolute_error": 0.23618090452261306,
-          "single_packet_mean_absolute_error": 0.23618090452261306,
+          "mean_absolute_error": 0.23115577889447236,
+          "single_packet_mean_absolute_error": 0.23115577889447236,
           "maximum_error": 1,
           "significant_rearticulations": 0,
           "articulation_packets": [],
@@ -1220,7 +1220,7 @@
               "reference": -1,
               "predicted": -1,
               "reference_delta_levels": -1,
-              "predicted_delta_levels": -2,
+              "predicted_delta_levels": -1,
               "significant": false,
               "match": true
             }
@@ -1230,8 +1230,8 @@
             "source_changed_frames_4bit": 0,
             "best_depth_levels": 0,
             "emitted_depth_levels": 0,
-            "baseline_squared_error": 47,
-            "fitted_squared_error": 47,
+            "baseline_squared_error": 46,
+            "fitted_squared_error": 46,
             "squared_error_improvement": 0,
             "improvement_per_frame": 0.0,
             "semantic_candidate": false
@@ -1313,23 +1313,23 @@
           "reference_frames": 88,
           "reference_peak": 13,
           "packet": {
-            "peak_level": 15,
-            "sustain_level": 0,
+            "peak_level": 13,
+            "sustain_level": 13,
             "attack_period_frames": 1,
-            "decay_period_frames": 8,
-            "release_period_frames": 0,
-            "sustain_while_keyed": true
+            "decay_period_frames": 64,
+            "release_period_frames": 2,
+            "sustain_while_keyed": false
           },
           "baseline_packet": {
-            "peak_level": 15,
-            "sustain_level": 0,
+            "peak_level": 13,
+            "sustain_level": 13,
             "attack_period_frames": 1,
-            "decay_period_frames": 8,
-            "release_period_frames": 0,
-            "sustain_while_keyed": true
+            "decay_period_frames": 64,
+            "release_period_frames": 2,
+            "sustain_while_keyed": false
           },
-          "mean_absolute_error": 1.7613636363636365,
-          "single_packet_mean_absolute_error": 1.7613636363636365,
+          "mean_absolute_error": 1.0681818181818181,
+          "single_packet_mean_absolute_error": 1.0681818181818181,
           "maximum_error": 7,
           "significant_rearticulations": 0,
           "articulation_packets": [],
@@ -1340,7 +1340,7 @@
               "reference": 1,
               "predicted": 1,
               "reference_delta_levels": 13,
-              "predicted_delta_levels": 15,
+              "predicted_delta_levels": 13,
               "significant": true,
               "match": true
             },
@@ -1348,7 +1348,7 @@
               "reference": -1,
               "predicted": -1,
               "reference_delta_levels": -10,
-              "predicted_delta_levels": -9,
+              "predicted_delta_levels": -13,
               "significant": true,
               "match": true
             }
@@ -1356,13 +1356,13 @@
           "tremolo_analysis": {
             "directly_audible_am_path": true,
             "source_changed_frames_4bit": 38,
-            "best_depth_levels": 1,
+            "best_depth_levels": 0,
             "emitted_depth_levels": 0,
-            "baseline_squared_error": 445,
-            "fitted_squared_error": 436,
-            "squared_error_improvement": 9,
-            "improvement_per_frame": 0.10227272727272728,
-            "semantic_candidate": true
+            "baseline_squared_error": 254,
+            "fitted_squared_error": 254,
+            "squared_error_improvement": 0,
+            "improvement_per_frame": 0.0,
+            "semantic_candidate": false
           }
         },
         {
@@ -1735,23 +1735,23 @@
       "frames": 86,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 7,
-          "sustain_level": 0,
+          "peak_level": 6,
+          "sustain_level": 5,
           "attack_period_frames": 1,
-          "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 4,
+          "sustain_while_keyed": false
         },
         "phase_step": 845
       },
       "tone2": {
         "opl_envelope": {
-          "peak_level": 7,
-          "sustain_level": 0,
+          "peak_level": 6,
+          "sustain_level": 5,
           "attack_period_frames": 1,
-          "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 4,
+          "sustain_while_keyed": false
         },
         "phase_step": 839
       },
@@ -1778,11 +1778,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 6,
-          "sustain_level": 0,
+          "sustain_level": 6,
           "attack_period_frames": 2,
-          "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 32,
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "phase_step": 845
       }
@@ -1828,11 +1828,11 @@
       "tone2": {
         "opl_envelope": {
           "peak_level": 7,
-          "sustain_level": 0,
+          "sustain_level": 4,
           "attack_period_frames": 2,
-          "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 32,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "phase_step": 839
       }
@@ -1842,11 +1842,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 7,
-          "sustain_level": 0,
+          "sustain_level": 4,
           "attack_period_frames": 1,
           "decay_period_frames": 64,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "phase_step": 845
       }
@@ -1892,11 +1892,11 @@
       "tone2": {
         "opl_envelope": {
           "peak_level": 7,
-          "sustain_level": 0,
+          "sustain_level": 5,
           "attack_period_frames": 2,
-          "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 32,
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "phase_step": 839
       }
@@ -1906,11 +1906,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 7,
-          "sustain_level": 5,
+          "sustain_level": 4,
           "attack_period_frames": 2,
-          "decay_period_frames": 32,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "phase_step": 845
       }
@@ -1955,12 +1955,12 @@
       "frames": 1,
       "tone2": {
         "opl_envelope": {
-          "peak_level": 8,
-          "sustain_level": 0,
+          "peak_level": 7,
+          "sustain_level": 4,
           "attack_period_frames": 2,
-          "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 32,
+          "release_period_frames": 4,
+          "sustain_while_keyed": false
         },
         "phase_step": 839
       }
@@ -1969,12 +1969,12 @@
       "frames": 138,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 8,
-          "sustain_level": 0,
+          "peak_level": 7,
+          "sustain_level": 5,
           "attack_period_frames": 2,
-          "decay_period_frames": 32,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 16,
+          "sustain_while_keyed": false
         },
         "phase_step": 845
       }
@@ -2073,11 +2073,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 12,
-          "sustain_level": 0,
+          "sustain_level": 4,
           "attack_period_frames": 2,
           "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2174,11 +2174,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 12,
-          "sustain_level": 0,
+          "sustain_level": 4,
           "attack_period_frames": 2,
           "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2187,12 +2187,12 @@
       "frames": 6,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 13,
-          "sustain_level": 0,
+          "peak_level": 14,
+          "sustain_level": 5,
           "attack_period_frames": 1,
           "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2246,11 +2246,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 12,
-          "sustain_level": 0,
+          "sustain_level": 4,
           "attack_period_frames": 2,
           "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       },
@@ -2283,11 +2283,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 14,
-          "sustain_level": 0,
+          "sustain_level": 4,
           "attack_period_frames": 1,
           "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2296,12 +2296,12 @@
       "frames": 1,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 5,
+          "peak_level": 4,
           "sustain_level": 2,
           "attack_period_frames": 0,
-          "decay_period_frames": 32,
-          "release_period_frames": 2,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 32,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2344,11 +2344,11 @@
       "tone1": {
         "opl_envelope": {
           "peak_level": 12,
-          "sustain_level": 0,
+          "sustain_level": 4,
           "attack_period_frames": 2,
           "decay_period_frames": 16,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "release_period_frames": 8,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2377,12 +2377,12 @@
       "frames": 1,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 15,
-          "sustain_level": 0,
+          "peak_level": 13,
+          "sustain_level": 13,
           "attack_period_frames": 1,
-          "decay_period_frames": 8,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       },
@@ -2414,12 +2414,12 @@
       "frames": 10,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 15,
-          "sustain_level": 0,
+          "peak_level": 13,
+          "sustain_level": 13,
           "attack_period_frames": 1,
-          "decay_period_frames": 8,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2448,12 +2448,12 @@
       "frames": 7,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 15,
-          "sustain_level": 0,
+          "peak_level": 13,
+          "sustain_level": 13,
           "attack_period_frames": 1,
-          "decay_period_frames": 8,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2482,12 +2482,12 @@
       "frames": 8,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 15,
-          "sustain_level": 0,
+          "peak_level": 13,
+          "sustain_level": 13,
           "attack_period_frames": 1,
-          "decay_period_frames": 8,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }
@@ -2525,12 +2525,12 @@
       "frames": 1,
       "tone1": {
         "opl_envelope": {
-          "peak_level": 15,
-          "sustain_level": 0,
+          "peak_level": 13,
+          "sustain_level": 13,
           "attack_period_frames": 1,
-          "decay_period_frames": 8,
-          "release_period_frames": 0,
-          "sustain_while_keyed": true
+          "decay_period_frames": 64,
+          "release_period_frames": 2,
+          "sustain_while_keyed": false
         },
         "note": "F#2"
       }

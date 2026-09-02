@@ -10,10 +10,10 @@
 
 PITDATA         equ     019h
 PITCTL          equ     01bh
-
-        if      @@2
 KEYCOLPORT      equ     004h
 KEYROWPORT      equ     005h
+
+        if      @@2
 SONG_LOAD       equ     01800h
 SONG_ROWS       equ     SONG_LOAD+10
 SONG_SILENCE    equ     SONG_LOAD+12
@@ -42,6 +42,14 @@ player_start:
         dad     sp
         shld    saved_sp
 
+        ; Standalone JPS v2 must patch its dispatcher while the caller's real
+        ; stack is still active.  Once SP is lent to tone channel 3, CALL
+        ; would push at FFFEh; that happens to work in a flat-RAM harness but
+        ; is lost behind Juku's D800h-FFFFh high-ROM overlay.
+        if      @@3
+        call    envelope_dispatch_init
+        endif
+
         mvi     a,050h                  ; D57 ch1, LSB-only, mode 0
         out     PITCTL
         mvi     a,1                     ; static high = silence
@@ -60,10 +68,7 @@ player_start:
         sta     ch1_volume
         sta     ch2_volume
         sta     ch3_volume
-        if      @@3
-        call    envelope_dispatch_init
-        endif
-        if      @@2
+        if      @@2+@@8
         sta     player_aborted
         endif
         if      @@1
@@ -172,7 +177,7 @@ frame_tick_base_saved:
         lhld    saved_sp
         sphl
 
-        if      @@2
+        if      @@2+@@8
         ; Escape is column 3, encoder input 4 (raw low nibble 06h).  Poll only
         ; this contact at the existing frame boundary: 48 cycles when idle,
         ; no BIOS/N4 transaction, and no change to the audio-sample hot loop.
@@ -908,7 +913,7 @@ envelope_decay:
         include "jukupoly-envelope-v2.inc"
         endif
 
-        if      @@2
+        if      @@2+@@8
 playback_aborted:
         mvi     a,1
         sta     player_aborted
@@ -918,7 +923,7 @@ finished:
         out     PITCTL
         mvi     a,1
         out     PITDATA
-        if      @@2
+        if      @@2+@@8
         lda     player_aborted
         ora     a
         jz      playback_return
@@ -961,6 +966,8 @@ slide_delta:
         if      @@2
 silence_pointer:
         dw      SONG_LOAD
+        endif
+        if      @@2+@@8
 player_aborted:
         db      0
         endif

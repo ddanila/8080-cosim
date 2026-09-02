@@ -83,6 +83,9 @@ def generate() -> dict:
     nobody = load("OPL-NOBODY-REARTICULATION-M7.json")
     attack_pcm = load("OPL-M7-ATTACK-PCM.json")
     physical_ab = load("OPL-IMP-M7-PHYSICAL-AB.json")
+    target_shape = load("OPL-IMP-TARGET-SHAPE-M7.json")
+    target_shape_ab = load("OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json")
+    target_shape_pack = load("OPL-TARGET-SHAPE-PACK-SCAN-M7.json")
     physical_result_path = (
         SPINOFF / "sessions" / "cs00000-jukupoly-m6-physical" / "result.txt"
     )
@@ -161,9 +164,77 @@ def generate() -> dict:
             "M6 physical result boundary is missing or changed")
     require(physical_ab["disk"]["cpm_round_trip_verified"] is True,
             "M7 physical A/B disk has no CP/M round-trip evidence")
+    require(physical_ab["schema"] == "jukupoly-imp-m7-physical-ab-v2",
+            "M7 physical A/B disk predates standalone Escape qualification")
     require([item["strategy"] for item in physical_ab["files"]] == [
         "unchanged-v1", "bounded-rearticulation", "detuned-source-members",
     ], "M7 physical A/B order changed")
+    require(all(
+        item.get("standalone_player") is True and
+        item.get("escape_polling_enabled") is True and
+        item.get("escape_poll_sites") == 2
+        for item in physical_ab["files"]
+    ), "M7 physical A/B standalone Escape evidence is incomplete")
+    require(
+        physical_ab["physical_protocol"].get("escape_polling") ==
+        "standalone player build option -P8=1",
+        "M7 physical protocol does not identify its Escape build",
+    )
+    all_true(physical_ab["cycle_qualification"]["gates"],
+             "M7 standalone Escape qualification")
+    require(
+        target_shape["schema"] ==
+        "jukupoly-imp-target-shape-pcm-audit-v1",
+        "M7 target-shape PCM audit schema changed",
+    )
+    all_true(target_shape["gates"], "M7 target-shape PCM audit")
+    for name, comparison in target_shape["comparisons"].items():
+        all_true(comparison["gates"], f"M7 target-shape {name}")
+    require(
+        target_shape_ab["schema"] ==
+        "jukupoly-imp-target-shape-physical-ab-v1",
+        "M7 target-shape physical A/B schema changed",
+    )
+    require([item["strategy"] for item in target_shape_ab["files"]] == [
+        "source-egt-rearticulation", "target-shape-rearticulation",
+        "source-egt-detuned-members", "target-shape-detuned-members",
+    ], "M7 target-shape physical A/B order changed")
+    require(all(
+        item.get("standalone_player") is True and
+        item.get("escape_polling_enabled") is True and
+        item.get("escape_poll_sites") == 2
+        for item in target_shape_ab["files"]
+    ), "M7 target-shape standalone Escape evidence is incomplete")
+    all_true(target_shape_ab["cycle_qualification"]["gates"],
+             "M7 target-shape Escape qualification")
+    require(
+        target_shape_ab["independent_pcm_audit"]["sha256"] ==
+        sha256(SPINOFF / "OPL-IMP-TARGET-SHAPE-M7.json") and
+        target_shape_ab["independent_pcm_audit"]["all_gates_pass"] is True,
+        "M7 target-shape disk is detached from its PCM audit",
+    )
+    require(
+        target_shape_pack["schema"] ==
+        "jukupoly-opl-target-shape-pack-scan-v1" and
+        target_shape_pack["summary"]["tracks"] == 44,
+        "M7 target-shape pack audit is incomplete",
+    )
+    shape_comparison = target_shape_pack["target_shape_fit"][
+        "two_pack_comparison"
+    ]
+    require(
+        shape_comparison["target_shape_absolute_error"] <
+        shape_comparison["source_semantic_absolute_error"] and
+        shape_comparison["baseline_squared_error"]["target_shape"] <
+        shape_comparison["baseline_squared_error"]["source_semantic"],
+        "M7 target-shape pack fit did not improve both error measures",
+    )
+    require(
+        shape_comparison["timing"][
+            "worst_sample_rate_fraction_change"
+        ] >= -0.10,
+        "M7 target-shape pack scan exceeds the allowed 10% rate reduction",
+    )
 
     guards = [
         {
@@ -191,12 +262,14 @@ def generate() -> dict:
         {
             "id": "G3", "status": "physical-pending",
             "finding": (
-                "percussion and Escape remain measured; M7 iteration change "
-                "still requires the prepared physical A/B"
+                "percussion and Escape remain measured; independently PCM-"
+                "qualified target-shape iteration still requires physical A/B"
             ),
             "evidence": [
                 "OPL-IMP-DETUNED-FULL-M7.json",
-                "OPL-IMP-M7-PHYSICAL-AB.json",
+                "OPL-IMP-TARGET-SHAPE-M7.json",
+                "OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json",
+                "OPL-TARGET-SHAPE-PACK-SCAN-M7.json",
             ],
         },
         {
@@ -231,17 +304,18 @@ def generate() -> dict:
             "evidence": [
                 "OPL-M7-PACK-SCAN.json", "OPL-M7-MODES.json",
                 "OPL-M7-DETUNED-SPARES.json", "OPL-M7-ATTACK-PCM.json",
+                "OPL-TARGET-SHAPE-PACK-SCAN-M7.json",
             ],
         },
         {
             "id": "G8", "status": "physical-pending",
             "finding": (
                 "M3 fallback and delivered M4/M5/M6 payloads have physical "
-                "evidence; the M7 Imp candidate does not"
+                "evidence; the corrected M7 Imp target-shape candidates do not"
             ),
             "evidence": [
                 "sessions/cs00000-jukupoly-m6-physical/result.txt",
-                "OPL-IMP-M7-PHYSICAL-AB.json",
+                "OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json",
             ],
         },
     ]
@@ -271,8 +345,8 @@ def generate() -> dict:
         {
             "id": "M7", "status": "physical-pending",
             "finding": (
-                "full detuned Imp passes offline; modes and attack PCM have "
-                "documented no-demand/capacity fallbacks"
+                "full detuned Imp and corrected target-envelope shape pass "
+                "offline; modes and attack PCM retain documented fallbacks"
             ),
         },
     ]
@@ -288,13 +362,13 @@ def generate() -> dict:
         "automated_status": "pass",
         "overall_status": "physical-qualification-pending",
         "remaining_required_actions": [{
-            "id": "M7-IMP-PHYSICAL-AB",
+            "id": "M7-IMP-TARGET-SHAPE-PHYSICAL-AB",
             "action": (
-                "boot the hash-locked comparison disk on CS00000, run IMPV1, "
-                "IMPREAR, and IMPDET at one volume, record sound assessment, "
-                "Escape behavior, and CP/M return"
+                "cold-boot the hash-locked target-shape comparison disk on "
+                "CS00000; run REAROLD/REARNEW and DETOLD/DETNEW at one volume "
+                "and record fade preference, Escape behavior, and CP/M return"
             ),
-            "prepared_evidence": "OPL-IMP-M7-PHYSICAL-AB.json",
+            "prepared_evidence": "OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json",
             "requires_external_state": "powered physical CS00000 and operator",
         }],
         "evidence": [evidence(name) for name in evidence_names] + [{
