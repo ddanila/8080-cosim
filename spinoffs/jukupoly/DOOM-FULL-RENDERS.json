@@ -1,0 +1,1579 @@
+{
+  "aggregate_gates": {
+    "catalog_and_renders_have_same_track_count": true,
+    "every_catalog_payload_hash_matches": true,
+    "every_render_has_audio": true,
+    "generic_conversion_requested": true,
+    "minimum_enhanced_tracks_met": true,
+    "no_song_specific_conversion_exceptions": true,
+    "no_song_specific_render_exceptions": true
+  },
+  "library": {
+    "catalog_sha256": "7598e1e791a58c6325acb1c12ec897def3b55ec291a8dd7c866b8d6b98d41eaa",
+    "conversion_policy": {
+      "generic_only": true,
+      "song_specific_allocation_overrides": false,
+      "song_specific_melodic_overrides": false
+    },
+    "enhanced_tracks": 23,
+    "player_bytes": 4537,
+    "player_capabilities": 1,
+    "player_sha256": "aef13dd51eb782203a3fc4f5b65697729a7fedb86b4d8947ece6bf824299f37d"
+  },
+  "render_policy": {
+    "cpu_hz": 1700000,
+    "dc_block_hz": 20,
+    "engine": "cycle-level Intel 8080 plus D57 channel-1 Mode-0 pulses",
+    "gain": 0.95,
+    "lead_seconds": 0.25,
+    "mp3": "libmp3lame VBR quality 2",
+    "pcm_sample_rate_hz": 48000,
+    "pit_hz": 2000000,
+    "song_specific_render_exceptions": [],
+    "tail_seconds": 0.25
+  },
+  "schema": "jukupoly-library-full-renders-v1",
+  "status": "all 44 finite library tracks were cycle-rendered through the reusable player and encoded to MP3",
+  "tracks": [
+    {
+      "global_track": 1,
+      "jps": {
+        "bytes": 2845,
+        "capability": 1,
+        "name": "D1T01.JPS",
+        "sha256": "728a94cc16e1a6d176e29e899cafadb547e7c41554d10befc3ebfb9dd5e5408e"
+      },
+      "local_track": 1,
+      "mp3": {
+        "bytes": 166270,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 7.361021,
+        "path": "mp3/01-doom1-01-title-screen.mp3",
+        "sha256": "b9b61598c113dfd2925bf4b22736264614cbc7e146710b73d76c92905e1428d6"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 345,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 2807,
+        "pulse_intervals": 2805,
+        "run_seconds": 6.861,
+        "wav_seconds": 7.361
+      },
+      "source_name": "01 Title Screen.vgz",
+      "source_sha256": "faa33ba67248f0a5e4a62ba47f895fe38a0d83731b15275f6033df9062ed5035",
+      "title": "Title Screen",
+      "wav": {
+        "bytes": 706702,
+        "path": "wav/01-doom1-01-title-screen.wav",
+        "sha256": "de94e71a45181af2fa6ce9274655156d8ee7a70ffe5a3a6d5a169442acc2a7c9"
+      }
+    },
+    {
+      "global_track": 2,
+      "jps": {
+        "bytes": 12110,
+        "capability": 0,
+        "name": "D1T02.JPS",
+        "sha256": "d665c56a856a1080479ae5f10d08cccf47d3d79b01ec567f05d19d75ba349f89"
+      },
+      "local_track": 2,
+      "mp3": {
+        "bytes": 2071344,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 97.552042,
+        "path": "mp3/02-doom1-02-at-doom-s-gate.mp3",
+        "sha256": "a9d915e420bbefb9676e594de189beb9125b6bf71a21ee7e6be2c7bada57070e"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 4827,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 56979,
+        "pulse_intervals": 56977,
+        "run_seconds": 97.052,
+        "wav_seconds": 97.552
+      },
+      "source_name": "02 At Doom's Gate.vgz",
+      "source_sha256": "87c6620af71c04a73dd51bec06f7e849fb54a827373de9a1bf33173d7344109a",
+      "title": "At Doom's Gate",
+      "wav": {
+        "bytes": 9365040,
+        "path": "wav/02-doom1-02-at-doom-s-gate.wav",
+        "sha256": "ab8785dfceb868908adbbd672b8a855b28c1ab119f60d0a3732a79534edb77b6"
+      }
+    },
+    {
+      "global_track": 3,
+      "jps": {
+        "bytes": 11705,
+        "capability": 1,
+        "name": "D1T03.JPS",
+        "sha256": "78bab88bbfd3bb14d6326c2299c19419c1ad3ddb922a4b323c4b3a19f0a5ca48"
+      },
+      "local_track": 3,
+      "mp3": {
+        "bytes": 4635720,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 157.932458,
+        "path": "mp3/03-doom1-03-the-imp-s-song.mp3",
+        "sha256": "3e9a70288857344841343b15d2a168e16e9433b952f74985b5c069e05fb4c464"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 7876,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 57637,
+        "pulse_intervals": 57635,
+        "run_seconds": 157.432,
+        "wav_seconds": 157.932
+      },
+      "source_name": "03 The Imp's Song.vgz",
+      "source_sha256": "1d3670f1bd3ccccf6ecd510926101ba6c24fc466c38d37277edfe57c538839cc",
+      "title": "The Imp's Song",
+      "wav": {
+        "bytes": 15161560,
+        "path": "wav/03-doom1-03-the-imp-s-song.wav",
+        "sha256": "2c8d91131176d1916efd6c250aae2faab7e56e3a38f66ad048dfbdea40e04a5e"
+      }
+    },
+    {
+      "global_track": 4,
+      "jps": {
+        "bytes": 20163,
+        "capability": 1,
+        "name": "D1T04.JPS",
+        "sha256": "26d595230e70cc8768e6af7752e8b8307cedec91f33becc093751a38b2b4ddd3"
+      },
+      "local_track": 4,
+      "mp3": {
+        "bytes": 4801460,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 272.671958,
+        "path": "mp3/04-doom1-04-dark-halls.mp3",
+        "sha256": "2611523c59722e5304e3428fe705175186800f84cf2fc52a2e5df51c4af653bd"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 13609,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 371762,
+        "pulse_intervals": 371760,
+        "run_seconds": 272.172,
+        "wav_seconds": 272.672
+      },
+      "source_name": "04 Dark Halls.vgz",
+      "source_sha256": "ef49e29081f002b140cd270a7add18753eb472dde1c3bb239da8bbe8f7cf2807",
+      "title": "Dark Halls",
+      "wav": {
+        "bytes": 26176552,
+        "path": "wav/04-doom1-04-dark-halls.wav",
+        "sha256": "bdeb81f9a1abda12fb9142fd6321c20d149e6abf53632082f24f271462b00674"
+      }
+    },
+    {
+      "global_track": 5,
+      "jps": {
+        "bytes": 19873,
+        "capability": 1,
+        "name": "D1T05.JPS",
+        "sha256": "ada3a8ce3c172b1402b43fc56a7f67559409561f0d1a143a22e59476510fcf55"
+      },
+      "local_track": 5,
+      "mp3": {
+        "bytes": 3606160,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 173.692875,
+        "path": "mp3/05-doom1-05-kitchen-ace-and-taking-names.mp3",
+        "sha256": "c0c9a443eb38695a1ba5266747c53210b5c7dc0e78b6a111c3f577fcd864518e"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 8650,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 112350,
+        "pulse_intervals": 112348,
+        "run_seconds": 173.193,
+        "wav_seconds": 173.693
+      },
+      "source_name": "05 Kitchen Ace (and Taking Names).vgz",
+      "source_sha256": "89c3c07a2305809b0ed0a448dfcaafa2361e89929b8b397a7fdbef5a6e507e93",
+      "title": "Kitchen Ace (and Taking Names)",
+      "wav": {
+        "bytes": 16674560,
+        "path": "wav/05-doom1-05-kitchen-ace-and-taking-names.wav",
+        "sha256": "d57c50eee0a09ac03e39ac03ce3a00be8928231038e27670d39c36b40f19749d"
+      }
+    },
+    {
+      "global_track": 6,
+      "jps": {
+        "bytes": 10812,
+        "capability": 0,
+        "name": "D1T06.JPS",
+        "sha256": "e639e10b36c4533f26b028f26d286ad40d5183316508b99ebd9c4b6fa467eff1"
+      },
+      "local_track": 6,
+      "mp3": {
+        "bytes": 3276618,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 175.139938,
+        "path": "mp3/06-doom1-06-suspense.mp3",
+        "sha256": "efec05f8bb153c6b4ea224468306606c2d9d268a80e08c4d4f8059dd240bede3"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 8633,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.948,
+        "pit_writes": 162869,
+        "pulse_intervals": 162867,
+        "run_seconds": 174.64,
+        "wav_seconds": 175.14
+      },
+      "source_name": "06 Suspense.vgz",
+      "source_sha256": "50dce89e22c6cdd824b72a8a32e7d0db2f25a20f51a30f81c872e74c13abae61",
+      "title": "Suspense",
+      "wav": {
+        "bytes": 16813478,
+        "path": "wav/06-doom1-06-suspense.wav",
+        "sha256": "523e7ecf701f356add0e2f88271ab3c468a641322f297d203ebc89b99a85af56"
+      }
+    },
+    {
+      "global_track": 7,
+      "jps": {
+        "bytes": 9637,
+        "capability": 0,
+        "name": "D1T07.JPS",
+        "sha256": "c6a188ca52f69c2dc34f7b3ed0770b39c4cb962c81ddc6a3e2291be25127c7fd"
+      },
+      "local_track": 7,
+      "mp3": {
+        "bytes": 1420989,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 87.665521,
+        "path": "mp3/07-doom1-07-on-the-hunt.mp3",
+        "sha256": "fbc411d55bf13f43c7e006c3da86df4466275c27396f4245a2be0741bc500ba2"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 4289,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 104668,
+        "pulse_intervals": 104666,
+        "run_seconds": 87.166,
+        "wav_seconds": 87.666
+      },
+      "source_name": "07 On the Hunt.vgz",
+      "source_sha256": "0e3cbdc00f8f7619dff716f44361f4172428eebe7ab1d96b8003cf57ca881413",
+      "title": "On the Hunt",
+      "wav": {
+        "bytes": 8415934,
+        "path": "wav/07-doom1-07-on-the-hunt.wav",
+        "sha256": "f4dd043977bea91b9f60e4e9d210d617d0c43ca63a864f4ed83a2333e064210f"
+      }
+    },
+    {
+      "global_track": 8,
+      "jps": {
+        "bytes": 9657,
+        "capability": 0,
+        "name": "D1T08.JPS",
+        "sha256": "b190c2cdd2ea2b307bd4dbc792735c35bf1c5b193cb9c929ea50c9703497dc11"
+      },
+      "local_track": 8,
+      "mp3": {
+        "bytes": 3643924,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 152.037292,
+        "path": "mp3/08-doom1-08-demons-on-the-prey.mp3",
+        "sha256": "bfe3ace26020ffd01d944152b80a9c854f7653b118f5183bf65d20324fff6f3d"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 7564,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 83895,
+        "pulse_intervals": 83893,
+        "run_seconds": 151.537,
+        "wav_seconds": 152.037
+      },
+      "source_name": "08 Demons on the Prey.vgz",
+      "source_sha256": "aab361692ea7ffc27d2292cba974b95bfe218cf3ee52b38fbff52e8a39f996ea",
+      "title": "Demons on the Prey",
+      "wav": {
+        "bytes": 14595624,
+        "path": "wav/08-doom1-08-demons-on-the-prey.wav",
+        "sha256": "fd777923fc153fdd84949a3245a48a618e149febb0969464798348955cc354d2"
+      }
+    },
+    {
+      "global_track": 9,
+      "jps": {
+        "bytes": 5553,
+        "capability": 1,
+        "name": "D1T09.JPS",
+        "sha256": "13bfb3309192032160259c19c4d26541f9fb6eb4895b341ccccdb72c99ed2ded"
+      },
+      "local_track": 9,
+      "mp3": {
+        "bytes": 2373766,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 153.06825,
+        "path": "mp3/09-doom1-09-sign-of-evil.mp3",
+        "sha256": "a46bbc72d94dfd1cdc8060cdc6051ea47e87e3ce73425fb3ed4d3f2cc56550cf"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 7630,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 198921,
+        "pulse_intervals": 198919,
+        "run_seconds": 152.568,
+        "wav_seconds": 153.068
+      },
+      "source_name": "09 Sign of Evil.vgz",
+      "source_sha256": "371ee5a8bbf27c062ddf920e706cac227fe063c2da8ac32f73568988457bbd6b",
+      "title": "Sign of Evil",
+      "wav": {
+        "bytes": 14694596,
+        "path": "wav/09-doom1-09-sign-of-evil.wav",
+        "sha256": "c3911d4d60e54b643b2702e692ba197ed60430638a1533113acae89bd4ee7e40"
+      }
+    },
+    {
+      "global_track": 10,
+      "jps": {
+        "bytes": 14274,
+        "capability": 0,
+        "name": "D1T10.JPS",
+        "sha256": "61a6f94d58bd0905e3a3ccf0fe1adc93fe48007f9ccfe3469698037ffb9215dc"
+      },
+      "local_track": 10,
+      "mp3": {
+        "bytes": 2400365,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 143.486646,
+        "path": "mp3/10-doom1-10-hiding-the-secrets.mp3",
+        "sha256": "559b8d1d086ea921402c7f4ca52bb03f55a5bc3177b494021a3a973d2e950eaa"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 7041,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 163424,
+        "pulse_intervals": 163422,
+        "run_seconds": 142.987,
+        "wav_seconds": 143.487
+      },
+      "source_name": "10 Hiding the Secrets.vgz",
+      "source_sha256": "47069f9c73e65f40e3f53961918ae909ff5d01f081068c9783f84f1a3ac9e366",
+      "title": "Hiding the Secrets",
+      "wav": {
+        "bytes": 13774762,
+        "path": "wav/10-doom1-10-hiding-the-secrets.wav",
+        "sha256": "3f5d3650aaa23bcc1300d70e140bc731472158404d463fd0332152fb8dd4d746"
+      }
+    },
+    {
+      "global_track": 11,
+      "jps": {
+        "bytes": 22938,
+        "capability": 1,
+        "name": "D1T11.JPS",
+        "sha256": "a87b76a846f9d60e0e3b9a58a9779da0bfae1dcf2ddbef833f38782417265d74"
+      },
+      "local_track": 11,
+      "mp3": {
+        "bytes": 3196493,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 154.827104,
+        "path": "mp3/11-doom1-11-i-sawed-the-demons.mp3",
+        "sha256": "65d8b77f520b95ea82e5caa3d239b7d9d685c228a3626cb6b9afaa077c3f0100"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 7740,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 129780,
+        "pulse_intervals": 129778,
+        "run_seconds": 154.327,
+        "wav_seconds": 154.827
+      },
+      "source_name": "11 I Sawed the Demons.vgz",
+      "source_sha256": "a263a575c5cffa027e3d82f3df7739aeb3c0bc2cf518c80f040861eee4d76bc0",
+      "title": "I Sawed the Demons",
+      "wav": {
+        "bytes": 14863446,
+        "path": "wav/11-doom1-11-i-sawed-the-demons.wav",
+        "sha256": "2c5d5df9f2d94fd1cf05228a2e7e076ff959cfe19e794168f3dc08059e5cccc3"
+      }
+    },
+    {
+      "global_track": 12,
+      "jps": {
+        "bytes": 22783,
+        "capability": 1,
+        "name": "D1T12.JPS",
+        "sha256": "cd2d66eed7daed67e40a2c7bd62ec8e37730f59fddfb3c216f490bf7e6e3997f"
+      },
+      "local_track": 12,
+      "mp3": {
+        "bytes": 3419583,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 155.601313,
+        "path": "mp3/12-doom1-12-the-demons-from-adrian-s-pen.mp3",
+        "sha256": "0397bcd2dea6d41f0136c350376f0e4cf48349ec9994cfc055ae16ad6a578979"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 7777,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 127400,
+        "pulse_intervals": 127398,
+        "run_seconds": 155.101,
+        "wav_seconds": 155.601
+      },
+      "source_name": "12 The Demons from Adrian's Pen.vgz",
+      "source_sha256": "5883ddd0b0ea3f22eb98a5dd83339a5b96fe20b0e82ed811db49e922fc818376",
+      "title": "The Demons from Adrian's Pen",
+      "wav": {
+        "bytes": 14937770,
+        "path": "wav/12-doom1-12-the-demons-from-adrian-s-pen.wav",
+        "sha256": "859194162414ab3f2dd222fc9e24b8467ed024904e2dc8e657c969a299fb78d2"
+      }
+    },
+    {
+      "global_track": 13,
+      "jps": {
+        "bytes": 11286,
+        "capability": 1,
+        "name": "D1T13.JPS",
+        "sha256": "f0abfe055277d19567d8fd50fa09c117d99b6b36a218e9073c3ab12e570a7c2a"
+      },
+      "local_track": 13,
+      "mp3": {
+        "bytes": 3906803,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 253.49975,
+        "path": "mp3/13-doom1-13-they-re-going-to-get-you.mp3",
+        "sha256": "871d00000846f79408e175b156d601e1b0db97ab7c5ab0bfd45eea83d79dee43"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 12642,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 105309,
+        "pulse_intervals": 105307,
+        "run_seconds": 253.0,
+        "wav_seconds": 253.5
+      },
+      "source_name": "13 They're Going to Get You.vgz",
+      "source_sha256": "a1e627bf5860a558859620c7149a3f8259dae53f60cb938ce1b20fca5d23dd45",
+      "title": "They're Going to Get You",
+      "wav": {
+        "bytes": 24336020,
+        "path": "wav/13-doom1-13-they-re-going-to-get-you.wav",
+        "sha256": "67d61e70f825827b884873787307f319017eefb23659335219d328fc53cb0756"
+      }
+    },
+    {
+      "global_track": 14,
+      "jps": {
+        "bytes": 12239,
+        "capability": 1,
+        "name": "D1T14.JPS",
+        "sha256": "cbfddf3b0268c888edf90e9548acfb80cb1da37f93a8c528983471d40ecb8e16"
+      },
+      "local_track": 14,
+      "mp3": {
+        "bytes": 3689683,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 178.818,
+        "path": "mp3/14-doom1-14-sinister.mp3",
+        "sha256": "26be26a18c2aafa5b6f887fdaa42e7ca4dbcb677e1af1474f3f72e11eb73db92"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 8922,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 150952,
+        "pulse_intervals": 150950,
+        "run_seconds": 178.318,
+        "wav_seconds": 178.818
+      },
+      "source_name": "14 Sinister.vgz",
+      "source_sha256": "cc1d740dffbff7fc590557474b58c94aba73a00dc25278aaf8a0173e81da6074",
+      "title": "Sinister",
+      "wav": {
+        "bytes": 17166572,
+        "path": "wav/14-doom1-14-sinister.wav",
+        "sha256": "3ef47dc69bfb162bfd368c7c2b9d53064387fc727aceef79ddc4d88bee3d8513"
+      }
+    },
+    {
+      "global_track": 15,
+      "jps": {
+        "bytes": 10000,
+        "capability": 0,
+        "name": "D1T15.JPS",
+        "sha256": "41c6d47eb15da5754a8c984d40c4ee009cc06ff973a1cb3c783b0bb79df95a86"
+      },
+      "local_track": 15,
+      "mp3": {
+        "bytes": 1793742,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 107.312875,
+        "path": "mp3/15-doom1-15-waltz-of-the-demons.mp3",
+        "sha256": "2cbb48cc8db26b8d8a49999832d243cb6a2a93237bd91170e1a903ea8852e79d"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 5285,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 90564,
+        "pulse_intervals": 90562,
+        "run_seconds": 106.813,
+        "wav_seconds": 107.313
+      },
+      "source_name": "15 Waltz of the Demons.vgz",
+      "source_sha256": "ca6dcdac2da02a5dc8058cd8ff72a5bc35dc7916616154f4aad76d65bbd79fe2",
+      "title": "Waltz of the Demons",
+      "wav": {
+        "bytes": 10302080,
+        "path": "wav/15-doom1-15-waltz-of-the-demons.wav",
+        "sha256": "c8c300388b79905b087c939c08891427fb2a7b287f3bd4ed80350b23ff24a8a9"
+      }
+    },
+    {
+      "global_track": 16,
+      "jps": {
+        "bytes": 8311,
+        "capability": 0,
+        "name": "D1T16.JPS",
+        "sha256": "4789e5f877b27b8a18ef92f24a543d5c1c331cfe19e51343a44d6f5fa308744c"
+      },
+      "local_track": 16,
+      "mp3": {
+        "bytes": 2731666,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 181.596167,
+        "path": "mp3/16-doom1-16-nobody-told-me-about-id.mp3",
+        "sha256": "740ab7879608f1f21c8a187f7507a43bb68be2e095909799a978240363424858"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 8922,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 223417,
+        "pulse_intervals": 223415,
+        "run_seconds": 181.096,
+        "wav_seconds": 181.596
+      },
+      "source_name": "16 Nobody Told Me About id.vgz",
+      "source_sha256": "b551e878eb1a14d2d3953d534a2f987cc097140ec1ee9512ae1ec727ba64c198",
+      "title": "Nobody Told Me About id",
+      "wav": {
+        "bytes": 17433276,
+        "path": "wav/16-doom1-16-nobody-told-me-about-id.wav",
+        "sha256": "081aeffe64adfea4788d6ff356ca50728468a43de3338b0d1de0d485440b9278"
+      }
+    },
+    {
+      "global_track": 17,
+      "jps": {
+        "bytes": 14721,
+        "capability": 0,
+        "name": "D1T17.JPS",
+        "sha256": "451867aaa396d5be80b67fccc5c8da1a1dc085a28044ffcfaf0b3431e1dd7c14"
+      },
+      "local_track": 17,
+      "mp3": {
+        "bytes": 1701931,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 98.432875,
+        "path": "mp3/17-doom1-17-untitled.mp3",
+        "sha256": "27baf4966edb12142a84599f6cfbf011b5778f35aad50725a41b02c2bf33e2d9"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 4834,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 84426,
+        "pulse_intervals": 84424,
+        "run_seconds": 97.933,
+        "wav_seconds": 98.433
+      },
+      "source_name": "17 Untitled.vgz",
+      "source_sha256": "73cdc2fb25126e3edc4aea969a357312198eea1445e612fd7f1b8b837f355690",
+      "title": "Untitled",
+      "wav": {
+        "bytes": 9449600,
+        "path": "wav/17-doom1-17-untitled.wav",
+        "sha256": "ef7827e0d3d80d8ec36eae4ea81744bc7b7fc160c38475cf888f58f011763a21"
+      }
+    },
+    {
+      "global_track": 18,
+      "jps": {
+        "bytes": 15222,
+        "capability": 0,
+        "name": "D1T18.JPS",
+        "sha256": "f9c4792b7a9766223dad55b89899ec7d074f5860e05f6744e4ed84b1fb7dd286"
+      },
+      "local_track": 18,
+      "mp3": {
+        "bytes": 2065638,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 121.487917,
+        "path": "mp3/18-doom1-18-donna-to-the-rescue.mp3",
+        "sha256": "2afdba425ae498f4dea78acdd117ce7b1e765360b0874b5b0eab46ef90d0fb1f"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 5958,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 131477,
+        "pulse_intervals": 131475,
+        "run_seconds": 120.988,
+        "wav_seconds": 121.488
+      },
+      "source_name": "18 Donna to the Rescue.vgz",
+      "source_sha256": "8f1fe5529b8b8e379cf3aa96a992c83c84110f132f001eabce28bda414737d96",
+      "title": "Donna to the Rescue",
+      "wav": {
+        "bytes": 11662884,
+        "path": "wav/18-doom1-18-donna-to-the-rescue.wav",
+        "sha256": "0c9fefafb41ad7e95e399995219624de806e10df9918d74f6dba4d55cef36d31"
+      }
+    },
+    {
+      "global_track": 19,
+      "jps": {
+        "bytes": 21291,
+        "capability": 0,
+        "name": "D1T19.JPS",
+        "sha256": "6f925004299427fd3be8080ff2210d826d7462d6bdafe8f8db17906ddd412cff"
+      },
+      "local_track": 19,
+      "mp3": {
+        "bytes": 2626013,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 124.598417,
+        "path": "mp3/19-doom1-19-deep-into-the-code.mp3",
+        "sha256": "5b09d6ef2c98100677b8d861876371c8cbb0738bd70bb0a4395c023a818a7594"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 6122,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 101597,
+        "pulse_intervals": 101595,
+        "run_seconds": 124.098,
+        "wav_seconds": 124.598
+      },
+      "source_name": "19 Deep into the Code.vgz",
+      "source_sha256": "8ce1af61dd12102072191b374ef428c0a734b7c97669e03d4debcade9c937bbb",
+      "title": "Deep into the Code",
+      "wav": {
+        "bytes": 11961492,
+        "path": "wav/19-doom1-19-deep-into-the-code.wav",
+        "sha256": "53371e3996247b24065af7e22f819cc508775ef56315207c3125e2d49ee31ad7"
+      }
+    },
+    {
+      "global_track": 20,
+      "jps": {
+        "bytes": 18241,
+        "capability": 1,
+        "name": "D1T20.JPS",
+        "sha256": "7c92ce3f53d9236d7d5519a7681e3f53a5ff3c513e7103f318181389cf029109"
+      },
+      "local_track": 20,
+      "mp3": {
+        "bytes": 2349628,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 96.618833,
+        "path": "mp3/20-doom1-20-facing-the-spider.mp3",
+        "sha256": "cb85afbf85baea8c24472fb4f467f7a68a53c7cd68a49e4422968acd3c42ff00"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 4801,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 65023,
+        "pulse_intervals": 65021,
+        "run_seconds": 96.119,
+        "wav_seconds": 96.619
+      },
+      "source_name": "20 Facing the Spider.vgz",
+      "source_sha256": "4ed2c5151b49f73ff42a7567fc220d296a3b0fe6156f6ced8ae1027e28749fb4",
+      "title": "Facing the Spider",
+      "wav": {
+        "bytes": 9275452,
+        "path": "wav/20-doom1-20-facing-the-spider.wav",
+        "sha256": "b30a1ba7269b6ca76d338df4bb3445c89fd40f6b267cd9a04d60e7f1449975fd"
+      }
+    },
+    {
+      "global_track": 21,
+      "jps": {
+        "bytes": 25335,
+        "capability": 0,
+        "name": "D1T21.JPS",
+        "sha256": "b6125ab6286bf30e1c15cbea300596a763d56e8a8db309b375b1d92efe6add70"
+      },
+      "local_track": 21,
+      "mp3": {
+        "bytes": 3829305,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 204.338667,
+        "path": "mp3/21-doom1-21-intermission-from-doom.mp3",
+        "sha256": "9a57452030d9385c774b421e09957103dd3f3443e16fe8f84c85f945ebbd91a1"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 10138,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 115625,
+        "pulse_intervals": 115623,
+        "run_seconds": 203.839,
+        "wav_seconds": 204.339
+      },
+      "source_name": "21 Intermission from Doom.vgz",
+      "source_sha256": "985619acc8e69560f8155d8fe623f393c8b46682c5328094c57ea428e97fa378",
+      "title": "Intermission from Doom",
+      "wav": {
+        "bytes": 19616556,
+        "path": "wav/21-doom1-21-intermission-from-doom.wav",
+        "sha256": "b13f98b880b084e5a3665dc7822b8638149957ec1e4926aea8692b1f0276547a"
+      }
+    },
+    {
+      "global_track": 22,
+      "jps": {
+        "bytes": 16787,
+        "capability": 1,
+        "name": "D1T22.JPS",
+        "sha256": "052968761c42a415937f5cdcc38b2fc2e7f837189fa14278da7f268ef4f55b0d"
+      },
+      "local_track": 22,
+      "mp3": {
+        "bytes": 3665690,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 193.264063,
+        "path": "mp3/22-doom1-22-the-end-of-doom.mp3",
+        "sha256": "6f6abd59ff1bb0c608e09ae359bddd1825ec79e9a40c165048708b956635d18e"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 9600,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 211639,
+        "pulse_intervals": 211637,
+        "run_seconds": 192.764,
+        "wav_seconds": 193.264
+      },
+      "source_name": "22 The End of Doom.vgz",
+      "source_sha256": "15d945a39b1ab738d8e31ad69bf52c4e780d2574168bf6f05885cfa8e6d3fa23",
+      "title": "The End of Doom",
+      "wav": {
+        "bytes": 18553394,
+        "path": "wav/22-doom1-22-the-end-of-doom.wav",
+        "sha256": "86cb80c8e0df68ca8ccb87504563bc179e1fe2d3ecde18367ca372c4803ccb13"
+      }
+    },
+    {
+      "global_track": 23,
+      "jps": {
+        "bytes": 6982,
+        "capability": 1,
+        "name": "D1T23.JPS",
+        "sha256": "805c5d10728d78f0d4ef0652a9664454167a0367fe85caadd306f9912ee45443"
+      },
+      "local_track": 23,
+      "mp3": {
+        "bytes": 1177186,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 62.661292,
+        "path": "mp3/23-doom1-23-sweet-little-dead-bunny.mp3",
+        "sha256": "6d9284967e1066315c69e6d5251433035275894fba081336ffbb04101c3f6bbc"
+      },
+      "pack": "doom1",
+      "render": {
+        "keyboard_polls": 3101,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 66933,
+        "pulse_intervals": 66931,
+        "run_seconds": 62.161,
+        "wav_seconds": 62.661
+      },
+      "source_name": "23 Sweet Little Dead Bunny.vgz",
+      "source_sha256": "657c591431d16e06cb4da1a9d5f9775bb0a7f7cb785615e1b1daecc382ed1e89",
+      "title": "Sweet Little Dead Bunny",
+      "wav": {
+        "bytes": 6015528,
+        "path": "wav/23-doom1-23-sweet-little-dead-bunny.wav",
+        "sha256": "9a204af907849fbbc85504146440fd4ac5f8f9e9f4395b3a80a6e2e26be7da23"
+      }
+    },
+    {
+      "global_track": 24,
+      "jps": {
+        "bytes": 4751,
+        "capability": 1,
+        "name": "D2T01.JPS",
+        "sha256": "1bef9d08b0ebe2dc284da107118ba080c5134664de898990e4a69169bc728a30"
+      },
+      "local_track": 1,
+      "mp3": {
+        "bytes": 214078,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 11.929188,
+        "path": "mp3/24-doom2-01-title-music.mp3",
+        "sha256": "6fcc013a1d74e3d3cd100af0beec9e9ce09eb6d6f125c6f8d0e08662f669344a"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 570,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 32091,
+        "pulse_intervals": 32089,
+        "run_seconds": 11.429,
+        "wav_seconds": 11.929
+      },
+      "source_name": "01 Title Music.vgz",
+      "source_sha256": "4abae391fcfb42ff66118b210230212b9f79700896b5a846d3d6a3ad4babf489",
+      "title": "Title Music",
+      "wav": {
+        "bytes": 1145246,
+        "path": "wav/24-doom2-01-title-music.wav",
+        "sha256": "f35145f203e7d92df56eeafce70b70311095bb7072ca4f3e922b6056e9b53447"
+      }
+    },
+    {
+      "global_track": 25,
+      "jps": {
+        "bytes": 16151,
+        "capability": 0,
+        "name": "D2T02.JPS",
+        "sha256": "b66f3769342c8169d5705d7cd213a36149d10bbd7103783f160327f6f41e8bbe"
+      },
+      "local_track": 2,
+      "mp3": {
+        "bytes": 3452212,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 237.200229,
+        "path": "mp3/25-doom2-02-running-from-evil.mp3",
+        "sha256": "3dc324e82c6a759c97730e015be11a2be111988ad34d62b1572ceaf5531a5f21"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 11554,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 384202,
+        "pulse_intervals": 384200,
+        "run_seconds": 236.7,
+        "wav_seconds": 237.2
+      },
+      "source_name": "02 Running From Evil.vgz",
+      "source_sha256": "62fec3ea84c87405e092472b3989c7e6b35b00d4be5958b0c73d08f0139d1c5a",
+      "title": "Running From Evil",
+      "wav": {
+        "bytes": 22771266,
+        "path": "wav/25-doom2-02-running-from-evil.wav",
+        "sha256": "988c3497e513822710b53bfc2809a0bed15e03bd7db00e34dd9926248d8e6b2b"
+      }
+    },
+    {
+      "global_track": 26,
+      "jps": {
+        "bytes": 19458,
+        "capability": 1,
+        "name": "D2T03.JPS",
+        "sha256": "ab5e4b3340b15accd3eb9ee1f7893de6f99261a025f7c8dc1da23232d0055b09"
+      },
+      "local_track": 3,
+      "mp3": {
+        "bytes": 3682877,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 173.999917,
+        "path": "mp3/26-doom2-03-intermission-music.mp3",
+        "sha256": "c15850213344ac058f4d4fa7bd79f9292cb22f940f9580e05a9928ccc85ed1ad"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 8645,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 167833,
+        "pulse_intervals": 167831,
+        "run_seconds": 173.5,
+        "wav_seconds": 174.0
+      },
+      "source_name": "03 Intermission Music.vgz",
+      "source_sha256": "f4447a522409efc5beaea3f44ae173418f2137c168be06e672ff6191234a5d10",
+      "title": "Intermission Music",
+      "wav": {
+        "bytes": 16704036,
+        "path": "wav/26-doom2-03-intermission-music.wav",
+        "sha256": "8bbe33dc5bd6ec257f02b1a47d40e217dacc3b35e336686476a4e000a64849c7"
+      }
+    },
+    {
+      "global_track": 27,
+      "jps": {
+        "bytes": 17696,
+        "capability": 1,
+        "name": "D2T04.JPS",
+        "sha256": "91cff0e7d48f0c996115692b595657791696841e179dc48b100534e30c2502eb"
+      },
+      "local_track": 4,
+      "mp3": {
+        "bytes": 4959916,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 292.636521,
+        "path": "mp3/27-doom2-04-the-healer-stalks.mp3",
+        "sha256": "f45956fe4f75447dfef1b701a59dda3859f11046985276f13cf442243e8e7f36"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 14635,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 159088,
+        "pulse_intervals": 159086,
+        "run_seconds": 292.137,
+        "wav_seconds": 292.637
+      },
+      "source_name": "04 The Healer Stalks.vgz",
+      "source_sha256": "fdfd0468c2e14367304cb3af0332e08bffd1b3cbd2b70192046de03b8344f045",
+      "title": "The Healer Stalks",
+      "wav": {
+        "bytes": 28093150,
+        "path": "wav/27-doom2-04-the-healer-stalks.wav",
+        "sha256": "a750bb8e5071dd71efcc8361f635642984d505a5571281bfbb12bcd3da617b97"
+      }
+    },
+    {
+      "global_track": 28,
+      "jps": {
+        "bytes": 21210,
+        "capability": 1,
+        "name": "D2T05.JPS",
+        "sha256": "3538745353236ddbc972dbcb01a71bf88d7884754818361b51c1fec8af7df0ef"
+      },
+      "local_track": 5,
+      "mp3": {
+        "bytes": 4767533,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 231.842021,
+        "path": "mp3/28-doom2-05-countdown-to-death.mp3",
+        "sha256": "91c2cceacc1ccba621bf7bfb84784e67b78a211904d10ca02e6dbbc18491dc5e"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 11524,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 240663,
+        "pulse_intervals": 240661,
+        "run_seconds": 231.342,
+        "wav_seconds": 231.842
+      },
+      "source_name": "05 Countdown to Death.vgz",
+      "source_sha256": "28716de289ffc0d8ad53802c4a3955918bb5df8029db4edca361906848982955",
+      "title": "Countdown to Death",
+      "wav": {
+        "bytes": 22256878,
+        "path": "wav/28-doom2-05-countdown-to-death.wav",
+        "sha256": "8aece544a537f1f97c6dae1ea152e111c48d5b1da283d243f43b449ff2c3fec6"
+      }
+    },
+    {
+      "global_track": 29,
+      "jps": {
+        "bytes": 24620,
+        "capability": 1,
+        "name": "D2T06.JPS",
+        "sha256": "5d9e0acfa695fb72443453ebc0dcebb57ab7b664f9543ae2b1938b43255b009e"
+      },
+      "local_track": 6,
+      "mp3": {
+        "bytes": 3167449,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 155.638271,
+        "path": "mp3/29-doom2-06-between-levels.mp3",
+        "sha256": "236ba0351beec38ca439a165b5690aeee724b1c19a2d5225631762ff882cefc5"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 7742,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 155832,
+        "pulse_intervals": 155830,
+        "run_seconds": 155.138,
+        "wav_seconds": 155.638
+      },
+      "source_name": "06 Between Levels.vgz",
+      "source_sha256": "d0928e835cd4224742e4865ebb470f1e6314a8ff97afac096b1d1652ea1feeb7",
+      "title": "Between Levels",
+      "wav": {
+        "bytes": 14941318,
+        "path": "wav/29-doom2-06-between-levels.wav",
+        "sha256": "367abec1f29b4457cb38042c73a27c8b5bfeb5573045520aa2d16c25d54d732e"
+      }
+    },
+    {
+      "global_track": 30,
+      "jps": {
+        "bytes": 15887,
+        "capability": 0,
+        "name": "D2T07.JPS",
+        "sha256": "e2c6bf9c57d563822d7e9801edd9e065ffb6e75c8911f57a876b5d69f9eeb005"
+      },
+      "local_track": 7,
+      "mp3": {
+        "bytes": 5017023,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 262.192125,
+        "path": "mp3/30-doom2-07-doom.mp3",
+        "sha256": "6313e0bae0f4a4b3043cae6b3013ef9b47593646e629f9ace199483d2b7faf82"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 12983,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 217081,
+        "pulse_intervals": 217079,
+        "run_seconds": 261.692,
+        "wav_seconds": 262.192
+      },
+      "source_name": "07 DOOM.vgz",
+      "source_sha256": "7a58b54a6d5116ef4db5d5b49c5a1945a8f7566c538eb6c3042135e8ad1c9975",
+      "title": "DOOM",
+      "wav": {
+        "bytes": 25170488,
+        "path": "wav/30-doom2-07-doom.wav",
+        "sha256": "8b8584a01bde29e063905f979cbe4e604fc778cdb78522d712fecd5867f32fcc"
+      }
+    },
+    {
+      "global_track": 31,
+      "jps": {
+        "bytes": 22013,
+        "capability": 1,
+        "name": "D2T08.JPS",
+        "sha256": "75416f427e9b89ad1fd8988a20e0148704d7b16070085090594c6643650d6fd1"
+      },
+      "local_track": 8,
+      "mp3": {
+        "bytes": 12626566,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 419.228021,
+        "path": "mp3/31-doom2-08-in-the-dark.mp3",
+        "sha256": "26c1768f559ed8bcc5db23aab292fe0782c9f37a0f70b118c642baf24ad55d1c"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 20951,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 151338,
+        "pulse_intervals": 151336,
+        "run_seconds": 418.728,
+        "wav_seconds": 419.228
+      },
+      "source_name": "08 In the Dark.vgz",
+      "source_sha256": "f4be446643781c3149d1da02271adf589df75f6b264ac42e381a605e5e8ece04",
+      "title": "In the Dark",
+      "wav": {
+        "bytes": 40245934,
+        "path": "wav/31-doom2-08-in-the-dark.wav",
+        "sha256": "e1e5e1d75aa9cf0588ef69339dfa2a7ca2f66decd3834658ba662330299d7ffd"
+      }
+    },
+    {
+      "global_track": 32,
+      "jps": {
+        "bytes": 15605,
+        "capability": 0,
+        "name": "D2T09.JPS",
+        "sha256": "a79a5acc44ff46291d12f2a3a413dce22c9f0061b71739cb7e8b6ac625b91116"
+      },
+      "local_track": 9,
+      "mp3": {
+        "bytes": 5572066,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 261.262771,
+        "path": "mp3/32-doom2-09-shawn-s-got-the-shotgun.mp3",
+        "sha256": "1190b8d70c05915e94c428336eb426e5ae889749ef12569c3bf652a8b9003953"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 12981,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 175943,
+        "pulse_intervals": 175941,
+        "run_seconds": 260.763,
+        "wav_seconds": 261.263
+      },
+      "source_name": "09 Shawn's Got the Shotgun.vgz",
+      "source_sha256": "3fa1883fd841328ace0f4b978710ff95d98a6e168fa0cfaf10e4a3ef9f8fc6cf",
+      "title": "Shawn's Got the Shotgun",
+      "wav": {
+        "bytes": 25081270,
+        "path": "wav/32-doom2-09-shawn-s-got-the-shotgun.wav",
+        "sha256": "f3d0578c7c21e65f5100c6208406b8b8a9303a356efa3e5f2027e33a1865862e"
+      }
+    },
+    {
+      "global_track": 33,
+      "jps": {
+        "bytes": 30071,
+        "capability": 0,
+        "name": "D2T10.JPS",
+        "sha256": "667e1d82e99636449f921735df781a3b3172355e6082cc0c351a50b6cb7372ca"
+      },
+      "local_track": 10,
+      "mp3": {
+        "bytes": 5110475,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 304.420646,
+        "path": "mp3/33-doom2-10-the-dave-d-taylor-blues.mp3",
+        "sha256": "4665ebe60018b0042c26c651d046b30c1d3d5ec9f14c12da416b05287f0dcb39"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 15034,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 266689,
+        "pulse_intervals": 266687,
+        "run_seconds": 303.921,
+        "wav_seconds": 304.421
+      },
+      "source_name": "10 The Dave D. Taylor Blues.vgz",
+      "source_sha256": "4d9813740918f89dd64e72dd7eb516cbd3174efd600f7007b36c4ba492896d47",
+      "title": "The Dave D. Taylor Blues",
+      "wav": {
+        "bytes": 29224426,
+        "path": "wav/33-doom2-10-the-dave-d-taylor-blues.wav",
+        "sha256": "38efff102ff11b1b1558ffcfbc3e193c74fd97fa771ad8da86c145a679fa5045"
+      }
+    },
+    {
+      "global_track": 34,
+      "jps": {
+        "bytes": 28333,
+        "capability": 0,
+        "name": "D2T11.JPS",
+        "sha256": "517d9e4789b60cd42cb3653a58853d4c866b73603be1feff7863c4077b28fde7"
+      },
+      "local_track": 11,
+      "mp3": {
+        "bytes": 6007132,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 282.089292,
+        "path": "mp3/34-doom2-11-into-sandy-s-city.mp3",
+        "sha256": "bf379df39b11d3f97ac7319c1128778df23230d570b37f5fb8f38e4278b3c493"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 14000,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 175509,
+        "pulse_intervals": 175507,
+        "run_seconds": 281.589,
+        "wav_seconds": 282.089
+      },
+      "source_name": "11 Into Sandy's City.vgz",
+      "source_sha256": "2149aeec47d0ff4f0b77a0e7a148b63bd4b46dbccfd02af7ee65ec20b98ef7fb",
+      "title": "Into Sandy's City",
+      "wav": {
+        "bytes": 27080616,
+        "path": "wav/34-doom2-11-into-sandy-s-city.wav",
+        "sha256": "9bb66001b445190acf616f580348c4f49f252d896ed22cf58d3b635f52565abd"
+      }
+    },
+    {
+      "global_track": 35,
+      "jps": {
+        "bytes": 14080,
+        "capability": 1,
+        "name": "D2T12.JPS",
+        "sha256": "6a118963b47bc2571837575b8f88c3302e5e70b9f180d5f2e6e47e2ead7b82a6"
+      },
+      "local_track": 12,
+      "mp3": {
+        "bytes": 4173867,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 265.842104,
+        "path": "mp3/35-doom2-12-the-demon-s-dead.mp3",
+        "sha256": "d9bb6ce0e3a1f3d5df0dccc6f23e0aeabc3df17478f26c68f8398288a0ddc986"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 13206,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.949,
+        "pit_writes": 358543,
+        "pulse_intervals": 358541,
+        "run_seconds": 265.342,
+        "wav_seconds": 265.842
+      },
+      "source_name": "12 The Demon's Dead.vgz",
+      "source_sha256": "facc8df322678d0c3fea2924ca2abfe33fb1ab59dc4a7b9e4b516b7f02320539",
+      "title": "The Demon's Dead",
+      "wav": {
+        "bytes": 25520886,
+        "path": "wav/35-doom2-12-the-demon-s-dead.wav",
+        "sha256": "60d61b5470055c79a3068e789b3303370dbd6ce2c46936c6586f0c2faa803bc8"
+      }
+    },
+    {
+      "global_track": 36,
+      "jps": {
+        "bytes": 18927,
+        "capability": 0,
+        "name": "D2T13.JPS",
+        "sha256": "e2dcb1539d0738b9ba1acb449f173c45f1b53e924b3ded3bf7f92cced48abf26"
+      },
+      "local_track": 13,
+      "mp3": {
+        "bytes": 6212149,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 311.413979,
+        "path": "mp3/36-doom2-13-waiting-for-romero-to-play.mp3",
+        "sha256": "c8bdb5bc16de1e6f4819ef5f125abe5ff68cbbc320db2cbe18ca50b2bc060b5d"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 15360,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 300318,
+        "pulse_intervals": 300316,
+        "run_seconds": 310.914,
+        "wav_seconds": 311.414
+      },
+      "source_name": "13 Waiting for Romero to Play.vgz",
+      "source_sha256": "4005e5d0d0abbfeab157b590a4e9490d862d1378fa81fe9d3d194787d75de5a3",
+      "title": "Waiting for Romero to Play",
+      "wav": {
+        "bytes": 29895786,
+        "path": "wav/36-doom2-13-waiting-for-romero-to-play.wav",
+        "sha256": "2b9fb4ab86f64957440d28fa382f09d928d45cfc3ff902d83a2efd21a6a7baf7"
+      }
+    },
+    {
+      "global_track": 37,
+      "jps": {
+        "bytes": 19532,
+        "capability": 1,
+        "name": "D2T14.JPS",
+        "sha256": "1641f059a8cc161e30a7c80defae1817a5ae44ee93794a62528915ca3a1b9bb5"
+      },
+      "local_track": 14,
+      "mp3": {
+        "bytes": 4241315,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 280.705292,
+        "path": "mp3/37-doom2-14-message-for-the-archvile.mp3",
+        "sha256": "2844de23278147613ba4f2c3263a0dab4607bd1ba51be6349e1cff0240359f05"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 14008,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 207068,
+        "pulse_intervals": 207066,
+        "run_seconds": 280.205,
+        "wav_seconds": 280.705
+      },
+      "source_name": "14 Message for the Archvile.vgz",
+      "source_sha256": "bf81557b6b9d4c8efc7703aff75fa30ea22eb3d2c1f8080e0fd3eb4b7e4e3760",
+      "title": "Message for the Archvile",
+      "wav": {
+        "bytes": 26947752,
+        "path": "wav/37-doom2-14-message-for-the-archvile.wav",
+        "sha256": "cebb68935091f4d37c39a714a46d737ef77ccc4f18ae3a194ae4d16c72cabe9a"
+      }
+    },
+    {
+      "global_track": 38,
+      "jps": {
+        "bytes": 15589,
+        "capability": 1,
+        "name": "D2T15.JPS",
+        "sha256": "66fdce7ad6e036128d9e0dc5b7fd5faf31376374d055bcb45b6cac9383a45a12"
+      },
+      "local_track": 15,
+      "mp3": {
+        "bytes": 2337991,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 99.345292,
+        "path": "mp3/38-doom2-15-bye-bye-american-pie.mp3",
+        "sha256": "9d1351fcd7d4e2571df86205ee3c34d45333ea93552b3bd7d386a786b89a7364"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 4946,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 69711,
+        "pulse_intervals": 69709,
+        "run_seconds": 98.845,
+        "wav_seconds": 99.345
+      },
+      "source_name": "15 Bye Bye American Pie.vgz",
+      "source_sha256": "a272d6851cc46effcb8e16545b7b6d0d088ef20cc23ee3ea3f756e31cc35ccba",
+      "title": "Bye Bye American Pie",
+      "wav": {
+        "bytes": 9537192,
+        "path": "wav/38-doom2-15-bye-bye-american-pie.wav",
+        "sha256": "a2d5ff52f77c18c3b71ed4b30da38645c61799ba8ce4eeda1202f1319362444a"
+      }
+    },
+    {
+      "global_track": 39,
+      "jps": {
+        "bytes": 6914,
+        "capability": 1,
+        "name": "D2T16.JPS",
+        "sha256": "ab3bf84727e0fb948e773cb6a0b836b4e7c91110589cbb3a7012b0303d36d6a8"
+      },
+      "local_track": 16,
+      "mp3": {
+        "bytes": 2715002,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 115.620271,
+        "path": "mp3/39-doom2-16-adrian-s-asleep.mp3",
+        "sha256": "d745c2f7556a38b7265eea53aa406496b6a1eff3fbc1fdc74cbb8bdbcf60d7dc"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 5760,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 45930,
+        "pulse_intervals": 45928,
+        "run_seconds": 115.12,
+        "wav_seconds": 115.62
+      },
+      "source_name": "16 Adrian's Asleep.vgz",
+      "source_sha256": "a161de9d3cbc3c3144b2a901831a87c02632a59cd2cb9d31945e2a9a8afbf0a3",
+      "title": "Adrian's Asleep",
+      "wav": {
+        "bytes": 11099590,
+        "path": "wav/39-doom2-16-adrian-s-asleep.wav",
+        "sha256": "1fd6de0e01b734deec2fc08f09dd5167fc81c715b116a0a0108acc6319be4c5b"
+      }
+    },
+    {
+      "global_track": 40,
+      "jps": {
+        "bytes": 23791,
+        "capability": 0,
+        "name": "D2T17.JPS",
+        "sha256": "e64c26692224b1a86a2f8552a532f370b3d8ded9d643deedbfd59f0dc8956e70"
+      },
+      "local_track": 17,
+      "mp3": {
+        "bytes": 5101876,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 292.640896,
+        "path": "mp3/40-doom2-17-getting-too-tense.mp3",
+        "sha256": "ed34f0a0d72cfc8841ab983c3ec23a6232a1bbb4e98cd80243c54e062ce2303c"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 14323,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 395829,
+        "pulse_intervals": 395827,
+        "run_seconds": 292.141,
+        "wav_seconds": 292.641
+      },
+      "source_name": "17 Getting Too Tense.vgz",
+      "source_sha256": "157cb821b571dd031b3248fe6c49184da214669366fec1f9ca61c3926f5e3567",
+      "title": "Getting Too Tense",
+      "wav": {
+        "bytes": 28093570,
+        "path": "wav/40-doom2-17-getting-too-tense.wav",
+        "sha256": "c6cd47739cdc5a2a7aea21ea0338d0177b005ca111359dd5f23b5e3d0f056929"
+      }
+    },
+    {
+      "global_track": 41,
+      "jps": {
+        "bytes": 10525,
+        "capability": 1,
+        "name": "D2T18.JPS",
+        "sha256": "4e74b5bb89f2228a4fd5bf4361795310d5e1fe7e29c6cd79a87b042ccceefee2"
+      },
+      "local_track": 18,
+      "mp3": {
+        "bytes": 7423778,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 282.228521,
+        "path": "mp3/41-doom2-18-opening-to-hell.mp3",
+        "sha256": "66bc7b1906c59eac166ef477c5588b047c3d4c0b9e9c97ad449e98519b9835a2"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 14000,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 88869,
+        "pulse_intervals": 88867,
+        "run_seconds": 281.729,
+        "wav_seconds": 282.229
+      },
+      "source_name": "18 Opening to Hell.vgz",
+      "source_sha256": "1ac9a5413b8cb3776530eeda2e555edc32854f6ed6a5af06799e650feb3249bc",
+      "title": "Opening to Hell",
+      "wav": {
+        "bytes": 27093982,
+        "path": "wav/41-doom2-18-opening-to-hell.wav",
+        "sha256": "00ff24dd8b11f393ff8ecb2506423ef2e1bce7e338c55c6bc3a1877dea834c1b"
+      }
+    },
+    {
+      "global_track": 42,
+      "jps": {
+        "bytes": 4791,
+        "capability": 0,
+        "name": "D2T19.JPS",
+        "sha256": "b92a52825f9aba059fc6ae1219e6539ae9c6018de7ac6a267d532066de633a8a"
+      },
+      "local_track": 19,
+      "mp3": {
+        "bytes": 1515457,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 72.097042,
+        "path": "mp3/42-doom2-19-evil-incarnate.mp3",
+        "sha256": "e40ebc05ff1812575e08a88acc81eec05f471474d8cba3dd266f9b0ecf3c8ac7"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 3556,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 63363,
+        "pulse_intervals": 63361,
+        "run_seconds": 71.597,
+        "wav_seconds": 72.097
+      },
+      "source_name": "19 Evil Incarnate.vgz",
+      "source_sha256": "6f8da6f36f4f41fe5a0ba40464f08bb66ba8662cead621a823299431d9e07b9a",
+      "title": "Evil Incarnate",
+      "wav": {
+        "bytes": 6921360,
+        "path": "wav/42-doom2-19-evil-incarnate.wav",
+        "sha256": "a784cb4a5366e067fbb2e1c8c35ac22ebf830a84c70c48c3eadbceab7408ec37"
+      }
+    },
+    {
+      "global_track": 43,
+      "jps": {
+        "bytes": 5313,
+        "capability": 0,
+        "name": "D2T20.JPS",
+        "sha256": "a291d0d2b6824e1ee31b873f9c62df9bdecda9380f20baf3837842e466536553"
+      },
+      "local_track": 20,
+      "mp3": {
+        "bytes": 1046145,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 80.508667,
+        "path": "mp3/43-doom2-20-the-ultimate-challenge.mp3",
+        "sha256": "3bc4762e176496ed608924a332486d9bbb4994fe7f3b0971be09bb6c2d6103c5"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 3903,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 134443,
+        "pulse_intervals": 134441,
+        "run_seconds": 80.009,
+        "wav_seconds": 80.509
+      },
+      "source_name": "20 The Ultimate Challenge.vgz",
+      "source_sha256": "3a78d05e614d8d8857d5e7596bc1e5cd16080f4eb198c5b95fb35cc550a9b576",
+      "title": "The Ultimate Challenge",
+      "wav": {
+        "bytes": 7728876,
+        "path": "wav/43-doom2-20-the-ultimate-challenge.wav",
+        "sha256": "a04352439889278aba58b208710a91149ef3044d58fb03609483f932f0da99db"
+      }
+    },
+    {
+      "global_track": 44,
+      "jps": {
+        "bytes": 27654,
+        "capability": 0,
+        "name": "D2T21.JPS",
+        "sha256": "bf160971a29b3a8efd7019f8970cdcf812cd155c7115dd8b960e44855946b9b2"
+      },
+      "local_track": 21,
+      "mp3": {
+        "bytes": 4909032,
+        "codec": "libmp3lame VBR quality 2",
+        "duration_seconds": 293.215708,
+        "path": "mp3/44-doom2-21-endgame-music.mp3",
+        "sha256": "eefb0295a9b1001798472137c0023412852250d6b81ec25725be28cdb95022ea"
+      },
+      "pack": "doom2",
+      "render": {
+        "keyboard_polls": 14420,
+        "pcm_sample_rate_hz": 48000,
+        "peak": 0.95,
+        "pit_writes": 320398,
+        "pulse_intervals": 320396,
+        "run_seconds": 292.716,
+        "wav_seconds": 293.216
+      },
+      "source_name": "21 Endgame Music.vgz",
+      "source_sha256": "61411dbf03d13d06ba3cc14418cc744951a87c14488e59a7e86d7376adae70e6",
+      "title": "Endgame Music",
+      "wav": {
+        "bytes": 28148752,
+        "path": "wav/44-doom2-21-endgame-music.wav",
+        "sha256": "1d2b7f2d7b67a0f5d38097262d0e1ce4412660659de6d92af56806df9dbf6ce4"
+      }
+    }
+  ]
+}

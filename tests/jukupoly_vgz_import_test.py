@@ -60,6 +60,23 @@ def check_classification() -> None:
     assert chord in melodic
     assert fixed not in melodic
 
+    fixed_chord = [(10,), (11,), (12,)]
+    chord_events = []
+    for attack in range(8):
+        for channel, (signature, note) in enumerate(zip(
+                fixed_chord, (48, 48, 50))):
+            chord_events.append(event(attack * 100, signature, note, channel))
+    chord_counts = Counter({signature: 8 for signature in fixed_chord})
+    assert MODULE.fixed_harmony_fallback(
+        chord_events, chord_counts,
+    ) == set(fixed_chord)
+
+    # A similarly repeated wide-pitch cluster is compatible with drums, not
+    # sufficient evidence for a fixed-patch harmony.
+    for item, note in zip(chord_events[:3], (29, 60, 84)):
+        item.note = note
+    assert not MODULE.fixed_harmony_fallback(chord_events, chord_counts)
+
 
 def check_pitch_preservation() -> None:
     # The old per-note D2/E2 boundary turned the ascending source interval

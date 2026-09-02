@@ -54,6 +54,17 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def track_policy(pack: str, local_track: int, generic: bool
+                 ) -> tuple[set[str], bool]:
+    """Return explicit compatibility overrides or the shared generic policy."""
+    if generic:
+        return set(), False
+    return (
+        MELODIC_OVERRIDES.get((pack, local_track), set()),
+        (pack, local_track) in ARTICULATION_PRIORITY,
+    )
+
+
 def archive_tracks(path: Path) -> list[tuple[str, bytes]]:
     with zipfile.ZipFile(path) as archive:
         names = sorted(
@@ -236,6 +247,11 @@ def main() -> int:
                         default=ROOT / "out" / "jukupoly-doom-library")
     parser.add_argument("--replacement-manifest", type=Path)
     parser.add_argument("--replacement-dir", type=Path)
+    parser.add_argument(
+        "--generic-conversion", action="store_true",
+        help=("disable every song-specific melodic and allocation override; "
+              "use only the converter's shared classification/selection policy"),
+    )
     args = parser.parse_args()
     for path in (args.doom, args.doom2):
         if not path.is_file():
@@ -279,8 +295,9 @@ def main() -> int:
                 global_track += 1
                 source = temp / source_name
                 source.write_bytes(source_bytes)
-                overrides = MELODIC_OVERRIDES.get((pack, local_track), set())
-                prioritize_articulations = (pack, local_track) in ARTICULATION_PRIORITY
+                overrides, prioritize_articulations = track_policy(
+                    pack, local_track, args.generic_conversion,
+                )
                 payload, score = compile_track(
                     source, overrides, prioritize_articulations,
                 )
@@ -343,6 +360,11 @@ def main() -> int:
                 None if args.replacement_manifest is None else
                 args.replacement_manifest.name
             ),
+        },
+        "conversion_policy": {
+            "generic_only": args.generic_conversion,
+            "song_specific_melodic_overrides": not args.generic_conversion,
+            "song_specific_allocation_overrides": not args.generic_conversion,
         },
         "tracks": catalog,
     }

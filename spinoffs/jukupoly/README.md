@@ -1063,6 +1063,16 @@ pitch error is `0.969` cents. See
 [`OPL-VOICE-DIFFERENTIAL.md`](OPL-VOICE-DIFFERENTIAL.md) for the reproducible
 register isolation, renders, limitations, and eventual physical protocol.
 
+The full two-pack conversion is documented in
+[`FULL-DOOM-RENDERS.md`](FULL-DOOM-RENDERS.md). It applies one generic policy
+to all 44 tracks, delivers 23 qualified v2 tracks and 21 explicit v1
+fallbacks, and renders each through the reusable library player. The apparent
+return of the missing Imp intro was traced to an all-v1 control directory
+being presented as the result: the generic enhanced Imp candidate starts all
+three detuned intro members in frame zero and retains every protected onset.
+`render_jukupoly_library.py --minimum-enhanced-tracks` now rejects that
+artifact-selection error before a current-best render starts.
+
 [`OPL-M7-ATTACK-PCM.json`](OPL-M7-ATTACK-PCM.json) records why generic melodic
 attack samples stop at analysis for now.  The existing single PCM lane cannot
 overlap a drum or another attack, and fixed-rate PCM needs a separate sample
@@ -1092,6 +1102,10 @@ Source and generated files:
 - `firmware/build_doom_library.py` — two-pack converter and native disk builder;
 - `diskdefs` — logical Juku full-disk geometry for cpmtools;
 - `tools/render_jukupoly_wav.c` — calibrated cycle-model Mode-0 WAV renderer;
+- `tools/render_jukupoly_library.py` — exact reusable-player WAV/MP3 batch
+  renderer with a current-best enhanced-track guard;
+- `tools/build_jukupoly_generic_pack.py` — shared-policy full-pack enhancement,
+  cycle calibration, qualification, and explicit v1 fallback builder;
 - `tools/jukupoly_opl_oracle.c` — pinned Nuked OPL3 timed-stream bridge;
 - `tools/report_opl_voices.py` — deterministic whole-pack M2 evidence report;
 - `tools/report_jukupoly_baseline.py` — reproducible OPL feasibility profiler;
@@ -1189,6 +1203,10 @@ Source and generated files:
 - `OPL-M6-REPRESENTATIVE-RENDERS.json` — committed M6 three-way excerpt report;
 - `M6-REPRESENTATIVE-DELIVERY.json` — hash-locked qualified JPS2 replacements;
 - `OPL-M6-MIXED-LIBRARY.json` — committed 44-track mixed-disk C-cosim report;
+- `DOOM-GENERIC-ENHANCED-PACK.json` — generic all-track conversion, calibration,
+  delivery-gate, and fallback evidence;
+- `DOOM-FULL-RENDERS.json` — exact reusable-player JPS/WAV/MP3 hashes and
+  complete current-best collection profile;
 - `JPS2-ENVELOPE-DESIGN.md` — guarded M3 packet/state implementation contract;
 - `JPS2-TREMOLO-DESIGN.md` — guarded M4 ABI/state/cycle and rollback contract;
 - `JPS2-PITCH-DESIGN.md` — guarded M5 pitch/vibrato and rollback contract;

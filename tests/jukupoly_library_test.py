@@ -52,6 +52,16 @@ class JukuDiskLayoutTest(unittest.TestCase):
             {("doom1", 4)},
         )
 
+    def test_generic_policy_has_no_song_specific_exceptions(self) -> None:
+        for pack, count in library.EXPECTED_TRACKS.items():
+            for local_track in range(1, count + 1):
+                self.assertEqual(
+                    library.track_policy(pack, local_track, True),
+                    (set(), False),
+                )
+        self.assertTrue(library.track_policy("doom1", 1, False)[0])
+        self.assertTrue(library.track_policy("doom1", 4, False)[1])
+
     def test_side_major_tracks_become_cylinder_interleaved(self) -> None:
         with tempfile.TemporaryDirectory(prefix="jukupoly-layout.") as name:
             source = Path(name) / "logical.cpm"

@@ -367,6 +367,36 @@ def melodic_signatures(events: list[KeyEvent], counts: Counter[tuple[int, ...]]
     return result
 
 
+def fixed_harmony_fallback(events: list[KeyEvent],
+                           counts: Counter[tuple[int, ...]]
+                           ) -> set[tuple[int, ...]]:
+    """Recognize a repeated fixed-patch chord when pitch variation is absent.
+
+    Some short fanfares dedicate one OPL patch to each chord member, so no
+    individual signature ever changes pitch.  Eight repeated, simultaneous
+    three-voice attacks spanning at most one octave are still direct musical
+    evidence.  The narrow span rejects the usual kick/snare/cymbal cluster,
+    and this fallback is used only when the primary classifier found nothing.
+    """
+    simultaneous: dict[int, list[KeyEvent]] = defaultdict(list)
+    for event in events:
+        simultaneous[event.start].append(event)
+    evidence: Counter[tuple[int, ...]] = Counter()
+    for group in simultaneous.values():
+        notes = {event.note for event in group}
+        channels = {(event.bank, event.channel) for event in group}
+        signatures = {event.signature for event in group}
+        if (len(group) < 3 or len(notes) < 2 or len(channels) < 3 or
+                max(notes) - min(notes) > 12):
+            continue
+        for signature in signatures:
+            evidence[signature] += 1
+    return {
+        signature for signature, groups in evidence.items()
+        if groups >= 8 and counts[signature] >= 8
+    }
+
+
 def editor_volume(registers: list[list[int]], bank: int, channel: int) -> int:
     modulator = OPERATOR_OFFSETS[channel]
     carrier = modulator + 3
@@ -453,6 +483,12 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
         classification_writes, classification_info,
     )
     melodic = melodic_signatures(events, instrument_counts)
+    automatic_fixed_harmony = set()
+    if not melodic:
+        automatic_fixed_harmony = fixed_harmony_fallback(
+            events, instrument_counts,
+        )
+        melodic.update(automatic_fixed_harmony)
     known_signatures = {signature_id(signature): signature
                         for signature in instrument_counts}
     unknown_melodic = sorted(melodic_overrides - set(known_signatures))
@@ -463,10 +499,10 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
                    for identifier in melodic_overrides)
     if not melodic:
         # A useful failure is better than silently turning every note into a
-        # drum.  Test this after applying explicit overrides so a fixed-pitch
-        # fanfare or chord can still be imported deliberately.
+        # drum.  Test this after the two evidence-based classifiers and any
+        # explicit compatibility overrides.
         raise VgmError(
-            "could not identify any variable-pitch OPL instrument; "
+            "could not identify any melodic OPL instrument; "
             "use --melodic-signature for a known fixed-pitch voice"
         )
     unknown_overrides = sorted(set(percussion_overrides) - set(known_signatures))
@@ -650,6 +686,10 @@ def compile_score(info: VgmInfo, writes: list[RegisterWrite], source: Path,
             "frames_with_more_than_three_distinct_notes": dropped_note_frames,
             "percussion_hits": {str(key): value for key, value in percussion_hits.items()},
             "melodic_signature_overrides": sorted(melodic_overrides),
+            "automatic_fixed_harmony_signatures": sorted(
+                signature_id(signature)
+                for signature in automatic_fixed_harmony
+            ),
             "percussion_signature_overrides": percussion_overrides,
             "voice_selection_policy": (
                 "newly articulated notes before sustaining notes"
@@ -890,7 +930,10 @@ def main() -> int:
             pcm = directory / "source.s16le"
             probes_path = directory / "source.csv"
             opl_oracle.write_event_stream(
-                stream, writes, info.total_samples,
+                stream,
+                (write for write in writes
+                 if write.sample < info.total_samples),
+                info.total_samples,
             )
             subprocess.run(
                 [str(args.opl_oracle), str(stream), str(pcm),

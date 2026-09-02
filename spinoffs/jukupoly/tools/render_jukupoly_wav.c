@@ -9,6 +9,7 @@
 #include <string.h>
 
 #define LOAD_ADDRESS 0x0100
+#define SONG_ADDRESS 0x1800
 #define STACK_RETURN 0x9bfe
 
 typedef struct {
@@ -46,7 +47,10 @@ typedef struct {
   double escape_at_seconds;
   unsigned sample_rate;
   const char *input_path;
+  const char *song_path;
   const char *output_path;
+  uint16_t entry_address;
+  uint16_t prepare_address;
 } options;
 
 static void usage(FILE *stream, const char *program) {
@@ -54,7 +58,8 @@ static void usage(FILE *stream, const char *program) {
       "usage: %s [options] input.com output.wav\n"
       "\n"
       "Render Juku D57 channel-1 Mode-0 pulses emitted by a self-contained\n"
-      "CP/M transient executed in the cycle-level 8080 model.\n"
+      "CP/M transient executed in the cycle-level 8080 model.  With --song,\n"
+      "input.com is a reusable library player and the JPS is loaded at 1800h.\n"
       "\n"
       "options:\n"
       "  --cpu-hz HZ       effective CPU rate (default 1700000)\n"
@@ -67,8 +72,22 @@ static void usage(FILE *stream, const char *program) {
       "                    it (default 20)\n"
       "  --max-seconds N   abort a non-returning transient (default 300)\n"
       "  --escape-at N     inject one physical Escape contact after N seconds\n"
+      "  --song FILE       load a JPS v1/v2 song at 1800h\n"
+      "  --entry HEX       library player entry address (required with --song)\n"
+      "  --prepare HEX     optional library one-time preparation address\n"
       "  --help            show this help\n",
       program);
+}
+
+static int parse_address(const char *text, uint16_t *result) {
+  char *end = NULL;
+  errno = 0;
+  unsigned long value = strtoul(text, &end, 16);
+  if (errno || end == text || *end || value < LOAD_ADDRESS ||
+      value >= SONG_ADDRESS)
+    return 0;
+  *result = (uint16_t)value;
+  return 1;
 }
 
 static int parse_double(const char *text, double minimum, double maximum,
@@ -147,6 +166,14 @@ static int parse_options(int argc, char **argv, options *result) {
       } else if (!strcmp(arg, "--escape-at")) {
         if (!parse_double(value, 0.0, 86400.0, &result->escape_at_seconds))
           goto invalid_value;
+      } else if (!strcmp(arg, "--song")) {
+        result->song_path = value;
+      } else if (!strcmp(arg, "--entry")) {
+        if (!parse_address(value, &result->entry_address))
+          goto invalid_value;
+      } else if (!strcmp(arg, "--prepare")) {
+        if (!parse_address(value, &result->prepare_address))
+          goto invalid_value;
       } else {
         fprintf(stderr, "unknown option: %s\n", arg);
         return 0;
@@ -175,6 +202,14 @@ invalid_value:
   }
   if (result->dc_block_hz >= result->sample_rate / 2.0) {
     fprintf(stderr, "DC blocker must be below the output Nyquist frequency\n");
+    return 0;
+  }
+  if (!!result->song_path != !!result->entry_address) {
+    fprintf(stderr, "--song and --entry must be supplied together\n");
+    return 0;
+  }
+  if (result->prepare_address && !result->song_path) {
+    fprintf(stderr, "--prepare requires --song and --entry\n");
     return 0;
   }
   return 1;
@@ -257,28 +292,58 @@ static void port_out(void *opaque, uint8_t port, uint8_t value) {
   f->pit_writes++;
 }
 
-static int load_and_run(fixture *f, const options *opts, double *run_seconds) {
-  FILE *input = fopen(opts->input_path, "rb");
+static int load_file(const char *path, uint8_t *destination, size_t maximum,
+                     size_t *size_result) {
+  FILE *input = fopen(path, "rb");
   if (!input) {
-    perror(opts->input_path);
+    perror(path);
     return 0;
   }
-  size_t maximum = STACK_RETURN - LOAD_ADDRESS;
-  size_t size = fread(&f->memory[LOAD_ADDRESS], 1, maximum + 1, input);
+  size_t size = fread(destination, 1, maximum + 1, input);
   int read_error = ferror(input);
   fclose(input);
   if (read_error) {
-    fprintf(stderr, "failed to read %s\n", opts->input_path);
+    fprintf(stderr, "failed to read %s\n", path);
     return 0;
   }
   if (!size || size > maximum) {
-    fprintf(stderr, "CP/M transient must contain 1..%zu bytes\n", maximum);
+    fprintf(stderr, "%s must contain 1..%zu bytes\n", path, maximum);
     return 0;
+  }
+  *size_result = size;
+  return 1;
+}
+
+static int load_and_run(fixture *f, const options *opts, double *run_seconds) {
+  size_t program_maximum = opts->song_path
+      ? SONG_ADDRESS - LOAD_ADDRESS - 1
+      : STACK_RETURN - LOAD_ADDRESS;
+  size_t program_size;
+  if (!load_file(opts->input_path, &f->memory[LOAD_ADDRESS], program_maximum,
+                 &program_size))
+    return 0;
+
+  if (opts->song_path) {
+    size_t song_size;
+    if (!load_file(opts->song_path, &f->memory[SONG_ADDRESS],
+                   0x8000 - 1, &song_size))
+      return 0;
+    uint8_t *song = &f->memory[SONG_ADDRESS];
+    size_t declared = song[4] | (size_t)song[5] << 8;
+    if (song_size < 16 || memcmp(song, "JPS", 3) ||
+        (song[3] != 1 && song[3] != 2) || declared != song_size) {
+      fprintf(stderr, "invalid JPS song: %s\n", opts->song_path);
+      return 0;
+    }
   }
 
   f->memory[0] = 0x76; /* HLT after the CP/M-style RET to address zero. */
   f->memory[STACK_RETURN] = 0;
   f->memory[STACK_RETURN + 1] = 0;
+  if (opts->prepare_address) {
+    f->memory[STACK_RETURN - 2] = (uint8_t)opts->entry_address;
+    f->memory[STACK_RETURN - 1] = (uint8_t)(opts->entry_address >> 8);
+  }
   f->cpu_hz = opts->cpu_hz;
   f->pit_hz = opts->pit_hz;
   f->escape_at_seconds = opts->escape_at_seconds;
@@ -289,8 +354,10 @@ static int load_and_run(fixture *f, const options *opts, double *run_seconds) {
   f->cpu.port_in = port_in;
   f->cpu.port_out = port_out;
   f->cpu.userdata = f;
-  f->cpu.pc = LOAD_ADDRESS;
-  f->cpu.sp = STACK_RETURN;
+  f->cpu.pc = opts->prepare_address ? opts->prepare_address
+                                    : (opts->entry_address
+                                       ? opts->entry_address : LOAD_ADDRESS);
+  f->cpu.sp = opts->prepare_address ? STACK_RETURN - 2 : STACK_RETURN;
   f->cpu.iff = 1;
 
   double maximum_cycles = opts->max_seconds * opts->cpu_hz;
