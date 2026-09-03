@@ -112,7 +112,61 @@ claimed.
 
 ## W3 — native UI and simple configuration
 
-Status: **not started**
+Status: **implementation complete; native visual/runtime test open**
+
+The cross-built `JUKUWIN.EXE` is now a Windows GUI-subsystem application with
+one ordinary Win32 window. It provides C11/stock selection, safe serial-device
+selection and refresh, A:/B: browsing, snapshot/read-only A: policy,
+auto-listen, Listen/Stop, actual runner state and boot progress, live traffic
+counters, an N4 console with bounded input, and a diagnostic transcript.
+
+The UI freezes one configuration per session and runs the shared host runner
+on a worker thread. Worker callbacks copy data through posted window messages;
+the serial thread never calls a control. Stop, window close, and Windows
+session shutdown request cooperative cancellation. Controls that affect a
+session stay disabled until the runner has closed serial, evidence, journal,
+and media resources.
+
+The simple strict-ASCII `JUKUWIN.INI` parser, canonical formatter, path
+resolver, defaults, semantic validator, and deterministic working-image name
+are portable and directly unit-tested. UI saves use a flushed temporary file
+and `MoveFileEx` replacement. A: defaults to an exclusively opened snapshot;
+B: remains read-only. Each run receives a new timestamp/PID evidence folder.
+Retention recognizes only the owned session-name grammar, removes only the two
+known evidence files, and leaves any directory containing an unknown file
+untouched.
+
+SetupAPI enumeration is dynamically discovered to preserve the legacy import
+boundary. Selection follows an exact case-insensitive device-instance ID even
+when the COM number changes. One unidentified adapter may be selected
+automatically; zero devices waits; multiple devices without an identity is a
+hard ambiguity. Explicit `COM1` through `COM256` remains available through the
+INI and works even when a port is temporarily absent.
+
+The build also provides `--selftest`, `--headless --config PATH`, an example
+INI, an operator guide, and deterministic packaging. The current package has
+only `JUKUWIN.EXE`, `JUKUWIN.INI`, `README.md`, `MANIFEST.json`, and
+`SHA256SUMS`; no boot payload or runtime DLL is loose.
+
+Current automated evidence:
+
+- strict config parse/format/path tests;
+- stable-identity, explicit-port, missing-device, and ambiguity tests;
+- warning-free GUI compilation;
+- two byte-identical 171,520-byte GUI EXEs after deterministic PE timestamp
+  normalization;
+- PE32/i386 Windows GUI subsystem 4.0 and exact 92-import allowlist;
+- package manifest and complete SHA-256 verification.
+
+The current GUI EXE SHA-256 is
+`ff3cdf150f3df02f45b94097ce756ac6c5db093779bfd487741eff71ee1a55eb`.
+This identity will change when the remaining API-shim tests and embedded
+version/icon resource are added.
+
+No Windows or Wine runtime is present in the available environment, so window
+rendering, message-loop automation, and the actual `--selftest` process remain
+unexecuted. Those are explicit open desk items, not inferred from a successful
+cross-link.
 
 ## W4 — physical current-Windows qualification
 

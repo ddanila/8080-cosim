@@ -36,8 +36,11 @@ sources=(
     host/src/platform_file.c
     host/src/platform_win32.c
     host/src/jukuhost_runner.c
+    host/windows/jukuwin_config.c
     host/windows/jukuwin_payloads.c
-    host/windows/jukuwin_headless.c
+    host/windows/jukuwin_serial_select.c
+    host/windows/jukuwin_serial_win32.c
+    host/windows/jukuwin_app.c
 )
 objects=()
 compile_flags=(
@@ -56,18 +59,21 @@ compile_flags=(
         wcc386 "${compile_flags[@]}" -fo="$object" "$project_root/$source"
     done
     {
-        echo "system nt"
+        echo "system nt_win"
         echo "name $output_dir/JUKUWIN.EXE"
         echo "option map=$output_dir/JUKUWIN.MAP"
         echo "option quiet"
         for object in "${objects[@]}"; do
             echo "file $object"
         done
+        echo "library comdlg32"
     } >"$output_dir/LINK.RSP"
     wlink @"$output_dir/LINK.RSP"
 } >"$output_dir/BUILD.LOG" 2>&1
 
 test -s "$output_dir/JUKUWIN.EXE"
 test -s "$output_dir/JUKUWIN.MAP"
+"$project_root/tools/normalize-pe.py" "$output_dir/JUKUWIN.EXE" \
+    >>"$output_dir/BUILD.LOG"
 sha256sum "$output_dir/JUKUWIN.EXE"
 echo "JUKUWIN-WIN32-BUILD: PASS ($(stat -c %s "$output_dir/JUKUWIN.EXE") bytes)"

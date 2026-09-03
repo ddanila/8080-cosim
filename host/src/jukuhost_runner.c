@@ -57,6 +57,7 @@ struct host_context {
     int log_error;
     int capture_error;
     int capture_ready;
+    char resolved_serial[JH_CONFIG_PATH_MAX];
     /* Bytes already read from the port but not yet consumed by the reader
      * that read them.  A frame reader that stops mid-buffer returns the tail
      * here so the next phase sees it; the target starts its first NetDisk
@@ -349,6 +350,28 @@ static int host_stop_requested(const struct host_context *host)
     return jh_platform_stop_requested();
 }
 
+static const char *host_serial_path(struct host_context *host)
+{
+    size_t length;
+    if (host->options.serial == NULL) {
+        errno = EINVAL;
+        return NULL;
+    }
+    if (host->hooks != NULL && host->hooks->resolve_serial != NULL) {
+        if (host->hooks->resolve_serial(host->hooks->context,
+                host->options.serial, host->resolved_serial,
+                sizeof(host->resolved_serial)) != 0) return NULL;
+        return host->resolved_serial;
+    }
+    length = strlen(host->options.serial);
+    if (length >= sizeof(host->resolved_serial)) {
+        errno = ENAMETOOLONG;
+        return NULL;
+    }
+    memcpy(host->resolved_serial, host->options.serial, length + 1u);
+    return host->resolved_serial;
+}
+
 static int host_console_enabled(const struct host_context *host)
 {
     return host->options.console_enabled || host->options.console_pty != NULL ||
@@ -367,6 +390,26 @@ static void host_progress(struct host_context *host, unsigned completed,
     if (host->hooks != NULL && host->hooks->progress != NULL) {
         host->hooks->progress(host->hooks->context, completed, total);
     }
+}
+
+static void host_activity(struct host_context *host)
+{
+    struct jh_host_summary summary;
+    if (host->hooks == NULL || host->hooks->activity == NULL) return;
+    memset(&summary, 0, sizeof(summary));
+    summary.rx_bytes = host->rx_bytes;
+    summary.tx_bytes = host->tx_bytes;
+    summary.requests = host->requests;
+    summary.retries = host->retries;
+    summary.reads = host->reads;
+    summary.read_records = host->read_records;
+    summary.writes = host->writes;
+    summary.boot_restarts = host->boot_restart_count;
+    summary.reconnects = host->reconnect_count;
+    summary.target_resets = host->target_reset_count;
+    summary.serial_line_errors = host->serial_line_errors +
+        host->serial.line_errors;
+    host->hooks->activity(host->hooks->context, &summary);
 }
 
 static int path_is_absolute(const char *path)
@@ -605,6 +648,7 @@ static int host_write(struct host_context *host, const uint8_t *data,
         return -1;
     }
     host->tx_bytes += (unsigned long)length;
+    host_activity(host);
     if (capture_record(host, JH_CAPTURE_TX, 0u, data, length) != 0) {
         host->capture_error = 1;
         return -1;
@@ -672,6 +716,7 @@ static int host_read(struct host_context *host, uint8_t *data, size_t capacity,
     received = jh_platform_serial_read(&host->serial, data, capacity, timeout_ms);
     if (received > 0) {
         host->rx_bytes += (unsigned long)received;
+        host_activity(host);
         if (capture_record(host, JH_CAPTURE_RX, 0u, data,
                            (size_t)received) != 0) {
             host->capture_error = 1;
@@ -707,9 +752,11 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
         (uint64_t)host->options.reconnect_timeout_seconds * 1000u;
     while (!host_stop_requested(host) &&
             jh_platform_milliseconds() < deadline) {
-        if (jh_platform_serial_open(&host->serial, host->options.serial,
-                                 baud, parity) == 0) {
+        const char *path = host_serial_path(host);
+        if (path != NULL && jh_platform_serial_open(
+                &host->serial, path, baud, parity) == 0) {
             ++host->reconnect_count;
+            host_activity(host);
             host_log(host, "INFO", "serial reconnected count=%lu applied=%u 8%c1",
                      host->reconnect_count, host->serial.baud,
                      host->serial.parity);
@@ -1695,6 +1742,7 @@ static int run_disk(struct host_context *host,
                 result = EXIT_EVIDENCE;
                 goto done;
             }
+            host_activity(host);
             if (host->options.verbose &&
                     request.operation >= JH_N3_READ &&
                     request.operation <= JH_N3_WRITE_V3) {
@@ -1947,12 +1995,15 @@ int jh_host_run(const struct jh_host_options *options,
             host.options.direct_fastboot ? 'N' : 'O';
         host_log(&host, "INFO", "phase=serial-open requested=%u 8%c1 flow=none",
                  initial_baud, initial_parity);
+        const char *serial_path = host.options.serial_fd >= 0 ? NULL :
+            host_serial_path(&host);
         int opened = host.options.serial_fd >= 0 ?
             jh_platform_serial_adopt(&host.serial, host.options.serial_fd,
                                   "/dev/pts/inherited", initial_baud,
                                   initial_parity) :
-            jh_platform_serial_open(&host.serial, host.options.serial,
-                                 initial_baud, initial_parity);
+            serial_path == NULL ? -1 :
+            jh_platform_serial_open(&host.serial, serial_path,
+                                    initial_baud, initial_parity);
         if (opened != 0) {
             if (!host.options.recover_session ||
                     recover_c11_serial(&host) != 0) {

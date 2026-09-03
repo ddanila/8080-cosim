@@ -85,8 +85,11 @@ struct jh_host_hooks {
                 const char *level, const char *message);
     void (*state)(void *context, const char *state);
     void (*progress)(void *context, unsigned completed, unsigned total);
+    void (*activity)(void *context, const struct jh_host_summary *summary);
     int (*console_read)(void *context, uint8_t *output, size_t capacity);
     int (*console_write)(void *context, const uint8_t *data, size_t length);
+    int (*resolve_serial)(void *context, const char *configured,
+                          char *output, size_t capacity);
 };
 
 void jh_host_options_init(struct jh_host_options *options);

@@ -8,6 +8,9 @@
 
 #if defined(__WATCOMC__) && (defined(__DOS__) || defined(JH_WIN32))
 #include <io.h>
+#if defined(JH_WIN32)
+#include <share.h>
+#endif
 #define JH_OPEN _open
 #define JH_READ _read
 #define JH_WRITE _write
@@ -186,7 +189,12 @@ int jh_platform_media_open(struct jh_platform_media *media, const char *path,
         return -1;
     }
     memset(media, 0, sizeof(*media));
+#if defined(__WATCOMC__) && defined(JH_WIN32)
+    media->file = _fsopen(path, writable ? "r+b" : "rb",
+                          writable ? SH_DENYRW : SH_DENYNO);
+#else
     media->file = fopen(path, writable ? "r+b" : "rb");
+#endif
     if (media->file == NULL) return -1;
     if (fseek(media->file, 0L, SEEK_END) != 0 ||
             (size = ftell(media->file)) < 0L ||
