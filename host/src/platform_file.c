@@ -6,7 +6,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#if defined(__WATCOMC__) && defined(__DOS__)
+#if defined(__WATCOMC__) && (defined(__DOS__) || defined(JH_WIN32))
 #include <io.h>
 #define JH_OPEN _open
 #define JH_READ _read
@@ -40,6 +40,8 @@ static int sync_file(FILE *file)
         errno = 0;
     }
     return 0;
+#elif defined(__WATCOMC__) && defined(JH_WIN32)
+    return _commit(fileno(file));
 #else
     return fsync(fileno(file));
 #endif
@@ -123,7 +125,9 @@ int jh_platform_load_file(const char *path, uint8_t **data, size_t *length)
     if (file == NULL) return -1;
     if (fseek(file, 0L, SEEK_END) != 0 ||
             (file_length = ftell(file)) < 0L ||
+#if SIZE_MAX < UINT32_MAX
             (uint32_t)file_length > (uint32_t)SIZE_MAX ||
+#endif
             fseek(file, 0L, SEEK_SET) != 0) {
         fclose(file);
         errno = EFBIG;

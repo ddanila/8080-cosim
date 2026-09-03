@@ -9,6 +9,7 @@
 
 struct jh_platform_serial {
     int fd;
+    void *native_handle;
     int pseudo_terminal;
     char path[512];
     unsigned baud;
@@ -26,6 +27,7 @@ struct jh_platform_serial {
 
 struct jh_platform_console {
     int fd;
+    void *native_handle;
     FILE *file;
     uint64_t ready_ms;
 };

@@ -79,7 +79,36 @@ rather than being hidden behind the passing C11 boot and NetDisk activity.
 
 ## W2 — Win32 platform and headless parity
 
-Status: **not started**
+Status: **platform/build complete; runtime and serial qualification open**
+
+`platform_win32.c` now supplies the production runner with a Windows 4.0-safe
+clock, stop handling, memory report, exclusive COM open, complete DCB setup,
+applied-setting verification, bounded reads/writes/drain, line-error
+accounting, purge at framing transitions, and reopen through the existing
+runner. `platform_file.c` uses the Open Watcom Win32 commit primitive for
+journal and media flushes.
+
+The deterministic payload generator validates the pinned W0 source files and
+emits a checked C catalog. Both stock and C11 pairs are compiled into the PE;
+native tests recompute every SHA-256 and verify mode selection. A release
+build therefore has no loose boot/system dependency.
+
+`sync/jukuhost_win32_check.sh` currently proves:
+
+- four exact embedded payload identities and stock/C11 option mapping;
+- strict warning-free Open Watcom compilation;
+- two byte-identical 150,016-byte PE builds;
+- PE32/i386, console subsystem version 4.0;
+- an exact reviewed allowlist of 53 direct KERNEL32/USER32 imports.
+
+The current artifact SHA-256 is
+`8a5e6243e1e5932083dbd66de6335dd5eeccfde6f88dfaa19bc68195523f17cc`.
+It is an intermediate headless artifact, not the GUI release identity.
+
+Wine is not installed in the available environment, so its self-test and COM
+integration are still open. A native Win32-API shim test is also required
+before this gate can be called desk-complete. No real-Windows behavior is
+claimed.
 
 ## W3 — native UI and simple configuration
 
