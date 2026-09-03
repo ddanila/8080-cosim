@@ -2,6 +2,12 @@
 
 Status: **M2.2 DESK COMPLETE — M2.3 PHYSICAL POCKET8086 QUALIFICATION NEXT**
 
+The newer interactive Windows deliverable is governed by
+[windows-jukuhost-client-plan.md](windows-jukuhost-client-plan.md). That plan
+supersedes the console-only Win32 product scope and permits its implementation
+to proceed before M2.3, while preserving the physical Pocket8086 and Windows
+qualification gates recorded here.
+
 Native-Linux acceptance and Python-host retirement are recorded in
 [portable-c-host-m2-acceptance.md](portable-c-host-m2-acceptance.md). The first
 pre-M3 gate, physical Linux validation on CS00015, is complete. The same core
