@@ -24,6 +24,7 @@ sources=(
     jukuhost_sha256
     platform_file
     platform_dos
+    jukuhost_runner
     jukuhost_main
 )
 

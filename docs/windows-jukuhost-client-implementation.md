@@ -46,7 +46,36 @@ test, and DOS build/emulator gate. W1 must keep all of those green.
 
 ## W1 — shared runner extraction
 
-Status: **not started**
+Status: **implementation complete; C11 aggregate co-sim requalification open**
+
+The production lifecycle now has a public frontend-neutral API in
+`jukuhost_runner.h`. It accepts immutable options, embedded or file-backed
+boot artifacts, cooperative cancellation, log/state/progress callbacks, N4
+console callbacks, and returns typed summary counters. The former production
+body is compiled as `jukuhost_runner.c`; `jukuhost_main.c` is now only the
+five-line CLI entry adapter. Linux and DOS build the same runner.
+
+`sync/jukuhost_runner_check.sh` verifies defaults, null-input rejection,
+callback delivery, summary delivery, and immediate cooperative cancellation
+without opening serial or media. The following post-extraction gates pass:
+
+- strict core vectors under GCC/Clang, signed/unsigned `char`, and sanitizers;
+- runner callback/cancellation test;
+- native Linux build and self-test;
+- Linux PTY N3/N4, B:, duplicate, journal, capture, console, and reconnect;
+- five-stock-system co-simulation and learned identity;
+- physical-failure JF15 five-second delayed-core regression;
+- stock/JF15 co-simulation;
+- named-PTY serial disappearance and reopen;
+- Open Watcom DOS build from the shared runner;
+- complete DOS reproducibility, self-test, stock, and C8 emulator gate.
+
+The aggregate C11 co-simulation is not yet recorded as requalified. Its first
+STATUS transcript intermittently loses an internal N4 substring in this busy
+Linux environment. The exact same failures reproduce from an untouched
+`6255a4ef` worktree, at different transcript offsets, proving this is not
+specific to the runner extraction. It remains an open qualification item
+rather than being hidden behind the passing C11 boot and NetDisk activity.
 
 ## W2 — Win32 platform and headless parity
 

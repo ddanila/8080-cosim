@@ -372,9 +372,10 @@ in [portable-c-host-plan.md](portable-c-host-plan.md).
 
 ## M2.2 — Pocket8086 DOS port desk-complete
 
-The production source is no longer POSIX-shaped. `jukuhost_main.c` and
-`platform_file.c` are shared, while `platform_posix.c` and `platform_dos.c`
-provide only their platform boundaries. Media reads, writes, native B: layout,
+The production source is no longer POSIX-shaped. `jukuhost_runner.c` and
+`platform_file.c` are shared, `jukuhost_main.c` is the thin CLI entry, and
+`platform_posix.c` and `platform_dos.c` provide only their platform
+boundaries. Media reads, writes, native B: layout,
 identity hashing, snapshots, and journal recovery are streamed through a
 file-backed backend; neither 400 KiB A: nor 800 KiB B: is copied into 16-bit
 memory.

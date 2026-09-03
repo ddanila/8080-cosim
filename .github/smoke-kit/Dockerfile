@@ -27,6 +27,7 @@ RUN cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
         /src/host/src/jukuhost_sha256.c \
         /src/host/src/platform_file.c \
         /src/host/src/platform_posix.c \
+        /src/host/src/jukuhost_runner.c \
         /src/host/src/jukuhost_main.c \
         -o /opt/8080-cosim/bin/jukuhost \
     && /opt/8080-cosim/bin/jukuhost --selftest
