@@ -72,6 +72,20 @@ actual EXE through emulated COM1 against stock 9,600-baud Janet and current C8
 `docs/portable-c-host-m2.2-dos-acceptance.md`. Physical Pocket8086 timing and
 CS00015 behavior remain the separate M2.3 gate.
 
+The native Windows Juku host desk gate is:
+
+```sh
+sync/jukuhost_win32_check.sh
+```
+
+It tests the embedded stock/C11 catalog, strict INI and serial selection,
+Win32 COM behavior through an API shim, two byte-identical Open Watcom GUI
+builds, the exact legacy-safe PE import/resource boundary, and the exact
+self-contained package. It runs the compiled self-test under Wine when Wine is
+available and reports an explicit skip otherwise. See
+`docs/windows-jukuhost-client-desk-acceptance.md`; real Windows, the physical
+adapter, CS00000, and Windows 95 remain separate qualification boundaries.
+
 ```sh
 sync/boot_check.sh
 sync/i8080_check.sh

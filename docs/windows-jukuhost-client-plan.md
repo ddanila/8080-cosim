@@ -1,6 +1,13 @@
 # Windows Juku host client plan
 
-Status: **W0 COMPLETE — W1/W2/W3 IMPLEMENTED, DESK QUALIFICATION IN PROGRESS**
+Status: **W0–W3 DESK-COMPLETE — W4/W5 REQUIRE REAL WINDOWS HARDWARE**
+
+The implementation sprint is complete to the explicitly available boundary:
+Linux cross-build, native portable tests, Win32 API shims, PE/package audits,
+and all shared Linux/DOS/co-simulation regressions. The retained evidence is
+in
+[windows-jukuhost-client-desk-acceptance.md](windows-jukuhost-client-desk-acceptance.md).
+This does not waive or imply either physical Windows gate below.
 
 Date: 2026-09-03
 
@@ -203,10 +210,11 @@ Rules:
 - malformed values prevent auto-listen and are displayed with section, key,
   and line number.
 
-The UI can save the same file atomically through a temporary file, flush, and
-replace. It never stores configuration in the registry. Hand edits remain a
-supported workflow. Passwords, credentials, and machine-specific secrets are
-not part of the format.
+The UI saves through a flushed temporary file and uses atomic replacement
+where the OS supplies it. The legacy path uses a crash-recoverable
+backup/install/restore sequence. It never stores configuration in the
+registry. Hand edits remain a supported workflow. Passwords, credentials, and
+machine-specific secrets are not part of the format.
 
 An advanced command-line test switch may load the existing strict
 `JUKUHOST.INI`, but the normal GUI does not expose artifact paths or weaken
@@ -448,7 +456,7 @@ timing can hide defects.
 ### Gate W3 — basic UI
 
 - implement the fixed control set and worker/UI message boundary;
-- load, validate, edit, and atomically save the simple INI;
+- load, validate, edit, and atomically or recoverably save the simple INI;
 - prove auto-listen, manual Listen/Stop, close-during-each-phase, and clean
   restart in one process;
 - prove bounded console input/output under heavy disk and log activity;

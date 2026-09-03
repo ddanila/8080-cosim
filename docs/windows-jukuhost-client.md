@@ -71,8 +71,10 @@ record.
 ## Configuration
 
 `JUKUWIN.INI` is strict ASCII text. Relative image and evidence paths are
-resolved beside the INI file. The UI saves it atomically when **Listen** is
-pressed. It uses no registry settings.
+resolved beside the INI file. The UI uses a committed temporary file and
+atomic replacement where the OS provides it; the legacy fallback retains a
+recovery backup. It saves when **Listen** is pressed and uses no registry
+settings.
 
 ```ini
 [juku]

@@ -46,7 +46,7 @@ test, and DOS build/emulator gate. W1 must keep all of those green.
 
 ## W1 — shared runner extraction
 
-Status: **implementation complete; C11 aggregate co-sim requalification open**
+Status: **complete**
 
 The production lifecycle now has a public frontend-neutral API in
 `jukuhost_runner.h`. It accepts immutable options, embedded or file-backed
@@ -70,16 +70,16 @@ without opening serial or media. The following post-extraction gates pass:
 - Open Watcom DOS build from the shared runner;
 - complete DOS reproducibility, self-test, stock, and C8 emulator gate.
 
-The aggregate C11 co-simulation is not yet recorded as requalified. Its first
-STATUS transcript intermittently loses an internal N4 substring in this busy
-Linux environment. The exact same failures reproduce from an untouched
-`6255a4ef` worktree, at different transcript offsets, proving this is not
-specific to the runner extraction. It remains an open qualification item
-rather than being hidden behind the passing C11 boot and NetDisk activity.
+The complete aggregate C11 gate subsequently passed unchanged: normal boot,
+passive session discovery, periodic late-host beacon, host replacement, and
+NetDisk-reset recovery. An earlier run intermittently lost an internal STATUS
+substring in this busy Linux environment; the same symptom reproduced from an
+untouched pre-extraction `6255a4ef` worktree. No assertion, timeout, or retry
+was weakened to obtain the accepted pass.
 
 ## W2 — Win32 platform and headless parity
 
-Status: **platform/build complete; runtime and serial qualification open**
+Status: **desk-complete to the available non-Windows boundary**
 
 `platform_win32.c` now supplies the production runner with a Windows 4.0-safe
 clock, stop handling, memory report, exclusive COM open, complete DCB setup,
@@ -93,26 +93,31 @@ emits a checked C catalog. Both stock and C11 pairs are compiled into the PE;
 native tests recompute every SHA-256 and verify mode selection. A release
 build therefore has no loose boot/system dependency.
 
-`sync/jukuhost_win32_check.sh` currently proves:
+`sync/jukuhost_win32_check.sh` proves:
 
 - four exact embedded payload identities and stock/C11 option mapping;
+- strict config and stable-device-selection behavior;
+- Win32 COM namespace, exclusive access, complete DCB setup, partial I/O,
+  line-error handling, bounded drain, stop handling, and timer wrap through a
+  native API shim;
 - strict warning-free Open Watcom compilation;
-- two byte-identical 150,016-byte PE builds;
-- PE32/i386, console subsystem version 4.0;
-- an exact reviewed allowlist of 53 direct KERNEL32/USER32 imports.
+- two byte-identical 177,152-byte PE builds;
+- PE32/i386, GUI subsystem version 4.0;
+- an exact reviewed allowlist of 92 direct system imports;
+- deterministic icon/version resources and normalized resource timestamps;
+- an exact five-file package, complete hashes, and four-payload manifest.
 
-The current artifact SHA-256 is
-`8a5e6243e1e5932083dbd66de6335dd5eeccfde6f88dfaa19bc68195523f17cc`.
-It is an intermediate headless artifact, not the GUI release identity.
+The qualified implementation is `f332a2d8`; its EXE SHA-256 is
+`dd79caa86fdf55f5c8ddc82166d75eb568be2e0382eb6618f3d1d979e6b33026`.
 
-Wine is not installed in the available environment, so its self-test and COM
-integration are still open. A native Win32-API shim test is also required
-before this gate can be called desk-complete. No real-Windows behavior is
-claimed.
+Wine is not installed in the available environment, so the compiled
+`--selftest`, headless process, and simulated-COM integration could not be run
+as Windows processes. The native Win32 API shim covers the platform adapter,
+but no real-Windows behavior is inferred from it.
 
 ## W3 — native UI and simple configuration
 
-Status: **implementation complete; native visual/runtime test open**
+Status: **desk-complete to the available non-Windows boundary**
 
 The cross-built `JUKUWIN.EXE` is now a Windows GUI-subsystem application with
 one ordinary Win32 window. It provides C11/stock selection, safe serial-device
@@ -129,9 +134,12 @@ and media resources.
 
 The simple strict-ASCII `JUKUWIN.INI` parser, canonical formatter, path
 resolver, defaults, semantic validator, and deterministic working-image name
-are portable and directly unit-tested. UI saves use a flushed temporary file
-and `MoveFileEx` replacement. A: defaults to an exclusively opened snapshot;
-B: remains read-only. Each run receives a new timestamp/PID evidence folder.
+are portable and directly unit-tested. UI saves use a flushed temporary file.
+Current Windows discovers `MoveFileExA` dynamically for atomic write-through
+replacement; the legacy path uses a tested backup/install/restore sequence and
+startup recovery, without making that API a static Windows 95 import. A:
+defaults to an exclusively opened snapshot; B: remains read-only. Each run
+receives a new timestamp/PID evidence folder.
 Retention recognizes only the owned session-name grammar, removes only the two
 known evidence files, and leaves any directory containing an unknown file
 untouched.
@@ -153,20 +161,21 @@ Current automated evidence:
 - strict config parse/format/path tests;
 - stable-identity, explicit-port, missing-device, and ambiguity tests;
 - warning-free GUI compilation;
-- two byte-identical 171,520-byte GUI EXEs after deterministic PE timestamp
+- two byte-identical 177,152-byte GUI EXEs after deterministic PE and resource
+  timestamp
   normalization;
-- PE32/i386 Windows GUI subsystem 4.0 and exact 92-import allowlist;
-- package manifest and complete SHA-256 verification.
+- PE32/i386 Windows GUI subsystem 4.0, embedded icon/version, and exact
+  92-import allowlist;
+- exact package membership, manifest identity, and complete SHA-256
+  verification.
 
 The current GUI EXE SHA-256 is
-`ff3cdf150f3df02f45b94097ce756ac6c5db093779bfd487741eff71ee1a55eb`.
-This identity will change when the remaining API-shim tests and embedded
-version/icon resource are added.
+`dd79caa86fdf55f5c8ddc82166d75eb568be2e0382eb6618f3d1d979e6b33026`.
 
 No Windows or Wine runtime is present in the available environment, so window
 rendering, message-loop automation, and the actual `--selftest` process remain
-unexecuted. Those are explicit open desk items, not inferred from a successful
-cross-link.
+unexecuted. Those are explicit environmental limitations, not inferred from a
+successful cross-link. See the desk acceptance record for the full matrix.
 
 ## W4 — physical current-Windows qualification
 
