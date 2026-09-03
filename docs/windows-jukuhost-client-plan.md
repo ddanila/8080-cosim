@@ -1,8 +1,11 @@
 # Windows Juku host client plan
 
-Status: **PLANNED — IMPLEMENTATION NOT STARTED**
+Status: **W0 COMPLETE — W1 SHARED RUNNER EXTRACTION NEXT**
 
 Date: 2026-09-03
+
+Implementation and qualification evidence is recorded in
+[windows-jukuhost-client-implementation.md](windows-jukuhost-client-implementation.md).
 
 ## Goal
 
