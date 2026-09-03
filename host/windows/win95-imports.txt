@@ -44,7 +44,7 @@ KERNEL32.DLL!InterlockedExchange
 KERNEL32.DLL!InterlockedExchangeAdd
 KERNEL32.DLL!LeaveCriticalSection
 KERNEL32.DLL!LoadLibraryA
-KERNEL32.DLL!MoveFileExA
+KERNEL32.DLL!MoveFileA
 KERNEL32.DLL!MultiByteToWideChar
 KERNEL32.DLL!PurgeComm
 KERNEL32.DLL!ReadConsoleInputA

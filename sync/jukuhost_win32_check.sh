@@ -23,6 +23,14 @@ cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
 "$project_root/build/jukuwin_config_test"
 
 cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
+    -I"$project_root/host/tests/win32-shim" \
+    -I"$project_root/host/windows" \
+    "$project_root/host/windows/jukuwin_config_store.c" \
+    "$project_root/host/tests/jukuwin_config_store_test.c" \
+    -o "$project_root/build/jukuwin_config_store_test"
+"$project_root/build/jukuwin_config_store_test"
+
+cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
     -I"$project_root/host/windows" \
     "$project_root/host/windows/jukuwin_serial_select.c" \
     "$project_root/host/tests/jukuwin_serial_select_test.c" \

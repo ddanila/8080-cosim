@@ -13,6 +13,8 @@ typedef uint8_t BYTE;
 typedef uint32_t DWORD;
 typedef int32_t LONG;
 typedef void *HANDLE;
+typedef void *HMODULE;
+typedef void (*FARPROC)(void);
 typedef const char *LPCSTR;
 typedef void *LPVOID;
 typedef DWORD *LPDWORD;
@@ -27,6 +29,7 @@ typedef DWORD *LPDWORD;
 #define CTRL_SHUTDOWN_EVENT 6u
 
 #define ERROR_FILE_NOT_FOUND 2u
+#define ERROR_SUCCESS 0u
 #define ERROR_PATH_NOT_FOUND 3u
 #define ERROR_ACCESS_DENIED 5u
 #define ERROR_NOT_ENOUGH_MEMORY 8u
@@ -41,6 +44,8 @@ typedef DWORD *LPDWORD;
 #define GENERIC_READ 0x80000000u
 #define GENERIC_WRITE 0x40000000u
 #define OPEN_EXISTING 3u
+#define MOVEFILE_REPLACE_EXISTING 0x00000001u
+#define MOVEFILE_WRITE_THROUGH 0x00000008u
 
 #define DTR_CONTROL_ENABLE 1u
 #define RTS_CONTROL_ENABLE 1u
@@ -121,5 +126,9 @@ BOOL ReadFile(HANDLE handle, LPVOID output, DWORD amount, DWORD *received,
 BOOL WriteFile(HANDLE handle, const void *data, DWORD amount, DWORD *written,
                LPVOID overlapped);
 DWORD GetLastError(void);
+HMODULE GetModuleHandleA(LPCSTR module);
+FARPROC GetProcAddress(HMODULE module, LPCSTR name);
+BOOL DeleteFileA(LPCSTR path);
+BOOL MoveFileA(LPCSTR source, LPCSTR target);
 
 #endif

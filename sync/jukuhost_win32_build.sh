@@ -41,6 +41,7 @@ sources=(
     host/src/platform_win32.c
     host/src/jukuhost_runner.c
     host/windows/jukuwin_config.c
+    host/windows/jukuwin_config_store.c
     host/windows/jukuwin_payloads.c
     host/windows/jukuwin_serial_select.c
     host/windows/jukuwin_serial_win32.c

@@ -4,6 +4,7 @@
 
 #include "jukuhost_runner.h"
 #include "jukuwin_config.h"
+#include "jukuwin_config_store.h"
 #include "jukuwin_payloads.h"
 #include "jukuwin_serial.h"
 #include "platform.h"
@@ -292,6 +293,36 @@ static int load_configuration(struct app_state *app, char *message,
     struct jh_jukuwin_config_error error;
     if (jh_platform_load_file(app->config_path, &data, &length) != 0) {
         if (errno == ENOENT) {
+            char temporary[JH_CONFIG_PATH_MAX];
+            char backup[JH_CONFIG_PATH_MAX];
+            const char *candidate = NULL;
+            uint8_t *candidate_data = NULL;
+            size_t candidate_length = 0u;
+            struct jh_jukuwin_config recovered;
+            if (snprintf(temporary, sizeof(temporary), "%s.tmp",
+                    app->config_path) < (int)sizeof(temporary) &&
+                    jh_platform_load_file(temporary, &candidate_data,
+                                          &candidate_length) == 0 &&
+                    jh_jukuwin_config_parse((const char *)candidate_data,
+                        candidate_length, &recovered, &error) == JH_OK) {
+                candidate = temporary;
+            }
+            free(candidate_data);
+            candidate_data = NULL;
+            candidate_length = 0u;
+            if (candidate == NULL &&
+                    snprintf(backup, sizeof(backup), "%s.bak",
+                        app->config_path) < (int)sizeof(backup) &&
+                    jh_platform_load_file(backup, &candidate_data,
+                                          &candidate_length) == 0 &&
+                    jh_jukuwin_config_parse((const char *)candidate_data,
+                        candidate_length, &recovered, &error) == JH_OK) {
+                candidate = backup;
+            }
+            free(candidate_data);
+            if (candidate != NULL && MoveFileA(candidate, app->config_path)) {
+                return load_configuration(app, message, capacity);
+            }
             jh_jukuwin_config_init(&app->config);
             (void)snprintf(message, capacity,
                            "New configuration; select drive A and save by listening");
@@ -318,20 +349,28 @@ static int save_configuration(struct app_state *app, char *message,
 {
     char text[4096];
     char temporary[JH_CONFIG_PATH_MAX];
+    char backup[JH_CONFIG_PATH_MAX];
     size_t length;
+    unsigned long error = 0u;
     if (jh_jukuwin_config_format(&app->config, text, sizeof(text), &length) !=
             JH_OK || snprintf(temporary, sizeof(temporary), "%s.tmp",
-                              app->config_path) >= (int)sizeof(temporary)) {
+                              app->config_path) >= (int)sizeof(temporary) ||
+            snprintf(backup, sizeof(backup), "%s.bak", app->config_path) >=
+                (int)sizeof(backup)) {
         (void)snprintf(message, capacity, "Configuration is too large");
         return -1;
     }
     if (jh_platform_write_file(temporary, (const uint8_t *)text, length, 1) !=
-            0 || !MoveFileExA(temporary, app->config_path,
-                MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) {
-        DWORD error = GetLastError();
+            0) {
+        (void)snprintf(message, capacity, "Cannot write %s: %s", temporary,
+                       strerror(errno));
+        return -1;
+    }
+    if (jh_jukuwin_config_replace(temporary, app->config_path, backup,
+                                  &error) != 0) {
         (void)jh_platform_remove_file(temporary);
         (void)snprintf(message, capacity, "Cannot save %s (Windows error %lu)",
-                       app->config_path, (unsigned long)error);
+                       app->config_path, error);
         return -1;
     }
     return 0;
