@@ -1135,7 +1135,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line,
     window_class.style = CS_HREDRAW | CS_VREDRAW;
     window_class.lpfnWndProc = window_proc;
     window_class.hInstance = instance;
-    window_class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    window_class.hIcon = LoadIconA(instance, MAKEINTRESOURCEA(1));
+    if (window_class.hIcon == NULL) {
+        window_class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    }
     window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
     window_class.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
     window_class.lpszClassName = APP_CLASS;

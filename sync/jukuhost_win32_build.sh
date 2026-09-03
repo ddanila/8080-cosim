@@ -11,6 +11,10 @@ payload_source=${JUKUWIN_PAYLOAD_SOURCE:-"$project_root/../cpm-plus-juku/out"}
 source "$project_root/tools/open-watcom-env.sh"
 
 mkdir -p "$output_dir"
+"$project_root/tools/generate-jukuwin-resources.py" \
+    --directory "$output_dir" >"$output_dir/RESOURCE.LOG"
+(cd "$output_dir" && wrc -q -r -bt=nt -i="$WATCOM/h/nt" \
+    -fo=JUKUWIN.RES JUKUWIN.RC)
 if [[ -d "$payload_source" ]]; then
     "$project_root/tools/generate-jukuwin-payloads.py" \
         --manifest "$project_root/host/windows/payload-manifest.json" \
@@ -69,6 +73,7 @@ compile_flags=(
         echo "library comdlg32"
     } >"$output_dir/LINK.RSP"
     wlink @"$output_dir/LINK.RSP"
+    (cd "$output_dir" && wrc -q -bt=nt JUKUWIN.RES JUKUWIN.EXE)
 } >"$output_dir/BUILD.LOG" 2>&1
 
 test -s "$output_dir/JUKUWIN.EXE"

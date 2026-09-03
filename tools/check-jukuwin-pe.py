@@ -14,6 +14,53 @@ def fail(message: str) -> None:
     raise SystemExit(f"check-jukuwin-pe: {message}")
 
 
+def resource_types(data: bytes, pe_offset: int) -> set[int]:
+    """Return numeric root resource types and validate deterministic stamps."""
+    section_count = struct.unpack_from("<H", data, pe_offset + 6)[0]
+    optional_size = struct.unpack_from("<H", data, pe_offset + 20)[0]
+    section_table = pe_offset + 24 + optional_size
+    raw = None
+    size = 0
+    for index in range(section_count):
+        section = section_table + index * 40
+        if bytes(data[section:section + 8]).rstrip(b"\0") == b".rsrc":
+            size = struct.unpack_from("<I", data, section + 16)[0]
+            raw = struct.unpack_from("<I", data, section + 20)[0]
+            break
+    if raw is None or raw + 16 > len(data):
+        fail("resource section missing or truncated")
+
+    visited: set[int] = set()
+
+    def visit(relative: int) -> None:
+        if relative in visited or relative + 16 > size:
+            fail("invalid resource directory")
+        visited.add(relative)
+        directory = raw + relative
+        if directory + 16 > len(data):
+            fail("truncated resource directory")
+        timestamp = struct.unpack_from("<I", data, directory + 4)[0]
+        if timestamp != 0:
+            fail("non-deterministic resource timestamp")
+        named, identifiers = struct.unpack_from("<HH", data, directory + 12)
+        count = named + identifiers
+        if relative + 16 + count * 8 > size:
+            fail("resource entries exceed section")
+        for entry_index in range(count):
+            entry = directory + 16 + entry_index * 8
+            target = struct.unpack_from("<I", data, entry + 4)[0]
+            if target & 0x80000000:
+                visit(target & 0x7FFFFFFF)
+
+    visit(0)
+    named, identifiers = struct.unpack_from("<HH", data, raw + 12)
+    types = set()
+    for entry_index in range(named, named + identifiers):
+        entry = raw + 16 + entry_index * 8
+        types.add(struct.unpack_from("<I", data, entry)[0] & 0xFFFF)
+    return types
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("executable", type=Path)
@@ -41,6 +88,17 @@ def main() -> int:
         fail(f"subsystem {subsystem} != {expected_subsystem}")
     if (major_subsystem, minor_subsystem) > (4, 0):
         fail(f"subsystem version {major_subsystem}.{minor_subsystem} exceeds 4.0")
+    types = resource_types(data, pe_offset)
+    missing_types = {3, 14, 16} - types
+    if missing_types:
+        fail("missing icon/version resource types: " +
+             ", ".join(str(item) for item in sorted(missing_types)))
+    signature = data.find(b"\xbd\x04\xef\xfe")
+    if signature < 0 or signature + 56 > len(data):
+        fail("VS_FIXEDFILEINFO missing")
+    file_date = struct.unpack_from("<II", data, signature + 48)
+    if file_date != (0, 0):
+        fail("non-deterministic VERSIONINFO file date")
 
     result = subprocess.run(
         ["objdump", "-p", str(args.executable)], check=True,
@@ -69,7 +127,7 @@ def main() -> int:
     print(
         "JUKUWIN-PE-AUDIT: PASS "
         f"(PE32/i386, subsystem {major_subsystem}.{minor_subsystem} "
-        f"{args.subsystem}, {len(imports)} reviewed imports)"
+        f"{args.subsystem}, {len(imports)} reviewed imports, icon + version)"
     )
     return 0
 

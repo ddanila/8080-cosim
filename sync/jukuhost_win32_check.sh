@@ -29,6 +29,14 @@ cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
     -o "$project_root/build/jukuwin_serial_select_test"
 "$project_root/build/jukuwin_serial_select_test"
 
+cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
+    -I"$project_root/host/tests/win32-shim" \
+    -I"$project_root/host/include" -I"$project_root/host/src" \
+    "$project_root/host/src/platform_win32.c" \
+    "$project_root/host/tests/platform_win32_test.c" \
+    -o "$project_root/build/platform_win32_test"
+"$project_root/build/platform_win32_test"
+
 "$project_root/sync/jukuhost_win32_build.sh" "$first"
 "$project_root/sync/jukuhost_win32_build.sh" "$second"
 cmp "$first/JUKUWIN.EXE" "$second/JUKUWIN.EXE"
@@ -51,5 +59,7 @@ test -f "$project_root/build/jukuwin-package/JUKUWIN.EXE"
 test -f "$project_root/build/jukuwin-package/JUKUWIN.INI"
 test ! -e "$project_root/build/jukuwin-package/SYSTEM.BIN"
 test ! -e "$project_root/build/jukuwin-package/FAST16.BIN"
+"$project_root/tools/check-jukuwin-package.py" \
+    "$project_root/build/jukuwin-package"
 
 echo "JUKUWIN-WIN32-CHECK: PASS (cross-build desk boundary)"
