@@ -48,6 +48,7 @@ kicad/*.kicad_pro
 obj_dir/
 tools/*/build/
 /build/
+/out/
 V*.cpp
 V*.h
 venv/
