@@ -116,7 +116,13 @@ def main() -> int:
             metadata.get("runtime_console", {}).get(
                 "keyboard_transition") != {
                     "pending_state": "discard", "key_remap": "preserve",
-                } or metadata.get("gate_bytes") != 224:
+                } or metadata.get("gate_bytes") != 224 or \
+            metadata.get("rom_envelope_padding_bytes") != {
+                "resident_and_diagnostics_D800_EFFF": 154,
+                "locale_console_F000_F7FF": 839,
+                "resident_host_F800_FEFF": 896,
+                "abi_manifest_vectors_FF00_FFFF": 158,
+            }:
         fail(f"C12 metadata differs: {metadata}")
     manifest = image[0x3F00:0x3F63]
     if manifest[:10] != b"JUKUABI\0\x01\x05" or \

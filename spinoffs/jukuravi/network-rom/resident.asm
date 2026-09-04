@@ -1163,7 +1163,12 @@ build_identity:
 .endif
 
 .ifdef ROM_ABI_HOSTSERVICES
+        ; C12 uses some of the former pre-diagnostic slack. Older variants
+        ; still align diagnostics at EC00h; C12 continues immediately and is
+        ; bounded together with diagnostics by the hard F000h assertion.
+        .if     $ < 0ec00h
         dc      0ec00h-$,0ffh
+        .endif
 DIAG_PIT_CONTROL equ   PITCTL
 DIAG_PIT_COUNT0 equ    PITCOUNT0
 DIAG_USART_CONTROL equ USARTCTL
@@ -1174,6 +1179,9 @@ DIAG_USART_CONTROL equ USARTCTL
         include "checksum.asm"
         include "pit-d57.asm"
         include "usart-status.asm"
+        .if     $ > 0f000h
+        .error  "Resident core and diagnostics exceed D800h..EFFFh"
+        .endif
         dc      0f000h-$,0ffh
 .endif
 
@@ -1389,6 +1397,9 @@ RCFONTFOUND:
 CREEP_PSEUDO_ONLY equ  1
         include "creep-console-font.asm"
         include "locale-console-fonts.asm"
+        .if     $ > 0f800h
+        .error  "Locale console exceeds F000h..F7FFh"
+        .endif
         dc      0f800h-$,0ffh
 .endif
 
@@ -1398,6 +1409,9 @@ CREEP_PSEUDO_ONLY equ  1
 ; empty ROM tail, without adding a direct vector or expanding the RAM gate.
         org     0f800h
         include "rom-host-services.asm"
+        .if     $ > JROMABIBASE
+        .error  "Resident host exceeds F800h..FEFFh"
+        .endif
         dc      JROMABIBASE-$,0ffh
 .else
 
@@ -1454,5 +1468,8 @@ resident_checksum_balance:
         jmp     rom_conconfig_impl
 .endif
 
+        .if     $ > 10000h
+        .error  "ROM ABI manifest and vectors exceed FF00h..FFFFh"
+        .endif
         dc      10000h-$,0ffh
         end     resident_entry

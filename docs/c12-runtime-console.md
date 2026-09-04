@@ -39,6 +39,13 @@ console state ending at `D7D9h`, per-drive NetDisk state at `D7DAh..D7DFh`,
 host state at `D7E0h..D7FCh`, fixed `D600h..D7FFh` reservation, and CP/M TPA
 remain unchanged.
 
+The assembler now fails closed at every fixed resident-ROM envelope instead
+of relying on a negative padding expression when C12 consumes older diagnostic
+slack. The generated metadata records 154 bytes after resident diagnostics,
+839 after the locale console, 896 after the resident host, and 158 after the
+ABI vectors. These are padding measurements, not permission to append another
+ABI vector: the corresponding low-RAM call-gate envelope is exactly full.
+
 ## Boot discovery identity
 
 C12 retains C11's passive, receive-only recovery behavior but emits checked

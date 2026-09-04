@@ -38,6 +38,12 @@
   },
   "target_ready_byte": "C4",
   "resident_bytes": 10240,
+  "rom_envelope_padding_bytes": {
+    "resident_and_diagnostics_D800_EFFF": 2168,
+    "locale_console_F000_F7FF": 2048,
+    "resident_host_F800_FEFF": 1792,
+    "abi_manifest_vectors_FF00_FFFF": 182
+  },
   "resident_services": [
     "console",
     "serial",

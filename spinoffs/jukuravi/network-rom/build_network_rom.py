@@ -93,6 +93,14 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def trailing_padding(image: bytes, start: int, end: int) -> int:
+    """Count generated FF padding at the end of one fixed ROM envelope."""
+    cursor = end
+    while cursor > start and image[cursor - 1] == 0xFF:
+        cursor -= 1
+    return end - cursor
+
+
 def build(*, abi_selftest: bool = False,
           cursor_phase: str | None = None,
           netdisk_selftest: bool = False,
@@ -440,6 +448,20 @@ def build(*, abi_selftest: bool = False,
         },
         "target_ready_byte": "C7" if extended else "C4",
         "resident_bytes": len(resident),
+        "rom_envelope_padding_bytes": {
+            "resident_and_diagnostics_D800_EFFF": trailing_padding(
+                image, 0x1800, 0x3000,
+            ),
+            "locale_console_F000_F7FF": trailing_padding(
+                image, 0x3000, 0x3800,
+            ),
+            "resident_host_F800_FEFF": trailing_padding(
+                image, 0x3800, 0x3F00,
+            ),
+            "abi_manifest_vectors_FF00_FFFF": trailing_padding(
+                image, 0x3F00, 0x4000,
+            ),
+        },
         "resident_services": [
             "console", "serial", "keyboard", "netdisk-v3", "diagnostics",
         ] + ([
