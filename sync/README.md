@@ -86,6 +86,7 @@ Wine is available and reports an explicit skip otherwise. The longer,
 developer-invoked `sync/jukuhost_win32_wine_e2e.sh` maps Wine `COM1` through a
 PTY bridge and runs the actual PE against both stock and C11 co-simulation; it
 is deliberately outside the ordinary CI gate. See
+`docs/windows-jukuhost-client-wine-acceptance.md` and
 `docs/windows-jukuhost-client-desk-acceptance.md`; real Windows, the physical
 adapter, CS00000, and Windows 95 remain separate qualification boundaries.
 

@@ -108,6 +108,25 @@ creating a window; it is intended for controlled tests and support work.
 `--disk-timeout SECONDS` gives that headless mode a bounded NetDisk test run;
 zero, which is the default, serves without a time limit.
 
+## Local Wine end-to-end check
+
+Developers can run the actual PE against both the stock and C11 simulators:
+
+```sh
+sync/jukuhost_win32_wine_e2e.sh
+```
+
+The default invocation rebuilds `JUKUWIN.EXE` first. It needs 32-bit Wine,
+`wineboot`, Xvfb, `socat`, Python 3, a C compiler, and the sibling
+`cpm-plus-juku` C11 outputs (or `CPM_PLUS_JUKU_ROOT`). It creates an isolated
+32-bit Wine prefix and retained evidence under `build/`. This longer test is
+developer-invoked and is deliberately not part of the ordinary CI gate.
+
+Wine's PTY backend accepts the requested odd-parity DCB but reports no parity
+on readback. The executable detects Wine and emits a warning before continuing
+with byte-level emulation. Real Windows keeps strict `8O1` readback validation;
+the Wine pass therefore does not qualify a physical serial adapter or parity.
+
 ## Qualification boundary
 
 The package manifest states exactly which compiler, source revision, embedded

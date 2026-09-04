@@ -597,6 +597,15 @@ Wine proves Win32 call behavior and catches many porting errors, but it does
 not prove Windows 95 scheduling, UART-driver timing, or physical electrical
 behavior.
 
+Result (2026-09-04): the explicit local-only harness now passes the actual
+Open Watcom PE through stock and C11 co-simulation, including snapshot media,
+disk requests, retained capture, and independent evidence decoding. The fast
+Wine self-test remains in the ordinary Windows desk gate; the full protocol
+run remains developer-invoked. Wine's PTY does not retain odd parity on DCB
+readback, so the executable permits only that exact mismatch when it detects
+Wine and reports the emulation boundary. See
+[windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md).
+
 ### 6. macOS build
 
 Compile the already-qualified core with Clang, retain the POSIX backend's

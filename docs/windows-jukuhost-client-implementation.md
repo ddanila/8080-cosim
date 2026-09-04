@@ -85,8 +85,8 @@ Status: **desk-complete to the available non-Windows boundary**
 clock, stop handling, memory report, exclusive COM open, complete DCB setup,
 applied-setting verification, bounded reads/writes/drain, line-error
 accounting, purge at framing transitions, and reopen through the existing
-runner. `platform_file.c` uses the Open Watcom Win32 commit primitive for
-journal and media flushes.
+runner. `platform_file.c` flushes Open Watcom streams and their native Win32
+handles with `FlushFileBuffers` for journal, snapshot, and media durability.
 
 The deterministic payload generator validates the pinned W0 source files and
 emits a checked C catalog. Both stock and C11 pairs are compiled into the PE;
@@ -110,10 +110,9 @@ build therefore has no loose boot/system dependency.
 The qualified implementation is `f332a2d8`; its EXE SHA-256 is
 `dd79caa86fdf55f5c8ddc82166d75eb568be2e0382eb6618f3d1d979e6b33026`.
 
-Wine is not installed in the available environment, so the compiled
-`--selftest`, headless process, and simulated-COM integration could not be run
-as Windows processes. The native Win32 API shim covers the platform adapter,
-but no real-Windows behavior is inferred from it.
+At the 2026-09-03 W2 acceptance boundary Wine was unavailable, so the compiled
+process and simulated COM path remained unexecuted. The later W3.1 result below
+supersedes that environmental limitation without claiming real Windows.
 
 ## W3 — native UI and simple configuration
 
@@ -172,10 +171,35 @@ Current automated evidence:
 The current GUI EXE SHA-256 is
 `dd79caa86fdf55f5c8ddc82166d75eb568be2e0382eb6618f3d1d979e6b33026`.
 
-No Windows or Wine runtime is present in the available environment, so window
-rendering, message-loop automation, and the actual `--selftest` process remain
-unexecuted. Those are explicit environmental limitations, not inferred from a
-successful cross-link. See the desk acceptance record for the full matrix.
+At the 2026-09-03 W3 acceptance boundary no Windows or Wine runtime was
+present. The later W3.1 result below executes self-test and both headless
+protocol paths, but does not automate or qualify the GUI message loop.
+
+## W3.1 — local Wine protocol end-to-end
+
+Status: **desk-complete**
+
+Implementation `244d38addcee4b862a2556c1146ab2b09e1d05ea` adds an
+explicit, local-only Wine harness. It creates an isolated 32-bit prefix, maps
+Wine `COM1` to a `socat` PTY pair, and runs the actual GUI-subsystem PE in its
+bounded headless mode against the existing stock and C11 co-simulations. The
+ordinary Windows gate runs only the fast compiled self-test when Wine is
+available; the roughly one-minute protocol run is not wired into CI.
+
+The accepted Wine run covered the stock Janet bootstrap and V15 transition at
+9,600/19,200 baud, the C11 passive beacon and V16/NetDisk path at 19,200 baud,
+A: snapshot creation, C11 B: mounting, disk reads, clean bounded shutdown,
+capture generation, independent capture decoding, and unchanged base-image
+hashes. Both sessions ended with zero retries and zero UART errors. See
+[windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md)
+for exact evidence.
+
+Wine 10's PTY serial backend accepts odd parity but reports `NOPARITY` through
+`GetCommState`. The Win32 backend therefore recognizes Wine dynamically and
+allows only that exact parity readback mismatch, with an explicit warning.
+All other DCB checks remain strict, and native Windows still rejects any
+parity mismatch. This validates byte-level protocol behavior, not physical
+parity, adapter identity, Windows scheduling, the visible UI, or CS00000.
 
 ## W4 — physical current-Windows qualification
 
