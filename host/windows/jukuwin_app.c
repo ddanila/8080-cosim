@@ -10,6 +10,7 @@
 #include "platform.h"
 
 #include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -283,6 +284,27 @@ static int make_config_path(char output[JH_CONFIG_PATH_MAX],
             JH_CONFIG_PATH_MAX) return -1;
     memcpy(separator, "JUKUWIN.INI", sizeof("JUKUWIN.INI"));
     return 0;
+}
+
+static int command_line_unsigned(const char *command_line,
+                                 const char *option, unsigned *value)
+{
+    const char *start = strstr(command_line, option);
+    char *end;
+    unsigned long parsed;
+    if (start == NULL) return 0;
+    start += strlen(option);
+    while (*start == ' ' || *start == '\t') ++start;
+    if (*start == '\0' || *start == '-') return -1;
+    errno = 0;
+    parsed = strtoul(start, &end, 10);
+    if (errno != 0 || end == start ||
+#if ULONG_MAX > UINT_MAX
+            parsed > UINT_MAX ||
+#endif
+            (*end != '\0' && *end != ' ' && *end != '\t')) return -1;
+    *value = (unsigned)parsed;
+    return 1;
 }
 
 static int load_configuration(struct app_state *app, char *message,
@@ -1086,7 +1108,7 @@ static int application_selftest(void)
     return JH_HOST_EXIT_CLEAN;
 }
 
-static int run_headless(struct app_state *app)
+static int run_headless(struct app_state *app, unsigned disk_timeout_seconds)
 {
     struct jh_jukuwin_config_error config_error;
     struct jh_host_options options;
@@ -1133,7 +1155,7 @@ static int run_headless(struct app_state *app)
     options.log = app->log_path;
     options.capture = app->run_config.capture ? app->capture_path : NULL;
     options.verbose = app->run_config.verbose;
-    options.disk_timeout_seconds = 0u;
+    options.disk_timeout_seconds = disk_timeout_seconds;
     memset(&summary, 0, sizeof(summary));
     return jh_host_run(&options, &hooks, &summary);
 }
@@ -1145,6 +1167,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line,
     MSG message;
     char status[512];
     HWND window;
+    unsigned headless_disk_timeout = 0u;
     (void)previous;
     memset(&application, 0, sizeof(application));
     application.instance = instance;
@@ -1166,7 +1189,15 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line,
         return JH_HOST_EXIT_COMMAND;
     }
     if (strstr(command_line, "--headless") != NULL) {
-        int result = run_headless(&application);
+        int parsed = command_line_unsigned(command_line, "--disk-timeout",
+                                           &headless_disk_timeout);
+        int result;
+        if (parsed < 0) {
+            fputs("JUKUWIN: --disk-timeout requires whole seconds\n", stderr);
+            DeleteCriticalSection(&application.input_lock);
+            return JH_HOST_EXIT_COMMAND;
+        }
+        result = run_headless(&application, headless_disk_timeout);
         DeleteCriticalSection(&application.input_lock);
         return result;
     }

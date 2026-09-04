@@ -54,11 +54,13 @@ echo "JUKUWIN-WIN32-REPRODUCIBILITY: PASS"
     --allowlist "$project_root/host/windows/win95-imports.txt" \
     --subsystem windows
 
-if command -v wine >/dev/null 2>&1; then
-    wine "$first/JUKUWIN.EXE" --selftest
-    echo "JUKUWIN-WINE-SELFTEST: PASS"
+if command -v wine >/dev/null 2>&1 &&
+        command -v wineboot >/dev/null 2>&1 &&
+        command -v xvfb-run >/dev/null 2>&1; then
+    python3 "$project_root/tests/jukuwin_wine_e2e_test.py" \
+        --selftest-only "$first/JUKUWIN.EXE"
 else
-    echo "JUKUWIN-WINE-SELFTEST: SKIP (Wine not installed)"
+    echo "JUKUWIN-WINE-SELFTEST: SKIP (Wine/Xvfb prerequisites unavailable)"
 fi
 
 "$project_root/tools/package-jukuhost-windows.py" \

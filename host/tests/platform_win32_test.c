@@ -23,6 +23,8 @@ static unsigned write_calls;
 static uint8_t written_bytes[64];
 static size_t written_length;
 static int fail_open;
+static int wine_mode;
+static int drop_parity_on_read;
 
 BOOL SetConsoleCtrlHandler(PHANDLER_ROUTINE handler, BOOL add)
 {
@@ -79,6 +81,10 @@ BOOL GetCommState(HANDLE handle, DCB *state)
 {
     if (handle != fake_handle) return FALSE;
     *state = applied_dcb;
+    if (drop_parity_on_read && state->Parity == ODDPARITY) {
+        state->Parity = NOPARITY;
+        state->fParity = FALSE;
+    }
     return TRUE;
 }
 
@@ -156,6 +162,18 @@ DWORD GetLastError(void)
     return last_error;
 }
 
+HMODULE GetModuleHandleA(LPCSTR module)
+{
+    (void)module;
+    return wine_mode ? (HMODULE)(uintptr_t)0x5678u : NULL;
+}
+
+FARPROC GetProcAddress(HMODULE module, LPCSTR name)
+{
+    (void)name;
+    return wine_mode && module != NULL ? (FARPROC)(uintptr_t)0x9abcu : NULL;
+}
+
 static int check(int condition, const char *message)
 {
     if (condition) return 0;
@@ -192,6 +210,17 @@ int main(void)
             check(applied_dcb.BaudRate == 19200u &&
                   applied_dcb.Parity == NOPARITY && !applied_dcb.fParity,
                   "8N1 DCB differs")) return 1;
+
+    wine_mode = 1;
+    drop_parity_on_read = 1;
+    if (check(jh_platform_serial_configure(&serial, 9600u, 'O') == 0,
+              "Wine PTY odd-parity emulation was rejected")) return 1;
+    wine_mode = 0;
+    errno = 0;
+    if (check(jh_platform_serial_configure(&serial, 9600u, 'O') < 0 &&
+              errno == EINVAL,
+              "real Windows parity mismatch was accepted")) return 1;
+    drop_parity_on_read = 0;
 
     if (check(jh_platform_serial_read(&serial, input, sizeof(input), 37u) == 3,
               "bounded read differs") ||

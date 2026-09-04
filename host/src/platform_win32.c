@@ -5,6 +5,7 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <stdio.h>
 #include <string.h>
 
 #ifndef ETIMEDOUT
@@ -43,6 +44,21 @@ static void set_errno_from_win32(DWORD error)
         errno = EIO;
         break;
     }
+}
+
+static int serial_win32_failure(const char *operation, DWORD error)
+{
+    fprintf(stderr, "jukuhost: Win32 serial %s failed (error %lu)\n",
+            operation, (unsigned long)error);
+    set_errno_from_win32(error);
+    return -1;
+}
+
+static int running_under_wine(void)
+{
+    HMODULE ntdll = GetModuleHandleA("NTDLL.DLL");
+    return ntdll != NULL &&
+           GetProcAddress(ntdll, "wine_get_version") != NULL;
 }
 
 static BOOL WINAPI console_control(DWORD control)
@@ -122,8 +138,7 @@ static int configure_timeouts(HANDLE handle, unsigned read_timeout,
     timeouts.ReadTotalTimeoutConstant = (DWORD)read_timeout;
     timeouts.WriteTotalTimeoutConstant = (DWORD)write_timeout;
     if (!SetCommTimeouts(handle, &timeouts)) {
-        set_errno_from_win32(GetLastError());
-        return -1;
+        return serial_win32_failure("SetCommTimeouts", GetLastError());
     }
     return 0;
 }
@@ -134,6 +149,7 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial,
     DCB dcb;
     DCB applied;
     HANDLE handle;
+    int wine_parity_emulation;
     if (serial == NULL || !serial->opened ||
             (parity != 'N' && parity != 'O') ||
             (baud != 2400u && baud != 4800u && baud != 9600u &&
@@ -144,6 +160,9 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial,
     handle = serial_handle(serial);
     memset(&dcb, 0, sizeof(dcb));
     dcb.DCBlength = sizeof(dcb);
+    if (!GetCommState(handle, &dcb)) {
+        return serial_win32_failure("GetCommState", GetLastError());
+    }
     dcb.BaudRate = (DWORD)baud;
     dcb.fBinary = TRUE;
     dcb.fParity = parity == 'O';
@@ -161,26 +180,47 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial,
     dcb.ByteSize = 8;
     dcb.Parity = parity == 'O' ? ODDPARITY : NOPARITY;
     dcb.StopBits = ONESTOPBIT;
-    if (!SetCommState(handle, &dcb) ||
-            configure_timeouts(handle, 50u, 10000u) != 0 ||
-            !PurgeComm(handle, PURGE_RXABORT | PURGE_RXCLEAR |
-                       PURGE_TXABORT | PURGE_TXCLEAR)) {
-        set_errno_from_win32(GetLastError());
+    if (!SetCommState(handle, &dcb)) {
+        return serial_win32_failure("SetCommState", GetLastError());
+    }
+    if (configure_timeouts(handle, 50u, 10000u) != 0) {
         return -1;
+    }
+    if (!PurgeComm(handle, PURGE_RXABORT | PURGE_RXCLEAR |
+                   PURGE_TXABORT | PURGE_TXCLEAR)) {
+        return serial_win32_failure("PurgeComm", GetLastError());
     }
     memset(&applied, 0, sizeof(applied));
     applied.DCBlength = sizeof(applied);
     if (!GetCommState(handle, &applied)) {
-        set_errno_from_win32(GetLastError());
-        return -1;
+        return serial_win32_failure("GetCommState verification",
+                                    GetLastError());
     }
+    wine_parity_emulation = parity == 'O' &&
+                            applied.Parity == NOPARITY && !applied.fParity &&
+                            running_under_wine();
     if (applied.BaudRate != (DWORD)baud || applied.ByteSize != 8 ||
             applied.StopBits != ONESTOPBIT ||
-            applied.Parity != (parity == 'O' ? ODDPARITY : NOPARITY) ||
+            (!wine_parity_emulation &&
+             (applied.Parity !=
+                  (parity == 'O' ? ODDPARITY : NOPARITY) ||
+              applied.fParity != (unsigned)(parity == 'O'))) ||
             applied.fOutxCtsFlow || applied.fOutxDsrFlow || applied.fOutX ||
             applied.fInX || applied.fAbortOnError) {
+        fprintf(stderr,
+                "jukuhost: Win32 serial settings verification failed "
+                "(requested %lu 8%c1, applied %lu %u/%u/%u)\n",
+                (unsigned long)baud, parity,
+                (unsigned long)applied.BaudRate,
+                (unsigned)applied.ByteSize, (unsigned)applied.Parity,
+                (unsigned)applied.StopBits);
         errno = EINVAL;
         return -1;
+    }
+    if (wine_parity_emulation) {
+        fprintf(stderr,
+                "jukuhost: Wine PTY does not retain odd parity; "
+                "continuing for byte-level emulation only\n");
     }
     serial->baud = baud;
     serial->parity = parity;
@@ -229,13 +269,18 @@ int jh_platform_serial_open(struct jh_platform_serial *serial, const char *path,
     serial->native_handle = handle;
     serial->opened = 1;
     memcpy(serial->path, path, length + 1u);
-    if (!SetupComm(handle, 4096u, 4096u) ||
-            jh_platform_serial_configure(serial, baud, parity) != 0) {
+    if (!SetupComm(handle, 4096u, 4096u)) {
         DWORD error = GetLastError();
+        (void)serial_win32_failure("SetupComm", error);
         CloseHandle(handle);
         memset(serial, 0, sizeof(*serial));
         serial->fd = -1;
-        if (errno == 0) set_errno_from_win32(error);
+        return -1;
+    }
+    if (jh_platform_serial_configure(serial, baud, parity) != 0) {
+        CloseHandle(handle);
+        memset(serial, 0, sizeof(*serial));
+        serial->fd = -1;
         return -1;
     }
     return 0;

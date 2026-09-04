@@ -105,6 +105,8 @@ For automated diagnosis, `JUKUWIN.EXE --selftest` verifies the portable core,
 configuration round trip, and every embedded payload without opening a port.
 `JUKUWIN.EXE --headless --config PATH` serves the same configuration without
 creating a window; it is intended for controlled tests and support work.
+`--disk-timeout SECONDS` gives that headless mode a bounded NetDisk test run;
+zero, which is the default, serves without a time limit.
 
 ## Qualification boundary
 

@@ -1,7 +1,6 @@
 #include "platform.h"
 
 #include <errno.h>
-#include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -10,23 +9,11 @@
 #include <io.h>
 #if defined(JH_WIN32)
 #include <share.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif
-#define JH_OPEN _open
-#define JH_READ _read
-#define JH_WRITE _write
-#define JH_CLOSE _close
-#define JH_SYNC _commit
 #else
 #include <unistd.h>
-#define JH_OPEN open
-#define JH_READ read
-#define JH_WRITE write
-#define JH_CLOSE close
-#define JH_SYNC fsync
-#endif
-
-#ifndef O_BINARY
-#define O_BINARY 0
 #endif
 
 static int sync_file(FILE *file)
@@ -44,7 +31,14 @@ static int sync_file(FILE *file)
     }
     return 0;
 #elif defined(__WATCOMC__) && defined(JH_WIN32)
-    return _commit(fileno(file));
+    {
+        long native = _get_osfhandle(fileno(file));
+        if (native == -1L || !FlushFileBuffers((HANDLE)native)) {
+            errno = EIO;
+            return -1;
+        }
+        return 0;
+    }
 #else
     return fsync(fileno(file));
 #endif
@@ -83,35 +77,24 @@ int jh_platform_file_identity(const char *path, uint32_t *size,
 int jh_platform_copy_file(const char *source, const char *target)
 {
     uint8_t buffer[4096];
-    int input;
-    int output;
+    FILE *input;
+    FILE *output;
     int result = -1;
-    long got;
-    input = JH_OPEN(source, O_RDONLY | O_BINARY);
-    if (input < 0) return -1;
-    output = JH_OPEN(target, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,
-                     S_IREAD | S_IWRITE);
-    if (output < 0) {
-        (void)JH_CLOSE(input);
+    size_t got;
+    input = fopen(source, "rb");
+    if (input == NULL) return -1;
+    output = fopen(target, "wb");
+    if (output == NULL) {
+        (void)fclose(input);
         return -1;
     }
-    while ((got = JH_READ(input, buffer, sizeof(buffer))) > 0) {
-        long position = 0;
-        while (position < got) {
-            long written = JH_WRITE(output, buffer + (size_t)position,
-                                    (size_t)(got - position));
-            if (written <= 0) goto done;
-            position += written;
-        }
+    while ((got = fread(buffer, 1u, sizeof(buffer), input)) != 0u) {
+        if (fwrite(buffer, 1u, got, output) != got) goto done;
     }
-    if (got == 0 && (JH_SYNC(output) == 0
-#if defined(__WATCOMC__) && defined(__DOS__)
-            || errno == ENOENT
-#endif
-            )) result = 0;
+    if (!ferror(input) && sync_file(output) == 0) result = 0;
 done:
-    if (JH_CLOSE(output) != 0) result = -1;
-    if (JH_CLOSE(input) != 0) result = -1;
+    if (fclose(output) != 0) result = -1;
+    if (fclose(input) != 0) result = -1;
     return result;
 }
 
