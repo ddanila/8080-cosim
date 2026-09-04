@@ -78,13 +78,13 @@ The native Windows Juku host desk gate is:
 sync/jukuhost_win32_check.sh
 ```
 
-It tests the embedded stock/C11 catalog, strict INI and serial selection,
+It tests the embedded stock/C11/C12 catalog, strict INI and serial selection,
 Win32 COM behavior through an API shim, two byte-identical Open Watcom GUI
 builds, the exact legacy-safe PE import/resource boundary, and the exact
 self-contained package. It runs the fast compiled self-test under Wine when
 Wine is available and reports an explicit skip otherwise. The longer,
 developer-invoked `sync/jukuhost_win32_wine_e2e.sh` maps Wine `COM1` through a
-PTY bridge and runs the actual PE against both stock and C11 co-simulation; it
+PTY bridge and runs the actual PE against stock, C11, and C12 co-simulation; it
 is deliberately outside the ordinary CI gate. See
 `docs/windows-jukuhost-client-wine-acceptance.md` and
 `docs/windows-jukuhost-client-desk-acceptance.md`; real Windows, the physical

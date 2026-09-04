@@ -6,6 +6,11 @@ Qualified implementation: `f332a2d885f09e3fbae7b6e2609bfc0ac7fd78fb`
 
 Result: **PASS at the available non-Windows desk boundary**
 
+This is the historical pre-Wine/C12 acceptance. The 2026-09-04 C12-capable
+artifact and local runtime result in
+[windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md)
+supersede its artifact size, payload count, and unavailable-Wine statements.
+
 This accepts the implementation and all verification possible in the
 available environment. It does not claim execution on Windows, physical COM
 timing, CS00000 interoperability from the Windows binary, or Windows 95

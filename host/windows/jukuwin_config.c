@@ -75,7 +75,7 @@ void jh_jukuwin_config_init(struct jh_jukuwin_config *config)
 {
     if (config == NULL) return;
     memset(config, 0, sizeof(*config));
-    config->mode = JH_JUKUWIN_MODE_C11;
+    config->mode = JH_JUKUWIN_MODE_C12;
     memcpy(config->serial, "auto", 5u);
     config->auto_listen = 1;
     config->drive_a_mode = JH_JUKUWIN_DRIVE_A_SNAPSHOT;
@@ -105,10 +105,16 @@ static int assign_value(struct jh_jukuwin_config *config,
     case SECTION_JUKU:
         if (ascii_equal(key, "mode")) {
             bit = 1u;
-            if (ascii_equal(value, "c11")) config->mode = JH_JUKUWIN_MODE_C11;
+            if (ascii_equal(value, "c12")) config->mode = JH_JUKUWIN_MODE_C12;
+            else if (ascii_equal(value, "c11")) {
+                config->mode = JH_JUKUWIN_MODE_C11;
+            }
             else if (ascii_equal(value, "stock")) {
                 config->mode = JH_JUKUWIN_MODE_STOCK;
-            } else return set_error(error, line, "mode must be c11 or stock");
+            } else {
+                return set_error(error, line,
+                                 "mode must be c12, c11, or stock");
+            }
         } else if (ascii_equal(key, "serial")) {
             bit = 2u;
             result = copy_value(config->serial, sizeof(config->serial), value,
@@ -263,6 +269,11 @@ int jh_jukuwin_config_validate(const struct jh_jukuwin_config *config,
     unsigned long number;
     if (config == NULL) return JH_ERR_ARGUMENT;
     if (error != NULL) memset(error, 0, sizeof(*error));
+    if (config->mode != JH_JUKUWIN_MODE_C12 &&
+            config->mode != JH_JUKUWIN_MODE_C11 &&
+            config->mode != JH_JUKUWIN_MODE_STOCK) {
+        return set_error(error, 0u, "mode is invalid");
+    }
     serial = config->serial;
     if (!ascii_equal(serial, "auto")) {
         if (!((serial[0] == 'C' || serial[0] == 'c') &&
@@ -300,7 +311,9 @@ int jh_jukuwin_config_format(const struct jh_jukuwin_config *config,
     if (config == NULL || output == NULL || output_length == NULL) {
         return JH_ERR_ARGUMENT;
     }
-    mode = config->mode == JH_JUKUWIN_MODE_STOCK ? "stock" : "c11";
+    if (config->mode == JH_JUKUWIN_MODE_C12) mode = "c12";
+    else if (config->mode == JH_JUKUWIN_MODE_C11) mode = "c11";
+    else mode = "stock";
     drive_mode = config->drive_a_mode == JH_JUKUWIN_DRIVE_A_READ_ONLY ?
         "read-only" : "snapshot";
     written = snprintf(output, capacity,

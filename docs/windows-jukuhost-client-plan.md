@@ -1,5 +1,12 @@
 # Windows Juku host client plan
 
+Implementation addendum (2026-09-04): C12 is now the default mode while C11
+and stock remain selectable. The implemented six-payload catalog and
+stock/C11/C12 local Wine matrix are recorded in
+[windows-jukuhost-client-implementation.md](windows-jukuhost-client-implementation.md).
+References below to the original stock/C11 scope are retained as the frozen
+design baseline, not as a restriction on the additive C12 mode.
+
 Status: **W0–W3 DESK-COMPLETE — W4/W5 REQUIRE REAL WINDOWS HARDWARE**
 
 The implementation sprint is complete to the explicitly available boundary:

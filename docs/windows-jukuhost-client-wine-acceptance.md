@@ -2,7 +2,7 @@
 
 Date: 2026-09-04
 
-Qualified implementation: `244d38addcee4b862a2556c1146ab2b09e1d05ea`
+Qualified source state: C12 Windows-host integration milestone
 
 Result: **PASS at the local Wine protocol boundary**
 
@@ -17,8 +17,8 @@ Windows 95 qualification.
 - Runtime: Wine 10.0 in a newly created `WINEARCH=win32` prefix.
 - Serial bridge: two raw PTYs connected by `socat`; Wine `COM1` is registered
   and linked to the host side.
-- EXE: 176,640 bytes, SHA-256
-  `5834c17d115475b7268e93046c643b0b6624dcf5802e4e8d2b485240e01afee5`.
+- EXE: 204,800 bytes, SHA-256
+  `d02f08c17b7ca6d50c72517f0e9d2e40305bb3e5a33ad9d29dff47fe1a9aa2e1`.
 - Compiler bootstrap SHA-256:
   `f83c158176f740ec656394a1ec531e2e6d8b78ebdfa4496460f9a0e457475e85`;
   pinned Open Watcom source
@@ -34,28 +34,32 @@ sync/jukuhost_win32_wine_e2e.sh build/win32-repro-a/JUKUWIN.EXE
 The first command passed portable payload/configuration/device-selection
 tests, the Win32 API shim, two byte-identical builds, PE/import/resource audit,
 the real PE self-test under Wine, and exact package validation. The second
-command passed the stock and C11 protocol sessions. The complete protocol run
-is intentionally local-only rather than part of ordinary CI.
+command passed the stock, retained C11, and C12 protocol sessions. The complete
+protocol run is intentionally local-only rather than part of ordinary CI.
 
 ## Accepted protocol evidence
 
 | Case | Serial path | First disk request | Final service counters |
 | --- | --- | ---: | --- |
-| stock | Janet at 9,600, V15/NetDisk at 19,200 | 21.369 s | 18 requests, 54 records, 0 retries, 0 UART errors |
-| C11 | passive beacon and V16/NetDisk at 19,200 | 8.645 s | 18 requests, 51 records, 0 retries, 0 UART errors |
+| stock | Janet at 9,600, V15/NetDisk at 19,200 | 24.098 s | 17 requests, 51 records, 1 retry, 0 UART errors |
+| C11 | passive beacon and V16/NetDisk at 19,200 | 8.637 s | 18 requests, 51 records, 0 retries, 0 UART errors |
+| C12 | passive beacon and V16/NetDisk at 19,200 | 8.639 s | 18 requests, 51 records, 0 retries, 0 UART errors |
 
-Both cases mounted a 409,600-byte A: base as a new snapshot working image,
+All three cases mounted a 409,600-byte A: base as a new snapshot working image,
 served disk reads, stopped cleanly with host exit zero, retained a raw capture,
-and passed independent capture decoding. The C11 case also mounted the
-819,200-byte B: image. Base and working-copy identities matched after each
+and passed independent capture decoding. The C11 and C12 cases also mounted
+the 819,200-byte B: image. Base and working-copy identities matched after each
 read-only workload:
 
 - stock A: `b4402dc9be86fef9532e61fff491dc3b93dc0db40e68d575c89aab083160bec1`;
-- C11 A: `59174921a4504283dd0311ef07324a7e3db4f4c0bd7ebac4cd7304097e8ab2fa`.
+- C11 A: `59174921a4504283dd0311ef07324a7e3db4f4c0bd7ebac4cd7304097e8ab2fa`;
+- C12 A: `34754c5280a821929c05618c81e9b8e040db3c5ed42151ffdf30c3e212250df1`.
 
-The C11 host missed the optional V16 final reply, performed its designed
-resident-stream probe, and then received valid NetDisk requests. No Fastboot
-resend was attempted; successful disk service is the end-to-end confirmation.
+Both network-ROM hosts missed the optional V16 final reply, performed the
+designed resident-stream probe, and then received valid NetDisk requests. No
+Fastboot resend was attempted; successful disk service is the end-to-end
+confirmation. The logs independently identify `C11` and `C12` beacons and the
+matching embedded Fastboot hashes.
 
 ## Wine-specific boundary
 

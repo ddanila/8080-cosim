@@ -56,14 +56,14 @@ def main() -> int:
     if identity.get("sha256") != digest(executable):
         fail("manifest executable hash differs")
     payloads = manifest.get("embedded_payloads", [])
-    if len(payloads) != 4 or {item.get("mode") for item in payloads} != {
-        "stock", "c11"
+    if len(payloads) != 6 or {item.get("mode") for item in payloads} != {
+        "stock", "c11", "c12"
     }:
         fail("manifest embedded payload catalog differs")
 
     print(
         "JUKUWIN-PACKAGE-CHECK: PASS "
-        f"(5 files, 4 embedded payloads, EXE {executable.stat().st_size} bytes)"
+        f"(5 files, 6 embedded payloads, EXE {executable.stat().st_size} bytes)"
     )
     return 0
 

@@ -1,8 +1,8 @@
 # Windows Juku host client
 
-`JUKUWIN.EXE` is the self-contained Windows host for a Juku using either the
-stock ROM or the C11 JukuNet ROM. It includes the approved CP/M boot system,
-JF15 stock helper, and JF16 C11 helper. Disk images remain ordinary external
+`JUKUWIN.EXE` is the self-contained Windows host for a Juku using the stock,
+C11, or C12 JukuNet ROM. It includes the approved CP/M boot systems, JF15
+stock helper, and JF16 C11/C12 helpers. Disk images remain ordinary external
 files.
 
 ## First start
@@ -10,17 +10,19 @@ files.
 Place `JUKUWIN.EXE` and `JUKUWIN.INI` in a writable folder. Double-click the
 EXE, then:
 
-1. choose **C11** or **Stock ROM**;
+1. choose **C12**, **C11**, or **Stock ROM**;
 2. select the serial adapter;
 3. browse to a 400 KiB A: image;
 4. optionally browse to a native 800 KiB B: image;
 5. leave A: in **Snapshot** mode for normal writable use; and
 6. press **Listen**, then power or reset the Juku if necessary.
 
-**C11** is the normal mode for the C11 ROM. It waits without transmitting
-until it sees either a checked C11 beacon or a complete NetDisk request. This
-means it can safely attach while CP/M is already running or silently playing
-music.
+**C12** is the default for the latest ROM and matching CP/M system. **C11**
+retains compatibility with the physically accepted C11 ROM. Both wait without
+transmitting until they see their checked ROM beacon or a complete NetDisk
+request. This means either can safely attach while CP/M is already running or
+silently playing music. Select the mode that exactly matches the installed
+ROM; the embedded system and Fastboot pair changes with it.
 
 **Stock ROM** waits for the 9,600-baud Janet loader, installs the embedded
 JF15 helper, and continues at 19,200 baud. It requires a fresh stock-ROM boot
@@ -78,7 +80,7 @@ settings.
 
 ```ini
 [juku]
-mode=c11
+mode=c12
 serial=auto
 serial_id=
 auto_listen=yes
@@ -110,7 +112,7 @@ zero, which is the default, serves without a time limit.
 
 ## Local Wine end-to-end check
 
-Developers can run the actual PE against both the stock and C11 simulators:
+Developers can run the actual PE against the stock, C11, and C12 simulators:
 
 ```sh
 sync/jukuhost_win32_wine_e2e.sh
@@ -118,9 +120,10 @@ sync/jukuhost_win32_wine_e2e.sh
 
 The default invocation rebuilds `JUKUWIN.EXE` first. It needs 32-bit Wine,
 `wineboot`, Xvfb, `socat`, Python 3, a C compiler, and the sibling
-`cpm-plus-juku` C11 outputs (or `CPM_PLUS_JUKU_ROOT`). It creates an isolated
-32-bit Wine prefix and retained evidence under `build/`. This longer test is
-developer-invoked and is deliberately not part of the ordinary CI gate.
+`cpm-plus-juku` C11/C12 outputs (or `CPM_PLUS_JUKU_ROOT`). It creates an
+isolated 32-bit Wine prefix and retained evidence under `build/`. This longer
+test is developer-invoked and is deliberately not part of the ordinary CI
+gate.
 
 Wine's PTY backend accepts the requested odd-parity DCB but reports no parity
 on readback. The executable detects Wine and emits a warning before continuing

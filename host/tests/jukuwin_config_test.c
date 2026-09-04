@@ -43,6 +43,12 @@ int main(void)
     char path[JH_CONFIG_PATH_MAX];
     size_t length;
 
+    jh_jukuwin_config_init(&config);
+    if (config.mode != JH_JUKUWIN_MODE_C12) {
+        fprintf(stderr, "default mode is not C12\n");
+        return 1;
+    }
+
     if (jh_jukuwin_config_parse(text, sizeof(text) - 1u, &config, &error) !=
             JH_OK || jh_jukuwin_config_validate(&config, &error) != JH_OK) {
         fprintf(stderr, "valid config rejected at %lu: %s\n",
@@ -75,6 +81,17 @@ int main(void)
             expect_failure("[bad]\nvalue=x\n", "unknown section") ||
             expect_failure("[juku]\nmagic=yes\n", "unknown key") ||
             expect_failure("[juku]\nauto_listen=maybe\n", "yes or no")) {
+        return 1;
+    }
+    if (jh_jukuwin_config_parse("[juku]\nmode=c11\n",
+            strlen("[juku]\nmode=c11\n"),
+            &config, &error) != JH_OK ||
+            config.mode != JH_JUKUWIN_MODE_C11 ||
+            jh_jukuwin_config_parse("[juku]\nmode=c12\n",
+            strlen("[juku]\nmode=c12\n"),
+            &config, &error) != JH_OK ||
+            config.mode != JH_JUKUWIN_MODE_C12) {
+        fprintf(stderr, "C11/C12 mode parsing differs\n");
         return 1;
     }
     jh_jukuwin_config_init(&config);

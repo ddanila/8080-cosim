@@ -18,7 +18,7 @@ durability rules, non-goals, and test gates are frozen in the plan.
 
 The embedded catalog is pinned by
 [`host/windows/payload-manifest.json`](../host/windows/payload-manifest.json)
-to `cpm-plus-juku` revision `1efbcd1` and these exact artifacts:
+to `cpm-plus-juku` revision `d8fdd5d` and these exact artifacts:
 
 | Mode | Role | Bytes | SHA-256 |
 | --- | --- | ---: | --- |
@@ -26,11 +26,14 @@ to `cpm-plus-juku` revision `1efbcd1` and these exact artifacts:
 | stock | JF15 | 9,670 | `881befd8ebd306ae7313b2dff8b83cb8d964988e17627d76efedaa49e6a19a5d` |
 | C11 | system | 18,432 | `923be9c41068b7de6f14d93dd7fd28e31bbefbf2fd68609c0483597092becd5f` |
 | C11 | JF16 | 7,914 | `fc4fa48ef7c96064d7879782c293c740e30f73f50e06db2ad6fc09bbb0dd2d31` |
+| C12 | system | 18,432 | `74abab89c14e8429eec943c8b7c77ad33675cbf411fde5190d4657a3d28bdb79` |
+| C12 | JF16 | 7,914 | `51788bc93dac1e03a541239eb7f2837e3e03ef2519c3703aa052fe15b248f202` |
 
 The stock pair is the exact JF15/system pair retained in
 `tests/fixtures/jukuhost-v15` and physically accepted on CS00000. The C11 pair
 is the exact system/JF16 pair from the accepted C11 manifest and the physical
-CS00000 session.
+CS00000 session. The C12 pair adds ABI 1.5 runtime-console control while the
+C11 pair remains selectable and byte-identical to its accepted release.
 
 The available USB adapter identifies as Prolific `067B:2303`, product
 `USB-Serial Controller D`, and exposes no USB serial number. Consequently the
@@ -89,26 +92,26 @@ runner. `platform_file.c` flushes Open Watcom streams and their native Win32
 handles with `FlushFileBuffers` for journal, snapshot, and media durability.
 
 The deterministic payload generator validates the pinned W0 source files and
-emits a checked C catalog. Both stock and C11 pairs are compiled into the PE;
-native tests recompute every SHA-256 and verify mode selection. A release
+emits a checked C catalog. The stock, C11, and C12 pairs are compiled into the
+PE; native tests recompute every SHA-256 and verify mode selection. A release
 build therefore has no loose boot/system dependency.
 
 `sync/jukuhost_win32_check.sh` proves:
 
-- four exact embedded payload identities and stock/C11 option mapping;
+- six exact embedded payload identities and stock/C11/C12 option mapping;
 - strict config and stable-device-selection behavior;
 - Win32 COM namespace, exclusive access, complete DCB setup, partial I/O,
   line-error handling, bounded drain, stop handling, and timer wrap through a
   native API shim;
 - strict warning-free Open Watcom compilation;
-- two byte-identical 177,152-byte PE builds;
+- two byte-identical 204,800-byte PE builds;
 - PE32/i386, GUI subsystem version 4.0;
 - an exact reviewed allowlist of 92 direct system imports;
 - deterministic icon/version resources and normalized resource timestamps;
-- an exact five-file package, complete hashes, and four-payload manifest.
+- an exact five-file package, complete hashes, and six-payload manifest.
 
-The qualified implementation is `f332a2d8`; its EXE SHA-256 is
-`dd79caa86fdf55f5c8ddc82166d75eb568be2e0382eb6618f3d1d979e6b33026`.
+The current C12-capable EXE SHA-256 is
+`d02f08c17b7ca6d50c72517f0e9d2e40305bb3e5a33ad9d29dff47fe1a9aa2e1`.
 
 At the 2026-09-03 W2 acceptance boundary Wine was unavailable, so the compiled
 process and simulated COM path remained unexecuted. The later W3.1 result below
@@ -119,7 +122,7 @@ supersedes that environmental limitation without claiming real Windows.
 Status: **desk-complete to the available non-Windows boundary**
 
 The cross-built `JUKUWIN.EXE` is now a Windows GUI-subsystem application with
-one ordinary Win32 window. It provides C11/stock selection, safe serial-device
+one ordinary Win32 window. It provides C12/C11/stock selection, safe serial-device
 selection and refresh, A:/B: browsing, snapshot/read-only A: policy,
 auto-listen, Listen/Stop, actual runner state and boot progress, live traffic
 counters, an N4 console with bounded input, and a diagnostic transcript.
@@ -160,7 +163,7 @@ Current automated evidence:
 - strict config parse/format/path tests;
 - stable-identity, explicit-port, missing-device, and ambiguity tests;
 - warning-free GUI compilation;
-- two byte-identical 177,152-byte GUI EXEs after deterministic PE and resource
+- two byte-identical 204,800-byte GUI EXEs after deterministic PE and resource
   timestamp
   normalization;
 - PE32/i386 Windows GUI subsystem 4.0, embedded icon/version, and exact
@@ -169,28 +172,31 @@ Current automated evidence:
   verification.
 
 The current GUI EXE SHA-256 is
-`dd79caa86fdf55f5c8ddc82166d75eb568be2e0382eb6618f3d1d979e6b33026`.
+`d02f08c17b7ca6d50c72517f0e9d2e40305bb3e5a33ad9d29dff47fe1a9aa2e1`.
 
 At the 2026-09-03 W3 acceptance boundary no Windows or Wine runtime was
-present. The later W3.1 result below executes self-test and both headless
+present. The later W3.1 result below executes self-test and all three headless
 protocol paths, but does not automate or qualify the GUI message loop.
 
 ## W3.1 — local Wine protocol end-to-end
 
 Status: **desk-complete**
 
-Implementation `244d38addcee4b862a2556c1146ab2b09e1d05ea` adds an
-explicit, local-only Wine harness. It creates an isolated 32-bit prefix, maps
-Wine `COM1` to a `socat` PTY pair, and runs the actual GUI-subsystem PE in its
-bounded headless mode against the existing stock and C11 co-simulations. The
-ordinary Windows gate runs only the fast compiled self-test when Wine is
-available; the roughly one-minute protocol run is not wired into CI.
+Implementation `244d38addcee4b862a2556c1146ab2b09e1d05ea` introduced the
+explicit, local-only Wine harness; the C12 host milestone extends it to the new
+mode. It creates an isolated 32-bit prefix, maps Wine `COM1` to a `socat` PTY
+pair, and runs the actual GUI-subsystem PE in bounded headless mode against the
+stock, C11, and C12 co-simulations. The ordinary Windows gate runs only the
+fast compiled self-test when Wine is available; the longer protocol run is not
+wired into CI.
 
 The accepted Wine run covered the stock Janet bootstrap and V15 transition at
-9,600/19,200 baud, the C11 passive beacon and V16/NetDisk path at 19,200 baud,
-A: snapshot creation, C11 B: mounting, disk reads, clean bounded shutdown,
+9,600/19,200 baud, the C11 and C12 passive beacons and their independently
+pinned V16/NetDisk paths at 19,200 baud, A: snapshot creation, C11/C12 B:
+mounting, disk reads, clean bounded shutdown,
 capture generation, independent capture decoding, and unchanged base-image
-hashes. Both sessions ended with zero retries and zero UART errors. See
+hashes. C11 and C12 ended with zero retries and UART errors; stock completed
+with one protocol retry and zero UART errors. See
 [windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md)
 for exact evidence.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the actual Win32 host through Wine against stock and C11 cosim."""
+"""Run the actual Win32 host through Wine against stock, C11, and C12."""
 
 from __future__ import annotations
 
@@ -141,7 +141,7 @@ def decode_evidence(case: str, capture: Path, case_dir: Path,
     require(result.returncode == 0, f"{case}: evidence decode failed: {result.stdout}")
     boot_result = json.loads(boot.read_text())
     records = [json.loads(line) for line in requests.read_text().splitlines()]
-    require(boot_result["network_rom"] is (case == "c11"),
+    require(boot_result["network_rom"] is (case != "stock"),
             f"{case}: boot mode differs: {boot_result}")
     require(any(record["operation"] in (0x11, 0x13, 0x14)
                 for record in records), f"{case}: no disk read request captured")
@@ -198,12 +198,18 @@ def run_case(case: str, executable: Path, prefix: Path, trace: Path,
                 f"{case}: Wine device refresh failed: {refresh.stdout}")
         subprocess.run([server, "-w"], env=wine_environment, check=True)
 
-        if case == "c11":
-            rom = ROOT / "spinoffs/jukuravi/network-rom/juku-network-rom-abi1.4-c11.bin"
-            volume = CPM / "out/cpm-plus-juku-c11-full.img"
+        if case in ("c11", "c12"):
+            abi = "1.4" if case == "c11" else "1.5"
+            rom = ROOT / (
+                "spinoffs/jukuravi/network-rom/"
+                f"juku-network-rom-abi{abi}-{case}.bin"
+            )
+            volume = CPM / f"out/cpm-plus-juku-{case}-full.img"
             drive_b = CPM / "out/cpm-plus-juku-apps.juk"
-            system = CPM / "out/cpm-plus-juku-network-rom-c11-system.bin"
-            fastboot = CPM / "out/cpm-plus-juku-network-rom-c11-fastboot-v16.bin"
+            system = CPM / f"out/cpm-plus-juku-network-rom-{case}-system.bin"
+            fastboot = CPM / (
+                f"out/cpm-plus-juku-network-rom-{case}-fastboot-v16.bin"
+            )
         else:
             rom = ROOT / "spinoffs/jukuravi/remix/ekta4401.bin"
             volume = ROOT / "tests/fixtures/jukuhost-v15/cpm-plus-juku.img"
@@ -254,11 +260,12 @@ def run_case(case: str, executable: Path, prefix: Path, trace: Path,
         text = log.read_text(errors="replace")
         require("phase=netdisk" in text and "stop exit=0" in text and
                 "requests=" in text, f"{case}: host log is incomplete: {text}")
-        if case == "c11":
-            require("C11 boot beacon received" in text and
+        if case in ("c11", "c12"):
+            release = case.upper()
+            require(f"{release} boot beacon received" in text and
                     ("Fastboot V16 complete" in text or
                      "V16 final reply not seen" in text),
-                    f"c11: boot evidence is incomplete: {text}")
+                    f"{case}: boot evidence is incomplete: {text}")
         else:
             require("stock bootstrap complete" in text and
                     "stock-assisted V15 core" in text,
@@ -330,7 +337,7 @@ def main() -> int:
                     prefix="jukuwin-wine-e2e.", dir=ROOT / "build"))
                 trace = evidence_root / "trace"
                 build_trace(trace)
-                for case in ("stock", "c11"):
+                for case in ("stock", "c11", "c12"):
                     run_case(case, executable, prefix, trace,
                              wine_environment, evidence_root)
                 print(f"JUKUWIN-WINE-E2E: PASS (evidence {evidence_root})")

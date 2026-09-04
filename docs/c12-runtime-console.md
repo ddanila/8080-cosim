@@ -1,7 +1,7 @@
 # C12 runtime console and improvement ledger
 
-Status: **ROM CORE AND HOST RECOVERY IMPLEMENTED; C-MODEL QUALIFIED; CP/M
-CONSUMER, RELEASE PACKAGE, AND PHYSICAL ACCEPTANCE PENDING**
+Status: **ROM, CP/M CONSUMER, HOST PAYLOAD, AND LOCAL WINE E2E IMPLEMENTED;
+PHYSICAL ACCEPTANCE PENDING**
 
 C12 is an additive successor to the immutable C11 ROM. It implements the one
 fully specified, hardware-compatible improvement left in the retained design
@@ -68,9 +68,8 @@ artifacts are:
 - D15 low: `b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de`;
 - D16 high: `c5e95491ba01da32f4b28be436d1261ae9d3fddf495b20bb2a15dca45ba404bb`.
 
-These are not yet authorized as a burn pair. A matching CP/M consumer and
-release manifest must be built and the focused visual/runtime switch matrix
-must pass on CS00000 before physical promotion.
+These are not yet authorized as a burn pair. The focused visual/runtime switch
+matrix must pass on CS00000 before physical promotion.
 
 ## Improvement disposition
 
@@ -82,12 +81,29 @@ Included in C12 because the contract and evidence are complete:
 - distinct `JB/12` discovery identity with C11-compatible host recovery;
 - deterministic artifacts and exhaustive simulator regression.
 
-Still required before calling C12 complete:
+Completed above the ROM core:
 
-- a CP/M command for query/set/default and STATUS/diagnostic reporting;
-- matching system/Fastboot artifacts, Windows-host C12 payload selection, and
-  a deterministic release package;
-- end-to-end native-host, structural HDL, Wine, and attended physical tests.
+- CP/M `CONSOLE` query/set/default control plus STATUS/DIAG active-state and
+  independent-override reporting;
+- distinct C12 system, Fastboot, and 400 KiB release-image artifacts;
+- Windows-host C12 selection with six embedded stock/C11/C12 payloads;
+- actual-PE Wine boot, NetDisk, snapshot, B:, capture, and evidence decoding
+  for stock, C11, and C12.
+
+Still required before calling C12 physically complete:
+
+- attended CS00000 runtime visual switching and reset/default checks;
+- physical Windows-to-CS00000 qualification remains a separate host-product
+  gate and is not inferred from Wine.
+
+A supplemental attempt to add C12 to the older, long production-Linux-host
+stress workload reached ABI/default-state reporting, diagnostics, disk reads,
+and journaled writes, but the simulator accumulated seven USART overruns and
+missed the final warm-boot prompt. The dedicated C12 CP/M gate passes the same
+warm-boot behavior, while the bounded actual-PE Wine C12 run has zero retries
+and UART errors. The stress extension is therefore recorded as a timing-fixture
+follow-up, not committed as a flaky release gate and not treated as physical
+evidence.
 
 Not folded in without new evidence or a separate design decision:
 

@@ -39,8 +39,8 @@ def main() -> int:
     require(manifest.get("schema") == "jukuwin-embedded-payloads-v1",
             "unsupported manifest schema")
     payloads = manifest.get("payloads")
-    require(isinstance(payloads, list) and len(payloads) == 4,
-            "catalog must contain exactly four payloads")
+    require(isinstance(payloads, list) and len(payloads) == 6,
+            "catalog must contain exactly six payloads")
 
     arrays = []
     entries = []
@@ -135,7 +135,9 @@ int jh_jukuwin_payloads_selftest(char *message, size_t capacity)
     if (jh_jukuwin_payload_find("stock", "system") == NULL ||
             jh_jukuwin_payload_find("stock", "fastboot") == NULL ||
             jh_jukuwin_payload_find("c11", "system") == NULL ||
-            jh_jukuwin_payload_find("c11", "fastboot") == NULL) {{
+            jh_jukuwin_payload_find("c11", "fastboot") == NULL ||
+            jh_jukuwin_payload_find("c12", "system") == NULL ||
+            jh_jukuwin_payload_find("c12", "fastboot") == NULL) {{
         (void)snprintf(message, capacity, "payload pair missing");
         return JH_ERR_FORMAT;
     }}
@@ -159,7 +161,7 @@ int jh_jukuwin_apply_payloads(const char *mode,
     options->fast_stage_bytes = fastboot->bytes;
     options->fast_stage_length = fastboot->length;
     options->fast_stage_identity = &fastboot->identity;
-    options->direct_fastboot = strcmp(mode, "c11") == 0;
+    options->direct_fastboot = strcmp(mode, "stock") != 0;
     options->recover_session = options->direct_fastboot;
     return JH_OK;
 }}

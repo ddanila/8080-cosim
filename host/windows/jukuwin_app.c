@@ -96,6 +96,13 @@ struct app_state {
     DWORD last_activity_ms;
 };
 
+static const char *mode_name(enum jh_jukuwin_mode mode)
+{
+    if (mode == JH_JUKUWIN_MODE_C12) return "c12";
+    if (mode == JH_JUKUWIN_MODE_C11) return "c11";
+    return "stock";
+}
+
 static struct app_state application;
 
 static int copy_text(char *target, size_t capacity, const char *source)
@@ -437,8 +444,7 @@ static void refresh_serial_devices(struct app_state *app)
 
 static void controls_from_config(struct app_state *app)
 {
-    SendMessage(app->mode, CB_SETCURSEL,
-        app->config.mode == JH_JUKUWIN_MODE_STOCK ? 1u : 0u, 0u);
+    SendMessage(app->mode, CB_SETCURSEL, (WPARAM)app->config.mode, 0u);
     SetWindowTextA(app->drive_a, app->config.drive_a_image);
     SendMessage(app->a_mode, CB_SETCURSEL,
         app->config.drive_a_mode == JH_JUKUWIN_DRIVE_A_READ_ONLY ? 1u : 0u,
@@ -458,8 +464,14 @@ static int controls_to_config(struct app_state *app, char *message,
     struct jh_jukuwin_config_error error;
     memcpy(previous_drive_a, app->config.drive_a_image,
            sizeof(previous_drive_a));
-    app->config.mode = SendMessage(app->mode, CB_GETCURSEL, 0u, 0u) == 1 ?
-        JH_JUKUWIN_MODE_STOCK : JH_JUKUWIN_MODE_C11;
+    selection = (int)SendMessage(app->mode, CB_GETCURSEL, 0u, 0u);
+    if (selection == (int)JH_JUKUWIN_MODE_C11) {
+        app->config.mode = JH_JUKUWIN_MODE_C11;
+    } else if (selection == (int)JH_JUKUWIN_MODE_STOCK) {
+        app->config.mode = JH_JUKUWIN_MODE_STOCK;
+    } else {
+        app->config.mode = JH_JUKUWIN_MODE_C12;
+    }
     if (GetWindowTextA(app->drive_a, app->config.drive_a_image,
             sizeof(app->config.drive_a_image)) == 0) {
         app->config.drive_a_image[0] = '\0';
@@ -761,7 +773,7 @@ static DWORD WINAPI host_worker(LPVOID opaque)
     }
     jh_host_options_init(&options);
     if (jh_jukuwin_apply_payloads(
-            app->run_config.mode == JH_JUKUWIN_MODE_STOCK ? "stock" : "c11",
+            mode_name(app->run_config.mode),
             &options) != JH_OK) {
         (void)post_host_event(app, EVENT_DONE, NULL, 0u,
                               JH_HOST_EXIT_ARTIFACT, 0u);
@@ -925,6 +937,7 @@ static void create_controls(struct app_state *app)
     (void)make_control(app, "STATIC", "Mode:", 0u, 200u);
     app->mode = make_control(app, "COMBOBOX", "",
         CBS_DROPDOWNLIST | WS_TABSTOP, ID_MODE);
+    SendMessageA(app->mode, CB_ADDSTRING, 0u, (LPARAM)"C12");
     SendMessageA(app->mode, CB_ADDSTRING, 0u, (LPARAM)"C11");
     SendMessageA(app->mode, CB_ADDSTRING, 0u, (LPARAM)"Stock ROM");
     (void)make_control(app, "STATIC", "Port:", 0u, 201u);
@@ -1142,7 +1155,7 @@ static int run_headless(struct app_state *app, unsigned disk_timeout_seconds)
     hooks.resolve_serial = resolve_serial_hook;
     jh_host_options_init(&options);
     if (jh_jukuwin_apply_payloads(
-            app->run_config.mode == JH_JUKUWIN_MODE_STOCK ? "stock" : "c11",
+            mode_name(app->run_config.mode),
             &options) != JH_OK) return JH_HOST_EXIT_ARTIFACT;
     options.serial = app->run_config.serial;
     options.volume = app->drive_a_identity.file;

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Exercise the actual PE through Wine COM1 against stock and C11 co-sim.
+# Exercise the actual PE through Wine COM1 against stock, C11, and C12 co-sim.
 set -euo pipefail
 
 project_root=$(cd "$(dirname "$0")/.." && pwd)

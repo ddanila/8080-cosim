@@ -2,8 +2,8 @@
   "schema": "jukuwin-embedded-payloads-v1",
   "source": {
     "repository": "https://github.com/ddanila/cpm-plus-juku",
-    "revision": "1efbcd1",
-    "revision_full": "1efbcd109187a73ff8d33c7d2c15bc3ceb5b60c9",
+    "revision": "d8fdd5d",
+    "revision_full": "d8fdd5dfd566b89251e67b2da6a2e30cabfa7103",
     "output_directory": "out"
   },
   "payloads": [
@@ -42,6 +42,25 @@
       "file": "cpm-plus-juku-network-rom-c11-fastboot-v16.bin",
       "bytes": 7914,
       "sha256": "fc4fa48ef7c96064d7879782c293c740e30f73f50e06db2ad6fc09bbb0dd2d31",
+      "format": "JF16",
+      "version": 16
+    },
+    {
+      "symbol": "c12_system",
+      "mode": "c12",
+      "role": "system",
+      "file": "cpm-plus-juku-network-rom-c12-system.bin",
+      "bytes": 18432,
+      "sha256": "74abab89c14e8429eec943c8b7c77ad33675cbf411fde5190d4657a3d28bdb79",
+      "format": "JUKURM1"
+    },
+    {
+      "symbol": "c12_fastboot",
+      "mode": "c12",
+      "role": "fastboot",
+      "file": "cpm-plus-juku-network-rom-c12-fastboot-v16.bin",
+      "bytes": 7914,
+      "sha256": "51788bc93dac1e03a541239eb7f2837e3e03ef2519c3703aa052fe15b248f202",
       "format": "JF16",
       "version": 16
     }

@@ -10,8 +10,9 @@
 #define JH_JUKUWIN_SERIAL_ID_MAX 256u
 
 enum jh_jukuwin_mode {
-    JH_JUKUWIN_MODE_C11 = 0,
-    JH_JUKUWIN_MODE_STOCK = 1
+    JH_JUKUWIN_MODE_C12 = 0,
+    JH_JUKUWIN_MODE_C11 = 1,
+    JH_JUKUWIN_MODE_STOCK = 2
 };
 
 enum jh_jukuwin_drive_a_mode {

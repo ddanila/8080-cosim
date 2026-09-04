@@ -1,5 +1,5 @@
 [juku]
-mode=c11
+mode=c12
 serial=auto
 serial_id=
 auto_listen=no

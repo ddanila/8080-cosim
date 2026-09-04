@@ -20,6 +20,12 @@ int main(void)
         fprintf(stderr, "C11 payload lookup differs\n");
         return 1;
     }
+    payload = jh_jukuwin_payload_find("c12", "system");
+    if (payload == NULL || payload->length != 18432u ||
+            strcmp(payload->format, "JUKURM1") != 0) {
+        fprintf(stderr, "C12 payload lookup differs\n");
+        return 1;
+    }
     memset(&options, 0, sizeof(options));
     if (jh_jukuwin_apply_payloads("stock", &options) != JH_OK ||
             options.direct_fastboot || options.recover_session ||
@@ -34,6 +40,14 @@ int main(void)
             options.system_length != 18432u ||
             options.fast_stage_length != 7914u) {
         fprintf(stderr, "C11 payload application differs\n");
+        return 1;
+    }
+    memset(&options, 0, sizeof(options));
+    if (jh_jukuwin_apply_payloads("c12", &options) != JH_OK ||
+            !options.direct_fastboot || !options.recover_session ||
+            options.system_length != 18432u ||
+            options.fast_stage_length != 7914u) {
+        fprintf(stderr, "C12 payload application differs\n");
         return 1;
     }
     if (jh_jukuwin_apply_payloads("unknown", &options) !=
