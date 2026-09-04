@@ -135,3 +135,31 @@ Not folded in without new evidence or a separate design decision:
 - XMODEM or host-side filesystem shortcuts that duplicate the authenticated
   bootstrap/NetDisk path;
 - repurposing S21 bit 0 without a concrete distinct behavior.
+
+## Completion audit
+
+This table is the finite acceptance boundary for “C12 implemented with all
+currently justified improvements folded in.” A pass requires direct evidence;
+an unmeasured idea is dispositioned above rather than silently becoming a
+release requirement.
+
+| Requirement | Authoritative evidence | State |
+| --- | --- | --- |
+| Deterministic D15/D16 pair | generator check, split/concatenation test, additive checksums, exact hashes above | pass |
+| ABI 1.5 layout and compatibility | exact 224-byte gate, `1000h` feature, `FF5Fh` vector, immutable C4--C11 regressions | pass |
+| Complete runtime selection | independent framebuffer/font oracle for all 16 mode/bank pairs | pass |
+| Atomic failure and transition policy | invalid selector/value fixtures, full-raster-tail checks, cursor/timing reset, published state checks | pass |
+| Keyboard transition safety | pending/debounce state discarded and installed four-pair remap retained across set/default | pass |
+| Warm/default lifecycle | local and N4 CP/M switch, `WBOOT`, STATUS/DIAG, and `CONSOLE DEFAULT` checks | pass |
+| Active visual utility | C12-only strict-8080 VIDTEST build plus exact switched 40x24/Russian hidden/visible frames; legacy hash retained | pass |
+| Structural hardware model | VM80A/Juku ABI self-test with POF release, runtime transition, remap, keyboard, and serial completion | pass |
+| Host delivery | reproducible 204,800-byte PE, six pinned payloads, actual-PE stock/C11/C12 Wine sessions | pass |
+| ROM capacity fail-closed | assembly envelope assertions and generated padding measurements; ABI call gate exactly full | pass |
+| Reproducible physical procedure | manifest-bound cold/runtime/full workloads and exact CS00000 programming/rollback worksheet | ready, not executed |
+| Installed-hardware behavior | attended CS00000 four-mode/four-bank raster, recovery, warm/default, reset and power-cycle evidence | pending |
+| Real-Windows serial product | current Windows, real PL2303 and CS00000 lifecycle/endurance evidence | separate host-product gate |
+
+The first ten rows close every C12 implementation and desk-verification item.
+The ROM cannot be called physically complete until the installed-hardware row
+passes. The last row does not change C12 ROM readiness: it qualifies the
+Windows distribution and driver boundary separately.
