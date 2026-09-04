@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-#define JH_HOST_VERSION "0.3.1-m7"
+#define JH_HOST_VERSION "0.4.0-m8"
 
 enum jh_host_exit {
     JH_HOST_EXIT_CLEAN = 0,

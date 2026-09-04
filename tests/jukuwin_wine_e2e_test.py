@@ -136,6 +136,7 @@ def decode_evidence(case: str, capture: Path, case_dir: Path,
         "--requests-jsonl", str(requests), "--boot-result", str(boot),
         "--system", str(system), "--fast-stage", str(fastboot),
         "--serial", "Wine COM1",
+        "--disk-baud", "9600" if case == "stock" else "19200",
     ], cwd=ROOT, text=True, stdout=subprocess.PIPE,
        stderr=subprocess.STDOUT, check=False)
     require(result.returncode == 0, f"{case}: evidence decode failed: {result.stdout}")
@@ -212,10 +213,10 @@ def run_case(case: str, executable: Path, prefix: Path, trace: Path,
             )
         else:
             rom = ROOT / "spinoffs/jukuravi/remix/ekta4401.bin"
-            volume = ROOT / "tests/fixtures/jukuhost-v15/cpm-plus-juku.img"
+            volume = CPM / "out/cpm-plus-juku.img"
             drive_b = None
-            system = ROOT / "tests/fixtures/jukuhost-v15/cpm-plus-juku-system.bin"
-            fastboot = ROOT / "tests/fixtures/jukuhost-v15/cpm-plus-juku-fastboot-v15.bin"
+            system = CPM / "out/cpm-plus-juku-stock-recovery-system.bin"
+            fastboot = CPM / "out/cpm-plus-juku-stock-recovery-fastboot-v17.bin"
         for artifact in (rom, volume, system, fastboot, *(tuple() if drive_b is None else (drive_b,))):
             require(artifact.is_file(), f"{case}: missing {artifact}")
         original_digest = hashlib.sha256(volume.read_bytes()).digest()
@@ -227,7 +228,8 @@ def run_case(case: str, executable: Path, prefix: Path, trace: Path,
 
         host_command = [
             "xvfb-run", "-a", "wine", str(executable), "--headless",
-            "--config", wine_path(config), "--disk-timeout", "8",
+            "--config", wine_path(config), "--disk-timeout",
+            "20" if case == "stock" else "8",
         ]
         if os.environ.get("JUKUWIN_WINE_STRACE") == "1":
             host_command = [
@@ -268,7 +270,9 @@ def run_case(case: str, executable: Path, prefix: Path, trace: Path,
                     f"{case}: boot evidence is incomplete: {text}")
         else:
             require("stock bootstrap complete" in text and
-                    "stock-assisted V15 core" in text,
+                    "stock-assisted V17 core" in text and
+                    ("Fastboot V17 complete" in text or
+                     "V17 final reply not seen" in text),
                     f"stock: boot evidence is incomplete: {text}")
         require(capture.stat().st_size > 100, f"{case}: capture is too small")
         require(working.stat().st_size == 409600,

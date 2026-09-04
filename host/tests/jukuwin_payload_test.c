@@ -14,6 +14,12 @@ int main(void)
         fprintf(stderr, "payload selftest failed: %s\n", message);
         return 1;
     }
+    payload = jh_jukuwin_payload_find("stock", "fastboot");
+    if (payload == NULL || payload->length != 9707u ||
+            strcmp(payload->format, "JF17") != 0) {
+        fprintf(stderr, "stock payload lookup differs\n");
+        return 1;
+    }
     payload = jh_jukuwin_payload_find("c11", "fastboot");
     if (payload == NULL || payload->length != 7914u ||
             strcmp(payload->format, "JF16") != 0) {
@@ -28,15 +34,17 @@ int main(void)
     }
     memset(&options, 0, sizeof(options));
     if (jh_jukuwin_apply_payloads("stock", &options) != JH_OK ||
-            options.direct_fastboot || options.recover_session ||
+            options.direct_fastboot || !options.recover_session ||
+            options.disk_baud != 9600u ||
             options.system_length != 16896u ||
-            options.fast_stage_length != 9670u) {
+            options.fast_stage_length != 9707u) {
         fprintf(stderr, "stock payload application differs\n");
         return 1;
     }
     memset(&options, 0, sizeof(options));
     if (jh_jukuwin_apply_payloads("c11", &options) != JH_OK ||
             !options.direct_fastboot || !options.recover_session ||
+            options.disk_baud != 19200u ||
             options.system_length != 18432u ||
             options.fast_stage_length != 7914u) {
         fprintf(stderr, "C11 payload application differs\n");
@@ -45,6 +53,7 @@ int main(void)
     memset(&options, 0, sizeof(options));
     if (jh_jukuwin_apply_payloads("c12", &options) != JH_OK ||
             !options.direct_fastboot || !options.recover_session ||
+            options.disk_baud != 19200u ||
             options.system_length != 18432u ||
             options.fast_stage_length != 7914u) {
         fprintf(stderr, "C12 payload application differs\n");

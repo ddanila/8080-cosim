@@ -1,7 +1,7 @@
 # Windows Juku host client
 
 `JUKUWIN.EXE` is the self-contained Windows host for a Juku using the stock,
-C11, or C12 JukuNet ROM. It includes the approved CP/M boot systems, JF15
+C11, or C12 JukuNet ROM. It includes the approved CP/M boot systems, JF17
 stock helper, and JF16 C11/C12 helpers. Disk images remain ordinary external
 files.
 
@@ -24,9 +24,10 @@ request. This means either can safely attach while CP/M is already running or
 silently playing music. Select the mode that exactly matches the installed
 ROM; the embedded system and Fastboot pair changes with it.
 
-**Stock ROM** waits for the 9,600-baud Janet loader, installs the embedded
-JF15 helper, and continues at 19,200 baud. It requires a fresh stock-ROM boot
-request.
+**Stock ROM** stays at 9,600/8O1 for Janet, the compressed JF17 transfer, and
+NetDisk. Like C11/C12, it first listens without transmitting, attaches to a
+checked live NetDisk session, and recognizes a new checked Janet request as a
+target reset. It then reloads CP/M automatically without a baud-rate guess.
 
 Press **Stop** before changing the mode, adapter, or disk images. Closing the
 window while active requests the same clean stop and waits for the current

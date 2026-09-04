@@ -144,7 +144,9 @@ static int test_configuration(void)
     struct jh_config_error error;
     char oversized[JH_CONFIG_PATH_MAX + 32u];
     char stock_fast[sizeof(valid)];
+    char stock_recover[sizeof(valid)];
     const char *network_line;
+    char *edit;
     CHECK(jh_config_parse(valid, sizeof(valid) - 1u, &config, &error) == JH_OK);
     CHECK(strcmp(config.port, "/dev/ttyS0") == 0 && config.network_rom == 1 &&
           config.recover_session == 1 &&
@@ -169,6 +171,27 @@ static int test_configuration(void)
           JH_OK);
     CHECK(config.have_fastboot && !config.network_rom &&
           !config.recover_session);
+    strcpy(stock_recover, valid);
+    edit = strstr(stock_recover, "network_rom=yes\n");
+    CHECK(edit != NULL);
+    memmove(edit, edit + strlen("network_rom=yes\n"),
+            strlen(edit + strlen("network_rom=yes\n")) + 1u);
+    edit = strstr(stock_recover, "baud=19200\n");
+    CHECK(edit != NULL);
+    memmove(edit + strlen("baud=9600"), edit + strlen("baud=19200"),
+            strlen(edit + strlen("baud=19200")) + 1u);
+    memcpy(edit, "baud=9600", strlen("baud=9600"));
+    CHECK(jh_config_parse(stock_recover, strlen(stock_recover),
+                          &config, &error) == JH_OK);
+    CHECK(config.have_fastboot && !config.network_rom &&
+          config.recover_session && config.disk_baud == 9600u);
+    edit = strstr(stock_recover, "baud=9600\n");
+    CHECK(edit != NULL);
+    memmove(edit + strlen("baud=19200"), edit + strlen("baud=9600"),
+            strlen(edit + strlen("baud=9600")) + 1u);
+    memcpy(edit, "baud=19200", strlen("baud=19200"));
+    CHECK(jh_config_parse(stock_recover, strlen(stock_recover),
+                          &config, &error) == JH_ERR_FORMAT);
     CHECK(jh_sha256_parse(hash, config.system.sha256) == JH_OK);
     CHECK(jh_config_parse(duplicate, sizeof(duplicate) - 1u,
                           &config, &error) == JH_ERR_FORMAT && error.line == 3u);
@@ -384,7 +407,10 @@ static int test_fastboot(const char *fixture)
           session_v15.compressed == artifact_v15 + 392u &&
           session_v15.compressed_length == 256u &&
           session_v15.compressed_crc == compressed_crc &&
-          session_v15.system_crc == resident_crc);
+          session_v15.system_crc == resident_crc &&
+          session_v15.version == 15u && session_v15.ready_rate == 1u &&
+          session_v15.transfer_baud == 19200u &&
+          session_v15.transfer_parity == 'N');
     CHECK(jh_fast_v15_extension_tail_size(&session_v15) ==
           sizeof(extension_tail));
     CHECK(jh_fast_v15_extension_tail(
@@ -394,6 +420,16 @@ static int test_fastboot(const char *fixture)
           memcmp(extension_tail, artifact_v15 + 128u, 256u) == 0 &&
           extension_tail[256] == session_v15.extension_sum1 &&
           extension_tail[257] == session_v15.extension_sum2);
+    artifact_v15[6] = (uint8_t)'7';
+    artifact_v15[385] = (uint8_t)'H';
+    CHECK(jh_fast_v15_session_init(
+              &session_v15, artifact_v15, sizeof(artifact_v15),
+              system_image, sizeof(system_image)) == JH_OK);
+    CHECK(session_v15.version == 17u && session_v15.ready_rate == 0u &&
+          session_v15.transfer_baud == 9600u &&
+          session_v15.transfer_parity == 'O');
+    artifact_v15[6] = (uint8_t)'5';
+    artifact_v15[385] = (uint8_t)'F';
     artifact_v15[386] ^= 1u;
     CHECK(jh_fast_v15_session_init(
               &session_v15, artifact_v15, sizeof(artifact_v15),

@@ -52,10 +52,12 @@ V16.
 | capture/log/media/artifact failure | no safe ROM remedy | host stops with its specific fatal exit | unsafe or unaudited state is not hidden |
 | permanent power, cable, UART, RAM, or ROM fault | may remain silent or repeat POST failure | waits/retries only where transport remains observable | operator/hardware repair is still required |
 
-This is intentionally not claimed for the stock ROM: its boot and NetDisk
-framing use different rates, and it cannot emit the C11 discovery contract.
-The ordinary immediate `--network-rom` and explicit `--resume-disk` modes remain
-available for C8-C10 and stock-era workflows.
+The later, separately identified stock `JF17` profile now applies the same
+receive-only principle at a stable 9,600/8O1: a checked Janet load request
+means reset ROM, while a checked `JD` request means live NetDisk. It does not
+change this C11 wire contract or the historical 19,200-baud JF15 artifact.
+The ordinary immediate `--network-rom` and explicit `--resume-disk` modes
+remain available for C8-C10 and historical workflows.
 
 ## Qualification
 

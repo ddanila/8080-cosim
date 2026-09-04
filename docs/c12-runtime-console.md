@@ -153,7 +153,7 @@ release requirement.
 | Warm/default lifecycle | local and N4 CP/M switch, `WBOOT`, STATUS/DIAG, and `CONSOLE DEFAULT` checks | pass |
 | Active visual utility | C12-only strict-8080 VIDTEST build plus exact switched 40x24/Russian hidden/visible frames; legacy hash retained | pass |
 | Structural hardware model | VM80A/Juku ABI self-test with POF release, runtime transition, remap, keyboard, and serial completion | pass |
-| Host delivery | reproducible 204,800-byte PE, six pinned payloads, actual-PE stock/C11/C12 Wine sessions | pass |
+| Host delivery | reproducible PE, six pinned payloads, actual-PE stock/C11/C12 Wine sessions | pass |
 | ROM capacity fail-closed | assembly envelope assertions and generated padding measurements; ABI call gate exactly full | pass |
 | Reproducible physical procedure | manifest-bound cold/runtime/full workloads and exact CS00000 programming/rollback worksheet | ready, not executed |
 | Installed-hardware behavior | attended CS00000 four-mode/four-bank raster, recovery, warm/default, reset and power-cycle evidence | pending |

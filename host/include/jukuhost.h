@@ -347,6 +347,10 @@ struct jh_fast_v15_session {
     uint16_t system_crc;
     uint8_t extension_sum1;
     uint8_t extension_sum2;
+    uint8_t version;
+    uint8_t ready_rate;
+    uint32_t transfer_baud;
+    char transfer_parity;
 };
 
 uint8_t jh_xor(const uint8_t *data, size_t length);

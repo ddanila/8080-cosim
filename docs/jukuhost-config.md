@@ -82,30 +82,32 @@ Boot selection is explicit:
 
 - no `[fastboot]` section selects a complete stock Janet bootstrap at
   9,600/8O1;
-- `[fastboot]` with `network_rom=no` (the default) selects stock-assisted JF15:
-  one 128-byte core through Janet at 9,600/8O1, then its checked extension and
-  compressed system at 19,200/8N1;
+- `[fastboot]` with `network_rom=no` (the default) selects stock-assisted
+  JF15/JF17. JF15 is the historical 19,200 transfer; reset-safe JF17 keeps its
+  checked extension, compressed system, and NetDisk at 9,600/8O1;
 - `[fastboot]` with `network_rom=yes` selects direct JF16 from a JukuNet ROM at
   19,200/8N1;
 - `network_rom=yes` plus `recover_session=yes` selects C11/C12 passive
   discovery: the host listens at 19,200/8O1 until a checked C11 or C12 boot
   beacon or a complete NetDisk request identifies the live target state.
+- `network_rom=no`, JF17, `baud=9600`, and `recover_session=yes` selects stock
+  passive discovery and automatic recovery from a fresh Janet request.
 
 `network_rom=yes` therefore requires a system and a JF16 Fastboot artifact;
-stock-assisted mode requires an exact JF15 artifact. A fallback is optional,
+stock-assisted mode requires an exact JF15 or JF17 artifact. A fallback is optional,
 but its system and Fastboot identities form one inseparable slot: if either
 primary artifact is absent or fails its size/SHA-256 identity, both fallback
 artifacts are selected. A JF1–JF14 fallback still fails validation; fallback
 does not weaken the protocol boundary or switch direct/stock mode.
 
-`recover_session=yes` requires C11 or C12, JF16, NetDisk at exactly 19,200
-baud, and a normal disk-serving run. It is deliberately receive-only until
-target state is known, so a silent CP/M music player is not disturbed. A
-checked C11/C12 beacon during NetDisk triggers a complete V16 reboot; a
-replacement host recognizes an already-running CP/M from its next checked
-request. Named serial-device loss is retried in bounded `reconnect_timeout`
-windows while recovery remains armed; a configured console PTY is likewise
-awaited before boot and reopened after a loss.
+`recover_session=yes` requires a normal disk-serving run and matching rate:
+JF17 stock recovery uses 9,600, while C11/C12 JF16 recovery uses 19,200. It is
+receive-only until target state is known, so a silent CP/M music player is not
+disturbed. A checked Janet request or C11/C12 beacon during NetDisk triggers a
+complete reboot; a replacement host recognizes already-running CP/M from its
+next checked request. Named serial-device loss is retried in bounded
+`reconnect_timeout` windows while recovery remains armed; a configured console
+PTY is likewise awaited before boot and reopened after a loss.
 See [`c11-session-recovery.md`](c11-session-recovery.md).
 
 `boot_restarts` bounds complete bootstrap retransmissions after an explicit

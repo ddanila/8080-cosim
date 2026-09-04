@@ -125,7 +125,11 @@ def write_boot(path: Path, capture: Path, started_ms: int,
         raise EvidenceError("capture contains no disk request confirming boot")
     messages = [bytes(record["payload"]).decode("ascii", "replace")
                 for record in captured if record["kind"] == 3]
-    version = 16 if any(
+    version = 17 if any(
+        message.startswith("Fastboot V17 complete") or
+        message.startswith("V17 final reply not seen")
+        for message in messages
+    ) else 16 if any(
         message.startswith("Fastboot V16 complete") or
         message.startswith("V16 final reply not seen")
         for message in messages
@@ -135,7 +139,7 @@ def write_boot(path: Path, capture: Path, started_ms: int,
         for message in messages
     ) else 0
     if version == 0:
-        raise EvidenceError("capture contains no completed V15/V16 transfer")
+        raise EvidenceError("capture contains no completed V15/V16/V17 transfer")
     confirmed = any(message.startswith(f"Fastboot V{version} complete")
                     for message in messages)
     value = {
@@ -146,9 +150,9 @@ def write_boot(path: Path, capture: Path, started_ms: int,
         "network_rom": version == 16,
         "fastboot_version": version,
         "boot_baud": 19200 if version == 16 else 9600,
-        # V15 enters through one stock Janet record at 9,600, then transfers
-        # its extension and compressed system at the same 19,200 rate as V16.
-        "effective_boot_baud": 19200,
+        # V17 stays at the stock 9,600 rate for reset-safe recovery. V15 enters
+        # through Janet at 9,600, then transfers at the V16 19,200 rate.
+        "effective_boot_baud": 9600 if version == 17 else 19200,
         "disk_baud": args.disk_baud,
         "disk_protocol": args.disk_protocol,
         "system": str(args.system.resolve()),

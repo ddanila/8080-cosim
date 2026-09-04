@@ -286,7 +286,8 @@ static int fast_v15_bundle(const uint8_t *artifact, size_t artifact_length,
                            size_t *extension_length,
                            const uint8_t **compressed,
                            size_t *compressed_length,
-                           uint16_t *compressed_crc, uint16_t *system_crc)
+                           uint16_t *compressed_crc, uint16_t *system_crc,
+                           uint8_t *version)
 {
     size_t extension_size;
     size_t payload_offset;
@@ -297,12 +298,13 @@ static int fast_v15_bundle(const uint8_t *artifact, size_t artifact_length,
     if (artifact == NULL || core == NULL || extension == NULL ||
             extension_length == NULL || compressed == NULL ||
             compressed_length == NULL || compressed_crc == NULL ||
-            system_crc == NULL) {
+            system_crc == NULL || version == NULL) {
         return JH_ERR_ARGUMENT;
     }
     if (artifact_length <= 136u || artifact[3] != (uint8_t)'J' ||
             artifact[4] != (uint8_t)'F' || artifact[5] != (uint8_t)'1' ||
-            artifact[6] != (uint8_t)'5') {
+            (artifact[6] != (uint8_t)'5' &&
+             artifact[6] != (uint8_t)'7')) {
         return JH_ERR_UNSUPPORTED;
     }
     if (artifact[7] != 1u || artifact[8] != 0u) return JH_ERR_FORMAT;
@@ -313,7 +315,10 @@ static int fast_v15_bundle(const uint8_t *artifact, size_t artifact_length,
     }
     payload_offset = 128u + extension_size;
     descriptor = artifact + payload_offset;
-    if (descriptor[0] != (uint8_t)'Z' || descriptor[1] != (uint8_t)'F') {
+    *version = artifact[6] == (uint8_t)'5' ? 15u : 17u;
+    if (descriptor[0] != (uint8_t)'Z' ||
+            descriptor[1] != (*version == 15u ? (uint8_t)'F' :
+                                             (uint8_t)'H')) {
         return JH_ERR_FORMAT;
     }
     *system_crc = (uint16_t)((uint16_t)descriptor[2] << 8) | descriptor[3];
@@ -420,7 +425,7 @@ int jh_fast_v15_session_init(struct jh_fast_v15_session *session,
         artifact, artifact_length, &session->core, &session->extension,
         &session->extension_length, &session->compressed,
         &session->compressed_length, &session->compressed_crc,
-        &session->system_crc);
+        &session->system_crc, &session->version);
     if (result != JH_OK) return result;
     result = fast_extract_system(system_image, system_image_length, &system,
                                  &system_length);
@@ -430,6 +435,15 @@ int jh_fast_v15_session_init(struct jh_fast_v15_session *session,
     }
     jh_fletcher16(session->extension, session->extension_length,
                   &session->extension_sum1, &session->extension_sum2);
+    if (session->version == 17u) {
+        session->ready_rate = 0u;
+        session->transfer_baud = 9600u;
+        session->transfer_parity = 'O';
+    } else {
+        session->ready_rate = 1u;
+        session->transfer_baud = 19200u;
+        session->transfer_parity = 'N';
+    }
     return JH_OK;
 }
 

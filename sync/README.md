@@ -42,7 +42,8 @@ sync/jukuhost_m2_check.sh
 ```
 
 It compares the frozen Python-era oracle with the sole supported C host, then
-runs stock, stock-assisted JF15, C8/JF16, disk, console, reconnect, recovery,
+runs stock, stock-assisted JF15, reset-safe stock JF17, C8/JF16, disk, console,
+reconnect, recovery,
 wrapper, and current network-ROM fault regressions. See
 `docs/portable-c-host-m2-acceptance.md` for the accepted result and exact
 platform-port boundary.
@@ -84,7 +85,7 @@ builds, the exact legacy-safe PE import/resource boundary, and the exact
 self-contained package. It runs the fast compiled self-test under Wine when
 Wine is available and reports an explicit skip otherwise. The longer,
 developer-invoked `sync/jukuhost_win32_wine_e2e.sh` maps Wine `COM1` through a
-PTY bridge and runs the actual PE against stock, C11, and C12 co-simulation; it
+PTY bridge and runs the actual PE against stock/JF17, C11, and C12 co-simulation; it
 is deliberately outside the ordinary CI gate. See
 `docs/windows-jukuhost-client-wine-acceptance.md` and
 `docs/windows-jukuhost-client-desk-acceptance.md`; real Windows, the physical

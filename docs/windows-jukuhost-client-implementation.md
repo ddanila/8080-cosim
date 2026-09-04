@@ -18,19 +18,21 @@ durability rules, non-goals, and test gates are frozen in the plan.
 
 The embedded catalog is pinned by
 [`host/windows/payload-manifest.json`](../host/windows/payload-manifest.json)
-to `cpm-plus-juku` revision `d2e5b31` and these exact artifacts:
+to `cpm-plus-juku` revision `014839b` and these exact artifacts:
 
 | Mode | Role | Bytes | SHA-256 |
 | --- | --- | ---: | --- |
-| stock | system | 16,896 | `254f940e36501dcf3f46c5ba23b2b6cb3b1b7f3a13b1e42ae9786f2fa337a4a4` |
-| stock | JF15 | 9,670 | `881befd8ebd306ae7313b2dff8b83cb8d964988e17627d76efedaa49e6a19a5d` |
+| stock | system | 16,896 | `a14adb85ead4e6bc223f4107aa88abfed8e798207fcc4b185e5ec9d5d3fb3694` |
+| stock | JF17 | 9,707 | `46c93c15dbf4fd111d02674ddc395a5a394e189972a37a12553905178ed1059e` |
 | C11 | system | 18,432 | `923be9c41068b7de6f14d93dd7fd28e31bbefbf2fd68609c0483597092becd5f` |
 | C11 | JF16 | 7,914 | `fc4fa48ef7c96064d7879782c293c740e30f73f50e06db2ad6fc09bbb0dd2d31` |
 | C12 | system | 18,432 | `74abab89c14e8429eec943c8b7c77ad33675cbf411fde5190d4657a3d28bdb79` |
 | C12 | JF16 | 7,914 | `51788bc93dac1e03a541239eb7f2837e3e03ef2519c3703aa052fe15b248f202` |
 
-The stock pair is the exact JF15/system pair retained in
-`tests/fixtures/jukuhost-v15` and physically accepted on CS00000. The C11 pair
+The stock pair is the separately named reset-safe JF17/system pair: Janet,
+compressed transfer, and NetDisk all use 9,600/8O1. The historical JF15 pair
+retained in `tests/fixtures/jukuhost-v15` remains byte-identical and records
+the earlier physical CS00000 result. The C11 pair
 is the exact system/JF16 pair from the accepted C11 manifest and the physical
 CS00000 session. The C12 pair adds ABI 1.5 runtime-console control while the
 C11 pair remains selectable and byte-identical to its accepted release. The
@@ -108,14 +110,14 @@ build therefore has no loose boot/system dependency.
   line-error handling, bounded drain, stop handling, and timer wrap through a
   native API shim;
 - strict warning-free Open Watcom compilation;
-- two byte-identical 204,800-byte PE builds;
+- two byte-identical 207,360-byte PE builds;
 - PE32/i386, GUI subsystem version 4.0;
 - an exact reviewed allowlist of 92 direct system imports;
 - deterministic icon/version resources and normalized resource timestamps;
 - an exact five-file package, complete hashes, and six-payload manifest.
 
 The current C12-capable EXE SHA-256 is
-`a93c97580d2af23dfda77d84736b0618e8ac97820d7bb06aaddb7f7a04bb2e25`.
+`ea556fde96e5d7faa34fd04f2065eba647f39c49aee3e30c68f56dff74f42316`.
 
 At the 2026-09-03 W2 acceptance boundary Wine was unavailable, so the compiled
 process and simulated COM path remained unexecuted. The later W3.1 result below
@@ -167,7 +169,7 @@ Current automated evidence:
 - strict config parse/format/path tests;
 - stable-identity, explicit-port, missing-device, and ambiguity tests;
 - warning-free GUI compilation;
-- two byte-identical 204,800-byte GUI EXEs after deterministic PE and resource
+- two byte-identical 207,360-byte GUI EXEs after deterministic PE and resource
   timestamp
   normalization;
 - PE32/i386 Windows GUI subsystem 4.0, embedded icon/version, and exact
@@ -176,7 +178,7 @@ Current automated evidence:
   verification.
 
 The current GUI EXE SHA-256 is
-`a93c97580d2af23dfda77d84736b0618e8ac97820d7bb06aaddb7f7a04bb2e25`.
+`ea556fde96e5d7faa34fd04f2065eba647f39c49aee3e30c68f56dff74f42316`.
 
 At the 2026-09-03 W3 acceptance boundary no Windows or Wine runtime was
 present. The later W3.1 result below executes self-test and all three headless
@@ -194,12 +196,14 @@ stock, C11, and C12 co-simulations. The ordinary Windows gate runs only the
 fast compiled self-test when Wine is available; the longer protocol run is not
 wired into CI.
 
-The accepted Wine run covered the stock Janet bootstrap and V15 transition at
-9,600/19,200 baud, the C11 and C12 passive beacons and their independently
-pinned V16/NetDisk paths at 19,200 baud, A: snapshot creation, C11/C12 B:
+The reset-safe update covers stock Janet, JF17, and NetDisk at one stable
+9,600/8O1 rate, including a native co-simulation cold restart with the same
+host process. The Wine matrix covers that stock profile plus the C11 and C12
+passive beacons and their independently pinned V16/NetDisk paths at 19,200
+baud, A: snapshot creation, C11/C12 B:
 mounting, disk reads, clean bounded shutdown,
 capture generation, independent capture decoding, and unchanged base-image
-hashes. All three sessions ended with zero retries and UART errors. See
+hashes. All three ended with zero retries and zero UART errors. See
 [windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md)
 for exact evidence.
 

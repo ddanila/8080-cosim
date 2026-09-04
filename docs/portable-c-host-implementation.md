@@ -400,3 +400,25 @@ Janet and current C8 19,200/8N1 Fastboot followed by 19,200/8O1 NetDisk v3 and
 N4. The exact artifact identity, measurements, test boundary, and next physical
 gate are in
 [portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).
+
+## M8 — reset-safe stock-ROM session recovery
+
+The stock production profile now has a separately named `JF17` transport. It
+retains the 128-byte Janet-loaded core, checked extension, and ZX0-compressed
+system, but explicitly programs D57 count 8 and 8251 8O1 and stays at 9,600
+baud through NetDisk. The historical `JF15` pair remains byte-identical.
+
+With `--recover-session --disk-baud 9600`, the host starts receive-only and
+classifies only checksum-valid traffic. A stock Janet request, or its directed
+poll when the listener attached late, selects bootstrap; a complete `JD`
+request selects an already-running NetDisk session and is returned intact to
+the service parser. During NetDisk, a checked Janet frame proves that the
+target reset and restarts the complete JF17 boot without a retry limit or a
+baud-rate guess. C11/C12 retain their independent 19,200-baud V16 recovery
+loop.
+
+`tests/jukuhost_stock_recovery_cosim_test.py` keeps one production host alive,
+boots stock CP/M to `A>`, terminates and cold-starts the simulated board on the
+same serial link, and requires a second JF17 boot to `A>` with one recorded
+target reset and bootstrap restart. The Windows embedded-payload mapping uses
+this recovery profile automatically for Stock ROM mode.

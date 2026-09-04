@@ -2,8 +2,8 @@
   "schema": "jukuwin-embedded-payloads-v1",
   "source": {
     "repository": "https://github.com/ddanila/cpm-plus-juku",
-    "revision": "d2e5b31",
-    "revision_full": "d2e5b31711b879b6f4d3763782ba96d6bd9b6db6",
+    "revision": "014839b",
+    "revision_full": "014839bac4aeee708e2ebda9f90422bf9d1e1a7a",
     "output_directory": "out"
   },
   "payloads": [
@@ -11,20 +11,20 @@
       "symbol": "stock_system",
       "mode": "stock",
       "role": "system",
-      "file": "cpm-plus-juku-system.bin",
+      "file": "cpm-plus-juku-stock-recovery-system.bin",
       "bytes": 16896,
-      "sha256": "254f940e36501dcf3f46c5ba23b2b6cb3b1b7f3a13b1e42ae9786f2fa337a4a4",
-      "format": "stock-system"
+      "sha256": "a14adb85ead4e6bc223f4107aa88abfed8e798207fcc4b185e5ec9d5d3fb3694",
+      "format": "JUKURM1"
     },
     {
       "symbol": "stock_fastboot",
       "mode": "stock",
       "role": "fastboot",
-      "file": "cpm-plus-juku-fastboot-v15.bin",
-      "bytes": 9670,
-      "sha256": "881befd8ebd306ae7313b2dff8b83cb8d964988e17627d76efedaa49e6a19a5d",
-      "format": "JF15",
-      "version": 15
+      "file": "cpm-plus-juku-stock-recovery-fastboot-v17.bin",
+      "bytes": 9707,
+      "sha256": "46c93c15dbf4fd111d02674ddc395a5a394e189972a37a12553905178ed1059e",
+      "format": "JF17",
+      "version": 17
     },
     {
       "symbol": "c11_system",

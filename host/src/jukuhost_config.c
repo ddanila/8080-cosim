@@ -325,7 +325,7 @@ static int validate(struct jh_host_config *config,
     if (state->fastboot != 0u && state->fastboot != 7u) return JH_ERR_FORMAT;
     config->have_fastboot = state->fastboot == 7u;
     if (config->network_rom && !config->have_fastboot) return JH_ERR_FORMAT;
-    if (config->recover_session && !config->network_rom) return JH_ERR_FORMAT;
+    if (config->recover_session && !config->have_fastboot) return JH_ERR_FORMAT;
     if ((state->fallback_system == 0u) !=
             (state->fallback_fastboot == 0u) ||
             (state->fallback_system != 0u &&
@@ -352,7 +352,8 @@ static int validate(struct jh_host_config *config,
     if (config->console[0] != '\0' && config->disk_protocol != 3u) {
         return JH_ERR_FORMAT;
     }
-    if (config->recover_session && config->disk_baud != 19200u) {
+    if (config->recover_session &&
+            config->disk_baud != (config->network_rom ? 19200u : 9600u)) {
         return JH_ERR_FORMAT;
     }
     return JH_OK;

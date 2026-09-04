@@ -162,7 +162,8 @@ int jh_jukuwin_apply_payloads(const char *mode,
     options->fast_stage_length = fastboot->length;
     options->fast_stage_identity = &fastboot->identity;
     options->direct_fastboot = strcmp(mode, "stock") != 0;
-    options->recover_session = options->direct_fastboot;
+    options->recover_session = 1;
+    options->disk_baud = options->direct_fastboot ? 19200u : 9600u;
     return JH_OK;
 }}
 """

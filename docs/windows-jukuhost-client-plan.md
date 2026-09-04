@@ -1,8 +1,10 @@
 # Windows Juku host client plan
 
 Implementation addendum (2026-09-04): C12 is now the default mode while C11
-and stock remain selectable. The implemented six-payload catalog and
-stock/C11/C12 local Wine matrix are recorded in
+and stock remain selectable. Stock mode now uses the separately named JF17
+profile and stays at 9,600/8O1 through Janet, compressed boot, and NetDisk so
+the same listener can recover a target reset automatically. The implemented
+six-payload catalog and stock/C11/C12 local Wine matrix are recorded in
 [windows-jukuhost-client-implementation.md](windows-jukuhost-client-implementation.md).
 References below to the original stock/C11 scope are retained as the frozen
 design baseline, not as a restriction on the additive C12 mode.
@@ -70,11 +72,14 @@ the Windows GUI are front ends over the same core and session runner.
 
 `stock` mode means:
 
-1. listen for the stock Janet boot protocol at 9,600 baud, 8O1;
-2. load the admitted JF15 stock-assisted core;
-3. transfer its checked extension and embedded CP/M system at 19,200 baud,
-   8N1; and
-4. serve NetDisk/N4 at 19,200 baud, 8O1.
+1. listen at 9,600/8O1 without transmitting while target state is unknown;
+2. distinguish a checked stock Janet request/poll from a checked live NetDisk
+   request;
+3. load the reset-safe JF17 core, checked extension, and compressed CP/M system
+   without changing the serial rate or framing;
+4. serve NetDisk/N4 at 9,600/8O1; and
+5. automatically return to JF17 bootstrap after a checked Janet frame proves
+   that the target reset.
 
 `c11` mode means:
 
@@ -84,7 +89,7 @@ the Windows GUI are front ends over the same core and session runner.
 4. attach without disturbing an already-running CP/M session; and
 5. automatically recover across a target reset or serial reconnect.
 
-C8-C10 direct-fastboot operation and raw stock bootstrap without JF15 are not
+C8-C10 direct-fastboot operation and raw stock bootstrap without JF17 are not
 first-release UI modes. The existing CLI keeps those diagnostic paths.
 
 ### Deployment shape
@@ -100,7 +105,7 @@ logs/                generated evidence, not a runtime dependency
 ```
 
 The application reads no boot-stage or system binary from the deployment
-folder. Approved JF15, JF16, and CP/M system bytes plus their names, versions,
+folder. Approved JF17, JF16, and CP/M system bytes plus their names, versions,
 sizes, SHA-256 identities, and source provenance are embedded at build time.
 Disk images remain external and replaceable by the user.
 
@@ -299,9 +304,9 @@ API call.
 ### Embedded payload catalog
 
 Build tooling imports one explicitly approved artifact set and generates a C
-payload catalog compiled into the executable. The catalog contains one shared
-system image where stock and C11 use identical bytes, plus exact JF15 and JF16
-bundles. Each entry contains:
+payload catalog compiled into the executable. The catalog contains matching
+stock, C11, and C12 systems plus exact JF17 and JF16 bundles. Each entry
+contains:
 
 - stable symbolic name and semantic role;
 - payload bytes and length;

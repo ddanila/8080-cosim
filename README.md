@@ -118,6 +118,10 @@ with the machine-readable board model.
   Fastboot/NetDisk/N4 at 19,200 baud through emulated COM1. Images remain
   file-backed and the Pocket package runs with no options. Physical
   Pocket8086/CS00015 qualification is the remaining M2.3 gate before Win32.
+  The newer stock recovery profile keeps its accelerated JF17 bootstrap and
+  NetDisk at 9,600/8O1, allowing the same listening host to distinguish Janet
+  from checked NetDisk traffic and reboot CP/M automatically after a stock-ROM
+  reset. C11/C12 remain at 19,200.
 - `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
   scope.
 - The promoted routed main-board artifact exactly matches the live source.
