@@ -9,7 +9,11 @@ PITCOUNT0       equ     018h
 PITCTL          equ     01bh
 VRAM            equ     0d800h
 .ifdef ROM_ABI_HOSTSERVICES
+.ifdef ROM_ABI_C12
+FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFSOUND+JROMFDIAG+JROMFNETCON+JROMFLOCALE+JROMFKEYREMAP+JROMFCONBLOCK+JROMFNETMULTI+JROMFKEYRAW+JROMFCONCONFIG
+.else
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFSOUND+JROMFDIAG+JROMFNETCON+JROMFLOCALE+JROMFKEYREMAP+JROMFCONBLOCK+JROMFNETMULTI+JROMFKEYRAW
+.endif
 .else
 .ifdef ROM_ABI_EXTENDED
 FEATURES        equ     JROMFCONSOLE+JROMFKEYBOARD+JROMFSERIAL+JROMFNETDISK+JROMFSOUND+JROMFDIAG+JROMFLOCALE+JROMFKEYREMAP+JROMFCONBLOCK+JROMFNETMULTI+JROMFKEYRAW
@@ -30,6 +34,12 @@ ROMNETSTATEBASE equ     JROMSTATEBASE+010h
 .ifdef ROM_ABI_LOCALE
 ROMCONFIG       equ     JROMSTATEBASE+041h
 ROMKEYREMAPBASE equ     JROMSTATEBASE+042h
+.ifdef ROM_ABI_C12
+; The console's mode-specific state ends at D7D9h, per-drive NetDisk state
+; occupies D7DAh..D7DFh, and the resident-host block ends at D7FCh.
+ROMACTIVECONFIG equ     JROMSTATEBASE+07dh
+ROMCONFIGFLAGS  equ     JROMSTATEBASE+07eh
+.endif
 .endif
 .ifdef ROM_ABI_HOSTSERVICES
 ROMHOSTSTATEBASE equ    JROMSTATEBASE+060h
@@ -249,6 +259,9 @@ self_host_done:
         ora     a
         jnz     self_fail_info
         mov     a,d
+.ifdef ROM_ABI_C12
+        cpi     01fh
+.else
 .ifdef ROM_ABI_EXTENDED
         cpi     00fh
 .else
@@ -256,6 +269,7 @@ self_host_done:
         cpi     1
 .else
         ora     a
+.endif
 .endif
 .endif
         jnz     self_fail_info
@@ -311,6 +325,120 @@ self_host_done:
 .endif
 .endif
         jnz     self_fail_info
+.endif
+
+.ifdef ROM_ABI_C12
+        mvi     a,JROMCONCONFIGQUERY
+        call    JCGCONCONFIGADDR
+        mov     a,d
+        ora     a
+        jnz     self_fail_info
+        mov     a,b
+        sta     0d5d2h
+        mov     a,c
+        sta     0d5d3h
+.ifdef ABI_C12_KEEP_OVERRIDE
+.ifdef ABI_C12_MODE_0
+        mvi     a,0
+.else
+.ifdef ABI_C12_MODE_1
+        mvi     a,1
+.else
+.ifdef ABI_C12_MODE_2
+        mvi     a,2
+.else
+        mvi     a,3
+.endif
+.endif
+.endif
+        sta     0d5d0h
+.ifdef ABI_C12_BANK_0
+        mvi     a,0
+.else
+.ifdef ABI_C12_BANK_1
+        mvi     a,1
+.else
+.ifdef ABI_C12_BANK_2
+        mvi     a,2
+.else
+        mvi     a,3
+.endif
+.endif
+.endif
+        sta     0d5d1h
+.else
+        mov     a,b
+        inr     a
+        ani     3
+        sta     0d5d0h
+        mov     a,c
+        inr     a
+        ani     3
+        sta     0d5d1h
+.endif
+
+        ; Rejected selectors and values must not partially publish state.
+        mvi     b,4
+        mvi     c,0
+        mvi     a,JROMCONCONFIGSET
+        call    JCGCONCONFIGADDR
+        jnc     self_fail_console
+        cpi     0ffh
+        jnz     self_fail_console
+        mvi     b,0
+        mvi     c,4
+        mvi     a,JROMCONCONFIGSET
+        call    JCGCONCONFIGADDR
+        jnc     self_fail_console
+        cpi     0ffh
+        jnz     self_fail_console
+        mvi     a,3
+        call    JCGCONCONFIGADDR
+        jnc     self_fail_console
+        cpi     0ffh
+        jnz     self_fail_console
+        mvi     a,JROMCONCONFIGQUERY
+        call    JCGCONCONFIGADDR
+        mov     a,d
+        ora     a
+        jnz     self_fail_console
+        lda     0d5d2h
+        cmp     b
+        jnz     self_fail_console
+        lda     0d5d3h
+        cmp     c
+        jnz     self_fail_console
+
+        lda     0d5d1h
+        mov     c,a
+        lda     0d5d0h
+        mov     b,a
+        mvi     a,JROMCONCONFIGSET
+        call    JCGCONCONFIGADDR
+        ora     a
+        jnz     self_fail_console
+        mvi     a,JROMCONCONFIGQUERY
+        call    JCGCONCONFIGADDR
+        lda     0d5d0h
+        cmp     b
+        jnz     self_fail_console
+        lda     0d5d1h
+        cmp     c
+        jnz     self_fail_console
+        mov     a,d
+        cpi     JROMCONOVERRIDEVIDEO+JROMCONOVERRIDELOCALE
+        jnz     self_fail_console
+.ifndef ABI_C12_KEEP_OVERRIDE
+        mvi     a,JROMCONCONFIGDEFAULT
+        call    JCGCONCONFIGADDR
+        ora     a
+        jnz     self_fail_console
+        mvi     a,JROMCONCONFIGQUERY
+        call    JCGCONCONFIGADDR
+        mov     a,d
+        ora     a
+        jnz     self_fail_console
+.endif
 .endif
 
         call    JCGCONINITADDR
@@ -673,6 +801,11 @@ rom_init_clear:
 .ifdef ROM_ABI_LOCALE
         call    RKCONFIG
         sta     ROMCONFIG
+.ifdef ROM_ABI_C12
+        sta     ROMACTIVECONFIG
+        xra     a
+        sta     ROMCONFIGFLAGS
+.endif
 .endif
         xra     a
         ret
@@ -850,6 +983,91 @@ rom_config_impl:
         mov     a,d
         ret
 
+.ifdef ROM_ABI_C12
+; A selects query (0), set B=video/C=character bank (1), or reset to the
+; latched S21 default (2). Validation completes before any state or pixels
+; change. Calls are synchronous with interrupts disabled under the ROM ABI,
+; so console writers observe either the complete old or complete new state.
+rom_conconfig_impl:
+        ora     a
+        jz      rom_conconfig_query
+        dcr     a
+        jz      rom_conconfig_set
+        dcr     a
+        jz      rom_conconfig_default
+        jmp     rom_extended_bad
+rom_conconfig_set:
+        mov     a,b
+        cpi     4
+        jnc     rom_extended_bad
+        mov     a,c
+        cpi     4
+        jnc     rom_extended_bad
+        lda     ROMCONFIG
+        ani     0e1h                    ; retain reserved bits and boot bit
+        mov     e,a
+        mov     a,b
+        add     a                       ; video in bits 2:1
+        ora     e
+        mov     e,a
+        mov     a,c
+        add     a
+        add     a
+        add     a                       ; character bank in bits 4:3
+        ora     e
+        sta     ROMACTIVECONFIG
+        call    rom_conconfig_flags
+        jmp     rom_conconfig_apply
+rom_conconfig_default:
+        lda     ROMCONFIG
+        sta     ROMACTIVECONFIG
+        xra     a
+        sta     ROMCONFIGFLAGS
+rom_conconfig_apply:
+        call    ROMCONINIT              ; hide/reset cursor, timing, full clear
+        call    RKINIT                  ; discard any pre-switch pending key
+        xra     a
+        ret
+rom_conconfig_flags:
+        lda     ROMACTIVECONFIG
+        mov     e,a
+        lda     ROMCONFIG
+        xra     e
+        mov     e,a
+        mvi     d,0
+        ani     006h
+        jz      rom_conconfig_locale_flag
+        mvi     d,JROMCONOVERRIDEVIDEO
+rom_conconfig_locale_flag:
+        mov     a,e
+        ani     018h
+        jz      rom_conconfig_store_flags
+        mov     a,d
+        ori     JROMCONOVERRIDELOCALE
+        mov     d,a
+rom_conconfig_store_flags:
+        mov     a,d
+        sta     ROMCONFIGFLAGS
+        ret
+rom_conconfig_query:
+        lda     ROMACTIVECONFIG
+        mov     e,a
+        rrc
+        ani     3
+        mov     b,a
+        mov     a,e
+        rrc
+        rrc
+        rrc
+        ani     3
+        mov     c,a
+        lda     ROMCONFIGFLAGS
+        mov     d,a
+        lda     ROMCONFIG
+        ora     a                       ; success and carry clear
+        ret
+.endif
+
 rom_keyremap_impl:
         call    RKSETREMAP
         xra     a
@@ -889,14 +1107,17 @@ rom_unavailable:
         ret
 
 .ifdef ROM_ABI_HOSTSERVICES
-.ifdef ROM_ABI_C10
+.ifdef ROM_ABI_C12
+build_identity:
+        db      'JukuNet C12 ROM ABI 1.5 runtime console 2026-09-04',0
+.else
 .ifdef ROM_ABI_C11
 build_identity:
         db      'JukuNet C11 ROM ABI 1.4 deterministic POST raster 2026-08-29',0
 .else
+.ifdef ROM_ABI_C10
 build_identity:
         db      'JukuNet C10 ROM ABI 1.4 physical POF release 2026-08-27',0
-.endif
 .else
 .ifdef ROM_ABI_C9
 build_identity:
@@ -904,6 +1125,8 @@ build_identity:
 .else
 build_identity:
         db      'JukuNet C8 ROM ABI 1.3 resident host services 2026-08-20',0
+.endif
+.endif
 .endif
 .endif
 .else
@@ -941,7 +1164,11 @@ DIAG_USART_CONTROL equ USARTCTL
 ; 2:1 select the same four proven geometries as the shared RAM console.
         org     0f000h
 RCSETVIDEO:
+.ifdef ROM_ABI_C12
+        lda     ROMACTIVECONFIG
+.else
         lda     ROMCONFIG
+.endif
         rrc
         ani     3
         sta     RCVIDMODE
@@ -1063,7 +1290,11 @@ RCMODE64:
 ; pseudographic rows and A=row count.
 RCFONTLOOKUP:
         mov     e,a
+.ifdef ROM_ABI_C12
+        lda     ROMACTIVECONFIG
+.else
         lda     ROMCONFIG
+.endif
         rrc
         rrc
         rrc
@@ -1200,6 +1431,9 @@ resident_checksum_balance:
 .endif
 .ifdef ROM_ABI_HOSTSERVICES
         jmp     rom_host_impl
+.endif
+.ifdef ROM_ABI_C12
+        jmp     rom_conconfig_impl
 .endif
 
         dc      10000h-$,0ffh

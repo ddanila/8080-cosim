@@ -51,6 +51,10 @@ C11_OUTPUT = HERE / "juku-network-rom-abi1.4-c11.bin"
 C11_D15_OUTPUT = HERE / "juku-network-rom-abi1.4-c11-d15.bin"
 C11_D16_OUTPUT = HERE / "juku-network-rom-abi1.4-c11-d16.bin"
 C11_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.4-c11.json"
+C12_OUTPUT = HERE / "juku-network-rom-abi1.5-c12.bin"
+C12_D15_OUTPUT = HERE / "juku-network-rom-abi1.5-c12-d15.bin"
+C12_D16_OUTPUT = HERE / "juku-network-rom-abi1.5-c12-d16.bin"
+C12_METADATA_OUTPUT = HERE / "juku-network-rom-abi1.5-c12.json"
 
 LOWER_SIZE = 0x1800
 RESIDENT_SIZE = 0x2800
@@ -71,6 +75,7 @@ C8_CANDIDATE = "network-first-abi1.3-c8-resident-host-simulator"
 C9_CANDIDATE = "network-first-abi1.4-c9-bounded-host-simulator"
 C10_CANDIDATE = "network-first-abi1.4-c10-pof-release-candidate"
 C11_CANDIDATE = "network-first-abi1.4-c11-post-raster-candidate"
+C12_CANDIDATE = "network-first-abi1.5-c12-runtime-console-candidate"
 
 
 def assemble(source: Path, output: Path, includes: tuple[Path, ...],
@@ -100,8 +105,13 @@ def build(*, abi_selftest: bool = False,
           c9: bool = False,
           c10: bool = False,
           c11: bool = False,
+          c12: bool = False,
           host_selftest: bool = False,
-          selftest_locale: int = 1) -> tuple[bytes, dict[str, object]]:
+          selftest_locale: int = 1,
+          runtime_console_target: tuple[int, int] | None = None,
+          ) -> tuple[bytes, dict[str, object]]:
+    if c12:
+        c11 = True
     if c11:
         c10 = True
     if c10:
@@ -132,6 +142,12 @@ def build(*, abi_selftest: bool = False,
         raise ValueError("selftest locale must be 0..3")
     if selftest_locale != 1 and (not abi_selftest or not locale):
         raise ValueError("non-default locale requires localized ABI selftest")
+    if runtime_console_target is not None:
+        if not abi_selftest or not c12:
+            raise ValueError("runtime console fixture requires C12 ABI selftest")
+        if len(runtime_console_target) != 2 or any(
+                value not in range(4) for value in runtime_console_target):
+            raise ValueError("runtime console target must be (mode, bank) 0..3")
     selftest_defines = ("ROM_ABI_LOCALE",) if locale else ()
     if locale and not successor:
         selftest_defines += ("CREEP_LEGACY_PSEUDO",)
@@ -149,6 +165,15 @@ def build(*, abi_selftest: bool = False,
         selftest_defines += ("ROM_ABI_C10",)
     if c11:
         selftest_defines += ("ROM_ABI_C11",)
+    if c12:
+        selftest_defines += ("ROM_ABI_C12",)
+    if runtime_console_target is not None:
+        target_mode, target_bank = runtime_console_target
+        selftest_defines += (
+            "ABI_C12_KEEP_OVERRIDE",
+            f"ABI_C12_MODE_{target_mode}",
+            f"ABI_C12_BANK_{target_bank}",
+        )
     if host_selftest:
         selftest_defines += ("ABI_HOST_SELFTEST",)
     selftest_defines += ((
@@ -200,7 +225,8 @@ def build(*, abi_selftest: bool = False,
                 "FASTBOOT_CPM3_ROM", "FASTBOOT_BOOT_RECORD",
                 "FASTBOOT_V16",
             ) + (("FASTBOOT_CPM3_C8",) if c8 else ()) +
-            (("FASTBOOT_C11_DISCOVERY",) if c11 else ()),
+            (("FASTBOOT_C12_DISCOVERY",) if c12 else
+             (("FASTBOOT_C11_DISCOVERY",) if c11 else ())),
         ) if extended else b""
         expected_embedded_extension_bytes = (
             C11_EMBEDDED_EXTENSION_BYTES if c11 else
@@ -270,7 +296,9 @@ def build(*, abi_selftest: bool = False,
         core = bytes(core)
         if len(gate) > 0xE0:
             raise ValueError(f"RAM gate is {len(gate)} bytes; envelope is 224")
-        expected_gate_bytes = 219 if c8 else (214 if locale else 196)
+        expected_gate_bytes = (
+            224 if c12 else (219 if c8 else (214 if locale else 196))
+        )
         if len(gate) != expected_gate_bytes:
             raise ValueError(
                 f"RAM gate is {len(gate)} bytes, expected {expected_gate_bytes}"
@@ -286,6 +314,9 @@ def build(*, abi_selftest: bool = False,
         generated = HERE / "network-rom-generated.inc"
         expected_generated = (
             "; Generated/verified by build_network_rom.py.\n"
+            ".ifdef ROM_ABI_C12\n"
+            "JROMGATEBYTES equ 224\n"
+            ".else\n"
             ".ifdef ROM_ABI_HOSTSERVICES\n"
             "JROMGATEBYTES equ 219\n"
             ".else\n"
@@ -293,6 +324,7 @@ def build(*, abi_selftest: bool = False,
             "JROMGATEBYTES equ 214\n"
             ".else\n"
             "JROMGATEBYTES equ 196\n"
+            ".endif\n"
             ".endif\n"
             ".endif\n"
             ".ifdef ROM_ABI_LOCALE\n"
@@ -413,7 +445,8 @@ def build(*, abi_selftest: bool = False,
         ] + ([
             "bounded-console-span", "netdisk-multi", "raw-keyboard",
             "sound",
-            *( ["resident-host", "full-diagnostics"] if c8 else [] ),
+            *(["resident-host", "full-diagnostics"] if c8 else []),
+            *(["runtime-console"] if c12 else []),
         ] if extended else []),
         "console": {
             "geometry": "80x24",
@@ -422,9 +455,10 @@ def build(*, abi_selftest: bool = False,
         },
         "abi": {
             "base": "FF00", "major": 1,
-            "minor": (4 if c9 else
+            "minor": (5 if c12 else
+                      (4 if c9 else
                       (3 if c8 else
-                       (2 if extended else (1 if locale else 0)))),
+                       (2 if extended else (1 if locale else 0))))),
         },
         "abi_vectors": {
             "init": "FF20",
@@ -443,17 +477,20 @@ def build(*, abi_selftest: bool = False,
             "get_info": "FF47",
         },
         "candidate": (
-            (C11_CANDIDATE if c11 else
+            (C12_CANDIDATE if c12 else
+             (C11_CANDIDATE if c11 else
              (C10_CANDIDATE if c10 else
              (C9_CANDIDATE if c9 else
              (C8_CANDIDATE if c8 else
              (SUCCESSOR_CANDIDATE if successor else EXTENDED_CANDIDATE)))
-            ))
+            )))
             if extended else
             (LOCALE_CANDIDATE if locale else CANDIDATE)
         ),
         "status": (
-            (("deterministic POST/raster/recovery simulator candidate; "
+            (("runtime-console ABI simulator candidate; C11 remains immutable"
+              if c12 else
+              ("deterministic POST/raster/recovery simulator candidate; "
               "C10 remains immutable"
               if c11 else
               ("desk-qualified POF-release successor; physical acceptance "
@@ -462,7 +499,7 @@ def build(*, abi_selftest: bool = False,
               ("bounded-host simulator/HDL candidate; physical programming "
               "not authorized; C8 remains immutable"
               if c9 else
-              "resident-host simulator successor; C7 remains immutable")))
+              "resident-host simulator successor; C7 remains immutable"))))
              if c8 else
              ("modified-raw simulator successor; C6 remains immutable"
               if successor else
@@ -605,11 +642,29 @@ def build(*, abi_selftest: bool = False,
         }
         metadata["boot_discovery"] = {
             "framing": "19200-8O1",
-            "frame": "4A 42 0B 01 02",
+            "frame": (
+                "4A 42 0C 01 05" if c12 else "4A 42 0B 01 02"
+            ),
             "copies_per_interval": 2,
             "idle_interval": "approximately 1 second at 1.7 MHz",
             "fastboot_framing": "19200-8N1",
             "scope": "idle JZ scanner only; payload receive remains blocking",
+        }
+    if c12:
+        metadata["abi"]["minor"] = 5
+        metadata["abi_vectors"]["console_config"] = "FF5F"
+        metadata["feature_bits"]["value"] = "1FFF"
+        metadata["feature_bits"]["console_config"] = "1000"
+        metadata["runtime_console"] = {
+            "selectors": {"query": 0, "set": 1, "default": 2},
+            "video_modes": ["40x24", "53x24", "64x20", "80x24"],
+            "character_banks": [
+                "english", "estonian", "cp866", "english/user-remap",
+            ],
+            "override_flags": {"video": "01", "character_bank": "02"},
+            "transition": "cursor-hide, timing/font switch, full clear, state publish",
+            "warm_boot": "preserve override",
+            "reset": "restore latched S21 default",
         }
     return image, metadata
 
@@ -626,6 +681,7 @@ def main() -> int:
     c9_image, c9_metadata = build(c9=True)
     c10_image, c10_metadata = build(c10=True)
     c11_image, c11_metadata = build(c11=True)
+    c12_image, c12_metadata = build(c12=True)
     expected = (
         (OUTPUT, image),
         (D15_OUTPUT, image[:0x2000]),
@@ -667,6 +723,11 @@ def main() -> int:
         (C11_D16_OUTPUT, c11_image[0x2000:]),
         (C11_METADATA_OUTPUT,
          (json.dumps(c11_metadata, indent=2) + "\n").encode()),
+        (C12_OUTPUT, c12_image),
+        (C12_D15_OUTPUT, c12_image[:0x2000]),
+        (C12_D16_OUTPUT, c12_image[0x2000:]),
+        (C12_METADATA_OUTPUT,
+         (json.dumps(c12_metadata, indent=2) + "\n").encode()),
     )
     if args.check:
         for path, data in expected:

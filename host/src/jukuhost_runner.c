@@ -105,7 +105,7 @@ static void usage(FILE *file)
         "  --fast-stage FILE       stock-assisted JF15 or network-ROM JF16\n"
         "  --network-rom           C8/C9 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
-        "  --recover-session       C11 passive boot/NetDisk auto-recovery\n"
+        "  --recover-session       C11/C12 passive boot/NetDisk auto-recovery\n"
         "  --resume-disk           attach to an already running system\n"
         "  --boot-only             stop after a successful bootstrap\n"
         "  --timeout SECONDS       boot deadline (default 120)\n"
@@ -976,9 +976,11 @@ static int wait_fast_frame(struct host_context *host,
     return 0;
 }
 
-static int is_c11_boot_beacon(uint8_t kind, uint8_t first, uint8_t second)
+static int is_recovery_boot_beacon(uint8_t kind, uint8_t first,
+                                   uint8_t second)
 {
-    return kind == (uint8_t)'B' && first == 11u && second == 1u;
+    return kind == (uint8_t)'B' && (first == 11u || first == 12u) &&
+           second == 1u;
 }
 
 static size_t request_wire_length(const struct jh_n3_request *request)
@@ -989,11 +991,11 @@ static size_t request_wire_length(const struct jh_n3_request *request)
     return 9u + request->payload_length;
 }
 
-/* C11 discovery is deliberately receive-only.  A checked JB/11 frame means
- * the ROM loader is waiting at V16; a complete checked JD request means CP/M
- * is already running.  The first request is put back byte-for-byte so the
- * ordinary NetDisk service, including duplicate handling, remains the sole
- * owner of request semantics. */
+/* C11/C12 discovery is deliberately receive-only.  A checked JB/11 or JB/12
+ * frame means the ROM loader is waiting at V16; a complete checked JD request
+ * means CP/M is already running.  The first request is put back byte-for-byte
+ * so the ordinary NetDisk service, including duplicate handling, remains the
+ * sole owner of request semantics. */
 static int discover_c11_target(struct host_context *host)
 {
     struct jh_fast_parser boot_parser;
@@ -1026,11 +1028,12 @@ static int discover_c11_target(struct host_context *host)
             disk_result = jh_n3_parser_push(
                 &disk_parser, incoming[index], &request);
             if (boot_result == JH_FRAME &&
-                    is_c11_boot_beacon(kind, first, second)) {
+                    is_recovery_boot_beacon(kind, first, second)) {
                 host->pending_length = 0u;
                 host->pending_offset = 0u;
                 host_log(host, "INFO",
-                         "C11 boot beacon received; target is awaiting V16");
+                         "C%u boot beacon received; target is awaiting V16",
+                         (unsigned)first);
                 return RUN_DISCOVER_BOOT;
             }
             if (disk_result == JH_FRAME) {
@@ -1046,7 +1049,7 @@ static int discover_c11_target(struct host_context *host)
             }
         }
         if (jh_platform_milliseconds() >= next_wait_log) {
-            host_log(host, "INFO", "waiting passively for C11 or NetDisk");
+            host_log(host, "INFO", "waiting passively for C11/C12 or NetDisk");
             next_wait_log = jh_platform_milliseconds() + 5000u;
         }
         jh_platform_idle();
@@ -1061,7 +1064,7 @@ static int recover_c11_serial(struct host_context *host)
     while (!host_stop_requested(host)) {
         if (reconnect_serial(host, 19200u, 'O') == 0) return 0;
         host_log(host, "WARN",
-                 "C11 recovery remains armed; retrying serial discovery");
+                 "C11/C12 recovery remains armed; retrying serial discovery");
     }
     return 0;
 }
@@ -1648,12 +1651,13 @@ static int run_disk(struct host_context *host,
                     &boot_first, &boot_second);
             }
             int parsed = jh_n3_parser_push(&parser, incoming[index], &request);
-            if (boot_parsed == JH_FRAME && is_c11_boot_beacon(
+            if (boot_parsed == JH_FRAME && is_recovery_boot_beacon(
                     boot_kind, boot_first, boot_second)) {
                 host->pending_length = 0u;
                 host->pending_offset = 0u;
                 host_log(host, "WARN",
-                         "C11 boot beacon received during NetDisk; target reset detected");
+                         "C%u boot beacon received during NetDisk; target reset detected",
+                         (unsigned)boot_first);
                 result = RUN_TARGET_RESET;
                 goto done;
             }
@@ -2077,7 +2081,7 @@ int jh_host_run(const struct jh_host_options *options,
                     ++host.target_reset_count;
                     ++host.boot_restart_count;
                     host_log(&host, "WARN",
-                        "C11 bootstrap did not reach NetDisk; rediscovering "
+                        "C11/C12 bootstrap did not reach NetDisk; rediscovering "
                         "without a restart limit (attempt %lu)",
                         host.boot_restart_count);
                     if (jh_platform_serial_configure(

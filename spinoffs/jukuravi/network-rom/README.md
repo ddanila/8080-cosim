@@ -1,6 +1,6 @@
 # Juku network-first ROM
 
-Status: **C11 / ABI 1.4 POST RASTER AND SESSION RECOVERY DESK-QUALIFIED; PHYSICAL ACCEPTANCE PENDING**
+Status: **C12 / ABI 1.5 RUNTIME CONSOLE SIMULATOR-QUALIFIED; CP/M AND PHYSICAL ACCEPTANCE PENDING**
 
 This is the from-scratch network-only successor to the EktaSoft monitor ROM.
 Reset performs a bounded POST, acquires an identity-independent host at the
@@ -75,6 +75,17 @@ line is deliberately additive:
   running CP/M, attach without a resume flag, and recover a reset seen during
   NetDisk. Focused physical confirmation of the checker, bottom line, and
   recovery pair remains. See `docs/c11-session-recovery.md`.
+- C12 / ABI 1.5 preserves the exact C11 image and appends `FF5Fh` runtime
+  console configuration. Software can query the reset-latched S21 default,
+  atomically select any of four video geometries and four character banks,
+  restore the default, and distinguish independent video/bank overrides. The
+  switch resets cursor state and clears the full 9,648-byte raster envelope;
+  invalid requests leave state and pixels unchanged. Active state uses the
+  last two free bytes at `D7FDh..D7FEh`, while the fixed ABI workspace and TPA
+  do not grow. C12 advertises a distinct checked `JB/12` discovery beacon, and
+  the production host accepts both C11 and C12 recovery identities. The 4x4
+  C-model matrix passes; CP/M commands/package and physical acceptance remain
+  separate gates. See `docs/c12-runtime-console.md`.
 
 ## Build and test
 
@@ -87,10 +98,11 @@ sync/network_first_rom_hdl_check.sh
 python3 tests/janet_disk_server_test.py
 ```
 
-The ABI gate rebuilds the images, executes C4 through C11 against the practical
+The ABI gate rebuilds the images, executes C4 through C12 against the practical
 C-model twin, and checks exact manifests, fixed vectors, stack guards,
 interrupt ownership, overlay protection, all S21 geometries, locale pixels,
-keyboard behavior, cursor phases, and resident serial activity.  The focused
+keyboard behavior, cursor phases, runtime mode/bank transitions, invalid-call
+atomicity, and resident serial activity.  The focused
 HDL gate retains the exact C4 reset/POST, call-gate, framebuffer, keyboard,
 serial, and one-record NetDisk boundary; full CP/M, recovery, and long-soak
 coverage remains in the faster C-model oracle.
@@ -152,6 +164,8 @@ slot, manifests, hashes, and the complete ROM/RAM/vector map.
   POF-release candidate ready for physical programming.
 - `juku-network-rom-abi1.4-c11{,-d15,-d16}.bin` and JSON: C11 / ABI 1.4
   deterministic POST/checker and complete-raster-clear candidate.
+- `juku-network-rom-abi1.5-c12{,-d15,-d16}.bin` and JSON: C12 / ABI 1.5
+  runtime-console and versioned-recovery simulator candidate.
 
 These named releases are immutable. In particular, rebuilding a modified
 scanner under the C6 filenames is not a C6 update: the fitted combined image
@@ -180,6 +194,10 @@ The recovery C11 combined, D15-low and D16-high hashes are respectively
 `b93428bb33cd7e31c2d9b2b84aa07ea17edda76c9d53ab73b3cb8687e8d53dfd`,
 `a94e8fa2911fd3f7e715c6086d237b45fe630e71e8e14786bdcce435d99a8134`,
 and `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
+The C12 combined, D15-low and D16-high hashes are respectively
+`7baa5943312fff869a0798197a6cd6a0f7961e93ee9c96509b73b20de3371aa4`,
+`b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de`,
+and `c5e95491ba01da32f4b28be436d1261ae9d3fddf495b20bb2a15dca45ba404bb`.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must
 reproduce the 16 KiB image exactly.  The generated JSON is the machine-readable
@@ -239,6 +257,14 @@ then appends negotiation flags and the failed operation. Its reason values
 distinguish TX timeout, RX timeout, prefix budget, sequence, integrity, and
 host status. The C9 implementation resides at `F800h`; the public low-RAM gate
 and `D600h..D7FFh` reservation do not grow.
+
+ABI 1.5 appends `FF5Fh` and feature bit `1000h`. Selector 0 queries the
+reset-latched default, active video mode, active character bank, and override
+flags; selector 1 sets a validated mode/bank pair; selector 2 restores S21.
+Set/default synchronously hide the cursor, apply timing and font policy, clear
+the complete physical raster, reset keyboard pending state, and return only
+after the new configuration is active. Warm boot and ordinary console init
+preserve an override; reset and `JCGINIT` restore the latched default.
 
 Framebuffer writes cannot execute directly through the active ROM overlay.
 The resident text policy calls the copied low-RAM helper, which briefly selects

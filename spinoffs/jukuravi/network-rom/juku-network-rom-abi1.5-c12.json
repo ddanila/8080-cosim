@@ -1,0 +1,239 @@
+{
+  "schema": "juku-network-rom-abi1-v1",
+  "image_bytes": 16384,
+  "image_sha256": "7baa5943312fff869a0798197a6cd6a0f7961e93ee9c96509b73b20de3371aa4",
+  "d15_sha256": "b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de",
+  "d16_sha256": "c5e95491ba01da32f4b28be436d1261ae9d3fddf495b20bb2a15dca45ba404bb",
+  "boot_code_bytes": 1124,
+  "gate_bytes": 224,
+  "helper_bytes": 128,
+  "fastboot_core_bytes": 128,
+  "fastboot_extension_bytes": 0,
+  "embedded_fastboot_extension_bytes": 456,
+  "embedded_fastboot_extension_sha256": "f2c3f355055d767e7b3cc654e4033980cddfc7e0d777ca95b94f741c50ac2d46",
+  "embedded_fastboot_extension_file_offset": "0600",
+  "fastboot_protocol": 16,
+  "quick_post": [
+    "cpu",
+    "ram-data",
+    "ram-address",
+    "complete-rom",
+    "pit-usart"
+  ],
+  "hardware_init": [
+    "ppi0-82-checker-pc7-high-then-low",
+    "ppi1-9b",
+    "stock-raster-refresh",
+    "pic-d6-fe-masked",
+    "d57-ch0-mode2-count4",
+    "d11-8n1"
+  ],
+  "post_status": {
+    "ok": "00",
+    "cpu": "C1",
+    "ram-data": "C2",
+    "ram-address": "C3",
+    "complete-rom": "C4",
+    "pit-usart": "C5"
+  },
+  "target_ready_byte": "C7",
+  "resident_bytes": 10240,
+  "resident_services": [
+    "console",
+    "serial",
+    "keyboard",
+    "netdisk-v3",
+    "diagnostics",
+    "bounded-console-span",
+    "netdisk-multi",
+    "raw-keyboard",
+    "sound",
+    "resident-host",
+    "full-diagnostics",
+    "runtime-console"
+  ],
+  "console": {
+    "geometry": "S21-bits-2:1",
+    "font": "Creep-0.31-adapted-5x7",
+    "cursor_period_polls": 512,
+    "modes": {
+      "00": "40x24",
+      "01": "53x24",
+      "10": "64x20",
+      "11": "80x24"
+    },
+    "locale": {
+      "s21_bits": "4:3",
+      "banks": [
+        "english",
+        "estonian",
+        "cp866"
+      ],
+      "cp437_ui": "B0-DF"
+    },
+    "physical_raster_clear_bytes": {
+      "00": 9640,
+      "01": 9640,
+      "10": 9648,
+      "11": 9600,
+      "implementation_envelope": 9648
+    }
+  },
+  "abi": {
+    "base": "FF00",
+    "major": 1,
+    "minor": 5
+  },
+  "abi_vectors": {
+    "init": "FF20",
+    "console_init": "FF23",
+    "console_status": "FF26",
+    "console_input": "FF29",
+    "console_output": "FF2C",
+    "serial_init": "FF2F",
+    "serial_receive": "FF32",
+    "serial_transmit": "FF35",
+    "netdisk_single": "FF38",
+    "keyboard_init": "FF3B",
+    "keyboard_scan": "FF3E",
+    "sound": "FF41",
+    "diagnostics": "FF44",
+    "get_info": "FF47",
+    "configuration": "FF4A",
+    "keyboard_remap": "FF4D",
+    "boot_policy": "FF50",
+    "console_block": "FF53",
+    "netdisk_multi": "FF56",
+    "keyboard_raw": "FF59",
+    "host_services": "FF5C",
+    "console_config": "FF5F"
+  },
+  "candidate": "network-first-abi1.5-c12-runtime-console-candidate",
+  "status": "runtime-console ABI simulator candidate; C11 remains immutable",
+  "key_remap_pairs": 4,
+  "netdisk_cache": {
+    "records_per_drive": 8,
+    "drives": 2,
+    "shared_pointer_fallback": "alias-safe"
+  },
+  "boot_policy": {
+    "s21_bit": 0,
+    "behavior": "reserved; unconditional network boot"
+  },
+  "boot_status_record": {
+    "base": "D610",
+    "post": "D610",
+    "stage": "D611",
+    "crc_retries": "D612",
+    "protocol": "D613",
+    "stages": {
+      "10": "POST active",
+      "20": "V16 core entered; ROM-resident loader active",
+      "30": "extension active; system header pending",
+      "31": "system header accepted; payload pending",
+      "E2": "compressed payload CRC failed; retrying",
+      "32": "compressed payload authenticated; decompressing",
+      "40": "CP/M system entered",
+      "50": "first NetDisk transaction succeeded"
+    }
+  },
+  "fastboot_wire_contract": "JF16 core descriptor plus JZ/length/compressed/CRC stream; no executable extension",
+  "feature_bits": {
+    "value": "1FFF",
+    "console_block": "0200",
+    "netdisk_multi": "0400",
+    "keyboard_raw": "0800",
+    "resident_host": "0040",
+    "console_config": "1000"
+  },
+  "netdisk_multi": {
+    "maximum_descriptors": 8,
+    "descriptor_bytes": 10,
+    "write_policy": "synchronous-write-through"
+  },
+  "post_audio": {
+    "C1": "short-short-long",
+    "C2": "short-long-short",
+    "C3": "short-long-long",
+    "C4": "long-short-short",
+    "C5": "long-short-long",
+    "success_and_host_wait": "silent"
+  },
+  "resident_checksum": "additive-8 over D800h..FFFFh = 00",
+  "resident_host": {
+    "state_bytes": 4,
+    "state_prefix_abi_1_3_bytes": 2,
+    "failure_reasons": {
+      "00": "none",
+      "01": "transmitter-timeout",
+      "02": "receive-timeout",
+      "03": "sync-budget",
+      "04": "sequence",
+      "05": "reply-integrity",
+      "06": "host-status"
+    },
+    "flags": {
+      "01": "host-detected",
+      "02": "n4-selected",
+      "04": "console-capability",
+      "08": "mirroring-enabled",
+      "10": "reconnected"
+    },
+    "transaction_deadline": {
+      "transmitter_ready_polls_per_byte": 8192,
+      "receiver_ready_polls_per_byte": 65535,
+      "reply_prefix_scan_bytes": 256,
+      "failure_backoff_console_polls": 1
+    }
+  },
+  "video_enable": {
+    "ppi0_port_c_bit": 7,
+    "signal": "POF",
+    "post_state": "high-picture-suppressed",
+    "runtime_state": "low-picture-enabled",
+    "successful_runtime_port_c": "01",
+    "ordered_control_writes": [
+      "82",
+      "0F",
+      "0E"
+    ],
+    "physical_evidence": "CS00000 C9 live 0E write restored local video 2026-08-27",
+    "release_after": "deterministic-320x241-checkerboard",
+    "checkerboard": "8x8-full-raster"
+  },
+  "checker_helper_bytes": 47,
+  "boot_discovery": {
+    "framing": "19200-8O1",
+    "frame": "4A 42 0C 01 05",
+    "copies_per_interval": 2,
+    "idle_interval": "approximately 1 second at 1.7 MHz",
+    "fastboot_framing": "19200-8N1",
+    "scope": "idle JZ scanner only; payload receive remains blocking"
+  },
+  "runtime_console": {
+    "selectors": {
+      "query": 0,
+      "set": 1,
+      "default": 2
+    },
+    "video_modes": [
+      "40x24",
+      "53x24",
+      "64x20",
+      "80x24"
+    ],
+    "character_banks": [
+      "english",
+      "estonian",
+      "cp866",
+      "english/user-remap"
+    ],
+    "override_flags": {
+      "video": "01",
+      "character_bank": "02"
+    },
+    "transition": "cursor-hide, timing/font switch, full clear, state publish",
+    "warm_boot": "preserve override",
+    "reset": "restore latched S21 default"
+  }
+}

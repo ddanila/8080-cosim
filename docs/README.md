@@ -25,6 +25,9 @@ history.
 - `c11-session-recovery.md` — C11 checked 8O1 discovery beacon, passive host
   boot/NetDisk state machine, reset/reconnect matrix, bounded failure policy,
   and superseded-versus-current programming hashes.
+- `c12-runtime-console.md` — C12 ABI 1.5 runtime video/bank switching,
+  atomicity and state map, distinct discovery identity, 4x4 qualification,
+  included improvement ledger, and remaining CP/M/physical gates.
 - `portable-c-host-plan.md` — subordinate implementation and qualification plan
   for a Linux-first portable C Janet/Fastboot/NetDisk/N4 host, an Open Watcom
   Windows 95 build, headless Wine-to-simulator automation, and eventual
