@@ -18,7 +18,7 @@ Windows 95 qualification.
 - Serial bridge: two raw PTYs connected by `socat`; Wine `COM1` is registered
   and linked to the host side.
 - EXE: 204,800 bytes, SHA-256
-  `d02f08c17b7ca6d50c72517f0e9d2e40305bb3e5a33ad9d29dff47fe1a9aa2e1`.
+  `a93c97580d2af23dfda77d84736b0618e8ac97820d7bb06aaddb7f7a04bb2e25`.
 - Compiler bootstrap SHA-256:
   `f83c158176f740ec656394a1ec531e2e6d8b78ebdfa4496460f9a0e457475e85`;
   pinned Open Watcom source
@@ -41,9 +41,9 @@ protocol run is intentionally local-only rather than part of ordinary CI.
 
 | Case | Serial path | First disk request | Final service counters |
 | --- | --- | ---: | --- |
-| stock | Janet at 9,600, V15/NetDisk at 19,200 | 21.224 s | 17 requests, 51 records, 0 retries, 0 UART errors |
-| C11 | passive beacon and V16/NetDisk at 19,200 | 8.632 s | 18 requests, 51 records, 0 retries, 0 UART errors |
-| C12 | passive beacon and V16/NetDisk at 19,200 | 8.636 s | 18 requests, 51 records, 0 retries, 0 UART errors |
+| stock | Janet at 9,600, V15/NetDisk at 19,200 | 21.247 s | 18 requests, 54 records, 0 retries, 0 UART errors |
+| C11 | passive beacon and V16/NetDisk at 19,200 | 8.650 s | 18 requests, 51 records, 0 retries, 0 UART errors |
+| C12 | passive beacon and V16/NetDisk at 19,200 | 8.644 s | 18 requests, 51 records, 0 retries, 0 UART errors |
 
 All three cases mounted a 409,600-byte A: base as a new snapshot working image,
 served disk reads, stopped cleanly with host exit zero, retained a raw capture,
@@ -53,7 +53,7 @@ read-only workload:
 
 - stock A: `b4402dc9be86fef9532e61fff491dc3b93dc0db40e68d575c89aab083160bec1`;
 - C11 A: `59174921a4504283dd0311ef07324a7e3db4f4c0bd7ebac4cd7304097e8ab2fa`;
-- C12 A: `34754c5280a821929c05618c81e9b8e040db3c5ed42151ffdf30c3e212250df1`.
+- C12 A: `56e0db2f203bd813e609298b5ef1ff01177c97dbb386d894b38251580a1c1fc9`.
 
 Both network-ROM hosts missed the optional V16 final reply, performed the
 designed resident-stream probe, and then received valid NetDisk requests. No

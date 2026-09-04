@@ -18,7 +18,7 @@ durability rules, non-goals, and test gates are frozen in the plan.
 
 The embedded catalog is pinned by
 [`host/windows/payload-manifest.json`](../host/windows/payload-manifest.json)
-to `cpm-plus-juku` revision `d8fdd5d` and these exact artifacts:
+to `cpm-plus-juku` revision `d2e5b31` and these exact artifacts:
 
 | Mode | Role | Bytes | SHA-256 |
 | --- | --- | ---: | --- |
@@ -33,7 +33,11 @@ The stock pair is the exact JF15/system pair retained in
 `tests/fixtures/jukuhost-v15` and physically accepted on CS00000. The C11 pair
 is the exact system/JF16 pair from the accepted C11 manifest and the physical
 CS00000 session. The C12 pair adds ABI 1.5 runtime-console control while the
-C11 pair remains selectable and byte-identical to its accepted release.
+C11 pair remains selectable and byte-identical to its accepted release. The
+pinned C12 source revision also carries the active-state-aware VIDTEST disk
+utility and manifest-bound cold/runtime/full physical acceptance workflows;
+disk images remain external to the executable as required by the product
+contract.
 
 The available USB adapter identifies as Prolific `067B:2303`, product
 `USB-Serial Controller D`, and exposes no USB serial number. Consequently the
@@ -111,7 +115,7 @@ build therefore has no loose boot/system dependency.
 - an exact five-file package, complete hashes, and six-payload manifest.
 
 The current C12-capable EXE SHA-256 is
-`d02f08c17b7ca6d50c72517f0e9d2e40305bb3e5a33ad9d29dff47fe1a9aa2e1`.
+`a93c97580d2af23dfda77d84736b0618e8ac97820d7bb06aaddb7f7a04bb2e25`.
 
 At the 2026-09-03 W2 acceptance boundary Wine was unavailable, so the compiled
 process and simulated COM path remained unexecuted. The later W3.1 result below
@@ -172,7 +176,7 @@ Current automated evidence:
   verification.
 
 The current GUI EXE SHA-256 is
-`d02f08c17b7ca6d50c72517f0e9d2e40305bb3e5a33ad9d29dff47fe1a9aa2e1`.
+`a93c97580d2af23dfda77d84736b0618e8ac97820d7bb06aaddb7f7a04bb2e25`.
 
 At the 2026-09-03 W3 acceptance boundary no Windows or Wine runtime was
 present. The later W3.1 result below executes self-test and all three headless

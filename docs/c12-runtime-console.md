@@ -95,6 +95,10 @@ Completed above the ROM core:
 - CP/M `CONSOLE` query/set/default control plus STATUS/DIAG active-state and
   independent-override reporting;
 - distinct C12 system, Fastboot, and 400 KiB release-image artifacts;
+- C12-specific `VIDTEST` reads the active ABI 1.5 tuple, with exact switched
+  framebuffer proof while all older release binaries remain unchanged;
+- manifest-bound cold/runtime/full physical profiles and an exact CS00000
+  worksheet covering every geometry and character bank;
 - Windows-host C12 selection with six embedded stock/C11/C12 payloads;
 - actual-PE Wine boot, NetDisk, snapshot, B:, capture, and evidence decoding
   for stock, C11, and C12.

@@ -2,8 +2,8 @@
   "schema": "jukuwin-embedded-payloads-v1",
   "source": {
     "repository": "https://github.com/ddanila/cpm-plus-juku",
-    "revision": "d8fdd5d",
-    "revision_full": "d8fdd5dfd566b89251e67b2da6a2e30cabfa7103",
+    "revision": "d2e5b31",
+    "revision_full": "d2e5b31711b879b6f4d3763782ba96d6bd9b6db6",
     "output_directory": "out"
   },
   "payloads": [
