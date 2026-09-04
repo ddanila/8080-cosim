@@ -1,9 +1,9 @@
 {
   "schema": "juku-network-rom-abi1-v1",
   "image_bytes": 16384,
-  "image_sha256": "7baa5943312fff869a0798197a6cd6a0f7961e93ee9c96509b73b20de3371aa4",
+  "image_sha256": "724f672657390882f10c19588778527bd0b46848616ccf4ec348502dbb36e18b",
   "d15_sha256": "b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de",
-  "d16_sha256": "c5e95491ba01da32f4b28be436d1261ae9d3fddf495b20bb2a15dca45ba404bb",
+  "d16_sha256": "45193e069ee3dca7a0abf98a20a563959c2a760e9eca828659d69a76420fe9b4",
   "boot_code_bytes": 1124,
   "gate_bytes": 224,
   "helper_bytes": 128,
@@ -232,7 +232,11 @@
       "video": "01",
       "character_bank": "02"
     },
-    "transition": "cursor-hide, timing/font switch, full clear, state publish",
+    "transition": "cursor-hide, timing/font switch, full clear, pending-key discard, key-remap preservation, state publish",
+    "keyboard_transition": {
+      "pending_state": "discard",
+      "key_remap": "preserve"
+    },
     "warm_boot": "preserve override",
     "reset": "restore latched S21 default"
   }

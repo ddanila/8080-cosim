@@ -25,11 +25,12 @@ S21; bit 1 means the character bank differs. The flags are independent.
 
 A successful transition hides the old cursor, selects the new timing and font
 policy, clears the complete 9,648-byte physical-raster envelope, resets cursor
-position/blink, discards a pre-switch pending key, and publishes the active
-pair before returning. Calls are synchronous under the existing
-interrupt-disabled ROM ABI. Ordinary console initialization and CP/M warm boot
-preserve the active override. Reset or an explicit `JCGINIT` restores the
-latched S21 default.
+position/blink, discards a pre-switch pending key without erasing the
+persistent four-pair key-remap table, and publishes the active pair before
+returning. Calls are synchronous under the existing interrupt-disabled ROM
+ABI. Ordinary console initialization and CP/M warm boot preserve the active
+override. Reset or an explicit `JCGINIT` restores the latched S21 default and,
+as before, resets the key-remap table.
 
 The ABI 1.5 call-gate addition consumes exactly the five bytes that remained in
 the fixed 224-byte `D620h` envelope. Active configuration and flags occupy
@@ -58,15 +59,22 @@ boot path.
   state;
 - all 16 runtime mode/bank pairs render against the independent font oracle,
   clear the physical raster tail, retain distinct defaults and active state,
-  and survive ordinary console reinitialization.
+  preserve an installed `T`-to-`X` key remap, and survive ordinary console
+  reinitialization.
 
 The aggregate `sync/network_first_rom_abi_check.sh` retains every C4--C11
 regression before running that C12 matrix. The deterministic simulator
 artifacts are:
 
-- combined: `7baa5943312fff869a0798197a6cd6a0f7961e93ee9c96509b73b20de3371aa4`;
+- combined: `724f672657390882f10c19588778527bd0b46848616ccf4ec348502dbb36e18b`;
 - D15 low: `b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de`;
-- D16 high: `c5e95491ba01da32f4b28be436d1261ae9d3fddf495b20bb2a15dca45ba404bb`.
+- D16 high: `45193e069ee3dca7a0abf98a20a563959c2a760e9eca828659d69a76420fe9b4`.
+
+`sync/network_first_rom_hdl_check.sh` also runs the C12 ABI self-test through
+the structural VM80A/Juku model, including call-gate dispatch, POF release,
+runtime transition, retained remap, translated keyboard input, and serial
+completion. The exhaustive 4x4 framebuffer oracle remains in the faster
+C-model matrix.
 
 These are not yet authorized as a burn pair. The focused visual/runtime switch
 matrix must pass on CS00000 before physical promotion.
@@ -78,6 +86,7 @@ Included in C12 because the contract and evidence are complete:
 - atomic runtime video geometry and character-bank switching;
 - separately observable S21 default, active pair, and override flags;
 - warm-boot preservation and explicit default restoration;
+- runtime-switch preservation of the existing persistent key-remap table;
 - distinct `JB/12` discovery identity with C11-compatible host recovery;
 - deterministic artifacts and exhaustive simulator regression.
 

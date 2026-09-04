@@ -195,8 +195,7 @@ The accepted Wine run covered the stock Janet bootstrap and V15 transition at
 pinned V16/NetDisk paths at 19,200 baud, A: snapshot creation, C11/C12 B:
 mounting, disk reads, clean bounded shutdown,
 capture generation, independent capture decoding, and unchanged base-image
-hashes. C11 and C12 ended with zero retries and UART errors; stock completed
-with one protocol retry and zero UART errors. See
+hashes. All three sessions ended with zero retries and UART errors. See
 [windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md)
 for exact evidence.
 

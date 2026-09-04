@@ -112,7 +112,11 @@ def main() -> int:
             metadata.get("feature_bits", {}).get("value") != "1FFF" or \
             metadata.get("abi_vectors", {}).get("console_config") != "FF5F" or \
             metadata.get("boot_discovery", {}).get("frame") != \
-            "4A 42 0C 01 05" or metadata.get("gate_bytes") != 224:
+            "4A 42 0C 01 05" or \
+            metadata.get("runtime_console", {}).get(
+                "keyboard_transition") != {
+                    "pending_state": "discard", "key_remap": "preserve",
+                } or metadata.get("gate_bytes") != 224:
         fail(f"C12 metadata differs: {metadata}")
     manifest = image[0x3F00:0x3F63]
     if manifest[:10] != b"JUKUABI\0\x01\x05" or \
@@ -122,6 +126,22 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="network-rom-c12.") as name:
         temporary = Path(name)
+        default_fixture, _ = network_rom.build(
+            c12=True, abi_selftest=True,
+        )
+        default_case = temporary / "default-remap"
+        default_case.mkdir()
+        _, default_ram = run_fixture(
+            trace, default_fixture, default_case, mode=1, bank=3,
+        )
+        if default_ram[0xD7FD] != 0x0E or default_ram[0xD7FE] != 0 or \
+                default_ram[0xD7C2:0xD7C5] != b"\x01TX":
+            fail(
+                "default transition did not preserve remap: "
+                f"active={default_ram[0xD7FD]:02X} "
+                f"flags={default_ram[0xD7FE]:02X} "
+                f"remap={default_ram[0xD7C2:0xD7C5].hex()}"
+            )
         for bank in range(4):
             for mode in range(4):
                 fixture, _ = network_rom.build(
@@ -148,6 +168,11 @@ def main() -> int:
                         f"active={ram[0xD7FD]:02X} flags={ram[0xD7FE]:02X} "
                         f"video={state.get('video_console_mode')}"
                     )
+                if ram[0xD7C2:0xD7C5] != b"\x01TX":
+                    fail(
+                        f"mode {mode}/bank {bank} erased persistent remap: "
+                        f"{ram[0xD7C2:0xD7C5].hex()}"
+                    )
                 expected = render_transcript(
                     b"Z\xC4Q!", locale=bank, mode=mode,
                 )
@@ -167,7 +192,8 @@ def main() -> int:
     print(
         "NETWORK-FIRST-ROM-C12-TEST: PASS "
         f"{metadata['image_sha256']} (ABI 1.5; immutable C11; checked JB/12; "
-        "invalid requests atomic; 4x4 runtime mode/bank matrix; retained override)"
+        "invalid requests atomic; 4x4 runtime mode/bank matrix; retained "
+        "override and key remap)"
     )
     return 0
 

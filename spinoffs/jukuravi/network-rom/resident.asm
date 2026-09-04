@@ -328,6 +328,15 @@ self_host_done:
 .endif
 
 .ifdef ROM_ABI_C12
+        ; Install the persistent remap before the runtime-console matrix. The
+        ; later translated-key assertion therefore proves that set/default
+        ; transitions discard only pending key state, not user remaps.
+        lxi     h,self_keyremap
+        mvi     a,1
+        call    JCGKEYREMAPADDR
+        ora     a
+        jnz     self_fail_keyboard
+
         mvi     a,JROMCONCONFIGQUERY
         call    JCGCONCONFIGADDR
         mov     a,d
@@ -576,9 +585,11 @@ self_diag_selector:
         jnz     self_fail_netdisk
 .endif
 
+.ifndef ROM_ABI_C12
         call    JCGKEYINITADDR
         ora     a
         jnz     self_fail_keyboard
+.endif
 .ifdef ROM_ABI_EXTENDED
         call    JCGKEYRAWADDR
         jc      self_fail_keyboard
@@ -617,11 +628,13 @@ self_diag_selector:
 .endif
 .endif
 .ifdef ROM_ABI_LOCALE
+.ifndef ROM_ABI_C12
         lxi     h,self_keyremap
         mvi     a,1
         call    JCGKEYREMAPADDR
         ora     a
         jnz     self_fail_keyboard
+.endif
 .endif
         lxi     b,0ffffh
 self_wait_keyboard:
@@ -1025,8 +1038,13 @@ rom_conconfig_default:
         sta     ROMCONFIGFLAGS
 rom_conconfig_apply:
         call    ROMCONINIT              ; hide/reset cursor, timing, full clear
-        call    RKINIT                  ; discard any pre-switch pending key
+        ; Keep the persistent JCGKEYREMAP table. RKINIT would also clear its
+        ; count, so reset only debounce and pending translated-key state.
         xra     a
+        sta     ROMKEYSTATEBASE
+        sta     ROMKEYSTATEBASE+1
+        sta     ROMKEYSTATEBASE+2
+        xra     a                       ; explicit ABI success result
         ret
 rom_conconfig_flags:
         lda     ROMACTIVECONFIG

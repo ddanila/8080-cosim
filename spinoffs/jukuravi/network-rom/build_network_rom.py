@@ -662,7 +662,14 @@ def build(*, abi_selftest: bool = False,
                 "english", "estonian", "cp866", "english/user-remap",
             ],
             "override_flags": {"video": "01", "character_bank": "02"},
-            "transition": "cursor-hide, timing/font switch, full clear, state publish",
+            "transition": (
+                "cursor-hide, timing/font switch, full clear, pending-key "
+                "discard, key-remap preservation, state publish"
+            ),
+            "keyboard_transition": {
+                "pending_state": "discard",
+                "key_remap": "preserve",
+            },
             "warm_boot": "preserve override",
             "reset": "restore latched S21 default",
         }

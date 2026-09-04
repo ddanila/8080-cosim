@@ -1,6 +1,7 @@
 # Juku network-first ROM
 
-Status: **C12 / ABI 1.5 RUNTIME CONSOLE SIMULATOR-QUALIFIED; CP/M AND PHYSICAL ACCEPTANCE PENDING**
+Status: **C12 / ABI 1.5 RUNTIME CONSOLE, CP/M, AND HOST SIMULATOR-QUALIFIED;
+PHYSICAL ACCEPTANCE PENDING**
 
 This is the from-scratch network-only successor to the EktaSoft monitor ROM.
 Reset performs a bounded POST, acquires an identity-independent host at the
@@ -80,12 +81,14 @@ line is deliberately additive:
   atomically select any of four video geometries and four character banks,
   restore the default, and distinguish independent video/bank overrides. The
   switch resets cursor state and clears the full 9,648-byte raster envelope;
-  invalid requests leave state and pixels unchanged. Active state uses the
+  it discards a pending key without erasing persistent key remaps, and invalid
+  requests leave state and pixels unchanged. Active state uses the
   last two free bytes at `D7FDh..D7FEh`, while the fixed ABI workspace and TPA
   do not grow. C12 advertises a distinct checked `JB/12` discovery beacon, and
   the production host accepts both C11 and C12 recovery identities. The 4x4
-  C-model matrix passes; CP/M commands/package and physical acceptance remain
-  separate gates. See `docs/c12-runtime-console.md`.
+  C-model matrix, focused structural HDL path, CP/M commands/package, and
+  stock/C11/C12 Windows-host Wine sessions pass; physical acceptance remains
+  separate. See `docs/c12-runtime-console.md`.
 
 ## Build and test
 
@@ -107,14 +110,15 @@ HDL gate retains the exact C4 reset/POST, call-gate, framebuffer, keyboard,
 serial, and one-record NetDisk boundary; full CP/M, recovery, and long-soak
 coverage remains in the faster C-model oracle.
 
-The matching C8 rollback and C9/C10/C11 system/TPA/local/N4 gates are run from
-`cpm-plus-juku`:
+The matching C8 rollback and C9/C10/C11/C12 system/TPA/local/N4 gates are run
+from `cpm-plus-juku`:
 
 ```sh
 make c8-check
 make c9-check
 make c10-check
 make c11-check
+make c12-check
 ```
 
 The native production-host and reconnect gate is:
@@ -125,8 +129,8 @@ sync/jukuhost_c10_cosim_check.sh
 sync/jukuhost_c11_cosim_check.sh
 ```
 
-The deterministic, explicitly non-physical package is produced from
-`cpm-plus-juku` with `make c9-simulator-candidate`. Its manifest records
+The deterministic, explicitly non-physical C12 package is produced from
+`cpm-plus-juku` with `make c12-simulator-candidate`. Its manifest records
 `physical_programming_authorized: false`; physical promotion remains a
 separate decision.
 
@@ -195,9 +199,9 @@ The recovery C11 combined, D15-low and D16-high hashes are respectively
 `a94e8fa2911fd3f7e715c6086d237b45fe630e71e8e14786bdcce435d99a8134`,
 and `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
 The C12 combined, D15-low and D16-high hashes are respectively
-`7baa5943312fff869a0798197a6cd6a0f7961e93ee9c96509b73b20de3371aa4`,
+`724f672657390882f10c19588778527bd0b46848616ccf4ec348502dbb36e18b`,
 `b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de`,
-and `c5e95491ba01da32f4b28be436d1261ae9d3fddf495b20bb2a15dca45ba404bb`.
+and `45193e069ee3dca7a0abf98a20a563959c2a760e9eca828659d69a76420fe9b4`.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must
 reproduce the 16 KiB image exactly.  The generated JSON is the machine-readable

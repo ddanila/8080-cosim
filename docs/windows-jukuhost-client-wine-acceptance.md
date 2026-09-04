@@ -41,9 +41,9 @@ protocol run is intentionally local-only rather than part of ordinary CI.
 
 | Case | Serial path | First disk request | Final service counters |
 | --- | --- | ---: | --- |
-| stock | Janet at 9,600, V15/NetDisk at 19,200 | 24.098 s | 17 requests, 51 records, 1 retry, 0 UART errors |
-| C11 | passive beacon and V16/NetDisk at 19,200 | 8.637 s | 18 requests, 51 records, 0 retries, 0 UART errors |
-| C12 | passive beacon and V16/NetDisk at 19,200 | 8.639 s | 18 requests, 51 records, 0 retries, 0 UART errors |
+| stock | Janet at 9,600, V15/NetDisk at 19,200 | 21.224 s | 17 requests, 51 records, 0 retries, 0 UART errors |
+| C11 | passive beacon and V16/NetDisk at 19,200 | 8.632 s | 18 requests, 51 records, 0 retries, 0 UART errors |
+| C12 | passive beacon and V16/NetDisk at 19,200 | 8.636 s | 18 requests, 51 records, 0 retries, 0 UART errors |
 
 All three cases mounted a 409,600-byte A: base as a new snapshot working image,
 served disk reads, stopped cleanly with host exit zero, retained a raw capture,
