@@ -50,6 +50,36 @@ the real CP/M stack, advances envelopes and channel-1 slide, optionally parses
 a row, then lends `SP` back to tone channel 3.  Interrupts remain disabled until
 the player silences D57, restores the stack, and returns to CP/M.
 
+### Standalone speech and PCM
+
+`firmware/build_jukupoly_pcm.py` converts an uncompressed integer PCM WAV into
+a self-contained CP/M transient for voice and short sound experiments.  This
+is deliberately separate from the three-tone-plus-percussion music hot loop:
+with no concurrent synthesis to preserve, it stores two samples per byte and
+unpacks them during playback.  The 422-cycle loop processes each sample pair
+and emits 8,056.872
+samples/s at the measured 1.70 MHz CPU rate.  Samples use the same D57
+channel-1 mode-0 pulse-width DAC as the music engine; the program silences the
+channel and returns to CP/M when the sample ends.
+
+For example:
+
+```sh
+python3 spinoffs/jukupoly/firmware/build_jukupoly_pcm.py \
+  voice.wav VOICE.COM --preview voice-u4.wav
+spinoffs/jukupoly/render_jukupoly_wav.sh \
+  VOICE.COM voice-juku-render.wav
+```
+
+The builder performs a 32-tap band-limited resample, peak normalisation, and
+4-bit packing.  It caps the largest pulse code for the selected sample period,
+so a pulse cannot overlap and flatten the following sample.  Its conservative
+`8000h` TPA boundary leaves room for about 8.0 seconds of audio at the default
+rate.  Source recordings and generated
+transients are not committed when their copyright does not permit it.
+The first speech trial and its recognition gates are recorded in
+[`PCM-SPEECH-EXPERIMENT.md`](PCM-SPEECH-EXPERIMENT.md).
+
 The percussion bank is unpacked 4-bit PCM.  This costs memory but makes the hot
 path only `LXI`/`ORA M`/`INX`/`SHLD`; packed samples would spend too much of the
 8080 budget shifting and tracking bits.  Drum tails span frame boundaries and

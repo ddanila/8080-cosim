@@ -443,6 +443,7 @@ jobs:
           ./sync/jukupoly_baseline_check.sh
           ./sync/jukupoly_envelope_check.sh
           ./sync/jukupoly_wav_check.sh
+          ./sync/jukupoly_pcm_check.sh
 
   subsystems:
     needs: changes
