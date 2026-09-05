@@ -1,7 +1,67 @@
 # C12 runtime console and improvement ledger
 
-Status: **ROM, CP/M CONSUMER, HOST PAYLOAD, AND LOCAL WINE E2E IMPLEMENTED;
-PHYSICAL ACCEPTANCE PENDING**
+Status: **CORRECTED CP437, WARM/DEFAULT, RESET AND POWER-CYCLE CHECKS
+PASSED ON CS00000; BROADER RELEASE QUALIFICATION SEPARATE**
+
+## 2026-09-05 physical finding and correction
+
+CS00000 booted the original C12 pair and passed cold STATUS/DIAG. The owner
+confirmed stable, correct 40x24 English, 53x24 Estonian, and 64x20 Russian
+VIDTEST pages. The 80x24 user/remap page displayed question marks instead of
+DAh/D9h corner glyphs. That page failed visual acceptance; the attended run
+was stopped without confirming it or proceeding to RESET/power-cycle tests.
+The retained CP/M session is
+`out/physical-CS00000-c12-runtime-attended-20260905`; its host stopped with
+zero disk retries and UART errors. S21 was read as 0F.
+
+The resident CP437 lookup still searched 17 entries after its table expanded
+to 26. Nine trailing entries, including D9h and DAh, therefore fell back to
+`?`. C12 now derives its search count from the code-table extent. C4--C11
+artifacts remain unchanged. The expanded C12 regression renders every byte
+B0h..DFh through the public console ABI in all four runtime-selected character
+banks at 80 columns, comparing the framebuffer with the independent oracle.
+It reproduces the old failure and passes after the correction.
+
+Only D16 changes, including its checksum balance; D15 remains byte-identical.
+The original installed combined hash was
+`724f672657390882f10c19588778527bd0b46848616ccf4ec348502dbb36e18b`,
+with D16 `45193e069ee3dca7a0abf98a20a563959c2a760e9eca828659d69a76420fe9b4`.
+Earlier physical and Wine evidence belongs to that original pair. The hashes
+below identify the corrected candidate. Its focused physical glyph and
+lifecycle checks subsequently passed, as recorded below.
+
+### Corrected D16 physical recheck
+
+The owner explicitly authorized the corrected D16 write. DOSRAVI session
+`at28c64-jukunet-c12-cp437-d16-write-20260905` records two changed bytes,
+8,192 verified bytes, no retries, CRC32 B54EE486, and VCC/VPP off. D15 was
+retained. The owner fitted D16 and confirmed the startup checkerboard.
+
+These sessions under the sibling `cpm-plus-juku/out/` passed their workloads
+and `physical_acceptance.py audit`:
+
+| Session suffix (prefix `physical-CS00000-c12-`) | Evidence |
+| --- | --- |
+| `cp437-recheck-20260905` | owner confirmed corrected 80x24 user/remap corners and sample glyphs, then pressed physical Return; 7/7 commands passed, including warm-boot override preservation, default restoration and DIAG ALL |
+| `reset-prepare-20260905` | 4/4 commands proved 40x24 / Russian with both overrides set before the owner pressed RESET |
+| `after-reset-20260905` | checkerboard confirmed by owner; 2/2 commands proved 80x24 / Estonian, both overrides clear, clean cold state and DIAG ALL |
+| `powercycle-prepare-20260905` | 4/4 commands re-established 40x24 / Russian with both overrides set |
+| `after-powercycle-20260905` | owner confirmed off/on and checkerboard; 2/2 commands proved S21 0F defaults restored, both overrides clear, clean cold state and DIAG ALL |
+
+All five host summaries report zero retries and UART errors. Cold runs retain
+warnings for missed V16 ready/final markers; the existing recovery path reached
+NetDisk without retransmission. RESET/power-cycle checks started a host after
+the checkerboard appeared; they do not prove reset recovery with a continuously
+running host. The 40/53/64-column visual confirmations belong to the original
+pair; the corrected pair received the focused 80-column recheck. Original
+failed session records remain unchanged. These results do not qualify Windows
+hardware, a new endurance run, or all three unmodified release profiles.
+
+The sibling CP/M acceptance fixtures now declare their C11 manifest dependency,
+use explicit resumed-session STATUS expectations, and check CONSOLE's two
+override lines independently. Byte-exact original CS00000 transcripts are
+retained under `tests/fixtures/c12-CS00000-20260905/` for offline replay and
+negative tests. Cold-state and hardware-error checks remain strict.
 
 C12 is an additive successor to the immutable C11 ROM. It implements the one
 fully specified, hardware-compatible improvement left in the retained design
@@ -73,9 +133,9 @@ The aggregate `sync/network_first_rom_abi_check.sh` retains every C4--C11
 regression before running that C12 matrix. The deterministic simulator
 artifacts are:
 
-- combined: `724f672657390882f10c19588778527bd0b46848616ccf4ec348502dbb36e18b`;
+- combined: `b1a8152c0b4684d9d5608bd8bb60a06a21393c3bd7e7894cd8b7b61c494350d6`;
 - D15 low: `b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de`;
-- D16 high: `45193e069ee3dca7a0abf98a20a563959c2a760e9eca828659d69a76420fe9b4`.
+- D16 high: `3c6530816ed114f8a6d612c2b023a67a841b4e0c323754a9692d0d197664dd8a`.
 
 `sync/network_first_rom_hdl_check.sh` also runs the C12 ABI self-test through
 the structural VM80A/Juku model, including call-gate dispatch, POF release,
@@ -83,8 +143,9 @@ runtime transition, retained remap, translated keyboard input, and serial
 completion. The exhaustive 4x4 framebuffer oracle remains in the faster
 C-model matrix.
 
-These are not yet authorized as a burn pair. The focused visual/runtime switch
-matrix must pass on CS00000 before physical promotion.
+The owner authorized and installed the corrected pair on 2026-09-05. Focused
+physical results and their exact scope are recorded above; broader release
+promotion must distinguish the original and corrected images.
 
 ## Improvement disposition
 
@@ -112,7 +173,8 @@ Completed above the ROM core:
 
 Still required before calling C12 physically complete:
 
-- attended CS00000 runtime visual switching and reset/default checks;
+- any broader release-profile rerun on the corrected pair beyond the focused
+  CS00000 glyph and lifecycle checks recorded above;
 - physical Windows-to-CS00000 qualification remains a separate host-product
   gate and is not inferred from Wine.
 
@@ -155,8 +217,8 @@ release requirement.
 | Structural hardware model | VM80A/Juku ABI self-test with POF release, runtime transition, remap, keyboard, and serial completion | pass |
 | Host delivery | reproducible PE, six pinned payloads, actual-PE stock/C11/C12 Wine sessions | pass |
 | ROM capacity fail-closed | assembly envelope assertions and generated padding measurements; ABI call gate exactly full | pass |
-| Reproducible physical procedure | manifest-bound cold/runtime/full workloads and exact CS00000 programming/rollback worksheet | ready, not executed |
-| Installed-hardware behavior | attended CS00000 four-mode/four-bank raster, recovery, warm/default, reset and power-cycle evidence | pending |
+| Reproducible physical procedure | manifest-bound workloads, captured original failures, corrected fixtures and audited focused rechecks above | executed in the recorded focused scope |
+| Installed-hardware behavior | three original-pair visual modes; corrected-pair CP437, warm/default, reset and power-cycle evidence above | focused checks pass; broader release qualification separate |
 | Real-Windows serial product | current Windows, real PL2303 and CS00000 lifecycle/endurance evidence | separate host-product gate |
 
 The first ten rows close every C12 implementation and desk-verification item.

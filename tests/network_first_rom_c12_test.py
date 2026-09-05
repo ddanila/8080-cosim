@@ -179,9 +179,13 @@ def main() -> int:
                         f"mode {mode}/bank {bank} erased persistent remap: "
                         f"{ram[0xD7C2:0xD7C5].hex()}"
                     )
-                expected = render_transcript(
-                    b"Z\xC4Q!", locale=bank, mode=mode,
-                )
+                transcript = b"Z\xC4Q!"
+                if mode == 3:
+                    # All 26 supported glyphs plus unsupported neighbors.
+                    # The old 17-entry search omitted D9/DA and nine total
+                    # table entries despite the source containing 26 glyphs.
+                    transcript += bytes(range(0xB0, 0xE0))
+                expected = render_transcript(transcript, locale=bank, mode=mode)
                 observed = ram[0xD800:0xD800 + 9600]
                 if observed != expected:
                     differences = [

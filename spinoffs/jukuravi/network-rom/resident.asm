@@ -506,6 +506,18 @@ self_host_done:
         jnz     self_fail_sound
 .endif
 
+.ifdef ABI_C12_MODE_3
+        ; Exercise the complete CP437 range, including unsupported codes,
+        ; through the runtime-selected bank and public console ABI.
+        mvi     b,0b0h
+self_c12_pseudo:
+        mov     a,b
+        call    JCGCONOUTADDR
+        inr     b
+        mov     a,b
+        cpi     0e0h
+        jnz     self_c12_pseudo
+.endif
 ; Test-only variants exercise complete cursor periods using the public
 ; console-status vector. They are assembled only into transient ABI fixtures;
 ; the committed production image is byte-identical.
@@ -1346,7 +1358,11 @@ RCFONTRUS:
         jmp     RCFONTPTR7
 RCFONTPSEUDOTRY:
         lxi     h,RAMFONTPSEUDOCODES
+.ifdef ROM_ABI_C12
+        mvi     b,RAMFONTPSEUDO-RAMFONTPSEUDOCODES
+.else
         mvi     b,17
+.endif
         call    RCFONTFIND
         rc
         lxi     h,RAMFONTPSEUDO

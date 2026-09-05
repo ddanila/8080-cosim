@@ -198,10 +198,15 @@ The recovery C11 combined, D15-low and D16-high hashes are respectively
 `b93428bb33cd7e31c2d9b2b84aa07ea17edda76c9d53ab73b3cb8687e8d53dfd`,
 `a94e8fa2911fd3f7e715c6086d237b45fe630e71e8e14786bdcce435d99a8134`,
 and `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
-The C12 combined, D15-low and D16-high hashes are respectively
-`724f672657390882f10c19588778527bd0b46848616ccf4ec348502dbb36e18b`,
+The CP437-corrected C12 combined, D15-low and D16-high hashes are respectively
+`b1a8152c0b4684d9d5608bd8bb60a06a21393c3bd7e7894cd8b7b61c494350d6`,
 `b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de`,
-and `45193e069ee3dca7a0abf98a20a563959c2a760e9eca828659d69a76420fe9b4`.
+and `3c6530816ed114f8a6d612c2b023a67a841b4e0c323754a9692d0d197664dd8a`.
+The 2026-09-05 CS00000 visual check exposed the old 17-entry lookup against
+the 26-entry glyph table. Only D16 changes. The corrected 80-column visual,
+warm/default, RESET and power-cycle checks passed on CS00000. See
+`docs/c12-runtime-console.md` for exact evidence scope and the retained
+original-pair failure boundary.
 
 D15 is always the low 8 KiB and D16 the high 8 KiB; concatenating them must
 reproduce the 16 KiB image exactly.  The generated JSON is the machine-readable
