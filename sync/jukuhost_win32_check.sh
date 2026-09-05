@@ -5,6 +5,7 @@ set -euo pipefail
 project_root=$(cd "$(dirname "$0")/.." && pwd)
 first="$project_root/build/win32-repro-a"
 second="$project_root/build/win32-repro-b"
+mkdir -p "$project_root/build"
 
 cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
     -I"$project_root/host/include" -I"$project_root/host/windows" \

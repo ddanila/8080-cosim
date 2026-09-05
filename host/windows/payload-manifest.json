@@ -2,8 +2,8 @@
   "schema": "jukuwin-embedded-payloads-v1",
   "source": {
     "repository": "https://github.com/ddanila/cpm-plus-juku",
-    "revision": "014839b",
-    "revision_full": "014839bac4aeee708e2ebda9f90422bf9d1e1a7a",
+    "revision": "27df51b",
+    "revision_full": "27df51b2fa4c2f9e4916c29c242028199882ebe9",
     "output_directory": "out"
   },
   "payloads": [
@@ -13,7 +13,7 @@
       "role": "system",
       "file": "cpm-plus-juku-stock-recovery-system.bin",
       "bytes": 16896,
-      "sha256": "a14adb85ead4e6bc223f4107aa88abfed8e798207fcc4b185e5ec9d5d3fb3694",
+      "sha256": "f00b6a93b3498a1d6c7ae93442bc8fb1b03681c032f44854c86e000dbc66c55e",
       "format": "JUKURM1"
     },
     {
@@ -21,8 +21,8 @@
       "mode": "stock",
       "role": "fastboot",
       "file": "cpm-plus-juku-stock-recovery-fastboot-v17.bin",
-      "bytes": 9707,
-      "sha256": "46c93c15dbf4fd111d02674ddc395a5a394e189972a37a12553905178ed1059e",
+      "bytes": 9704,
+      "sha256": "9e0de4a8048184346ad6ed846d95352391049e66be7870a1759456ecc91238cd",
       "format": "JF17",
       "version": 17
     },

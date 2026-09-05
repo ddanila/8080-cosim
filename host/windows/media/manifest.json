@@ -1,0 +1,11 @@
+{
+  "schema": "jukuwin-media-v1",
+  "source_repository": "https://github.com/ddanila/cpm-plus-juku",
+  "source_revision": "27df51b2fa4c2f9e4916c29c242028199882ebe9",
+  "build_command": "make out/cpm-plus-juku-dev.img",
+  "profile": "development-a",
+  "file": "CPM3.IMG",
+  "bytes": 409600,
+  "sha256": "363ba3a6c33012d89799a87702c5512f0a927b660cf7f1c12efe5773f514e967",
+  "report_sha256": "51890d1882bb193459a6b0754437e9074123b940938e53b12520fd86f9e95ce7"
+}

@@ -18,12 +18,12 @@ durability rules, non-goals, and test gates are frozen in the plan.
 
 The embedded catalog is pinned by
 [`host/windows/payload-manifest.json`](../host/windows/payload-manifest.json)
-to `cpm-plus-juku` revision `014839b` and these exact artifacts:
+to `cpm-plus-juku` revision `27df51b` and these exact artifacts:
 
 | Mode | Role | Bytes | SHA-256 |
 | --- | --- | ---: | --- |
-| stock | system | 16,896 | `a14adb85ead4e6bc223f4107aa88abfed8e798207fcc4b185e5ec9d5d3fb3694` |
-| stock | JF17 | 9,707 | `46c93c15dbf4fd111d02674ddc395a5a394e189972a37a12553905178ed1059e` |
+| stock | system | 16,896 | `f00b6a93b3498a1d6c7ae93442bc8fb1b03681c032f44854c86e000dbc66c55e` |
+| stock | JF17 | 9,704 | `9e0de4a8048184346ad6ed846d95352391049e66be7870a1759456ecc91238cd` |
 | C11 | system | 18,432 | `923be9c41068b7de6f14d93dd7fd28e31bbefbf2fd68609c0483597092becd5f` |
 | C11 | JF16 | 7,914 | `fc4fa48ef7c96064d7879782c293c740e30f73f50e06db2ad6fc09bbb0dd2d31` |
 | C12 | system | 18,432 | `74abab89c14e8429eec943c8b7c77ad33675cbf411fde5190d4657a3d28bdb79` |

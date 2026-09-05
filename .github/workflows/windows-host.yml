@@ -1,0 +1,120 @@
+name: Windows host bundle
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - host/**
+      - sync/jukuhost_win32_*.sh
+      - tools/*jukuwin*
+      - tools/package-jukuhost-windows.py
+      - tools/bootstrap-open-watcom.sh
+      - tools/open-watcom-env.sh
+      - tools/normalize-pe.py
+      - tests/jukuwin_floppy_test.py
+      - docs/windows-jukuhost-client*.md
+      - third_party/open-watcom-v2/**
+      - .github/workflows/windows-host.yml
+  pull_request:
+    paths:
+      - host/**
+      - sync/jukuhost_win32_*.sh
+      - tools/*jukuwin*
+      - tools/package-jukuhost-windows.py
+      - tools/bootstrap-open-watcom.sh
+      - tools/open-watcom-env.sh
+      - tools/normalize-pe.py
+      - tests/jukuwin_floppy_test.py
+      - docs/windows-jukuhost-client*.md
+      - third_party/open-watcom-v2/**
+      - .github/workflows/windows-host.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-host-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Fetch only the pinned compiler archive
+        run: git lfs pull --include=third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820 --exclude=""
+
+      - name: Install build and floppy tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential binutils unzip mtools
+          mkdir -p build
+
+      - name: Check host, reproducible PE and portable folder
+        run: bash sync/jukuhost_win32_check.sh
+
+      - name: Test floppy packaging
+        run: python3 tests/jukuwin_floppy_test.py
+
+      - name: Build full CP/M transfer bundle
+        run: |
+          python3 tools/package-jukuwin-floppy.py
+          cp build/win32-repro-a/BUILD.LOG build/jukuwin-floppy/BUILD.LOG
+
+      - name: Transfer bundle to Windows runtime check
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: jukuwin-staging-${{ github.sha }}
+          path: build/jukuwin-floppy/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: build
+    runs-on: windows-2022
+    timeout-minutes: 5
+    steps:
+      - name: Download checked build
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: jukuwin-staging-${{ github.sha }}
+          path: bundle
+
+      - name: Run actual 32-bit Windows executable selftest
+        shell: pwsh
+        run: |
+          $exe = (Resolve-Path 'bundle/files/JUKUWIN.EXE').Path
+          $process = Start-Process -FilePath $exe -ArgumentList '--selftest' -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "JUKUWIN selftest exited $($process.ExitCode)" }
+          'JUKUWIN PE32 selftest passed on Windows Server 2022.' | Set-Content bundle/WINDOWS-CHECK.txt
+
+      - name: Publish floppy-ready Windows host and full CP/M tools
+        id: artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: jukuwin-windows-full-cpm
+          path: bundle/
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Add download instructions
+        shell: pwsh
+        env:
+          BUNDLE_URL: ${{ steps.artifact.outputs.artifact-url }}
+        run: |
+          @"
+          ## Windows host + full CP/M tools
+          [Download the bundle]($env:BUNDLE_URL)
+
+          Extract the ZIP. Copy the contents of **files/** to a formatted 1.44 MB floppy,
+          or write **JUKUWIN.IMG** as a complete FAT12 image. On Windows, copy the files
+          to a writable hard-disk folder before running **JUKUWIN.EXE**.
+
+          Includes the full development CP/M A: image (33 files), stock/C11/C12 embedded
+          boot payloads, and a Stock ROM default configuration. B: is optional and empty.
+          The PE passed its selftest on Windows Server 2022; physical serial and Windows 95
+          qualification remain separate.
+          "@ >> $env:GITHUB_STEP_SUMMARY

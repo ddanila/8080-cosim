@@ -5,6 +5,36 @@ C11, or C12 JukuNet ROM. It includes the approved CP/M boot systems, JF17
 stock helper, and JF16 C11/C12 helpers. Disk images remain ordinary external
 files.
 
+## Download the CI bundle
+
+Open [Windows host bundle](https://github.com/ddanila/8080-cosim/actions/workflows/windows-host.yml),
+select a successful run, and download **jukuwin-windows-full-cpm** from its
+Artifacts section. The workflow runs for relevant pushes and pull requests
+and can also be started with **Run workflow**. Downloads are retained for 90 days.
+
+The ZIP contains a **files/** folder ready to copy to a formatted 1.44 MB
+floppy and **JUKUWIN.IMG**, a complete FAT12 image for disk-writing tools.
+This is a transfer disk. Copy its files into a writable Windows hard-disk
+folder before starting the host, so snapshots and captures have room to grow.
+
+The bundle includes `CPM3.IMG`: the full CP/M development A: image, with 33
+files and 190 KiB free inside CP/M. It includes the full utilities plus ED,
+SID, PATCH, HEXCOM, command history, diagnostics, HELP and example source/HEX.
+This is the approved full development collection, not the minimal recovery
+disk. The included `README.TXT` lists every file. The optional B: image is
+left empty so music or application media can be supplied separately.
+
+The bundled INI preselects **Stock ROM**, automatic serial selection, and a
+writable snapshot of `CPM3.IMG`; it does not start listening automatically.
+Select C11 or C12 instead if that is the ROM fitted in your machine.
+`MANIFEST.JSN`, `SHA256.TXT` and `LICENSE.TXT` travel with the files.
+
+CI checks the native components, two byte-identical PE builds, the Win95
+import boundary, payload identities, the full-media hash, floppy capacity,
+and byte-for-byte FAT12 readback. It then runs the actual EXE selftest on
+Windows Server 2022 before publishing the final artifact. This does not
+replace physical serial or Windows 95 testing.
+
 ## First start
 
 Place `JUKUWIN.EXE` and `JUKUWIN.INI` in a writable folder. Double-click the

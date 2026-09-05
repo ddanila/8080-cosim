@@ -1,0 +1,548 @@
+{
+  "schema": "cpm-plus-juku-volume-report-v1",
+  "profile": "development-a",
+  "description": "Strict-8080 CP/M Plus development A: volume",
+  "profile_path": "volume/profiles/dev.json",
+  "geometry": "juku386",
+  "output_layout": "logical",
+  "image_bytes": 409600,
+  "image_sha256": "363ba3a6c33012d89799a87702c5512f0a927b660cf7f1c12efe5773f514e967",
+  "allocated_bytes": 200704,
+  "free_bytes": 194560,
+  "files": [
+    {
+      "destination": "0:CCP.COM",
+      "source": "build/cpm3-history/CCP.COM",
+      "mode": "binary",
+      "source_bytes": 3379,
+      "source_sha256": "e27c1fcc2b185eaac395069b0e77575a026cff9d87130cd9bd117711746eedb7",
+      "volume_bytes": 3379,
+      "sha256": "e27c1fcc2b185eaac395069b0e77575a026cff9d87130cd9bd117711746eedb7",
+      "allocated_bytes": 4096,
+      "provenance": {
+        "source": "pinned Digital Research CP/M 3.1 CCP plus patches/ccp3-history.patch",
+        "version": "Juku CP/M 3 CCP History 1.0",
+        "license": "third_party/cpm3/LICENSE.md"
+      },
+      "attributes": "rs"
+    },
+    {
+      "destination": "0:HIST.COM",
+      "source": "build/history.cim",
+      "mode": "binary",
+      "source_bytes": 286,
+      "source_sha256": "3f3754e41bb7a501fdb6a8951a108287409a8efb6b03360de1ba0bf6d960faf2",
+      "volume_bytes": 286,
+      "sha256": "3f3754e41bb7a501fdb6a8951a108287409a8efb6b03360de1ba0bf6d960faf2",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/history.asm",
+        "version": "Juku History 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:DIAG.COM",
+      "source": "build/diag.cim",
+      "mode": "binary",
+      "source_bytes": 2829,
+      "source_sha256": "ddfcfc2ad1f69c09e32d59be87d96b1ca1190207a2cba20e259f8423dc6573d6",
+      "volume_bytes": 2829,
+      "sha256": "ddfcfc2ad1f69c09e32d59be87d96b1ca1190207a2cba20e259f8423dc6573d6",
+      "allocated_bytes": 4096,
+      "provenance": {
+        "source": "src/diag.asm and pinned juku-common diagnostics",
+        "version": "cpm-plus-juku build",
+        "license": "LICENSE and third_party/juku-common notices"
+      }
+    },
+    {
+      "destination": "0:WBOOT.COM",
+      "source": "build/wboot-user.cim",
+      "mode": "binary",
+      "source_bytes": 10,
+      "source_sha256": "318a64b5ad941bd9a69b7ef28df557a890c002e40fc14145a11e1b115520ef4d",
+      "volume_bytes": 10,
+      "sha256": "318a64b5ad941bd9a69b7ef28df557a890c002e40fc14145a11e1b115520ef4d",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/wboot-user.asm",
+        "version": "cpm-plus-juku nonzero-user warm-boot test",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:STATUS.COM",
+      "source": "build/status.cim",
+      "mode": "binary",
+      "source_bytes": 1648,
+      "source_sha256": "9cbaec6ea74a229d3d3c8ba18c48dcdce1baee04b297686482e52b9c39033e11",
+      "volume_bytes": 1648,
+      "sha256": "9cbaec6ea74a229d3d3c8ba18c48dcdce1baee04b297686482e52b9c39033e11",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/status.asm",
+        "version": "Juku Status 1.3",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:KEYTEST.COM",
+      "source": "build/keytest.cim",
+      "mode": "binary",
+      "source_bytes": 525,
+      "source_sha256": "ee4ef293a66281a5b54b258ba4a184e2f122f69e9fe210c8b558caeb761f4458",
+      "volume_bytes": 525,
+      "sha256": "ee4ef293a66281a5b54b258ba4a184e2f122f69e9fe210c8b558caeb761f4458",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/keytest.asm",
+        "version": "Juku Keytest 1.1",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:VIDTEST.COM",
+      "source": "build/vidtest.cim",
+      "mode": "binary",
+      "source_bytes": 1086,
+      "source_sha256": "07809927ad4094974cd04606387af82dc4ad49ea1a80fefb2e19fc1e682517c9",
+      "volume_bytes": 1086,
+      "sha256": "07809927ad4094974cd04606387af82dc4ad49ea1a80fefb2e19fc1e682517c9",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/vidtest.asm",
+        "version": "Juku Vidtest 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:PANEL.COM",
+      "source": "build/panel.cim",
+      "mode": "binary",
+      "source_bytes": 1349,
+      "source_sha256": "db8e2696c39b6466b629a7f8fca837cc921ad57662f319b6b6b94c77d1a1e74c",
+      "volume_bytes": 1349,
+      "sha256": "db8e2696c39b6466b629a7f8fca837cc921ad57662f319b6b6b94c77d1a1e74c",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/panel.asm",
+        "version": "Juku Panel 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:CRC.COM",
+      "source": "build/crc.cim",
+      "mode": "binary",
+      "source_bytes": 306,
+      "source_sha256": "a64bf616652aef921c5e0dbf0ce95cebd5f5fbe98ef6e34f2fdcc36cf94469cf",
+      "volume_bytes": 306,
+      "sha256": "a64bf616652aef921c5e0dbf0ce95cebd5f5fbe98ef6e34f2fdcc36cf94469cf",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/crc.asm",
+        "version": "Juku CRC 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:CMP.COM",
+      "source": "build/cmp.cim",
+      "mode": "binary",
+      "source_bytes": 788,
+      "source_sha256": "8219a218d67e37658c915fe7e4af9f265c19f712a59d4a38a6f9fc53eebfe621",
+      "volume_bytes": 788,
+      "sha256": "8219a218d67e37658c915fe7e4af9f265c19f712a59d4a38a6f9fc53eebfe621",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/cmp.asm",
+        "version": "Juku CMP 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:MEM.COM",
+      "source": "build/mem.cim",
+      "mode": "binary",
+      "source_bytes": 489,
+      "source_sha256": "1b69e87fff8c41e9e9b7bb9ac4b0c9f8c6e792eb2e716d44719e985536ed4b88",
+      "volume_bytes": 489,
+      "sha256": "1b69e87fff8c41e9e9b7bb9ac4b0c9f8c6e792eb2e716d44719e985536ed4b88",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/mem.asm",
+        "version": "Juku MEM 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:WC.COM",
+      "source": "build/wc.cim",
+      "mode": "binary",
+      "source_bytes": 353,
+      "source_sha256": "d1f6435bebb51e35f474bddc71c1e076330cda9b57886cc0369a97925761cdf9",
+      "volume_bytes": 353,
+      "sha256": "d1f6435bebb51e35f474bddc71c1e076330cda9b57886cc0369a97925761cdf9",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/wc.asm",
+        "version": "Juku WC 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:FIND.COM",
+      "source": "build/find.cim",
+      "mode": "binary",
+      "source_bytes": 673,
+      "source_sha256": "74f1da73f39594ece6c63132ca6d0cc4863a89f339a5128685fc3b64058b25fa",
+      "volume_bytes": 673,
+      "sha256": "74f1da73f39594ece6c63132ca6d0cc4863a89f339a5128685fc3b64058b25fa",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/find.asm",
+        "version": "Juku FIND 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:STRINGS.COM",
+      "source": "build/strings.cim",
+      "mode": "binary",
+      "source_bytes": 287,
+      "source_sha256": "4eae267a62a1b02274b9a34a191d9256f64ea73e3aceb7389ee2f49cefba5f02",
+      "volume_bytes": 287,
+      "sha256": "4eae267a62a1b02274b9a34a191d9256f64ea73e3aceb7389ee2f49cefba5f02",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/strings.asm",
+        "version": "Juku STRINGS 1.0",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:VER.COM",
+      "source": "build/ver.cim",
+      "mode": "binary",
+      "source_bytes": 58,
+      "source_sha256": "b7e5a28dfea13199f5907be734100fe6595ebadb748802241fe65d2469ec5d84",
+      "volume_bytes": 58,
+      "sha256": "b7e5a28dfea13199f5907be734100fe6595ebadb748802241fe65d2469ec5d84",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "src/ver.asm",
+        "version": "cpm-plus-juku build",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:README.TXT",
+      "source": "volume/README.txt",
+      "mode": "text",
+      "source_bytes": 486,
+      "source_sha256": "5ed8e516425a6b0eadcdb194de1977d02d6ce59af0fa4c26bb4617fbd4f04d4f",
+      "volume_bytes": 507,
+      "sha256": "2616d3e44ffe7ae3d56d59d9c7a4d70e966f571ed756fe687bf315b65f3310ab",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "volume/README.txt",
+        "version": "cpm-plus-juku build",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:TOOLS.TXT",
+      "source": "volume/TOOLS.txt",
+      "mode": "text",
+      "source_bytes": 1871,
+      "source_sha256": "1e94440fb995e442f355b140536d686568ff6628610961781219fa9a5e9c4a1d",
+      "volume_bytes": 1917,
+      "sha256": "8900467bab281ec47ac6d3425922168c029dbd32d10641db04529044d6f44d9b",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "volume/TOOLS.txt",
+        "version": "Juku CP/M Plus full-profile tools",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:PIP.COM",
+      "source": "build/cpm3-utilities/PIP.COM",
+      "mode": "binary",
+      "source_bytes": 8632,
+      "source_sha256": "b0b40eada6cebd512333989fdc65f8fa9e2321e2565a633063ae7cac9b02005d",
+      "volume_bytes": 8632,
+      "sha256": "b0b40eada6cebd512333989fdc65f8fa9e2321e2565a633063ae7cac9b02005d",
+      "allocated_bytes": 10240,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "CP/M 3 PIP 3.0",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:SHOW.COM",
+      "source": "build/cpm3-utilities/SHOW.COM",
+      "mode": "binary",
+      "source_bytes": 8376,
+      "source_sha256": "17a8561c18d1b9dc4d747f0a1ecd36ceb98ade6be2c2133d5ec1774769a4bcee",
+      "volume_bytes": 8376,
+      "sha256": "17a8561c18d1b9dc4d747f0a1ecd36ceb98ade6be2c2133d5ec1774769a4bcee",
+      "allocated_bytes": 10240,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "Show 3.1, 2025-01-22",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:SET.COM",
+      "source": "build/cpm3-utilities/SET.COM",
+      "mode": "binary",
+      "source_bytes": 10368,
+      "source_sha256": "213fa9a4617372d5b4518863a41adcbbca63ea535aae94632052ebb6ad026709",
+      "volume_bytes": 10368,
+      "sha256": "213fa9a4617372d5b4518863a41adcbbca63ea535aae94632052ebb6ad026709",
+      "allocated_bytes": 12288,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "CP/M 3 SET",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:DEVICE.COM",
+      "source": "build/cpm3-utilities/DEVICE.COM",
+      "mode": "binary",
+      "source_bytes": 7268,
+      "source_sha256": "1a8dd4c17523f36a297d13556948178e0672f2e67bb9b516771b27bf9722444c",
+      "volume_bytes": 7268,
+      "sha256": "1a8dd4c17523f36a297d13556948178e0672f2e67bb9b516771b27bf9722444c",
+      "allocated_bytes": 8192,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "CP/M 3 DEVICE",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:DATE.COM",
+      "source": "build/cpm3-utilities/DATE.COM",
+      "mode": "binary",
+      "source_bytes": 3247,
+      "source_sha256": "a413859648e340a424de7e8a709aabcee502516122d157b25d5d663d4e771004",
+      "volume_bytes": 3247,
+      "sha256": "a413859648e340a424de7e8a709aabcee502516122d157b25d5d663d4e771004",
+      "allocated_bytes": 4096,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "CP/M 3 DATE, Y2K-corrected",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:SUBMIT.COM",
+      "source": "build/cpm3-utilities/SUBMIT.COM",
+      "mode": "binary",
+      "source_bytes": 5376,
+      "source_sha256": "8c641d7383d48e14a60fe72df0f4af926a970b0aba40765770f3034da80a1f24",
+      "volume_bytes": 5376,
+      "sha256": "8c641d7383d48e14a60fe72df0f4af926a970b0aba40765770f3034da80a1f24",
+      "allocated_bytes": 6144,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "CP/M 3 SUBMIT 3.0",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:SETDEF.COM",
+      "source": "build/cpm3-utilities/SETDEF.COM",
+      "mode": "binary",
+      "source_bytes": 4244,
+      "source_sha256": "03e5ef141bfc9da39dbde435f7ad7ab264ce7b22caa5b1d3297065abe437cf08",
+      "volume_bytes": 4244,
+      "sha256": "03e5ef141bfc9da39dbde435f7ad7ab264ce7b22caa5b1d3297065abe437cf08",
+      "allocated_bytes": 6144,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "CP/M 3 SETDEF",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:DUMP.COM",
+      "source": "build/cpm3-utilities/DUMP.COM",
+      "mode": "binary",
+      "source_bytes": 960,
+      "source_sha256": "4acabe3feaaf03622adaaaaea3bb25d37cdc32e07901343b532974be2c783a64",
+      "volume_bytes": 960,
+      "sha256": "4acabe3feaaf03622adaaaaea3bb25d37cdc32e07901343b532974be2c783a64",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "CP/M 3 DUMP",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:HELP.COM",
+      "source": "build/cpm3-utilities/HELP.COM",
+      "mode": "binary",
+      "source_bytes": 6967,
+      "source_sha256": "d47256286eb6b05d290ba33c539f8acf79ed0fb18893a4f25f7a588538f343f8",
+      "volume_bytes": 6967,
+      "sha256": "d47256286eb6b05d290ba33c539f8acf79ed0fb18893a4f25f7a588538f343f8",
+      "allocated_bytes": 8192,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "HELP 1.1 pl5, 2026-06-07",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:HELP.HLP",
+      "source": "build/cpm3-utilities/HELP.HLP",
+      "mode": "binary",
+      "source_bytes": 63616,
+      "source_sha256": "0ba002b32e659c19ccec18f13ab3231d403a41911c5b753d42853243b01ed8a6",
+      "volume_bytes": 63616,
+      "sha256": "0ba002b32e659c19ccec18f13ab3231d403a41911c5b753d42853243b01ed8a6",
+      "allocated_bytes": 65536,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json",
+        "version": "HELP database, 2026-06-07",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:ED.COM",
+      "source": "build/cpm3-utilities/ED.COM",
+      "mode": "binary",
+      "source_bytes": 9254,
+      "source_sha256": "043732665d295ed86f96007bb76fa319145df85d384385b30bd5605b6774f56d",
+      "volume_bytes": 9254,
+      "sha256": "043732665d295ed86f96007bb76fa319145df85d384385b30bd5605b6774f56d",
+      "allocated_bytes": 10240,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json; ed.plm plus the pinned upstream PL/M-80 build recipe",
+        "version": "Digital Research CP/M 3 ED",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:HEXCOM.COM",
+      "source": "build/cpm3-utilities/HEXCOM.COM",
+      "mode": "binary",
+      "source_bytes": 1131,
+      "source_sha256": "0f458585377284053fb3c8441cdcea75b62dd6a2a4594fe5097b8ca33691964c",
+      "volume_bytes": 1131,
+      "sha256": "0f458585377284053fb3c8441cdcea75b62dd6a2a4594fe5097b8ca33691964c",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json; rebuilt exactly from hexcom.asm and hexcom.c",
+        "version": "Digital Research CP/M 3 HEXCOM",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:PATCH.COM",
+      "source": "build/cpm3-utilities/PATCH.COM",
+      "mode": "binary",
+      "source_bytes": 2369,
+      "source_sha256": "6259b16eee943ab5ca717477a9f473825be21aba8e535866aa6a1a550c7c14ac",
+      "volume_bytes": 2369,
+      "sha256": "6259b16eee943ab5ca717477a9f473825be21aba8e535866aa6a1a550c7c14ac",
+      "allocated_bytes": 4096,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json; rebuilt exactly from patch.asm and hexcom.c",
+        "version": "Digital Research CP/M 3 PATCH",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:SID.COM",
+      "source": "build/cpm3-utilities/SID.COM",
+      "mode": "binary",
+      "source_bytes": 7936,
+      "source_sha256": "7c7419d95107bdba5ea1c537e1a316ed9a45229111a9fdd13267f3df65931af7",
+      "volume_bytes": 7936,
+      "sha256": "7c7419d95107bdba5ea1c537e1a316ed9a45229111a9fdd13267f3df65931af7",
+      "allocated_bytes": 8192,
+      "provenance": {
+        "source": "third_party/cpm3/releases/provenance.json; rebuilt exactly from prs0mov.asm, prs1asm.asm, and prs2mon.asm",
+        "version": "Digital Research CP/M 3 SID",
+        "license": "third_party/cpm3/LICENSE.md"
+      }
+    },
+    {
+      "destination": "0:HELLO.ASM",
+      "source": "volume/HELLO.asm",
+      "mode": "text",
+      "source_bytes": 288,
+      "source_sha256": "f5e15cf3b762a2ec68d4c9678ced98a9cd8aa8efa8237146f85c6271d36ef848",
+      "volume_bytes": 304,
+      "sha256": "fc7f4a106bd5f5821d057be633037674be1eebfa759f7e5cb5b3b708bf893eae",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "volume/HELLO.asm",
+        "version": "cpm-plus-juku development example",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "destination": "0:HELLO.HEX",
+      "source": "build/HELLO.hex",
+      "mode": "text",
+      "source_bytes": 88,
+      "source_sha256": "5f7097852231f7c834200cdc82a75d4e14c2fa5ae2a98548173e1b68fb46e0fa",
+      "volume_bytes": 92,
+      "sha256": "6ff7dc0170d3112bcd78423f199ed37bab461127aa393b24d89aa08c1a1a5e51",
+      "allocated_bytes": 2048,
+      "provenance": {
+        "source": "volume/HELLO.asm assembled by the pinned zmac toolchain",
+        "version": "cpm-plus-juku development example",
+        "license": "LICENSE"
+      }
+    }
+  ],
+  "cpmtools_listing": [
+    "     Name    Bytes   Recs  Attr     update             create",
+    "------------ ------ ------ ---- -----------------  -----------------",
+    "CCP     .COM     4K     26 RS ",
+    "CMP     .COM     2K      6    ",
+    "CRC     .COM     2K      2    ",
+    "DATE    .COM     4K     25    ",
+    "DEVICE  .COM     8K     56    ",
+    "DIAG    .COM     4K     22    ",
+    "DUMP    .COM     2K      7    ",
+    "ED      .COM    10K     72    ",
+    "FIND    .COM     2K      5    ",
+    "HELLO   .ASM     2K      2    ",
+    "HELLO   .HEX     2K      0    ",
+    "HELP    .COM     8K     54    ",
+    "HELP    .HLP    64K    497    ",
+    "HEXCOM  .COM     2K      8    ",
+    "HIST    .COM     2K      2    ",
+    "KEYTEST .COM     2K      4    ",
+    "MEM     .COM     2K      3    ",
+    "PANEL   .COM     2K     10    ",
+    "PATCH   .COM     4K     18    ",
+    "PIP     .COM    10K     67    ",
+    "README  .TXT     2K      3    ",
+    "SET     .COM    12K     81    ",
+    "SETDEF  .COM     6K     33    ",
+    "SHOW    .COM    10K     65    ",
+    "SID     .COM     8K     62    ",
+    "STATUS  .COM     2K     12    ",
+    "STRINGS .COM     2K      2    ",
+    "SUBMIT  .COM     6K     42    ",
+    "TOOLS   .TXT     2K     14    ",
+    "VER     .COM     2K      0    ",
+    "VIDTEST .COM     2K      8    ",
+    "WBOOT   .COM     2K      0    ",
+    "WC      .COM     2K      2    ",
+    "   33 Files occupying    196K,     190K Free."
+  ]
+}
