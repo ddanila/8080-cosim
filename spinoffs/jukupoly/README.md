@@ -134,6 +134,10 @@ result was booted through CPMish NetDisk mode 2 on 2026-08-31: `B:JUKEBOX`
 listed the catalog, loaded and played track 01 from B:, returned to the menu,
 and quit cleanly to CP/M.
 
+The optional [normalization A/B trial](NORMALIZATION-AB.md) provides original
+and component-peak-normalized versions of three DOOM tracks on a separate
+listening disk. Production-library levels remain unchanged.
+
 ## Period demo score and credits
 
 The first score is a hand reduction of the opening phrase of **“Trip Through
