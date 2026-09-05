@@ -1,0 +1,9 @@
+00000000 INFO  start version=0.4.0-m8 port=/dev/cu.usbserial-110
+00000000 INFO  platform=Darwin timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000033 INFO  serial applied=9600 8O1 flow=none
+00000033 INFO  phase=discover serial=9600 8O1 passive stock
+00000367 INFO  checked NetDisk request received; stock CP/M is already running
+00000367 INFO  phase=netdisk
+00000367 INFO  serving A: read-only, 9600 baud 8O1, N3

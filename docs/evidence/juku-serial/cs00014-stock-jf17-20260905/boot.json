@@ -1,0 +1,24 @@
+{
+  "boot_baud": 9600,
+  "capture": "/Users/ddanila/fun/8080-cosim/docs/evidence/juku-serial/cs00014-stock-jf17-20260905/host.cap",
+  "capture_started_monotonic": 624102.439,
+  "completion_confirmed": 1,
+  "disk_baud": 9600,
+  "disk_protocol": 3,
+  "effective_boot_baud": 9600,
+  "fast_stage": "/Users/ddanila/fun/cpm-plus-juku/out/cpm-plus-juku-stock-recovery-fastboot-v17.bin",
+  "fast_stage_sha256": "9e0de4a8048184346ad6ed846d95352391049e66be7870a1759456ecc91238cd",
+  "fastboot_version": 17,
+  "first_disk_request": {
+    "elapsed_seconds": 121.966,
+    "monotonic_seconds": 624224.405,
+    "operation": 20,
+    "sequence": 1
+  },
+  "network_rom": false,
+  "recorded_at_utc": "2026-09-05T11:49:12.795162+00:00",
+  "schema": "juku-janet-boot-result-v1",
+  "serial": "/dev/cu.usbserial-110",
+  "system": "/Users/ddanila/fun/cpm-plus-juku/out/cpm-plus-juku-stock-recovery-system.bin",
+  "system_sha256": "f00b6a93b3498a1d6c7ae93442bc8fb1b03681c032f44854c86e000dbc66c55e"
+}

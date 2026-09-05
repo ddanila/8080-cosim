@@ -107,14 +107,16 @@ def main() -> int:
         ], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
            text=True, pass_fds=(serial_master,))
         try:
-            first = read_until(console_master, b"A>", 40.0)
+            # Include Janet polling, the 9600-baud stream, and CCP disk reads
+            # on native macOS, where the complete boot can exceed 40 seconds.
+            first = read_until(console_master, b"A>", 90.0)
             require(b"9600" in first and b"CP/M Plus" in first,
                     f"first boot banner differs: {first!r}")
             simulator.terminate()
             simulator.wait(timeout=5.0)
             drain(console_master)
             simulator = start_simulator(2)
-            second = read_until(console_master, b"A>", 40.0)
+            second = read_until(console_master, b"A>", 90.0)
             require(b"9600" in second and b"CP/M Plus" in second,
                     f"recovered boot banner differs: {second!r}")
 

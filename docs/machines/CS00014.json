@@ -1,7 +1,7 @@
 {
   "schema": "juku-machine-profile-v1",
   "machine_id": "CS00014",
-  "updated": "2026-08-18",
+  "updated": "2026-09-05",
   "location": "Arvutimuuseum main exhibition",
   "deployment_role": "preserved public exhibition machine",
   "fitted_firmware": {
@@ -12,13 +12,15 @@
   "qualified_paths": [
     "stock Janet network bootstrap",
     "CP/Mish NETROM2 network A: and native-geometry B: demonstration",
-    "19,200-baud NetDisk operation with the downloaded system"
+    "19,200-baud NetDisk operation with the downloaded system",
+    "9600-baud stock JF17 CP/M Plus boot, hardware-reset recovery after T → N, and passive host replacement"
   ],
   "open_investigations": [
     "preserve the exhibition configuration; repeat invasive bench work only when the machine is available"
   ],
   "evidence": [
     "docs/ekta37-netbios-notes.md",
-    "docs/machine-deployment-status.md"
+    "docs/machine-deployment-status.md",
+    "docs/evidence/juku-serial/cs00014-stock-jf17-20260905/README.md"
   ]
 }

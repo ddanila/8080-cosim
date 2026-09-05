@@ -1,0 +1,101 @@
+00000000 INFO  start version=0.4.0-m8 port=/dev/cu.usbserial-110
+00000000 INFO  platform=Darwin timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000034 INFO  serial applied=9600 8O1 flow=none
+00000034 INFO  phase=discover serial=9600 8O1 passive stock
+00005068 INFO  waiting passively for stock Janet or NetDisk
+00010108 INFO  waiting passively for stock Janet or NetDisk
+00015144 INFO  waiting passively for stock Janet or NetDisk
+00020177 INFO  waiting passively for stock Janet or NetDisk
+00025213 INFO  waiting passively for stock Janet or NetDisk
+00030246 INFO  waiting passively for stock Janet or NetDisk
+00035282 INFO  waiting passively for stock Janet or NetDisk
+00040314 INFO  waiting passively for stock Janet or NetDisk
+00045350 INFO  waiting passively for stock Janet or NetDisk
+00050385 INFO  waiting passively for stock Janet or NetDisk
+00055420 INFO  waiting passively for stock Janet or NetDisk
+00060452 INFO  waiting passively for stock Janet or NetDisk
+00065483 INFO  waiting passively for stock Janet or NetDisk
+00070522 INFO  waiting passively for stock Janet or NetDisk
+00075563 INFO  waiting passively for stock Janet or NetDisk
+00080604 INFO  waiting passively for stock Janet or NetDisk
+00085649 INFO  waiting passively for stock Janet or NetDisk
+00090690 INFO  waiting passively for stock Janet or NetDisk
+00095736 INFO  waiting passively for stock Janet or NetDisk
+00100777 INFO  waiting passively for stock Janet or NetDisk
+00105236 INFO  checked stock Janet poll received; target requires CP/M boot
+00105236 INFO  phase=stock-fastboot
+00105236 INFO  stock-assisted V17 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00105236 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00105263 INFO  Janet request accepted: 01 -> 09
+00107596 INFO  Janet bootstrap 1/1 records
+00107630 INFO  stock bootstrap complete: sent=17 ACK=5 REJ=0 turn-guard=0-ms
+00107904 INFO  phase=fastboot-v17 serial=9600 8O1; waiting adaptively for the acknowledged core
+00107908 INFO  V17 core acknowledged after 1 probes
+00108271 INFO  Fastboot V17 extension ready
+00108275 INFO  V17 stream header acknowledged after 1 probes
+00120380 INFO  Fastboot V17 complete: 9301 compressed bytes, CRC16/IBM=4F69, extension-retries=0
+00120389 INFO  phase=netdisk
+00120389 INFO  serving A: read-only, 9600 baud 8O1, N3
+00121966 INFO  disk op=14 seq=01 drive=0 track=2 sector=1 status=0
+00122059 INFO  disk op=14 seq=02 drive=0 track=2 sector=4 status=0
+00122145 INFO  disk op=14 seq=03 drive=0 track=2 sector=11 status=0
+00122230 INFO  disk op=14 seq=04 drive=0 track=2 sector=18 status=0
+00122316 INFO  disk op=14 seq=05 drive=0 track=2 sector=25 status=0
+00122403 INFO  disk op=14 seq=06 drive=0 track=2 sector=28 status=0
+00122491 INFO  disk op=14 seq=07 drive=0 track=2 sector=35 status=0
+00122575 INFO  disk op=14 seq=08 drive=0 track=2 sector=6 status=0
+00122659 INFO  disk op=14 seq=09 drive=0 track=2 sector=13 status=0
+00122745 INFO  disk op=14 seq=0A drive=0 track=2 sector=16 status=0
+00122977 INFO  disk op=14 seq=0B drive=0 track=2 sector=23 status=0
+00123189 INFO  disk op=14 seq=0C drive=0 track=2 sector=1 status=0
+00123705 INFO  disk op=14 seq=0D drive=0 track=2 sector=29 status=0
+00124199 INFO  disk op=14 seq=0E drive=0 track=2 sector=32 status=0
+00124721 INFO  disk op=14 seq=0F drive=0 track=2 sector=39 status=0
+00125244 INFO  disk op=14 seq=10 drive=0 track=3 sector=2 status=0
+00125767 INFO  disk op=14 seq=11 drive=0 track=3 sector=9 status=0
+00126291 INFO  disk op=14 seq=12 drive=0 track=3 sector=12 status=0
+00126814 INFO  disk op=14 seq=13 drive=0 track=3 sector=19 status=0
+00127337 INFO  disk op=14 seq=14 drive=0 track=3 sector=26 status=0
+00127561 INFO  disk op=14 seq=15 drive=0 track=3 sector=33 status=0
+00127833 INFO  disk op=14 seq=16 drive=0 track=2 sector=1 status=0
+00173244 WARN  stock Janet poll received during NetDisk; target reset detected
+00173244 WARN  stock-ROM reset during NetDisk; restarting JF17
+00173244 INFO  phase=stock-fastboot
+00173245 INFO  stock-assisted V17 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00173245 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00173272 INFO  Janet request accepted: 01 -> 09
+00175604 INFO  Janet bootstrap 1/1 records
+00175638 INFO  stock bootstrap complete: sent=17 ACK=5 REJ=0 turn-guard=0-ms
+00175913 INFO  phase=fastboot-v17 serial=9600 8O1; waiting adaptively for the acknowledged core
+00175917 INFO  V17 core acknowledged after 1 probes
+00176280 INFO  Fastboot V17 extension ready
+00176284 INFO  V17 stream header acknowledged after 1 probes
+00188392 INFO  Fastboot V17 complete: 9301 compressed bytes, CRC16/IBM=4F69, extension-retries=0
+00188393 INFO  phase=netdisk
+00188394 INFO  serving A: read-only, 9600 baud 8O1, N3
+00189978 INFO  disk op=14 seq=01 drive=0 track=2 sector=1 status=0
+00190074 INFO  disk op=14 seq=02 drive=0 track=2 sector=4 status=0
+00190161 INFO  disk op=14 seq=03 drive=0 track=2 sector=11 status=0
+00190248 INFO  disk op=14 seq=04 drive=0 track=2 sector=18 status=0
+00190332 INFO  disk op=14 seq=05 drive=0 track=2 sector=25 status=0
+00190420 INFO  disk op=14 seq=06 drive=0 track=2 sector=28 status=0
+00190506 INFO  disk op=14 seq=07 drive=0 track=2 sector=35 status=0
+00190593 INFO  disk op=14 seq=08 drive=0 track=2 sector=6 status=0
+00190679 INFO  disk op=14 seq=09 drive=0 track=2 sector=13 status=0
+00190766 INFO  disk op=14 seq=0A drive=0 track=2 sector=16 status=0
+00191002 INFO  disk op=14 seq=0B drive=0 track=2 sector=23 status=0
+00191215 INFO  disk op=14 seq=0C drive=0 track=2 sector=1 status=0
+00191729 INFO  disk op=14 seq=0D drive=0 track=2 sector=29 status=0
+00192225 INFO  disk op=14 seq=0E drive=0 track=2 sector=32 status=0
+00192744 INFO  disk op=14 seq=0F drive=0 track=2 sector=39 status=0
+00193266 INFO  disk op=14 seq=10 drive=0 track=3 sector=2 status=0
+00193787 INFO  disk op=14 seq=11 drive=0 track=3 sector=9 status=0
+00194306 INFO  disk op=14 seq=12 drive=0 track=3 sector=12 status=0
+00194827 INFO  disk op=14 seq=13 drive=0 track=3 sector=19 status=0
+00195348 INFO  disk op=14 seq=14 drive=0 track=3 sector=26 status=0
+00195575 INFO  disk op=14 seq=15 drive=0 track=3 sector=33 status=0
+00195846 INFO  disk op=14 seq=16 drive=0 track=2 sector=1 status=0
+00234009 INFO  phase=stopped
+00234009 INFO  stop exit=0 rx=10805 tx=33682 requests=1144 reads=44 records=132 writes=0 retries=0 boot-restarts=1 target-resets=1 reconnects=0 uart-errors=0 available-memory=0

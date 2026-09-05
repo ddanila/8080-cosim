@@ -1680,7 +1680,7 @@ static int run_disk(struct host_context *host,
             host_log(host, "ERROR", "cannot open console PTY %s: %s",
                      host->options.console_pty, strerror(errno));
             return recovery != RECOVERY_NONE ?
-                RUN_REOPEN_CONSOLE : EXIT_SERIAL;
+                (int)RUN_REOPEN_CONSOLE : (int)EXIT_SERIAL;
         }
         console_open = 1;
     }
@@ -1733,7 +1733,7 @@ static int run_disk(struct host_context *host,
                 host_log(host, "WARN", "console PTY %s disconnected: %s",
                          host->options.console_pty, strerror(errno));
                 result = recovery != RECOVERY_NONE ?
-                    RUN_REOPEN_CONSOLE : EXIT_SERIAL;
+                    (int)RUN_REOPEN_CONSOLE : (int)EXIT_SERIAL;
                 goto done;
             }
             if (console_received > 0 && jh_service_console_input(
@@ -1872,7 +1872,7 @@ static int run_disk(struct host_context *host,
                 host_log(host, "WARN", "console PTY %s write failed: %s",
                          host->options.console_pty, strerror(errno));
                 result = recovery != RECOVERY_NONE ?
-                    RUN_REOPEN_CONSOLE : EXIT_SERIAL;
+                    (int)RUN_REOPEN_CONSOLE : (int)EXIT_SERIAL;
                 goto done;
             }
             if (event.console_output_length != 0u && !console_open &&

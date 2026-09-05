@@ -1,0 +1,22 @@
+00000000 INFO  start version=0.4.0-m8 port=/dev/cu.usbserial-110
+00000000 INFO  platform=Darwin timer=CLOCK_MONOTONIC resolution-ms=1 available-memory=0
+00000000 INFO  phase=artifact-validation
+00000000 INFO  phase=serial-open requested=9600 8O1 flow=none
+00000038 INFO  serial applied=9600 8O1 flow=none
+00000038 INFO  phase=discover serial=9600 8O1 passive stock
+00000557 INFO  checked stock Janet poll received; target requires CP/M boot
+00000557 INFO  phase=stock-fastboot
+00000557 INFO  stock-assisted V17 core: 128 bytes at 9600 8O1; adaptive turn-guard=0/2/5/10 ms
+00000557 INFO  waiting for stock Janet request: 128 bytes, load=0100 entry=0100
+00000584 INFO  Janet request accepted: 01 -> 09
+00002916 INFO  Janet bootstrap 1/1 records
+00002950 INFO  stock bootstrap complete: sent=17 ACK=5 REJ=0 turn-guard=0-ms
+00003228 INFO  phase=fastboot-v17 serial=9600 8O1; waiting adaptively for the acknowledged core
+00003232 INFO  V17 core acknowledged after 1 probes
+00003595 INFO  Fastboot V17 extension ready
+00003599 INFO  V17 stream header acknowledged after 1 probes
+00015711 INFO  Fastboot V17 complete: 9304 compressed bytes, CRC16/IBM=2C33, extension-retries=0
+00015712 INFO  phase=netdisk
+00015713 INFO  serving A: read-only, 9600 baud 8O1, N3
+00162666 INFO  phase=stopped
+00162666 INFO  stop exit=0 rx=252 tx=12289 requests=0 reads=0 records=0 writes=0 retries=0 boot-restarts=0 target-resets=0 reconnects=0 uart-errors=0 available-memory=0
