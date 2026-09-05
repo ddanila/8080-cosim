@@ -120,3 +120,56 @@ jobs:
           The PE passed its selftest on Windows Server 2022; physical serial and Windows 95
           qualification remain separate.
           "@ >> $env:GITHUB_STEP_SUMMARY
+
+  release:
+    needs: publish
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows-tested bundle
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: jukuwin-windows-full-cpm
+          path: bundle
+
+      - name: Publish public download and installation instructions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag="jukuwin-${GITHUB_SHA}"
+          archive="jukuwin-windows-full-cpm.zip"
+          (cd bundle && zip -qr "../${archive}" .)
+          sha256sum "$archive" > "$archive.sha256"
+          cat > release-notes.md <<EOF
+          Windows host with the full CP/M development image (33 files).
+
+          **[Download the bundle](https://github.com/${GH_REPO}/releases/download/${tag}/${archive})** — no GitHub login required.
+
+          Extract the ZIP. Copy the contents of **files/** to a formatted 1.44 MB floppy,
+          or write **JUKUWIN.IMG** as a complete FAT12 transfer disk image. On Windows,
+          copy the files to a writable hard-disk folder before running **JUKUWIN.EXE**.
+
+          Includes ED, SID, PATCH, HEXCOM, HELP, diagnostics and the other CP/M tools,
+          stock/C11/C12 embedded boot payloads, and a Stock ROM default configuration.
+          B: is optional and empty. The ZIP also includes licenses, hashes and build evidence.
+
+          Automated development build from ${GITHUB_SHA}.
+          Reproducible PE, package and disk checks passed, followed by the actual EXE
+          selftest on Windows Server 2022. Physical serial and Windows 95 qualification
+          remain separate. These release assets do not have the Actions artifact expiry.
+
+          [Build checks](https://github.com/${GH_REPO}/actions/runs/${GITHUB_RUN_ID})
+          EOF
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "$archive" "$archive.sha256" --clobber
+          else
+            gh release create "$tag" "$archive" "$archive.sha256" \
+              --target "$GITHUB_SHA" --prerelease --latest=false \
+              --title "Windows host + full CP/M (${GITHUB_SHA:0:8})" \
+              --notes-file release-notes.md
+          fi
+          echo "Public download: https://github.com/${GH_REPO}/releases/tag/${tag}" >> "$GITHUB_STEP_SUMMARY"

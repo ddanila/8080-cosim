@@ -5,12 +5,18 @@ C11, or C12 JukuNet ROM. It includes the approved CP/M boot systems, JF17
 stock helper, and JF16 C11/C12 helpers. Disk images remain ordinary external
 files.
 
-## Download the CI bundle
+## Download the Windows bundle
 
-Open [Windows host bundle](https://github.com/ddanila/8080-cosim/actions/workflows/windows-host.yml),
-select a successful run, and download **jukuwin-windows-full-cpm** from its
-Artifacts section. The workflow runs for relevant pushes and pull requests
-and can also be started with **Run workflow**. Downloads are retained for 90 days.
+Open [Releases](https://github.com/ddanila/8080-cosim/releases), select a
+**Windows host + full CP/M** build, and download **jukuwin-windows-full-cpm.zip**.
+The release page and ZIP are public without signing into GitHub and have no
+automatic expiry. Each development prerelease identifies its source commit
+and includes installation instructions and a ZIP checksum.
+
+The [Windows host bundle workflow](https://github.com/ddanila/8080-cosim/actions/workflows/windows-host.yml)
+publishes a release after all checks pass for relevant pushes to master or
+manual runs on master. Pull requests only produce Actions artifacts.
+Those artifacts require GitHub login and are retained for 90 days.
 
 The ZIP contains a **files/** folder ready to copy to a formatted 1.44 MB
 floppy and **JUKUWIN.IMG**, a complete FAT12 image for disk-writing tools.
