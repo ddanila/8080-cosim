@@ -13,6 +13,7 @@ on:
       - tools/open-watcom-env.sh
       - tools/normalize-pe.py
       - tests/jukuwin_floppy_test.py
+      - tests/jukuwin_pe_imports_test.py
       - docs/windows-jukuhost-client*.md
       - third_party/open-watcom-v2/**
       - .github/workflows/windows-host.yml
@@ -26,6 +27,7 @@ on:
       - tools/open-watcom-env.sh
       - tools/normalize-pe.py
       - tests/jukuwin_floppy_test.py
+      - tests/jukuwin_pe_imports_test.py
       - docs/windows-jukuhost-client*.md
       - third_party/open-watcom-v2/**
       - .github/workflows/windows-host.yml

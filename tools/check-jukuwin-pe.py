@@ -61,6 +61,24 @@ def resource_types(data: bytes, pe_offset: int) -> set[int]:
     return types
 
 
+def parse_imports(output: str) -> set[str]:
+    """Accept GNU objdump tables with and without the newer Bound-To column."""
+    dll = None
+    imports = set()
+    for line in output.splitlines():
+        match = re.search(r"DLL Name:\s*(\S+)", line)
+        if match:
+            dll = match.group(1).upper()
+            continue
+        match = re.fullmatch(
+            r"\s*[0-9a-fA-F]+\s+(?:<none>\s+)?[0-9a-fA-F]+\s+(\S+)\s*",
+            line,
+        )
+        if match and dll is not None:
+            imports.add(f"{dll}!{match.group(1)}")
+    return imports
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("executable", type=Path)
@@ -104,16 +122,7 @@ def main() -> int:
         ["objdump", "-p", str(args.executable)], check=True,
         text=True, stdout=subprocess.PIPE,
     )
-    dll = None
-    imports = set()
-    for line in result.stdout.splitlines():
-        match = re.search(r"DLL Name:\s*(\S+)", line)
-        if match:
-            dll = match.group(1).upper()
-            continue
-        match = re.match(r"\s*[0-9a-fA-F]+\s+<none>\s+[0-9a-fA-F]+\s+(\S+)", line)
-        if match and dll is not None:
-            imports.add(f"{dll}!{match.group(1)}")
+    imports = parse_imports(result.stdout)
     allowed = {
         line.strip() for line in args.allowlist.read_text().splitlines()
         if line.strip() and not line.lstrip().startswith("#")

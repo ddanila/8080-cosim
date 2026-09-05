@@ -51,6 +51,8 @@ cc -std=c99 -O2 -pedantic -Wall -Wextra -Werror -Wconversion -Wshadow \
 cmp "$first/JUKUWIN.EXE" "$second/JUKUWIN.EXE"
 echo "JUKUWIN-WIN32-REPRODUCIBILITY: PASS"
 
+python3 "$project_root/tests/jukuwin_pe_imports_test.py"
+
 "$project_root/tools/check-jukuwin-pe.py" "$first/JUKUWIN.EXE" \
     --allowlist "$project_root/host/windows/win95-imports.txt" \
     --subsystem windows
