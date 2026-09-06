@@ -162,7 +162,9 @@ static int post_host_event(struct app_state *app, enum event_kind kind,
 static int stop_hook(void *opaque)
 {
     struct app_state *app = (struct app_state *)opaque;
-    return InterlockedExchangeAdd((LONG *)&app->stop_requested, 0L) != 0L;
+    /* Aligned volatile LONG read on Win32/x86; no payload is published by
+     * this flag. InterlockedExchangeAdd is absent from original Win95. */
+    return app->stop_requested != 0L;
 }
 
 static void log_hook(void *opaque, unsigned long elapsed,

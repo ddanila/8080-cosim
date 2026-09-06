@@ -41,7 +41,6 @@ KERNEL32.DLL!GetVersion
 KERNEL32.DLL!GlobalMemoryStatus
 KERNEL32.DLL!InitializeCriticalSection
 KERNEL32.DLL!InterlockedExchange
-KERNEL32.DLL!InterlockedExchangeAdd
 KERNEL32.DLL!LeaveCriticalSection
 KERNEL32.DLL!LoadLibraryA
 KERNEL32.DLL!MoveFileA

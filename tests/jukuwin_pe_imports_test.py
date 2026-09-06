@@ -11,6 +11,12 @@ spec.loader.exec_module(pe)
 
 
 class ImportsTest(unittest.TestCase):
+    def test_original_win95_excludes_later_interlocked_exports(self):
+        allowlist = (ROOT / 'host/windows/win95-imports.txt').read_text().splitlines()
+        self.assertIn('KERNEL32.DLL!InterlockedExchange', allowlist)
+        for name in ('InterlockedExchangeAdd', 'InterlockedCompareExchange'):
+            self.assertNotIn('KERNEL32.DLL!' + name, allowlist)
+
     def test_classic_and_bound_to_tables(self):
         for middle in ('', '<none> '):
             output = f'''

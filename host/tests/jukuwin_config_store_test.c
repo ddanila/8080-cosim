@@ -8,6 +8,7 @@
 static DWORD last_error;
 static int modern_available;
 static int modern_succeeds;
+static DWORD modern_error;
 static int fail_new_install;
 static int original_exists;
 static int temporary_exists;
@@ -24,7 +25,7 @@ static BOOL WINAPI fake_move_file_ex(LPCSTR source, LPCSTR target, DWORD flags)
         return FALSE;
     }
     if (!modern_succeeds) {
-        last_error = ERROR_ACCESS_DENIED;
+        last_error = modern_error;
         return FALSE;
     }
     temporary_exists = 0;
@@ -94,6 +95,7 @@ static void reset(int modern)
     last_error = ERROR_SUCCESS;
     modern_available = modern;
     modern_succeeds = 1;
+    modern_error = ERROR_ACCESS_DENIED;
     fail_new_install = 0;
     original_exists = 1;
     temporary_exists = 1;
@@ -116,6 +118,21 @@ int main(void)
             "JUKUWIN.bak", &error) == 0 && modern_calls == 1u &&
             original_exists && !temporary_exists,
             "modern atomic replacement differs")) return 1;
+
+    reset(1);
+    modern_succeeds = 0;
+    modern_error = ERROR_CALL_NOT_IMPLEMENTED;
+    if (check(jh_jukuwin_config_replace("JUKUWIN.tmp", "JUKUWIN.INI",
+            "JUKUWIN.bak", &error) == 0 && modern_calls == 1u &&
+            original_exists && !temporary_exists && !backup_exists,
+            "Win95 exported stub did not use legacy replacement")) return 1;
+
+    reset(1);
+    modern_succeeds = 0;
+    if (check(jh_jukuwin_config_replace("JUKUWIN.tmp", "JUKUWIN.INI",
+            "JUKUWIN.bak", &error) != 0 && error == ERROR_ACCESS_DENIED &&
+            original_exists && temporary_exists && !backup_exists,
+            "real replacement error must not fall back")) return 1;
 
     reset(0);
     if (check(jh_jukuwin_config_replace("JUKUWIN.tmp", "JUKUWIN.INI",

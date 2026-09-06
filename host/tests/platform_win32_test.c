@@ -20,7 +20,8 @@ static DWORD purge_flags;
 static DWORD pending_errors;
 static DWORD output_queue;
 static unsigned write_calls;
-static uint8_t written_bytes[64];
+static uint8_t written_bytes[16384];
+static int legacy_write_queue;
 static size_t written_length;
 static int fail_open;
 static int wine_mode;
@@ -36,13 +37,6 @@ LONG InterlockedExchange(LONG *target, LONG value)
 {
     LONG previous = *target;
     *target = value;
-    return previous;
-}
-
-LONG InterlockedExchangeAdd(LONG *target, LONG value)
-{
-    LONG previous = *target;
-    *target += value;
     return previous;
 }
 
@@ -150,6 +144,12 @@ BOOL WriteFile(HANDLE handle, const void *data, DWORD amount, DWORD *written,
     DWORD length = amount > 2u ? 2u : amount;
     (void)overlapped;
     if (handle != fake_handle) return FALSE;
+    if (legacy_write_queue && amount > 4096u) {
+        *written = 4096u;
+        last_error = ERROR_SUCCESS;
+        return FALSE;
+    }
+    if (legacy_write_queue) length = amount;
     memcpy(written_bytes + written_length, data, length);
     written_length += length;
     *written = length;
@@ -237,6 +237,19 @@ int main(void)
                   "partial writes lost data") ||
             check(applied_timeouts.WriteTotalTimeoutConstant == 91u,
                   "write timeout differs")) return 1;
+
+    {
+        uint8_t bulk[9000];
+        memset(bulk, 0xa5, sizeof(bulk));
+        legacy_write_queue = 1;
+        write_calls = 0u;
+        written_length = 0u;
+        if (check(jh_platform_serial_write(&serial, bulk, sizeof(bulk), 10000u) == 0 &&
+                  write_calls == 3u && written_length == sizeof(bulk) &&
+                  memcmp(written_bytes, bulk, sizeof(bulk)) == 0,
+                  "Win95 transmit queue limit lost or rejected a bulk write")) return 1;
+        legacy_write_queue = 0;
+    }
 
     output_queue = 3u;
     if (check(jh_platform_serial_drain(&serial) == 0,

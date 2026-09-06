@@ -23,7 +23,8 @@ int jh_jukuwin_config_replace(const char *temporary, const char *target,
             return 0;
         }
         error = GetLastError();
-        goto failed;
+        /* Original Win95 exports a stub: symbol presence is not support. */
+        if (error != ERROR_CALL_NOT_IMPLEMENTED) goto failed;
     }
 
     if (!DeleteFileA(backup)) {

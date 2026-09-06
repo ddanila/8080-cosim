@@ -108,7 +108,6 @@ typedef BOOL (WINAPI *PHANDLER_ROUTINE)(DWORD);
 
 BOOL SetConsoleCtrlHandler(PHANDLER_ROUTINE handler, BOOL add);
 LONG InterlockedExchange(LONG *target, LONG value);
-LONG InterlockedExchangeAdd(LONG *target, LONG value);
 DWORD GetTickCount(void);
 void Sleep(DWORD milliseconds);
 void GlobalMemoryStatus(MEMORYSTATUS *status);
@@ -129,6 +128,7 @@ DWORD GetLastError(void);
 HMODULE GetModuleHandleA(LPCSTR module);
 FARPROC GetProcAddress(HMODULE module, LPCSTR name);
 BOOL DeleteFileA(LPCSTR path);
+#define ERROR_CALL_NOT_IMPLEMENTED 120u
 BOOL MoveFileA(LPCSTR source, LPCSTR target);
 
 #endif

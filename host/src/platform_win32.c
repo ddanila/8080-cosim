@@ -83,7 +83,9 @@ void jh_platform_install_signals(void)
 
 int jh_platform_stop_requested(void)
 {
-    return InterlockedExchangeAdd((LONG *)&stop_requested, 0L) != 0L;
+    /* An aligned volatile LONG read is atomic on our Win32/x86 target.
+     * This flag publishes no other data; Win95 lacks InterlockedExchangeAdd. */
+    return stop_requested != 0L;
 }
 
 uint64_t jh_platform_milliseconds(void)
@@ -362,7 +364,9 @@ int jh_platform_serial_write(struct jh_platform_serial *serial,
     }
     while (total < length) {
         DWORD written = 0u;
-        DWORD amount = length - total > (size_t)INT_MAX ? (DWORD)INT_MAX :
+        /* Original Win95's serial driver rejects writes larger than the
+         * configured 4096-byte transmit queue, even for synchronous I/O. */
+        DWORD amount = length - total > 4096u ? 4096u :
             (DWORD)(length - total);
         if (!WriteFile(serial_handle(serial), data + total, amount, &written,
                        NULL) || written == 0u) {

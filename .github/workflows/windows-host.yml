@@ -162,6 +162,13 @@ jobs:
           selftest on Windows Server 2022. Physical serial and Windows 95 qualification
           remain separate. These release assets do not have the Actions artifact expiry.
 
+          Original Windows 95 compatibility includes avoiding unavailable interlocked
+          imports, falling back from the MoveFileExA stub, and bounding serial writes
+          to the 4096-byte transmit queue. Regression tests cover these fixes.
+          A local Windows 95 VM passed selftest, configuration save and an interactive
+          C12 CP/M session; physical serial hardware is not yet qualified.
+          [Windows 95 VM evidence](https://github.com/${GH_REPO}/blob/${GITHUB_SHA}/docs/windows-jukuhost-client-win95-acceptance.md)
+
           [Build checks](https://github.com/${GH_REPO}/actions/runs/${GITHUB_RUN_ID})
           EOF
           if gh release view "$tag" >/dev/null 2>&1; then
