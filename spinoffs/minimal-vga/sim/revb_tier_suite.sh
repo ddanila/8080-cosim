@@ -21,7 +21,7 @@ case "${1:-full}" in
     spinoffs/minimal-vga/sim/revb_bringup_check.sh
     spinoffs/minimal-vga/sim/revb_serial_console_check.sh
     spinoffs/minimal-vga/sim/revb_io_expansion_check.sh
-    REVB_BOOT_PHASE=modes WRITES=1000 spinoffs/minimal-vga/sim/revb_rom_system_check.sh
+    REVB_I6_EKTA_PHASE=modes WRITES=1000 spinoffs/minimal-vga/sim/revb_rom_system_check.sh
     spinoffs/minimal-vga/sim/revb_video_check.sh
     echo "REVB-TIER-SUITE-CI: PASS (behavioral smoke; full release suite is local-only)"
     exit 0

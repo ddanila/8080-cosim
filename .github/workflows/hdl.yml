@@ -592,15 +592,21 @@ jobs:
 
       # The TTL video-card boot runs as its own job below; the tier suite's
       # revb_boot_check.sh call therefore covers the decode-mode boots only.
-      - name: Run VJUGA and rev B tier guards
+      - name: Run DRAM timing and VJUGA boots
         env:
           REVB_BOOT_PHASE: modes
         timeout-minutes: 5
         run: |
           ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
           ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
-          ./spinoffs/minimal-vga/sim/revb_tier_suite.sh --ci
-          python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
+
+      - name: Run bounded rev B behavioral tier
+        timeout-minutes: 5
+        run: ./spinoffs/minimal-vga/sim/revb_tier_suite.sh --ci
+
+      - name: Check Rev A physical contract
+        timeout-minutes: 5
+        run: python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
 
   # Two async clocks make this 400-write TTL boot cost ~7 minutes. It is
   # the single measured exception to the five-minute shell-step target.

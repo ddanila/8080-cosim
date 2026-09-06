@@ -1,6 +1,7 @@
 """Check shell profile dispatch without running the long HDL simulations."""
 
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -10,6 +11,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class NetworkProfileTest(unittest.TestCase):
+    def test_revb_ci_controls_the_inner_boot_phase(self):
+        system = (ROOT / "spinoffs/minimal-vga/sim/revb_rom_system_check.sh").read_text()
+        tier = (ROOT / "spinoffs/minimal-vga/sim/revb_tier_suite.sh").read_text()
+        phase = re.search(r'EKTA_PHASE="\$\{(\w+):-all\}"', system)
+        self.assertIsNotNone(phase)
+        ci_branch = tier.split("  --ci)", 1)[1].split("    ;;", 1)[0]
+        self.assertIn(phase.group(1) + "=modes WRITES=1000", ci_branch)
+
     def run_profile(self, *args):
         with tempfile.TemporaryDirectory() as directory:
             temp = Path(directory)
