@@ -579,6 +579,12 @@ jobs:
     if: needs.changes.outputs.run_minimal_vga == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [cards, system]
+    env:
+      REVB_CI_GROUP: ${{ matrix.group }}
     steps:
       - uses: actions/checkout@v7
 
@@ -586,13 +592,14 @@ jobs:
         timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
-      - name: Initialize pinned tv80 core
+      - name: Initialize pinned CPU, assembler and shared sources
         timeout-minutes: 5
-        run: git submodule update --init spinoffs/minimal-vga/external/tv80
+        run: git submodule update --init spinoffs/minimal-vga/external/tv80 third_party/zmac third_party/juku-common
 
       # The TTL video-card boot runs as its own job below; the tier suite's
       # revb_boot_check.sh call therefore covers the decode-mode boots only.
       - name: Run DRAM timing and VJUGA boots
+        if: matrix.group == 'cards'
         env:
           REVB_BOOT_PHASE: modes
         timeout-minutes: 5

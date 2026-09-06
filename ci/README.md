@@ -24,7 +24,9 @@ manual `full` HDL runs mean **all bounded CI lanes**, not every local test.
   `REVB_BOOT_PHASE=ttl bash spinoffs/minimal-vga/sim/revb_boot_check.sh` locally
   with the pinned tv80 core initialized.
 - Rev B tier suite: `--ci` runs behavioral card, bus, serial, ROM-system,
-  bring-up and video checks, with 1000-write decode-mode boot prefixes. The default
+  bring-up and video checks, with 1000-write decode-mode boot prefixes. Hosted
+  CI splits these into independent `REVB_CI_GROUP=cards` and `system` matrix
+  jobs; a local `--ci` invocation defaults to both. The default
   `bash spinoffs/minimal-vga/sim/revb_tier_suite.sh` retains full GAL synthesis,
   physical PCB, DRC and manufacturing-release checks with Galette/KiCad.
   A green hosted run does not qualify manufacturing release.

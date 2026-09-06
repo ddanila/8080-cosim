@@ -16,7 +16,7 @@ class NetworkProfileTest(unittest.TestCase):
         tier = (ROOT / "spinoffs/minimal-vga/sim/revb_tier_suite.sh").read_text()
         phase = re.search(r'EKTA_PHASE="\$\{(\w+):-all\}"', system)
         self.assertIsNotNone(phase)
-        ci_branch = tier.split("  --ci)", 1)[1].split("    ;;", 1)[0]
+        ci_branch = tier.split("  --ci)", 1)[1].split("  full)", 1)[0]
         self.assertIn(phase.group(1) + "=modes WRITES=1000", ci_branch)
 
     def run_profile(self, *args):
