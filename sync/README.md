@@ -185,6 +185,8 @@ CI is split by relevance: `ci.yml` (always-on, syntax + doc consistency),
 `reports.yml` (report-freshness + PROM/photo validation, gated on generator and
 data paths), and `hdl.yml` (LVS + behavioral boot, gated on `hdl/`, `cosim/`,
 `roms/`, `sync/`, `media/`, and the board JSON).
+Hosted jobs are capped at ten minutes and shell steps normally at five; see the
+[CI budgets and local-only coverage](../ci/README.md) for the bounded profiles.
 
 After changing `kicad/juku.board.json`, timing-relevant HDL, or any
 `report_*.py`, run `scripts/regen_all.sh`; add `--deep` when HDL/cosim behavior

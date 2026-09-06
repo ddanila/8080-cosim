@@ -17,10 +17,19 @@ concurrency:
 jobs:
   generic:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
+      - name: Check CI coverage and time budgets
+        timeout-minutes: 5
+        run: |
+          python3 ci/check_hdl_ci.py
+          python3 -m ci.check_timeouts
+          python3 -m unittest -v ci.test_select_hdl_jobs ci.test_timeouts ci.test_smoke_profiles
+
       - name: Check script syntax
+        timeout-minutes: 5
         run: |
           sh -n kicad/check_replica_manufacturing_ready.sh
           sh -n sync/ekdos_checkpoint_prompt_check.sh
@@ -242,60 +251,79 @@ jobs:
             kicad/close_gap_by_ripup.py
 
       - name: Check C63 target-board DNP
+        timeout-minutes: 5
         run: python3 kicad/check_c63_target_dnp.py
 
       - name: Check generated-report coverage
+        timeout-minutes: 5
         run: python3 scripts/check_generated_report_coverage.py
 
       - name: Check FDC write-precomp network
+        timeout-minutes: 5
         run: python3 kicad/check_fdc_precomp_network.py
 
       - name: Check FDC clock mux
+        timeout-minutes: 5
         run: python3 kicad/check_fdc_clock_mux.py
 
       - name: Check FDC recovery counter
+        timeout-minutes: 5
         run: python3 kicad/check_fdc_recovery_counter.py
 
       - name: Check FDC read-clock toggle
+        timeout-minutes: 5
         run: python3 kicad/check_fdc_read_clock_toggle.py
 
       - name: Check exact-revision FDC unused pins
+        timeout-minutes: 5
         run: python3 kicad/check_fdc_unused_pins.py
 
       - name: Check D93 reset and static paths
+        timeout-minutes: 5
         run: python3 kicad/check_d93_static_paths.py
 
       - name: Check D93 HLT selector and RG disposition
+        timeout-minutes: 5
         run: python3 kicad/check_d93_hlt_rg.py
 
       - name: Check D93 interrupt conditioner
+        timeout-minutes: 5
         run: python3 kicad/check_d93_irq_conditioner.py
 
       - name: Check D99 timing and sheet-1 continuations
+        timeout-minutes: 5
         run: python3 kicad/check_d99_source_paths.py
 
       - name: Check silkscreen glyph coverage (no tofu)
+        timeout-minutes: 5
         run: python3 kicad/check_silk_glyphs.py
 
       - name: Check board population / assembly consistency
+        timeout-minutes: 5
         run: python3 kicad/check_board_population.py
 
       - name: Check documentation consistency
+        timeout-minutes: 5
         run: python3 scripts/check_documentation_consistency.py
 
       - name: Check native Juku host and retirement boundary
+        timeout-minutes: 5
         run: sync/jukuhost_linux_check.sh
 
       - name: Check automatic completion audit freshness
+        timeout-minutes: 5
         run: python3 scripts/report_automatic_completion_audit.py --check
 
       - name: Check spin-off shared commons
+        timeout-minutes: 5
         run: python3 scripts/check_spinoff_commons.py
 
       - name: Check ROM disassembly round-trips
+        timeout-minutes: 5
         run: ./sync/disasm_check.sh
 
       - name: Check rev B board connectivity + netlist completeness
+        timeout-minutes: 5
         run: python3 scripts/check_revb_boards.py --completeness
 
   watch-checkpoint:
@@ -305,11 +333,14 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - name: Build cosim trace
+        timeout-minutes: 5
         run: >-
           cc -O2 -Wall -Wextra -I cosim -o /tmp/cosim-watch-trace
           cosim/trace.c cosim/i8080.c cosim/juk_disk.c cosim/juku_fdc.c
       - name: Check atomic watched-write checkpoint state
+        timeout-minutes: 5
         run: python3 tests/cosim_watch_checkpoint_test.py /tmp/cosim-watch-trace

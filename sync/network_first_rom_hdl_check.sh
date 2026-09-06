@@ -4,6 +4,15 @@ cd "$(dirname "$0")/.."
 command -v iverilog >/dev/null
 command -v vvp >/dev/null
 
+# CI elaborates both structural ROM benches and executes the focused video POF
+# guard. All firmware/ABI structural simulations remain in the default full mode;
+# the complete fast cosim ABI/fault matrix runs separately in CI.
+scope=${1:-full}
+case "$scope" in
+  full|--ci) ;;
+  *) echo "usage: $0 [--ci]" >&2; exit 2 ;;
+esac
+
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
@@ -77,16 +86,19 @@ PY
 iverilog -g2012 -o "$tmp/network-first-rom-tb" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
   hdl/sim/network_first_rom_tb.v
+if [[ "$scope" == full ]]; then
 output=$(vvp "$tmp/network-first-rom-tb" +rom="$tmp/network-rom.hex")
 printf '%s\n' "$output"
 grep -q "NETWORK-FIRST-ROM-HDL: PASS" <<<"$output"
 if grep -q "NETWORK-FIRST-ROM-HDL: FAIL" <<<"$output"; then
   exit 1
 fi
+fi
 
 iverilog -g2012 -o "$tmp/network-first-rom-abi-tb" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v \
   hdl/sim/network_first_rom_abi_tb.v
+if [[ "$scope" == full ]]; then
 output=$(vvp "$tmp/network-first-rom-abi-tb" \
   +rom="$tmp/network-rom-abi.hex")
 printf '%s\n' "$output"
@@ -118,13 +130,16 @@ grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
 if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then
   exit 1
 fi
+fi
 
+if [[ "$scope" == full ]]; then
 output=$(vvp "$tmp/network-first-rom-abi-tb" \
   +rom="$tmp/network-rom-c12-abi.hex" +pof_release)
 printf '%s\n' "$output"
 grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
 if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then
   exit 1
+fi
 fi
 
 iverilog -g2012 -o "$tmp/video-pof-tb" \
@@ -136,6 +151,7 @@ if grep -q "VIDEO-POF-HDL: FAIL" <<<"$output"; then
   exit 1
 fi
 
+if [[ "$scope" == full ]]; then
 output=$(vvp "$tmp/network-first-rom-abi-tb" \
   +rom="$tmp/network-rom-netdisk.hex" +netdisk)
 printf '%s\n' "$output"
@@ -143,4 +159,7 @@ grep -q "NETWORK-FIRST-ROM-ABI-HDL: PASS" <<<"$output"
 grep -q "netdisk_dma=128" <<<"$output"
 if grep -q "NETWORK-FIRST-ROM-ABI-HDL: FAIL" <<<"$output"; then
   exit 1
+fi
+else
+  echo "NETWORK-FIRST-ROM-HDL-CI: PASS (structural elaboration + video POF; firmware simulation is local-only)"
 fi

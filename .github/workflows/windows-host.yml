@@ -42,26 +42,31 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Fetch only the pinned compiler archive
+        timeout-minutes: 5
         run: git lfs pull --include=third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820 --exclude=""
 
       - name: Install build and floppy tools
+        timeout-minutes: 5
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends build-essential binutils unzip mtools
           mkdir -p build
 
       - name: Check host, reproducible PE and portable folder
+        timeout-minutes: 5
         run: bash sync/jukuhost_win32_check.sh
 
       - name: Test floppy packaging
+        timeout-minutes: 5
         run: python3 tests/jukuwin_floppy_test.py
 
       - name: Build full CP/M transfer bundle
+        timeout-minutes: 5
         run: |
           python3 tools/package-jukuwin-floppy.py
           cp build/win32-repro-a/BUILD.LOG build/jukuwin-floppy/BUILD.LOG
@@ -77,7 +82,7 @@ jobs:
   publish:
     needs: build
     runs-on: windows-2022
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Download checked build
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -87,6 +92,7 @@ jobs:
 
       - name: Run actual 32-bit Windows executable selftest
         shell: pwsh
+        timeout-minutes: 5
         run: |
           $exe = (Resolve-Path 'bundle/files/JUKUWIN.EXE').Path
           $process = Start-Process -FilePath $exe -ArgumentList '--selftest' -Wait -PassThru
@@ -106,6 +112,7 @@ jobs:
         shell: pwsh
         env:
           BUNDLE_URL: ${{ steps.artifact.outputs.artifact-url }}
+        timeout-minutes: 5
         run: |
           @"
           ## Windows host + full CP/M tools
@@ -125,7 +132,7 @@ jobs:
     needs: publish
     if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -139,6 +146,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+        timeout-minutes: 5
         run: |
           tag="jukuwin-${GITHUB_SHA}"
           archive="jukuwin-windows-full-cpm.zip"

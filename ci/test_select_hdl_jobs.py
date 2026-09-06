@@ -4,11 +4,23 @@
 from __future__ import annotations
 
 import unittest
+import contextlib
+import io
 
 from ci.select_hdl_jobs import load_manifest, select_jobs
+from ci.check_hdl_ci import main as validate_manifest
 
 
 class SelectorTest(unittest.TestCase):
+    def test_workflow_and_manifest_stay_in_sync(self) -> None:
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            result = validate_manifest()
+        self.assertEqual(result, 0, output.getvalue())
+
+    def test_pcm_guard_selects_jukupoly(self) -> None:
+        self.assertEqual(self.selected("sync/jukupoly_pcm_check.sh"), {"jukupoly"})
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.manifest = load_manifest()

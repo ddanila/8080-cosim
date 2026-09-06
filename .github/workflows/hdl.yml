@@ -161,6 +161,7 @@ jobs:
   # that changing the entrypoint selects that lane.
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       run_full: ${{ steps.selector.outputs.run_full }}
       run_lvs: ${{ steps.selector.outputs.run_lvs }}
@@ -180,6 +181,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate CI coverage manifest
+        timeout-minutes: 5
         run: |
           python3 ci/check_hdl_ci.py
           python3 -m unittest -v ci.test_select_hdl_jobs
@@ -192,6 +194,7 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           FORCE_FULL: ${{ github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
           GH_TOKEN: ${{ github.token }}
+        timeout-minutes: 5
         run: |
           set -euo pipefail
           files_file=$(mktemp)
@@ -237,6 +240,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.run_lvs == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
@@ -246,44 +250,57 @@ jobs:
       # avoids fragile KiCad-version/schematic-format mismatches in CI. The real
       # kicad-cli round-trip is exercised locally (KiCad 10).
       - name: Install Yosys
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y yosys
 
       - name: Run LVS check
+        timeout-minutes: 5
         run: sh sync/check.sh
 
       - name: Run rev B mem-card LVS
         # The script intentionally uses Bash (`set -o pipefail`); execute it
         # directly so Actions honors its shebang instead of forcing dash.
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/revb_lvs.sh mem
 
       - name: Run rev B io-card LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/revb_lvs.sh io
 
       - name: Run Rev A power and clock/reset physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
 
       - name: Run Rev A decode physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
 
       - name: Run Rev A Z80 CPU and ROM physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
 
       - name: Run Rev A DRAM-bank physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
 
       - name: Run Rev A DRAM address-mux physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
 
       - name: Run Rev A refresh-counter physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
 
       - name: Run Rev A empty spare-socket physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
 
       - name: Run Rev A DRAM-timing physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_dram_timing_lvs.sh
 
       - name: Run Rev A PPI physical LVS
+        timeout-minutes: 5
         run: spinoffs/minimal-vga/sync/rev_a_ppi_lvs.sh
 
   # Every behavioral job below installs the same toolchain: Icarus runs the vm80a
@@ -293,13 +310,16 @@ jobs:
     needs: changes
     if: needs.changes.outputs.run_fdc == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
       - name: Install Icarus Verilog
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       - name: Run FDC regression checks
+        timeout-minutes: 5
         run: |
           (cd media/disks && sha256sum -c SHA256SUMS)
           (cd media/system && sha256sum -c SHA256SUMS)
@@ -322,6 +342,7 @@ jobs:
       # asserts each artifact appears in a `git diff --exit-code --` here, so generic
       # CI catches list drift before this expensive job ever runs.
       - name: Check report freshness
+        timeout-minutes: 5
         run: |
           git diff --exit-code -- \
             docs/ekdos-fdc-probe.md \
@@ -338,42 +359,51 @@ jobs:
     needs: changes
     if: needs.changes.outputs.run_jukuravi_d0 == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
       - name: Install Icarus Verilog
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       # The D0 aggregate also rebuilds the shared mnemonic smoke fixture.
       # Fetch the same assembler and platform sources as the later Jukuravi
       # regression job before starting its parallel fan-out.
       - name: Fetch assembler, OPL oracle, and shared sources
+        timeout-minutes: 5
         run: |
           git submodule update --init third_party/zmac third_party/juku-common
           git submodule update --init spinoffs/jukupoly/external/Nuked-OPL3
 
       # Fans its 31 vvp runs out across the runner's cores; see the script header.
       - name: Run Jukuravi D0 diagnostic guards
+        timeout-minutes: 5
         run: ./sync/jukuravi_d0_check.sh
 
   network-rom:
     needs: changes
     if: needs.changes.outputs.run_network_rom == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
       - name: Install ROM/HDL toolchain
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc iverilog
 
       - name: Fetch assembler and shared sources
+        timeout-minutes: 5
         run: git submodule update --init third_party/zmac third_party/juku-common
 
       - name: Run network-ROM ABI and fault matrix
+        timeout-minutes: 5
         run: ./sync/network_first_rom_abi_check.sh
 
-      - name: Run network-ROM structural HDL matrix
-        run: ./sync/network_first_rom_hdl_check.sh
+      - name: Elaborate network-ROM HDL and check video POF (full simulation is local-only)
+        timeout-minutes: 5
+        run: ./sync/network_first_rom_hdl_check.sh --ci
 
   # The T28-T32 loader/recovery guards. These are documented in the Jukuravi
   # READMEs and were reachable only by hand -- no workflow and no git hook ran
@@ -384,6 +414,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.run_jukuravi_regression == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
@@ -392,27 +423,34 @@ jobs:
       # ends in sync/jukuravi_vm80a_a12_check.sh, which simulates the vm80a core
       # against that same increment probe.
       - name: Install toolchain
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y bison gcc g++ iverilog nasm
 
       # The T31 smoke fixture is assembled from shared mnemonic sources: zmac
       # builds it and juku-common supplies the included music. Without both
       # submodules build_smoke.py --check aborts and the job fails.
       - name: Fetch assembler and shared sources
+        timeout-minutes: 5
         run: git submodule update --init third_party/zmac third_party/juku-common
 
       - name: Run T28 loader guards
+        timeout-minutes: 5
         run: ./sync/jukuravi_t28_check.sh
 
       - name: Run T29 recovery guards
+        timeout-minutes: 5
         run: ./sync/jukuravi_t29_check.sh
 
       - name: Run T30 TxEMPTY guards
+        timeout-minutes: 5
         run: ./sync/jukuravi_t30_check.sh
 
       - name: Run T31 low-4K and A12 guards
+        timeout-minutes: 5
         run: ./sync/jukuravi_t31_check.sh
 
       - name: Run T32 upper-ROM wait-class guards
+        timeout-minutes: 5
         run: ./sync/jukuravi_t32_check.sh
 
       # T33-T36 checks remain hand-run (they were never wired). The remix
@@ -421,21 +459,29 @@ jobs:
       # checksums, and boots it in cosim to prove the relocated command
       # table and the H command execute.
       - name: Run ekta4401 remix guards
+        timeout-minutes: 5
         run: ./sync/ekta4401_check.sh
 
   jukupoly:
     needs: changes
     if: needs.changes.outputs.run_jukupoly == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
+      - name: Install CP/M image tools
+        timeout-minutes: 5
+        run: sudo apt-get update && sudo apt-get install -y cpmtools
+
       - name: Fetch assembler, OPL oracle, and shared sources
+        timeout-minutes: 5
         run: |
           git submodule update --init third_party/zmac third_party/juku-common
           git submodule update --init spinoffs/jukupoly/external/Nuked-OPL3
 
       - name: Run JukuPoly engine, budget, song, and WAV guards
+        timeout-minutes: 5
         run: |
           ./sync/jukupoly_three_voice_check.sh
           ./sync/jukupoly_check.sh
@@ -449,13 +495,16 @@ jobs:
     needs: changes
     if: needs.changes.outputs.run_subsystems == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
       - name: Install Icarus Verilog
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       - name: Run fast subsystem guards
+        timeout-minutes: 5
         run: |
           ./sync/i8080_check.sh
           ./sync/i8080_vm80a_diff_check.sh
@@ -478,6 +527,7 @@ jobs:
           ./sync/jmon33_hdl_probe.sh
 
       - name: Run Monitor and BASIC reference guards
+        timeout-minutes: 5
         run: |
           ./sync/jmon33_interrupt_probe.py
           ./sync/jmon33_ready_probe.py
@@ -486,6 +536,7 @@ jobs:
           ./sync/juku_top_jbasic_prompt_check.sh
 
       - name: Run video output guards
+        timeout-minutes: 5
         run: |
           ./sync/ir16_check.sh
           ./sync/kp14_check.sh
@@ -499,6 +550,7 @@ jobs:
       # See the note in the fdc job: named explicitly so generic CI can verify
       # the writer/artifact contract without running this job.
       - name: Check report freshness
+        timeout-minutes: 5
         run: |
           git diff --exit-code -- \
             docs/basic-cart-readiness.md \
@@ -526,13 +578,16 @@ jobs:
     needs: changes
     if: needs.changes.outputs.run_minimal_vga == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
       - name: Install Icarus Verilog
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       - name: Initialize pinned tv80 core
+        timeout-minutes: 5
         run: git submodule update --init spinoffs/minimal-vga/external/tv80
 
       # The TTL video-card boot runs as its own job below; the tier suite's
@@ -540,31 +595,35 @@ jobs:
       - name: Run VJUGA and rev B tier guards
         env:
           REVB_BOOT_PHASE: modes
+        timeout-minutes: 5
         run: |
           ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
           ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
-          ./spinoffs/minimal-vga/sim/revb_tier_suite.sh
+          ./spinoffs/minimal-vga/sim/revb_tier_suite.sh --ci
           python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
 
-  # The single slowest gate in the suite (~426s). Two async clocks -- the CPU plus
-  # the 25 MHz dot clock -- make this boot far heavier than the single-clock
-  # decode-mode boots, so it gets its own job instead of serializing them.
+  # Two async clocks make this 400-write TTL boot cost ~7 minutes. It is
+  # the single measured exception to the five-minute shell-step target.
   revb-ttl-boot:
     needs: changes
     if: needs.changes.outputs.run_revb_ttl_boot == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
       - name: Install Icarus Verilog
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       - name: Initialize pinned tv80 core
+        timeout-minutes: 5
         run: git submodule update --init spinoffs/minimal-vga/external/tv80
 
       - name: Run rev B B2 TTL video-card boot
         env:
           REVB_BOOT_PHASE: ttl
+        timeout-minutes: 8
         run: ./spinoffs/minimal-vga/sim/revb_boot_check.sh
 
   # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL sim
@@ -575,15 +634,18 @@ jobs:
     needs: changes
     if: needs.changes.outputs.run_boot == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
       - name: Install Icarus Verilog
+        timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc g++ iverilog
 
       # No generated-doc writers here, so no freshness assertion -- matching the
       # pre-split workflow, where the freshness step ran before boot_check.sh.
       - name: Run boot regression check
+        timeout-minutes: 5
         run: ./sync/boot_check.sh
 
   results:
@@ -601,11 +663,13 @@ jobs:
       - revb-ttl-boot
       - boot
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Verify selected-lane results
         env:
           SELECTION_JSON: ${{ needs.changes.outputs.selection_json }}
           NEEDS_JSON: ${{ toJSON(needs) }}
+        timeout-minutes: 5
         run: |
           python3 - <<'PY'
           import json

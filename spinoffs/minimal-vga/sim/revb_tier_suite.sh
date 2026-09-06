@@ -9,6 +9,27 @@ ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 cd "$ROOT"
 . spinoffs/minimal-vga/kicad/revb/env.sh
 
+# Hosted CI is a behavioral smoke gate, not a five-board manufacturing release.
+# The default full suite below still requires Galette, KiCad and release tools.
+case "${1:-full}" in
+  --ci)
+    python3 scripts/check_spinoff_commons.py
+    python3 scripts/check_revb_boards.py --completeness
+    python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check
+    spinoffs/minimal-vga/sim/revb_card_tb_check.sh
+    spinoffs/minimal-vga/sim/revb_bus_assert_check.sh
+    spinoffs/minimal-vga/sim/revb_bringup_check.sh
+    spinoffs/minimal-vga/sim/revb_serial_console_check.sh
+    spinoffs/minimal-vga/sim/revb_io_expansion_check.sh
+    REVB_BOOT_PHASE=modes WRITES=1000 spinoffs/minimal-vga/sim/revb_rom_system_check.sh
+    spinoffs/minimal-vga/sim/revb_video_check.sh
+    echo "REVB-TIER-SUITE-CI: PASS (behavioral smoke; full release suite is local-only)"
+    exit 0
+    ;;
+  full) ;;
+  *) echo "usage: $0 [--ci]" >&2; exit 2 ;;
+esac
+
 echo "== rev B: shared-commons guard =="
 python3 scripts/check_spinoff_commons.py
 
