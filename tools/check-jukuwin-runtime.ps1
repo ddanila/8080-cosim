@@ -21,6 +21,7 @@ function Wait-Log([string]$Pattern, [int]$Count = 1) {
         }
         Start-Sleep -Milliseconds 100
     } while ([DateTime]::UtcNow -lt $deadline)
+    if (Test-Path $log) { Get-Content $log | Write-Host }
     throw "Missing log record ($Count occurrences): $Pattern"
 }
 function Stop-Gui($Process) {
@@ -93,8 +94,16 @@ keep_sessions=0
     Stop-Gui $process
 
     # Reach the runner and its session log; COM256 is deliberately unavailable.
+    # Discovery retries indefinitely, so exercise Stop during reconnect.
     Set-Content "$root/JUKUWIN.INI" ($config.Replace('MISSING.IMG', 'CPM3.IMG')) -Encoding ascii
     $process = Start-Process -FilePath $exe -PassThru
+    Wait-Log 'phase=reconnect'
+    $process.Refresh()
+    if (![JukuWinSmoke]::PostMessage($process.MainWindowHandle, 0x111, [IntPtr]110, [IntPtr]::Zero)) {
+        throw 'Cannot press Stop'
+    }
+    Wait-Log 'Stop requested'
+    Wait-Log 'Host worker stopped: result 0'
     Wait-Log 'Host worker stopped: result' 3
     $sessions = @(Get-ChildItem "$root/logs" -Recurse -Filter JUKUHOST.LOG)
     if ($sessions.Count -ne 1 -or $sessions[0].Length -eq 0) {
@@ -103,7 +112,7 @@ keep_sessions=0
     Stop-Gui $process
     $text = Get-Content $log -Raw
     if ($text.Contains('Cannot start host worker')) { throw 'Listen failed to create a worker' }
-    Write-Output 'JUKUWIN-WINDOWS-RUNTIME: PASS (threaded selftest, repeated GUI Listen, early failure log, session log)'
+    Write-Output 'JUKUWIN-WINDOWS-RUNTIME: PASS (threaded selftest, repeated GUI Listen, Stop during reconnect, early failure log, session log)'
 } finally {
     if ($null -ne $process -and !$process.HasExited) {
         $process.Kill()
