@@ -78,6 +78,11 @@ Snapshot mode keeps that base intact and creates CPM3-WORK.IMG on the host.
 B: is empty; an optional native 800 KiB music/apps image can be selected later.
 Type DIR at the CP/M prompt, or HELP and TYPE TOOLS.TXT for the tools.
 
+For troubleshooting, send JUKUWIN.LOG from beside the EXE. It records startup
+and Listen failures, even before a session starts. If the EXE folder is not
+writable, the log is in the Windows temporary folder. Session logs and serial
+captures are under logs. Worker errors include Windows error details.
+
 Included CP/M files:
 {', '.join(tool_names)}
 

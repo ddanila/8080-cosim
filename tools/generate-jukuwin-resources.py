@@ -61,8 +61,8 @@ def main() -> int:
 1 ICON "JUKUWIN.ICO"
 
 1 VERSIONINFO
-FILEVERSION 0,1,0,0
-PRODUCTVERSION 0,1,0,0
+FILEVERSION 0,1,1,0
+PRODUCTVERSION 0,1,1,0
 FILEFLAGSMASK 0x3fL
 FILEFLAGS 0x0L
 FILEOS VOS__WINDOWS32
@@ -75,11 +75,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Juku project\0"
             VALUE "FileDescription", "Juku Host\0"
-            VALUE "FileVersion", "0.1.0\0"
+            VALUE "FileVersion", "0.1.1\0"
             VALUE "InternalName", "JUKUWIN\0"
             VALUE "OriginalFilename", "JUKUWIN.EXE\0"
             VALUE "ProductName", "Juku Host\0"
-            VALUE "ProductVersion", "0.1.0\0"
+            VALUE "ProductVersion", "0.1.1\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -91,7 +91,7 @@ END
     (args.directory / "JUKUWIN.RC").write_text(
         resource, encoding="ascii", newline="\n"
     )
-    print("JUKUWIN-RESOURCE-GENERATOR: PASS (32x32 icon + version 0.1.0)")
+    print("JUKUWIN-RESOURCE-GENERATOR: PASS (32x32 icon + version 0.1.1)")
     return 0
 
 
