@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "two-face photo route links D34.2 through R33-left gap joint to D34.6; exact .009 source keeps those nodes separated by C5",
+  "review_state": "RETRACTED two-face bridge: upper R33-left/D34.2 joint and lower D34.6 joint are distinct on both faces",
   "images": [
     {
       "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
@@ -54,18 +54,26 @@
     3155,
     2570
   ],
-  "solder_observation": "The corrected D34 seven-contact registration places physical pin 2 on the solder joint near (1055,2001). An exposed, continuous short B.Cu strip runs east from that joint to the distinct solder joint near (1110,2007). The latter matches the front R33-left gap joint within the established local face-map tolerance.",
-  "front_observation": "The front R33-left gap joint near (3098,2345) follows continuous exposed F.Cu downward and right into the sixth contact of D34's notch-up left row near (3155,2570), physical pin 6. The May owner photo independently shows the R33-left branch entering the same gap, but only the July overhead view resolves the pin index.",
-  "front_gap_cut_inspection": "A native-resolution crop of July component image PXL_20260710_200418174.jpg at (2900,1980)-(3420,2630) shows the exposed R33-left trace, the two nearby bare annuli, and the separate open XTAL16M annulus. There is no visible cut or added wire on the exposed front segment from the R33-left gap joint toward D34.6. This does not inspect copper hidden by D34 or establish the original C5 through-hole pair.",
-  "source_disagreement": "Both the retained .006 scan and exact .009 sheet 2 draw D34.6/C5.1 separately from C5.2/D34.2/R33.1. The owner photos instead show a two-face copper path D34.2 -> gap joint -> D34.6 while no separate C5 body is visible on May or July dates. A target-board modification, original copper variant, or local damage remains possible; the archives do not establish factory intent.",
-  "decision": "Treat the two-face D34.2-to-D34.6 copper path as photo-supported on this owner board. Keep the exact .009 source model's two nodes separate and both passives on circuit review until powered-off continuity proves the board path and the C5 site is inspected. Do not install C5 or merge nets solely because the photo path is visible.",
-  "next_inspection": "Power off: measure D34.2 to D34.6 directly in both meter polarities, then measure each to R33-left gap joint and R33 right. Inspect the C5 site for a cut, jumper, or removed capacitor and compare with any other original .009 PCB before choosing the replica circuit.",
-  "older_revision_comparison": "Retained .006 sheet-2 scan crop (900,100)-(2100,750) independently draws D34.6 to C5=560, the opposite C5 plate to D34.2/R33=620, and R33 to ground. The exact .009 photo prints the same component values and topology. No archived schematic revision among these two documents explains the owner-board photo bridge.",
+  "solder_observation": "The D34.2 B.Cu strip joins the upper solder joint near (1110,2007). A second joint near (1110,2057), about 50 px lower, is visibly separate in native July crop (1030,1940)-(1200,2130). The local reflected face map pairs the upper and lower solder joints with the respective upper and lower front joints. No local B.Cu bridge joins them.",
+  "front_observation": "Native July component crop (3030,2250)-(3200,2450) resolves two vertically separated filled joints near (3098,2345) and (3098,2395). The R33-left diagonal terminates at the upper joint. A separate vertical F.Cu run leaves the lower joint toward physical D34.6. Brown board is visible between the two annuli and traces; the prior claim that the upper joint continues to D34.6 was a visual conflation.",
+  "front_gap_cut_inspection": "The two front annuli are distinct and their exposed F.Cu runs remain separate; no visible cut is required to explain the exact-source split. Copper hidden under D34 and the C5 pad pair remain uninspected.",
+  "source_disagreement": "RETRACTED. The previously claimed D34.2-to-D34.6 photo bridge results from conflating the two adjacent gap joints. Their visible separation agrees with the C5-separated nodes drawn in both .006 and exact .009 sheet 2. C5 body absence and actual pad identity remain unresolved.",
+  "decision": "Retire the alleged owner-board D34.2/D34.6 short. Preserve the exact .009 source model with separate RC nodes. Treat the upper joint as a photo-supported D34.2/R33-left branch and the lower joint as a D34.6 branch; confirm same-hole pairing and C5 pad identity before changing assembly placement.",
+  "next_inspection": "Power off: confirm D34.2 to upper gap joint and D34.6 to lower gap joint separately, then verify isolation between the two joints with C5 removed or accounted for. Identify the C5 through-hole pair and check R33 right to ground. The direct D34.2-to-D34.6 test remains useful as a guard against hidden modification.",
+  "older_revision_comparison": "Retained .006 and exact .009 sheet-2 images both separate D34.6/C5.1 from C5.2/D34.2/R33.1. The corrected two-joint photo read no longer contradicts that topology.",
   "assembly_and_change_record_review": {
     "assembly_photo": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
     "assembly_observation": "The .009 assembly placement explicitly labels C5 between R33 and D34/D39, alongside C82. The owner component photos show R33 but no distinct C5 body at that position.",
     "change_record": "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf, sheet 6",
     "change_record_observation": "The retained change-registration sheet lists revision numbers, document identifiers and dates, not the contents of those change documents. The assembly drawing and transcribed wire/cable table contain no explicit C5 omission or D34.2-to-D34.6 bridge instruction. This limited search cannot rule out an unarchived change document or owner modification.",
-    "decision": "No archived assembly or change-list instruction resolves the source-versus-owner disagreement; retain circuit-review status and the powered-off continuity request."
-  }
+    "decision": "The archive does not establish why the C5 body is absent; inspect its site and revision history before assigning population."
+  },
+  "d34_pin6_gap_joint_front_px_approx": [
+    3098,
+    2395
+  ],
+  "d34_pin6_gap_joint_solder_px_approx": [
+    1110,
+    2057
+  ]
 }

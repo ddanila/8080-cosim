@@ -4690,7 +4690,7 @@
       "value": "560",
       "procurement": {
         "action": "circuit-review",
-        "note": "Exact source nominal 560 pF; no body is visible at the factory C5 site in May/July owner photos, and owner two-face copper photo-supports a D34.2-to-D34.6 bridge across its drawn terminals. Confirm continuity and population history before fitting."
+        "note": "Exact source nominal 560 pF; no body is visible at the factory C5 site in May/July owner photos, and native photo reread separates the upper D34.2/R33-left and lower D34.6 joints. Identify C5 pads and population history before fitting."
       }
     },
     {
@@ -4717,12 +4717,12 @@
       "prov": {
         "type": "exact .009 E3 sheet 2",
         "refdes": "PXL_20260718_101911242.jpg prints R33=620 ohm in the D34 counter-load pulse shaper",
-        "pins": "exact .009 detail draws R33 from the C5.2/D34.2 RC node to ground; May PXL_20260519_202100511.jpg reads apparent К62 on the fitted owner body. July front copper routes R33 left through the gap joint to physical D34.6; July solder copper joins that same hole to D34.2, photo-supporting a two-face bridge across the drawn C5-separated nodes. Continuity, C5 population history, and R33 right-hand rail remain open (d34-pin2-pin6-c5-bridge-review.json)"
+        "pins": "exact .009 detail draws R33 from the C5.2/D34.2 RC node to ground; May PXL_20260519_202100511.jpg reads apparent К62 on the fitted owner body. Native July crops separate the upper R33-left/D34.2 gap joint from the lower D34.6 gap joint on both faces, retracting the alleged bridge. C5 pad identity, population history, and R33 right-hand rail remain open (d34-pin2-pin6-c5-bridge-review.json)"
       },
       "value": "620",
       "procurement": {
         "action": "circuit-review",
-        "note": "Source and apparent owner marking agree on 620 ohms, but owner front and solder copper photo-support a D34.2-to-R33-left-to-D34.6 bridge across the source C5-separated nodes. Meter and inspect the bare C5 site before fitting the pulse shaper."
+        "note": "Source and apparent owner marking agree on 620 ohms, but native photos separate the D34.2/R33-left upper joint from the D34.6 lower joint. Meter R33 and inspect the bare C5 site before fitting the pulse shaper."
       }
     },
     {
@@ -15716,7 +15716,7 @@
       ]
     },
     "D34_RC_DRIVE": {
-      "src": "exact .009 sheet-2 PXL_20260718_101911242.jpg: D34 first XOR output pin 6 drives C5.1 in the counter-load pulse shaper; owner two-face photos support a copper bridge from D34.6 through R33 left/gap joint to D34.2, a physical conflict pending continuity (d34-pin2-pin6-c5-bridge-review.json)",
+      "src": "exact .009 sheet-2 PXL_20260718_101911242.jpg: D34 first XOR output pin 6 drives C5.1 in the counter-load pulse shaper; native owner-photo reread separates the D34.6 lower joint from the D34.2/R33-left upper joint; C5 pad identity remains open (d34-pin2-pin6-c5-bridge-review.json)",
       "nodes": [
         [
           "D34",
@@ -15729,7 +15729,7 @@
       ]
     },
     "D34_RC_NODE": {
-      "src": "exact .009 sheet-2 PXL_20260718_101911242.jpg: C5.2 joins R33.1 and D34 second-XOR input pin 2; owner two-face photos support a copper bridge through R33 left/gap joint to D34.6, a physical conflict pending continuity (d34-pin2-pin6-c5-bridge-review.json)",
+      "src": "exact .009 sheet-2 PXL_20260718_101911242.jpg: C5.2 joins R33.1 and D34 second-XOR input pin 2; native owner-photo reread separates upper D34.2/R33-left joint from lower D34.6 joint; C5 pad identity remains open (d34-pin2-pin6-c5-bridge-review.json)",
       "nodes": [
         [
           "C5",

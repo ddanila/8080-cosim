@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "superseded RC-node assignment: R33-left gap joint photo-routes to D34.6, conflicting with source C5/R33 topology; same-hole gap registration retained",
+  "review_state": "upper R33-left gap joint on D34.2 branch; distinct lower D34.6 joint resolved; C5 pad identity open",
   "images": [
     {
       "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
@@ -36,9 +36,9 @@
     1110,
     2007
   ],
-  "front_trace": "R33 left lead visibly routes through the filled gap joint near (3098,2345) and continues on exposed F.Cu to the sixth pin down D34 notch-up left row, physical D34.6 near (3155,2570). The earlier interpretation stopped at the gap joint and missed this continuation.",
-  "cross_face_check": "The independently registered D34/D39 local map predicts solder about (1110,2007) from front (3098,2345). A distinct filled solder joint lies in that search position. This is a candidate same-hole match, with local map search tolerance about 15 px; the solder-side trace beyond it has not been assigned.",
-  "source_context": "Exact .009 sheet 2 separates R33.1/C5.2/D34.2 from D34.6/C5.1. The owner front trace appears to join R33 left directly to D34.6; see r33-d34-pin6-source-conflict.json. No direct continuity reading or C5 pad pair exists yet.",
-  "decision": "Retire the candidate C5.2/D34.2 label for this R33-left joint. Keep the two-face same-hole match (front 3098,2345; solder 1110,2007) as a probe target for the R33-left-to-D34.6 source conflict. Do not merge source nets or assign C5 pads from the photo alone.",
-  "next_inspection": "Power off: meter the R33-left gap joint to D34.6 and D34.2 separately, and R33 right to ground/+5 V; inspect the C5 site for removal, cut, or jumper. See r33-d34-pin6-source-conflict.json."
+  "front_trace": "R33 left lead reaches the upper filled gap joint near (3098,2345) and stops there. A distinct lower joint near (3098,2395) routes toward D34.6. Native enlargement shows brown clearance between their exposed F.Cu.",
+  "cross_face_check": "D34/D39 local map matches upper front (3098,2345) to solder (1110,2007), which joins D34.2 on B.Cu. It matches the distinct lower front (3098,2395) to a separate solder joint near (1110,2057). Same-hole matches remain candidates pending continuity.",
+  "source_context": "Exact .009 sheet 2 separates R33.1/C5.2/D34.2 from D34.6/C5.1. The corrected two-gap-joint owner-photo read is consistent with the split; C5 pad identity and population remain open.",
+  "decision": "Restore the upper R33-left joint as a D34.2/C5.2 node candidate, not a proved C5 pad. Retire the alleged copper short to D34.6. Keep the distinct lower D34.6 joint as the other C5-side search candidate.",
+  "next_inspection": "Power off: meter upper gap joint to D34.2, lower gap joint to D34.6, and isolation between them; identify the C5 through-hole pair and R33 right rail."
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "two-face photo route supports D34.2-to-R33-left-gap-to-D34.6 copper path against exact .009 C5-separated source; direct continuity unmetered",
+  "review_state": "retracted alleged D34.2-to-D34.6 photo bridge after separating two gap joints; C5 population and pads open",
   "sources": [
     {
       "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
@@ -39,11 +39,11 @@
     }
   ],
   "coordinate_system": "original source-image pixels",
-  "front_route": "The fitted R33-position body's left lead near (2980,2145) follows uninterrupted exposed F.Cu diagonally to the filled gap joint near (3098,2345), then continues downward and right to the sixth contact down D34's notch-up left row near (3155,2570). The corrected seven-contact D34 registration identifies that contact as physical pin 6. The solder-side same-hole candidate for the gap joint is near (1110,2007).",
-  "source_model_conflict": "Exact .009 sheet 2 and board JSON separate D34.6/C5.1 from C5.2/D34.2/R33.1. July photos now support a two-face copper route D34.2 (solder) -> R33-left gap joint -> D34.6 (front) while C5 has no visible May/July body. Direct continuity and factory intent remain unproved.",
-  "scope_limit": "The two-face copper route is visible, but hidden damage/cuts or a target-board modification cannot be excluded solely from the archive. R33 right-hand rail is still unknown. Do not merge D34_RC_DRIVE and D34_RC_NODE in the exact source model or declare factory C5 DNP before direct continuity and site inspection.",
-  "retired_inference": "Earlier c5-r33-rc-node-landing-review.json treated the R33-left/gap joint as a possible C5.2 RC-node landing based on the drawing. The full front trace to D34.6 invalidates that assignment as a photo conclusion. The same-hole gap-joint registration remains useful as a probe target.",
-  "next_inspection": "Power off: meter D34.2 to D34.6 directly in both polarities and each to the R33-left gap joint (front 3098,2345; solder 1110,2007). Meter R33 right solder near (1005,1808) to ground, +5 V, and D34.1 separately; inspect the C5 site for a cut, jumper, or removed capacitor.",
+  "front_route": "R33 left near (2980,2145) follows exposed F.Cu to the UPPER filled gap joint near (3098,2345). A separate LOWER filled joint near (3098,2395) has its own vertical F.Cu run to D34.6 near (3155,2570). Native enlargement shows brown clearance between the two joints and their traces.",
+  "source_model_conflict": "RETRACTED. The apparent two-face bridge conflated upper and lower gap joints. Exact .009 sheet 2 separates D34.2/R33.1 from D34.6 across C5; the corrected owner photo is consistent with that separation. C5 pad and population evidence remains open.",
+  "scope_limit": "The upper joint joins D34.2 on visible B.Cu, and the lower front joint routes toward D34.6. The two joints are visibly separate on both faces. Hidden copper or modification still needs continuity; do not infer C5 population from its absent body.",
+  "retired_inference": "Retire the previous D34.2-to-D34.6 photo-bridge claim. The older c5-r33-rc-node-landing-review.json upper-joint D34.2/R33-left candidate is again supported by solder copper, but this does not itself identify a C5 pad.",
+  "next_inspection": "Power off: confirm D34.2 to upper gap joint (front 3098,2345; solder 1110,2007) and D34.6 to lower gap joint (front 3098,2395; solder about 1110,2057), then test isolation and identify C5 pads. Meter R33 right to ground, +5 V, and D34.1 separately.",
   "may_cross_date_check": "The independent May 19 oblique close-up, viewed 180 degrees upright, shows the same fitted К62-position resistor and its left-lead diagonal into the bare D39/D34 gap. The branch continues toward the D34-side row, but the oblique image alone does not independently resolve a pin number. It supports persistence of the July visible route while the July seven-contact fit supplies the D34.6 identification.",
   "r33_right_photo_limit": "July original crop (3080,2080)-(3310,2350) shows R33 right lead soldered to a wide vertical front strip that disappears beneath D34 body at the package top. D34 top-left pin-1 uses a separate narrow strip immediately to its left; no exposed bridge between them is visible. The May oblique view has the same occlusion. Do not infer +5 V or ground for R33 right from this apparent proximity.",
   "r33_solder_pair_review": {
@@ -65,6 +65,7 @@
     "local_map_check": "D34/D39 face map predicts right lead about (1002,1814) and left lead about (1223,1814), residuals under roughly 7 px. Body spacing and reflected order independently support the two lead assignments.",
     "visible_b_cu": "The two solder joints are isolated from each other on visible B.Cu. A wide horizontal conductor below them has clear brown separation to both; neither joint visibly enters that conductor on B.Cu. Front copper under D34 remains obscured, so this does not prove the right lead is ungrounded."
   },
-  "solder_d34_pin2_bridge": "Native solder crop PXL_20260710_200522685.jpg (1020,1940)-(1210,2120) shows D34 physical pin2 at about (1055,2001) joined by uninterrupted short B.Cu to the R33-left gap joint about (1110,2007). The corrected D34 contact fit and two-face same-hole map support both endpoints. See d34-pin2-pin6-c5-bridge-review.json.",
-  "revision_comparison": "Retained .006 p2_sheet2.png crop (900,100)-(2100,750) repeats the exact .009 D34.6-C5-D34.2/R33 split with C5=560 and R33=620. The available earlier schematic therefore does not explain the owner-board bridge; see d34-pin2-pin6-c5-bridge-review.json."
+  "solder_d34_pin2_bridge": "D34.2 near (1055,2001) joins only the UPPER gap joint near (1110,2007) on exposed B.Cu. The LOWER joint near (1110,2057) is separate; see d34-pin2-pin6-c5-bridge-review.json for the correction.",
+  "revision_comparison": "Retained .006 and exact .009 sheets both show C5-separated D34.2 and D34.6 branches. The corrected two-joint owner-photo read is consistent with this topology.",
+  "two_joints_native_reread": "July front crop (3030,2250)-(3200,2450): upper joint near (3098,2345) ends R33-left diagonal; lower joint near (3098,2395) routes to D34.6. July solder crop (1030,1940)-(1200,2130): upper (1110,2007) receives D34.2 strip; lower (1110,2057) is visibly separate. The roughly 50 px row spacing matches across faces. Prior route description combined these two joints by mistake."
 }
