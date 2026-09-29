@@ -117,5 +117,6 @@
       4080
     ],
     "observation": "D96.9 Q2 turns down and left to the shared D101 A0-A3 input conductor. D96.11 CLK2 turns upward to the conductor drawn from D94.2. The D96.11 line crosses D28.10-to-D96.10 without a junction dot."
-  }
+  },
+  "pin9_component_edge_recheck": "Native front crop of 200402344 pixels (3250,2070)-(3450,2510, with registered pin9 near (3307,2340) and about 53 px row pitch, shows the exposed D96.9 package contact without a distinct F.Cu neck. Two nearby vertical front conductors are separated from that pin at the visible package edge; one starts at a higher contact and one at a separate open annulus. Hidden copper beneath the package and B.Cu through the solder pad remain possible, so the photo does not locate the D96.9-to-D101 continuation. Power-off pin9→D101 A0–A3 continuity remains the next physical test."
 }
