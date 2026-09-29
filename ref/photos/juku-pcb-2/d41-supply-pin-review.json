@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "logical supply pins corrected; routed PCB copper connected; owner rail continuity open",
+  "review_state": "logical supply pins corrected; owner D41.14/CAS photo conflict sharpened by C89 local hole fit; rail continuity open",
   "device_contract": "ref/video/ir16-device-contract.json",
   "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
   "package_registration": "ref/photos/juku-pcb-2/local-package-registration.json",
@@ -11,7 +11,7 @@
   "former_model_gap": "D41 pin 7 and pin 14 were absent from the P5V/GND node lists while D42 and D43 had the supply assignments. Before correction, the D41 footprint pads 7/14 were unassigned in the source, routed, and routed-candidate PCBs.",
   "model_correction": "D41.7 is in GND and D41.14 in P5V in kicad/juku.board.json. Both D41 pads carry matching net names in the source, routed, and routed-candidate PCB files. The generated schematic uses a functional-pin-only IR16 symbol and skips power nets by default; pad-net parity no longer flags D41.",
   "pcb_boundary": "The source PCB remains unrouted at D41.7/.14. Both routed variants now have a D41.7 GND F.Cu segment to (227.500,135.000) and a D41.14 P5V B.Cu segment to (244.000,144.000). KiCad error-only DRC remains at 176 violations and drops from 61 to 59 unconnected items in each board; normalized DRC comparison adds no violation or unconnected record. These replica routes do not prove the owner-board rail connections.",
-  "next_inspection": "Power off: confirm D41.7 near solder (2329,1620) to known ground, and D41.14 through the front open hole near (2230,2180)/solder counterpart (1974,1845) to known +5 V. Use the promoted D41 fit and keep the adjacent parallel solder lines and C83 same-hole candidate separate until measured.",
+  "next_inspection": "Power off: confirm D41.7 near solder (2329,1620) to known ground. Check D41.14 through front hole (2230,2180)/solder (1974,1845), then separately confirm C89-position front upper hole (1842,2298) to solder CAS-linked hole (2356,1953) and D38.1. Test D41.14, D38.1, and independently known +5 V against each other before any owner-net merge. Keep the adjacent parallel solder lines and C83 same-hole candidate separate.",
   "replica_copper_audit": {
     "method": "pcbnew inspection of D41 pad coordinates and PCB_TRACK segment distances on F.Cu/B.Cu; pad diameter 1.6 mm, nearest-track search radius 1.5 mm",
     "source_pcb": {
@@ -88,5 +88,6 @@
     "solder_image_crop_xyxy": ["PXL_20260710_200522685.jpg", 2300, 1900, 2430, 2010],
     "cas_joined_drill_center_px_approx": [2356, 1953],
     "observation": "Independent native-pixel enlargement puts the candidate front drilled center slightly lower than the prior (1842,2295) estimate. The B.Cu annulus remains joined to west and northeast traces. This reread does not remove the 12-14 px disagreement between the two package-only cross-face fits and the proposed far-hole pairing; it strengthens the need for electrical continuity before treating D41.14 and D38.1 as one physical node."
-  }
+  },
+  "c89_local_far_hole_fit": "The package-only D41/D38 and D41/D40 fits above remain valid as historical screens, but a closer three-control reflection around C89 is more specific to the far hole. Front lower wire joint (1810,2694), lower open hole (1872,2694), and middle filled joint (1870,2470) in 200418174 correspond to distinct solder features (2383,2347), (2327,2347), and (2327,2118) in 200522685. Their x_s+x_f sums are about 4193/4199/4197 and y_s−y_f offsets about −347/−347/−352. This local fit projects front upper C89-position hole (1842,2298) near solder (2354,1949), within about 4 px of the D38.1/CAS-linked annulus (2356,1953). The far same-hole hypothesis is therefore strongly photo-supported, raising the priority of the D41.14-to-D38.1 physical continuity discriminator. It does not prove the separate D41.14 near-hole match or an electrical VCC/CAS short; inspect for a false B.Cu join, board cut, or pin identification error if continuity conflicts with the exact .009 source."
 }
