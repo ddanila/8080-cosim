@@ -173,7 +173,7 @@
         {"pin": "1", "image_px": [1745.0, 2190.0], "use": "fit", "observation": "left visible solder joint of the horizontal 1K0 body below-left of registered D2"},
         {"pin": "2", "image_px": [1960.0, 2190.0], "use": "fit", "observation": "right visible solder joint beside D2's lower-left socket corner"}
       ],
-      "note": "Exact .009 assembly 114607591 labels R12 immediately below-left of D2, matching this July body and the May 201933909 1K0 body at the same relative location. These are approximate joint centers for placement and probing; axial symmetry and visual overlap do not establish electrical pin numbering. The nearby D1.24 WAIT front trace passes beneath the body without a visible lead junction; see d1-wait-source-review.json."
+      "note": "Exact .009 assembly 114607591 labels R12 immediately below-left of D2, matching this July body and the May 201933909 1K0 body at the same relative location. A four-feature front/solder fit matches left and right body joints to solder (1995,1945)/(1770,1945). The left joint has continuous B.Cu to registered D4.11, source-assigned +5 V, so the model's R12.1/+5 V maps physically left and R12.2/-WREQ right, consistent with prior owner continuity. The nearby D1.24 WAIT front trace passes beneath the body without a visible lead junction; see d1-wait-source-review.json."
     },
     {
       "refdes": "D4",
