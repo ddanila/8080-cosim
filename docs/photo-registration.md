@@ -487,8 +487,9 @@ The actual D37 is the separate bottom-notched `КР1533ЛА3` in the lower
 `D36–R57–D37–D33` row. The target component view fits pins 1/7 and holds pins
 4/8/14 to `0.500` px; bracketing D36/D33 centres and the held-out D103 row
 confirm the assembly-order registration. The same view fixes the intervening
-R57 vertically at `(236.7,177.6)` mm with its standard 10.16 mm lead span,
-while electrical sheet 2 identifies it as 20 ohms. D37 is now centred at
+R57 vertically at `(236.7,177.6)` mm with its standard 10.16 mm lead span.
+Electrical sheet 2 identifies it as 20 ohms, and the owner body independently
+shows red-black-black-gold bands consistent with 20 ohms. D37 is now centred at
 `(245.5,180.1)` mm with the photographed bottom notch represented by a
 180-degree footprint. The same raw frame moves the separately visible vertical
 200-ohm R46 out of that package and into its real D33/D103 gap at

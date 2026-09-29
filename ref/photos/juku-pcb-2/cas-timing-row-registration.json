@@ -41,7 +41,7 @@
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
     "observations": {
       "D36": {"centre_px": [1908.0, 1132.0], "board_centre_mm": [228.1, 180.4], "role": "left placement anchor", "marking": "KR531LA12"},
-      "R57": {"centre_px": [2085.0, 1080.0], "pad_centres_px": [[2085.0, 965.0], [2085.0, 1195.0]], "board_centre_mm": [236.7, 177.6], "orientation_deg": 90, "lead_span_mm": 10.16, "value": "20"},
+      "R57": {"centre_px": [2085.0, 1080.0], "pad_centres_px": [[2085.0, 965.0], [2085.0, 1195.0]], "board_centre_mm": [236.7, 177.6], "orientation_deg": 90, "lead_span_mm": 10.16, "value": "20", "owner_body_bands": "red-black-black-gold, consistent with 20 ohms at 5% tolerance; native July crop (2040,890)-(2130,1260)"},
       "D37": {"centre_px": [2269.0, 1139.0], "board_centre_mm": [245.5, 180.1], "orientation_deg": 180, "marking": "KR1533LA3", "role": "lower-row NAND between R57 and D33"},
       "D33": {"centre_px": [2550.0, 1132.0], "board_centre_mm": [258.0, 180.0], "role": "right placement anchor", "marking": "KR531LN1"},
       "R46": {"centre_px": [2790.0, 1218.0], "pad_centres_px": [[2790.0, 1054.0], [2790.0, 1382.0]], "board_centre_mm": [266.6, 184.0], "orientation_deg": 90, "lead_span_mm": 10.16, "value": "200", "role": "photo-visible vertical RC resistor between D33 and D103"},
@@ -103,6 +103,13 @@
     "may_image": "PXL_20260519_201927098.jpg",
     "may_crop_xyxy": [1870, 2020, 1930, 2140],
     "decision": "Two independent native component views support a direct local F.Cu tie of D36.12 and D36.13, consistent with exact .009 sheet 2. This closes the owner-board local tie only. The backside D36 field and the tied input's upstream driver remain unregistered."
+  },
+  "candidate_field_r57_shifted_check": {
+    "solder_image": "PXL_20260710_200530933.MP.jpg",
+    "crop_xyxy": [1550, 40, 1740, 540],
+    "method": "Align the D40-local D36 projection to the candidate seven-contact columns x1715/x1895 and rows y115-475, requiring an approximate (-30,-75) px shift; apply the same local shift to the two R57 lead projections.",
+    "r57_shifted_search_px_approx": [[1625, 115], [1625, 360]],
+    "observation": "Near the first search there are open annuli around x1590 and x1650 at y115, but no securely matched filled R57 lead crown. The second search falls on copper/substrate around x1625,y360 without a distinct solder crown. This corrected-offset check still does not identify an R57 pair and cannot certify the adjacent seven-contact field as D36. The front R57 lead pools do not expose drill centers, so their lack of a nearby B.Cu crown cannot prove surface-only attachment either."
   },
   "disposition": "D37/D39 physical identities and placements corrected; R57 and R46 vertical placements, lead spans, and schematic values closed; electrical nets unchanged"
 }
