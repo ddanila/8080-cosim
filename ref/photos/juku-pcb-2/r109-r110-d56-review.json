@@ -48,5 +48,14 @@
     "next_check": "With power off, identify each actual lead hole in both faces and measure the two ends separately to D56.7/C7.1, D56.15/C8.1, and known +5 V; isolate the resistor for value only after documenting its connected state."
   },
   "assembly_pad_order_limit": "Native .009 assembly crop (1950,1550)-(2900,2600) in PXL_20260711_114611058.jpg shows R47 above R59, each as a horizontal body with two unnumbered end strokes; R110/R109 below are plain outlines. The end strokes show intended horizontal mounting only. There are no pad numbers, printed net labels, or asymmetric markers at either end, so this drawing cannot assign owner-body polarity or map the single upright fitted resistor to either refdes. The exact E3 sheet-2 nets and owner continuity must decide.",
-  "may_right_body_crosscheck": "Independent May component image PXL_20260519_201907078.jpg native crop (2700,250)-(3650,1500) repeats the single upright red body east of marked D56 К155АГ3, in the same two lead positions as July 200445914. Its upper lead curls to an isolated-looking round joint beside an open hole; its lower lead joins a wider vertical front-copper strip. Neither image exposes a continuous front join from the upper lead to a numbered D56 pin, and the visible fragment of body print still does not identify a resistance. This confirms persistent population and local lead geometry, not R47/R59 identity or net continuity."
+  "may_right_body_crosscheck": "Independent May component image PXL_20260519_201907078.jpg native crop (2700,250)-(3650,1500) repeats the single upright red body east of marked D56 К155АГ3, in the same two lead positions as July 200445914. Its upper lead curls to an isolated-looking round joint beside an open hole; its lower lead joins a wider vertical front-copper strip. Neither image exposes a continuous front join from the upper lead to a numbered D56 pin, and the visible fragment of body print still does not identify a resistance. This confirms persistent population and local lead geometry, not R47/R59 identity or net continuity.",
+  "west_33k_solder_search": {
+    "component_image": "PXL_20260710_200445914.jpg",
+    "solder_image": "PXL_20260710_200530933.MP.jpg",
+    "component_lead_joints_px_approx": [[3103, 1183], [3103, 1427]],
+    "d56_corner_reflection": "D56 package anchors x3215/3415 to solder x990/807 and y940/1380 to solder y89/536 project the west 33K body's two lead joints near (1092,336) and (1092,584). This extrapolates outside the package and is a search map, not a two-hole registration.",
+    "native_solder_crop_xyxy": [850, 240, 1230, 650],
+    "observation": "Several crowns and a broad lower bar occupy the two projected neighborhoods. No unique pair at the expected separation can be assigned to the red body, and no exposed local B.Cu joins either search point to registered D56.15 near (990,472). The apparent D56.15 horizontal B.Cu departure belongs to another solder feature until the 33K lead holes are matched.",
+    "next_test": "With power off, first match both 33K lead holes across faces; then check each separately against D56.15 and C8.1 before assigning R59."
+  }
 }
