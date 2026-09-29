@@ -67,15 +67,41 @@
   },
   "pin11_photo_route_review": {
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
-    "native_crops_xyxy": [[570, 1850, 820, 2170], [580, 1920, 1150, 2040]],
-    "d96_11_registered_px": [625.4, 1994.2],
-    "d96_11_observed_joint_px_approx": [624, 1988],
-    "d28_11_registered_px": [838.8, 1995.6],
-    "far_observed_joint_px_approx": [849, 1990],
+    "native_crops_xyxy": [
+      [
+        570,
+        1850,
+        820,
+        2170
+      ],
+      [
+        580,
+        1920,
+        1150,
+        2040
+      ]
+    ],
+    "d96_11_registered_px": [
+      625.4,
+      1994.2
+    ],
+    "d96_11_observed_joint_px_approx": [
+      624,
+      1988
+    ],
+    "d28_11_registered_px": [
+      838.8,
+      1995.6
+    ],
+    "far_observed_joint_px_approx": [
+      849,
+      1990
+    ],
     "visible_b_cu": "Continuous narrow trace from the D96-side joint northeast to about (650,1963), east to about (820,1963), then southeast into the D28-side joint. The full native crop separates this line from the parallel runs above and below.",
     "independent_photo_check": "Adjacent native solder tiles PXL_20260710_200509593.jpg and PXL_20260710_200514102.jpg cover board regions farther right; neither repeats the D96.11 and D28.11 joints. The route has one photographic view.",
     "source_conflict": "Exact .009 sheet 3 places D96.11 CLK2 with D94.2/D99.9/R89.1, while D28.11 is the D93.38 DRQ/R94.1 input. The photographed B.Cu route would join these modeled nets if both physical pin registrations are correct. Do not merge or reroute the replica from photo alone.",
-    "next_check": "With power off, measure D96.11↔D28.11 directly, then each against D94.2, D99.9, D93.38, and R94.1. If the join is confirmed, inspect for a board modification or source/model pin-registration error before changing either net."
+    "next_check": "With power off, measure D96.11↔D28.11 directly, then each against D94.2, D99.9, D93.38, and R94.1. If the join is confirmed, inspect for a board modification or source/model pin-registration error before changing either net.",
+    "native_pin_row_recheck": "On the July solder crop (570,1870)-(950,2140), both mirrored opposite-side package rows have about 46 px vertical pitch. The D96 pin-14 row starts around y1858, making the fourth opposite-row contact pin11 near y1996; the visible route starts at (624,1988). D28 has pin1/5/6 anchors at y1859/2042/2088 on the other column, fixing its opposite row top pin14 near y1859 and fourth contact pin11 near y1997; the route ends at (849,1990). Adjacent pin10 contacts would be near y2042/2043, over 50 px from the route endpoints. This independent row count strengthens the physical pin identities, while the 6–11 px registration offsets and unmetered continuity remain."
   },
   "unresolved": [
     "D96.9 Q2-to-D101 A0-A3 physical continuity",

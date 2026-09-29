@@ -28,6 +28,8 @@ D96.11↔D28.11 directly, then D96.11 against D94.2, D99.9, R89.1,
 D93.38, and R94.1. Also check D96.11↔D96.10 to test the unmarked drawing
 crossing, and revisit the photo pin registration if the apparent DRQ join
 fails continuity.
+A native pin-row recount puts both route endpoints on the fourth contact of their mirrored seven-pin rows: D96.11 near y≈1996 and D28.11 near y≈1997. Neighboring pin-10 contacts lie around y≈2042, over 50 px from the observed joints. This strengthens the pin identities without replacing the continuity test.
+
 The adjacent native solder tiles `PXL_20260710_200509593.jpg` and
 `PXL_20260710_200514102.jpg` cover regions farther right on the board;
 neither repeats these two joints. The route has only one photographic view.
