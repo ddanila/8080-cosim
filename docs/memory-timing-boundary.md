@@ -157,9 +157,10 @@ and the common input's upstream driver is still unknown; see
   KiCad DRC report zero opens or electrical blockers.
 - The exact CAS-driver input source (`D36_CAS_IN`) is still not
   historical-source-complete. D36.12/.13 were
-  rechecked across the native 5140x3563 sheet on 2026-07-13; their common
-  west conductor enters an unlabeled dense timing bundle, so the automated
-  scan chase is exhausted.
+  rechecked across the native 5140x3563 sheet on 2026-07-13, and May/July
+  owner photos corroborate their local F.Cu tie. Their common west conductor
+  enters an unlabeled dense timing bundle, so the automated scan chase is
+  exhausted.
 - Exact-revision `.009 E3` sheet 2 and owner continuity close D56.12's
   conductor code 16 onto the tied D55 CLK1/CLK2 inputs at pins 15/18.
   It remains distinct from the unrelated D36.8/DRAM write rail 16.

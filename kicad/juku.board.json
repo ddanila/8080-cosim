@@ -17057,7 +17057,7 @@
       ]
     },
     "D36_CAS_IN": {
-      "src": "scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches R57, but the common west source enters a dense timing bundle without a unique rail number, label, or junction; automatic scan chase exhausted, so this remains a deliberate continuity boundary",
+      "src": "scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches R57; independent May/July owner component photos show the local pin12-to-pin13 F.Cu neck. The common west source enters a dense timing bundle without a unique rail number, label, or junction; automatic scan chase exhausted, so its remote driver remains a deliberate continuity boundary",
       "nodes": [
         [
           "D36",
