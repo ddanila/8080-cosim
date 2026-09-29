@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "review_state": "D101 section-A four-input source tie remains owner-open; native solder crop separates local pin departures",
+  "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101648508.jpg",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "crop_xyxy_original_pixels": [
+    1700,
+    1150,
+    2280,
+    1450
+  ],
+  "registration": "ref/photos/juku-pcb-2/local-package-registration.json D101 solder anchors pin1 (1789,1262), pin9 (2166,1099), pin16 (1790,1100); opposite row pin1-to-8 runs x≈1789+54*(pin-1), y≈1262.",
+  "contacts_px_approx": {
+    "D101.3": [
+      1897,
+      1262
+    ],
+    "D101.4": [
+      1951,
+      1262
+    ],
+    "D101.5": [
+      2005,
+      1262
+    ],
+    "D101.6": [
+      2059,
+      1262
+    ]
+  },
+  "native_solder_observation": "D101.3 has a narrow B.Cu neck north to a horizontal run. D101.4 has a broad plated neck south into the wide horizontal strip. D101.5 and D101.6 have no visible local B.Cu departure from their solder crowns. Brown substrate separates each adjacent crown and the immediate D101.3 and D101.4 departures. The visible crop does not show a local four-pad B.Cu bridge.",
+  "front_context": "July component photo PXL_20260710_200418174.jpg visibly joins D101.4 to R92.1 and R99.2 on F.Cu; the other three section-A contacts do not have an exposed front route that closes the full four-input island in that crop.",
+  "source_context": "Exact .009 sheet 3 draws D101 A0/A1/A2/A3 inputs pins6/5/4/3 on one conductor sourced from D96.9 Q2; see docs/d101-section-a-input-source-review.md.",
+  "decision": "Keep the source-modeled four-input tie, but do not promote it as owner-photo continuity. The separate local solder departures and potential hidden front or remote routes make a power-off D101.3/.5/.6-to-D101.4 measurement decisive.",
+  "next_inspection": "With D96 and D101 removed and power off, test each D101.3/.5/.6 to D101.4, R92.1, and R99.2 separately; follow D101.3 narrow solder line and D101.4 broad strip if any result disagrees. Test D96.9 to the same island independently."
+}

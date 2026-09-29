@@ -27,6 +27,8 @@ this remains a physical verification item. The sheet's use of `R99` at the
 D101 output is a separate known annotation conflict and supplies no evidence
 about these input joins.
 
+A native solder crop of `PXL_20260710_200522685.jpg` at `(1700,1150)`–`(2280,1450)` places pins 3–6 near x≈1897/1951/2005/2059, y≈1262. Pin 3 has a narrow northbound B.Cu departure, pin 4 enters a broad southbound strip, and pins 5–6 have no visible local B.Cu departure. The crowns are separated locally. This bounds the photographed evidence; a front-side or remote join still needs continuity. See `ref/photos/juku-pcb-2/d101-section-a-input-solder-review.json`.
+
 With D96 and D101 removed and power off, check D96.9 and each of D101.3,
 D101.5, and D101.6 against D101.4, R92.1, and R99.2. Record the meter
 readings separately.
