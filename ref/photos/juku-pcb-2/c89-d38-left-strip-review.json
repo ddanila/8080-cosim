@@ -25,8 +25,15 @@
     "component_upper_annulus_px_approx": [1842, 2298],
     "d38_local_projection_solder_px_approx": [2355, 1964],
     "visible_solder_open_annulus_px_approx": [2355, 1950],
-    "observation": "The open solder annulus near (2355,1950) has an uninterrupted short horizontal copper run west to registered D38.1 at (2244,1950). A separate close read shows the same annulus joined east to a narrow trace from the proposed D41.14 via near (1974,1845), creating a possible CAS/VCC conflict. The source board assigns D38.1 to CAS, separate from +5 V and ground. The projected component upper annulus is about 14 px below that solder hole, within the same order of local photo-fit offset seen elsewhere; it is a plausible, not physically proven, through counterpart.",
+    "observation": "The open solder annulus near (2355,1950) has an uninterrupted short horizontal copper run west to registered D38.1 at (2244,1950). A separate close read shows the same annulus joined east to a narrow trace from the proposed D41.14 via near (1974,1845), creating a possible CAS/VCC conflict. The source board assigns D38.1 to CAS, separate from +5 V and ground. This upper C89-position hole is the same front-hole candidate assessed in d41-supply-pin-review.json: an independent seven-contact D41/D38 fit projects it near solder (2355,1964), about 14 px below the visible annulus. That exceeds the fit's approximately 0–5 px package-contact residuals, so the proposed same-hole match is weak and cannot establish a CAS assignment for the front hole.",
     "assessment": "If the two annuli are the same hole, the upper C89-position site is on D38.1/CAS and cannot be one lead of the source-drawn +5 V/GND bypass. The same copper also requires a direct D41.14-to-D38.1 continuity check before either net assignment is promoted. Withdraw the assembly-position upper/middle pair as the preferred C89 footprint until the through-hole match is checked."
+  },
+  "upper_annulus_second_fit": {
+    "method": "Independent six-contact D41/D40 reflected affine fit in d41-supply-pin-review.json, excluding both the upper C89-position hole and the CAS-side solder annulus.",
+    "component_hole_px_approx": [1842, 2295],
+    "predicted_solder_px_approx": [2367, 1950],
+    "observed_cas_annulus_px_approx": [2355, 1950],
+    "assessment": "The approximately 12 px horizontal miss exceeds the fit's 0–6 px package-contact residuals. The D41/D38 fit misses the same proposal by about 14 px vertically. Neither fit justifies labeling this front hole CAS; only a same-hole or continuity check can settle it."
   },
   "middle_joint_ground_chase": {
     "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
